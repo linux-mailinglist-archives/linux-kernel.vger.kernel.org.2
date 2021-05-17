@@ -2,173 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D7A38300E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285BB382F1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239333AbhEQOX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239476AbhEQOUS (ORCPT
+        id S238590AbhEQONZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:13:25 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:40508 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238596AbhEQOLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:20:18 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A9FC061237;
-        Mon, 17 May 2021 07:09:48 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id y9so7430460ljn.6;
-        Mon, 17 May 2021 07:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ekVWOzxFNo3Z6IetXdeO7ete5WRacjN7K7wXm46m9JI=;
-        b=Y1UNXA1dDnxigz7B4TIqtAe6/gsDAiaVQDaZaYxe3YIZj9YtdtNFYqMQKilfa1BwT4
-         3fMXEFpMycesElPd//ByP7+dGzqjPbQbE/9KGQ3Lp/5ncuc8MDoJxe0kE/IabDsi1Z9l
-         cpQPbK/EkKyNQbG6/vkl8elZZSkF+yJvAkjn4aTQC8OjPX++nJKDKy13PJIeb+FzaSI1
-         ypLKko5E4cBtYG3fK2iN0xfkAD39AXhwaEIibgrbzBkYgMdUjFUwJt0jTjd1Vy35Yl8R
-         emv6kGUyKROUomQMO491PuolKzUe3FzpsQm7ek6zviituMjXmkV8/QwX9fnDbsvKp+DG
-         RhQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ekVWOzxFNo3Z6IetXdeO7ete5WRacjN7K7wXm46m9JI=;
-        b=A3Z/UH7OMF1BoklHJMedCrkyM/LFNW8qrgQOSFxdJ4vH80NpJ/Q5uDuwfR8MbqXmvR
-         lvGdy74DStgHL6MsrjXkK3YhBKDWoWv47SdevAr7Sy4H9PgcQsV5JsOSwQXAyApbY5/z
-         FdfPZIV5bl23+pm7Y3CB9SPKrwEDS+D4u0dJRmJrn3f3ucYyG/7hpOnuMWsPUudMKJeq
-         WBWxWjA8eFPJ/+xIRTL7j7dXAN8bBnxrLY8v1Fdn55KQpx3EQbp6P1PDQdylEF0MoMNT
-         9tcTTLAl9LbcVcV7yHT40mqThLxGRs+j/AmqZRujmPOD5PXL4W9TInalcIRqAy9+vWoz
-         YthA==
-X-Gm-Message-State: AOAM531qHtYIDbukzTq5fzB8DDAjlC5RbdfG3C+bAu6vhE5OMT9zWLY0
-        4Hqe7Xy6RJe9d/7s9Pa1PUcUltQ1J3o=
-X-Google-Smtp-Source: ABdhPJyPFHPAgpwmjrOkPzJvTF7hXVf40zH4gKfssBN2eC8ZBhL467fig/79fFWajAxgVXf4q059fA==
-X-Received: by 2002:a2e:a30c:: with SMTP id l12mr48969447lje.501.1621260586491;
-        Mon, 17 May 2021 07:09:46 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id x12sm2928586ljc.70.2021.05.17.07.09.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:09:46 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] soc/tegra: Add
- devm_tegra_core_dev_init_opp_table()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210516205138.22501-1-digetx@gmail.com>
- <20210516205138.22501-2-digetx@gmail.com>
- <20210517033705.uw5kfj46k6w6ptcl@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d43f5c65-eacc-e953-f2ef-3151d9229729@gmail.com>
-Date:   Mon, 17 May 2021 17:09:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 10:11:22 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 9134B64147;
+        Mon, 17 May 2021 16:09:10 +0200 (CEST)
+Date:   Mon, 17 May 2021 16:10:01 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        syzbot <syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com>,
+        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook (4)
+Message-ID: <20210517141001.GA23573@salvia>
+References: <0000000000008ce91e05bf9f62bc@google.com>
+ <CACT4Y+a6L_x22XNJVX+VYY-XKmLQ0GaYndCVYnaFmoxk58GPgw@mail.gmail.com>
+ <20210508144657.GC4038@breakpoint.cc>
+ <20210513005608.GA23780@salvia>
+ <CACT4Y+YhQQtHBErLYRDqHyw16Bxu9FCMQymviMBR-ywiKf3VQw@mail.gmail.com>
+ <20210517105745.GA19031@salvia>
+ <CACT4Y+Y1M7ewJmipTB=B4fbYR2DMn_kX69Vks93yo=g2g-iXKw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210517033705.uw5kfj46k6w6ptcl@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Y1M7ewJmipTB=B4fbYR2DMn_kX69Vks93yo=g2g-iXKw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.05.2021 06:37, Viresh Kumar пишет:
-> I am not sure why you divided this into three different patchsets,
-> while it should really have been one. Like this one just adds the API
-> but doesn't use it.
-
-Previously Krzysztof Kozlowski asked to split the large series into smaller sets which could be reviewed and applied separately by maintainers. He suggested that the immutable branch is a better option, I decided to implement this suggestion. So far I only sent out the memory patches which make use of the new helper, there will be more patches. The memory patches are intended to show that this helper can be utilized right now. My plan was to finalize this patch first, then Thierry will apply it and I will be able to sent the rest of the patches telling that they depend on the immutable branch.
-
-I'll merge this helper patch and the memory patches into a single series in v2. 
-
-> On 16-05-21, 23:51, Dmitry Osipenko wrote:
->> Add common helper which initializes OPP table for Tegra SoC core devices.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
->> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
->> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/soc/tegra/common.c | 112 +++++++++++++++++++++++++++++++++++++
->>  include/soc/tegra/common.h |  30 ++++++++++
->>  2 files changed, 142 insertions(+)
->>
->> diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
->> index 3dc54f59cafe..c3fd2facfc2d 100644
->> --- a/drivers/soc/tegra/common.c
->> +++ b/drivers/soc/tegra/common.c
->> @@ -3,9 +3,16 @@
->>   * Copyright (C) 2014 NVIDIA CORPORATION.  All rights reserved.
->>   */
->>  
->> +#define dev_fmt(fmt)	"tegra-soc: " fmt
->> +
->> +#include <linux/clk.h>
->> +#include <linux/device.h>
->> +#include <linux/export.h>
->>  #include <linux/of.h>
->> +#include <linux/pm_opp.h>
->>  
->>  #include <soc/tegra/common.h>
->> +#include <soc/tegra/fuse.h>
->>  
->>  static const struct of_device_id tegra_machine_match[] = {
->>  	{ .compatible = "nvidia,tegra20", },
->> @@ -31,3 +38,108 @@ bool soc_is_tegra(void)
->>  
->>  	return match != NULL;
->>  }
->> +
->> +static int tegra_core_dev_init_opp_state(struct device *dev)
->> +{
->> +	struct dev_pm_opp *opp;
->> +	unsigned long rate;
->> +	struct clk *clk;
->> +	int err;
->> +
->> +	clk = devm_clk_get(dev, NULL);
->> +	if (IS_ERR(clk)) {
->> +		dev_err(dev, "failed to get clk: %pe\n", clk);
->> +		return PTR_ERR(clk);
->> +	}
->> +
->> +	rate = clk_get_rate(clk);
->> +	if (!rate) {
->> +		dev_err(dev, "failed to get clk rate\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	opp = dev_pm_opp_find_freq_ceil(dev, &rate);
->> +
->> +	if (opp == ERR_PTR(-ERANGE))
->> +		opp = dev_pm_opp_find_freq_floor(dev, &rate);
->> +
->> +	err = PTR_ERR_OR_ZERO(opp);
->> +	if (err) {
->> +		dev_err(dev, "failed to get OPP for %ld Hz: %d\n",
->> +			rate, err);
->> +		return err;
->> +	}
+On Mon, May 17, 2021 at 02:42:41PM +0200, Dmitry Vyukov wrote:
+> On Mon, May 17, 2021 at 12:57 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > > > On Sat, May 08, 2021 at 04:46:57PM +0200, Florian Westphal wrote:
+> > > > > Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com
+> > > > > >
+> > > > > > Is this also fixed by "netfilter: arptables: use pernet ops struct
+> > > > > > during unregister"?
+> > > > > > The warning is the same, but the stack is different...
+> > > > >
+> > > > > No, this is a different bug.
+> > > > >
+> > > > > In both cases the caller attempts to unregister a hook that the core
+> > > > > can't find, but in this case the caller is nftables, not arptables.
+> > > >
+> > > > I see no reproducer for this bug. Maybe I broke the dormant flag handling?
+> > > >
+> > > > Or maybe syzbot got here after the arptables bug has been hitted?
+> > >
+> > > syzbot always stops after the first bug to give you perfect "Not
+> > > tainted" oopses.
+> >
+> > Looking at the log file:
+> >
+> > https://syzkaller.appspot.com/text?tag=CrashLog&x=110a3096d00000
+> >
+> > This is mixing calls to nftables:
+> >
+> > 14:43:16 executing program 0:
+> > r0 = socket$nl_netfilter(0x10, 0x3, 0xc)
+> > sendmsg$NFT_BATCH(r0, &(0x7f000000c2c0)={0x0, 0x0, &(0x7f0000000000)={&(0x7f00000001c0)={{0x9}, [@NFT_MSG_NEWTABLE={0x28, 0x0, 0xa, 0x3, 0x0, 0x0, {0x2}, [@NFTA_TABLE_NAME={0x9, 0x1, 'syz0\x00'}, @NFTA_TABLE_FLAGS={0x8}]}], {0x14}}, 0x50}}, 0x0)
+> >
+> > with arptables:
+> >
+> > 14:43:16 executing program 1:
+> > r0 = socket$inet_udp(0x2, 0x2, 0x0)
+> > setsockopt$ARPT_SO_SET_REPLACE(r0, 0x0, 0x60, &(0x7f0000000000)={'filter\x00', 0x4, 0x4, 0x3f8, 0x310, 0x200, 0x200, 0x310, 0x310, 0x310, 0x4, 0x0, {[{{@arp={@broadcast, @rand_addr, 0x87010000, 0x0, 0x0, 0x0, {@mac=@link_local}, {@mac}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'bridge0\x00', 'erspan0\x00'}, 0xc0, 0x100}, @unspec=@RATEEST={0x40, 'RATEEST\x00', 0x0, {'syz1\x00', 0x0, 0x4}}}, {{@arp={@initdev={0xac, 0x1e, 0x0, 0x0}, @local, 0x0, 0x0, 0x0, 0x0, {@mac=@remote}, {}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'veth0_to_bridge\x00', 'geneve1\x00'}, 0xc0, 0x100}, @unspec=@RATEEST={0x40, 'RATEEST\x00', 0x0, {'syz0\x00', 0x0, 0x2}}}, {{@arp={@local, @multicast1, 0x0, 0x0, 0x0, 0x0, {}, {@mac=@broadcast}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'veth0_to_batadv\x00', 'veth0_to_hsr\x00'}, 0xc0, 0x110}, @mangle={0x50, 'mangle\x00', 0x0, {@mac=@remote, @mac=@local, @multicast2, @initdev={0xac, 0x1e, 0x0, 0x0}}}}], {{[], 0xc0, 0xe8}, {0x28}}}}, 0x448)
+> >
+> > arptables was buggy at the time this bug has been reported.
+> >
+> > Am I understanding correctly the syzbot log?
+> >
+> > I wonder if the (buggy) arptables removed the incorrect hook from
+> > nftables, then nftables crashed on the same location when removing the
+> > hook. I don't see a clear sequence for this to happen though.
+> >
+> > Would it be possible to make syzbot exercise the NFT_MSG_NEWTABLE
+> > codepath (with NFTA_TABLE_FLAGS) to check if the problem still
+> > persists?
 > 
-> Why do you need to do this floor/ceil thing? Why can't you simply do
-> set-rate ? 
+> 
+> This happened only once so far 40 days ago. So if you consider it
+> possible that it actually happened due to the arptables issue, I would
+> mark it as invalid (with "#syz invalid") and move on. If it ever
+> happens again, syzbot will notify, but then we know it happened with
+> the aprtables issue fixed.
+> 
+> This bug does not have a reproducer, so it's not possible to test this
+> exact scenario. It's possible to replay the whole log, but somehow
+> syzkaller wasn't able to retrigger it by replaying the log. I don't
+> think it's worth our time at this point.
 
-The previous versions of this patch had this comment:
+Thanks.
 
-/*
- * dev_pm_opp_set_rate() doesn't search for a floor clock rate and it
- * will error out if default clock rate is too high, i.e. unsupported
- * by a SoC hardware version.  Hence find floor rate by ourselves.
- */
-
-I removed it because it appeared to me that it should be obvious why this is needed. The reason why it was added in the first place is that the tegra-clk driver initializes some clock rates to values that aren't supported by all hardware versions in accordance to the OPP tables, although technically those higher rates work okay in practice, this made dev_pm_opp_set_rate() to fail without fixing up the clock rate.
-
-You might be right that this is not necessary anymore, the code changed since the last time it was needed. I'll re-check it for the v2. Thank you for the review.
+I found the root cause, I was getting confused by the arptables
+report. I'll post a patch.
