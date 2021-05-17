@@ -2,126 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB8D386B18
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AEB386B16
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238614AbhEQURL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236354AbhEQURJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237865AbhEQURJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 17 May 2021 16:17:09 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A94C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:15:51 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id c17so5747618pfn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sIcPsjBtYPRGoLLSDO2B3/rtbfsSodR/GrhGvihj4OM=;
-        b=RSu7OC40KVFAlR4KCToJbuVdsdXMMdWauMKLK7Wuq+G3HBJPMlYyjPoUzP61cyC1Vl
-         m/0ekWyPL5MEiBAVKnMW5fX45XTC8Poaug44Gq+M0U2/JeBkXzbPUdTEyjI5/8zCWVg+
-         thsRri7EGp+ydsjziIZe1oU1O7MqJfsxARNYFVGrcuMG1tlb9c6Ajf4XDtZnRqupnw8I
-         nkd149CYP51BcJ+JU7qkJ/ERnYb/KTJogx3s/nAfWuxNNEmEaokaxbjY8KljjlNFizVw
-         vv5s4fcRu46yF+8hfhzROxoqNDVnUBjLcvHefi1zFl9r9QCrvZA+MO/f3Hg0nFdxPgVG
-         2SsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sIcPsjBtYPRGoLLSDO2B3/rtbfsSodR/GrhGvihj4OM=;
-        b=DINkjfDACFkCFMMFAlAiHJAHmsQG6SwFFqnernLyulDopR1UoLBBzeL0zPR8NtALsW
-         2CMP5hRLlVjpxq2gQms4mXwoH5GXMthhdzwvyCeyeXBNwr+k572ZFxm/qBpBW1HBWyEQ
-         iHV01biarx6rdHopZ11aEr3rbZhEaGfvhEoseFywRh7ciAXedNLdLvfIGQ9zJ1Xx1HBb
-         ri3vpDyQxlQ4WSSLYyhN/tQtV7jfaEVeDFOXby6WGoMBCehaP3LHZKyt2zlbXx0RQh40
-         PO91xJJPZt5XLxQIbxzCy6rphYKJVnMyp2Lb508+2mYEggNjz4rdF4/2tasCFDzmNBV2
-         RXkw==
-X-Gm-Message-State: AOAM532Sk2som+g8Zj4CGAryWGONUhMhI3plelw2J5BqlKhhaNJsqbt/
-        1kTR4dz+NiEQGcJvZMsgblGi2A==
-X-Google-Smtp-Source: ABdhPJzIWN9dnSGgET3oAfwZG9PR1Jrv82jckv3EBU/ZpcmKnoxMCGPpMfaG3c3dW0YoVPbBtzDwNQ==
-X-Received: by 2002:a63:205b:: with SMTP id r27mr1252598pgm.95.1621282550932;
-        Mon, 17 May 2021 13:15:50 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 5sm230348pjo.17.2021.05.17.13.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 13:15:50 -0700 (PDT)
-Date:   Mon, 17 May 2021 20:15:46 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        X86 ML <x86@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 00/11] x86: Support Intel Key Locker
-Message-ID: <YKLO8ryjO7gZKJQC@google.com>
-References: <20210514201508.27967-1-chang.seok.bae@intel.com>
- <9f556d3b-49d3-5b0b-0d92-126294ea082d@kernel.org>
- <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
+Received: from mx2.suse.de ([195.135.220.15]:33710 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229889AbhEQURH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 16:17:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AF6C8AEB3;
+        Mon, 17 May 2021 20:15:49 +0000 (UTC)
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+ <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+ <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
+ <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
+ <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <c28703a4-6936-15f2-730f-c3d96e1326a5@suse.de>
+Date:   Mon, 17 May 2021 22:15:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
+In-Reply-To: <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021, Bae, Chang Seok wrote:
-> On May 15, 2021, at 11:01, Andy Lutomirski <luto@kernel.org> wrote:
-> > What is the expected interaction between a KL-using VM guest and the
-> > host VMM?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX
+Content-Type: multipart/mixed; boundary="oLgGb4CoOy9gGjPXaoCdhJXJTDo4Hm2Za";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Alex Deucher <alexdeucher@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dragan Cvetic <dragan.cvetic@xilinx.com>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ DRI Development <dri-devel@lists.freedesktop.org>,
+ Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Derek Kiernan <derek.kiernan@xilinx.com>
+Message-ID: <c28703a4-6936-15f2-730f-c3d96e1326a5@suse.de>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+ <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+ <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
+ <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
+ <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
+In-Reply-To: <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
 
-Messy.  :-)
+--oLgGb4CoOy9gGjPXaoCdhJXJTDo4Hm2Za
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> > Will there be performance impacts (to context switching, for
-> > example) if a guest enables KL, even if the guest does not subsequently
-> > do anything with it?
+Hi
 
-Short answer, yes.  But the proposed solution is to disallow KL in KVM guests if
-KL is in use by the host.  The problem is that, by design, the host can't restore
-its key via LOADIWKEY because the whole point is to throw away the real key.  To
-restore its value, the host would need to use the platform backup/restore
-mechanism, which is comically slow (tens of thousands of cycles).
+Am 17.05.21 um 22:00 schrieb Daniel Vetter:
 
-If KL virtualization is mutually exclusive with use in the host, then IIRC the
-context switching penalty is only paid by vCPUs that have executed LOADIWKEY, as
-other tasks can safely run with a stale/bogus key.
+>> Sharing common code among subsystems is not a problem. Many of our
+>> more-sophisticated helpers are located in DRM because no other
+>> subsystems have the requirements yet. Maybe AI now has and we can move=
 
-> > Should Linux actually enable KL if it detects that it's a VM guest?
+>> the rsp shareable code to a common location. But AI is still no GPU. T=
+o
+>> give a bad analogy: GPUs transmit audio these days. Yet we don't treat=
 
-Probably not by default.  It shouldn't even be considered unless the VMM is
-trusted, as a malicious VMM can completely subvert KL.  Even if the host is
-trusted, it's not clear that the tradeoffs are a net win.
+>> them as sound cards.
+>=20
+> We actually do, there are full blown sound drivers for them over in
+> sound/ (ok I think they're all in sound/hda for pci gpus or in
+> sound/soc actually). There's some glue to tie it together because it
+> requires coordination between the gpu and sound side of things, but
+> that's it.
 
-Practically speaking, VMMs have to either (a) save the real key in host memory
-or (b) provide a single VM exclusive access to the underlying hardware.
+I know. But we don't merge both subsystems, just because the devices=20
+have some overlap in functionality.
 
-For (a), that rules out using an ephemeral, random key, as using a truly random
-key prevents the VMM from saving/restoring the real key.  That means the guest
-has to generate its own key, and the host has to also store the key in memory.
-There are also potential performance and live migration implications.  The only
-benefit to using KL in the guest is that the real key is not stored in _guest_
-accessible memory.  So it probably reduces the attack surface, but on the other
-hand the VMM may store the guest's master key in a known location, which might
-make cross-VM attacks easier in some ways.
+Best regards
+Thomas
 
-(b) is a fairly unlikely scenario, and certainly can't be assumed to be the
-default scenario for a guest.
+>=20
+> Also I think it would be extremely silly to remove all the drm_ stuff
+> just because it's originated from GPUs, and therefore absolutely
+> cannot be used by other accelarators. I'm not seeing the point in
+> that, but if someone has convincing technical argument for this we
+> could do it. A tree wide s/drm_/xpu_ might make some sense perhaps if
+> that makes people more comfortable with the idea of reusing code from
+> gpu origins for accelerators in general.
+> -Daniel
+>=20
 
-> > Should Linux have use a specific keying method as a guest?
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
-Could you rephrase this question?  I didn't follow.
 
-> First of all, there is an RFC series for KVM [2].
+--oLgGb4CoOy9gGjPXaoCdhJXJTDo4Hm2Za--
 
-That series also fails to address the use case question.
+--6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-[*] https://lore.kernel.org/kvm/YGs07I%2FmKhDy3pxD@google.com/
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCizvQFAwAAAAAACgkQlh/E3EQov+Ay
+WA/8CsiYmVjdX5mgd24Mcuk72EZyvsLI0bseTUnltOfF9WZPXw+wfSzWJakKqYxGzZ0aFernuz7F
+dkhwFKzWJ+ZpD2+WyDaxiaoSXoh4yg2rqRSGOZa0W3r/bq5homk2bAkXOpmnHtOAytVz6UxiHJew
+x4Qa9RxqEOud72vSONmfeoyD4Ib9iunpTUAFok43yg9OoxgUlhipSCwbfJRU4V6slHIQuB8yqvHS
+uossF7guT0jBrK1YXvwod3ZnEAi+5ilWCEiPejlOD2Z171cu3Ak9/xRevN8Tg8AoL/ki40x6bBgV
+V5mQzShY0zGyIQtunneyClthNf5SsBWyIBR1rNxNFAkQcqqxr0U/ShLjEanUW8ET5Po29cusZ4WD
+eqkh17gqtQubxwxnxFVyAg0yRY8ruuQBMmUqLxLNbsr8SO0NJa138MXY9AMIDUKdPsVGHOxBxsP1
+9xrIpRJCZ/qSFoUaqFdMDjOJ349Ubso6KGIL2YMlkK6j2i56t0IWCE7rqraPNaEiCaJcqp7juprE
+ioWCUB1p/8R5hgiCmCvLc6+r/av2ibMlsN6wZLOvZFjLcGjPn+0ZSLIlKUZ1zk+Z73j+HkElJeIM
+eBNHSFMwPffAQKItkJ2csc9xTCXWAeLvIG6r2dhvSJLlnI/YyQMDV+09ss7MB6umfEMcmb8dzqZf
+Kzk=
+=+mZB
+-----END PGP SIGNATURE-----
+
+--6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX--
