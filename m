@@ -2,101 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A25383DBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99370383DC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235308AbhEQTsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbhEQTsc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:48:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52D2C061573;
-        Mon, 17 May 2021 12:47:15 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621280833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PpozXE9Eg8reNXM2Sd0imFqDURR7dGqzmLBtJPdjcXE=;
-        b=WT4bXOeoC+ZgH20z5dJSPmzeEJizXclBOtClrdp4waF8XiJ9eYKKO5ZVSjO8HKNDaJbHjJ
-        /GamRxcZTVMMTAms7SqJ+UGZ47Dy8vjlNjJaiycBChJ4rUZBTSYim17/iPesXu5KwJVj4E
-        G/e7XtdXD0HRyELDnIdr0iy/Ncen4MzYCCgHLcJeGusokoXbQnni2QFIz6UwCVcBh9dpCE
-        3sraYiKeMQERVsEnhLvAEVsQpsw3l9H2O1YT2po81RmZzrFPBVEEGvYaQBrOpONU5S3qB4
-        ybNFo1I235w7fAAh0/sXOlMH5G6zncY6opF8A5dUrRdayHcgVd0+GmZzbdhyYw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621280833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PpozXE9Eg8reNXM2Sd0imFqDURR7dGqzmLBtJPdjcXE=;
-        b=4GxHSpNZswHYqUYSoeQLyu68tGD1lxN1swfD+vqX8hilV/B9yRXxT8SOH0B7kuSEayiXCI
-        AQwV0hZYJX2NtIDg==
-To:     Nitesh Lal <nilal@redhat.com>, Robin Murphy <robin.murphy@arm.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>,
-        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when setting the hint
-In-Reply-To: <CAFki+L=LDizBJmFUieMDg9J=U6mn6XxTPPkAaWiyppTouTzaqw@mail.gmail.com>
-References: <20210501021832.743094-1-jesse.brandeburg@intel.com> <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com> <20210504092340.00006c61@intel.com> <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com> <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com> <CAFki+L=LDizBJmFUieMDg9J=U6mn6XxTPPkAaWiyppTouTzaqw@mail.gmail.com>
-Date:   Mon, 17 May 2021 21:47:12 +0200
-Message-ID: <87y2cddtxb.ffs@nanos.tec.linutronix.de>
+        id S235292AbhEQTvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:51:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47102 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235119AbhEQTvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 15:51:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EAABFAECD;
+        Mon, 17 May 2021 19:49:51 +0000 (UTC)
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+ <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+ <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+Message-ID: <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
+Date:   Mon, 17 May 2021 21:49:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="BeFuMqkIKeU5e5dXQV293ifpK4BZ1eQ0O"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nitesh,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BeFuMqkIKeU5e5dXQV293ifpK4BZ1eQ0O
+Content-Type: multipart/mixed; boundary="QQltFApC08E4BoFqxUYYhiN08Px1ylIbQ";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dragan Cvetic <dragan.cvetic@xilinx.com>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ DRI Development <dri-devel@lists.freedesktop.org>,
+ Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Derek Kiernan <derek.kiernan@xilinx.com>
+Message-ID: <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+ <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+ <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
+In-Reply-To: <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
 
-On Mon, May 17 2021 at 14:21, Nitesh Lal wrote:
-> On Mon, May 17, 2021 at 1:26 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> We can use irq_set_affinity() to set the hint mask as well, however, maybe
-> there is a specific reason behind separating those two in the
-> first place (maybe not?).
+--QQltFApC08E4BoFqxUYYhiN08Px1ylIbQ
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Yes, because kernel side settings might overwrite the hint.
+Hi
 
-> But even in this case, we have to either modify the PMU drivers' IRQs
-> affinity from the userspace or we will have to make changes in the existing
-> request_irq code path.
+Am 17.05.21 um 21:23 schrieb Alex Deucher:
+> On Mon, May 17, 2021 at 3:12 PM Thomas Zimmermann <tzimmermann@suse.de>=20
+wrote:
+>>
+>> Hi
+>>
+>> Am 17.05.21 um 09:40 schrieb Daniel Vetter:
+>>> On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
+>>>> On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
+>>>> <gregkh@linuxfoundation.org> wrote:
+>>>>> On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:=
 
-Adjusting them from user space does not work for various reasons,
-especially CPU hotplug.
+>>>>>> Dear kernel maintainers,
+>>>>>>
+>>>>>> This submission is a kernel driver to support Intel(R) Gaussian & =
+Neural
+>>>>>> Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-=
+processor
+>>>>>> available on multiple Intel platforms. AI developers and users can=20
+offload
+>>>>>> continuous inference workloads to an Intel(R) GNA device in order =
+to
+>> free
+>>>>>> processor resources and save power. Noise reduction and speech rec=
+ognition
+>>>>>> are the examples of the workloads Intel(R) GNA deals with while it=
+s usage
+>>>>>> is not limited to the two.
+>>>>>
+>>>>> How does this compare with the "nnpi" driver being proposed here:
+>>>>>           https://lore.kernel.org/r/20210513085725.45528-1-guy.zadi=
+cario@intel.com
+>>>>>
+>>>>> Please work with those developers to share code and userspace api a=
+nd
+>>>>> tools.  Having the community review two totally different apis and
+>>>>> drivers for the same type of functionality from the same company is=
 
-> I am not sure about the latter because we already have the required controls
-> to adjust the device IRQ mask (by using default_smp_affinity or by modifying
-> them manually).
+>>>>> totally wasteful of our time and energy.
+>>>>
+>>>> Agreed, but I think we should go further than this and work towards =
+a
+>>>> subsystem across companies for machine learning and neural networks
+>>>> accelerators for both inferencing and training.
+>>>
+>>> We have, it's called drivers/gpu. Feel free to rename to drivers/xpu =
+or
+>>> think G as in General, not Graphisc.
+>>
+>> I hope this was a joke.
+>>
+>> Just some thoughts:
+>>
+>> AFAICT AI first came as an application of GPUs, but has now
+>> evolved/specialized into something of its own. I can imagine sharing
+>> some code among the various subsystems, say GEM/TTM internals for memo=
+ry
+>> management. Besides that there's probably little that can be shared in=
 
-default_smp_affinity does not help at all and there is nothing a module
-can modify manually.
+>> the userspace interfaces. A GPU is device that puts an image onto the
+>> screen and an AI accelerator isn't. Treating both as the same, even if=
 
-I'll send out a patch series which cleans that up soon.
+>> they share similar chip architectures, seems like a stretch. They migh=
+t
+>> evolve in different directions and fit less and less under the same
+>> umbrella.
+>=20
+> The putting something on the screen is just a tiny part of what GPUs
+> do these days.  Many GPUs don't even have display hardware anymore.
+> Even with drawing APIs, it's just some operation that you do with
+> memory.  The display may be another device entirely.  GPUs also do
+> video encode and decode, jpeg acceleration, etc.  drivers/gpu seems
+> like a logical place to me.  Call it drivers/accelerators if you like.
+> Other than modesetting most of the shared infrastructure in
+> drivers/gpu is around memory management and synchronization which are
+> all the hard parts.  Better to try and share that than to reinvent
+> that in some other subsystem.
 
-Thanks,
+I'm not sure whether we're on the same page or not.
 
-        tglx
+I look at this from the UAPI perspective: the only interfaces that we=20
+really standardize among GPUs is modesetting, dumb buffers, GEM. The=20
+sophisticated rendering is done with per-driver interfaces. And=20
+modesetting is the thing that AI does not do.
+
+Sharing common code among subsystems is not a problem. Many of our=20
+more-sophisticated helpers are located in DRM because no other=20
+subsystems have the requirements yet. Maybe AI now has and we can move=20
+the rsp shareable code to a common location. But AI is still no GPU. To=20
+give a bad analogy: GPUs transmit audio these days. Yet we don't treat=20
+them as sound cards.
 
 
+Best regards
+Thomas
+
+>=20
+> Alex
+>=20
+>>
+>> And as Dave mentioned, these devices are hard to obtain. We don't real=
+ly
+>> know what we sign up for.
+>>
+>> Just my 2 cents.
+>>
+>> Best regards
+>> Thomas
+>>
+>>
+>>
+>> --
+>> Thomas Zimmermann
+>> Graphics Driver Developer
+>> SUSE Software Solutions Germany GmbH
+>> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+>> (HRB 36809, AG N=C3=BCrnberg)
+>> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>>
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--QQltFApC08E4BoFqxUYYhiN08Px1ylIbQ--
+
+--BeFuMqkIKeU5e5dXQV293ifpK4BZ1eQ0O
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCiyN0FAwAAAAAACgkQlh/E3EQov+DF
+fw//RUaoVByJlvhp8HvTBwphU8uii0Fd9OsuYDnje4M0qFBa2wC2ohUTtb/pq5rpAWovWI5Hmzli
+I0OlXzG+zrZCdXm3BO53EBGyS403ATVntmTrGYyq6NiR7SfUsDxYjDoSvlC8WqYrB39k+nHYaTbj
++rlN6DwzDmc7iaNa3B8A1V7vA2Rh8wFeDq5LFCwkgKDswJw8pWoORHsQ0NoXmdzUxlgp3VpRYX6Y
+Fhg2syFvXIO4x7YQ0LZbpYK97PDT16FAKgKq/XgM/7vfu2qHLCNmwIaoAS/5vlTmU1dmSaNcJh89
+1WMDbvL6m1aUpymivxlspUCuL1V1oMjSQ8BJhRPTIX955myoA8k1AehzlG4uOB53eT0oxed8j/UG
+DHVyhnw8wyVleedJr33u2unag2LrBqqZLaCttzvz3XBbC1zfjhkzFGNBx2E5aGkhI9KFSMngdP7t
+K/UM/LAviQ+hGz77sxPxJ1wiovcCrbFKYEUGe+FzQIEB5Rxnd6lYu/Nv66EAM1Oi0Zz9fSfYaDSP
+gZ6y8Z/Y0jOItlEKZYpHFjot7hGi3sgLCNr4qaXusFTx60b7Wj9FPCmxTYW4Xd/cHERCDB45ui0u
+6RRMkhnrpWNC5O5DG5USYZfckNChLuUriMr7zlS3e5XJgQxIuW3BGEjLHkaafIzaDFQOH2jSM7s3
+nSs=
+=PY8l
+-----END PGP SIGNATURE-----
+
+--BeFuMqkIKeU5e5dXQV293ifpK4BZ1eQ0O--
