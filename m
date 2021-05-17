@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB76383712
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9158B3838BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343559AbhEQPjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:39:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41142 "EHLO mail.kernel.org"
+        id S1346148AbhEQQA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243944AbhEQPYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:24:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6450D61C9E;
-        Mon, 17 May 2021 14:35:42 +0000 (UTC)
+        id S1344051AbhEQPkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:40:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CE4C6194B;
+        Mon, 17 May 2021 14:41:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262142;
-        bh=MezwKVfeMlw3FXUOd7hfkb6rZQSNh9McEAZLyv0jj5o=;
+        s=korg; t=1621262512;
+        bh=gOuhFINJlzt8XFWTVxxmGAwRNy6+ka+gZ1gF4QnJRm8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nm7YvV0cjFwIjhjwcSD/6uNH8CNDh8yhOb7u2Gl0smqpn9FPr9tUzmjXkQ5X0YaE7
-         itLoBaa1Nb5ZyAXl9M/PouHvpLAwSyY1q4sGAmqKXtr4rYrc7dXCxqFsn+nNWrunLG
-         MDd6k0Xg9ausnZfShl4xPuftaRQhnvYAvO9Y0zjs=
+        b=i9dgcqYFKwEItJoyiInUYAtF26Ym+v2fqUk9A9U1MR4ASKHdSWsp2PDSX+hItwORh
+         6SzRXJ6M7lD6XEn2I/igXNYqoic8jlTQ5nYVfjIgc2C6mifPlUzIvhj4+1SukaE/U2
+         EYI/9ixfSlBl44mnCy+xgvftsgV28WgkvTrKVdBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 217/329] sched/fair: Fix unfairness caused by missing load decay
-Date:   Mon, 17 May 2021 16:02:08 +0200
-Message-Id: <20210517140309.471640394@linuxfoundation.org>
+        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Dan Schatzberg <dschatzberg@fb.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 204/289] blk-iocost: fix weight updates of inner active iocgs
+Date:   Mon, 17 May 2021 16:02:09 +0200
+Message-Id: <20210517140311.978383361@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,123 +40,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Tejun Heo <tj@kernel.org>
 
-[ Upstream commit 0258bdfaff5bd13c4d2383150b7097aecd6b6d82 ]
+commit e9f4eee9a0023ba22db9560d4cc6ee63f933dae8 upstream.
 
-This fixes an issue where old load on a cfs_rq is not properly decayed,
-resulting in strange behavior where fairness can decrease drastically.
-Real workloads with equally weighted control groups have ended up
-getting a respective 99% and 1%(!!) of cpu time.
+When the weight of an active iocg is updated, weight_updated() is called
+which in turn calls __propagate_weights() to update the active and inuse
+weights so that the effective hierarchical weights are update accordingly.
 
-When an idle task is attached to a cfs_rq by attaching a pid to a cgroup,
-the old load of the task is attached to the new cfs_rq and sched_entity by
-attach_entity_cfs_rq. If the task is then moved to another cpu (and
-therefore cfs_rq) before being enqueued/woken up, the load will be moved
-to cfs_rq->removed from the sched_entity. Such a move will happen when
-enforcing a cpuset on the task (eg. via a cgroup) that force it to move.
+The current implementation is incorrect for inner active nodes. For an
+active leaf iocg, inuse can be any value between 1 and active and the
+difference represents how much the iocg is donating. When weight is updated,
+as long as inuse is clamped between 1 and the new weight, we're alright and
+this is what __propagate_weights() currently implements.
 
-The load will however not be removed from the task_group itself, making
-it look like there is a constant load on that cfs_rq. This causes the
-vruntime of tasks on other sibling cfs_rq's to increase faster than they
-are supposed to; causing severe fairness issues. If no other task is
-started on the given cfs_rq, and due to the cpuset it would not happen,
-this load would never be properly unloaded. With this patch the load
-will be properly removed inside update_blocked_averages. This also
-applies to tasks moved to the fair scheduling class and moved to another
-cpu, and this path will also fix that. For fork, the entity is queued
-right away, so this problem does not affect that.
+However, that's not how an active inner node's inuse is set. An inner node's
+inuse is solely determined by the ratio between the sums of inuse's and
+active's of its children - ie. they're results of propagating the leaves'
+active and inuse weights upwards. __propagate_weights() incorrectly applies
+the same clamping as for a leaf when an active inner node's weight is
+updated. Consider a hierarchy which looks like the following with saturating
+workloads in AA and BB.
 
-This applies to cases where the new process is the first in the cfs_rq,
-issue introduced 3d30544f0212 ("sched/fair: Apply more PELT fixes"), and
-when there has previously been load on the cgroup but the cgroup was
-removed from the leaflist due to having null PELT load, indroduced
-in 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing
-path").
+     R
+   /   \
+  A     B
+  |     |
+ AA     BB
 
-For a simple cgroup hierarchy (as seen below) with two equally weighted
-groups, that in theory should get 50/50 of cpu time each, it often leads
-to a load of 60/40 or 70/30.
+1. For both A and B, active=100, inuse=100, hwa=0.5, hwi=0.5.
 
-parent/
-  cg-1/
-    cpu.weight: 100
-    cpuset.cpus: 1
-  cg-2/
-    cpu.weight: 100
-    cpuset.cpus: 1
+2. echo 200 > A/io.weight
 
-If the hierarchy is deeper (as seen below), while keeping cg-1 and cg-2
-equally weighted, they should still get a 50/50 balance of cpu time.
-This however sometimes results in a balance of 10/90 or 1/99(!!) between
-the task groups.
+3. __propagate_weights() update A's active to 200 and leave inuse at 100 as
+   it's already between 1 and the new active, making A:active=200,
+   A:inuse=100. As R's active_sum is updated along with A's active,
+   A:hwa=2/3, B:hwa=1/3. However, because the inuses didn't change, the
+   hwi's remain unchanged at 0.5.
 
-$ ps u -C stress
-USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
-root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
+4. The weight of A is now twice that of B but AA and BB still have the same
+   hwi of 0.5 and thus are doing the same amount of IOs.
 
-parent/
-  cg-1/
-    cpu.weight: 100
-    sub-group/
-      cpu.weight: 1
-      cpuset.cpus: 1
-  cg-2/
-    cpu.weight: 100
-    sub-group/
-      cpu.weight: 10000
-      cpuset.cpus: 1
+Fix it by making __propgate_weights() always calculate the inuse of an
+active inner iocg based on the ratio of child_inuse_sum to child_active_sum.
 
-This can be reproduced by attaching an idle process to a cgroup and
-moving it to a given cpuset before it wakes up. The issue is evident in
-many (if not most) container runtimes, and has been reproduced
-with both crun and runc (and therefore docker and all its "derivatives"),
-and with both cgroup v1 and v2.
-
-Fixes: 3d30544f0212 ("sched/fair: Apply more PELT fixes")
-Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210501141950.23622-2-odin@uged.al
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Dan Schatzberg <dschatzberg@fb.com>
+Fixes: 7caa47151ab2 ("blkcg: implement blk-iocost")
+Cc: stable@vger.kernel.org # v5.4+
+Link: https://lore.kernel.org/r/YJsxnLZV1MnBcqjj@slm.duckdns.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/fair.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ block/blk-iocost.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f217e5251fb2..10b8b133145d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10885,16 +10885,22 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
- {
- 	struct cfs_rq *cfs_rq;
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1023,7 +1023,17 @@ static void __propagate_weights(struct i
  
-+	list_add_leaf_cfs_rq(cfs_rq_of(se));
-+
- 	/* Start to propagate at parent */
- 	se = se->parent;
+ 	lockdep_assert_held(&ioc->lock);
  
- 	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
+-	inuse = clamp_t(u32, inuse, 1, active);
++	/*
++	 * For an active leaf node, its inuse shouldn't be zero or exceed
++	 * @active. An active internal node's inuse is solely determined by the
++	 * inuse to active ratio of its children regardless of @inuse.
++	 */
++	if (list_empty(&iocg->active_list) && iocg->child_active_sum) {
++		inuse = DIV64_U64_ROUND_UP(active * iocg->child_inuse_sum,
++					   iocg->child_active_sum);
++	} else {
++		inuse = clamp_t(u32, inuse, 1, active);
++	}
  
--		if (cfs_rq_throttled(cfs_rq))
--			break;
-+		if (!cfs_rq_throttled(cfs_rq)){
-+			update_load_avg(cfs_rq, se, UPDATE_TG);
-+			list_add_leaf_cfs_rq(cfs_rq);
-+			continue;
-+		}
+ 	iocg->last_inuse = iocg->inuse;
+ 	if (save)
+@@ -1040,7 +1050,7 @@ static void __propagate_weights(struct i
+ 		/* update the level sums */
+ 		parent->child_active_sum += (s32)(active - child->active);
+ 		parent->child_inuse_sum += (s32)(inuse - child->inuse);
+-		/* apply the udpates */
++		/* apply the updates */
+ 		child->active = active;
+ 		child->inuse = inuse;
  
--		update_load_avg(cfs_rq, se, UPDATE_TG);
-+		if (list_add_leaf_cfs_rq(cfs_rq))
-+			break;
- 	}
- }
- #else
--- 
-2.30.2
-
 
 
