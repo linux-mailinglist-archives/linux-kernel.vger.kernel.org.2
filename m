@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04C2382FD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A80A382E22
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239039AbhEQOVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:21:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239016AbhEQOR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:17:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B60EC61402;
-        Mon, 17 May 2021 14:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260614;
-        bh=kdJWbIocDoNQYfZqzv8L07x8UXrDuFbjWr2+dD5j2wI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dSxoQgsl1mI6opORR3ZGO5176q3xNNedkTqVB4Cr2LWks3TE4UaPlWdIAshwHuXQU
-         PT2JFi6foLgW+9sAVSAnFL8jr6cSSV9SIQcbkefj/visp5kex4uv0gIxUxK6hhZ0Sf
-         v0RLu0Yk272hEEhJI0r+v6Vti7ZBIrkymxMqjN+E=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 161/363] SUNRPC: Remove trace_xprt_transmit_queued
-Date:   Mon, 17 May 2021 16:00:27 +0200
-Message-Id: <20210517140308.047694788@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-References: <20210517140302.508966430@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S237637AbhEQOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237627AbhEQOCs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:02:48 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3CBC061761;
+        Mon, 17 May 2021 07:01:31 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d78so4141718pfd.10;
+        Mon, 17 May 2021 07:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=p6jAyFEHVFCxlZGpGxYbrWuXzrXvA1+9+mG4jRlrIQk=;
+        b=hDuAmQ4A43GWP0rKjcktZ9hykeiArJVyGcpT4ujdQRFXSuywufDCZFAYgkM2exL46R
+         CwYqu8QPpPsZQvgWPTT1EfxUKKA5uEpuCb0xc199tMlwKt67dquZw7yFdxF7BC9Hf06i
+         gROqkq6d/HN1ithnaqgpCkOgwFuUpflhf3GjiQb++cKtJnwnAWVSXDHZGbp+/2abu9m8
+         pqNeC5PPQNUw6jyeFCDYhqB6ne1SEMGXPztMw/HAbAu6oIxMET7PePOTNzTFrw3yX/Aj
+         0k7husLzMEEQJ3QCU4/vNMKH3yqX0wgac8QI3+pnAvBC6FNv0GlnPVBbO633fl4WJIcQ
+         t+nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=p6jAyFEHVFCxlZGpGxYbrWuXzrXvA1+9+mG4jRlrIQk=;
+        b=X0h/x0Z+1RxriOTzM8ToK84BYQx67sCePFAj6GYt+VrQmYChpUNr0jFtDHyRIh7fkz
+         8l/BHWRFVC7M2MU/8Em85RnZmkAQHiHFllBd5yVgTnagCVPeJN50Z4QOiGtWkiDE9UR+
+         OZn0uy0NgwR70s8LPjP3WuGlPCfiTLFol7pkiCcC62b5SMkTUK+fi23uneOdpP+nCeER
+         D1FKBYSaT/GeWHfpir65PvBiwyEd00jtnVPvMj24dgijcO7TLyuG6BSayWZ1hEkTpoAM
+         AoHgLCfJDq3ezY3kMeBLgz4CFHwAFBVy6hvq8VY0+xTUljWq2TdPdV6hOfwm9zH3PGlr
+         kr9w==
+X-Gm-Message-State: AOAM532/7L9bUCznphbQnxEFKnIDtXGKirkbJT86ox69ozUITLkDyNFv
+        Upkwq20cfRwOYW153sa0S19Rt8El4yc=
+X-Google-Smtp-Source: ABdhPJwj9HbY7SlYmRb/kfzs3XrJiDdyRtN9RdDvWJz/I86GDCxyl34GyEAXm4sgQnz/hmSL5B9ePw==
+X-Received: by 2002:a63:571d:: with SMTP id l29mr9510292pgb.179.1621260090676;
+        Mon, 17 May 2021 07:01:30 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.61])
+        by smtp.googlemail.com with ESMTPSA id k10sm3074229pfu.175.2021.05.17.07.01.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 May 2021 07:01:30 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v3 4/5] KVM: x86: hyper-v: Task srcu lock when accessing kvm_memslots()
+Date:   Mon, 17 May 2021 07:00:27 -0700
+Message-Id: <1621260028-6467-4-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
+References: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
-[ Upstream commit 6cf23783f750634e10daeede48b0f5f5d64ebf3a ]
+   WARNING: suspicious RCU usage
+   5.13.0-rc1 #4 Not tainted
+   -----------------------------
+   ./include/linux/kvm_host.h:710 suspicious rcu_dereference_check() usage!
 
-This tracepoint can crash when dereferencing snd_task because
-when some transports connect, they put a cookie in that field
-instead of a pointer to an rpc_task.
+  other info that might help us debug this:
 
-BUG: KASAN: use-after-free in trace_event_raw_event_xprt_writelock_event+0x141/0x18e [sunrpc]
-Read of size 2 at addr ffff8881a83bd3a0 by task git/331872
+  rcu_scheduler_active = 2, debug_locks = 1
+   1 lock held by hyperv_clock/8318:
+    #0: ffffb6b8cb05a7d8 (&hv->hv_lock){+.+.}-{3:3}, at: kvm_hv_invalidate_tsc_page+0x3e/0xa0 [kvm]
 
-CPU: 11 PID: 331872 Comm: git Tainted: G S                5.12.0-rc2-00007-g3ab6e585a7f9 #1453
-Hardware name: Supermicro SYS-6028R-T/X10DRi, BIOS 1.1a 10/16/2015
-Call Trace:
- dump_stack+0x9c/0xcf
- print_address_description.constprop.0+0x18/0x239
- kasan_report+0x174/0x1b0
- trace_event_raw_event_xprt_writelock_event+0x141/0x18e [sunrpc]
- xprt_prepare_transmit+0x8e/0xc1 [sunrpc]
- call_transmit+0x4d/0xc6 [sunrpc]
+  stack backtrace:
+  CPU: 3 PID: 8318 Comm: hyperv_clock Not tainted 5.13.0-rc1 #4
+  Call Trace:
+   dump_stack+0x87/0xb7
+   lockdep_rcu_suspicious+0xce/0xf0
+   kvm_write_guest_page+0x1c1/0x1d0 [kvm]
+   kvm_write_guest+0x50/0x90 [kvm]
+   kvm_hv_invalidate_tsc_page+0x79/0xa0 [kvm]
+   kvm_gen_update_masterclock+0x1d/0x110 [kvm]
+   kvm_arch_vm_ioctl+0x2a7/0xc50 [kvm]
+   kvm_vm_ioctl+0x123/0x11d0 [kvm]
+   __x64_sys_ioctl+0x3ed/0x9d0
+   do_syscall_64+0x3d/0x80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: 9ce07ae5eb1d ("SUNRPC: Replace dprintk() call site in xprt_prepare_transmit")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+kvm_memslots() will be called by kvm_write_guest(), so we should take the srcu lock.
+
+Fixes: e880c6ea5 (KVM: x86: hyper-v: Prevent using not-yet-updated TSC page by secondary CPUs)
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 ---
- include/trace/events/sunrpc.h | 1 -
- net/sunrpc/xprt.c             | 2 --
- 2 files changed, 3 deletions(-)
+ arch/x86/kvm/hyperv.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
-index 036eb1f5c133..2f01314de73a 100644
---- a/include/trace/events/sunrpc.h
-+++ b/include/trace/events/sunrpc.h
-@@ -1141,7 +1141,6 @@ DECLARE_EVENT_CLASS(xprt_writelock_event,
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index f98370a39936..f00830e5202f 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -1172,6 +1172,7 @@ void kvm_hv_invalidate_tsc_page(struct kvm *kvm)
+ {
+ 	struct kvm_hv *hv = to_kvm_hv(kvm);
+ 	u64 gfn;
++	int idx;
  
- DEFINE_WRITELOCK_EVENT(reserve_xprt);
- DEFINE_WRITELOCK_EVENT(release_xprt);
--DEFINE_WRITELOCK_EVENT(transmit_queued);
+ 	if (hv->hv_tsc_page_status == HV_TSC_PAGE_BROKEN ||
+ 	    hv->hv_tsc_page_status == HV_TSC_PAGE_UNSET ||
+@@ -1190,9 +1191,16 @@ void kvm_hv_invalidate_tsc_page(struct kvm *kvm)
+ 	gfn = hv->hv_tsc_page >> HV_X64_MSR_TSC_REFERENCE_ADDRESS_SHIFT;
  
- DECLARE_EVENT_CLASS(xprt_cong_event,
- 	TP_PROTO(
-diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
-index d616b93751d8..11ebe8a127b8 100644
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -1469,8 +1469,6 @@ bool xprt_prepare_transmit(struct rpc_task *task)
- 	struct rpc_xprt	*xprt = req->rq_xprt;
+ 	hv->tsc_ref.tsc_sequence = 0;
++
++	/*
++	 * Take the srcu lock as memslots will be accessed to check the gfn
++	 * cache generation against the memslots generation.
++	 */
++	idx = srcu_read_lock(&kvm->srcu);
+ 	if (kvm_write_guest(kvm, gfn_to_gpa(gfn),
+ 			    &hv->tsc_ref, sizeof(hv->tsc_ref.tsc_sequence)))
+ 		hv->hv_tsc_page_status = HV_TSC_PAGE_BROKEN;
++	srcu_read_unlock(&kvm->srcu, idx);
  
- 	if (!xprt_lock_write(xprt, task)) {
--		trace_xprt_transmit_queued(xprt, task);
--
- 		/* Race breaker: someone may have transmitted us */
- 		if (!test_bit(RPC_TASK_NEED_XMIT, &task->tk_runstate))
- 			rpc_wake_up_queued_task_set_status(&xprt->sending,
+ out_unlock:
+ 	mutex_unlock(&hv->hv_lock);
 -- 
-2.30.2
-
-
+2.25.1
 
