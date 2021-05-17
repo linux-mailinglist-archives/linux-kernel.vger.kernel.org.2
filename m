@@ -2,88 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A0A3827B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1063B3827C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbhEQJEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:04:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230087AbhEQJET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6790E610FA;
-        Mon, 17 May 2021 09:03:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621242183;
-        bh=gUm10dUf7/+1mJLO5+h9BYtkSzLqC7rGuCMNeD5x/QQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eRm58A+Po82x7w95vbhr3Ay/dAexkc6TwlY75gPGqbuRRZrpuGZkidKwTTDiFrF5b
-         5eEJkmtOvOE3uHJ6WUk56SR1hbZPQenObObSgvwlLuYRSUHu0QghuMUiTfFDkFQJNA
-         r4YXsSz+OIYQOp++ZTaqJJTv5KcQ37MSvtV1EIBfWg9rDYOBsU7Ss/PX3SwXw9s8Bj
-         /p23lO1tI9QAA94oLZZObABo8oUSjQnrT79pNeLY2HFvGIaEFBebNqHm0tG8/VsfAW
-         OyI5i3xemMd1nJD4vFavP07ZY0DrTX6B6oLrGJWvc9GDoBIs1uKl3UVpxfMKqF0M2I
-         m84dPm3FtfPhw==
-Date:   Mon, 17 May 2021 11:02:58 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 00/17] Add an experimental driver for Intel NUC leds
-Message-ID: <20210517110258.341da12c@coco.lan>
-In-Reply-To: <YKIm8TNJfXIMFl+W@kroah.com>
-References: <cover.1621161037.git.mchehab+huawei@kernel.org>
-        <YKIm8TNJfXIMFl+W@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235826AbhEQJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhEQJGu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 05:06:50 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9B0C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:05:34 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id t193so4214223pgb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=Gr47BrhR/b4EoJ2bOQxF4uUWqli/T+JeQ1G4Rm+7l7w=;
+        b=aPWF+ekSQfm3KMWRaX1DnCXiFW0Lu//59V6JcPjpIG08+eGQhF+griH5nDYfXFqCsx
+         iTQzv+LRTnahpLKEWmGH/tmKJ57+buFVLsScB6v5zk79qy6mxPRyWyQHVPUFnSUnMI67
+         4PUFheLa0ThG2/MDJVjBdlnFwvz4x3EeDdBakHvomPkPWz3B6JNA2+rSteiexUcO9p5v
+         UadDGNDfSngp5vTI+7fuefaBYO+s17PSAw5OUQR42sRyWzF99U5JGbnDesuoU8yGunOC
+         PH/oEpGO8NpA0q8KU/NBbLqk29L1/KuWPyQg5YryUHSl4MQ81zBYa/+NhKncI9lae/ye
+         RHLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=Gr47BrhR/b4EoJ2bOQxF4uUWqli/T+JeQ1G4Rm+7l7w=;
+        b=t0Z/fJMClEKKYxnN0uMCwyZQwdgeA+PxwwNiZPanWw82zQNrDAJfl9bzBVLAt4Il2k
+         xA9+HMRnng1/zT4OzEJKOXUsCLCBe9cIzKjdmCGnwVF0XGRM3sSM9RVPldrla28dTtW0
+         6RqS8RYBplkyEOnXPTuQUtuZ2WkmfmkSZLHRSWC7k5GmZAnlK3bwZtegZegrqVfKbWDS
+         CeH7shVi1P/zSmKprIWKaj1MPA+era2LBucyfsFuKzyzhKnL2KVoRXsctHaM6IBXQP1e
+         L7J2PCp8CK7Di+705BYy+NuJV4uXi1Bx/m9GcJE6InR8qQSKcaiCFbBtJAnR4B3OFDjt
+         CrqQ==
+X-Gm-Message-State: AOAM530nTVdbG7Y2CK7tR0BraZOg1uWtt+TVTwO+XzfGJ8xauNv5X91/
+        WrMu3tUboFfHaVx98VbxOkkUiasqPMfqqQ==
+X-Google-Smtp-Source: ABdhPJwDvRFe5PKaO3t1qF6WA8O0o6jda4eR+gY/exNFVUKBCcqai2NHXp+o/D/S1caVyhqkIWXZcw==
+X-Received: by 2002:aa7:9f8f:0:b029:2dc:76bc:edce with SMTP id z15-20020aa79f8f0000b02902dc76bcedcemr2890828pfr.29.1621242333670;
+        Mon, 17 May 2021 02:05:33 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id n21sm1981133pfu.99.2021.05.17.02.05.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 May 2021 02:05:33 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
+        linux-kernel@vger.kernel.org
+Subject: [[RFC]PATCH] psi: fix race between psi_trigger_create and psimon
+Date:   Mon, 17 May 2021 17:04:09 +0800
+Message-Id: <1621242249-8314-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 17 May 2021 10:18:57 +0200
-Greg KH <gregkh@linuxfoundation.org> escreveu:
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-> On Sun, May 16, 2021 at 12:53:28PM +0200, Mauro Carvalho Chehab wrote:
-> > Hi Greg,
-> > 
-> > This series add support for the LEDs found at Intel NUCs since
-> > NUC version 6.
-> > 
-> > On several NUC models, the function of the LEDs are programmable,
-> > which allow them to indicate several different hardware events.
-> > 
-> > They can even be programmed to represent an userspace-driven event.
-> > 
-> > Some models come with single colored or dual-colored LEDs, but
-> > high end models have RGB LEDs.
-> > 
-> > Programming them can ether be done via BIOS or by the OS.
-> > 
-> > There are 3 different API types, and there is already some OOT
-> > drivers that were written to support them, using procfs, each
-> > one using a different (and IMO confusing) API.
-> > 
-> > After looking at the existing drivers and not liking the uAPI
-> > interfaces there, I opted to write a new driver from scratch,
-> > unifying support for all different versions and using sysfs
-> > via the leds class.  
-> 
-> Just do this the "right way" and not add it to staging first.  Just use
-> the existing LED class apis and all should be fine, no need for doing
-> anything unusual here.
+Race detected between psimon_new and psimon_old as shown below, which
+cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
+and psi_system->poll_timer->entry->next. It is not necessary to reinit
+resource of psi_system when psi_trigger_create.
 
-I'm using the standard LED class already (but not triggers), and the
-standard WMI support.
+psi_trigger_create      psimon_new     psimon_old
+ init_waitqueue_head                    finish_wait
+                                          spin_lock(lock_old)
+	spin_lock_init(lock_new)
+ wake_up_process(psimon_new)
 
-Still, this API is complex, as it controls the LED behavior even when
-the machine is suspended. I would feel more comfortable if the ABI
-is not set into a stone at the beginning.
+                        finish_wait
+                          spin_lock(lock_new)
+                            list_del       list_del
 
-But it is your and Pavel's call.
+Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
+Signed-off-by: ke.wang <ke.wang@unisoc.com>
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ kernel/sched/psi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks,
-Mauro
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3c..d00e585 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+ 
+ static void psi_avgs_work(struct work_struct *work);
+ 
++static void poll_timer_fn(struct timer_list *t);
++
+ static void group_init(struct psi_group *group)
+ {
+ 	int cpu;
+@@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
+ 	memset(group->polling_total, 0, sizeof(group->polling_total));
+ 	group->polling_next_update = ULLONG_MAX;
+ 	group->polling_until = 0;
++	init_waitqueue_head(&group->poll_wait);
++	timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 	rcu_assign_pointer(group->poll_task, NULL);
+ }
+ 
+@@ -1157,7 +1161,6 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+ 			return ERR_CAST(task);
+ 		}
+ 		atomic_set(&group->poll_wakeup, 0);
+-		init_waitqueue_head(&group->poll_wait);
+ 		wake_up_process(task);
+ 		timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 		rcu_assign_pointer(group->poll_task, task);
+@@ -1233,7 +1236,6 @@ static void psi_trigger_destroy(struct kref *ref)
+ 		 * But it might have been already scheduled before
+ 		 * that - deschedule it cleanly before destroying it.
+ 		 */
+-		del_timer_sync(&group->poll_timer);
+ 		kthread_stop(task_to_destroy);
+ 	}
+ 	kfree(t);
+-- 
+1.9.1
+
