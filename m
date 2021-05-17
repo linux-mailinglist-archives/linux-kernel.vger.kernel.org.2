@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AED38256B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8D7382573
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235301AbhEQHeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:34:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:9567 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234742AbhEQHeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:34:18 -0400
-IronPort-SDR: ZUOmVceuxjk4044w2mH7bNq5B//cal4/pNB1ceQPhWQQJabPM33h/U1T9xz01ZMt9tll5KWXAB
- h9XSgcqZV7zA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="180001399"
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="180001399"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:33:02 -0700
-IronPort-SDR: 5XNFRMKOxEKOdgqb1gfmSSD021Ihgc5ethQIgLe94169a3Skxk2vw8QmA5Xj80R81VOBJR3Ukf
- UBIvSJ4vBxjg==
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="410714709"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:32:59 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1liXkG-00Cggg-Re; Mon, 17 May 2021 10:32:56 +0300
-Date:   Mon, 17 May 2021 10:32:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] gpio: xilinx: Fix potential integer overflow on
- shift of a u32 int
-Message-ID: <YKIcKLLP1VXBhYfO@smile.fi.intel.com>
-References: <20210513085227.54392-1-colin.king@canonical.com>
- <CAHp75VdvZEhdmui0+1eS0BXvxBs60=uB0zOPex_TTDTrK7ewnQ@mail.gmail.com>
+        id S234717AbhEQHj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:39:27 -0400
+Received: from antares.kleine-koenig.org ([94.130.110.236]:53302 "EHLO
+        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230499AbhEQHj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:39:26 -0400
+Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
+        by antares.kleine-koenig.org (Postfix) with ESMTP id 4BD67B9DCFB;
+        Mon, 17 May 2021 09:38:09 +0200 (CEST)
+Received: from antares.kleine-koenig.org ([94.130.110.236])
+        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
+        with ESMTP id ltGXZ89Y7-mn; Mon, 17 May 2021 09:38:08 +0200 (CEST)
+Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5c8:7bfc:3d80:4187:1735:8dd9])
+        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
+        Mon, 17 May 2021 09:38:08 +0200 (CEST)
+Subject: Re: [PATCH] [v2] printf: fix errname.c list
+To:     Arnd Bergmann <arnd@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20210514213456.745039-1-arnd@kernel.org>
+From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+Message-ID: <1986de34-bd7f-3a74-5cf9-d1efceb0ff54@kleine-koenig.org>
+Date:   Mon, 17 May 2021 09:38:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdvZEhdmui0+1eS0BXvxBs60=uB0zOPex_TTDTrK7ewnQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210514213456.745039-1-arnd@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="AZ5x7BOcwfp4S4aFbQZeC0xRw6VJKvlCl"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:03:15AM +0300, Andy Shevchenko wrote:
-> On Thu, May 13, 2021 at 12:12 PM Colin King <colin.king@canonical.com> wrote:
-> >
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > The left shift of the u32 integer v is evaluated using 32 bit
-> > arithmetic and then assigned to a u64 integer. There are cases
-> > where v will currently overflow on the shift. Avoid this by
-> > casting it to unsigned long (same type as map[]) before shifting
-> > it.
-> >
-> > Addresses-Coverity: ("Unintentional integer overflow")
-> > Fixes: 02b3f84d9080 ("gpio: xilinx: Switch to use bitmap APIs")
-> 
-> No, it is a false positive,
-> 
-> >         const unsigned long offset = (bit % BITS_PER_LONG) & BIT(5);
-> 
-> See above, offset is 0 when BITS_PER_LONG == 32 and 32 when it's equal to 64.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AZ5x7BOcwfp4S4aFbQZeC0xRw6VJKvlCl
+Content-Type: multipart/mixed; boundary="oyrrUHCpA4h6R8smJICWrwbB9DYAjeXDs";
+ protected-headers="v1"
+From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+To: Arnd Bergmann <arnd@kernel.org>, Petr Mladek <pmladek@suse.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-kernel@vger.kernel.org
+Message-ID: <1986de34-bd7f-3a74-5cf9-d1efceb0ff54@kleine-koenig.org>
+Subject: Re: [PATCH] [v2] printf: fix errname.c list
+References: <20210514213456.745039-1-arnd@kernel.org>
+In-Reply-To: <20210514213456.745039-1-arnd@kernel.org>
 
-Should be read as "...and 0 or 32 when..."
+--oyrrUHCpA4h6R8smJICWrwbB9DYAjeXDs
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> > -       map[index] |= v << offset;
-> > +       map[index] |= (unsigned long)v << offset;
+Hi Arnd,
 
--- 
-With Best Regards,
-Andy Shevchenko
+On 5/14/21 11:34 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> On most architectures, gcc -Wextra warns about the list of error
+> numbers containing both EDEADLK and EDEADLOCK:
+>=20
+> lib/errname.c:15:67: warning: initialized field overwritten [-Woverride=
+-init]
+>     15 | #define E(err) [err + BUILD_BUG_ON_ZERO(err <=3D 0 || err > 30=
+0)] =3D "-" #err
+>        |                                                               =20
+   ^~~
+> lib/errname.c:172:2: note: in expansion of macro 'E'
+>    172 |  E(EDEADLK), /* EDEADLOCK */
+>        |  ^
+>=20
+> On parisc, a similar error happens with -ECANCELLED, which is an
+> alias for ECANCELED.
+>=20
+> Make the EDEADLK printing conditional on the number being distinct
+> from EDEADLOCK, and remove the -ECANCELLED bit completely as it
+> can never be hit.
+>=20
+> To ensure these are correct, add static_assert lines that verify
+> all the remaining aliases are in fact identical to the canonical
+> name.
+>=20
+> Fixes: 57f5677e535b ("printf: add support for printing symbolic error n=
+ames")
+> Cc: Petr Mladek <pmladek@suse.com>
+> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+LGTM
+Acked-by: Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org>
+
+Thanks
+Uwe
 
 
+--oyrrUHCpA4h6R8smJICWrwbB9DYAjeXDs--
+
+--AZ5x7BOcwfp4S4aFbQZeC0xRw6VJKvlCl
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCiHVwACgkQwfwUeK3K
+7Alr4Qf/ZcaLwlAUdig5CT2zlGUiapijstlmSlpZGXWKtNdvUR6r5qr7Ht0aIVqx
+jiuoBOF8hrX6esuzvMT1XazzTYqpbE97eso+WhtQxRJjT67Ff1jqc7Xg0N+HCza5
+HayawabjniL+6/wzVOAplUv5tlAhJJnSgsA0OUW+OCkfivhGjqdF1+h6OjEmucb1
+9b5xFv81aqFO1FU6Kr0pDNzlw293MDTlw2FpxpdxvLeURSgAUQyTiTq6lNCCPP3o
+hNFyeVFGMGlnW0XVKWY9Fosl6FfDmrgeHFGXqgboFtmDiQ4vGaKtYt5zOFwvjXu7
+U8HNUzB42rOq0PmmCI5VLKtQ0qcMbA==
+=65tb
+-----END PGP SIGNATURE-----
+
+--AZ5x7BOcwfp4S4aFbQZeC0xRw6VJKvlCl--
