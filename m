@@ -2,74 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78064382A79
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5A1382A80
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236471AbhEQLCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236579AbhEQLCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:02:40 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3003C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:01:24 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id h16so6340579edr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Lvflle3nqVohqWXQjoKXKJ9NFkulfQYE+SnrI7kL87A=;
-        b=MoVu+reduWG5h6pq8tUmmTn9nel5GLj9nc2AA2INJyQkt984LNyYomhlVPZlvcWLZ0
-         lls8s5i9XYKig0wnrEIoUv6Xe6vt1lRX76z0LJdfoVjkMHeo1jhb1EwFTIU7gsXtkZrO
-         oPGk9wGC3l9H4L3m1IqSjO5dAoh7xjw7RsCrvuOaM4saQTgbFEMeZkxwU3BVpMBEJaJa
-         mfA85dJvkbUF6zQTJYCMAJlLJUbpIkGw0LRj/Ddo/Iwp81xX2gpnRhDA+gDLSjBlQH9s
-         Cctu54Wk3VXhpCZbSGcnTaNnMGt9Xqgk+vIqNqDiEIJ9plOt1DnhYwuKBv4N2J6Bsb5L
-         n0HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Lvflle3nqVohqWXQjoKXKJ9NFkulfQYE+SnrI7kL87A=;
-        b=oDdYOLRftP3worOAAiTeg4q4o2Q1GZ2zAVe09b+jQWCeb8Qs5gPcZ7tgYbWGh99Bgm
-         qtnwx4F5BKUoJnhNAsZQQb/pPha24tl36IGrVXqofl7AUXr2dLCpjlmYg+y12E2iX1/I
-         +dDaPIQrPEAUwfCl7SnnjAbEukCBzoQheiUqSfbFOpnaE1lk6TCuA1/3ySX0jN3jWdd7
-         ejZ7hNyl5U3MbFAEAc5S7u3UyifOPVXSzt8zS8ChtfnfAbRkLAl9HRUPBG6yTzJgmoLC
-         /7WiCTbg7u2n1IBCbWvJ9BFM3/xHdfuDxgnrRChF8MAYSWTZCISXyx89kC07cjm2u5qc
-         EZ1g==
-X-Gm-Message-State: AOAM530z0Nwt2rPKZ+5w4AugLwfQN0sad4ZNfT4Aj7Yw78K07EbKZujc
-        /j0cOObZtCSAFQg6Kgf5kEZbUw==
-X-Google-Smtp-Source: ABdhPJxuXu7WgWkMd+zcEXExrCD7oxWrKloPSisc8iLH6+Wfy13blbncOFJ5C2EvOs8X4GMgZlU2Mg==
-X-Received: by 2002:aa7:d952:: with SMTP id l18mr70191962eds.83.1621249283128;
-        Mon, 17 May 2021 04:01:23 -0700 (PDT)
-Received: from [192.168.1.14] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id g24sm10880568eds.41.2021.05.17.04.01.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 04:01:22 -0700 (PDT)
-Subject: Re: [PATCH][next] media: venus: hfi_msgs.h: Replace one-element
- arrays with flexible-array members
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210211001044.GA69612@embeddedor>
- <bf31beab-dc36-23e9-757f-9729be59f7b2@embeddedor.com>
- <de8538ad-48d8-7a3c-af4f-ab31ee2da761@linaro.org>
- <f63824ee-fc8b-25cf-f3c2-c7b3947b8076@embeddedor.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <64aa38bc-62b2-79d9-156f-74a09f11f871@linaro.org>
-Date:   Mon, 17 May 2021 14:01:20 +0300
+        id S236621AbhEQLEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:04:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47490 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236514AbhEQLEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 07:04:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 70B4FAE89;
+        Mon, 17 May 2021 11:03:04 +0000 (UTC)
+Subject: Re: [PATCH 3/9] arm64: dts: rockchip: Prepare Rockchip RK1808
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+References: <20210516230551.12469-1-afaerber@suse.de>
+ <20210516230551.12469-4-afaerber@suse.de>
+ <f46625ed-4c83-9fd2-52cd-e07a4d93a254@gmail.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Message-ID: <3f5767aa-77c4-6007-adfa-a85bf0a7e9ad@suse.de>
+Date:   Mon, 17 May 2021 13:03:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <f63824ee-fc8b-25cf-f3c2-c7b3947b8076@embeddedor.com>
+In-Reply-To: <f46625ed-4c83-9fd2-52cd-e07a4d93a254@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -77,105 +39,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Johan,
 
-On 5/12/21 7:37 PM, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 5/12/21 06:39, Stanimir Varbanov wrote:
->> Hi,
->>
->> On 5/11/21 6:46 PM, Gustavo A. R. Silva wrote:
->>> Hi all,
->>>
->>> Friendly ping:
->>>
->>> We are about to be able to globally enable -Warray-bounds and, these are one of
->>> the last out-of-bounds warnings in linux-next.
->>>
->>> Could someone take this, please?
->>
->> This one introduces regressions, so I cannot take it. It needs some more
->> work.
-> 
-> Please, share with me the errors or warnings you see with this. So, I can
-> have an idea of what is going on. Unfortunately, I don't have access to the
-> test suite or hardware to test this.
+On 17.05.21 03:29, Johan Jonker wrote:
+> Send the complete serie to all maintainers and mail lists.
 
-I guess it needs more debugging, but the simple answer is that the
-driver refuse to start streaming with this patch.
+That's unhelpful - all patches went to linux-rockchip, LAKML and LKML,
+and get_maintainers.pl was used. The cover letter was explicitly copied
+to DTML as get_maintainers.pl doesn't catch it. You'll find them here:
+
+https://lore.kernel.org/linux-rockchip/20210516230551.12469-1-afaerber@suse.de/
+
+Which mailing list or maintainer do you think all should've gone to in
+addition? You're not listed anywhere in linux-next MAINTAINERS. If you
+want to be CC'ed, you can nicely ask me to for a v2 (and explaining why
+would help for the next series), or you can send patches against
+MAINTAINERS yourself.
+
+Copying all maintainers and lists would likely not be appreciated by the
+colleagues and may get mails flagged as spam.
+
+> ===
+> Heiko's sort rules:
+> 
+> compatible
+> reg
+> interrupts
+> [alphabetical]
+> status [if needed]
+> 
+> ===
+> My incomplete list:
+> 
+> For nodes:
+> If exists on top: model, compatible and chosen.
+> Sort things without reg alphabetical first,
+> then sort the rest by reg address.
+> 
+> Inside nodes:
+> If exists on top: compatible, reg and interrupts.
+> In alphabetical order the required properties.
+> Then in alphabetical order the other properties.
+> And as last things that start with '#' in alphabetical order.
+> Add status below all other properties for soc internal components with
+> any board-specifics.
+> Keep an empty line between properties and nodes.
+> 
+> Exceptions:
+> Sort pinctrl-0 above pinctrl-names, so it stays in line with clock-names
+> and dma-names.
+> Sort simple-audio-card,name above other simple-audio-card properties.
+> Sort regulator-name above other regulator properties.
+> Sort regulator-min-microvolt above regulator-max-microvolt.
+> 
+> ===
+
+
+Here's a rule for you: No top-posting on kernel lists.
+
 
 > 
-> Thanks!
-> --
-> Gustavo
-> 
-> 
-> 
->>>
->>> Thanks
->>> --
->>> Gustavo
->>>
->>> On 2/10/21 18:10, Gustavo A. R. Silva wrote:
->>>> There is a regular need in the kernel to provide a way to declare having
->>>> a dynamically sized set of trailing elements in a structure. Kernel code
->>>> should always use “flexible array members”[1] for these cases. The older
->>>> style of one-element or zero-length arrays should no longer be used[2].
->>>>
->>>> Use flexible-array members in struct hfi_msg_sys_property_info_pkt and
->>>> hfi_msg_session_property_info_pkt instead of one-element arrays.
->>>>
->>>> Also, this helps with the ongoing efforts to enable -Warray-bounds by
->>>> fixing the following warnings:
->>>>
->>>>   CC [M]  drivers/media/platform/qcom/venus/hfi_msgs.o
->>>> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_sys_property_info’:
->>>> drivers/media/platform/qcom/venus/hfi_msgs.c:246:35: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->>>>   246 |  if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
->>>>       |                          ~~~~~~~~~^~~
->>>> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_session_prop_info’:
->>>> drivers/media/platform/qcom/venus/hfi_msgs.c:342:62: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->>>>   342 |  if (!req_bytes || req_bytes % sizeof(*buf_req) || !pkt->data[1])
->>>>       |                                                     ~~~~~~~~~^~~
->>>>
->>>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
->>>> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
->>>>
->>>> Link: https://github.com/KSPP/linux/issues/79
->>>> Link: https://github.com/KSPP/linux/issues/109
->>>> Build-tested-by: <lkp@intel.com>
->>>> Link: https://lore.kernel.org/lkml/6023dd80.MmTeFf8SzwX0iK7%2F%25lkp@intel.com/
->>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>>> ---
->>>>  drivers/media/platform/qcom/venus/hfi_msgs.h | 4 ++--
->>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.h b/drivers/media/platform/qcom/venus/hfi_msgs.h
->>>> index 526d9f5b487b..e2d2ccfbdd24 100644
->>>> --- a/drivers/media/platform/qcom/venus/hfi_msgs.h
->>>> +++ b/drivers/media/platform/qcom/venus/hfi_msgs.h
->>>> @@ -113,7 +113,7 @@ struct hfi_msg_sys_ping_ack_pkt {
->>>>  struct hfi_msg_sys_property_info_pkt {
->>>>  	struct hfi_pkt_hdr hdr;
->>>>  	u32 num_properties;
->>>> -	u32 data[1];
->>>> +	u32 data[];
->>>>  };
->>>>  
->>>>  struct hfi_msg_session_load_resources_done_pkt {
->>>> @@ -233,7 +233,7 @@ struct hfi_msg_session_parse_sequence_header_done_pkt {
->>>>  struct hfi_msg_session_property_info_pkt {
->>>>  	struct hfi_session_hdr_pkt shdr;
->>>>  	u32 num_properties;
->>>> -	u32 data[1];
->>>> +	u32 data[];
->>>>  };
->>>>  
->>>>  struct hfi_msg_session_release_resources_done_pkt {
->>>>
->>
+> Fix complete dtsi for property sort order!
+> Add more drivers. (cru, pinctrl)
+
+-ETONE! I don't work for Rockchip, so don't command me to add drivers
+for them that I have no source code for (cover letter) nor complete TRM.
+You're welcome that I did this service to the kernel community in my
+spare time... If you look up the date of Hackweek 20, you'll find that
+it took me two months to get this patchset binding-documented and
+cleaned up to this point, so by extrapolation it's unrealistic to expect
+much more of me here anytime soon. Rudeness certainly does not motivate.
+
+Heiko knows me - if he has any comments, he should be well capable of
+voicing them himself inline. I will not follow nonsensical rules that
+diverge from other mainline arm-soc vendors - unless I've missed some
+new directive from Rob or arm-soc maintainers that would apply to all.
+
+Thanks for nothing,
+
+Andreas
 
 -- 
-regards,
-Stan
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
