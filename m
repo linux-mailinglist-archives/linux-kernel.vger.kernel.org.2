@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037723834B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E308383402
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242559AbhEQPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:11:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58816 "EHLO mail.kernel.org"
+        id S242823AbhEQPEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:04:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242207AbhEQPB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:01:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E333E61396;
-        Mon, 17 May 2021 14:27:26 +0000 (UTC)
+        id S242266AbhEQOyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:54:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C054619B7;
+        Mon, 17 May 2021 14:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261647;
-        bh=/jP+cfFo5JlRNySFiT1j/3TcdknOoe2DYmu7MWOTPlg=;
+        s=korg; t=1621261490;
+        bh=F+pne/Hjxiv7x9JXuhGkN38R9E5g7VxohpNgBfzPr/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2U2zZ2c+avk7PTDRtcIBErroZ54gDxwBpf1f1T29R8duRblP3t2tTd4K9GhJNyfxN
-         xe7yP69x9g0C/ohG2CfgTiJeZYH+NxJ7mNsPG4InbUjPWncaXyZXzMEiPuTkpBxAyE
-         Go6EzaLDLcJhU1klxGeAWRS1/gyBJGUF9573R724=
+        b=X6tWkbyZaXTnOnuRSXjnLtvGdq9A7OUJXhlc4i8VU7yXfhLrqrL/g2HLZsmUyzQO9
+         5SHFwNL5XH/b3KCnpQzXQYRUAj9o+7i2f7vYvSBGgyzT9wzgjyHFYrDA7E1ipYE/o3
+         0rPsjZPMwu8CruHW22SP4gZt0ZUFK2FOkZ1LBc2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Tong Zhang <ztong0001@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 025/289] ALSA: rme9652: dont disable if not enabled
-Date:   Mon, 17 May 2021 15:59:10 +0200
-Message-Id: <20210517140306.027706740@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 026/289] ALSA: bebob: enable to deliver MIDI messages for multiple ports
+Date:   Mon, 17 May 2021 15:59:11 +0200
+Message-Id: <20210517140306.066512020@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,72 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit f57a741874bb6995089020e97a1dcdf9b165dcbe ]
+[ Upstream commit d2b6f15bc18ac8fbce25398290774c21f5b2cd44 ]
 
-rme9652 wants to disable a not enabled pci device, which makes kernel
-throw a warning. Make sure the device is enabled before calling disable.
+Current implementation of bebob driver doesn't correctly handle the case
+that the device has multiple MIDI ports. The cause is the number of MIDI
+conformant data channels is passed to AM824 data block processing layer.
 
-[    1.751595] snd_rme9652 0000:00:03.0: disabling already-disabled device
-[    1.751605] WARNING: CPU: 0 PID: 174 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.759968] Call Trace:
-[    1.760145]  snd_rme9652_card_free+0x76/0xa0 [snd_rme9652]
-[    1.760434]  release_card_device+0x4b/0x80 [snd]
-[    1.760679]  device_release+0x3b/0xa0
-[    1.760874]  kobject_put+0x94/0x1b0
-[    1.761059]  put_device+0x13/0x20
-[    1.761235]  snd_card_free+0x61/0x90 [snd]
-[    1.761454]  snd_rme9652_probe+0x3be/0x700 [snd_rme9652]
+This commit fixes the bug.
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210321153840.378226-4-ztong0001@gmail.com
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210321032831.340278-4-o-takashi@sakamocchi.jp
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/rme9652/rme9652.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/firewire/bebob/bebob_stream.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
-index 7ab10028d9fa..8def24673f35 100644
---- a/sound/pci/rme9652/rme9652.c
-+++ b/sound/pci/rme9652/rme9652.c
-@@ -1740,7 +1740,8 @@ static int snd_rme9652_free(struct snd_rme9652 *rme9652)
- 	if (rme9652->port)
- 		pci_release_regions(rme9652->pci);
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index bbae04793c50..c18017e0a3d9 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -517,20 +517,22 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ static int keep_resources(struct snd_bebob *bebob, struct amdtp_stream *stream,
+ 			  unsigned int rate, unsigned int index)
+ {
+-	struct snd_bebob_stream_formation *formation;
++	unsigned int pcm_channels;
++	unsigned int midi_ports;
+ 	struct cmp_connection *conn;
+ 	int err;
  
--	pci_disable_device(rme9652->pci);
-+	if (pci_is_enabled(rme9652->pci))
-+		pci_disable_device(rme9652->pci);
- 	return 0;
- }
+ 	if (stream == &bebob->tx_stream) {
+-		formation = bebob->tx_stream_formations + index;
++		pcm_channels = bebob->tx_stream_formations[index].pcm;
++		midi_ports = bebob->midi_input_ports;
+ 		conn = &bebob->out_conn;
+ 	} else {
+-		formation = bebob->rx_stream_formations + index;
++		pcm_channels = bebob->rx_stream_formations[index].pcm;
++		midi_ports = bebob->midi_output_ports;
+ 		conn = &bebob->in_conn;
+ 	}
+ 
+-	err = amdtp_am824_set_parameters(stream, rate, formation->pcm,
+-					 formation->midi, false);
++	err = amdtp_am824_set_parameters(stream, rate, pcm_channels, midi_ports, false);
+ 	if (err < 0)
+ 		return err;
  
 -- 
 2.30.2
 
-
-
-  required:
-+        - resets
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - renesas,vin-r8a7778
-+              - renesas,vin-r8a7779
-+              - renesas,rcar-gen2-vin
-+    then:
-+      required:
-+        - port
-+    else:
-+      required:
-+        - renesas,id
-+        - ports
- 
- additionalProperties: false
- 
 
 
