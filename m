@@ -2,121 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD8F383D3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD63383D4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhEQT1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232773AbhEQT1M (ORCPT
+        id S233670AbhEQT3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:29:52 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:57304 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232773AbhEQT3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:27:12 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76719C061573;
-        Mon, 17 May 2021 12:25:55 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id v6so8634399ljj.5;
-        Mon, 17 May 2021 12:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uu1FDu9fGs5Pi33teMn7ZfwLLr8waPYX+ZIqVV1QiCg=;
-        b=PiBFvUPgqtVxl+xiMFNQSDCJqXcn9ed/tGhQZAcCdjWqlWxcsk9F1jb9q0xb2uK/BO
-         +1eQ88vsT6/wNIc1aCCzgStt/IdYhkIxH52juEeTLIfeZcHuSAi6Vk1tkPIznQ7qJiNf
-         7v9y4ti3ZBjYHgaxgPtmYQ/Vk4MfrjzBP0E8i3nfAYWU/xJc5dTwQ9lCSpqzRCkFY8z7
-         GfCd0DylNIzGzD5/IT+TRrhZr+9WnmJcgf1dXM8l30/t4HnBfvYykrtaMMZ+ZV8LRpCU
-         ykKQnkM1+xti/4GAtS+dqjCTmPS8sy1b+T1ilMOVvv74+9c8B67Hr1P0y8EySdjgcojs
-         GOZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uu1FDu9fGs5Pi33teMn7ZfwLLr8waPYX+ZIqVV1QiCg=;
-        b=eZKkwqLBLI4H8hKffyBCwrXsA7e2X7cSsSGnUuWWl0ar+OdDs53RimGgejkdhQzE1m
-         E6Vmc9DfwGNOqcbHgjE3nZ/9tDqUTsnt28VdFwolr/cQwdgOeS1jEBrSrcpjP3JaemhU
-         riHcufbidzVmtx+PaLhYTsb6A1+cj/aWIyz8NpJQGfmZgN7VfJifXS44Rm1zqGOFIZ8O
-         e7HfYgjGVeTAMKk6GGNYHg7+OXqIrSDFBzpxlx49t1ej16Y69OPAkK/+ULlciz/aV4b3
-         QmjZjAFeZ5LUDallrpRtcbj4G22qIdpRbP0x7zBce44Tzh5qyGjSmtAtJY8/oL0BtHAF
-         n7gQ==
-X-Gm-Message-State: AOAM531xZcF5MjUR3pHeJ12hSQsKYTAiGD3R/dvQN3ifknw51+siJCfA
-        xyX9LBKjNFOaHJaEg7+DQ9l95HhDTuY=
-X-Google-Smtp-Source: ABdhPJxp2QOGsnmEnlQRU/ADYLvdAILbnamoueNzhGdqbJERogp1LTDuu652SO6NNTeAAagYkgj7ig==
-X-Received: by 2002:a2e:b8c9:: with SMTP id s9mr760554ljp.422.1621279553536;
-        Mon, 17 May 2021 12:25:53 -0700 (PDT)
-Received: from [10.17.0.15] ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id t24sm1632410lfk.198.2021.05.17.12.25.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 12:25:53 -0700 (PDT)
-Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Laight <David.Laight@aculab.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <87a6otfblh.ffs@nanos.tec.linutronix.de>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <b509418f-9fff-ab27-b460-ecbe6fdea09a@gmail.com>
-Date:   Mon, 17 May 2021 21:25:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 17 May 2021 15:29:50 -0400
+Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafb:ee01:404a:340a:91cb:c07b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 8287C1FFBF5;
+        Mon, 17 May 2021 21:28:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1621279710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z892+cBMUoR6h2qwKMWaHXpyck1ubQ4aEjm1aZtw54w=;
+        b=zih5OlFARljwGDVd2qvYp/GSifRKtFvaWFyQ/5ka2KVzWmZh2ZwvZ5xDxFfDIGVRW/YJyS
+        XF0wv0kJKPLkWieJ9AUcsZ79yyuGW82xeBiL8BrSeny+IBXCgarzV5erxUTHOC5X+HXU7H
+        wdbdlwhT1zYIt9z6voiXX4OyYCqPl424SRL0gg6fgQ8uujrBm+sKjA+x28F2V6bMYKGbkQ
+        yOTkDfDNTH5Fx1xKgTameT5b7F7y6Iz78Pykc/MdYajACzRzAOZo7DjeNPScQDEDEGB3qO
+        G5iglzOsI/ycZ0/Eqov/W3xq3c7kgJxC4uqJzRq7/Zm5ooFgU3xJ5I3dG/rogg==
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>
+Subject: [PATCH v2 0/7] RTL8231 GPIO expander support
+Date:   Mon, 17 May 2021 21:28:02 +0200
+Message-Id: <cover.1621279162.git.sander@svanheule.net>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1620735871.git.sander@svanheule.net>
+References: <cover.1620735871.git.sander@svanheule.net>
 MIME-Version: 1.0
-In-Reply-To: <87a6otfblh.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 8:40 PM, Thomas Gleixner wrote:
-> Max,
-> 
-> On Sat, May 15 2021 at 00:47, Maximilian Luz wrote:
->> I believe the theory was that, while the PIC is advertised in ACPI, it
->> might be expected to not be used and only present for some legacy reason
->> (therefore untested and buggy). Which I believe led to the question
->> whether we shouldn't prefer IOAPIC on systems like that in general. So I
->> guess it comes down to how you define "systems like that". By Tomas'
->> comment, I guess it should be possible to implement this as "systems
->> that should prefer IOAPIC over legacy PIC" quirk.
->>
->> I guess all modern machines should have an IOAPIC, so it might also be
->> preferable to expand that definition, maybe over time and with enough
->> testing.
-> 
-> I just double checked and we actually can boot just fine without the
-> PIC even when it is advertised, but disfunctional.
-> 
-> Can you please add "apic=verbose" to the kernel command line and provide
-> full dmesg output for a kernel w/o your patch and one with your patch
-> applied?
+The RTL8231 GPIO and LED expander can be configured for use as an MDIO or SMI
+bus device. Currently only the MDIO mode is supported, although SMI mode
+support should be fairly straightforward, once an SMI bus driver is available.
 
-I don't actually own an affected device, but I'm sure Sachi can provide
-you with that.
+Provided features by the RTL8231:
+  - Up to 37 GPIOs
+    - Configurable drive strength: 8mA or 4mA (currently unsupported)
+    - Input debouncing on high GPIOs (currently unsupported)
+  - Up to 88 LEDs in multiple scan matrix groups
+    - On, off, or one of six toggling intervals
+    - "single-color mode": 2×36 single color LEDs + 8 bi-color LEDs
+    - "bi-color mode": (12 + 2×6) bi-color LEDs + 24 single color LEDs
+  - Up to one PWM output (currently unsupported)
+    - Fixed duty cycle, 8 selectable frequencies (1.2kHz - 4.8kHz)
 
-As far as we can tell, due to the NULL PIC being chosen nr_legacy_irqs()
-returns 0. That in turn causes mp_check_pin_attr() to return false
-because is_level and active_low don't seem to match the expected values.
-That check is essentially ignored if nr_legacy_irqs() returns a high
-enough value. I guess that might also be a firmware bug here? Not sure
-where the expected values come from.
+Register access is provided through a new MDIO regmap provider. The GPIO
+controller uses gpio-regmap, although a patch is required to support a
+limitation of the chip.
 
-Due to this, mp_map_pin_to_irq() fails with -EBUSY which causes
-acpi_register_gsi() to fail. That fails in acpi_dev_get_irqresource(),
-which causes the IRQ resource to be marked as disabled.
+There remain some log warnings when probing the device, possibly due to the way
+I'm using the MFD subsystem. Would it be possible to avoid these?
+[    2.602242] rtl8231-pinctrl: Failed to locate of_node [id: -2]
+[    2.609380] rtl8231-pinctrl rtl8231-pinctrl.0.auto: no of_node; not parsing pinctrl DT
 
-Down the line, this then causes platform_get_irq() to return -EINVAL,
-because the IRQ we're trying to get has the IORESOURCE_DISABLED bit set.
+When no 'leds' sub-node is specified:
+[    2.922262] rtl8231-leds: Failed to locate of_node [id: -2]
+[    2.967149] rtl8231-leds rtl8231-leds.1.auto: no of_node; not parsing pinctrl DT
+[    2.975673] rtl8231-leds rtl8231-leds.1.auto: scan mode missing or invalid
+[    2.983531] rtl8231-leds: probe of rtl8231-leds.1.auto failed with error -22
 
-Sachi can probably walk you through this a bit better as she's the one
-who tracked this down. See also [1, 2] and following comments.
+Changes since v1:
+  - Reintroduce MDIO regmap, with fixed Kconfig dependencies
+  - Add configurable dir/value order for gpio-regmap direction_out call
+  - Drop allocations for regmap fields that are used only on init
+  - Move some definitions to MFD header
+  - Add PM ops to replace driver remove for MFD
+  - Change pinctrl driver to (modified) gpio-regmap
+  - Change leds driver to use fwnode
+Link: https://lore.kernel.org/lkml/cover.1620735871.git.sander@svanheule.net/
 
-Regards,
-Max
+Changes since RFC:
+  - Dropped MDIO regmap interface. I was unable to resolve the Kconfig
+    dependency issue, so have reverted to using regmap_config.reg_read/write.
+  - Added pinctrl support
+  - Added LED support
+  - Changed root device to MFD, with pinctrl and leds child devices. Root
+    device is now an mdio_device driver.
+Link: https://lore.kernel.org/linux-gpio/cover.1617914861.git.sander@svanheule.net/
 
-[1]: https://github.com/linux-surface/linux-surface/issues/425#issuecomment-835309201
-[2]: https://github.com/linux-surface/linux-surface/issues/425#issuecomment-835261784
+Sander Vanheule (7):
+  regmap: Add MDIO bus support
+  gpio: regmap: Add configurable dir/value order
+  dt-bindings: leds: Binding for RTL8231 scan matrix
+  dt-bindings: mfd: Binding for RTL8231
+  mfd: Add RTL8231 core device
+  pinctrl: Add RTL8231 pin control and GPIO support
+  leds: Add support for RTL8231 LED scan matrix
+
+ .../bindings/leds/realtek,rtl8231-leds.yaml   | 159 ++++++++
+ .../bindings/mfd/realtek,rtl8231.yaml         | 202 ++++++++++
+ drivers/base/regmap/Kconfig                   |   6 +-
+ drivers/base/regmap/Makefile                  |   1 +
+ drivers/base/regmap/regmap-mdio.c             |  57 +++
+ drivers/gpio/gpio-regmap.c                    |  20 +-
+ drivers/leds/Kconfig                          |  10 +
+ drivers/leds/Makefile                         |   1 +
+ drivers/leds/leds-rtl8231.c                   | 293 ++++++++++++++
+ drivers/mfd/Kconfig                           |   9 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/rtl8231.c                         | 153 +++++++
+ drivers/pinctrl/Kconfig                       |  11 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-rtl8231.c             | 377 ++++++++++++++++++
+ include/linux/gpio/regmap.h                   |   3 +
+ include/linux/mfd/rtl8231.h                   |  57 +++
+ include/linux/regmap.h                        |  36 ++
+ 18 files changed, 1393 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/realtek,rtl8231.yaml
+ create mode 100644 drivers/base/regmap/regmap-mdio.c
+ create mode 100644 drivers/leds/leds-rtl8231.c
+ create mode 100644 drivers/mfd/rtl8231.c
+ create mode 100644 drivers/pinctrl/pinctrl-rtl8231.c
+ create mode 100644 include/linux/mfd/rtl8231.h
+
+-- 
+2.31.1
+
