@@ -2,56 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BE4383687
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1E538389B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241577AbhEQPde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56098 "EHLO mail.kernel.org"
+        id S1345932AbhEQP5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243975AbhEQPSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:18:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F042561C75;
-        Mon, 17 May 2021 14:33:43 +0000 (UTC)
+        id S244525AbhEQPip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:38:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C437161945;
+        Mon, 17 May 2021 14:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262024;
-        bh=QpapYVIA1Q0/mraNDCl2nt4lswKCm+T9mTRZIK/Xw6o=;
+        s=korg; t=1621262455;
+        bh=Ml+rbwkOqOnHdPKJB7om6PTw+fGYm+kJ/QzE3psgn60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0OaUnyxS31CCK5mW8dxnNCA0tQqhSv1/cgImIe3XhOBQuBofNXRaojpJklau6wBdu
-         R0tXY4lRu7ab4Dd++FQiJhGkVW/TiiJHRuVblW7JNilrpq0j/6rDHr/qbt4p2JBzK+
-         8u+7NjEbr5KKywY0ffxzA27WYhCkbL7nUH5D5umI=
+        b=wTcYcaEiWvylAv/J6daj4YVsKa3h1qobNgrR9u+PdRM51Tqd3gn3edfhnJ4jlmp/T
+         blRfuC6XK5ctcSkY2v0j8NgQ9AztASxUh1ACef9xSRwwKgvQ2CyuRad/CyLtSSsVcG
+         fGtFZgb7co9fFlyNp6atGqtUDmPNtmA/arQbJ4Hc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morris <jmorris@namei.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.11 205/329] mm/gup: check every subpage of a compound page during isolation
+        stable@vger.kernel.org,
+        Dawid Lukwinski <dawid.lukwinski@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 191/289] i40e: Fix PHY type identifiers for 2.5G and 5G adapters
 Date:   Mon, 17 May 2021 16:01:56 +0200
-Message-Id: <20210517140309.050345724@linuxfoundation.org>
+Message-Id: <20210517140311.538072143@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,106 +44,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Tatashin <pasha.tatashin@soleen.com>
+From: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-[ Upstream commit 83c02c23d0747a7bdcd71f99a538aacec94b146c ]
+[ Upstream commit 15395ec4685bd45a43d1b54b8fd9846b87e2c621 ]
 
-When pages are isolated in check_and_migrate_movable_pages() we skip
-compound number of pages at a time.  However, as Jason noted, it is not
-necessary correct that pages[i] corresponds to the pages that we
-skipped.  This is because it is possible that the addresses in this
-range had split_huge_pmd()/split_huge_pud(), and these functions do not
-update the compound page metadata.
+Unlike other supported adapters, 2.5G and 5G use different
+PHY type identifiers for reading/writing PHY settings
+and for reading link status. This commit introduces
+separate PHY identifiers for these two operation types.
 
-The problem can be reproduced if something like this occurs:
-
-1. User faulted huge pages.
-2. split_huge_pmd() was called for some reason
-3. User has unmapped some sub-pages in the range
-4. User tries to longterm pin the addresses.
-
-The resulting pages[i] might end-up having pages which are not compound
-size page aligned.
-
-Link: https://lkml.kernel.org/r/20210215161349.246722-3-pasha.tatashin@soleen.com
-Fixes: aa712399c1e8 ("mm/gup: speed up check_and_migrate_cma_pages() on huge page")
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 2e45d3f4677a ("i40e: Add support for X710 B/P & SFP+ cards")
+Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/gup.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h | 6 ++++--
+ drivers/net/ethernet/intel/i40e/i40e_common.c     | 4 ++--
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c    | 4 ++--
+ drivers/net/ethernet/intel/i40e/i40e_type.h       | 7 ++-----
+ 4 files changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index e4c224cd9661..84d392886d85 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1549,26 +1549,23 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- 					unsigned int gup_flags)
- {
- 	unsigned long i;
--	unsigned long step;
- 	bool drain_allow = true;
- 	bool migrate_allow = true;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
-+	struct page *prev_head, *head;
- 	struct migration_target_control mtc = {
- 		.nid = NUMA_NO_NODE,
- 		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN,
- 	};
- 
- check_again:
--	for (i = 0; i < nr_pages;) {
--
--		struct page *head = compound_head(pages[i]);
--
--		/*
--		 * gup may start from a tail page. Advance step by the left
--		 * part.
--		 */
--		step = compound_nr(head) - (pages[i] - head);
-+	prev_head = NULL;
-+	for (i = 0; i < nr_pages; i++) {
-+		head = compound_head(pages[i]);
-+		if (head == prev_head)
-+			continue;
-+		prev_head = head;
- 		/*
- 		 * If we get a page from the CMA zone, since we are going to
- 		 * be pinning these entries, we might as well move them out
-@@ -1592,8 +1589,6 @@ check_again:
- 				}
- 			}
- 		}
--
--		i += step;
- 	}
- 
- 	if (!list_empty(&cma_page_list)) {
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
+index 1e960c3c7ef0..e84054fb8213 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
+@@ -1565,8 +1565,10 @@ enum i40e_aq_phy_type {
+ 	I40E_PHY_TYPE_25GBASE_LR		= 0x22,
+ 	I40E_PHY_TYPE_25GBASE_AOC		= 0x23,
+ 	I40E_PHY_TYPE_25GBASE_ACC		= 0x24,
+-	I40E_PHY_TYPE_2_5GBASE_T		= 0x30,
+-	I40E_PHY_TYPE_5GBASE_T			= 0x31,
++	I40E_PHY_TYPE_2_5GBASE_T		= 0x26,
++	I40E_PHY_TYPE_5GBASE_T			= 0x27,
++	I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS	= 0x30,
++	I40E_PHY_TYPE_5GBASE_T_LINK_STATUS	= 0x31,
+ 	I40E_PHY_TYPE_MAX,
+ 	I40E_PHY_TYPE_NOT_SUPPORTED_HIGH_TEMP	= 0xFD,
+ 	I40E_PHY_TYPE_EMPTY			= 0xFE,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
+index adc9e4fa4789..ba109073d605 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_common.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
+@@ -1154,8 +1154,8 @@ static enum i40e_media_type i40e_get_media_type(struct i40e_hw *hw)
+ 		break;
+ 	case I40E_PHY_TYPE_100BASE_TX:
+ 	case I40E_PHY_TYPE_1000BASE_T:
+-	case I40E_PHY_TYPE_2_5GBASE_T:
+-	case I40E_PHY_TYPE_5GBASE_T:
++	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
++	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
+ 	case I40E_PHY_TYPE_10GBASE_T:
+ 		media = I40E_MEDIA_TYPE_BASET;
+ 		break;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 13554706c180..5d48bc0c3f6c 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -841,8 +841,8 @@ static void i40e_get_settings_link_up(struct i40e_hw *hw,
+ 							     10000baseT_Full);
+ 		break;
+ 	case I40E_PHY_TYPE_10GBASE_T:
+-	case I40E_PHY_TYPE_5GBASE_T:
+-	case I40E_PHY_TYPE_2_5GBASE_T:
++	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
++	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
+ 	case I40E_PHY_TYPE_1000BASE_T:
+ 	case I40E_PHY_TYPE_100BASE_TX:
+ 		ethtool_link_ksettings_add_link_mode(ks, supported, Autoneg);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
+index c0bdc666f557..add67f7b73e8 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_type.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
+@@ -239,11 +239,8 @@ struct i40e_phy_info {
+ #define I40E_CAP_PHY_TYPE_25GBASE_ACC BIT_ULL(I40E_PHY_TYPE_25GBASE_ACC + \
+ 					     I40E_PHY_TYPE_OFFSET)
+ /* Offset for 2.5G/5G PHY Types value to bit number conversion */
+-#define I40E_PHY_TYPE_OFFSET2 (-10)
+-#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T + \
+-					     I40E_PHY_TYPE_OFFSET2)
+-#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T + \
+-					     I40E_PHY_TYPE_OFFSET2)
++#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T)
++#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T)
+ #define I40E_HW_CAP_MAX_GPIO			30
+ /* Capabilities of a PF or a VF or the whole device */
+ struct i40e_hw_capabilities {
 -- 
 2.30.2
 
