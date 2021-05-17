@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51F5383789
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26849383733
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344537AbhEQPo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55422 "EHLO mail.kernel.org"
+        id S244504AbhEQPjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244822AbhEQP2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:28:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A0A861931;
-        Mon, 17 May 2021 14:37:18 +0000 (UTC)
+        id S240312AbhEQPXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:23:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8847B61C9C;
+        Mon, 17 May 2021 14:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262238;
-        bh=7GQ9d/NA/jG23TAEWUeUrr5usm8s4sDa+11gvcze7JA=;
+        s=korg; t=1621262120;
+        bh=ONe5JH3iBMeNwpiqzelk5ZxBrHJfL7kKS7njUV+bDes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g7/mWIcO2Im1Ss0baQ/xf0ohUfpSrC/FlmJ+uHg/c5rOhpdHYZYu/KlQUvsPL/Ex+
-         Ux58VtnM1CJVpheMJ7EG5hfyTxmJqX01UCz9i0Gq1lDiPSiWMgLA78bXqgnOrJnaSQ
-         ySUj2pnyXmbdOOhNPfcsLb4KdWE7dFL6H91iU6sc=
+        b=TxqXfijHjppqwG2Yqs+NmhZtjCWDlRGDswFphzO913zYq2aFN8RE0pBRjobBheRh1
+         pLbY0EJ8DWP50thMNLYVg7dYXtbXc3fu56eZdVh4oLtuUsI4oF/dkH0NEQNTz+0JlJ
+         xN/JF8kvJa8zc11mREN0LWDLTZX/N3I9Lr6EKZx4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 114/289] f2fs: fix to avoid accessing invalid fio in f2fs_allocate_data_block()
-Date:   Mon, 17 May 2021 16:00:39 +0200
-Message-Id: <20210517140309.010449104@linuxfoundation.org>
+Subject: [PATCH 5.10 115/289] rpmsg: qcom_glink_native: fix error return code of qcom_glink_rx_data()
+Date:   Mon, 17 May 2021 16:00:40 +0200
+Message-Id: <20210517140309.042354896@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,41 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit 25ae837e61dee712b4b1df36602ebfe724b2a0b6 ]
+[ Upstream commit 26594c6bbb60c6bc87e3762a86ceece57d164c66 ]
 
-Callers may pass fio parameter with NULL value to f2fs_allocate_data_block(),
-so we should make sure accessing fio's field after fio's validation check.
+When idr_find() returns NULL to intent, no error return code of
+qcom_glink_rx_data() is assigned.
+To fix this bug, ret is assigned with -ENOENT in this case.
 
-Fixes: f608c38c59c6 ("f2fs: clean up parameter of f2fs_allocate_data_block()")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: 64f95f87920d ("rpmsg: glink: Use the local intents when receiving data")
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Link: https://lore.kernel.org/r/20210306133624.17237-1-baijiaju1990@gmail.com
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/segment.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/rpmsg/qcom_glink_native.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 1c264fd5a0dd..d04b449978aa 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3407,12 +3407,12 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 		f2fs_inode_chksum_set(sbi, page);
+diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+index 27a05167c18c..4840886532ff 100644
+--- a/drivers/rpmsg/qcom_glink_native.c
++++ b/drivers/rpmsg/qcom_glink_native.c
+@@ -857,6 +857,7 @@ static int qcom_glink_rx_data(struct qcom_glink *glink, size_t avail)
+ 			dev_err(glink->dev,
+ 				"no intent found for channel %s intent %d",
+ 				channel->name, liid);
++			ret = -ENOENT;
+ 			goto advance_rx;
+ 		}
  	}
- 
--	if (F2FS_IO_ALIGNED(sbi))
--		fio->retry = false;
--
- 	if (fio) {
- 		struct f2fs_bio_info *io;
- 
-+		if (F2FS_IO_ALIGNED(sbi))
-+			fio->retry = false;
-+
- 		INIT_LIST_HEAD(&fio->list);
- 		fio->in_list = true;
- 		io = sbi->write_io[fio->type] + fio->temp;
 -- 
 2.30.2
 
