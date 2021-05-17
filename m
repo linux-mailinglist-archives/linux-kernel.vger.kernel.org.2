@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0453829D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A503829DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbhEQKao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:30:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236315AbhEQKan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:30:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9801F61184;
-        Mon, 17 May 2021 10:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621247367;
-        bh=cTFdwPsJbINdMpD2LNRDK8Q0vyJ8F8wDU5WSk6Vo52U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RYc+1zE11r3x8gyAl702ZjX9XpMKw0TlncBBDhrWWsYStYYdflDs98ngVm1DbtQio
-         VkKLUsFdJXzAizjxdBE4ii0rs07M6ISxKj7M1XEGuyYMi8XNBPaO3uiBtsJ6o2mPJV
-         iMvCE0xmWLwgrRNEstXbnWmywPhHjXA6gBLCxiO4=
-Date:   Mon, 17 May 2021 12:29:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        daniel.lezcano@linaro.org, rui.zhang@intel.com
-Subject: Re: [STABLE][PATCH 4.4] thermal/core/fair share: Lock the thermal
- zone while looping over instances
-Message-ID: <YKJFhW+ByGl3/zSC@kroah.com>
-References: <20210514104916.19975-1-lukasz.luba@arm.com>
- <YJ5XTW9TYvv7wYr6@kroah.com>
- <12419f82-3efa-7587-da50-4edf7eef99e1@arm.com>
+        id S236414AbhEQKeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:34:01 -0400
+Received: from m13134.mail.163.com ([220.181.13.134]:49418 "EHLO
+        m13134.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236341AbhEQKd5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:33:57 -0400
+X-Greylist: delayed 2774 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 May 2021 06:33:57 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=Ub0Vf
+        0fbH3OL1iEjlbO1lhZp7rlbHcjhdJfIam7T91A=; b=O5AE6P6GZuTUTdACuqeCq
+        +fnytb3xy4LPIMO0yrJ8U4a58TpdqkNUg9FiQvUzFP7CLhd9cuX7/mKtg/3DRdet
+        FrrcK/emWnYKmStk3GSHUM3Iy7cOfpndcwkrairRKQ8Fuj/3Dtgxk2Xtti95OxRl
+        IIP2kxGMDogh5u4ASDiltU=
+Received: from wsj20369$163.com ( [211.94.251.182] ) by
+ ajax-webmail-wmsvr134 (Coremail) ; Mon, 17 May 2021 17:45:50 +0800 (CST)
+X-Originating-IP: [211.94.251.182]
+Date:   Mon, 17 May 2021 17:45:50 +0800 (CST)
+From:   wsj20369 <wsj20369@163.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Len Brown" <lenb@kernel.org>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re:Re: [PATCH] Revert "ACPI: power: Turn off unused power resources
+ unconditionally"
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <CAJZ5v0g--YTuzHiMTiVwuEH2Z87k+JCmynqqFshZ70yNXuUHew@mail.gmail.com>
+References: <20210430124224.6383-1-wsj20369@163.com>
+ <CAJZ5v0g--YTuzHiMTiVwuEH2Z87k+JCmynqqFshZ70yNXuUHew@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12419f82-3efa-7587-da50-4edf7eef99e1@arm.com>
+Message-ID: <52c748d4.5c2f.17979b7a960.Coremail.wsj20369@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: hsGowADHrl9PO6JgiYTjAA--.26943W
+X-CM-SenderInfo: hzvmjiqtwzqiywtou0bp/xtbB0hyVF1UMbkoueAACsl
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:58:10AM +0100, Lukasz Luba wrote:
-> 
-> 
-> On 5/14/21 11:56 AM, Greg KH wrote:
-> > On Fri, May 14, 2021 at 11:49:16AM +0100, Lukasz Luba wrote:
-> > > commit fef05776eb02238dcad8d5514e666a42572c3f32 upstream.
-> > > 
-> > > The tz->lock must be hold during the looping over the instances in that
-> > > thermal zone. This lock was missing in the governor code since the
-> > > beginning, so it's hard to point into a particular commit.
-> > > 
-> > > CC: stable@vger.kernel.org # 4.4
-> > > Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> > > ---
-> > > Hi all,
-> > > 
-> > > I've backported my patch which was sent to LKML:
-> > > https://lore.kernel.org/linux-pm/20210422153624.6074-2-lukasz.luba@arm.com/
-> > > 
-> > > The upstream patch failed while applying:
-> > > https://lore.kernel.org/stable/16206371483193@kroah.com/
-> > > 
-> > > This patch should apply to stable v4.4.y, on top of stable tree branch:
-> > > linux-4.4.y which head was at:
-> > > commit 47127fcd287c ("Linux 4.4.268")
-> > 
-> > What about 4.9, 4.14, 4.14, and 5.4 releases?  They need this fix as
-> > well, right?
-> 
-> s/4.14/4.19
-> 
-> Yes, I'm going to send them in next few hours after building and
-> testing.
-
-All now queued up, thanks.
-
-greg k-h
+CgpBdCAyMDIxLTA1LTE0IDIyOjA1OjA2LCAiUmFmYWVsIEouIFd5c29ja2kiIDxyYWZhZWxAa2Vy
+bmVsLm9yZz4gd3JvdGU6Cj5PbiBGcmksIEFwciAzMCwgMjAyMSBhdCAyOjQzIFBNIFNodWp1biBX
+YW5nIDx3c2oyMDM2OUAxNjMuY29tPiB3cm90ZToKPj4KPj4gVGhpcyByZXZlcnRzIGNvbW1pdCA3
+ZTRmZGVhZmE2MWYyYjY1M2ZjZjk2NzhmMDk5MzVlNTU3NTZhZWQyLgo+PiBJdCBtYXkgY2F1c2Ug
+c29tZSBOVk1lIGRldmljZSBwcm9iZXMgdG8gZmFpbCwgYW5kIHRoZSBzeXN0ZW0gbWF5IGdldAo+
+PiBzdHVjayB3aGVuIHVzaW5nIGFuIE5WTWUgZGV2aWNlIGFzIHRoZSByb290IGZpbGVzeXN0ZW0u
+Cj4+Cj4+IEluIHRoZSBmdW5jdGlvbiBudm1lX3BjaV9lbmFibGUoc3RydWN0IG52bWVfZGV2ICpk
+ZXYpLCBhcyBzaG93biBiZWxvdywKPj4gcmVhZGwoTlZNRV9SRUdfQ1NUUykgYWx3YXlzIHJldHVy
+bnMgLTEgd2l0aCB0aGUgY29tbWl0LCB3aGljaCByZXN1bHRzIGluCj4+IHRoZSBwcm9iZSBmYWls
+ZWQuCj4+Cj4+ICAgaWYgKHJlYWRsKGRldi0+YmFyICsgTlZNRV9SRUdfQ1NUUykgPT0gLTEpIHsK
+Pj4gICAgICAgICByZXN1bHQgPSAtRU5PREVWOwo+PiAgICAgICAgIGdvdG8gZGlzYWJsZTsKPj4g
+ICB9Cj4+Cj4+IGRtZXNnOgo+PiAgIFsgICAgMS4xMDYyODBdIG52bWUgMDAwMDowNDowMC4wOiBw
+bGF0Zm9ybSBxdWlyazogc2V0dGluZyBzaW1wbGUgc3VzcGVuZAo+PiAgIFsgICAgMS4xMDkxMTFd
+IG52bWUgbnZtZTA6IHBjaSBmdW5jdGlvbiAwMDAwOjA0OjAwLjAKPj4gICBbICAgIDEuMTEzMDY2
+XSBudm1lIDAwMDA6MDQ6MDAuMDogZW5hYmxpbmcgZGV2aWNlICgwMDAwIC0+IDAwMDIpCj4+ICAg
+WyAgICAxLjEyMTA0MF0gbnZtZSBudm1lMDogUmVtb3ZpbmcgYWZ0ZXIgcHJvYmUgZmFpbHVyZSBz
+dGF0dXM6IC0xOQo+Pgo+PiBsc3BjaToKPj4gICBOb24tVm9sYXRpbGUgbWVtb3J5IGNvbnRyb2xs
+ZXI6IEtJT1hJQSBDb3Jwb3JhdGlvbiBEZXZpY2UgMDAwMQo+Pgo+PiBkZXZpY2UgdWV2ZW50Ogo+
+PiAgIERSSVZFUj1udm1lCj4+ICAgUENJX0NMQVNTPTEwODAyCj4+ICAgUENJX0lEPTFFMEY6MDAw
+MQo+PiAgIFBDSV9TVUJTWVNfSUQ9MUUwRjowMDAxCj4+ICAgUENJX1NMT1RfTkFNRT0wMDAwOjA0
+OjAwLjAKPj4gICBNT0RBTElBUz1wY2k6djAwMDAxRTBGZDAwMDAwMDAxc3YwMDAwMUUwRnNkMDAw
+MDAwMDFiYzAxc2MwOGkwMgo+Pgo+PiBUaGlzIHBhdGNoIHdhcyB0ZXN0ZWQgaW4gTGVub3ZvIFRo
+aW5rcGFkIFgxLgo+Cj5QbGVhc2Ugc2VuZCBtZSB0aGUgZG1pZGVjb2RlIG91dHB1dCBmcm9tIHRo
+aXMgbWFjaGluZSBvciAoYmV0dGVyKQo+YXR0YWNoIGl0IGF0IGh0dHBzOi8vYnVnemlsbGEua2Vy
+bmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MjEzMDE5Cj4KPlRoYW5rcyEKCkhpIFJhZmFlbDoKClNv
+cnJ5IGZvciBsYXRlLCBJIGhhdmUgYXR0YWNoZWQgdGhlIGFjcGlkdW1wIGFuZCBkbWlkZWNvZGUg
+aW4gdGhlIGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MjEzMDE5
+CgpCUgpTaHVqdW4gV2FuZwoK
