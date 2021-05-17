@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFD7382964
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4168382968
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236297AbhEQKHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:07:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236330AbhEQKGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:06:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD869610C9;
-        Mon, 17 May 2021 10:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621245927;
-        bh=tYCqLfJRyuJ4yv/1riKqBYwWUTjUR4sj/G4c74/mzEc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kVSHPwqLd+WDpDWgi9We7u3KCx9lfKBNXfXd7kL1n+8dg0wlsNSuWPuY4DPe2nMXv
-         DPwVBgNmb3r0mKf2u15PM2T0GvODqYjFTiJePB7LrXLrwwNMjTz4nELQe36nOcoS1V
-         7nmL3B1jW/3nNaE/fi0dA3J7wdh+MtINgb9pCH8mBD/UVGjWQrq79piJ3uhdiaT8Ee
-         /cGpQm78qf8t6CB25aBzZ3AIv9EkkEu/uGflC9uiRSFpZWMOvxcCbYT0DROLvQNqkc
-         OZHHHJV09uX3q6lz9aGrrnkX/PNwYI9Az5qaIVC+1vABjVHFeh73ecveZExL2rpsjf
-         j81Piw8x/eVqg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lia7p-0006J5-0K; Mon, 17 May 2021 12:05:25 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        syzbot+ee6f6e2e68886ca256a8@syzkaller.appspotmail.com,
-        stable@vger.kernel.org, Claudio Mettler <claudio@ponyfleisch.ch>,
-        Marek Wyborski <marek.wyborski@emwesoft.com>,
-        Sean O'Brien <seobrien@chromium.org>
-Subject: [PATCH] HID: magicmouse: fix NULL-deref on disconnect
-Date:   Mon, 17 May 2021 12:04:30 +0200
-Message-Id: <20210517100430.20509-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
+        id S236140AbhEQKHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:07:45 -0400
+Received: from mail-vk1-f172.google.com ([209.85.221.172]:38860 "EHLO
+        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236457AbhEQKHc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:07:32 -0400
+Received: by mail-vk1-f172.google.com with SMTP id v188so1227626vkf.5;
+        Mon, 17 May 2021 03:06:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3GIvUHbLf7bHSRqm2WLTNacDJxM/viGmccF85dLQBwA=;
+        b=kgj66GhWBF9lSl5RZ1+KN1t42gwt17XKys+bussDhr8+eyDsLWQ3nUBueSqPlbzBLk
+         JmU/MmuWb4K+aNWFOPEAYY+wxWFdmTnMoqYVO17U5ZAfLp0If9EXRsiaHSPifs+jJroe
+         036Ht7fQSOTaIkIkCgCumFRsoRZ7GuNskSEFUzk24E/IXeWp1KMba4TEOYKyCdlGPNO0
+         KOG0lcbwNYovgC+JQEnPqnnOmBond/4ireIKo8wbUwAqnSHg4rGzJ/jhLQ1onQTWCfsj
+         1rIWr16EHCVx6bLOA+mv/uHcKCmTdsqLevaSPETStGtiszQGOJ8E87v1gdH5K2tDUwMr
+         cQnA==
+X-Gm-Message-State: AOAM530Ydd+lFTvxoGkf9wm9zWQdSJFvJslTnsK2b9Jq/YtQsuzXSGHu
+        UgGztXq1bPkV1GhAZJP6KAYMiQMgzAp7kwH9hP7kKZBqVn4=
+X-Google-Smtp-Source: ABdhPJzSuMIbh1shCp6BdMEcK0rCBCq1qUwTtUHKlfzDdiILXCroLjHVOs+3ObXQvUWmkW1diQnXIjz/O7+UgWA0tmI=
+X-Received: by 2002:a1f:eac1:: with SMTP id i184mr1956195vkh.2.1621245974394;
+ Mon, 17 May 2021 03:06:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210513114617.30191-1-aford173@gmail.com>
+In-Reply-To: <20210513114617.30191-1-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 17 May 2021 12:06:02 +0200
+Message-ID: <CAMuHMdXXHbRzRhSZqkh=QaHmndSyjyk5BQrz5-PRVHBLb+qHMw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] arm64: dts: renesas: beacon: Fix USB extal reference
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9d7b18668956 ("HID: magicmouse: add support for Apple Magic
-Trackpad 2") added a sanity check for an Apple trackpad but returned
-success instead of -ENODEV when the check failed. This means that the
-remove callback will dereference the never-initialised driver data
-pointer when the driver is later unbound (e.g. on USB disconnect).
+Hi Adam,
 
-Reported-by: syzbot+ee6f6e2e68886ca256a8@syzkaller.appspotmail.com
-Fixes: 9d7b18668956 ("HID: magicmouse: add support for Apple Magic Trackpad 2")
-Cc: stable@vger.kernel.org      # 4.20
-Cc: Claudio Mettler <claudio@ponyfleisch.ch>
-Cc: Marek Wyborski <marek.wyborski@emwesoft.com>
-Cc: Sean O'Brien <seobrien@chromium.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/hid/hid-magicmouse.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for your patch!
 
-diff --git a/drivers/hid/hid-magicmouse.c b/drivers/hid/hid-magicmouse.c
-index 2bb473d8c424..56dda50aa3d8 100644
---- a/drivers/hid/hid-magicmouse.c
-+++ b/drivers/hid/hid-magicmouse.c
-@@ -693,7 +693,7 @@ static int magicmouse_probe(struct hid_device *hdev,
- 	if (id->vendor == USB_VENDOR_ID_APPLE &&
- 	    id->product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2 &&
- 	    hdev->type != HID_TYPE_USBMOUSE)
--		return 0;
-+		return -ENODEV;
- 
- 	msc = devm_kzalloc(&hdev->dev, sizeof(*msc), GFP_KERNEL);
- 	if (msc == NULL) {
+On Thu, May 13, 2021 at 1:46 PM Adam Ford <aford173@gmail.com> wrote:
+> The USB extal clock reference isn't associated to a crystal, it's
+> assoicated to a programmable clock, so remove the extal reference,
+
+associated
+
+> add the usb2_clksel.  Since usb_extal is referenced by the versaclock,
+> reference it here so the usb2_clksel can get the proper clock speed
+> of 50MHz.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.14, with the above fixed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.3
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
