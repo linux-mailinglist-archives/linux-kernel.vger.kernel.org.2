@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C83B3838A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067303838E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346084AbhEQP6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:58:04 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:60079 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245089AbhEQPh1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:37:27 -0400
-Received: from [77.244.183.192] (port=64716 helo=melee.fritz.box)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lifHt-000CDv-67; Mon, 17 May 2021 17:36:09 +0200
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     linux-pci@vger.kernel.org
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] PCI: dwc: pci-dra7xx: fix reset behaviour
-Date:   Mon, 17 May 2021 17:35:57 +0200
-Message-Id: <20210517153557.429623-1-luca@lucaceresoli.net>
-X-Mailer: git-send-email 2.25.1
+        id S244382AbhEQQD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:03:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343854AbhEQPnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:43:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E53D61D01;
+        Mon, 17 May 2021 14:42:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621262564;
+        bh=EAfkBS4b60opCiLOVlnBupkfa4IP9sMSU+ZZMIUm5Rw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ys/G1FLCr5LZ/axYjM5tTaC82diiNYxhrrDF66sRz5TFer6YfGYPpRIhTIyYUC9Uw
+         T8UfZbDIGrCTZTEn9Czr+1FGLxA5cYkhbls6yPCLEpWZ2KXoWRh1ezHOXMbjNS0LJE
+         Heg/XbV3ZT7SKaPsxO7nllfq/YyMhc7YBu6xRBU4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 197/289] powerpc/64s: Fix crashes when toggling stf barrier
+Date:   Mon, 17 May 2021 16:02:02 +0200
+Message-Id: <20210517140311.743968416@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCIe PERSTn reset pin is active low and should be asserted, then
-deasserted.
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-The current implementation only drives the pin once in "HIGH" position,
-thus presumably it was intended to deassert the pin. This has two problems:
+commit 8ec7791bae1327b1c279c5cd6e929c3b12daaf0a upstream.
 
-  1) it assumes the pin was asserted by other means before loading the
-     driver
-  2) it has the wrong polarity, since "HIGH" means "active", and the pin is
-     presumably configured as active low coherently with the PCIe
-     convention, thus it is driven physically to 0, keeping the device
-     under reset unless the pin is configured as active high.
+The STF (store-to-load forwarding) barrier mitigation can be
+enabled/disabled at runtime via a debugfs file (stf_barrier), which
+causes the kernel to patch itself to enable/disable the relevant
+mitigations.
 
-Fix both problems by:
+However depending on which mitigation we're using, it may not be safe to
+do that patching while other CPUs are active. For example the following
+crash:
 
-  1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
-     assuming the pin is correctly configured as "active low" this now
-     becomes a reset assertion
-  2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
+  User access of kernel address (c00000003fff5af0) - exploit attempt? (uid: 0)
+  segfault (11) at c00000003fff5af0 nip 7fff8ad12198 lr 7fff8ad121f8 code 1
+  code: 40820128 e93c00d0 e9290058 7c292840 40810058 38600000 4bfd9a81 e8410018
+  code: 2c030006 41810154 3860ffb6 e9210098 <e94d8ff0> 7d295279 39400000 40820a3c
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+Shows that we returned to userspace without restoring the user r13
+value, due to executing the partially patched STF exit code.
+
+Fix it by doing the patching under stop machine. The CPUs that aren't
+doing the patching will be spinning in the core of the stop machine
+logic. That is currently sufficient for our purposes, because none of
+the patching we do is to that code or anywhere in the vicinity.
+
+Fixes: a048a07d7f45 ("powerpc/64s: Add support for a store forwarding barrier at kernel entry/exit")
+Cc: stable@vger.kernel.org # v4.17+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210506044959.1298123-1-mpe@ellerman.id.au
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/dwc/pci-dra7xx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/lib/feature-fixups.c |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index dacd6da70c35..8dd20b394d0c 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -800,6 +800,8 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "gpio request failed, ret %d\n", ret);
- 		goto err_gpio;
- 	}
-+	usleep_range(1000, 2000);
-+	gpiod_set_value(reset, 0);
+--- a/arch/powerpc/lib/feature-fixups.c
++++ b/arch/powerpc/lib/feature-fixups.c
+@@ -14,6 +14,7 @@
+ #include <linux/string.h>
+ #include <linux/init.h>
+ #include <linux/sched/mm.h>
++#include <linux/stop_machine.h>
+ #include <asm/cputable.h>
+ #include <asm/code-patching.h>
+ #include <asm/page.h>
+@@ -227,11 +228,25 @@ static void do_stf_exit_barrier_fixups(e
+ 		                                           : "unknown");
+ }
  
- 	reg = dra7xx_pcie_readl(dra7xx, PCIECTRL_DRA7XX_CONF_DEVICE_CMD);
- 	reg &= ~LTSSM_EN;
--- 
-2.25.1
++static int __do_stf_barrier_fixups(void *data)
++{
++	enum stf_barrier_type *types = data;
++
++	do_stf_entry_barrier_fixups(*types);
++	do_stf_exit_barrier_fixups(*types);
++
++	return 0;
++}
+ 
+ void do_stf_barrier_fixups(enum stf_barrier_type types)
+ {
+-	do_stf_entry_barrier_fixups(types);
+-	do_stf_exit_barrier_fixups(types);
++	/*
++	 * The call to the fallback entry flush, and the fallback/sync-ori exit
++	 * flush can not be safely patched in/out while other CPUs are executing
++	 * them. So call __do_stf_barrier_fixups() on one CPU while all other CPUs
++	 * spin in the stop machine core with interrupts hard disabled.
++	 */
++	stop_machine(__do_stf_barrier_fixups, &types, NULL);
+ }
+ 
+ void do_uaccess_flush_fixups(enum l1d_flush_type types)
+
 
