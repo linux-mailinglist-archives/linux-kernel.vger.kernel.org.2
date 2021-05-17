@@ -2,56 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D427C3838B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD7F383628
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344046AbhEQP7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:59:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51344 "EHLO mail.kernel.org"
+        id S244919AbhEQP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245740AbhEQPjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:39:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD8061D05;
-        Mon, 17 May 2021 14:41:21 +0000 (UTC)
+        id S243346AbhEQPNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:13:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82DEB61C44;
+        Mon, 17 May 2021 14:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262481;
-        bh=9zsl9zDHEx/+/pebn0qQBMX6T086vh3OQ34q2z/vCks=;
+        s=korg; t=1621261908;
+        bh=yb2t9n9d73ncxUe8UzTCxpoOQfoZZe3tejDhEVDgH2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e2vqvHuSM0cStQRupsy5tZVFOzdvuPgYYD4ZQrTQas5Nyxdub9LrT8YHK5rRVOe/V
-         qgNTdZfo8M/p2XWaRd9XD/P2bYYRd8oPZVIsceiFM8gMhi0tDNrIZLBNlSpwc31epV
-         NjZJRB7cZppjxUBbXqHwlvdtE+dVBFz4FlVAL/eY=
+        b=IEv88AyWKmUYph6q/SI/NTBspQ6hdOV1evqll3iIbQTHDLHquzhGk9SuM3ZnxTpg0
+         YIX8NHxUfzOjvSwmIwcR8KiBYutraq/ZWe5HxnOj4uNvj6tYH2XjPWOF/AnjZ2Rp0L
+         4lFSbOcEOLvY92I0cHvLWIqtsywNxlYYxfkndTYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morris <jmorris@namei.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 171/289] mm/gup: return an error on migration failure
+        stable@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 185/329] RISC-V: Fix error code returned by riscv_hartid_to_cpuid()
 Date:   Mon, 17 May 2021 16:01:36 +0200
-Message-Id: <20210517140310.874758677@linuxfoundation.org>
+Message-Id: <20210517140308.389910521@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,94 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Tatashin <pasha.tatashin@soleen.com>
+From: Anup Patel <anup.patel@wdc.com>
 
-[ Upstream commit f0f4463837da17a89d965dcbe4e411629dbcf308 ]
+[ Upstream commit 533b4f3a789d49574e7ae0f6ececed153f651f97 ]
 
-When migration failure occurs, we still pin pages, which means that we
-may pin CMA movable pages which should never be the case.
+We should return a negative error code upon failure in
+riscv_hartid_to_cpuid() instead of NR_CPUS. This is also
+aligned with all uses of riscv_hartid_to_cpuid() which
+expect negative error code upon failure.
 
-Instead return an error without pinning pages when migration failure
-happens.
-
-No need to retry migrating, because migrate_pages() already retries 10
-times.
-
-Link: https://lkml.kernel.org/r/20210215161349.246722-4-pasha.tatashin@soleen.com
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 6825c7a80f18 ("RISC-V: Add logical CPU indexing for RISC-V")
+Fixes: f99fb607fb2b ("RISC-V: Use Linux logical CPU number instead of hartid")
+Signed-off-by: Anup Patel <anup.patel@wdc.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/gup.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ arch/riscv/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index e10807c4c46b..0fa8d88eb7ba 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1563,7 +1563,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- {
- 	unsigned long i;
- 	bool drain_allow = true;
--	bool migrate_allow = true;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
- 	struct page *prev_head, *head;
-@@ -1614,17 +1613,15 @@ check_again:
- 			for (i = 0; i < nr_pages; i++)
- 				put_page(pages[i]);
+diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+index ea028d9e0d24..d44567490d91 100644
+--- a/arch/riscv/kernel/smp.c
++++ b/arch/riscv/kernel/smp.c
+@@ -54,7 +54,7 @@ int riscv_hartid_to_cpuid(int hartid)
+ 			return i;
  
--		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
--			/*
--			 * some of the pages failed migration. Do get_user_pages
--			 * without migration.
--			 */
--			migrate_allow = false;
--
-+		ret = migrate_pages(&cma_page_list, alloc_migration_target,
-+				    NULL, (unsigned long)&mtc, MIGRATE_SYNC,
-+				    MR_CONTIG_RANGE);
-+		if (ret) {
- 			if (!list_empty(&cma_page_list))
- 				putback_movable_pages(&cma_page_list);
-+			return ret > 0 ? -ENOMEM : ret;
- 		}
-+
- 		/*
- 		 * We did migrate all the pages, Try to get the page references
- 		 * again migrating any new CMA pages which we failed to isolate
-@@ -1634,7 +1631,7 @@ check_again:
- 						   pages, vmas, NULL,
- 						   gup_flags);
+ 	pr_err("Couldn't find cpu id for hartid [%d]\n", hartid);
+-	return i;
++	return -ENOENT;
+ }
  
--		if ((ret > 0) && migrate_allow) {
-+		if (ret > 0) {
- 			nr_pages = ret;
- 			drain_allow = true;
- 			goto check_again;
+ void riscv_cpuid_to_hartid_mask(const struct cpumask *in, struct cpumask *out)
 -- 
 2.30.2
 
