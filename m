@@ -2,213 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27058382BE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D17382BE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236911AbhEQMRL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 May 2021 08:17:11 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11399 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234754AbhEQMRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:17:05 -0400
-IronPort-SDR: A4TtZ6VucI87sMggHQJHXSgmWLICemkZQtcHUF2sa17PTXpmmPY/Zye/PVtujDChoJlxdBJBKC
- 9fOQiiPL6SFA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="187854159"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="187854159"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 05:15:45 -0700
-IronPort-SDR: 7Ht9fR84yA4Rq8Y8w3Q2gXOI2V6j3777dycbyy09H98pxYDgPaGBbYFG66HJ8MS8XTvkcZkwbY
- lnxhCVCbYQ5Q==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="472382788"
-Received: from sudhirk1-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.50.192])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 05:15:39 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Ville =?utf-8?B?U3lyasOk?= =?utf-8?B?bMOk?= 
-        <ville.syrjala@linux.intel.com>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        =?utf-8?Q?Jos=C3=A9?= Roberto de Souza <jose.souza@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Imre Deak <imre.deak@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Karthik B S <karthik.b.s@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] drm/i915: Invoke another _DSM to enable MUX on HP Workstation laptops
-In-Reply-To: <CAAd53p7kFD-PrdeONF8-c=JG5rtHXpz1sxTbPkwg8YY4ZcCYWg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210426152420.359402-1-kai.heng.feng@canonical.com> <YJrKnHppE5FnaZ72@intel.com> <CAAd53p7kFD-PrdeONF8-c=JG5rtHXpz1sxTbPkwg8YY4ZcCYWg@mail.gmail.com>
-Date:   Mon, 17 May 2021 15:15:36 +0300
-Message-ID: <87fsylh7yv.fsf@intel.com>
+        id S236948AbhEQMRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234754AbhEQMRg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:17:36 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B065EC061573;
+        Mon, 17 May 2021 05:16:18 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id w33so492800lfu.7;
+        Mon, 17 May 2021 05:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Bpg0yo4zd9e4wgCvkS6BR8yRBmNDCnC7ieiyGUPdPVc=;
+        b=X38FB1g+bA2WdLtLPEg2NrmkK7EeNXvscBt99RlP9vSpFsTCT0EfGbprIgtlTHJC1U
+         cCdyfaURALQ6G74244t8XorpFu9r8ryPDahUDciszM9qN+zmhgZu7M6J3hMWUoTMcthr
+         bnB3L/xVvYEFREK2DCg3twRsZ9dGLpJGDOiO9fbhbuPoRHoXWIaOMDT312XvryD0az17
+         u3Yf0qTKtW4BUEXBsJ0p9R0V37Dx1iTsgJ2SNMkki+TG0/X1exxVCweVk60B5sYZSXrt
+         UwKzbMVNDNjQ0QLT63sFdAxqdSJBhfWeXLAe2vXWMCCcHgdS5q63Q25Oji2hI1UC+Pdi
+         2BnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Bpg0yo4zd9e4wgCvkS6BR8yRBmNDCnC7ieiyGUPdPVc=;
+        b=FHLk6Kz6vPUp/A4Joo4dczTP6zkeKzSvKo3y4ONAum7zdyPNhn8Ao7I+bqGTEmK1R2
+         S/12UuT7LykSTIH6sDeu4GxceZwuRVjUWQIRjSguImmDyY8kVSQB1sw+DP/aHjPLio6k
+         UEOihaMg+JeorRDsD7LaHVAYs6W7LY/lWnPsfiBx/2uO/M72azLbobLGCDKbdrxhgIS2
+         YeRTcyXwJdNmEVrVPF48v9oS3YKowGCLnqsdFRmmzaFqU6dxT9y3ouyJzWu1kyLWN5zj
+         78ODrOHLJz3M9MS/OeLcmk9tc1OKxAhGyUMRh30limND+7M06HALbcDxhT+dGjhfOyhv
+         hvTQ==
+X-Gm-Message-State: AOAM530EUpMBbfA/a9tpHsS8bfyZsXdV2kaMQcTPgisA1fXETK/7OJqG
+        6WcufnCVUVKKMvDXArO/vM4=
+X-Google-Smtp-Source: ABdhPJx10eT0n+8VyUM8+53tApBPCxIrFACbiNRF0GdwEF3deMfsdYpzK3vnBSJic3VtjM+JqSB1+g==
+X-Received: by 2002:a05:6512:2398:: with SMTP id c24mr42525549lfv.244.1621253777198;
+        Mon, 17 May 2021 05:16:17 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.227])
+        by smtp.gmail.com with ESMTPSA id i21sm535690lfg.265.2021.05.17.05.16.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 05:16:16 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     jack@suse.cz, tiantao6@hisilicon.com, rdunlap@infradead.org
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+Subject: [PATCH v2] reiserfs: add check for invalid 1st journal block
+Date:   Mon, 17 May 2021 15:15:45 +0300
+Message-Id: <20210517121545.29645-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210517101523.GB31755@quack2.suse.cz>
+References: <20210517101523.GB31755@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
-> On Wed, May 12, 2021 at 2:19 AM Ville Syrjälä
-> <ville.syrjala@linux.intel.com> wrote:
->>
->> On Mon, Apr 26, 2021 at 11:24:10PM +0800, Kai-Heng Feng wrote:
->> > On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
->> > to discrete GFX after S3. This is not desirable, because userspace will
->> > treat connected display as a new one, losing display settings.
->> >
->> > The expected behavior is to let discrete GFX drives all external
->> > displays.
->> >
->> > The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
->> > The method is inside the another _DSM, so add the _DSM and call it
->> > accordingly.
->> >
->> > I also tested some MUX-less and iGPU only laptops with that _DSM, no
->> > regression was found.
->> >
->> > v3:
->> >  - Remove BXT from names.
->> >  - Change the parameter type.
->> >  - Fold the function into intel_modeset_init_hw().
->> >
->> > v2:
->> >  - Forward declare struct pci_dev.
->> >
->> > Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
->> > References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
->> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> > ---
->> >  drivers/gpu/drm/i915/display/intel_acpi.c    | 18 ++++++++++++++++++
->> >  drivers/gpu/drm/i915/display/intel_acpi.h    |  3 +++
->> >  drivers/gpu/drm/i915/display/intel_display.c |  2 ++
->> >  3 files changed, 23 insertions(+)
->> >
->> > diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
->> > index 833d0c1be4f1..d008d3976261 100644
->> > --- a/drivers/gpu/drm/i915/display/intel_acpi.c
->> > +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
->> > @@ -13,12 +13,17 @@
->> >  #include "intel_display_types.h"
->> >
->> >  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
->> > +#define INTEL_DSM_FN_PLATFORM_MUX_ENABLE 0 /* No args */
->>
->> This block of defines is for the other DSM. We don't want to
->> mix these up. We also want to name it according to the spec,
->> so something like GET_BIOS_DATA_FUNCS_SUPPORTED. Similarly
->> for the intel_dsm_enable_mux() wrapper function. + it needs
->> a comment to document that some BIOSes abuse it to do MUX
->> initialization and whatnot.
->
-> Will do.
->
->
->>
->> We should perhaps rename all the old DSM stuff to
->> something a bit less generic as well...
->
-> I can rename them as well. But what's the naming scheme you prefer?
->
->>
->> >  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
->> >
->> >  static const guid_t intel_dsm_guid =
->> >       GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
->> >                 0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
->> >
->> > +static const guid_t intel_dsm_guid2 =
->> > +     GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
->> > +               0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
->> > +
->> >  static char *intel_dsm_port_name(u8 id)
->> >  {
->> >       switch (id) {
->> > @@ -176,6 +181,19 @@ void intel_unregister_dsm_handler(void)
->> >  {
->> >  }
->> >
->> > +void intel_dsm_enable_mux(struct drm_i915_private *i915)
->> > +{
->> > +     struct pci_dev *pdev = i915->drm.pdev;
->> > +     acpi_handle dhandle;
->> > +
->> > +     dhandle = ACPI_HANDLE(&pdev->dev);
->> > +     if (!dhandle)
->> > +             return;
->> > +
->> > +     acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
->> > +                       INTEL_DSM_FN_PLATFORM_MUX_ENABLE, NULL);
->> > +}
->> > +
->> >  /*
->> >   * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
->> >   * Attached to the Display Adapter).
->> > diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
->> > index e8b068661d22..def013cf6308 100644
->> > --- a/drivers/gpu/drm/i915/display/intel_acpi.h
->> > +++ b/drivers/gpu/drm/i915/display/intel_acpi.h
->> > @@ -11,11 +11,14 @@ struct drm_i915_private;
->> >  #ifdef CONFIG_ACPI
->> >  void intel_register_dsm_handler(void);
->> >  void intel_unregister_dsm_handler(void);
->> > +void intel_dsm_enable_mux(struct drm_i915_private *i915);
->> >  void intel_acpi_device_id_update(struct drm_i915_private *i915);
->> >  #else
->> >  static inline void intel_register_dsm_handler(void) { return; }
->> >  static inline void intel_unregister_dsm_handler(void) { return; }
->> >  static inline
->> > +void intel_dsm_enable_mux(struct drm_i915_private *i915) { return; }
->> > +static inline
->> >  void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
->> >  #endif /* CONFIG_ACPI */
->> >
->> > diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
->> > index a10e26380ef3..d79dae370b20 100644
->> > --- a/drivers/gpu/drm/i915/display/intel_display.c
->> > +++ b/drivers/gpu/drm/i915/display/intel_display.c
->> > @@ -11472,6 +11472,8 @@ void intel_modeset_init_hw(struct drm_i915_private *i915)
->> >  {
->> >       struct intel_cdclk_state *cdclk_state;
->> >
->> > +     intel_dsm_enable_mux(i915);
->> > +
->>
->> This should probably be somewhere around where we do all the other
->> semi ACPI related init (OpRegion/etc.).
->
-> Hmm, but Jani prefers to put it inside intel_modeset_*() helpers. But
-> I don't see any opregion related functions are being called by
-> intel_modeset_*() helpers. Any suggestion?
+syzbot reported divide error in reiserfs.
+The problem was in incorrect journal 1st block.
 
-I think I mainly wanted it in intel_display.c instead of at the driver
-top level.
+Syzbot's reproducer manualy generated wrong superblock
+with incorrect 1st block. In journal_init() wasn't
+any checks about this particular case.
 
-BR,
-Jani.
+For example, if 1st journal block is before superblock
+1st block, it can cause zeroing important superblock members
+in do_journal_end().
 
+Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
->
-> Kai-Heng
->
->>
->> >       if (!HAS_DISPLAY(i915))
->> >               return;
->> >
->> > --
->> > 2.30.2
->>
->> --
->> Ville Syrjälä
->> Intel
+Changes in v2:
+  Added necessary !SB_ONDISK_JOURNAL_DEVICE(sb) in "if"
 
+---
+ fs/reiserfs/journal.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
+index 9edc8e2b154e..0834b101c316 100644
+--- a/fs/reiserfs/journal.c
++++ b/fs/reiserfs/journal.c
+@@ -2758,6 +2758,20 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
+ 		goto free_and_return;
+ 	}
+ 
++	/*
++	 * Sanity check to see if journal first block is correct.
++	 * If journal first block is invalid it can cause
++	 * zeroing important superblock members.
++	 */
++	if (!SB_ONDISK_JOURNAL_DEVICE(sb) &&
++	    SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
++		reiserfs_warning(sb, "journal-1393",
++				 "journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
++				 SB_JOURNAL_1st_RESERVED_BLOCK(sb),
++				 SB_ONDISK_JOURNAL_1st_BLOCK(sb));
++		goto free_and_return;
++	}
++
+ 	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
+ 		reiserfs_warning(sb, "sh-462",
+ 				 "unable to initialize journal device");
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.31.1
+
