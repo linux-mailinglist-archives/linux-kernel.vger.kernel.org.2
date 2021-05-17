@@ -2,136 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBC5382784
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CADF382788
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235775AbhEQIwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:52:21 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:45508 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235446AbhEQIwS (ORCPT
+        id S235770AbhEQIxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:53:33 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:56150 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235727AbhEQIxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:52:18 -0400
-Received: from [IPv6:2a02:a03f:eafb:ee01:404a:340a:91cb:c07b] (unknown [IPv6:2a02:a03f:eafb:ee01:404a:340a:91cb:c07b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id CBB6E1FF8B2;
-        Mon, 17 May 2021 10:50:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1621241460;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h5tsms5xI9mYoU2aDfH9/YdSGrBfg2Dt6aTgdrqgN0M=;
-        b=lEd4V0jDDjiTkNzNAmUv+3XSNCwDDz3bv9rUAqw3pFigetdsit0+mGGJuHYsU4owuoAolv
-        hs9gEkmRWMg0coyZFZ/28vTjmh8VxGQSs46OC2vWHLc/H6LTutZBnziBMvHMMDasNfFNzy
-        NOZO4iPtKGPiDRrKSeWXELv1T8jotVNIkqaBRyVn+N7ta8ZlOp/bRXPjwSrGvLkBjY+5rv
-        vrEHx8VY0EVopDg/fi/zGVU9OG2RSBQIiqobJg9YHxOW48zHZDKvUOIH/AGusM4DOUV/ov
-        yhl7bdh4BSG4nnSoB5B34ekyketrpKTRQuO8GVIB5q24DXtus0X8kDz60dcgfA==
-Message-ID: <a717bd96509b38bdfd8883847b8d085f9bdd919f.camel@svanheule.net>
-Subject: Re: [PATCH 0/5] RTL8231 GPIO expander support
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 17 May 2021 10:50:57 +0200
-In-Reply-To: <CAHp75VdS63n55b3RG7ZL1=uVgB=7ZiBtTOmV0t+5hw6xKoLFSg@mail.gmail.com>
-References: <cover.1620735871.git.sander@svanheule.net>
-         <CAHp75VffoKyyPJbdtKMLx575c9LT0S8+EHOk7Mw36j=aTL6Q4Q@mail.gmail.com>
-         <b7d39a26bc3a90de4d8e4fdbf8f944de43d12a56.camel@svanheule.net>
-         <CAHp75VdS63n55b3RG7ZL1=uVgB=7ZiBtTOmV0t+5hw6xKoLFSg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 17 May 2021 04:53:30 -0400
+Received: by mail-io1-f71.google.com with SMTP id p2-20020a5d98420000b029043b3600ac76so1317ios.22
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 01:52:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=3SRqX4XYa1OubWuc+nsCa3NBcKx9gujWq3URJrBjN/4=;
+        b=F2WiDZWcsiEWaoqM1BNJjwNt1NU3uf+/GKm6ugy/AsJS3QTyzDq8uDbxc59b1cskAm
+         Tog9Jh+H39TddEgALaO77jBP0lErGZrHf3Y0E1s/Vgrg1tvGmDG+Nm5OPlpucplHNr9K
+         x9+1fzxuFk+h5OszaW8yTX39YUFWui3mjsvSg6MNBLH3500Hb+VdiRBL41RbKwyL47jq
+         crKPWTzdz6XyTduoTWIZGZ5VFm81uIEQ5yMZ8ECGNLo4cryXBf9pZKqmqoBsYIEPqJjw
+         zwH0X4RrMiDCn+FdR6QmIFEWAK8AUOI/HT1QAq/Ws5MXFYYu5hqM/kNnYPU5NuWBC4oF
+         YcGw==
+X-Gm-Message-State: AOAM531jgXCYQkfixv+UzMvzgV+otDr+owZC2AEbzOctiX71CVDwxCse
+        RuvdMfpkj3P2qw6OdJsqqGnRiJm39YRbBSVjNz8wNp6/ddwi
+X-Google-Smtp-Source: ABdhPJzpRaGkv/AeS2mGRekr9VX6LgH+E1Xi4eIXn8LZaC58udxuB33cxstvybyUg3CZDHEZpwNkHBp9Zg6d5/+y6+ggiC6YLbFq
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:164c:: with SMTP id y12mr42180306iow.78.1621241533833;
+ Mon, 17 May 2021 01:52:13 -0700 (PDT)
+Date:   Mon, 17 May 2021 01:52:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b82bdb05c282b5ff@google.com>
+Subject: [syzbot] memory leak in snd_ctl_led_register
+From:   syzbot <syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-17 at 11:13 +0300, Andy Shevchenko wrote:
-> On Mon, May 17, 2021 at 12:40 AM Sander Vanheule <sander@svanheule.net> wrote:
-> > On Wed, 2021-05-12 at 18:29 +0300, Andy Shevchenko wrote:
-> > > On Tuesday, May 11, 2021, Sander Vanheule <sander@svanheule.net> wrote:
-> 
-> ...
-> 
-> > >  * > > > I have several comments to the series, but I may give them next
-> > >    week.
-> > > 
-> > > Just couple here:
-> > > 1. If subsystem provides a regmap API I would suggest to use it, I.o.w.
-> > > try
-> > > again to understand what is wrong with MDIO case.
-> > 
-> > Are you referring to the MDIO regmap interface, or the GPIO regmap
-> > interface?
-> 
-> MDIO
-> 
-> > For the MDIO regmap interface, I have been able to resolve the Kconfig
-> > dependency issue. So I can reintroduce that, if that's preferred over the
-> > solution in this v1.
-> > 
-> > With an extra patch, I was able to use the gpio-regmap interface, dropping
-> > most
-> > of the GPIO code. The current gpio-regmap implementation makes the
-> > assumption
-> > that an output value can be set while a pin is configured as an input. That
-> > assumption is invalid for this chip, so I had to provide an extra flag for
-> > gpio_regmap_config, similar to how this is handled in gpio-mmio.
-> > 
-> > 
-> > > 2. Please, switch to fwnode API in LED driver
-> > 
-> > Since you had the same comment on my previous patch set, I had already tried
-> > to
-> > this this into account as much as possible.
-> > 
-> > There's a few things I couldn't find the fwnode-equivalent for:
-> >  * I use of_node_name_prefix to enforce the naming required by the binding.
-> > I
-> >    could just walk over all (available) child nodes, which would be mostly
-> >    equivalent.
-> 
-> AFAIU the LED traditional bindings is that you define LED compatible
-> nodes and all child nodes of it are the one-per-LED ones, there
-> shouldn't be others.
+Hello,
 
-OK, then I can just iterate over all child fwnodes.
+syzbot found the following issue on:
+
+HEAD commit:    e4866123 Merge tag 's390-5.13-2' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1052b345d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2e724a3033c441e3
+dashboard link: https://syzkaller.appspot.com/bug?extid=08a7d8b51ea048a74ffb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=117d4593d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100509b3d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888113a0ca00 (size 256):
+  comm "kworker/1:1", pid 35, jiffies 4294942586 (age 13.780s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 ca a0 13 81 88 ff ff  ................
+    08 ca a0 13 81 88 ff ff a0 5c 60 82 ff ff ff ff  .........\`.....
+  backtrace:
+    [<ffffffff8260b58c>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff8260b58c>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff8260b58c>] device_private_init drivers/base/core.c:3161 [inline]
+    [<ffffffff8260b58c>] device_add+0x85c/0xd70 drivers/base/core.c:3211
+    [<ffffffff8356aaef>] snd_ctl_led_sysfs_add sound/core/control_led.c:670 [inline]
+    [<ffffffff8356aaef>] snd_ctl_led_register+0x1af/0x2f0 sound/core/control_led.c:361
+    [<ffffffff8355e0a8>] snd_ctl_dev_register+0x78/0xb0 sound/core/control.c:2156
+    [<ffffffff83563fab>] __snd_device_register sound/core/device.c:149 [inline]
+    [<ffffffff83563fab>] __snd_device_register sound/core/device.c:145 [inline]
+    [<ffffffff83563fab>] snd_device_register_all+0x7b/0xd0 sound/core/device.c:197
+    [<ffffffff8355ccc0>] snd_card_register+0x90/0x2b0 sound/core/init.c:773
+    [<ffffffff83648737>] usX2Y_usb_probe sound/usb/usx2y/usbusx2y.c:382 [inline]
+    [<ffffffff83648737>] snd_usX2Y_probe+0x277/0x2f0 sound/usb/usx2y/usbusx2y.c:398
+    [<ffffffff82bcf687>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82610359>] really_probe+0x159/0x500 drivers/base/dd.c:576
+    [<ffffffff8261078b>] driver_probe_device+0x8b/0x100 drivers/base/dd.c:763
+    [<ffffffff82610eb6>] __device_attach_driver+0xf6/0x120 drivers/base/dd.c:870
+    [<ffffffff8260d247>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<ffffffff82610a32>] __device_attach+0x122/0x260 drivers/base/dd.c:938
+    [<ffffffff8260eee6>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<ffffffff8260b305>] device_add+0x5d5/0xd70 drivers/base/core.c:3319
+    [<ffffffff82bccc29>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<ffffffff82bdcfbc>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+
+BUG: memory leak
+unreferenced object 0xffff888113a0c900 (size 256):
+  comm "kworker/1:1", pid 35, jiffies 4294942586 (age 13.780s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 c9 a0 13 81 88 ff ff  ................
+    08 c9 a0 13 81 88 ff ff a0 5c 60 82 ff ff ff ff  .........\`.....
+  backtrace:
+    [<ffffffff8260b58c>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff8260b58c>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff8260b58c>] device_private_init drivers/base/core.c:3161 [inline]
+    [<ffffffff8260b58c>] device_add+0x85c/0xd70 drivers/base/core.c:3211
+    [<ffffffff8356aaef>] snd_ctl_led_sysfs_add sound/core/control_led.c:670 [inline]
+    [<ffffffff8356aaef>] snd_ctl_led_register+0x1af/0x2f0 sound/core/control_led.c:361
+    [<ffffffff8355e0a8>] snd_ctl_dev_register+0x78/0xb0 sound/core/control.c:2156
+    [<ffffffff83563fab>] __snd_device_register sound/core/device.c:149 [inline]
+    [<ffffffff83563fab>] __snd_device_register sound/core/device.c:145 [inline]
+    [<ffffffff83563fab>] snd_device_register_all+0x7b/0xd0 sound/core/device.c:197
+    [<ffffffff8355ccc0>] snd_card_register+0x90/0x2b0 sound/core/init.c:773
+    [<ffffffff83648737>] usX2Y_usb_probe sound/usb/usx2y/usbusx2y.c:382 [inline]
+    [<ffffffff83648737>] snd_usX2Y_probe+0x277/0x2f0 sound/usb/usx2y/usbusx2y.c:398
+    [<ffffffff82bcf687>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82610359>] really_probe+0x159/0x500 drivers/base/dd.c:576
+    [<ffffffff8261078b>] driver_probe_device+0x8b/0x100 drivers/base/dd.c:763
+    [<ffffffff82610eb6>] __device_attach_driver+0xf6/0x120 drivers/base/dd.c:870
+    [<ffffffff8260d247>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<ffffffff82610a32>] __device_attach+0x122/0x260 drivers/base/dd.c:938
+    [<ffffffff8260eee6>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<ffffffff8260b305>] device_add+0x5d5/0xd70 drivers/base/core.c:3319
+    [<ffffffff82bccc29>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<ffffffff82bdcfbc>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+
+BUG: memory leak
+unreferenced object 0xffff888112c771c0 (size 32):
+  comm "kworker/1:1", pid 35, jiffies 4294943217 (age 7.470s)
+  hex dump (first 32 bytes):
+    63 61 72 64 33 00 00 00 00 00 00 00 00 00 00 00  card3...........
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff82253d3c>] kvasprintf+0x6c/0xf0 lib/kasprintf.c:25
+    [<ffffffff82253e18>] kvasprintf_const+0x58/0x110 lib/kasprintf.c:49
+    [<ffffffff8231b16b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<ffffffff82605c03>] dev_set_name+0x63/0x90 drivers/base/core.c:3105
+    [<ffffffff8356aabe>] snd_ctl_led_sysfs_add sound/core/control_led.c:666 [inline]
+    [<ffffffff8356aabe>] snd_ctl_led_register+0x17e/0x2f0 sound/core/control_led.c:361
+    [<ffffffff8355e0a8>] snd_ctl_dev_register+0x78/0xb0 sound/core/control.c:2156
+    [<ffffffff83563fab>] __snd_device_register sound/core/device.c:149 [inline]
+    [<ffffffff83563fab>] __snd_device_register sound/core/device.c:145 [inline]
+    [<ffffffff83563fab>] snd_device_register_all+0x7b/0xd0 sound/core/device.c:197
+    [<ffffffff8355ccc0>] snd_card_register+0x90/0x2b0 sound/core/init.c:773
+    [<ffffffff83648737>] usX2Y_usb_probe sound/usb/usx2y/usbusx2y.c:382 [inline]
+    [<ffffffff83648737>] snd_usX2Y_probe+0x277/0x2f0 sound/usb/usx2y/usbusx2y.c:398
+    [<ffffffff82bcf687>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82610359>] really_probe+0x159/0x500 drivers/base/dd.c:576
+    [<ffffffff8261078b>] driver_probe_device+0x8b/0x100 drivers/base/dd.c:763
+    [<ffffffff82610eb6>] __device_attach_driver+0xf6/0x120 drivers/base/dd.c:870
+    [<ffffffff8260d247>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<ffffffff82610a32>] __device_attach+0x122/0x260 drivers/base/dd.c:938
+    [<ffffffff8260eee6>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
 
 
-> >  * To get the address of an LED child node, I use of_get_address, since this
-> >    appeared to provide what I want to do: get the address of the node. I
-> > know
-> >    next to nothing about ACPI. Does the equivalent exist there? Or am I
-> > taking
-> >    the wrong approach?
-> 
-> What are the means of an address in this case?
 
-The chip appears to be intended for use with ethernet switches. The registers
-are organised to into a few groups, to provide 2 or 3 status LEDs per switch
-port:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- * "LED0" group for 32 ports,
- * "LED1" group for 32 ports,
- * "LED2" group for 24 ports
-
-The number of LEDs that can be used depends on the output mode, so I use a two-
-part <#PORT #LED> address, resembling how this is defined by Realtek.
-
-A single linear LED address space would get awkward gaps in bi-color mode (where
-only the lower 24 ports can be used), but would still require addresses to be
-able to specify which LED is where. For example in case the user want to link
-them to a phy trigger for a specific switch port.
-
-Best,
-Sander
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
