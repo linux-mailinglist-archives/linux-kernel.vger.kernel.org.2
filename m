@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC694383755
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F69F383786
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240721AbhEQPls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:41:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
+        id S1344468AbhEQPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:44:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243995AbhEQP0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:26:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3744D61108;
-        Mon, 17 May 2021 14:36:39 +0000 (UTC)
+        id S243611AbhEQP1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:27:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A91F61CAF;
+        Mon, 17 May 2021 14:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262199;
-        bh=kC7FQNzElUN2/JaEJqPMFhEHrMIh5d+NALf67BGqDAw=;
+        s=korg; t=1621262203;
+        bh=rT3wyvJlgHTyoEDQhF1w6rnDbcmpWsfqhSKDDCR+MFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1PyEVc3t5434czenVMAm4jdSv3/V7Fi9p8NheLW6yvmV3STqIJC/Y9DkYO2GyOhmy
-         ztTUnGYHkxQj2Q7yqa+9JjylP4Stwh7V43AOQiAMLrEmDcV8EeNQ53rGTB3fP08BuD
-         qqy1ZvbEQKINx0S7+CAabXcWfd8W7gdPQVAS6lpk=
+        b=J385JiVpy7q4e19cI0aSufETNlFAWzuz1yBYuN20Nay3p65MhtUVC+sltlkTKrLek
+         56W3Fztr4APGvUEdxDSN9PFA+jfQ2CdqPFipTsgfTbEOoShlE9PY+ayW9hnpm/7UaP
+         mZeumniK1P6k+KBgI4O5Lf1bK+Lx4RnZ6zn8wPS8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Rasmussen <axelrasmussen@google.com>,
-        Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>,
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        George Popescu <georgepope@android.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.11 237/329] userfaultfd: release page in error path to avoid BUG_ON
-Date:   Mon, 17 May 2021 16:02:28 +0200
-Message-Id: <20210517140310.130976446@linuxfoundation.org>
+Subject: [PATCH 5.11 238/329] kasan: fix unit tests with CONFIG_UBSAN_LOCAL_BOUNDS enabled
+Date:   Mon, 17 May 2021 16:02:29 +0200
+Message-Id: <20210517140310.167568236@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -41,64 +45,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Rasmussen <axelrasmussen@google.com>
+From: Peter Collingbourne <pcc@google.com>
 
-commit 7ed9d238c7dbb1fdb63ad96a6184985151b0171c upstream.
+commit f649dc0e0d7b509c75570ee403723660f5b72ec7 upstream.
 
-Consider the following sequence of events:
+These tests deliberately access these arrays out of bounds, which will
+cause the dynamic local bounds checks inserted by
+CONFIG_UBSAN_LOCAL_BOUNDS to fail and panic the kernel.  To avoid this
+problem, access the arrays via volatile pointers, which will prevent the
+compiler from being able to determine the array bounds.
 
-1. Userspace issues a UFFD ioctl, which ends up calling into
-   shmem_mfill_atomic_pte(). We successfully account the blocks, we
-   shmem_alloc_page(), but then the copy_from_user() fails. We return
-   -ENOENT. We don't release the page we allocated.
-2. Our caller detects this error code, tries the copy_from_user() after
-   dropping the mmap_lock, and retries, calling back into
-   shmem_mfill_atomic_pte().
-3. Meanwhile, let's say another process filled up the tmpfs being used.
-4. So shmem_mfill_atomic_pte() fails to account blocks this time, and
-   immediately returns - without releasing the page.
+These accesses use volatile pointers to char (char *volatile) rather than
+the more conventional pointers to volatile char (volatile char *) because
+we want to prevent the compiler from making inferences about the pointer
+itself (i.e.  its array bounds), not the data that it refers to.
 
-This triggers a BUG_ON in our caller, which asserts that the page
-should always be consumed, unless -ENOENT is returned.
-
-To fix this, detect if we have such a "dangling" page when accounting
-fails, and if so, release it before returning.
-
-Link: https://lkml.kernel.org/r/20210428230858.348400-1-axelrasmussen@google.com
-Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-Reported-by: Hugh Dickins <hughd@google.com>
-Acked-by: Hugh Dickins <hughd@google.com>
-Reviewed-by: Peter Xu <peterx@redhat.com>
+Link: https://lkml.kernel.org/r/20210507025915.1464056-1-pcc@google.com
+Link: https://linux-review.googlesource.com/id/I90b1713fbfa1bf68ff895aef099ea77b98a7c3b9
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Tested-by: Alexander Potapenko <glider@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: George Popescu <georgepope@android.com>
+Cc: Elena Petrova <lenaptr@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/shmem.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ lib/test_kasan.c |   29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2373,8 +2373,18 @@ static int shmem_mfill_atomic_pte(struct
- 	pgoff_t offset, max_off;
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -449,8 +449,20 @@ static char global_array[10];
  
- 	ret = -ENOMEM;
--	if (!shmem_inode_acct_block(inode, 1))
-+	if (!shmem_inode_acct_block(inode, 1)) {
-+		/*
-+		 * We may have got a page, returned -ENOENT triggering a retry,
-+		 * and now we find ourselves with -ENOMEM. Release the page, to
-+		 * avoid a BUG_ON in our caller.
-+		 */
-+		if (unlikely(*pagep)) {
-+			put_page(*pagep);
-+			*pagep = NULL;
-+		}
- 		goto out;
-+	}
+ static void kasan_global_oob(struct kunit *test)
+ {
+-	volatile int i = 3;
+-	char *p = &global_array[ARRAY_SIZE(global_array) + i];
++	/*
++	 * Deliberate out-of-bounds access. To prevent CONFIG_UBSAN_LOCAL_BOUNDS
++	 * from failing here and panicing the kernel, access the array via a
++	 * volatile pointer, which will prevent the compiler from being able to
++	 * determine the array bounds.
++	 *
++	 * This access uses a volatile pointer to char (char *volatile) rather
++	 * than the more conventional pointer to volatile char (volatile char *)
++	 * because we want to prevent the compiler from making inferences about
++	 * the pointer itself (i.e. its array bounds), not the data that it
++	 * refers to.
++	 */
++	char *volatile array = global_array;
++	char *p = &array[ARRAY_SIZE(global_array) + 3];
  
- 	if (!*pagep) {
- 		page = shmem_alloc_page(gfp, info, pgoff);
+ 	/* Only generic mode instruments globals. */
+ 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+@@ -479,8 +491,9 @@ static void ksize_unpoisons_memory(struc
+ static void kasan_stack_oob(struct kunit *test)
+ {
+ 	char stack_array[10];
+-	volatile int i = OOB_TAG_OFF;
+-	char *p = &stack_array[ARRAY_SIZE(stack_array) + i];
++	/* See comment in kasan_global_oob. */
++	char *volatile array = stack_array;
++	char *p = &array[ARRAY_SIZE(stack_array) + OOB_TAG_OFF];
+ 
+ 	if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
+ 		kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
+@@ -494,7 +507,9 @@ static void kasan_alloca_oob_left(struct
+ {
+ 	volatile int i = 10;
+ 	char alloca_array[i];
+-	char *p = alloca_array - 1;
++	/* See comment in kasan_global_oob. */
++	char *volatile array = alloca_array;
++	char *p = array - 1;
+ 
+ 	/* Only generic mode instruments dynamic allocas. */
+ 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+@@ -514,7 +529,9 @@ static void kasan_alloca_oob_right(struc
+ {
+ 	volatile int i = 10;
+ 	char alloca_array[i];
+-	char *p = alloca_array + i;
++	/* See comment in kasan_global_oob. */
++	char *volatile array = alloca_array;
++	char *p = array + i;
+ 
+ 	/* Only generic mode instruments dynamic allocas. */
+ 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
 
 
