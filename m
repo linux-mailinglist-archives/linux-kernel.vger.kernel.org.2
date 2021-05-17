@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1ED53836C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113DF38387F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243186AbhEQPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55936 "EHLO mail.kernel.org"
+        id S245741AbhEQPxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:53:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244425AbhEQPUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B7C6191D;
-        Mon, 17 May 2021 14:34:18 +0000 (UTC)
+        id S243460AbhEQPf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:35:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5301361CE7;
+        Mon, 17 May 2021 14:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262059;
-        bh=VDx8O+U6Cb9HQVTvwF8B4BPQlbaXtvFBDUjVbfchoVM=;
+        s=korg; t=1621262391;
+        bh=bBZdnNjDGJVADnWg/L62VTsJidFCmRulnLAs2KUCXjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0qTf+6tkweQ9HAV8fsoD/LKgHZ+dCeHVh119PCdEiCmY8iVHAp1OLrmdufs/NSXuo
-         j3wBVU3otFG5Za/hLfAhi6zcaouN8xq2yTUh5XbV3TS5/25yVbczw1wsNDl3yX75qg
-         EKa+4gpIQeLYky3/oZ066OfaeIdEWO548qeLXz/M=
+        b=zUPsXAUs05aLlNeVr8yqUSCgVgbPqTxwW2oqpzg+h6RmGOzK43j4Zk1BCDOvRpmZu
+         CA4bN1cp85k8u+L8FmpeJzNwEHqX0HliYXX9jRT8WHO7iSxKOUhsW7Vx+za35XlHbi
+         YNTBcNg7z9ohOhv07d0exgSF6S4ot1I90UoRSsgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunlei He <heyunlei@hihonor.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 5.4 131/141] f2fs: fix error handling in f2fs_end_enable_verity()
+        stable@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 272/329] nvmet: fix inline bio check for bdev-ns
 Date:   Mon, 17 May 2021 16:03:03 +0200
-Message-Id: <20210517140247.226544995@linuxfoundation.org>
+Message-Id: <20210517140311.322849945@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,135 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-commit 3c0315424f5e3d2a4113c7272367bee1e8e6a174 upstream.
+[ Upstream commit 608a969046e6e0567d05a166be66c77d2dd8220b ]
 
-f2fs didn't properly clean up if verity failed to be enabled on a file:
+When handling rw commands, for inline bio case we only consider
+transfer size. This works well when req->sg_cnt fits into the
+req->inline_bvec, but it will result in the warning in
+__bio_add_page() when req->sg_cnt > NVMET_MAX_INLINE_BVEC.
 
-- It left verity metadata (pages past EOF) in the page cache, which
-  would be exposed to userspace if the file was later extended.
+Consider an I/O size 32768 and first page is not aligned to the page
+boundary, then I/O is split in following manner :-
 
-- It didn't truncate the verity metadata at all (either from cache or
-  from disk) if an error occurred while setting the verity bit.
+[ 2206.256140] nvmet: sg->length 3440 sg->offset 656
+[ 2206.256144] nvmet: sg->length 4096 sg->offset 0
+[ 2206.256148] nvmet: sg->length 4096 sg->offset 0
+[ 2206.256152] nvmet: sg->length 4096 sg->offset 0
+[ 2206.256155] nvmet: sg->length 4096 sg->offset 0
+[ 2206.256159] nvmet: sg->length 4096 sg->offset 0
+[ 2206.256163] nvmet: sg->length 4096 sg->offset 0
+[ 2206.256166] nvmet: sg->length 4096 sg->offset 0
+[ 2206.256170] nvmet: sg->length 656 sg->offset 0
 
-Fix these bugs by adding a call to truncate_inode_pages() and ensuring
-that we truncate the verity metadata (both from cache and from disk) in
-all error paths.  Also rework the code to cleanly separate the success
-path from the error paths, which makes it much easier to understand.
+Now the req->transfer_size == NVMET_MAX_INLINE_DATA_LEN i.e. 32768, but
+the req->sg_cnt is (9) > NVMET_MAX_INLINE_BIOVEC which is (8).
+This will result in the following warning message :-
 
-Finally, log a message if f2fs_truncate() fails, since it might
-otherwise fail silently.
+nvmet_bdev_execute_rw()
+	bio_add_page()
+		__bio_add_page()
+			WARN_ON_ONCE(bio_full(bio, len));
 
-Reported-by: Yunlei He <heyunlei@hihonor.com>
-Fixes: 95ae251fe828 ("f2fs: add fs-verity support")
-Cc: <stable@vger.kernel.org> # v5.4+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This scenario is very hard to reproduce on the nvme-loop transport only
+with rw commands issued with the passthru IOCTL interface from the host
+application and the data buffer is allocated with the malloc() and not
+the posix_memalign().
+
+Fixes: 73383adfad24 ("nvmet: don't split large I/Os unconditionally")
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/verity.c |   79 ++++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 56 insertions(+), 23 deletions(-)
+ drivers/nvme/target/io-cmd-bdev.c | 2 +-
+ drivers/nvme/target/nvmet.h       | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
---- a/fs/f2fs/verity.c
-+++ b/fs/f2fs/verity.c
-@@ -150,40 +150,73 @@ static int f2fs_end_enable_verity(struct
- 				  size_t desc_size, u64 merkle_tree_size)
- {
- 	struct inode *inode = file_inode(filp);
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	u64 desc_pos = f2fs_verity_metadata_pos(inode) + merkle_tree_size;
- 	struct fsverity_descriptor_location dloc = {
- 		.version = cpu_to_le32(1),
- 		.size = cpu_to_le32(desc_size),
- 		.pos = cpu_to_le64(desc_pos),
- 	};
--	int err = 0;
-+	int err = 0, err2 = 0;
+diff --git a/drivers/nvme/target/io-cmd-bdev.c b/drivers/nvme/target/io-cmd-bdev.c
+index 23095bdfce06..6a9626ff0713 100644
+--- a/drivers/nvme/target/io-cmd-bdev.c
++++ b/drivers/nvme/target/io-cmd-bdev.c
+@@ -258,7 +258,7 @@ static void nvmet_bdev_execute_rw(struct nvmet_req *req)
  
--	if (desc != NULL) {
--		/* Succeeded; write the verity descriptor. */
--		err = pagecache_write(inode, desc, desc_size, desc_pos);
--
--		/* Write all pages before clearing FI_VERITY_IN_PROGRESS. */
--		if (!err)
--			err = filemap_write_and_wait(inode->i_mapping);
--	}
--
--	/* If we failed, truncate anything we wrote past i_size. */
--	if (desc == NULL || err)
--		f2fs_truncate(inode);
-+	/*
-+	 * If an error already occurred (which fs/verity/ signals by passing
-+	 * desc == NULL), then only clean-up is needed.
-+	 */
-+	if (desc == NULL)
-+		goto cleanup;
-+
-+	/* Append the verity descriptor. */
-+	err = pagecache_write(inode, desc, desc_size, desc_pos);
-+	if (err)
-+		goto cleanup;
-+
-+	/*
-+	 * Write all pages (both data and verity metadata).  Note that this must
-+	 * happen before clearing FI_VERITY_IN_PROGRESS; otherwise pages beyond
-+	 * i_size won't be written properly.  For crash consistency, this also
-+	 * must happen before the verity inode flag gets persisted.
-+	 */
-+	err = filemap_write_and_wait(inode->i_mapping);
-+	if (err)
-+		goto cleanup;
-+
-+	/* Set the verity xattr. */
-+	err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
-+			    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
-+			    NULL, XATTR_CREATE);
-+	if (err)
-+		goto cleanup;
-+
-+	/* Finally, set the verity inode flag. */
-+	file_set_verity(inode);
-+	f2fs_set_inode_flags(inode);
-+	f2fs_mark_inode_dirty_sync(inode, true);
+ 	sector = nvmet_lba_to_sect(req->ns, req->cmd->rw.slba);
  
- 	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
-+	return 0;
- 
--	if (desc != NULL && !err) {
--		err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
--				    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
--				    NULL, XATTR_CREATE);
--		if (!err) {
--			file_set_verity(inode);
--			f2fs_set_inode_flags(inode);
--			f2fs_mark_inode_dirty_sync(inode, true);
--		}
-+cleanup:
-+	/*
-+	 * Verity failed to be enabled, so clean up by truncating any verity
-+	 * metadata that was written beyond i_size (both from cache and from
-+	 * disk) and clearing FI_VERITY_IN_PROGRESS.
-+	 *
-+	 * Taking i_gc_rwsem[WRITE] is needed to stop f2fs garbage collection
-+	 * from re-instantiating cached pages we are truncating (since unlike
-+	 * normal file accesses, garbage collection isn't limited by i_size).
-+	 */
-+	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-+	truncate_inode_pages(inode->i_mapping, inode->i_size);
-+	err2 = f2fs_truncate(inode);
-+	if (err2) {
-+		f2fs_err(sbi, "Truncating verity metadata failed (errno=%d)",
-+			 err2);
-+		set_sbi_flag(sbi, SBI_NEED_FSCK);
- 	}
--	return err;
-+	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-+	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
-+	return err ?: err2;
+-	if (req->transfer_len <= NVMET_MAX_INLINE_DATA_LEN) {
++	if (nvmet_use_inline_bvec(req)) {
+ 		bio = &req->b.inline_bio;
+ 		bio_init(bio, req->inline_bvec, ARRAY_SIZE(req->inline_bvec));
+ 	} else {
+diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
+index 8776dd1a0490..7f8712de77e0 100644
+--- a/drivers/nvme/target/nvmet.h
++++ b/drivers/nvme/target/nvmet.h
+@@ -613,4 +613,10 @@ static inline sector_t nvmet_lba_to_sect(struct nvmet_ns *ns, __le64 lba)
+ 	return le64_to_cpu(lba) << (ns->blksize_shift - SECTOR_SHIFT);
  }
  
- static int f2fs_get_verity_descriptor(struct inode *inode, void *buf,
++static inline bool nvmet_use_inline_bvec(struct nvmet_req *req)
++{
++	return req->transfer_len <= NVMET_MAX_INLINE_DATA_LEN &&
++	       req->sg_cnt <= NVMET_MAX_INLINE_BIOVEC;
++}
++
+ #endif /* _NVMET_H */
+-- 
+2.30.2
+
 
 
