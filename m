@@ -2,225 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C7738399A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA0A38399F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243860AbhEQQZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:25:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54668 "EHLO mx2.suse.de"
+        id S245186AbhEQQZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346267AbhEQQY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:24:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B527B038;
-        Mon, 17 May 2021 16:23:10 +0000 (UTC)
-From:   colyli@suse.de
-To:     linux-bcache@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Coly Li <colyli@suse.de>,
-        Diego Ercolani <diego.ercolani@gmail.com>,
-        Jan Szubiak <jan.szubiak@linuxpolska.pl>,
-        Marco Rebhan <me@dblsaiko.net>,
-        Matthias Ferdinand <bcache@mfedv.net>,
-        Thorsten Knabe <linux@thorsten-knabe.de>,
-        Victor Westerhuis <victor@westerhu.is>,
-        Vojtech Pavlik <vojtech@suse.cz>, stable@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH] bcache: avoid oversized read request in cache missing code path
-Date:   Tue, 18 May 2021 00:22:56 +0800
-Message-Id: <20210517162256.128236-1-colyli@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S1346334AbhEQQY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:24:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0079461042;
+        Mon, 17 May 2021 16:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621268593;
+        bh=LX1Um5xURyTO5CyK1WgfQ2dHQ8bucxW1gMUuqNrXqvk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tHd8cQLt8uXFmwCFoRcNsI9tWllC1HrjOmdoN34cdKStXcSbAbfdjeYyh2GVb7uwW
+         VYK/mqS7qqSL7Dva0pGgU/meyuaQn5JFgnMsyvpnapLzVuWCww6A3UcL573AKPzf9D
+         6doWT+aOjttLE0EtKYBeh2ljNEa5h4wqa2QGhqfHQSScQeJoRh/MyxJ9EoRs5x6V9o
+         W4S8aUjeJdmMRyCwCMVBkm2e+jkIH7tLZsJ5MF/1mLQxaGNbjlzLhQLX7gY3uKBmUJ
+         iyvKcByFKHRH7QtFsZssDHJL7E4Ro2XCDilPo5F90u4mBbDmq06r9EGYNN6TlyHGNV
+         2Fx/LKuQTkeaQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C35885C00C6; Mon, 17 May 2021 09:23:12 -0700 (PDT)
+Date:   Mon, 17 May 2021 09:23:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
+Message-ID: <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210516102716.689596-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210516102716.689596-1-senozhatsky@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+On Sun, May 16, 2021 at 07:27:16PM +0900, Sergey Senozhatsky wrote:
+> Soft watchdog timer function checks if a virtual machine
+> was suspended and hence what looks like a lockup in fact
+> is a false positive.
+> 
+> This is what kvm_check_and_clear_guest_paused() does: it
+> tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
+> and if it's set then we need to touch all watchdogs and bail
+> out.
+> 
+> Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
+> check works fine.
+> 
+> There is, however, one more watchdog that runs from IRQ, so
+> watchdog timer fn races with it, and that watchdog is not aware
+> of PVCLOCK_GUEST_STOPPED - RCU stall detector.
+> 
+> apic_timer_interrupt()
+>  smp_apic_timer_interrupt()
+>   hrtimer_interrupt()
+>    __hrtimer_run_queues()
+>     tick_sched_timer()
+>      tick_sched_handle()
+>       update_process_times()
+>        rcu_sched_clock_irq()
+> 
+> This triggers RCU stalls on our devices during VM resume.
+> 
+> If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
+> before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
+> then there is nothing on this VCPU that touches watchdogs and
+> RCU reads stale gp stall timestamp and new jiffies value, which
+> makes it think that RCU has stalled.
+> 
+> Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
+> don't report RCU stalls when we resume the VM.
 
-In the cache missing code path of cached device, if a proper location
-from the internal B+ tree is matched for a cache miss range, function
-cached_dev_cache_miss() will be called in cache_lookup_fn() in the
-following code block,
-[code block 1]
-  526         unsigned int sectors = KEY_INODE(k) == s->iop.inode
-  527                 ? min_t(uint64_t, INT_MAX,
-  528                         KEY_START(k) - bio->bi_iter.bi_sector)
-  529                 : INT_MAX;
-  530         int ret = s->d->cache_miss(b, s, bio, sectors);
+Good point!
 
-Here s->d->cache_miss() is the call backfunction pointer initialized as
-cached_dev_cache_miss(), the last parameter 'sectors' is an important
-hint to calculate the size of read request to backing device of the
-missing cache data.
+But if I understand your patch correctly, if the virtual machine is
+stopped at any point during a grace period, even if only for a short time,
+stall warnings are suppressed for that grace period forever, courtesy of
+the call to rcu_cpu_stall_reset().  So, if something really is stalling,
+and the virtual machine just happens to stop for a few milliseconds, the
+stall warning is completely suppressed.  Which would make it difficult
+to debug the underlying stall condition.
 
-Current calculation in above code block may generate oversized value of
-'sectors', which consequently may trigger 2 different potential kernel
-panics by BUG() or BUG_ON() as listed below,
+Is it possible to provide RCU with information on the duration of the
+virtual-machine stoppage so that RCU could adjust the timing of the
+stall warning?  Maybe by having something like rcu_cpu_stall_reset()
+that takes the duration of the stoppage in jiffies?
 
-1) BUG_ON() inside bch_btree_insert_key(),
-[code block 2]
-   886         BUG_ON(b->ops->is_extents && !KEY_SIZE(k));
-2) BUG() inside biovec_slab(),
-[code block 3]
-   51         default:
-   52                 BUG();
-   53                 return NULL;
+Please note that I am not completely opposed to your patch below, but
+I figured that this was a good time to ask if we can do better.
 
-All the above panics are original from cached_dev_cache_miss() by the
-oversized parameter 'sectors'.
+							Thanx, Paul
 
-Inside cached_dev_cache_miss(), parameter 'sectors' is used to calculate
-the size of data read from backing device for the cache missing. This
-size is stored in s->insert_bio_sectors by the following lines of code,
-[code block 4]
-  909    s->insert_bio_sectors = min(sectors, bio_sectors(bio) + reada);
-
-Then the actual key inserting to the internal B+ tree is generated and
-stored in s->iop.replace_key by the following lines of code,
-[code block 5]
-  911   s->iop.replace_key = KEY(s->iop.inode,
-  912                    bio->bi_iter.bi_sector + s->insert_bio_sectors,
-  913                    s->insert_bio_sectors);
-The oversized parameter 'sectors' may trigger panic 1) by BUG_ON() from
-the above code block.
-
-And the bio sending to backing device for the missing data is allocated
-with hint from s->insert_bio_sectors by the following lines of code,
-[code block 6]
-  926    cache_bio = bio_alloc_bioset(GFP_NOWAIT,
-  927                 DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS),
-  928                 &dc->disk.bio_split);
-The oversized parameter 'sectors' may trigger panic 2) by BUG() from the
-agove code block.
-
-Now let me explain how the panics happen with the oversized 'sectors'.
-In code block 5, replace_key is generated by macro KEY(). From the
-definition of macro KEY(),
-[code block 7]
-  71 #define KEY(inode, offset, size)                                  \
-  72 ((struct bkey) {                                                  \
-  73      .high = (1ULL << 63) | ((__u64) (size) << 20) | (inode),     \
-  74      .low = (offset)                                              \
-  75 })
-
-Here 'size' is 16bits width embedded in 64bits member 'high' of struct
-bkey. But in code block 1, if "KEY_START(k) - bio->bi_iter.bi_sector" is
-very probably to be larger than (1<<16) - 1, which makes the bkey size
-calculation in code block 5 is overflowed. In one bug report the value
-of parameter 'sectors' is 131072 (= 1 << 17), the overflowed 'sectors'
-results the overflowed s->insert_bio_sectors in code block 4, then makes
-size field of s->iop.replace_key to be 0 in code block 5. Then the 0-
-sized s->iop.replace_key is inserted into the internal B+ tree as cache
-missing check key (a special key to detect and avoid a racing between
-normal write request and cache missing read request) as,
-[code block 8]
-  915   ret = bch_btree_insert_check_key(b, &s->op, &s->iop.replace_key);
-
-Then the 0-sized s->iop.replace_key as 3rd parameter triggers the bkey
-size check BUG_ON() in code block 2, and causes the kernel panic 1).
-
-Another kernel panic is from code block 6, is from the oversized value
-s->insert_bio_sectors resulted by the oversized 'sectors'. From a bug
-report the result of "DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS)"
-from code block 6 can be 344, 282, 946, 342 and many other values which
-larther than BIO_MAX_VECS (a.k.a 256). When calling bio_alloc_bioset()
-with such larger-than-256 value as the 2nd parameter, this value will
-eventually be sent to biovec_slab() as parameter 'nr_vecs' in following
-code path,
-   bio_alloc_bioset() ==> bvec_alloc() ==> biovec_slab()
-
-Because parameter 'nr_vecs' is larger-than-256 value, the panic by BUG()
-in code block 3 is triggered inside biovec_slab().
-
-From the above analysis, it is obvious that in order to avoid the kernel
-panics in code block 2 and code block 3, the calculated 'sectors' in
-code block 1 should not generate overflowed value in code block 5 and
-code block 6.
-
-To avoid overflow in code block 5, the maximum 'sectors' value should be
-equal or less than (1 << KEY_SIZE_BITS) - 1. And to avoid overflow in
-code block 6, the maximum 'sectors' value should be euqal or less than
-BIO_MAX_VECS * PAGE_SECTORS. Considering the kernel page size can be
-variable, a reasonable maximum limitation of 'sectors' in code block 1
-should be smaller on from "(1 << KEY_SIZE_BITS) - 1" and "BIO_MAX_VECS *
-PAGE_SECTORS".
-
-In this patch, a local variable inside cache_lookup_fn() is added as,
-     max_cache_miss_size = min_t(uint32_t,
-		(1 << KEY_SIZE_BITS) - 1, BIO_MAX_VECS * PAGE_SECTORS);
-Then code block 1 uses max_cache_miss_size to limit the maximum value of
-'sectors' calculation as,
-  533        unsigned int sectors = KEY_INODE(k) == s->iop.inode
-  534                 ? min_t(uint64_t, max_cache_miss_size,
-  535                         KEY_START(k) - bio->bi_iter.bi_sector)
-  536                 : max_cache_miss_size;
-
-Now the calculated 'sectors' value sent into cached_dev_cache_miss()
-won't trigger neither of the above kernel panics.
-
-Current problmatic code can be partially found since Linux v5.13-rc1,
-therefore all maintained stable kernels should try to apply this fix.
-
-Reported-by: Diego Ercolani <diego.ercolani@gmail.com>
-Reported-by: Jan Szubiak <jan.szubiak@linuxpolska.pl>
-Reported-by: Marco Rebhan <me@dblsaiko.net>
-Reported-by: Matthias Ferdinand <bcache@mfedv.net>
-Reported-by: Thorsten Knabe <linux@thorsten-knabe.de>
-Reported-by: Victor Westerhuis <victor@westerhu.is>
-Reported-by: Vojtech Pavlik <vojtech@suse.cz>
-Signed-off-by: Coly Li <colyli@suse.de>
-Cc: stable@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Kent Overstreet <kent.overstreet@gmail.com>
----
- drivers/md/bcache/request.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-index 29c231758293..90fa9ac47661 100644
---- a/drivers/md/bcache/request.c
-+++ b/drivers/md/bcache/request.c
-@@ -515,18 +515,25 @@ static int cache_lookup_fn(struct btree_op *op, struct btree *b, struct bkey *k)
- 	struct search *s = container_of(op, struct search, op);
- 	struct bio *n, *bio = &s->bio.bio;
- 	struct bkey *bio_key;
--	unsigned int ptr;
-+	unsigned int ptr, max_cache_miss_size;
- 
- 	if (bkey_cmp(k, &KEY(s->iop.inode, bio->bi_iter.bi_sector, 0)) <= 0)
- 		return MAP_CONTINUE;
- 
-+	/*
-+	 * Make sure the cache missing size won't exceed the restrictions of
-+	 * max bkey size and max bio's bi_max_vecs.
-+	 */
-+	max_cache_miss_size = min_t(uint32_t,
-+		(1 << KEY_SIZE_BITS) - 1, BIO_MAX_VECS * PAGE_SECTORS);
-+
- 	if (KEY_INODE(k) != s->iop.inode ||
- 	    KEY_START(k) > bio->bi_iter.bi_sector) {
- 		unsigned int bio_sectors = bio_sectors(bio);
- 		unsigned int sectors = KEY_INODE(k) == s->iop.inode
--			? min_t(uint64_t, INT_MAX,
-+			? min_t(uint64_t, max_cache_miss_size,
- 				KEY_START(k) - bio->bi_iter.bi_sector)
--			: INT_MAX;
-+			: max_cache_miss_size;
- 		int ret = s->d->cache_miss(b, s, bio, sectors);
- 
- 		if (ret != MAP_CONTINUE)
-@@ -547,7 +554,7 @@ static int cache_lookup_fn(struct btree_op *op, struct btree *b, struct bkey *k)
- 	if (KEY_DIRTY(k))
- 		s->read_dirty_data = true;
- 
--	n = bio_next_split(bio, min_t(uint64_t, INT_MAX,
-+	n = bio_next_split(bio, min_t(uint64_t, max_cache_miss_size,
- 				      KEY_OFFSET(k) - bio->bi_iter.bi_sector),
- 			   GFP_NOIO, &s->d->bio_split);
- 
--- 
-2.26.2
-
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 59b95cc5cbdf..cb233c79f0bc 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -7,6 +7,8 @@
+>   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+>   */
+>  
+> +#include <asm/kvm_para.h>
+> +
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
+>  // Controlling CPU stall warnings, including delay calculation.
+> @@ -695,6 +697,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+>  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+>  
+> +		/*
+> +		 * If a virtual machine is stopped by the host it can look to
+> +		 * the watchdog like an RCU stall. Check to see if the host
+> +		 * stopped the vm.
+> +		 */
+> +		if (kvm_check_and_clear_guest_paused())
+> +			return;
+> +
+>  		/* We haven't checked in, so go dump stack. */
+>  		print_cpu_stall(gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> @@ -704,6 +714,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+>  		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+>  
+> +		/*
+> +		 * If a virtual machine is stopped by the host it can look to
+> +		 * the watchdog like an RCU stall. Check to see if the host
+> +		 * stopped the vm.
+> +		 */
+> +		if (kvm_check_and_clear_guest_paused())
+> +			return;
+> +
+>  		/* They had a few time units to dump stack, so complain. */
+>  		print_other_cpu_stall(gs2, gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> -- 
+> 2.31.1.751.gd2f1c929bd-goog
+> 
