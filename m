@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96023386B6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAD8386B71
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243145AbhEQUf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S243185AbhEQUfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239331AbhEQUfX (ORCPT
+        with ESMTP id S236148AbhEQUft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:35:23 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2E6C061573;
-        Mon, 17 May 2021 13:34:05 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id h7so3171879qvs.12;
-        Mon, 17 May 2021 13:34:05 -0700 (PDT)
+        Mon, 17 May 2021 16:35:49 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFE7C061573;
+        Mon, 17 May 2021 13:34:31 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id 1so5932755qtb.0;
+        Mon, 17 May 2021 13:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ZxYJhTuM2LR07AUba1x1umGGRXOkQsAno3p7Ab7UDtI=;
-        b=K4hTWOrvhYSxkFOXjGlNnlb1np9ZZdlEjAiyZWxAIPdJJE1JTnXoXGA1GlpvscCDEg
-         CypLl+Soj7ZlizZV/i0oV7ooCJUdUdNsjE7q+qEehJAnnZ858Dg9oWP3JhLI6U6BBwc0
-         FxcGGVaxbooOsDPdysss/JLMgfP+f6GY8Iw+C+D+T6nznilyIh+hhs8x/KyWtTR8flta
-         YVGQFauXN0cCK3eY/9Vchhxldac41XBaZmkWuB4NVt7OojPKdVPMVqEwkZC8Tm78yJcG
-         cUSOMc5+B9M5ru6EjtrxgqNc/HufyXaxv4LlDNMJiCULRIV8W69xesCfuua+U9YGTvWQ
-         wFeQ==
+        bh=C827mxc6Fp6xq25VAgPqo5a4jEN7qKOekGr4SbEOmHE=;
+        b=mmdWw8fIVx8C1XBBhADN9QbNK7ionOYqxXAngKOajKyEAipWVV9dXkgw+0Phws+sIR
+         6CxxFJHZl3ffuhQvxUqMFv5eaYUpuqkgNf1XQ1fmKwzoarQindX8sFKPdQc4RbwZg7uM
+         UsiOHoP0XClbRqXt+8/rq1c+Mrsg3i+/aPok6M3j/nOstEQXu2/cKc09ZSSRs7uh20cB
+         TiwfhMB/dnbqvrKW0CQdFuBgMFUNE2r6DAh9+6sVd0SDGkue35gTa/RLocckhGHqLKUL
+         BHBRCZPq3aK0zDnAFEfdqvqKUfRBR3U8IYhNiBAmAOkXBOnTRCj27jcl7pCgumfWg1tX
+         ccwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=ZxYJhTuM2LR07AUba1x1umGGRXOkQsAno3p7Ab7UDtI=;
-        b=GzNBfHXjncAdyHeFc7U8b+HWUWDqq5YTpxPWwtRpYCwuMsLa9F0E7/ysoYw5LuzrHA
-         n8Zdd9AMwDJFSaUlMVHZpYW/tpFt8H95mAIIKa+r4may1g8lsTecgwY5E6tO6MaaK5+2
-         hDU6cYStfCu+4ZZwgMm3t1rypUnxlcASd1TJiVfTrPZPdZQR0r83yMUiflQgTe109eVq
-         b29tzfhNE/9C66RWMse5mdI+JasAO+ZPSmpzdIcEyByXvMu5FTzmFA4l6tW0poFnmV8v
-         kp2WXSts/kTMBtAGbaYqDL3jC5u2BtCusBxi/EgAXKsWLiq0mSce+mUpsCIRbRSXVUD1
-         YE2Q==
-X-Gm-Message-State: AOAM530JJ3fNyjbRFxkLY3hoeW04a9RE06dF5sdg/ECTWEuZma7R3Uep
-        biykiCuTb1HwkoQKhQCnFoaEUbZRTTg=
-X-Google-Smtp-Source: ABdhPJxXDD9sg2F9fb/HUA86Sm3Lc7DoFByJMnFcUpoGHe7g4MwnuYf2eWKkhVRFvS2m7yf7Bnx3ow==
-X-Received: by 2002:ad4:5f87:: with SMTP id jp7mr1586579qvb.46.1621283644817;
-        Mon, 17 May 2021 13:34:04 -0700 (PDT)
+        bh=C827mxc6Fp6xq25VAgPqo5a4jEN7qKOekGr4SbEOmHE=;
+        b=hmrOtgyCemEa1F+a3jqvkA0ov1gWepxA1pZqPfRehe2CnskiY8+hBU05TA08sxVt1X
+         7a/QGbWuiZVEJ+eob4bPiFr65vN69EqyIhYnUlHwV6Q1bXhOXzHuix1Rj9Vw24YXqUHu
+         HhzgnoRowWi5J5W8/YMVQTkoOwAFJScLz/QgaEy2NUNnAj88fjMybNYVeLAzRywcgJlD
+         ThaFQtuaU3yIREI9jaHwY77nes93MNCvJg7+FNwUCk1VCsgUYbXMFrqYlBmUHDogQ12g
+         eQZm8jXLDZcP2QSIBTQI8qvjQlNYKPvIVFcJV3WTkSsffy/sKCSGfwRrSRN8+0J/yKqM
+         NMNg==
+X-Gm-Message-State: AOAM532gsjoaqxF8xIUWPRN9HcKX1+zvF82KIgQZnDiQxRTbL+15x0Lm
+        unpLMJITtPkt8lOJz4dpIODyjROmLIg=
+X-Google-Smtp-Source: ABdhPJzDCZ/NXHWcJ5gZyFxQHcpCE+SokIfC3RHncqZzlP7fPzUbvLnOwrd5xYYGJiT+X22n/GyqSg==
+X-Received: by 2002:ac8:5946:: with SMTP id 6mr1312420qtz.366.1621283671188;
+        Mon, 17 May 2021 13:34:31 -0700 (PDT)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o26sm11206336qkm.4.2021.05.17.13.34.04
+        by smtp.gmail.com with ESMTPSA id t18sm10884356qtn.63.2021.05.17.13.34.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 13:34:04 -0700 (PDT)
+        Mon, 17 May 2021 13:34:30 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 17 May 2021 13:34:03 -0700
+Date:   Mon, 17 May 2021 13:34:29 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Martin Kaiser <martin@kaiser.cx>
 Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
@@ -58,21 +58,21 @@ Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Dan Carpenter <dan.carpenter@oracle.com>,
         linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] staging: rtl8188eu: use safe iterator in
- rtw_acl_remove_sta
-Message-ID: <20210517203403.GD3620180@roeck-us.net>
+Subject: Re: [PATCH v2 5/6] staging: rtl8188eu: use safe iterator in
+ rtw_sta_flush
+Message-ID: <20210517203429.GE3620180@roeck-us.net>
 References: <20210516160613.30489-1-martin@kaiser.cx>
  <20210517201826.25150-1-martin@kaiser.cx>
- <20210517201826.25150-4-martin@kaiser.cx>
+ <20210517201826.25150-5-martin@kaiser.cx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517201826.25150-4-martin@kaiser.cx>
+In-Reply-To: <20210517201826.25150-5-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:18:24PM +0200, Martin Kaiser wrote:
+On Mon, May 17, 2021 at 10:18:25PM +0200, Martin Kaiser wrote:
 > Use list_for_each_entry_safe, we may delete list items while iterating
 > over the list.
 > 
@@ -89,31 +89,31 @@ Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 >  1 file changed, 3 insertions(+), 5 deletions(-)
 > 
 > diff --git a/drivers/staging/rtl8188eu/core/rtw_ap.c b/drivers/staging/rtl8188eu/core/rtw_ap.c
-> index 6d7c96f1aa42..d297d5301153 100644
+> index d297d5301153..bbecb07274f6 100644
 > --- a/drivers/staging/rtl8188eu/core/rtw_ap.c
 > +++ b/drivers/staging/rtl8188eu/core/rtw_ap.c
-> @@ -1068,8 +1068,8 @@ int rtw_acl_add_sta(struct adapter *padapter, u8 *addr)
+> @@ -1573,8 +1573,8 @@ u8 ap_free_sta(struct adapter *padapter, struct sta_info *psta,
 >  
->  int rtw_acl_remove_sta(struct adapter *padapter, u8 *addr)
+>  int rtw_sta_flush(struct adapter *padapter)
 >  {
-> -	struct list_head *plist, *phead;
-> -	struct rtw_wlan_acl_node *paclnode;
+> -	struct list_head *phead, *plist;
+> -	struct sta_info *psta = NULL;
 > +	struct list_head *phead;
-> +	struct rtw_wlan_acl_node *paclnode, *temp;
+> +	struct sta_info *psta, *temp;
 >  	struct sta_priv *pstapriv = &padapter->stapriv;
->  	struct wlan_acl_pool *pacl_list = &pstapriv->acl_list;
->  	struct __queue *pacl_node_q = &pacl_list->acl_node_q;
-> @@ -1079,9 +1079,7 @@ int rtw_acl_remove_sta(struct adapter *padapter, u8 *addr)
->  	spin_lock_bh(&pacl_node_q->lock);
->  
->  	phead = get_list_head(pacl_node_q);
+>  	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
+>  	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+> @@ -1588,9 +1588,7 @@ int rtw_sta_flush(struct adapter *padapter)
+>  	spin_lock_bh(&pstapriv->asoc_list_lock);
+>  	phead = &pstapriv->asoc_list;
+>  	/* free sta asoc_queue */
 > -	list_for_each(plist, phead) {
-> -		paclnode = list_entry(plist, struct rtw_wlan_acl_node, list);
+> -		psta = list_entry(plist, struct sta_info, asoc_list);
 > -
-> +	list_for_each_entry_safe(paclnode, temp, phead, list) {
->  		if (!memcmp(paclnode->addr, addr, ETH_ALEN)) {
->  			if (paclnode->valid) {
->  				paclnode->valid = false;
+> +	list_for_each_entry_safe(psta, temp, phead, asoc_list) {
+>  		list_del_init(&psta->asoc_list);
+>  		pstapriv->asoc_list_cnt--;
+>  
 > -- 
 > 2.20.1
 > 
