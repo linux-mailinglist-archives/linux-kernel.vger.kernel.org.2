@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D613A382FD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1805382FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239525AbhEQOVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:21:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49306 "EHLO mail.kernel.org"
+        id S235562AbhEQOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234797AbhEQORh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238422AbhEQORh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 10:17:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49191611EE;
-        Mon, 17 May 2021 14:10:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8221661244;
+        Mon, 17 May 2021 14:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260609;
-        bh=lOlsJjgaOPtDTbYmbKCrNFRFhoILXqDGkvLtaB4IIV4=;
+        s=korg; t=1621260612;
+        bh=udhIfNy6AghWVRixPerSegAgZTYFpkeriRae/MKt/24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A7VKn02FGEGsFe7bVOnCNolfBjWf54hXhU6OPN3A8Rny4EPmSDP/R+SWm8tIfCGUL
-         MkKl8NLk42MtBZ9sHlmDJ3XToTIkRN/MFzlLwkoRKe8Nqeb+NPUWOHh2C/A/rKgA62
-         tVBtwZv2z0LvMKVixFbIM6n3ULoah0fKOGd6mlqg=
+        b=rhbfRwGu5AGKu4zGobvmAAkRduaO2QRjkwmGOIyK6DRgAiTMwbsV18jR+OtKtsCHi
+         o33ROlmzNchdskLWB3gHDb3Meixh8MvIE3lRxFOZzbA5J4/OMYdk0v+lvK/8+H35AZ
+         UFGnQKCKyjHnM+r/qT1yyI4TsCPQGIg+3lqa2buk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
+        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 159/363] NFSv4.2 fix handling of sr_eof in SEEKs reply
-Date:   Mon, 17 May 2021 16:00:25 +0200
-Message-Id: <20210517140307.981336756@linuxfoundation.org>
+Subject: [PATCH 5.12 160/363] SUNRPC: Move fault injection call sites
+Date:   Mon, 17 May 2021 16:00:26 +0200
+Message-Id: <20210517140308.016194612@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
 References: <20210517140302.508966430@linuxfoundation.org>
@@ -40,41 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olga Kornievskaia <kolga@netapp.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit 73f5c88f521a630ea1628beb9c2d48a2e777a419 ]
+[ Upstream commit 7638e0bfaed1b653d3ca663e560e9ffb44bb1030 ]
 
-Currently the client ignores the value of the sr_eof of the SEEK
-operation. According to the spec, if the server didn't find the
-requested extent and reached the end of the file, the server
-would return sr_eof=true. In case the request for DATA and no
-data was found (ie in the middle of the hole), then the lseek
-expects that ENXIO would be returned.
+I've hit some crashes that occur in the xprt_rdma_inject_disconnect
+path. It appears that, for some provides, rdma_disconnect() can
+take so long that the transport can disconnect and release its
+hardware resources while rdma_disconnect() is still running,
+resulting in a UAF in the provider.
 
-Fixes: 1c6dcbe5ceff8 ("NFS: Implement SEEK")
-Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+The transport's fault injection method may depend on the stability
+of transport data structures. That means it needs to be invoked
+only from contexts that hold the transport write lock.
+
+Fixes: 4a0682583988 ("SUNRPC: Transport fault injection")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs42proc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/sunrpc/clnt.c               | 1 -
+ net/sunrpc/xprt.c               | 6 ++++--
+ net/sunrpc/xprtrdma/transport.c | 6 ++++--
+ 3 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/fs/nfs/nfs42proc.c b/fs/nfs/nfs42proc.c
-index 704a5246ccb5..8d64eb953347 100644
---- a/fs/nfs/nfs42proc.c
-+++ b/fs/nfs/nfs42proc.c
-@@ -667,7 +667,10 @@ static loff_t _nfs42_proc_llseek(struct file *filep,
- 	if (status)
- 		return status;
+diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
+index 612f0a641f4c..c2a01125be1a 100644
+--- a/net/sunrpc/clnt.c
++++ b/net/sunrpc/clnt.c
+@@ -1799,7 +1799,6 @@ call_allocate(struct rpc_task *task)
  
--	return vfs_setpos(filep, res.sr_offset, inode->i_sb->s_maxbytes);
-+	if (whence == SEEK_DATA && res.sr_eof)
-+		return -NFS4ERR_NXIO;
-+	else
-+		return vfs_setpos(filep, res.sr_offset, inode->i_sb->s_maxbytes);
+ 	status = xprt->ops->buf_alloc(task);
+ 	trace_rpc_buf_alloc(task, status);
+-	xprt_inject_disconnect(xprt);
+ 	if (status == 0)
+ 		return;
+ 	if (status != -ENOMEM) {
+diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
+index 691ccf8049a4..d616b93751d8 100644
+--- a/net/sunrpc/xprt.c
++++ b/net/sunrpc/xprt.c
+@@ -1483,7 +1483,10 @@ bool xprt_prepare_transmit(struct rpc_task *task)
+ 
+ void xprt_end_transmit(struct rpc_task *task)
+ {
+-	xprt_release_write(task->tk_rqstp->rq_xprt, task);
++	struct rpc_xprt	*xprt = task->tk_rqstp->rq_xprt;
++
++	xprt_inject_disconnect(xprt);
++	xprt_release_write(xprt, task);
  }
  
- loff_t nfs42_proc_llseek(struct file *filep, loff_t offset, int whence)
+ /**
+@@ -1885,7 +1888,6 @@ void xprt_release(struct rpc_task *task)
+ 	spin_unlock(&xprt->transport_lock);
+ 	if (req->rq_buffer)
+ 		xprt->ops->buf_free(task);
+-	xprt_inject_disconnect(xprt);
+ 	xdr_free_bvec(&req->rq_rcv_buf);
+ 	xdr_free_bvec(&req->rq_snd_buf);
+ 	if (req->rq_cred != NULL)
+diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
+index 78d29d1bcc20..09953597d055 100644
+--- a/net/sunrpc/xprtrdma/transport.c
++++ b/net/sunrpc/xprtrdma/transport.c
+@@ -262,8 +262,10 @@ xprt_rdma_connect_worker(struct work_struct *work)
+  * xprt_rdma_inject_disconnect - inject a connection fault
+  * @xprt: transport context
+  *
+- * If @xprt is connected, disconnect it to simulate spurious connection
+- * loss.
++ * If @xprt is connected, disconnect it to simulate spurious
++ * connection loss. Caller must hold @xprt's send lock to
++ * ensure that data structures and hardware resources are
++ * stable during the rdma_disconnect() call.
+  */
+ static void
+ xprt_rdma_inject_disconnect(struct rpc_xprt *xprt)
 -- 
 2.30.2
 
