@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C5D38379F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4AF383640
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240996AbhEQPqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:46:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55332 "EHLO mail.kernel.org"
+        id S1343533AbhEQPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:30:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245710AbhEQPak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:30:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDEA61CC8;
-        Mon, 17 May 2021 14:37:59 +0000 (UTC)
+        id S242692AbhEQPQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:16:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1995861C5B;
+        Mon, 17 May 2021 14:32:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262280;
-        bh=yb2t9n9d73ncxUe8UzTCxpoOQfoZZe3tejDhEVDgH2w=;
+        s=korg; t=1621261962;
+        bh=VSWwm3qHb2ni9JKb0Wjc4srAAOWNFy3yN5/uvmUwoCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XT1JdDgo9VFrP37EYtcOyXlfW1MKLEJl9AyHcNjqO6VS3+hp1IMwGz8eXuaao2TN1
-         DHL7BekvmCLhtZ9ZQoKPBsl7Lm34QJZ9dA3u+u1Z2TIhbG/f7HeiFO/dZqKxmaAoSx
-         jHCR2PRJJmo4P6mBJUJmKk8mpos1FD8mcuH7eSoA=
+        b=p1mLUHBngSqEtTyN66IYXuoV4qiLi3QYRYx7Jii7elxO+ySMIJSSYkvtNpbSy0Z1E
+         howUCyqQOWG5sb8EjNzGsfVaD0yOVkv3ZDZyg+T/n3grjWfPu+TYVfO7aqtJMrVGQN
+         WTLB0Ud6itMREjhqMDbRQWWHpnT/gmCQfLc1+vDM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 152/289] RISC-V: Fix error code returned by riscv_hartid_to_cpuid()
+Subject: [PATCH 5.11 166/329] SUNRPC: Fix null pointer dereference in svc_rqst_free()
 Date:   Mon, 17 May 2021 16:01:17 +0200
-Message-Id: <20210517140310.263298172@linuxfoundation.org>
+Message-Id: <20210517140307.753790459@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anup Patel <anup.patel@wdc.com>
+From: Yunjian Wang <wangyunjian@huawei.com>
 
-[ Upstream commit 533b4f3a789d49574e7ae0f6ececed153f651f97 ]
+[ Upstream commit b9f83ffaa0c096b4c832a43964fe6bff3acffe10 ]
 
-We should return a negative error code upon failure in
-riscv_hartid_to_cpuid() instead of NR_CPUS. This is also
-aligned with all uses of riscv_hartid_to_cpuid() which
-expect negative error code upon failure.
+When alloc_pages_node() returns null in svc_rqst_alloc(), the
+null rq_scratch_page pointer will be dereferenced when calling
+put_page() in svc_rqst_free(). Fix it by adding a null check.
 
-Fixes: 6825c7a80f18 ("RISC-V: Add logical CPU indexing for RISC-V")
-Fixes: f99fb607fb2b ("RISC-V: Use Linux logical CPU number instead of hartid")
-Signed-off-by: Anup Patel <anup.patel@wdc.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Addresses-Coverity: ("Dereference after null check")
+Fixes: 5191955d6fc6 ("SUNRPC: Prepare for xdr_stream-style decoding on the server-side")
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sunrpc/svc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index ea028d9e0d24..d44567490d91 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -54,7 +54,7 @@ int riscv_hartid_to_cpuid(int hartid)
- 			return i;
- 
- 	pr_err("Couldn't find cpu id for hartid [%d]\n", hartid);
--	return i;
-+	return -ENOENT;
- }
- 
- void riscv_cpuid_to_hartid_mask(const struct cpumask *in, struct cpumask *out)
+diff --git a/net/sunrpc/svc.c b/net/sunrpc/svc.c
+index 7034b4755fa1..16b6681a97ab 100644
+--- a/net/sunrpc/svc.c
++++ b/net/sunrpc/svc.c
+@@ -846,7 +846,8 @@ void
+ svc_rqst_free(struct svc_rqst *rqstp)
+ {
+ 	svc_release_buffer(rqstp);
+-	put_page(rqstp->rq_scratch_page);
++	if (rqstp->rq_scratch_page)
++		put_page(rqstp->rq_scratch_page);
+ 	kfree(rqstp->rq_resp);
+ 	kfree(rqstp->rq_argp);
+ 	kfree(rqstp->rq_auth_data);
 -- 
 2.30.2
 
