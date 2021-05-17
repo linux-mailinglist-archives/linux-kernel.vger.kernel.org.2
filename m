@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CD2383941
+	by mail.lfdr.de (Postfix) with ESMTP id 79BF8383940
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345270AbhEQQMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:12:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
+        id S1345232AbhEQQMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238526AbhEQPsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243418AbhEQPsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 11:48:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0B6461437;
-        Mon, 17 May 2021 14:44:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE1A86195A;
+        Mon, 17 May 2021 14:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262688;
-        bh=Vg1h4/8J8wvPIdZl8ejo0BKFj8ednOpcj2Dpo2elCtc=;
+        s=korg; t=1621262690;
+        bh=vjRzk8bYKbakThoVaMc//KZ4NHSVmY1DMv1cBk4aWCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rxeOy7MGiH8Bvc11Lp3BqMBTIKBnQ7340kFwIvgoCwnH1zXXpZYUYTbBFcr5iZTqU
-         L4vaG+SvlBpe0N9YF7ma3MD/56MheoHFChFDtOWJFxXA1dyc9W57zC3lxUb2gGnRMb
-         5EYi2KNIZrF96qCwE6d+ZaOX8mPqNq3iacS07rNY=
+        b=1BHtHn7PfvJ+MJnkSjCUcPrVCH2zJ+fyo0fFck0LDMeNN2sGs/VG7YnHpcSRxePug
+         4awH5m70hkGWWoeSdZw6V6emSpwJxD2zAO4Dald2RC8XBYNeFx+wWUKbEAK1bAitzI
+         wzqHDK4FH7Fk0bgED3dxyFWwlSdj1czoAt//3tMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 228/289] usb: musb: Fix an error message
-Date:   Mon, 17 May 2021 16:02:33 +0200
-Message-Id: <20210517140312.838938208@linuxfoundation.org>
+Subject: [PATCH 5.10 229/289] ACPI: scan: Fix a memory leak in an error handling path
+Date:   Mon, 17 May 2021 16:02:34 +0200
+Message-Id: <20210517140312.872162859@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -42,34 +44,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit d9ff1096a840dddea3d5cfa2149ff7da9f499fb2 ]
+[ Upstream commit 0c8bd174f0fc131bc9dfab35cd8784f59045da87 ]
 
-'ret' is known to be 0 here.
-Initialize 'ret' with the expected error code before using it.
+If 'acpi_device_set_name()' fails, we must free
+'acpi_device_bus_id->bus_id' or there is a (potential) memory leak.
 
-Fixes: 0990366bab3c ("usb: musb: Add support for MediaTek musb controller")
+Fixes: eb50aaf960e3 ("ACPI: scan: Use unique number for instance_no")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/69f514dc7134e3c917cad208e73cc650cb9e2bd6.1620159879.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/musb/mediatek.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/scan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/musb/mediatek.c b/drivers/usb/musb/mediatek.c
-index eebeadd26946..6b92d037d8fc 100644
---- a/drivers/usb/musb/mediatek.c
-+++ b/drivers/usb/musb/mediatek.c
-@@ -518,8 +518,8 @@ static int mtk_musb_probe(struct platform_device *pdev)
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index b47f14ac75ae..de0533bd4e08 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -705,6 +705,7 @@ int acpi_device_add(struct acpi_device *device,
  
- 	glue->xceiv = devm_usb_get_phy(dev, USB_PHY_TYPE_USB2);
- 	if (IS_ERR(glue->xceiv)) {
--		dev_err(dev, "fail to getting usb-phy %d\n", ret);
- 		ret = PTR_ERR(glue->xceiv);
-+		dev_err(dev, "fail to getting usb-phy %d\n", ret);
- 		goto err_unregister_usb_phy;
- 	}
- 
+ 		result = acpi_device_set_name(device, acpi_device_bus_id);
+ 		if (result) {
++			kfree_const(acpi_device_bus_id->bus_id);
+ 			kfree(acpi_device_bus_id);
+ 			goto err_unlock;
+ 		}
 -- 
 2.30.2
 
