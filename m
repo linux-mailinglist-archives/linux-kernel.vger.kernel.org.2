@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F61383B3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F48383B43
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240707AbhEQR1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 13:27:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:58812 "EHLO foss.arm.com"
+        id S241940AbhEQR3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 13:29:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230408AbhEQR1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 13:27:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B66891FB;
-        Mon, 17 May 2021 10:26:27 -0700 (PDT)
-Received: from [10.57.66.179] (unknown [10.57.66.179])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8DCA3F73D;
-        Mon, 17 May 2021 10:26:23 -0700 (PDT)
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
- setting the hint
-To:     Nitesh Lal <nilal@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>
-References: <20210501021832.743094-1-jesse.brandeburg@intel.com>
- <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com>
- <20210504092340.00006c61@intel.com>
- <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com>
-Date:   Mon, 17 May 2021 18:26:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230408AbhEQR3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 13:29:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6E1860FDB;
+        Mon, 17 May 2021 17:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621272467;
+        bh=XEjLvdy0CWJOwACIZyypbKf5Baefw5IgizZM3DSDsOE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aKkUoCkRwjSqbF2vpGLse+53r6EzeCWPt7SVerxnnYnOzfdwZ61CLDFfYDXCfycFi
+         dspssmA7VWLGheh5gLMKLZeKe07whbcZfwknycQgwGybq2ZPH3dcwkDjgqg8HxMrs5
+         z2BtP4yXrCQ4OdUMou1LAHFhNoiEqlFqB1jbMxepbpa9hIpkckL+FpmHPmZSTGLErN
+         eIs1/BuQeXZ67BPsHVo2MJsxVJMR33IZt/4aMJ9hjgc0DkXT7UoaPovQA0M1vQ928T
+         J8/IMVmFBs7oGVelUzb7wHMRl1GOr1vwiga2MKYsjhLv4UJyh98n2GPpnhZr6BQnqX
+         cWkp1nQQUK+Tg==
+Date:   Mon, 17 May 2021 10:27:45 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     jaegeuk@kernel.org, marcosfrm <marcosfrm@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] f2fs: add MODULE_SOFTDEP to ensure crc32c is
+ included in the initramfs
+Message-ID: <YKKnkSag35cDXh0Z@gmail.com>
+References: <20210517011557.21722-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517011557.21722-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-17 17:57, Nitesh Lal wrote:
-> On Tue, May 4, 2021 at 12:25 PM Jesse Brandeburg
-> <jesse.brandeburg@intel.com> wrote:
->>
->> Robin Murphy wrote:
->>
->>> On 2021-05-01 03:18, Jesse Brandeburg wrote:
->>>> It was pointed out by Nitesh that the original work I did in 2014
->>>> to automatically set the interrupt affinity when requesting a
->>>> mask is no longer necessary. The kernel has moved on and no
->>>> longer has the original problem, BUT the original patch
->>>> introduced a subtle bug when booting a system with reserved or
->>>> excluded CPUs. Drivers calling this function with a mask value
->>>> that included a CPU that was currently or in the future
->>>> unavailable would generally not update the hint.
->>>>
->>>> I'm sure there are a million ways to solve this, but the simplest
->>>> one is to just remove a little code that tries to force the
->>>> affinity, as Nitesh has shown it fixes the bug and doesn't seem
->>>> to introduce immediate side effects.
->>>
->>> Unfortunately, I think there are quite a few other drivers now relying
->>> on this behaviour, since they are really using irq_set_affinity_hint()
->>> as a proxy for irq_set_affinity(). Partly since the latter isn't
->>> exported to modules, but also I have a vague memory of it being said
->>> that it's nice to update the user-visible hint to match when the
->>> affinity does have to be forced to something specific.
->>>
->>> Robin.
->>
->> Thanks for your feedback Robin, but there is definitely a bug here that
->> is being exposed by this code. The fact that people are using this
->> function means they're all exposed to this bug.
->>
->> Not sure if you saw, but this analysis from Nitesh explains what
->> happened chronologically to the kernel w.r.t this code, it's a useful
->> analysis! [1]
->>
->> I'd add in addition that irqbalance daemon *stopped* paying attention
->> to hints quite a while ago, so I'm not quite sure what purpose they
->> serve.
->>
->> [1]
->> https://lore.kernel.org/lkml/CAFki+Lm0W_brLu31epqD3gAV+WNKOJfVDfX2M8ZM__aj3nv9uA@mail.gmail.com/
->>
+On Mon, May 17, 2021 at 09:15:57AM +0800, Chao Yu wrote:
+> As marcosfrm reported in bugzilla:
 > 
-> Wanted to follow up to see if there are any more objections or even
-> suggestions to take this forward?
+> https://bugzilla.kernel.org/show_bug.cgi?id=213089
+> 
+> Initramfs generators rely on "pre" softdeps (and "depends") to include
+> additional required modules.
+> 
+> F2FS does not declare "pre: crc32" softdep. Then every generator (dracut,
+> mkinitcpio...) has to maintain a hardcoded list for this purpose.
+> 
+> Hence let's use MODULE_SOFTDEP("pre: crc32") in f2fs code.
+> 
+> Fixes: 43b6573bac95 ("f2fs: use cryptoapi crc32 functions")
+> Reported-by: marcosfrm <marcosfrm@gmail.com>
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  fs/f2fs/super.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 3f8a7a6c250c..fa0ce6301c16 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -4431,4 +4431,5 @@ module_exit(exit_f2fs_fs)
+>  MODULE_AUTHOR("Samsung Electronics's Praesto Team");
+>  MODULE_DESCRIPTION("Flash Friendly File System");
+>  MODULE_LICENSE("GPL");
+> +MODULE_SOFTDEP("pre: crc32c");
 
-Oops, sorry, seems I got distracted before getting round to actually 
-typing up my response :)
+Shouldn't it be crc32, not crc32c?
 
-I'm not implying that there isn't a bug, or that this code ever made 
-sense in the first place, just that fixing it will unfortunately be a 
-bit more involved than a simple revert. This patch as-is *will* subtly 
-break at least the system PMU drivers currently using 
-irq_set_affinity_hint() - those I know require the IRQ affinity to 
-follow whichever CPU the PMU context is bound to, in order to meet perf 
-core's assumptions about mutual exclusion.
-
-As far as the consistency argument goes, maybe that's just backwards and 
-it should be irq_set_affinity() that also sets the hint, to indicate to 
-userspace that the affinity has been forced by the kernel? Either way 
-we'll need to do a little more diligence to figure out which callers 
-actually care about more than just the hint, and sort them out first.
-
-Robin.
+- Eric
