@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329203838B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35823836D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344288AbhEQP7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:59:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43488 "EHLO mail.kernel.org"
+        id S243891AbhEQPgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:36:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245742AbhEQPjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:39:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4477561CFB;
-        Mon, 17 May 2021 14:41:19 +0000 (UTC)
+        id S244526AbhEQPVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:21:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 935E361C83;
+        Mon, 17 May 2021 14:34:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262479;
-        bh=NjA1dweoYFafyPsVsG2C6HmvH3v42wGI6CA5LFo+kfY=;
+        s=korg; t=1621262070;
+        bh=ZFAuTJO59UT5twKnCexyk2VzbleOLvEsm/3HKj7R0A8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WeyrGT2GPaGV43HUaE6uCfwXLjB8gUiZboZe63DeIbE5IIOMC2iEOz4IyycFAOAoI
-         Rn/jbVGmdo2fgT0p/+DYAT2xHa0lS8lil6R5yHaNmLb1HtnYq4+prdtBddghyHfTtT
-         7l4H5BF3LhUAI+kXhoADmME8QV/WbGVVT2IAxdss=
+        b=qSRNmLx9tKYwJqv0Ewckrg6rUggF4Al+VE2mEpVyNkty7Opd2Yhub/WA0obNnMNuW
+         f1x/MAs8FhfMqODEzifmumrb9RtEh7dSUKpDKmiLczN2GLnqTfv0rSyHNds/fzSwzv
+         HkICuHAE0gU/R4vDBqu3pHNz7fxTJTBw6nsC+U7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Isaev <isaev@synopsys.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 5.10 196/289] ARC: mm: Use max_high_pfn as a HIGHMEM zone border
-Date:   Mon, 17 May 2021 16:02:01 +0200
-Message-Id: <20210517140311.712058384@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 211/329] netfilter: nfnetlink_osf: Fix a missing skb_header_pointer() NULL check
+Date:   Mon, 17 May 2021 16:02:02 +0200
+Message-Id: <20210517140309.279284219@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Isaev <isaev@synopsys.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit 1d5e4640e5df15252398c1b621f6bd432f2d7f17 upstream.
+[ Upstream commit 5e024c325406470d1165a09c6feaf8ec897936be ]
 
-Commit 4af22ded0ecf ("arc: fix memory initialization for systems
-with two memory banks") fixed highmem, but for the PAE case it causes
-bug messages:
+Do not assume that the tcph->doff field is correct when parsing for TCP
+options, skb_header_pointer() might fail to fetch these bits.
 
-| BUG: Bad page state in process swapper  pfn:80000
-| page:(ptrval) refcount:0 mapcount:1 mapping:00000000 index:0x0 pfn:0x80000 flags: 0x0()
-| raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
-| raw: 00000000
-| page dumped because: nonzero mapcount
-| Modules linked in:
-| CPU: 0 PID: 0 Comm: swapper Not tainted 5.12.0-rc5-00003-g1e43c377a79f #1
-
-This is because the fix expects highmem to be always less than
-lowmem and uses min_low_pfn as an upper zone border for highmem.
-
-max_high_pfn should be ok for both highmem and highmem+PAE cases.
-
-Fixes: 4af22ded0ecf ("arc: fix memory initialization for systems with two memory banks")
-Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: stable@vger.kernel.org  #5.8 onwards
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 11eeef41d5f6 ("netfilter: passive OS fingerprint xtables match")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/mm/init.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ net/netfilter/nfnetlink_osf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arc/mm/init.c
-+++ b/arch/arc/mm/init.c
-@@ -158,7 +158,16 @@ void __init setup_arch_memory(void)
- 	min_high_pfn = PFN_DOWN(high_mem_start);
- 	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
+diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
+index 916a3c7f9eaf..79fbf37291f3 100644
+--- a/net/netfilter/nfnetlink_osf.c
++++ b/net/netfilter/nfnetlink_osf.c
+@@ -186,6 +186,8 @@ static const struct tcphdr *nf_osf_hdr_ctx_init(struct nf_osf_hdr_ctx *ctx,
  
--	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
-+	/*
-+	 * max_high_pfn should be ok here for both HIGHMEM and HIGHMEM+PAE.
-+	 * For HIGHMEM without PAE max_high_pfn should be less than
-+	 * min_low_pfn to guarantee that these two regions don't overlap.
-+	 * For PAE case highmem is greater than lowmem, so it is natural
-+	 * to use max_high_pfn.
-+	 *
-+	 * In both cases, holes should be handled by pfn_valid().
-+	 */
-+	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
+ 		ctx->optp = skb_header_pointer(skb, ip_hdrlen(skb) +
+ 				sizeof(struct tcphdr), ctx->optsize, opts);
++		if (!ctx->optp)
++			return NULL;
+ 	}
  
- 	high_memory = (void *)(min_high_pfn << PAGE_SHIFT);
- 	kmap_init();
+ 	return tcp;
+-- 
+2.30.2
+
 
 
