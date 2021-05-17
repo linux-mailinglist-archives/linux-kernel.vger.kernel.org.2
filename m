@@ -2,415 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF6F382ECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE415382F05
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238563AbhEQOLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:11:12 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44676 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237652AbhEQOJZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:09:25 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14HE7wiS000693;
-        Mon, 17 May 2021 09:07:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621260478;
-        bh=uTG+ABssZ2hiKpKozl0jHsQcpmSVhLhm0wwj5qVs3Wc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=l4hXsm1Wva8FpMCi2lQ54wqkcJmNDtdxcWoPXpK6a7tvPmbGPcTa5zHjuuXV5+Hm7
-         FQH15a1SDSJKyDTEYl5nE/kxi3N66eYjOzHBvTzcEom/ctpgSbZMFAr3TlqnwpYvKJ
-         BAsOWjrQb7gdMeB9cLQyz+dBwFhdIDZKhMOb6q9I=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14HE7wmc120473
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 17 May 2021 09:07:58 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 17
- May 2021 09:07:57 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 17 May 2021 09:07:57 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14HE7vZ4092209;
-        Mon, 17 May 2021 09:07:57 -0500
-Date:   Mon, 17 May 2021 09:07:57 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, Peter Rosin <peda@axentia.se>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>, <a-govindraju@ti.com>
-Subject: Re: [PATCH v2 1/6] dt-bindings: mux: Convert reg-mux DT bindings to
- YAML
-Message-ID: <20210517140757.senmh5vc7klagym3@cache>
-References: <20210517061739.5762-1-kishon@ti.com>
- <20210517061739.5762-2-kishon@ti.com>
-MIME-Version: 1.0
+        id S238763AbhEQOMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:12:24 -0400
+Received: from mail-eopbgr00085.outbound.protection.outlook.com ([40.107.0.85]:30198
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238140AbhEQOKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:10:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LqDIlJWWOs8wSSa/7LWFHMvI8apMubwgyAuepOah2ZqdThmURIfeaWHV1uSoCt1NowjQFIsy+6NAMOU4OTR6dFRkqWV0UGk+b79fgNjMZ0aXILY2BPBa81cpaqIoSLlAN2sHU/XcIGepcgfGryHQbyVeFKDEv3YwOyGGL118FvU2aOupKPriQ91tWI7zi26vEb5D6nl0V9VKccupdD26FMRCk6aExE3mEEyyRiyZi2h3W0pt7U5vk7ULMm8EJpd/UMg+YQ2o7642goycPoS97RaS30MUVoyapjzdxzKDGhkImGgUIy0n0Q24n1Qikj0mMPQvnfWTmX6iWt2dCBbeZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qnoIYe9jnCgmIKFtt130wSqVM1YRsKv+saUbWMgkT+o=;
+ b=AIPJs/X/AGiU3kLkDkcNARFiQLO2lEHDyiLwAUJY8LOB703fEQ7HLriQv8k/iUjKy/O5112mhQ3qk/fgWUTkj/8oRVZEuaxtwKWkZku5PMihS/3wpAZICj97mb/VUWFJ2eV2NlUDfET3ZWu7HpJG6zzg4Oq62qLgeNPI5XGe8UyPxzrP7nPp8Sp7ZyFSSUyYsEnTP2ofdqXLd01OUPkDeLQnpqwcNPJ5z15g4gVBK9WBIiRx6fFEkut30vLbyKsPmznjFk6J84UqjxLV/5uCUR42MCWj5iM1figgQIh3IIpdnz4iFBLm+Ca/WU4wZOFPtdm3zMIggB4g5OL0zV2M4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qnoIYe9jnCgmIKFtt130wSqVM1YRsKv+saUbWMgkT+o=;
+ b=oAQierWxMEuGjyTgxzvEGbLaFahGx/1p8UQ1kegKbvaKQ2brPknzDPspWwSCbOSwlmPy47IX6GEbG3bkr8xITsb30KLXWszBEAB435N3xxfxIKyGetmouV6FjWFvDIr4wZf89TJxcEUgQ+kzc+If84yvlr3RvFzPkW3b/Z5Seis=
+Received: from VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:803:12d::15)
+ by VI1PR10MB2046.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:803:3a::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Mon, 17 May
+ 2021 14:08:55 +0000
+Received: from VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d843:6b8b:f783:31c2]) by VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d843:6b8b:f783:31c2%9]) with mapi id 15.20.4129.031; Mon, 17 May 2021
+ 14:08:55 +0000
+From:   Adam Ward <Adam.Ward.opensource@diasemi.com>
+To:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+CC:     Adam Ward <Adam.Ward.opensource@diasemi.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] regulator: da9121: Return REGULATOR_MODE_INVALID for
+ invalid mode
+Thread-Topic: [PATCH] regulator: da9121: Return REGULATOR_MODE_INVALID for
+ invalid mode
+Thread-Index: AQHXSt1WvLxGJ28QUkaYNcYbLRQkzarntaJw
+Date:   Mon, 17 May 2021 14:08:54 +0000
+Message-ID: <VI1PR10MB316722676183BDD61E1C7AE2EC2D9@VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210517052721.1063375-1-axel.lin@ingics.com>
+In-Reply-To: <20210517052721.1063375-1-axel.lin@ingics.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ingics.com; dkim=none (message not signed)
+ header.d=none;ingics.com; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [147.161.166.97]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6bee1bf1-c11b-47a0-2a56-08d9193d4e82
+x-ms-traffictypediagnostic: VI1PR10MB2046:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR10MB2046A31B3D5577E3FBAB1E69CB2D9@VI1PR10MB2046.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ulQ7WdyjJQvPs4vmN+2c+OV2alYnZVTsj90fsdqiPhTwsrd3NjmN0UaNuR0KaBrrNZd7ZptLCiUGChshwgd78LYIP1uuj2Y55DNJ2xZ3s8c1XxJE2LA2UqrAHXxExFJLGcV1jtnRC9EjhFPeNgShxyL0kTUADF93wgbXhyCXV/bRVSqmhlTizlsriTZcvxZv1vePQFtI4EtkSPuDWUAIfH8EgKUWmIRt10Y9QLDNYv03aEX+hsdzoCkTaR0qiQdOkoSoTyygzWFMRqIP6Tes2EDc8gsOLm9okqIQsVztIjq8Yw/Jn0wNKYPYog+3nZ+wJm+winAPYQv/YCBqJupspfaGTg1+tz1FH7SAgx4tPgM9Q7SHUK1oTJRVk9EzWDpXYQfcVUxA/ktUc7ekLl9ZsHAg97HKDASoQ29r81OG1wShGwIYq0ePjZ3HydyxL4CZxRYNWK0+SGYC16xhrC0f6D+REJhlL48e4O/6N2+SwdUcowOeVIYUqPNvt0igMIdIzSWJL2IrmHqBH71yoaF+XNlch/cWU/j/YkB0q88ld9Jm1KAjCGrd6ccedxTLxNRRqtyX20RMvavlZJ0CHtobPGY7oIQfJbvJxRFwan2w1G8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(366004)(376002)(39850400004)(54906003)(110136005)(71200400001)(122000001)(7696005)(8676002)(66556008)(9686003)(26005)(64756008)(86362001)(66946007)(38100700002)(55016002)(53546011)(76116006)(316002)(558084003)(66446008)(66476007)(6506007)(478600001)(4326008)(33656002)(5660300002)(186003)(52536014)(8936002)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MsYj4bDjtwnX2oeY8j31tAtVJ7uivKzvtw/3eJZBVE9o7Um7E9V/ei5XS1aT?=
+ =?us-ascii?Q?XXIpoN83KIn47n2m6pOoIhuxV95OnNJo3hQ8Orpit+gzQ+35O5+N2xTiLwL4?=
+ =?us-ascii?Q?h68icIesslw1fZgWTunaU2RXUFLBK9aYEeKwhutZ2njsMTGsA7iAds9WvsAY?=
+ =?us-ascii?Q?2TcSBkDsjBY1rTK1x4r7pHqTgBD0EszBbMzTc5FKdIpZEI6oYOcOsFOjpZfg?=
+ =?us-ascii?Q?bIeoewY+C+b5D5MWbnB6hauULtF+aVHYqyxVxYNPXE1G+OZEVZTVRqxNNU1b?=
+ =?us-ascii?Q?oa9CF2aPKMXWArv+3jEIbMll6/+BRCfb+tL1b5iy32jMKn7U5ddGD1r5RazX?=
+ =?us-ascii?Q?0hw2XR6DoI/SLM8FazwTmmnxlHb1do8RCqsPxw8pAtArfElu90KzhOKh1m6c?=
+ =?us-ascii?Q?987UdcP6nV5Bk8a+aYpc5JwMBzJzzx3TlxELgM0x11MeMzkept2/c/40eZTS?=
+ =?us-ascii?Q?Op3nK3IoLFWq/bQThSbPWbd966GFUUD1XuHn1jj5oCGbQqwqTswtS5ps+dMq?=
+ =?us-ascii?Q?Buu5aPcwfF7Ldd7FkP78+XnchxQ4vox/aWQfhiYR40BBCVraShSypqNfbY8Z?=
+ =?us-ascii?Q?TJPLlksUnuxga5CP0uuDOQIKnDNoAOiMftyDFzIH+YAzNNc4IJt3GDEQ+gOY?=
+ =?us-ascii?Q?4O68gzrl2OoY8oHIJ75nJaW1HKsOi7cAxKQf/shANuGU+juYZeSHZYOOhgy/?=
+ =?us-ascii?Q?x+RSfIyuufGgShiR3enYamDhCxZ998kSdaNZpP4uvULp431OzYU7UepzYeSa?=
+ =?us-ascii?Q?mdGhaaIZMJ0mUSC3JsVUicC1dI3icpvSIq9r4WsiFMlW/Xp3wB2DdJxeGJfY?=
+ =?us-ascii?Q?3stTBIgflIeeDLZxiFj6bVGDK6lp0sfva0VlZyILIGy4U7mn0lK11BloZoxh?=
+ =?us-ascii?Q?EeZ7BJ9Eqvczt8azb+4lO0R/oxRvNzlrAJKI4v2odsPqvmO5uYFcYmGCcBp9?=
+ =?us-ascii?Q?Yc4EaJSpgBJY8U5GlsDy7Aqa441AIgn8Ed7kx7WpvzWV95/ZoKPsps55JWWu?=
+ =?us-ascii?Q?/mHDkZ16Qzj+P2kv7ectnVZsO4+OxjnQ5vXuv9OULysiXz+Jerjr7usbHemG?=
+ =?us-ascii?Q?XhzR85135fJ1GZBYe0N84vgvcTrb5CjafmSnlio41CadC3gumIflZd7ubfxX?=
+ =?us-ascii?Q?uEo9V3kMs/42h1JjRi22g3iiTuwDAQ3WqVQzHEcD0mPBsN6uw+N07wFlAMfa?=
+ =?us-ascii?Q?Iq2S9T3vhZFCUPCKG3I1WeH+/06/fQ5zjXDiCADLFm1oxX/54794B3BbcYn5?=
+ =?us-ascii?Q?U4qIgAPWnYVr4qO9+g5LVMqtSgDvV2JJXQO1SXJYRx0ARPbFQ1t+3Ew35C9l?=
+ =?us-ascii?Q?C8QxDxo/gIDgg5HWTjZsrAng?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210517061739.5762-2-kishon@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bee1bf1-c11b-47a0-2a56-08d9193d4e82
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2021 14:08:54.9343
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T7KcW05FhoElvmLcQp1JwyYw2oePio5YrbJPbQ/4pivXc+KcSoVHZLO288NG+XfFlCOvEugkIxqDMB41hBGPsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB2046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:47-20210517, Kishon Vijay Abraham I wrote:
-> Convert reg-mux DT bindings to YAML. Move the examples provided in
-> reg-mux.txt to mux-controller.txt and remove reg-mux.txt
+On 17 May 2021 06:27, Axel Lin wrote:
 
---to 'Rob Herring <robh+dt@kernel.org>' --to 'Peter Rosin
-<peda@axentia.se>' please.
-
-
-If Peter and Rob request me, then I can pick into my tree..
-
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> -EINVAL is not a valid return value for .of_map_mode, return
+> REGULATOR_MODE_INVALID instead.
+>=20
+> Fixes: 65ac97042d4e ("regulator: da9121: add mode support")
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 > ---
->  .../bindings/mux/mux-controller.txt           | 113 ++++++++++++++-
->  .../devicetree/bindings/mux/reg-mux.txt       | 129 ------------------
->  .../devicetree/bindings/mux/reg-mux.yaml      |  47 +++++++
->  3 files changed, 159 insertions(+), 130 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mux/reg-mux.txt
->  create mode 100644 Documentation/devicetree/bindings/mux/reg-mux.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mux/mux-controller.txt b/Documentation/devicetree/bindings/mux/mux-controller.txt
-> index 4f47e4bd2fa0..6f1e83367d52 100644
-> --- a/Documentation/devicetree/bindings/mux/mux-controller.txt
-> +++ b/Documentation/devicetree/bindings/mux/mux-controller.txt
-> @@ -38,7 +38,7 @@ mux-ctrl-specifier typically encodes the chip-relative mux controller number.
->  If the mux controller chip only provides a single mux controller, the
->  mux-ctrl-specifier can typically be left out.
->  
-> -Example:
-> +Example 1:
->  
->  	/* One consumer of a 2-way mux controller (one GPIO-line) */
->  	mux: mux-controller {
-> @@ -64,6 +64,8 @@ because there is only one mux controller in the list. However, if the driver
->  for the consumer node in fact asks for a named mux controller, that name is of
->  course still required.
->  
-> +Example 2:
-> +
->  	/*
->  	 * Two consumers (one for an ADC line and one for an i2c bus) of
->  	 * parallel 4-way multiplexers controlled by the same two GPIO-lines.
-> @@ -116,6 +118,115 @@ course still required.
->  		};
->  	};
->  
-> +Example 3:
-> +
-> +The parent device of mux controller is not a syscon device.
-> +
-> +&i2c0 {
-> +	fpga@66 { // fpga connected to i2c
-> +		compatible = "fsl,lx2160aqds-fpga", "fsl,fpga-qixis-i2c",
-> +			     "simple-mfd";
-> +		reg = <0x66>;
-> +
-> +		mux: mux-controller {
-> +			compatible = "reg-mux";
-> +			#mux-control-cells = <1>;
-> +			mux-reg-masks = <0x54 0xf8>, /* 0: reg 0x54, bits 7:3 */
-> +					<0x54 0x07>; /* 1: reg 0x54, bits 2:0 */
-> +		};
-> +	};
-> +};
-> +
-> +mdio-mux-1 {
-> +	compatible = "mdio-mux-multiplexer";
-> +	mux-controls = <&mux 0>;
-> +	mdio-parent-bus = <&emdio1>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	mdio@0 {
-> +		reg = <0x0>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +	};
-> +
-> +	mdio@8 {
-> +		reg = <0x8>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +	};
-> +
-> +	..
-> +	..
-> +};
-> +
-> +mdio-mux-2 {
-> +	compatible = "mdio-mux-multiplexer";
-> +	mux-controls = <&mux 1>;
-> +	mdio-parent-bus = <&emdio2>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	mdio@0 {
-> +		reg = <0x0>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +	};
-> +
-> +	mdio@1 {
-> +		reg = <0x1>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +	};
-> +
-> +	..
-> +	..
-> +};
-> +
-> +Example 4:
-> +
-> +The parent device of mux controller is syscon device.
-> +
-> +syscon {
-> +	compatible = "syscon";
-> +
-> +	mux: mux-controller {
-> +		compatible = "mmio-mux";
-> +		#mux-control-cells = <1>;
-> +
-> +		mux-reg-masks = <0x3 0x30>, /* 0: reg 0x3, bits 5:4 */
-> +				<0x3 0x40>, /* 1: reg 0x3, bit 6 */
-> +		idle-states = <MUX_IDLE_AS_IS>, <0>;
-> +	};
-> +};
-> +
-> +video-mux {
-> +	compatible = "video-mux";
-> +	mux-controls = <&mux 0>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	ports {
-> +		/* inputs 0..3 */
-> +		port@0 {
-> +			reg = <0>;
-> +		};
-> +		port@1 {
-> +			reg = <1>;
-> +		};
-> +		port@2 {
-> +			reg = <2>;
-> +		};
-> +		port@3 {
-> +			reg = <3>;
-> +		};
-> +
-> +		/* output */
-> +		port@4 {
-> +			reg = <4>;
-> +		};
-> +	};
-> +};
->  
->  Mux controller nodes
->  --------------------
-> diff --git a/Documentation/devicetree/bindings/mux/reg-mux.txt b/Documentation/devicetree/bindings/mux/reg-mux.txt
-> deleted file mode 100644
-> index 4afd7ba73d60..000000000000
-> --- a/Documentation/devicetree/bindings/mux/reg-mux.txt
-> +++ /dev/null
-> @@ -1,129 +0,0 @@
-> -Generic register bitfield-based multiplexer controller bindings
-> -
-> -Define register bitfields to be used to control multiplexers. The parent
-> -device tree node must be a device node to provide register r/w access.
-> -
-> -Required properties:
-> -- compatible : should be one of
-> -	"reg-mux" : if parent device of mux controller is not syscon device
-> -	"mmio-mux" : if parent device of mux controller is syscon device
-> -- #mux-control-cells : <1>
-> -- mux-reg-masks : an array of register offset and pre-shifted bitfield mask
-> -                  pairs, each describing a single mux control.
-> -* Standard mux-controller bindings as decribed in mux-controller.txt
-> -
-> -Optional properties:
-> -- idle-states : if present, the state the muxes will have when idle. The
-> -		special state MUX_IDLE_AS_IS is the default.
-> -
-> -The multiplexer state of each multiplexer is defined as the value of the
-> -bitfield described by the corresponding register offset and bitfield mask
-> -pair in the mux-reg-masks array.
-> -
-> -Example 1:
-> -The parent device of mux controller is not a syscon device.
-> -
-> -&i2c0 {
-> -	fpga@66 { // fpga connected to i2c
-> -		compatible = "fsl,lx2160aqds-fpga", "fsl,fpga-qixis-i2c",
-> -			     "simple-mfd";
-> -		reg = <0x66>;
-> -
-> -		mux: mux-controller {
-> -			compatible = "reg-mux";
-> -			#mux-control-cells = <1>;
-> -			mux-reg-masks = <0x54 0xf8>, /* 0: reg 0x54, bits 7:3 */
-> -					<0x54 0x07>; /* 1: reg 0x54, bits 2:0 */
-> -		};
-> -	};
-> -};
-> -
-> -mdio-mux-1 {
-> -	compatible = "mdio-mux-multiplexer";
-> -	mux-controls = <&mux 0>;
-> -	mdio-parent-bus = <&emdio1>;
-> -	#address-cells = <1>;
-> -	#size-cells = <0>;
-> -
-> -	mdio@0 {
-> -		reg = <0x0>;
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -	};
-> -
-> -	mdio@8 {
-> -		reg = <0x8>;
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -	};
-> -
-> -	..
-> -	..
-> -};
-> -
-> -mdio-mux-2 {
-> -	compatible = "mdio-mux-multiplexer";
-> -	mux-controls = <&mux 1>;
-> -	mdio-parent-bus = <&emdio2>;
-> -	#address-cells = <1>;
-> -	#size-cells = <0>;
-> -
-> -	mdio@0 {
-> -		reg = <0x0>;
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -	};
-> -
-> -	mdio@1 {
-> -		reg = <0x1>;
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -	};
-> -
-> -	..
-> -	..
-> -};
-> -
-> -Example 2:
-> -The parent device of mux controller is syscon device.
-> -
-> -syscon {
-> -	compatible = "syscon";
-> -
-> -	mux: mux-controller {
-> -		compatible = "mmio-mux";
-> -		#mux-control-cells = <1>;
-> -
-> -		mux-reg-masks = <0x3 0x30>, /* 0: reg 0x3, bits 5:4 */
-> -				<0x3 0x40>, /* 1: reg 0x3, bit 6 */
-> -		idle-states = <MUX_IDLE_AS_IS>, <0>;
-> -	};
-> -};
-> -
-> -video-mux {
-> -	compatible = "video-mux";
-> -	mux-controls = <&mux 0>;
-> -	#address-cells = <1>;
-> -	#size-cells = <0>;
-> -
-> -	ports {
-> -		/* inputs 0..3 */
-> -		port@0 {
-> -			reg = <0>;
-> -		};
-> -		port@1 {
-> -			reg = <1>;
-> -		};
-> -		port@2 {
-> -			reg = <2>;
-> -		};
-> -		port@3 {
-> -			reg = <3>;
-> -		};
-> -
-> -		/* output */
-> -		port@4 {
-> -			reg = <4>;
-> -		};
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/mux/reg-mux.yaml b/Documentation/devicetree/bindings/mux/reg-mux.yaml
-> new file mode 100644
-> index 000000000000..54583aafa9de
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mux/reg-mux.yaml
-> @@ -0,0 +1,47 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/mux/reg-mux.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Generic register bitfield-based multiplexer controller bindings
-> +
-> +maintainers:
-> +  - Peter Rosin <peda@axentia.se>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - reg-mux
-> +      - mmio-mux
-> +
-> +  "#mux-control-cells": true
-> +
-> +  mux-reg-masks:
-> +    minItems: 2
-> +    maxItems: 32
-> +    description:
-> +      An array of register offset and pre-shifted bitfield mask pairs, each describing a
-> +      single mux control.
-> +
-> +  idle-states:
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
-> +required:
-> +  - compatible
-> +  - mux-reg-masks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    serdes_ln_ctrl: mux {
-> +      compatible = "mmio-mux";
-> +      #mux-control-cells = <1>;
-> +      mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
-> +                      <0x4090 0x3>, <0x4094 0x3>, /* SERDES1 lane0/1 select */
-> +                      <0x40a0 0x3>, <0x40a4 0x3>, /* SERDES2 lane0/1 select */
-> +                      <0x40b0 0x3>, <0x40b4 0x3>, /* SERDES3 lane0/1 select */
-> +                      <0x40c0 0x3>, <0x40c4 0x3>, <0x40c8 0x3>, <0x40cc 0x3>;
-> +    };
-> -- 
-> 2.17.1
-> 
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Acked-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
+
