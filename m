@@ -2,78 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE853382E42
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D737F382E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237785AbhEQOFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:05:13 -0400
-Received: from mga12.intel.com ([192.55.52.136]:52755 "EHLO mga12.intel.com"
+        id S237822AbhEQOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:05:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237701AbhEQOEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:04:55 -0400
-IronPort-SDR: y4E76X64FNwMfIeqN5yZeZbYSN7sz48CG6cwiTWod8kgdE7BncpUpwDShGxtcfY+96u/SlluyS
- 31U9X+2WJniQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="180069938"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="180069938"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 07:03:39 -0700
-IronPort-SDR: 83O4XpwY87zfbWy9otwwwHtt2q2eWehqjauZk9l8PffRPkopx7zW+MlqURrlYpfMGHVI+a8tWz
- RvgNCNMeEqjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="393527862"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 17 May 2021 07:03:36 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 6E6099A1; Mon, 17 May 2021 17:03:55 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v1 9/9] spi: pxa2xx: Use predefined mask when programming FIFO thresholds
-Date:   Mon, 17 May 2021 17:03:51 +0300
-Message-Id: <20210517140351.901-10-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210517140351.901-1-andriy.shevchenko@linux.intel.com>
-References: <20210517140351.901-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S237810AbhEQOFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:05:20 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AB6561074;
+        Mon, 17 May 2021 14:04:04 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lidqj-001ouz-3j; Mon, 17 May 2021 15:04:01 +0100
+Date:   Mon, 17 May 2021 15:03:59 +0100
+Message-ID: <87cztpv4mo.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 1/8] arm64: mte: Handle race when synchronising tags
+In-Reply-To: <20210517123239.8025-2-steven.price@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+        <20210517123239.8025-2-steven.price@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The predefined mask for threshold modification can be used
-in case of Intel Merrifield SPI. Replace open-coded value
-with predefined mask when programming FIFO thresholds.
+Hi Steven,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-pxa2xx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Mon, 17 May 2021 13:32:32 +0100,
+Steven Price <steven.price@arm.com> wrote:
+> 
+> mte_sync_tags() used test_and_set_bit() to set the PG_mte_tagged flag
+> before restoring/zeroing the MTE tags. However if another thread were to
+> race and attempt to sync the tags on the same page before the first
+> thread had completed restoring/zeroing then it would see the flag is
+> already set and continue without waiting. This would potentially expose
+> the previous contents of the tags to user space, and cause any updates
+> that user space makes before the restoring/zeroing has completed to
+> potentially be lost.
+> 
+> Since this code is run from atomic contexts we can't just lock the page
+> during the process. Instead implement a new (global) spinlock to protect
+> the mte_sync_page_tags() function.
+> 
+> Fixes: 34bfeea4a9e9 ("arm64: mte: Clear the tags when a page is mapped in user-space with PROT_MTE")
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+> ---
+>  arch/arm64/kernel/mte.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 125a10e413e9..c88e778c2fa9 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -25,6 +25,7 @@
+>  u64 gcr_kernel_excl __ro_after_init;
+>  
+>  static bool report_fault_once = true;
+> +static spinlock_t tag_sync_lock;
 
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 94b1585de203..bdf9a283efc3 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1083,12 +1083,13 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
- 	}
- 
- 	if (is_mrfld_ssp(drv_data)) {
-+		u32 mask = SFIFOTT_RFT | SFIFOTT_TFT;
- 		u32 thresh = 0;
- 
- 		thresh |= SFIFOTT_RxThresh(chip->lpss_rx_threshold);
- 		thresh |= SFIFOTT_TxThresh(chip->lpss_tx_threshold);
- 
--		pxa2xx_spi_update(drv_data, SFIFOTT, 0xffffffff, thresh);
-+		pxa2xx_spi_update(drv_data, SFIFOTT, mask, thresh);
- 	}
- 
- 	if (is_quark_x1000_ssp(drv_data))
+What initialises this spinlock? Have you tried this with lockdep? I'd
+expect it to be defined with DEFINE_SPINLOCK(), which always does the
+right thing.
+
+>  
+>  #ifdef CONFIG_KASAN_HW_TAGS
+>  /* Whether the MTE asynchronous mode is enabled. */
+> @@ -34,13 +35,22 @@ EXPORT_SYMBOL_GPL(mte_async_mode);
+>  
+>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>  {
+> +	unsigned long flags;
+>  	pte_t old_pte = READ_ONCE(*ptep);
+>  
+> +	spin_lock_irqsave(&tag_sync_lock, flags);
+> +
+> +	/* Recheck with the lock held */
+> +	if (test_bit(PG_mte_tagged, &page->flags))
+> +		goto out;
+> +
+>  	if (check_swap && is_swap_pte(old_pte)) {
+>  		swp_entry_t entry = pte_to_swp_entry(old_pte);
+>  
+> -		if (!non_swap_entry(entry) && mte_restore_tags(entry, page))
+> -			return;
+> +		if (!non_swap_entry(entry) && mte_restore_tags(entry, page)) {
+> +			set_bit(PG_mte_tagged, &page->flags);
+> +			goto out;
+> +		}
+>  	}
+>  
+>  	page_kasan_tag_reset(page);
+> @@ -53,6 +63,10 @@ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>  	 */
+>  	smp_wmb();
+>  	mte_clear_page_tags(page_address(page));
+> +	set_bit(PG_mte_tagged, &page->flags);
+> +
+> +out:
+> +	spin_unlock_irqrestore(&tag_sync_lock, flags);
+>  }
+>  
+>  void mte_sync_tags(pte_t *ptep, pte_t pte)
+> @@ -60,10 +74,11 @@ void mte_sync_tags(pte_t *ptep, pte_t pte)
+>  	struct page *page = pte_page(pte);
+>  	long i, nr_pages = compound_nr(page);
+>  	bool check_swap = nr_pages == 1;
+> +	bool pte_is_tagged = pte_tagged(pte);
+>  
+>  	/* if PG_mte_tagged is set, tags have already been initialised */
+>  	for (i = 0; i < nr_pages; i++, page++) {
+> -		if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> +		if (!test_bit(PG_mte_tagged, &page->flags))
+>  			mte_sync_page_tags(page, ptep, check_swap);
+>  	}
+>  }
+
+Thanks,
+
+	M.
+
 -- 
-2.30.2
-
+Without deviation from the norm, progress is not possible.
