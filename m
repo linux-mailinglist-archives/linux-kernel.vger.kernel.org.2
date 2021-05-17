@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB1B386BB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1125386BBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244509AbhEQUx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:53:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237148AbhEQUxy (ORCPT
+        id S244552AbhEQUyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244517AbhEQUyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:53:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621284757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=76uFxF6tDNi0nKdQA2asyMgYE2LMBW+B8Yl0fD6nlcE=;
-        b=fyRIuh3ahTn8oEy2UVj5RbaNGk7vDmjuf6i6L/EqKbO2p1WrHMVBmzXF/AN6KD88GXstDn
-        TXS9ARz48cT6SCGhTmW7sqTeD8fK7vF7UIcztrsMCpfq055P1wqebBIgZ5lggmamG3v0Gh
-        nHD/lnv+CENoZBBqxpULC2UqH6/Lux4=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-q9LCuA6uPKm67tcXZ5D3NQ-1; Mon, 17 May 2021 16:52:36 -0400
-X-MC-Unique: q9LCuA6uPKm67tcXZ5D3NQ-1
-Received: by mail-qt1-f199.google.com with SMTP id j12-20020ac8550c0000b02901dae492d1f2so6097799qtq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:52:36 -0700 (PDT)
+        Mon, 17 May 2021 16:54:53 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E84C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:53:32 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id v22so7732958oic.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tYiKNumB/sG3g6UoDTpwUaKhoLR3TJj2KrtveF22its=;
+        b=E4IYESmDgLDJKTJfDF4vUoPzJf3sI7MEpeT+1/mAXEdTQsZpiuuMol/4F+vLlpLrIE
+         sah8VFk6mwDiaNaEeoOzMK/Y6GiT3emWiXvBt3HP8YHmEZmkum/YGqd1Md+A1uvOpenb
+         uAHx856RtWQ1SJrIHA/Cb42hLyw1yEAs1zEkG/KI9N7mAWFbOIVyKZ5V5irdXysHT9UW
+         B0KlW/e/W866hpDt9/A9Rs93Aqhp8wNb73AI5+CVeIl5W51ZF4FsfNLPcj7xvUhSVLVP
+         mMFLmI9uzK/wK0RHafAEZbf7zEXFb9f5nQ/5UtJlXGrumhfnXfSWF4OQIGZRyq620vbs
+         6KgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=76uFxF6tDNi0nKdQA2asyMgYE2LMBW+B8Yl0fD6nlcE=;
-        b=YLDUvTmIYGUgnUZu9U1Yc5mTT8DCKwT2JiQzTI3gFYBNpiPtrgZ0j+1lP+Yd1gKWQK
-         A2JnmqV2MQbUNRAQTOOVSNdymOmegbL7iEAOX4lVtM4vvyOPkFjGBTz04EOGlMsknSYO
-         u9DDqF3ra45S1uFx0pyh6lhaUCutURDwbz6q5KRrV+ItgyERCVA5pYVx+369+y0OQRSY
-         VvNDGSwOM4gL9kciELM2gs9rcH6SHnItnNW+R6ytw8wLKwZ2wnQMKDiZtQ9xmGK33x7r
-         stSodsUBH/kGGFnTlpTxldq14dDGJaarhoT+R0sEaG/BuAMRpgp0CsXeNYV1WPRTy1Oa
-         R6Kg==
-X-Gm-Message-State: AOAM532vaSjaUYSvOLy87R2w6nJ4tpMUQ2tqLZMcoZYuu6W+GihXRqhk
-        lbaoHfCeqlaqSoNMi8QzlRSL0PqU7Jq4ex/Si9iYJ0GzQGLEDfjeRO/BISwt/k6ZPwD0KpyCcld
-        33pKTxg1XrkZUt7XJveDgn3L/
-X-Received: by 2002:a05:6214:6f1:: with SMTP id bk17mr1774860qvb.37.1621284755704;
-        Mon, 17 May 2021 13:52:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxS9/fVzT+mCCgEItgc7xkN4bp5oRWkMsPDBBsnWCAFRzegq9r1DPFcBWA1wUkCG1o1cJ77sA==
-X-Received: by 2002:a05:6214:6f1:: with SMTP id bk17mr1774849qvb.37.1621284755564;
-        Mon, 17 May 2021 13:52:35 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id t11sm11341683qkm.123.2021.05.17.13.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 13:52:35 -0700 (PDT)
-From:   trix@redhat.com
-To:     gregkh@linuxfoundation.org, masahiroy@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] USB: select WWAN_CORE for USB_WDM
-Date:   Mon, 17 May 2021 13:52:31 -0700
-Message-Id: <20210517205231.1850314-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tYiKNumB/sG3g6UoDTpwUaKhoLR3TJj2KrtveF22its=;
+        b=auO3faCJFW5vmTY9QULsbQyYKeGjCCAXPuOrmxR0mfcjQfHt83gX+GVqNnEkJLtQEf
+         TrukNrpRcSjknp+y6sXLPz/oKAawGPMLO97C9B8oF7M5h3WaNS08rU3JxA+N+RBn962P
+         JXc9rN5Y4YdZLbD0dHaKnEft2NI79Pmedrczrd12mqgfyLMglD/GZT4hEebvkntzv1je
+         MPiu4Mc85Xd0/Y43aqJGEyowIO96NTL2/0FMACsHkzQavo3whObCCXWBslww1JcRQnfc
+         m6skTiErrb6KqbQwlHDWYgIYWtuFJ0+1SxhFFATpBjbOvZN8b9+AalZEP0LEvNyCdjPF
+         R/hA==
+X-Gm-Message-State: AOAM530vmBPR2iZiwhVVCYXCY1fYhL9YzRXavTj4Ex8wLP/WaK5ihndR
+        plDXWlRHXwgMIQYdhSC/4x+mTS+8CHHuwZkBw/u82A==
+X-Google-Smtp-Source: ABdhPJydkSsTkVe66YjNSKFDH6L71UKujfw4XIMG1b/yqvx8GCOTa67p4xK47kkdF1AolTKy50FI6BZbal8CMHvsKAc=
+X-Received: by 2002:a05:6808:f94:: with SMTP id o20mr1223000oiw.121.1621284811977;
+ Mon, 17 May 2021 13:53:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
+ <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+ <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+ <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1r1irpc5v.fsf@fess.ebiederm.org>
+ <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
+ <m1czuapjpx.fsf@fess.ebiederm.org> <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
+ <m14kfjh8et.fsf_-_@fess.ebiederm.org> <m1tuni8ano.fsf_-_@fess.ebiederm.org> <m1a6ot5e2h.fsf_-_@fess.ebiederm.org>
+In-Reply-To: <m1a6ot5e2h.fsf_-_@fess.ebiederm.org>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 17 May 2021 22:53:20 +0200
+Message-ID: <CANpmjNM6rzyTp_+myecf8_773HLWDyJDbxFM6rWvzfKTLkXbhQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] siginfo: ABI fixes for TRAP_PERF
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, 17 May 2021 at 21:58, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> During the merge window an issue with si_perf and the siginfo ABI came
+> up.  The alpha and sparc siginfo structure layout had changed with the
+> addition of SIGTRAP TRAP_PERF and the new field si_perf.
+>
+> The reason only alpha and sparc were affected is that they are the
+> only architectures that use si_trapno.
+>
+> Looking deeper it was discovered that si_trapno is used for only
+> a few select signals on alpha and sparc, and that none of the
+> other _sigfault fields past si_addr are used at all.  Which means
+> technically no regression on alpha and sparc.
+>
+> While the alignment concerns might be dismissed the abuse of
+> si_errno by SIGTRAP TRAP_PERF does have the potential to cause
+> regressions in existing userspace.
+>
+> While we still have time before userspace starts using and depending on
+> the new definition siginfo for SIGTRAP TRAP_PERF this set of changes
+> cleans up siginfo_t.
+>
+> - The si_trapno field is demoted from magic alpha and sparc status and
+>   made an ordinary union member of the _sigfault member of siginfo_t.
+>   Without moving it of course.
+>
+> - si_perf is replaced with si_perf_data and si_perf_type ending the
+>   abuse of si_errno.
+>
+> - Unnecessary additions to signalfd_siginfo are removed.
+>
+> v3: https://lkml.kernel.org/r/m1tuni8ano.fsf_-_@fess.ebiederm.org
+> v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
+> v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
+>
+> This version drops the tests and fine grained handling of si_trapno
+> on alpha and sparc (replaced assuming si_trapno is valid for
+> all but the faults that defined different data).
 
-Link is failing with
-cdc-wdm.c: undefined reference to `wwan_port_get_drvdata'
+And just to clarify, the rest of the series (including static-asserts)
+for the next merge-window will be sent once this series is all sorted,
+correct?
 
-Add a select of WWAN_CORE to USB_WDM configury similar to
-what is done for drivers/net/mhi_wwan_ctrl.c
+> Eric W. Biederman (5):
+>       siginfo: Move si_trapno inside the union inside _si_fault
+>       signal: Implement SIL_FAULT_TRAPNO
+>       signal: Factor force_sig_perf out of perf_sigtrap
+>       signal: Deliver all of the siginfo perf data in _perf
+>       signalfd: Remove SIL_PERF_EVENT fields from signalfd_siginfo
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/usb/class/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Looks good, thank you! I build-tested (defconfig -- x86_64, i386, arm,
+arm64, m68k, sparc, alpha) this series together with a local patch to
+pull in the static asserts from v3. Also re-ran perf_events kselftests
+on x86_64 (native and 32bit compat).
 
-diff --git a/drivers/usb/class/Kconfig b/drivers/usb/class/Kconfig
-index d3f5162bd67ef..e5714fddf1642 100644
---- a/drivers/usb/class/Kconfig
-+++ b/drivers/usb/class/Kconfig
-@@ -30,6 +30,7 @@ config USB_PRINTER
- 
- config USB_WDM
- 	tristate "USB Wireless Device Management support"
-+	select WWAN_CORE
- 	help
- 	  This driver supports the WMC Device Management functionality
- 	  of cell phones compliant to the CDC WMC specification. You can use
--- 
-2.26.3
-
+Thanks,
+-- Marco
