@@ -2,152 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F23386B87
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95483386B8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239252AbhEQUi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238372AbhEQUiy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:38:54 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED4CC06175F;
-        Mon, 17 May 2021 13:37:37 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so291089wmh.4;
-        Mon, 17 May 2021 13:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JdlOUWCFrqhk74UvYiMcqHdWI1N1+oYHII4ZRq2kZ3Q=;
-        b=iGYBbJ7VV+sih5JcSVBhAw+WygMf8lzLPqsrC86lDfO6oZdOx7a8AdYoopCJYyhvOQ
-         7VM0R4hkIWexulCPuRs5G41v6DhcisDIhFvO5wY5mO4iy5ZFgM2wAHmzLbJIjlVFdMRs
-         K8gas4JH270iFfnPW2id7L0eyizQl3gPfQ0R95gZc5aOKqPfziCTyJ6e4hhCWIFJ1iKP
-         1cBuDoA6YvvMtU3s4N3IuPdOSXoFR7dAncB8QyfG7cFtYDQ8S12Mo7in+3ySv0fgOSad
-         VOBaglZ5ViFafsKgH1SGAlSl9rkV/J/9Ln2shol0Wx6uxgghiDW7KItMlGX/CMfHvvKZ
-         AfXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JdlOUWCFrqhk74UvYiMcqHdWI1N1+oYHII4ZRq2kZ3Q=;
-        b=f3hF24tCsbQfCtrNRjbuph9o7+nyZ2+sTpBO8XurAMlJSXGDbnQjx6wco6V1pg3Vwr
-         67SmmVZglzy+TT5hvxpmLTz6J1360d1C8VPM/LlOwCO/XJth41zx6tt3VVoisgoqmM1S
-         gkqOKlRLwGXJWrGP4np7Zc0BXz4jgVNGG5wL3u6Aqpc+EpOIQ9wOjjygqi2Q1Yff3R2M
-         ZgpkHklbfOpd9GpLcS/ztVGkDBhh2hs/SmZxtj8qj6xt272VvFhfkB93lJBm2t4DRxur
-         pR/UUgAgh5uwrN0SLV3mpMvc4rZ9HWUh+D0PX3sh1aPZq4SQIyEpm20YcCGuqWIBB2r5
-         rzbw==
-X-Gm-Message-State: AOAM530h3VRXQPEqQ9Tv1IEWE40pxZiAQCTsmt6hIBrHYSP6NrzHvGSd
-        Gi50960eLM6EtbZRSsU+kHeeu+sb6dE=
-X-Google-Smtp-Source: ABdhPJyUym/2wMl+zRWG2tm3iJbsKFKDbcljcr3Vp0/EZQwKDXOiJPSAJif7+TfZO0XWr0cKN3EUuw==
-X-Received: by 2002:a7b:c346:: with SMTP id l6mr1351729wmj.109.1621283856162;
-        Mon, 17 May 2021 13:37:36 -0700 (PDT)
-Received: from localhost.localdomain (p200300f1371adf00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:371a:df00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id p6sm3840448wma.4.2021.05.17.13.37.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 13:37:35 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, narmstrong@baylibre.com,
-        jbrunet@baylibre.com, linux-clk@vger.kernel.org
-Cc:     khilman@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH RFC v1 3/3] clk: meson: pll: switch to determine_rate for the PLL ops
-Date:   Mon, 17 May 2021 22:37:24 +0200
-Message-Id: <20210517203724.1006254-4-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517203724.1006254-1-martin.blumenstingl@googlemail.com>
-References: <20210517203724.1006254-1-martin.blumenstingl@googlemail.com>
+        id S239573AbhEQUli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:41:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237722AbhEQUlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 16:41:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 508016109F;
+        Mon, 17 May 2021 20:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621284020;
+        bh=U/+SHNLKS+W4E0Ul+f980UnrJ/tSD1HUHDzazKRkNDU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pZwF/URd53gPXpzs3cPoqkPOXu1OnOc/S39kSdRgOIaISSghUZOhgmWAM6RtW6+FN
+         jfnmoBNUzmA7iKiokNcRNB9ssFq4tIdWmHnFKfevUAxDJPZGzatYqNbpG8TLXaNk+v
+         QP42eWpf9bUHK0hUj2gQSVUGTIzaybZtDeSfVlKTWZBQ75z669dX+L3zvtdJwo/PiS
+         RZAGFlIXKqF5ZVeEeL44aCrFo5jV+ah0wiRwDOWkMLtPLIH4w5mUALfI4riUIkfqX2
+         kbxAYDecKfLN8TegHZ9bVo/C1Ch1sIvp4O4B4SpH9+if2aui83+SG/1gcRu64pLxl5
+         cAFStsLNSzIrA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1F8145C00C6; Mon, 17 May 2021 13:40:20 -0700 (PDT)
+Date:   Mon, 17 May 2021 13:40:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] torture: Add --cmdline-to-config parameter to kvm.sh
+Message-ID: <20210517204020.GM4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210506131510.51488-1-frederic@kernel.org>
+ <20210506131510.51488-2-frederic@kernel.org>
+ <20210507192009.GY975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210517104236.GA199206@lothringen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517104236.GA199206@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This increases the maxmium supported frequency on 32-bit systems from
-2^31 (signed long as used by clk_ops.round_rate, maximum value:
-approx. 2.14GHz) to 2^32 (unsigned long as used by
-clk_ops.determine_rate, maximum value: approx. 4.29GHz).
-On Meson8/8b/8m2 the HDMI PLL and it's OD (post-dividers) are
-capable of running at up to 2.97GHz. So switch the divider
-implementation in clk-regmap to clk_ops.determine_rate to support these
-higher frequencies on 32-bit systems.
+On Mon, May 17, 2021 at 12:42:36PM +0200, Frederic Weisbecker wrote:
+> On Fri, May 07, 2021 at 12:20:09PM -0700, Paul E. McKenney wrote:
+> > On Thu, May 06, 2021 at 03:15:08PM +0200, Frederic Weisbecker wrote:
+> > > While running rcutorture on bare metal, an easy way to test is to build
+> > > a kernel with the torture scenario parameters built-in using
+> > > CONFIG_CMDLINE="". This way the remote box can simply download the image
+> > > and the boot loader doesn't need to be updated with the new kernel
+> > > parameters.
+> > 
+> > I had no idea about CONFIG_CMDLINE!  Thank you for introducing me to it!
+> > 
+> > > Provide kvm.sh with --cmdline-to-config to perform that.
+> > 
+> > If I understand correctly, kernel-boot parameters are processed after
+> > the CONFIG_CMDLINE parameters.  If so, would it make sense (probably
+> > as a separate patch) for the current --bootargs kernel parameters to be
+> > supplied to CONFIG_CMDLINE in kvm.sh, and to add a --bootargs parameter
+> > to kvm-again.sh which caused additional kernel-boot parameters to be
+> > added to the end of the "-append" list in the qemu-cmd file?
+> > 
+> > As in, "Re-run this rcutorture run, but with rcutorture.onoff_interval=0
+> > so as to disable CPU-hotplug operations"?
+> 
+> Sure that looks possible.
+> 
+> > > diff --git a/tools/testing/selftests/rcutorture/bin/configinit.sh b/tools/testing/selftests/rcutorture/bin/configinit.sh
+> > > index d6e5ce084b1c..d2b8a68114e4 100755
+> > > --- a/tools/testing/selftests/rcutorture/bin/configinit.sh
+> > > +++ b/tools/testing/selftests/rcutorture/bin/configinit.sh
+> > > @@ -23,6 +23,8 @@ mkdir $T
+> > >  
+> > >  c=$1
+> > >  resdir=$2
+> > > +kboot_args=$3
+> > > +modprobe_args=$4
+> > >  
+> > >  sed -e 's/^\(CONFIG[0-9A-Z_]*\)=.*$/grep -v "^# \1" |/' < $c > $T/u.sh
+> > >  sed -e 's/^\(CONFIG[0-9A-Z_]*=\).*$/grep -v \1 |/' < $c >> $T/u.sh
+> > > @@ -35,6 +37,17 @@ fi
+> > >  make $TORTURE_KMAKE_ARG $TORTURE_DEFCONFIG > $resdir/Make.defconfig.out 2>&1
+> > >  mv .config .config.sav
+> > >  sh $T/upd.sh < .config.sav > .config
+> > > +
+> > > +if test -n "$TORTURE_CMDLINE2CONFIG"
+> > > +then
+> > > +	cmdline=$(grep "CONFIG_CMDLINE=" .config | sed -E 's/CONFIG_CMDLINE="(.*)"/\1/')
+> > > +	prefixed_modprobe_args=$(echo $modprobe_args | sed -E -e "s/([^ ]+?)(=[^ ]*)?/rcutorture.\1\2/g")
+> > 
+> > Doesn't this need to check for locktorture, refscale, rcuscale, and
+> > scftorture as well as for rcutorture?  Maybe use the TORTURE_MOD
+> > environment variable similar to the way you do in your change to
+> > kvm-test-1-run.sh.
+> 
+> Ah! Right I missed all that. Ok I'll need to handle all those other modules.
+> 
+> > > +	cmdline="$kboot_args $prefixed_modprobe_args $cmdline"
+> > 
+> > This makes a "--kconfig CONFIG_CMDLINE=whatever" override the --bootargs
+> > parameters.  Is that what we want?  Either way, why?
+> 
+> I guess it's up to the user not to try dangerous mixes. But we could forbid
+> --kconfig CONFIG_CMDLINE= for example.
+> 
+> > You could ask the same question about the current ordering of kernel
+> > boot parameters from their various sources, and it would be good to do so.
+> 
+> Heh.
+> 
+> > > +seconds=$3
+> > > +qemu_args=$4
+> > > +boot_args_in=$5
+> > > +
+> > > +# Pull in Kconfig-fragment boot parameters
+> > > +boot_args="`configfrag_boot_params "$boot_args_in" "$config_template"`"
+> > > +# Generate kernel-version-specific boot parameters
+> > > +boot_args="`per_version_boot_params "$boot_args" $resdir/.config $seconds`"
+> > > +
+> > > +if test -n "$TORTURE_BOOT_GDB_ARG"
+> > > +then
+> > > +	boot_args="$boot_args $TORTURE_BOOT_GDB_ARG"
+> > > +fi
+> > > +
+> > > +modprobe_args="`echo $boot_args | tr -s ' ' '\012' | grep "^$TORTURE_MOD\." | sed -e "s/$TORTURE_MOD\.//g"`"
+> > > +kboot_args="`echo $boot_args | tr -s ' ' '\012' | grep -v "^$TORTURE_MOD\."`"
+> > > +
+> > 
+> > We are in trouble if a kernel boot parameter contains a space character,
+> > but we probably are already in trouble, so no problem.  ;-)
+> 
+> :o)
+> 
+> > But don't we want to avoid adding these to the qemu -append argument
+> > if they are already in CONFIG_CMDLINE?  Or is there some benefit to
+> > duplicating them?
+> 
+> Indeed I only used it with --configonly so far so I didn't bother checking.
+> But you're right, I should avoid passing these twice.
+> 
+> > > diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+> > > index b4ac4ee33222..a05a20135de1 100755
+> > > --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
+> > > +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+> > > @@ -33,6 +33,7 @@ TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
+> > >  TORTURE_DEFCONFIG=defconfig
+> > >  TORTURE_BOOT_IMAGE=""
+> > >  TORTURE_BUILDONLY=
+> > > +TORTURE_CMDLINE2CONFIG=
+> > >  TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
+> > >  TORTURE_KCONFIG_ARG=""
+> > >  TORTURE_KCONFIG_GDB_ARG=""
+> > > @@ -64,6 +65,7 @@ usage () {
+> > >  	echo "       --bootargs kernel-boot-arguments"
+> > >  	echo "       --bootimage relative-path-to-kernel-boot-image"
+> > >  	echo "       --buildonly"
+> > > +	echo "       --cmdline-to-config"
+> > 
+> > Does it make sense to have a way to specify that some kernel-boot
+> > paremeters go in through CONFIG_CMDLINE and others through the qemu
+> > -append argument?
+> > 
+> > Does it make sense to make kvm.sh unconditionally pass the kernel boot
+> > parameters in via CONFIG_CMDLINE, thus avoiding the need for the new
+> > --cmdline_to_config argument?  (One reason to avoid this is that it is
+> > probably easier to hand-edit the qemu-cmd file than the bzImage file.
+> > Though the qemu-cmd edits would override the bzImage boot parameters,
+> > right?)
+> 
+> I guess it depends if you ever plan to be able to re-launch qemu with different
+> parameters without rebuilding the bzImage. Perhaps it's even something that can
+> be done currently?
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/clk/meson/clk-pll.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+One thing that has been on my list (though not the official todo list for
+whatever reason) has been to create a clear precedence among the various
+sources of kernel boot parameters.  Such a precedence exists (with a few
+exceptions) for Kconfig options, so that a --kconfig argument overrides
+the contents of the scenario file (e.g., TREE05) which overrides the
+contents of the CFcommon file.
 
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 49f27fe53213..9e55617bc3b4 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -242,8 +242,8 @@ static int meson_clk_get_pll_settings(unsigned long rate,
- 	return best ? 0 : -EINVAL;
- }
- 
--static long meson_clk_pll_round_rate(struct clk_hw *hw, unsigned long rate,
--				     unsigned long *parent_rate)
-+static int meson_clk_pll_determine_rate(struct clk_hw *hw,
-+					struct clk_rate_request *req)
- {
- 	struct clk_regmap *clk = to_clk_regmap(hw);
- 	struct meson_clk_pll_data *pll = meson_clk_pll_data(clk);
-@@ -251,22 +251,26 @@ static long meson_clk_pll_round_rate(struct clk_hw *hw, unsigned long rate,
- 	unsigned long round;
- 	int ret;
- 
--	ret = meson_clk_get_pll_settings(rate, *parent_rate, &m, &n, pll);
-+	ret = meson_clk_get_pll_settings(req->rate, req->best_parent_rate,
-+					 &m, &n, pll);
- 	if (ret)
--		return meson_clk_pll_recalc_rate(hw, *parent_rate);
-+		return ret;
- 
--	round = __pll_params_to_rate(*parent_rate, m, n, 0, pll);
-+	round = __pll_params_to_rate(req->best_parent_rate, m, n, 0, pll);
- 
--	if (!MESON_PARM_APPLICABLE(&pll->frac) || rate == round)
--		return round;
-+	if (!MESON_PARM_APPLICABLE(&pll->frac) || req->rate == round) {
-+		req->rate = round;
-+		return 0;
-+	}
- 
- 	/*
- 	 * The rate provided by the setting is not an exact match, let's
- 	 * try to improve the result using the fractional parameter
- 	 */
--	frac = __pll_params_with_frac(rate, *parent_rate, m, n, pll);
-+	frac = __pll_params_with_frac(req->rate, req->best_parent_rate, m, n, pll);
-+	req->rate = __pll_params_to_rate(req->best_parent_rate, m, n, frac, pll);
- 
--	return __pll_params_to_rate(*parent_rate, m, n, frac, pll);
-+	return 0;
- }
- 
- static int meson_clk_pll_wait_lock(struct clk_hw *hw)
-@@ -419,7 +423,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
-  */
- const struct clk_ops meson_clk_pcie_pll_ops = {
- 	.recalc_rate	= meson_clk_pll_recalc_rate,
--	.round_rate	= meson_clk_pll_round_rate,
-+	.determine_rate	= meson_clk_pll_determine_rate,
- 	.is_enabled	= meson_clk_pll_is_enabled,
- 	.enable		= meson_clk_pcie_pll_enable,
- 	.disable	= meson_clk_pll_disable
-@@ -429,7 +433,7 @@ EXPORT_SYMBOL_GPL(meson_clk_pcie_pll_ops);
- const struct clk_ops meson_clk_pll_ops = {
- 	.init		= meson_clk_pll_init,
- 	.recalc_rate	= meson_clk_pll_recalc_rate,
--	.round_rate	= meson_clk_pll_round_rate,
-+	.determine_rate	= meson_clk_pll_determine_rate,
- 	.set_rate	= meson_clk_pll_set_rate,
- 	.is_enabled	= meson_clk_pll_is_enabled,
- 	.enable		= meson_clk_pll_enable,
--- 
-2.31.1
+And yes, it would be nice to change boot parameters without needing to
+rebuild the kernel, but it can be a bit tricky.
 
+							Thanx, Paul
