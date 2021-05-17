@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326A5382CCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76463382CD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbhEQNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:05:54 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49336 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhEQNFx (ORCPT
+        id S237221AbhEQNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237210AbhEQNJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:05:53 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-269-SnWmW07CP9mRfzOX1xeU9g-1; Mon, 17 May 2021 14:04:34 +0100
-X-MC-Unique: SnWmW07CP9mRfzOX1xeU9g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 17 May 2021 14:04:31 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 17 May 2021 14:04:31 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Shevchenko' <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "Christoph Hellwig" <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Media Mailing List" <linux-media@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>
-Subject: RE: [PATCH] media: atomisp: remove compat_ioctl32 code
-Thread-Topic: [PATCH] media: atomisp: remove compat_ioctl32 code
-Thread-Index: AQHXSuu4+en14/uhzUazyYkeGYdKuKrno/nQ
-Date:   Mon, 17 May 2021 13:04:31 +0000
-Message-ID: <eb34029138bd4c02960a59c88009cc76@AcuMS.aculab.com>
-References: <20210516204818.2967910-1-arnd@kernel.org>
- <CAHp75Ve7FZQwj-aO_TJ4ddYmhRMez+CapH4YUV7s3-6zVjdLnA@mail.gmail.com>
-In-Reply-To: <CAHp75Ve7FZQwj-aO_TJ4ddYmhRMez+CapH4YUV7s3-6zVjdLnA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 17 May 2021 09:09:14 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41939C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:07:47 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id u144so6395495oie.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dZeinS6LE1NP88+BR+f1LcsUBMPUh7N3G4KpQRQogBk=;
+        b=aGBMVprGuoTf9++f+DatDpeTnGL5ZmpmA0esmGNR7sOjh15bPnJ5xl4LQ5QM8p55SZ
+         k0Gr9tasB7CXqw4F9//xhZFkDKTW8P+jDQg2ksKWGRr8PQl3uomjjBlkpx26Llf80vsO
+         aqPf6OCmWnkSEJ6/iAg/YkwZbF/CzGgpR2sG0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dZeinS6LE1NP88+BR+f1LcsUBMPUh7N3G4KpQRQogBk=;
+        b=c2C1s4YdFVBhV/3D4kqQan9R03QB1tksqT7x5UbKn3Ps6xZuox9u/lCz+wN33Tepca
+         lJW7Y3XwUj3QRgyFFgYlNpQbfqO2ar4h06RVRj/pgQHCUVhrl2iq054XmSPcgrYkrhyX
+         RKmV554mBVuxUxH3nrcWvGKN7Er+U9tGN6B7wLJv/QbKugDL5bdEpcQwcuZavkNMCeUW
+         mCD63mCcYlMQ1gRYY7aWO5+k79dyLY5dM0HWvw8rEwbVf7idVgO6B+TPdYjBWSy8LBIN
+         PQX6rH57BSWNfSmUFxoApueylEWy2anhdpDzBCds70Lfz0yIi5Psjq4vukCGGZxN9muG
+         qh2g==
+X-Gm-Message-State: AOAM531vd636dzmgWy0FiJ9hE4pMrxiitHQhCs7gLmYt0qarWnhA+qZw
+        3Fid8UdhfQmpuhCpH5RcbnM0hezJ3rK90FM9rfExPuuQ41o=
+X-Google-Smtp-Source: ABdhPJy7GTk1BfTS88fw/8gIr6/ZDBTUprv35YFaMITbfmvjl7jiiSuHvPGnKkFzht+U6iHn/HLP2JVzKLU+U28GVkY=
+X-Received: by 2002:a54:4809:: with SMTP id j9mr15251365oij.14.1621256866371;
+ Mon, 17 May 2021 06:07:46 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
+ <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
+ <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
+ <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
+ <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk> <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
+In-Reply-To: <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 17 May 2021 15:07:35 +0200
+Message-ID: <CAKMK7uGLP2zn7LX4ATExA4DLo16shVivSd_W58X-rBZNPSb3_w@mail.gmail.com>
+Subject: Re: [PATCH] video: fbdev: vga16fb: fix OOB write in vga16fb_imageblit()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Antonino A. Daplas" <adaplas@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW5keSBTaGV2Y2hlbmtvDQo+IFNlbnQ6IDE3IE1heSAyMDIxIDA4OjEwDQo+IA0KPiBP
-biBNb24sIE1heSAxNywgMjAyMSBhdCAzOjI3IEFNIEFybmQgQmVyZ21hbm4gPGFybmRAa2VybmVs
-Lm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRl
-Pg0KPiA+DQo+ID4gVGhpcyBpcyBvbmUgb2YgdGhlIGxhc3QgcmVtYWluaW5nIHVzZXJzIG9mIGNv
-bXBhdF9hbGxvY191c2VyX3NwYWNlKCkNCj4gPiBhbmQgY29weV9pbl91c2VyKCksIHdoaWNoIGFy
-ZSBpbiB0aGUgcHJvY2VzcyBvZiBnZXR0aW5nIHJlbW92ZWQuDQo+ID4NCj4gPiBBcyBvZiBjb21t
-aXQgNTdlNmI2ZjIzMDNlICgibWVkaWE6IGF0b21pc3BfZm9wcy5jOiBkaXNhYmxlDQo+ID4gYXRv
-bWlzcF9jb21wYXRfaW9jdGwzMiIpLCBub3RoaW5nIGluIHRoaXMgZmlsZSBpcyBhY3R1YWxseSBn
-ZXR0aW5nIHVzZWQNCj4gPiBhcyB0aGUgb25seSByZWZlcmVuY2UgaGFzIGJlZW4gc3R1YmJlZCBv
-dXQuDQo+ID4NCj4gPiBSZW1vdmUgdGhlIGVudGlyZSBmaWxlIC0tIGFueW9uZSB3aWxsaW5nIHRv
-IHJlc3RvcmUgdGhlIGZ1bmN0aW9uYWxpdHkNCj4gPiBjYW4gZXF1YWxseSB3ZWxsIGp1c3QgbG9v
-ayB1cCB0aGUgY29udGVudHMgaW4gdGhlIGdpdCBoaXN0b3J5IGlmIG5lZWRlZC4NCj4gDQo+IEV2
-ZXJ5dGhpbmcgd2hpY2ggcmVtb3ZlcyB0b25zIG9mIExPQ3MgaW4gdGhpcyBkcml2ZXIgSSBsaWtl
-IGJ5IGRlZmF1bHQsIHRoYW5rcyENCi4uLi4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zdGFn
-aW5nL21lZGlhL2F0b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+IGIvZHJpdmVycy9zdGFnaW5n
-L21lZGlhL2F0b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+ID4gaW5kZXggZjFlNmIyNTk3ODUz
-Li5lMzgzZTE3YzUwNzIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9zdGFnaW5nL21lZGlhL2F0
-b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+ID4gKysrIGIvZHJpdmVycy9zdGFnaW5nL21lZGlh
-L2F0b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+ID4gQEAgLTEyODMsNyArMTI4Myw4IEBAIGNv
-bnN0IHN0cnVjdCB2NGwyX2ZpbGVfb3BlcmF0aW9ucyBhdG9taXNwX2ZvcHMgPSB7DQo+ID4gICAg
-ICAgICAudW5sb2NrZWRfaW9jdGwgPSB2aWRlb19pb2N0bDIsDQo+ID4gICNpZmRlZiBDT05GSUdf
-Q09NUEFUDQo+ID4gICAgICAgICAvKg0KPiA+IC0gICAgICAgICogVGhlcmUgYXJlIHByb2JsZW1z
-IHdpdGggdGhpcyBjb2RlLiBEaXNhYmxlIHRoaXMgZm9yIG5vdy4NCj4gPiArICAgICAgICAqIHRo
-aXMgd2FzIHJlbW92ZWQgYmVjYXVzZSBvZiBidWdzLCB0aGUgaW50ZXJmYWNlDQo+ID4gKyAgICAg
-ICAgKiBuZWVkcyB0byBiZSBtYWRlIHNhZmUgZm9yIGNvbXBhdCB0YXNrcyBpbnN0ZWFkLg0KPiA+
-ICAgICAgICAgLmNvbXBhdF9pb2N0bDMyID0gYXRvbWlzcF9jb21wYXRfaW9jdGwzMiwNCj4gPiAg
-ICAgICAgICAqLw0KPiA+ICAjZW5kaWYNCj4gPiBAQCAtMTI5NywxMCArMTI5OCw3IEBAIGNvbnN0
-IHN0cnVjdCB2NGwyX2ZpbGVfb3BlcmF0aW9ucyBhdG9taXNwX2ZpbGVfZm9wcyA9IHsNCj4gPiAg
-ICAgICAgIC5tbWFwID0gYXRvbWlzcF9maWxlX21tYXAsDQo+ID4gICAgICAgICAudW5sb2NrZWRf
-aW9jdGwgPSB2aWRlb19pb2N0bDIsDQo+ID4gICNpZmRlZiBDT05GSUdfQ09NUEFUDQo+ID4gLSAg
-ICAgICAvKg0KPiA+IC0gICAgICAgICogVGhlcmUgYXJlIHByb2JsZW1zIHdpdGggdGhpcyBjb2Rl
-LiBEaXNhYmxlIHRoaXMgZm9yIG5vdy4NCj4gPiAtICAgICAgIC5jb21wYXRfaW9jdGwzMiA9IGF0
-b21pc3BfY29tcGF0X2lvY3RsMzIsDQo+ID4gLSAgICAgICAgKi8NCj4gPiArICAgICAgIC8qIC5j
-b21wYXRfaW9jdGwzMiA9IGF0b21pc3BfY29tcGF0X2lvY3RsMzIsICovDQo+ID4gICNlbmRpZg0K
-PiA+ICAgICAgICAgLnBvbGwgPSBhdG9taXNwX3BvbGwsDQoNClNob3VsZG4ndCB0aGV5IGJlIHN0
-dWJiZWQgd2l0aCBzb21ldGhpbmcgdGhhdCByZXR1cm5zIC1FTk9UVFkNCnJhdGhlciB0aGFuIGJs
-aW5kbHkgY2FsbGluZyB0aGUgNjRiaXQgY29kZSB3aXRoIHRoZSB3cm9uZyBzdHJ1Y3R1cmU/DQoN
-CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
-TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
-MTM5NzM4NiAoV2FsZXMpDQo=
+On Fri, May 14, 2021 at 10:33 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, May 14, 2021 at 1:25 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
+> >
+> >  Overall I think it does make sense to resize the text console at any
+> > time, even if the visible console (VT) chosen is in the graphics mode,
+>
+> It might make sense, but only if we call the function to update the
+> low-level data.
+>
+> Not calling it, and then starting to randomly use the (wrong)
+> geometry, and just limiting it so that it's all within the buffer -
+> THAT does not make sense.
+>
+> So I think your patch is fundamentally wrong. It basically says "let's
+> use random stale incorrect data, but just make sure that the end
+> result is still within the allocated buffer".
+>
+> My patch is at least conceptually sane.
+>
+> An alternative would be to just remove the "vcmode != KD_GRAPHICS"
+> check entirely, and always call con_resize() to update the low-level
+> data, but honestly, that seems very likelty to break something very
+> fundamentally, since it's not how any of fbcon has ever been tested,
 
+Just an aside: I think with fbdev drivers this would go boom, because
+you'd have fbcon interferring with a direct /dev/fb/* user.
+
+But if your fbdev driver is actually a drm modeset driver, then we
+have additional limitations: If the userspace accesses the display
+through /dev/dri/card0, then the kernel blocks all access through
+/dev/fb/* (including fbcon) to the actual display (it only goes into
+the buffer used for fbdev emulation). And everything would be fine.
+
+Also generally you'd get away with this even in problematic cases,
+since usually you resize your console when looking at it, not when X
+or something else is using your fbdev direct access.
+
+The one thing that's left out here a bit in the cold is userspace
+modeset drivers in X. Those would get hosed. But also, we stopped
+supporting those in at least i915/amd/radeon/nouveau drivers,
+automatically falling back to the fbdev stuff in most cases (with or
+without the drm drivers underneath that), and no one screamed. So
+probably not many users left.
+
+So I /think/ we could wager this, if it's the least intrusive fix from
+the kernel pov. But it has some risks that we need to revert again if
+we break some of the really old use-cases here.
+
+Cheers, Daniel
+
+> Another alternative would be to just delay the resize to when vcmode
+> is put back to text mode again. That sounds somewhat reasonable to me,
+> but it's a pretty big thing.
+>
+> But no, your patch to just "knowingly use entirely wrong values, then
+> add a limit check because we know the values are possibly garbage and
+> not consistent with reality" is simply not acceptable.
+>
+>               Linus
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
