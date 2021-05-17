@@ -2,141 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5FF386504
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B91386509
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237339AbhEQUDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
+        id S237396AbhEQUEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236917AbhEQUDe (ORCPT
+        with ESMTP id S237381AbhEQUEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:03:34 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A751FC061573;
-        Mon, 17 May 2021 13:02:16 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id q2so5699559pfh.13;
-        Mon, 17 May 2021 13:02:16 -0700 (PDT)
+        Mon, 17 May 2021 16:04:05 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AD4C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:02:48 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id d14so2241527ybe.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IVIyPTZ6w0h3Ret1w2E/pdnyUaIbFCtkLZj+hGFpk4s=;
-        b=X/xKCa7K0LvTnwJIilIzC4PbSZ3Jyv4ccdvzbTeTE1jp0CSwvEaJQoa1aIQ4US9wBD
-         5ZtZlpz4h1vu4DczOH0/dLUQGjRsDmU2T/CBSvqNcJTN1dU6oOfQi/1kdHfyIHPloic4
-         z4OURolq6UZCMn5Y3kZx9BjxlS8+eKZFJ3FyHhqtu6vnRC6riDhJbJngl2CcLUL1ezJi
-         YJfU0bHExh3fUT7JbgrX4jaswiDvuYPqx+IX934+03pywURe+kHy907p0RAlmWJFXd5h
-         QTiwfoA90u9TXBs2NOIozH0xeippZ3xxIKSkh5Jj8cbgvCZotga6xoR/OCkBMxGMk5Ro
-         crNg==
+        bh=WOt8pDHxf8UyV1g+frGSSeqaqXf66O0fXn4ZHmPI4BY=;
+        b=IBDLeDDyYTZmykeL/+LFDwgPTgobab9QhFzNZXP5nCatE9wX6vMPUuVFw47KyiCuJj
+         s3tU2+Z6FlHGFt5jub3pypsxakKfEMMWX8JATwGw+A6DOZ7IcS97vNj0j58FP2I6dMra
+         9aucHTVz60UpOes9MJ1DrxSliX2MFb2qU8bNHwF+dmLlJbtrVzgsT+g1gqcM26hZKqiP
+         LdOdJAhVBxMrYEXcMZv3cYMHzJm32/KS5+qeTwTRxUFE9jek/lSR+D1+lQbN5wleKBMO
+         1RICp7/Xo9U75cigVEV0k4hoFPPHitNmba1xyZzwzQ3Ij2DYpLc+nHIHgFjOFHf82Pwh
+         um3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IVIyPTZ6w0h3Ret1w2E/pdnyUaIbFCtkLZj+hGFpk4s=;
-        b=joxXkp8WJzcTIP72NbLwKT9UuNy6no86l5jXXfQa7RnaQRT+5QOfkeHUPCj2OL29DW
-         dhNIEGSAae96agA6nO3n4OL/houNj9sYU9BOOtuZDrYDLg0YaTh51RTGj7VlXFdd/Ssp
-         rK1B4eORQ1Ug/NQSrOvTOdO5FzguhI6uyiVIFpDtXifnxuZDjA4cnUf0EoeXGaAFIYPM
-         WEL0UXxQ3PXJ07pmP8/TNBSEuBMxGPWHao2VJEggtyXNp8apeNbUiwvW6rCvGmJ9coIk
-         6jVwONWpbY2bSnBLDJJORL4CAq3rhlpNyhE7Ji1/pOLsN8bHMvk5Quktpd0wzsmIwaqR
-         eMyQ==
-X-Gm-Message-State: AOAM5303MBDunb9eW+9FIrj2oee8A3mLnLhmpBipnUfbUP5aKTOk6eth
-        x9SQt+Xr0b8oPBaKJyxHXVE+B8I2PoOby8clWl8=
-X-Google-Smtp-Source: ABdhPJyKujI6A2w3oQvR+CotMActckhkR3dfYYFSs/2V4ykIDzqEZ/woudBpJQNuYj/9hQYzcMDzkPsIbMmhXKJZ01E=
-X-Received: by 2002:a05:6a00:1591:b029:2d9:369a:b846 with SMTP id
- u17-20020a056a001591b02902d9369ab846mr1390908pfk.40.1621281736214; Mon, 17
- May 2021 13:02:16 -0700 (PDT)
+        bh=WOt8pDHxf8UyV1g+frGSSeqaqXf66O0fXn4ZHmPI4BY=;
+        b=kpn/ArgWTW320SDFbbvab5zx6b4UaxE6yM04bvFCIJp8Rsdo54G+ozJInl+95m6zpo
+         LCCADIPlVcsrshUmd5aWcLYEP8cqNaGxbNnqD0gGZonsFMxMza8V14n3I7gXl7h42k5R
+         CLrEkq0hi/hd5OeSCYRXZCiQQIcxiQBtuFek2sHnb7ZRXun7LNAoHxkggmoeCcALkOAp
+         WPw/6WlABjMECxMIwKBXJAho2hnoO2msH/VppWDf697m5sTSX2XFDZUdRU++a29P9agV
+         jAg1xfo2TMlLRCEwgr6MlVpXdkPzBCu8ZA3cTfHKNy37NWHamy9UG2U5ocflZ9RPwQtN
+         cS7w==
+X-Gm-Message-State: AOAM533/+XR2ls8GkgXGkYX70mK1N8GtmQgO4CVV237q9ud+2zvSmPY4
+        oWd70xog5PV+bedF66nogaQS0yqGQo5Vt9h/ltqA2w==
+X-Google-Smtp-Source: ABdhPJwS6fAI4vrD9cHbCMoV0PUsmjjznxmSh8H/3YOVLg1P9jZ7axn+uajLPV4AvemovAOd5w3sbp0WFM4/ejFVXUc=
+X-Received: by 2002:a5b:7c5:: with SMTP id t5mr2189351ybq.190.1621281767582;
+ Mon, 17 May 2021 13:02:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210516135531.2203-1-dariobin@libero.it> <20210516135531.2203-2-dariobin@libero.it>
-In-Reply-To: <20210516135531.2203-2-dariobin@libero.it>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 17 May 2021 23:02:00 +0300
-Message-ID: <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug file
-To:     Dario Binacchi <dariobin@libero.it>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
+ <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
+ <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net> <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
+ <CAJuCfpH2X47_3VvfZXs_eWhYDziOh13qdUwcfxPJe=Zg_Nkvqw@mail.gmail.com>
+ <CAJuCfpEznCYhjbM+1=dMdEn1J2NVw88M+4AThD99PBKg41RgTw@mail.gmail.com> <YKK2ZumDWcaGWvBj@cmpxchg.org>
+In-Reply-To: <YKK2ZumDWcaGWvBj@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 17 May 2021 13:02:36 -0700
+Message-ID: <CAJuCfpGx7w2E8Bq7jcq7HS41i40r4Lp+-z9m1P095B+MkAOWqg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
+        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        Minchan Kim <minchan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
+        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 7:43 PM Dario Binacchi <dariobin@libero.it> wrote:
+On Mon, May 17, 2021 at 11:31 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> The MPUs of some architectures (e.g AM335x) must be in privileged
-> operating mode to write on the pinmux
+> On Sun, May 16, 2021 at 12:52:32PM -0700, Suren Baghdasaryan wrote:
+> > After reworking the code to add a static key I had to expand the
+> > #ifdef CONFIG_CGROUPS section, so I think a code refactoring below
+> > would make sense. It localizes config-specific code and it has the
+> > same exact code for CONFIG_CGROUPS=n and for
+> > cgroup_psi_enabled()==false. WDYT?:
+> >
+> > --- a/kernel/sched/psi.c
+> > +++ b/kernel/sched/psi.c
+> > @@ -181,6 +181,7 @@ struct psi_group psi_system = {
+> >  };
+> >
+> >  static void psi_avgs_work(struct work_struct *work);
+> > +static void cgroup_iterator_init(void);
+> >
+> >  static void group_init(struct psi_group *group)
+> >  {
+> > @@ -211,6 +212,8 @@ void __init psi_init(void)
+> >                  return;
+> >          }
+> >
+> > +        cgroup_iterator_init();
+> > +
+> >          psi_period = jiffies_to_nsecs(PSI_FREQ);
+> >          group_init(&psi_system);
+> >  }
+> > @@ -742,11 +745,31 @@ static void psi_group_change(struct psi_group
+> > *group, int cpu,
+> >                  schedule_delayed_work(&group->avgs_work, PSI_FREQ);
+> >  }
+> >
+> > -static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> > +static inline struct psi_group *sys_group_iterator(struct task_struct *task,
+> > +                                                   void **iter)
+> >  {
+> > +        *iter = &psi_system;
+> > +        return &psi_system;
+> > +}
+> > +
+> >  #ifdef CONFIG_CGROUPS
+> > +
+> > +DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
+> > +
+> > +static void cgroup_iterator_init(void)
+> > +{
+> > +        if (!cgroup_psi_enabled())
+> > +                static_branch_enable(&psi_cgroups_disabled);
+> > +}
+> > +
+> > +static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> > +{
+> >          struct cgroup *cgroup = NULL;
+> >
+> > +        /* Skip to psi_system if per-cgroup accounting is disabled */
+> > +        if (static_branch_unlikely(&psi_cgroups_disabled))
+> > +                return *iter ? NULL : sys_group_iterator(task, iter);
+> > +
+> >          if (!*iter)
+> >                  cgroup = task->cgroups->dfl_cgrp;
+>
+> That looks over-engineered. You have to check iter whether cgroups are
+> enabled or not. Pulling the jump label check up doesn't save anything,
+> but it ends up duplicating code.
+>
+> What you had in the beginning was better, it just had the system label
+> in an unexpected place where it would check iter twice in a row.
+>
+> The (*iter == &psi_system) check inside the cgroups branch has the
+> same purpose as the (*iter) check in the else branch. We could
+> consolidate that by pulling it up front.
+>
+> If we wrap the entire cgroup iteration block into the static branch,
+> IMO it becomes a bit clearer as well.
+>
+> How about this?
+>
+> static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> {
+>         if (*iter == &psi_system)
+>                 return NULL;
+>
+> #ifdef CONFIG_CGROUPS
+>         if (!static_branch_likely(&psi_cgroups_disabled)) {
+>                 struct cgroup *cgroup = NULL;
+>
+>                 if (!*iter)
+>                         cgroup = task->cgroups->dfl_cgrp;
+>                 else
+>                         cgroup = cgroup_parent(*iter);
+>
+>                 if (cgroup && cgroup_parent(cgroup)) {
+>                         *iter = cgroup;
+>                         return cgroup_psi(cgroup);
+>                 }
+>         }
+> #endif
+>
+>         *iter = &psi_system;
+>         return &psi_system;
+> }
 
-pinmux is not pin configuration. You need to rethink the approach.
-
-> registers. In such cases, where
-> writes will not work from user space, now it can be done from the pins
-> debug file if the platform driver exports the pin_dbg_set() helper among
-> the registered operations.
-
-Drew, is it similar to what you are trying to achieve?
-
-...
-
-> +static ssize_t pinctrl_pins_write(struct file *file,
-> +                                 const char __user *user_buf, size_t count,
-> +                                 loff_t *ppos)
-> +{
-> +       struct seq_file *s = file->private_data;
-> +       struct pinctrl_dev *pctldev = s->private;
-> +       const struct pinctrl_ops *ops = pctldev->desc->pctlops;
-> +       char buf[32];
-> +       char *c = &buf[0];
-> +       char *token;
-> +       int ret, buf_size;
-> +       unsigned int i, pin;
-> +
-> +       if (!ops->pin_dbg_set)
-> +               return -EFAULT;
-> +
-> +       /* Get userspace string and assure termination */
-> +       buf_size = min(count, sizeof(buf) - 1);
-> +       if (copy_from_user(buf, user_buf, buf_size))
-> +               return -EFAULT;
-> +
-> +       buf[buf_size] = 0;
-
-Can't you use strncpy_from_user() ?
-
-
-> +       token = strsep(&c, " ");
-
-> +       if (kstrtouint(token, 0, &pin))
-> +               return -EINVAL;
-
-Don't shadow an error code.
-
-> +       for (i = 0; i < pctldev->desc->npins; i++) {
-> +               if (pin != pctldev->desc->pins[i].number)
-> +                       continue;
-
-Hmm... I don't get this. Why is it needed?
-
-> +               ret = ops->pin_dbg_set(pctldev, pin, c);
-> +               if (ret)
-> +                       return ret;
-> +
-> +               return count;
-> +       }
-> +
-> +       return -EINVAL;
-> +}
-
-...
-
-> -       debugfs_create_file("pins", 0444,
-> +       debugfs_create_file("pins", 0644,
->                             device_root, pctldev, &pinctrl_pins_fops);
-
-Why is it in this file?
-
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+This looks great to me. Will use it in the next version. Thanks!
