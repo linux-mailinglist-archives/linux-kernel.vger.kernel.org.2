@@ -2,133 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B00386CB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005F0386CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245747AbhEQV6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
+        id S1343493AbhEQWCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 18:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235014AbhEQV6L (ORCPT
+        with ESMTP id S235014AbhEQWCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:58:11 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052EFC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 14:56:55 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id v22so7876591oic.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 14:56:54 -0700 (PDT)
+        Mon, 17 May 2021 18:02:16 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EBEC061573;
+        Mon, 17 May 2021 15:00:58 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id t193so5588434pgb.4;
+        Mon, 17 May 2021 15:00:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=javM02b4/WyQxR7G/IZDk0+ZM0MvdenmOr8WXepdWxM=;
-        b=I8sLUCn4ThTDhZTcCefu7YoeKN5+ReQGR7FONXUgZ6bljED4gnkCO2Gr2XHJWg2/Ej
-         HyIDWveaB6jZgD9q1cWJYpyxkRZibRg2cc/oWbzczvsg6CP35npBbkAdC6iY0OHtG33g
-         Nb3f3pbnohEhnNH/B8SDLTMZN/TDxDT+zRPMKXXhsWbzUYABziLnXcorj5vFbbC5b4iL
-         rxiGXDGwGupVkGtpUuOMc2G1VzLT8vclHGci0Z69/S7rK/igWgNavg/XdOGyDA/HpRkT
-         SFl0gqrua00z+WosbSRwfA7O1koHamJcvPprhj0XAaac0GXbLhRj5/aFFLAyYiDv0ni/
-         XPnw==
+        bh=b4AFArD+ZVIfd8U0Xl9mLYPnItc1+fvBlzBikRR9v5o=;
+        b=Rg2Zt0RSwWC1n0F6AFMKJ2UwvYt29MAJhECFo3VpwS/hpx3cnEwowsfJY91VSkCgTj
+         y5K6yrBT7jPikTQB6st41/izTwa9zgmxVoCCht6uYls7L9WBNT+iqVI0hcDGWh/pUwr9
+         u54MeXU9BYxeU+43oSpv+pqHb1cpFDmKrsw7lP7uEfii64lp5zXrdkxjETqN4MtiySRg
+         6usdL1+9AFbc4UI/qsmXHABMJrIgJqBhy/1Uj5FvjCgeyTlsCDY6NE4aT10QDydRF9pn
+         VtlBWGPiuzsgykqq8PRCCFc2uvp7tl4K+6aDqcJzCKo13/HR4O0Qfydsyz6NZNAz47iH
+         k8yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=javM02b4/WyQxR7G/IZDk0+ZM0MvdenmOr8WXepdWxM=;
-        b=iaRawXyT6dPmIs+6Zx/+LJW+ElxV10kttkmaZb4Jd/gSUVSBN19lqvBO93rRPh6Fbz
-         c56FkqWXOjJngJtQIzztwqq6YUXW88Ot/EatOapfG6rwjO2h+50+nBLWEbQeAB/iZ7Mj
-         F8zlgddUhNlNOAO2bgN9hksP6jY/h/g8vWbfMk6NNlxQT1kEHxR423++/ge5zkwf/dOU
-         6JqeNXucbNeTEeIkfdJBdPU8muSwa8UqrcuzBvqMLYfO8OtVq/KIrFegmvIaqXLS0ZpN
-         ZeGkyBHl67fiZplnc4Ew7fkqMOZbeRNJ0fvn8hcSGJL+EVFp79/Y8axZmyM2q1Tsh4Ip
-         QfCA==
-X-Gm-Message-State: AOAM533/GoLcN9s6JhmqzNndoZYCpabYSGqhXeq84PQFhgVS7fG/65sZ
-        Laf4TIw+ccZxzco76e8dpq1lz72BX5QMuiJBQy5NWg==
-X-Google-Smtp-Source: ABdhPJxHUTgoNPwlQ1SsXbiblJgUMsoBrB+1eFr/AHLcHCxGTejk7NyGaqLBVgqW65QxCX7xowuZMAIkRXjG6mN7qZU=
-X-Received: by 2002:aca:5358:: with SMTP id h85mr955353oib.6.1621288614176;
- Mon, 17 May 2021 14:56:54 -0700 (PDT)
+        bh=b4AFArD+ZVIfd8U0Xl9mLYPnItc1+fvBlzBikRR9v5o=;
+        b=PWWAun935ERlWcBz+x2+xoPpTl9xoyG06noiqkzdSXx0erYv9jSkD5vEt+QXXUofhO
+         3OmDFhANWN8NJ3drbS8v+GhIZ6JIiC8hSKRbkwdhFEsAFUN4l128rI4bTr0kiGHgWMEy
+         4e82lA2szrvg/9zavb89L+4KIJ0S/MyPUT5rKzYSsq2kmIZRsWDEjOe39vr2LZl/eM5t
+         ucTy0m7coatbDVMQQX2Tp79fJ7sdwbXmlNNpyYmqoC2F2715ZjsngANKPqffhuB47cKp
+         yD4c7emFzU2gfRAyX/w4mugjsXlbKJ1gGFIcNNGb+IsAJI6deOqsu0cUpv8kh+WyKCF+
+         c8iw==
+X-Gm-Message-State: AOAM531mH9d7VyrOHN+YpricymiLUmppdK+G0XTlLy96MeXgl1al7lt2
+        IHC+s6pyeMlTHUDrcj6BYirUA0q7V1Bqk1iu02c=
+X-Google-Smtp-Source: ABdhPJz2lnkyKtU9B7z1UaAxHDbAyWMM5/Yric3H8b+7q21ZGStMNRMRH9LDNJ5YnsgLWxDuvZpD6CCiO2GARQ4mjGU=
+X-Received: by 2002:a63:cd11:: with SMTP id i17mr1625739pgg.74.1621288858005;
+ Mon, 17 May 2021 15:00:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210513113710.1740398-1-vkuznets@redhat.com> <20210513113710.1740398-2-vkuznets@redhat.com>
- <YKLaKV5Z+x30iNG9@google.com> <CALMp9eSR3tAZx3iW4_aVRWtFvVma-NYC979SDG5z3MG-F4M5dw@mail.gmail.com>
- <YKLfi4Xn95hDefgH@google.com>
-In-Reply-To: <YKLfi4Xn95hDefgH@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 17 May 2021 14:56:43 -0700
-Message-ID: <CALMp9eTh+CF1b5HeXqUQv1wO-3W-xOOt7LiZ4zSORKZUXtuvtg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Invert APICv/AVIC enablement check
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kechen Lu <kechenl@nvidia.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1621279162.git.sander@svanheule.net> <752444cff2a7ec5da38dba368c64a5ed7dd87279.1621279162.git.sander@svanheule.net>
+In-Reply-To: <752444cff2a7ec5da38dba368c64a5ed7dd87279.1621279162.git.sander@svanheule.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 18 May 2021 01:00:41 +0300
+Message-ID: <CAHp75VdRZQXt25mNA+6fY3_iNV4JOE9h+QoFzbtb1_nAdWYFLA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] leds: Add support for RTL8231 LED scan matrix
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 2:26 PM Sean Christopherson <seanjc@google.com> wrote:
+On Mon, May 17, 2021 at 10:28 PM Sander Vanheule <sander@svanheule.net> wrote:
 >
-> On Mon, May 17, 2021, Jim Mattson wrote:
-> > On Mon, May 17, 2021 at 2:03 PM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > On Thu, May 13, 2021, Vitaly Kuznetsov wrote:
-> > > > Currently, APICv/AVIC enablement is global ('enable_apicv' module parameter
-> > > > for Intel, 'avic' module parameter for AMD) but there's no way to check
-> > > > it from vendor-neutral code. Add 'apicv_supported()' to kvm_x86_ops and
-> > > > invert kvm_apicv_init() (which now doesn't need to be called from arch-
-> > > > specific code).
-> > >
-> > > Rather than add a new hook, just move the variable to x86.c, and export it so
-> > > that VMX and SVM can give it different module names.  The only hiccup is that
-> > > avic is off by default, but I don't see why that can't be changed.
-> >
-> > See https://www.spinics.net/lists/kvm/msg208722.html.
+> Both single and bi-color scanning modes are supported. The driver will
+> verify that the addresses are valid for the current mode, before
+> registering the LEDs. LEDs can be turned on, off, or toggled at one of
+> six predefined rates from 40ms to 1280ms.
 >
-> Boo.  A common enable_apicv can still work, SVM just needs an intermediary
-> between the module param and enable_apicv.
->
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -185,6 +185,10 @@ module_param(vls, int, 0444);
->  static int vgif = true;
->  module_param(vgif, int, 0444);
->
-> +/* enable / disable AVIC */
-> +static bool avic;
-> +module_param(avic, bool, S_IRUGO);
-> +
->  bool __read_mostly dump_invalid_vmcb;
->  module_param(dump_invalid_vmcb, bool, 0644);
->
-> @@ -1009,16 +1013,19 @@ static __init int svm_hardware_setup(void)
->                         nrips = false;
->         }
->
-> -       if (avic) {
-> -               if (!npt_enabled ||
-> -                   !boot_cpu_has(X86_FEATURE_AVIC) ||
-> -                   !IS_ENABLED(CONFIG_X86_LOCAL_APIC)) {
-> -                       avic = false;
-> -               } else {
-> -                       pr_info("AVIC enabled\n");
-> +       if (!npt_enabled || !boot_cpu_has(X86_FEATURE_AVIC))
-> +               avic = false;
->
-> -                       amd_iommu_register_ga_log_notifier(&avic_ga_log_notifier);
-> -               }
-> +       /*
-> +        * Override the common enable_apicv.  AVIC is disabled by default
-> +        * because Jim said so.
-> +        */
+> Implements a platform device for use as child device with RTL8231 MFD,
 
-Hey! I'm just the messenger. Wei Huang said so.
+as a child
 
-> +       enable_apicv = avic;
+> and uses the parent regmap to access the required registers.
+
+...
+
+> +         When built as a module, this module will be named rtl8231_leds.
+
+Again, what it's written here is not what is in Makefile.
+
+> +obj-$(CONFIG_LEDS_RTL8231)             += leds-rtl8231.o
+
+...
+
+> +/**
+> + * struct led_toggle_rate - description of an LED blinking mode
+> + * @interval:  LED toggle rate in ms
+> + * @mode:      Register field value used to active this mode
+
+activate
+
+> + *
+> + * For LED hardware accelerated blinking, with equal on and off delay.
+> + * Both delays are given by @interval, so the interval at which the LED blinks
+> + * (i.e. turn on and off once) is double this value.
+> + */
+
+...
+
+> +static unsigned int rtl8231_led_current_interval(struct rtl8231_led *pled)
+> +{
+> +       unsigned int mode;
+
+> +       unsigned int i = 0;
+
+This...
+
+> +       if (regmap_field_read(pled->reg_field, &mode))
+> +               return 0;
 > +
-> +       if (enable_apicv) {
-> +               pr_info("AVIC enabled\n");
+> +       while (i < pled->modes->num_toggle_rates && mode != pled->modes->toggle_rates[i].mode)
+> +               i++;
+
+...and this will be better as a for-loop.
+
+> +       if (i < pled->modes->num_toggle_rates)
+> +               return pled->modes->toggle_rates[i].interval;
+
+> +       else
+
+Redundant.
+
+> +               return 0;
+> +}
+
+...
+
+> +       unsigned int i = 0;
+
+As per above.
+
+...
+
+> +               interval = 500;
+
+interval_ms
+
+> +               /*
+> +                * If the current mode is blinking, choose the delay that (likely) changed.
+> +                * Otherwise, choose the interval that would have the same total delay.
+> +                */
+> +               interval = rtl8231_led_current_interval(pled);
+
 > +
-> +               amd_iommu_register_ga_log_notifier(&avic_ga_log_notifier);
->         }
->
->         if (vls) {
+
+Redundant blank line.
+
+> +               if (interval > 0 && interval == *delay_off)
+> +                       interval = *delay_on;
+> +               else if (interval > 0 && interval == *delay_on)
+> +                       interval = *delay_off;
+> +               else
+> +                       interval = (*delay_on + *delay_off) / 2;
+> +       }
+
+...
+
+> +       u32 addr[2];
+> +       int err;
+> +
+
+> +       if (!fwnode_property_count_u32(fwnode, "reg"))
+
+err = fwnode_property_count_u32(...);
+if (err < 0)
+  return err;
+if (err == 0)
+  return -ENODEV;
+
+> +               return -ENODEV;
+> +
+> +       err = fwnode_property_read_u32_array(fwnode, "reg", addr, ARRAY_SIZE(addr));
+
+If count returns 1? What's the point of counting if you always want two?
+
+> +       if (err)
+> +               return err;
+> +
+> +       *addr_port = addr[0];
+> +       *addr_led = addr[1];
+> +
+> +       return 0;
+> +}
+
+...
+
+> +       pled = devm_kzalloc(dev, sizeof(*pled), GFP_KERNEL);
+> +       if (IS_ERR(pled))
+
+Wrong.
+
+> +               return PTR_ERR(pled);
+
+...
+
+> +       err = rtl8231_led_read_address(fwnode, &port_index, &led_index);
+> +
+
+Redundant blank line.
+
+> +       if (err) {
+> +               dev_err(dev, "LED address invalid\n");
+> +               return err;
+
+> +       } else if (led_index >= RTL8231_NUM_LEDS || port_index >= port_counts[led_index]) {
+
+Redundant 'else'
+
+> +               dev_err(dev, "LED address (%d.%d) invalid\n", port_index, led_index);
+> +               return -ENODEV;
+> +       }
+
+...
+
+> +       map = dev_get_regmap(dev->parent, NULL);
+> +       if (IS_ERR_OR_NULL(map)) {
+
+Split it into two conditionals.
+
+> +               dev_err(dev, "failed to retrieve regmap\n");
+> +               if (!map)
+> +                       return -ENODEV;
+> +               else
+> +                       return PTR_ERR(map);
+> +       }
+
+...
+
+> +       if (!device_property_match_string(dev, "realtek,led-scan-mode", "single-color")) {
+
+It seems that device_property_match_string() and accompanying
+functions have wrong description of returned codes, i.e. it returns
+the index of the matched string. It's possible that some APIs are
+broken (but I believe that the former is the case).
+
+That said, I think the proper comparison should be >= 0.
+
+> +               port_counts = rtl8231_led_port_counts_single;
+> +               regmap_update_bits(map, RTL8231_REG_FUNC0,
+> +                       RTL8231_FUNC0_SCAN_MODE, RTL8231_FUNC0_SCAN_SINGLE);
+> +       } else if (!device_property_match_string(dev, "realtek,led-scan-mode", "bi-color")) {
+
+Ditto.
+
+> +               port_counts = rtl8231_led_port_counts_bicolor;
+> +               regmap_update_bits(map, RTL8231_REG_FUNC0,
+> +                       RTL8231_FUNC0_SCAN_MODE, RTL8231_FUNC0_SCAN_BICOLOR);
+> +       } else {
+> +               dev_err(dev, "scan mode missing or invalid\n");
+> +               return -EINVAL;
+> +       }
+
+-- 
+With Best Regards,
+Andy Shevchenko
