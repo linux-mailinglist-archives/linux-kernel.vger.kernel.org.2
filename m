@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6323E3833CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7DE3833C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240904AbhEQPCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:02:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48080 "EHLO mail.kernel.org"
+        id S242174AbhEQPB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:01:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241566AbhEQOwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:52:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBD961988;
-        Mon, 17 May 2021 14:23:45 +0000 (UTC)
+        id S241502AbhEQOv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:51:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2720A613D9;
+        Mon, 17 May 2021 14:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261425;
-        bh=gHSj6tyoz1bH7DPcjnPJnj511RmRmxNiZ5alo7SwcLA=;
+        s=korg; t=1621261412;
+        bh=T5HBUSrZ6/zYpnEUGgF+yo9YlFrserrzIbd8ccwjIKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DASroyqKHgCMFym1qO9y+HADBinZpJ9uji33Mcx9dFbpgIZIlL2+be7rHP2dhH4b8
-         z5WXIqm4Bo20nBgzwx35HtodixC/tnAmD3mpgn6I7li5aff1+ooHRCyY5D/DTQ4yLY
-         pzGE/3tXpP5DE3e84/ZKt19UDtNYKI0lFjKQ3pPw=
+        b=YHywzTxwSggirSCzX0CRD3iTc+7wGxPYI+tdDTovMXRGFAtbkDZ0l/+Sxci9CVHsK
+         CTZ9ZYSV8u8JFGqSQYkc6HfDMAKINtUE0Lg4dCAkqDSwcrnag0wP9XgKhMqFs+otz8
+         zADs4meCkga7RTPlDEuGZZoUXmW5gSfvO1ixZnww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Reiji Watanabe <reijiw@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 331/363] KVM: x86: Add support for RDPID without RDTSCP
-Date:   Mon, 17 May 2021 16:03:17 +0200
-Message-Id: <20210517140313.798043158@linuxfoundation.org>
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH 5.12 343/363] drm/i915/gt: Fix a double free in gen8_preallocate_top_level_pdp
+Date:   Mon, 17 May 2021 16:03:29 +0200
+Message-Id: <20210517140314.200993433@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
 References: <20210517140302.508966430@linuxfoundation.org>
@@ -40,121 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-commit 36fa06f9ff39f23e03cd8206dc6bbb7711c23be6 upstream.
+commit ea995218dddba171fecd05496c69617c5ef3c5b8 upstream.
 
-Allow userspace to enable RDPID for a guest without also enabling RDTSCP.
-Aside from checking for RDPID support in the obvious flows, VMX also needs
-to set ENABLE_RDTSCP=1 when RDPID is exposed.
+Our code analyzer reported a double free bug.
 
-For the record, there is no known scenario where enabling RDPID without
-RDTSCP is desirable.  But, both AMD and Intel architectures allow for the
-condition, i.e. this is purely to make KVM more architecturally accurate.
+In gen8_preallocate_top_level_pdp, pde and pde->pt.base are allocated
+via alloc_pd(vm) with one reference. If pin_pt_dma() failed, pde->pt.base
+is freed by i915_gem_object_put() with a reference dropped. Then free_pd
+calls free_px() defined in intel_ppgtt.c, which calls i915_gem_object_put()
+to put pde->pt.base again.
 
-Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
-Cc: stable@vger.kernel.org
-Reported-by: Reiji Watanabe <reijiw@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210504171734.1434054-8-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+As pde->pt.base is protected by refcount, so the second put will not free
+pde->pt.base actually. But, maybe it is better to remove the first put?
+
+Fixes: 82adf901138cc ("drm/i915/gt: Shrink i915_page_directory's slab bucket")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Reviewed-by: Matthew Auld <matthew.auld@intel.com>
+Signed-off-by: Matthew Auld <matthew.auld@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210426124340.4238-1-lyl2019@mail.ustc.edu.cn
+(cherry picked from commit ac69496fe65cca0611d5917b7d232730ff605bc7)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/svm.c |    6 ++++--
- arch/x86/kvm/vmx/vmx.c |   27 +++++++++++++++++++++++----
- arch/x86/kvm/x86.c     |    3 ++-
- 3 files changed, 29 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/i915/gt/gen8_ppgtt.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2741,7 +2741,8 @@ static int svm_get_msr(struct kvm_vcpu *
- 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
- 			return 1;
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 		msr_info->data = svm->tsc_aux;
- 		break;
-@@ -2952,7 +2953,8 @@ static int svm_set_msr(struct kvm_vcpu *
- 			return 1;
+--- a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
++++ b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
+@@ -630,7 +630,6 @@ static int gen8_preallocate_top_level_pd
  
- 		if (!msr->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 
- 		/*
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1734,7 +1734,8 @@ static void setup_msrs(struct vcpu_vmx *
- 	if (update_transition_efer(vmx))
- 		vmx_setup_uret_msr(vmx, MSR_EFER);
- 
--	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP))
-+	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP)  ||
-+	    guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID))
- 		vmx_setup_uret_msr(vmx, MSR_TSC_AUX);
- 
- 	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL);
-@@ -1933,7 +1934,8 @@ static int vmx_get_msr(struct kvm_vcpu *
- 		break;
- 	case MSR_TSC_AUX:
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 		goto find_uret_msr;
- 	case MSR_IA32_DEBUGCTLMSR:
-@@ -2230,7 +2232,8 @@ static int vmx_set_msr(struct kvm_vcpu *
- 		break;
- 	case MSR_TSC_AUX:
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 		/* Check reserved bit, higher 32 bits should be zero */
- 		if ((data >> 32) != 0)
-@@ -4302,7 +4305,23 @@ static void vmx_compute_secondary_exec_c
- 						  xsaves_enabled, false);
- 	}
- 
--	vmx_adjust_sec_exec_feature(vmx, &exec_control, rdtscp, RDTSCP);
-+	/*
-+	 * RDPID is also gated by ENABLE_RDTSCP, turn on the control if either
-+	 * feature is exposed to the guest.  This creates a virtualization hole
-+	 * if both are supported in hardware but only one is exposed to the
-+	 * guest, but letting the guest execute RDTSCP or RDPID when either one
-+	 * is advertised is preferable to emulating the advertised instruction
-+	 * in KVM on #UD, and obviously better than incorrectly injecting #UD.
-+	 */
-+	if (cpu_has_vmx_rdtscp()) {
-+		bool rdpid_or_rdtscp_enabled =
-+			guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
-+			guest_cpuid_has(vcpu, X86_FEATURE_RDPID);
-+
-+		vmx_adjust_secondary_exec_control(vmx, &exec_control,
-+						  SECONDARY_EXEC_ENABLE_RDTSCP,
-+						  rdpid_or_rdtscp_enabled, false);
-+	}
- 	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
- 
- 	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5864,7 +5864,8 @@ static void kvm_init_msr_list(void)
- 				continue;
- 			break;
- 		case MSR_TSC_AUX:
--			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
-+			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP) &&
-+			    !kvm_cpu_cap_has(X86_FEATURE_RDPID))
- 				continue;
- 			break;
- 		case MSR_IA32_UMWAIT_CONTROL:
+ 		err = pin_pt_dma(vm, pde->pt.base);
+ 		if (err) {
+-			i915_gem_object_put(pde->pt.base);
+ 			free_pd(vm, pde);
+ 			return err;
+ 		}
 
 
