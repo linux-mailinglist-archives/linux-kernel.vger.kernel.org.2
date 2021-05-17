@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A302D383546
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26512383557
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241102AbhEQPRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:17:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47056 "EHLO mail.kernel.org"
+        id S241425AbhEQPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242348AbhEQPGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:06:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0C0261C22;
-        Mon, 17 May 2021 14:29:07 +0000 (UTC)
+        id S241833AbhEQPG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:06:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63EB361C25;
+        Mon, 17 May 2021 14:29:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261748;
-        bh=US3hMeH1GUE/kdBn25UaP8ob5GTGD4xJWzzbbSmWuSQ=;
+        s=korg; t=1621261756;
+        bh=ZFAuTJO59UT5twKnCexyk2VzbleOLvEsm/3HKj7R0A8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kk0OTktpL54Y2LvA+gB8U+Vn9EmtXPP3RSPDaz23L4PO2YAf7aW/t1RGZ0+e5Jyfk
-         SpC17TlWm8tLW7v1RojgsIXv9DuilaVexLBYjZaPaUN5ISb7cj6ZqAEM5TT79cBZA8
-         bFUcev9LKB/0/6RglzUJNxT+ofL06YFVpduCnq8g=
+        b=UPDEJ7pC68gMwUta+UKkqxjXqKUULEzpbUqtQMLEK3Q6cZ48jJ5NUD3IuAEU3qILV
+         wGbBe9eBGEIO34SbY/BbAwxxK8Zq47dYUuHM4aTHgUyB0CEX6f+qukJEsoCzfq4ib3
+         +wjlNxwmLa47KzDIuMHNjrSIx9I+MsGTTcmOvID4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
-Subject: [PATCH 5.4 085/141] smc: disallow TCP_ULP in smc_setsockopt()
-Date:   Mon, 17 May 2021 16:02:17 +0200
-Message-Id: <20210517140245.647272111@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 086/141] netfilter: nfnetlink_osf: Fix a missing skb_header_pointer() NULL check
+Date:   Mon, 17 May 2021 16:02:18 +0200
+Message-Id: <20210517140245.677516898@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -43,53 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 8621436671f3a4bba5db57482e1ee604708bf1eb ]
+[ Upstream commit 5e024c325406470d1165a09c6feaf8ec897936be ]
 
-syzbot is able to setup kTLS on an SMC socket which coincidentally
-uses sk_user_data too. Later, kTLS treats it as psock so triggers a
-refcnt warning. The root cause is that smc_setsockopt() simply calls
-TCP setsockopt() which includes TCP_ULP. I do not think it makes
-sense to setup kTLS on top of SMC sockets, so we should just disallow
-this setup.
+Do not assume that the tcph->doff field is correct when parsing for TCP
+options, skb_header_pointer() might fail to fetch these bits.
 
-It is hard to find a commit to blame, but we can apply this patch
-since the beginning of TCP_ULP.
-
-Reported-and-tested-by: syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
-Fixes: 734942cc4ea6 ("tcp: ULP infrastructure")
-Cc: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 11eeef41d5f6 ("netfilter: passive OS fingerprint xtables match")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/smc/af_smc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/netfilter/nfnetlink_osf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index dc09a72f8110..51986f7ead81 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -1709,6 +1709,9 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
- 	struct smc_sock *smc;
- 	int val, rc;
+diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
+index 916a3c7f9eaf..79fbf37291f3 100644
+--- a/net/netfilter/nfnetlink_osf.c
++++ b/net/netfilter/nfnetlink_osf.c
+@@ -186,6 +186,8 @@ static const struct tcphdr *nf_osf_hdr_ctx_init(struct nf_osf_hdr_ctx *ctx,
  
-+	if (level == SOL_TCP && optname == TCP_ULP)
-+		return -EOPNOTSUPP;
-+
- 	smc = smc_sk(sk);
+ 		ctx->optp = skb_header_pointer(skb, ip_hdrlen(skb) +
+ 				sizeof(struct tcphdr), ctx->optsize, opts);
++		if (!ctx->optp)
++			return NULL;
+ 	}
  
- 	/* generic setsockopts reaching us here always apply to the
-@@ -1730,7 +1733,6 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
- 	if (rc || smc->use_fallback)
- 		goto out;
- 	switch (optname) {
--	case TCP_ULP:
- 	case TCP_FASTOPEN:
- 	case TCP_FASTOPEN_CONNECT:
- 	case TCP_FASTOPEN_KEY:
+ 	return tcp;
 -- 
 2.30.2
 
