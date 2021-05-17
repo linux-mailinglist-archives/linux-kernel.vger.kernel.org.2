@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53C03837D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C91938369E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237687AbhEQPrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:47:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
+        id S1343812AbhEQPe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244503AbhEQPb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:31:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60DD2613FC;
-        Mon, 17 May 2021 14:38:17 +0000 (UTC)
+        id S242836AbhEQPQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:16:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17EB56186A;
+        Mon, 17 May 2021 14:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262298;
-        bh=fBCwBoQIBu1Z/Im+ck+WQ9ZRSffBq64U6W6k0+CiYPY=;
+        s=korg; t=1621261976;
+        bh=cePfU9NcGXdJAeLEHSy5JpFozNTh5JcfXlp8E8gVRK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AIjYmAuSzU7R/oaNQqZCHf+bdFEWMdI7AYaMq1KbVusWg34j2BbYsiMrtzUvzwO/h
-         xvpIsLhXpnbWItnsiEzLIraKkmxNPwjUKiuYQOTH6i8rVBIKYPk0sGPa7vvLsu3teb
-         oDS7D2QZ3KriexZPCMThZMR6bt0q2bzYuDzEqvS0=
+        b=ZtyFSAs0Jqwbs5LHned5OwFrccwsZ+vWtZLV+AFW4s67tPoJsHe2oB8wWK7VbZ5wz
+         g3F9ZZeIUOTI1VXBdZAN2Fv+9qif8V5CbkIOen8IYkQxGtgSl1TnO1Mz2DMZxnWYW2
+         p3GdIWKfBohkBodRN7cmFJacA/jvuTaRv3QlwjNk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Justin M. Forbes" <jforbes@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 259/329] perf tools: Fix dynamic libbpf link
-Date:   Mon, 17 May 2021 16:02:50 +0200
-Message-Id: <20210517140310.872385968@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.4 119/141] xhci: Do not use GFP_KERNEL in (potentially) atomic context
+Date:   Mon, 17 May 2021 16:02:51 +0200
+Message-Id: <20210517140246.801184391@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,74 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ad1237c30d975535a669746496cbed136aa5a045 ]
+commit dda32c00c9a0fa103b5d54ef72c477b7aa993679 upstream.
 
-Justin reported broken build with LIBBPF_DYNAMIC=1.
+'xhci_urb_enqueue()' is passed a 'mem_flags' argument, because "URBs may be
+submitted in interrupt context" (see comment related to 'usb_submit_urb()'
+in 'drivers/usb/core/urb.c')
 
-When linking libbpf dynamically we need to use perf's
-hashmap object, because it's not exported in libbpf.so
-(only in libbpf.a).
+So this flag should be used in all the calling chain.
+Up to now, 'xhci_check_maxpacket()' which is only called from
+'xhci_urb_enqueue()', uses GFP_KERNEL.
 
-Following build is now passing:
+Be safe and pass the mem_flags to this function as well.
 
-  $ make LIBBPF_DYNAMIC=1
-    BUILD:   Doing 'make -j8' parallel build
-    ...
-  $ ldd perf | grep libbpf
-        libbpf.so.0 => /lib64/libbpf.so.0 (0x00007fa7630db000)
-
-Fixes: eee19501926d ("perf tools: Grab a copy of libbpf's hashmap")
-Reported-by: Justin M. Forbes <jforbes@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Michael Petlan <mpetlan@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20210508205020.617984-1-jolsa@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ddba5cd0aeff ("xhci: Use command structures when queuing commands on the command ring")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210512080816.866037-4-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/Makefile.config | 1 +
- tools/perf/util/Build      | 7 +++++++
- 2 files changed, 8 insertions(+)
+ drivers/usb/host/xhci.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index ce8516e4de34..2abbd75fbf2e 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -530,6 +530,7 @@ ifndef NO_LIBELF
-       ifdef LIBBPF_DYNAMIC
-         ifeq ($(feature-libbpf), 1)
-           EXTLIBS += -lbpf
-+          $(call detected,CONFIG_LIBBPF_DYNAMIC)
-         else
-           dummy := $(error Error: No libbpf devel library found, please install libbpf-devel);
-         endif
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index e2563d0154eb..0cf27354aa45 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -140,7 +140,14 @@ perf-$(CONFIG_LIBELF) += symbol-elf.o
- perf-$(CONFIG_LIBELF) += probe-file.o
- perf-$(CONFIG_LIBELF) += probe-event.o
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1397,7 +1397,7 @@ static int xhci_configure_endpoint(struc
+  * we need to issue an evaluate context command and wait on it.
+  */
+ static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
+-		unsigned int ep_index, struct urb *urb)
++		unsigned int ep_index, struct urb *urb, gfp_t mem_flags)
+ {
+ 	struct xhci_container_ctx *out_ctx;
+ 	struct xhci_input_control_ctx *ctrl_ctx;
+@@ -1428,7 +1428,7 @@ static int xhci_check_maxpacket(struct x
+ 		 * changes max packet sizes.
+ 		 */
  
-+ifdef CONFIG_LIBBPF_DYNAMIC
-+  hashmap := 1
-+endif
- ifndef CONFIG_LIBBPF
-+  hashmap := 1
-+endif
-+
-+ifdef hashmap
- perf-y += hashmap.o
- endif
+-		command = xhci_alloc_command(xhci, true, GFP_KERNEL);
++		command = xhci_alloc_command(xhci, true, mem_flags);
+ 		if (!command)
+ 			return -ENOMEM;
  
--- 
-2.30.2
-
+@@ -1524,7 +1524,7 @@ static int xhci_urb_enqueue(struct usb_h
+ 		 */
+ 		if (urb->dev->speed == USB_SPEED_FULL) {
+ 			ret = xhci_check_maxpacket(xhci, slot_id,
+-					ep_index, urb);
++					ep_index, urb, mem_flags);
+ 			if (ret < 0) {
+ 				xhci_urb_free_priv(urb_priv);
+ 				urb->hcpriv = NULL;
 
 
