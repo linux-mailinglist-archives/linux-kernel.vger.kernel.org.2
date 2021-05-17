@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6A3383B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177E0383B77
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236339AbhEQRiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 13:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        id S236500AbhEQRkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 13:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbhEQRiH (ORCPT
+        with ESMTP id S236416AbhEQRke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 13:38:07 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A01C061573;
-        Mon, 17 May 2021 10:36:50 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d11so7283560wrw.8;
-        Mon, 17 May 2021 10:36:50 -0700 (PDT)
+        Mon, 17 May 2021 13:40:34 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBC4C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:39:17 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id q2so5430047pfh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:39:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7XsYTUx1bd2TMLBzGLJMdAv8774GZAoLJjC4TPLuaiE=;
-        b=hAI95AmEoPquzZm0RQNsHAvyYi3ps+FRa0T3uqSpNIyEqe30W6NP6MUWGtv6dd9tGO
-         OVCfSkcdPwj9hMt7mIsTvql6WvP5FFWk6j5N3hAPqv2yaDWyORNFp6rThhOXHrUQQ8TA
-         S+B+UvMefGprWPt4BxvUH39jRz9TLJCQbhAo/CXu5k2qN8KNEP67/ClzVwzpXzRbMk3n
-         HEMap4DjS0ua8MYXSYzodqiBNgZTbgViS9yllUTCJiqy3w4kl04HohSQUlf+YcvfGoFV
-         tKmCK8u4hlVhfFrk4OomxLtnWgjgFTiD42JlYNhKM0GC4gZljsCoUBrCm2j7t/q0D2/+
-         Hyfg==
+        bh=hvub6CXwv1swv1fPBWV3j29OzzOASCX1eigrFawcdJA=;
+        b=MXSffpKw04H3Myy+0OBpJX1eRwj4cYwVMw47+31Z9xzgcAtyA5P1sJKI/NVjE9DhP2
+         m9Uo/i/WyPaRIV73zK40aQhGdfZXXNs75uT2eQbi//h9KgLue9kZQ5KUW6pbFDcBiZYG
+         w8eW52GVY5phUQIP6ASC5EOwf/wTjXLFCS0A8sWldQMdDy/UPFAtrMZVtfH+08TjPrmw
+         kWD5kxDctKfXEsQBcco7moW4P8oa+NXQhbp0wFW8D4hpkgbNLETdpwWrQUeND/Un6xsa
+         9cn8vsAyu1lxKhlVu/bCAfTOu0EGLLCBYy3Xlfi3KjzId2qfkePAybrNPtrNeaIyyaTm
+         wBKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7XsYTUx1bd2TMLBzGLJMdAv8774GZAoLJjC4TPLuaiE=;
-        b=jFeqiR2YkTrantVReGCcrLjI8E+B8GBu4B7yYbHMsr4ZM5E+LLt2hHFKRegR2CPkLl
-         jpIwBA00QIdjuMzB7uSybNXeTmnSRZtcks+qXcCkAVH52sLYf5UJFizgPoShtLlbdAHd
-         h/h1u5zgO5xmd2xUYctl6dDBodH3NuCHTxb8dXrlgRfqcKq9fOtREl12fQEMVcDYLSie
-         f0qOTNfVlB15L6UYGiOljuPFM/kt5XiycrTdyTPiTaSs4fK271gfhiY7cA+DISu0eHPB
-         P1Kkl9BGV1y5sBXMU19p4dhYXPO1mA3QKLjYQF4zqf2onGQ8cDDWiJBnDDOVeEjitvL6
-         IAnQ==
-X-Gm-Message-State: AOAM531AyztHtKqPPnEB2nnTa7LrUoSuIl4lQPMGc7tQEZ6rR37T4dyf
-        2VvUq5h3GEc56cRoWxf6ar0=
-X-Google-Smtp-Source: ABdhPJyTMCRrbZJtlGWzjFOP+iisuO5V0f43VIB3BybJky/mau5jTY9tY1T+msh+QRwo75w6j5rHug==
-X-Received: by 2002:a5d:4b10:: with SMTP id v16mr922886wrq.259.1621273008861;
-        Mon, 17 May 2021 10:36:48 -0700 (PDT)
-Received: from pevik ([62.201.25.198])
-        by smtp.gmail.com with ESMTPSA id g4sm15010689wmk.45.2021.05.17.10.36.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hvub6CXwv1swv1fPBWV3j29OzzOASCX1eigrFawcdJA=;
+        b=n8YpyneA9WEseHtYQRR6GUVC/2jDiTezzDZRPj2BTVF7rOOcDlsOmUJHxJlWobatWA
+         reHcJqy8zhgbTzN/XwrMIVVVRuXBxo9nWbsDsA1mifqpJDHB/KtAWCaDd1SwmLnLaIT6
+         HBsu3hgba3dpRLd0bGNaBQ0h7/tk96QHFe5Bc7MszVQWy3oTljO5cBusOUWzniH98CtG
+         SZtu3Hh7Xgcg6nhetzpbVUNdcnuB1GVqkMgk8LtMoasYVvplVeLlyFPxzPXyQ/b8dk/u
+         umPT/X8L++3d04BzeqxXrA1oVG2ha82hF1/FzT/2rO371EenOgwCOJQvHMp/gBNzCkyA
+         6rTQ==
+X-Gm-Message-State: AOAM532HGmsgtJ/AyLTnWJe6az6GZl6Bf5QBoJkaK4g8DMoW57ytEtUx
+        XYlK+kmE/evVQFHH8CPrirKq3A==
+X-Google-Smtp-Source: ABdhPJyPw5UV6J978V3Si3HhKjvcrULfDqvYAgy5AE7RccNMNlTjfVEHILrs+ULlrqM+9B6iKQbqNA==
+X-Received: by 2002:a63:9c7:: with SMTP id 190mr659228pgj.149.1621273157269;
+        Mon, 17 May 2021 10:39:17 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id p1sm10080539pfp.137.2021.05.17.10.39.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 10:36:48 -0700 (PDT)
-Date:   Mon, 17 May 2021 19:36:46 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Heiko Thiery <heiko.thiery@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stephen@networkplumber.org,
-        Dmitry Yakunin <zeil@yandex-team.ru>
-Subject: Re: [PATCH iproute2-next v3] lib/fs: fix issue when
- {name,open}_to_handle_at() is not implemented
-Message-ID: <YKKprl2ukkR7Djv+@pevik>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20210508064925.8045-1-heiko.thiery@gmail.com>
- <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
+        Mon, 17 May 2021 10:39:16 -0700 (PDT)
+Date:   Mon, 17 May 2021 17:39:13 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Jon Kohler <jon@nutanix.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Juergen Gross <jgross@suse.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>
+Subject: Re: [PATCH] KVM: x86: add hint to skip hidden rdpkru under
+ kvm_load_host_xsave_state
+Message-ID: <YKKqQZH7bX+7PDjX@google.com>
+References: <20210507164456.1033-1-jon@nutanix.com>
+ <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
+ <5e01d18b-123c-b91f-c7b4-7ec583dd1ec6@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
+In-Reply-To: <5e01d18b-123c-b91f-c7b4-7ec583dd1ec6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 5/8/21 12:49 AM, Heiko Thiery wrote:
-> > With commit d5e6ee0dac64 the usage of functions name_to_handle_at() and
-> > open_by_handle_at() are introduced. But these function are not available
-> > e.g. in uclibc-ng < 1.0.35. To have a backward compatibility check for the
-> > availability in the configure script and in case of absence do a direct
-> > syscall.
+On Mon, May 17, 2021, Paolo Bonzini wrote:
+> On 14/05/21 07:11, Andy Lutomirski wrote:
+> > I don't even want to think about what happens if a perf NMI hits and
+> > accesses host user memory while the guest PKRU is live (on VMX -- I
+> > think this can't happen on SVM).
+> 
+> This is indeed a problem, which indeed cannot happen on SVM but is there on
+> VMX.  Note that the function above is not handling all of the xstate, it's
+> handling the *XSAVE state*, that is XCR0, XSS and PKRU.  Thus the window is
+> small, but it's there.
+> 
+> Is it solvable at all, without having PKRU fields in the VMCS (and without
+> masking NMIs in the LAPIC which would be too expensive)?  Dave, Sean, what
+> do you think?
 
-> > Fixes: d5e6ee0dac64 ("ss: introduce cgroup2 cache and helper functions")
-> > Cc: Dmitry Yakunin <zeil@yandex-team.ru>
-> > Cc: Petr Vorel <petr.vorel@gmail.com>
-> > Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-> > ---
-> > v3:
-> >  - use correct syscall number (thanks to Petr Vorel)
-> >  - add #include <sys/syscall.h> (thanks to Petr Vorel)
-> >  - remove bogus parameters (thanks to Petr Vorel)
-> >  - fix #ifdef (thanks to Petr Vorel)
-> >  - added Fixes tag (thanks to David Ahern)
-> >  - build test with buildroot 2020.08.3 using uclibc 1.0.34
-
-> > v2:
-> >  - small correction to subject
-> >  - removed IP_CONFIG_HANDLE_AT:=y option since it is not required
-> >  - fix indentation in check function
-> >  - removed empty lines (thanks to Petr Vorel)
-> >  - add #define _GNU_SOURCE in check (thanks to Petr Vorel)
-> >  - check only for name_to_handle_at (thanks to Petr Vorel)
-
-> >  configure | 28 ++++++++++++++++++++++++++++
-> >  lib/fs.c  | 25 +++++++++++++++++++++++++
-> >  2 files changed, 53 insertions(+)
-
-
-> applied to iproute2-next.
-
-Thanks a lot!
-
-I guess, it'll be merged to regular iproute2 in next merge window (for 5.14).
-
-Kind regards,
-Petr
+The least awful solution would be to have the NMI handler restore the host's
+PKRU.  The NMI handler would need to save/restore the register, a la CR2, but the
+whole thing could be optimized to run if and only if the NMI lands in the window
+where the guest's PKRU is loaded.
