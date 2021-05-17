@@ -2,82 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9128B382C91
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DE6382CA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237147AbhEQMv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:51:56 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48895 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234579AbhEQMvw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:51:52 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-149-wut8-mPqOHOv3M2Sd2gB7Q-1; Mon, 17 May 2021 13:50:33 +0100
-X-MC-Unique: wut8-mPqOHOv3M2Sd2gB7Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 17 May 2021 13:50:30 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 17 May 2021 13:50:30 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Neal Cardwell' <ncardwell@google.com>,
-        louisrossberg <louisrossberg@protonmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
-Subject: RE: Listening on a TCP socket from a Kernel Module
-Thread-Topic: Listening on a TCP socket from a Kernel Module
-Thread-Index: AQHXSr+3GMYNZUgdCkOEAPNeLW2sIqrnnyqg
-Date:   Mon, 17 May 2021 12:50:30 +0000
-Message-ID: <576922badb254ef0a73443a7752ba9c8@AcuMS.aculab.com>
-References: <5J_z4QNPMBAk4y0rGshI7mBykT1tivh3037CbQRYXTu_Ra6zuojEcI0RB04ghXQxgdtDbt3YFv6sA882mrFyTdzQePwHwvLoECnqFTnYNZI=@protonmail.com>
- <CADVnQymGvCTEzdd8dSLZnn0dwnHAoNiwo72yEFeNr47+Na8GDg@mail.gmail.com>
-In-Reply-To: <CADVnQymGvCTEzdd8dSLZnn0dwnHAoNiwo72yEFeNr47+Na8GDg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S235106AbhEQM63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:58:29 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42844 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233441AbhEQM62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:58:28 -0400
+Received: from zn.tnic (p200300ec2f061b004a70cca8b839c355.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:1b00:4a70:cca8:b839:c355])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CCFDC1EC01B5;
+        Mon, 17 May 2021 14:57:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621256230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=4ZTxHuIXLkDq2ilVFphM2z7wrM4IP5A2RNR6g3B+MWI=;
+        b=nMS3bRrXZ7K9CZaH3CdMjqOW+HMOYJhrn8/mTQ3xMrRiMvTfrwImGNKZbyiX9h5DDEc2gl
+        i7vjYpp2S+C+sTJykl5wmbM6hRm62wthSHoh4foT5h4lh23fBZDDUzQT6DNqX9DW0fyHwf
+        6eSwHfEDx/xhuLtNvzuX/WXAPv1DLF4=
+Date:   Mon, 17 May 2021 14:57:04 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <Yazen.Ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH 00/25] AMD MCA Address Translation Updates
+Message-ID: <YKJoICQzD/o7ZPBp@zn.tnic>
+References: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTmVhbCBDYXJkd2VsbA0KPiBTZW50OiAxNyBNYXkgMjAyMSAwMjo1NQ0KPiANCj4gT24g
-U3VuLCBNYXkgMTYsIDIwMjEgYXQgNzoyMCBQTSBsb3Vpc3Jvc3NiZXJnDQo+IDxsb3Vpc3Jvc3Ni
-ZXJnQHByb3Rvbm1haWwuY29tPiB3cm90ZToNCj4gPg0KPiA+IEhlbGxvLCBjYW4gc29tZWJvZHkg
-cG9pbnQgbWUgaW4gdGhlIHJpZ2h0IGRpcmVjdGlvbiBmb3INCj4gPiB3aGF0IEkgd291bGQgdXNl
-IHRvIGxpc3RlbiBvbiBhIFRDUCBzb2NrZXQgZnJvbSB0aGUNCj4gPiBrZXJuZWw/IEkgYW0gd29y
-a2luZyBvbiBhIGtlcm5lbCBtb2R1bGUgYW5kIGhhdmUgc3BlbnQgdGhlDQo+ID4gcGFzdCBkYXkg
-bG9va2luZyB0aHJvdWdoIGluY2x1ZGUvbmV0IGFuZCBpbmNsdWRlL2xpbnV4IGZvcg0KPiA+IHNv
-bWV0aGluZyB0aGF0IHdvdWxkIGFsbG93IG1lIHRvIGRvIHNvLiBJIGtub3cgVENQDQo+ID4gbGlz
-dGVuaW5nIGlzIHR5cGljYWxseSBkb25lIGluIHVzZXJzcGFjZSwgYnV0IGl0IHNob3VsZCBiZQ0K
-PiA+IHBvc3NpYmxlIGF0IHRoZSBrZXJuZWwgbGV2ZWwgcmlnaHQ/ICB0Y3BfZGlhZyBsb29rcw0K
-PiA+IHByb21pc2luZywgYnV0IGl0IHNlZW1zIGxpa2UgdGhhdCBpcyBtYWlubHkgZm9yIG1vbml0
-b3JpbmcNCj4gPiBzb2NrZXRzLCBhbmQgSSdtIG5vdCBzdXJlIGlmIEkgd291bGQgYmUgYWJsZSB0
-byBwcm92aWRlDQo+ID4gcmVzcG9uc2VzIGZyb20gaXQuDQo+ID4NCj4gPiBMb3VpcyBSb3NzYmVy
-ZywNCj4gPiBXYXJwZWQgVGVjaG5vbG9naWVzDQo+IA0KPiBQZXJoYXBzIGtlcm5lbF9saXN0ZW4o
-KSBhbmQgcmVsYXRlZCBmdW5jdGlvbnMgKGtlcm5lbF9iaW5kKCksDQo+IGtlcm5lbF9hY2NlcHQo
-KSwgZXRjLikgaW4gbmV0L3NvY2tldC5jIG1pZ2h0IGRvIHRoZSB0cmljayBmb3IgeW91ciB1c2UN
-Cj4gY2FzZT8gTG9va2luZyBhdCBob3cgdGhlIGNhbGxlcnMgb2YgdGhlc2UgZnVuY3Rpb25zIHN0
-cnVjdHVyZSB0aGVpcg0KPiBjb2RlIG1pZ2h0IGdpdmUgeW91IGVub3VnaCB0byBnbyBvbi4NCg0K
-VGhleSBzaG91bGQgd29yay4NClRoZXJlIGFyZSBhIGNvdXBsZSBvZiBpc3N1ZXMgdGhvdWdoOg0K
-LSBUaGVyZSBpcyBubyBnZXRzb2Nrb3B0KCkgc3VwcG9ydCBpbiBjdXJyZW50IGtlcm5lbHMuDQot
-IFlvdSBtYXkgbmVlZCB0byB1c2UgX19zb2NrX2NyZWF0ZSgpIHJhdGhlciB0aGFuIHNvY2tfY3Jl
-YXRlX2tlcm4oKQ0KICBpbiBvcmRlciB0byBob2xkIGEgcmVmZXJlbmNlIHRvIHRoZSBuZXR3b3Jr
-IG5hbWVzcGFjZS4NCkl0IG1heSBiZSBwb3NzaWJsZSB0byB1c2UgdGhlIHdha2V1cCBjYWxsYmFj
-a3MgdGhhdCBzZWxlY3QvcG9sbCB1c2UuDQpCdXQgaXQgaXMgcHJvYmFibHkgc2FmZXIgdG8gdXNl
-IGJsb2NraW5nIG9wZXJhdGlvbnMgZnJvbSBhIHNlcGFyYXRlDQprZXJuZWwgdGhyZWFkLg0KDQoJ
-RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
-dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
-OTczODYgKFdhbGVzKQ0K
+On Fri, May 07, 2021 at 03:01:15PM -0400, Yazen Ghannam wrote:
+> Patches 1-24 do the refactor without adding new system support. The goal
+> is to break down the translation algorithm into smaller chunks. There
+> are some simple wrapper functions defined. These will be filled in when
+> supporting newer systems. The intention is that new system support can
+> be added without any major refactor. I tried to make a patch for each
+> logical change. There's a bit of churn so as to not break the build with
+> each change. I think many of these patches can be squashed together, if
+> desired. The top level function was split first, then the next level of
+> functions, etc. in a somewhat breadth-first approach.
 
+No, that's great what you did and keeping each logical change in a
+single patch is a lot easier on everybody involved.
+
+Now, looking at this - and I know we've talked about this before - but:
+
+umc_normaddr_to_sysaddr() is used only in amd64_edac.c.
+amd_df_indirect_read() is used only by this function, so how about
+moving both to amd64_edac, where they're needed and then doing the
+refactoring ontop?
+
+You can simply reuse your current patches - just change the file they
+patch from
+
+arch/x86/kernel/cpu/mce/amd.c
+
+to
+
+drivers/edac/amd64_edac.c
+
+I went through te umc_... function and AFAICT, it doesn't need any core
+MCE facilities so it should be just fine in EDAC land.
+
+Or?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
