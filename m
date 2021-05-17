@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3498382C81
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E63382C86
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234880AbhEQMrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231591AbhEQMrn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:47:43 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD24C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 05:46:25 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id z1so2985063qvo.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 05:46:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=US7LpJWCwtTmFe0Y8kLTeXtbSfCIEwq3UZFrYiM9u4c=;
-        b=SxM/7RVHpba+L5Xt5BhFbsOC3V88HhUnMKoyePQGE6WaILJzZDs+jWlR7fhVDQ5XoR
-         B9cWducwqElS89loGL8jnaLV88WhUg1mcik87unj2Zk1abJFRr1v70rv5senetfLqJjW
-         MJIYokWCm/v8sQldUk0uExPs8VQHs2hi53wxXAedDRZ/yDaosI96UTWsk7CZHeWRdYz8
-         OeuEO0EGu5TJSKVG+IO8bhzp6ZMi6N5CJI1BjV/JKHo8OZlDGJFi7abdDlbLfb3HfKLY
-         8rGTLw+ZYed+2hcAJTTBVwkCmUgOcPumTd8uJOF7CMXLqfNZQT3YufAAedU6ctJ0kB/v
-         wE1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=US7LpJWCwtTmFe0Y8kLTeXtbSfCIEwq3UZFrYiM9u4c=;
-        b=mu2fhsVf+xxOZV2Juhkga3+Hq+LqIdvCbHRy7k49zNLgYiVCXjsUYiwLvQgiSOPJUM
-         k/fzLdUr+bOb1jIja58qHoA0Q2OtIfvvFzOQsf/j+BXG4aCj219KDNg30jlwjnb7kcAg
-         fQYvLmqBoOCZsdkreWWkSnV0h2YHZ1HQeQeya7wvcXN6SEULIxhVvW/itXeTGDlnblJQ
-         F39gDNljyztSIW30EmG5apC158PuacRu3kztQCcnlFI2sYUUYvHwrmQ/PijgLteDbfCa
-         SBbioUdEf0HX/OKF+1fSnIwPp9MlqUFoL1lJ8+RP4491xptc4wOxa4aGzhAxomsgtaIb
-         WMvQ==
-X-Gm-Message-State: AOAM530UXE1t3xAbqe67ag8wpacaUSLCfBhc6AROkCuUu/0rzYha3fCi
-        TfKU5imtWXYvl0kZfvly9Y2rNDXKecy4wTYxlxmezg==
-X-Google-Smtp-Source: ABdhPJytLMaCWze97hp4sqs2640skpJNc9pqDB3xaTeoD8HOdx//AFSEpd4TYu6tRlbapl/3Thh/UDKpTCU/BJkFYVw=
-X-Received: by 2002:a05:6214:1705:: with SMTP id db5mr19714811qvb.13.1621255584959;
- Mon, 17 May 2021 05:46:24 -0700 (PDT)
+        id S235191AbhEQMuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:50:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:51349 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231591AbhEQMuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:50:02 -0400
+IronPort-SDR: YF70JEQkgZ48XpCbe1bmbPVD8iR37xo/+moDgL172TwEnq3NgrdpzrQnn+YLYh+He9w3DQRpQJ
+ qrWFNPrXL7PA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="187578091"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="187578091"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 05:48:45 -0700
+IronPort-SDR: 0iqaCaLL/nRgIUzfPqPFVrA5Adm9a+cbAfgyhgATnOgNzsNALeh1jOKGNkkI1awIX8jQea7V3n
+ k8PJDYI1xjCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="460291356"
+Received: from aubrey-app.sh.intel.com (HELO [10.239.53.25]) ([10.239.53.25])
+  by fmsmga004.fm.intel.com with ESMTP; 17 May 2021 05:48:42 -0700
+Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
+ callback
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
+ <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
+ <47d29f1d-cea6-492a-5125-85db6bce0fa7@linux.intel.com>
+ <20210513073112.GV2633526@linux.vnet.ibm.com>
+ <5823f298-6fae-5a73-3ab8-f708d90a7e52@linux.intel.com>
+ <20210517104058.GW2633526@linux.vnet.ibm.com>
+From:   Aubrey Li <aubrey.li@linux.intel.com>
+Message-ID: <9d493353-7a27-16aa-3e99-c6a07e69de25@linux.intel.com>
+Date:   Mon, 17 May 2021 20:48:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <000000000000b3d89a05c284718f@google.com> <YKJTNcpqVN6gNIHV@hirez.programming.kicks-ass.net>
-In-Reply-To: <YKJTNcpqVN6gNIHV@hirez.programming.kicks-ass.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 17 May 2021 14:46:13 +0200
-Message-ID: <CACT4Y+bucS5_6=rcEEpe+t8p_m3PQVzU5U+u+++ZSVG8E9zzmg@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in __perf_install_in_context
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     syzbot <syzbot+0fb24f56fa707081e4f2@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
-        kpsingh@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210517104058.GW2633526@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:28 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, May 17, 2021 at 03:56:22AM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    18a3c5f7 Merge tag 'for_linus' of git://git.kernel.org/pub..
-> > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1662c153d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b8ac1fe5995f69d7
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=0fb24f56fa707081e4f2
-> > userspace arch: riscv64
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+0fb24f56fa707081e4f2@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 8643 at kernel/events/core.c:2781 __perf_install_in_context+0x1c0/0x47c kernel/events/core.c:2781
-> > Modules linked in:
-> > CPU: 1 PID: 8643 Comm: syz-executor.0 Not tainted 5.12.0-rc8-syzkaller-00011-g18a3c5f7abfd #0
-> > Hardware name: riscv-virtio,qemu (DT)
->
-> How serious should I take this thing? ARM64 and x86_64 don't show these
-> errors.
+On 5/17/21 6:40 PM, Srikar Dronamraju wrote:
+> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-14 12:11:50]:
+> 
+>> On 5/13/21 3:31 PM, Srikar Dronamraju wrote:
+>>> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-12 16:08:24]:
+>>>> On 5/7/21 12:45 AM, Srikar Dronamraju wrote:
+> 
+> <snip>
+> 
+>>>> Also, for those frequent context-switching tasks with very short idle,
+>>>> it's expensive for scheduler to mark idle/busy every time, that's why
+>>>> my patch only marks idle every time and marks busy ratelimited in
+>>>> scheduler tick.
+>>>>
+>>>
+>>> I have tried few tasks with very short idle times and updating nr_busy
+>>> everytime, doesnt seem to be impacting. Infact, it seems to help in picking
+>>> the idler-llc more often.
+>>>
+>>
+>> How many CPUs in your LLC?
+> 
+> I have tried with X86, 48 CPUs, 2 nodes, each having 24 CPUs in LLC
+> +
+> POWER10, Multiple CPUs with 4 CPUs in LLC
+> +
+> POWER9, Multiple CPUs with 8 CPUs in LLC
+> 
+>>
+>> This is a system with 192 CPUs, 4 nodes and each node has 48 CPUs in LLC
+>> domain.
+>>
+> 
+> Okay,
+> 
+>> It looks like for netperf both TCP and UDP cases have the notable change
+>> under 2 x overcommit, it may be not interesting though.
+>>
+>>
+> 
+> I believe the extra load on this 24 core LLC could be because we may end up
+> trying to set the idle-core, even when there is no idle core available.
+> 
+> If possible, can you please give a try with v3 with the call to
+> set_next_idle_core commented out?
+> 
+> 
 
-+riscv mainters for this question
-Is perf on riscv considered stable?
+v3 seems not be applicable on tip/sched/core 915a2bc3c6b7?
