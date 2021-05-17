@@ -2,154 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357C2382587
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F16438257F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235375AbhEQHmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235372AbhEQHm2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:42:28 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7155CC061761
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:40:57 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id n2so7684466ejy.7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:40:57 -0700 (PDT)
+        id S235392AbhEQHlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:41:42 -0400
+Received: from mail-bn7nam10on2055.outbound.protection.outlook.com ([40.107.92.55]:59617
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235357AbhEQHlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:41:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ffchRFe73SzQZstOEla4qtDSUn8lB4/b4D8wW/yDw+MJb3khtHX8oTqcK3r+hU0xEH5wxikkjz6kXOzP7dSedO5hycWZeKaUd8de21rXqfasuNUzT4Ih9H0Qy/H9btvkVtceExuOEAO0tvv/WBKg0XvMU5uOSJD3CCjOzU6p/7feWFsYxVuwkP/5VLRLGMOXJq0d9SxPSAoF0bYGYqvZJ0bpvOq0+VJ+kK5XHh38Pd5dtuKnrR7MmvfHGNh5Z5sf1xQ549UvNIKYeJypSyfjtfHqUO6BQsRj3CzmW2Ha+ZYB5LcHGXr4ZBpT22ONDkNtOKCy3KULGwhXV9D/2uzpIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p63QmlrIqLy0lHz3U7W7gyM86gQzm39eGs15jDMi/5g=;
+ b=Pd7iPJL2nbiMTIrXmO9IUnimh6ibb+sAebRXosYoNxayfQniv1yyFvWdXFOmBN2iW/fatOxdqVxvjOjt3JSQxGwIchqC6jypQJxJdOobHw6oN3X6rOyH4vw2TYdvz5esKCg/kIzv0p98graijYx17sqjdOk7ZwhH/rNTo7R/VbES7J+21fD9biritZs+6rin8cfIcKBffvZosMdv/4gMmcR+VSz7FkXLmmHjclZkVsY7umlupjrlBgZfSwxfvKCjPU+9AnSI89mq3GAaI6N+v3K9cHrkYW0VMM0nK0UZi7LBmtJhwmWdRiMUAy9GkTfKnjl8YZ2rwlVN3HuOyjPSzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B8FVvdrYV7pRJNP/rUxfxaSr7LQz2pvmtedFAKqPA5s=;
-        b=CSFvg+tjQEVYhc705mOMRwpzk8Gqt8xv+H0Ikr17UUGkrdXsoTWL0M/0aboeQW7SL0
-         WGnU4bdI0p5NbtPBxoIeo/1cgqFGkNieW6G7xHDeOo+2I+gaAhQxABCrVRSNg5NWzPMn
-         3o9RmP2fWWxIhM54sngD7vFBAb3B0wP539qc0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=B8FVvdrYV7pRJNP/rUxfxaSr7LQz2pvmtedFAKqPA5s=;
-        b=grCD3f8Q7Fh/3fcWVIFJEOyPoTHdwq58sP8CoOepN5NblzXNbO5yuhzG1zbTGYQHUc
-         B+aYhrPsbaEVdsWKDLR8vp5PwLwyy2eRd0oEByrTBWkLKmSHCBLp2hp6R2T8U6gS43hh
-         Ts/s/QGxIi3hA/dUEzqevLVrJl4YfHL/l3Y2/awgRrT3s92KFVn8OMWnQnHSLN4cf9Ra
-         pquP+4Vop+wsdhlltfY1AhL5OB9/MxzWoneaMLJWHGbOlA5fEYktECwirwHZ9eJ+R+OX
-         FAUGfShP+dEMSnfUn/nvzFqKQjHdgCQvwTfkid4t7QtRDTqEEbvJp6zUcDfk1hUf5RXv
-         cnUw==
-X-Gm-Message-State: AOAM53085u+sZKEvRq+XpnR1TgET5qf0bOSt0FgEYttN1U5SzarljugO
-        fvZBHJLA9mPbrLJGAT1VF+sSDA==
-X-Google-Smtp-Source: ABdhPJxsNKvac4CwIYd6QJnPC6F9qO8I0E39FRtgpcmyeUqnVrz/aM5qdvLz6CPniRZqwmrChq++FA==
-X-Received: by 2002:a17:906:cb1:: with SMTP id k17mr60265688ejh.307.1621237256090;
-        Mon, 17 May 2021 00:40:56 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p14sm6814861ejz.51.2021.05.17.00.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 00:40:55 -0700 (PDT)
-Date:   Mon, 17 May 2021 09:40:53 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
-Message-ID: <YKIeBdwFb9Ng275X@phenom.ffwll.local>
-Mail-Followup-To: Arnd Bergmann <arnd@arndb.de>,
-        Dave Airlie <airlied@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <YJ42MEgwDZrAEQLl@kroah.com>
- <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p63QmlrIqLy0lHz3U7W7gyM86gQzm39eGs15jDMi/5g=;
+ b=GX2ey0/dhEr3/aLYhHC0YwNOxu3CFLY1OzyXx54JxXbFj3WvHDolBh8BGGsWhGfT5JGYANoBAIt2p81ifj+O7BjWWkNjcC0vVaDLF4gYliJx95MYvYZBIsnofxchMUfnDmWbeEupDMCI0M9nmwkI+ihuWqBJCR1LJRmyjNXwc14=
+Authentication-Results: zeniv.linux.org.uk; dkim=none (message not signed)
+ header.d=none;zeniv.linux.org.uk; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM6PR11MB4202.namprd11.prod.outlook.com (2603:10b6:5:1df::16)
+ by DM6PR11MB3866.namprd11.prod.outlook.com (2603:10b6:5:199::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Mon, 17 May
+ 2021 07:40:18 +0000
+Received: from DM6PR11MB4202.namprd11.prod.outlook.com
+ ([fe80::60c5:cd78:8edd:d274]) by DM6PR11MB4202.namprd11.prod.outlook.com
+ ([fe80::60c5:cd78:8edd:d274%5]) with mapi id 15.20.4129.031; Mon, 17 May 2021
+ 07:40:17 +0000
+From:   qiang.zhang@windriver.com
+To:     viro@zeniv.linux.org.uk, axboe@kernel.dk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: simplify super destroy
+Date:   Mon, 17 May 2021 15:41:17 +0800
+Message-Id: <20210517074117.7748-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR02CA0128.apcprd02.prod.outlook.com
+ (2603:1096:202:16::12) To DM6PR11MB4202.namprd11.prod.outlook.com
+ (2603:10b6:5:1df::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK2PR02CA0128.apcprd02.prod.outlook.com (2603:1096:202:16::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Mon, 17 May 2021 07:40:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 80e66a83-7a55-4682-e74a-08d919070418
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3866:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB3866DF6F1D4D70F48EB4809EFF2D9@DM6PR11MB3866.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:119;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /4jgc766WsqIrsSejW8IqySvjprhbUfMIs/1ohYwjl7sL+UHcIRpXwMf+z+sozM7iVeGVJ/Tqb6/YBCSbn9phV31KosKPA05UX/TO3tnRUvY8EMwOuh5iUhG+0UgNFMy0Zi1pUsfpQFhLAY2jCrHCsxUmWBnlajf9CVubch2zjey7KXtaX8SEcaxBP/9QOAdz5gIdilMAIs5eVbs0qg18Q/RkfWw3Gs/BlCuh8nu06S+hw1TF7Yx1f6HX1owfEzY6znxf/QRjNL9AglrPm4OIfKJlAydUUZ1nJDJhIjWjNODcBoU28Ghb7R8I4bFH0sYvph+heYZY9UOuafW6kUNVXQKu8yQ04uUqvD7WGaA222WzZ0TiHBPKaid2pGQfFJAmY/KbrlB8pOF/je/MjZGi3uI+6uloL8GjteYI5KMfKt+2q67enSpnR7L2TsP1pdmPHQqNLEsIb6MxeVC45+lmfJVkGfaLlNjpdtMn2jQ0tLQeBoWRouQoi3TUbIFNNiG/mcCI/pdcD+SqpDcl1q0ROBCq2sWv3q7WqVc1eIl9o00y1SeIGfZlXtTjWTNORprnCNGqi7fN0qnT0W6PWOexZssLHKfGpO0LyrvjGFtzYYYDJgfrvLvY3qEPQJ4tyHpE+9UFLJpi0Da156H99hrIQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4202.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(39840400004)(396003)(66556008)(4326008)(1076003)(6512007)(6506007)(36756003)(66476007)(52116002)(9686003)(66946007)(956004)(8936002)(5660300002)(8676002)(2906002)(6486002)(478600001)(16526019)(38100700002)(38350700002)(186003)(316002)(2616005)(83380400001)(86362001)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QT7KqFxNvaeuZdd5hAHkyGYZK77D77acYPfrozqcBwJ3Ik3LEymAaBIGgkGF?=
+ =?us-ascii?Q?DefO2180O4Tklsr0plFjPP96TZe0ik6yEkhbvZQacQTWmY3RvviAyaA/N0/V?=
+ =?us-ascii?Q?LpDspSemGjVKdeoPLHkVpRP4x/DJBU00OsUivuR0kwJf6sPn6RGrLGr0nX0s?=
+ =?us-ascii?Q?F1eHWL6TCqm+Z9nbivrD044KQ0PrYQav11FoQxOxMCICXB0UEG9Win1Rh1qO?=
+ =?us-ascii?Q?YgJp2Os0J93OflNQAvlNxlTn4v0xm0t37aLsBVNJihAUw4eOEPYfzRJVjYv5?=
+ =?us-ascii?Q?aqaQGeD/vQnJEhBwBC9AncjCR/crHBD5jPJ+qxPZPTn9PDhfAqlJCzosXZmm?=
+ =?us-ascii?Q?/kzUQFwpmAc/ydDasTAHtA/sCZp5VNY58BR9AIEHV98Odw69oEzCUGAg+j6V?=
+ =?us-ascii?Q?tut2TlQQxs1BMqROt3Z1P91VMNOq1MI9lCRZafagfrMbGVKK8/HS0gszS7u+?=
+ =?us-ascii?Q?yLJZuKROEiBOvv+xViw5zOLUAAnSbtJTRaNG/QZvum40r2BqJqaUwbiT60XH?=
+ =?us-ascii?Q?CopR1wVMktKHFgPkxYY42FTyS5R+OPAtU4Iu/s7L5zbwETQZuh3s95PWrrSg?=
+ =?us-ascii?Q?5W2EvwTRo2FYyJH37Ihg1o2L7XtVQG8KPh3ext3/1hBjQdQiBsuBwbxVvhyw?=
+ =?us-ascii?Q?+6GgVimhdmV8zodIMfuQ3HxXJndZSFREtybcyH/ggvm9dReB04YOWZhTV7lC?=
+ =?us-ascii?Q?y2StYUx68tAo2rwBYX+h+tNVqZp1DpR3+o2+QKS/A6rCMH3qEUBFZDx4Ver0?=
+ =?us-ascii?Q?931GzWHBzAQfD7KFBc8yaco5hDTWYwf3zgTc0kztZHBH/JrE7GXx/clpPFnl?=
+ =?us-ascii?Q?TKJ2t97qJd0p0D8scz12OzaUEzmt1AYbPwgx7Tg1dljEFP2WgH9axHHGKOdd?=
+ =?us-ascii?Q?vFoJrsrF4ZbAiJmQc2nIlwTYY0ESKbTicEGsrE2Lm7i0WC+THqcaMG3JZMNI?=
+ =?us-ascii?Q?ntmuHe4Pjx3MqZvzx1YFogxScMIO+cxl+PjRnns+OyIkDLC9xhW5z9IvAR5l?=
+ =?us-ascii?Q?jndNdbIX8aAeSbTGPV8OxjiQk3QVLEHSj4cgJrEpkBZBQrrnDpmy/giiqTBF?=
+ =?us-ascii?Q?mVnCGMWmhr2l2jUV7WjdQOFQDSPqRj0BtjN6VF5CE/GZP++oYZh0htqTDw5Y?=
+ =?us-ascii?Q?aqdV8dOYe7/RGGLTDsd1Yy2AFJQWuvyQTy6nTftRAEUCDtfuA8k536qYCdLZ?=
+ =?us-ascii?Q?RCIZQRO0Zt0azjjFKLnBaIj1VcpTiSfKYKwpLWSUY4GZmWd1xuCjFBAPQGuk?=
+ =?us-ascii?Q?YOl+vCYJRD4feNfpXT4GXRI6dfrCiXUrEfJkPjx7BAZljHydtU425Csc5B9o?=
+ =?us-ascii?Q?qSk2tGTNwhcsT2u9bDLW1nuC?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80e66a83-7a55-4682-e74a-08d919070418
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4202.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2021 07:40:17.5671
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s5f+kNJW53KyPuMZ0UiiAbcoEdymYzLqjHDzpixstxXD0ry9kjacqfRrg6ibQ0VXPED4kogVRWtfPtKnTFAKsvfTfTraGxV0on2c7sQVJ0E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3866
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
-> On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:
-> > > Dear kernel maintainers,
-> > >
-> > > This submission is a kernel driver to support Intel(R) Gaussian & Neural
-> > > Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-processor
-> > > available on multiple Intel platforms. AI developers and users can offload
-> > > continuous inference workloads to an Intel(R) GNA device in order to free
-> > > processor resources and save power. Noise reduction and speech recognition
-> > > are the examples of the workloads Intel(R) GNA deals with while its usage
-> > > is not limited to the two.
-> >
-> > How does this compare with the "nnpi" driver being proposed here:
-> >         https://lore.kernel.org/r/20210513085725.45528-1-guy.zadicario@intel.com
-> >
-> > Please work with those developers to share code and userspace api and
-> > tools.  Having the community review two totally different apis and
-> > drivers for the same type of functionality from the same company is
-> > totally wasteful of our time and energy.
-> 
-> Agreed, but I think we should go further than this and work towards a
-> subsystem across companies for machine learning and neural networks
-> accelerators for both inferencing and training.
+From: Zqiang <qiang.zhang@windriver.com>
 
-We have, it's called drivers/gpu. Feel free to rename to drivers/xpu or
-think G as in General, not Graphisc.
+Simplify the super destroy process through queue_rcu_work().
 
-> We have support for Intel habanalabs hardware in drivers/misc, and there are
-> countless hardware solutions out of tree that would hopefully go the same
-> way with an upstream submission and open source user space, including
-> 
-> - Intel/Mobileye EyeQ
-> - Intel/Movidius Keembay
-> - Nvidia NVDLA
-> - Gyrfalcon Lightspeeur
-> - Apple Neural Engine
-> - Google TPU
-> - Arm Ethos
-> 
-> plus many more that are somewhat less likely to gain fully open source
-> driver stacks.
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ fs/super.c         | 15 +++++----------
+ include/linux/fs.h |  3 +--
+ 2 files changed, 6 insertions(+), 12 deletions(-)
 
-We also had this entire discussion 2 years ago with habanalabs. The
-hang-up is that drivers/gpu folks require fully open source userspace,
-including compiler and anything else you need to actually use the chip.
-Greg doesn't, he's happy if all he has is the runtime library with some
-tests.
-
-These two drivers here look a lot more like classic gpus than habanalabs
-did, at least from a quick look they operate with explicit buffer
-allocations/registration model. So even more reasons to just reuse all the
-stuff we have already. But also I don't expect these drivers here to come
-with open compilers, they never do, not initially at least before you
-started talking with the vendor. Hence I expect there'll be more
-drivers/totally-not-drm acceleration subsystem nonsense.
-
-Anyway this horse has been throughroughly beaten to death and more, the
-agreement is that accel drivers in drivers/misc must not use any gpu
-stuff, so that drivers/gpu people dont end up in a prickly situation they
-never signed up for. E.g. I removed some code sharing from habanalabs.
-This means interop between gpu and nn/ai drivers will be no-go until this
-is resolved, but *shrug*.
-
-Cheers, Daniel
+diff --git a/fs/super.c b/fs/super.c
+index 11b7e7213fd1..6b796bbc5ba3 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -156,8 +156,8 @@ static unsigned long super_cache_count(struct shrinker *shrink,
+ 
+ static void destroy_super_work(struct work_struct *work)
+ {
+-	struct super_block *s = container_of(work, struct super_block,
+-							destroy_work);
++	struct super_block *s = container_of(to_rcu_work(work), struct super_block,
++							rcu_work);
+ 	int i;
+ 
+ 	for (i = 0; i < SB_FREEZE_LEVELS; i++)
+@@ -165,12 +165,6 @@ static void destroy_super_work(struct work_struct *work)
+ 	kfree(s);
+ }
+ 
+-static void destroy_super_rcu(struct rcu_head *head)
+-{
+-	struct super_block *s = container_of(head, struct super_block, rcu);
+-	INIT_WORK(&s->destroy_work, destroy_super_work);
+-	schedule_work(&s->destroy_work);
+-}
+ 
+ /* Free a superblock that has never been seen by anyone */
+ static void destroy_unused_super(struct super_block *s)
+@@ -185,7 +179,7 @@ static void destroy_unused_super(struct super_block *s)
+ 	kfree(s->s_subtype);
+ 	free_prealloced_shrinker(&s->s_shrink);
+ 	/* no delays needed */
+-	destroy_super_work(&s->destroy_work);
++	destroy_super_work(&s->rcu_work.work);
+ }
+ 
+ /**
+@@ -249,6 +243,7 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+ 	spin_lock_init(&s->s_inode_list_lock);
+ 	INIT_LIST_HEAD(&s->s_inodes_wb);
+ 	spin_lock_init(&s->s_inode_wblist_lock);
++	INIT_RCU_WORK(&s->rcu_work, destroy_super_work);
+ 
+ 	s->s_count = 1;
+ 	atomic_set(&s->s_active, 1);
+@@ -296,7 +291,7 @@ static void __put_super(struct super_block *s)
+ 		fscrypt_sb_free(s);
+ 		put_user_ns(s->s_user_ns);
+ 		kfree(s->s_subtype);
+-		call_rcu(&s->rcu, destroy_super_rcu);
++		queue_rcu_work(system_wq, &s->rcu_work);
+ 	}
+ }
+ 
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index c3c88fdb9b2a..2fe2b4d67af2 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1534,8 +1534,7 @@ struct super_block {
+ 	 */
+ 	struct list_lru		s_dentry_lru;
+ 	struct list_lru		s_inode_lru;
+-	struct rcu_head		rcu;
+-	struct work_struct	destroy_work;
++	struct rcu_work         rcu_work;
+ 
+ 	struct mutex		s_sync_lock;	/* sync serialisation lock */
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.17.1
+
