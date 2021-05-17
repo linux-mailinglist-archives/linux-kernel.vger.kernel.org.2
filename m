@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BF438395B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBDD3838D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345883AbhEQQOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:14:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
+        id S1343530AbhEQQCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:02:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345110AbhEQPuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:50:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D8D61D43;
-        Mon, 17 May 2021 14:45:42 +0000 (UTC)
+        id S243751AbhEQPmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:42:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3941761412;
+        Mon, 17 May 2021 14:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262743;
-        bh=grHjv2NKDKo3mLYiaU5UpHcXyJDgSHwMjgiwlv45/Jw=;
+        s=korg; t=1621262540;
+        bh=FcEvc5PoH4pw2nJbg/O4TvNBIRJdOnTrHryv7J8Bsek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=El1Inhv0Diq/YuPIoTIy561TMjaVRugf2NaSNlCA6w08ZIwPn4srKfzNX+eqDtkeL
-         zXdV/EfIjdDUspRdWlFj0iisuQrwjSVSmK0GqEJF1Qw3lyM3qhQ4o9HY66XDt95hi1
-         1ZOP9GfO/3yMqeXw/zcYcp1D4NFoQ8EPS8964gpU=
+        b=FQNI+8RrCRlKB8wUhKCG0QcIeEjyEc74GG5WzJKsKGLG9OuWw1byKM18sppF9VnR1
+         ijVU/MwXUHpuznQP6X5rL7VvqFWWlWn3rgQ8dpTtuExq7JGMzpcJhxrnNQgE2xDoLo
+         5LU4EAugFwLl3ms2K864LocpFayN9wXWc8yERCRU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Liu <liupeng17@lenovo.com>,
-        Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>
-Subject: [PATCH 5.10 288/289] nvme: do not try to reconfigure APST when the controller is not live
-Date:   Mon, 17 May 2021 16:03:33 +0200
-Message-Id: <20210517140314.845106593@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.11 303/329] mm: fix struct page layout on 32-bit systems
+Date:   Mon, 17 May 2021 16:03:34 +0200
+Message-Id: <20210517140312.343115841@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +45,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit 53fe2a30bc168db9700e00206d991ff934973cf1 upstream.
+commit 9ddb3c14afba8bc5950ed297f02d4ae05ff35cd1 upstream.
 
-Do not call nvme_configure_apst when the controller is not live, given
-that nvme_configure_apst will fail due the lack of an admin queue when
-the controller is being torn down and nvme_set_latency_tolerance is
-called from dev_pm_qos_hide_latency_tolerance.
+32-bit architectures which expect 8-byte alignment for 8-byte integers and
+need 64-bit DMA addresses (arm, mips, ppc) had their struct page
+inadvertently expanded in 2019.  When the dma_addr_t was added, it forced
+the alignment of the union to 8 bytes, which inserted a 4 byte gap between
+'flags' and the union.
 
-Fixes: 510a405d945b("nvme: fix memory leak for power latency tolerance")
-Reported-by: Peng Liu <liupeng17@lenovo.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+Fix this by storing the dma_addr_t in one or two adjacent unsigned longs.
+This restores the alignment to that of an unsigned long.  We always
+store the low bits in the first word to prevent the PageTail bit from
+being inadvertently set on a big endian platform.  If that happened,
+get_user_pages_fast() racing against a page which was freed and
+reallocated to the page_pool could dereference a bogus compound_head(),
+which would be hard to trace back to this cause.
+
+Link: https://lkml.kernel.org/r/20210510153211.1504886-1-willy@infradead.org
+Fixes: c25fff7171be ("mm: add dma_addr_t to struct page")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Tested-by: Matteo Croce <mcroce@linux.microsoft.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/mm_types.h |    4 ++--
+ include/net/page_pool.h  |   12 +++++++++++-
+ net/core/page_pool.c     |   12 +++++++-----
+ 3 files changed, 20 insertions(+), 8 deletions(-)
 
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2622,7 +2622,8 @@ static void nvme_set_latency_tolerance(s
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -97,10 +97,10 @@ struct page {
+ 		};
+ 		struct {	/* page_pool used by netstack */
+ 			/**
+-			 * @dma_addr: might require a 64-bit value even on
++			 * @dma_addr: might require a 64-bit value on
+ 			 * 32-bit architectures.
+ 			 */
+-			dma_addr_t dma_addr;
++			unsigned long dma_addr[2];
+ 		};
+ 		struct {	/* slab, slob and slub */
+ 			union {
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -198,7 +198,17 @@ static inline void page_pool_recycle_dir
  
- 	if (ctrl->ps_max_latency_us != latency) {
- 		ctrl->ps_max_latency_us = latency;
--		nvme_configure_apst(ctrl);
-+		if (ctrl->state == NVME_CTRL_LIVE)
-+			nvme_configure_apst(ctrl);
- 	}
+ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+ {
+-	return page->dma_addr;
++	dma_addr_t ret = page->dma_addr[0];
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
++	return ret;
++}
++
++static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
++{
++	page->dma_addr[0] = addr;
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		page->dma_addr[1] = upper_32_bits(addr);
  }
  
+ static inline bool is_page_pool_compiled_in(void)
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -174,8 +174,10 @@ static void page_pool_dma_sync_for_devic
+ 					  struct page *page,
+ 					  unsigned int dma_sync_size)
+ {
++	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
++
+ 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+-	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
++	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
+ 					 pool->p.offset, dma_sync_size,
+ 					 pool->p.dma_dir);
+ }
+@@ -226,7 +228,7 @@ static struct page *__page_pool_alloc_pa
+ 		put_page(page);
+ 		return NULL;
+ 	}
+-	page->dma_addr = dma;
++	page_pool_set_dma_addr(page, dma);
+ 
+ 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+ 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+@@ -294,13 +296,13 @@ void page_pool_release_page(struct page_
+ 		 */
+ 		goto skip_dma_unmap;
+ 
+-	dma = page->dma_addr;
++	dma = page_pool_get_dma_addr(page);
+ 
+-	/* When page is unmapped, it cannot be returned our pool */
++	/* When page is unmapped, it cannot be returned to our pool */
+ 	dma_unmap_page_attrs(pool->p.dev, dma,
+ 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
+ 			     DMA_ATTR_SKIP_CPU_SYNC);
+-	page->dma_addr = 0;
++	page_pool_set_dma_addr(page, 0);
+ skip_dma_unmap:
+ 	/* This may be the last page returned, releasing the pool, so
+ 	 * it is not safe to reference pool afterwards.
 
 
