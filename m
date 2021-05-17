@@ -2,83 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DE6382CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815C9382CAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235106AbhEQM63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:58:29 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42844 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233441AbhEQM62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:58:28 -0400
-Received: from zn.tnic (p200300ec2f061b004a70cca8b839c355.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:1b00:4a70:cca8:b839:c355])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CCFDC1EC01B5;
-        Mon, 17 May 2021 14:57:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621256230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4ZTxHuIXLkDq2ilVFphM2z7wrM4IP5A2RNR6g3B+MWI=;
-        b=nMS3bRrXZ7K9CZaH3CdMjqOW+HMOYJhrn8/mTQ3xMrRiMvTfrwImGNKZbyiX9h5DDEc2gl
-        i7vjYpp2S+C+sTJykl5wmbM6hRm62wthSHoh4foT5h4lh23fBZDDUzQT6DNqX9DW0fyHwf
-        6eSwHfEDx/xhuLtNvzuX/WXAPv1DLF4=
-Date:   Mon, 17 May 2021 14:57:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <Yazen.Ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, x86@kernel.org,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH 00/25] AMD MCA Address Translation Updates
-Message-ID: <YKJoICQzD/o7ZPBp@zn.tnic>
-References: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
+        id S237157AbhEQM7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:59:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9146 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234141AbhEQM7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:59:07 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HCj5Sq066330;
+        Mon, 17 May 2021 08:57:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=asxJpFhkqXmPyphsVqEp6/B0KkzL+c35FmJLjxLyLq4=;
+ b=J6dTpEUo9EcK6nxllk3GwW5bdGr9h+QN0KglzQvqG9giI7LUMopus4z1hPQGysJF+nmP
+ y2CsB8JqgGrYpZYH6RGlqqNX8VLI7bwlbdLxP5/YxNFs7yy4YVW6uDlNf08IxiROMca2
+ aXWwm9UiklR2+6IxrImq+o6DHe1jIB6zoSyImwP2IISw4KbRZ6iLCsDeHDTS2Tf+GGbj
+ 0hSVebAyps43+IWHiRx31KVhjhdoiQWLy/EwX73TALRIlj/W+XbDNqo2eFaYot2K03d+
+ TJacWatftf+qqDFwkudwtr7jkY+uaEldAJRoV2NYWZhbV4XyKRbp+jXWYfDqW4aP4JED /g== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38krrtrb4a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 08:57:35 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14HCpoKP031843;
+        Mon, 17 May 2021 12:57:33 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 38j5x7rtep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 12:57:33 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14HCvUtK29622706
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 12:57:31 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CAF9A5205A;
+        Mon, 17 May 2021 12:57:30 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 952C65204E;
+        Mon, 17 May 2021 12:57:28 +0000 (GMT)
+Date:   Mon, 17 May 2021 18:27:27 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Aubrey Li <aubrey.li@linux.intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
+ callback
+Message-ID: <20210517125727.GX2633526@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
+ <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
+ <47d29f1d-cea6-492a-5125-85db6bce0fa7@linux.intel.com>
+ <20210513073112.GV2633526@linux.vnet.ibm.com>
+ <5823f298-6fae-5a73-3ab8-f708d90a7e52@linux.intel.com>
+ <20210517104058.GW2633526@linux.vnet.ibm.com>
+ <9d493353-7a27-16aa-3e99-c6a07e69de25@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
+In-Reply-To: <9d493353-7a27-16aa-3e99-c6a07e69de25@linux.intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XG-woPjBhLR7gWM9XgtR-2Uuv-_5g3xc
+X-Proofpoint-ORIG-GUID: XG-woPjBhLR7gWM9XgtR-2Uuv-_5g3xc
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-17_05:2021-05-17,2021-05-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ impostorscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105170089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 03:01:15PM -0400, Yazen Ghannam wrote:
-> Patches 1-24 do the refactor without adding new system support. The goal
-> is to break down the translation algorithm into smaller chunks. There
-> are some simple wrapper functions defined. These will be filled in when
-> supporting newer systems. The intention is that new system support can
-> be added without any major refactor. I tried to make a patch for each
-> logical change. There's a bit of churn so as to not break the build with
-> each change. I think many of these patches can be squashed together, if
-> desired. The top level function was split first, then the next level of
-> functions, etc. in a somewhat breadth-first approach.
+* Aubrey Li <aubrey.li@linux.intel.com> [2021-05-17 20:48:46]:
 
-No, that's great what you did and keeping each logical change in a
-single patch is a lot easier on everybody involved.
+> On 5/17/21 6:40 PM, Srikar Dronamraju wrote:
+> > * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-14 12:11:50]:
+> > 
+> >> On 5/13/21 3:31 PM, Srikar Dronamraju wrote:
+> >>> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-12 16:08:24]:
+> >>>> On 5/7/21 12:45 AM, Srikar Dronamraju wrote:
+> > 
+> > <snip>
+> > 
+> >>>> Also, for those frequent context-switching tasks with very short idle,
+> >>>> it's expensive for scheduler to mark idle/busy every time, that's why
+> >>>> my patch only marks idle every time and marks busy ratelimited in
+> >>>> scheduler tick.
+> >>>>
+> >>>
+> >>> I have tried few tasks with very short idle times and updating nr_busy
+> >>> everytime, doesnt seem to be impacting. Infact, it seems to help in picking
+> >>> the idler-llc more often.
+> >>>
+> >>
+> >> How many CPUs in your LLC?
+> > 
+> > I have tried with X86, 48 CPUs, 2 nodes, each having 24 CPUs in LLC
+> > +
+> > POWER10, Multiple CPUs with 4 CPUs in LLC
+> > +
+> > POWER9, Multiple CPUs with 8 CPUs in LLC
+> > 
+> >>
+> >> This is a system with 192 CPUs, 4 nodes and each node has 48 CPUs in LLC
+> >> domain.
+> >>
+> > 
+> > Okay,
+> > 
+> >> It looks like for netperf both TCP and UDP cases have the notable change
+> >> under 2 x overcommit, it may be not interesting though.
+> >>
+> >>
+> > 
+> > I believe the extra load on this 24 core LLC could be because we may end up
+> > trying to set the idle-core, even when there is no idle core available.
+> > 
+> > If possible, can you please give a try with v3 with the call to
+> > set_next_idle_core commented out?
+> > 
+> > 
+> 
+> v3 seems not be applicable on tip/sched/core 915a2bc3c6b7?
 
-Now, looking at this - and I know we've talked about this before - but:
+I had applied on top of 2ea46c6fc9452ac100ad907b051d797225847e33
+which was tag: sched-core-2021-04-28
 
-umc_normaddr_to_sysaddr() is used only in amd64_edac.c.
-amd_df_indirect_read() is used only by this function, so how about
-moving both to amd64_edac, where they're needed and then doing the
-refactoring ontop?
+The only conflict you get on today's tip is Gautham's one line patch.
+Gautham's patch replaced 'this' with 'target'.
 
-You can simply reuse your current patches - just change the file they
-patch from
-
-arch/x86/kernel/cpu/mce/amd.c
-
-to
-
-drivers/edac/amd64_edac.c
-
-I went through te umc_... function and AFAICT, it doesn't need any core
-MCE facilities so it should be just fine in EDAC land.
-
-Or?
+The 2nd patch does away with that line
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks and Regards
+Srikar Dronamraju
