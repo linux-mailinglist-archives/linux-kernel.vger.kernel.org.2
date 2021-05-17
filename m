@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2F338257B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F7C382575
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbhEQHl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:41:28 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:34168 "EHLO
+        id S235303AbhEQHlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:41:06 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:33333 "EHLO
         conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235334AbhEQHl0 (ORCPT
+        with ESMTP id S234681AbhEQHlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:41:26 -0400
+        Mon, 17 May 2021 03:41:05 -0400
 Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 14H7cLoN027919;
-        Mon, 17 May 2021 16:38:26 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 14H7cLoN027919
+        by conuserg-09.nifty.com with ESMTP id 14H7cLoO027919;
+        Mon, 17 May 2021 16:38:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 14H7cLoO027919
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621237106;
-        bh=s1wiLTH91EKAgG1RLCAKeMhWZ7J2zh+/Hi2ne1w2pKY=;
+        s=dec2015msa; t=1621237107;
+        bh=2ggi49J0VZ1wo+bPnkXyf73MnfKaviktx3ill4o72ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sv+el2cvTNsB2UE/y1bR2Nv/6xXovT+yaJJ0lqqrtyUv7mCzCrW9y/UNlK+gwuQ14
-         5Hhg3AiedFt81jV3on2INOupe9dxM7aiH449AZ7faA6A/TMxg1iIfWph1SSxhrR8aD
-         j9wwQ1vjghIA+EzJgE95LjevIVcr0j6+lHChf1qeZbyjQauXnJmOU7yXw26yZV8W9f
-         Mxj2hVdXvw8WEH+wXi86LVj3DvcwINAdh/F0yGXkAkksmGQJ36KVC0qu2Z+U+Oeef3
-         XqSBBpvpmW4ZgBVdNpaCBk6TTiv3bFhtYC+ZzVGBG7Apo96Tj7z0AFjGhq6keFrrBU
-         erDhbS02giVRA==
+        b=Bid7I5SQyRt8JLKbffZJrrrSMc2JGpAI2vl+OIyhbR7eQx/TWzvb5POdUoEiILKXO
+         cXKMHLRzRcB18cO1Z88AMUO1789ND/zxqRf7UcDk0WU8j5IUTJJ3B72HFfTCeklfEW
+         o1gUE6Iy/mtzw3WBB2SsnlJUIQjOAB1JYTnMGePCh0TY94VhNCQAymt3VpP2y5A91b
+         t1gjN88eGYsLDggVZykHqzaEOv1eDLRIlqCd3vqcyzAgdl780EY4DHUm2S5QzKQVYx
+         fhDshiA5m2cn1SaEOVjA4OphxIG6Pirg2P3dC8Nj3kwb2lkDuVP0YSiSl4ws+J13FH
+         HV3jGFyDvdMZw==
 X-Nifty-SrcIP: [133.32.232.101]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Subject: [RESEND PATCH 5/6] x86/syscalls: use __NR_syscalls instead of __NR_syscall_max
-Date:   Mon, 17 May 2021 16:38:13 +0900
-Message-Id: <20210517073815.97426-6-masahiroy@kernel.org>
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH 6/6] x86/syscalls: switch to generic syscallhdr.sh
+Date:   Mon, 17 May 2021 16:38:14 +0900
+Message-Id: <20210517073815.97426-7-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210517073815.97426-1-masahiroy@kernel.org>
 References: <20210517073815.97426-1-masahiroy@kernel.org>
@@ -48,82 +45,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__NR_syscall_max is only used by x86 and UML in the following two files:
+Many architectures duplicate similar shell scripts.
 
-  - arch/um/kernel/skas/syscall.c
-  - arch/x86/include/asm/unistd.h
-
-In contrast, __NR_syscalls is widely used by all the architectures.
-
-Let's convert __NR_syscall_max to __NR_syscalls by adding one.
-
-This makes arch/x86/include/asm/unistd.h look cleaner, and also
-prepares x86 to switch to the generic scripts/syscallhdr.sh from
-arch/x86/entry/syscalls/syscallhdr.sh.
+This commit converts x86 to use scripts/syscallhdr.sh.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/um/kernel/skas/syscall.c         | 2 +-
- arch/x86/entry/syscalls/syscallhdr.sh | 2 +-
- arch/x86/include/asm/unistd.h         | 8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/entry/syscalls/Makefile      | 26 ++++++++++----------
+ arch/x86/entry/syscalls/syscallhdr.sh | 35 ---------------------------
+ 2 files changed, 13 insertions(+), 48 deletions(-)
+ delete mode 100644 arch/x86/entry/syscalls/syscallhdr.sh
 
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 3d91f89fd852..9ee19e566da3 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -41,7 +41,7 @@ void handle_syscall(struct uml_pt_regs *r)
- 		goto out;
+diff --git a/arch/x86/entry/syscalls/Makefile b/arch/x86/entry/syscalls/Makefile
+index c4bd8dd82bb1..8eb014bca8c9 100644
+--- a/arch/x86/entry/syscalls/Makefile
++++ b/arch/x86/entry/syscalls/Makefile
+@@ -9,40 +9,40 @@ _dummy := $(shell [ -d '$(out)' ] || mkdir -p '$(out)') \
+ syscall32 := $(src)/syscall_32.tbl
+ syscall64 := $(src)/syscall_64.tbl
  
- 	syscall = UPT_SYSCALL_NR(r);
--	if (syscall >= 0 && syscall <= __NR_syscall_max)
-+	if (syscall >= 0 && syscall < __NR_syscalls)
- 		PT_REGS_SET_SYSCALL_RETURN(regs,
- 				EXECUTE_SYSCALL(syscall, regs));
+-syshdr := $(srctree)/$(src)/syscallhdr.sh
++syshdr := $(srctree)/scripts/syscallhdr.sh
+ systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+-      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@' \
+-		   '$(syshdr_abi_$(basetarget))' \
+-		   '$(syshdr_pfx_$(basetarget))' \
+-		   '$(syshdr_offset_$(basetarget))'
++      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --abis $(abis) --emit-nr \
++		$(if $(offset),--offset $(offset)) \
++		$(if $(prefix),--prefix $(prefix)) \
++		$< $@
+ quiet_cmd_systbl = SYSTBL  $@
+       cmd_systbl = $(CONFIG_SHELL) $(systbl) --abis $(abis) $< $@
+ 
+ quiet_cmd_hypercalls = HYPERCALLS $@
+       cmd_hypercalls = $(CONFIG_SHELL) '$<' $@ $(filter-out $<, $(real-prereqs))
+ 
+-syshdr_abi_unistd_32 := i386
++$(uapi)/unistd_32.h: abis := i386
+ $(uapi)/unistd_32.h: $(syscall32) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-syshdr_abi_unistd_32_ia32 := i386
+-syshdr_pfx_unistd_32_ia32 := ia32_
++$(out)/unistd_32_ia32.h: abis := i386
++$(out)/unistd_32_ia32.h: prefix := ia32_
+ $(out)/unistd_32_ia32.h: $(syscall32) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-syshdr_abi_unistd_x32 := common,x32
+-syshdr_offset_unistd_x32 := __X32_SYSCALL_BIT
++$(uapi)/unistd_x32.h: abis := common,x32
++$(uapi)/unistd_x32.h: offset := __X32_SYSCALL_BIT
+ $(uapi)/unistd_x32.h: $(syscall64) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-syshdr_abi_unistd_64 := common,64
++$(uapi)/unistd_64.h: abis := common,64
+ $(uapi)/unistd_64.h: $(syscall64) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-syshdr_abi_unistd_64_x32 := x32
+-syshdr_pfx_unistd_64_x32 := x32_
++$(out)/unistd_64_x32.h: abis := x32
++$(out)/unistd_64_x32.h: prefix := x32_
+ $(out)/unistd_64_x32.h: $(syscall64) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
  
 diff --git a/arch/x86/entry/syscalls/syscallhdr.sh b/arch/x86/entry/syscalls/syscallhdr.sh
-index cc1e63857427..75e66af06773 100644
+deleted file mode 100644
+index 75e66af06773..000000000000
 --- a/arch/x86/entry/syscalls/syscallhdr.sh
-+++ b/arch/x86/entry/syscalls/syscallhdr.sh
-@@ -28,7 +28,7 @@ grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
- 
-     echo ""
-     echo "#ifdef __KERNEL__"
--    echo "#define __NR_${prefix}syscall_max $max"
-+    echo "#define __NR_${prefix}syscalls $(($max + 1))"
-     echo "#endif"
-     echo ""
-     echo "#endif /* ${fileguard} */"
-diff --git a/arch/x86/include/asm/unistd.h b/arch/x86/include/asm/unistd.h
-index 1bc6020bc58d..80e9d5206a71 100644
---- a/arch/x86/include/asm/unistd.h
-+++ b/arch/x86/include/asm/unistd.h
-@@ -13,7 +13,7 @@
- #  define __ARCH_WANT_SYS_OLD_MMAP
- #  define __ARCH_WANT_SYS_OLD_SELECT
- 
--#  define __NR_ia32_syscall_max __NR_syscall_max
-+#  define IA32_NR_syscalls (__NR_syscalls)
- 
- # else
- 
-@@ -26,12 +26,12 @@
- #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64
- #  define __ARCH_WANT_COMPAT_SYS_PREADV64V2
- #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64V2
--#  define X32_NR_syscalls (__NR_x32_syscall_max + 1)
-+#  define X32_NR_syscalls (__NR_x32_syscalls)
-+#  define IA32_NR_syscalls (__NR_ia32_syscalls)
- 
- # endif
- 
--# define NR_syscalls (__NR_syscall_max + 1)
--# define IA32_NR_syscalls (__NR_ia32_syscall_max + 1)
-+# define NR_syscalls (__NR_syscalls)
- 
- # define __ARCH_WANT_NEW_STAT
- # define __ARCH_WANT_OLD_READDIR
++++ /dev/null
+@@ -1,35 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-prefix="$4"
+-offset="$5"
+-
+-fileguard=_ASM_X86_`basename "$out" | sed \
+-    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
+-    -e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-    echo "#ifndef ${fileguard}"
+-    echo "#define ${fileguard} 1"
+-    echo ""
+-
+-    max=0
+-    while read nr abi name entry ; do
+-	if [ -z "$offset" ]; then
+-	    echo "#define __NR_${prefix}${name} $nr"
+-	else
+-	    echo "#define __NR_${prefix}${name} ($offset + $nr)"
+-        fi
+-
+-	max=$nr
+-    done
+-
+-    echo ""
+-    echo "#ifdef __KERNEL__"
+-    echo "#define __NR_${prefix}syscalls $(($max + 1))"
+-    echo "#endif"
+-    echo ""
+-    echo "#endif /* ${fileguard} */"
+-) > "$out"
 -- 
 2.27.0
 
