@@ -2,143 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540F0383C33
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC54A383C35
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbhEQS0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:26:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38854 "EHLO mail.kernel.org"
+        id S237020AbhEQS25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:28:57 -0400
+Received: from mga17.intel.com ([192.55.52.151]:17147 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233592AbhEQS0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:26:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3EDF61241;
-        Mon, 17 May 2021 18:24:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621275890;
-        bh=agtqME+MKmOmL3aHSZ0CiwFpj5LnjrmqdL388mt/8PI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cNIzKIMnVD7el6yhUFHTVuSo/cF8AFYjDx/7JWn9swaI2SV07JxBLMHPY1pMY1a6E
-         N2Y0AagWNaWu8W90Fw6R45oFm5hiCyx/46EzqHrpLlQUlBSg3R2EseybSk6rLmfUlh
-         LSx/HYqxJvwLDIWOxuzF9NhVGRktueq+1i95AyH5tto4RDmaEbRPwwAwr2F+TgIDbB
-         Gkfl3y4z/+UGKrlsf+D4QrRVogKM14kpytdWPlqsmgOvfcHW5QdH1jX/ZemrPdA0vv
-         tWwnUdVTvQbWVHVeI7HO8tEyTFGig8fVww3Du+ahYAc5hWKd3+1Xp10IzIqsIgl8TQ
-         EnhI8X2oxO5wA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C019B5C00C6; Mon, 17 May 2021 11:24:50 -0700 (PDT)
-Date:   Mon, 17 May 2021 11:24:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU
- Tasks quiescent states
-Message-ID: <20210517182450.GL4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210512182747.3445812-4-paulmck@kernel.org>
- <20210513155417.93ab2299139ba35025ec8ef7@kernel.org>
- <20210513142110.GY975577@paulmck-ThinkPad-P17-Gen-1>
- <20210514024912.a38f755add13a0f1dc73395a@kernel.org>
- <20210513191539.GF975577@paulmck-ThinkPad-P17-Gen-1>
- <20210514150431.d89b0ad0a5ce1ac3971a66e5@kernel.org>
+        id S233592AbhEQS2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 14:28:55 -0400
+IronPort-SDR: YjMTZCGkoQQhWyf2PNgqEJZtPuHOILB7a5+vP/cxJOOimoLOwVQYRY1UAEJ4YAfss3U+feT/4P
+ HQ0L7870ming==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="180812523"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="180812523"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:27:37 -0700
+IronPort-SDR: 3g4wahcMquEIn9pC7wPTvUqmPsuxEsWz+PdKJfmj7EJmI6N6zOBV03b3r+ixWosiRLhSetr7pq
+ ICUV4CvXG3Ig==
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="393625340"
+Received: from jtshade-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.100.65])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:27:35 -0700
+Subject: Re: [RFC v2 26/32] x86/mm: Move force_dma_unencrypted() to common
+ code
+To:     Sean Christopherson <seanjc@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <7c5adf75d69ea327b22b404b7c37b29712d73640.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <5536639a-918d-de8d-ff32-934a13902a03@intel.com>
+ <d04e5992-8800-a8df-99de-4dbb40e45d09@linux.intel.com>
+ <bbcb688c-5aa0-eeb1-192a-45edaccc2f32@intel.com>
+ <20210512130821.7r2rtzcyjltecun7@box.shutemov.name>
+ <e8886298-83fa-212e-ab3a-5e5b21a7ab6c@intel.com>
+ <YJv6EWJmDYQL4Eqt@google.com>
+ <c6b40305-d643-6023-907b-e6858d422a36@linux.intel.com>
+ <943645b7-3974-bf05-073c-03ef4f889379@intel.com>
+ <a72bce3a-d7da-c595-9456-cfda42d9cdc3@linux.intel.com>
+ <YKKzCOW9u6q06E5I@google.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <d5fb2565-110e-17d1-ea00-35cf4d196f1e@linux.intel.com>
+Date:   Mon, 17 May 2021 11:27:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514150431.d89b0ad0a5ce1ac3971a66e5@kernel.org>
+In-Reply-To: <YKKzCOW9u6q06E5I@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 03:04:31PM +0900, Masami Hiramatsu wrote:
-> Hi Paul,
-> 
-> On Thu, 13 May 2021 12:15:39 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > On Fri, May 14, 2021 at 02:49:12AM +0900, Masami Hiramatsu wrote:
-> > > On Thu, 13 May 2021 07:21:10 -0700
-> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > 
-> > > > On Thu, May 13, 2021 at 03:54:17PM +0900, Masami Hiramatsu wrote:
-> > > > > Hi Paul,
-> > > > > 
-> > > > > On Wed, 12 May 2021 11:27:46 -0700
-> > > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > > > 
-> > > > > > Heavy networking load can cause a CPU to execute continuously and
-> > > > > > indefinitely within ksoftirqd, in which case there will be no voluntary
-> > > > > > task switches and thus no RCU-tasks quiescent states.  This commit
-> > > > > > therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
-> > > > > > quiescent state.
-> > > > > > 
-> > > > > > This of course means that __do_softirq() and its callers cannot be
-> > > > > > invoked from within a tracing trampoline.
-> > > > > 
-> > > > > I would like to confirm that you mean "tracing trampoline" here is
-> > > > > the code on the trampoline buffer, not the handler code which is
-> > > > > invoked from the trampoline buffer but it is protected by preempt_disable(),
-> > > > > am I understand correctly?
-> > > > 
-> > > > Maybe?  ;-)
-> > > > 
-> > > > If the handler code is invoked from the trampoline buffer, but
-> > > > returns somewhere else, then it is OK for the handler code to invoke
-> > > > __do_softirq() or its callers.
-> > > > 
-> > > > In addition, if the handler code is invoked from the trampoline buffer is
-> > > > guaranteed never to be running in the context of the ksoftirqd kthread,
-> > > > then it is also OK for the handler code to invoke __do_softirq() or
-> > > > its callers.
-> > > > 
-> > > > Otherwise, if the handler code might return back into the trampoline
-> > > > buffer and if that code might be running in the context of the ksoftirqd
-> > > > kthread, invoking __do_softirq() or one of its callers could result in
-> > > > the trampoline buffer no longer being there when it was returned to.
-> > > 
-> > > Hmm, the optprobe may be involved in this case. It always return to
-> > > the trampoline and handler does not disable irqs (only disable preempt).
-> > > BTW, what will call the __do_softirq()? Is hardirq safe?
-> > 
-> > As long as your code does not explicitly call __do_softirq() or one of
-> > its callers, you should be OK.
-> > 
-> > Let's suppose that your code takes a hardirq from ksoftirqd context.
-> > In that case, the return-from-irq path will notice the ksoftirqd
-> > context and refrain from calling __do_softirqd().  Life is good.
-> > (See the invoke_softirq() function for more detail.)
-> > 
-> > On the other hand, if your code takes a hardirq from some non-ksoftirqd
-> > context, and if this hardirq decides to handle softirqs on exit
-> > from the hardirq, the "__this_cpu_read(ksoftirqd) == current" within
-> > __do_softirq() will fail, so that rcu_softirq_qs() will not be called.
-> > Life is still good.
-> 
-> Ah, OK. This is good.
-> 
-> > 
-> > Either way, as long as your handler does not explicitly invoke
-> > __do_softirq(), life is good.
-> 
-> There should be no such code, I hope. 
-> 
-> > 
-> > The bad case is when you instrument a function that is invoked in the
-> > context of a ksoftirqd kthread, and the corresponding handler (or
-> > some function that the handler explicitly calls) directly invokes
-> > __do_softirq() or one of its caller.
-> > 
-> > Is that more helpful?
-> 
-> OK, I got it. So it would be better to be commented later.
-> But anyway I can't imagine that there is any reason to call
-> __do_softirq() inside kprobe handler :)
-> 
-> Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-I will apply on the next rebase, thank you!
 
-							Thanx, Paul
+On 5/17/21 11:16 AM, Sean Christopherson wrote:
+> What generic code needs access to SEV vs. TDX?  force_dma_unencrypted() is called
+> from generic code, but its implementation is x86 specific.
+
+When the hardening the drivers for TDX usage, we will have requirement to check
+for is_protected_guest() to add code specific to protected guests. Since this will
+be outside arch/x86, we need common framework for it.
+
+Few examples are,
+  * ACPI sleep driver uses WBINVD (when doing cache flushes). We want to skip it for
+   TDX.
+  * Forcing virtio to use dma API when running with untrusted host.
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
