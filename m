@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F68382E0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01518382E10
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237479AbhEQN5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:57:00 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58801 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232924AbhEQN47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:56:59 -0400
-IronPort-SDR: oqUsk117Jb1pHEF293DalBX/bOjtvuNpG2AjLoXx2i6GFC4QPtHbekFvhbf1jdlk6dnLgBraqI
- JpqSaYvpH1mg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="197386149"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="197386149"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 06:55:43 -0700
-IronPort-SDR: sRljyzGClPT11dARfJMUIn3lj3s88tZhkg78C8LTEYY5FNNCKjak7tL9KcaGwn4uHs7jK/dGqB
- ENGogLcc2ItA==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="438929730"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 06:55:40 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lidiX-00CkQk-Li; Mon, 17 May 2021 16:55:33 +0300
-Date:   Mon, 17 May 2021 16:55:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH v1 1/1] i2c: core: Propagate all possible errors when
- requesting recovery GPIOs
-Message-ID: <YKJ11UKwSZPy9X5D@smile.fi.intel.com>
-References: <20210428154934.18807-1-andriy.shevchenko@linux.intel.com>
+        id S237488AbhEQN6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232924AbhEQN6N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 09:58:13 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452E4C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:56:56 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id h21so4869522qtu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VgmyCKaAKZGVNxTY5A/pM798vKb97NwfHdPP/vxvmWU=;
+        b=WZUdyoeWXO0448S6mUcE9CZhyKL4c+OfRMK2oE5brWpbpUG6s6Tc8y5xQTjfUJFXRi
+         WonuzkbIpZ68ok2CXoREOmOMvDzjiLmE7vDRFQ+/EKB+a+9k6KQNr5yEjM8tdYtGvBfF
+         nU55gxwoSHVLnrOHLkGNRcS3NJVp9hD0Wh9wH4PP0Sr4B+ubgktR6oWAGqle+0eC7DUg
+         pcYgZW1PcvSfLROGD2ryDBUR13LzL3Eq7vxWEkRuKpirCRJWQE0vbvI4WgjxzlN1g0k7
+         IMpb4961skqHpxq9YB5PuIcwwC0raZzJLlxYlFJQvaXymzE3qI77ol+BQI/6HC5nMhb+
+         qeIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=VgmyCKaAKZGVNxTY5A/pM798vKb97NwfHdPP/vxvmWU=;
+        b=WjfM6Iyo+k/CWWLzmwnpchbd/HXA67hxvqLD4K25BTT1ejDEGWMcXhq8or3ah9I+m8
+         k9zvzXKg6a5UwIuagyCGjDdS6wZcUxayVcRy96pGV1uGNDmTW8tzZP29NYHjPRzMHcwv
+         qt8pVrmqoU7nXxqIdPoG1TRNFV0A7n/XrKuStQEpxa8PrKw2yA1CupukAzLkfqLkDCKV
+         7rk04MwSS8Anci0XAFhzZQpZxCgLJ2Ai1x8KaWIP/KhjCmRlx6SXJ047W5oK0rQB19sx
+         GRvaOnDD99ALSdCn4HBlfW0c1eI/qFMa035Yt41npsyIs4K5O2TUqskWL6mFknGdWVP7
+         YATg==
+X-Gm-Message-State: AOAM532t3hDjP2v8g41ln9K/oKfcXhQe3QU4GgBRaMdk65ydNHqnrzSr
+        BVMFtfs28I05OLihBUz8rUI1mxX6mYg=
+X-Google-Smtp-Source: ABdhPJzOmjltS9KI/5t83hJMS7v/IpuO1NqP+SVBncPEjD3XebcUltp9P644oxsuMHxi4e9cLT68ow==
+X-Received: by 2002:a05:622a:48b:: with SMTP id p11mr21702155qtx.346.1621259815560;
+        Mon, 17 May 2021 06:56:55 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h10sm10541506qka.26.2021.05.17.06.56.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 06:56:55 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 17 May 2021 06:56:53 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.13-rc2
+Message-ID: <20210517135653.GA2116459@roeck-us.net>
+References: <CAHk-=wgX-4PTGAH7kRvqHYiq9wPJ-zN6jhLsuOAj6cG__g9N9A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210428154934.18807-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAHk-=wgX-4PTGAH7kRvqHYiq9wPJ-zN6jhLsuOAj6cG__g9N9A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 06:49:34PM +0300, Andy Shevchenko wrote:
-> If GPIO is available but we can't get it by some other, than deferred probe,
-> reason, propagate it to the caller.
+On Sun, May 16, 2021 at 03:48:13PM -0700, Linus Torvalds wrote:
+> So a week has passed, and rc2 is tagged and pushed out.
 > 
-> No functional change since i2c_register_adapter() still cares only about
-> deferred probe.
+> Things look pretty normal: rc2 tends to be fairly quiet as people
+> start finding issues, and while 5.13 looks to be a pretty big release
+> over-all, the changes in rc2 are if anything slightly smaller than
+> average.  But it's well within the noise.
+> 
+> The fixes here are all over the place - drivers, arch updates,
+> documentation, tooling.. Nothing particularly stands out, although a
+> fix for some VGA text-mode font size issues is funny (as in "strange",
+> not "ha-ha funny") just because so few people presumably use the
+> extended SVGA text modes any more. That's not recent breakage either.
+> 
 
-Wolfram, any comment on this?
+Build results:
+	total: 151 pass: 151 fail: 0
+Qemu test results:
+	total: 462 pass: 460 fail: 2
+Failed tests:
+	arm:raspi2:multi_v7_defconfig:net,usb:bcm2836-rpi-2-b:initrd
+	arm:raspi2:multi_v7_defconfig:sd:net,usb:bcm2836-rpi-2-b:rootfs
 
--- 
-With Best Regards,
-Andy Shevchenko
+I have seen a pull request that fixes the raspi2 problem. Hopefully that
+fix should be in -rc3.
 
-
+Guenter
