@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056B9383BE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9D6383BEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241316AbhEQSGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
+        id S241981AbhEQSKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236781AbhEQSGR (ORCPT
+        with ESMTP id S229610AbhEQSKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:06:17 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2531C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:05:00 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id k19so5515355pfu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:05:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RK9CKsxYiZ0SKcAPJMjkDQ9/exTOSP2ko5N4Ci6GuXs=;
-        b=LSaIZZlsx3p9ej1B86/ciNnrvYc8952OFvB5rJLgzDWArbdNp7pJvfg3PGluQUAgUu
-         fsovaLGtnPco/Y6H4PoNWmd6Jip2Ipp/eMy91HQAhHrUQhhg1R3giyX+8v1bmTCfue6S
-         M5Wi7U4j4xv//BZj/r9x5A57SzVUUGr8aAPyZcOnHnd5AsLLtYgMa4j7mhAMXbZ8IWdJ
-         LZkw+RyAMRe/0NGmrBQOyRrtbIrFwWOwGiu0gnTV1FdXG3BEtqGUd575jX8dj/w/7yXY
-         LeMc9aOJYHIZ8Zlw/TwwMWBKMbkih0xiE3/wCFspJPArkT8JoUDBFgpWMaJIEtJZDzR7
-         t4fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RK9CKsxYiZ0SKcAPJMjkDQ9/exTOSP2ko5N4Ci6GuXs=;
-        b=UB3SiTvAcUARh5vKuaxtxJHQjd0eapYwX05OMlRbPtkcIKVSaAELtpX8OkJ1m1yan7
-         EMymdagtfz9jvathH4NPF6wUEbN2qXbp1vtgY2B5qvWs2tkkUBelHwLY232IP6tWb7pA
-         VVNb46rSYyRMQUp238vgem9wvR+Mo2n46yEfkzn83VawQdVi/0XaSJIlUuS30YCnqMsf
-         QMmZ2fZCAmln94AVef7GM0FOWdbNsW3SIFzGrzmDz38LTGrkrRaQTODtn51pOVbjlU+C
-         o8Y9IYluWp4UIiPofiWoI3sVAgkJUuCA/lG0dXAxgPpBYOdoQdEx5FhCKvJjU1xpJ/SI
-         lvCA==
-X-Gm-Message-State: AOAM532IxcOyHNGF8kIeYK3VrCSsuhEUPkilvARig5OmH77QhJ2LLV/M
-        oXygHc5uLFXmazP1GXiSgqNPww==
-X-Google-Smtp-Source: ABdhPJwrHdcqHaaCzqnkXKeuTTo/NFeQCxMKnHCAmext9WOsmA4UolhzEow6UhPiLLfsr6hujFEtrg==
-X-Received: by 2002:a65:6183:: with SMTP id c3mr715412pgv.403.1621274700186;
-        Mon, 17 May 2021 11:05:00 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id x184sm11459121pgb.36.2021.05.17.11.04.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 11:04:59 -0700 (PDT)
-Date:   Mon, 17 May 2021 18:04:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jon Kohler <jon@nutanix.com>, Babu Moger <babu.moger@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Juergen Gross <jgross@suse.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>
-Subject: Re: [PATCH] KVM: x86: add hint to skip hidden rdpkru under
- kvm_load_host_xsave_state
-Message-ID: <YKKwSLnkzc77HcnG@google.com>
-References: <20210507164456.1033-1-jon@nutanix.com>
- <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
- <5e01d18b-123c-b91f-c7b4-7ec583dd1ec6@redhat.com>
- <YKKqQZH7bX+7PDjX@google.com>
- <4e6f7056-6b66-46b9-9eac-922ae1c7b526@www.fastmail.com>
- <342a8ba9-037e-b841-f9b1-cb62e46c0db8@intel.com>
+        Mon, 17 May 2021 14:10:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B482EC061573;
+        Mon, 17 May 2021 11:08:50 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621274929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CvTjUMP0IFpl0qRUVo9p7Gf+50VNC5rcsZbQA53CimU=;
+        b=Ey7OfTMIuqEtByYZx90mXd53djFEoEu8K6IQPlvipZNXg5ghONNRHkNCn3ng4fZHJ14yVJ
+        GJFvsrF4jaDT1+cvSLA20ljvzp6GSJku4d78C4Cl9fB+KBVB6k3f9aAEbnFAygXcIBDtoa
+        dZQSyUeukUjJ+r7QVVaTL2WMe2VWaCxzYKzcGwcQEKSHyNyhpuw482nShODXmgnLX53zj0
+        FNDDJY5gMC1aK6TVCRecA6Mj0F9fHIdZGSDYxUF0THBl2/Qu2LsiPsOHutrwBUp5iHhR+W
+        ShmIS0ZMS9bRH5pEk0GZOCGZBu3XBYTzL065HM+NcjX/kLs6ukQ09rczJrw+Ig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621274929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CvTjUMP0IFpl0qRUVo9p7Gf+50VNC5rcsZbQA53CimU=;
+        b=nwk42rkPCNh3s3mfln/GYYElC6A2IeHtvkPV0s3OY/6QuCU3sny3CL8c02/ZY3eO7ySjyt
+        gJbDII33Hb8QQmAg==
+To:     Robin Murphy <robin.murphy@arm.com>, Nitesh Lal <nilal@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "frederic\@kernel.org" <frederic@kernel.org>,
+        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when setting the hint
+In-Reply-To: <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com>
+References: <20210501021832.743094-1-jesse.brandeburg@intel.com> <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com> <20210504092340.00006c61@intel.com> <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com> <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com>
+Date:   Mon, 17 May 2021 20:08:48 +0200
+Message-ID: <87sg2lz0zz.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <342a8ba9-037e-b841-f9b1-cb62e46c0db8@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021, Dave Hansen wrote:
-> On 5/17/21 10:49 AM, Andy Lutomirski wrote:
-> >> The least awful solution would be to have the NMI handler restore
-> >> the host's PKRU.  The NMI handler would need to save/restore the
-> >> register, a la CR2, but the whole thing could be optimized to run
-> >> if and only if the NMI lands in the window where the guest's PKRU
-> >> is loaded.
-> > 
-> > Or set a flag causing nmi_uaccess_ok() to return false.
-> 
-> Oh, that doesn't sound too bad.  The VMENTER/EXIT paths are also
-> essentially a context switch.
+On Mon, May 17 2021 at 18:26, Robin Murphy wrote:
+> On 2021-05-17 17:57, Nitesh Lal wrote:
+> I'm not implying that there isn't a bug, or that this code ever made 
+> sense in the first place, just that fixing it will unfortunately be a 
+> bit more involved than a simple revert. This patch as-is *will* subtly 
+> break at least the system PMU drivers currently using
 
-I like that idea, too.
+s/using/abusing/
 
-The flag might also be useful to fix the issue where the NMI handler activates
-PEBS after KVM disables it.  Jim?
+> irq_set_affinity_hint() - those I know require the IRQ affinity to 
+> follow whichever CPU the PMU context is bound to, in order to meet perf 
+> core's assumptions about mutual exclusion.
 
-> Will widening the window where nmi_uaccess_okay()==false anger any of
-> the perf folks?  It looks like perf knows how to handle it nicely.
+Which driver is that?
+
+Thanks,
+
+        tglx
