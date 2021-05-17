@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9833830F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08683830F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240036AbhEQOch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54856 "EHLO mail.kernel.org"
+        id S239962AbhEQOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:32:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239556AbhEQO0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:26:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C377C613DA;
-        Mon, 17 May 2021 14:13:47 +0000 (UTC)
+        id S239418AbhEQO0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:26:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 541A96157E;
+        Mon, 17 May 2021 14:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260828;
-        bh=RMq8/fB2qZBnIDS5YABZMEifsfx7xVn38ieGIz3nlbo=;
+        s=korg; t=1621260832;
+        bh=enR9fvpoMci803EPJsInd9Zej7fSXQVmWoPu6wDqnOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hvY1jS6ov0fCf2jpQMA/mlSg9W6FHrZyAfvkVn830VbVq4VEdfmecdNsRDPUoUrr1
-         BZ3br5YaWoGMJDrDLJVy6UStQhVcIBCzEDmerT919GYIjkveA7SFgPa/iGKJFykM9P
-         s8URXZI0KmFcqAeMHRN/BxD2u/aktiqn0E5lB2YE=
+        b=1NYKsJPqijioMkIeUSlJxbnH3ZJjdgCq9XbZkQRIyY8jUlFdebcGJ+uLGR5IIaPxN
+         8cZtRkDGEtNqKJQGhpNGmqe/HdLTwo1XqEKftsRMyf3sFLAnAOVscsbzHzA3WcSidn
+         bJOwtktbniKp+rVH23kGeTrARxvDjzrZb6mTWRaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas MURE <nicolas.mure2019@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 013/329] ALSA: usb-audio: Add Pioneer DJM-850 to quirks-table
-Date:   Mon, 17 May 2021 15:58:44 +0200
-Message-Id: <20210517140302.494400361@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 014/329] fs: dlm: fix debugfs dump
+Date:   Mon, 17 May 2021 15:58:45 +0200
+Message-Id: <20210517140302.525858477@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -39,97 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas MURE <nicolas.mure2019@gmail.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit a3c30b0cb6d05f5bf66d1a5d42e876f31753a447 ]
+[ Upstream commit 92c48950b43f4a767388cf87709d8687151a641f ]
 
-Declare the Pioneer DJM-850 interfaces for capture and playback.
+This patch fixes the following message which randomly pops up during
+glocktop call:
 
-See https://github.com/nm2107/Pioneer-DJM-850-driver-reverse-engineering/blob/172fb9a61055960c88c67b7c416fe5bf3609807b/doc/usb-device-specifications.md
-for the complete device spec.
+seq_file: buggy .next function table_seq_next did not update position index
 
-Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
-Link: https://lore.kernel.org/r/20210301152729.18094-2-nicolas.mure2019@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The issue is that seq_read_iter() in fs/seq_file.c also needs an
+increment of the index in an non next record case as well which this
+patch fixes otherwise seq_read_iter() will print out the above message.
+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks-table.h | 63 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ fs/dlm/debug_fs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 48facd262658..8a8fe2b980a1 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3827,6 +3827,69 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
+index d6bbccb0ed15..d5bd990bcab8 100644
+--- a/fs/dlm/debug_fs.c
++++ b/fs/dlm/debug_fs.c
+@@ -542,6 +542,7 @@ static void *table_seq_next(struct seq_file *seq, void *iter_ptr, loff_t *pos)
+ 
+ 		if (bucket >= ls->ls_rsbtbl_size) {
+ 			kfree(ri);
++			++*pos;
+ 			return NULL;
  		}
- 	}
- },
-+{
-+	/*
-+	 * Pioneer DJ DJM-850
-+	 * 8 channels playback and 8 channels capture @ 44.1/48/96kHz S24LE
-+	 * Playback on EP 0x05
-+	 * Capture on EP 0x86
-+	 */
-+	USB_DEVICE_VENDOR_SPEC(0x08e4, 0x0163),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8,
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x05,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC|
-+					    USB_ENDPOINT_SYNC_ASYNC|
-+						USB_ENDPOINT_USAGE_DATA,
-+					.rates = SNDRV_PCM_RATE_44100|
-+						SNDRV_PCM_RATE_48000|
-+						SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 3,
-+					.rate_table = (unsigned int[]) { 44100, 48000, 96000 }
-+				}
-+			},
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8,
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x86,
-+					.ep_idx = 1,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC|
-+						USB_ENDPOINT_SYNC_ASYNC|
-+						USB_ENDPOINT_USAGE_DATA,
-+					.rates = SNDRV_PCM_RATE_44100|
-+						SNDRV_PCM_RATE_48000|
-+						SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 3,
-+					.rate_table = (unsigned int[]) { 44100, 48000, 96000 }
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- {
- 	/*
- 	 * Pioneer DJ DJM-450
+ 		tree = toss ? &ls->ls_rsbtbl[bucket].toss : &ls->ls_rsbtbl[bucket].keep;
 -- 
 2.30.2
 
