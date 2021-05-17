@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CFD3833E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B69383407
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239207AbhEQPDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:03:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
+        id S242940AbhEQPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:05:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241211AbhEQOxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:53:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93C8761987;
-        Mon, 17 May 2021 14:24:07 +0000 (UTC)
+        id S241772AbhEQOx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:53:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A8AE619A3;
+        Mon, 17 May 2021 14:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261448;
-        bh=AYvKDmHSqkXvGF5u65iwXgvIsvrCbrBW9qOo7GDoyMw=;
+        s=korg; t=1621261458;
+        bh=fxnDPLlPWYLf9/KzTkxHvikDC9lWN6ga0dBvtKr5d2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=msj+zDKbtrkYbvVQZtBcvK4PkrRXh+OVpY/W1vZMr28ZTLwlzE59wkNKP36vXZWfA
-         Pwa6pbY9O4VVTs42VW5VDvMpZs518BCPndYF+7uNyKTmU/Z9xh2AxoZJDjfdqf1xMQ
-         kKASPNgqkomy0twy0eDg8d2X6xc5B+ih0dqD8y+I=
+        b=mn8mkZMHuj59bkLXOiQ+vfjRcmuir6Yui/QO15RbPntNlsEfUplb7G51owUHg1faN
+         iNVMHvRW/Rz586uUti9y3qUuS2Ci1L4kV7ufMrgtdY4YgKGTBJgvqZpURuKUhkjczR
+         aCffUlfitXt/6IYl87bfk0plPimFUyjMOgzWD/+o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ayush Garg <ayush.garg@samsung.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 021/289] Bluetooth: Fix incorrect status handling in LE PHY UPDATE event
-Date:   Mon, 17 May 2021 15:59:06 +0200
-Message-Id: <20210517140305.893756088@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 022/289] i2c: bail out early when RDWR parameters are wrong
+Date:   Mon, 17 May 2021 15:59:07 +0200
+Message-Id: <20210517140305.924508510@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,33 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ayush Garg <ayush.garg@samsung.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-[ Upstream commit 87df8bcccd2cede62dfb97dc3d4ca1fe66cb4f83 ]
+[ Upstream commit 71581562ee36032d2d574a9b23ad4af6d6a64cf7 ]
 
-Skip updation of tx and rx PHYs values, when PHY Update
-event's status is not successful.
+The buggy parameters currently get caught later, but emit a noisy WARN.
+Userspace should not be able to trigger this, so add similar checks much
+earlier. Also avoids some unneeded code paths, of course. Apply kernel
+coding stlye to a comment while here.
 
-Signed-off-by: Ayush Garg <ayush.garg@samsung.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Reported-by: syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com
+Tested-by: syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/i2c-dev.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index e0a542849735..4676e4b0be2b 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5897,7 +5897,7 @@ static void hci_le_phy_update_evt(struct hci_dev *hdev, struct sk_buff *skb)
+diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
+index 6ceb11cc4be1..6ef38a8ee95c 100644
+--- a/drivers/i2c/i2c-dev.c
++++ b/drivers/i2c/i2c-dev.c
+@@ -440,8 +440,13 @@ static long i2cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 				   sizeof(rdwr_arg)))
+ 			return -EFAULT;
  
- 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
+-		/* Put an arbitrary limit on the number of messages that can
+-		 * be sent at once */
++		if (!rdwr_arg.msgs || rdwr_arg.nmsgs == 0)
++			return -EINVAL;
++
++		/*
++		 * Put an arbitrary limit on the number of messages that can
++		 * be sent at once
++		 */
+ 		if (rdwr_arg.nmsgs > I2C_RDWR_IOCTL_MAX_MSGS)
+ 			return -EINVAL;
  
--	if (!ev->status)
-+	if (ev->status)
- 		return;
- 
- 	hci_dev_lock(hdev);
 -- 
 2.30.2
 
