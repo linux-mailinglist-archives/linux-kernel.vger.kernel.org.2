@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78B9383A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C33383A18
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241838AbhEQQf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        id S245603AbhEQQh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245207AbhEQQfd (ORCPT
+        with ESMTP id S245260AbhEQQhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:35:33 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912A0C0610F9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:29:47 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso5893001otn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:29:47 -0700 (PDT)
+        Mon, 17 May 2021 12:37:52 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CD2C0816F9;
+        Mon, 17 May 2021 08:38:07 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3929264pjv.1;
+        Mon, 17 May 2021 08:38:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LHuA8eHjuppTIJ75R7cv3VweFNbwB4dqcEtg7HA60qg=;
-        b=RMks6CV9lAVCFBcqyvaL15OwQDYYydA46ie8ERZRUW9bdz6Ss2d63nvntdd2ppylbj
-         TT1hoAtcrCR7P1QUgAoKu41mbQqWIXoRN7jJxyGntT0uCWz/IiczJZV24UwIWC7mZW89
-         iDl7tmzK3OcYBBXrYUDYJ/OJrz6o9/5h4ij88=
+        bh=6Bg9e5GSjj736fnDp80ETYuzRsaqdlxSaM386v8GCn0=;
+        b=BwE2XYtDeFP72pRAlxQnf3Aj2GR5JRoQoDXL2f3UNT8wNr46YXt0joCH7FaK8Edf/Z
+         to7ojMRwXfx+tVIne2L7eRw+s0OeHqqBIGiqb0oyaLBJc4LD0dCqIz1LUfjHxlJRZrWw
+         r1NU3xHCe0aXmg4rlA9R8kldYdZ5ysABNCxgKM2PYOZg87JU8gN+1SECC7ocepNh/8UZ
+         CwXufZGR7HxMPKT+iQY9vgT/wNHS1L8/YCIFgKmFGuhLauSjSG125bvAP83Yr8ElKJma
+         Egv98Q2q7aS2C9IFaS/v0OVf1TsmWViej3UUOJ4XZNCKCxF6XmCZAQsjHWBzk+QBj1Ta
+         OtaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LHuA8eHjuppTIJ75R7cv3VweFNbwB4dqcEtg7HA60qg=;
-        b=du+0AJjL4GXkHZ/uiRaI9rC1J6zh6E48rMT6OvYiC/PwNNfriooyOEzSvrEd6oU6uk
-         nAslaWJrUwbRV64RMuVVcXyxrHeNYceCvqboH1owwCmwcp5zd7Bisvg2IPMukumaIaHR
-         O5xOupOgYX4zZ16C4t0rR4JtjZNfosSMA2t8X5Vc/TxRIQ65fY0GUIJRtHAoqwKmJd/z
-         1Z4UZy3URUnOSA3r2uAQijJhrOPLeQXOnwfjbzIGUPlJRdh3J2H8vRQ03JvGFTth3cdl
-         DIb/EEqp7mysPY4T0R9FC4hx3ZcQdOmOPUat4a0vKvxSwg5O7Fx58MLIEPXFJOTsOiBf
-         mETQ==
-X-Gm-Message-State: AOAM532Ck0F2jJ1Jm0jiwchV9HV9H/wJj8y6alOvYOMfTT0NR8xN7cHW
-        ZL5siE4688r/s5KI2vfSiJJd/26NW8BmDpUHZTjQUQ==
-X-Google-Smtp-Source: ABdhPJyx4VgXyr7sHxhLzHJfU08wfDCFYrZOk1+l9hfQuvBlJV+AtL3GicGrv7/C44z5A3YFPk7MxSeP6Ot3b+xUVts=
-X-Received: by 2002:a05:6830:1155:: with SMTP id x21mr88425otq.303.1621265387064;
- Mon, 17 May 2021 08:29:47 -0700 (PDT)
+        bh=6Bg9e5GSjj736fnDp80ETYuzRsaqdlxSaM386v8GCn0=;
+        b=RMihzRIWkc3EkK/17ONjukopononx4ZbMKYJU6b649d/S8u57I0IxFnO4kXHG7jNpy
+         LSpKOqpcf0+zUO6ewneqfm3eg8iuEDDlKBF9zNVAQrDIuAJlvhLtjMRjz5URVrturIsV
+         cpH85i+cmRWjPwb/QZWzRnHhxxwxBTlSbutJoP/4ZgWjVEErKP7oMnTar12lRzNZH68s
+         LKI7ILrufj0GhHq4K3xhtQyzQfju8jcD5E8oGkQttghHoqcgW8tlUKpn9r3kO2q1xSXC
+         s1n4Ojcv0cDUGW15oXDOWRsmy0UdEd6CdgEivnT5+AC6QYVQDNcGO0vv+dR1tU0H/nns
+         KJzA==
+X-Gm-Message-State: AOAM530KpVZ81WSSK8OR9a2D37K3eaon5GAYDB/rZDSN+I998vCDadfN
+        bCi143//BmSGTNLT+P3rVJR7CiyYRZMC9jIk5HU=
+X-Google-Smtp-Source: ABdhPJz34+noXoLLnWMqlFwNc9eDg9UvjNflkG+CYO21Qf9/Zv5MGNS2kk3tvRlxLbN+4F2LNTBYdOfY7nhJ91+HN9Y=
+X-Received: by 2002:a17:902:264:b029:eb:3d3a:a09c with SMTP id
+ 91-20020a1709020264b02900eb3d3aa09cmr643155plc.0.1621265886581; Mon, 17 May
+ 2021 08:38:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <YJBHiRiCGzojk25U@phenom.ffwll.local> <CAHk-=wiwgOPQ+4Eaf0GD5P_GveE6vUHsKxAT=pMsjk1v_kh4ig@mail.gmail.com>
- <YJVijmznt1xnsCxc@phenom.ffwll.local> <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
- <CAKMK7uELBbkhFBQoSfvMx+AKnbk-fgbamBm3sC20-dJwMq3Xmg@mail.gmail.com> <YJjg3DRnG1RG6VDK@infradead.org>
-In-Reply-To: <YJjg3DRnG1RG6VDK@infradead.org>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 17 May 2021 17:29:35 +0200
-Message-ID: <CAKMK7uFsRPod-tAJ8ZrzXM6B_+5VgvRs-U0_TiG75da62cnVnw@mail.gmail.com>
-Subject: Re: [PULL] topic/iomem-mmap-vs-gup
-To:     Christoph Hellwig <hch@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
+References: <20210516034730.621461-1-bjorn.andersson@linaro.org>
+ <CAHp75VdfnM+Vr-8__zHPaQ5wDyv8Eg=DMQ0+HRCpWWrSQBZniw@mail.gmail.com> <20210517151416.GT2484@yoga>
+In-Reply-To: <20210517151416.GT2484@yoga>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 17 May 2021 18:37:50 +0300
+Message-ID: <CAHp75VdmTKLnGrm19UF5TqYDcNtqCmjt8NWVEDv__5qHsvnF3A@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: mux: Fix matching with typec_altmode_desc
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jun Li <jun.li@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 9:30 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Mon, May 10, 2021 at 09:16:58AM +0200, Daniel Vetter wrote:
-> > > End result: not pulling it, unless somebody can explain to me in small
-> > > words why I'm wrong and have the mental capacity of a damaged rodent.
+On Mon, May 17, 2021 at 6:14 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+> On Mon 17 May 04:13 CDT 2021, Andy Shevchenko wrote:
+> > On Sun, May 16, 2021 at 6:47 AM Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> > >
+> > > In typec_mux_match() "nval" is assigned the number of elements in the
+> > > "svid" fwnode property, then the variable is used to store the success
+> > > of the read and finally attempts to loop between 0 and "success" - i.e.
+> > > not at all - and the code returns indicating that no match was found.
+> > >
+> > > Fix this by using a separate variable to track the success of the read,
+> > > to allow the loop to get a change to find a match.
+
+...
+
+> > > -       nval = fwnode_property_read_u16_array(fwnode, "svid", val, nval);
+> > > -       if (nval < 0) {
+> > > +       ret = fwnode_property_read_u16_array(fwnode, "svid", val, nval);
+> > > +       if (ret < 0) {
+> > >                 kfree(val);
+> > > -               return ERR_PTR(nval);
+> > > +               return ERR_PTR(ret);
+> > >         }
 > >
-> > No rodents I think, just more backstory of how this all fits. tldr;
-> > pin_user_pages is the only safe use of this vb2 userptr thing.
+> > This changes the behaviour of the original code, i.e. nval can be
+> > still positive but less than we got from previous call. Some fwnode
+> > backends in some cases potentially can _successfully_ read less than
+> > asked.
+> >
+> > Perhaps
+> >
+> >   nval = ret;
+> >
+> > or drop the patch.
+> >
 >
-> Yes, which is why I advocate for just ripping the follow_pfn path
-> out entirely.  It could have been used for crazy ad dangerous peer to
-> peer transfers outside of any infrastructure making it safe, or for
-> pre-CMA kernel memory carveouts for lage contiguous memory allocations
-> (which are pretty broken by design as well).  So IMHO the only sensible
-> thing is to remove this cruft entirely, and if it breaks a currently
-> working setup (which I think is unlikely) we'll have to make sure it
-> can work the proper way.
+> Per the kerneldoc of fwnode_property_read_u16_array:
+>
+>  * Return: number of values if @val was %NULL,
+>  *         %0 if the property was found (success),
+>
+> @val is not NULL, as we just checked for that, so the function will
+> always return 0 on success.
+>
+> I don't see anything indicating that the number of elements can be
+> different from what fwnode_property_count_u16() returned.
 
-Since I'm not getting any cozy consenus vibes here on any option I
-think I'll just drop this.
+Okay, I have checked the backends of fwnode and indeed, OF case (from
+where I remember such behaviour) deliberately does
 
-Stephen, can you pls drop
+if (ret >= 0)
+  return 0;
 
-git://anongit.freedesktop.org/drm/drm topic/iomem-mmap-vs-gup
+Otherwise the rest return 0 directly / explicitly.
 
-from linux-next? It's not going anywhere. I'll also go ahead and
-delete the branch, to make sure you catch this update :-)
+The only exception is _read_string_array().
 
-Thanks, Daniel
+> > >         for (i = 0; i < nval; i++) {
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+With Best Regards,
+Andy Shevchenko
