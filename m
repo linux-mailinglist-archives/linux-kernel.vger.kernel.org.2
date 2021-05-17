@@ -2,210 +2,556 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76699383C23
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA392383C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhEQSXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:23:15 -0400
-Received: from mga11.intel.com ([192.55.52.93]:18094 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhEQSXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:23:14 -0400
-IronPort-SDR: 3KAM23y2WBl7EfENS351fjV7quyJlzC151Qu2zIYe2RdLLNkyeFQBuZKrh6kbCVbpIZvWKb4wz
- sMV25BGimW0A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="197445864"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="197445864"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:21:57 -0700
-IronPort-SDR: wrYbsUt4YEANVuu96b/tZK4KmW99S8ZgQoWH3S9vEJCKz8iDkqnolTcKY+9Ols4chAeQ+pc59o
- QY/CL72PkDCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="541408428"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by fmsmga001.fm.intel.com with ESMTP; 17 May 2021 11:21:57 -0700
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 17 May 2021 11:21:56 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Mon, 17 May 2021 11:21:56 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Mon, 17 May 2021 11:21:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NsVFXJ+HzqicPj5vvrUf+nT7tBRtN2xOr0d6wIPO4uiWhvPBpXPT5YoAOWYihr5yY3Y67CwadylkHs5FVIRwfwnQ+zDIm1I5tHL1QDC9GD9q3Xp7AQ132PHbYVTlBDxFMLbGWo/ymTZODhWoU1DZbpa9u+Jb9P4cdb/ukZlsvx+Im2pA+R7tlSoRlYiANUsnxFhqg2Gxit1CJYbtgeWRth6HwCU+S2cc86isUVM/XiKJdfeS4JqElHp11WuXwFN2ji4YP1SD4r+ltWeFg9/fU0/Z0n+d7MmefRxIOokQKe6Ws8gDR8cZFv4uM0osYYOtb2VZE8eQ0PKSJ0SqBubO2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rFuLyFt6nvup8jA+gW3wRJog9fEkKavL/El607K3UaE=;
- b=XnNuKLJBYnncwklYJf+h6oHSLdKBQU7OWJG5FHP4HcxnCb4JYhP4miZ28XHw/MreIFxqf8vAAtxUpMaqsF1pwOetRdqGxpak5wuSxD7Td+l1lqIhTMKfe9yOteyVMKC0WVpTv3RiWWq+Hl7zP4YAwaM0fCb8GOFF1X4PSwGN7jADrLAM49TnY5rBQSC0rNDRVOW79eiXto9r2V1IObb0TTgJ4vSPmahzvreEkzVqhcVH3Y59vG5rMGJhNOmDxVeILBa3Dhvnn1Vk1CBNvAFDhqpsOthdlcXLxVyFweH3e0WuYyQJorJIzcVdmnh7xhpSLelBBJiD9oSrWbUx+RBInA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rFuLyFt6nvup8jA+gW3wRJog9fEkKavL/El607K3UaE=;
- b=eCcunUxsnTtDveJBNVdYgCbvZ/tja3Z5bTeJlpiyAFYO9jGCDqOdoLq+cpin9YZ3XYtg6I1GZqmeYjNsQhXbjQM6OIQoppiZGfK4mwrnfgv+mokijlvg7IjlVtjWJE6EVKpKdFypSxgHdXMvHxEY1g6XH5mcksNcbGHu/G8xKgs=
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB4823.namprd11.prod.outlook.com (2603:10b6:510:43::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Mon, 17 May
- 2021 18:21:55 +0000
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::8878:2a72:7987:673]) by PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::8878:2a72:7987:673%5]) with mapi id 15.20.4129.031; Mon, 17 May 2021
- 18:21:55 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        X86 ML <x86@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 00/11] x86: Support Intel Key Locker
-Thread-Topic: [RFC PATCH v2 00/11] x86: Support Intel Key Locker
-Thread-Index: AQHXSP6hgf4aXmFhiUuqBU4d/omVPark1qMAgAMqZgA=
-Date:   Mon, 17 May 2021 18:21:55 +0000
-Message-ID: <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
-References: <20210514201508.27967-1-chang.seok.bae@intel.com>
- <9f556d3b-49d3-5b0b-0d92-126294ea082d@kernel.org>
-In-Reply-To: <9f556d3b-49d3-5b0b-0d92-126294ea082d@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.189.248.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d31c9aad-d835-49bf-d38a-08d91960a696
-x-ms-traffictypediagnostic: PH0PR11MB4823:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB48237876AE5DCB7B26D3E341D82D9@PH0PR11MB4823.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bBp/ewH7uKn7g2mPyYo8Dm6NG+vPKQnV75fLnYe8E0VDS7apGEiOjMPD3yTTqXdfHaY0nCc+INS5L8S5FkQqFe2mEYrOlrlODcT7Vv1PEYNpEBT0I6reR1/FPDtEZYEsArpJtkz6dETOJjLFMRWe5/p1ZSizQbcQ/f6HoT/VvP2mi2xNzh8JrVGM5rMdb9HWAX7zMtg7QqeOciXZI+ZcVdbpwXo7xJxwiqMBeeMQJHnAFcjakqRntYHErTAgAGwqz9tpqCJBemiGhOvai8akUok75nc4N0JC9T5Kw1SFHDePC82AYfB0ybsWuHVVqsrBzp6OCeCrpQ1z8ZJCiEwmnbZMzoCautE+2PwI49JTHNpf+OMAJUhRiQh7FCAUf4EFvV3bZ/zA7iOY+auDgMRQ+7l44a3s9YJTm1ei0+k0BDUNC9Nh63gq/NMgQU4XXIDce2Dhnrwwo2QtuecM1cziTney04ycxVA8muZXmTHJxQglMCJY+7fWgHRVlIbZ7oRdIiHBKDM7iuCYxPMQG3WpkKOBVeEX76ZpPyNIYPfdnIuECvZdfixYjPn6rTrxUpoFG4a8CivaExb1Ly7jReZ/XWW8KUIqZ+mOhRkFjNADsHjlP/8acz6wcklUTFSA1Q2U9yhe2OlvzB+D1brR5SauYhBHUf2mLzX+gGG1vhzMligUX5rVT75xv/OPygxNkGkTuSjpNRVLBkeoW9cyFAotQpIEs9BaWOj14v5kLTkvrK/ZQLdbwpM+w1WqFTpYQxiyRSkXhPfzOXHDx9SR93ONaQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(136003)(346002)(366004)(39860400002)(66946007)(66476007)(316002)(66446008)(66556008)(36756003)(6486002)(64756008)(38100700002)(76116006)(8676002)(54906003)(86362001)(2906002)(8936002)(478600001)(53546011)(122000001)(71200400001)(186003)(83380400001)(2616005)(6916009)(33656002)(4326008)(26005)(6512007)(6506007)(5660300002)(966005)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?dXNZcHFZVjNqMlN1bjZ5WElOUENFU1YvTHl4eDBtNkNlWVU4TkR2dERBaTVP?=
- =?utf-8?B?MUNVYlFGT1ZBVDA2T1hKbVRjV2dYNTMrRWxKbGNJQ24xdUxnem5KZmgxL1F4?=
- =?utf-8?B?Mnk1UGJMWVREWDkxSjRBVHAwZm5VbzNlVlJWMXNULzFhaHI4OVhPdGloMHhB?=
- =?utf-8?B?NTB1VklkMHQwNmYyazJXZEx5bWFLUkFZVloxQTZqUy94TkhJOEVMT2o0dHJl?=
- =?utf-8?B?ZTNwT2szUGVVOHFkOGxzbVkzRU8xeHkzNVZGNzFXOWhkT3FrMEtSK3lCSEty?=
- =?utf-8?B?MThnMkNmQXhlMFhmajlvWGdqRkVIQXdoaThjNmtZVEFEaWRjaFJoS3g2bXUr?=
- =?utf-8?B?RVIxQ2xIOUdoa0h2WXBUL0NvNWJaaUY1c0NicWtDeGFPWmc1Nmg5NlJnejEz?=
- =?utf-8?B?RlRhOGxwMnhSaDQ1K1NUa0tRRVg2M1VOdHozZXgwUFZQTXpXOVVwRkt1VEZC?=
- =?utf-8?B?VGZTb2NIQ0ZjMnl2dUhpem1EYytRN3NEeUk0QmphNm5TaENPUjE5UTI5Qmpj?=
- =?utf-8?B?bG44RVFJTkdGT25lNFFmNEpoYXhCTW1CQnBIZ1hoSlFTRHhDNnN4cUFWNGkv?=
- =?utf-8?B?MEF5ZjNyNmVLWUMwK3RIQkEwbXUwYVIzUktvdTQwWmxjaVA2a2NGTzBsSTln?=
- =?utf-8?B?MGhuMi91WDdIVi90QmNKQUFKVEx5Y3VDYnEzNDhMV09yditiYTNuM0RXUE5a?=
- =?utf-8?B?UjN6Qjc0dUplekpkaE9KOGsrZWxSd0hSeFZxNHlQZmhwMVpsTlF0cW4zTWtw?=
- =?utf-8?B?T2F1ckdlNnV0aVlpNS8wSllUTURwbnpLYkFDV0NKL2dVMWFTcWkxVXVmM3Fy?=
- =?utf-8?B?VVp5dXFXczZxWktsLzBkWWQ1cDBnaDBTQlp4cE5uMVJqUExIZXIraVpCcm1v?=
- =?utf-8?B?YUNaVStxemttV2xzRHNNOEtRb2hQQlNHZXRleWc4TEZCaFFvZ3lpWlZxVjJi?=
- =?utf-8?B?T1NSWTRNeGZzQTN0WHI5Rm56U2w5RTVpdVgzWEFwY0xzVHpqLy9OZVVYSkhj?=
- =?utf-8?B?ajJCRkRDQ2pkWVZYVU96eEVPZGI5VElZczdrSm5PclR3dzN3WldKNzBrYmw1?=
- =?utf-8?B?QWd5am1wUS9ac1k5c3ZLbzBmSHJ6M2FCVm9wd29PcjZIRVV0RWVqbkt6em82?=
- =?utf-8?B?THM5L1FOcWQ2VWJLQWFiVW4zUDV2eXVDUmhnL3grUjJFL3pPNVJISEZYai9M?=
- =?utf-8?B?ZTI2dWQrQ0VzTG9RbEtxTHZURUZJRGZaQXRqMEYwbDk3Z1RST29XS1dQRFc1?=
- =?utf-8?B?cVdYWUJ1ZGN1RmUzRFM0Y05sZmwrTjA4RGMwc2VtTmxndWNpay9wczhSeEx1?=
- =?utf-8?B?YlgwRis5ZGpoem1iUXJuU2VldTNqVjFiUlp5Sm9KNm5BZTd6NEZ3RlZpZlZa?=
- =?utf-8?B?TE9JTEdkTytrUU9McUF0ZGs2NmRlWFZyQXlHSDhwc293dFpwcHNoT1dlOWdx?=
- =?utf-8?B?ZjNQbjhkRjFkazVkTXhiYkNKcDlXMUNoWFhGWGhjR3lUNXlldXVYYnZRNmpS?=
- =?utf-8?B?RkN5THc5ZmlhbUprWTNMZTN5WTI5YVpCblkrZXdSeWdwTGovRzJyd0xLeDZR?=
- =?utf-8?B?TTkzNTRRZFNOWXB3SS9JekRwZlJianRkZmhIeFE5M2Zpc0gxaUFGNXE3V1VT?=
- =?utf-8?B?eWFTRmJMUDVVZTRkTm9zQ3NGZGZ3eWFzYm9EZmVYajNoVFMwRkRxWGtGTUNG?=
- =?utf-8?B?OG5xVnE1Q1daSnFKd3hveHI1dGpBVVovd1VaTVNSeEdISEJoMVRCSG5uRWds?=
- =?utf-8?Q?8Ptr/f+EmgLgMVax6pPVdadGpVNqKZUWbN3OT8e?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3A5079F7C5B1CD4DB74F81C5E38AB126@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S235182AbhEQSZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234513AbhEQSZ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 14:25:57 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBD0C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:24:40 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so132093pjv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FI246W5m9EGcLjbkDUbXs1YNpVMm1UcSABT6//sFJdY=;
+        b=vUVwmCgU4hLWgn6ulLZB7O3P+TiuGG+24Xl/SDTPLSCwyakGO0GYF/YYIQrDxlXbtu
+         SDH8Oz9pmrbNM4DlFzNC+AwAxVzTy0ge6/Cf61TwNyMXKO6OPJkeND1A5DMtW3vgJjSI
+         ehkx0XmUOKx2LNRhtTW7+b0/uUd4aYcH01Z/cg6zdr5L5hgO2TL4shq98NbjgyfvVOXp
+         avUWuf5Rf0SgVQgXCJxKVmmPA5qoWra5WBxNMYHrmOBKwrOWPeZImHInQJKyBcKK9d4j
+         X57CAfGdrgyFV+yVMI0tlmhB4zbjsLBSrnE45caboECPWGX7QBYoJwBJKELJ3/OOUjl8
+         D9yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FI246W5m9EGcLjbkDUbXs1YNpVMm1UcSABT6//sFJdY=;
+        b=GhCb0+91j6nIZOJ1cZjj3o976gHARE816Gg83esrR+ZhZ3GWnjvJ9NVS2o6BCtRM/R
+         afzpBLwfH9TUBpKfcX2vLiH1eTRSV4ZmLFBHpc1JGjEsweSMTn4BCXjgNgfRjS46BjBA
+         OYdribCsVbpIbxiN9nxDLi9Yv+T91PEYB4oQy4wgASZDJq79USb7a2hA86RdMoURbGQw
+         gLgtGxqqhgUeY1FCrvkzxUw8opAmlkfcaEJQ2roAdC0U11Nn8Qw5q+52WVrCEyleVccs
+         KUVxncwXDTVddAYBBp7KAPbZlgxI3xy6drBQ+qiBA8YtcHuS0YrFKq2WK/JRDa3TRCnT
+         vLzQ==
+X-Gm-Message-State: AOAM531leggkwFGSglitJa0HbEtmJKoMRiH+f1Vt+772FXdb+UixFZlw
+        e2/o0oTjWB9y5/qBL4keX8NYUw==
+X-Google-Smtp-Source: ABdhPJxuKhRpA9d+ZG4n25RnpFrOVY8RUylM/mc8vcVjZ2gtu539kniy2/cqE8oZJT155RENGTSMYg==
+X-Received: by 2002:a17:902:8bcb:b029:ec:a192:21cf with SMTP id r11-20020a1709028bcbb02900eca19221cfmr1368936plo.71.1621275880082;
+        Mon, 17 May 2021 11:24:40 -0700 (PDT)
+Received: from srv7.pensando.io ([12.226.153.42])
+        by smtp.gmail.com with ESMTPSA id a16sm10545417pfa.95.2021.05.17.11.24.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 May 2021 11:24:39 -0700 (PDT)
+From:   Ashwin H <ashwin@pensando.io>
+To:     jdelvare@suse.com, linux@roeck-us.net, corbet@lwn.net,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, snelson@pensando.io,
+        Ashwin H <ashwin@pensando.io>
+Subject: [PATCH] hwmon: (adt7462) Add settings for manual fan control.
+Date:   Mon, 17 May 2021 11:24:27 -0700
+Message-Id: <20210517182427.12904-1-ashwin@pensando.io>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d31c9aad-d835-49bf-d38a-08d91960a696
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2021 18:21:55.0928
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4fGoqNr3J5OdytZK/Ejt3GP9j2gudGpOyTCPTuVXPIpb099zp3lFoAsH8MgdYrplMdH+q7+a5TdSrjw1vCTjUWUT/upGh3hcodJ/FNJwvXs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4823
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTWF5IDE1LCAyMDIxLCBhdCAxMTowMSwgQW5keSBMdXRvbWlyc2tpIDxsdXRvQGtlcm5lbC5v
-cmc+IHdyb3RlOg0KPiBPbiA1LzE0LzIxIDE6MTQgUE0sIENoYW5nIFMuIEJhZSB3cm90ZToNCj4+
-IEtleSBMb2NrZXIgWzFdWzJdIGlzIGEgbmV3IHNlY3VyaXR5IGZlYXR1cmUgYXZhaWxhYmxlIGlu
-IG5ldyBJbnRlbCBDUFVzIHRvDQo+PiBwcm90ZWN0IGRhdGEgZW5jcnlwdGlvbiBrZXlzIGZvciB0
-aGUgQWR2YW5jZWQgRW5jcnlwdGlvbiBTdGFuZGFyZA0KPj4gYWxnb3JpdGhtLiBUaGUgcHJvdGVj
-dGlvbiBsaW1pdHMgdGhlIGFtb3VudCBvZiB0aW1lIGFuIEFFUyBrZXkgaXMgZXhwb3NlZA0KPj4g
-aW4gbWVtb3J5IGJ5IHNlYWxpbmcgYSBrZXkgYW5kIHJlZmVyZW5jaW5nIGl0IHdpdGggbmV3IEFF
-UyBpbnN0cnVjdGlvbnMuDQo+PiANCj4+IFRoZSBuZXcgQUVTIGluc3RydWN0aW9uIHNldCBpcyBh
-IHN1Y2Nlc3NvciBvZiBJbnRlbCdzIEFFUy1OSSAoQUVTIE5ldw0KPj4gSW5zdHJ1Y3Rpb24pLiBV
-c2VycyBtYXkgc3dpdGNoIHRvIHRoZSBLZXkgTG9ja2VyIHZlcnNpb24gZnJvbSBjcnlwdG8NCj4+
-IGxpYnJhcmllcy4gIFRoaXMgc2VyaWVzIGluY2x1ZGVzIGEgbmV3IEFFUyBpbXBsZW1lbnRhdGlv
-biBmb3IgdGhlIENyeXB0bw0KPj4gQVBJLCB3aGljaCB3YXMgdmFsaWRhdGVkIHRocm91Z2ggdGhl
-IGNyeXB0byB1bml0IHRlc3RzLiBUaGUgcGVyZm9ybWFuY2UgaW4NCj4+IHRoZSB0ZXN0IGNhc2Vz
-IHdhcyBtZWFzdXJlZCBhbmQgZm91bmQgY29tcGFyYWJsZSB0byB0aGUgQUVTLU5JIHZlcnNpb24u
-DQo+PiANCj4+IEtleSBMb2NrZXIgaW50cm9kdWNlcyBhIChDUFUtKWludGVybmFsIGtleSB0byBl
-bmNvZGUgQUVTIGtleXMuIFRoZSBrZXJuZWwNCj4+IG5lZWRzIHRvIGxvYWQgaXQgYW5kIGVuc3Vy
-ZSBpdCB1bmNoYW5nZWQgYXMgbG9uZyBhcyBDUFVzIGFyZSBvcGVyYXRpb25hbC4NCj4gDQo+IEkg
-aGF2ZSBoaWdoLWxldmVsIHF1ZXN0aW9uczoNCj4gDQo+IFdoYXQgaXMgdGhlIGV4cGVjdGVkIHVz
-ZSBjYXNlPw0KDQpUaGUgd3JhcHBpbmcga2V5IGhlcmUgaXMgb25seSB1c2VkIGZvciBuZXcgQUVT
-IGluc3RydWN0aW9ucy4NCg0KSeKAmW0gYXdhcmUgb2YgdGhlaXIgcG90ZW50aWFsIHVzZSBjYXNl
-cyBmb3IgZW5jcnlwdGluZyBmaWxlIHN5c3RlbSBvciBkaXNrcy4NCg0KPiBNeSBwZXJzb25hbCBo
-eXBvdGhlc2lzLCBiYXNlZCBvbiB2YXJpb3VzDQo+IHB1YmxpYyBJbnRlbCBzbGlkZXMsIGlzIHRo
-YXQgdGhlIGFjdHVhbCBpbnRlbmRlZCB1c2UgY2FzZSB3YXMgaW50ZXJuYWwNCj4gdG8gdGhlIE1F
-LCBhbmQgdGhhdCBLTCB3YXMgcG9ydGVkIHRvIGVuZC11c2VyIENQVXMgbW9yZSBvciBsZXNzDQo+
-IHZlcmJhdGltLiAgDQoNCk5vLCB0aGlzIGlzIGEgc2VwYXJhdGUgb25lLiBUaGUgZmVhdHVyZSBo
-YXMgbm90aGluZyB0byBkbyB3aXRoIHRoZSBmaXJtd2FyZQ0KZXhjZXB0IHRoYXQgaW4gc29tZSBz
-aXR1YXRpb25zIGl0IG1lcmVseSBoZWxwcyB0byBiYWNrIHVwIHRoZSBrZXkgaW4gaXRzDQpzdGF0
-ZS4NCg0KPiBJIGNlcnRhaW5seSB1bmRlcnN0YW5kIGhvdyBLTCBpcyB2YWx1YWJsZSBpbiBhIGNv
-bnRleHQgd2hlcmUNCj4gYSB2ZXJpZmllZCBib290IHByb2Nlc3MgaW5zdGFsbHMgc29tZSBLTCBr
-ZXlzIHRoYXQgYXJlIG5vdCBzdWJzZXF1ZW50bHkNCj4gYWNjZXNzaWJsZSBvdXRzaWRlIHRoZSBL
-TCBJU0EsIGJ1dCBMaW51eCBkb2VzIG5vdCByZWFsbHkgd29yayBsaWtlIHRoaXMuDQoNCkRvIHlv
-dSBtaW5kIGVsYWJvcmF0aW5nIG9uIHRoZSBjb25jZXJuPyAgSSB0cnkgdG8gdW5kZXJzdGFuZCBh
-bnkgaXNzdWUgd2l0aA0KUEFUQ0gzIFsxXSwgc3BlY2lmaWNhbGx5Lg0KDQo+IEknbSB3b25kZXJp
-bmcgd2hhdCBwZW9wbGUgd2lsbCB1c2UgaXQgZm9yLg0KDQpNZW50aW9uZWQgYWJvdmUuDQoNCj4g
-T24gYSByZWxhdGVkIG5vdGUsIGRvZXMgSW50ZWwgcGxhbiB0byBleHRlbmQgS0wgd2l0aCB3YXlz
-IHRvIHNlY3VyZWx5DQo+IGxvYWQga2V5cz8gIChFLmcuIHRoZSBhYmlsaXR5IHRvLCBpbiBlZmZl
-Y3QsIExPQURJV0tFWSBmcm9tIGluc2lkZSBhbg0KPiBlbmNsYXZlPyAgS2V5IHdyYXBwaW5nL3Vu
-d3JhcHBpbmcgb3BlcmF0aW9ucz8pICBJbiBvdGhlciB3b3JkcywgaXMNCj4gc2hvdWxkIHdlIGxv
-b2sgYXQgS0wgdGhlIHdheSB3ZSBsb29rIGF0IE1LVE1FLCBpLmUuIHRoZSBmb3VuZGF0aW9uIG9m
-DQo+IHNvbWV0aGluZyBuZWF0IGJ1dCBub3QgbmVjZXNzYXJpbHkgdmVyeSB1c2VmdWwgYXMgaXMs
-IG9yIHNob3VsZCB3ZQ0KPiBleHBlY3QgdGhhdCBLTCBpcyBpbiBpdHMgbW9yZSBvciBsZXNzIGZp
-bmFsIGZvcm0/DQoNCkFsbCBJIGhhdmUgaXMgcHJldHR5IG11Y2ggaW4gdGhlIHNwZWMuIFNvLCBJ
-IHRoaW5rIHRoZSBsYXR0ZXIgaXMgdGhlIGNhc2UuDQoNCkkgZG9u4oCZdCBzZWUgYW55dGhpbmcg
-YWJvdXQgdGhhdCBMT0FESVdLRVkgaW5zaWRlIGFuIGVuY2xhdmUgaW4gdGhlIHNwZWMuIChBDQpy
-ZWxldmFudCBzZWN0aW9uIGlzIEEuNi4xIEtleSBMb2NrZXIgVXNhZ2Ugd2l0aCBURUUuKQ0KDQo+
-IFdoYXQgaXMgdGhlIGV4cGVjdGVkIGludGVyYWN0aW9uIGJldHdlZW4gYSBLTC11c2luZyBWTSBn
-dWVzdCBhbmQgdGhlDQo+IGhvc3QgVk1NPyAgV2lsbCB0aGVyZSBiZSBwZXJmb3JtYW5jZSBpbXBh
-Y3RzICh0byBjb250ZXh0IHN3aXRjaGluZywgZm9yDQo+IGV4YW1wbGUpIGlmIGEgZ3Vlc3QgZW5h
-YmxlcyBLTCwgZXZlbiBpZiB0aGUgZ3Vlc3QgZG9lcyBub3Qgc3Vic2VxdWVudGx5DQo+IGRvIGFu
-eXRoaW5nIHdpdGggaXQ/ICBTaG91bGQgTGludXggYWN0dWFsbHkgZW5hYmxlIEtMIGlmIGl0IGRl
-dGVjdHMgdGhhdA0KPiBpdCdzIGEgVk0gZ3Vlc3Q/ICBTaG91bGQgTGludXggaGF2ZSB1c2UgYSBz
-cGVjaWZpYyBrZXlpbmcgbWV0aG9kIGFzIGEgZ3Vlc3Q/DQoNCkZpcnN0IG9mIGFsbCwgdGhlcmUg
-aXMgYW4gUkZDIHNlcmllcyBmb3IgS1ZNIFsyXS4NCg0KRWFjaCBDUFUgaGFzIG9uZSBpbnRlcm5h
-bCBrZXkgc3RhdGUgc28gaXQgbmVlZHMgdG8gcmVsb2FkIGl0IGJldHdlZW4gZ3Vlc3QgYW5kDQpo
-b3N0IGlmIGJvdGggYXJlIGVuYWJsZWQuIFRoZSBwcm9wb3NlZCBhcHByb2FjaCBlbmFibGVzIGl0
-IGV4Y2x1c2l2ZWx5OyBleHBvc2UNCml0IHRvIGd1ZXN0cyBvbmx5IHdoZW4gZGlzYWJsZWQgaW4g
-YSBob3N0LiBUaGVuLCBJIGd1ZXNzIGEgZ3Vlc3QgbWF5IGVuYWJsZSBpdC4NCg0KVGhhbmtzLA0K
-Q2hhbmcNCg0KWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMTA1MTQyMDE1MDgu
-Mjc5NjctNC1jaGFuZy5zZW9rLmJhZUBpbnRlbC5jb20vDQpbMl0gaHR0cHM6Ly9sb3JlLmtlcm5l
-bC5vcmcva3ZtLzE2MTE1NjU1ODAtNDc3MTgtMS1naXQtc2VuZC1lbWFpbC1yb2JlcnQuaHVAbGlu
-dXguaW50ZWwuY29tLw0KDQo=
+ADT7462 can operate in manual mode for fan control.
+Currently if we want to read fan speed,
+there is a check if TACH measurement is enabled for a fan.
+(In fan_enabled function).
+There is no way to enable TACH measurement currently.
+This is addressed in this commit.
+
+Along with the above support few more features are enabled
+- Support for setting fan presence.
+- Support for setting low and high frequency mode.
+- Support for setting easy config option.
+- Support for setting the duration of the fan startup timeout.
+- Once the setting is done, there is a setup complete bit in cfg1 register.
+  Settings this bit will start the monitoring of all selected channels.
+  Added support for that.
+
+Based on this, below is the flow to set/get fan speed (example:pwm1)
+
+echo 1 > pwm1_enable            #Set to manual mode
+echo 1 > pwm_freq_mode          #High freq mode (optional.newly added)
+echo 1 > fan1_presence          #Set fan 1 as present(newly added)
+echo 1 > fan1_tach_enable       #Start TACH measurement-fan1(newly added)
+echo 1 > setup_complete         #Mark as setup complete (newly added)
+cat fan1_input                  #Read Fan1 RPM.
+echo 192 > pwm1                 #Change PWM1(has fan1) to 75%(192/255).
+
+This is tested on x86 CPU which connects via PCIE to FGPA which has I2C Controller.
+ADT7462 is connected to the I2C controller(on FPGA).
+
+Signed-off-by: Ashwin H <ashwin@pensando.io>
+---
+ Documentation/hwmon/adt7462.rst |  22 ++-
+ drivers/hwmon/adt7462.c         | 308 ++++++++++++++++++++++++++++++++
+ 2 files changed, 329 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/hwmon/adt7462.rst b/Documentation/hwmon/adt7462.rst
+index 139e19696188..a4418ed6f2fa 100644
+--- a/Documentation/hwmon/adt7462.rst
++++ b/Documentation/hwmon/adt7462.rst
+@@ -56,7 +56,7 @@ Configuration Notes
+ 
+ Besides standard interfaces driver adds the following:
+ 
+-* PWM Control
++* PWM Auto Control
+ 
+ * pwm#_auto_point1_pwm and temp#_auto_point1_temp and
+ * pwm#_auto_point2_pwm and temp#_auto_point2_temp -
+@@ -68,3 +68,23 @@ The ADT7462 will scale the pwm between the lower and higher pwm speed when
+ the temperature is between the two temperature boundaries.  PWM values range
+ from 0 (off) to 255 (full speed).  Fan speed will be set to maximum when the
+ temperature sensor associated with the PWM control exceeds temp#_max.
++
++* PWM Manual Control
++The ADT7462 can operate in manual mode for PWM control.
++Below is the typical flow to contol PWM manually.
++(Example for PWM1 which controls fan1)
++
++  - Set PWM to manual mode
++    - echo 1 > pwm1_enable
++  - Enable High Freq Mode (optional)
++    -  echo 1 > pwm_freq_mode
++  - Set fan1 as present
++    - echo 1 > fan1_presence
++  - Start TACH measurement for fan1
++    - echo 1 > fan1_tach_enable
++  - Mark as setup complete. This will start monitoring of all enabled channels.
++    - echo 1 > setup_complete
++  - Read fan1 RPM
++    -  cat fan1_input
++  - Change PWM1 to 75% (192/255)
++    - echo 192 > pwm1
+diff --git a/drivers/hwmon/adt7462.c b/drivers/hwmon/adt7462.c
+index e75bbd87ad09..d9faa1224ed8 100644
+--- a/drivers/hwmon/adt7462.c
++++ b/drivers/hwmon/adt7462.c
+@@ -39,8 +39,12 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
+ #define ADT7462_REG_FAN_MIN_BASE_ADDR		0x78
+ #define ADT7462_REG_FAN_MIN_MAX_ADDR		0x7F
+ 
++#define ADT7462_REG_CFG1			0x01
++#define		ADT7462_SETUP_COMPLETE_MASK	0x20
++
+ #define ADT7462_REG_CFG2			0x02
+ #define		ADT7462_FSPD_MASK		0x20
++#define		ADT7462_PWM_FREQ_MODE_MASK      0x04
+ 
+ #define ADT7462_REG_PWM_BASE_ADDR		0xAA
+ #define ADT7462_REG_PWM_MAX_ADDR		0xAD
+@@ -58,6 +62,7 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
+ #define ADT7462_REG_PWM_CFG_MAX_ADDR		0x24
+ #define		ADT7462_PWM_CHANNEL_MASK	0xE0
+ #define		ADT7462_PWM_CHANNEL_SHIFT	5
++#define		ADT7462_SPINUP_TIMEOUT_MASK     0x07
+ 
+ #define ADT7462_REG_PIN_CFG_BASE_ADDR		0x10
+ #define ADT7462_REG_PIN_CFG_MAX_ADDR		0x13
+@@ -84,6 +89,10 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
+ #define		ADT7462_PIN28_SHIFT		4	/* cfg3 */
+ #define		ADT7462_PIN28_VOLT		0x5
+ 
++#define ADT7462_REG_EASY_CONFIG                 0x14
++
++#define ADT7462_REG_FAN_PRESENCE                0x1D
++
+ #define ADT7462_REG_ALARM1			0xB8
+ #define	ADT7462_LT_ALARM			0x02
+ #define		ADT7462_R1T_ALARM		0x04
+@@ -203,8 +212,11 @@ struct adt7462_data {
+ 	u8			temp_max[ADT7462_TEMP_COUNT];
+ 	u16			fan[ADT7462_FAN_COUNT];
+ 	u8			fan_enabled;
++	u8			fan_presence;
+ 	u8			fan_min[ADT7462_FAN_COUNT];
++	u8			cfg1;
+ 	u8			cfg2;
++	u8			easy_config;
+ 	u8			pwm[ADT7462_PWM_COUNT];
+ 	u8			pin_cfg[ADT7462_PIN_CFG_REG_COUNT];
+ 	u8			voltages[ADT7462_VOLT_COUNT];
+@@ -700,6 +712,9 @@ static struct adt7462_data *adt7462_update_device(struct device *dev)
+ 	data->fan_enabled = i2c_smbus_read_byte_data(client,
+ 					ADT7462_REG_FAN_ENABLE);
+ 
++	data->fan_presence = i2c_smbus_read_byte_data(client,
++					ADT7462_REG_FAN_PRESENCE);
++
+ 	for (i = 0; i < ADT7462_PWM_COUNT; i++)
+ 		data->pwm[i] = i2c_smbus_read_byte_data(client,
+ 						ADT7462_REG_PWM(i));
+@@ -765,8 +780,13 @@ static struct adt7462_data *adt7462_update_device(struct device *dev)
+ 
+ 	data->pwm_max = i2c_smbus_read_byte_data(client, ADT7462_REG_PWM_MAX);
+ 
++	data->cfg1 = i2c_smbus_read_byte_data(client, ADT7462_REG_CFG1);
++
+ 	data->cfg2 = i2c_smbus_read_byte_data(client, ADT7462_REG_CFG2);
+ 
++	data->easy_config = i2c_smbus_read_byte_data(client,
++						ADT7462_REG_EASY_CONFIG);
++
+ 	data->limits_last_updated = local_jiffies;
+ 	data->limits_valid = 1;
+ 
+@@ -1049,6 +1069,117 @@ static ssize_t fan_show(struct device *dev, struct device_attribute *devattr,
+ 		       FAN_PERIOD_TO_RPM(data->fan[attr->index]));
+ }
+ 
++static ssize_t fan_tach_show(struct device *dev,
++			      struct device_attribute *devattr,
++			      char *buf)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
++	struct adt7462_data *data = adt7462_update_device(dev);
++
++	return sprintf(buf, "%d\n", fan_enabled(data, attr->index) ? 1 : 0);
++}
++
++static ssize_t fan_tach_store(struct device *dev,
++			       struct device_attribute *devattr,
++			       const char *buf, size_t count)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
++	struct adt7462_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
++	long temp;
++	u8   reg;
++
++	if (kstrtol(buf, 10, &temp))
++		return -EINVAL;
++
++	mutex_lock(&data->lock);
++	reg = i2c_smbus_read_byte_data(client, ADT7462_REG_FAN_ENABLE);
++
++	if (temp)
++		reg |= (1 << attr->index);
++	else
++		reg &= (~(1 << attr->index));
++	data->fan_enabled = reg;
++
++	i2c_smbus_write_byte_data(client, ADT7462_REG_FAN_ENABLE, reg);
++	mutex_unlock(&data->lock);
++
++	return count;
++}
++
++static ssize_t fan_presence_show(struct device *dev,
++				  struct device_attribute *devattr,
++				  char *buf)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
++	struct adt7462_data *data = adt7462_update_device(dev);
++
++	return sprintf(buf, "%d\n", ((data->fan_presence >> attr->index) & 1) ? 1 : 0);
++}
++
++static ssize_t fan_presence_store(struct device *dev,
++				   struct device_attribute *devattr,
++				   const char *buf, size_t count)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
++	struct adt7462_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
++	long temp;
++	u8   reg;
++
++	if (kstrtol(buf, 10, &temp))
++		return -EINVAL;
++
++	mutex_lock(&data->lock);
++	reg = i2c_smbus_read_byte_data(client, ADT7462_REG_FAN_PRESENCE);
++
++	if (temp)
++		reg |= (1 << attr->index);
++	else
++		reg &= (~(1 << attr->index));
++	data->fan_presence = reg;
++
++	i2c_smbus_write_byte_data(client, ADT7462_REG_FAN_PRESENCE, reg);
++	mutex_unlock(&data->lock);
++
++	return count;
++}
++
++static ssize_t setup_complete_show(struct device *dev,
++				    struct device_attribute *devattr,
++				    char *buf)
++{
++	struct adt7462_data *data = adt7462_update_device(dev);
++
++	return sprintf(buf, "%d\n", (data->cfg1 & ADT7462_SETUP_COMPLETE_MASK ? 1 : 0));
++}
++
++static ssize_t setup_complete_store(struct device *dev,
++				     struct device_attribute *devattr,
++				     const char *buf,
++				     size_t count)
++{
++	struct adt7462_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
++	long temp;
++	u8 reg;
++
++	if (kstrtol(buf, 10, &temp))
++		return -EINVAL;
++
++	mutex_lock(&data->lock);
++	reg = i2c_smbus_read_byte_data(client, ADT7462_REG_CFG1);
++	if (temp)
++		reg |= ADT7462_SETUP_COMPLETE_MASK;
++	else
++		reg &= ~ADT7462_SETUP_COMPLETE_MASK;
++	data->cfg1 = reg;
++	i2c_smbus_write_byte_data(client, ADT7462_REG_CFG1, reg);
++	mutex_unlock(&data->lock);
++
++	return count;
++}
++
+ static ssize_t force_pwm_max_show(struct device *dev,
+ 				  struct device_attribute *devattr, char *buf)
+ {
+@@ -1081,6 +1212,75 @@ static ssize_t force_pwm_max_store(struct device *dev,
+ 	return count;
+ }
+ 
++static ssize_t pwm_freq_mode_show(struct device *dev,
++				   struct device_attribute *devattr,
++				   char *buf)
++{
++	struct adt7462_data *data = adt7462_update_device(dev);
++
++	return sprintf(buf, "%d\n", (data->cfg2 & ADT7462_PWM_FREQ_MODE_MASK ? 1 : 0));
++}
++
++static ssize_t pwm_freq_mode_store(struct device *dev,
++				    struct device_attribute *devattr,
++				    const char *buf,
++				    size_t count)
++{
++	struct adt7462_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
++	long temp;
++	u8 reg;
++
++	if (kstrtol(buf, 10, &temp))
++		return -EINVAL;
++
++	mutex_lock(&data->lock);
++	reg = i2c_smbus_read_byte_data(client, ADT7462_REG_CFG2);
++	if (temp)
++		reg |= ADT7462_PWM_FREQ_MODE_MASK;
++	else
++		reg &= ~ADT7462_PWM_FREQ_MODE_MASK;
++
++	data->cfg2 = reg;
++	i2c_smbus_write_byte_data(client, ADT7462_REG_CFG2, reg);
++	mutex_unlock(&data->lock);
++
++	return count;
++}
++
++static ssize_t easy_config_show(struct device *dev,
++				 struct device_attribute *devattr,
++				 char *buf)
++{
++	struct adt7462_data *data = adt7462_update_device(dev);
++
++	return sprintf(buf, "%d\n", data->easy_config);
++}
++
++static ssize_t easy_config_store(struct device *dev,
++				  struct device_attribute *devattr,
++				  const char *buf,
++				  size_t count)
++{
++	struct adt7462_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
++	long temp;
++
++	if (kstrtol(buf, 10, &temp))
++		return -EINVAL;
++	/* Only 1 bit needs to be set and set bit should be below bit 5. */
++
++	if (((temp & (temp - 1)) != 0) || (temp > 16))
++		return -EINVAL;
++
++	mutex_lock(&data->lock);
++	data->easy_config = temp;
++	i2c_smbus_write_byte_data(client, ADT7462_REG_EASY_CONFIG, temp);
++	mutex_unlock(&data->lock);
++
++	return count;
++}
++
+ static ssize_t pwm_show(struct device *dev, struct device_attribute *devattr,
+ 			char *buf)
+ {
+@@ -1339,6 +1539,56 @@ static ssize_t pwm_auto_store(struct device *dev,
+ 	}
+ }
+ 
++static ssize_t pwm_spinup_timeout_show(struct device *dev,
++					struct device_attribute *devattr,
++					char *buf)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
++	struct adt7462_data *data = adt7462_update_device(dev);
++	int cfg = data->pwm_cfg[attr->index] & ADT7462_SPINUP_TIMEOUT_MASK;
++
++	return sprintf(buf, "%d\n", cfg);
++
++}
++
++static void pwm_spinup_timeout_reg_store(struct i2c_client *client,
++					  struct adt7462_data *data,
++					  int which,
++					  int value)
++{
++	int temp = data->pwm_cfg[which] & ~ADT7462_SPINUP_TIMEOUT_MASK;
++
++	temp |= value;
++
++	mutex_lock(&data->lock);
++	data->pwm_cfg[which] = temp;
++	i2c_smbus_write_byte_data(client, ADT7462_REG_PWM_CFG(which), temp);
++	mutex_unlock(&data->lock);
++}
++
++static ssize_t pwm_spinup_timeout_store(struct device *dev,
++					 struct device_attribute *devattr,
++					 const char *buf,
++					 size_t count)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
++	struct adt7462_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
++	long temp;
++
++	if (kstrtol(buf, 10, &temp))
++		return -EINVAL;
++	/* Only 3 bits are valid. */
++	if (temp > 7)
++		return -EINVAL;
++
++	pwm_spinup_timeout_reg_store(client, data, attr->index, temp);
++
++	return count;
++}
++
++
++
+ static ssize_t pwm_auto_temp_show(struct device *dev,
+ 				  struct device_attribute *devattr, char *buf)
+ {
+@@ -1540,8 +1790,32 @@ static SENSOR_DEVICE_ATTR_RO(fan7_alarm, alarm,
+ static SENSOR_DEVICE_ATTR_RO(fan8_alarm, alarm,
+ 			     ADT7462_ALARM4 | ADT7462_F7_ALARM);
+ 
++static SENSOR_DEVICE_ATTR_RW(fan1_tach_enable, fan_tach, 0);
++static SENSOR_DEVICE_ATTR_RW(fan2_tach_enable, fan_tach, 1);
++static SENSOR_DEVICE_ATTR_RW(fan3_tach_enable, fan_tach, 2);
++static SENSOR_DEVICE_ATTR_RW(fan4_tach_enable, fan_tach, 3);
++static SENSOR_DEVICE_ATTR_RW(fan5_tach_enable, fan_tach, 4);
++static SENSOR_DEVICE_ATTR_RW(fan6_tach_enable, fan_tach, 5);
++static SENSOR_DEVICE_ATTR_RW(fan7_tach_enable, fan_tach, 6);
++static SENSOR_DEVICE_ATTR_RW(fan8_tach_enable, fan_tach, 7);
++
++static SENSOR_DEVICE_ATTR_RW(fan1_presence, fan_presence, 0);
++static SENSOR_DEVICE_ATTR_RW(fan2_presence, fan_presence, 1);
++static SENSOR_DEVICE_ATTR_RW(fan3_presence, fan_presence, 2);
++static SENSOR_DEVICE_ATTR_RW(fan4_presence, fan_presence, 3);
++static SENSOR_DEVICE_ATTR_RW(fan5_presence, fan_presence, 4);
++static SENSOR_DEVICE_ATTR_RW(fan6_presence, fan_presence, 5);
++static SENSOR_DEVICE_ATTR_RW(fan7_presence, fan_presence, 6);
++static SENSOR_DEVICE_ATTR_RW(fan8_presence, fan_presence, 7);
++
+ static SENSOR_DEVICE_ATTR_RW(force_pwm_max, force_pwm_max, 0);
+ 
++static SENSOR_DEVICE_ATTR_RW(setup_complete, setup_complete, 0);
++
++static SENSOR_DEVICE_ATTR_RW(pwm_freq_mode, pwm_freq_mode, 0);
++
++static SENSOR_DEVICE_ATTR_RW(easy_config, easy_config, 0);
++
+ static SENSOR_DEVICE_ATTR_RW(pwm1, pwm, 0);
+ static SENSOR_DEVICE_ATTR_RW(pwm2, pwm, 1);
+ static SENSOR_DEVICE_ATTR_RW(pwm3, pwm, 2);
+@@ -1582,6 +1856,11 @@ static SENSOR_DEVICE_ATTR_RW(pwm2_enable, pwm_auto, 1);
+ static SENSOR_DEVICE_ATTR_RW(pwm3_enable, pwm_auto, 2);
+ static SENSOR_DEVICE_ATTR_RW(pwm4_enable, pwm_auto, 3);
+ 
++static SENSOR_DEVICE_ATTR_RW(pwm1_spinup_timeout, pwm_spinup_timeout, 0);
++static SENSOR_DEVICE_ATTR_RW(pwm2_spinup_timeout, pwm_spinup_timeout, 1);
++static SENSOR_DEVICE_ATTR_RW(pwm3_spinup_timeout, pwm_spinup_timeout, 2);
++static SENSOR_DEVICE_ATTR_RW(pwm4_spinup_timeout, pwm_spinup_timeout, 3);
++
+ static SENSOR_DEVICE_ATTR_RW(pwm1_auto_channels_temp, pwm_auto_temp, 0);
+ static SENSOR_DEVICE_ATTR_RW(pwm2_auto_channels_temp, pwm_auto_temp, 1);
+ static SENSOR_DEVICE_ATTR_RW(pwm3_auto_channels_temp, pwm_auto_temp, 2);
+@@ -1710,12 +1989,36 @@ static struct attribute *adt7462_attrs[] = {
+ 	&sensor_dev_attr_fan7_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_fan8_alarm.dev_attr.attr,
+ 
++	&sensor_dev_attr_fan1_tach_enable.dev_attr.attr,
++	&sensor_dev_attr_fan2_tach_enable.dev_attr.attr,
++	&sensor_dev_attr_fan3_tach_enable.dev_attr.attr,
++	&sensor_dev_attr_fan4_tach_enable.dev_attr.attr,
++	&sensor_dev_attr_fan5_tach_enable.dev_attr.attr,
++	&sensor_dev_attr_fan6_tach_enable.dev_attr.attr,
++	&sensor_dev_attr_fan7_tach_enable.dev_attr.attr,
++	&sensor_dev_attr_fan8_tach_enable.dev_attr.attr,
++
++	&sensor_dev_attr_fan1_presence.dev_attr.attr,
++	&sensor_dev_attr_fan2_presence.dev_attr.attr,
++	&sensor_dev_attr_fan3_presence.dev_attr.attr,
++	&sensor_dev_attr_fan4_presence.dev_attr.attr,
++	&sensor_dev_attr_fan5_presence.dev_attr.attr,
++	&sensor_dev_attr_fan6_presence.dev_attr.attr,
++	&sensor_dev_attr_fan7_presence.dev_attr.attr,
++	&sensor_dev_attr_fan8_presence.dev_attr.attr,
++
++
+ 	&sensor_dev_attr_force_pwm_max.dev_attr.attr,
++	&sensor_dev_attr_pwm_freq_mode.dev_attr.attr,
+ 	&sensor_dev_attr_pwm1.dev_attr.attr,
+ 	&sensor_dev_attr_pwm2.dev_attr.attr,
+ 	&sensor_dev_attr_pwm3.dev_attr.attr,
+ 	&sensor_dev_attr_pwm4.dev_attr.attr,
+ 
++	&sensor_dev_attr_setup_complete.dev_attr.attr,
++
++	&sensor_dev_attr_easy_config.dev_attr.attr,
++
+ 	&sensor_dev_attr_pwm1_auto_point1_pwm.dev_attr.attr,
+ 	&sensor_dev_attr_pwm2_auto_point1_pwm.dev_attr.attr,
+ 	&sensor_dev_attr_pwm3_auto_point1_pwm.dev_attr.attr,
+@@ -1751,6 +2054,11 @@ static struct attribute *adt7462_attrs[] = {
+ 	&sensor_dev_attr_pwm3_enable.dev_attr.attr,
+ 	&sensor_dev_attr_pwm4_enable.dev_attr.attr,
+ 
++	&sensor_dev_attr_pwm1_spinup_timeout.dev_attr.attr,
++	&sensor_dev_attr_pwm2_spinup_timeout.dev_attr.attr,
++	&sensor_dev_attr_pwm3_spinup_timeout.dev_attr.attr,
++	&sensor_dev_attr_pwm4_spinup_timeout.dev_attr.attr,
++
+ 	&sensor_dev_attr_pwm1_auto_channels_temp.dev_attr.attr,
+ 	&sensor_dev_attr_pwm2_auto_channels_temp.dev_attr.attr,
+ 	&sensor_dev_attr_pwm3_auto_channels_temp.dev_attr.attr,
+-- 
+2.31.1
+
