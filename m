@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FEF38311C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C23383120
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240617AbhEQOex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:34:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43400 "EHLO mail.kernel.org"
+        id S240703AbhEQOfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239965AbhEQO3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:29:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 564B56162C;
-        Mon, 17 May 2021 14:14:55 +0000 (UTC)
+        id S239997AbhEQO3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:29:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE7A7611ED;
+        Mon, 17 May 2021 14:14:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260895;
-        bh=DRdU950bFxrQzhdl2dct9MiKkUAcUctOWsGQgNIuahM=;
+        s=korg; t=1621260900;
+        bh=pnKSpHyz9pQmxPkhijylRsJgz8hvUcVRIQ3sz0mB/KM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ONYjUsVu2rdo7Z0dILEqwOjYKTTWp1hskITH4T8lrCmns5XXGfTFCvq1DtnLMKzyO
-         bWzUx4yAPiFd7mG1w4yZe2jRyXzmj5DoH33LwB/FEpTxIiKCNQi9+H13KkFNKVRFcs
-         ldC2eQQHChF/WgtihfeAAEQG32zSI+BTrDDOsqjQ=
+        b=ePOtFEGyoDUHqOWrqAplyR+cvsM2ekRaqkIzLL+F47VkCGw2nxxBW+dSp2vkJoLJr
+         3v6hErZin0UTRsfznlkaj3GlFGiwumLRI4p7oPfzyQ0ZOB3RQhWhgW9Z1IN6zxm02S
+         ELxeUu9bqgou9FrekNFqXgNsZlFMJ4E2DNhHRpww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.12 262/363] arm64: mte: initialize RGSR_EL1.SEED in __cpu_setup
-Date:   Mon, 17 May 2021 16:02:08 +0200
-Message-Id: <20210517140311.464948572@linuxfoundation.org>
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>
+Subject: [PATCH 5.12 263/363] arm64: Fix race condition on PG_dcache_clean in __sync_icache_dcache()
+Date:   Mon, 17 May 2021 16:02:09 +0200
+Message-Id: <20210517140311.497540449@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
 References: <20210517140302.508966430@linuxfoundation.org>
@@ -40,51 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Collingbourne <pcc@google.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
 
-commit 37a8024d265564eba680575df6421f19db21dfce upstream.
+commit 588a513d34257fdde95a9f0df0202e31998e85c6 upstream.
 
-A valid implementation choice for the ChooseRandomNonExcludedTag()
-pseudocode function used by IRG is to behave in the same way as with
-GCR_EL1.RRND=0. This would mean that RGSR_EL1.SEED is used as an LFSR
-which must have a non-zero value in order for IRG to properly produce
-pseudorandom numbers. However, RGSR_EL1 is reset to an UNKNOWN value
-on soft reset and thus may reset to 0. Therefore we must initialize
-RGSR_EL1.SEED to a non-zero value in order to ensure that IRG behaves
-as expected.
+To ensure that instructions are observable in a new mapping, the arm64
+set_pte_at() implementation cleans the D-cache and invalidates the
+I-cache to the PoU. As an optimisation, this is only done on executable
+mappings and the PG_dcache_clean page flag is set to avoid future cache
+maintenance on the same page.
 
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Fixes: 3b714d24ef17 ("arm64: mte: CPU feature detection and initial sysreg configuration")
-Cc: <stable@vger.kernel.org> # 5.10
-Link: https://linux-review.googlesource.com/id/I2b089b6c7d6f17ee37e2f0db7df5ad5bcc04526c
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20210507185905.1745402-1-pcc@google.com
+When two different processes map the same page (e.g. private executable
+file or shared mapping) there's a potential race on checking and setting
+PG_dcache_clean via set_pte_at() -> __sync_icache_dcache(). While on the
+fault paths the page is locked (PG_locked), mprotect() does not take the
+page lock. The result is that one process may see the PG_dcache_clean
+flag set but the I/D cache maintenance not yet performed.
+
+Avoid test_and_set_bit(PG_dcache_clean) in favour of separate test_bit()
+and set_bit(). In the rare event of a race, the cache maintenance is
+done twice.
+
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: <stable@vger.kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Steven Price <steven.price@arm.com>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210514095001.13236-1-catalin.marinas@arm.com
 Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/mm/proc.S |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm64/mm/flush.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -444,6 +444,18 @@ SYM_FUNC_START(__cpu_setup)
- 	mov	x10, #(SYS_GCR_EL1_RRND | SYS_GCR_EL1_EXCL_MASK)
- 	msr_s	SYS_GCR_EL1, x10
+--- a/arch/arm64/mm/flush.c
++++ b/arch/arm64/mm/flush.c
+@@ -55,8 +55,10 @@ void __sync_icache_dcache(pte_t pte)
+ {
+ 	struct page *page = pte_page(pte);
  
-+	/*
-+	 * If GCR_EL1.RRND=1 is implemented the same way as RRND=0, then
-+	 * RGSR_EL1.SEED must be non-zero for IRG to produce
-+	 * pseudorandom numbers. As RGSR_EL1 is UNKNOWN out of reset, we
-+	 * must initialize it.
-+	 */
-+	mrs	x10, CNTVCT_EL0
-+	ands	x10, x10, #SYS_RGSR_EL1_SEED_MASK
-+	csinc	x10, x10, xzr, ne
-+	lsl	x10, x10, #SYS_RGSR_EL1_SEED_SHIFT
-+	msr_s	SYS_RGSR_EL1, x10
-+
- 	/* clear any pending tag check faults in TFSR*_EL1 */
- 	msr_s	SYS_TFSR_EL1, xzr
- 	msr_s	SYS_TFSRE0_EL1, xzr
+-	if (!test_and_set_bit(PG_dcache_clean, &page->flags))
++	if (!test_bit(PG_dcache_clean, &page->flags)) {
+ 		sync_icache_aliases(page_address(page), page_size(page));
++		set_bit(PG_dcache_clean, &page->flags);
++	}
+ }
+ EXPORT_SYMBOL_GPL(__sync_icache_dcache);
+ 
 
 
