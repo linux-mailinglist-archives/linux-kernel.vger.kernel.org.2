@@ -2,84 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CC33838FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB266383975
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346395AbhEQQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344286AbhEQPoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:44:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54D4861D20;
-        Mon, 17 May 2021 14:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621262596;
-        bh=iH1753AkMmzMFnrNJ4C/WylYC6aZOwPygucDv8g2sGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JBcvgm13fZyycqcfNx4ZA3YPtHEX5CGYJS9HGk25YYdkgP2Ae2QL380bZCv7jtS34
-         NfpZKBoEOYQmvrMFjGZi2Z9u4PUumsFdcmvD6pG6g3NLf1LO/wlpXHQOC6pP0nZcMo
-         RsKO++8PYrRsgAo4NhqAaW87o1hlIaBLJsgGTDEwfhkBMXOrM/tQky8SDx1HcM5Elp
-         HCuPr/IIjgA1WfNSvRyiBDnOrP+UfRFufp0ebdhbTUnmMd26bkag8zD4mAjrFrLcWW
-         xklB9vetjh++oKdLV98JIV1eX3cKHJQde7VbK57o2pc3A53IGbt5IaHH0P1bYEq+fm
-         RsogRC/vo9jrQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7AC8D4034C; Mon, 17 May 2021 11:43:13 -0300 (-03)
-Date:   Mon, 17 May 2021 11:43:13 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
-        leo.yan@linaro.org, al.grant@arm.com, branislav.rankov@arm.com,
-        denik@chromium.org, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] perf cs-etm: Handle valid-but-zero timestamps
-Message-ID: <YKKBAeQMAo5CIily@kernel.org>
-References: <20210517131741.3027-1-james.clark@arm.com>
+        id S244071AbhEQQRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244658AbhEQQCI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:02:08 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE33C0467C6;
+        Mon, 17 May 2021 07:45:24 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id d21so6654049oic.11;
+        Mon, 17 May 2021 07:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dQh3WD+V36DcjC0tRHnk3vjCMvP62JeajHSbxzekmLY=;
+        b=Chnd4Pj2Y8RyVvXPj6M832q/iB/no7+e0YmAxsL/N1cgnjquNf37lXctJQh0LpTK4i
+         S/fL/IIDIZ/vHpz/h7BZX7i5D6j/mipF3o9G/Zm1huxLajcP0lC3cEesQhzKcx5latte
+         ksudygWrQksl2LzfpcmkSFlDBUGw0pJEpVmvs9fGPAJSlV7ife2arQdoXchX+9BgekG8
+         fmbt1i8U0+nGpAEhrjsL7xNqXZB11aXEpRaZStKTG1E5wl89N9Pn9dtYFp20KP/pIKUN
+         w2i0KliAKI7RZelYlQIlUAua6B7+dLj+yXTa9wQJ9pzcfaa5GmvqcKKysxMcsItXSDvb
+         ZpEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dQh3WD+V36DcjC0tRHnk3vjCMvP62JeajHSbxzekmLY=;
+        b=t4BNKK95ocgjWONwp0LTP7jLyrRbb+Fhc+CkLNKlQsUeY4/hBaIuARjLdu2t6oyHk0
+         cDYrHJhLKRoJJRYJh5m9yIZ7VDtdM6cK1IRQg6cXZdxQIXnfO0GXoldXymUW1IGIXXRG
+         53q3TGRGb4qtcTCur/7Lb8v5x8XbFdm1AINH01c9Mu7NO23OMHMiiXQlX4Sa+euqRP61
+         d3JCCyCxUrAaV29hOQCBrqD1VNy7csfwxF5wxiF/oGAJhUSJYpThVrtS+PBJOHvsOuxh
+         oTkv+GiWztMg83svClOwxSiiJXeXiN+rqlqneQvh/+U9DwfZKuov1VUl9sCX6LqVE/XI
+         31bw==
+X-Gm-Message-State: AOAM533d53bC4+1osFrjTs5BoY1W3xGASWK3IoyF1W/YNsCAQpR1a4Pb
+        mMsOACv3GcRq9BSV6dhY2ks=
+X-Google-Smtp-Source: ABdhPJzXc1gbOm6DJ88PuSwBm6xawJcoOfwrpG+2Rpg+8grxci8Ca6BrK7Kn4BISGvZXBPkZrfs2QQ==
+X-Received: by 2002:aca:3684:: with SMTP id d126mr90498oia.129.1621262723613;
+        Mon, 17 May 2021 07:45:23 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.22])
+        by smtp.googlemail.com with ESMTPSA id o15sm3096753ota.61.2021.05.17.07.45.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 07:45:23 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next v3] lib/fs: fix issue when
+ {name,open}_to_handle_at() is not implemented
+To:     Heiko Thiery <heiko.thiery@gmail.com>, netdev@vger.kernel.org
+Cc:     petr.vorel@gmail.com, linux-kernel@vger.kernel.org,
+        stephen@networkplumber.org, Dmitry Yakunin <zeil@yandex-team.ru>
+References: <20210508064925.8045-1-heiko.thiery@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
+Date:   Mon, 17 May 2021 08:45:22 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517131741.3027-1-james.clark@arm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210508064925.8045-1-heiko.thiery@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, May 17, 2021 at 04:17:38PM +0300, James Clark escreveu:
-> Changes since v2:
+On 5/8/21 12:49 AM, Heiko Thiery wrote:
+> With commit d5e6ee0dac64 the usage of functions name_to_handle_at() and
+> open_by_handle_at() are introduced. But these function are not available
+> e.g. in uclibc-ng < 1.0.35. To have a backward compatibility check for the
+> availability in the configure script and in case of absence do a direct
+> syscall.
 > 
->  * Fix typo in last commit message
->  * Add reviewed-by tags from Leo Yan
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> This patchset applies on top of "[PATCH v3 0/2] perf cs-etm: Set
-> time on synthesised samples to preserve ordering"
+> Fixes: d5e6ee0dac64 ("ss: introduce cgroup2 cache and helper functions")
+> Cc: Dmitry Yakunin <zeil@yandex-team.ru>
+> Cc: Petr Vorel <petr.vorel@gmail.com>
+> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> ---
+> v3:
+>  - use correct syscall number (thanks to Petr Vorel)
+>  - add #include <sys/syscall.h> (thanks to Petr Vorel)
+>  - remove bogus parameters (thanks to Petr Vorel)
+>  - fix #ifdef (thanks to Petr Vorel)
+>  - added Fixes tag (thanks to David Ahern)
+>  - build test with buildroot 2020.08.3 using uclibc 1.0.34
 > 
-> James Clark (3):
->   perf cs-etm: Move synth_opts initialisation
->   perf cs-etm: Start reading 'Z' --itrace option
->   perf cs-etm: Prevent and warn on underflows during timestamp
->     calculation.
+> v2:
+>  - small correction to subject
+>  - removed IP_CONFIG_HANDLE_AT:=y option since it is not required
+>  - fix indentation in check function
+>  - removed empty lines (thanks to Petr Vorel)
+>  - add #define _GNU_SOURCE in check (thanks to Petr Vorel)
+>  - check only for name_to_handle_at (thanks to Petr Vorel)
 > 
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 45 ++++++++++++++-----
->  tools/perf/util/cs-etm.c                      | 20 +++++----
->  2 files changed, 46 insertions(+), 19 deletions(-)
-> 
-> -- 
-> 2.28.0
+>  configure | 28 ++++++++++++++++++++++++++++
+>  lib/fs.c  | 25 +++++++++++++++++++++++++
+>  2 files changed, 53 insertions(+)
 > 
 
--- 
+applied to iproute2-next.
 
-- Arnaldo
