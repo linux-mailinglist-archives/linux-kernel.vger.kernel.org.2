@@ -2,173 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA2438397F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11437383980
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242682AbhEQQSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S236447AbhEQQSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344536AbhEQQMH (ORCPT
+        with ESMTP id S1346057AbhEQQO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:12:07 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4153C0494E3;
-        Mon, 17 May 2021 07:47:11 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id v8so4217685lft.8;
-        Mon, 17 May 2021 07:47:11 -0700 (PDT)
+        Mon, 17 May 2021 12:14:58 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3079FC035437
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:48:17 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id v11-20020a17090a6b0bb029015cba7c6bdeso3864345pjj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SEA3EwJIt3rzzFHp4o5m/p8jxV9Zmq+VibaWYsv49TE=;
-        b=Hsiv82W97hbMKpEhsQMsW6lcJ2MT0an4aXXxdGMQhZpMeKZgrmcy2WHXuvlQ6QX2ZO
-         WrqmTOsWpd8IFdIR+sjdPPEf2x8qpZMp8pgis1M+h/5XOc/76wUlP4hvohw4+Ix/1/FQ
-         PAn6WK6Tk9+qdaHhIMTCuF3JRqLyK5xQwRa+lyAEBGz+Rmn2C0EYKcZK62cOjkBgT+Ur
-         m8HteSjr3ls4oxbKucPxwpzGRPTLf0ek/Mk98r/gRMQLjTKk8VBx3E5DhyBKZB4nHzGs
-         dqg44BFYcpwMFMC1B+zP40xRXeXmNbyCGXHyJe9RSjPlTML+gBGMcGRMlXLuMaNWBHb6
-         5KqA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kdeSQM6n6ehpxt42Ss8k8UZyemLNVXlBn2/V/96APY4=;
+        b=WVotFD6KFq7FKYZUVMZr4WZBVObM0/yy+5GOpB78HbjC+HRel8qTTi23kLZAFV5YpL
+         8Le7N3FuVQ++shWQdW8GQFDeZy85GynYsH5DUnnyBHc4mk9j1A4sWUafeEY26uFvrHKE
+         ZI6U7h4WaKiXvtCQws6l8+G1QBHV3UUBdgKj2kADT/H6BiLEOM3fXeBb/z7Yl5PUUC36
+         RNHtkC3sU8VBTLkx1mfiYpMKMcV9t+tvhILPiqJi68boLB6IoHTJ+GkkYTuj4rcA8aRQ
+         XWSPY0qYpBoWeVZyM4aI+EB/uyfIArlZogL1IgyzD42ocD6yc/vN5x+Eimyr0cDn9bBT
+         yDOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SEA3EwJIt3rzzFHp4o5m/p8jxV9Zmq+VibaWYsv49TE=;
-        b=oPXazGV7CgdQXV9RakprUVarPgfNMwPhn+0HnzBbN/eIKLWQlq/BXZ+b3L2Ma1PuIZ
-         +hmjIDmFqdFqX/pgi1LUhv5ynSkI7Mj7W9SA8vNPjB5lSW3+kjRzK19gTgEazuS+xNln
-         uxxZC78yGHqA0mTOw/dlZnUYCOZAlKGBgjZimlZ0WECJNnmmQ3maqHjbRlwEFaVHAdm8
-         5IjOSoDQqNf+6SV+39io2/11E0ujGDMD3Nd5Euna41jnR8+UEyblhYbVsZFk8c/cEHaA
-         mUmVzK75FmdMvfQjLO+OgCWBmpvMf9444HNy6rHp9BQzu1BopmX2R51KbLF6zn5n5XUv
-         r51w==
-X-Gm-Message-State: AOAM530/we7IpSdS3UniwxNliwNVeUaL95yY13RMhprDq5ELP56RVgqq
-        0Zsu2CI7MACqCi1f4en7DWMUiAbvquY=
-X-Google-Smtp-Source: ABdhPJwIhZEsa68lzrxmBmtVnI6PtEzqWJDaxxtZQ37Pt6wE2KuNB43Zd8pMIJlReGk6G8bXJfU6yw==
-X-Received: by 2002:a05:6512:1109:: with SMTP id l9mr183151lfg.550.1621262830161;
-        Mon, 17 May 2021 07:47:10 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id q2sm61976lfd.84.2021.05.17.07.47.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:47:09 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] soc/tegra: Add
- devm_tegra_core_dev_init_opp_table()
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210516205138.22501-1-digetx@gmail.com>
- <20210516205138.22501-2-digetx@gmail.com>
- <3ea6b48f-af3f-51db-8d7b-1292a68ae74e@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a3b42449-4cd8-f692-c41a-205cbaa987eb@gmail.com>
-Date:   Mon, 17 May 2021 17:47:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kdeSQM6n6ehpxt42Ss8k8UZyemLNVXlBn2/V/96APY4=;
+        b=i4poTlXO4auoTDBiqYyOovWv+KhQofZLl6mrRBlxfVaejc1+KAweLLd2vesbLEThhN
+         zhq7evlzVYRSmttYBpviqnep7pZP+8C4xyQ1hF3kzLMofXKhfEgtCnPxeVwMyQ96BfNC
+         AHgqh0AYJH/Dt4okfC88KzlsR587PMFH1MLD/M8XXbSPn//sa6QmQaZZBPm62AFMmksi
+         HeF/KcnFy+zYB4MT7aRZm5V/3CQ8YQ03C+LPosVaeyYJ1O1dtlUrS56XP/a7bKjMvuVJ
+         ptdVMpaBmrl1ls5hM7NQNGl5bO1KjUBXGveLnz67N8yLtrjblj8W8i5/vj4HMau5OLJ6
+         E71w==
+X-Gm-Message-State: AOAM530jm2opeWPn3UZy46BWo7RmDCd6BRllkG1aQCwbfl1FcokpekXH
+        9rg3Ap14L2VhjECzKxMheQE=
+X-Google-Smtp-Source: ABdhPJy/hLq9Wg9UD+0N/OJ47bWBmXA9uT4lXWcLYM/B9K+IiAWbeYfHp7+Q4tvdTBQoTSXOfK14Yg==
+X-Received: by 2002:a17:90a:a2b:: with SMTP id o40mr302170pjo.214.1621262896743;
+        Mon, 17 May 2021 07:48:16 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id h1sm10449494pfh.72.2021.05.17.07.48.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 07:48:16 -0700 (PDT)
+Date:   Mon, 17 May 2021 23:48:11 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] sound: line6: Fix race condition in line6_probe
+Message-ID: <20210517144811.GA54892@hyeyoo>
+References: <20210517132725.GA50495@hyeyoo>
+ <s5hk0nxo4qr.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <3ea6b48f-af3f-51db-8d7b-1292a68ae74e@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hk0nxo4qr.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.05.2021 14:43, Krzysztof Kozlowski пишет:
-...
->> +static int tegra_core_dev_init_opp_state(struct device *dev)
->> +{
->> +	struct dev_pm_opp *opp;
->> +	unsigned long rate;
->> +	struct clk *clk;
->> +	int err;
->> +
->> +	clk = devm_clk_get(dev, NULL);
->> +	if (IS_ERR(clk)) {
->> +		dev_err(dev, "failed to get clk: %pe\n", clk);
->> +		return PTR_ERR(clk);
->> +	}
->> +
->> +	rate = clk_get_rate(clk);
->> +	if (!rate) {
->> +		dev_err(dev, "failed to get clk rate\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	opp = dev_pm_opp_find_freq_ceil(dev, &rate);
->> +
->> +	if (opp == ERR_PTR(-ERANGE))
->> +		opp = dev_pm_opp_find_freq_floor(dev, &rate);
->> +
->> +	err = PTR_ERR_OR_ZERO(opp);
->> +	if (err) {
->> +		dev_err(dev, "failed to get OPP for %ld Hz: %d\n",
->> +			rate, err);
->> +		return err;
->> +	}
->> +
->> +	dev_pm_opp_put(opp);
->> +
->> +	/* first dummy rate-setting initializes voltage vote */
->> +	err = dev_pm_opp_set_rate(dev, rate);
->> +	if (err) {
->> +		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
->> +		return err;
->> +	}
-> 
-> 
-> The devm_pm_opp_set_clkname will call clk_get(), so here you should drop
-> the clk reference at the end. Why having it twice?
+On Mon, May 17, 2021 at 03:43:24PM +0200, Takashi Iwai wrote:
+> The actually needed initialization is
+> line6_init_mid() call, and this can be fixed by moving to the
+> appropriate place instead of inside each private_init callback.
 
-The devm_pm_opp_set_clkname assigns clock to the OPP table.
+Oh, I missed it! there was another caller of line6_init_midi.
+your fix seems promising to me. it's putting line6_init_midi
+to the right place.
 
-The devm_clk_get() is needed for the clk_get_rate(). OPP core doesn't
-initialize voltage vote and we need this initialization for the Tegra
-memory drivers.
+by the way looking at code, I think this driver needs some
+refactoring... it doesn't handle exceptions well.
 
-The reference count of the clk will be dropped automatically once device
-driver is released. The resource-managed helper avoids the need to care
-about the error unwinding in the code, making it clean and easy to follow.
+Thanks,
 
-...
->> +EXPORT_SYMBOL_GPL(devm_tegra_core_dev_init_opp_table);
->> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
->> index 98027a76ce3d..e8eab13aa199 100644
->> --- a/include/soc/tegra/common.h
->> +++ b/include/soc/tegra/common.h
->> @@ -6,6 +6,36 @@
->>  #ifndef __SOC_TEGRA_COMMON_H__
->>  #define __SOC_TEGRA_COMMON_H__
->>  
->> +#include <linux/errno.h>
->> +#include <linux/types.h>
->> +
->> +struct device;
->> +
->> +/**
->> + * Tegra SoC core device OPP table configuration
->> + *
->> + * @init_state: pre-initialize OPP state of a device
->> + */
->> +struct tegra_core_opp_params {
->> +	bool init_state;
->> +};
->> +
->> +#ifdef CONFIG_ARCH_TEGRA
->>  bool soc_is_tegra(void);
->> +int devm_tegra_core_dev_init_opp_table(struct device *dev,
->> +				       struct tegra_core_opp_params *params);
->> +#else
->> +static inline bool soc_is_tegra(void)
-> 
-> This looks unrelated. Please make it a separate patch.
-
-The missing stub for soc_is_tegra() popped up multiple times before.
-Hence it didn't look like a bad idea to me to add stub for it since this
-patch touches code around it.
-
-I'll factor it out into a separate patch in v2.
+Hyeonggon
+> ---
+> diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+> index a030dd65eb28..9602929b7de9 100644
+> --- a/sound/usb/line6/driver.c
+> +++ b/sound/usb/line6/driver.c
+> @@ -699,6 +699,10 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+>  		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+>  		if (!line6->buffer_message)
+>  			return -ENOMEM;
+> +
+> +		ret = line6_init_midi(line6);
+> +		if (ret < 0)
+> +			return ret;
+>  	} else {
+>  		ret = line6_hwdep_init(line6);
+>  		if (ret < 0)
+> diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+> index cd44cb5f1310..16e644330c4d 100644
+> --- a/sound/usb/line6/pod.c
+> +++ b/sound/usb/line6/pod.c
+> @@ -376,11 +376,6 @@ static int pod_init(struct usb_line6 *line6,
+>  	if (err < 0)
+>  		return err;
+>  
+> -	/* initialize MIDI subsystem: */
+> -	err = line6_init_midi(line6);
+> -	if (err < 0)
+> -		return err;
+> -
+>  	/* initialize PCM subsystem: */
+>  	err = line6_init_pcm(line6, &pod_pcm_properties);
+>  	if (err < 0)
+> diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
+> index ed158f04de80..1376fc405c7f 100644
+> --- a/sound/usb/line6/variax.c
+> +++ b/sound/usb/line6/variax.c
+> @@ -172,11 +172,6 @@ static int variax_init(struct usb_line6 *line6,
+>  	if (variax->buffer_activate == NULL)
+>  		return -ENOMEM;
+>  
+> -	/* initialize MIDI subsystem: */
+> -	err = line6_init_midi(&variax->line6);
+> -	if (err < 0)
+> -		return err;
+> -
+>  	/* initiate startup procedure: */
+>  	schedule_delayed_work(&line6->startup_work,
+>  			      msecs_to_jiffies(VARIAX_STARTUP_DELAY1));
