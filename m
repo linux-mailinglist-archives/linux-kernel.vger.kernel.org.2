@@ -2,112 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A7B382B32
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DC0382B2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236865AbhEQLhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        id S236826AbhEQLhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236835AbhEQLhY (ORCPT
+        with ESMTP id S236751AbhEQLhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:37:24 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8595CC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:36:07 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id l4so8669849ejc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:36:07 -0700 (PDT)
+        Mon, 17 May 2021 07:37:08 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775C3C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:35:51 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id k14so5199059eji.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:35:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=B3U4sFVt7KjRPqeulougyIA4myDGMkTfpXl0wugLAP8=;
-        b=vGuA9zYVOz5i6yfV/p5x6UO8dLJWh4heuAb1VjYaYcaBGPYw1uED4k2J6HY9qzg2nA
-         T1cxTEQhMJr+5lDtyWpYn+k7CZpMLMdjnmKUylnjNcUUMfJvkddE6QsnNnT5r4KkD7nw
-         yjUdLgXSmO+4hyYNZG3bIO8OYb+1+e3pWar51voyxBlMRQ5963L+o+aS0otfGEDIqCia
-         aCIknv7SY+2zMkVl5k3l+uHLLtRsULEo6LitmcGZEvYA6asDqw2oGCDpkTo/6bV2rOMx
-         bmMiWHcEZkGlVCkcEyVmT9Q9j6dJCsuWzXVGdczcuDjtiT87M8HZgCeG2p7FbuGkGbM+
-         mZQg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cpVCz5J0mualmBJL14dU/kCHM8m4z1AkfD48q7fb54Y=;
+        b=j7UvTXiSILRPux9PGsOIlTxwHEXL4df2qspCBdJq2w8fVwIVveJzi/6katDaWZo4kb
+         WN+z1G8hvYNmldIuH4Fl5+DrK+e+1lb+3S9aIv1EdWQOae9rn5VmJ1jHd6S+gSrJfvwV
+         Lk7kMEZB1sfEEzgaNAxgb0yoPriBMzUXWa32eDVvkQexwx6BI3xnQVOBuX8KSWVX+m0e
+         rB4bWR23P0G5dAzeAsBAjeIOYEK3DoYX98NiaEhZXc1+THb4z8mOEGv2788ult9f2SZT
+         0gT7uwxcvFZy+qZYMvUCpCCUdPYZYRCCQQr0DDqYtVrHDkKGg1j/KWB0P0iwo9wtF/WT
+         3cwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B3U4sFVt7KjRPqeulougyIA4myDGMkTfpXl0wugLAP8=;
-        b=bIawJcDIEzf7pN9Xv7TOlNECNVm5nSKVqHYdgujCjHU7myB+xnn68iZ7hc7U+5KwPm
-         gRIL8Wtp1zMp2C2LIlq6Hptm7lV55nrwqQLRu0HQI5S/5B+TSb6oJ38OVXAIExcU8gOo
-         KReg0MYjPCr9biJAVu4dTUFmFPgolgdn0Bp7xV4PI7z02AAQ2nS5c2pdGUe02e63afHW
-         yPDF29zxmWqHSDIWmf5oNvjnsTmcoHmxB7A2ei2S273pNi3zRWFCtPiXD03DfuuLPvnH
-         M7sCTsyj2lZNlqptrZ9GBNysXIhqifwGxY2G8yyn5LqEsGv4gfAD4rb4O96vQxwzXcLh
-         4EBw==
-X-Gm-Message-State: AOAM531X1/QNclMFzgJrpmPMfCmlnGmHQFnu88wgo+dLtk4/03jEXZZ5
-        dr0HURateicL97c3uPQn+0HsHQ==
-X-Google-Smtp-Source: ABdhPJxfbICzaIghksBO0l9YVZgy9DbYgwPQ43Kd4QE3T2c8/Jf29r/4PJgbARe6s1SYQ643JHhweA==
-X-Received: by 2002:a17:907:9008:: with SMTP id ay8mr21043176ejc.474.1621251365894;
-        Mon, 17 May 2021 04:36:05 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id v24sm2903703eds.19.2021.05.17.04.36.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cpVCz5J0mualmBJL14dU/kCHM8m4z1AkfD48q7fb54Y=;
+        b=rO6+BEa3BqFBpjhejsC+dpVe79AfyNbK36U8s5+ABI3zvRnneD42I4EHMlWhfXUU+C
+         jgK7+h1AXIIpvrZwePVaoMg5IW3ypUZoYAbOdAvyzLr/bWDWL9JsQwabyl09mi84YteR
+         fT1SoVQlKp7tLX8stvoDHlvxEir1d1ilabWxOWRG9JxwmkVI2HsI9CqEuUEZM1OIsxAQ
+         p9ovdIVyrNzg+hlw+fFgCuEDEW2iTceGghwSaalvM2IGJLcjd/vSmZjDRJtgJ7bpCa03
+         7VJ9AXXK4m9ZLVyJU5Ky0LPnURD7vSEMUFekYBpI5KE4Txa1HqgZFuQ2m6TPT70eyhrA
+         kn3A==
+X-Gm-Message-State: AOAM530Mt+ynC7NxtKecWS+zfpsPKUErZcYZAi33GM4nzwXu6VunFkhS
+        fsYVTKWBqKgx98hMIwglRGSE5g==
+X-Google-Smtp-Source: ABdhPJzt2r6RHjtKUUNYBd1PR/7rdCUkb6ACw8GomMcdp8eOm4/+GQQxMTKlfPAItXeOe1oy5amyFg==
+X-Received: by 2002:a17:907:20a8:: with SMTP id pw8mr11169946ejb.256.1621251350130;
+        Mon, 17 May 2021 04:35:50 -0700 (PDT)
+Received: from enceladus ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id b19sm10631737edd.66.2021.05.17.04.35.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 04:36:05 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] gpio: gpio-wm8994: remove platform_set_drvdata() + cleanup probe
-Date:   Mon, 17 May 2021 14:35:40 +0300
-Message-Id: <20210517113540.237495-3-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517113540.237495-1-aardelean@deviqon.com>
-References: <20210517113540.237495-1-aardelean@deviqon.com>
+        Mon, 17 May 2021 04:35:49 -0700 (PDT)
+Date:   Mon, 17 May 2021 14:35:44 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YKJVEDUjmv6rRnFP@enceladus>
+References: <20210513165846.23722-4-mcroce@linux.microsoft.com>
+ <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
+ <YJ4ocslvURa/H+6f@apalos.home>
+ <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
+ <YJ5APhzabmAKIKCE@apalos.home>
+ <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
+ <YKIPcF9ACNmFtksz@enceladus>
+ <fade4bc7-c1c7-517e-a775-0a5bb2e66be6@huawei.com>
+ <YKI5JxG2rw2y6C1P@apalos.home>
+ <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The platform_set_drvdata() call is only useful if we need to retrieve back
-the private information.
-Since the driver doesn't do that, it's not useful to have it.
+On Mon, May 17, 2021 at 07:10:09PM +0800, Yunsheng Lin wrote:
+> On 2021/5/17 17:36, Ilias Apalodimas wrote:
+>  >>
+> >> Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
+> >> or page pool are both supported, so it seems page->signature need to be reliable
+> >> to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
+> >> is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
+> >> the page->signature does not need checking?
+> > 
+> > Yes, the idea for the recycling bit, is that you don't have to fetch the page
+> > in cache do do more processing (since freeing is asynchronous and we
+> > can't have any guarantees on what the cache will have at that point).  So we
+> > are trying to affect the existing release path a less as possible. However it's
+> > that new skb bit that triggers the whole path.
+> > 
+> > What you propose could still be doable though.  As you said we can add the
+> > page pointer to struct page when we allocate a page_pool page and never
+> > reset it when we recycle the buffer. But I don't think there will be any
+> > performance impact whatsoever. So I prefer the 'visible' approach, at least for
+> 
+> setting and unsetting the page_pool ptr every time the page is recycled may
+> cause a cache bouncing problem when rx cleaning and skb releasing is not
+> happening on the same cpu.
 
-If this is removed, we can also just do a direct return on
-devm_gpiochip_add_data(). We don't need to print that this call failed as
-there are other ways to log/see this during probe.
+In our case since the skb is asynchronous and not protected by a NAPI context,
+the buffer wont end up in the 'fast' page pool cache.  So we'll recycle by
+calling page_pool_recycle_in_ring() not page_pool_recycle_in_cache().  Which
+means that the page you recycled will be re-filled later, in batches, when
+page_pool_refill_alloc_cache() is called to refill the fast cache.  I am not i
+saying it might not happen, but I don't really know if it's going to make a
+difference or not.  So I just really prefer taking this as is and perhaps
+later, when 40/100gbit drivers start using it we can justify the optimization
+(along with supporting the split page model).
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/gpio/gpio-wm8994.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Thanks
+/Ilias
 
-diff --git a/drivers/gpio/gpio-wm8994.c b/drivers/gpio/gpio-wm8994.c
-index 9af89cf7f6bc..f4a474cef32d 100644
---- a/drivers/gpio/gpio-wm8994.c
-+++ b/drivers/gpio/gpio-wm8994.c
-@@ -263,7 +263,6 @@ static int wm8994_gpio_probe(struct platform_device *pdev)
- 	struct wm8994 *wm8994 = dev_get_drvdata(pdev->dev.parent);
- 	struct wm8994_pdata *pdata = dev_get_platdata(wm8994->dev);
- 	struct wm8994_gpio *wm8994_gpio;
--	int ret;
- 
- 	wm8994_gpio = devm_kzalloc(&pdev->dev, sizeof(*wm8994_gpio),
- 				   GFP_KERNEL);
-@@ -279,17 +278,7 @@ static int wm8994_gpio_probe(struct platform_device *pdev)
- 	else
- 		wm8994_gpio->gpio_chip.base = -1;
- 
--	ret = devm_gpiochip_add_data(&pdev->dev, &wm8994_gpio->gpio_chip,
--				     wm8994_gpio);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Could not register gpiochip, %d\n",
--			ret);
--		return ret;
--	}
--
--	platform_set_drvdata(pdev, wm8994_gpio);
--
--	return ret;
-+	return devm_gpiochip_add_data(&pdev->dev, &wm8994_gpio->gpio_chip, wm8994_gpio);
- }
- 
- static struct platform_driver wm8994_gpio_driver = {
--- 
-2.31.1
-
+> 
+> > the first iteration.
+> > 
+> > Thanks
+> > /Ilias
+> >  
+> > 
+> > .
+> > 
+> 
