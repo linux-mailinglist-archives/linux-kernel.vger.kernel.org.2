@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5914C38299C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBB73829A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbhEQKQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:16:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49932 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhEQKQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:16:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F113EAE4D;
-        Mon, 17 May 2021 10:15:23 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8DBDE1F2CA4; Mon, 17 May 2021 12:15:23 +0200 (CEST)
-Date:   Mon, 17 May 2021 12:15:23 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     jack@suse.cz, tiantao6@hisilicon.com, rdunlap@infradead.org,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
-Subject: Re: [PATCH] reiserfs: add check for invalid 1st journal block
-Message-ID: <20210517101523.GB31755@quack2.suse.cz>
-References: <20210514212335.9709-1-paskripkin@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514212335.9709-1-paskripkin@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S236345AbhEQKR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:17:27 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:42459 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236352AbhEQKRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:17:00 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UZ9B-kz_1621246526;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UZ9B-kz_1621246526)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 17 May 2021 18:15:32 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] net/packet: Remove redundant assignment to ret
+Date:   Mon, 17 May 2021 18:15:25 +0800
+Message-Id: <1621246525-65683-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 15-05-21 00:23:35, Pavel Skripkin wrote:
-> syzbot reported divide error in reiserfs.
-> The problem was in incorrect journal 1st block.
-> 
-> Syzbot's reproducer manualy generated wrong superblock
-> with incorrect 1st block. In journal_init() wasn't
-> any checks about this particular case.
-> 
-> For example, if 1st journal block is before superblock
-> 1st block, it can cause zeroing important superblock members
-> in do_journal_end().
-> 
-> Reported-and-tested-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Variable ret is set to '0' or '-EBUSY', but this value is never read
+as it is not used later on, hence it is a redundant assignment and
+can be removed.
 
-Thanks for the patch. One comment below:
+Clean up the following clang-analyzer warning:
 
-> diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
-> index 9edc8e2b154e..d58f24a08385 100644
-> --- a/fs/reiserfs/journal.c
-> +++ b/fs/reiserfs/journal.c
-> @@ -2758,6 +2758,19 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
->  		goto free_and_return;
->  	}
->  
-> +	/*
-> +	 * Sanity check to see is journal first block correct.
-> +	 * If journal first block is invalid it can cause
-> +	 * zeroing important superblock members.
-> +	 */
-> +	if (SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
+net/packet/af_packet.c:3936:4: warning: Value stored to 'ret' is never
+read [clang-analyzer-deadcode.DeadStores].
 
-I guess this check is valid only if !SB_ONDISK_JOURNAL_DEVICE(sb), isn't
-it? Otherwise you are comparing block numbers from two different devices...
+net/packet/af_packet.c:3933:4: warning: Value stored to 'ret' is never
+read [clang-analyzer-deadcode.DeadStores].
 
-									Honza
+No functional change.
 
-> +		reiserfs_warning(sb, "journal-1393",
-> +			"journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
-> +			SB_JOURNAL_1st_RESERVED_BLOCK(sb),
-> +			SB_ONDISK_JOURNAL_1st_BLOCK(sb));
-> +		goto free_and_return;
-> +	}
-> +
->  	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
->  		reiserfs_warning(sb, "sh-462",
->  				 "unable to initialize journal device");
-> -- 
-> 2.31.1
-> 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ net/packet/af_packet.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index ae906eb..71dd6b9 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -3929,12 +3929,9 @@ static void packet_flush_mclist(struct sock *sk)
+ 			return -EFAULT;
+ 
+ 		lock_sock(sk);
+-		if (po->rx_ring.pg_vec || po->tx_ring.pg_vec) {
+-			ret = -EBUSY;
+-		} else {
++		if (!po->rx_ring.pg_vec && !po->tx_ring.pg_vec)
+ 			po->tp_tx_has_off = !!val;
+-			ret = 0;
+-		}
++
+ 		release_sock(sk);
+ 		return 0;
+ 	}
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.8.3.1
+
