@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD7A3829F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0776D3829F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbhEQKh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:37:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236218AbhEQKh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:37:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 089D4611CA;
-        Mon, 17 May 2021 10:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621247770;
-        bh=wIbh01EGhpy2Glxz4BA0QU4Cr0YfmkGXDrZC8LNYWGI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qXqCwsqd4/oJdhAqwblyA+uVGI4d3ZMXTQW/UonB7RAz3WPMBgDKp3FjI/nSFW9TR
-         g+S2/QyR4XcHbVz5d2tnjw8SSFL9JinR6gDRnOrSslyWR4+Tnylz4RFVWGBUCPafcV
-         /I23a6mo5vHaPgyFtOELvXps7hbBBThmlO/LxSRM=
-Date:   Mon, 17 May 2021 12:36:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, zhangfei.gao@linaro.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH] uacce: use sysfs_emit instead of sprintf
-Message-ID: <YKJHGP9LTnCRfIx6@kroah.com>
-References: <1621247137-42693-1-git-send-email-yekai13@huawei.com>
+        id S236452AbhEQKhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236350AbhEQKhn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:37:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6468AC061573;
+        Mon, 17 May 2021 03:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5WpWqsmHNLWQc70bpUWhJIPOVl6gzN2zEoMJ15ENTac=; b=euTLqySvTY1oLnU3ssO7tDoule
+        IstShSS2L0Gqd0ZjEr5FUbN1Q/Q+oVSqeI0hMwjHuqoH69qU7df/ui9pkiYtPQzMnd1+rF9qQ+pF0
+        KSwW4ETdHVcVfMypNXly5zS0ncKO8GlfDu0Ng3Um5Ls9pzJqt9pval+I4O7j41gGVQQx4ViMaP9jE
+        xEBByybdpEAsZrYa2bgOhTJN2Tf1u/kYTcFem6ybxSv9JvkXrJiMbsuictEXvnz2KDOXRNB0a/y4S
+        J/Wu1WnpwnWZAOsrH+xRPbjvLZu14HxJ1v8tQWcaQF/J2nt+b15+t7gOvhBa6Baqoe57vIFjtp7iA
+        Cz5GssVA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1liabZ-00CoX6-9r; Mon, 17 May 2021 10:36:14 +0000
+Date:   Mon, 17 May 2021 11:36:09 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Juerg Haefliger <juerg.haefliger@canonical.com>
+Cc:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Subject: Re: [PATCH] init/Kconfig: Fix BLK_CGROUP help text indentation
+Message-ID: <YKJHGbmRMcs/e+pm@infradead.org>
+References: <20210516145731.61253-1-juergh@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621247137-42693-1-git-send-email-yekai13@huawei.com>
+In-Reply-To: <20210516145731.61253-1-juergh@canonical.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 06:25:37PM +0800, Kai Ye wrote:
-> Use the sysfs_emit to replace sprintf.
-
-That says _what_ you did, not _why_ you are doing this.  What problem
-are you solving with this change?
-
-thanks,
-
-greg k-h
+While you're at it, please move the symbol to block/Kconfig.
