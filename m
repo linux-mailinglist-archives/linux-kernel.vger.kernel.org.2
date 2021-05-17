@@ -2,230 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A31383970
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA42383983
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345922AbhEQQQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:16:26 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40796 "EHLO mga07.intel.com"
+        id S245145AbhEQQS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:18:27 -0400
+Received: from mga03.intel.com ([134.134.136.65]:15452 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346138AbhEQP6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:58:10 -0400
-IronPort-SDR: BMA++xii8SwWkuPQgi3E2LmxOrBecr3H3QEcY3tnSY2syTEhgWwDedY4c6yahQ4O1snsmPqNoY
- 2Hqg77LZJh5w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="264409952"
+        id S1347313AbhEQQPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:15:38 -0400
+IronPort-SDR: 56NIEOGGC5/y04bTAwp2hzKn4fNEAU/Igorjv3fZWBupP781AP9EbO/ebx97ZFUHit+F9Su6dx
+ nR0wAiAsLMIg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200552582"
 X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="264409952"
+   d="scan'208";a="200552582"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 08:51:30 -0700
-IronPort-SDR: dq2q+9+jFCNc1GGOtlyxbC0N52q2GurHuwma66S/ls+dO1hgr45Vtd0OpX9s29l7lPKBuXJZdO
- vIGrK/k76raA==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 09:08:46 -0700
+IronPort-SDR: JVDASEKlkXRH/GdBfmC+uCG1U12n41dOxXgtivBmEAqcolEC9g0wlc/cIjvvp9M0q6jY88UNDa
+ e9Iku14+703g==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="410875570"
-Received: from btamaklo-mobl.amr.corp.intel.com ([10.209.149.190])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 08:51:27 -0700
-Message-ID: <fb8c82441abfbd0e1b8a1a1bff34be362f9b0ee9.camel@linux.intel.com>
-Subject: Re: [PATCH] ACPI: DPTF: Add new PCH FIVR methods
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Date:   Mon, 17 May 2021 08:51:23 -0700
-In-Reply-To: <CAJZ5v0gqW6Gn4CN7-V_F_yE+k9qBgEgBhAHSHrWF5p1ZAHbS7A@mail.gmail.com>
-References: <20210517055356.1918418-1-srinivas.pandruvada@linux.intel.com>
-         <CAJZ5v0gqW6Gn4CN7-V_F_yE+k9qBgEgBhAHSHrWF5p1ZAHbS7A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+   d="scan'208";a="410880704"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga002.jf.intel.com with ESMTP; 17 May 2021 09:08:46 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     robh@kernel.org, ak@linux.intel.com, acme@kernel.org,
+        mark.rutland@arm.com, luto@amacapital.net, eranian@google.com,
+        namhyung@kernel.org, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V8] perf/x86: Reset the dirty counter to prevent the leak for an RDPMC task
+Date:   Mon, 17 May 2021 08:54:55 -0700
+Message-Id: <1621266895-110141-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-17 at 17:20 +0200, Rafael J. Wysocki wrote:
-> On Mon, May 17, 2021 at 7:54 AM Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com> wrote:
-> > 
-> > Some additional information is required for updating PCH FIVR
-> > values
-> > upon WiFi channel changes.
-> > 
-> > New attributes added to the existing sysfs:
-> > fivr_switching_freq_mhz : Get the FIVR switching control frequency.
-> >                           Uses ACPI method GFCS
-> > fivr_switching_fault_status: Read the FIVR switching frequency
-> > control
-> >                         fault status. Uses ACPI method GFFS
-> > 
-> > ssc_clock_info : Presents SSC (spread spectrum clock) information
-> > for EMI
-> > (Electro magnetic interference) control. Use ACPI method GEMI.
-> > Refer
-> > to the description of GEMI method below.
-> > 
-> > GFFS
-> > This ACPI method is used to read the FIVR switching frequency
-> > control
-> > fault status.
-> > Bits    Description
-> > [0:0]   Fault status when set to 1
-> > [31:1]  Reserved
-> > 
-> > GFCS
-> > This ACPI method is used to read the FIVR switching control
-> > frequency.
-> > Bits    Description
-> > [11:0]  Actual Frequency = value * XTAL_FREQ / 128
-> 
-> I was about to apply this, but one question.
-> 
-> AFAICS the "show" function will simply evaluate GFCS and preset the
-> returned value to the reader of the attribute, but the documentation
-> says that this is the switching control frequency in MHz which
-> doesn't
-> seem to be consistent with the above information.
-> 
-> Is the reader of the attribute required to know the XTAL frequency
-> and
-> apply the above formula to the value read from it?  If so, the
-> documentation should be clear about this.
-> 
-Since XTAL_FREQ can be different on designs, user of the interface is
-supposed to know that.
-I will update the documentation and resend.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Thanks,
-Srinivas
+The counter value of a perf task may leak to another RDPMC task.
+For example, a perf stat task as below is running on CPU 0.
 
-> > [31:12] Reserved
-> > 
-> > GEMI
-> > This ACPI method is used to read the programmed register value for
-> > EMI
-> > (Electro magnetic interference) control.
-> > 
-> > Bits    Description
-> > [7:0]   Sets clock spectrum spread percentage:
-> >         0x00=0.2% , 0x3F=10%
-> >         1 LSB = 0.1% increase in spread (for
-> >         settings 0x01 thru 0x1C)
-> >         1 LSB = 0.2% increase in spread (for
-> >         settings 0x1E thru 0x3F)
-> > [8]     When set to 1, enables spread
-> >         spectrum clock
-> > [9]     0: Triangle mode. FFC frequency
-> >         walks around the Fcenter in a linear
-> >         fashion
-> >         1: Random walk mode. FFC frequency
-> >         changes randomly within the SSC
-> >         (Spread spectrum clock) range
-> > [10]    0: No white noise. 1: Add white noise
-> >         to spread waveform
-> > [11]    When 1, future writes are ignored.
-> > 
-> > Signed-off-by: Srinivas Pandruvada <
-> > srinivas.pandruvada@linux.intel.com>
-> > ---
-> >  Documentation/ABI/testing/sysfs-platform-dptf | 40
-> > +++++++++++++++++++
-> >  drivers/acpi/dptf/dptf_pch_fivr.c             |  9 +++++
-> >  2 files changed, 49 insertions(+)
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-platform-dptf
-> > b/Documentation/ABI/testing/sysfs-platform-dptf
-> > index 141834342a4d..f0c43711ad4f 100644
-> > --- a/Documentation/ABI/testing/sysfs-platform-dptf
-> > +++ b/Documentation/ABI/testing/sysfs-platform-dptf
-> > @@ -111,3 +111,43 @@ Contact:   linux-acpi@vger.kernel.org
-> >  Description:
-> >                 (RW) The PCH FIVR (Fully Integrated Voltage
-> > Regulator) switching frequency in MHz,
-> >                 when FIVR clock is 38.4MHz.
-> > +
-> > +What:         
-> > /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fiv
-> > r_switching_freq_mhz
-> > +Date:          June, 2021
-> > +KernelVersion: v5.14
-> > +Contact:       linux-acpi@vger.kernel.org
-> > +Description:
-> > +               (RO) Get the FIVR switching control frequency in
-> > MHz.
-> > +
-> > +What:         
-> > /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fiv
-> > r_switching_fault_status
-> > +Date:          June, 2021
-> > +KernelVersion: v5.14
-> > +Contact:       linux-acpi@vger.kernel.org
-> > +Description:
-> > +               (RO) Read the FIVR switching frequency control
-> > fault status.
-> > +
-> > +What:         
-> > /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/ssc
-> > _clock_info
-> > +Date:          June, 2021
-> > +KernelVersion: v5.14
-> > +Contact:       linux-acpi@vger.kernel.org
-> > +Description:
-> > +               (RO) Presents SSC (spread spectrum clock)
-> > information for EMI
-> > +               (Electro magnetic interference) control. This is a
-> > bit mask.
-> > +               Bits    Description
-> > +               [7:0]   Sets clock spectrum spread percentage:
-> > +                       0x00=0.2% , 0x3F=10%
-> > +                       1 LSB = 0.1% increase in spread (for
-> > +                       settings 0x01 thru 0x1C)
-> > +                       1 LSB = 0.2% increase in spread (for
-> > +                       settings 0x1E thru 0x3F)
-> > +               [8]     When set to 1, enables spread
-> > +                       spectrum clock
-> > +               [9]     0: Triangle mode. FFC frequency
-> > +                       walks around the Fcenter in a linear
-> > +                       fashion
-> > +                       1: Random walk mode. FFC frequency
-> > +                       changes randomly within the SSC
-> > +                       (Spread spectrum clock) range
-> > +               [10]    0: No white noise. 1: Add white noise
-> > +                       to spread waveform
-> > +               [11]    When 1, future writes are ignored.
-> > diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c
-> > b/drivers/acpi/dptf/dptf_pch_fivr.c
-> > index 5fca18296bf6..22c4ae0401ef 100644
-> > --- a/drivers/acpi/dptf/dptf_pch_fivr.c
-> > +++ b/drivers/acpi/dptf/dptf_pch_fivr.c
-> > @@ -55,15 +55,24 @@ static ssize_t name##_store(struct device
-> > *dev,\
-> > 
-> >  PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
-> >  PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
-> > +PCH_FIVR_SHOW(ssc_clock_info, GEMI)
-> > +PCH_FIVR_SHOW(fivr_switching_freq_mhz, GFCS)
-> > +PCH_FIVR_SHOW(fivr_switching_fault_status, GFFS)
-> >  PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
-> >  PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
-> > 
-> >  static DEVICE_ATTR_RW(freq_mhz_low_clock);
-> >  static DEVICE_ATTR_RW(freq_mhz_high_clock);
-> > +static DEVICE_ATTR_RO(ssc_clock_info);
-> > +static DEVICE_ATTR_RO(fivr_switching_freq_mhz);
-> > +static DEVICE_ATTR_RO(fivr_switching_fault_status);
-> > 
-> >  static struct attribute *fivr_attrs[] = {
-> >         &dev_attr_freq_mhz_low_clock.attr,
-> >         &dev_attr_freq_mhz_high_clock.attr,
-> > +       &dev_attr_ssc_clock_info.attr,
-> > +       &dev_attr_fivr_switching_freq_mhz.attr,
-> > +       &dev_attr_fivr_switching_fault_status.attr,
-> >         NULL
-> >  };
-> > 
-> > --
-> > 2.27.0
-> > 
+    perf stat -e 'branches,cycles' -- taskset -c 0 ./workload
 
+In the meantime, an RDPMC task, which is also running on CPU 0, may read
+the GP counters periodically. (The RDPMC task creates a fixed event,
+but read four GP counters.)
+
+    $./rdpmc_read_all_counters
+    index 0x0 value 0x8001e5970f99
+    index 0x1 value 0x8005d750edb6
+    index 0x2 value 0x0
+    index 0x3 value 0x0
+
+    index 0x0 value 0x8002358e48a5
+    index 0x1 value 0x8006bd1e3bc9
+    index 0x2 value 0x0
+    index 0x3 value 0x0
+
+It is a potential security issue. Once the attacker knows what the other
+thread is counting. The PerfMon counter can be used as a side-channel to
+attack cryptosystems.
+
+The counter value of the perf stat task leaks to the RDPMC task because
+perf never clears the counter when it's stopped.
+
+Three methods were considered to address the issue.
+- Unconditionally reset the counter in x86_pmu_del(). It can bring extra
+  overhead even when there is no RDPMC task running.
+- Only reset the un-assigned dirty counters when the RDPMC task is
+  scheduled in via sched_task(). It fails for the below case.
+
+	Thread A			Thread B
+
+	clone(CLONE_THREAD) --->	
+	set_affine(0)
+					set_affine(1)
+					while (!event-enabled)
+						;
+	event = perf_event_open()
+	mmap(event)
+	ioctl(event, IOC_ENABLE); --->
+					RDPMC
+  Counters are still leaked to the thread B.
+- Only reset the un-assigned dirty counters before updating the CR4.PCE
+  bit. The method is implemented here.
+
+The dirty counter is a counter, on which the assigned event has been
+deleted, but the counter is not reset. To track the dirty counters,
+add a 'dirty' variable in the struct cpu_hw_events.
+
+The security issue can only be found with an RDPMC task. To enable the
+RDMPC, the CR4.PCE bit has to be updated. Add a
+perf_clear_dirty_counters() right before updating the CR4.PCE bit to
+clear the existing dirty counters. Only the current un-assigned dirty
+counters are reset, bacuase the RDPMC assigned dirty counters will be
+updated soon.
+
+The RDPMC is not an Intel-only feature. Add the changes in the x86
+generic code.
+
+After applying the patch,
+
+        $ ./rdpmc_read_all_counters
+        index 0x0 value 0x0
+        index 0x1 value 0x0
+        index 0x2 value 0x0
+        index 0x3 value 0x0
+
+        index 0x0 value 0x0
+        index 0x1 value 0x0
+        index 0x2 value 0x0
+        index 0x3 value 0x0
+
+Performance
+
+The performance of a context switch only be impacted when there are two
+or more perf users and one of the users must be an RDPMC user. In other
+cases, there is no performance impact.
+
+The worst-case occurs when there are two users: the RDPMC user only
+applies one counter; while the other user applies all available
+counters. When the RDPMC task is scheduled in, all the counters, other
+than the RDPMC assigned one, have to be reset.
+
+Here is the test result for the worst-case.
+
+The test is implemented on an Ice Lake platform, which has 8 GP
+counters and 3 fixed counters (Not include SLOTS counter).
+
+The lat_ctx is used to measure the context switching time.
+
+    lat_ctx -s 128K -N 1000 processes 2
+
+I instrument the lat_ctx to open all 8 GP counters and 3 fixed
+counters for one task. The other task opens a fixed counter and enable
+RDPMC.
+
+Without the patch:
+The context switch time is 4.97 us
+
+With the patch:
+The context switch time is 5.16 us
+
+There is ~4% performance drop for the context switching time in the
+worst-case.
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+
+Changes since V7
+- Drop the method which clear the dirty counters in sched_task()
+- Clear the dirty counters before updating the CR4.PCE bit.
+
+Changes since V6:
+- Drop the new method check_leakage()
+- Update per-PMU sched_cb_usage in mmap/munmap().
+- Clear dirty counters in mmap() for the first RDPMC read.
+
+Changes since V5:
+- Don't update perf_sched_cb_{inc,dec} in mmap/munmap().
+  Don't check and clear dirty counters in sched_task().
+  Because perf_sched_cb_{inc,dec} modify per-CPU state. The mmap() and
+  munmap() can be invoked in different CPU.
+- Add a new method check_leakage() to check and clear dirty counters
+  to prevent potential leakage.
+
+Changes since V4:
+- Fix the warning with CONFIG_DEBUG_PREEMPT=y
+  Disable the interrupts and preemption around perf_sched_cb_inc/dec()
+  to protect the sched_cb_list. I don't think we touch the area in NMI.
+  Disabling the interrupts should be good enough to protect the cpuctx.
+  We don't need perf_ctx_lock().
+
+Changes since V3:
+- Fix warnings reported by kernel test robot <lkp@intel.com>
+- Move bitmap_empty() check after clearing assigned counters.
+  It should be very likely that the cpuc->dirty is non-empty.
+  Move it after the clearing can skip the for_each_set_bit() and
+  bitmap_zero().
+
+The V2 can be found here.
+https://lore.kernel.org/lkml/20200821195754.20159-3-kan.liang@linux.intel.com/
+
+Changes since V2:
+- Unconditionally set cpuc->dirty. The worst case for an RDPMC task is
+  that we may have to clear all counters for the first time in
+  x86_pmu_event_mapped. After that, the sched_task() will clear/update
+  the 'dirty'. Only the real 'dirty' counters are clear. For a non-RDPMC
+  task, it's harmless to unconditionally set the cpuc->dirty.
+- Remove the !is_sampling_event() check
+- Move the code into x86 generic file, because RDPMC is not a Intel-only
+  feature.
+
+Changes since V1:
+- Drop the old method, which unconditionally reset the counter in
+  x86_pmu_del().
+  Only reset the dirty counters when a RDPMC task is sheduled in.
+
+ arch/x86/events/core.c            | 28 +++++++++++++++++++++++++++-
+ arch/x86/events/perf_event.h      |  1 +
+ arch/x86/include/asm/perf_event.h |  1 +
+ arch/x86/mm/tlb.c                 | 10 ++++++++--
+ 4 files changed, 37 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index c6fedd2..05f9490 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1636,6 +1636,8 @@ static void x86_pmu_del(struct perf_event *event, int flags)
+ 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+ 		goto do_del;
+ 
++	__set_bit(event->hw.idx, cpuc->dirty);
++
+ 	/*
+ 	 * Not a TXN, therefore cleanup properly.
+ 	 */
+@@ -2484,6 +2486,31 @@ static int x86_pmu_event_init(struct perf_event *event)
+ 	return err;
+ }
+ 
++void perf_clear_dirty_counters(void)
++{
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	int i;
++
++	 /* Don't need to clear the assigned counter. */
++	for (i = 0; i < cpuc->n_events; i++)
++		__clear_bit(cpuc->assign[i], cpuc->dirty);
++
++	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
++		return;
++
++	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
++		/* Metrics and fake events don't have corresponding HW counters. */
++		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
++			continue;
++		else if (i >= INTEL_PMC_IDX_FIXED)
++			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
++		else
++			wrmsrl(x86_pmu_event_addr(i), 0);
++	}
++
++	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
++}
++
+ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ {
+ 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+@@ -2507,7 +2534,6 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ 
+ static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+ {
+-
+ 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+ 		return;
+ 
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 10c8171..55bd891 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -229,6 +229,7 @@ struct cpu_hw_events {
+ 	 */
+ 	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
+ 	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
++	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
+ 	int			enabled;
+ 
+ 	int			n_events; /* the # of events in the below arrays */
+diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
+index ebf4ebd..0c326aa 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -482,6 +482,7 @@ struct x86_pmu_lbr {
+ 
+ extern void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap);
+ extern void perf_check_microcode(void);
++extern void perf_clear_dirty_counters(void);
+ extern int x86_perf_rdpmc_index(struct perf_event *event);
+ #else
+ static inline void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap)
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 7880468..cfe6b1e 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -14,6 +14,7 @@
+ #include <asm/nospec-branch.h>
+ #include <asm/cache.h>
+ #include <asm/apic.h>
++#include <asm/perf_event.h>
+ 
+ #include "mm_internal.h"
+ 
+@@ -404,9 +405,14 @@ static inline void cr4_update_pce_mm(struct mm_struct *mm)
+ {
+ 	if (static_branch_unlikely(&rdpmc_always_available_key) ||
+ 	    (!static_branch_unlikely(&rdpmc_never_available_key) &&
+-	     atomic_read(&mm->context.perf_rdpmc_allowed)))
++	     atomic_read(&mm->context.perf_rdpmc_allowed))) {
++		/*
++		 * Clear the existing dirty counters to
++		 * prevent the leak for an RDPMC task.
++		 */
++		perf_clear_dirty_counters();
+ 		cr4_set_bits_irqsoff(X86_CR4_PCE);
+-	else
++	} else
+ 		cr4_clear_bits_irqsoff(X86_CR4_PCE);
+ }
+ 
+-- 
+2.7.4
 
