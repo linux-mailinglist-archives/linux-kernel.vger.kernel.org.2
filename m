@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18433825D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CE43825E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbhEQHvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhEQHvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:51:46 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6558C061573;
-        Mon, 17 May 2021 00:50:29 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so4813234oth.5;
-        Mon, 17 May 2021 00:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vT6tVfgVQYax85ltv/yac9IUk/uA4vEprh4TNBKtlVo=;
-        b=oEJ+FkzCAYVGNQuUH4qv+SoSmQPSANTJf31/FDy0Tb/92Bkg68SJQLBekz+JLd1ptU
-         iGM9CKiH6/1gStpkopD39bEMw3X29dDPRQ0lYxa1BVpl4fXvCc8BKM9bC1DImzt2MbMx
-         IzBCRq7CaNqntGWV4NNPoPPs2DmreKlrFcuZjE2vTaBr00gJDgcPbf7SCa+9vT5dExfU
-         Nhsvm1SPzWFGUFvBcF9B3YGDQZc7vAHyX4RX/tH5jsaBj5osntfjhXUbqq6mML6szy00
-         xGYXwxEGh7hQ9R/UdOHEEkFqWgYbutRS078EH9uRdo2fb88NT6Q1ca+JTMiefNOFFzFm
-         FtVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vT6tVfgVQYax85ltv/yac9IUk/uA4vEprh4TNBKtlVo=;
-        b=mZ9EGLSPugxA0MLuu48GXzbjkaBghYRxq7WlLjdlty4ow50dVLOjYkSdp0NPy8Ajek
-         UW82o91srAPWk5eFu6eYUYAg6zcAhFQQeEekyNtlPhbohd+ACOqBgyVBe4RpSwJuCYJY
-         ZRqsnBYM8quOf7r74lRmah13DM69xrnEZMIlL/KjsC0jMPTbI4RLPK5sXGVvGVRtIhh8
-         Wq9QNNBM1kYjY2dzNe8ElVhplODGQJSD1JUZ+J8oA5j1PoFuSuCTP53M33kNcnUg4WuT
-         4S0j9psN+WsoFt//ljyTNnIg5j22pufaN1bPM6+LRP2UOtTCXTmqU+78iH6BfnsCr5le
-         KdoA==
-X-Gm-Message-State: AOAM5313pYZ7qMr9MwZyKN0vRmcIEuE2+Icvkrw+lX76ntDW9wvbioJV
-        xLkI8cyLhUXRRLSk0nm2Yn3axS7+LzJS6pYwD9U=
-X-Google-Smtp-Source: ABdhPJwApu7Ibyl11BxwMoiIUtxGt5Yho6kiWDwGr7lzrzX6b81rl//LyrMsBGiUzKt9kYgrfNbvY2UZA3B7OTcrwAY=
-X-Received: by 2002:a05:6830:1510:: with SMTP id k16mr35262204otp.290.1621237829236;
- Mon, 17 May 2021 00:50:29 -0700 (PDT)
+        id S235259AbhEQHxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:53:25 -0400
+Received: from mga04.intel.com ([192.55.52.120]:9143 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhEQHxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:53:23 -0400
+IronPort-SDR: Myar4+xNKHXjO5hTvAxfotLwVnogwRQjWXdGcX7aEqHhKRRhiJkeGxAQQVpFlTQzViE9A0IShj
+ OZCf0pweUzzg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="198453743"
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="198453743"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:52:07 -0700
+IronPort-SDR: rd21XUZcwHIbvmiOSea5rvnjWierU/LWoSiQ3oORaaOmyAIa2WowbgOIqQrWXlo2U6YudJplIL
+ yhh50sy9U1iQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="460213344"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 17 May 2021 00:52:04 -0700
+Cc:     baolu.lu@linux.intel.com, sashal@kernel.org, ashok.raj@intel.com,
+        jroedel@suse.de, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [REWORKED PATCH 1/1] iommu/vt-d: Preset Access/Dirty bits for
+ IOVA over FL
+To:     Greg KH <gregkh@linuxfoundation.org>
+References: <20210517034913.3432-1-baolu.lu@linux.intel.com>
+ <YKIWS0lFKTcZ9094@kroah.com>
+ <726aede1-3d9f-6666-b31d-9db8e4301a0c@linux.intel.com>
+ <YKIa9dczRk0v9Y2N@kroah.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <cfe7a99c-a5b1-3c27-f44f-101ecdb84f12@linux.intel.com>
+Date:   Mon, 17 May 2021 15:51:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210517000108.26015-1-rdunlap@infradead.org>
-In-Reply-To: <20210517000108.26015-1-rdunlap@infradead.org>
-From:   Manuel Lauss <manuel.lauss@gmail.com>
-Date:   Mon, 17 May 2021 09:49:53 +0200
-Message-ID: <CAOLZvyEyayWctr4uv4MUaUknZ7FVhtCcG7ErjRuYBdez7zJuLA@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux-MIPS <linux-mips@vger.kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKIa9dczRk0v9Y2N@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Greg,
 
-On Mon, May 17, 2021 at 2:01 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> board-xxs1500.c references 2 functions without declaring them, so add
-> the header file to placate the build.
->
-> ../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
-> ../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
->    56 |  alchemy_gpio1_input_enable();
-> ../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
->    57 |  alchemy_gpio2_enable();
->
-> Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-mips@vger.kernel.org
-> Cc: Manuel Lauss <manuel.lauss@googlemail.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> ---
->  arch/mips/alchemy/board-xxs1500.c |    1 +
->  1 file changed, 1 insertion(+)
->
-> --- linux-next-20210514.orig/arch/mips/alchemy/board-xxs1500.c
-> +++ linux-next-20210514/arch/mips/alchemy/board-xxs1500.c
-> @@ -18,6 +18,7 @@
->  #include <asm/reboot.h>
->  #include <asm/setup.h>
->  #include <asm/mach-au1x00/au1000.h>
-> +#include <asm/mach-au1x00/gpio-au1000.h>
+On 5/17/21 3:27 PM, Greg KH wrote:
+> On Mon, May 17, 2021 at 03:17:53PM +0800, Lu Baolu wrote:
+>> Hi Greg,
+>>
+>> On 5/17/21 3:07 PM, Greg KH wrote:
+>>> On Mon, May 17, 2021 at 11:49:13AM +0800, Lu Baolu wrote:
+>>>> [ Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3 ]
+>>>>
+>>>> The Access/Dirty bits in the first level page table entry will be set
+>>>> whenever a page table entry was used for address translation or write
+>>>> permission was successfully translated. This is always true when using
+>>>> the first-level page table for kernel IOVA. Instead of wasting hardware
+>>>> cycles to update the certain bits, it's better to set them up at the
+>>>> beginning.
+>>>>
+>>>> Suggested-by: Ashok Raj <ashok.raj@intel.com>
+>>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> Link: https://lore.kernel.org/r/20210115004202.953965-1-baolu.lu@linux.intel.com
+>>>> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+>>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>>> ---
+>>>>    drivers/iommu/intel/iommu.c | 14 ++++++++++++--
+>>>>    include/linux/intel-iommu.h |  2 ++
+>>>>    2 files changed, 14 insertions(+), 2 deletions(-)
+>>>>
+>>>> [Note:
+>>>> - This is a reworked patch of
+>>>>     https://lore.kernel.org/stable/20210512144819.664462530@linuxfoundation.org/T/#m65267f0a0091c2fcbde097cea91089775908faad.
+>>>> - It aims to fix a reported issue of
+>>>>     https://bugzilla.kernel.org/show_bug.cgi?id=213077.
+>>>> - Please help to review and test.]
+>>>
+>>> What stable tree(s) is this supposed to be for?
+>>
+>> It's for 5.10.37.
+> 
+> But the above commit is already in 5.10.y.  And what about 5.11 and
+> 5.12, were those backports incorrect?
 
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
+Above commit is now only in v5.10.37. Other 5.10.y are not impacted.
 
-Thank you!
-     Manuel
+5.11 and 5.12 both have correct backports.
+
+> 
+> confused,
+> 
+> greg k-h
+> 
+
+Best regards,
+baolu
