@@ -2,105 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C35E38381B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2B5383680
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245576AbhEQPsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244134AbhEQPc1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:32:27 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4A5C06137D;
-        Mon, 17 May 2021 07:32:49 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 5so3204144qvk.0;
-        Mon, 17 May 2021 07:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=THOJoa9goNNyDVOh5QQdcefIk4gsILRnxGGzLYO5As0=;
-        b=Zs0nZPfdCFHS+jiRnL+KUKTc1A3XyZH58TySt1g06gNB+Z8z+RQMXwETfnsv2Zf7MY
-         3kru/VHbJogwd4dgUQ4N2IG+bi5jwr+BlNm9hFwCR7dt5G+1Lcw2zlkIhClDJOsmmlCU
-         7wEAzOWBaeu7sgDkNspAV70oTaMYDdVF85TgWzDBAci2Yurn+zRsVdEFWZlpITk1wMfk
-         NpD8s17hlMPbTlx7stJeX4xCtxk5nCwq1YpGvt0Mck2UKAlvlQWktqnG1MjY2EgARQbR
-         Ls+/4PPI1aaI6un/2+xMpUgspbkF1aZaGiq0+4d8QBxZhbP8Wcb3KMIk/kdRm/wISDtU
-         pxDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=THOJoa9goNNyDVOh5QQdcefIk4gsILRnxGGzLYO5As0=;
-        b=ndWwQplz1Ik+EF8F+UFYvlGVi+b/fADRsqCzNdSgmvRV39DjBZwqfZPQyTZf8E97hL
-         UqrrLYT9i0iuf6cUv6Cw7t4opNXibHaqB0Ogoxkl+3ZyCjRxMOd5V87WNHeHqK0XPpYm
-         C3UAYw5OPFRxD/bU8FPVtAysXvEJhguN1nU2zPcCV0h0x/D54PjvpYt9GRKIrRs9hsiE
-         YTf2taVhtbYkHY2uaGxCE36JztgQhbX6VBRGCFUf4TY0pXXycq+p+H63AKMeu98VI+WO
-         naGaP7vbuuqf27oOa/K1F3p2NttmS2wYSuSyw6ghuAW4ge2WQ4es76yq0cu9N2DTsNij
-         yMNA==
-X-Gm-Message-State: AOAM530s3HSsNHWHiSfzNRLQcpCxWS89cvlmC+x2MWi3DNPfJWeiN9iY
-        PDhVvAP6BohK7N/0W/s6QBw=
-X-Google-Smtp-Source: ABdhPJytu85FbMC7Pk4Simc+JUTdrO+Fyj4LkQ2v0YbWXKANmhpN7uT81xvH+P54zhFwBZA9nuJDlQ==
-X-Received: by 2002:a05:6214:a43:: with SMTP id ee3mr170152qvb.61.1621261968638;
-        Mon, 17 May 2021 07:32:48 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 25sm500001qtd.51.2021.05.17.07.32.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 07:32:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 17 May 2021 07:32:46 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] usb: typec: tcpm: Fix up PR_SWAP when vsafe0v is
- signalled
-Message-ID: <20210517143246.GA3434992@roeck-us.net>
-References: <20210515052613.3261340-1-badhri@google.com>
+        id S244996AbhEQPdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241745AbhEQPSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:18:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2C3D61C6C;
+        Mon, 17 May 2021 14:33:24 +0000 (UTC)
+Date:   Mon, 17 May 2021 16:33:21 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org,
+        dwalsh@redhat.com, ebiederm@xmission.com
+Subject: Re: [RFC PATCH 1/3] setgroups: new mode 'shadow' for
+ /proc/PID/setgroups
+Message-ID: <20210517143321.en2jy2gaxrhdhvub@wittgenstein>
+References: <20210510130011.1441834-1-gscrivan@redhat.com>
+ <20210510130011.1441834-2-gscrivan@redhat.com>
+ <20210515015157.GB2845@mail.hallyn.com>
+ <87y2cdqyhj.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210515052613.3261340-1-badhri@google.com>
+In-Reply-To: <87y2cdqyhj.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:26:10PM -0700, Badhri Jagan Sridharan wrote:
-> During PR_SWAP, When TCPM is in PR_SWAP_SNK_SRC_SINK_OFF, vbus is
-> expected to reach VSAFE0V when source turns of vbus. Do not move
-
-s/of/off/ as already reported
-
-> to SNK_UNATTACHED state when this happens.
+On Mon, May 17, 2021 at 03:30:16PM +0200, Giuseppe Scrivano wrote:
+> Hi Serge,
 > 
-> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-Otherwise
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 3 +++
->  1 file changed, 3 insertions(+)
+> thanks for the review.
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index c4fdc00a3bc8..b93c4c8d7b15 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -5114,6 +5114,9 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
->  				tcpm_set_state(port, SNK_UNATTACHED, 0);
->  		}
->  		break;
-> +	case PR_SWAP_SNK_SRC_SINK_OFF:
-> +		/* Do nothing, vsafe0v is expected during transition */
-> +		break;
->  	default:
->  		if (port->pwr_role == TYPEC_SINK && port->auto_vbus_discharge_enabled)
->  			tcpm_set_state(port, SNK_UNATTACHED, 0);
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
+> "Serge E. Hallyn" <serge@hallyn.com> writes:
 > 
+> > On Mon, May 10, 2021 at 03:00:09PM +0200, Giuseppe Scrivano wrote:
+> >> add a new mode 'shadow' to the /proc/PID/setgroups file.
+> >> 
+> >> When the 'shadow' string is written to the file, the current process
+> >> groups are inherited from the process and stored into the user
+> >> namespace.  These groups will be silently added on each setgroups(2)
+> >> call.  A child user namespace won't be able to drop these groups
+> >> anymore.
+> >> 
+> >> It enables using setgroups(2) in user namespaces on systems where
+> >> negative ACLs are used.
+> >> 
+> >> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> >
+> > Thanks for re-sending.
+> >
+> > Two closely related questions (and one comment) below.
+> >
+> >> ---
+> >>  include/linux/cred.h           |  4 ++-
+> >>  include/linux/user_namespace.h | 11 +++++--
+> >>  kernel/groups.c                | 60 +++++++++++++++++++++++++---------
+> >>  kernel/uid16.c                 | 38 ++++++++++++++++-----
+> >>  kernel/user_namespace.c        | 34 +++++++++++++++----
+> >>  5 files changed, 114 insertions(+), 33 deletions(-)
+> >> 
+> >> diff --git a/include/linux/cred.h b/include/linux/cred.h
+> >> index 14971322e1a0..f3e631293532 100644
+> >> --- a/include/linux/cred.h
+> >> +++ b/include/linux/cred.h
+> >> @@ -63,7 +63,9 @@ extern int groups_search(const struct group_info *, kgid_t);
+> >>  
+> >>  extern int set_current_groups(struct group_info *);
+> >>  extern void set_groups(struct cred *, struct group_info *);
+> >> -extern bool may_setgroups(void);
+> >> +extern bool may_setgroups(struct group_info **shadowed_groups);
+> >> +extern void add_shadowed_groups(struct group_info *group_info,
+> >> +				struct group_info *shadowed);
+> >>  extern void groups_sort(struct group_info *);
+> >>  #else
+> >>  static inline void groups_free(struct group_info *group_info)
+> >> diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+> >> index 1d08dbbcfe32..cb003172de20 100644
+> >> --- a/include/linux/user_namespace.h
+> >> +++ b/include/linux/user_namespace.h
+> >> @@ -32,6 +32,7 @@ struct uid_gid_map { /* 64 bytes -- 1 cache line */
+> >>  };
+> >>  
+> >>  #define USERNS_SETGROUPS_ALLOWED 1UL
+> >> +#define USERNS_SETGROUPS_SHADOW  2UL
+> >>  
+> >>  #define USERNS_INIT_FLAGS USERNS_SETGROUPS_ALLOWED
+> >>  
+> >> @@ -93,6 +94,9 @@ struct user_namespace {
+> >>  #endif
+> >>  	struct ucounts		*ucounts;
+> >>  	int ucount_max[UCOUNT_COUNTS];
+> >> +
+> >> +	/* Supplementary groups when setgroups "shadow" mode is enabled.   */
+> >> +	struct group_info *shadow_group_info;
+> >>  } __randomize_layout;
+> >>  
+> >>  struct ucounts {
+> >> @@ -138,7 +142,8 @@ extern ssize_t proc_gid_map_write(struct file *, const char __user *, size_t, lo
+> >>  extern ssize_t proc_projid_map_write(struct file *, const char __user *, size_t, loff_t *);
+> >>  extern ssize_t proc_setgroups_write(struct file *, const char __user *, size_t, loff_t *);
+> >>  extern int proc_setgroups_show(struct seq_file *m, void *v);
+> >> -extern bool userns_may_setgroups(const struct user_namespace *ns);
+> >
+> > I realize there's not a single other comment in this file, but I
+> > think userns_may_setgroups() could use a comment to explain what
+> > shadowed_groups is.
+> 
+> sure, I'll add some comments to the code.
+> 
+> >> +extern bool userns_may_setgroups(const struct user_namespace *ns,
+> >> +				 struct group_info **shadowed_groups);
+> >>  extern bool in_userns(const struct user_namespace *ancestor,
+> >>  		       const struct user_namespace *child);
+> >>  extern bool current_in_userns(const struct user_namespace *target_ns);
+> >> @@ -167,8 +172,10 @@ static inline void put_user_ns(struct user_namespace *ns)
+> >>  {
+> >>  }
+> >>  
+> >> -static inline bool userns_may_setgroups(const struct user_namespace *ns)
+> >> +static inline bool userns_may_setgroups(const struct user_namespace *ns,
+> >> +					struct group_info **shadowed_groups)
+> >>  {
+> >> +	*shadowed_groups = NULL;
+> >>  	return true;
+> >>  }
+> >>  
+> >> diff --git a/kernel/groups.c b/kernel/groups.c
+> >> index 787b381c7c00..f0c3b49da19e 100644
+> >> --- a/kernel/groups.c
+> >> +++ b/kernel/groups.c
+> >> @@ -52,11 +52,10 @@ static int groups_to_user(gid_t __user *grouplist,
+> >>  
+> >>  /* fill a group_info from a user-space array - it must be allocated already */
+> >>  static int groups_from_user(struct group_info *group_info,
+> >> -    gid_t __user *grouplist)
+> >> +			    gid_t __user *grouplist, int count)
+> >>  {
+> >>  	struct user_namespace *user_ns = current_user_ns();
+> >>  	int i;
+> >> -	unsigned int count = group_info->ngroups;
+> >>  
+> >>  	for (i = 0; i < count; i++) {
+> >>  		gid_t gid;
+> >> @@ -169,12 +168,24 @@ SYSCALL_DEFINE2(getgroups, int, gidsetsize, gid_t __user *, grouplist)
+> >>  	return i;
+> >>  }
+> >>  
+> >> -bool may_setgroups(void)
+> >> +bool may_setgroups(struct group_info **shadowed_groups)
+> >>  {
+> >>  	struct user_namespace *user_ns = current_user_ns();
+> >>  
+> >>  	return ns_capable_setid(user_ns, CAP_SETGID) &&
+> >> -		userns_may_setgroups(user_ns);
+> >> +		userns_may_setgroups(user_ns, shadowed_groups);
+> >> +}
+> >> +
+> >> +void add_shadowed_groups(struct group_info *group_info, struct group_info *shadowed)
+> >> +{
+> >> +	int i, j;
+> >> +
+> >> +	for (i = 0; i < shadowed->ngroups; i++) {
+> >> +		kgid_t kgid = shadowed->gid[i];
+> >> +
+> >> +		j = group_info->ngroups - i - 1;
+> >> +		group_info->gid[j] = kgid;
+> >> +	}
+> >>  }
+> >>  
+> >>  /*
+> >> @@ -184,27 +195,44 @@ bool may_setgroups(void)
+> >>  
+> >>  SYSCALL_DEFINE2(setgroups, int, gidsetsize, gid_t __user *, grouplist)
+> >>  {
+> >> -	struct group_info *group_info;
+> >> +	struct group_info *shadowed_groups = NULL;
+> >> +	struct group_info *group_info = NULL;
+> >> +	unsigned int arraysize = gidsetsize;
+> >>  	int retval;
+> >>  
+> >> -	if (!may_setgroups())
+> >> -		return -EPERM;
+> >> -	if ((unsigned)gidsetsize > NGROUPS_MAX)
+> >> +	if (arraysize > NGROUPS_MAX)
+> >>  		return -EINVAL;
+> >>  
+> >> -	group_info = groups_alloc(gidsetsize);
+> >> -	if (!group_info)
+> >> -		return -ENOMEM;
+> >> -	retval = groups_from_user(group_info, grouplist);
+> >> -	if (retval) {
+> >> -		put_group_info(group_info);
+> >> -		return retval;
+> >> +	if (!may_setgroups(&shadowed_groups))
+> >> +		return -EPERM;
+> >> +
+> >> +	if (shadowed_groups) {
+> >> +		retval = -EINVAL;
+> >> +		if (shadowed_groups->ngroups + gidsetsize > NGROUPS_MAX)
+> >> +			goto out;
+> >> +		arraysize += shadowed_groups->ngroups;
+> >>  	}
+> >>  
+> >> +	group_info = groups_alloc(arraysize);
+> >> +	retval = -ENOMEM;
+> >> +	if (!group_info)
+> >> +		goto out;
+> >> +
+> >> +	retval = groups_from_user(group_info, grouplist, gidsetsize);
+> >> +	if (retval)
+> >> +		goto out;
+> >> +
+> >> +	if (shadowed_groups)
+> >> +		add_shadowed_groups(group_info, shadowed_groups);
+> >> +
+> >>  	groups_sort(group_info);
+> >>  	retval = set_current_groups(group_info);
+> >> -	put_group_info(group_info);
+> >>  
+> >> +out:
+> >> +	if (group_info)
+> >> +		put_group_info(group_info);
+> >> +	if (shadowed_groups)
+> >> +		put_group_info(shadowed_groups);
+> >>  	return retval;
+> >>  }
+> >>  
+> >> diff --git a/kernel/uid16.c b/kernel/uid16.c
+> >> index af6925d8599b..cb1110f083ce 100644
+> >> --- a/kernel/uid16.c
+> >> +++ b/kernel/uid16.c
+> >> @@ -130,14 +130,14 @@ static int groups16_to_user(old_gid_t __user *grouplist,
+> >>  }
+> >>  
+> >>  static int groups16_from_user(struct group_info *group_info,
+> >> -    old_gid_t __user *grouplist)
+> >> +			      old_gid_t __user *grouplist, int count)
+> >>  {
+> >>  	struct user_namespace *user_ns = current_user_ns();
+> >>  	int i;
+> >>  	old_gid_t group;
+> >>  	kgid_t kgid;
+> >>  
+> >> -	for (i = 0; i < group_info->ngroups; i++) {
+> >> +	for (i = 0; i < count; i++) {
+> >>  		if (get_user(group, grouplist+i))
+> >>  			return  -EFAULT;
+> >>  
+> >> @@ -177,25 +177,47 @@ SYSCALL_DEFINE2(getgroups16, int, gidsetsize, old_gid_t __user *, grouplist)
+> >>  SYSCALL_DEFINE2(setgroups16, int, gidsetsize, old_gid_t __user *, grouplist)
+> >>  {
+> >>  	struct group_info *group_info;
+> >> +	struct group_info *shadowed_groups = NULL;
+> >>  	int retval;
+> >> +	unsigned int arraysize = gidsetsize;
+> >>  
+> >> -	if (!may_setgroups())
+> >> -		return -EPERM;
+> >> -	if ((unsigned)gidsetsize > NGROUPS_MAX)
+> >> +	if (arraysize > NGROUPS_MAX)
+> >>  		return -EINVAL;
+> >>  
+> >> -	group_info = groups_alloc(gidsetsize);
+> >> -	if (!group_info)
+> >> +	if (!may_setgroups(&shadowed_groups))
+> >> +		return -EPERM;
+> >> +
+> >> +	if (shadowed_groups) {
+> >> +		if (shadowed_groups->ngroups + gidsetsize > NGROUPS_MAX) {
+> >> +			put_group_info(shadowed_groups);
+> >> +			return -EINVAL;
+> >> +		}
+> >> +		arraysize += shadowed_groups->ngroups;
+> >> +	}
+> >> +
+> >> +	group_info = groups_alloc(arraysize);
+> >> +	if (!group_info) {
+> >> +		if (shadowed_groups)
+> >> +			put_group_info(shadowed_groups);
+> >>  		return -ENOMEM;
+> >> -	retval = groups16_from_user(group_info, grouplist);
+> >> +	}
+> >> +
+> >> +	retval = groups16_from_user(group_info, grouplist, gidsetsize);
+> >>  	if (retval) {
+> >> +		if (shadowed_groups)
+> >> +			put_group_info(shadowed_groups);
+> >>  		put_group_info(group_info);
+> >>  		return retval;
+> >>  	}
+> >>  
+> >> +	if (shadowed_groups)
+> >> +		add_shadowed_groups(group_info, shadowed_groups);
+> >> +
+> >>  	groups_sort(group_info);
+> >>  	retval = set_current_groups(group_info);
+> >>  	put_group_info(group_info);
+> >> +	if (shadowed_groups)
+> >> +		put_group_info(shadowed_groups);
+> >>  
+> >>  	return retval;
+> >>  }
+> >> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> >> index 8d62863721b0..b1940b63f7ac 100644
+> >> --- a/kernel/user_namespace.c
+> >> +++ b/kernel/user_namespace.c
+> >> @@ -123,6 +123,7 @@ int create_user_ns(struct cred *new)
+> >>  		ns->ucount_max[i] = INT_MAX;
+> >>  	}
+> >>  	ns->ucounts = ucounts;
+> >> +	ns->shadow_group_info = get_current_groups();
+> >
+> > If userns u1 unshares u2 with shadow set, then when u2 unshares
+> > u3, should u3 get the same shadowed set that u2 has, or should it
+> > get all of u2's groups as u3's initial shadow set?
+> 
+> good question.  Thinking more of it, I think a reasonable interface is
+> to expect a child userns to inherit the same shadow groups as its parent
+> userns.  If "shadow" is written again to the /proc/PID/setgroups file
+> then it grows shadow groups set to include the ones the userns had at
+> creation time (which includes the parent shadow groups).  What do you
+> think of it?  I'll play more with this idea and see if it works.
+
+So when I initially looked at that proposal I was neither "yay" or "nay"
+since it seemed useful to people and it looked somewhat straightforward
+to implement.
+
+But I do have concerns now after seeing this. The whole
+/proc/<pid>/setgroups API is terrible in the first place and causes even
+more special-casing in container runtimes then there already is. But it
+fixes a security issue so ok we'll live with it.
+
+But I'm not happy about extending its format to include more options. I
+really don't want the precedent of adding magic keywords into this file.
+
+Which brings me to my second concern. I think starting to magically
+inherit group ids isn't a great idea. It's got a lot of potential for
+confusion.
+
+The point Serge here made makes this pretty obvious imho. I don't think
+introducing the complexities of magic group inheritance is something we
+should do.
+
+Alternative proposal, can we solve this in userspace instead?
+
+As has been pointed out there is a solution to this problem already
+which is to explicitly map those groups through, i.e. punch holes for
+the groups to be inherited.
+
+So can't we introduce a new mode for newgidmap by e.g. introducing
+another /etc/setgroups file or something similar that can be configured
+by the administrator. It could take options, e.g. "shadow=always" which
+could mean "everyone must inherit their groups" so newgidmap will punch
+holes for the caller's groups when writing the gid mapping. We could
+also extend this by making newgidmap take a command line switch so it's
+on a case-by-case basis.
+
+This is even more flexible since you could extend the new /etc/setgroups
+file to specify a list of groups that must always be preserved. I'd
+rather see something like this rather than a magic inheritance switch.
+
+Christian
