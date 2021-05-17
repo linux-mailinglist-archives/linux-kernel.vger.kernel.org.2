@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96277382E20
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04C2382FD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237678AbhEQOCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237574AbhEQOCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:02:43 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACE7C061573;
-        Mon, 17 May 2021 07:01:27 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3765502pjv.1;
-        Mon, 17 May 2021 07:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/2GPjTLQ/YR+wnuKsns5/Hi1QLal2y1jDQCRlyJhbRk=;
-        b=m78vKY4Ils3Zka2LHxaL7/u8+Ux75+b2P5JcA51NnA/mOemelC6vljDXQ+wiyyhvCj
-         JcjTebx//vYgWfEddx+4wvQUX1l7NeyFbhAH3MOb85xrYr/KeMFbUGJY7jhAj3QsUWqa
-         Z6idJdQmlCCZ11B9YyUIFVhbybDaPahq0a8NVz/nVkumfpLeikq53mrI198nC7ujuGCT
-         Cogu7jTwppj9IZ3sh48PkLyHT+42fOsBnPkjyLMzJmam9bpe9gqLeEqpZ1l08W//h4XJ
-         4UAwQtoURr7VZfMLg2KuYO2WNphH7/SD7nw9RoaemRDr4C21vW2+X2i7LfF1/mWAclO7
-         qSRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/2GPjTLQ/YR+wnuKsns5/Hi1QLal2y1jDQCRlyJhbRk=;
-        b=k6G5HSWZBpeFC3c5o5B8zeDl5S9l3gVnt7spPcyYBMgnbAkksYo43tYzdc2fnfxdn5
-         wRWW+CAEacRwk9GDLNlU2E4TLNwk4A3bCz9pCQF6rgjL+25Wm6oWyOl0QxlE2xBO18jX
-         TvTEXwTuhneyEjEh3IFvUNVe/2+G9vZr8u9KXCaGOJ4OB9pM2sxys25V1p8zDIOmf4u1
-         sM9lSf17x8jZJKbSS5bR3hhXJ5uu3eLxqC8UZhNaTRY37YMx5AtoGH9t+h/cbX3trrA+
-         Avusii+NSLMbM0jDNcmI9X6kABaGQzVNyEbu+kX2bZa5rx86cv67nvHDCnpmEK+zfscG
-         hwJg==
-X-Gm-Message-State: AOAM5333rs8yO9h5ZkTyvepiYM9dfvDFTLP6LYe+80fNK6oOUMY3S9JU
-        XrY4ToHGgCk78aouwiUBmW0fMRnO/tM=
-X-Google-Smtp-Source: ABdhPJwaT9yOEYd0kc9RCcyNp41kW9zpGoSd03Lqy76hsnwtT1jmF+q8DlO5M2OCw0rdT+rzvYgcMA==
-X-Received: by 2002:a17:90a:4a0e:: with SMTP id e14mr58581pjh.209.1621260086511;
-        Mon, 17 May 2021 07:01:26 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.61])
-        by smtp.googlemail.com with ESMTPSA id k10sm3074229pfu.175.2021.05.17.07.01.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 May 2021 07:01:26 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, stable@vger.kernel.org
-Subject: [PATCH v3 3/5] KVM: X86: Fix vCPU preempted state from guest's point of view
-Date:   Mon, 17 May 2021 07:00:26 -0700
-Message-Id: <1621260028-6467-3-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
-References: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
+        id S239039AbhEQOVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:21:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239016AbhEQOR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:17:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B60EC61402;
+        Mon, 17 May 2021 14:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621260614;
+        bh=kdJWbIocDoNQYfZqzv8L07x8UXrDuFbjWr2+dD5j2wI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dSxoQgsl1mI6opORR3ZGO5176q3xNNedkTqVB4Cr2LWks3TE4UaPlWdIAshwHuXQU
+         PT2JFi6foLgW+9sAVSAnFL8jr6cSSV9SIQcbkefj/visp5kex4uv0gIxUxK6hhZ0Sf
+         v0RLu0Yk272hEEhJI0r+v6Vti7ZBIrkymxMqjN+E=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 161/363] SUNRPC: Remove trace_xprt_transmit_queued
+Date:   Mon, 17 May 2021 16:00:27 +0200
+Message-Id: <20210517140308.047694788@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-Commit 66570e966dd9 (kvm: x86: only provide PV features if enabled in guest's
-CPUID) avoids to access pv tlb shootdown host side logic when this pv feature
-is not exposed to guest, however, kvm_steal_time.preempted not only leveraged
-by pv tlb shootdown logic but also mitigate the lock holder preemption issue.
-From guest's point of view, vCPU is always preempted since we lose the reset
-of kvm_steal_time.preempted before vmentry if pv tlb shootdown feature is not
-exposed. This patch fixes it by clearing kvm_steal_time.preempted before
-vmentry.
+[ Upstream commit 6cf23783f750634e10daeede48b0f5f5d64ebf3a ]
 
-Fixes: 66570e966dd9 (kvm: x86: only provide PV features if enabled in guest's CPUID)
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+This tracepoint can crash when dereferencing snd_task because
+when some transports connect, they put a cookie in that field
+instead of a pointer to an rpc_task.
+
+BUG: KASAN: use-after-free in trace_event_raw_event_xprt_writelock_event+0x141/0x18e [sunrpc]
+Read of size 2 at addr ffff8881a83bd3a0 by task git/331872
+
+CPU: 11 PID: 331872 Comm: git Tainted: G S                5.12.0-rc2-00007-g3ab6e585a7f9 #1453
+Hardware name: Supermicro SYS-6028R-T/X10DRi, BIOS 1.1a 10/16/2015
+Call Trace:
+ dump_stack+0x9c/0xcf
+ print_address_description.constprop.0+0x18/0x239
+ kasan_report+0x174/0x1b0
+ trace_event_raw_event_xprt_writelock_event+0x141/0x18e [sunrpc]
+ xprt_prepare_transmit+0x8e/0xc1 [sunrpc]
+ call_transmit+0x4d/0xc6 [sunrpc]
+
+Fixes: 9ce07ae5eb1d ("SUNRPC: Replace dprintk() call site in xprt_prepare_transmit")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-v1 -> v2:
- * add curly braces
+ include/trace/events/sunrpc.h | 1 -
+ net/sunrpc/xprt.c             | 2 --
+ 2 files changed, 3 deletions(-)
 
- arch/x86/kvm/x86.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index dfb7c320581f..bed7b5348c0e 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3105,6 +3105,8 @@ static void record_steal_time(struct kvm_vcpu *vcpu)
- 				       st->preempted & KVM_VCPU_FLUSH_TLB);
- 		if (xchg(&st->preempted, 0) & KVM_VCPU_FLUSH_TLB)
- 			kvm_vcpu_flush_tlb_guest(vcpu);
-+	} else {
-+		st->preempted = 0;
- 	}
+diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
+index 036eb1f5c133..2f01314de73a 100644
+--- a/include/trace/events/sunrpc.h
++++ b/include/trace/events/sunrpc.h
+@@ -1141,7 +1141,6 @@ DECLARE_EVENT_CLASS(xprt_writelock_event,
  
- 	vcpu->arch.st.preempted = 0;
+ DEFINE_WRITELOCK_EVENT(reserve_xprt);
+ DEFINE_WRITELOCK_EVENT(release_xprt);
+-DEFINE_WRITELOCK_EVENT(transmit_queued);
+ 
+ DECLARE_EVENT_CLASS(xprt_cong_event,
+ 	TP_PROTO(
+diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
+index d616b93751d8..11ebe8a127b8 100644
+--- a/net/sunrpc/xprt.c
++++ b/net/sunrpc/xprt.c
+@@ -1469,8 +1469,6 @@ bool xprt_prepare_transmit(struct rpc_task *task)
+ 	struct rpc_xprt	*xprt = req->rq_xprt;
+ 
+ 	if (!xprt_lock_write(xprt, task)) {
+-		trace_xprt_transmit_queued(xprt, task);
+-
+ 		/* Race breaker: someone may have transmitted us */
+ 		if (!test_bit(RPC_TASK_NEED_XMIT, &task->tk_runstate))
+ 			rpc_wake_up_queued_task_set_status(&xprt->sending,
 -- 
-2.25.1
+2.30.2
+
+
 
