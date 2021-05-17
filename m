@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC9C38250E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D4E382519
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbhEQHJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:09:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234049AbhEQHJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:09:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9659D60E09;
-        Mon, 17 May 2021 07:07:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621235278;
-        bh=Rhy5AZY3AtAnv8EyIybDPUwYFHgR5lYLD0wSfwMo8c8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=phv1uxO5JaSxKYmjx7afwME0PIixAQQHYBEOQobeACRe6+bf12M/rIvyPVThVAu31
-         IG86EAHXAE0wjwplc//mai8yA/XfVJdDNBimXQktFWoBXmDrso9jGZviJgfJ8TID7J
-         Q5a1ExCbUH/PsYMCW90e6YMZ9Q6yXY3bIrP8UVhU=
-Date:   Mon, 17 May 2021 09:07:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     sashal@kernel.org, ashok.raj@intel.com, jroedel@suse.de,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [REWORKED PATCH 1/1] iommu/vt-d: Preset Access/Dirty bits for
- IOVA over FL
-Message-ID: <YKIWS0lFKTcZ9094@kroah.com>
-References: <20210517034913.3432-1-baolu.lu@linux.intel.com>
+        id S234525AbhEQHLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:11:52 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:57046 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhEQHLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:11:51 -0400
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 14H7AA92009952;
+        Mon, 17 May 2021 16:10:10 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 14H7AA92009952
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1621235410;
+        bh=gl+dr5L8eegH2FU+Zxi5YlBiIEtrTUPYEHSSBWnGe0E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=A2hwPE6ymUWR3TDJz6ASDpizlqYU1jO53dVBZfN/rdS0/0gp6+27QKBP6T7ZYvcbO
+         9QtKXk0ZV7XH0uPoXaytYtY+IYmxQfX6oewCQHjd+jXWGRgyyLPjEsh0j6ckBCsPv1
+         iZPfIlftoGP3AGsr1/XfR5kRkAh5z/worePL3ODV48nMk8ZH/QU+n225OB4mX5DyQq
+         8Y9is5pZBIqiFRpe6Z0xxsUDXfEymiislr+/9Y7TcfUgugaWeks6I4UB/AuvxZzGj+
+         wZjwk/C8EePvvKy4LkT8l9hevVf9DSbMV3wyNw7UTVIQKnI4WAfTEg83nwbaQYOwmT
+         4yL6/OHs40U8w==
+X-Nifty-SrcIP: [209.85.210.178]
+Received: by mail-pf1-f178.google.com with SMTP id b13so571895pfv.4;
+        Mon, 17 May 2021 00:10:10 -0700 (PDT)
+X-Gm-Message-State: AOAM532/Yo34FBcoL0jGIdWWzS2oW1gXOjDBsOvoqZRDsIKVPbjOmevr
+        1WlmZx9MIHb0UO3OiAU8ZAi0e6Dg9FiCrkSZNGQ=
+X-Google-Smtp-Source: ABdhPJyVfNZ4pLLeuZZX0ENyRx+ycMWDlsFRXrhdv/nvvdaVPThB4/DEbLY8bypsbSpgdVjAoerpUm33CK+NOt7m68M=
+X-Received: by 2002:a63:a547:: with SMTP id r7mr59739129pgu.7.1621235409713;
+ Mon, 17 May 2021 00:10:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517034913.3432-1-baolu.lu@linux.intel.com>
+References: <20210514135752.2910387-1-arnd@kernel.org>
+In-Reply-To: <20210514135752.2910387-1-arnd@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 17 May 2021 16:09:33 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARjwrqja-qsOhTSw7Lje0=U6o7HNEu0ESOkb446TdWYwQ@mail.gmail.com>
+Message-ID: <CAK7LNARjwrqja-qsOhTSw7Lje0=U6o7HNEu0ESOkb446TdWYwQ@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: shut up uboot mkimage output when building quietly
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:49:13AM +0800, Lu Baolu wrote:
-> [ Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3 ]
-> 
-> The Access/Dirty bits in the first level page table entry will be set
-> whenever a page table entry was used for address translation or write
-> permission was successfully translated. This is always true when using
-> the first-level page table for kernel IOVA. Instead of wasting hardware
-> cycles to update the certain bits, it's better to set them up at the
-> beginning.
-> 
-> Suggested-by: Ashok Raj <ashok.raj@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Link: https://lore.kernel.org/r/20210115004202.953965-1-baolu.lu@linux.intel.com
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Fri, May 14, 2021 at 10:58 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When building with 'make -s', most architectures produce no output
+> at all unless there are warnings. However, on at leat mips and nios2
+> there is output from /usr/bin/mkimage when that is installed:
+>
+>   Image Name:   Linux-5.12.0-next-20210427-00716
+>   Created:      Wed Apr 28 22:03:30 2021
+>   Image Type:   NIOS II Linux Kernel Image (gzip compressed)
+>   Data Size:    2245876 Bytes = 2193.24 KiB = 2.14 MiB
+>   Load Address: d0000000
+>   Entry Point:  d0000000
+>
+> Make these behave like the others and check for the '${quiet}'
+> variable to see if we should redirect the output to /dev/null.
+> Any errors and warnings from mkimage will still be seen as those
+> get sent to stderr.
+
+Thanks for the report, but I rather want to suppress stdout
+in the kbuild core macro.
+
+I wrote this patch.
+https://lore.kernel.org/patchwork/patch/1429409/
+
+
+
+
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/iommu/intel/iommu.c | 14 ++++++++++++--
->  include/linux/intel-iommu.h |  2 ++
->  2 files changed, 14 insertions(+), 2 deletions(-)
-> 
-> [Note:
-> - This is a reworked patch of
->   https://lore.kernel.org/stable/20210512144819.664462530@linuxfoundation.org/T/#m65267f0a0091c2fcbde097cea91089775908faad.
-> - It aims to fix a reported issue of
->   https://bugzilla.kernel.org/show_bug.cgi?id=213077.
-> - Please help to review and test.]
+>  scripts/mkuboot.sh | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/mkuboot.sh b/scripts/mkuboot.sh
+> index 4b1fe09e9042..031b5d6b839f 100755
+> --- a/scripts/mkuboot.sh
+> +++ b/scripts/mkuboot.sh
+> @@ -17,4 +17,8 @@ if [ -z "${MKIMAGE}" ]; then
+>  fi
+>
+>  # Call "mkimage" to create U-Boot image
+> -${MKIMAGE} "$@"
+> +if [ "${quiet}" != "silent_" ]; then
+> +${MKIMAGE} "$@" ${REDIRECT}
+> +else
+> +${MKIMAGE} "$@" ${REDIRECT} > /dev/null
+> +fi
+> --
+> 2.29.2
+>
 
-What stable tree(s) is this supposed to be for?
 
-thanks,
-
-greg k-h
+-- 
+Best Regards
+Masahiro Yamada
