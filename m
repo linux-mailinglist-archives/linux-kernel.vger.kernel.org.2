@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2743836C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC14638379A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243313AbhEQPf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:35:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55932 "EHLO mail.kernel.org"
+        id S1344961AbhEQPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:46:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244427AbhEQPUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD5FC61C88;
-        Mon, 17 May 2021 14:34:20 +0000 (UTC)
+        id S245718AbhEQPak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:30:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C2A60698;
+        Mon, 17 May 2021 14:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262061;
-        bh=sVFnVSZ/6fdfB41yv0+eSarSSZo9WQXQoHoeZlTjde8=;
+        s=korg; t=1621262287;
+        bh=Y1Fi/8EmZWG4KsmdkBqPpUUPzppWQTtjsGwFkKKu/P0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fWdK6Kwj2M1S2dJpKPhe1t7jV9X8CdBM/2T0lQ4IWrBKaJ1PiI5c07yMW7mJWURie
-         7f8TTyCNUHxTsmgnJNSDGzWHQjE1xN6oRxBSu36GoUKf9k+z24lsV5c8h9PLrw6xhS
-         BJjNnuV+fTQ0hrITVuNm1hcULc6CJ4G9Tt7lNBfQ=
+        b=kldb5Xv3KVu0eXFITy5IQk479mAezkuto6GPeG0zijB0a93nyxONZKCjhxO2UVM/N
+         ExF4mfPgAx6GP/PDdWhZAR61PggSl4heXI/trAQq7TKAtX3zl2UYrcvndWSeVk5e+r
+         tCYH8TLJoATzEH/xwplloHk8wEh30B10GkdD5y2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Subject: [PATCH 5.4 116/141] usb: dwc2: Fix gadget DMA unmap direction
+        stable@vger.kernel.org, Sergio Lopez <slp@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 257/329] dax: Wake up all waiters after invalidating dax entry
 Date:   Mon, 17 May 2021 16:02:48 +0200
-Message-Id: <20210517140246.702936517@linuxfoundation.org>
+Message-Id: <20210517140310.803938885@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Vivek Goyal <vgoyal@redhat.com>
 
-commit 75a41ce46bae6cbe7d3bb2584eb844291d642874 upstream.
+[ Upstream commit 237388320deffde7c2d65ed8fc9eef670dc979b3 ]
 
-The dwc2 gadget support maps and unmaps DMA buffers as necessary. When
-mapping and unmapping it uses the direction of the endpoint to select
-the direction of the DMA transfer, but this fails for Control OUT
-transfers because the unmap occurs after the endpoint direction has
-been reversed for the status phase.
+I am seeing missed wakeups which ultimately lead to a deadlock when I am
+using virtiofs with DAX enabled and running "make -j". I had to mount
+virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
+the problem consistently.
 
-A possible solution would be to unmap the buffer before the direction
-is changed, but a safer, less invasive fix is to remember the buffer
-direction independently of the endpoint direction.
+So here is the problem. put_unlocked_entry() wakes up waiters only
+if entry is not null as well as !dax_is_conflict(entry). But if I
+call multiple instances of invalidate_inode_pages2() in parallel,
+then I can run into a situation where there are waiters on
+this index but nobody will wake these waiters.
 
-Fixes: fe0b94abcdf6 ("usb: dwc2: gadget: manage ep0 state in software")
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-Link: https://lore.kernel.org/r/20210506112200.2893922-1-phil@raspberrypi.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+invalidate_inode_pages2()
+  invalidate_inode_pages2_range()
+    invalidate_exceptional_entry2()
+      dax_invalidate_mapping_entry_sync()
+        __dax_invalidate_entry() {
+                xas_lock_irq(&xas);
+                entry = get_unlocked_entry(&xas, 0);
+                ...
+                ...
+                dax_disassociate_entry(entry, mapping, trunc);
+                xas_store(&xas, NULL);
+                ...
+                ...
+                put_unlocked_entry(&xas, entry);
+                xas_unlock_irq(&xas);
+        }
+
+Say a fault in in progress and it has locked entry at offset say "0x1c".
+Now say three instances of invalidate_inode_pages2() are in progress
+(A, B, C) and they all try to invalidate entry at offset "0x1c". Given
+dax entry is locked, all tree instances A, B, C will wait in wait queue.
+
+When dax fault finishes, say A is woken up. It will store NULL entry
+at index "0x1c" and wake up B. When B comes along it will find "entry=0"
+at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
+this means put_unlocked_entry() will not wake up next waiter, given
+the current code. And that means C continues to wait and is not woken
+up.
+
+This patch fixes the issue by waking up all waiters when a dax entry
+has been invalidated. This seems to fix the deadlock I am facing
+and I can make forward progress.
+
+Reported-by: Sergio Lopez <slp@redhat.com>
+Fixes: ac401cc78242 ("dax: New fault locking")
+Reviewed-by: Jan Kara <jack@suse.cz>
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+Link: https://lore.kernel.org/r/20210428190314.1865312-4-vgoyal@redhat.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc2/core.h   |    2 ++
- drivers/usb/dwc2/gadget.c |    3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ fs/dax.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc2/core.h
-+++ b/drivers/usb/dwc2/core.h
-@@ -112,6 +112,7 @@ struct dwc2_hsotg_req;
-  * @debugfs: File entry for debugfs file for this endpoint.
-  * @dir_in: Set to true if this endpoint is of the IN direction, which
-  *          means that it is sending data to the Host.
-+ * @map_dir: Set to the value of dir_in when the DMA buffer is mapped.
-  * @index: The index for the endpoint registers.
-  * @mc: Multi Count - number of transactions per microframe
-  * @interval: Interval for periodic endpoints, in frames or microframes.
-@@ -161,6 +162,7 @@ struct dwc2_hsotg_ep {
- 	unsigned short		fifo_index;
- 
- 	unsigned char           dir_in;
-+	unsigned char           map_dir;
- 	unsigned char           index;
- 	unsigned char           mc;
- 	u16                     interval;
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -421,7 +421,7 @@ static void dwc2_hsotg_unmap_dma(struct
- {
- 	struct usb_request *req = &hs_req->req;
- 
--	usb_gadget_unmap_request(&hsotg->gadget, req, hs_ep->dir_in);
-+	usb_gadget_unmap_request(&hsotg->gadget, req, hs_ep->map_dir);
+diff --git a/fs/dax.c b/fs/dax.c
+index 56eb1c759ca5..df5485b4bddf 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -675,7 +675,7 @@ static int __dax_invalidate_entry(struct address_space *mapping,
+ 	mapping->nrexceptional--;
+ 	ret = 1;
+ out:
+-	put_unlocked_entry(&xas, entry, WAKE_NEXT);
++	put_unlocked_entry(&xas, entry, WAKE_ALL);
+ 	xas_unlock_irq(&xas);
+ 	return ret;
  }
- 
- /*
-@@ -1242,6 +1242,7 @@ static int dwc2_hsotg_map_dma(struct dwc
- {
- 	int ret;
- 
-+	hs_ep->map_dir = hs_ep->dir_in;
- 	ret = usb_gadget_map_request(&hsotg->gadget, req, hs_ep->dir_in);
- 	if (ret)
- 		goto dma_error;
+-- 
+2.30.2
+
 
 
