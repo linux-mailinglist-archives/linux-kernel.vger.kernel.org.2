@@ -2,200 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58068382383
+	by mail.lfdr.de (Postfix) with ESMTP id E9E04382385
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhEQEdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 00:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
+        id S232989AbhEQEgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 00:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhEQEdL (ORCPT
+        with ESMTP id S229808AbhEQEgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 00:33:11 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543F7C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:31:55 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id p20so5526538ljj.8
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:31:55 -0700 (PDT)
+        Mon, 17 May 2021 00:36:50 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4540C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:35:33 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id g11so916762ilq.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3iLQ1tptdplZl/aA36a0VSppXS1DKptyQ7u4dZiuFvw=;
-        b=htGSXP2RKllOoPfes+o5aRs8N2SAYwNscFGSNbl9cx5FhQ9rViWuCBFdPR36VqoBsK
-         Yi3FnyGyt1dzyMOrBDqX1lD1gDoLSqakbv0GVZiGh+DtSmt+pI5jEyuv2m3mbbTlGzp0
-         aIdSlhpb0vcg4sFVEJ9Zz3rRzMPFnA71fZLsUQIjTZnlikSv5BX7fmtjePmriTaTkEzn
-         Cv6Fs5H4z1aKLQ35eL2Ltym6CA0CX9N2wWuXrWALTDfXPiWdiAGKaYx80gEVKIli4ZUX
-         0D79p6ZJejHmCI1lOqC82Jzm+t7Rkc6lFOcyTPF4Lvr6F1Ud+eX7BOrvAab29mtGdvSs
-         T4QQ==
+         :cc;
+        bh=9qPWRHR+PUcFLbaucVvojL1MaT1ICFcyjD+jNvEEGdg=;
+        b=AlTeHTsWilvuYwm9xksxhaCVaXuNSjuJ8FquZYO31IrTM+Y339sDWT8JHoCnXnzIIT
+         AjBipQYY76/Bu+Esgj9jMeOKCiKyqka7FvDAUdvfYW24dhaxjlVdoQiDMrBhXWb2dbwU
+         vskUTHlYPU20jMMANw3Pg1HegjmHdM8pkUezU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3iLQ1tptdplZl/aA36a0VSppXS1DKptyQ7u4dZiuFvw=;
-        b=LeRxpbyqIHya0ZzMrAJ41F8cuQtgrUFq3nfIhazjP9Qw3b5RbyKX2fioXXioXV9ODh
-         AujOPsy+gwLt3LlgGxUs/u52wc4gPHJKyh/S/QdSJ0hSP//2KGoqlOEA84VAya0VlTjF
-         KO5he+dk+1qPFPTQCk8CDQ40sFCp4S3mUS0st0tjQUAA616WqEHVrkBOFbTnT9u2tXzs
-         uyI2EhOSfjHZ3CYc+QrZxq/5fsbmw+K0Hq8V+ChdrtneK7cGQdIGe7pVH+vfQ6oJ9gXV
-         dKb1umBv3DUl4/6SWvcit8e7tKXJhtHlFd5Uj/AOZT1czMT/qmEWzKpd0LsT6vMv7Khl
-         SDhg==
-X-Gm-Message-State: AOAM533gAsn0vZ+YcIQHUZtFPWJYY441WiA8iI8eTs24jIpl2lLSbIfQ
-        dYI0Y4z2fQb8f1Yrfi15j2kjHGJiNJg8G+4mRgVcew==
-X-Google-Smtp-Source: ABdhPJy9XKM6yMZGl/SkQSsxH9fddXvLgPCMEc4WrJH0e325bQpEilNCV6FPBbChgfnUa8E3aFcGaY9aVg0IP//PUgI=
-X-Received: by 2002:a2e:9896:: with SMTP id b22mr47225301ljj.329.1621225913369;
- Sun, 16 May 2021 21:31:53 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=9qPWRHR+PUcFLbaucVvojL1MaT1ICFcyjD+jNvEEGdg=;
+        b=Zu/clkBJtf+ZuOj0JIWOX1JM/l3dPykyz1ivWycTSq216aKDSk7gORwc/D8/BPu77F
+         ccT+aqaWB0WY9zBdcDYbD9qgPeSsj21E2sN4V1+VyoGEqnWVMvQsWAs06BdSgA/F3gu/
+         yn6YYHa48Am7zVQ5lvhDyfu1I8oU4s0Ub4Yg/JIKj/bWobdRlhX5DCIZbTh8Z4mpfJCo
+         D1z/IO9f2knyYoBh0Yefmxbr1TQg7zuqLDcqWlX7k/3Zdm/9HHlbxNwv7UotEBu1EH06
+         HX7o6Y4uFqQH+Cby5CsYY6s76Hhy6WnaqtxVozwuEgxvdp+kSxLloOk+2NOgT1f3XqV2
+         Vk9g==
+X-Gm-Message-State: AOAM530j3cGtG1b5ALDZejBvUghZpVcyBBPsnZj0LJwhCG98eJ0zvTs6
+        BTr1fC1JyFr/Y2y9PAIoWdlyRxCxd6XjFctDPBFr9g==
+X-Google-Smtp-Source: ABdhPJzoRYq5Zv23D3UkkHYKjX4FehsOCDj3SbfFabhwmX4Id9eUzexY6pzchM5x0sFFg7FADcEPVYyFS/WFm/wJU3s=
+X-Received: by 2002:a92:360e:: with SMTP id d14mr50144021ila.106.1621226133306;
+ Sun, 16 May 2021 21:35:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
- <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org> <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
- <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org> <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
-In-Reply-To: <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Mon, 17 May 2021 12:31:42 +0800
-Message-ID: <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210427111526.1772293-1-acourbot@chromium.org> <20210427111526.1772293-8-acourbot@chromium.org>
+In-Reply-To: <20210427111526.1772293-8-acourbot@chromium.org>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Mon, 17 May 2021 12:35:07 +0800
+Message-ID: <CAJMQK-g=bnr9bAkvN61sFapX_XOKmUF8LPivtCEzUhP-LjoHUw@mail.gmail.com>
+Subject: Re: [PATCH v4 07/15] media: mtk-vcodec: vdec: add media device if
+ using stateless api
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+On Tue, Apr 27, 2021 at 7:16 PM Alexandre Courbot <acourbot@chromium.org> wrote:
+>
+> From: Yunfei Dong <yunfei.dong@mediatek.com>
+>
+> The stateless API requires a media device for issuing requests. Add one
+> if we are being instantiated as a stateless decoder.
+>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> [acourbot: refactor, cleanup and split]
+> Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> ---
+>  drivers/media/platform/Kconfig                |  1 +
+>  .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 39 +++++++++++++++++++
+>  .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  2 +
+>  3 files changed, 42 insertions(+)
+>
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index ae1468aa1b4e..4154fdec2efb 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -315,6 +315,7 @@ config VIDEO_MEDIATEK_VCODEC
+>         select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
+>         select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
+>         select V4L2_H264
+> +       select MEDIA_CONTROLLER
 
-On Fri, 14 May 2021 at 19:40, Archie Pusaka <apusaka@google.com> wrote:
->
-> Hi Marcel,
->
-> On Fri, 14 May 2021 at 03:03, Marcel Holtmann <marcel@holtmann.org> wrote=
-:
-> >
-> > Hi Archie,
-> >
-> > >>> RTL8822 chipset supports WBS, and this information is conveyed in
-> > >>> btusb.c. However, the UART driver doesn't have this information jus=
-t
-> > >>> yet.
-> > >>>
-> > >>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > >>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > >>> ---
-> > >>>
-> > >>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
-> > >>> drivers/bluetooth/btrtl.h  |  2 ++
-> > >>> drivers/bluetooth/hci_h5.c |  5 +----
-> > >>> 3 files changed, 19 insertions(+), 14 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-> > >>> index e7fe5fb22753..988a09860c6b 100644
-> > >>> --- a/drivers/bluetooth/btrtl.c
-> > >>> +++ b/drivers/bluetooth/btrtl.c
-> > >>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hd=
-ev,
-> > >>> }
-> > >>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
-> > >>>
-> > >>> -int btrtl_setup_realtek(struct hci_dev *hdev)
-> > >>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_in=
-fo *btrtl_dev)
-> > >>> {
-> > >>> -     struct btrtl_device_info *btrtl_dev;
-> > >>> -     int ret;
-> > >>> -
-> > >>> -     btrtl_dev =3D btrtl_initialize(hdev, NULL);
-> > >>> -     if (IS_ERR(btrtl_dev))
-> > >>> -             return PTR_ERR(btrtl_dev);
-> > >>> -
-> > >>> -     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
-> > >>> -
-> > >>>      /* Enable controller to do both LE scan and BR/EDR inquiry
-> > >>>       * simultaneously.
-> > >>>       */
-> > >>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
-> > >>>              rtl_dev_dbg(hdev, "WBS supported not enabled.");
-> > >>>              break;
-> > >>>      }
-> > >>> +}
-> > >>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
-> > >>> +
-> > >>> +int btrtl_setup_realtek(struct hci_dev *hdev)
-> > >>> +{
-> > >>> +     struct btrtl_device_info *btrtl_dev;
-> > >>> +     int ret;
-> > >>> +
-> > >>> +     btrtl_dev =3D btrtl_initialize(hdev, NULL);
-> > >>> +     if (IS_ERR(btrtl_dev))
-> > >>> +             return PTR_ERR(btrtl_dev);
-> > >>> +
-> > >>> +     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
-> > >>> +
-> > >>> +     btrtl_set_quirks(hdev, btrtl_dev);
-> > >>>
-> > >>>      btrtl_free(btrtl_dev);
-> > >>>      return ret;
-> > >>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
-> > >>> index 2a582682136d..260167f01b08 100644
-> > >>> --- a/drivers/bluetooth/btrtl.h
-> > >>> +++ b/drivers/bluetooth/btrtl.h
-> > >>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct=
- hci_dev *hdev,
-> > >>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
-> > >>> int btrtl_download_firmware(struct hci_dev *hdev,
-> > >>>                          struct btrtl_device_info *btrtl_dev);
-> > >>> +void btrtl_set_quirks(struct hci_dev *hdev,
-> > >>> +                   struct btrtl_device_info *btrtl_dev);
-> > >>> int btrtl_setup_realtek(struct hci_dev *hdev);
-> > >>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
-> > >>> int btrtl_get_uart_settings(struct hci_dev *hdev,
-> > >>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.=
-c
-> > >>> index 27e96681d583..e0520639f4ba 100644
-> > >>> --- a/drivers/bluetooth/hci_h5.c
-> > >>> +++ b/drivers/bluetooth/hci_h5.c
-> > >>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
-> > >>>      /* Give the device some time before the hci-core sends it a re=
-set */
-> > >>>      usleep_range(10000, 20000);
-> > >>>
-> > >>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
-> > >>> -      * simultaneously.
-> > >>> -      */
-> > >>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quir=
-ks);
-> > >>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
-> > >>
-> > >> any reason why not just setting WBS quirk here?
-> > >
-> > > Hmm, I think WBS is the feature of the chipset and not the transport.
-> > > Therefore isn't it better to just have it set in one place?
-> > > Setting the quirks here means we need to copy paste the settings from=
- btrtl.c.
-> >
-> > but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY righ=
-t now, I don=E2=80=99t see the difference.
->
-> Sorry, I don't get what you mean.
-> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
-> btrtl.c, so it's together with the WBS quirk.
->
-> > Can we actually verify that we still need the WBS quirk. I think we fix=
-ed the broken errerrnous packet flag handling.
->
-> To be honest, I am not aware about the story of the broken erroneous
-> packet flag.
-> Last time I checked I still needed the quirk to have RTL8822 on UART
-> properly run WBS, but that was months ago...
-> Let me verify whether this quirk is still needed.
+Should this also select MEDIA_CONTROLLER_REQUEST_API config?
 
-It looks like we still need the WBS quirk because otherwise the host
-wouldn't know whether the controller supports WBS or not. It's used in
-get_supported_settings() in mgmt.c.
-
-> Cheers,
-> Archie
+Thanks
+>         help
+>           Mediatek video codec driver provides HW capability to
+>           encode and decode in a range of video formats on MT8173
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> index 533781d4680a..e942e28f96fe 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> @@ -14,6 +14,7 @@
+>  #include <media/v4l2-event.h>
+>  #include <media/v4l2-mem2mem.h>
+>  #include <media/videobuf2-dma-contig.h>
+> +#include <media/v4l2-device.h>
+>
+>  #include "mtk_vcodec_drv.h"
+>  #include "mtk_vcodec_dec.h"
+> @@ -324,6 +325,31 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>                 goto err_event_workq;
+>         }
+>
+> +       if (dev->vdec_pdata->uses_stateless_api) {
+> +               dev->mdev_dec.dev = &pdev->dev;
+> +               strscpy(dev->mdev_dec.model, MTK_VCODEC_DEC_NAME,
+> +                               sizeof(dev->mdev_dec.model));
+> +
+> +               media_device_init(&dev->mdev_dec);
+> +               dev->mdev_dec.ops = &mtk_vcodec_media_ops;
+> +               dev->v4l2_dev.mdev = &dev->mdev_dec;
+> +
+> +               ret = v4l2_m2m_register_media_controller(dev->m2m_dev_dec,
+> +                       dev->vfd_dec, MEDIA_ENT_F_PROC_VIDEO_DECODER);
+> +               if (ret) {
+> +                       mtk_v4l2_err("Failed to register media controller");
+> +                       goto err_reg_cont;
+> +               }
+> +
+> +               ret = media_device_register(&dev->mdev_dec);
+> +               if (ret) {
+> +                       mtk_v4l2_err("Failed to register media device");
+> +                       goto err_media_reg;
+> +               }
+> +
+> +               mtk_v4l2_debug(0, "media registered as /dev/media%d",
+> +                       vfd_dec->num);
+> +       }
+>         ret = video_register_device(vfd_dec, VFL_TYPE_VIDEO, 0);
+>         if (ret) {
+>                 mtk_v4l2_err("Failed to register video device");
+> @@ -336,6 +362,12 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>         return 0;
+>
+>  err_dec_reg:
+> +       if (dev->vdec_pdata->uses_stateless_api)
+> +               media_device_unregister(&dev->mdev_dec);
+> +err_media_reg:
+> +       if (dev->vdec_pdata->uses_stateless_api)
+> +               v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
+> +err_reg_cont:
+>         destroy_workqueue(dev->decode_workqueue);
+>  err_event_workq:
+>         v4l2_m2m_release(dev->m2m_dev_dec);
+> @@ -368,6 +400,13 @@ static int mtk_vcodec_dec_remove(struct platform_device *pdev)
+>
+>         flush_workqueue(dev->decode_workqueue);
+>         destroy_workqueue(dev->decode_workqueue);
+> +
+> +       if (media_devnode_is_registered(dev->mdev_dec.devnode)) {
+> +               media_device_unregister(&dev->mdev_dec);
+> +               v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
+> +               media_device_cleanup(&dev->mdev_dec);
+> +       }
+> +
+>         if (dev->m2m_dev_dec)
+>                 v4l2_m2m_release(dev->m2m_dev_dec);
+>
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> index 78d4a7728ddf..10edd238c939 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> @@ -383,6 +383,7 @@ struct mtk_vcodec_enc_pdata {
+>   * struct mtk_vcodec_dev - driver data
+>   * @v4l2_dev: V4L2 device to register video devices for.
+>   * @vfd_dec: Video device for decoder
+> + * @mdev_dec: Media device for decoder
+>   * @vfd_enc: Video device for encoder.
+>   *
+>   * @m2m_dev_dec: m2m device for decoder
+> @@ -418,6 +419,7 @@ struct mtk_vcodec_enc_pdata {
+>  struct mtk_vcodec_dev {
+>         struct v4l2_device v4l2_dev;
+>         struct video_device *vfd_dec;
+> +       struct media_device mdev_dec;
+>         struct video_device *vfd_enc;
+>
+>         struct v4l2_m2m_dev *m2m_dev_dec;
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
