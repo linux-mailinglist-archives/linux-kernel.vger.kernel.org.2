@@ -2,154 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AEB386B16
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2006386B1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237865AbhEQURJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:17:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33710 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhEQURH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:17:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF6C8AEB3;
-        Mon, 17 May 2021 20:15:49 +0000 (UTC)
-Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Derek Kiernan <derek.kiernan@xilinx.com>
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <YJ42MEgwDZrAEQLl@kroah.com>
- <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
- <YKIeBdwFb9Ng275X@phenom.ffwll.local>
- <503d101d-7273-757a-2809-e272db93c45d@suse.de>
- <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
- <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
- <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <c28703a4-6936-15f2-730f-c3d96e1326a5@suse.de>
-Date:   Mon, 17 May 2021 22:15:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S238569AbhEQUSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238337AbhEQUSg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 16:18:36 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E392DC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:17:19 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id h21so5855122qtu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:17:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vLJpaxOqtbI+Qb2zKdqGEkILQIDGWpq1zNOEwsHFtPQ=;
+        b=ZrQnlImcr9WmIFORVAFZEDpXisiakdk1c7hJMqPolW1P1zOfpLXZ3jX5JU9XArrkzs
+         G34/AQNfxUiOIu9TsyBjCX92VuSpj1TU4tm1DDgZ1LYT+tZzk7hX8XHH+P0xYvW8BNO5
+         78J1WTzrDq24zp159QAD+LFEZPxjmaEHktb1o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vLJpaxOqtbI+Qb2zKdqGEkILQIDGWpq1zNOEwsHFtPQ=;
+        b=UrMilbeJkdbySpXVKEU213a+dWX9Kh4v50t4gRz6DuysrquCA1YkG6/OCwTKKrWTn4
+         HTbBivKYPh2FoCzbXfHPPfKOGvchNtvC0CpBX9f0ZkZguXZKyVj2QZjqUNjaWiuKqYXU
+         useO1x/skX5RpdDqIvAZiUBep/MseeEw2lMh+y0tVUy7y8ZJoWSnbza6ejeEHMwG/H1m
+         RGCbF4YwFNkqTnJOF4JsWMfXVXfrrVPlZFf771lY00lQjGArUQpNPXYRRkkbfHEiGMOn
+         HFc26eLeZZ/vQCWOa+/5mA1dNIR7czfx3euMvaGyW2Bj2ggfAwv1yVkHjO72iXI+WXcT
+         ZWVw==
+X-Gm-Message-State: AOAM530bo9XgKkUFUHrjnjDLGMtF0wveN7GqgM+9Oxea4knMNbshoinh
+        eiQee6YCe/tLpqFpE2U0RQW2C+8GauBSVQ==
+X-Google-Smtp-Source: ABdhPJwnROUYxs3aohEReDo+k0lKuWnhfeiAg3MC5V9pfIf8GDvQ/F6XhqMWHO57ZvE/suiahBdpyA==
+X-Received: by 2002:ac8:5649:: with SMTP id 9mr1279927qtt.148.1621282639236;
+        Mon, 17 May 2021 13:17:19 -0700 (PDT)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id 123sm11458318qkg.0.2021.05.17.13.17.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 13:17:06 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id i4so10270035ybe.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:17:00 -0700 (PDT)
+X-Received: by 2002:a25:aad4:: with SMTP id t78mr2151750ybi.343.1621282601374;
+ Mon, 17 May 2021 13:16:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX"
+References: <20210503215844.2996320-1-dianders@chromium.org> <20210503145750.v6.1.Ib7e3a4af2f3e2cb3bd8e4adbac3bcfc966f27791@changeid>
+In-Reply-To: <20210503145750.v6.1.Ib7e3a4af2f3e2cb3bd8e4adbac3bcfc966f27791@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 17 May 2021 13:16:29 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UuBo_T_FiPWT3Wz1SGtcAkwnsKKAtxtLkGDnzeYaybtg@mail.gmail.com>
+Message-ID: <CAD=FV=UuBo_T_FiPWT3Wz1SGtcAkwnsKKAtxtLkGDnzeYaybtg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/5] i2c: i2c-core-of: Fix corner case of finding
+ adapter by node
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Lyude Paul <lyude@redhat.com>, Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Linus W <linus.walleij@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX
-Content-Type: multipart/mixed; boundary="oLgGb4CoOy9gGjPXaoCdhJXJTDo4Hm2Za";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Alex Deucher <alexdeucher@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Jonathan Corbet <corbet@lwn.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dragan Cvetic <dragan.cvetic@xilinx.com>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- DRI Development <dri-devel@lists.freedesktop.org>,
- Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Derek Kiernan <derek.kiernan@xilinx.com>
-Message-ID: <c28703a4-6936-15f2-730f-c3d96e1326a5@suse.de>
-Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <YJ42MEgwDZrAEQLl@kroah.com>
- <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
- <YKIeBdwFb9Ng275X@phenom.ffwll.local>
- <503d101d-7273-757a-2809-e272db93c45d@suse.de>
- <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
- <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
- <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
-In-Reply-To: <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
+Hi,
 
---oLgGb4CoOy9gGjPXaoCdhJXJTDo4Hm2Za
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 3, 2021 at 2:59 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> The of_find_i2c_adapter_by_node() could end up failing to find an
+> adapter in certain conditions. Specifically it's possible that
+> of_dev_or_parent_node_match() could end up finding an I2C client in
+> the list and cause bus_find_device() to stop early even though an I2C
+> adapter was present later in the list.
+>
+> Let's move the i2c_verify_adapter() into the predicate function to
+> prevent this. Now we'll properly skip over the I2C client and be able
+> to find the I2C adapter.
+>
+> This issue has always been a potential problem if a single device tree
+> node could represent both an I2C client and an adapter. I believe this
+> is a sane thing to do if, for instance, an I2C-connected DP bridge
+> chip is present. The bridge chip is an I2C client but it can also
+> provide an I2C adapter (DDC tunneled over AUX channel). We don't want
+> to have to create a sub-node just so a panel can link to it with the
+> "ddc-i2c-bus" property.
+>
+> I believe that this problem got worse, however, with commit
+> e814e688413a ("i2c: of: Try to find an I2C adapter matching the
+> parent"). Starting at that commit it would be even easier to
+> accidentally miss finding the adapter.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> Later patches in this series won't work right without this one, but
+> they won't crash. If we can't find the i2c bus we'll just fall back to
+> the hardcoded panel modes which, at least today, all panels have.
+>
+> I'll also note that part of me wonders if we should actually fix this
+> further to run two passes through everything: first look to see if we
+> find an exact match and only look at the parent pointer if there is no
+> match. I don't currently have a need for that and it's a slightly
+> bigger change, but it seems conceivable that it could affect someone?
+>
+> (no changes since v1)
+>
+>  drivers/i2c/i2c-core-of.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
 
-Hi
+FYI that I've just posted v7 of this series and I've dropped
+${SUBJECT} patch from my series.
 
-Am 17.05.21 um 22:00 schrieb Daniel Vetter:
+I think that ${SUBJECT} patch is still correct and could be useful to
+land, but it's no longer needed by my series since I'm getting access
+to the DDC bus in a different way. If this patch needs to be spun,
+please let me know. ...or, feel free to land it! :-)
 
->> Sharing common code among subsystems is not a problem. Many of our
->> more-sophisticated helpers are located in DRM because no other
->> subsystems have the requirements yet. Maybe AI now has and we can move=
-
->> the rsp shareable code to a common location. But AI is still no GPU. T=
-o
->> give a bad analogy: GPUs transmit audio these days. Yet we don't treat=
-
->> them as sound cards.
->=20
-> We actually do, there are full blown sound drivers for them over in
-> sound/ (ok I think they're all in sound/hda for pci gpus or in
-> sound/soc actually). There's some glue to tie it together because it
-> requires coordination between the gpu and sound side of things, but
-> that's it.
-
-I know. But we don't merge both subsystems, just because the devices=20
-have some overlap in functionality.
-
-Best regards
-Thomas
-
->=20
-> Also I think it would be extremely silly to remove all the drm_ stuff
-> just because it's originated from GPUs, and therefore absolutely
-> cannot be used by other accelarators. I'm not seeing the point in
-> that, but if someone has convincing technical argument for this we
-> could do it. A tree wide s/drm_/xpu_ might make some sense perhaps if
-> that makes people more comfortable with the idea of reusing code from
-> gpu origins for accelerators in general.
-> -Daniel
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---oLgGb4CoOy9gGjPXaoCdhJXJTDo4Hm2Za--
-
---6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCizvQFAwAAAAAACgkQlh/E3EQov+Ay
-WA/8CsiYmVjdX5mgd24Mcuk72EZyvsLI0bseTUnltOfF9WZPXw+wfSzWJakKqYxGzZ0aFernuz7F
-dkhwFKzWJ+ZpD2+WyDaxiaoSXoh4yg2rqRSGOZa0W3r/bq5homk2bAkXOpmnHtOAytVz6UxiHJew
-x4Qa9RxqEOud72vSONmfeoyD4Ib9iunpTUAFok43yg9OoxgUlhipSCwbfJRU4V6slHIQuB8yqvHS
-uossF7guT0jBrK1YXvwod3ZnEAi+5ilWCEiPejlOD2Z171cu3Ak9/xRevN8Tg8AoL/ki40x6bBgV
-V5mQzShY0zGyIQtunneyClthNf5SsBWyIBR1rNxNFAkQcqqxr0U/ShLjEanUW8ET5Po29cusZ4WD
-eqkh17gqtQubxwxnxFVyAg0yRY8ruuQBMmUqLxLNbsr8SO0NJa138MXY9AMIDUKdPsVGHOxBxsP1
-9xrIpRJCZ/qSFoUaqFdMDjOJ349Ubso6KGIL2YMlkK6j2i56t0IWCE7rqraPNaEiCaJcqp7juprE
-ioWCUB1p/8R5hgiCmCvLc6+r/av2ibMlsN6wZLOvZFjLcGjPn+0ZSLIlKUZ1zk+Z73j+HkElJeIM
-eBNHSFMwPffAQKItkJ2csc9xTCXWAeLvIG6r2dhvSJLlnI/YyQMDV+09ss7MB6umfEMcmb8dzqZf
-Kzk=
-=+mZB
------END PGP SIGNATURE-----
-
---6jSQ74WCN6fjyYkRQIxlywyhJlLUuOPzX--
+-Doug
