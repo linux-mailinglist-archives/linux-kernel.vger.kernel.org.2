@@ -2,160 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F7C382575
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA638382583
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235303AbhEQHlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:41:06 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:33333 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234681AbhEQHlF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:41:05 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 14H7cLoO027919;
-        Mon, 17 May 2021 16:38:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 14H7cLoO027919
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621237107;
-        bh=2ggi49J0VZ1wo+bPnkXyf73MnfKaviktx3ill4o72ys=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bid7I5SQyRt8JLKbffZJrrrSMc2JGpAI2vl+OIyhbR7eQx/TWzvb5POdUoEiILKXO
-         cXKMHLRzRcB18cO1Z88AMUO1789ND/zxqRf7UcDk0WU8j5IUTJJ3B72HFfTCeklfEW
-         o1gUE6Iy/mtzw3WBB2SsnlJUIQjOAB1JYTnMGePCh0TY94VhNCQAymt3VpP2y5A91b
-         t1gjN88eGYsLDggVZykHqzaEOv1eDLRIlqCd3vqcyzAgdl780EY4DHUm2S5QzKQVYx
-         fhDshiA5m2cn1SaEOVjA4OphxIG6Pirg2P3dC8Nj3kwb2lkDuVP0YSiSl4ws+J13FH
-         HV3jGFyDvdMZw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH 6/6] x86/syscalls: switch to generic syscallhdr.sh
-Date:   Mon, 17 May 2021 16:38:14 +0900
-Message-Id: <20210517073815.97426-7-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210517073815.97426-1-masahiroy@kernel.org>
-References: <20210517073815.97426-1-masahiroy@kernel.org>
+        id S235365AbhEQHmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:42:11 -0400
+Received: from mga07.intel.com ([134.134.136.100]:39144 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235372AbhEQHmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:42:07 -0400
+IronPort-SDR: xOtvbQFr+fQ7ysoF0Qyr0/UjqYfma1O+DgvEFFFgEfpKvvdliRDV7SyBoSS3TTCsLaJYegWOOJ
+ 87Xx0X2YxC6w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="264325837"
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="264325837"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:40:21 -0700
+IronPort-SDR: dAdRdi1OZ5hYiaAOKuAJ+aXMdn8EvNAmqlwk8yOthuSmQObcW+7vxdJWYeB+ExP3s5BHlOQQZY
+ uiPmqDz6lwUA==
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="403951583"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:40:16 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1liXrI-00CgkM-82; Mon, 17 May 2021 10:40:12 +0300
+Date:   Mon, 17 May 2021 10:40:12 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        mihai.carabas@oracle.com, pizhenwei@bytedance.com,
+        pbonzini@redhat.com, bobo.shaobowang@huawei.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] misc/pvpanic: Fix error handling in
+ 'pvpanic_mmio_probe()'
+Message-ID: <YKId3AuQgQiQFY/q@smile.fi.intel.com>
+References: <d6e7bf6eb6e482c387124e815edc0e0edaebafe8.1621177126.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6e7bf6eb6e482c387124e815edc0e0edaebafe8.1621177126.git.christophe.jaillet@wanadoo.fr>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many architectures duplicate similar shell scripts.
+On Sun, May 16, 2021 at 05:00:27PM +0200, Christophe JAILLET wrote:
+> There is no error handling path in the probe function.
+> Switch to managed resource so that errors in the probe are handled easily
+> and simplify the remove function accordingly.
 
-This commit converts x86 to use scripts/syscallhdr.sh.
+Either folded or separated, feel free to add to the result
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> Fixes: b3c0f8774668 ("misc/pvpanic: probe multiple instances")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/misc/pvpanic/pvpanic-mmio.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/misc/pvpanic/pvpanic-mmio.c b/drivers/misc/pvpanic/pvpanic-mmio.c
+> index 4c0841776087..69b31f7adf4f 100644
+> --- a/drivers/misc/pvpanic/pvpanic-mmio.c
+> +++ b/drivers/misc/pvpanic/pvpanic-mmio.c
+> @@ -93,7 +93,7 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
+>  		return -EINVAL;
+>  	}
+>  
+> -	pi = kmalloc(sizeof(*pi), GFP_ATOMIC);
+> +	pi = devm_kmalloc(dev, sizeof(*pi), GFP_ATOMIC);
+>  	if (!pi)
+>  		return -ENOMEM;
+>  
+> @@ -114,7 +114,6 @@ static int pvpanic_mmio_remove(struct platform_device *pdev)
+>  	struct pvpanic_instance *pi = dev_get_drvdata(&pdev->dev);
+>  
+>  	pvpanic_remove(pi);
+> -	kfree(pi);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.30.2
+> 
 
- arch/x86/entry/syscalls/Makefile      | 26 ++++++++++----------
- arch/x86/entry/syscalls/syscallhdr.sh | 35 ---------------------------
- 2 files changed, 13 insertions(+), 48 deletions(-)
- delete mode 100644 arch/x86/entry/syscalls/syscallhdr.sh
-
-diff --git a/arch/x86/entry/syscalls/Makefile b/arch/x86/entry/syscalls/Makefile
-index c4bd8dd82bb1..8eb014bca8c9 100644
---- a/arch/x86/entry/syscalls/Makefile
-+++ b/arch/x86/entry/syscalls/Makefile
-@@ -9,40 +9,40 @@ _dummy := $(shell [ -d '$(out)' ] || mkdir -p '$(out)') \
- syscall32 := $(src)/syscall_32.tbl
- syscall64 := $(src)/syscall_64.tbl
- 
--syshdr := $(srctree)/$(src)/syscallhdr.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@' \
--		   '$(syshdr_abi_$(basetarget))' \
--		   '$(syshdr_pfx_$(basetarget))' \
--		   '$(syshdr_offset_$(basetarget))'
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --abis $(abis) --emit-nr \
-+		$(if $(offset),--offset $(offset)) \
-+		$(if $(prefix),--prefix $(prefix)) \
-+		$< $@
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) --abis $(abis) $< $@
- 
- quiet_cmd_hypercalls = HYPERCALLS $@
-       cmd_hypercalls = $(CONFIG_SHELL) '$<' $@ $(filter-out $<, $(real-prereqs))
- 
--syshdr_abi_unistd_32 := i386
-+$(uapi)/unistd_32.h: abis := i386
- $(uapi)/unistd_32.h: $(syscall32) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--syshdr_abi_unistd_32_ia32 := i386
--syshdr_pfx_unistd_32_ia32 := ia32_
-+$(out)/unistd_32_ia32.h: abis := i386
-+$(out)/unistd_32_ia32.h: prefix := ia32_
- $(out)/unistd_32_ia32.h: $(syscall32) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--syshdr_abi_unistd_x32 := common,x32
--syshdr_offset_unistd_x32 := __X32_SYSCALL_BIT
-+$(uapi)/unistd_x32.h: abis := common,x32
-+$(uapi)/unistd_x32.h: offset := __X32_SYSCALL_BIT
- $(uapi)/unistd_x32.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--syshdr_abi_unistd_64 := common,64
-+$(uapi)/unistd_64.h: abis := common,64
- $(uapi)/unistd_64.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--syshdr_abi_unistd_64_x32 := x32
--syshdr_pfx_unistd_64_x32 := x32_
-+$(out)/unistd_64_x32.h: abis := x32
-+$(out)/unistd_64_x32.h: prefix := x32_
- $(out)/unistd_64_x32.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
-diff --git a/arch/x86/entry/syscalls/syscallhdr.sh b/arch/x86/entry/syscalls/syscallhdr.sh
-deleted file mode 100644
-index 75e66af06773..000000000000
---- a/arch/x86/entry/syscalls/syscallhdr.sh
-+++ /dev/null
-@@ -1,35 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
--offset="$5"
--
--fileguard=_ASM_X86_`basename "$out" | sed \
--    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--    -e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--    echo "#ifndef ${fileguard}"
--    echo "#define ${fileguard} 1"
--    echo ""
--
--    max=0
--    while read nr abi name entry ; do
--	if [ -z "$offset" ]; then
--	    echo "#define __NR_${prefix}${name} $nr"
--	else
--	    echo "#define __NR_${prefix}${name} ($offset + $nr)"
--        fi
--
--	max=$nr
--    done
--
--    echo ""
--    echo "#ifdef __KERNEL__"
--    echo "#define __NR_${prefix}syscalls $(($max + 1))"
--    echo "#endif"
--    echo ""
--    echo "#endif /* ${fileguard} */"
--) > "$out"
 -- 
-2.27.0
+With Best Regards,
+Andy Shevchenko
+
 
