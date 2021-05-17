@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E2C383876
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D8638370C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245027AbhEQPxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
+        id S244012AbhEQPjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:39:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243219AbhEQPf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:35:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7D1061CE6;
-        Mon, 17 May 2021 14:39:46 +0000 (UTC)
+        id S238673AbhEQPXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:23:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B5DA61CA3;
+        Mon, 17 May 2021 14:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262387;
-        bh=bHYA8Dfl/fBT+THpRKXg/JP2T5wRvL428Kuetier2Xk=;
+        s=korg; t=1621262116;
+        bh=iHKtszs9IIlWoFV7+AuVDwDxIjB0taP5A/9EBFJd1V4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vhWuHMr7R/zZ0322CcCc/qRcgvOznpyxNCDexG7EAy8m5BCiXutv1c5oOHS60Pzvr
-         iEPdEpw1FLN9kQSaqYxLg7B17R+tavamJ2Etjb3AWkifgLXFAGIa/TqS3FOpQ4pTJy
-         lwxeGKAGa+UTZ4/AGMWzKwphC6FHU22AcHpEo/wU=
+        b=VsPevmkleIfsgmA56NkZjQPVhQe2yoRIRJvbKU/q/gDAzihAEO6dLMdFqH2yLSRtH
+         bLVQvJTpJo43qpAstziB3OAjBM8/Yg6zB9yOui0haFkp3+mtCuThfwnOWVewTaDI93
+         bviaDUNG8akH0Z8SrOqncjJYkZrbyAvrgsx3Fv14=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Govindarajulu Varadarajan <gvaradar@cisco.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 177/289] netfilter: nftables: Fix a memleak from userdata error path in new objects
-Date:   Mon, 17 May 2021 16:01:42 +0200
-Message-Id: <20210517140311.075308368@linuxfoundation.org>
+Subject: [PATCH 5.11 192/329] ethernet:enic: Fix a use after free bug in enic_hard_start_xmit
+Date:   Mon, 17 May 2021 16:01:43 +0200
+Message-Id: <20210517140308.624680293@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 85dfd816fabfc16e71786eda0a33a7046688b5b0 ]
+[ Upstream commit 643001b47adc844ae33510c4bb93c236667008a3 ]
 
-Release object name if userdata allocation fails.
+In enic_hard_start_xmit, it calls enic_queue_wq_skb(). Inside
+enic_queue_wq_skb, if some error happens, the skb will be freed
+by dev_kfree_skb(skb). But the freed skb is still used in
+skb_tx_timestamp(skb).
 
-Fixes: b131c96496b3 ("netfilter: nf_tables: add userdata support for nft_object")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+My patch makes enic_queue_wq_skb() return error and goto spin_unlock()
+incase of error. The solution is provided by Govind.
+See https://lkml.org/lkml/2021/4/30/961.
+
+Fixes: fb7516d42478e ("enic: add sw timestamp support")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Acked-by: Govindarajulu Varadarajan <gvaradar@cisco.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/cisco/enic/enic_main.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 2e76935db2c8..7bf7bfa0c7d9 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -6015,9 +6015,9 @@ err_obj_ht:
- 	INIT_LIST_HEAD(&obj->list);
+diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
+index fb269d587b74..548d8095c0a7 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_main.c
++++ b/drivers/net/ethernet/cisco/enic/enic_main.c
+@@ -768,7 +768,7 @@ static inline int enic_queue_wq_skb_encap(struct enic *enic, struct vnic_wq *wq,
  	return err;
- err_trans:
--	kfree(obj->key.name);
--err_userdata:
- 	kfree(obj->udata);
-+err_userdata:
-+	kfree(obj->key.name);
- err_strdup:
- 	if (obj->ops->destroy)
- 		obj->ops->destroy(&ctx, obj);
+ }
+ 
+-static inline void enic_queue_wq_skb(struct enic *enic,
++static inline int enic_queue_wq_skb(struct enic *enic,
+ 	struct vnic_wq *wq, struct sk_buff *skb)
+ {
+ 	unsigned int mss = skb_shinfo(skb)->gso_size;
+@@ -814,6 +814,7 @@ static inline void enic_queue_wq_skb(struct enic *enic,
+ 		wq->to_use = buf->next;
+ 		dev_kfree_skb(skb);
+ 	}
++	return err;
+ }
+ 
+ /* netif_tx_lock held, process context with BHs disabled, or BH */
+@@ -857,7 +858,8 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
+ 		return NETDEV_TX_BUSY;
+ 	}
+ 
+-	enic_queue_wq_skb(enic, wq, skb);
++	if (enic_queue_wq_skb(enic, wq, skb))
++		goto error;
+ 
+ 	if (vnic_wq_desc_avail(wq) < MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS)
+ 		netif_tx_stop_queue(txq);
+@@ -865,6 +867,7 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
+ 	if (!netdev_xmit_more() || netif_xmit_stopped(txq))
+ 		vnic_wq_doorbell(wq);
+ 
++error:
+ 	spin_unlock(&enic->wq_lock[txq_map]);
+ 
+ 	return NETDEV_TX_OK;
 -- 
 2.30.2
 
