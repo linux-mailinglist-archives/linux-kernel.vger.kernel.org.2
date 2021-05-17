@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA66383885
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256C838369D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345284AbhEQPys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:54:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40236 "EHLO mail.kernel.org"
+        id S1343672AbhEQPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:34:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244186AbhEQPgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:36:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D25E61402;
-        Mon, 17 May 2021 14:40:06 +0000 (UTC)
+        id S244208AbhEQPTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:19:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D707261C7F;
+        Mon, 17 May 2021 14:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262407;
-        bh=tcUVMuMgLyyT89/cUG1U/0KGN5h80q4PpF7JLCOk/Ls=;
+        s=korg; t=1621262037;
+        bh=Jr74mpcAFGs90GVsKiJjiazXqFTEMwCXJ3RvrPOOb8o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mB30GnTdEuzxgVtw85yjolxwTcoNEi/t/yIKIlnpdt9jNPY6SdEI62y3zW0hT0A7o
-         ppTcKIeKdzwuq1/ifl8nehaYuOBjomcLeMVvFT275Plj4chUbWvRW4v9kKefS76z+8
-         1NvD6KOjFhRM8mFpZLrmMPu96XYqX005TCYALPU0=
+        b=mEbTczVnVmUf8MgRl1vTvj0kY9Eg8WDPOJMHVqXv9Jm/Q61Qk6SN5hQqMs+6m74Zb
+         gd9o0d4emGeKfhzGOZAWDskeUXUIBjS2DSjdwe4MzjWYvqKqD/34SU4tJfakQtV0at
+         yscom3B3uMjIwgsaaUq14urROfkr+oZ/UTjM0Wjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 181/289] sched: Fix out-of-bound access in uclamp
+Subject: [PATCH 5.11 195/329] xsk: Fix for xp_aligned_validate_desc() when len == chunk_size
 Date:   Mon, 17 May 2021 16:01:46 +0200
-Message-Id: <20210517140311.204516622@linuxfoundation.org>
+Message-Id: <20210517140308.720723497@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Perret <qperret@google.com>
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-[ Upstream commit 6d2f8909a5fabb73fe2a63918117943986c39b6c ]
+[ Upstream commit ac31565c21937eee9117e43c9cd34f557f6f1cb8 ]
 
-Util-clamp places tasks in different buckets based on their clamp values
-for performance reasons. However, the size of buckets is currently
-computed using a rounding division, which can lead to an off-by-one
-error in some configurations.
+When desc->len is equal to chunk_size, it is legal. But when the
+xp_aligned_validate_desc() got chunk_end from desc->addr + desc->len
+pointing to the next chunk during the check, it caused the check to
+fail.
 
-For instance, with 20 buckets, the bucket size will be 1024/20=51. A
-task with a clamp of 1024 will be mapped to bucket id 1024/51=20. Sadly,
-correct indexes are in range [0,19], hence leading to an out of bound
-memory access.
+This problem was first introduced in bbff2f321a86 ("xsk: new descriptor
+addressing scheme"). Later in 2b43470add8c ("xsk: Introduce AF_XDP buffer
+allocation API") this piece of code was moved into the new function called
+xp_aligned_validate_desc(). This function was then moved into xsk_queue.h
+via 26062b185eee ("xsk: Explicitly inline functions and move definitions").
 
-Clamp the bucket id to fix the issue.
-
-Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
-Suggested-by: Qais Yousef <qais.yousef@arm.com>
-Signed-off-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Link: https://lkml.kernel.org/r/20210430151412.160913-1-qperret@google.com
+Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Link: https://lore.kernel.org/bpf/20210428094424.54435-1-xuanzhuo@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/xdp/xsk_queue.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3c3554d9ee50..57b236251884 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -936,7 +936,7 @@ DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
- 
- static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index 2823b7c3302d..40f359bf2044 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -128,13 +128,12 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
+ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+ 					    struct xdp_desc *desc)
  {
--	return clamp_value / UCLAMP_BUCKET_DELTA;
-+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
- }
+-	u64 chunk, chunk_end;
++	u64 chunk;
  
- static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+-	chunk = xp_aligned_extract_addr(pool, desc->addr);
+-	chunk_end = xp_aligned_extract_addr(pool, desc->addr + desc->len);
+-	if (chunk != chunk_end)
++	if (desc->len > pool->chunk_size)
+ 		return false;
+ 
++	chunk = xp_aligned_extract_addr(pool, desc->addr);
+ 	if (chunk >= pool->addrs_cnt)
+ 		return false;
+ 
 -- 
 2.30.2
 
