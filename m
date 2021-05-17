@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987CB383912
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E65383914
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244421AbhEQQH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36422 "EHLO mail.kernel.org"
+        id S1343698AbhEQQIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:08:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344711AbhEQPpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:45:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE2861D2A;
-        Mon, 17 May 2021 14:43:42 +0000 (UTC)
+        id S1344714AbhEQPpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:45:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98D5561D31;
+        Mon, 17 May 2021 14:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262622;
-        bh=A3aj7XsdKFjdT5a1NUfr0FrUX38Ab4ZfX67qPR7dwI0=;
+        s=korg; t=1621262625;
+        bh=QXHIcgxXCMsYEp8HK4WnUJS8HGDDPdqg5mi9M4eJkqg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nu0EtrHL1bAcT08wVMslUFjxLzqn1qx90cdlka2Ahil0yVQsoZAf8oQP87D9Et4rb
-         FDRwmz9F5ObfZmFXBLp3nScL/A6z5JZPbVdopOoFO35PXGYJToV0+k+65rsiGcx/Qk
-         w8c/zh2hePlNIO1vGCBxTI8YQWEX3MuSuIGbaEs0=
+        b=oTBCFBtZkd/+TcELDEXbkvDWKoP4HEgoGoXyyvjzB6oqXtiCnV5tTnrG0zrAafV/W
+         wyDtvOowr3ASn6n715p1V+IZ/9eg3JgIcj3B52CcD3Lu/6m5L5yO6CLg4ROzZ9xOOC
+         LuLD1bq6MDYnjJyXaWyYJhuTV8LydD02muaKba4w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 235/289] f2fs: compress: fix race condition of overwrite vs truncate
-Date:   Mon, 17 May 2021 16:02:40 +0200
-Message-Id: <20210517140313.087306799@linuxfoundation.org>
+Subject: [PATCH 5.10 236/289] f2fs: compress: fix to assign cc.cluster_idx correctly
+Date:   Mon, 17 May 2021 16:02:41 +0200
+Message-Id: <20210517140313.119972534@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -42,144 +42,141 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit a949dc5f2c5cfe0c910b664650f45371254c0744 ]
+[ Upstream commit 8bfbfb0ddd706b1ce2e89259ecc45f192c0ec2bf ]
 
-pos_fsstress testcase complains a panic as belew:
-
-------------[ cut here ]------------
-kernel BUG at fs/f2fs/compress.c:1082!
-invalid opcode: 0000 [#1] SMP PTI
-CPU: 4 PID: 2753477 Comm: kworker/u16:2 Tainted: G           OE     5.12.0-rc1-custom #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-Workqueue: writeback wb_workfn (flush-252:16)
-RIP: 0010:prepare_compress_overwrite+0x4c0/0x760 [f2fs]
-Call Trace:
- f2fs_prepare_compress_overwrite+0x5f/0x80 [f2fs]
- f2fs_write_cache_pages+0x468/0x8a0 [f2fs]
- f2fs_write_data_pages+0x2a4/0x2f0 [f2fs]
- do_writepages+0x38/0xc0
- __writeback_single_inode+0x44/0x2a0
- writeback_sb_inodes+0x223/0x4d0
- __writeback_inodes_wb+0x56/0xf0
- wb_writeback+0x1dd/0x290
- wb_workfn+0x309/0x500
- process_one_work+0x220/0x3c0
- worker_thread+0x53/0x420
- kthread+0x12f/0x150
- ret_from_fork+0x22/0x30
-
-The root cause is truncate() may race with overwrite as below,
-so that one reference count left in page can not guarantee the
-page attaching in mapping tree all the time, after truncation,
-later find_lock_page() may return NULL pointer.
-
-- prepare_compress_overwrite
- - f2fs_pagecache_get_page
- - unlock_page
-					- f2fs_setattr
-					 - truncate_setsize
-					  - truncate_inode_page
-					   - delete_from_page_cache
- - find_lock_page
-
-Fix this by avoiding referencing updated page.
+In f2fs_destroy_compress_ctx(), after f2fs_destroy_compress_ctx(),
+cc.cluster_idx will be cleared w/ NULL_CLUSTER, f2fs_cluster_blocks()
+may check wrong cluster metadata, fix it.
 
 Fixes: 4c8ff7095bef ("f2fs: support data compression")
 Signed-off-by: Chao Yu <yuchao0@huawei.com>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/compress.c | 35 ++++++++++++-----------------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+ fs/f2fs/compress.c | 17 +++++++++--------
+ fs/f2fs/data.c     |  6 +++---
+ fs/f2fs/f2fs.h     |  2 +-
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index b6b7b1552769..58eb5eefe268 100644
+index 58eb5eefe268..f94b13075ea4 100644
 --- a/fs/f2fs/compress.c
 +++ b/fs/f2fs/compress.c
-@@ -123,19 +123,6 @@ static void f2fs_unlock_rpages(struct compress_ctx *cc, int len)
- 	f2fs_drop_rpages(cc, len, true);
+@@ -151,13 +151,14 @@ int f2fs_init_compress_ctx(struct compress_ctx *cc)
+ 	return cc->rpages ? 0 : -ENOMEM;
  }
  
--static void f2fs_put_rpages_mapping(struct address_space *mapping,
--				pgoff_t start, int len)
--{
--	int i;
--
--	for (i = 0; i < len; i++) {
--		struct page *page = find_get_page(mapping, start + i);
--
--		put_page(page);
--		put_page(page);
--	}
--}
--
- static void f2fs_put_rpages_wbc(struct compress_ctx *cc,
- 		struct writeback_control *wbc, bool redirty, int unlock)
+-void f2fs_destroy_compress_ctx(struct compress_ctx *cc)
++void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse)
  {
-@@ -986,7 +973,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
- 		}
+ 	page_array_free(cc->inode, cc->rpages, cc->cluster_size);
+ 	cc->rpages = NULL;
+ 	cc->nr_rpages = 0;
+ 	cc->nr_cpages = 0;
+-	cc->cluster_idx = NULL_CLUSTER;
++	if (!reuse)
++		cc->cluster_idx = NULL_CLUSTER;
+ }
  
- 		if (PageUptodate(page))
--			unlock_page(page);
-+			f2fs_put_page(page, 1);
- 		else
- 			f2fs_compress_ctx_add_page(cc, page);
- 	}
-@@ -996,32 +983,34 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
- 
+ void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page)
+@@ -984,7 +985,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
  		ret = f2fs_read_multi_pages(cc, &bio, cc->cluster_size,
  					&last_block_in_bio, false, true);
-+		f2fs_put_rpages(cc);
- 		f2fs_destroy_compress_ctx(cc);
+ 		f2fs_put_rpages(cc);
+-		f2fs_destroy_compress_ctx(cc);
++		f2fs_destroy_compress_ctx(cc, true);
  		if (ret)
--			goto release_pages;
-+			goto out;
+ 			goto out;
  		if (bio)
- 			f2fs_submit_bio(sbi, bio, DATA);
- 
- 		ret = f2fs_init_compress_ctx(cc);
- 		if (ret)
--			goto release_pages;
-+			goto out;
- 	}
- 
- 	for (i = 0; i < cc->cluster_size; i++) {
- 		f2fs_bug_on(sbi, cc->rpages[i]);
- 
- 		page = find_lock_page(mapping, start_idx + i);
--		f2fs_bug_on(sbi, !page);
-+		if (!page) {
-+			/* page can be truncated */
-+			goto release_and_retry;
-+		}
- 
- 		f2fs_wait_on_page_writeback(page, DATA, true, true);
--
- 		f2fs_compress_ctx_add_page(cc, page);
--		f2fs_put_page(page, 0);
- 
- 		if (!PageUptodate(page)) {
-+release_and_retry:
-+			f2fs_put_rpages(cc);
+@@ -1011,7 +1012,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ release_and_retry:
+ 			f2fs_put_rpages(cc);
  			f2fs_unlock_rpages(cc, i + 1);
--			f2fs_put_rpages_mapping(mapping, start_idx,
--					cc->cluster_size);
- 			f2fs_destroy_compress_ctx(cc);
+-			f2fs_destroy_compress_ctx(cc);
++			f2fs_destroy_compress_ctx(cc, true);
  			goto retry;
  		}
-@@ -1053,10 +1042,10 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
  	}
- 
+@@ -1044,7 +1045,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
  unlock_pages:
-+	f2fs_put_rpages(cc);
+ 	f2fs_put_rpages(cc);
  	f2fs_unlock_rpages(cc, i);
--release_pages:
--	f2fs_put_rpages_mapping(mapping, start_idx, i);
- 	f2fs_destroy_compress_ctx(cc);
-+out:
+-	f2fs_destroy_compress_ctx(cc);
++	f2fs_destroy_compress_ctx(cc, true);
+ out:
  	return ret;
  }
+@@ -1080,7 +1081,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+ 		set_cluster_dirty(&cc);
  
+ 	f2fs_put_rpages_wbc(&cc, NULL, false, 1);
+-	f2fs_destroy_compress_ctx(&cc);
++	f2fs_destroy_compress_ctx(&cc, false);
+ 
+ 	return first_index;
+ }
+@@ -1299,7 +1300,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	f2fs_put_rpages(cc);
+ 	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
+ 	cc->cpages = NULL;
+-	f2fs_destroy_compress_ctx(cc);
++	f2fs_destroy_compress_ctx(cc, false);
+ 	return 0;
+ 
+ out_destroy_crypt:
+@@ -1461,7 +1462,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
+ 	err = f2fs_write_raw_pages(cc, submitted, wbc, io_type);
+ 	f2fs_put_rpages_wbc(cc, wbc, false, 0);
+ destroy_out:
+-	f2fs_destroy_compress_ctx(cc);
++	f2fs_destroy_compress_ctx(cc, false);
+ 	return err;
+ }
+ 
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 901bd1d963ee..bdc0f3b2d7ab 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2419,7 +2419,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 							max_nr_pages,
+ 							&last_block_in_bio,
+ 							rac != NULL, false);
+-				f2fs_destroy_compress_ctx(&cc);
++				f2fs_destroy_compress_ctx(&cc, false);
+ 				if (ret)
+ 					goto set_error_page;
+ 			}
+@@ -2464,7 +2464,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 							max_nr_pages,
+ 							&last_block_in_bio,
+ 							rac != NULL, false);
+-				f2fs_destroy_compress_ctx(&cc);
++				f2fs_destroy_compress_ctx(&cc, false);
+ 			}
+ 		}
+ #endif
+@@ -3168,7 +3168,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 		}
+ 	}
+ 	if (f2fs_compressed_file(inode))
+-		f2fs_destroy_compress_ctx(&cc);
++		f2fs_destroy_compress_ctx(&cc, false);
+ #endif
+ 	if (retry) {
+ 		index = 0;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 036d2a3a2f41..69a390c6064c 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3856,7 +3856,7 @@ void f2fs_free_dic(struct decompress_io_ctx *dic);
+ void f2fs_decompress_end_io(struct page **rpages,
+ 			unsigned int cluster_size, bool err, bool verity);
+ int f2fs_init_compress_ctx(struct compress_ctx *cc);
+-void f2fs_destroy_compress_ctx(struct compress_ctx *cc);
++void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse);
+ void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
+ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
+ void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
 -- 
 2.30.2
 
