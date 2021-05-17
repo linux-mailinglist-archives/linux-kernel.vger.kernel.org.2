@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43BD386C01
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F9F386C0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244878AbhEQVL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237403AbhEQVL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:11:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 91A6B611C1;
-        Mon, 17 May 2021 21:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621285810;
-        bh=TEA/wBQ2bfJOzNxSwWzS/isOhOdg6bEZLH5gpZAr1YQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kX/p3SUbSJ5Em+5TjR47pCooSq2H2gJjgg0UaYfSv/l441HCyDi7QEzCLaHyk5MuW
-         qB/V6v/m1UyV8qB2txIqJdxIiUiIl+pVa5mh9yClmgyi9p6LUHwEXc30P1eijX2PFZ
-         LzXSj2eWBG6vxhPANxtJAl+hI3QsIMV3dEnypP96rbXE0dm9jpeCYrloS5rKDr/3fh
-         DiDp6xYrkEthRBqkDDmND+LbZmQk/yK8JOajoaCtkJNL/uWFL98K7SFXtOqkpQFhn7
-         jgXvhy7YNuYHvz7Z9r1MixsnFPXLwHlxNGW6jKRqxtHcCNd1UWUI75E4q4DJj7OR/1
-         KKYxqnxB6XPxg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 84A8460963;
-        Mon, 17 May 2021 21:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S237740AbhEQVMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:12:54 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:34339 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235796AbhEQVMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 17:12:53 -0400
+Received: by mail-ot1-f49.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso6824197ote.1;
+        Mon, 17 May 2021 14:11:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=er+nFmon+svqmtkFcqXC0e3slEFDd9HMF6EJMQ1oQXM=;
+        b=lv8UhXIjfiglvtAX0+ymkiEoyrRzuTgHHX2E8hMHEdNTMVswOeg4YSO8k9ls2YFfYx
+         k4j21TzqM1P/046kcqBniL+vp23tSEyfR3fTECKxmV+HJd08DdoOZJwm31iR5rmskMEz
+         2S4fYEfTZd4HFChNABr/8HpW0s3yrKYzqNg6+02MpCCtFSJ/NCy9GD9X0zNP/pizmK/2
+         Ds3OQwa3XBe2kQ2SgnGJ45zR/stazw3nvLwCGJht3ve6WcVTrRqjkWM0EVSiWQfUHHls
+         V7G22tM+2XDmlIOwMqXn4f/q9fLtNWUHiiWq+gVCPb6jwL2FcvmL/dnHZ+/7PiCTMDsg
+         fdSQ==
+X-Gm-Message-State: AOAM531vD4D+yb4Wf4eETzmhfWxy19FoE/gzvZDAOlp3bTBdsfPZ9fvg
+        PZYZUt/9QaKnBwK9BWs3/VNdC/a3vQ==
+X-Google-Smtp-Source: ABdhPJxkTw2VFbtDoOEtMEjJz0I8famE3J/wge+2Bnazq1FlHH61nbZWedLyyZ53+pWLMXKdfG1buw==
+X-Received: by 2002:a05:6830:1f52:: with SMTP id u18mr1233598oth.298.1621285895288;
+        Mon, 17 May 2021 14:11:35 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a11sm2955723oif.52.2021.05.17.14.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 14:11:34 -0700 (PDT)
+Received: (nullmailer pid 3200619 invoked by uid 1000);
+        Mon, 17 May 2021 21:11:33 -0000
+Date:   Mon, 17 May 2021 16:11:33 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v5 2/2] dt-bindings: gpio: Add devicetree binding for IDT
+ 79RC32434 GPIO controller
+Message-ID: <20210517211133.GA3200481@robh.at.kernel.org>
+References: <20210514123309.134048-1-tsbogend@alpha.franken.de>
+ <20210514123309.134048-2-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] isdn: mISDN: netjet: Fix crash in nj_probe:
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162128581053.6429.12390001025467093897.git-patchwork-notify@kernel.org>
-Date:   Mon, 17 May 2021 21:10:10 +0000
-References: <1621149100-23604-1-git-send-email-zheyuma97@gmail.com>
-In-Reply-To: <1621149100-23604-1-git-send-email-zheyuma97@gmail.com>
-To:     Zheyu Ma <zheyuma97@gmail.com>
-Cc:     isdn@linux-pingi.de, christophe.jaillet@wanadoo.fr,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514123309.134048-2-tsbogend@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Sun, 16 May 2021 07:11:40 +0000 you wrote:
-> 'nj_setup' in netjet.c might fail with -EIO and in this case
-> 'card->irq' is initialized and is bigger than zero. A subsequent call to
-> 'nj_release' will free the irq that has not been requested.
+On Fri, 14 May 2021 14:33:08 +0200, Thomas Bogendoerfer wrote:
+> Add YAML devicetree binding for IDT 79RC32434 GPIO controller
 > 
-> Fix this bug by deleting the previous assignment to 'card->irq' and just
-> keep the assignment before 'request_irq'.
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+> Changes in v5:
+>  - made interrupt controller optional
+>  - made ngpios setting optional
 > 
-> [...]
+> Changes in v4:
+>  - renamed to idt,32434-gpio this time for real
+> 
+> Changes in v3:
+>  - renamed to idt,32434-gpio
+>  - drop ngpio description
+>  - use gpio0: gpio@50004 in example
+> 
+> 
+>  .../bindings/gpio/idt,32434-gpio.yaml         | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/idt,32434-gpio.yaml
+> 
 
-Here is the summary with links:
-  - isdn: mISDN: netjet: Fix crash in nj_probe:
-    https://git.kernel.org/netdev/net/c/9f6f852550d0
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
