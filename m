@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED91386BAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A11386BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237120AbhEQUty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhEQUtx (ORCPT
+        id S237240AbhEQUw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:52:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44491 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237136AbhEQUwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:49:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F46C061573;
-        Mon, 17 May 2021 13:48:36 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621284514;
+        Mon, 17 May 2021 16:52:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621284667;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=N9j0B7b156ySsfMwDJsNRd7Lot/GWP1durNGX4F30bE=;
-        b=1ZpNYLsTCuxDd2w4It1l3dHPjwwAqXAEgSY+DEPNfEPoHcR+Tj8HSX/lM6OuPLk7dDZQVW
-        W1mANCzHmyx/moYnbSqJIsfksQzHubt7JiZM2zKDIcbWHzozO2ubMZ64DlHO+vvi6SI3/u
-        kzgUMF1r1LiMVSf6GAg4a80TbFVuMBAThFvwPAqShd0TKE41wvAv3ecwduS+Wu1jdbDg0I
-        AbAfl/Kx/MAGDQmSaMwvUS+//Ee8ZAgjroZ+SaUJfqQ5dTIfSI6X60+ohc6ZLvj7Z1TR8t
-        CqFlk/za3NV3QACI21PFNIS7CqVMAmhb4Di/XCXQ8oCYUumaEBmQw4P267xG8Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621284514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=N9j0B7b156ySsfMwDJsNRd7Lot/GWP1durNGX4F30bE=;
-        b=Cq5gGnOum9YEtmqRoidToVZ0cJKjg3O1ZDCn247dy6VTZmmSgwiY8J34jS0r/5mY/3Ru7v
-        WBWf4Bc9muZaDeDA==
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        "frederic\@kernel.org" <frederic@kernel.org>,
-        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Nitesh Lal <nilal@redhat.com>, Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when setting the hint
-In-Reply-To: <20210504092340.00006c61@intel.com>
-Date:   Mon, 17 May 2021 22:48:33 +0200
-Message-ID: <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qidodmYtOq/bVdiDmZy2oVcc1WKBd5gvipIegl/6mHQ=;
+        b=MYHCzUDEscONzoIreK3GMTBKC6yg6C0EZuftXO6Uf2lCXEXlfdqnLRNUGcRFMysPy7VLFH
+        vNZr8r3HZ1h6ihMNG78danHovw22GzZCNrd0Ugu/Ky1txElaEtphtKioVOYNs3AToakdVt
+        0mBITfZnpsIYDWM12jrT3IMJrwcapEU=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-B67_5wFQPdWISWa_bh7quQ-1; Mon, 17 May 2021 16:51:05 -0400
+X-MC-Unique: B67_5wFQPdWISWa_bh7quQ-1
+Received: by mail-qv1-f71.google.com with SMTP id i14-20020a0cf10e0000b02901eeced6480dso4208010qvl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:51:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qidodmYtOq/bVdiDmZy2oVcc1WKBd5gvipIegl/6mHQ=;
+        b=uWLnO0Sxzqwd5LKUJVune4AolYaRhGp94PO9wPJxtOWuFe2p1XVQiRsQCuBbPklPqS
+         duFldjohwrzDdwddzEfwrrlW300hiAXfkhRGHPtpE6fk95vCLQHVOJP7RHNuinJE1qzM
+         MiGWF5oH/e+YxPDs9nHIbfOwP41nPDy+N5Ky+V2sRQ+h8u+A5xCCGDeSBnerwclic1nJ
+         fGoYHh0yo/1NAN2ZYceN8awO2MCzD+LJQQyEKVcRBQqY7KNyCmfcOM7P2pftFDnmAROm
+         X6Kot9rtrNdpwvWOr60VnAIf/cVo1cVsyEsPZgUZDP0zGUcthw0+/Dd3SNFW2gaXdeEg
+         bh1g==
+X-Gm-Message-State: AOAM532OmYCkZ4dR+KPo1S4H3TUHDIPbkA2Lhnu4Ee05eE64qJVVYiIT
+        nr2z5YYIzwbDjJilWa4681W/4afFKFgQjP7n/1InMk2r1wsfBdyqG1QDiTZE2x5Ej0EdQgvM+08
+        bdzOUDh/qE9i9Q2b8dPPhSIgP
+X-Received: by 2002:ac8:7e8c:: with SMTP id w12mr1393764qtj.384.1621284664702;
+        Mon, 17 May 2021 13:51:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzf7r8oNdaJYHYWe0zaANVtHXBioBvnDbPzxB+JhLVOkDKrwobi/FReLeV6iQBIPNR96tGYoQ==
+X-Received: by 2002:ac8:7e8c:: with SMTP id w12mr1393754qtj.384.1621284664537;
+        Mon, 17 May 2021 13:51:04 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f1sm11227045qkl.93.2021.05.17.13.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 13:51:04 -0700 (PDT)
+From:   trix@redhat.com
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] [SCSI] aic7xxx: remove multiple definition of globals
+Date:   Mon, 17 May 2021 13:50:57 -0700
+Message-Id: <20210517205057.1850010-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04 2021 at 09:23, Jesse Brandeburg wrote:
-> I'd add in addition that irqbalance daemon *stopped* paying attention
-> to hints quite a while ago, so I'm not quite sure what purpose they
-> serve.
+From: Tom Rix <trix@redhat.com>
 
-The hint was added so that userspace has a better understanding where it
-should place the interrupt. So if irqbalanced ignores it anyway, then
-what's the point of the hint? IOW, why is it still used drivers?
+When building the aicasm with gcc 10.2 + gas 26.1
+Multiple definitions of global variables cause these errors.
 
-Now there is another aspect to that. What happens if irqbalanced does
-not run at all and a driver relies on the side effect of the hint
-setting the initial affinity. Bah...
+multiple definition of `args';
+multiple definition of `yylineno';
 
-While none of the drivers (except the perf muck) actually prevents
-userspace from fiddling with the affinity (via IRQF_NOBALANCING) a
-deeper inspection shows that they actually might rely on the current
-behaviour if irqbalanced is disabled. Of course every driver has its own
-convoluted way to do that and all of those functions are well
-documented. What a mess.
+args came from the expansion of
+STAILQ_HEAD(macro_arg_list, macro_arg) args;
 
-If the hint still serves a purpose then we can provide a variant which
-solely applies the hint and does not fiddle with the actual affinity,
-but if the hint is useless anyway then we have a way better option to
-clean that up.
+The definition of the macro_arg_list structure is needed.
+The global variable 'args' is not, so delete.
 
-Most users are in networking, there are a few in crypto, a couple of
-leftovers in scsi, virtio and a handfull of oddball drivers.
+yylineno is defined by flex, so defining it in bison/*.y
+file is not needed, so delete.
 
-The perf muck wants to be cleaned up anyway as it's just crystal clear
-abuse.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/scsi/aic7xxx/aicasm/aicasm_gram.y   | 1 -
+ drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-Thanks,
+diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y b/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
+index 924d55a8acbfc..65182ad9cdf82 100644
+--- a/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
++++ b/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
+@@ -58,7 +58,6 @@
+ #include "aicasm_symbol.h"
+ #include "aicasm_insformat.h"
+ 
+-int yylineno;
+ char *yyfilename;
+ char stock_prefix[] = "aic_";
+ char *prefix = stock_prefix;
+diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
+index 7bf7fd5953ac9..ed3bdd43c2976 100644
+--- a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
++++ b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
+@@ -108,7 +108,7 @@ struct macro_arg {
+ 	regex_t	arg_regex;
+ 	char   *replacement_text;
+ };
+-STAILQ_HEAD(macro_arg_list, macro_arg) args;
++STAILQ_HEAD(macro_arg_list, macro_arg);
+ 
+ struct macro_info {
+ 	struct macro_arg_list args;
+-- 
+2.26.3
 
-        tglx
