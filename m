@@ -2,54 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1A73837F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DABF383822
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237901AbhEQPsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:48:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50786 "EHLO mx2.suse.de"
+        id S1343911AbhEQPtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:49:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52508 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243299AbhEQPcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:32:04 -0400
+        id S244705AbhEQPdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:33:01 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621265504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D78x0RQykGxtuFVKDLK2tegONNqQIINNV1fp5HE+u1o=;
+        b=UlpURxft8mCNp5WtrDPvtUpGOpEsRnDR0jJF0c7mh+vDsIm6ScJ7qTGjqT60UiVDQRJ6k0
+        41KGiWtA9xdJD4l8MO7kltHMJ9fUX+Dq08VZR9dbQatXEsB9+Cf/xLGKQnaKCC2nOvEHGu
+        Hwt42g0mrif5bw2UWDSVartMsW1ZQPg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4636DB23C;
-        Mon, 17 May 2021 15:30:46 +0000 (UTC)
-Date:   Mon, 17 May 2021 16:30:44 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     kirill.shutemov@linux.intel.com, ziy@nvidia.com, mhocko@suse.com,
-        ying.huang@intel.com, hughd@google.com,
-        gerald.schaefer@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [v2 PATCH 7/7] mm: thp: skip make PMD PROT_NONE if THP migration
- is not supported
-Message-ID: <20210517153044.GZ3672@suse.de>
-References: <20210413212416.3273-1-shy828301@gmail.com>
- <20210413212416.3273-8-shy828301@gmail.com>
+        by mx2.suse.de (Postfix) with ESMTP id 4AAFDB038;
+        Mon, 17 May 2021 15:31:44 +0000 (UTC)
+Subject: Re: [PATCH 7/8] xen/netfront: don't trust the backend response data
+ blindly
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210513100302.22027-1-jgross@suse.com>
+ <20210513100302.22027-8-jgross@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <18aa307e-edf0-cb8b-1fd2-2b5c89522d02@suse.com>
+Date:   Mon, 17 May 2021 17:31:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210413212416.3273-8-shy828301@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210513100302.22027-8-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 02:24:16PM -0700, Yang Shi wrote:
-> A quick grep shows x86_64, PowerPC (book3s), ARM64 and S390 support both
-> NUMA balancing and THP.  But S390 doesn't support THP migration so NUMA
-> balancing actually can't migrate any misplaced pages.
-> 
-> Skip make PMD PROT_NONE for such case otherwise CPU cycles may be wasted
-> by pointless NUMA hinting faults on S390.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+On 13.05.2021 12:03, Juergen Gross wrote:
+> @@ -429,6 +453,12 @@ static void xennet_tx_buf_gc(struct netfront_queue *queue)
+>  	} while (more_to_do);
+>  
+>  	xennet_maybe_wake_tx(queue);
+> +
+> +	return;
+> +
+> + err:
+> +	queue->info->broken = true;
+> +	dev_alert(dev, "Disabled for further use\n");
+>  }
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+If in blkfront the ability to revive a device via a suspend/resume cycle
+is "a nice side effect", wouldn't it be nice for all frontends to behave
+similarly in this regard? I.e. wouldn't you want to also clear this flag
+somewhere? And shouldn't additionally / more generally a disconnect /
+connect cycle allow proper operation again?
 
--- 
-Mel Gorman
-SUSE Labs
+> @@ -472,6 +502,13 @@ static void xennet_tx_setup_grant(unsigned long gfn, unsigned int offset,
+>  
+>  	*tx = info->tx_local;
+>  
+> +	/*
+> +	 * The request is not in its final form, as size and flags might be
+> +	 * modified later, but even if a malicious backend will send a response
+> +	 * now, nothing bad regarding security could happen.
+> +	 */
+> +	queue->tx_pending[id] = true;
+
+I'm not sure I can agree with what the comment says. If the backend
+sent a response prematurely, wouldn't the underlying slot(s) become
+available for re-use, and hence potentially get filled / updated by
+two parties?
+
+Jan
