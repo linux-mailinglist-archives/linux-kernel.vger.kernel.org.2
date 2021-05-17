@@ -2,313 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859D038259F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68AC3825A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235376AbhEQHrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:47:03 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45190 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231787AbhEQHq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:46:58 -0400
-Received: from zn.tnic (p200300ec2f061b008e3a9cb332cecf90.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:1b00:8e3a:9cb3:32ce:cf90])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7E15F1EC0345;
-        Mon, 17 May 2021 09:45:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621237540;
+        id S235334AbhEQHre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:47:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53356 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231787AbhEQHrd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:47:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621237577;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nLVgavtPi73oeu6JkSw1lXObVuaZk7TsBy+QjR6ZzJw=;
-        b=fIhv70a8juEjUnMLPFsHbjmxjut56VtF5eRkDZkdil25TAZpcfoNfgtKBExBhJEfpd0c8E
-        /tpmuT2K9V2iGq15P7JoEosMqldTASCHh+tbgslKxdYlGtd+sTfrc+oSx+cQ1PzDSnaWYl
-        r+g1UTYZgP4TJI1fp14oft9y2FvN5Ks=
-Date:   Mon, 17 May 2021 09:45:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v26 24/30] x86/cet/shstk: Introduce shadow stack token
- setup/verify routines
-Message-ID: <YKIfIEyW+sR+bDCk@zn.tnic>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-25-yu-cheng.yu@intel.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oW3LzEcy6xhREj6wjyfZMKHY6gt96o4WsFjzrVstiLo=;
+        b=QuCL3B8suBxuTTqw+Xgx/ADfOp9Xv2Cvl0U5grI9CpcR6DKrA86dAPftRPB83pw46KIOhg
+        tWAhZg0jh7HOZBRY7escjf9c6vQAJuvQdG8k0noGSYmFHYokdNQ8Dd6viwIYJ16bn1qjFE
+        ObLMe5qkq5cCYt4bmGY3Zk7tjnpVq8U=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-423-51a54doqMlSq815_HPeq-w-1; Mon, 17 May 2021 03:46:15 -0400
+X-MC-Unique: 51a54doqMlSq815_HPeq-w-1
+Received: by mail-wm1-f72.google.com with SMTP id g206-20020a1c39d70000b029016ac627fbe9so1094072wma.9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:46:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=oW3LzEcy6xhREj6wjyfZMKHY6gt96o4WsFjzrVstiLo=;
+        b=phQ4iqy1nclDW+ItQizet1XWK2xqICqPXYp9FJSBYFvZvaTuO/7+wfZ87sVjcQ8k9g
+         LxvyjygAQoW8PAtpySXnYMJo7fNodk2l3DpsIAv8BHaKYgnV5nXuB7JVU1LmffaGhWsh
+         OulNIH8bf0nk/R0CYSfk/zM/AgAke1GqaCetp2J+gsDJ1DaKZJGeaC89btyj1u1NX5Cp
+         vRZ8U5hL/LMv8P93GMgiLQqHtts72HPwaEpDItS4DzEDvYVsWe3khihyjxa9Xe8EB4Rf
+         ORA/MmdM+OjNxGHcHocFGqTBUDXQQFiKFGSwVlKuygaarMHa0cOEQGc0Fds8EGsTaY+Q
+         xd0g==
+X-Gm-Message-State: AOAM533of1At7tIRZtze2UbNw/vE8t6RYkTVPL17qD4XJX6q2Jp/bImp
+        XVmij1RbqP6lO88Mu+pPO6g4KofPz4wkmdfJwV4LQG/KIJRxBIW6GVf22KJ58BMPMOsYkQrQOI7
+        swM+++FlHign8CFA54+tE+xyP
+X-Received: by 2002:a5d:438c:: with SMTP id i12mr26903792wrq.44.1621237574409;
+        Mon, 17 May 2021 00:46:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwROdnuXYbqFLPiHMKE8n+P0duVXjs1e5WKix8FiCyLOl1Qa/HiqWLT3lnItQNHmk8XZbmiTQ==
+X-Received: by 2002:a5d:438c:: with SMTP id i12mr26903768wrq.44.1621237574201;
+        Mon, 17 May 2021 00:46:14 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6833.dip0.t-ipconnect.de. [91.12.104.51])
+        by smtp.gmail.com with ESMTPSA id f4sm16730658wrz.33.2021.05.17.00.46.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 00:46:13 -0700 (PDT)
+Subject: Re: alloc_contig_range() with MIGRATE_MOVABLE performance regression
+ since 4.9
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, l.stach@pengutronix.de,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jaewon Kim <jaewon31.kim@samsung.com>,
+        Michal Nazarewicz <mina86@mina86.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Oscar Salvador <OSalvador@suse.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+References: <dbdf7b8c-9165-f87c-92d4-cfb5a4f01221@gmail.com>
+ <YIEqpIOAyrs26soC@dhcp22.suse.cz>
+ <8919b724-ce5b-a80f-bbea-98b99af97357@redhat.com>
+ <58726a6b-5468-a6b4-7c26-371ef5d71ee2@gmail.com>
+ <9df905cf-cc4f-c739-26cb-c2e5c6e5a234@redhat.com>
+ <a0420344-4d9b-8e90-69cd-b0de20d683e0@gmail.com>
+ <a15bd5c9-870d-3824-99cc-e5073d4d42a1@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <d2bf87c0-7a2d-d663-a0ac-99840c77cd44@redhat.com>
+Date:   Mon, 17 May 2021 09:46:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210427204315.24153-25-yu-cheng.yu@intel.com>
+In-Reply-To: <a15bd5c9-870d-3824-99cc-e5073d4d42a1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:43:09PM -0700, Yu-cheng Yu wrote:
-> +static inline int write_user_shstk_32(u32 __user *addr, u32 val)
-> +{
-> +	WARN_ONCE(1, "%s used but not supported.\n", __func__);
-> +	return -EFAULT;
-> +}
-> +#endif
+On 16.05.21 18:13, Florian Fainelli wrote:
+> 
+> 
+> On 4/22/2021 12:31 PM, Florian Fainelli wrote:
+>>> For
+>>>
+>>> https://lkml.kernel.org/r/20210121175502.274391-3-minchan@kernel.org
+>>>
+>>> to do its work you'll have to pass  __GFP_NORETRY to
+>>> alloc_contig_range(). This requires CMA adaptions, from where we call
+>>> alloc_contig_range().
+>>
+>> Yes, I did modify the alloc_contig_range() caller to pass GFP_KERNEL |
+>> __GFP_NORETRY. I did run for a more iterations (1000) and the results
+>> are not very conclusive as with __GFP_NORETRY the allocation time per
+>> allocation was not significantly better, in fact it was slightly worse
+>> by 100us than without.
+>>
+>> My x86 VM with 1GB of DRAM including 512MB being in ZONE_MOVABLE does
+>> shows identical numbers for both 4.9 and 5.4 so this must be something
+>> specific to ARM64 and/or the code we added to create a ZONE_MOVABLE on
+>> that architecture since movablecore does not appear to have any effect
+>> unlike x86.
+> 
+> We tracked down the slowdowns to be caused by two major contributors:
+> 
+> - for a reason that we do not fully understand yet the same cpufreq
+> governor (conservative) did not cause alloc_contig_range() to be slowed
+> down on 4.9 as much as it it with 5.4, running tests with the
+> performance cpufreq governor works a tad better and the results are more
+> consistent from run to run with a smaller variation.
 
-What is that supposed to catch? Any concrete (mis-)use cases?
+Interesting! So your CPU is down-clocking while performing (heavy) 
+kernel work? Is that expected or are we mis-accounting kernel cpu time 
+somehow when it comes to determining the CPU target frequency?
 
-> +
-> +static inline int write_user_shstk_64(u64 __user *addr, u64 val)
-> +{
-> +	asm_volatile_goto("1: wrussq %[val], (%[addr])\n"
-> +			  _ASM_EXTABLE(1b, %l[fail])
-> +			  :: [addr] "r" (addr), [val] "r" (val)
-> +			  :: fail);
-> +	return 0;
-> +fail:
-> +	return -EFAULT;
-> +}
-> +#endif /* CONFIG_X86_SHADOW_STACK */
-> +
->  #define nop() asm volatile ("nop")
->  
->  static inline void serialize(void)
-> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-> index d387df84b7f1..48a0c87414ef 100644
-> --- a/arch/x86/kernel/shstk.c
-> +++ b/arch/x86/kernel/shstk.c
-> @@ -20,6 +20,7 @@
->  #include <asm/fpu/xstate.h>
->  #include <asm/fpu/types.h>
->  #include <asm/cet.h>
-> +#include <asm/special_insns.h>
->  
->  static void start_update_msrs(void)
->  {
-> @@ -176,3 +177,128 @@ void shstk_disable(void)
->  
->  	shstk_free(current);
->  }
-> +
-> +static unsigned long _get_user_shstk_addr(void)
+> 
+> - another large contributor to the slowdown was having enabled
+> CONFIG_IRQSOFF_TRACER. After c3bc8fd637a9623f5c507bd18f9677effbddf584
+> ("tracing: Centralize preemptirq tracepoints and unify their usage") we
+> now prepare arguments for tracing even if we end-up not using them since
+> tracing is not enabled at runtime. Getting the caller function's return
+> address is cheap on arm64 for level == 0, but getting the preceding
+> caller involves doing a backtrace walk which is expensive (see
+> arch/arm64/kernel/return_address.c).
 
-What's the "_" prefix in the name supposed to denote?
+Again, very interesting finding.
 
-Ditto for the other functions with "_" prefix you're adding.
+> 
+> So with these two variables eliminated we are only about x2 slower on
+> 5.4 than we were on 4.9 and this is acceptable for our use case. I would
+> not say the case is closed but at least we understand it better. We now
+> have 5.10 brought up to speed so any new investigation will be focused
+> on that kernel.
+> 
 
-> +{
-> +	struct fpu *fpu = &current->thread.fpu;
-> +	unsigned long ssp = 0;
-> +
-> +	fpregs_lock();
-> +
-> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
-> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
-> +	} else {
-> +		struct cet_user_state *p;
-> +
-> +		p = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
-> +		if (p)
-> +			ssp = p->user_ssp;
-> +	}
-> +
-> +	fpregs_unlock();
-
-<---- newline here.
-
-> +	return ssp;
-> +}
-> +
-> +#define TOKEN_MODE_MASK	3UL
-> +#define TOKEN_MODE_64	1UL
-> +#define IS_TOKEN_64(token) (((token) & TOKEN_MODE_MASK) == TOKEN_MODE_64)
-> +#define IS_TOKEN_32(token) (((token) & TOKEN_MODE_MASK) == 0)
-
-Why do you have to look at the second, busy bit, too in order to
-determine the mode?
-
-Also, you don't need most of those defines - see below.
-
-> +/*
-> + * Create a restore token on the shadow stack.  A token is always 8-byte
-> + * and aligned to 8.
-> + */
-> +static int _create_rstor_token(bool ia32, unsigned long ssp,
-> +			       unsigned long *token_addr)
-> +{
-> +	unsigned long addr;
-> +
-> +	*token_addr = 0;
-
-What for? Callers should check this function's retval and then interpret
-the validity of token_addr and it should not unconditionally write into
-it.
-
-> +
-> +	if ((!ia32 && !IS_ALIGNED(ssp, 8)) || !IS_ALIGNED(ssp, 4))
-
-Flip this logic:
-
-	if ((ia32 && !IS_ALIGNED(ssp, 4)) || !IS_ALIGNED(ssp, 8))
-
-> +		return -EINVAL;
-> +
-> +	addr = ALIGN_DOWN(ssp, 8) - 8;
-
-Yah, so this is weird. Why does the restore token need to be at -8
-instead on the shadow stack address itself?
-
-Looking at
-
-Figure 18-2. RSTORSSP to Switch to New Shadow Stack
-Figure 18-3. SAVEPREVSSP to Save a Restore Point
-
-in the SDM, it looks like unnecessarily more complex than it should be.
-But maybe there's some magic I'm missing.
-
-> +
-> +	/* Is the token for 64-bit? */
-> +	if (!ia32)
-> +		ssp |= TOKEN_MODE_64;
-
-		    |= BIT(0);
-
-> +
-> +	if (write_user_shstk_64((u64 __user *)addr, (u64)ssp))
-> +		return -EFAULT;
-> +
-> +	*token_addr = addr;
-
-<---- newline here.
-
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Create a restore token on shadow stack, and then push the user-mode
-> + * function return address.
-> + */
-> +int shstk_setup_rstor_token(bool ia32, unsigned long ret_addr,
-> +			    unsigned long *token_addr, unsigned long *new_ssp)
-> +{
-> +	struct cet_status *cet = &current->thread.cet;
-> +	unsigned long ssp = 0;
-> +	int err = 0;
-
-What are those cleared to 0 for?
-
-> +
-> +	if (cet->shstk_size) {
-
-Flip logic to save an indentation level:
-
-	if (!cet->shstk_size)
-		return err;
-
-	if (!ret_addr)
-		...
-
-
-> +		if (!ret_addr)
-> +			return -EINVAL;
-> +
-> +		ssp = _get_user_shstk_addr();
-
-Needs to test retval for 0 here and return error if so.
-
-> +		err = _create_rstor_token(ia32, ssp, token_addr);
-> +		if (err)
-> +			return err;
-> +
-> +		if (ia32) {
-> +			*new_ssp = *token_addr - sizeof(u32);
-> +			err = write_user_shstk_32((u32 __user *)*new_ssp, (u32)ret_addr);
-> +		} else {
-> +			*new_ssp = *token_addr - sizeof(u64);
-> +			err = write_user_shstk_64((u64 __user *)*new_ssp, (u64)ret_addr);
-
-In both cases, you should write *new_ssp only when write_user_shstk_*
-functions have succeeded.
-
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +/*
-> + * Verify token_addr point to a valid token, and then set *new_ssp
-
-			points
-
-> + * according to the token.
-> + */
-> +int shstk_check_rstor_token(bool ia32, unsigned long token_addr, unsigned long *new_ssp)
-> +{
-> +	unsigned long token;
-> +
-> +	*new_ssp = 0;
-
-Same as above.
-
-> +
-> +	if (!IS_ALIGNED(token_addr, 8))
-> +		return -EINVAL;
-> +
-> +	if (get_user(token, (unsigned long __user *)token_addr))
-> +		return -EFAULT;
-> +
-> +	/* Is 64-bit mode flag correct? */
-> +	if (!ia32 && !IS_TOKEN_64(token))
-> +		return -EINVAL;
-> +	else if (ia32 && !IS_TOKEN_32(token))
-> +		return -EINVAL;
-
-That test can be done using the XOR function - i.e., you want to return
-an error value when the two things are different.
-
-In order to make this more readable, you call ia32 "proc32" to be clear
-what that variable denotes - a 32-bit process. Then, you do
-
-	bool shstk32 = !(token & BIT(0));
-
-	if (proc32 ^ shstk32)
-		return -EINVAL;
-
-Voila.
-
-> +	token &= ~TOKEN_MODE_MASK;
-> +
-> +	/*
-> +	 * Restore address properly aligned?
-> +	 */
-> +	if ((!ia32 && !IS_ALIGNED(token, 8)) || !IS_ALIGNED(token, 4))
-
-Flip logic as above.
-
+Thanks for the insight, please do let me know when you learn more. x2 
+slowdown still is quite a lot.
 
 -- 
-Regards/Gruss,
-    Boris.
+Thanks,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+David / dhildenb
+
