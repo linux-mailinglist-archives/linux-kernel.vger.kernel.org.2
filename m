@@ -2,208 +2,482 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC6E386BC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B7C386BDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244582AbhEQU4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:56:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:11856 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233271AbhEQU4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:56:32 -0400
-IronPort-SDR: JtVE8OpCLu8+RxtHKZDwD5TToUFcPMNT/N7/2zot4uaTP31iMfSRwVA5zrUYTb8/fiNOoX6Gn+
- wBBxzVZwi9Qg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="286093933"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="286093933"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 13:55:15 -0700
-IronPort-SDR: TZcXoTiIbYniVOmf1LN1Ev8wIo3ZErYhJYjAMAmVqWeQUZ6eIC8Vwm+cxtyTHYjB5Jkzk7NDh5
- UipVJ/gBm2sA==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="541464404"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.147.139]) ([10.251.147.139])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 13:55:13 -0700
-Subject: Re: [PATCH v26 24/30] x86/cet/shstk: Introduce shadow stack token
- setup/verify routines
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-25-yu-cheng.yu@intel.com> <YKIfIEyW+sR+bDCk@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <e225e357-a1d5-9596-8900-79e6b94cf924@intel.com>
-Date:   Mon, 17 May 2021 13:55:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S244658AbhEQVFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236014AbhEQVFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 17:05:00 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1410C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 14:03:42 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q15so5479914pgg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 14:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hX8pXX2gDo3bIEjeY+BvmHcSNEliE7BLLK2W/5PzHEs=;
+        b=XmuD99E+xfOFpNvtovgVxbnjepYHvAk2+O1VlHN8p4+ZydQe/FVAuaTG00qbqkhn3Y
+         DtIoVPuQLWCPVUy3HmQA/5krm01VYrRGzOxoYqgvd8UC85wDsKmgZn+7mAoOJuEClXsl
+         LiH0TVwto4c4jRc0LrDKJEJIip8i2cgD9/MGegoMjP8tr/Run747383nNZMESEYjyyYY
+         HtHRL01PyL+2/Te9tCJsuBBCIg/RfUbQOLmaT2OhXUmbxO3mAgKhHKvi5s1eTh5xiy/O
+         zJIDUbVqzQY1DirZ0U/66zQ7/gUPjtCHLTzSt/RS6ZZvUQkdI5oqgSQx2twcemCuWRc+
+         Dlrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hX8pXX2gDo3bIEjeY+BvmHcSNEliE7BLLK2W/5PzHEs=;
+        b=idcuXt/6mxZFB8W6CepiYY5NFExUcQnn0icNGNN6FRi6V7tLJe7xQDbbEjmmu7EW8i
+         5Beosnh7jIi1GrGK8TWXJXO0POPowGP4sm3zJfrOwcBfLbto3NwQ5rWE7xa0lGG+nzom
+         C2FVTnHIOZv3qQhtRQUTNp0ohyitJiHmLt8dFVNUpsvDKku8PnU2PqLRfZSVdl2A4VWq
+         E68ab7Ck/zQeFfKMToFgRaNNWddZgODR9SiCKtZ5aUa0tMPI0cIv/HP4MmSSYVzMK/5V
+         LZqPF+p387MxQJacYr9zBRHvwxJes1NiCr1cpPkdMMUSgsNdgzEd/ZA7A7Y9ORf7Q9LD
+         bYUQ==
+X-Gm-Message-State: AOAM532wdHwkwTkCGkeyaky2NVRHqpDg+zqUeM+vEOOqsvwZWSduWg8E
+        OtLktXAGPeA3w0LY+PRR61PLpQ==
+X-Google-Smtp-Source: ABdhPJzxX5uTsD8c+Ygaz6N4l5tdQ0RZYQhRDQ35EuwwloI1+Z3ks4RAGVFtDj7uTw3chrL7yxy2Dg==
+X-Received: by 2002:a65:424b:: with SMTP id d11mr1386837pgq.171.1621285422049;
+        Mon, 17 May 2021 14:03:42 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t133sm11372658pgb.0.2021.05.17.14.03.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 14:03:41 -0700 (PDT)
+Date:   Mon, 17 May 2021 21:03:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Kechen Lu <kechenl@nvidia.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: x86: Invert APICv/AVIC enablement check
+Message-ID: <YKLaKV5Z+x30iNG9@google.com>
+References: <20210513113710.1740398-1-vkuznets@redhat.com>
+ <20210513113710.1740398-2-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YKIfIEyW+sR+bDCk@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513113710.1740398-2-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/2021 12:45 AM, Borislav Petkov wrote:
-> On Tue, Apr 27, 2021 at 01:43:09PM -0700, Yu-cheng Yu wrote:
->> +static inline int write_user_shstk_32(u32 __user *addr, u32 val)
->> +{
->> +	WARN_ONCE(1, "%s used but not supported.\n", __func__);
->> +	return -EFAULT;
->> +}
->> +#endif
-> 
-> What is that supposed to catch? Any concrete (mis-)use cases?
-> 
+On Thu, May 13, 2021, Vitaly Kuznetsov wrote:
+> Currently, APICv/AVIC enablement is global ('enable_apicv' module parameter
+> for Intel, 'avic' module parameter for AMD) but there's no way to check
+> it from vendor-neutral code. Add 'apicv_supported()' to kvm_x86_ops and
+> invert kvm_apicv_init() (which now doesn't need to be called from arch-
+> specific code).
 
-If 32-bit apps are not supported, there should be no need of 32-bit 
-shadow stack write, otherwise there is a bug.
+Rather than add a new hook, just move the variable to x86.c, and export it so
+that VMX and SVM can give it different module names.  The only hiccup is that
+avic is off by default, but I don't see why that can't be changed.
 
-[...]
+On a related topic, the AVIC dependency on CONFIG_X86_LOCAL_APIC is dead code
+since commit e42eef4ba388 ("KVM: add X86_LOCAL_APIC dependency").  Ditto for
+cpu_has_vmx_posted_intr().
 
->> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
->> index d387df84b7f1..48a0c87414ef 100644
->> --- a/arch/x86/kernel/shstk.c
->> +++ b/arch/x86/kernel/shstk.c
->> @@ -20,6 +20,7 @@
->>   #include <asm/fpu/xstate.h>
->>   #include <asm/fpu/types.h>
->>   #include <asm/cet.h>
->> +#include <asm/special_insns.h>
->>   
->>   static void start_update_msrs(void)
->>   {
->> @@ -176,3 +177,128 @@ void shstk_disable(void)
->>   
->>   	shstk_free(current);
->>   }
->> +
->> +static unsigned long _get_user_shstk_addr(void)
-> 
-> What's the "_" prefix in the name supposed to denote?
-> 
-> Ditto for the other functions with "_" prefix you're adding.
-> 
 
-These are static functions.  I thought that would make the static scope 
-clear.  I can remove "_".
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 55efbacfc244..bf5807d35339 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1422,6 +1422,7 @@ struct kvm_arch_async_pf {
+ extern u32 __read_mostly kvm_nr_uret_msrs;
+ extern u64 __read_mostly host_efer;
+ extern bool __read_mostly allow_smaller_maxphyaddr;
++extern bool __read_mostly enable_apicv;
+ extern struct kvm_x86_ops kvm_x86_ops;
 
->> +{
->> +	struct fpu *fpu = &current->thread.fpu;
->> +	unsigned long ssp = 0;
->> +
->> +	fpregs_lock();
->> +
->> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
->> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
->> +	} else {
->> +		struct cet_user_state *p;
->> +
->> +		p = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
->> +		if (p)
->> +			ssp = p->user_ssp;
->> +	}
->> +
->> +	fpregs_unlock();
-> 
-> <---- newline here.
-> 
->> +	return ssp;
->> +}
->> +
->> +#define TOKEN_MODE_MASK	3UL
->> +#define TOKEN_MODE_64	1UL
->> +#define IS_TOKEN_64(token) (((token) & TOKEN_MODE_MASK) == TOKEN_MODE_64)
->> +#define IS_TOKEN_32(token) (((token) & TOKEN_MODE_MASK) == 0)
-> 
-> Why do you have to look at the second, busy bit, too in order to
-> determine the mode?
-> 
+ #define KVM_X86_OP(func) \
+@@ -1661,7 +1662,6 @@ gpa_t kvm_mmu_gva_to_gpa_system(struct kvm_vcpu *vcpu, gva_t gva,
+                                struct x86_exception *exception);
 
-If the busy bit is set, it is only for SAVEPREVSSP, and invalid as a 
-normal restore token.
+ bool kvm_apicv_activated(struct kvm *kvm);
+-void kvm_apicv_init(struct kvm *kvm, bool enable);
+ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu);
+ void kvm_request_apicv_update(struct kvm *kvm, bool activate,
+                              unsigned long bit);
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index 712b4e0de481..ec4aa804395b 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -28,10 +28,7 @@
+ #include "svm.h"
 
-> Also, you don't need most of those defines - see below.
-> 
->> +/*
->> + * Create a restore token on the shadow stack.  A token is always 8-byte
->> + * and aligned to 8.
->> + */
->> +static int _create_rstor_token(bool ia32, unsigned long ssp,
->> +			       unsigned long *token_addr)
->> +{
->> +	unsigned long addr;
->> +
->> +	*token_addr = 0;
-> 
-> What for? Callers should check this function's retval and then interpret
-> the validity of token_addr and it should not unconditionally write into
-> it.
-> 
+ /* enable / disable AVIC */
+-int avic;
+-#ifdef CONFIG_X86_LOCAL_APIC
+-module_param(avic, int, S_IRUGO);
+-#endif
++module_param_named(avic, enable_apicv, bool, S_IRUGO);
 
-Ok.
+ #define SVM_AVIC_DOORBELL      0xc001011b
 
->> +
->> +	if ((!ia32 && !IS_ALIGNED(ssp, 8)) || !IS_ALIGNED(ssp, 4))
-> 
-> Flip this logic:
-> 
-> 	if ((ia32 && !IS_ALIGNED(ssp, 4)) || !IS_ALIGNED(ssp, 8))
-> 
->> +		return -EINVAL;
->> +
->> +	addr = ALIGN_DOWN(ssp, 8) - 8;
-> 
-> Yah, so this is weird. Why does the restore token need to be at -8
-> instead on the shadow stack address itself?
+@@ -126,7 +123,7 @@ void avic_vm_destroy(struct kvm *kvm)
+        unsigned long flags;
+        struct kvm_svm *kvm_svm = to_kvm_svm(kvm);
 
-With the lower two bits masked out, the restore token must point 
-directly above itself.
+-       if (!avic)
++       if (!enable_apicv)
+                return;
 
-> 
-> Looking at
-> 
-> Figure 18-2. RSTORSSP to Switch to New Shadow Stack
-> Figure 18-3. SAVEPREVSSP to Save a Restore Point
-> 
-> in the SDM, it looks like unnecessarily more complex than it should be.
-> But maybe there's some magic I'm missing.
-> 
->> +
->> +	/* Is the token for 64-bit? */
->> +	if (!ia32)
->> +		ssp |= TOKEN_MODE_64;
-> 
-> 		    |= BIT(0);
-> 
+        if (kvm_svm->avic_logical_id_table_page)
+@@ -149,7 +146,7 @@ int avic_vm_init(struct kvm *kvm)
+        struct page *l_page;
+        u32 vm_id;
 
-Ok, then, we don't use #define's.  I will put in comments about what it 
-is doing, and fix the rest.
+-       if (!avic)
++       if (!enable_apicv)
+                return 0;
 
-Thanks,
-Yu-cheng
+        /* Allocating physical APIC ID table (4KB) */
+@@ -571,7 +568,7 @@ int avic_init_vcpu(struct vcpu_svm *svm)
+        int ret;
+        struct kvm_vcpu *vcpu = &svm->vcpu;
+
+-       if (!avic || !irqchip_in_kernel(vcpu->kvm))
++       if (!enable_apicv || !irqchip_in_kernel(vcpu->kvm))
+                return 0;
+
+        ret = avic_init_backing_page(vcpu);
+@@ -595,7 +592,7 @@ void avic_post_state_restore(struct kvm_vcpu *vcpu)
+
+ void svm_toggle_avic_for_irq_window(struct kvm_vcpu *vcpu, bool activate)
+ {
+-       if (!avic || !lapic_in_kernel(vcpu))
++       if (!enable_apicv || !lapic_in_kernel(vcpu))
+                return;
+
+        srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
+@@ -655,7 +652,7 @@ void svm_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
+        struct vmcb *vmcb = svm->vmcb;
+        bool activated = kvm_vcpu_apicv_active(vcpu);
+
+-       if (!avic)
++       if (!enable_apicv)
+                return;
+
+        if (activated) {
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index dfa351e605de..e650d4c466e1 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1009,11 +1009,9 @@ static __init int svm_hardware_setup(void)
+                        nrips = false;
+        }
+
+-       if (avic) {
+-               if (!npt_enabled ||
+-                   !boot_cpu_has(X86_FEATURE_AVIC) ||
+-                   !IS_ENABLED(CONFIG_X86_LOCAL_APIC)) {
+-                       avic = false;
++       if (enable_apicv) {
++               if (!npt_enabled || !boot_cpu_has(X86_FEATURE_AVIC)) {
++                       enable_apicv = false;
+                } else {
+                        pr_info("AVIC enabled\n");
+
+@@ -4429,13 +4427,12 @@ static int svm_vm_init(struct kvm *kvm)
+        if (!pause_filter_count || !pause_filter_thresh)
+                kvm->arch.pause_in_guest = true;
+
+-       if (avic) {
++       if (enable_apicv) {
+                int ret = avic_vm_init(kvm);
+                if (ret)
+                        return ret;
+        }
+
+-       kvm_apicv_init(kvm, avic);
+        return 0;
+ }
+
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index e44567ceb865..a514b490db4a 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -479,8 +479,6 @@ extern struct kvm_x86_nested_ops svm_nested_ops;
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 55efbacfc244..bf5807d35339 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1422,6 +1422,7 @@ struct kvm_arch_async_pf {
+ extern u32 __read_mostly kvm_nr_uret_msrs;
+ extern u64 __read_mostly host_efer;
+ extern bool __read_mostly allow_smaller_maxphyaddr;
++extern bool __read_mostly enable_apicv;
+ extern struct kvm_x86_ops kvm_x86_ops;
+
+ #define KVM_X86_OP(func) \
+@@ -1661,7 +1662,6 @@ gpa_t kvm_mmu_gva_to_gpa_system(struct kvm_vcpu *vcpu, gva_t gva,
+                                struct x86_exception *exception);
+
+ bool kvm_apicv_activated(struct kvm *kvm);
+-void kvm_apicv_init(struct kvm *kvm, bool enable);
+ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu);
+ void kvm_request_apicv_update(struct kvm *kvm, bool activate,
+                              unsigned long bit);
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index 712b4e0de481..ec4aa804395b 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -28,10 +28,7 @@
+ #include "svm.h"
+
+ /* enable / disable AVIC */
+-int avic;
+-#ifdef CONFIG_X86_LOCAL_APIC
+-module_param(avic, int, S_IRUGO);
+-#endif
++module_param_named(avic, enable_apicv, bool, S_IRUGO);
+
+ #define SVM_AVIC_DOORBELL      0xc001011b
+
+@@ -126,7 +123,7 @@ void avic_vm_destroy(struct kvm *kvm)
+        unsigned long flags;
+        struct kvm_svm *kvm_svm = to_kvm_svm(kvm);
+
+-       if (!avic)
++       if (!enable_apicv)
+                return;
+
+        if (kvm_svm->avic_logical_id_table_page)
+@@ -149,7 +146,7 @@ int avic_vm_init(struct kvm *kvm)
+        struct page *l_page;
+        u32 vm_id;
+
+-       if (!avic)
++       if (!enable_apicv)
+                return 0;
+
+        /* Allocating physical APIC ID table (4KB) */
+@@ -571,7 +568,7 @@ int avic_init_vcpu(struct vcpu_svm *svm)
+        int ret;
+        struct kvm_vcpu *vcpu = &svm->vcpu;
+
+-       if (!avic || !irqchip_in_kernel(vcpu->kvm))
++       if (!enable_apicv || !irqchip_in_kernel(vcpu->kvm))
+                return 0;
+
+        ret = avic_init_backing_page(vcpu);
+@@ -595,7 +592,7 @@ void avic_post_state_restore(struct kvm_vcpu *vcpu)
+
+ void svm_toggle_avic_for_irq_window(struct kvm_vcpu *vcpu, bool activate)
+ {
+-       if (!avic || !lapic_in_kernel(vcpu))
++       if (!enable_apicv || !lapic_in_kernel(vcpu))
+                return;
+
+        srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
+@@ -655,7 +652,7 @@ void svm_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
+        struct vmcb *vmcb = svm->vmcb;
+        bool activated = kvm_vcpu_apicv_active(vcpu);
+
+-       if (!avic)
++       if (!enable_apicv)
+                return;
+
+        if (activated) {
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index dfa351e605de..e650d4c466e1 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1009,11 +1009,9 @@ static __init int svm_hardware_setup(void)
+                        nrips = false;
+        }
+
+-       if (avic) {
+-               if (!npt_enabled ||
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 55efbacfc244..bf5807d35339 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1422,6 +1422,7 @@ struct kvm_arch_async_pf {
+ extern u32 __read_mostly kvm_nr_uret_msrs;
+ extern u64 __read_mostly host_efer;
+ extern bool __read_mostly allow_smaller_maxphyaddr;
++extern bool __read_mostly enable_apicv;
+ extern struct kvm_x86_ops kvm_x86_ops;
+
+ #define KVM_X86_OP(func) \
+@@ -1661,7 +1662,6 @@ gpa_t kvm_mmu_gva_to_gpa_system(struct kvm_vcpu *vcpu, gva_t gva,
+                                struct x86_exception *exception);
+
+ bool kvm_apicv_activated(struct kvm *kvm);
+-void kvm_apicv_init(struct kvm *kvm, bool enable);
+ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu);
+ void kvm_request_apicv_update(struct kvm *kvm, bool activate,
+                              unsigned long bit);
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index 712b4e0de481..ec4aa804395b 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -28,10 +28,7 @@
+ #include "svm.h"
+
+ /* enable / disable AVIC */
+-int avic;
+-#ifdef CONFIG_X86_LOCAL_APIC
+-module_param(avic, int, S_IRUGO);
+-#endif
++module_param_named(avic, enable_apicv, bool, S_IRUGO);
+
+ #define SVM_AVIC_DOORBELL      0xc001011b
+
+@@ -126,7 +123,7 @@ void avic_vm_destroy(struct kvm *kvm)
+        unsigned long flags;
+        struct kvm_svm *kvm_svm = to_kvm_svm(kvm);
+
+-       if (!avic)
++       if (!enable_apicv)
+                return;
+
+        if (kvm_svm->avic_logical_id_table_page)
+@@ -149,7 +146,7 @@ int avic_vm_init(struct kvm *kvm)
+        struct page *l_page;
+        u32 vm_id;
+
+-       if (!avic)
++       if (!enable_apicv)
+                return 0;
+
+        /* Allocating physical APIC ID table (4KB) */
+@@ -571,7 +568,7 @@ int avic_init_vcpu(struct vcpu_svm *svm)
+        int ret;
+        struct kvm_vcpu *vcpu = &svm->vcpu;
+
+-       if (!avic || !irqchip_in_kernel(vcpu->kvm))
++       if (!enable_apicv || !irqchip_in_kernel(vcpu->kvm))
+                return 0;
+
+        ret = avic_init_backing_page(vcpu);
+@@ -595,7 +592,7 @@ void avic_post_state_restore(struct kvm_vcpu *vcpu)
+
+ void svm_toggle_avic_for_irq_window(struct kvm_vcpu *vcpu, bool activate)
+ {
+-       if (!avic || !lapic_in_kernel(vcpu))
++       if (!enable_apicv || !lapic_in_kernel(vcpu))
+                return;
+
+        srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
+@@ -655,7 +652,7 @@ void svm_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
+        struct vmcb *vmcb = svm->vmcb;
+        bool activated = kvm_vcpu_apicv_active(vcpu);
+
+-       if (!avic)
++       if (!enable_apicv)
+                return;
+
+        if (activated) {
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index dfa351e605de..e650d4c466e1 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1009,11 +1009,9 @@ static __init int svm_hardware_setup(void)
+                        nrips = false;
+        }
+
+-       if (avic) {
+-               if (!npt_enabled ||
+...skipping...
+
+ #define VMCB_AVIC_APIC_BAR_MASK                0xFFFFFFFFFF000ULL
+
+-extern int avic;
+-
+ static inline void avic_update_vapic_bar(struct vcpu_svm *svm, u64 data)
+ {
+        svm->vmcb->control.avic_vapic_bar = data & VMCB_AVIC_APIC_BAR_MASK;
+diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+index 8dee8a5fbc17..4705ad55abb5 100644
+--- a/arch/x86/kvm/vmx/capabilities.h
++++ b/arch/x86/kvm/vmx/capabilities.h
+@@ -12,7 +12,6 @@ extern bool __read_mostly enable_ept;
+ extern bool __read_mostly enable_unrestricted_guest;
+ extern bool __read_mostly enable_ept_ad_bits;
+ extern bool __read_mostly enable_pml;
+-extern bool __read_mostly enable_apicv;
+ extern int __read_mostly pt_mode;
+
+ #define PT_MODE_SYSTEM         0
+@@ -90,8 +89,7 @@ static inline bool cpu_has_vmx_preemption_timer(void)
+
+ static inline bool cpu_has_vmx_posted_intr(void)
+ {
+-       return IS_ENABLED(CONFIG_X86_LOCAL_APIC) &&
+-               vmcs_config.pin_based_exec_ctrl & PIN_BASED_POSTED_INTR;
++       return vmcs_config.pin_based_exec_ctrl & PIN_BASED_POSTED_INTR;
+ }
+
+ static inline bool cpu_has_load_ia32_efer(void)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 4bceb5ca3a89..697dd54c7df8 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -101,7 +101,6 @@ module_param(emulate_invalid_guest_state, bool, S_IRUGO);
+ static bool __read_mostly fasteoi = 1;
+ module_param(fasteoi, bool, S_IRUGO);
+
+-bool __read_mostly enable_apicv = 1;
+ module_param(enable_apicv, bool, S_IRUGO);
+
+ /*
+@@ -7001,7 +7000,6 @@ static int vmx_vm_init(struct kvm *kvm)
+                        break;
+                }
+        }
+-       kvm_apicv_init(kvm, enable_apicv);
+        return 0;
+ }
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9b6bca616929..22a1e2b438c3 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -209,6 +209,9 @@ EXPORT_SYMBOL_GPL(host_efer);
+ bool __read_mostly allow_smaller_maxphyaddr = 0;
+ EXPORT_SYMBOL_GPL(allow_smaller_maxphyaddr);
+
++bool __read_mostly enable_apicv = true;
++EXPORT_SYMBOL_GPL(enable_apicv);
++
+ u64 __read_mostly host_xss;
+ EXPORT_SYMBOL_GPL(host_xss);
+ u64 __read_mostly supported_xss;
+@@ -8342,16 +8345,15 @@ bool kvm_apicv_activated(struct kvm *kvm)
+ }
+ EXPORT_SYMBOL_GPL(kvm_apicv_activated);
+
+-void kvm_apicv_init(struct kvm *kvm, bool enable)
++static void kvm_apicv_init(struct kvm *kvm)
+ {
+-       if (enable)
++       if (enable_apicv)
+                clear_bit(APICV_INHIBIT_REASON_DISABLE,
+                          &kvm->arch.apicv_inhibit_reasons);
+        else
+                set_bit(APICV_INHIBIT_REASON_DISABLE,
+                        &kvm->arch.apicv_inhibit_reasons);
+ }
+-EXPORT_SYMBOL_GPL(kvm_apicv_init);
+
+ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
+ {
+@@ -10736,6 +10738,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+        INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
+        INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
+
++       kvm_apicv_init(kvm);
+        kvm_hv_init_vm(kvm);
+        kvm_page_track_init(kvm);
+        kvm_mmu_init_vm(kvm);
+
+
