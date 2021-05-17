@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F263383670
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD04E383801
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244816AbhEQPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58612 "EHLO mail.kernel.org"
+        id S245138AbhEQPsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243576AbhEQPRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:17:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DEAF61C63;
-        Mon, 17 May 2021 14:33:11 +0000 (UTC)
+        id S244217AbhEQPcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:32:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D6861CC5;
+        Mon, 17 May 2021 14:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261991;
-        bh=qx/PjOA/ZuU7CCjNcrmVLoFRUgUwwm36wgvT06uqZQk=;
+        s=korg; t=1621262311;
+        bh=sm8ZH7gysXzcnQnc1SaFFmXLhMTtkYqQ/OCrUYQWeio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZ82zazY48b6eWlOjhJh6Zwg7jyOj4dBYhJqO7Ho2E+8JUXgAfdNclTyLfAQ5m15x
-         OYeDASgM3BCTQT7k1G7opoS8Xhzusn+rIsGHTvyyW82mAPNJqvSAa6bkFJwItYcFnK
-         JhisAIABZFFZB0a8rdI5aVwgnBU9a0jkIEaN+9N4=
+        b=0FNyRs5DymhhcEPTDPFTQa5yyGt4PLw/gYzaMmhgMhqUpNWTJmsLvA/NWU2ua6m/v
+         l/vNUoso2I+IgBnKC4OoWcuoiD24VpA2aPXTHLqw1kMXgZOvC3Rj9YrbRgQ7jiLXjO
+         7t3PgiTRmjsGOI28XiHAb1OliaRSULIwBeaqdR+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Svyatoslav Ryhel <clamor95@gmail.com>,
-        Andy Shevchenko <Andy.Shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>
-Subject: [PATCH 5.4 121/141] iio: gyro: mpu3050: Fix reported temperature value
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 262/329] iio: proximity: pulsedlight: Fix rumtime PM imbalance on error
 Date:   Mon, 17 May 2021 16:02:53 +0200
-Message-Id: <20210517140246.870447276@linuxfoundation.org>
+Message-Id: <20210517140310.972505395@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit f73c730774d88a14d7b60feee6d0e13570f99499 upstream.
+[ Upstream commit a2fa9242e89f27696515699fe0f0296bf1ac1815 ]
 
-The raw temperature value is a 16-bit signed integer. The sign casting
-is missing in the code, which results in a wrong temperature reported
-by userspace tools, fix it.
+When lidar_write_control() fails, a pairing PM usage counter
+decrement is needed to keep the counter balanced.
 
-Cc: stable@vger.kernel.org
-Fixes: 3904b28efb2c ("iio: gyro: Add driver for the MPU-3050 gyroscope")
-Datasheet: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
-Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
-Tested-by: Svyatoslav Ryhel <clamor95@gmail.com> # Asus TF201
-Reported-by: Svyatoslav Ryhel <clamor95@gmail.com>
-Reviewed-by: Andy Shevchenko <Andy.Shevchenko@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Acked-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-Link: https://lore.kernel.org/r/20210423020959.5023-1-digetx@gmail.com
+Fixes: 4ac4e086fd8c5 ("iio: pulsedlight-lidar-lite: add runtime PM")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210412053204.4889-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/gyro/mpu3050-core.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/iio/proximity/pulsedlight-lidar-lite-v2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -271,7 +271,16 @@ static int mpu3050_read_raw(struct iio_d
- 	case IIO_CHAN_INFO_OFFSET:
- 		switch (chan->type) {
- 		case IIO_TEMP:
--			/* The temperature scaling is (x+23000)/280 Celsius */
-+			/*
-+			 * The temperature scaling is (x+23000)/280 Celsius
-+			 * for the "best fit straight line" temperature range
-+			 * of -30C..85C.  The 23000 includes room temperature
-+			 * offset of +35C, 280 is the precision scale and x is
-+			 * the 16-bit signed integer reported by hardware.
-+			 *
-+			 * Temperature value itself represents temperature of
-+			 * the sensor die.
-+			 */
- 			*val = 23000;
- 			return IIO_VAL_INT;
- 		default:
-@@ -328,7 +337,7 @@ static int mpu3050_read_raw(struct iio_d
- 				goto out_read_raw_unlock;
- 			}
+diff --git a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+index c685f10b5ae4..cc206bfa09c7 100644
+--- a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
++++ b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+@@ -160,6 +160,7 @@ static int lidar_get_measurement(struct lidar_data *data, u16 *reg)
+ 	ret = lidar_write_control(data, LIDAR_REG_CONTROL_ACQUIRE);
+ 	if (ret < 0) {
+ 		dev_err(&client->dev, "cannot send start measurement command");
++		pm_runtime_put_noidle(&client->dev);
+ 		return ret;
+ 	}
  
--			*val = be16_to_cpu(raw_val);
-+			*val = (s16)be16_to_cpu(raw_val);
- 			ret = IIO_VAL_INT;
- 
- 			goto out_read_raw_unlock;
+-- 
+2.30.2
+
 
 
