@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3F438378B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F01383616
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344578AbhEQPpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
+        id S244305AbhEQP2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244095AbhEQP3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:29:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4694861CBC;
-        Mon, 17 May 2021 14:37:29 +0000 (UTC)
+        id S243345AbhEQPNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:13:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B089A61874;
+        Mon, 17 May 2021 14:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262249;
-        bh=hGFvCicMJSd+OXQXSjAVDr5lHiJ4sa10UlQ0LN+CYRk=;
+        s=korg; t=1621261910;
+        bh=8gvvx7b9I5QME9AY0DissWoL6xE0TpxVPERlas/FuJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fLblzrjt/uvoO4nXHeWRlWltcJkx+kdFMu4U85ygofWQhKLgIXqdah1ZduSEruu7k
-         QyeoXMsqurjgOGknlEmcCgDMbTmHCt+TXaxEvQ+ZdVhehpP08jQsh66aYWNKyFNl7E
-         mNXgZ/z/KN2H2ftrQXYDeEoc49XqU2TmTgQS3Gc8=
+        b=VY3qpMi28UqFZCfC4tavK7uRCb3vAtLGGzXsx7OKKhoDFy/yrnltD8w5X01SArpZ1
+         4RGzk0v7x0/hw5K0c7NvIykomxOoEPlek7ErPzw9F26n+VZEL/SVqn3fsuWEM5pFiU
+         24vORZJXO28kp+jvsYX19WkJJH3oASmNbsGDSBvI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Segall <bsegall@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: [PATCH 5.11 249/329] kvm: exit halt polling on need_resched() as well
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 108/141] ACPI: scan: Fix a memory leak in an error handling path
 Date:   Mon, 17 May 2021 16:02:40 +0200
-Message-Id: <20210517140310.537115832@linuxfoundation.org>
+Message-Id: <20210517140246.426509941@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Segall <bsegall@google.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 262de4102c7bb8e59f26a967a8ffe8cce85cc537 upstream.
+[ Upstream commit 0c8bd174f0fc131bc9dfab35cd8784f59045da87 ]
 
-single_task_running() is usually more general than need_resched()
-but CFS_BANDWIDTH throttling will use resched_task() when there
-is just one task to get the task to block. This was causing
-long-need_resched warnings and was likely allowing VMs to
-overrun their quota when halt polling.
+If 'acpi_device_set_name()' fails, we must free
+'acpi_device_bus_id->bus_id' or there is a (potential) memory leak.
 
-Signed-off-by: Ben Segall <bsegall@google.com>
-Signed-off-by: Venkatesh Srinivas <venkateshs@chromium.org>
-Message-Id: <20210429162233.116849-1-venkateshs@chromium.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: eb50aaf960e3 ("ACPI: scan: Use unique number for instance_no")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- virt/kvm/kvm_main.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/acpi/scan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2814,7 +2814,8 @@ void kvm_vcpu_block(struct kvm_vcpu *vcp
- 				goto out;
- 			}
- 			poll_end = cur = ktime_get();
--		} while (single_task_running() && ktime_before(cur, stop));
-+		} while (single_task_running() && !need_resched() &&
-+			 ktime_before(cur, stop));
- 	}
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index dbb5919f23e2..95d119ff76b6 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -706,6 +706,7 @@ int acpi_device_add(struct acpi_device *device,
  
- 	prepare_to_rcuwait(&vcpu->wait);
+ 		result = acpi_device_set_name(device, acpi_device_bus_id);
+ 		if (result) {
++			kfree_const(acpi_device_bus_id->bus_id);
+ 			kfree(acpi_device_bus_id);
+ 			goto err_unlock;
+ 		}
+-- 
+2.30.2
+
 
 
