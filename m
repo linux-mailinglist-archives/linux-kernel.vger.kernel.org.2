@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E11038360B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB21538363C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244451AbhEQP14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:27:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39412 "EHLO mx2.suse.de"
+        id S245703AbhEQPah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:30:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243323AbhEQPNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:13:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621264333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ACzB0DWbQGMuhP7p+vCM4+g4XN+9TxlE9DnI7LNXZBs=;
-        b=vDfEffzs87TIlyJUBoxJiFeoxiofBZyZFCKTYenvgXrKex0QVkTui63PUD/mFZrrvqzWov
-        +AYG2+nff9AsadGKL2MUFXg09LY7mghXZS9EigOW0wWNu9PYsOIXbDPqKOVJ9fab+FOGoK
-        NAJ/O7l2p8W6IrmSmmMzF+HEbCj8zcE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 105D8AF75;
-        Mon, 17 May 2021 15:12:13 +0000 (UTC)
-Subject: Re: [PATCH 4/8] xen/blkfront: don't trust the backend response data
- blindly
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-5-jgross@suse.com>
- <315ad8b9-8a98-8d3e-f66c-ab32af2731a8@suse.com>
- <6095c4b9-a9bb-8a38-fb6c-a5483105b802@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <a19a13ba-a386-2808-ad85-338d47085fa6@suse.com>
-Date:   Mon, 17 May 2021 17:12:12 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S242426AbhEQPPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:15:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4551A61166;
+        Mon, 17 May 2021 14:32:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621261953;
+        bh=92FI9qX6GvN2UV4rq9RLx9wGNwoXzf1yu+G5cg2gVFs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EJ+O9Q5bX4qIxn/TMYlnQWClzGy57H0SS5mGYKwZbGRQDzk0tvS0/Mtn0eRqwAcyH
+         ArW3pmowEYE/hy5+CfzAS7Gaytg4fjcHxc656mQ+ZrHv4iirsWGT3pEDEpN6eBSyLh
+         ESqPuN+zy0KivVqeRVK5/ZXyd1xbhUB2riJPR9lU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 069/289] ethtool: ioctl: Fix out-of-bounds warning in store_link_ksettings_for_user()
+Date:   Mon, 17 May 2021 15:59:54 +0200
+Message-Id: <20210517140307.523006251@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <6095c4b9-a9bb-8a38-fb6c-a5483105b802@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.05.2021 16:23, Juergen Gross wrote:
-> On 17.05.21 16:11, Jan Beulich wrote:
->> On 13.05.2021 12:02, Juergen Gross wrote:
->>> @@ -1574,10 +1580,16 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
->>>   	spin_lock_irqsave(&rinfo->ring_lock, flags);
->>>    again:
->>>   	rp = rinfo->ring.sring->rsp_prod;
->>> +	if (RING_RESPONSE_PROD_OVERFLOW(&rinfo->ring, rp)) {
->>> +		pr_alert("%s: illegal number of responses %u\n",
->>> +			 info->gd->disk_name, rp - rinfo->ring.rsp_cons);
->>> +		goto err;
->>> +	}
->>>   	rmb(); /* Ensure we see queued responses up to 'rp'. */
->>
->> I think you want to insert after the barrier.
-> 
-> Why? The relevant variable which is checked is "rp". The result of the
-> check is in no way depending on the responses themselves. And any change
-> of rsp_cons is protected by ring_lock, so there is no possibility of
-> reading an old value here.
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-But this is a standard double read situation: You might check a value
-and then (via a separate read) use a different one past the barrier.
+[ Upstream commit c1d9e34e11281a8ba1a1c54e4db554232a461488 ]
 
-Jan
+Fix the following out-of-bounds warning:
+
+net/ethtool/ioctl.c:492:2: warning: 'memcpy' offset [49, 84] from the object at 'link_usettings' is out of the bounds of referenced subobject 'base' with type 'struct ethtool_link_settings' at offset 0 [-Warray-bounds]
+
+The problem is that the original code is trying to copy data into a
+some struct members adjacent to each other in a single call to
+memcpy(). This causes a legitimate compiler warning because memcpy()
+overruns the length of &link_usettings.base. Fix this by directly
+using &link_usettings and _from_ as destination and source addresses,
+instead.
+
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/ethtool/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index ec2cd7aab5ad..2917af3f5ac1 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -489,7 +489,7 @@ store_link_ksettings_for_user(void __user *to,
+ {
+ 	struct ethtool_link_usettings link_usettings;
+ 
+-	memcpy(&link_usettings.base, &from->base, sizeof(link_usettings));
++	memcpy(&link_usettings, from, sizeof(link_usettings));
+ 	bitmap_to_arr32(link_usettings.link_modes.supported,
+ 			from->link_modes.supported,
+ 			__ETHTOOL_LINK_MODE_MASK_NBITS);
+-- 
+2.30.2
+
+
+
