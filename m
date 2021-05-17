@@ -2,182 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84113863CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9693A386526
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237218AbhEQUBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236983AbhEQUBn (ORCPT
+        id S237535AbhEQUGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:06:34 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:49328 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236497AbhEQUG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:01:43 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF0AC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:00:26 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso6612236otg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xtjdje62yD9oW3HEgHTuDl9DmMypEy/sRMCMoiLlyK8=;
-        b=OzwnYrKYMaYFJamVY9o+1JtKgZTcpEFZ0w19j8y+zZR+QadYHkx37rbQAFSiq+sImx
-         738pbcMQFtnVAsl7XPerLkJAIXvYQIhewaFsSrnFCJ03BJZ8A0zrkDW819tpu+IpPT78
-         F0zglpq/SMPZM6qmf9X5F5DT0jyavkonPiySA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xtjdje62yD9oW3HEgHTuDl9DmMypEy/sRMCMoiLlyK8=;
-        b=DEuIygB5+EPV02PZ+cFRGFXlPvxFcXiXH3rS+FFXQJdKkXrjU3rEK2fe47zR6+ZEh+
-         cGg9lGICVVMAsBQ6mRTvzUh1otp6VlMYtVM/qYbQn06PrqSPW6Rgt/hlxjRFGpxGbf2i
-         Cq1se7CFPNZOQN5ddQWyElZyky8J97yiZpJvaEug3N/Fb9lUCODvPFFW+BEIWBAuAgUz
-         lpMXrcFQDMl2YnS4EZ2eTPQgoAlJf4+891jjF8D8IDasJKl6sDDsYS0hOWYe8R5EVpwV
-         qrrMn97mobqnv/MXj35ud4O2RluRtS+dkPezhdZRUcQR2lq4OB3paL189P7Rdp9SlrRj
-         rMyw==
-X-Gm-Message-State: AOAM5337DKK8qVYV9+jWXYmj+Fqk/oKTw1FGi5R+ToZVZe1BKYGBTP/i
-        V+7sGhbo6Vr13bloPsVS3y8o5JMnosf1Qp+hxoJtYA==
-X-Google-Smtp-Source: ABdhPJzSRhLB+ZsKjK7Y9NOTBW/MdZUTUaNuuD/r7tN8j0vZd8wXbTlo3vlPKi44cglUPOYryfXV4DRE6LUN0LHgJ38=
-X-Received: by 2002:a9d:4101:: with SMTP id o1mr1056732ote.281.1621281625633;
- Mon, 17 May 2021 13:00:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <YJ42MEgwDZrAEQLl@kroah.com> <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
- <YKIeBdwFb9Ng275X@phenom.ffwll.local> <503d101d-7273-757a-2809-e272db93c45d@suse.de>
- <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com> <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
-In-Reply-To: <3aac3e39-4889-22dc-83dc-72fff63cb3d0@suse.de>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 17 May 2021 22:00:14 +0200
-Message-ID: <CAKMK7uFyTM9NQzhtOv-ABemYThLE2CnA=OYRiJwe7YwgotfLPA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Mon, 17 May 2021 16:06:26 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lijUD-008wn0-6v; Mon, 17 May 2021 14:05:09 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.int.ebiederm.org)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lijNr-0001rb-0e; Mon, 17 May 2021 13:58:35 -0600
+From:   "Eric W. Beiderman" <ebiederm@xmission.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Derek Kiernan <derek.kiernan@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Date:   Mon, 17 May 2021 14:57:44 -0500
+Message-Id: <20210517195748.8880-1-ebiederm@xmission.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <m1a6ot5e2h.fsf_-_@fess.ebiederm.org>
+References: <m1a6ot5e2h.fsf_-_@fess.ebiederm.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-XM-SPF: eid=1lijNr-0001rb-0e;;;mid=<20210517195748.8880-1-ebiederm@xmission.com>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/fN9eCwd6Pf3euOoMd6UjKgwMo0ARlihE=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.9 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,T_TM2_M_HEADER_IN_MSG,
+        T_TooManySym_01,T_XMDrugObfuBody_08,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Marco Elver <elver@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 599 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 10 (1.7%), b_tie_ro: 9 (1.5%), parse: 1.95 (0.3%),
+         extract_message_metadata: 23 (3.8%), get_uri_detail_list: 6 (0.9%),
+        tests_pri_-1000: 15 (2.4%), tests_pri_-950: 1.38 (0.2%),
+        tests_pri_-900: 1.13 (0.2%), tests_pri_-90: 90 (15.1%), check_bayes:
+        89 (14.8%), b_tokenize: 13 (2.1%), b_tok_get_all: 10 (1.7%),
+        b_comp_prob: 2.9 (0.5%), b_tok_touch_all: 60 (10.0%), b_finish: 0.93
+        (0.2%), tests_pri_0: 438 (73.1%), check_dkim_signature: 0.71 (0.1%),
+        check_dkim_adsp: 2.4 (0.4%), poll_dns_idle: 0.65 (0.1%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 11 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH v4 1/5] siginfo: Move si_trapno inside the union inside _si_fault
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 9:49 PM Thomas Zimmermann <tzimmermann@suse.de> wrote:
->
-> Hi
->
-> Am 17.05.21 um 21:23 schrieb Alex Deucher:
-> > On Mon, May 17, 2021 at 3:12 PM Thomas Zimmermann <tzimmermann@suse.de>
-> wrote:
-> >>
-> >> Hi
-> >>
-> >> Am 17.05.21 um 09:40 schrieb Daniel Vetter:
-> >>> On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
-> >>>> On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
-> >>>> <gregkh@linuxfoundation.org> wrote:
-> >>>>> On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:
-> >>>>>> Dear kernel maintainers,
-> >>>>>>
-> >>>>>> This submission is a kernel driver to support Intel(R) Gaussian & Neural
-> >>>>>> Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-processor
-> >>>>>> available on multiple Intel platforms. AI developers and users can
-> offload
-> >>>>>> continuous inference workloads to an Intel(R) GNA device in order to
-> >> free
-> >>>>>> processor resources and save power. Noise reduction and speech recognition
-> >>>>>> are the examples of the workloads Intel(R) GNA deals with while its usage
-> >>>>>> is not limited to the two.
-> >>>>>
-> >>>>> How does this compare with the "nnpi" driver being proposed here:
-> >>>>>           https://lore.kernel.org/r/20210513085725.45528-1-guy.zadicario@intel.com
-> >>>>>
-> >>>>> Please work with those developers to share code and userspace api and
-> >>>>> tools.  Having the community review two totally different apis and
-> >>>>> drivers for the same type of functionality from the same company is
-> >>>>> totally wasteful of our time and energy.
-> >>>>
-> >>>> Agreed, but I think we should go further than this and work towards a
-> >>>> subsystem across companies for machine learning and neural networks
-> >>>> accelerators for both inferencing and training.
-> >>>
-> >>> We have, it's called drivers/gpu. Feel free to rename to drivers/xpu or
-> >>> think G as in General, not Graphisc.
-> >>
-> >> I hope this was a joke.
-> >>
-> >> Just some thoughts:
-> >>
-> >> AFAICT AI first came as an application of GPUs, but has now
-> >> evolved/specialized into something of its own. I can imagine sharing
-> >> some code among the various subsystems, say GEM/TTM internals for memory
-> >> management. Besides that there's probably little that can be shared in
-> >> the userspace interfaces. A GPU is device that puts an image onto the
-> >> screen and an AI accelerator isn't. Treating both as the same, even if
-> >> they share similar chip architectures, seems like a stretch. They might
-> >> evolve in different directions and fit less and less under the same
-> >> umbrella.
-> >
-> > The putting something on the screen is just a tiny part of what GPUs
-> > do these days.  Many GPUs don't even have display hardware anymore.
-> > Even with drawing APIs, it's just some operation that you do with
-> > memory.  The display may be another device entirely.  GPUs also do
-> > video encode and decode, jpeg acceleration, etc.  drivers/gpu seems
-> > like a logical place to me.  Call it drivers/accelerators if you like.
-> > Other than modesetting most of the shared infrastructure in
-> > drivers/gpu is around memory management and synchronization which are
-> > all the hard parts.  Better to try and share that than to reinvent
-> > that in some other subsystem.
->
-> I'm not sure whether we're on the same page or not.
->
-> I look at this from the UAPI perspective: the only interfaces that we
-> really standardize among GPUs is modesetting, dumb buffers, GEM. The
-> sophisticated rendering is done with per-driver interfaces. And
-> modesetting is the thing that AI does not do.
+From: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Yeah, but the peole who know what should be standardized and what
-should not be standardized for accel drivers are here. Because we've
-done both models in the past, and pretty much everything in between.
+It turns out that linux uses si_trapno very sparingly, and as such it
+can be considered extra information for a very narrow selection of
+signals, rather than information that is present with every fault
+reported in siginfo.
 
-Also like Daniel said, we support hw (and know how to drive it) for
-anything from "kernel bashes register values" (gpus worked like that
-20 years ago) to "mostly direct userspace submit (amdkfd and parts of
-nouveau work like this).
+As such move si_trapno inside the union inside of _si_fault.  This
+results in no change in placement, and makes it eaiser
+to extend _si_fault in the future as this reduces the number of
+special cases.  In particular with si_trapno included in the union it
+is no longer a concern that the union must be pointer aligned on most
+architectures because the union follows immediately after si_addr
+which is a pointer.
 
-There isn't any other subsystem with that much knowledge about how to
-stand up the entire accelerator stack and not making it suck too
-badly. That is the real value of dri-devel and the community we have
-here, not the code sharing we occasionally tend to do.
+This change results in a difference in siginfo field placement on
+sparc and alpha for the fields si_addr_lsb, si_lower, si_upper,
+si_pkey, and si_perf.  These architectures do not implement the
+signals that would use si_addr_lsb, si_lower, si_upper, si_pkey, and
+si_perf.  Further these architecture have not yet implemented the
+userspace that would use si_perf.
 
-> Sharing common code among subsystems is not a problem. Many of our
-> more-sophisticated helpers are located in DRM because no other
-> subsystems have the requirements yet. Maybe AI now has and we can move
-> the rsp shareable code to a common location. But AI is still no GPU. To
-> give a bad analogy: GPUs transmit audio these days. Yet we don't treat
-> them as sound cards.
+The point of this change is in fact to correct these placement issues
+before sparc or alpha grow userspace that cares.  This change was
+discussed[1] and the agreement is that this change is currently safe.
 
-We actually do, there are full blown sound drivers for them over in
-sound/ (ok I think they're all in sound/hda for pci gpus or in
-sound/soc actually). There's some glue to tie it together because it
-requires coordination between the gpu and sound side of things, but
-that's it.
+[1]: https://lkml.kernel.org/r/CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com
+Acked-by: Marco Elver <elver@google.com>
+v1: https://lkml.kernel.org/r/m1tunns7yf.fsf_-_@fess.ebiederm.org
+v2: https://lkml.kernel.org/r/20210505141101.11519-5-ebiederm@xmission.com
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/x86/kernel/signal_compat.c    | 3 +++
+ include/linux/compat.h             | 5 ++---
+ include/uapi/asm-generic/siginfo.h | 7 ++-----
+ kernel/signal.c                    | 1 +
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-Also I think it would be extremely silly to remove all the drm_ stuff
-just because it's originated from GPUs, and therefore absolutely
-cannot be used by other accelarators. I'm not seeing the point in
-that, but if someone has convincing technical argument for this we
-could do it. A tree wide s/drm_/xpu_ might make some sense perhaps if
-that makes people more comfortable with the idea of reusing code from
-gpu origins for accelerators in general.
--Daniel
+diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
+index 0e5d0a7e203b..a9fcabd8a5e5 100644
+--- a/arch/x86/kernel/signal_compat.c
++++ b/arch/x86/kernel/signal_compat.c
+@@ -127,6 +127,9 @@ static inline void signal_compat_build_tests(void)
+ 	BUILD_BUG_ON(offsetof(siginfo_t, si_addr) != 0x10);
+ 	BUILD_BUG_ON(offsetof(compat_siginfo_t, si_addr) != 0x0C);
+ 
++	BUILD_BUG_ON(offsetof(siginfo_t, si_trapno) != 0x18);
++	BUILD_BUG_ON(offsetof(compat_siginfo_t, si_trapno) != 0x10);
++
+ 	BUILD_BUG_ON(offsetof(siginfo_t, si_addr_lsb) != 0x18);
+ 	BUILD_BUG_ON(offsetof(compat_siginfo_t, si_addr_lsb) != 0x10);
+ 
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index f0d2dd35d408..6af7bef15e94 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -214,12 +214,11 @@ typedef struct compat_siginfo {
+ 		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGTRAP, SIGEMT */
+ 		struct {
+ 			compat_uptr_t _addr;	/* faulting insn/memory ref. */
+-#ifdef __ARCH_SI_TRAPNO
+-			int _trapno;	/* TRAP # which caused the signal */
+-#endif
+ #define __COMPAT_ADDR_BND_PKEY_PAD  (__alignof__(compat_uptr_t) < sizeof(short) ? \
+ 				     sizeof(short) : __alignof__(compat_uptr_t))
+ 			union {
++				/* used on alpha and sparc */
++				int _trapno;	/* TRAP # which caused the signal */
+ 				/*
+ 				 * used when si_code=BUS_MCEERR_AR or
+ 				 * used when si_code=BUS_MCEERR_AO
+diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+index 03d6f6d2c1fe..e663bf117b46 100644
+--- a/include/uapi/asm-generic/siginfo.h
++++ b/include/uapi/asm-generic/siginfo.h
+@@ -63,9 +63,6 @@ union __sifields {
+ 	/* SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGTRAP, SIGEMT */
+ 	struct {
+ 		void __user *_addr; /* faulting insn/memory ref. */
+-#ifdef __ARCH_SI_TRAPNO
+-		int _trapno;	/* TRAP # which caused the signal */
+-#endif
+ #ifdef __ia64__
+ 		int _imm;		/* immediate value for "break" */
+ 		unsigned int _flags;	/* see ia64 si_flags */
+@@ -75,6 +72,8 @@ union __sifields {
+ #define __ADDR_BND_PKEY_PAD  (__alignof__(void *) < sizeof(short) ? \
+ 			      sizeof(short) : __alignof__(void *))
+ 		union {
++			/* used on alpha and sparc */
++			int _trapno;	/* TRAP # which caused the signal */
+ 			/*
+ 			 * used when si_code=BUS_MCEERR_AR or
+ 			 * used when si_code=BUS_MCEERR_AO
+@@ -150,9 +149,7 @@ typedef struct siginfo {
+ #define si_int		_sifields._rt._sigval.sival_int
+ #define si_ptr		_sifields._rt._sigval.sival_ptr
+ #define si_addr		_sifields._sigfault._addr
+-#ifdef __ARCH_SI_TRAPNO
+ #define si_trapno	_sifields._sigfault._trapno
+-#endif
+ #define si_addr_lsb	_sifields._sigfault._addr_lsb
+ #define si_lower	_sifields._sigfault._addr_bnd._lower
+ #define si_upper	_sifields._sigfault._addr_bnd._upper
+diff --git a/kernel/signal.c b/kernel/signal.c
+index c3017aa8024a..65888aec65a0 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -4607,6 +4607,7 @@ static inline void siginfo_buildtime_checks(void)
+ 
+ 	/* sigfault */
+ 	CHECK_OFFSET(si_addr);
++	CHECK_OFFSET(si_trapno);
+ 	CHECK_OFFSET(si_addr_lsb);
+ 	CHECK_OFFSET(si_lower);
+ 	CHECK_OFFSET(si_upper);
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.30.1
+
