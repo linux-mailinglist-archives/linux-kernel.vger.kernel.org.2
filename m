@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E0F3829C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3A43829CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236409AbhEQK1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        id S236287AbhEQK3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhEQK1a (ORCPT
+        with ESMTP id S236230AbhEQK3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:27:30 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BAAC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:26:14 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id e11so6510138ljn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TABM48q860KIIr5PxtnzEvdl0N8ZAcbff2DSZQYX9FQ=;
-        b=DFOwNqZzH3LgNcrSdw/Uy8RJXi0IHbACsyD2QcUBdAuGL9d+Rl46Gs27xrsbnYwctP
-         PY5UAYk6szw/UjjC+5Km++3YZdlzR29hatmAM5g1n5uEsVTU4F1THp6bJiNu1NbfsGx2
-         evh3lkswyVPbI0feh8liiShu0AeCLPlxOiZxziy6AQ487e/nXzl/CK1/Hh0Ocf6/Vgag
-         dRejebsGWU2W3Ji8rQ4HYrw44vjdolffNxMOQTgML6z4x+sigvg+TePqtEvstpIGoJ7M
-         njEFushs67lFinE8EuLgKo5JGGoB8KxZYJvuyxtO1gXojCDrGVi1srnyteXk2SC0bMO4
-         B1eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TABM48q860KIIr5PxtnzEvdl0N8ZAcbff2DSZQYX9FQ=;
-        b=K18AFiWxN7Vv8ip0DblOgyT/EGYYjCAusQnEMcochP3TZRHarhd1S1Ue26mCwEafjI
-         UzbeG31ZjAzf4DigzBPGUaX0eTpuhs+76UQcYHVQLHbDCFptAXgJtVHAENfoorEwlQWV
-         4oE4YaF/cBk24L7OJyWEDpZwx++z38f1GDvyK+pO2ZWLdkpSN29HGoj4ZEcSRK6BbW1K
-         860iPLg4OlibW+f1TIpjVr56dMjlG68vKzKO84puFGo7U7QsXvpqjoiZLW1hkYauNbhV
-         XAcgKEBtzdaa6y3etzsmU6phRO9lIOIbqFWyhcAjcEd/7PA+utFz3UjU5XleYKMTSCqS
-         EEKg==
-X-Gm-Message-State: AOAM532FSdNTJeNUzKKC5t65BWobJR2yJndweV2o59Q830EngjJ1HRZx
-        yCRl03Jk3cAZn2RrMQckc3hGdDd44RaEZK1VrIFNpQ==
-X-Google-Smtp-Source: ABdhPJxWoQYefeTGAUQ3FV7Srjws4aPms4JUP73DPTY+Y87Ey6NVw+RkHp2kdVWionVILEOUvztOvQ941rAhRMwLGy0=
-X-Received: by 2002:a05:651c:4c6:: with SMTP id e6mr36942164lji.326.1621247172915;
- Mon, 17 May 2021 03:26:12 -0700 (PDT)
+        Mon, 17 May 2021 06:29:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79830C061573;
+        Mon, 17 May 2021 03:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rLb4WLtzCt3pie0yCq3Bk7nNX431oFC9urgUQrI6e5M=; b=T5KqDgEGebvZJeUWDVNQiDGwTa
+        NNoHyW62q49jKgsXYwK78QaPy5xeR4Cg/M8rc170REZY7NOLg+DyyF+lumRmJCniHnJ4EbuB7Nm8x
+        NzVUVDZhY2i47siTBq+19E7YR85JnNgxkw11HHMLdUywbB7O/PgKz4B7zshG75IX/cvXVzylxlN5a
+        7QJmwg+5Q/5ZrxS44koU4mUR8YBwkvoAP4CopaYteTco7rDPpgzY2KYkGcYt3vs5Mp+bN3ianV7Rt
+        3O7mA+H269wN+6wVra9xssfzah82jROCgcmcGkpLwEK2jmqGfG/hmOGg3ps1scoFK37oNlRQHZsJo
+        BKrTpFLw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1liaU0-00Co94-3k; Mon, 17 May 2021 10:28:20 +0000
+Date:   Mon, 17 May 2021 11:28:20 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-ntfs-dev@lists.sourceforge.net, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/13] partitions: msdos: fix one-byte get_unaligned()
+Message-ID: <YKJFRBynJXoFtTyy@infradead.org>
+References: <20210514100106.3404011-1-arnd@kernel.org>
+ <20210514100106.3404011-9-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210511021656.17719-1-ansuelsmth@gmail.com> <YJnq3Y3/I1kdV1Ov@casper.infradead.org>
- <YJnswvYFUjlNS7Fa@Ansuel-xps.localdomain> <CAMj1kXGLihr4gq3iwHy6mLKG4UHWnh5XAgxZDZmnmNPErfJ-bg@mail.gmail.com>
-In-Reply-To: <CAMj1kXGLihr4gq3iwHy6mLKG4UHWnh5XAgxZDZmnmNPErfJ-bg@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 17 May 2021 12:26:02 +0200
-Message-ID: <CACRpkdYM5Rk9qxhkpsWqaGp-uZDoHJ3_r0605vC9SLQw6=BCAQ@mail.gmail.com>
-Subject: Re: [PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514100106.3404011-9-arnd@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 6:26 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+On Fri, May 14, 2021 at 12:00:56PM +0200, Arnd Bergmann wrote:
+>  /* Borrowed from msdos.c */
+> -#define SYS_IND(p)		(get_unaligned(&(p)->sys_ind))
+> +#define SYS_IND(p)		((p)->sys_ind)
 
-> I used to carry a PCIe serial port
-> card to UEFI plugfests because that was the only thing that would stop
-> working if a system configured its I/O resource window incorrectly
+Please just kill this macro entirely.
 
-I've been looking for a thing like that for testing, I was actually
-thinking that it would perhaps be a good idea to add a I/O-resource
-requiring device to QEMU just to be able to test this kind of
-thing for completeness.
+> -#define SYS_IND(p)	get_unaligned(&p->sys_ind)
+> +#define SYS_IND(p)	(p->sys_ind)
 
-Yours,
-Linus Walleij
+Same here.
