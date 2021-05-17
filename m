@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF7B38396D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CC33838FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345457AbhEQQQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345306AbhEQPy6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:54:58 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705C8C026CD6;
-        Mon, 17 May 2021 07:40:50 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f061b008001bc91326b1fbb.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:1b00:8001:bc91:326b:1fbb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BBC131EC0283;
-        Mon, 17 May 2021 16:40:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621262448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hHiDOVzxirtXGCtnHRuuwKdYkuJC05LNwuTeUETutu0=;
-        b=JJ1rKql39gX9kS9AD4praXlW6NJxUt9ALeDSOxmfrRdy/sA3JmjEWsG6tjd+KiH5Vy8a/z
-        SFCUsL9HbCK5p2OTLMx7OjVsJEjk6ZWucCPE3aWzpleaAX9oF9X1QPcfIz2asb47cd+hpw
-        GySEaCiXA9D8PAxyU+Is3JfXpiVMoi0=
-Date:   Mon, 17 May 2021 16:40:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 03/20] x86/sev: Add support for hypervisor
- feature VMGEXIT
-Message-ID: <YKKAbMIRCVKjB+MU@zn.tnic>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-4-brijesh.singh@amd.com>
- <YJpWAY+ayATSn6nN@zn.tnic>
- <bb512f58-be1d-d6ae-41e3-0fc95a01a95d@amd.com>
+        id S1346395AbhEQQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344286AbhEQPoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:44:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54D4861D20;
+        Mon, 17 May 2021 14:43:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621262596;
+        bh=iH1753AkMmzMFnrNJ4C/WylYC6aZOwPygucDv8g2sGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JBcvgm13fZyycqcfNx4ZA3YPtHEX5CGYJS9HGk25YYdkgP2Ae2QL380bZCv7jtS34
+         NfpZKBoEOYQmvrMFjGZi2Z9u4PUumsFdcmvD6pG6g3NLf1LO/wlpXHQOC6pP0nZcMo
+         RsKO++8PYrRsgAo4NhqAaW87o1hlIaBLJsgGTDEwfhkBMXOrM/tQky8SDx1HcM5Elp
+         HCuPr/IIjgA1WfNSvRyiBDnOrP+UfRFufp0ebdhbTUnmMd26bkag8zD4mAjrFrLcWW
+         xklB9vetjh++oKdLV98JIV1eX3cKHJQde7VbK57o2pc3A53IGbt5IaHH0P1bYEq+fm
+         RsogRC/vo9jrQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7AC8D4034C; Mon, 17 May 2021 11:43:13 -0300 (-03)
+Date:   Mon, 17 May 2021 11:43:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
+        leo.yan@linaro.org, al.grant@arm.com, branislav.rankov@arm.com,
+        denik@chromium.org, suzuki.poulose@arm.com,
+        anshuman.khandual@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] perf cs-etm: Handle valid-but-zero timestamps
+Message-ID: <YKKBAeQMAo5CIily@kernel.org>
+References: <20210517131741.3027-1-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bb512f58-be1d-d6ae-41e3-0fc95a01a95d@amd.com>
+In-Reply-To: <20210517131741.3027-1-james.clark@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 01:53:53PM -0500, Brijesh Singh wrote:
-> I am fine with the reduced name, I just hope that "TMR" does not create
-> confusion with "Trusted Memory Region" documented in  SEV-ES firmware
-> specification. Since I am working on both guest and OVMF patches
-> simultaneously so its possible that I just worked on this code after
-> OVMF and used the same mouthful name ;)
+Em Mon, May 17, 2021 at 04:17:38PM +0300, James Clark escreveu:
+> Changes since v2:
+> 
+>  * Fix typo in last commit message
+>  * Add reviewed-by tags from Leo Yan
 
-I'm not surprised :-)
+Thanks, applied.
 
-But sure, call this
+- Arnaldo
 
-GHCB_SNP_RESTRICTED_INJ_TIMER
-
-Still short enough.
-
->   I apologies for those nits.
-
-Oh, it's not a nit - it pays off later when chasing bugs and one is
-trying to swap in the whole situation back into her/his L1. :-)
-
-> Sure, I will send prepatch.
-
-Thx.
+ 
+> This patchset applies on top of "[PATCH v3 0/2] perf cs-etm: Set
+> time on synthesised samples to preserve ordering"
+> 
+> James Clark (3):
+>   perf cs-etm: Move synth_opts initialisation
+>   perf cs-etm: Start reading 'Z' --itrace option
+>   perf cs-etm: Prevent and warn on underflows during timestamp
+>     calculation.
+> 
+>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 45 ++++++++++++++-----
+>  tools/perf/util/cs-etm.c                      | 20 +++++----
+>  2 files changed, 46 insertions(+), 19 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+- Arnaldo
