@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455C6382268
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 02:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602BF38226A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 02:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhEQAzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 20:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
+        id S231480AbhEQA7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 20:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhEQAzi (ORCPT
+        with ESMTP id S229948AbhEQA7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 20:55:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A30C061573;
-        Sun, 16 May 2021 17:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=4LsPAbMJd+IqOKQv3+Gf63mGt6dOG7rzjzIjevXmu6I=; b=GjyCS/ML7yyMOTL6pct57ceADl
-        GsFzQhlU54ewVFxjYO63Ud6vL3KsaaoJJxuVzAFSSfiGKGqEV2QRq+XHP4/d6ysprtBpwdKITslGl
-        hfhvBCWJLc5ekfRMwG4XC9uKyTEfTIx/jm0EzY+sDZgmc+2AV5EU5rmIZgRvkAu3vF9kUc5U/VYnw
-        GhcsHsXN2Gumt+Y+nzTiizvYYh7mAfjMPLk3w6U2NqbeA+dLEHgvRrqRJgeaX279P0XyM+LV2WDtX
-        vq7Zknlh7OgwqwgSOe8YnBMeqbOmRsHvjYRZLjhA34NYXkA2puxNgkAJeyoiK+Ga0oneYoJjKreAs
-        GMO1CcWA==;
-Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liRWV-00DOYA-9o; Mon, 17 May 2021 00:54:19 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@iguana.be>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH] MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
-Date:   Sun, 16 May 2021 17:54:17 -0700
-Message-Id: <20210517005417.18338-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 16 May 2021 20:59:44 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B7FC061573;
+        Sun, 16 May 2021 17:58:28 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id z3so5057118oib.5;
+        Sun, 16 May 2021 17:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N871goaSSdA/dHZRX1hFrtYRKni/828JahIgyz5A2aM=;
+        b=kItJFM9jLVEaNef4/kLAjaaOLnFfG9EqgSOOGzXHTNg2UPXHOUUDBjK7XSrkEgJCK+
+         BVjOBK3a1a4z6KAiLiY8F1xGhYFVphhQmENvi1buPcgbusMMxgANLaO/Ral4XRKVhQcf
+         ieo5m9VpVsllIn2u4Hwy/DLoHxqwISDDov3Rwiey4vghkI9+0/em6tA4D65rPhqRtyAV
+         +NALy3/4wwdlRQzGXbiDAbRo/crn3LDsMJ/8UUSLbfgZMcvbv1QwhTyIrgDVubF0ZEsV
+         fdSUXQZUao00m6rI72Oph26hBG1x9fdQDiuvIlrj3/2zCqyy+qgpeIrz/eedpjuSGY2y
+         EhKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N871goaSSdA/dHZRX1hFrtYRKni/828JahIgyz5A2aM=;
+        b=rbvwYVze/m7n69X8dyugjcbMKeft3kaQeTgIxb5+XzlQaTQWrAa6e1jIR8phPCqyaY
+         5M+6bRjN2QJ2RjizapfchFaPiNS2ejO7VIEu/hW6dhhvPOym4/BG1zisrgTvV743j9Wv
+         DxaeninnL3jHufSf4rV8JFJoRicUe5u4lHhNwe0+tUBemR/dHKhc68fwEFGU73yPsckE
+         +Sk+1Zuq1FTB/oyVmKbq57tnzBJc6mmdbYNyZ3NcWmKMh9eyCrOeaJNeKtJEw0Q3wkOW
+         e0DEuvR/7iP1t/PHjk9jlU66xWVZNIIsMQ4w0FgNk3h7hxnc5VQlEYBspabSPwfaZ064
+         RctQ==
+X-Gm-Message-State: AOAM532+dYM1bFihKrc5qkXNtVuGhgSVAdyp5Vwf4SA4QGN9YiDxBaJ6
+        IgfEvAd0MqRGM1cPQyw5Um0dXaG4pCwCsagp1iq8l7RG
+X-Google-Smtp-Source: ABdhPJxRwDTUXiNGb1hh5dhChiuH/mxrWyl3/XMxs6yLhW9IKZILQ/C9hyAiZp5w27HzWQDUJkFHKBoFgvZq5g1Vl54=
+X-Received: by 2002:a05:6808:206:: with SMTP id l6mr13191170oie.5.1621213108170;
+ Sun, 16 May 2021 17:58:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1620871084-4639-1-git-send-email-wanpengli@tencent.com> <CALzav=eTC3HhHyxndHvS3NyCfPiBL2Wb5NvU=-+UsxSoMfmqXA@mail.gmail.com>
+In-Reply-To: <CALzav=eTC3HhHyxndHvS3NyCfPiBL2Wb5NvU=-+UsxSoMfmqXA@mail.gmail.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Mon, 17 May 2021 08:58:17 +0800
+Message-ID: <CANRm+CxhnS8QovecA_cW-_kz2JK61+YHRrJBmsMS0Qkd+mFffA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] KVM: PPC: Book3S HV: exit halt polling on
+ need_resched() as well
+To:     David Matlack <dmatlack@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rt2880_wdt.c uses (well, attempts to use) rt_sysc_membase. However,
-when this watchdog driver is built as a loadable module, there is a
-build error since the rt_sysc_membase symbol is not exported.
-Export it to quell the build error.
+On Sat, 15 May 2021 at 05:21, David Matlack <dmatlack@google.com> wrote:
+>
+> On Wed, May 12, 2021 at 6:58 PM Wanpeng Li <kernellwp@gmail.com> wrote:
+> >
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+> > as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+> > one task to get the task to block. It was likely allowing VMs to overrun their
+> > quota when halt polling. Due to PPC implements an arch specific halt polling
+> > logic, we should add the need_resched() checking there as well.
+> >
+> > Cc: Ben Segall <bsegall@google.com>
+> > Cc: Venkatesh Srinivas <venkateshs@chromium.org>
+> > Cc: Jim Mattson <jmattson@google.com>
+> > Cc: David Matlack <dmatlack@google.com>
+> > Cc: Paul Mackerras <paulus@ozlabs.org>
+> > Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> > ---
+> > v1 -> v2:
+> >  * update patch description
+> >
+> >  arch/powerpc/kvm/book3s_hv.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> > index 28a80d2..6199397 100644
+> > --- a/arch/powerpc/kvm/book3s_hv.c
+> > +++ b/arch/powerpc/kvm/book3s_hv.c
+> > @@ -3936,7 +3936,8 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+> >                                 break;
+> >                         }
+> >                         cur = ktime_get();
+> > -               } while (single_task_running() && ktime_before(cur, stop));
+> > +               } while (single_task_running() && !need_resched() &&
+> > +                        ktime_before(cur, stop));
+>
+> Consider moving this condition to a helper function that can be shared
+> between book3s and the generic halt-polling loop.
 
-ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
+Will do in the next version, thanks for review. :)
 
-Fixes: 473cf939ff34 ("watchdog: add ralink watchdog driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Wim Van Sebroeck <wim@iguana.be>
-Cc: John Crispin <john@phrozen.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-watchdog@vger.kernel.org
----
-or make the Kconfig symbol RALINK_WDT bool instead of tristate?
-
- arch/mips/ralink/of.c |    2 ++
- 1 file changed, 2 insertions(+)
-
---- linux-next-20210514.orig/arch/mips/ralink/of.c
-+++ linux-next-20210514/arch/mips/ralink/of.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/io.h>
- #include <linux/clk.h>
-+#include <linux/export.h>
- #include <linux/init.h>
- #include <linux/sizes.h>
- #include <linux/of_fdt.h>
-@@ -25,6 +26,7 @@
- 
- __iomem void *rt_sysc_membase;
- __iomem void *rt_memc_membase;
-+EXPORT_SYMBOL_GPL(rt_sysc_membase);
- 
- __iomem void *plat_of_remap_node(const char *node)
- {
+    Wanpeng
