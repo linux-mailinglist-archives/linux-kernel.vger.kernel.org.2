@@ -2,111 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30321382D9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FEB382DA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237423AbhEQNlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:41:07 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40636 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235562AbhEQNlG (ORCPT
+        id S237438AbhEQNl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237414AbhEQNl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:41:06 -0400
-Received: from mail-qv1-f71.google.com ([209.85.219.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lidTI-0002WE-FB
-        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 13:39:48 +0000
-Received: by mail-qv1-f71.google.com with SMTP id q15-20020a0cf5cf0000b02901ecb7d57bccso4714393qvm.17
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:39:48 -0700 (PDT)
+        Mon, 17 May 2021 09:41:56 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B61C061573;
+        Mon, 17 May 2021 06:40:39 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j10so8828344lfb.12;
+        Mon, 17 May 2021 06:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=uwmsFmAlOo76er6Ji5UTRtBzo940BiJI4cuJFCDeXfU=;
+        b=UbVcU25g+r45EQTwnm5XC1IOOnRNwgWrtDyxScOR/YTVoFKqzGlP4B1BOwrph9s3j0
+         wCamxC//WsFQ6rS/eOHdKdkoehjoCvPCGuhzp7YR311zH5Jpe+QUZhmHsZ+sI0eyKz3E
+         39Gc+YlVZCGtGnfkUbwP4EzVSjxny52IRi/pjVXPLsAdcl5R1zD2aIZfOYHRllPGVG1x
+         8sCO9BTybuIFShckdHjyLXzCGDs/jfsm7zMUGeEBhAZghwrbI4dWlNmbc/4XbM2zz5qC
+         8Cqd6Bde0S1c3aP9Jn01B1i4bfoUPM/jTrBo95gmh9E2hOuQwllvwrZ/H5L8POG1PAo4
+         zp8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k0GyDjKGOaiBFyj0VO0VDbfQWmuxm8DN2JEDjCxcBww=;
-        b=CmpluaoJzq2OWqQOJ/pDW1B8AXcqwlP9xHyzIwmZZ85Cq3an53qvjbvZeJBao+SuP/
-         QHy/KoK6AgiUZv1d9VbZR4cPIIKyYKOKww/1UEdNciJqLSgNTdVwDNsfYauwTjrn/naw
-         0BMMBhfjHP4DG+3qiqSSyjMH5TGhcNllBGrXjlNz46qOKwhcqhUN8hrHY8PczBFdGZsj
-         1l5EZcVmeiteGWHl7GNcmqcZLlkiUx+kEGptnj4aZ8Pxnf2qzDBuyzn23uuvAoL/LL3S
-         AMeZyzhradTpJRWbE+mxRD+7CspGOBdl9GZ5cxeTNLTQqpXjfi0jKWr7zjvn0HnHtnFH
-         SjyQ==
-X-Gm-Message-State: AOAM532io42lyMZzQCzqmZAeh/8CQLWqhk8v4I2HwhGGMb9U/KTh4Y5f
-        kv75RXj8XsTOFlXAuIEqJoL3zjAazmm2OxL4bunkXmHozSI+iMfPz7HO8a9FK+RINHZPKEJaGJx
-        Rk9GJzlfA8MZx8jrMPgqHfWrjMDEAZi9yzjAD478CVQ==
-X-Received: by 2002:a05:622a:344:: with SMTP id r4mr36301248qtw.386.1621258787585;
-        Mon, 17 May 2021 06:39:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNpgwiRCMC1E5bCQ1cvtZJWI8VjLot+FfJ7j2qWWMbKItZy9C4icnOrxmzTz8ALMWXJF4piw==
-X-Received: by 2002:a05:622a:344:: with SMTP id r4mr36301230qtw.386.1621258787417;
-        Mon, 17 May 2021 06:39:47 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.5])
-        by smtp.gmail.com with ESMTPSA id t17sm1417011qto.92.2021.05.17.06.39.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 06:39:46 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] memory: tegra124-emc: Fix compilation warnings on
- 64bit platforms
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210516161214.4693-1-digetx@gmail.com>
- <20210516161214.4693-4-digetx@gmail.com>
- <936cfc7d-737e-a582-ea60-ad2ba5b4ca72@canonical.com>
- <1d80ee0f-de4c-24d0-154f-20841874bf20@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <4ea1bf29-c353-6fcf-5248-bfee67d5c361@canonical.com>
-Date:   Mon, 17 May 2021 09:39:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uwmsFmAlOo76er6Ji5UTRtBzo940BiJI4cuJFCDeXfU=;
+        b=oJlIqDGmSQokT+9C63HVy4LW/Hvrj1I3B3cbj7EkNfkLcqoziOwva180kqzujUn1uh
+         4Bhmsc0f+EbLr08L5f50+nVXa+DS7fcCJsFhtQ2FVGf/FT8fBPpyJpZI08WwzRaM7eKH
+         HTb6AHry63atpce8jGaotLKKovcXwqCyfhTEZ0dCgb2wL3W5LWnphm8JlPwTvDBJMb4P
+         VPJaYuLGCMnU733HrqQTEbSlGF56QEZd6WIjhsE40ZHIO3B48Yf0K0vzk6aaFn0Wb4WT
+         /4GWbQw8wo39318dtC169foSlBFlmv3OVamKuQIMznK+WO4B1nPcdC3GjmUgfJbMusaQ
+         pfqQ==
+X-Gm-Message-State: AOAM530rrPcZI90hYhiPEDh5XjE7+u7R1V1GmgtQ9CVxfCJRpr0QgRly
+        SItu5laLoLt5C9Cf7OBtkA8=
+X-Google-Smtp-Source: ABdhPJzTPGDuXem4nPuheC3gCCJ7o7R2hUL5WcXmbbZB/BMgNw7/iq3HGgGkVdvgElCr2q/6mB1vGg==
+X-Received: by 2002:a19:7012:: with SMTP id h18mr2838021lfc.432.1621258837508;
+        Mon, 17 May 2021 06:40:37 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.227])
+        by smtp.gmail.com with ESMTPSA id r1sm2899113ljj.21.2021.05.17.06.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 06:40:37 -0700 (PDT)
+Date:   Mon, 17 May 2021 16:40:34 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ext4: fix memory leak in ext4_fill_super
+Message-ID: <20210517164034.1e7d712b@gmail.com>
+In-Reply-To: <20210430185046.15742-1-paskripkin@gmail.com>
+References: <YIt9IFY4Xsf5K+eZ@mit.edu>
+        <20210430185046.15742-1-paskripkin@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1d80ee0f-de4c-24d0-154f-20841874bf20@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/05/2021 09:35, Dmitry Osipenko wrote:
-> 17.05.2021 14:28, Krzysztof Kozlowski пишет:
->> On 16/05/2021 12:12, Dmitry Osipenko wrote:
->>> Fix compilation warning on 64bit platforms caused by implicit promotion
->>> of 32bit signed integer to a 64bit unsigned value which happens after
->>> enabling compile-testing of the driver.
->>>
->>> Suggested-by: Nathan Chancellor <nathan@kernel.org>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
->>>  drivers/memory/tegra/tegra124-emc.c | 4 ++--
->>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
->>> index 5699d909abc2..c9eb948cf4df 100644
->>> --- a/drivers/memory/tegra/tegra124-emc.c
->>> +++ b/drivers/memory/tegra/tegra124-emc.c
->>> @@ -272,8 +272,8 @@
->>>  #define EMC_PUTERM_ADJ				0x574
->>>  
->>>  #define DRAM_DEV_SEL_ALL			0
->>> -#define DRAM_DEV_SEL_0				(2 << 30)
->>> -#define DRAM_DEV_SEL_1				(1 << 30)
->>> +#define DRAM_DEV_SEL_0				(2u << 30)
->>> +#define DRAM_DEV_SEL_1				(1u << 30)
->>
->> Why not using BIT()? This would make even this 2<<30 less awkard...
+Hi!
+
+Is all ok with this one, or I should send v3? :)
+
+With regards,
+Pavel Skripkin
+
+On Fri, 30 Apr 2021 21:50:46 +0300
+Pavel Skripkin <paskripkin@gmail.com> wrote:
+> static int kthread(void *_create) will return -ENOMEM
+> or -EINTR in case of internal failure or
+> kthread_stop() call happens before threadfn call.
 > 
-> The bitfield 31:30 is a enum, 3 is a wrong value. Formally it's
-> incorrect to use the BIT() macro here.
+> To prevent fancy error checking and make code
+> more straightforward we moved all cleanup code out
+> of kmmpd threadfn.
+> 
+> Also, dropped struct mmpd_data at all. Now struct super_block
+> is a threadfn data and struct buffer_head embedded into
+> struct ext4_sb_info.
+> 
+> Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  fs/ext4/ext4.h  |  4 ++++
+>  fs/ext4/mmp.c   | 28 +++++++++++++---------------
+>  fs/ext4/super.c | 10 ++++------
+>  3 files changed, 21 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 826a56e3bbd2..62210cbea84b 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1490,6 +1490,7 @@ struct ext4_sb_info {
+>  	struct kobject s_kobj;
+>  	struct completion s_kobj_unregister;
+>  	struct super_block *s_sb;
+> +	struct buffer_head *s_mmp_bh;
+>  
+>  	/* Journaling */
+>  	struct journal_s *s_journal;
+> @@ -3663,6 +3664,9 @@ extern struct ext4_io_end_vec
+> *ext4_last_io_end_vec(ext4_io_end_t *io_end); /* mmp.c */
+>  extern int ext4_multi_mount_protect(struct super_block *,
+> ext4_fsblk_t); 
+> +/* mmp.c */
+> +extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
+> +
+>  /* verity.c */
+>  extern const struct fsverity_operations ext4_verityops;
+>  
+> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> index 795c3ff2907c..623bad399612 100644
+> --- a/fs/ext4/mmp.c
+> +++ b/fs/ext4/mmp.c
+> @@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *sb,
+> struct mmp_struct *mmp, */
+>  static int kmmpd(void *data)
+>  {
+> -	struct super_block *sb = ((struct mmpd_data *) data)->sb;
+> -	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
+> +	struct super_block *sb = (struct super_block *) data;
+>  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+> +	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
+>  	struct mmp_struct *mmp;
+>  	ext4_fsblk_t mmp_block;
+>  	u32 seq = 0;
+> @@ -245,12 +245,18 @@ static int kmmpd(void *data)
+>  	retval = write_mmp_block(sb, bh);
+>  
+>  exit_thread:
+> -	EXT4_SB(sb)->s_mmp_tsk = NULL;
+> -	kfree(data);
+> -	brelse(bh);
+>  	return retval;
+>  }
+>  
+> +void ext4_stop_mmpd(struct ext4_sb_info *sbi)
+> +{
+> +	if (sbi->s_mmp_tsk) {
+> +		kthread_stop(sbi->s_mmp_tsk);
+> +		brelse(sbi->s_mmp_bh);
+> +		sbi->s_mmp_tsk = NULL;
+> +	}
+> +}
+> +
+>  /*
+>   * Get a random new sequence number but make sure it is not greater
+> than
+>   * EXT4_MMP_SEQ_MAX.
+> @@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct super_block
+> *sb, struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+>  	struct buffer_head *bh = NULL;
+>  	struct mmp_struct *mmp = NULL;
+> -	struct mmpd_data *mmpd_data;
+>  	u32 seq;
+>  	unsigned int mmp_check_interval =
+> le16_to_cpu(es->s_mmp_update_interval); unsigned int wait_time = 0;
+> @@ -364,24 +369,17 @@ int ext4_multi_mount_protect(struct super_block
+> *sb, goto failed;
+>  	}
+>  
+> -	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
+> -	if (!mmpd_data) {
+> -		ext4_warning(sb, "not enough memory for mmpd_data");
+> -		goto failed;
+> -	}
+> -	mmpd_data->sb = sb;
+> -	mmpd_data->bh = bh;
+> +	EXT4_SB(sb)->s_mmp_bh = bh;
+>  
+>  	/*
+>  	 * Start a kernel thread to update the MMP block
+> periodically. */
+> -	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data,
+> "kmmpd-%.*s",
+> +	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb, "kmmpd-%.*s",
+>  					     (int)sizeof(mmp->mmp_bdevname),
+>  					     bdevname(bh->b_bdev,
+>  						      mmp->mmp_bdevname));
+>  	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
+>  		EXT4_SB(sb)->s_mmp_tsk = NULL;
+> -		kfree(mmpd_data);
+>  		ext4_warning(sb, "Unable to create kmmpd thread for
+> %s.", sb->s_id);
+>  		goto failed;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index b9693680463a..539f89c5431f 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1244,8 +1244,8 @@ static void ext4_put_super(struct super_block
+> *sb) ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
+>  	sbi->s_ea_block_cache = NULL;
+>  
+> -	if (sbi->s_mmp_tsk)
+> -		kthread_stop(sbi->s_mmp_tsk);
+> +	ext4_stop_mmpd(sbi);
+> +
+>  	brelse(sbi->s_sbh);
+>  	sb->s_fs_info = NULL;
+>  	/*
+> @@ -5156,8 +5156,7 @@ static int ext4_fill_super(struct super_block
+> *sb, void *data, int silent) failed_mount3:
+>  	flush_work(&sbi->s_error_work);
+>  	del_timer_sync(&sbi->s_err_report);
+> -	if (sbi->s_mmp_tsk)
+> -		kthread_stop(sbi->s_mmp_tsk);
+> +	ext4_stop_mmpd(sbi);
+>  failed_mount2:
+>  	rcu_read_lock();
+>  	group_desc = rcu_dereference(sbi->s_group_desc);
+> @@ -5952,8 +5951,7 @@ static int ext4_remount(struct super_block *sb,
+> int *flags, char *data) */
+>  				ext4_mark_recovery_complete(sb, es);
+>  			}
+> -			if (sbi->s_mmp_tsk)
+> -				kthread_stop(sbi->s_mmp_tsk);
+> +			ext4_stop_mmpd(sbi);
+>  		} else {
+>  			/* Make sure we can mount this feature set
+> readwrite */ if (ext4_has_feature_readonly(sb) ||
 
-Why "3"? BIT(31) is the same as 2<<30. It's common to use BIT for
-register fields which do not accept all possible values. Now you
-basically reimplement BIT() which is error-prone.
-
-
-Best regards,
-Krzysztof
