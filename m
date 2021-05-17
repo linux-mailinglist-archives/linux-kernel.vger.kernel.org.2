@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B5138337B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B1B38310F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241759AbhEQO6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:58:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
+        id S240080AbhEQOeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:34:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240728AbhEQOtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:49:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F5B46197F;
-        Mon, 17 May 2021 14:22:42 +0000 (UTC)
+        id S239719AbhEQO2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5B5E6162D;
+        Mon, 17 May 2021 14:14:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261362;
-        bh=enR9fvpoMci803EPJsInd9Zej7fSXQVmWoPu6wDqnOw=;
+        s=korg; t=1621260878;
+        bh=BMgVRc07yMdSNpu4EtODLQluJHjs8aTrZ8NbIbKt+d4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjBqzcU8oubktlR1ZSGwDdSKM+cDnqSQor2WKeiOUsjnj7DkqfDA2ngEb+/XJWnuv
-         wtKYjr9eFpGztBDt6pIoaqgzufb7rJTpQ/871yZoDoN8kdG0dqoXgUIOI/lm9wkD89
-         9ytqQFKv/dR77rgVSb/tW7AgkkM9LkSSrEvohfT8=
+        b=G+YRt5pDPHXMRRSMUf69hBiXuOi3B4YtnjnVnjpvZjBYiAknzpiVGVS7nKu9XkpiY
+         N1a+xJwLPUB12mwPzTNydMAy3XZoW3wPM5ZDbAqizEKZB3epYlbvAUA4hXbe7vHWqA
+         aM9uYF0tTK7wXu5ZAHu2QfMjD2+mxwf14CSBIqlo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
+        stable@vger.kernel.org, Mikhail Durnev <mikhail_durnev@mentor.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 012/289] fs: dlm: fix debugfs dump
+Subject: [PATCH 5.11 026/329] ASoC: rsnd: core: Check convert rate in rsnd_hw_params
 Date:   Mon, 17 May 2021 15:58:57 +0200
-Message-Id: <20210517140305.592473256@linuxfoundation.org>
+Message-Id: <20210517140302.931600567@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +40,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Mikhail Durnev <mikhail_durnev@mentor.com>
 
-[ Upstream commit 92c48950b43f4a767388cf87709d8687151a641f ]
+[ Upstream commit 19c6a63ced5e07e40f3a5255cb1f0fe0d3be7b14 ]
 
-This patch fixes the following message which randomly pops up during
-glocktop call:
+snd_pcm_hw_params_set_rate_near can return incorrect sample rate in
+some cases, e.g. when the backend output rate is set to some value higher
+than 48000 Hz and the input rate is 8000 Hz. So passing the value returned
+by snd_pcm_hw_params_set_rate_near to snd_pcm_hw_params will result in
+"FSO/FSI ratio error" and playing no audio at all while the userland
+is not properly notified about the issue.
 
-seq_file: buggy .next function table_seq_next did not update position index
+If SRC is unable to convert the requested sample rate to the sample rate
+the backend is using, then the requested sample rate should be adjusted in
+rsnd_hw_params. The userland will be notified about that change in the
+returned hw_params structure.
 
-The issue is that seq_read_iter() in fs/seq_file.c also needs an
-increment of the index in an non next record case as well which this
-patch fixes otherwise seq_read_iter() will print out the above message.
-
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
+Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
+Link: https://lore.kernel.org/r/1615870055-13954-1-git-send-email-mikhail_durnev@mentor.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/debug_fs.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sh/rcar/core.c | 69 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 68 insertions(+), 1 deletion(-)
 
-diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
-index d6bbccb0ed15..d5bd990bcab8 100644
---- a/fs/dlm/debug_fs.c
-+++ b/fs/dlm/debug_fs.c
-@@ -542,6 +542,7 @@ static void *table_seq_next(struct seq_file *seq, void *iter_ptr, loff_t *pos)
- 
- 		if (bucket >= ls->ls_rsbtbl_size) {
- 			kfree(ri);
-+			++*pos;
- 			return NULL;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 6e670b3e92a0..289928d4c0c9 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1428,8 +1428,75 @@ static int rsnd_hw_params(struct snd_soc_component *component,
  		}
- 		tree = toss ? &ls->ls_rsbtbl[bucket].toss : &ls->ls_rsbtbl[bucket].keep;
+ 		if (io->converted_chan)
+ 			dev_dbg(dev, "convert channels = %d\n", io->converted_chan);
+-		if (io->converted_rate)
++		if (io->converted_rate) {
++			/*
++			 * SRC supports convert rates from params_rate(hw_params)/k_down
++			 * to params_rate(hw_params)*k_up, where k_up is always 6, and
++			 * k_down depends on number of channels and SRC unit.
++			 * So all SRC units can upsample audio up to 6 times regardless
++			 * its number of channels. And all SRC units can downsample
++			 * 2 channel audio up to 6 times too.
++			 */
++			int k_up = 6;
++			int k_down = 6;
++			int channel;
++			struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
++
+ 			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
++
++			channel = io->converted_chan ? io->converted_chan :
++				  params_channels(hw_params);
++
++			switch (rsnd_mod_id(src_mod)) {
++			/*
++			 * SRC0 can downsample 4, 6 and 8 channel audio up to 4 times.
++			 * SRC1, SRC3 and SRC4 can downsample 4 channel audio
++			 * up to 4 times.
++			 * SRC1, SRC3 and SRC4 can downsample 6 and 8 channel audio
++			 * no more than twice.
++			 */
++			case 1:
++			case 3:
++			case 4:
++				if (channel > 4) {
++					k_down = 2;
++					break;
++				}
++				fallthrough;
++			case 0:
++				if (channel > 2)
++					k_down = 4;
++				break;
++
++			/* Other SRC units do not support more than 2 channels */
++			default:
++				if (channel > 2)
++					return -EINVAL;
++			}
++
++			if (params_rate(hw_params) > io->converted_rate * k_down) {
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
++					io->converted_rate * k_down;
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
++					io->converted_rate * k_down;
++				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
++			} else if (params_rate(hw_params) * k_up < io->converted_rate) {
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
++					(io->converted_rate + k_up - 1) / k_up;
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
++					(io->converted_rate + k_up - 1) / k_up;
++				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
++			}
++
++			/*
++			 * TBD: Max SRC input and output rates also depend on number
++			 * of channels and SRC unit:
++			 * SRC1, SRC3 and SRC4 do not support more than 128kHz
++			 * for 6 channel and 96kHz for 8 channel audio.
++			 * Perhaps this function should return EINVAL if the input or
++			 * the output rate exceeds the limitation.
++			 */
++		}
+ 	}
+ 
+ 	return rsnd_dai_call(hw_params, io, substream, hw_params);
 -- 
 2.30.2
 
