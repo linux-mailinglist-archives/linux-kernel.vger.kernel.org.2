@@ -2,161 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E45382D34
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B0F382D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237353AbhEQNTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:19:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:51208 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237341AbhEQNTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:19:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D24A1424;
-        Mon, 17 May 2021 06:18:06 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.3.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7D96B3F73B;
-        Mon, 17 May 2021 06:18:03 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, leo.yan@linaro.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] perf cs-etm: Prevent and warn on underflows during timestamp calculation.
-Date:   Mon, 17 May 2021 16:17:41 +0300
-Message-Id: <20210517131741.3027-4-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210517131741.3027-1-james.clark@arm.com>
-References: <20210517131741.3027-1-james.clark@arm.com>
+        id S237229AbhEQNTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:19:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24779 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235337AbhEQNTO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 09:19:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621257477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=302eZ4qDI0GRNiemHwtsv0o7x2BmzRwhlMO3j9ZHKfo=;
+        b=C4w/Bq9MyNLEIfg8Uezve8PBAdZzfKTa9M4YrJuF0sDc57oWUTYzGR2LQKLmazGGEsDFu2
+        7Szzji5aqCmGcKwV6WZ7HDrR5EGuSFU2fT7Ac8UTWK7KL0abcHNcoCJd4gG/oCXASsaLfj
+        nz2rw3GHBE5shHn1yI9bfjKJC4eNXHo=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-leKVwvw6PnSqq8dX5ttXvA-1; Mon, 17 May 2021 09:17:56 -0400
+X-MC-Unique: leKVwvw6PnSqq8dX5ttXvA-1
+Received: by mail-qt1-f198.google.com with SMTP id e13-20020ac84e4d0000b02901e0f0a55411so5196047qtw.9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:17:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=302eZ4qDI0GRNiemHwtsv0o7x2BmzRwhlMO3j9ZHKfo=;
+        b=fP9/TZJrs5T34kWxyHpisxZfLMZ8nrgpLbcDrgQVfC7iK3dHM4pfk4DPSMm/x2rjE0
+         LMoDJU3NHlGlKhXIHCxXaMuXCebTnaROaU77tigEXbB+t0ZOAxm0iPLUNcJ/xpVzC6+Q
+         O6QJR7MlYFyTB0NigbgL7aJkIo8yvF+xsOTp37ZYZ0yTZDNgRDB/awJXDalaRRmjsfqW
+         atzA9xHDCP+GoD3RBPh4r5VKQUxkXLnWytFz/UmKJC/cieCVn8ftqBKsSExlODDEBUgl
+         t4ke52ncuTAk4GZhyczJ9hiQE9bi/aYwQp+/SKrP9ki34UPjd3SH0TTilGGgKCrrF2cV
+         skog==
+X-Gm-Message-State: AOAM531qT5Xe14RfBBnH6TbcQC0VvmSwC/xQHD/tnxJdqIRwXEXE248D
+        R3EzEdfg7hqdb4jRMV6CtHa/uVuQlMgcPN0ci6MnjRqy6nPw71OA/ZSW+AFxobRt259wYlQXw6/
+        iDjuE7jg388eiTQghnIqg8PmLlPoAWqW6KaT+UA+bBOoSzPUWQaH9c0pJrgrd1k4vetLQu6w=
+X-Received: by 2002:ac8:7f41:: with SMTP id g1mr57865329qtk.72.1621257470696;
+        Mon, 17 May 2021 06:17:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1GXnceHJW1kNq377snFtM5QG53XeoeEVafMT93GToCW8jsZKQxNt7PKa6yc9SZ9VaeNkTPg==
+X-Received: by 2002:ac8:7f41:: with SMTP id g1mr57865242qtk.72.1621257469608;
+        Mon, 17 May 2021 06:17:49 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s5sm10465630qkg.88.2021.05.17.06.17.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 06:17:49 -0700 (PDT)
+Subject: Re: [PATCH] percpu: initialize best_upa variable
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     tj@kernel.org, cl@linux.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210515180817.1751084-1-trix@redhat.com>
+ <YKHPV4QAXmaWb6jJ@google.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <dd1dabe0-73a5-8a39-ba58-bb58a1453d90@redhat.com>
+Date:   Mon, 17 May 2021 06:17:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YKHPV4QAXmaWb6jJ@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a zero timestamp is encountered, warn once. This is to make
-hardware or configuration issues visible. Also suggest that the issue
-can be worked around with the --itrace=Z option.
 
-When an underflow with a non-zero timestamp occurs, warn every time.
-This is an unexpected scenario, and with increasing timestamps, it's
-unlikely that it would occur more than once, therefore it should be
-ok to warn every time.
+On 5/16/21 7:05 PM, Dennis Zhou wrote:
+> Hello,
+>
+> On Sat, May 15, 2021 at 11:08:17AM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Static analysis reports this problem
+>> percpu.c:2945:6: warning: Assigned value is garbage or undefined
+>>          upa = best_upa;
+>>              ^ ~~~~~~~~
+>> best_upa may not be set, so initialize it.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   mm/percpu.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/mm/percpu.c b/mm/percpu.c
+>> index a257c3efdf18b..6578b706fae81 100644
+>> --- a/mm/percpu.c
+>> +++ b/mm/percpu.c
+>> @@ -2916,6 +2916,7 @@ static struct pcpu_alloc_info * __init __flatten pcpu_build_alloc_info(
+>>   	 * Related to atom_size, which could be much larger than the unit_size.
+>>   	 */
+>>   	last_allocs = INT_MAX;
+>> +	best_upa = max_upa;
+>>   	for (upa = max_upa; upa; upa--) {
+>>   		int allocs = 0, wasted = 0;
+>>   
+>> -- 
+>> 2.26.3
+>>
+> I think the proper fix would be:
+>
+> best_upa = 0;
 
-Only try to calculate the timestamp by subtracting the instruction
-count if neither of the above cases are true. This makes attempting
-to decode files with zero timestamps in non-timeless mode
-more consistent. Currently it can half work if the timestamp wraps
-around and becomes non-zero, although the behavior is undefined and
-unpredictable.
+I was looking for initializing with something that would work.
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-Signed-off-by: James Clark <james.clark@arm.com>
----
- .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 45 ++++++++++++++-----
- 1 file changed, 34 insertions(+), 11 deletions(-)
+> for (...) { }
+> BUG_ON(!best_upa);
+WARN_ON instead?
+> upa = best_upa;
+>
+> If you're fine with this I'll make the changes and apply it to
+> for-5.13-fixes.
+>
+> Can you also tell me what static analysis tool produced this? I'm just a
+> little curious because this code hasn't changed in several years so I'd
+> have expected some static analyzer to have caught this by now.
 
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-index b01d363b9301..3e1a05bc82cc 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-@@ -6,6 +6,7 @@
-  * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
-  */
- 
-+#include <asm/bug.h>
- #include <linux/coresight-pmu.h>
- #include <linux/err.h>
- #include <linux/list.h>
-@@ -17,6 +18,7 @@
- 
- #include "cs-etm.h"
- #include "cs-etm-decoder.h"
-+#include "debug.h"
- #include "intlist.h"
- 
- /* use raw logging */
-@@ -294,7 +296,8 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
- static ocsd_datapath_resp_t
- cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
- 				  const ocsd_generic_trace_elem *elem,
--				  const uint8_t trace_chan_id)
-+				  const uint8_t trace_chan_id,
-+				  const ocsd_trc_index_t indx)
- {
- 	struct cs_etm_packet_queue *packet_queue;
- 
-@@ -313,14 +316,33 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
- 		return OCSD_RESP_CONT;
- 	}
- 
--	/*
--	 * This is the first timestamp we've seen since the beginning of traces
--	 * or a discontinuity.  Since timestamps packets are generated *after*
--	 * range packets have been generated, we need to estimate the time at
--	 * which instructions started by subtracting the number of instructions
--	 * executed to the timestamp.
--	 */
--	packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-+
-+	if (!elem->timestamp) {
-+		/*
-+		 * Zero timestamps can be seen due to misconfiguration or hardware bugs.
-+		 * Warn once, and don't try to subtract instr_count as it would result in an
-+		 * underflow.
-+		 */
-+		packet_queue->cs_timestamp = 0;
-+		WARN_ONCE(true, "Zero Coresight timestamp found at Idx:%" OCSD_TRC_IDX_STR
-+				". Decoding may be improved with --itrace=Z...\n", indx);
-+	} else if (packet_queue->instr_count > elem->timestamp) {
-+		/*
-+		 * Sanity check that the elem->timestamp - packet_queue->instr_count would not
-+		 * result in an underflow. Warn and clamp at 0 if it would.
-+		 */
-+		packet_queue->cs_timestamp = 0;
-+		pr_err("Timestamp calculation underflow at Idx:%" OCSD_TRC_IDX_STR "\n", indx);
-+	} else {
-+		/*
-+		 * This is the first timestamp we've seen since the beginning of traces
-+		 * or a discontinuity.  Since timestamps packets are generated *after*
-+		 * range packets have been generated, we need to estimate the time at
-+		 * which instructions started by subtracting the number of instructions
-+		 * executed to the timestamp.
-+		 */
-+		packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-+	}
- 	packet_queue->next_cs_timestamp = elem->timestamp;
- 	packet_queue->instr_count = 0;
- 
-@@ -542,7 +564,7 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
- 
- static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
- 				const void *context,
--				const ocsd_trc_index_t indx __maybe_unused,
-+				const ocsd_trc_index_t indx,
- 				const u8 trace_chan_id __maybe_unused,
- 				const ocsd_generic_trace_elem *elem)
- {
-@@ -579,7 +601,8 @@ static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
- 		break;
- 	case OCSD_GEN_TRC_ELEM_TIMESTAMP:
- 		resp = cs_etm_decoder__do_hard_timestamp(etmq, elem,
--							 trace_chan_id);
-+							 trace_chan_id,
-+							 indx);
- 		break;
- 	case OCSD_GEN_TRC_ELEM_PE_CONTEXT:
- 		resp = cs_etm_decoder__set_tid(etmq, packet_queue,
--- 
-2.28.0
+Clang 10
+
+Tom
+
+>
+> Thanks,
+> Dennis
+>
 
