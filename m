@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52B938336A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED561383110
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241295AbhEQO6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39584 "EHLO mail.kernel.org"
+        id S237315AbhEQOeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:34:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241197AbhEQOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:48:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EB556196E;
-        Mon, 17 May 2021 14:22:31 +0000 (UTC)
+        id S239720AbhEQO2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B13561601;
+        Mon, 17 May 2021 14:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261351;
-        bh=dKodwKUoJASrAFlw1LNyG9ld/2oU3AxtzmUdjccQb24=;
+        s=korg; t=1621260873;
+        bh=kEnxKvRvXtsSjAMGQKobqwfi53MrIc8FrAhY6aWVDy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QEQt9o1VYY+6nlTPfR4mm6BrqFf2EHsuss9cbdPnmOmvJIVvp/L1Z57+Q50J31ucz
-         O7N0Red7Jg4TnjTJaSVMPqiqfWL1mDwGX1NFNf4sx6Oa3/h5tn5P+4sytX8hF+zRnq
-         7k896TWSmH3FY9k5aBgAwJogMrbQWpZsQCUmYUTo=
+        b=cLk8/YWdo8TxLJXM1JHjh2TheuurmkkUzn3L8zpYXEWaNGDnB3X1XdEFLkDIUmYJt
+         IG1TdqX4l83abWEl15J1vsZOBsggcKtBRyv/0AzMudqzA1LPmgwnlucsEsvJl4XdwE
+         UzjbP/vWWBmqJ99rZ1rVSkioqpm4/AujoJ+EQS+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 011/289] ath11k: fix thermal temperature read
+Subject: [PATCH 5.11 025/329] net: stmmac: Set FIFO sizes for ipq806x
 Date:   Mon, 17 May 2021 15:58:56 +0200
-Message-Id: <20210517140305.562268058@linuxfoundation.org>
+Message-Id: <20210517140302.901899015@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,104 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+From: Jonathan McDowell <noodles@earth.li>
 
-[ Upstream commit e3de5bb7ac1a4cb262f8768924fd3ef6182b10bb ]
+[ Upstream commit e127906b68b49ddb3ecba39ffa36a329c48197d3 ]
 
-Fix dangling pointer in thermal temperature event which causes
-incorrect temperature read.
+Commit eaf4fac47807 ("net: stmmac: Do not accept invalid MTU values")
+started using the TX FIFO size to verify what counts as a valid MTU
+request for the stmmac driver.  This is unset for the ipq806x variant.
+Looking at older patches for this it seems the RX + TXs buffers can be
+up to 8k, so set appropriately.
 
-Tested-on: IPQ8074 AHB WLAN.HK.2.4.0.1-00041-QCAHKSWPL_SILICONZ-1
+(I sent this as an RFC patch in June last year, but received no replies.
+I've been running with this on my hardware (a MikroTik RB3011) since
+then with larger MTUs to support both the internal qca8k switch and
+VLANs with no problems. Without the patch it's impossible to set the
+larger MTU required to support this.)
 
-Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210218182708.8844-1-pradeepc@codeaurora.org
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/wmi.c | 53 +++++++++++----------------
- 1 file changed, 21 insertions(+), 32 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
-index 173ab6ceed1f..eca86225a341 100644
---- a/drivers/net/wireless/ath/ath11k/wmi.c
-+++ b/drivers/net/wireless/ath/ath11k/wmi.c
-@@ -4986,31 +4986,6 @@ int ath11k_wmi_pull_fw_stats(struct ath11k_base *ab, struct sk_buff *skb,
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+index bf3250e0e59c..749585fe6fc9 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+@@ -352,6 +352,8 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 	plat_dat->bsp_priv = gmac;
+ 	plat_dat->fix_mac_speed = ipq806x_gmac_fix_mac_speed;
+ 	plat_dat->multicast_filter_bins = 0;
++	plat_dat->tx_fifo_size = 8192;
++	plat_dat->rx_fifo_size = 8192;
  
--static int
--ath11k_pull_pdev_temp_ev(struct ath11k_base *ab, u8 *evt_buf,
--			 u32 len, const struct wmi_pdev_temperature_event *ev)
--{
--	const void **tb;
--	int ret;
--
--	tb = ath11k_wmi_tlv_parse_alloc(ab, evt_buf, len, GFP_ATOMIC);
--	if (IS_ERR(tb)) {
--		ret = PTR_ERR(tb);
--		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
--		return ret;
--	}
--
--	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
--	if (!ev) {
--		ath11k_warn(ab, "failed to fetch pdev temp ev");
--		kfree(tb);
--		return -EPROTO;
--	}
--
--	kfree(tb);
--	return 0;
--}
--
- size_t ath11k_wmi_fw_stats_num_vdevs(struct list_head *head)
- {
- 	struct ath11k_fw_stats_vdev *i;
-@@ -6390,23 +6365,37 @@ ath11k_wmi_pdev_temperature_event(struct ath11k_base *ab,
- 				  struct sk_buff *skb)
- {
- 	struct ath11k *ar;
--	struct wmi_pdev_temperature_event ev = {0};
-+	const void **tb;
-+	const struct wmi_pdev_temperature_event *ev;
-+	int ret;
-+
-+	tb = ath11k_wmi_tlv_parse_alloc(ab, skb->data, skb->len, GFP_ATOMIC);
-+	if (IS_ERR(tb)) {
-+		ret = PTR_ERR(tb);
-+		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
-+		return;
-+	}
- 
--	if (ath11k_pull_pdev_temp_ev(ab, skb->data, skb->len, &ev) != 0) {
--		ath11k_warn(ab, "failed to extract pdev temperature event");
-+	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
-+	if (!ev) {
-+		ath11k_warn(ab, "failed to fetch pdev temp ev");
-+		kfree(tb);
- 		return;
- 	}
- 
- 	ath11k_dbg(ab, ATH11K_DBG_WMI,
--		   "pdev temperature ev temp %d pdev_id %d\n", ev.temp, ev.pdev_id);
-+		   "pdev temperature ev temp %d pdev_id %d\n", ev->temp, ev->pdev_id);
- 
--	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev.pdev_id);
-+	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev->pdev_id);
- 	if (!ar) {
--		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev.pdev_id);
-+		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev->pdev_id);
-+		kfree(tb);
- 		return;
- 	}
- 
--	ath11k_thermal_event_temperature(ar, ev.temp);
-+	ath11k_thermal_event_temperature(ar, ev->temp);
-+
-+	kfree(tb);
- }
- 
- static void ath11k_wmi_tlv_op_rx(struct ath11k_base *ab, struct sk_buff *skb)
+ 	err = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+ 	if (err)
 -- 
 2.30.2
 
