@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286CF383945
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40333383976
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345474AbhEQQM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
+        id S244831AbhEQQRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245566AbhEQPsx (ORCPT
+        with ESMTP id S1346372AbhEQQFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:48:53 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E39C07E5FC;
-        Mon, 17 May 2021 07:38:31 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id ez19so3194294qvb.3;
-        Mon, 17 May 2021 07:38:31 -0700 (PDT)
+        Mon, 17 May 2021 12:05:51 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BAEEBC0467E9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uNcMlxmGe0/KHpC/yKgEws6zzml6blB7GcOty29DOBI=;
-        b=kqLqC53Mu3wSLvV9gQtWSdGf6U/KsZd1lLq9SusTQeIg3BVK3J66/3F2eJtYNAQkzb
-         22/9oIWqk+jx/Yy/UEYg/RkbCwVYCPKYxUohmwkjaR31UIPVa6hdKrnn6mACi961hlZX
-         HxMYsE8jzKidtjb8LvWVmpLhS3YTaKjfJ3cFdV2NAgsnyiSECLLFzn0Mz/hVnKmzAbvb
-         P///s1NE3EkQykKejmi0yShD9dfz8BFclJcpHTQgj4I2evBU2y0JfBJU/wtVa164SMXv
-         eFKOouzbX2ktygTOzifMkrRCAeWB07KabKYeEB1yRGoLne0XRpS2scApgwRFVpMYj2km
-         ZHmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=uNcMlxmGe0/KHpC/yKgEws6zzml6blB7GcOty29DOBI=;
-        b=LshZ+S2fuOfeQHJzSuOXfy2zA8Ulhb39dpx0PDvNluLaaRtfEiEBNEEUzxFQicN8WF
-         mh38nGXDOcFgmrGuVDf9/lB47hbFf/sCkEUKXt6J3bwG/NmucDe2tIhv0N8rOxS1Wbwc
-         jyKKaDeWlNU3tqeDT2pm8XHS8gRuFDnZCyyCuzQ/8jxbNafciy7kqfzsUNe8iH0flY10
-         eWZR16U9Fy7mbG1buhQ2bg3LXcZbFh+Q7WZmw3clOTyhbNG756g7CzdSSJj4I0Yypw5I
-         sG7dZHs5q7TNoGPP4VgXZ3Ig7r0PlekWxNQEznPAvMQzE8YR1aXWj/IWcOx7PMe2W1/z
-         hS/A==
-X-Gm-Message-State: AOAM533Q0T8SRyGIqTuU8lVDFOlJrzHL03pBs2bJMfBTeNLDPOd46org
-        7gQZjYXiGP6W7fg4bHIQAl+mgsYJmxU=
-X-Google-Smtp-Source: ABdhPJw9LSemMfJJH/rTL2PbCi3+OqjPZ7U4FmtlxTu4RXABkFM4zki/rzxOuXL2kngcSpckwjhJ3Q==
-X-Received: by 2002:a0c:9ccc:: with SMTP id j12mr60481248qvf.30.1621262310662;
-        Mon, 17 May 2021 07:38:30 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c9sm4086104qke.8.2021.05.17.07.38.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 07:38:30 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 17 May 2021 07:38:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] usb: typec: tcpci: Implement callback for apply_rc
-Message-ID: <20210517143828.GC3434992@roeck-us.net>
-References: <20210515052613.3261340-1-badhri@google.com>
- <20210515052613.3261340-4-badhri@google.com>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=ZXsRNWguWbVa0PtAmixG+uiM2qAEjYWOfH
+        SwLuA4TyE=; b=EqztZO8DWB8gA3sQFNBpU6PwbOgqEpdc/bTPL2yVNn47iZdzWK
+        6sUMGqvRSLsBbD3AJgkf9TbgcKVCzR5I7nqvqX4RUW6zShDmnorVMGrB5FceKPwd
+        03Xr7hymxSFVdqRy+q73W9cmxguTaVMm1fghbdBRHhLgd6qSfiDsfGVCk=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygB3f0d+gaJgnBTyAA--.22620S2;
+        Mon, 17 May 2021 22:45:18 +0800 (CST)
+Date:   Mon, 17 May 2021 22:40:01 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: mm: init: Consolidate vars, functions
+Message-ID: <20210517224001.42424097@xhacker>
+In-Reply-To: <66c8965d-494f-6c2f-0739-9bee13fc507c@ghiti.fr>
+References: <20210516211556.43c00055@xhacker>
+        <20210516211922.2110232e@xhacker>
+        <66c8965d-494f-6c2f-0739-9bee13fc507c@ghiti.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210515052613.3261340-4-badhri@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygB3f0d+gaJgnBTyAA--.22620S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW8XF1fJw4ktw4kuw43Awb_yoW8JFWrpr
+        4FqFW5Ja1kArW7CasFqr4IgFyj9Fn3WFyrJw1UKr1fuFn8Grn8Xw4UWrW5u39FgrWxuF4Y
+        vr4jy34qgw4jv37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUy2b7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s02
+        6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
+        I_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
+        6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj4
+        0_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_
+        Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j5BMNUUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:26:13PM -0700, Badhri Jagan Sridharan wrote:
-> APPLY RC is defined as ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and
-> POWER_CONTROL.AutodischargeDisconnect is 0. When ROLE_CONTROL.CC1 ==
-> ROLE_CONTROL.CC2, set the other CC to OPEN.
-> 
-> Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+On Sun, 16 May 2021 21:10:48 +0200
+Alex Ghiti <alex@ghiti.fr> wrote:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> Hi Jisheng,
+> 
+> On 16/05/2021 15:19, Jisheng Zhang wrote:
+> > On Sun, 16 May 2021 21:15:56 +0800 Jisheng Zhang  wrote:
+> >   
+> >> From: Jisheng Zhang <jszhang@kernel.org>
+> >>
+> >> Consolidate the following items in init.c
+> >>
+> >> Staticize global vars as much as possible;
+> >> Add __initdata mark if the global var isn't needed after init
+> >> Add __init mark if the func isn't needed after init
+> >> Add __ro_after_init if the global var is read only after init  
+> > 
+> > Hi Alexandre,
+> > 
+> > I think kernel_virt_addr can be removed, users can directly use
+> > the KERNEL_LINK_ADDR MACRO. Maybe I miss the reason of intrducing
+> > it in commit 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of
+> > linear mapping"), could you please comment?
+> > 
+> > Thanks in advance  
+> 
+> kernel_virt_addr will be used when I push my relocatable series since 
+> then, the kernel virtual address will be different from 
+> KERNEL_LINK_ADDR. I agree this was not needed in 2bfc6cd81bd17e43 
+> ("riscv: Move kernel mapping outside of linear mapping"), I'm a bit late 
+> in pushing the relocatable series.
+> 
 
-> ---
->  drivers/usb/typec/tcpm/tcpci.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index 25b480752266..34b5095cc84f 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.c
-> +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -115,6 +115,32 @@ static int tcpci_set_cc(struct tcpc_dev *tcpc, enum typec_cc_status cc)
->  	return 0;
->  }
->  
-> +int tcpci_apply_rc(struct tcpc_dev *tcpc, enum typec_cc_status cc, enum typec_cc_polarity polarity)
-> +{
-> +	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-> +	unsigned int reg;
-> +	int ret;
-> +
-> +	ret = regmap_read(tcpci->regmap, TCPC_ROLE_CTRL, &reg);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/*
-> +	 * APPLY_RC state is when ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and vbus autodischarge on
-> +	 * disconnect is disabled. Bail out when ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2.
-> +	 */
-> +	if (((reg & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) >>
-> +	     TCPC_ROLE_CTRL_CC2_SHIFT) !=
-> +	    ((reg & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) >>
-> +	     TCPC_ROLE_CTRL_CC1_SHIFT))
-> +		return 0;
-> +
-> +	return regmap_update_bits(tcpci->regmap, TCPC_ROLE_CTRL, polarity == TYPEC_POLARITY_CC1 ?
-> +				  TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT :
-> +				  TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT,
-> +				  TCPC_ROLE_CTRL_CC_OPEN);
-> +}
-> +
->  static int tcpci_start_toggling(struct tcpc_dev *tcpc,
->  				enum typec_port_type port_type,
->  				enum typec_cc_status cc)
-> @@ -728,6 +754,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
->  	tcpci->tcpc.get_vbus = tcpci_get_vbus;
->  	tcpci->tcpc.set_vbus = tcpci_set_vbus;
->  	tcpci->tcpc.set_cc = tcpci_set_cc;
-> +	tcpci->tcpc.apply_rc = tcpci_apply_rc;
->  	tcpci->tcpc.get_cc = tcpci_get_cc;
->  	tcpci->tcpc.set_polarity = tcpci_set_polarity;
->  	tcpci->tcpc.set_vconn = tcpci_set_vconn;
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
-> 
+Thanks for your information. I think kernel_virt_addr could be __ro_after_init
+But I will keep it unchanged until your relocatable series.
+
+thanks
+
