@@ -2,118 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25F638272C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AD1382712
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235715AbhEQIi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:38:59 -0400
-Received: from vps.xff.cz ([195.181.215.36]:59872 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235423AbhEQIi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:38:58 -0400
-X-Greylist: delayed 461 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 May 2021 04:38:58 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1621240198; bh=2VhAsUXgQ5oNkSlTwnPcKvmOph17V9lpnFgnWSI+JyE=;
-        h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-        b=H8r63aEnFmsJHXroicoP8nx3sfwjSGZ6O2gVC2CPIay0DgRQZH84O871lEkRL1gwL
-         RuueK15iIJ+tkPASv9Dwdkj12RcPV+NqOLje9C3/crioDfY5QJbPWexV1tp2U2N+Sd
-         ZZJbCqng/ahGe1Gck8S9JQkP56fZLrbPBlA49jEI=
-Date:   Mon, 17 May 2021 10:29:57 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, andre.przywara@arm.com
-Subject: Re: fw_devlink=on and sunxi HDMI
-Message-ID: <20210517082957.sddwy2dv5esbzmo4@core>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, andre.przywara@arm.com
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20210516170539.2yxe43qwezonuo3r@core>
- <CAGETcx93RxfsXG51zeaUK+UyKdEDgivqkmS85mcMPp0H42X5ZQ@mail.gmail.com>
+        id S235613AbhEQIch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:32:37 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:59158 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235406AbhEQIcg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 04:32:36 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-219-3UlcEW98NA-nIwfojSR38g-1; Mon, 17 May 2021 09:31:16 +0100
+X-MC-Unique: 3UlcEW98NA-nIwfojSR38g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 17 May 2021 09:31:13 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 17 May 2021 09:31:13 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nathan Chancellor' <nathan@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: RE: [PATCH] [v2] platform/surface: aggregator: avoid clang
+ -Wconstant-conversion warning
+Thread-Topic: [PATCH] [v2] platform/surface: aggregator: avoid clang
+ -Wconstant-conversion warning
+Thread-Index: AQHXSQdQtGc3TDOhPEi9QDyAZ4cunarnW2LA
+Date:   Mon, 17 May 2021 08:31:12 +0000
+Message-ID: <16280aaedc40425295d202431ac3adc0@AcuMS.aculab.com>
+References: <20210514200453.1542978-1-arnd@kernel.org>
+ <057b5568-c4b8-820c-3dd7-2200f61a4d58@kernel.org>
+In-Reply-To: <057b5568-c4b8-820c-3dd7-2200f61a4d58@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGETcx93RxfsXG51zeaUK+UyKdEDgivqkmS85mcMPp0H42X5ZQ@mail.gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 11:32:47PM -0700, Saravana Kannan wrote:
-> On Sun, May 16, 2021 at 10:05 AM Ondřej Jirman <megi@xff.cz> wrote:
-> >
-> > Hello,
-> >
-> > Linux 5.13-rc1 again has fw_devlink=on enabled by default. I've found that this
-> > breaks probing display pipeline and HDMI output on sunxi boards, because of
-> > fwnode_link between hdmi and hdmi-phy nodes.
-> >
-> > HDMI device probe keeps being avoided with these repeated messages in dmesg:
-> >
-> >   platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy not ready
-> >
-> > Both nodes have their own compatible, but are implemented by a single
-> > struct device.
-> >
-> > This looks like a kind of situation that's expected to break fw_devlink
-> > expectations by my reading of the the e-mails about trying the fw_devlink=on
-> > during 5.12 cycle.
-> >
-> > Is this supposed to be solved by implementing the PHY node as it's own
-> > device or by breaking the fwnode_link between the hdmi phy and hdmi nodes?
-> > Seems like second solution would be quicker now that rc1 is out.
-> 
-> Seems like sun8i_hdmi_phy_probe() already does 95% of the work to make
-> the PHY a separate driver. Why not just finish it up by really making
-> it a separate driver? I'd really prefer doing that because this seems
-> unnecessarily messed up. The phy will have a struct device created for
-> it already. You are just not probing it.
+RnJvbTogTmF0aGFuIENoYW5jZWxsb3INCj4gU2VudDogMTQgTWF5IDIwMjEgMjI6MjMNCj4gPg0K
+PiA+IENsYW5nIGNvbXBsYWlucyBhYm91dCB0aGUgYXNzaWdubWVudCBvZiBTU0FNX0FOWV9JSUQg
+dG8NCj4gPiBzc2FtX2RldmljZV91aWQtPmluc3RhbmNlOg0KDQpIYXMgdGhpcyBiZWVuIHJhaXNl
+ZCB3aXRoIGNsYW5nPw0KDQouLi4NCj4gPiAtCS50YXJnZXQgICA9ICgodGlkKSAhPSBTU0FNX0FO
+WV9USUQpID8gKHRpZCkgOiAwLAkJCVwNCj4gPiAtCS5pbnN0YW5jZSA9ICgoaWlkKSAhPSBTU0FN
+X0FOWV9JSUQpID8gKGlpZCkgOiAwLAkJCVwNCj4gPiAtCS5mdW5jdGlvbiA9ICgoZnVuKSAhPSBT
+U0FNX0FOWV9GVU4pID8gKGZ1bikgOiAwCQkJCVwNCj4gPiArCS50YXJnZXQgICA9IF9fYnVpbHRp
+bl9jaG9vc2VfZXhwcigodGlkKSAhPSBTU0FNX0FOWV9USUQsICh0aWQpLCAwKSwJXA0KPiA+ICsJ
+Lmluc3RhbmNlID0gX19idWlsdGluX2Nob29zZV9leHByKChpaWQpICE9IFNTQU1fQU5ZX0lJRCwg
+KGlpZCksIDApLAlcDQo+ID4gKwkuZnVuY3Rpb24gPSBfX2J1aWx0aW5fY2hvb3NlX2V4cHIoKGZ1
+bikgIT0gU1NBTV9BTllfRlVOLCAoZnVuKSwgMCkNCg0KQSBzaW1wbGVyIGFsdGVybmF0aXZlOg0K
+CQk9IGZ1biAqIChmdW4gIT0gU1NBTV9BTllfRlVOKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJl
+ZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXlu
+ZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Currently it's all just a glue code for dw-hdmi, which is not using a phy
-framework and handles both the controller and phy parts. dw-hdmi needs passing
-platform data around
-(https://elixir.bootlin.com/linux/latest/source/include/drm/bridge/dw_hdmi.h#L115)
-to get a specific set of phy glue callbacks hooked into platform data of dw-hdmi
-prior to calling dw_hdmi_probe.
-
-Looking at other users of dw_hdmi_probe this is the only one that has this
-unfortunate issue due to using phys binding internally as a part of one device.
-
-Just making it a platform driver will also change the probe order of phy and the
-controller, which I've heard from Jernej needs to have the current order of
-(controller and then phy) perserved, for some reason, and will make things
-still a bit more convoluted.
-
-So this looks like needs quite a bit of thought.
-
-regards,
-	o.
-
-> Thanks,
-> Saravana
-> 
-> >
-> > Where would be a good place to break that fwnode_link in code?
-> >
-> > Or can the fw_devlink code be made aware of this situation, where two fwnodes
-> > are implemented by the same Linux device, somehow?
-> >
-> > Relevant references:
-> >
-> > https://elixir.bootlin.com/linux/v5.13-rc1/source/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c#L600
-> > https://elixir.bootlin.com/linux/v5.13-rc1/source/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c#L212
-> > https://elixir.bootlin.com/linux/v5.13-rc1/source/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi#L1176
-> >
-> > kind regards,
-> >         o.
