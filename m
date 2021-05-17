@@ -2,70 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936DD386D9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328FD386DA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238382AbhEQXXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 19:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhEQXXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 19:23:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEC761285;
-        Mon, 17 May 2021 23:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621293748;
-        bh=EPBxny1NVj/4hJ03KGf6BRDXyG2HMfX26b5gVD5p4Ak=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RZqtnAjWXB6D8uxmTNZFPHf/DF6al8mVzBBZ1w8ilO18QPJmEg+X8FuciOtJT4YDP
-         aY2AuH5MHSvP/EQyKvEHiy3o/d837niQOfH/P/ChQDToKJFag9Ui2MqO1uQwSaIJdA
-         Iof4/1i7RnMI2E9nwgfrJ9lv25VHZlS7t9Pj7c7cIh4FanMkoXGOuNq830s0KrYWrs
-         pnsbP/nEGC6Nr2e1/YReMmDVD9ru0zIU4/uF1y6a2q1/e7zVA5w9cc+HZz2z6rxjnd
-         3TKeuYKn1mY8mwn4ZGFl+xY4+3StA5zf9utKLRsXCDLrEAPzzC6gV1pwolU1py11AZ
-         2N4Dz9/LeXlcw==
-Date:   Mon, 17 May 2021 18:23:12 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] ACPI: Fix fall-through warning for Clang
-Message-ID: <20210517232312.GA43474@embeddedor>
+        id S244041AbhEQX2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 19:28:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55934 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240516AbhEQX2V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 19:28:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621294023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o1uB9QtPenPr6TAPimIlnSz22cHSphlYyyuDv8n5vns=;
+        b=KV6xNF9bc6gkFF0B1a4EINc469/fWs0giQRDPreaShpNYlaXQ0aQu3KdHMPvk1rNVQR/sV
+        3X1kntSeHo6D60eXm1UjnNyy4t39FcQXtC/gBoichXv5cm0PFWlJQfcescyBM+1n5Nk1DF
+        8+6vSVpxrsjATDvS0j1peHqqOnJh2ZSmJFiqBwQDdRvl0LGaaICalIAk1eP1QAdOhnRGNW
+        oV9LrwSw+tT2O5e/xo9mPow0otSp1P5mrV35MYqCpxnyGgZtJOTw1lBNBryJDMbyFDjXVP
+        Zs43P6qYPS1zXRDN8vVO+pqu2I+pPk+owmVJ+dKb/TVqdIon0GI6k9+Fz9i1sw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621294023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o1uB9QtPenPr6TAPimIlnSz22cHSphlYyyuDv8n5vns=;
+        b=L/VKAsznb/XEYy/QPeQygiKB4CfM+Ver5HYSHu2BBW0Z+Xzr5hYm1J9ewwU68Gtlp2ctrd
+        PSvj76yg2n8m2lAA==
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Laight <David.Laight@aculab.com>,
+        "x86\@kernel.org" <x86@kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
+In-Reply-To: <b509418f-9fff-ab27-b460-ecbe6fdea09a@gmail.com>
+References: <87a6otfblh.ffs@nanos.tec.linutronix.de> <b509418f-9fff-ab27-b460-ecbe6fdea09a@gmail.com>
+Date:   Tue, 18 May 2021 01:27:02 +0200
+Message-ID: <87lf8ddjqx.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-fallthrough warning by simply dropping the empty default case at
-the bottom.
+On Mon, May 17 2021 at 21:25, Maximilian Luz wrote:
+> On 5/17/21 8:40 PM, Thomas Gleixner wrote:
+>> Can you please add "apic=verbose" to the kernel command line and provide
+>> full dmesg output for a kernel w/o your patch and one with your patch
+>> applied?
+>
+> I don't actually own an affected device, but I'm sure Sachi can provide
+> you with that.
 
-This contributes to the ongoing efforts to globally enable
--Wimplicit-fallthrough for Clang.
+Ok.
 
-Link: https://github.com/KSPP/linux/issues/115
-Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-Link: https://lore.kernel.org/lkml/CAJZ5v0hLYWKX__oZdcCY0D20pNqpw8SkiTPOCNOtpqe--QLp4Q@mail.gmail.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> As far as we can tell, due to the NULL PIC being chosen nr_legacy_irqs()
+> returns 0. That in turn causes mp_check_pin_attr() to return false
+> because is_level and active_low don't seem to match the expected
+> values.
+
+Ok.
+
+> That check is essentially ignored if nr_legacy_irqs() returns a high
+> enough value.
+
+Close enough.
+
+> I guess that might also be a firmware bug here? Not sure where the
+> expected values come from.
+
+They come from the interrupt override ACPI table and if not supplied
+then irq 0-15 is preset with default values, which are type=edge and
+polarity=high, i.e.  the opposite of what the failing driver wants.
+
+The ACPI table lacks an override entry for IRQ7. I looked at one of the
+dmesg files in that github thread and that has overrides:
+
+[    0.111674] ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+[    0.111681] ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 low level)
+[    0.111688] ACPI: IRQ0 used by override.
+[    0.111692] ACPI: IRQ9 used by override.
+
+IRQ7 should have a corresponding entry as IRQ9 has:
+
+https://github.com/linux-surface/acpidumps/blob/4da0148744164cea0c924dab92f45842fde03177/surface_laptop_4_amd/apic.dsl#L178
+
+          Subtable Type : 02 [Interrupt Source Override]
+                 Length : 0A
+                    Bus : 00
+                 Source : 07
+              Interrupt : 00000007
+  Flags (decoded below) : 000F
+               Polarity : 3
+           Trigger Mode : 3
+
+> Sachi can probably walk you through this a bit better as she's the one
+> who tracked this down. See also [1, 2] and following comments.
+
+Impressive detective work!
+
+Sachi, can you please try the hack below to confirm the above?
+
+It's not meant to be a solution, but it's the most trivial way to
+validate this.
+
+I'm pretty sure that Windows on Surface does not care about the PIC at
+all. Whether that's on purpose to safe power or just because Windows
+ignores the PIC completely by now does not matter at all. No idea how
+that repeated poking on the PIC makes it come alive either and TBH, I
+don't care too much about it simply because Linux is able to cope with a
+missing PIC as long as the ACPI tables are correct.
+
+I'm way too tired to think about a proper solution for that problem and
+I noticed another related issue in that dmesg output:
+
+[    0.272448] Failed to register legacy timer interrupt
+
+It's not a problem which causes failures, but it's related to the
+missing PIC.
+
+Needs some more thoughts with brain awake...
+
+Thanks,
+
+        tglx
 ---
- drivers/acpi/sbshc.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/acpi/sbshc.c b/drivers/acpi/sbshc.c
-index 53c2862c4c75..5c021c3b81d9 100644
---- a/drivers/acpi/sbshc.c
-+++ b/drivers/acpi/sbshc.c
-@@ -231,7 +231,6 @@ static int smbus_alarm(void *context)
- 		case ACPI_SBS_BATTERY:
- 			acpi_os_execute(OSL_NOTIFY_HANDLER,
- 					acpi_smbus_callback, hc);
--		default:;
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -21,6 +21,7 @@
+ #include <linux/efi-bgrt.h>
+ #include <linux/serial_core.h>
+ #include <linux/pgtable.h>
++#include <linux/dmi.h>
+ 
+ #include <asm/e820/api.h>
+ #include <asm/irqdomain.h>
+@@ -1155,6 +1156,17 @@ static void __init mp_config_acpi_legacy
  	}
- 	mutex_unlock(&hc->lock);
- 	return 0;
--- 
-2.27.0
+ }
+ 
++static const struct dmi_system_id surface_quirk[] __initconst = {
++	{
++		.ident = "Microsoft Surface Laptop 4 (AMD)",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_MATCH(DMI_PRODUCT_SKU, "Surface_Laptop_4_1952:1953")
++		},
++	},
++	{}
++};
++
+ /*
+  * Parse IOAPIC related entries in MADT
+  * returns 0 on success, < 0 on error
+@@ -1212,6 +1224,11 @@ static int __init acpi_parse_madt_ioapic
+ 		acpi_sci_ioapic_setup(acpi_gbl_FADT.sci_interrupt, 0, 0,
+ 				      acpi_gbl_FADT.sci_interrupt);
+ 
++	if (dmi_check_system(surface_quirk)) {
++		pr_warn("Surface hack: Override irq 7\n");
++		mp_override_legacy_irq(7, 3, 3, 7);
++	}
++
+ 	/* Fill in identity legacy mappings where no override */
+ 	mp_config_acpi_legacy_irqs();
+ 
+
 
