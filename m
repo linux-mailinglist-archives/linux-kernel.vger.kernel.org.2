@@ -2,204 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3433822AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284483822AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhEQCUN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 16 May 2021 22:20:13 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2935 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhEQCUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 22:20:10 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fk2ml6XWyzCtLp;
-        Mon, 17 May 2021 10:16:07 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 10:18:52 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 10:18:52 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2176.012;
- Mon, 17 May 2021 10:18:52 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "Subo (Subo, Cloud Infrastructure Service Product Dept.)" 
-        <subo7@huawei.com>, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "David Brazdil" <dbrazdil@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        "lixianming (E)" <lixianming5@huawei.com>,
-        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-Subject: RE: [RFC] vsock: notify server to shutdown when client has pending
- signal
-Thread-Topic: [RFC] vsock: notify server to shutdown when client has pending
- signal
-Thread-Index: AQHXRkna70IyCpulcUmMFYMN4BnQYKrgpa2AgACTRtCABasjMA==
-Date:   Mon, 17 May 2021 02:18:51 +0000
-Message-ID: <09562f9b35c3419f9b5844b35b4276ae@huawei.com>
-References: <20210511094127.724-1-longpeng2@huawei.com>
- <20210513094143.pir5vzsludut3xdc@steredhat>
- <558d53dd31dc4841b94c4ec35249ac80@huawei.com>
-In-Reply-To: <558d53dd31dc4841b94c4ec35249ac80@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.148.223]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S232429AbhEQCXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 22:23:15 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40970 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231755AbhEQCXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 22:23:08 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP+4k06FgP_cXAA--.20760S2;
+        Mon, 17 May 2021 10:21:24 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>, Marc Koderer <marc@koderer.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca>,
+        Ananth N Mavinakayanahalli <ananth@in.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v4 0/2] Fix typos in samples/kprobes/kprobe_example.c
+Date:   Mon, 17 May 2021 10:21:21 +0800
+Message-Id: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxP+4k06FgP_cXAA--.20760S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYq7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrw
+        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
+        x2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5gAwDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefano,
+Split the v3 patch [1] into two patches suggested by Masami Hiramatsu.
 
-> -----Original Message-----
-> From: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
-> [mailto:longpeng2@huawei.com]
-> Sent: Thursday, May 13, 2021 6:36 PM
-> To: Stefano Garzarella <sgarzare@redhat.com>
-> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Gonglei (Arei)
-> <arei.gonglei@huawei.com>; Subo (Subo, Cloud Infrastructure Service Product
-> Dept.) <subo7@huawei.com>; David S . Miller <davem@davemloft.net>; Jakub
-> Kicinski <kuba@kernel.org>; Jorgen Hansen <jhansen@vmware.com>; Norbert
-> Slusarek <nslusarek@gmx.net>; Andra Paraschiv <andraprs@amazon.com>;
-> Colin Ian King <colin.king@canonical.com>; David Brazdil
-> <dbrazdil@google.com>; Alexander Popov <alex.popov@linux.com>;
-> lixianming (E) <lixianming5@huawei.com>
-> Subject: RE: [RFC] vsock: notify server to shutdown when client has pending
-> signal
-> 
-> Hi Stefano,
-> 
-> > -----Original Message-----
-> > From: Stefano Garzarella [mailto:sgarzare@redhat.com]
-> > Sent: Thursday, May 13, 2021 5:42 PM
-> > To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
-> > <longpeng2@huawei.com>
-> > Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Gonglei
-> > (Arei) <arei.gonglei@huawei.com>; Subo (Subo, Cloud Infrastructure
-> > Service Product
-> > Dept.) <subo7@huawei.com>; David S . Miller <davem@davemloft.net>;
-> > Jakub Kicinski <kuba@kernel.org>; Jorgen Hansen <jhansen@vmware.com>;
-> > Norbert Slusarek <nslusarek@gmx.net>; Andra Paraschiv
-> > <andraprs@amazon.com>; Colin Ian King <colin.king@canonical.com>;
-> > David Brazdil <dbrazdil@google.com>; Alexander Popov
-> > <alex.popov@linux.com>; lixianming (E) <lixianming5@huawei.com>
-> > Subject: Re: [RFC] vsock: notify server to shutdown when client has
-> > pending signal
-> >
-> > Hi,
-> > thanks for this patch, comments below...
-> >
-> > On Tue, May 11, 2021 at 05:41:27PM +0800, Longpeng(Mike) wrote:
-> > >The client's sk_state will be set to TCP_ESTABLISHED if the server
-> > >replay the client's connect request.
-> > >However, if the client has pending signal, its sk_state will be set
-> > >to TCP_CLOSE without notify the server, so the server will hold the
-> > >corrupt connection.
-> > >
-> > >            client                        server
-> > >
-> > >1. sk_state=TCP_SYN_SENT         |
-> > >2. call ->connect()              |
-> > >3. wait reply                    |
-> > >                                 | 4. sk_state=TCP_ESTABLISHED
-> > >                                 | 5. insert to connected list
-> > >                                 | 6. reply to the client
-> > >7. sk_state=TCP_ESTABLISHED      |
-> > >8. insert to connected list      |
-> > >9. *signal pending* <--------------------- the user kill client
-> > >10. sk_state=TCP_CLOSE           |
-> > >client is exiting...             |
-> > >11. call ->release()             |
-> > >     virtio_transport_close
-> > >      if (!(sk->sk_state == TCP_ESTABLISHED ||
-> > >	      sk->sk_state == TCP_CLOSING))
-> > >		return true; <------------- return at here As a result, the server
-> > >cannot notice the connection is corrupt.
-> > >So the client should notify the peer in this case.
-> > >
-> > >Cc: David S. Miller <davem@davemloft.net>
-> > >Cc: Jakub Kicinski <kuba@kernel.org>
-> > >Cc: Stefano Garzarella <sgarzare@redhat.com>
-> > >Cc: Jorgen Hansen <jhansen@vmware.com>
-> > >Cc: Norbert Slusarek <nslusarek@gmx.net>
-> > >Cc: Andra Paraschiv <andraprs@amazon.com>
-> > >Cc: Colin Ian King <colin.king@canonical.com>
-> > >Cc: David Brazdil <dbrazdil@google.com>
-> > >Cc: Alexander Popov <alex.popov@linux.com>
-> > >Signed-off-by: lixianming <lixianming5@huawei.com>
-> > >Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-> > >---
-> > > net/vmw_vsock/af_vsock.c | 1 +
-> > > 1 file changed, 1 insertion(+)
-> > >
-> > >diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> > >index
-> > >92a72f0..d5df908 100644
-> > >--- a/net/vmw_vsock/af_vsock.c
-> > >+++ b/net/vmw_vsock/af_vsock.c
-> > >@@ -1368,6 +1368,7 @@ static int vsock_stream_connect(struct socket
-> > >*sock,
-> > struct sockaddr *addr,
-> > > 		lock_sock(sk);
-> > >
-> > > 		if (signal_pending(current)) {
-> > >+			vsock_send_shutdown(sk, SHUTDOWN_MASK);
-> >
-> > I see the issue, but I'm not sure is okay to send the shutdown in any
-> > case, think about the server didn't setup the connection.
-> >
-> > Maybe is better to set TCP_CLOSING if the socket state was
-> > TCP_ESTABLISHED, so the shutdown will be handled by the
-> > transport->release() as usual.
-> >
-> > What do you think?
-> >
-> 
-> Your method looks more gracefully, we'll try it and get back to you, thanks.
-> 
+[1] https://lore.kernel.org/patchwork/patch/1429021/
 
-As your suggestion, the following code can solve the problem:
+Tiezhu Yang (2):
+  samples/kprobes: Fix typo in handler_fault()
+  samples/kprobes: Fix typo in handler_post()
 
-                if (signal_pending(current)) {
-                        err = sock_intr_errno(timeout);
--                       sk->sk_state = TCP_CLOSE;
-+                       sk->sk_state = TCP_CLOSING;
-                        sock->state = SS_UNCONNECTED;
-                        vsock_transport_cancel_pkt(vsk);
-                        goto out_wait;
+ samples/kprobes/kprobe_example.c | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-This will send shutdown to the server even if the connection is not established, but
-I don't see any side effects yet, right ?
-
-The problem is also in the timeout case, we should fix it together ?
-
-
-> > Anyway, also without the patch, the server should receive a RST if it
-> > sends any data to the client, but of course, is better to let it know
-> > the socket is closed in advance.
-> >
-> 
-> Yes, agree.
-> 
-> > Thanks,
-> > Stefano
+-- 
+2.1.0
 
