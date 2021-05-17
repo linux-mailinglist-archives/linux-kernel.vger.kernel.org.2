@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE9738374B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFDB383782
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245087AbhEQPlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:41:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41292 "EHLO mail.kernel.org"
+        id S1344377AbhEQPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:44:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243909AbhEQP0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:26:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73B1F6192C;
-        Mon, 17 May 2021 14:36:30 +0000 (UTC)
+        id S244795AbhEQP2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:28:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DB7161CB5;
+        Mon, 17 May 2021 14:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262190;
-        bh=efgKcpnarIBExQX5AS5UKcQeZ+O4dUiiz2LxL/khdlQ=;
+        s=korg; t=1621262236;
+        bh=a4yamCC8qnVv/cSRaTHuXgN9RNgwx+1LS01fGTGFiGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l+TYvDn/LVNq58eXAv/fvAOKd3favA/wW9kMShE3kASd7KDs8SvUqZNQRiklAkJSI
-         wz14xcxoxoF0AqgfkNRy0IvxpBp00dfcooZd8Omu1rJdBGplBeUxAIdcbN90m02RU9
-         rIg+xNU4NUEfhwjBjwUQ1NdRt2xnqya3dmqSh7+4=
+        b=0m2EEqrSB1AyDLSjIyQD/4+sjs0QbQE4rmXw/5J8ddk9yxm34w/kPrqg9bBOhqy5k
+         wqGfNQiFfGLUgSLyVaEvIw4+fGT6x45i+QHBzKhL9UFFIgiztiOhy6qdtCigj2GbQX
+         gL4SvWa1Bj6etmZd3AqBfbXEaf83lkL/GcNlX4iU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 218/329] net: ipa: fix inter-EE IRQ register definitions
-Date:   Mon, 17 May 2021 16:02:09 +0200
-Message-Id: <20210517140309.502120779@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@google.com>
+Subject: [PATCH 5.11 219/329] fs/proc/generic.c: fix incorrect pde_is_permanent check
+Date:   Mon, 17 May 2021 16:02:10 +0200
+Message-Id: <20210517140309.542228047@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -40,74 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 6a780f51f87b430cc69ebf4e859e7e9be720b283 ]
+[ Upstream commit f4bf74d82915708208bc9d0c9bd3f769f56bfbec ]
 
-In gsi_irq_setup(), two registers are written with the intention of
-disabling inter-EE channel and event IRQs.
+Currently the pde_is_permanent() check is being run on root multiple times
+rather than on the next proc directory entry.  This looks like a
+copy-paste error.  Fix this by replacing root with next.
 
-But the wrong registers are used (and defined); the ones used are
-read-only registers that indicate whether the interrupt condition is
-present.
-
-Define the mask registers instead of the status registers, and use
-them to disable the inter-EE interrupt types.
-
-Fixes: 46f748ccaf01 ("net: ipa: explicitly disallow inter-EE interrupts")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Link: https://lore.kernel.org/r/20210505223636.232527-1-elder@linaro.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Addresses-Coverity: ("Copy-paste error")
+Link: https://lkml.kernel.org/r/20210318122633.14222-1-colin.king@canonical.com
+Fixes: d919b33dafb3 ("proc: faster open/read/close with "permanent" files")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reviewed-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/gsi.c     |  4 ++--
- drivers/net/ipa/gsi_reg.h | 18 +++++++++---------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ fs/proc/generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index febfac75dd6a..537853b9301b 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -205,8 +205,8 @@ static void gsi_irq_setup(struct gsi *gsi)
- 	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
- 
- 	/* The inter-EE registers are in the non-adjusted address range */
--	iowrite32(0, gsi->virt_raw + GSI_INTER_EE_SRC_CH_IRQ_OFFSET);
--	iowrite32(0, gsi->virt_raw + GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET);
-+	iowrite32(0, gsi->virt_raw + GSI_INTER_EE_SRC_CH_IRQ_MSK_OFFSET);
-+	iowrite32(0, gsi->virt_raw + GSI_INTER_EE_SRC_EV_CH_IRQ_MSK_OFFSET);
- 
- 	iowrite32(0, gsi->virt + GSI_CNTXT_GSI_IRQ_EN_OFFSET);
- }
-diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
-index 1622d8cf8dea..48ef04afab79 100644
---- a/drivers/net/ipa/gsi_reg.h
-+++ b/drivers/net/ipa/gsi_reg.h
-@@ -53,15 +53,15 @@
- #define GSI_EE_REG_ADJUST			0x0000d000	/* IPA v4.5+ */
- 
- /* The two inter-EE IRQ register offsets are relative to gsi->virt_raw */
--#define GSI_INTER_EE_SRC_CH_IRQ_OFFSET \
--			GSI_INTER_EE_N_SRC_CH_IRQ_OFFSET(GSI_EE_AP)
--#define GSI_INTER_EE_N_SRC_CH_IRQ_OFFSET(ee) \
--			(0x0000c018 + 0x1000 * (ee))
--
--#define GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET \
--			GSI_INTER_EE_N_SRC_EV_CH_IRQ_OFFSET(GSI_EE_AP)
--#define GSI_INTER_EE_N_SRC_EV_CH_IRQ_OFFSET(ee) \
--			(0x0000c01c + 0x1000 * (ee))
-+#define GSI_INTER_EE_SRC_CH_IRQ_MSK_OFFSET \
-+			GSI_INTER_EE_N_SRC_CH_IRQ_MSK_OFFSET(GSI_EE_AP)
-+#define GSI_INTER_EE_N_SRC_CH_IRQ_MSK_OFFSET(ee) \
-+			(0x0000c020 + 0x1000 * (ee))
-+
-+#define GSI_INTER_EE_SRC_EV_CH_IRQ_MSK_OFFSET \
-+			GSI_INTER_EE_N_SRC_EV_CH_IRQ_MSK_OFFSET(GSI_EE_AP)
-+#define GSI_INTER_EE_N_SRC_EV_CH_IRQ_MSK_OFFSET(ee) \
-+			(0x0000c024 + 0x1000 * (ee))
- 
- /* All other register offsets are relative to gsi->virt */
- #define GSI_CH_C_CNTXT_0_OFFSET(ch) \
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index 6c0a05f55d6b..09e4d8a499a3 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -754,7 +754,7 @@ int remove_proc_subtree(const char *name, struct proc_dir_entry *parent)
+ 	while (1) {
+ 		next = pde_subdir_first(de);
+ 		if (next) {
+-			if (unlikely(pde_is_permanent(root))) {
++			if (unlikely(pde_is_permanent(next))) {
+ 				write_unlock(&proc_subdir_lock);
+ 				WARN(1, "removing permanent /proc entry '%s/%s'",
+ 					next->parent->name, next->name);
 -- 
 2.30.2
 
