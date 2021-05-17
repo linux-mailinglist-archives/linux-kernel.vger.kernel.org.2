@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F69F383786
+	by mail.lfdr.de (Postfix) with ESMTP id A8392383787
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344468AbhEQPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:44:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51532 "EHLO mail.kernel.org"
+        id S1344491AbhEQPos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:44:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243611AbhEQP1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:27:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A91F61CAF;
-        Mon, 17 May 2021 14:36:43 +0000 (UTC)
+        id S244213AbhEQP1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:27:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6B2461CB1;
+        Mon, 17 May 2021 14:36:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262203;
-        bh=rT3wyvJlgHTyoEDQhF1w6rnDbcmpWsfqhSKDDCR+MFI=;
+        s=korg; t=1621262208;
+        bh=w1aeMm/kiwVrQe6PqJGVYcg9a6t6R3ZxK/2ZEZIDo5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J385JiVpy7q4e19cI0aSufETNlFAWzuz1yBYuN20Nay3p65MhtUVC+sltlkTKrLek
-         56W3Fztr4APGvUEdxDSN9PFA+jfQ2CdqPFipTsgfTbEOoShlE9PY+ayW9hnpm/7UaP
-         mZeumniK1P6k+KBgI4O5Lf1bK+Lx4RnZ6zn8wPS8=
+        b=STomcj7ZRpD/80Kf8Yhbg9P2FIFftEVu3xb58k5bbliKnNa16pGCfucF/MwOW6HKp
+         QWOkF2HkLTJbLlxNy1d+yqwMzTyOf5jtXd+xWAewSXEMYeL+z4zkb2w51I8kaQomeo
+         m0g6lrIuRV34KO5douxQRd+sy2WqPv/otZDRziXY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        George Popescu <georgepope@android.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
+        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.11 238/329] kasan: fix unit tests with CONFIG_UBSAN_LOCAL_BOUNDS enabled
-Date:   Mon, 17 May 2021 16:02:29 +0200
-Message-Id: <20210517140310.167568236@linuxfoundation.org>
+Subject: [PATCH 5.11 239/329] mm/hugetlb: fix F_SEAL_FUTURE_WRITE
+Date:   Mon, 17 May 2021 16:02:30 +0200
+Message-Id: <20210517140310.201000694@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -45,96 +43,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Collingbourne <pcc@google.com>
+From: Peter Xu <peterx@redhat.com>
 
-commit f649dc0e0d7b509c75570ee403723660f5b72ec7 upstream.
+commit 22247efd822e6d263f3c8bd327f3f769aea9b1d9 upstream.
 
-These tests deliberately access these arrays out of bounds, which will
-cause the dynamic local bounds checks inserted by
-CONFIG_UBSAN_LOCAL_BOUNDS to fail and panic the kernel.  To avoid this
-problem, access the arrays via volatile pointers, which will prevent the
-compiler from being able to determine the array bounds.
+Patch series "mm/hugetlb: Fix issues on file sealing and fork", v2.
 
-These accesses use volatile pointers to char (char *volatile) rather than
-the more conventional pointers to volatile char (volatile char *) because
-we want to prevent the compiler from making inferences about the pointer
-itself (i.e.  its array bounds), not the data that it refers to.
+Hugh reported issue with F_SEAL_FUTURE_WRITE not applied correctly to
+hugetlbfs, which I can easily verify using the memfd_test program, which
+seems that the program is hardly run with hugetlbfs pages (as by default
+shmem).
 
-Link: https://lkml.kernel.org/r/20210507025915.1464056-1-pcc@google.com
-Link: https://linux-review.googlesource.com/id/I90b1713fbfa1bf68ff895aef099ea77b98a7c3b9
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Tested-by: Alexander Potapenko <glider@google.com>
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Peter Collingbourne <pcc@google.com>
-Cc: George Popescu <georgepope@android.com>
-Cc: Elena Petrova <lenaptr@google.com>
-Cc: Evgenii Stepanov <eugenis@google.com>
+Meanwhile I found another probably even more severe issue on that hugetlb
+fork won't wr-protect child cow pages, so child can potentially write to
+parent private pages.  Patch 2 addresses that.
+
+After this series applied, "memfd_test hugetlbfs" should start to pass.
+
+This patch (of 2):
+
+F_SEAL_FUTURE_WRITE is missing for hugetlb starting from the first day.
+There is a test program for that and it fails constantly.
+
+$ ./memfd_test hugetlbfs
+memfd-hugetlb: CREATE
+memfd-hugetlb: BASIC
+memfd-hugetlb: SEAL-WRITE
+memfd-hugetlb: SEAL-FUTURE-WRITE
+mmap() didn't fail as expected
+Aborted (core dumped)
+
+I think it's probably because no one is really running the hugetlbfs test.
+
+Fix it by checking FUTURE_WRITE also in hugetlbfs_file_mmap() as what we
+do in shmem_mmap().  Generalize a helper for that.
+
+Link: https://lkml.kernel.org/r/20210503234356.9097-1-peterx@redhat.com
+Link: https://lkml.kernel.org/r/20210503234356.9097-2-peterx@redhat.com
+Fixes: ab3948f58ff84 ("mm/memfd: add an F_SEAL_FUTURE_WRITE seal to memfd")
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/test_kasan.c |   29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
+ fs/hugetlbfs/inode.c |    5 +++++
+ include/linux/mm.h   |   32 ++++++++++++++++++++++++++++++++
+ mm/shmem.c           |   22 ++++------------------
+ 3 files changed, 41 insertions(+), 18 deletions(-)
 
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -449,8 +449,20 @@ static char global_array[10];
- 
- static void kasan_global_oob(struct kunit *test)
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -131,6 +131,7 @@ static void huge_pagevec_release(struct
+ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
  {
--	volatile int i = 3;
--	char *p = &global_array[ARRAY_SIZE(global_array) + i];
-+	/*
-+	 * Deliberate out-of-bounds access. To prevent CONFIG_UBSAN_LOCAL_BOUNDS
-+	 * from failing here and panicing the kernel, access the array via a
-+	 * volatile pointer, which will prevent the compiler from being able to
-+	 * determine the array bounds.
-+	 *
-+	 * This access uses a volatile pointer to char (char *volatile) rather
-+	 * than the more conventional pointer to volatile char (volatile char *)
-+	 * because we want to prevent the compiler from making inferences about
-+	 * the pointer itself (i.e. its array bounds), not the data that it
-+	 * refers to.
-+	 */
-+	char *volatile array = global_array;
-+	char *p = &array[ARRAY_SIZE(global_array) + 3];
+ 	struct inode *inode = file_inode(file);
++	struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
+ 	loff_t len, vma_len;
+ 	int ret;
+ 	struct hstate *h = hstate_file(file);
+@@ -146,6 +147,10 @@ static int hugetlbfs_file_mmap(struct fi
+ 	vma->vm_flags |= VM_HUGETLB | VM_DONTEXPAND;
+ 	vma->vm_ops = &hugetlb_vm_ops;
  
- 	/* Only generic mode instruments globals. */
- 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-@@ -479,8 +491,9 @@ static void ksize_unpoisons_memory(struc
- static void kasan_stack_oob(struct kunit *test)
++	ret = seal_check_future_write(info->seals, vma);
++	if (ret)
++		return ret;
++
+ 	/*
+ 	 * page based offset in vm_pgoff could be sufficiently large to
+ 	 * overflow a loff_t when converted to byte offset.  This can
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3191,5 +3191,37 @@ unsigned long wp_shared_mapping_range(st
+ 
+ extern int sysctl_nr_trim_pages;
+ 
++/**
++ * seal_check_future_write - Check for F_SEAL_FUTURE_WRITE flag and handle it
++ * @seals: the seals to check
++ * @vma: the vma to operate on
++ *
++ * Check whether F_SEAL_FUTURE_WRITE is set; if so, do proper check/handling on
++ * the vma flags.  Return 0 if check pass, or <0 for errors.
++ */
++static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
++{
++	if (seals & F_SEAL_FUTURE_WRITE) {
++		/*
++		 * New PROT_WRITE and MAP_SHARED mmaps are not allowed when
++		 * "future write" seal active.
++		 */
++		if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
++			return -EPERM;
++
++		/*
++		 * Since an F_SEAL_FUTURE_WRITE sealed memfd can be mapped as
++		 * MAP_SHARED and read-only, take care to not allow mprotect to
++		 * revert protections on such mappings. Do this only for shared
++		 * mappings. For private mappings, don't need to mask
++		 * VM_MAYWRITE as we still want them to be COW-writable.
++		 */
++		if (vma->vm_flags & VM_SHARED)
++			vma->vm_flags &= ~(VM_MAYWRITE);
++	}
++
++	return 0;
++}
++
+ #endif /* __KERNEL__ */
+ #endif /* _LINUX_MM_H */
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2256,25 +2256,11 @@ out_nomem:
+ static int shmem_mmap(struct file *file, struct vm_area_struct *vma)
  {
- 	char stack_array[10];
--	volatile int i = OOB_TAG_OFF;
--	char *p = &stack_array[ARRAY_SIZE(stack_array) + i];
-+	/* See comment in kasan_global_oob. */
-+	char *volatile array = stack_array;
-+	char *p = &array[ARRAY_SIZE(stack_array) + OOB_TAG_OFF];
+ 	struct shmem_inode_info *info = SHMEM_I(file_inode(file));
++	int ret;
  
- 	if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
- 		kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
-@@ -494,7 +507,9 @@ static void kasan_alloca_oob_left(struct
- {
- 	volatile int i = 10;
- 	char alloca_array[i];
--	char *p = alloca_array - 1;
-+	/* See comment in kasan_global_oob. */
-+	char *volatile array = alloca_array;
-+	char *p = array - 1;
+-	if (info->seals & F_SEAL_FUTURE_WRITE) {
+-		/*
+-		 * New PROT_WRITE and MAP_SHARED mmaps are not allowed when
+-		 * "future write" seal active.
+-		 */
+-		if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
+-			return -EPERM;
+-
+-		/*
+-		 * Since an F_SEAL_FUTURE_WRITE sealed memfd can be mapped as
+-		 * MAP_SHARED and read-only, take care to not allow mprotect to
+-		 * revert protections on such mappings. Do this only for shared
+-		 * mappings. For private mappings, don't need to mask
+-		 * VM_MAYWRITE as we still want them to be COW-writable.
+-		 */
+-		if (vma->vm_flags & VM_SHARED)
+-			vma->vm_flags &= ~(VM_MAYWRITE);
+-	}
++	ret = seal_check_future_write(info->seals, vma);
++	if (ret)
++		return ret;
  
- 	/* Only generic mode instruments dynamic allocas. */
- 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-@@ -514,7 +529,9 @@ static void kasan_alloca_oob_right(struc
- {
- 	volatile int i = 10;
- 	char alloca_array[i];
--	char *p = alloca_array + i;
-+	/* See comment in kasan_global_oob. */
-+	char *volatile array = alloca_array;
-+	char *p = array + i;
- 
- 	/* Only generic mode instruments dynamic allocas. */
- 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+ 	/* arm64 - allow memory tagging on RAM-based files */
+ 	vma->vm_flags |= VM_MTE_ALLOWED;
 
 
