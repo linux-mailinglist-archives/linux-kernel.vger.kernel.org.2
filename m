@@ -2,338 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619AD382622
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340883825D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbhEQIBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:01:18 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3713 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235517AbhEQIAO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:00:14 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FkBK82n9Xz16RD3;
-        Mon, 17 May 2021 15:56:12 +0800 (CST)
-Received: from dggema704-chm.china.huawei.com (10.3.20.68) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 15:58:56 +0800
-Received: from localhost.localdomain (10.67.165.2) by
- dggema704-chm.china.huawei.com (10.3.20.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 17 May 2021 15:58:56 +0800
-From:   Yang Shen <shenyang39@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yang Shen <shenyang39@huawei.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>
-Subject: [PATCH v2 24/24] net: hisilicon: hns: Fix wrong function name in comments
-Date:   Mon, 17 May 2021 12:45:35 +0800
-Message-ID: <20210517044535.21473-25-shenyang39@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210517044535.21473-1-shenyang39@huawei.com>
-References: <20210517044535.21473-1-shenyang39@huawei.com>
+        id S234382AbhEQHvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:51:05 -0400
+Received: from ms-10.1blu.de ([178.254.4.101]:38910 "EHLO ms-10.1blu.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230144AbhEQHvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:51:02 -0400
+X-Greylist: delayed 3627 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 May 2021 03:51:02 EDT
+Received: from [87.102.202.253] (helo=[192.168.1.92])
+        by ms-10.1blu.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <joerg.sigle@jsigle.com>)
+        id 1liX3z-00018V-L9; Mon, 17 May 2021 08:49:15 +0200
+Subject: [PATCH] iommu/vt-d: Fix kernel panic caused by 416fa531c816: Preset
+ Access/Dirty bits for IOVA over FL
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, joro@8bytes.org,
+        sashal@kernel.org, linux-kernel@vger.kernel.org
+References: <bug-213077-5531-kGNQn2oCe1@https.bugzilla.kernel.org/>
+ <8f485610-7560-239f-207b-cda3234869f2@jsigle.com>
+ <041d48f5-0c3c-a435-1980-33492c377e8b@linux.intel.com>
+From:   "Joerg M. Sigle" <joerg.sigle@jsigle.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=joerg.sigle@jsigle.com; prefer-encrypt=mutual; keydata=
+ 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
+ 8PuOAKC9roFUBE+MA3ttuTAdqMIxhIo1cw==
+To:     bp@alien8.de
+Message-ID: <095f9639-2708-48bf-bf56-57ab0866dcee@jsigle.com>
+Date:   Mon, 17 May 2021 08:49:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema704-chm.china.huawei.com (10.3.20.68)
-X-CFilter-Loop: Reflected
+In-Reply-To: <041d48f5-0c3c-a435-1980-33492c377e8b@linux.intel.com>
+Content-Type: multipart/mixed;
+ boundary="------------B30AAE90B5865B3ACE0C512C"
+Content-Language: de-DE-1901
+X-Con-Id: 102464
+X-Con-U: 0-joergsigle
+X-Originating-IP: 87.102.202.253
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+This is a multi-part message in MIME format.
+--------------B30AAE90B5865B3ACE0C512C
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c:121: warning: expecting prototype for hns_mac_is_adjust_link(). Prototype was for hns_mac_need_adjust_link() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c:386: warning: expecting prototype for hns_mac_queue_config_bc_en(). Prototype was for hns_mac_port_config_bc_en() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c:607: warning: expecting prototype for hns_mac_set_autoneg(). Prototype was for hns_mac_set_pauseparam() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:236: warning: expecting prototype for hns_ppe_qid_cfg(). Prototype was for hns_dsaf_ppe_qid_cfg() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:623: warning: expecting prototype for dsaf_tbl_tcam_mcast_cfg(). Prototype was for hns_dsaf_tbl_tcam_mcast_cfg() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:1220: warning: expecting prototype for hns_dsaf_tbl_tcam_init(). Prototype was for hns_dsaf_comm_init() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:2121: warning: expecting prototype for dsaf_pfc_unit_cnt(). Prototype was for hns_dsaf_pfc_unit_cnt() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:2153: warning: expecting prototype for dsaf_port_work_rate_cfg(). Prototype was for hns_dsaf_port_work_rate_cfg() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:2745: warning: expecting prototype for hns_dsaf_get_sset_count(). Prototype was for hns_dsaf_get_regs_count() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:2957: warning: expecting prototype for dsaf_probe(). Prototype was for hns_dsaf_probe() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:3011: warning: expecting prototype for dsaf_remove(). Prototype was for hns_dsaf_remove() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c:366: warning: expecting prototype for hns_dsaf_srst_chns(). Prototype was for hns_dsaf_srst_chns_acpi() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c:509: warning: expecting prototype for hns_mac_get_sds_mode(). Prototype was for hns_mac_get_phy_if() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c:303: warning: expecting prototype for ppe_init_hw(). Prototype was for hns_ppe_init_hw() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c:350: warning: expecting prototype for ppe_uninit_hw(). Prototype was for hns_ppe_uninit_hw() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c:391: warning: expecting prototype for hns_ppe_reset(). Prototype was for hns_ppe_reset_common() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c:464: warning: expecting prototype for ppe_get_strings(). Prototype was for hns_ppe_get_strings() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c:920: warning: expecting prototype for rcb_get_sset_count(). Prototype was for hns_rcb_get_ring_regs_count() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c:112: warning: expecting prototype for hns_xgmac_tx_lf_rf_insert(). Prototype was for hns_xgmac_lf_rf_insert() instead
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c:122: warning: expecting prototype for hns_xgmac__lf_rf_control_init(). Prototype was for hns_xgmac_lf_rf_control_init() instead
- drivers/net/ethernet/hisilicon/hns/hns_enet.c:777: warning: expecting prototype for hns_nic_adp_coalesce(). Prototype was for hns_nic_adpt_coalesce() instead
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c:202: warning: expecting prototype for hns_nic_set_link_settings(). Prototype was for hns_nic_set_link_ksettings() instead
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c:837: warning: expecting prototype for get_ethtool_stats(). Prototype was for hns_get_ethtool_stats() instead
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c:894: warning: expecting prototype for get_strings(). Prototype was for hns_get_strings() instead
+From: Joerg M. Sigle <joerg.sigle@jsigle.com>
 
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>
-Cc: Salil Mehta <salil.mehta@huawei.com>
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
+Patch 416fa531c816 commit 416fa531c8160151090206a51b829b9218b804d9 caused
+an immediate kernel panic on boot at RIP: 0010:__domain_mapping+0xa7/0x3a0
+with longterm kernel 5.10.37 configured w/ CONFIG_INTEL_IOMMU_DEFAULT_ON=y
+due to removal of a check. Putting the check back in place fixes this.
+The kernel panic was observed on various Intel Core i7 i5 i3 CPUs from
+Sandy Bridge, Haswell, Broadwell and Kaby Lake generations (at least).
+It may NOT be reproducible on some older CPU generations.
+Suppressing the panic with boot parameter intel_iommu=off is diagnostic.
+See: https://bugzilla.kernel.org/show_bug.cgi?id=213077
+https://bugzilla.kernel.org/show_bug.cgi?id=213087
+https://bugzilla.kernel.org/show_bug.cgi?id=213095
+
+Signed-off-by: Joerg M. Sigle <joerg.sigle@jsigle.com>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+
 ---
- .../net/ethernet/hisilicon/hns/hns_dsaf_mac.c    |  6 +++---
- .../net/ethernet/hisilicon/hns/hns_dsaf_main.c   | 16 ++++++++--------
- .../net/ethernet/hisilicon/hns/hns_dsaf_misc.c   |  4 ++--
- .../net/ethernet/hisilicon/hns/hns_dsaf_ppe.c    |  8 ++++----
- .../net/ethernet/hisilicon/hns/hns_dsaf_rcb.c    |  2 +-
- .../net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c  |  4 ++--
- drivers/net/ethernet/hisilicon/hns/hns_enet.c    |  2 +-
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c |  6 +++---
- 8 files changed, 24 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-index de6f051f5b0b..f41379de2186 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-@@ -111,7 +111,7 @@ int hns_mac_get_port_info(struct hns_mac_cb *mac_cb,
- }
- 
- /**
-- *hns_mac_is_adjust_link - check is need change mac speed and duplex register
-+ *hns_mac_need_adjust_link - check is need change mac speed and duplex register
-  *@mac_cb: mac device
-  *@speed: phy device speed
-  *@duplex:phy device duplex
-@@ -374,7 +374,7 @@ static void hns_mac_param_get(struct mac_params *param,
- }
- 
- /**
-- * hns_mac_queue_config_bc_en - set broadcast rx&tx enable
-+ * hns_mac_port_config_bc_en - set broadcast rx&tx enable
-  * @mac_cb: mac device
-  * @port_num: queue number
-  * @vlan_id: vlan id`
-@@ -597,7 +597,7 @@ int hns_mac_set_autoneg(struct hns_mac_cb *mac_cb, u8 enable)
- }
- 
- /**
-- * hns_mac_set_autoneg - set rx & tx pause parameter
-+ * hns_mac_set_pauseparam - set rx & tx pause parameter
-  * @mac_cb: mac control block
-  * @rx_en: rx enable or not
-  * @tx_en: tx enable or not
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c
-index c2a60612f503..fcaf5132b865 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c
-@@ -227,7 +227,7 @@ hns_dsaf_reg_cnt_clr_ce(struct dsaf_device *dsaf_dev, u32 reg_cnt_clr_ce)
- }
- 
- /**
-- * hns_ppe_qid_cfg - config ppe qid
-+ * hns_dsaf_ppe_qid_cfg - config ppe qid
-  * @dsaf_dev: dsa fabric id
-  * @qid_cfg: value array
-  */
-@@ -613,7 +613,7 @@ static void hns_dsaf_tbl_tcam_data_cfg(
- }
- 
- /**
-- * dsaf_tbl_tcam_mcast_cfg - tbl
-+ * hns_dsaf_tbl_tcam_mcast_cfg - tbl
-  * @dsaf_dev: dsa fabric id
-  * @mcast: addr
-  */
-@@ -1213,7 +1213,7 @@ void hns_dsaf_get_rx_mac_pause_en(struct dsaf_device *dsaf_dev, int mac_id,
- }
- 
- /**
-- * hns_dsaf_tbl_tcam_init - INT
-+ * hns_dsaf_comm_init - INT
-  * @dsaf_dev: dsa fabric id
-  */
- static void hns_dsaf_comm_init(struct dsaf_device *dsaf_dev)
-@@ -2111,7 +2111,7 @@ static void hns_dsaf_free_dev(struct dsaf_device *dsaf_dev)
- }
- 
- /**
-- * dsaf_pfc_unit_cnt - set pfc unit count
-+ * hns_dsaf_pfc_unit_cnt - set pfc unit count
-  * @dsaf_dev: dsa fabric id
-  * @mac_id: id in use
-  * @rate:  value array
-@@ -2142,7 +2142,7 @@ static void hns_dsaf_pfc_unit_cnt(struct dsaf_device *dsaf_dev, int  mac_id,
- }
- 
- /**
-- * dsaf_port_work_rate_cfg - fifo
-+ * hns_dsaf_port_work_rate_cfg - fifo
-  * @dsaf_dev: dsa fabric id
-  * @mac_id: mac contrl block
-  * @rate_mode: value array
-@@ -2738,7 +2738,7 @@ void hns_dsaf_get_strings(int stringset, u8 *data, int port,
- }
- 
- /**
-- *hns_dsaf_get_sset_count - get dsaf regs count
-+ *hns_dsaf_get_regs_count - get dsaf regs count
-  *return dsaf regs count
-  */
- int hns_dsaf_get_regs_count(void)
-@@ -2949,7 +2949,7 @@ int hns_dsaf_wait_pkt_clean(struct dsaf_device *dsaf_dev, int port)
- }
- 
- /**
-- * dsaf_probe - probo dsaf dev
-+ * hns_dsaf_probe - probo dsaf dev
-  * @pdev: dasf platform device
-  * return 0 - success , negative --fail
-  */
-@@ -3004,7 +3004,7 @@ static int hns_dsaf_probe(struct platform_device *pdev)
- }
- 
- /**
-- * dsaf_remove - remove dsaf dev
-+ * hns_dsaf_remove - remove dsaf dev
-  * @pdev: dasf platform device
-  */
- static int hns_dsaf_remove(struct platform_device *pdev)
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
-index 1eaac89d60b7..23d9cbf262c3 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
-@@ -351,7 +351,7 @@ hns_dsaf_srst_chns(struct dsaf_device *dsaf_dev, u32 msk, bool dereset)
- }
- 
- /**
-- * hns_dsaf_srst_chns - reset dsaf channels
-+ * hns_dsaf_srst_chns_acpi - reset dsaf channels
-  * @dsaf_dev: dsaf device struct pointer
-  * @msk: xbar channels mask value:
-  * @dereset: false - request reset , true - drop reset
-@@ -501,7 +501,7 @@ static void hns_ppe_com_srst(struct dsaf_device *dsaf_dev, bool dereset)
- }
- 
- /**
-- * hns_mac_get_sds_mode - get phy ifterface form serdes mode
-+ * hns_mac_get_phy_if - get phy ifterface form serdes mode
-  * @mac_cb: mac control block
-  * retuen phy interface
-  */
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c
-index ff03cafccb66..a7eb87da4e70 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c
-@@ -296,7 +296,7 @@ int hns_ppe_wait_tx_fifo_clean(struct hns_ppe_cb *ppe_cb)
- }
- 
- /**
-- * ppe_init_hw - init ppe
-+ * hns_ppe_init_hw - init ppe
-  * @ppe_cb: ppe device
-  */
- static void hns_ppe_init_hw(struct hns_ppe_cb *ppe_cb)
-@@ -343,7 +343,7 @@ static void hns_ppe_init_hw(struct hns_ppe_cb *ppe_cb)
- }
- 
- /**
-- * ppe_uninit_hw - uninit ppe
-+ * hns_ppe_uninit_hw - uninit ppe
-  * @ppe_cb: ppe device
-  */
- static void hns_ppe_uninit_hw(struct hns_ppe_cb *ppe_cb)
-@@ -382,7 +382,7 @@ void hns_ppe_uninit(struct dsaf_device *dsaf_dev)
- }
- 
- /**
-- * hns_ppe_reset - reinit ppe/rcb hw
-+ * hns_ppe_reset_common - reinit ppe/rcb hw
-  * @dsaf_dev: dasf device
-  * @ppe_common_index: the index
-  * return void
-@@ -455,7 +455,7 @@ int hns_ppe_get_regs_count(void)
- }
- 
- /**
-- * ppe_get_strings - get ppe srting
-+ * hns_ppe_get_strings - get ppe srting
-  * @ppe_cb: ppe device
-  * @stringset: string set type
-  * @data: output string
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c
-index 5d5dc6942232..e2ff3ca198d1 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c
-@@ -913,7 +913,7 @@ int hns_rcb_get_common_regs_count(void)
- }
- 
- /**
-- *rcb_get_sset_count - rcb ring regs count
-+ *hns_rcb_get_ring_regs_count - rcb ring regs count
-  *return regs count
-  */
- int hns_rcb_get_ring_regs_count(void)
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c
-index be52acd448f9..401fef5f1d07 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c
-@@ -104,7 +104,7 @@ static void hns_xgmac_rx_enable(struct mac_driver *drv, u32 value)
- }
- 
- /**
-- * hns_xgmac_tx_lf_rf_insert - insert lf rf control about xgmac
-+ * hns_xgmac_lf_rf_insert - insert lf rf control about xgmac
-  * @mac_drv: mac driver
-  * @mode: inserf rf or lf
-  */
-@@ -115,7 +115,7 @@ static void hns_xgmac_lf_rf_insert(struct mac_driver *mac_drv, u32 mode)
- }
- 
- /**
-- * hns_xgmac__lf_rf_control_init - initial the lf rf control register
-+ * hns_xgmac_lf_rf_control_init - initial the lf rf control register
-  * @mac_drv: mac driver
-  */
- static void hns_xgmac_lf_rf_control_init(struct mac_driver *mac_drv)
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_enet.c b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-index 5e349c0bdecc..ad534f9e41ab 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-@@ -770,7 +770,7 @@ static u32 smooth_alg(u32 new_param, u32 old_param)
- }
- 
- /**
-- * hns_nic_adp_coalesce - self adapte coalesce according to rx rate
-+ * hns_nic_adpt_coalesce - self adapte coalesce according to rx rate
-  * @ring_data: pointer to hns_nic_ring_data
-  **/
- static void hns_nic_adpt_coalesce(struct hns_nic_ring_data *ring_data)
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-index da48c05435ea..7e62dcff2426 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-@@ -192,7 +192,7 @@ static int hns_nic_get_link_ksettings(struct net_device *net_dev,
- }
- 
- /**
-- *hns_nic_set_link_settings - implement ethtool set link ksettings
-+ *hns_nic_set_link_ksettings - implement ethtool set link ksettings
-  *@net_dev: net_device
-  *@cmd: ethtool_link_ksettings
-  *retuen 0 - success , negative --fail
-@@ -827,7 +827,7 @@ hns_get_channels(struct net_device *net_dev, struct ethtool_channels *ch)
- }
- 
- /**
-- * get_ethtool_stats - get detail statistics.
-+ * hns_get_ethtool_stats - get detail statistics.
-  * @netdev: net device
-  * @stats: statistics info.
-  * @data: statistics data.
-@@ -885,7 +885,7 @@ static void hns_get_ethtool_stats(struct net_device *netdev,
- }
- 
- /**
-- * get_strings: Return a set of strings that describe the requested objects
-+ * hns_get_strings: Return a set of strings that describe the requested objects
-  * @netdev: net device
-  * @stringset: string set ID.
-  * @data: objects data.
+Dear colleagues,
+
+Please find the suggested patch in the attachment, now reformatted to include the affected C function.
+It fixes a problem in LT kernel 5.10.37; I'm asking for inclusion into LT kernel 5.10.38.
+
+I'm submitting this now, after receiving Lu Baolu's positive response attached below.
+Baolu, I hope that the line "Acked-by: Lu Baolu ..." is ok given your comment.
+
+I hope I'm providing this in a useful way, following
+https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html
+
+I'm still unsure whether this line should be added above:
+Cc: stable@vger.kernel.org
+Please add this if needed, also considering Baolu's comment re. upstream/backported.
+
+Thanks and kind regards to all! Joerg
+
+
+Am 17.05.2021 um 04:51 schrieb Lu Baolu:
+> Hi Joerg,
+> 
+> On 5/16/21 7:57 AM, Joerg M. Sigle wrote:
+>> Dear colleagues at Intel
+>>
+>> could you please check the enclosed bug report
+>> and confirm whether the suggested patch is valid.
+>>
+>> Thank you very much & kind regards - Joerg
+>>
+>>
+>> -------- Weitergeleitete Nachricht --------
+>> From: bugzilla-daemon@bugzilla.kernel.org
+>> To: joerg.sigle@jsigle.com
+>> Subject: [Bug 213077] Kernel 5.10.37 immediately panics at boot w/ Intel Core i7-4910MQ Haswell or Core i3-5010U Broadwell w/ custom .config CONFIG_INTEL_IOMMU_DEFAULT_ON=y, same config worked with 5.10.36, due to commit 416fa531c816 =
+>> a8ce9ebbecdfda3322bbcece6b3b25888217f8e3
+>> Date: Sat, 15 May 2021 23:47:39 +0000
+>> X-Envelope-To: joerg.sigle@jsigle.com
+>>
+>> https://bugzilla.kernel.org/show_bug.cgi?id=213077
+>>
+>> --- Comment #7 from Joerg M. Sigle (joerg.sigle@jsigle.com) ---
+>> This patch:
+>>
+>> 416fa531c816 iommu/vt-d: Preset Access/Dirty bits for IOVA over FL
+>> commit 416fa531c8160151090206a51b829b9218b804d9
+>> Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3
+>>
+>> https://github.com/arter97/x86-kernel/commit/416fa531c8160151090206a51b829b9218b804d9
+>>
+>> while doing other things, changed the conditional:
+>>
+>> if (!sg) { ...
+>>          sg_res = nr_pages;
+>>          pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
+>> }
+>>
+>> to an unconditional:
+>>
+>> pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
+>>
+>> Reinserting the check for !sg fixed the immediate panic on boot for me.
+>> Reverting the remainder of the same patch had not helped before.
+>>
+>> Here's a possible patch for 5.10.37:
+>>
+>> -------------------------------------------------------------------------
+>> --- a/drivers/iommu/intel/iommu.c       2021-05-14 09:50:46.000000000 +0200
+>> +++ b/drivers/iommu/intel/iommu.c       2021-05-16 01:02:17.816810690 +0200
+>> @@ -2373,7 +2373,10 @@
+>>                  }
+>>          }
+>>
+>> -       pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
+>> +        if (!sg) {
+>> +                sg_res = nr_pages;
+>> +                pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
+>> +       }
+>>
+>>          while (nr_pages > 0) {
+>>                  uint64_t tmp;
+>> -------------------------------------------------------------------------
+>>
+>> Could you please check this patch submission and pass it to upstream?
+> 
+> 
+> Above fix looks good to me.
+> 
+> This issue is caused by the back-ported patch for stable v5.10.37.
+> There's no need for upstream.
+> 
+> Best regards,
+> baolu
+> 
+>>
+>> I have, however, NOT tried to understand what the code really does.
+>> So please ask the suppliers of patch 416fa531c816 whether their
+>> removal of the condition was intentional or a mere lapsus. Thanks!
+>>
+>> Thanks and kind regards, Joerg
+>>
+> 
+
 -- 
-2.17.1
+-------------------------------------------------------------------
+Dr. med. Jörg M. Sigle                             +41 76 276 86 94
+http://www.ql-recorder.com                         +41 32 510 23 46
+http://www.jsigle.com                           +49 176 96 43 54 13
 
+--------------B30AAE90B5865B3ACE0C512C
+Content-Type: text/plain; charset=UTF-8;
+ name="patch-to-LinuxKernelLT5.10.37-iommuvtd-FixKernelPanicBy416fa531c816-202105160112js.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename*0="patch-to-LinuxKernelLT5.10.37-iommuvtd-FixKernelPanicBy416fa";
+ filename*1="531c816-202105160112js.txt"
+
+LS0tIGEvZHJpdmVycy9pb21tdS9pbnRlbC9pb21tdS5jCTIwMjEtMDUtMTQgMDk6NTA6NDYu
+MDAwMDAwMDAwICswMjAwCisrKyBiL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUuYwkyMDIx
+LTA1LTE2IDAxOjAyOjE3LjgxNjgxMDY5MCArMDIwMApAQCAtMjM3Myw3ICsyMzczLDEwIEBA
+IHN0YXRpYyBpbnQgX19kb21haW5fbWFwcGluZyhzdHJ1Y3QgZG1hcl8KIAkJfQogCX0KIAot
+CXB0ZXZhbCA9ICgocGh5c19hZGRyX3QpcGh5c19wZm4gPDwgVlREX1BBR0VfU0hJRlQpIHwg
+YXR0cjsKKwlpZiAoIXNnKSB7CisgICAgICAgICAgICAgICAgc2dfcmVzID0gbnJfcGFnZXM7
+CisgICAgICAgICAgICAgICAgcHRldmFsID0gKChwaHlzX2FkZHJfdClwaHlzX3BmbiA8PCBW
+VERfUEFHRV9TSElGVCkgfCBhdHRyOworCX0KIAogCXdoaWxlIChucl9wYWdlcyA+IDApIHsK
+IAkJdWludDY0X3QgdG1wOwo=
+--------------B30AAE90B5865B3ACE0C512C--
