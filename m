@@ -2,92 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA638382583
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357C2382587
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235365AbhEQHmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:42:11 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39144 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235372AbhEQHmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:42:07 -0400
-IronPort-SDR: xOtvbQFr+fQ7ysoF0Qyr0/UjqYfma1O+DgvEFFFgEfpKvvdliRDV7SyBoSS3TTCsLaJYegWOOJ
- 87Xx0X2YxC6w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="264325837"
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="264325837"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:40:21 -0700
-IronPort-SDR: dAdRdi1OZ5hYiaAOKuAJ+aXMdn8EvNAmqlwk8yOthuSmQObcW+7vxdJWYeB+ExP3s5BHlOQQZY
- uiPmqDz6lwUA==
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="403951583"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:40:16 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1liXrI-00CgkM-82; Mon, 17 May 2021 10:40:12 +0300
-Date:   Mon, 17 May 2021 10:40:12 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        mihai.carabas@oracle.com, pizhenwei@bytedance.com,
-        pbonzini@redhat.com, bobo.shaobowang@huawei.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] misc/pvpanic: Fix error handling in
- 'pvpanic_mmio_probe()'
-Message-ID: <YKId3AuQgQiQFY/q@smile.fi.intel.com>
-References: <d6e7bf6eb6e482c387124e815edc0e0edaebafe8.1621177126.git.christophe.jaillet@wanadoo.fr>
+        id S235375AbhEQHmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235372AbhEQHm2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:42:28 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7155CC061761
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:40:57 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id n2so7684466ejy.7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B8FVvdrYV7pRJNP/rUxfxaSr7LQz2pvmtedFAKqPA5s=;
+        b=CSFvg+tjQEVYhc705mOMRwpzk8Gqt8xv+H0Ikr17UUGkrdXsoTWL0M/0aboeQW7SL0
+         WGnU4bdI0p5NbtPBxoIeo/1cgqFGkNieW6G7xHDeOo+2I+gaAhQxABCrVRSNg5NWzPMn
+         3o9RmP2fWWxIhM54sngD7vFBAb3B0wP539qc0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=B8FVvdrYV7pRJNP/rUxfxaSr7LQz2pvmtedFAKqPA5s=;
+        b=grCD3f8Q7Fh/3fcWVIFJEOyPoTHdwq58sP8CoOepN5NblzXNbO5yuhzG1zbTGYQHUc
+         B+aYhrPsbaEVdsWKDLR8vp5PwLwyy2eRd0oEByrTBWkLKmSHCBLp2hp6R2T8U6gS43hh
+         Ts/s/QGxIi3hA/dUEzqevLVrJl4YfHL/l3Y2/awgRrT3s92KFVn8OMWnQnHSLN4cf9Ra
+         pquP+4Vop+wsdhlltfY1AhL5OB9/MxzWoneaMLJWHGbOlA5fEYktECwirwHZ9eJ+R+OX
+         FAUGfShP+dEMSnfUn/nvzFqKQjHdgCQvwTfkid4t7QtRDTqEEbvJp6zUcDfk1hUf5RXv
+         cnUw==
+X-Gm-Message-State: AOAM53085u+sZKEvRq+XpnR1TgET5qf0bOSt0FgEYttN1U5SzarljugO
+        fvZBHJLA9mPbrLJGAT1VF+sSDA==
+X-Google-Smtp-Source: ABdhPJxsNKvac4CwIYd6QJnPC6F9qO8I0E39FRtgpcmyeUqnVrz/aM5qdvLz6CPniRZqwmrChq++FA==
+X-Received: by 2002:a17:906:cb1:: with SMTP id k17mr60265688ejh.307.1621237256090;
+        Mon, 17 May 2021 00:40:56 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id p14sm6814861ejz.51.2021.05.17.00.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 00:40:55 -0700 (PDT)
+Date:   Mon, 17 May 2021 09:40:53 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+Message-ID: <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+Mail-Followup-To: Arnd Bergmann <arnd@arndb.de>,
+        Dave Airlie <airlied@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d6e7bf6eb6e482c387124e815edc0e0edaebafe8.1621177126.git.christophe.jaillet@wanadoo.fr>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 05:00:27PM +0200, Christophe JAILLET wrote:
-> There is no error handling path in the probe function.
-> Switch to managed resource so that errors in the probe are handled easily
-> and simplify the remove function accordingly.
-
-Either folded or separated, feel free to add to the result
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Fixes: b3c0f8774668 ("misc/pvpanic: probe multiple instances")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/misc/pvpanic/pvpanic-mmio.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
+> On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:
+> > > Dear kernel maintainers,
+> > >
+> > > This submission is a kernel driver to support Intel(R) Gaussian & Neural
+> > > Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-processor
+> > > available on multiple Intel platforms. AI developers and users can offload
+> > > continuous inference workloads to an Intel(R) GNA device in order to free
+> > > processor resources and save power. Noise reduction and speech recognition
+> > > are the examples of the workloads Intel(R) GNA deals with while its usage
+> > > is not limited to the two.
+> >
+> > How does this compare with the "nnpi" driver being proposed here:
+> >         https://lore.kernel.org/r/20210513085725.45528-1-guy.zadicario@intel.com
+> >
+> > Please work with those developers to share code and userspace api and
+> > tools.  Having the community review two totally different apis and
+> > drivers for the same type of functionality from the same company is
+> > totally wasteful of our time and energy.
 > 
-> diff --git a/drivers/misc/pvpanic/pvpanic-mmio.c b/drivers/misc/pvpanic/pvpanic-mmio.c
-> index 4c0841776087..69b31f7adf4f 100644
-> --- a/drivers/misc/pvpanic/pvpanic-mmio.c
-> +++ b/drivers/misc/pvpanic/pvpanic-mmio.c
-> @@ -93,7 +93,7 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
->  
-> -	pi = kmalloc(sizeof(*pi), GFP_ATOMIC);
-> +	pi = devm_kmalloc(dev, sizeof(*pi), GFP_ATOMIC);
->  	if (!pi)
->  		return -ENOMEM;
->  
-> @@ -114,7 +114,6 @@ static int pvpanic_mmio_remove(struct platform_device *pdev)
->  	struct pvpanic_instance *pi = dev_get_drvdata(&pdev->dev);
->  
->  	pvpanic_remove(pi);
-> -	kfree(pi);
->  
->  	return 0;
->  }
-> -- 
-> 2.30.2
-> 
+> Agreed, but I think we should go further than this and work towards a
+> subsystem across companies for machine learning and neural networks
+> accelerators for both inferencing and training.
 
+We have, it's called drivers/gpu. Feel free to rename to drivers/xpu or
+think G as in General, not Graphisc.
+
+> We have support for Intel habanalabs hardware in drivers/misc, and there are
+> countless hardware solutions out of tree that would hopefully go the same
+> way with an upstream submission and open source user space, including
+> 
+> - Intel/Mobileye EyeQ
+> - Intel/Movidius Keembay
+> - Nvidia NVDLA
+> - Gyrfalcon Lightspeeur
+> - Apple Neural Engine
+> - Google TPU
+> - Arm Ethos
+> 
+> plus many more that are somewhat less likely to gain fully open source
+> driver stacks.
+
+We also had this entire discussion 2 years ago with habanalabs. The
+hang-up is that drivers/gpu folks require fully open source userspace,
+including compiler and anything else you need to actually use the chip.
+Greg doesn't, he's happy if all he has is the runtime library with some
+tests.
+
+These two drivers here look a lot more like classic gpus than habanalabs
+did, at least from a quick look they operate with explicit buffer
+allocations/registration model. So even more reasons to just reuse all the
+stuff we have already. But also I don't expect these drivers here to come
+with open compilers, they never do, not initially at least before you
+started talking with the vendor. Hence I expect there'll be more
+drivers/totally-not-drm acceleration subsystem nonsense.
+
+Anyway this horse has been throughroughly beaten to death and more, the
+agreement is that accel drivers in drivers/misc must not use any gpu
+stuff, so that drivers/gpu people dont end up in a prickly situation they
+never signed up for. E.g. I removed some code sharing from habanalabs.
+This means interop between gpu and nn/ai drivers will be no-go until this
+is resolved, but *shrug*.
+
+Cheers, Daniel
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
