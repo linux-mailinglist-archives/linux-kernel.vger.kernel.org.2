@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46993833FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E125A383602
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242647AbhEQPEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:04:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49086 "EHLO mail.kernel.org"
+        id S244033AbhEQP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:27:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242131AbhEQOyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:54:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A157619AA;
-        Mon, 17 May 2021 14:24:42 +0000 (UTC)
+        id S243125AbhEQPNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:13:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A71E061261;
+        Mon, 17 May 2021 14:31:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261482;
-        bh=40hQnL67yDel9pKz/Y1QEu7i9cfHv98AEBna5R7P3s8=;
+        s=korg; t=1621261897;
+        bh=RCxLgN7/gkXsKhym5ThqqgbVTx9xWZPHnifZLnamMSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t4NqT+RoE3Q91loP832b1B6mc65bMMTHoFb236a3WSqytz97shk99fzEYdAcPrOwh
-         WOLrPCrnnYPQcLo89WZ8I40HfKUxS88nqCLeDwA3GocFsQZtCeMmSUInfmsLxsTBe2
-         d/WokNVeDt+Exn55IGnES6XRphM12GIjpfeUieAA=
+        b=PbccOHJrkUv8QIgZseGWFkgAgVmm81AB9ivPhsoCKrqwjRv6NLWZukmgzKGC0CxGk
+         nLu8peQwDAKgSjqQ30qxUA76F7d1/5Ct9P/yQIvB0pdQ+czyCUvIQqKXir0mLYVoeO
+         MRP+gJkoU/u8Mbm9HsEfVL3r+k/ncxSeG+fgh2fk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Stefan Assmann <sassmann@kpanic.de>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 096/329] crypto: ccp: Free SEV device if SEV init fails
+Subject: [PATCH 5.10 082/289] iavf: remove duplicate free resources calls
 Date:   Mon, 17 May 2021 16:00:07 +0200
-Message-Id: <20210517140305.377136747@linuxfoundation.org>
+Message-Id: <20210517140307.949046377@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Stefan Assmann <sassmann@kpanic.de>
 
-[ Upstream commit b61a9071dc72a3c709192c0c00ab87c2b3de1d94 ]
+[ Upstream commit 1a0e880b028f97478dc689e2900b312741d0d772 ]
 
-Free the SEV device if later initialization fails.  The memory isn't
-technically leaked as it's tracked in the top-level device's devres
-list, but unless the top-level device is removed, the memory won't be
-freed and is effectively leaked.
+Both iavf_free_all_tx_resources() and iavf_free_all_rx_resources() have
+already been called in the very same function.
+Remove the duplicate calls.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210406224952.4177376-2-seanjc@google.com>
-Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Stefan Assmann <sassmann@kpanic.de>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccp/sev-dev.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 5b82ba7acc7c..21caed429cc5 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -989,7 +989,7 @@ int sev_dev_init(struct psp_device *psp)
- 	if (!sev->vdata) {
- 		ret = -ENODEV;
- 		dev_err(dev, "sev: missing driver data\n");
--		goto e_err;
-+		goto e_sev;
- 	}
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index dc5b3c06d1e0..ebd08543791b 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -3899,8 +3899,6 @@ static void iavf_remove(struct pci_dev *pdev)
  
- 	psp_set_sev_irq_handler(psp, sev_irq_handler, sev);
-@@ -1004,6 +1004,8 @@ int sev_dev_init(struct psp_device *psp)
- 
- e_irq:
- 	psp_clear_sev_irq_handler(psp);
-+e_sev:
-+	devm_kfree(dev, sev);
- e_err:
- 	psp->sev_data = NULL;
- 
+ 	iounmap(hw->hw_addr);
+ 	pci_release_regions(pdev);
+-	iavf_free_all_tx_resources(adapter);
+-	iavf_free_all_rx_resources(adapter);
+ 	iavf_free_queues(adapter);
+ 	kfree(adapter->vf_res);
+ 	spin_lock_bh(&adapter->mac_vlan_list_lock);
 -- 
 2.30.2
 
