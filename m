@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D84383198
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB12038319A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239272AbhEQOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:37:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43788 "EHLO mail.kernel.org"
+        id S240034AbhEQOiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:38:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239487AbhEQOdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 408DF613EA;
-        Mon, 17 May 2021 14:16:25 +0000 (UTC)
+        id S240111AbhEQOdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D0761928;
+        Mon, 17 May 2021 14:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260985;
-        bh=rpLi6obJg7z+Xp2DoJtz1BqvPDpy3Mlmr1qOG2hQV2s=;
+        s=korg; t=1621260992;
+        bh=b3RxAnqZyvSpqfjl9rUegzuE+IJ21GBgWwQc2A7a/zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n05mDGUaJ3ZfVFnM6rB/bEuI9u7jjH6/PXKR9SRskzsLQw/8YkG+Aonb/n5nBPEBa
-         rgB26vlfyp89OZVcO4VfFXI7pWeK1jTYEyc2pbxg2dysI/YZVz4nzDdMwsUp6qiZ5u
-         yGDJREXvt4MmyhO/mxEXAbZ1lzc2MSITkM10Kxp4=
+        b=rKth6uYXnipRKcS4GnhoTnKZMqvregyVuiCOP1LNh15IpR4JjAffJ7pQTeH3Aa5fz
+         M7TQI0sPl9taJ4X5CI/jlb5OJTZhU36OrqXRv3w9w3BL+PYWEfcnhEI2Pe2hMIrbmc
+         TS3CBi+V+/JrcsisAa9YdkwnqH5Kub4BTJXzz7ps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 050/329] MIPS: Loongson64: Use _CACHE_UNCACHED instead of _CACHE_UNCACHED_ACCELERATED
-Date:   Mon, 17 May 2021 15:59:21 +0200
-Message-Id: <20210517140303.741282374@linuxfoundation.org>
+Subject: [PATCH 5.11 051/329] coresight: Do not scan for graph if none is present
+Date:   Mon, 17 May 2021 15:59:22 +0200
+Message-Id: <20210517140303.776297388@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -40,65 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-[ Upstream commit 5e65c52ec716af6e8f51dacdaeb4a4d872249af1 ]
+[ Upstream commit 2b921b671a8d29c2adb255a86409aad1e3267309 ]
 
-Loongson64 processors have a writecombine issue that maybe failed to
-write back framebuffer used with ATI Radeon or AMD GPU at times, after
-commit 8a08e50cee66 ("drm: Permit video-buffers writecombine mapping
-for MIPS"), there exists some errors such as blurred screen and lockup,
-and so on.
+If a graph node is not found for a given node, of_get_next_endpoint()
+will emit the following error message :
 
-[   60.958721] radeon 0000:03:00.0: ring 0 stalled for more than 10079msec
-[   60.965315] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000112 last fence id 0x000000000000011d on ring 0)
-[   60.976525] radeon 0000:03:00.0: ring 3 stalled for more than 10086msec
-[   60.983156] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000374 last fence id 0x00000000000003a8 on ring 3)
+ OF: graph: no port node found in /<node_name>
 
-As discussed earlier [1], it might be better to disable writecombine
-on the CPU detection side because the root cause is unknown now.
+If the given component doesn't have any explicit connections (e.g,
+ETE) we could simply ignore the graph parsing. As for any legacy
+component where this is mandatory, the device will not be usable
+as before this patch. Updating the DT bindings to Yaml and enabling
+the schema checks can detect such issues with the DT.
 
-Actually, this patch is a temporary solution to just make it work well,
-it is not a proper and final solution, I hope someone will have a better
-solution to fix this issue in the future.
-
-[1] https://lore.kernel.org/patchwork/patch/1285542/
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20210405164307.1720226-11-suzuki.poulose@arm.com
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/cpu-probe.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/hwtracing/coresight/coresight-platform.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 21794db53c05..8895eb6568ca 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1743,7 +1743,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 			set_isa(c, MIPS_CPU_ISA_M64R2);
- 			break;
- 		}
--		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_EXT |
- 				MIPS_ASE_LOONGSON_EXT2);
- 		break;
-@@ -1773,7 +1772,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 		 * register, we correct it here.
- 		 */
- 		c->options |= MIPS_CPU_FTLB | MIPS_CPU_TLBINV | MIPS_CPU_LDPTE;
--		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_CAM |
- 			MIPS_ASE_LOONGSON_EXT | MIPS_ASE_LOONGSON_EXT2);
- 		c->ases &= ~MIPS_ASE_VZ; /* VZ of Loongson-3A2000/3000 is incomplete */
-@@ -1784,7 +1782,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 		set_elf_platform(cpu, "loongson3a");
- 		set_isa(c, MIPS_CPU_ISA_M64R2);
- 		decode_cpucfg(c);
--		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		break;
- 	default:
- 		panic("Unknown Loongson Processor ID!");
+diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
+index 3629b7885aca..c594f45319fc 100644
+--- a/drivers/hwtracing/coresight/coresight-platform.c
++++ b/drivers/hwtracing/coresight/coresight-platform.c
+@@ -90,6 +90,12 @@ static void of_coresight_get_ports_legacy(const struct device_node *node,
+ 	struct of_endpoint endpoint;
+ 	int in = 0, out = 0;
+ 
++	/*
++	 * Avoid warnings in of_graph_get_next_endpoint()
++	 * if the device doesn't have any graph connections
++	 */
++	if (!of_graph_is_present(node))
++		return;
+ 	do {
+ 		ep = of_graph_get_next_endpoint(node, ep);
+ 		if (!ep)
 -- 
 2.30.2
 
