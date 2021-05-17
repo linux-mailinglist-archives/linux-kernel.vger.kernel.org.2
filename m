@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF837383544
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A1338355E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243985AbhEQPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:16:40 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:46952 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242295AbhEQPGi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:06:38 -0400
-Received: by mail-pg1-f173.google.com with SMTP id m124so4817907pgm.13;
-        Mon, 17 May 2021 08:05:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3r35L0qNENJHIBlJuhpmCbhxw+UQzhph/PXwpvUMIxo=;
-        b=Tp+Nall+Jk5041wXioENH5diARN3Ksvf/pwQ01FzI9CW/f8xjOAFMxVSUaYUcccaOP
-         hwecM7JN5B3N5M1jEjQynxtTfbs0EynObb7pFQ/GqEqw56k5ruWfTx1H55l2AyK/JNen
-         uEW/98hYJ//Szz7xv7b4zGaAxGGPqGnam5NoJbZrtpLeP2Uf5dbVAo1LdZ+xJsSGnk5u
-         mjxG0W4aLsGA3xZA9KzXkluMKYQDGFAR8iw2DI7E8De+Vy2Wf46umhvZp2zyRux9q0FF
-         vpFOdCvVVCSZsoYPLsDjodEm5CLXE5n/3WtE/KKyo/D+kox6MKvtEMRO5ruzsWmBcdUz
-         eP7g==
-X-Gm-Message-State: AOAM532dFby3kJB03EtrKWTR5TC/GupxiSfjYfGLuUgTmxj9zhCbkcVJ
-        UBGlNe+8G8yIHHJgiRiS7BJX7FukA8U=
-X-Google-Smtp-Source: ABdhPJwWop1b09JK5L3WA+EljJ/aR6GpcRyko4Y+tVvGFb4B/9O6jGgQaI3GFoO2J05h2+0dLJWclA==
-X-Received: by 2002:a63:784c:: with SMTP id t73mr74045pgc.62.1621263920351;
-        Mon, 17 May 2021 08:05:20 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:8224:c0d6:d9dd:57b3? ([2601:647:4000:d7:8224:c0d6:d9dd:57b3])
-        by smtp.gmail.com with ESMTPSA id z62sm10030427pfb.110.2021.05.17.08.05.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 08:05:19 -0700 (PDT)
-Subject: Re: [PATCH v1 5/6] scsi: ufs: Let host_sem cover the entire system
- suspend/resume
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1620885319-15151-1-git-send-email-cang@codeaurora.org>
- <1620885319-15151-7-git-send-email-cang@codeaurora.org>
- <b59e0cd4-d560-6724-3f30-a5232dd41a8f@acm.org>
- <98a7135ef1ce34e23e84817cf6167e1a@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <31858ed5-dffe-82f8-aca6-94744f147059@acm.org>
-Date:   Mon, 17 May 2021 08:05:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S238870AbhEQPSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:18:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:54816 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242655AbhEQPH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:07:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7BE1106F;
+        Mon, 17 May 2021 08:06:11 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54DEE3F73B;
+        Mon, 17 May 2021 08:06:10 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] sched/topology: Rework CPU capacity asymmetry detection
+In-Reply-To: <20210517131816.GA13965@e120325.cambridge.arm.com>
+References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com> <1621239831-5870-3-git-send-email-beata.michalska@arm.com> <87mtst1s8m.mognet@arm.com> <20210517131816.GA13965@e120325.cambridge.arm.com>
+Date:   Mon, 17 May 2021 16:06:05 +0100
+Message-ID: <87k0nx1jtu.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <98a7135ef1ce34e23e84817cf6167e1a@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/16/21 8:22 PM, Can Guo wrote:
-> Hi Bart,
-> 
-> On 2021-05-14 11:55, Bart Van Assche wrote:
->> On 5/12/21 10:55 PM, Can Guo wrote:
->>> UFS error handling now is doing more than just re-probing, but also
->>> sending
->>> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error,
->>> which
->>> may change runtime status of scsi devices. To protect system
->>> suspend/resume
->>> from being disturbed by error handling, move the host_sem from wl pm ops
->>> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
+On 17/05/21 14:18, Beata Michalska wrote:
+> On Mon, May 17, 2021 at 01:04:25PM +0100, Valentin Schneider wrote:
+>> On 17/05/21 09:23, Beata Michalska wrote:
+>> > +static void asym_cpu_capacity_scan(const struct cpumask *cpu_map)
+>> > +{
+>> > +	struct asym_cap_data *entry, *next;
+>> > +	int cpu;
+>> >
+>> > -		for_each_sd_topology(tl) {
+>> > -			if (tl_id < asym_level)
+>> > -				goto next_level;
+>> > +	if (!list_empty(&asym_cap_list))
+>> > +		list_for_each_entry(entry, &asym_cap_list, link)
+>> > +			cpumask_clear(entry->cpu_mask);
+>> >
 >>
->> In ufshcd.h I found the following:
+>> The topology isn't going to change between domain rebuilds, so why
+>> recompute the masks? The sched_domain spans are already masked by cpu_map,
+>> so no need to do this masking twice. I'm thinking this scan should be done
+>> once against the cpu_possible_mask - kinda like sched_init_numa() done once
+>> against the possible nodes.
 >>
->>  * @host_sem: semaphore used to serialize concurrent contexts
->>
->> That's the wrong way to use a synchronization object. A synchronization
->> object must protect data instead of code. Does host_sem perhaps need to
->> be split into multiple synchronization objects?
-> 
-> Thanks for the comments. These contexts are changing critical data and
-> registers, so the sem is used to protect data actually, just like the
-> scaling_lock protecting scaling and cmd transations.
+> This is currently done, as what you have mentioned earlier, the tl->mask
+> may contain CPUs that are not 'available'. So it makes sure that the masks
+> kept on  the list are representing only those CPUs that are online.
+> And it is also needed case all CPUs of given capacity go offline - not to to
+> lose the full asymmetry that might change because of that ( empty masks are
+> being removed from the list).
+>
+> I could change that and use the CPU mask that represents the online CPUs as
+> a checkpoint but then it also means additional tracking which items on the
+> list are actually available at a given point of time.
+> So if the CPUs masks on the list are to be set once (as you are suggesting)
+> than it needs additional logic to count the number of available capacities
+> to decide whether there is a full asymmetry or not.
+>
 
-But where is the documentation that explains which data members are
-protected by hba->host_sem and which data members are protected by
-hba->host->host_lock? Was the host_lock protection perhaps introduced
-before scsi-mq was introduced? Before scsi-mq acquiring the host_lock
-was sufficient to serialize against ufshcd_queuecommand() but that is
-not sufficient when using scsi-mq.
+That should be doable by counting non-empty intersections between each
+entry->cpumask and the cpu_online_mask in _classify().
 
-I want to verify whether locking is used correctly in the UFS driver but
-without documentation of which synchronization object protects which
-data members that is not possible.
+That said I'm afraid cpufreq module loading forces us to dynamically update
+those masks, as you've done. The first domain build could see asymmetry
+without cpufreq loaded, and a later one with cpufreq loaded would need an
+update. Conversely, as much of a fringe case as it is, we'd have to cope
+with the cpufreq module being unloaded later on...
 
-Thanks,
-
-Bart.
+:(
