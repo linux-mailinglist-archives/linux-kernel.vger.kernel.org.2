@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D285383923
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851AC383927
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346747AbhEQQJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:09:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
+        id S1346881AbhEQQKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:10:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345021AbhEQPqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:46:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B37761954;
-        Mon, 17 May 2021 14:44:14 +0000 (UTC)
+        id S1345030AbhEQPqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:46:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A22E46194C;
+        Mon, 17 May 2021 14:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262654;
-        bh=9e1NpktBaQxCEzNSTtXQpzNt52VY3DIH7mIJyie7GNE=;
+        s=korg; t=1621262657;
+        bh=nLZfFLfIMSjb7iPWswJhagxZlOp3+CzraNRrZ9kLpAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDOd3RbObhw6fleigVvLX3k9IPgFj/1z1XPO10uGDPjIEuc5rsgy3hx9B1R3zodHe
-         OO7+TeXQShYgW9HYMrePqLy7NrE6CekwTpvamTOLS1lK63E4BQUjPpeVz2ap1s1I5S
-         R+rb239tuly/1tOc+1wbv0R7LR2JFrqqNy/P1iZI=
+        b=gJnZJu9kX4I8oxOBT+citu45DlDm2gcqYv1cy+VMlwXNx0z7VNzvOUKooG+qaIzgA
+         hMGA39gkeX13U3ev24Hj4bdlMW34eYgKtNDdMSXQgODv2eAZ2Ft9rv15N9FsRjupvC
+         pYRIB74g7X6F6QkfcQZlMwFSql2xBnJsO5+TdO3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH 5.10 248/289] usb: typec: ucsi: Put fwnode in any case during ->probe()
-Date:   Mon, 17 May 2021 16:02:53 +0200
-Message-Id: <20210517140313.493562254@linuxfoundation.org>
+        stable@vger.kernel.org, Abhijeet Rao <abhijeet.rao@intel.com>,
+        "Nikunj A. Dadhania" <nikunj.dadhania@intel.com>,
+        Azhar Shaikh <azhar.shaikh@intel.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.10 249/289] xhci-pci: Allow host runtime PM as default for Intel Alder Lake xHCI
+Date:   Mon, 17 May 2021 16:02:54 +0200
+Message-Id: <20210517140313.525241648@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,51 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Abhijeet Rao <abhijeet.rao@intel.com>
 
-commit b9a0866a5bdf6a4643a52872ada6be6184c6f4f2 upstream.
+commit b813511135e8b84fa741afdfbab4937919100bef upstream.
 
-device_for_each_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+In the same way as Intel Tiger Lake TCSS (Type-C Subsystem) the Alder Lake
+TCSS xHCI needs to be runtime suspended whenever possible to allow the
+TCSS hardware block to enter D3cold and thus save energy.
 
-Fixes: c1b0bc2dabfa ("usb: typec: Add support for UCSI interface")
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210504222337.3151726-1-andy.shevchenko@gmail.com
-Cc: stable <stable@vger.kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Abhijeet Rao <abhijeet.rao@intel.com>
+Signed-off-by: Nikunj A. Dadhania <nikunj.dadhania@intel.com>
+Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210512080816.866037-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/ucsi/ucsi.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/usb/host/xhci-pci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -910,6 +910,7 @@ static const struct typec_operations ucs
- 	.pr_set = ucsi_pr_swap
- };
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -57,6 +57,7 @@
+ #define PCI_DEVICE_ID_INTEL_CML_XHCI			0xa3af
+ #define PCI_DEVICE_ID_INTEL_TIGER_LAKE_XHCI		0x9a13
+ #define PCI_DEVICE_ID_INTEL_MAPLE_RIDGE_XHCI		0x1138
++#define PCI_DEVICE_ID_INTEL_ALDER_LAKE_XHCI		0x461e
  
-+/* Caller must call fwnode_handle_put() after use */
- static struct fwnode_handle *ucsi_find_fwnode(struct ucsi_connector *con)
- {
- 	struct fwnode_handle *fwnode;
-@@ -943,7 +944,7 @@ static int ucsi_register_port(struct ucs
- 	command |= UCSI_CONNECTOR_NUMBER(con->num);
- 	ret = ucsi_send_command(ucsi, command, &con->cap, sizeof(con->cap));
- 	if (ret < 0)
--		goto out;
-+		goto out_unlock;
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_4			0x43b9
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_3			0x43ba
+@@ -243,7 +244,8 @@ static void xhci_pci_quirks(struct devic
+ 	     pdev->device == PCI_DEVICE_ID_INTEL_TITAN_RIDGE_DD_XHCI ||
+ 	     pdev->device == PCI_DEVICE_ID_INTEL_ICE_LAKE_XHCI ||
+ 	     pdev->device == PCI_DEVICE_ID_INTEL_TIGER_LAKE_XHCI ||
+-	     pdev->device == PCI_DEVICE_ID_INTEL_MAPLE_RIDGE_XHCI))
++	     pdev->device == PCI_DEVICE_ID_INTEL_MAPLE_RIDGE_XHCI ||
++	     pdev->device == PCI_DEVICE_ID_INTEL_ALDER_LAKE_XHCI))
+ 		xhci->quirks |= XHCI_DEFAULT_PM_RUNTIME_ALLOW;
  
- 	if (con->cap.op_mode & UCSI_CONCAP_OPMODE_DRP)
- 		cap->data = TYPEC_PORT_DRD;
-@@ -1039,6 +1040,8 @@ static int ucsi_register_port(struct ucs
- 	trace_ucsi_register_port(con->num, &con->status);
- 
- out:
-+	fwnode_handle_put(cap->fwnode);
-+out_unlock:
- 	mutex_unlock(&con->lock);
- 	return ret;
- }
+ 	if (pdev->vendor == PCI_VENDOR_ID_ETRON &&
 
 
