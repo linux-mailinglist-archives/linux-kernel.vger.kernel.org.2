@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D393B3826B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE353826B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbhEQIUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:20:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235640AbhEQIT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:19:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 787E960C3D;
-        Mon, 17 May 2021 08:17:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621239459;
-        bh=BZxAEIkbSW7MbE/cKpN6ELnrkkO5GDgcmYWBCq1E9oE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xe+a+SfspvvC4YFLbvfFGou5Jh4ZaOJhNkVXbtGzQzDaw9YtnD2k5/AYJRH37GLz1
-         HarCPEyiCvtPLqqvURKmUeKluy77qdfGcIrJi/isWCrMZQ6A5QP/7rtzd2dmdK2J0A
-         3SHQ8E4iKKDOiX1B7oZK1lgB1PjMHYvnVe3bZMP0=
-Date:   Mon, 17 May 2021 10:17:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>
-Cc:     aaro.koskinen@iki.fi, tony@atomide.com, linux@prisktech.co.nz,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        jingoohan1@gmail.com, mst@redhat.com, jasowang@redhat.com,
-        zbr@ioremap.net, pablo@netfilter.org, kadlec@netfilter.org,
-        fw@strlen.de, horms@verge.net.au, ja@ssi.bg,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, linux-scsi@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Juerg Haefliger <juergh@canonical.com>
-Subject: Re: [PATCH] treewide: Remove leading spaces in Kconfig files
-Message-ID: <YKImotylLR7D4mQW@kroah.com>
-References: <20210516132209.59229-1-juergh@canonical.com>
- <YKIDJIfuufBrTQ4f@kroah.com>
- <CAB2i3ZgszsUVDuK2fkUXtD72tPSgrycnDawM4VAuGGPJiA9+cA@mail.gmail.com>
+        id S235566AbhEQIUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235623AbhEQIT6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 04:19:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9E0C06174A;
+        Mon, 17 May 2021 01:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ebgCnld2n4PAoHyPpWIkEqhlb5U8FfLblu7QnX1Ihas=; b=F77xpAPRdcBWfTtIJB6ARA1+xM
+        lYpavD2ob8Wi7ucTR1D5zGOJAnG3s4lECdILvNMqZC91JNMX9QeTixNMVyLPr+qqpYYZlLzKz5wi7
+        9IblGeAZ4oaJEj7EbHD3bHA7F3+n78JnKM1UPVHDtUvoO0BxOLqAetRXehZfRe56LqcudQymyazXj
+        TuZUJlqhjJgoIrANzyLSAnZfnkQblVBxIIHLELFTZ5saGB+RLjAnr44r1uE7ejoSnOGcrjwz0o8yV
+        Rd5vZNkOjfXQKsnFfo9TeNGK0an+e3Uf1PzkFcjX6WLwgYFJepSyGdj2Z5ufkSWFU7G1fvVz6FNYq
+        UnD1iHEg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1liYS2-00ECLN-Qs; Mon, 17 May 2021 08:18:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2116A30022C;
+        Mon, 17 May 2021 10:18:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0AA292D1FEA3D; Mon, 17 May 2021 10:18:10 +0200 (CEST)
+Date:   Mon, 17 May 2021 10:18:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Luwei Kang <luwei.kang@intel.com>
+Subject: Re: [PATCH v6 05/16] KVM: x86/pmu: Introduce the ctrl_mask value for
+ fixed counter
+Message-ID: <YKImwdg7LO/OPvVJ@hirez.programming.kicks-ass.net>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-6-like.xu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAB2i3ZgszsUVDuK2fkUXtD72tPSgrycnDawM4VAuGGPJiA9+cA@mail.gmail.com>
+In-Reply-To: <20210511024214.280733-6-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:07:43AM +0200, Juerg Haefliger wrote:
-> On Mon, May 17, 2021 at 7:46 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sun, May 16, 2021 at 03:22:09PM +0200, Juerg Haefliger wrote:
-> > > There are a few occurences of leading spaces before tabs in a couple of
-> > > Kconfig files. Remove them by running the following command:
-> > >
-> > >   $ find . -name 'Kconfig*' | xargs sed -r -i 's/^[ ]+\t/\t/'
-> > >
-> > > Signed-off-by: Juerg Haefliger <juergh@canonical.com>
-> > > ---
-> > >  arch/arm/mach-omap1/Kconfig     | 12 ++++++------
-> > >  arch/arm/mach-vt8500/Kconfig    |  6 +++---
-> > >  arch/arm/mm/Kconfig             | 10 +++++-----
-> > >  drivers/char/hw_random/Kconfig  |  8 ++++----
-> > >  drivers/net/usb/Kconfig         | 10 +++++-----
-> > >  drivers/net/wan/Kconfig         |  4 ++--
-> > >  drivers/scsi/Kconfig            |  2 +-
-> > >  drivers/uio/Kconfig             |  2 +-
-> > >  drivers/video/backlight/Kconfig | 10 +++++-----
-> > >  drivers/virtio/Kconfig          |  2 +-
-> > >  drivers/w1/masters/Kconfig      |  6 +++---
-> > >  fs/proc/Kconfig                 |  4 ++--
-> > >  init/Kconfig                    |  2 +-
-> > >  net/netfilter/Kconfig           |  2 +-
-> > >  net/netfilter/ipvs/Kconfig      |  2 +-
-> > >  15 files changed, 41 insertions(+), 41 deletions(-)
-> >
-> > Please break this up into one patch per subsystem and resend to the
-> > proper maintainers that way.
+On Tue, May 11, 2021 at 10:42:03AM +0800, Like Xu wrote:
+> The mask value of fixed counter control register should be dynamic
+> adjusted with the number of fixed counters. This patch introduces a
+> variable that includes the reserved bits of fixed counter control
+> registers. This is needed for later Ice Lake fixed counter changes.
 > 
-> Hmm... How is my patch different from other treewide Kconfig cleanup
-> patches like:
-> a7f7f6248d97 ("treewide: replace '---help---' in Kconfig files with 'help'")
-> 8636a1f9677d ("treewide: surround Kconfig file paths with double quotes")
-> 83fc61a563cb ("treewide: Fix typos in Kconfig")
-> 769a12a9c760 ("treewide: Kconfig: fix wording / spelling")
-> f54619f28fb6 ("treewide: Fix typos in Kconfig")
+> Co-developed-by: Luwei Kang <luwei.kang@intel.com>
+> Signed-off-by: Luwei Kang <luwei.kang@intel.com>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 1 +
+>  arch/x86/kvm/vmx/pmu_intel.c    | 6 +++++-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 55efbacfc244..49b421bd3dd8 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -457,6 +457,7 @@ struct kvm_pmu {
+>  	unsigned nr_arch_fixed_counters;
+>  	unsigned available_event_types;
+>  	u64 fixed_ctr_ctrl;
+> +	u64 fixed_ctr_ctrl_mask;
+>  	u64 global_ctrl;
+>  	u64 global_status;
+>  	u64 global_ovf_ctrl;
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index d9dbebe03cae..ac7fe714e6c1 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -400,7 +400,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  	case MSR_CORE_PERF_FIXED_CTR_CTRL:
+>  		if (pmu->fixed_ctr_ctrl == data)
+>  			return 0;
+> -		if (!(data & 0xfffffffffffff444ull)) {
+> +		if (!(data & pmu->fixed_ctr_ctrl_mask)) {
 
-Ok, I'll just ignore this and not try to suggest a way for you to get
-your change accepted...
-
-greg k-h
+Don't we already have hardware with more than 3 fixed counters?
