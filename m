@@ -2,37 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D36383377
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CAA3830FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238454AbhEQO63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:58:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
+        id S239910AbhEQOdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:33:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241922AbhEQOtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:49:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05AB961979;
-        Mon, 17 May 2021 14:22:39 +0000 (UTC)
+        id S239217AbhEQO2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BC861606;
+        Mon, 17 May 2021 14:14:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261360;
-        bh=fJN5beqb6iISSyqwkK88FGN7aSMtTjvVNkDNeKpLloQ=;
+        s=korg; t=1621260852;
+        bh=AgBW2YH8kpy/3JGlqr074zJiO1SvvpeXPngdoHsqbSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z8cUrYuJ/dg53ARjn2V1IwxHSfiexl9ZXuGnQLT6w2TIFXiAzcczFNhzA8EM9y2o2
-         WBtp0vMQ+BatzxE7jo8cxzTynL26g0UeXgWDb5zYmdpUjAFUOdyzpvyNjNdttH9Tqq
-         HDKxjO30EEBu7HuiUhT1UdqrY9nKBcRaSphutcS4=
+        b=yfJlPF0rdLvOwq1ii/pc//cw4ih9ZsPDHHDPsDdT/77/XSl1obRP05SDvU+PsRHw7
+         l+j8jYJ6HxJlFX6RP5Q7me5FWuM1HK3AdH3Zid1/g1drhKtjMgRpp6xzXCtfoPd8tK
+         ijLql+WFKJNrJTyX7RwKWLQ16ITVt/4kfTb2Jjek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Ward <david.ward@gatech.edu>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/141] ASoC: rt286: Generalize support for ALC3263 codec
+        stable@vger.kernel.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morris <jmorris@namei.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.12 223/363] mm/gup: check for isolation errors
 Date:   Mon, 17 May 2021 16:01:29 +0200
-Message-Id: <20210517140244.021055679@linuxfoundation.org>
+Message-Id: <20210517140310.133885570@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,97 +60,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ward <david.ward@gatech.edu>
+From: Pavel Tatashin <pasha.tatashin@soleen.com>
 
-[ Upstream commit aa2f9c12821e6a4ba1df4fb34a3dbc6a2a1ee7fe ]
+[ Upstream commit 6e7f34ebb8d25d71ce7f4580ba3cbfc10b895580 ]
 
-The ALC3263 codec on the XPS 13 9343 is also found on the Latitude 13 7350
-and Venue 11 Pro 7140. They require the same handling for the combo jack to
-work with a headset: GPIO pin 6 must be set.
+It is still possible that we pin movable CMA pages if there are
+isolation errors and cma_page_list stays empty when we check again.
 
-The HDA driver always sets this pin on the ALC3263, which it distinguishes
-by the codec vendor/device ID 0x10ec0288 and PCI subsystem vendor ID 0x1028
-(Dell). The ASoC driver does not use PCI, so adapt this check to use DMI to
-determine if Dell is the system vendor.
+Check for isolation errors, and return success only when there are no
+isolation errors, and cma_page_list is empty after checking.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=150601
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205961
-Signed-off-by: David Ward <david.ward@gatech.edu>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210418134658.4333-6-david.ward@gatech.edu
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Because isolation errors are transient, we retry indefinitely.
+
+Link: https://lkml.kernel.org/r/20210215161349.246722-5-pasha.tatashin@soleen.com
+Fixes: 9a4e9f3b2d73 ("mm: update get_user_pages_longterm to migrate pages allocated from CMA region")
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sasha Levin <sashal@kernel.org>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ mm/gup.c | 60 ++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 34 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 9593a9a27bf8..03e3e0aa25a2 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1115,12 +1115,11 @@ static const struct dmi_system_id force_combo_jack_table[] = {
- 	{ }
- };
- 
--static const struct dmi_system_id dmi_dell_dino[] = {
-+static const struct dmi_system_id dmi_dell[] = {
- 	{
--		.ident = "Dell Dino",
-+		.ident = "Dell",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
--			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 13 9343")
- 		}
- 	},
- 	{ }
-@@ -1131,7 +1130,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+diff --git a/mm/gup.c b/mm/gup.c
+index 2b48c65e27cc..333f5dfd8942 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1551,8 +1551,8 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 					struct vm_area_struct **vmas,
+ 					unsigned int gup_flags)
  {
- 	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt286_priv *rt286;
--	int i, ret, val;
-+	int i, ret, vendor_id;
+-	unsigned long i;
+-	bool drain_allow = true;
++	unsigned long i, isolation_error_count;
++	bool drain_allow;
+ 	LIST_HEAD(cma_page_list);
+ 	long ret = nr_pages;
+ 	struct page *prev_head, *head;
+@@ -1563,6 +1563,8 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
  
- 	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
- 				GFP_KERNEL);
-@@ -1147,14 +1146,15 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ check_again:
+ 	prev_head = NULL;
++	isolation_error_count = 0;
++	drain_allow = true;
+ 	for (i = 0; i < nr_pages; i++) {
+ 		head = compound_head(pages[i]);
+ 		if (head == prev_head)
+@@ -1574,25 +1576,35 @@ check_again:
+ 		 * of the CMA zone if possible.
+ 		 */
+ 		if (is_migrate_cma_page(head)) {
+-			if (PageHuge(head))
+-				isolate_huge_page(head, &cma_page_list);
+-			else {
++			if (PageHuge(head)) {
++				if (!isolate_huge_page(head, &cma_page_list))
++					isolation_error_count++;
++			} else {
+ 				if (!PageLRU(head) && drain_allow) {
+ 					lru_add_drain_all();
+ 					drain_allow = false;
+ 				}
+ 
+-				if (!isolate_lru_page(head)) {
+-					list_add_tail(&head->lru, &cma_page_list);
+-					mod_node_page_state(page_pgdat(head),
+-							    NR_ISOLATED_ANON +
+-							    page_is_file_lru(head),
+-							    thp_nr_pages(head));
++				if (isolate_lru_page(head)) {
++					isolation_error_count++;
++					continue;
+ 				}
++				list_add_tail(&head->lru, &cma_page_list);
++				mod_node_page_state(page_pgdat(head),
++						    NR_ISOLATED_ANON +
++						    page_is_file_lru(head),
++						    thp_nr_pages(head));
+ 			}
+ 		}
  	}
  
- 	ret = regmap_read(rt286->regmap,
--		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &val);
-+		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &vendor_id);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "I2C error %d\n", ret);
- 		return ret;
++	/*
++	 * If list is empty, and no isolation errors, means that all pages are
++	 * in the correct zone.
++	 */
++	if (list_empty(&cma_page_list) && !isolation_error_count)
++		return ret;
++
+ 	if (!list_empty(&cma_page_list)) {
+ 		/*
+ 		 * drop the above get_user_pages reference.
+@@ -1612,23 +1624,19 @@ check_again:
+ 			return ret > 0 ? -ENOMEM : ret;
+ 		}
+ 
+-		/*
+-		 * We did migrate all the pages, Try to get the page references
+-		 * again migrating any new CMA pages which we failed to isolate
+-		 * earlier.
+-		 */
+-		ret = __get_user_pages_locked(mm, start, nr_pages,
+-						   pages, vmas, NULL,
+-						   gup_flags);
+-
+-		if (ret > 0) {
+-			nr_pages = ret;
+-			drain_allow = true;
+-			goto check_again;
+-		}
++		/* We unpinned pages before migration, pin them again */
++		ret = __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
++					      NULL, gup_flags);
++		if (ret <= 0)
++			return ret;
++		nr_pages = ret;
  	}
--	if (val != RT286_VENDOR_ID && val != RT288_VENDOR_ID) {
-+	if (vendor_id != RT286_VENDOR_ID && vendor_id != RT288_VENDOR_ID) {
- 		dev_err(&i2c->dev,
--			"Device with ID register %#x is not rt286\n", val);
-+			"Device with ID register %#x is not rt286\n",
-+			vendor_id);
- 		return -ENODEV;
- 	}
  
-@@ -1178,8 +1178,8 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	if (pdata)
- 		rt286->pdata = *pdata;
- 
--	if (dmi_check_system(force_combo_jack_table) ||
--		dmi_check_system(dmi_dell_dino))
-+	if ((vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) ||
-+		dmi_check_system(force_combo_jack_table))
- 		rt286->pdata.cbj_en = true;
- 
- 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
-@@ -1218,7 +1218,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
- 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
- 
--	if (dmi_check_system(dmi_dell_dino)) {
-+	if (vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) {
- 		regmap_update_bits(rt286->regmap,
- 			RT286_SET_GPIO_MASK, 0x40, 0x40);
- 		regmap_update_bits(rt286->regmap,
+-	return ret;
++	/*
++	 * check again because pages were unpinned, and we also might have
++	 * had isolation errors and need more pages to migrate.
++	 */
++	goto check_again;
+ }
+ #else
+ static long check_and_migrate_cma_pages(struct mm_struct *mm,
 -- 
 2.30.2
 
