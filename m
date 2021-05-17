@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFD4382A4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF03382A44
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236596AbhEQKzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:55:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35202 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236591AbhEQKzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:55:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 96607B039;
-        Mon, 17 May 2021 10:53:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2F468DAF1B; Mon, 17 May 2021 12:51:18 +0200 (CEST)
-Date:   Mon, 17 May 2021 12:51:18 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210517105117.GL7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Khaled ROMDHANI <khaledromdhani216@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
+        id S236570AbhEQKyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236568AbhEQKyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:54:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93E7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:53:20 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1liaru-0007ET-Ma; Mon, 17 May 2021 12:53:02 +0200
+Message-ID: <72fef3d9f79194876f2035e996bb83f9f8b12902.camel@pengutronix.de>
+Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
+ register
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, kernel@collabora.com,
+        cphealy@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+Date:   Mon, 17 May 2021 12:52:57 +0200
+In-Reply-To: <831a59b052df02e9860b9766e631a7ab6a37c46a.camel@collabora.com>
+References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
+         <20210407073534.376722-4-benjamin.gaignard@collabora.com>
+         <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
+         <831a59b052df02e9860b9766e631a7ab6a37c46a.camel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210501225046.9138-1-khaledromdhani216@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 11:50:46PM +0100, Khaled ROMDHANI wrote:
-> Fix the warning: variable 'zone' is used
-> uninitialized whenever '?:' condition is true.
+Hi Ezequiel,
+
+Am Sonntag, dem 16.05.2021 um 19:40 -0300 schrieb Ezequiel Garcia:
+> Hi Lucas,
 > 
-> Fix that by preventing the code to reach
-> the last assertion. If the variable 'mirror'
-> is invalid, the assertion fails and we return
-> immediately.
+> On Fri, 2021-04-16 at 12:54 +0200, Lucas Stach wrote:
+> > Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
+> > > In order to be able to share the control hardware block between
+> > > VPUs use a syscon instead a ioremap it in the driver.
+> > > To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
+> > > phandle is not found look at 'ctrl' reg-name.
+> > > With the method it becomes useless to provide a list of register
+> > > names so remove it.
+> > 
+> > Sorry for putting a spoke in the wheel after many iterations of the
+> > series.
+> > 
+> > We just discussed a way forward on how to handle the clocks and resets
+> > provided by the blkctl block on i.MX8MM and later and it seems there is
+> > a consensus on trying to provide virtual power domains from a blkctl
+> > driver, controlling clocks and resets for the devices in the power
+> > domain. I would like to avoid introducing yet another way of handling
+> > the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
+> > what we are planning to do on the later chip generations.
+> > 
+> > CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
+> > virtual power domain thing a shot.
+> > 
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-
-This took several rounds and none of them was close to what I'd consider
-a proper fix, for something that's not really important. As Dan said,
-smatch does understand the values passed from the callers and the
-function is a static inline so the complete information is available. No
-tricky analysis is required, so why does not coverity see that too?
-
-We use assertions to namely catch programmer errors and API misuse,
-anything that can happen at runtime or depends on input needs proper
-checks and error handling. But for the super block copies, the constant
-won't change so all we want is to catch the stupid errors.
-
-> ---
->  fs/btrfs/zoned.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> It seems the i.MX8MM BLK-CTL series are moving forward:
 > 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 8250ab3f0868..23da9d8dc184 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -145,7 +145,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
->  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
->  	default:
->  		ASSERT((u32)mirror < 3);
-> -		break;
-> +		return 0;
+> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=479175
+> 
+> ... but I'm unable to wrap my head around how this affects the
+> devicetree VPU modelling for i.MX8MQ (and also i.MX8MM, i.MX8MP, ...).
+> 
+> 
+For the i.MX8MQ we want to have the same virtual power-domains provided
+by a BLK-CTRL driver for the VPUs, as on i.MX8MM. This way we should be
+able to use the same DT bindings for the VPUs on i.MX8MQ and i.MX8MM,
+even though the SoC integration with the blk-ctrl is a little
+different.
 
-It's been pointed out that this does not apply on the current code but
-on top of previous versions, so it's not making it easy for me to apply
-the patch and do maybe some tweaks only.
+> Can you clarify that?
+> 
+I'm planning on sending some patches adding i.MX8MQ VPU support to the
+BLK-CTRL driver in the next few days. I guess that should clarify
+things. :)
 
-I don't mind merging trivial patches, people can learn the process and
-few iterations are not a big deal. What I also hope for is to get some
-understanding of the code being changed and not just silencing some
-tools' warnings.
+Regards,
+Lucas
+
+
