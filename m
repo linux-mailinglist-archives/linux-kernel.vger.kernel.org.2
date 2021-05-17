@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6025383641
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72A638388F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343566AbhEQPa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:30:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54996 "EHLO mail.kernel.org"
+        id S1345587AbhEQP4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:56:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243959AbhEQPQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:16:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F6CD61C5E;
-        Mon, 17 May 2021 14:32:46 +0000 (UTC)
+        id S244224AbhEQPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:36:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A48661360;
+        Mon, 17 May 2021 14:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261966;
-        bh=c98Xh2EIf9ewuNlVYp7loEtMz2X168zaSkuxzeaPzdw=;
+        s=korg; t=1621262417;
+        bh=a4yamCC8qnVv/cSRaTHuXgN9RNgwx+1LS01fGTGFiGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eGv4Bw+d2bf8fCO8cr3fhku4KEdhC1HR4RXcVzfa46mM1Xcf2bADUwJl2glwPulJc
-         6cUO4Assi8IILYUnM2SnUs8NCZe2n4jiny62AFMSyL7lwDRdHbofqXw5uIbZljOd4o
-         b24ilFy3xOzTNm9/WKL5xg3KSybTx/cPLTQanBk8=
+        b=y3ToTHAgP3Zd+jGF0If6wqM06WMQHUuFBhC/fwDDsw2DP/13zlW699V211vFRovh5
+         6K2QJlxiGiS5aew5+L7dklBVU87/agbPQVWM+K2DGcZ3gaxMO5W3PCcEeEODenui8Q
+         V5IhCnZe0IiP6mqZ+mIhux1yGbSTFhknDa43x9Jo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Kees Cook <keescook@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 197/329] drm/radeon: Fix off-by-one power_state index heap overwrite
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@google.com>
+Subject: [PATCH 5.10 183/289] fs/proc/generic.c: fix incorrect pde_is_permanent check
 Date:   Mon, 17 May 2021 16:01:48 +0200
-Message-Id: <20210517140308.792862496@linuxfoundation.org>
+Message-Id: <20210517140311.269772793@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,117 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 5bbf219328849e83878bddb7c226d8d42e84affc ]
+[ Upstream commit f4bf74d82915708208bc9d0c9bd3f769f56bfbec ]
 
-An out of bounds write happens when setting the default power state.
-KASAN sees this as:
+Currently the pde_is_permanent() check is being run on root multiple times
+rather than on the next proc directory entry.  This looks like a
+copy-paste error.  Fix this by replacing root with next.
 
-[drm] radeon: 512M of GTT memory ready.
-[drm] GART: num cpu pages 131072, num gpu pages 131072
-==================================================================
-BUG: KASAN: slab-out-of-bounds in
-radeon_atombios_parse_power_table_1_3+0x1837/0x1998 [radeon]
-Write of size 4 at addr ffff88810178d858 by task systemd-udevd/157
-
-CPU: 0 PID: 157 Comm: systemd-udevd Not tainted 5.12.0-E620 #50
-Hardware name: eMachines        eMachines E620  /Nile       , BIOS V1.03 09/30/2008
-Call Trace:
- dump_stack+0xa5/0xe6
- print_address_description.constprop.0+0x18/0x239
- kasan_report+0x170/0x1a8
- radeon_atombios_parse_power_table_1_3+0x1837/0x1998 [radeon]
- radeon_atombios_get_power_modes+0x144/0x1888 [radeon]
- radeon_pm_init+0x1019/0x1904 [radeon]
- rs690_init+0x76e/0x84a [radeon]
- radeon_device_init+0x1c1a/0x21e5 [radeon]
- radeon_driver_load_kms+0xf5/0x30b [radeon]
- drm_dev_register+0x255/0x4a0 [drm]
- radeon_pci_probe+0x246/0x2f6 [radeon]
- pci_device_probe+0x1aa/0x294
- really_probe+0x30e/0x850
- driver_probe_device+0xe6/0x135
- device_driver_attach+0xc1/0xf8
- __driver_attach+0x13f/0x146
- bus_for_each_dev+0xfa/0x146
- bus_add_driver+0x2b3/0x447
- driver_register+0x242/0x2c1
- do_one_initcall+0x149/0x2fd
- do_init_module+0x1ae/0x573
- load_module+0x4dee/0x5cca
- __do_sys_finit_module+0xf1/0x140
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Without KASAN, this will manifest later when the kernel attempts to
-allocate memory that was stomped, since it collides with the inline slab
-freelist pointer:
-
-invalid opcode: 0000 [#1] SMP NOPTI
-CPU: 0 PID: 781 Comm: openrc-run.sh Tainted: G        W 5.10.12-gentoo-E620 #2
-Hardware name: eMachines        eMachines E620  /Nile , BIOS V1.03       09/30/2008
-RIP: 0010:kfree+0x115/0x230
-Code: 89 c5 e8 75 ea ff ff 48 8b 00 0f ba e0 09 72 63 e8 1f f4 ff ff 41 89 c4 48 8b 45 00 0f ba e0 10 72 0a 48 8b 45 08 a8 01 75 02 <0f> 0b 44 89 e1 48 c7 c2 00 f0 ff ff be 06 00 00 00 48 d3 e2 48 c7
-RSP: 0018:ffffb42f40267e10 EFLAGS: 00010246
-RAX: ffffd61280ee8d88 RBX: 0000000000000004 RCX: 000000008010000d
-RDX: 4000000000000000 RSI: ffffffffba1360b0 RDI: ffffd61280ee8d80
-RBP: ffffd61280ee8d80 R08: ffffffffb91bebdf R09: 0000000000000000
-R10: ffff8fe2c1047ac8 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000100
-FS:  00007fe80eff6b68(0000) GS:ffff8fe339c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe80eec7bc0 CR3: 0000000038012000 CR4: 00000000000006f0
-Call Trace:
- __free_fdtable+0x16/0x1f
- put_files_struct+0x81/0x9b
- do_exit+0x433/0x94d
- do_group_exit+0xa6/0xa6
- __x64_sys_exit_group+0xf/0xf
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fe80ef64bea
-Code: Unable to access opcode bytes at RIP 0x7fe80ef64bc0.
-RSP: 002b:00007ffdb1c47528 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fe80ef64bea
-RDX: 00007fe80ef64f60 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 00007fe80ee2c620 R11: 0000000000000246 R12: 00007fe80eff41e0
-R13: 00000000ffffffff R14: 0000000000000024 R15: 00007fe80edf9cd0
-Modules linked in: radeon(+) ath5k(+) snd_hda_codec_realtek ...
-
-Use a valid power_state index when initializing the "flags" and "misc"
-and "misc2" fields.
-
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=211537
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Fixes: a48b9b4edb8b ("drm/radeon/kms/pm: add asic specific callbacks for getting power state (v2)")
-Fixes: 79daedc94281 ("drm/radeon/kms: minor pm cleanups")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Addresses-Coverity: ("Copy-paste error")
+Link: https://lkml.kernel.org/r/20210318122633.14222-1-colin.king@canonical.com
+Fixes: d919b33dafb3 ("proc: faster open/read/close with "permanent" files")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reviewed-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/radeon/radeon_atombios.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/proc/generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_atombios.c b/drivers/gpu/drm/radeon/radeon_atombios.c
-index be96d9b64e43..11eeabe13d22 100644
---- a/drivers/gpu/drm/radeon/radeon_atombios.c
-+++ b/drivers/gpu/drm/radeon/radeon_atombios.c
-@@ -2249,10 +2249,10 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
- 		rdev->pm.default_power_state_index = state_index - 1;
- 		rdev->pm.power_state[state_index - 1].default_clock_mode =
- 			&rdev->pm.power_state[state_index - 1].clock_info[0];
--		rdev->pm.power_state[state_index].flags &=
-+		rdev->pm.power_state[state_index - 1].flags &=
- 			~RADEON_PM_STATE_SINGLE_DISPLAY_ONLY;
--		rdev->pm.power_state[state_index].misc = 0;
--		rdev->pm.power_state[state_index].misc2 = 0;
-+		rdev->pm.power_state[state_index - 1].misc = 0;
-+		rdev->pm.power_state[state_index - 1].misc2 = 0;
- 	}
- 	return state_index;
- }
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index 6c0a05f55d6b..09e4d8a499a3 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -754,7 +754,7 @@ int remove_proc_subtree(const char *name, struct proc_dir_entry *parent)
+ 	while (1) {
+ 		next = pde_subdir_first(de);
+ 		if (next) {
+-			if (unlikely(pde_is_permanent(root))) {
++			if (unlikely(pde_is_permanent(next))) {
+ 				write_unlock(&proc_subdir_lock);
+ 				WARN(1, "removing permanent /proc entry '%s/%s'",
+ 					next->parent->name, next->name);
 -- 
 2.30.2
 
