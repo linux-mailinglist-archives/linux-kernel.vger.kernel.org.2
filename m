@@ -2,56 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7C6386C56
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FBC386C58
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245164AbhEQVgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:36:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232924AbhEQVgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:36:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7484D61263;
-        Mon, 17 May 2021 21:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621287284;
-        bh=bLqR0ycSJjK3kwjoIQdiqU24f66TkyRBFt3e5ONdI1k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mF+QXjowhpfX8kxSq7lsuRZHrvO0S4RLsR3yre1g2raXdSlYJ7DHAusukBnGuPcSI
-         wQdl7vnxYbmpoo42wi2VqtG/l/FbJ3Z9XOGHdZY4G/8ot/1WJsLsW8bI4n3VulC2VK
-         m7KtMLqbT7x8jKAp+isWgE10XiLeeTGZLVIuYm3YZt4KLjzUp8L3IV8rSy7ZL4Sz+R
-         CC/7pOPtckJrmWa3rOTJQQX7z8RTFp2KE4049uM+BjFGIiBgiVPEJkpmWngDDfabYN
-         k7JXKMcUbknnmv/PrNC+WZJW8JclujQZEs5fFIcOBG5/DkUEXii3k2EF7sdU0nahoH
-         WKBqHFc8AqHHA==
-Date:   Mon, 17 May 2021 14:34:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
-        x86@kernel.org, herbert@gondor.apana.org.au,
-        dan.j.williams@intel.com, dave.hansen@intel.com,
-        ravi.v.shankar@intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 10/11] crypto: x86/aes-kl - Support AES algorithm
- using Key Locker instructions
-Message-ID: <YKLhc6HX9+JunQ/X@gmail.com>
-References: <20210514201508.27967-1-chang.seok.bae@intel.com>
- <20210514201508.27967-11-chang.seok.bae@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514201508.27967-11-chang.seok.bae@intel.com>
+        id S245187AbhEQVgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232924AbhEQVgr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 17:36:47 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6329DC061573;
+        Mon, 17 May 2021 14:35:30 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id t4so3908817plc.6;
+        Mon, 17 May 2021 14:35:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=attsytHbipYOgWpcPcHpCKVvuqA3N68XPfEcSSoxPl4=;
+        b=iD4SGUZBwMZn+yiNQThfZPnDo/oWRoyVWa/mOrYLbx6DkDNhae0qy28018ofSx6CLH
+         XVur7zjLaQUgql8lZYMaPAAeCqAiJwRCqHWP+xn83pnXJ8/M5ih3u24gsxUjnrA0VSpp
+         oJpnhusNH/V51CsqE/DScakTZl3Xc5pVS0f+WCJbtWySDRsPyStR2gAyy/f0C9RapEeU
+         rO9Q9yCKKQQJCsYMp9OBxuSsjZ5L1nA2GaEUWhcLVZue4g+EGRqY4QCgN+X3lmj97Nll
+         U2hDzobCbEGVHYkAPMhdejgyT9WYyY3JPzR3u6IAwgHYqNgDAV7Y4Sei7TP53gWpsb4/
+         mO7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=attsytHbipYOgWpcPcHpCKVvuqA3N68XPfEcSSoxPl4=;
+        b=kSIgLal0m8II8AhyQPm9PR/yEYkTJg5Xm15RucrlypNRyWFg/VBu6o+/lPwfASIB6D
+         Umg4NmUKMQUNF8GvQfirkwp0ll1umLViDuWZYsUtK8qVXIFTn4/dHG1VyYY4M0tMrAmu
+         mtXBtMBM/anbi3vQpeaZWom9hjW9mOZin/GzP5dQjNGWwF+6KugTM87DaQCczuz3Pg9F
+         kZ1t0nUKG0UHKdEK3i31zAB+zI/qA1jSGe569nw2a1BGjxX1LSnkeSycggsxu6WxPVmT
+         X8m+bqeBXUhO8Ey+oJj8hoEcZP07MZ5+jBNiTnmfgYieSHKEovQUQ6ERKJ476qWo6urS
+         IjnA==
+X-Gm-Message-State: AOAM532F3XZ0TggCc32sIcPM8fjyJhO0JAA3oF5NvqSkH00tVHxxxFm/
+        K3t2g3jjGWpF5lsZM060vJluKqiOm4DUt8X1hkA=
+X-Google-Smtp-Source: ABdhPJwee59COR8BdsR2cusX9UMgl3OqHaZG/atIfTb4g+UFP73ptSdjhXjC8Ewe2BJXHJyDd4yYJA==
+X-Received: by 2002:a17:90a:e7c2:: with SMTP id kb2mr1541458pjb.193.1621287329445;
+        Mon, 17 May 2021 14:35:29 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id u12sm10293593pfh.122.2021.05.17.14.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 14:35:28 -0700 (PDT)
+Message-ID: <60a2e1a0.1c69fb81.8df1.388f@mx.google.com>
+Date:   Mon, 17 May 2021 14:35:28 -0700 (PDT)
+X-Google-Original-Date: Mon, 17 May 2021 21:35:27 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 000/363] 5.12.5-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 01:15:07PM -0700, Chang S. Bae wrote:
+On Mon, 17 May 2021 15:57:46 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.5 release.
+> There are 363 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Included are methods for ECB, CBC, CTR, and XTS modes. They are not
-> compatible with other implementations as referencing an encrypted form
-> only.
+> Responses should be made by Wed, 19 May 2021 14:02:12 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Your code uses the standard algorithm names like cbc(aes), which implies that it
-is compatible with the standard cbc(aes).  So which is it -- compatible or not
-compatible -- and if it isn't compatible, what is the expected use case?
+5.12.5-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-- Eric
