@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D97738394E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98851383956
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345631AbhEQQNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36780 "EHLO mail.kernel.org"
+        id S245552AbhEQQOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:14:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344009AbhEQPtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:49:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1286761D48;
-        Mon, 17 May 2021 14:45:29 +0000 (UTC)
+        id S1345083AbhEQPuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:50:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E6AA61D4E;
+        Mon, 17 May 2021 14:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262730;
-        bh=+6mSZR8I9erVDXuGgE3bnDP4G0hXIV/fcvao60XbwlE=;
+        s=korg; t=1621262732;
+        bh=4qn/o1jq7ot2iUr5OwZVguiLDDYmq2cO08lHXczxDQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ksa01dzihdUc+dptb1Xw5NubYeA9eaRpuEqwbh0U5kb/kawjyrDAZza+0N5P2wkzA
-         eMRs6U8fTQZQkwC8mOjFh7b+VIXDbj63GjvR+JAxiNqnT/aLLLlf3Izsj6XVNi0O61
-         GjXIRphhvf7c0SkgcSLt+8SrIG7o8RgSoBWL/qDQ=
+        b=A3Yss0GmNMya8bBVCDNrgc+uSOvqMKp0g7s9QG6HCeVxqWzYS7K9cvbrInEKHXa6w
+         1aBSu7xlgy5M4f+SDlw546qTL79r5OyJ7QfQ3Sk258mmCXhEEhIRdix5cxFb4Cu76n
+         nnify5tgk4keUz2yq2evjKCTf7hRTn8nkyDodMe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 282/289] media: rkvdec: Remove of_match_ptr()
-Date:   Mon, 17 May 2021 16:03:27 +0200
-Message-Id: <20210517140314.634915079@linuxfoundation.org>
+        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.10 283/289] i2c: mediatek: Fix send master code at more than 1MHz
+Date:   Mon, 17 May 2021 16:03:28 +0200
+Message-Id: <20210517140314.664246684@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -42,38 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Qii Wang <qii.wang@mediatek.com>
 
-commit c2357dd9cbafc8ed37156e32c24884cfa8380b2f upstream.
+commit 63ce8e3df8f6deca2da52eaf064751ad4018b46e upstream.
 
-When building with CONFIG_OF not set, the following clang
-build warning is seen:
+There are some omissions in the previous patch about replacing
+I2C_MAX_FAST_MODE__FREQ with I2C_MAX_FAST_MODE_PLUS_FREQ and
+need to fix it.
 
->> drivers/staging/media/rkvdec/rkvdec.c:967:34: warning: unused variable 'of_rkvdec_match' [-Wunused-const-variable]
-
-Fix the warning by removing the unnecessary of_match_ptr().
-
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: cd33c830448b ("media: rkvdec: Add the rkvdec driver")
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: b44658e755b5("i2c: mediatek: Send i2c master code at more than 1MHz")
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/media/rkvdec/rkvdec.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-mt65xx.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -1107,7 +1107,7 @@ static struct platform_driver rkvdec_dri
- 	.remove = rkvdec_remove,
- 	.driver = {
- 		   .name = "rkvdec",
--		   .of_match_table = of_match_ptr(of_rkvdec_match),
-+		   .of_match_table = of_rkvdec_match,
- 		   .pm = &rkvdec_pm_ops,
- 	},
- };
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -564,7 +564,7 @@ static const struct i2c_spec_values *mtk
+ 
+ static int mtk_i2c_max_step_cnt(unsigned int target_speed)
+ {
+-	if (target_speed > I2C_MAX_FAST_MODE_FREQ)
++	if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ)
+ 		return MAX_HS_STEP_CNT_DIV;
+ 	else
+ 		return MAX_STEP_CNT_DIV;
+@@ -635,7 +635,7 @@ static int mtk_i2c_check_ac_timing(struc
+ 	if (sda_min > sda_max)
+ 		return -3;
+ 
+-	if (check_speed > I2C_MAX_FAST_MODE_FREQ) {
++	if (check_speed > I2C_MAX_FAST_MODE_PLUS_FREQ) {
+ 		if (i2c->dev_comp->ltiming_adjust) {
+ 			i2c->ac_timing.hs = I2C_TIME_DEFAULT_VALUE |
+ 				(sample_cnt << 12) | (high_cnt << 8);
+@@ -850,7 +850,7 @@ static int mtk_i2c_do_transfer(struct mt
+ 
+ 	control_reg = mtk_i2c_readw(i2c, OFFSET_CONTROL) &
+ 			~(I2C_CONTROL_DIR_CHANGE | I2C_CONTROL_RS);
+-	if ((i2c->speed_hz > I2C_MAX_FAST_MODE_FREQ) || (left_num >= 1))
++	if ((i2c->speed_hz > I2C_MAX_FAST_MODE_PLUS_FREQ) || (left_num >= 1))
+ 		control_reg |= I2C_CONTROL_RS;
+ 
+ 	if (i2c->op == I2C_MASTER_WRRD)
+@@ -1067,7 +1067,8 @@ static int mtk_i2c_transfer(struct i2c_a
+ 		}
+ 	}
+ 
+-	if (i2c->auto_restart && num >= 2 && i2c->speed_hz > I2C_MAX_FAST_MODE_FREQ)
++	if (i2c->auto_restart && num >= 2 &&
++		i2c->speed_hz > I2C_MAX_FAST_MODE_PLUS_FREQ)
+ 		/* ignore the first restart irq after the master code,
+ 		 * otherwise the first transfer will be discarded.
+ 		 */
 
 
