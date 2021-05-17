@@ -2,255 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22494382CBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326A5382CCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237200AbhEQNAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235149AbhEQNAf (ORCPT
+        id S235178AbhEQNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:05:54 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49336 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229519AbhEQNFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:00:35 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8876DC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 05:59:19 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1licq0-0006dk-NN; Mon, 17 May 2021 14:59:12 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1licpz-00039I-0q; Mon, 17 May 2021 14:59:11 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org
-Subject: [RFC PATCH v1 3/3] Input: resistive-adc-touch: add support for z1 and z2 channels
-Date:   Mon, 17 May 2021 14:59:09 +0200
-Message-Id: <20210517125909.12024-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210517125909.12024-1-o.rempel@pengutronix.de>
-References: <20210517125909.12024-1-o.rempel@pengutronix.de>
+        Mon, 17 May 2021 09:05:53 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-269-SnWmW07CP9mRfzOX1xeU9g-1; Mon, 17 May 2021 14:04:34 +0100
+X-MC-Unique: SnWmW07CP9mRfzOX1xeU9g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 17 May 2021 14:04:31 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 17 May 2021 14:04:31 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andy Shevchenko' <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Linux Media Mailing List" <linux-media@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>
+Subject: RE: [PATCH] media: atomisp: remove compat_ioctl32 code
+Thread-Topic: [PATCH] media: atomisp: remove compat_ioctl32 code
+Thread-Index: AQHXSuu4+en14/uhzUazyYkeGYdKuKrno/nQ
+Date:   Mon, 17 May 2021 13:04:31 +0000
+Message-ID: <eb34029138bd4c02960a59c88009cc76@AcuMS.aculab.com>
+References: <20210516204818.2967910-1-arnd@kernel.org>
+ <CAHp75Ve7FZQwj-aO_TJ4ddYmhRMez+CapH4YUV7s3-6zVjdLnA@mail.gmail.com>
+In-Reply-To: <CAHp75Ve7FZQwj-aO_TJ4ddYmhRMez+CapH4YUV7s3-6zVjdLnA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Typical touchscreen do not report pressure. Instead, it is calculated by
-measuring resistance of touchscreen plates on different reference
-points. Some ADC controllers, for example TI TSC2046, can provide this
-measurements. With this patch resistive-adc-touch will be able to use it
-and calculate pressure out if measured resistance.
-
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- .../input/touchscreen/resistive-adc-touch.c   | 142 ++++++++++++++++--
- 1 file changed, 129 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/input/touchscreen/resistive-adc-touch.c b/drivers/input/touchscreen/resistive-adc-touch.c
-index e50af30183f4..f53f8a7fd186 100644
---- a/drivers/input/touchscreen/resistive-adc-touch.c
-+++ b/drivers/input/touchscreen/resistive-adc-touch.c
-@@ -20,7 +20,18 @@
- 
- #define DRIVER_NAME					"resistive-adc-touch"
- #define GRTS_DEFAULT_PRESSURE_MIN			50000
-+#define GRTS_DEFAULT_PRESSURE_MAX			65535
- #define GRTS_MAX_POS_MASK				GENMASK(11, 0)
-+#define GRTS_MAX_CHANNELS				4
-+
-+enum grts_ch_type {
-+	GRTS_CH_NONE = 0,
-+	GRTS_CH_X,
-+	GRTS_CH_Y,
-+	GRTS_CH_PRESSURE,
-+	GRTS_CH_Z1,
-+	GRTS_CH_Z2,
-+};
- 
- /**
-  * struct grts_state - generic resistive touch screen information struct
-@@ -33,24 +44,61 @@
-  */
- struct grts_state {
- 	u32				pressure_min;
-+	u32				x_plate_ohms;
- 	bool				pressure;
- 	struct iio_channel		*iio_chans;
- 	struct iio_cb_buffer		*iio_cb;
- 	struct input_dev		*input;
- 	struct touchscreen_properties	prop;
-+	enum grts_ch_type		ch[GRTS_MAX_CHANNELS];
- };
- 
- static int grts_cb(const void *data, void *private)
- {
- 	const u16 *touch_info = data;
- 	struct grts_state *st = private;
--	unsigned int x, y, press = 0x0;
-+	unsigned int x, y, press = 0x0, z1, z2;
-+	unsigned int Rt;
-+	unsigned int idx;
-+
-+	for (idx = 0; st->ch[idx] != GRTS_CH_NONE; idx++) {
-+		switch (st->ch[idx]) {
-+		case GRTS_CH_X:
-+			x = touch_info[idx];
-+			break;
-+		case GRTS_CH_Y:
-+			y = touch_info[idx];
-+			break;
-+		case GRTS_CH_PRESSURE:
-+			press = touch_info[idx];
-+			break;
-+		case GRTS_CH_Z1:
-+			z1 = touch_info[idx];
-+			break;
-+		case GRTS_CH_Z2:
-+			z2 = touch_info[idx];
-+			break;
-+		case GRTS_CH_NONE:
-+			break;
-+		}
-+	}
- 
--	/* channel data coming in buffer in the order below */
--	x = touch_info[0];
--	y = touch_info[1];
--	if (st->pressure)
--		press = touch_info[2];
-+	if (z1) {
-+		Rt = z2;
-+		Rt -= z1;
-+		Rt *= st->x_plate_ohms;
-+		Rt = DIV_ROUND_CLOSEST(Rt, 16);
-+		Rt *= x;
-+		Rt /= z1;
-+		Rt = DIV_ROUND_CLOSEST(Rt, 256);
-+		/* On increased pressure the resistance (Rt) is decreasing
-+		 * so, convert values to make it looks as real pressure.
-+		 */
-+		if (Rt < GRTS_DEFAULT_PRESSURE_MAX)
-+			press = GRTS_DEFAULT_PRESSURE_MAX - Rt;
-+		else
-+			press = 0;
-+	}
- 
- 	if ((!x && !y) || (st->pressure && (press < st->pressure_min))) {
- 		/* report end of touch */
-@@ -94,6 +142,73 @@ static void grts_disable(void *data)
- 	iio_channel_release_all_cb(data);
- }
- 
-+static int grts_get_properties(struct grts_state *st, struct device *dev)
-+{
-+	int idx;
-+
-+	idx = device_property_match_string(dev, "io-channel-names", "x");
-+	if (idx < 0)
-+		return idx;
-+
-+	if (idx >= GRTS_MAX_CHANNELS)
-+		return -EOVERFLOW;
-+
-+	st->ch[idx] = GRTS_CH_X;
-+
-+	idx = device_property_match_string(dev, "io-channel-names", "y");
-+	if (idx < 0)
-+		return idx;
-+
-+	if (idx >= GRTS_MAX_CHANNELS)
-+		return -EOVERFLOW;
-+
-+	st->ch[idx] = GRTS_CH_Y;
-+
-+	/* pressure is optional */
-+	idx = device_property_match_string(dev, "io-channel-names", "pressure");
-+	if (idx >= 0) {
-+		if (idx >= GRTS_MAX_CHANNELS)
-+			return -EOVERFLOW;
-+
-+		st->ch[idx] = GRTS_CH_PRESSURE;
-+		st->pressure = true;
-+
-+		return 0;
-+	}
-+
-+	/* if no pressure is defined, try optional z1 + z2 */
-+	idx = device_property_match_string(dev, "io-channel-names", "z1");
-+	if (idx >= 0) {
-+		int error;
-+
-+		if (idx >= GRTS_MAX_CHANNELS)
-+			return -EOVERFLOW;
-+
-+		st->ch[idx] = GRTS_CH_Z1;
-+
-+		/* if z1 is provided z2 is not optional */
-+		idx = device_property_match_string(dev, "io-channel-names", "z2");
-+		if (idx < 0)
-+			return idx;
-+
-+		if (idx >= GRTS_MAX_CHANNELS)
-+			return -EOVERFLOW;
-+
-+		st->ch[idx] = GRTS_CH_Z2;
-+		st->pressure = true;
-+
-+		error = device_property_read_u32(dev,
-+						 "touchscreen-x-plate-ohms",
-+						 &st->x_plate_ohms);
-+		if (error) {
-+			dev_err(dev, "can't get touchscreen-x-plate-ohms property\n");
-+			return error;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int grts_probe(struct platform_device *pdev)
- {
- 	struct grts_state *st;
-@@ -115,12 +230,13 @@ static int grts_probe(struct platform_device *pdev)
- 		return error;
- 	}
- 
--	chan = &st->iio_chans[0];
--	st->pressure = false;
--	while (chan && chan->indio_dev) {
--		if (!strcmp(chan->channel->datasheet_name, "pressure"))
--			st->pressure = true;
--		chan++;
-+	if (!device_property_present(dev, "io-channel-names"))
-+		return -ENODEV;
-+
-+	error = grts_get_properties(st, dev);
-+	if (error) {
-+		dev_err(dev, "Failed to parse properties\n");
-+		return error;
- 	}
- 
- 	if (st->pressure) {
-@@ -148,7 +264,7 @@ static int grts_probe(struct platform_device *pdev)
- 	input_set_abs_params(input, ABS_Y, 0, GRTS_MAX_POS_MASK - 1, 0, 0);
- 	if (st->pressure)
- 		input_set_abs_params(input, ABS_PRESSURE, st->pressure_min,
--				     0xffff, 0, 0);
-+				     GRTS_DEFAULT_PRESSURE_MAX, 0, 0);
- 
- 	input_set_capability(input, EV_KEY, BTN_TOUCH);
- 
--- 
-2.29.2
+RnJvbTogQW5keSBTaGV2Y2hlbmtvDQo+IFNlbnQ6IDE3IE1heSAyMDIxIDA4OjEwDQo+IA0KPiBP
+biBNb24sIE1heSAxNywgMjAyMSBhdCAzOjI3IEFNIEFybmQgQmVyZ21hbm4gPGFybmRAa2VybmVs
+Lm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRl
+Pg0KPiA+DQo+ID4gVGhpcyBpcyBvbmUgb2YgdGhlIGxhc3QgcmVtYWluaW5nIHVzZXJzIG9mIGNv
+bXBhdF9hbGxvY191c2VyX3NwYWNlKCkNCj4gPiBhbmQgY29weV9pbl91c2VyKCksIHdoaWNoIGFy
+ZSBpbiB0aGUgcHJvY2VzcyBvZiBnZXR0aW5nIHJlbW92ZWQuDQo+ID4NCj4gPiBBcyBvZiBjb21t
+aXQgNTdlNmI2ZjIzMDNlICgibWVkaWE6IGF0b21pc3BfZm9wcy5jOiBkaXNhYmxlDQo+ID4gYXRv
+bWlzcF9jb21wYXRfaW9jdGwzMiIpLCBub3RoaW5nIGluIHRoaXMgZmlsZSBpcyBhY3R1YWxseSBn
+ZXR0aW5nIHVzZWQNCj4gPiBhcyB0aGUgb25seSByZWZlcmVuY2UgaGFzIGJlZW4gc3R1YmJlZCBv
+dXQuDQo+ID4NCj4gPiBSZW1vdmUgdGhlIGVudGlyZSBmaWxlIC0tIGFueW9uZSB3aWxsaW5nIHRv
+IHJlc3RvcmUgdGhlIGZ1bmN0aW9uYWxpdHkNCj4gPiBjYW4gZXF1YWxseSB3ZWxsIGp1c3QgbG9v
+ayB1cCB0aGUgY29udGVudHMgaW4gdGhlIGdpdCBoaXN0b3J5IGlmIG5lZWRlZC4NCj4gDQo+IEV2
+ZXJ5dGhpbmcgd2hpY2ggcmVtb3ZlcyB0b25zIG9mIExPQ3MgaW4gdGhpcyBkcml2ZXIgSSBsaWtl
+IGJ5IGRlZmF1bHQsIHRoYW5rcyENCi4uLi4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zdGFn
+aW5nL21lZGlhL2F0b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+IGIvZHJpdmVycy9zdGFnaW5n
+L21lZGlhL2F0b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+ID4gaW5kZXggZjFlNmIyNTk3ODUz
+Li5lMzgzZTE3YzUwNzIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9zdGFnaW5nL21lZGlhL2F0
+b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+ID4gKysrIGIvZHJpdmVycy9zdGFnaW5nL21lZGlh
+L2F0b21pc3AvcGNpL2F0b21pc3BfZm9wcy5jDQo+ID4gQEAgLTEyODMsNyArMTI4Myw4IEBAIGNv
+bnN0IHN0cnVjdCB2NGwyX2ZpbGVfb3BlcmF0aW9ucyBhdG9taXNwX2ZvcHMgPSB7DQo+ID4gICAg
+ICAgICAudW5sb2NrZWRfaW9jdGwgPSB2aWRlb19pb2N0bDIsDQo+ID4gICNpZmRlZiBDT05GSUdf
+Q09NUEFUDQo+ID4gICAgICAgICAvKg0KPiA+IC0gICAgICAgICogVGhlcmUgYXJlIHByb2JsZW1z
+IHdpdGggdGhpcyBjb2RlLiBEaXNhYmxlIHRoaXMgZm9yIG5vdy4NCj4gPiArICAgICAgICAqIHRo
+aXMgd2FzIHJlbW92ZWQgYmVjYXVzZSBvZiBidWdzLCB0aGUgaW50ZXJmYWNlDQo+ID4gKyAgICAg
+ICAgKiBuZWVkcyB0byBiZSBtYWRlIHNhZmUgZm9yIGNvbXBhdCB0YXNrcyBpbnN0ZWFkLg0KPiA+
+ICAgICAgICAgLmNvbXBhdF9pb2N0bDMyID0gYXRvbWlzcF9jb21wYXRfaW9jdGwzMiwNCj4gPiAg
+ICAgICAgICAqLw0KPiA+ICAjZW5kaWYNCj4gPiBAQCAtMTI5NywxMCArMTI5OCw3IEBAIGNvbnN0
+IHN0cnVjdCB2NGwyX2ZpbGVfb3BlcmF0aW9ucyBhdG9taXNwX2ZpbGVfZm9wcyA9IHsNCj4gPiAg
+ICAgICAgIC5tbWFwID0gYXRvbWlzcF9maWxlX21tYXAsDQo+ID4gICAgICAgICAudW5sb2NrZWRf
+aW9jdGwgPSB2aWRlb19pb2N0bDIsDQo+ID4gICNpZmRlZiBDT05GSUdfQ09NUEFUDQo+ID4gLSAg
+ICAgICAvKg0KPiA+IC0gICAgICAgICogVGhlcmUgYXJlIHByb2JsZW1zIHdpdGggdGhpcyBjb2Rl
+LiBEaXNhYmxlIHRoaXMgZm9yIG5vdy4NCj4gPiAtICAgICAgIC5jb21wYXRfaW9jdGwzMiA9IGF0
+b21pc3BfY29tcGF0X2lvY3RsMzIsDQo+ID4gLSAgICAgICAgKi8NCj4gPiArICAgICAgIC8qIC5j
+b21wYXRfaW9jdGwzMiA9IGF0b21pc3BfY29tcGF0X2lvY3RsMzIsICovDQo+ID4gICNlbmRpZg0K
+PiA+ICAgICAgICAgLnBvbGwgPSBhdG9taXNwX3BvbGwsDQoNClNob3VsZG4ndCB0aGV5IGJlIHN0
+dWJiZWQgd2l0aCBzb21ldGhpbmcgdGhhdCByZXR1cm5zIC1FTk9UVFkNCnJhdGhlciB0aGFuIGJs
+aW5kbHkgY2FsbGluZyB0aGUgNjRiaXQgY29kZSB3aXRoIHRoZSB3cm9uZyBzdHJ1Y3R1cmU/DQoN
+CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
+TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
+MTM5NzM4NiAoV2FsZXMpDQo=
 
