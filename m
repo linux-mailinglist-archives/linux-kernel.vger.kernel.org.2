@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9953833AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5627D383207
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240149AbhEQPBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
+        id S241472AbhEQOpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:45:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240444AbhEQOvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:51:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90F7E61460;
-        Mon, 17 May 2021 14:23:25 +0000 (UTC)
+        id S241020AbhEQOhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:37:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34B326140E;
+        Mon, 17 May 2021 14:17:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261406;
-        bh=xtG7WbmAe5GyHpRvMmugAktrglxWiM55d6rGpGh9mqI=;
+        s=korg; t=1621261071;
+        bh=2My33MW8WcPqKDH36tcS/OcN/3BcDWUhHYBOJZyAS+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IKX1Yo1hxJwmncYAp7K/33pYlJbKARTjUVfDXILzF8m/ljAFYP3I1So+LQGGzVQMp
-         Z45Hyn+HpkoAf7zp6XcUGVXYKF5Rjkf5uPZzADDwyGSJaESORGrLDtrzgS91tKBwNc
-         k5m6rGZHdh9pw0f/7t+uAwLyOtYOCecvsLUawr3k=
+        b=C+bcFOoRrGQbaWaxz7t3plokN3n9gRs4U/wxHr07oPACTaNBYE29Py2h4bNtegQCr
+         DxFF32jZ8CHMyDgviEOavTJsxY09dlcEsDZvGo91d0T8AghIUoNAQFEwrzNqPW6sm+
+         STRg+dFu12rYUQAfdX1rMN6XZkXKt0B/OfLvotJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Laurence Oberman <loberman@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 110/329] watchdog/softlockup: remove logic that tried to prevent repeated reports
-Date:   Mon, 17 May 2021 16:00:21 +0200
-Message-Id: <20210517140305.836565674@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 5.4 001/141] tpm: fix error return code in tpm2_get_cc_attrs_tbl()
+Date:   Mon, 17 May 2021 16:00:53 +0200
+Message-Id: <20210517140242.794689582@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -47,109 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek <pmladek@suse.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 1bc503cb4a2638fb1c57801a7796aca57845ce63 ]
+commit 1df83992d977355177810c2b711afc30546c81ce upstream.
 
-The softlockup detector does some gymnastic with the variable
-soft_watchdog_warn.  It was added by the commit 58687acba59266735ad
-("lockup_detector: Combine nmi_watchdog and softlockup detector").
+If the total number of commands queried through TPM2_CAP_COMMANDS is
+different from that queried through TPM2_CC_GET_CAPABILITY, it indicates
+an unknown error. In this case, an appropriate error code -EFAULT should
+be returned. However, we currently do not explicitly assign this error
+code to 'rc'. As a result, 0 was incorrectly returned.
 
-The purpose is not completely clear.  There are the following clues.  They
-describe the situation how it looked after the above mentioned commit:
-
-  1. The variable was checked with a comment "only warn once".
-
-  2. The variable was set when softlockup was reported. It was cleared
-     only when the CPU was not longer in the softlockup state.
-
-  3. watchdog_touch_ts was not explicitly updated when the softlockup
-     was reported. Without this variable, the report would normally
-     be printed again during every following watchdog_timer_fn()
-     invocation.
-
-The logic has got even more tangled up by the commit ed235875e2ca98
-("kernel/watchdog.c: print traces for all cpus on lockup detection").
-After this commit, soft_watchdog_warn is set only when
-softlockup_all_cpu_backtrace is enabled.  But multiple reports from all
-CPUs are prevented by a new variable soft_lockup_nmi_warn.
-
-Conclusion:
-
-The variable probably never worked as intended.  In each case, it has not
-worked last many years because the softlockup was reported repeatedly
-after the full period defined by watchdog_thresh.
-
-The reason is that watchdog gets touched in many known slow paths, for
-example, in printk_stack_address().  This code is called also when
-printing the softlockup report.  It means that the watchdog timestamp gets
-updated after each report.
-
-Solution:
-
-Simply remove the logic. People want the periodic report anyway.
-
-Link: https://lkml.kernel.org/r/20210311122130.6788-5-pmladek@suse.com
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Laurence Oberman <loberman@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 58472f5cd4f6("tpm: validate TPM 2.0 commands")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/watchdog.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/char/tpm/tpm2-cmd.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 7776d53a015c..122e272ad7f2 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -172,7 +172,6 @@ static u64 __read_mostly sample_period;
- static DEFINE_PER_CPU(unsigned long, watchdog_touch_ts);
- static DEFINE_PER_CPU(struct hrtimer, watchdog_hrtimer);
- static DEFINE_PER_CPU(bool, softlockup_touch_sync);
--static DEFINE_PER_CPU(bool, soft_watchdog_warn);
- static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts);
- static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts_saved);
- static unsigned long soft_lockup_nmi_warn;
-@@ -394,19 +393,12 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		if (kvm_check_and_clear_guest_paused())
- 			return HRTIMER_RESTART;
+--- a/drivers/char/tpm/tpm2-cmd.c
++++ b/drivers/char/tpm/tpm2-cmd.c
+@@ -962,6 +962,7 @@ static int tpm2_get_cc_attrs_tbl(struct
  
--		/* only warn once */
--		if (__this_cpu_read(soft_watchdog_warn) == true)
--			return HRTIMER_RESTART;
--
- 		if (softlockup_all_cpu_backtrace) {
- 			/* Prevent multiple soft-lockup reports if one cpu is already
- 			 * engaged in dumping cpu back traces
- 			 */
--			if (test_and_set_bit(0, &soft_lockup_nmi_warn)) {
--				/* Someone else will report us. Let's give up */
--				__this_cpu_write(soft_watchdog_warn, true);
-+			if (test_and_set_bit(0, &soft_lockup_nmi_warn))
- 				return HRTIMER_RESTART;
--			}
- 		}
- 
- 		/* Start period for the next softlockup warning. */
-@@ -436,9 +428,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
- 		if (softlockup_panic)
- 			panic("softlockup: hung tasks");
--		__this_cpu_write(soft_watchdog_warn, true);
--	} else
--		__this_cpu_write(soft_watchdog_warn, false);
-+	}
- 
- 	return HRTIMER_RESTART;
- }
--- 
-2.30.2
-
+ 	if (nr_commands !=
+ 	    be32_to_cpup((__be32 *)&buf.data[TPM_HEADER_SIZE + 5])) {
++		rc = -EFAULT;
+ 		tpm_buf_destroy(&buf);
+ 		goto out;
+ 	}
 
 
