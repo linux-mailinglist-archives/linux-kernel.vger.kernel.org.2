@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED38382B71
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4878382B75
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236720AbhEQLsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhEQLsB (ORCPT
+        id S229845AbhEQLtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:49:36 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:45574 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhEQLte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:48:01 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E813FC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:46:44 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id t20so4556643qtx.8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:46:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=26/l/0FD/kSwSVPmMbR0uwDbJE0XXhCY8B8R+7GK6CI=;
-        b=F1iSrtT56EOerjVGbasVPonOqjKUe7agF3pq3YJWH57WMfTbvW6ZRDHNpguGP/NOVw
-         5DY+3IXUi/r9VjQZabkjYAf1EG5aAW9/Kg+127flBY4JbGSn/H3QksFP4bsB3rh8fTC5
-         eDLGJ8YGFcLPTxvtSq6y6AzTyASfSo3tbGEIiRmaugQzWQxaRjjjZG4plmYCd+F0/flE
-         Tsl5AAR5kzLuxSnx2dOpnQyTlRItIAn2VACNn1MNLu5y1kOGa4VXt22m+5+TOLKKfmfy
-         B0xR6UN11bdYFScLr+sv0wSd9srMsaNcoQGiVHHDBfokDbPegJM5zr2QWiCNDYsdxA5/
-         xHOA==
+        Mon, 17 May 2021 07:49:34 -0400
+Received: by mail-il1-f200.google.com with SMTP id s18-20020a92cbd20000b02901bb78581beaso3678078ilq.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:48:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=26/l/0FD/kSwSVPmMbR0uwDbJE0XXhCY8B8R+7GK6CI=;
-        b=Z4SnSomC+CYm/f/sh1SJIxnbCAHAiuj7GJOCB4zuq5Ps3vRZ+RHMv/MuhDapECdWYq
-         s1MBjaEdC3R45sOk68shDJLcW3HS4daqPES75ajtfwTBaGV0vaGWxdtFxBAsQgeIqbbD
-         GBV5iSZ8Kad8gZhQk6YwqCJkdc7+SZSIOaFrMxlucDXcyNjfYRwzTyiykmZqxzqrEErQ
-         lHzOSfY+ShdGPoitfB7LOgJ1sWkmvDzng+6Y44R4xPn3UIn7d8q1LJRI4xtfnaG7ASTR
-         abeQv74NZsoowum2NDaWclIjFfHRRG94QiKImdJZ1byUzwdRU2GCkhAvB44Vu8R7Ay5g
-         R8bw==
-X-Gm-Message-State: AOAM532plUBvHo+SSFdVCMKGx+2kK9NXwdMUe79WXQpzds+UD45wU7XA
-        R1jjx+KpPvr5qKdy0NwYPzLDX5m6Fx97pFeWawsbJA==
-X-Google-Smtp-Source: ABdhPJyMdr0SvuuHJEMQZrfjYKhvP/mPQNwfZQKF7QbW0Ha2974eWJZM+ZDovb7iyxnBzNzD8BFYQFDlI/dSY9sTxDY=
-X-Received: by 2002:ac8:5b8a:: with SMTP id a10mr15311324qta.43.1621252003962;
- Mon, 17 May 2021 04:46:43 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yYBFhzqgd/PHAE0tD7Ib82HE2HqWy6JboZUomFESCjA=;
+        b=IVAOXOCj5CHMMjcYPe5zMV4L+kTLtSagDtndLBR3SLpdNVOwHgbUBuKdwu95+Gk7bR
+         sgY9MatndY4zx5QxmrVIw710In5sHyJVS083l45uGPSJk89Droh6xk7GFCzflJCsZz++
+         lDwDTWAZnERYUhJ3nbhtRkwsPExxpnBqlnz/vdq8DVK5dLeY7rCKdUtGqIiNZlp8uVHh
+         A4OAoPRr9eSXu19USUmJ/so4I82gh7TljTaXjZcTcNqIyfgZKlyViE8ibjaFsbRH6QNb
+         /6xpt8xqPhXRf2+76YsxkxJVjuJg7zhykR5FrzMSl8QDJkAhzCbg1Jz+jtknERy+juJZ
+         pCAA==
+X-Gm-Message-State: AOAM531OkrG44+QfgtUYmTwSD/kroBVwMRQMt/YoYkH0DVYHoCqqgHQN
+        OcmpduYvgTJXPOJvopwj2/7KGaVNH2SxHEPs9j7IY9F7Pnfr
+X-Google-Smtp-Source: ABdhPJyoh3NDfKr2PeoZxpBMtSpga6dgNKx2z3EEleAbpNqhfiRmNOBIIE9vbISVQ/AuXM0sN5Mz5kkDuqz4QY9UqTUIT7KD2Rva
 MIME-Version: 1.0
-References: <000000000000712bf205c28512b3@google.com>
-In-Reply-To: <000000000000712bf205c28512b3@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 17 May 2021 13:46:32 +0200
-Message-ID: <CACT4Y+ZGWOXBd7O9i4nxgkZMPD74MKnpsws8QsqKsjGwxv_9DA@mail.gmail.com>
-Subject: Re: [syzbot] linux-next boot error: can't ssh into the instance (4)
-To:     syzbot <syzbot+9bc9321e24cb69b1d70b@syzkaller.appspotmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+X-Received: by 2002:a92:b106:: with SMTP id t6mr53747751ilh.99.1621252097198;
+ Mon, 17 May 2021 04:48:17 -0700 (PDT)
+Date:   Mon, 17 May 2021 04:48:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000584fd505c2852b25@google.com>
+Subject: [syzbot] WARNING in bond_update_slave_arr (2)
+From:   syzbot <syzbot+0d294e1d3ade13a70161@syzkaller.appspotmail.com>
+To:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vfalico@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:41 PM syzbot
-<syzbot+9bc9321e24cb69b1d70b@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    18250b53 Add linux-next specific files for 20210416
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15f554c5d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1a0849068413e97e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9bc9321e24cb69b1d70b
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+9bc9321e24cb69b1d70b@syzkaller.appspotmail.com
+Hello,
 
-There was some issue with ttyS0 console:
+syzbot found the following issue on:
 
-[  109.503836][    T1] systemd[1]: Timed out waiting for device
-dev-ttyS0.device.
- [K[ [0;1;31m TIME  [0m] Timed out waiting for device dev-ttyS0.device.
-[  109.547660][    T1] systemd[1]: Dependency failed for Serial Getty on ttyS0.
-[ [0;1;33mDEPEND [0m] Dependency failed for Serial Getty on ttyS0.
+HEAD commit:    1678e493 Merge tag 'lto-v5.12-rc6' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=146488fcd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=0d294e1d3ade13a70161
 
-but it seems to be resolved by now:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-#syz invalid
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0d294e1d3ade13a70161@syzkaller.appspotmail.com
+
+netlink: 'syz-executor.0': attribute type 1 has an invalid length.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 21400 at drivers/net/bonding/bond_main.c:4395 bond_update_slave_arr+0xcb0/0x10c0 drivers/net/bonding/bond_main.c:4395
+Modules linked in:
+CPU: 0 PID: 21400 Comm: syz-executor.0 Not tainted 5.12.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bond_update_slave_arr+0xcb0/0x10c0 drivers/net/bonding/bond_main.c:4395
+Code: cb fc 45 31 e4 e9 76 fe ff ff e8 eb bc cb fc 48 83 3c 24 00 41 bc f4 ff ff ff 0f 85 67 fc ff ff e9 7f fe ff ff e8 d0 bc cb fc <0f> 0b e9 e7 f3 ff ff e8 c4 bc cb fc 48 85 ed 41 bc f4 ff ff ff 0f
+RSP: 0018:ffffc90001bbee38 EFLAGS: 00010216
+RAX: 000000000002a883 RBX: ffff88807b5d0c00 RCX: ffffc90009192000
+RDX: 0000000000040000 RSI: ffffffff84a83480 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff84a82866 R11: 0000000000000001 R12: 0000000000000006
+R13: ffff88807b5d0038 R14: 0000000000000000 R15: ffff88807b5d0c00
+FS:  00007f3c00d35700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f00387e3000 CR3: 000000007af5a000 CR4: 0000000000350ef0
+Call Trace:
+ bond_open+0x448/0xc00 drivers/net/bonding/bond_main.c:3710
+ __dev_open+0x2bc/0x4d0 net/core/dev.c:1563
+ __dev_change_flags+0x583/0x750 net/core/dev.c:8686
+ rtnl_configure_link+0xee/0x240 net/core/rtnetlink.c:3125
+ __rtnl_newlink+0x1093/0x1710 net/core/rtnetlink.c:3451
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f3c00d35188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 00000000004bf9fb R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007fff04d9e05f R14: 00007f3c00d35300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
