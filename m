@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE25382335
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4351F38233A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhEQEB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 00:01:58 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:35208 "EHLO loongson.cn"
+        id S229963AbhEQECP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 00:02:15 -0400
+Received: from mail-dm6nam11on2098.outbound.protection.outlook.com ([40.107.223.98]:9312
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229452AbhEQEB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 00:01:57 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax7chk6qFgYAoYAA--.31444S2;
-        Mon, 17 May 2021 12:00:37 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>, Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH] Documentation: checkpatch: add description if no filenames are given
-Date:   Mon, 17 May 2021 12:00:36 +0800
-Message-Id: <1621224036-32092-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Ax7chk6qFgYAoYAA--.31444S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Xw4Dtw4xXryUuFyfJrykuFg_yoW8Jr4xpa
-        n5GrySgrZ8GryrX34jv3WxWFyfAaykXFZ8GF1vgF15tFZ8Xa9aqryfKw1Yy3W7CFWrCa9I
-        vr48Xr9avF1jvFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8XwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUY8-PUUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S229452AbhEQECN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 00:02:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bWiP0I+zClRVw5OT5fx8JjnhBUMtYxSlbpsRPlNJjPUDjC5uT9EiRrDaNS+q+cTWcXUhll7hBZrDa8D7IltZnVZzGXbbRIjKg86ouey66CXHHzOQaVGYE5vSq/St2OZ24/yZq8EOeywGITk5sEtK+4t6ubSav3B7b6gAC5fmZ25wCoE8c1SXT7ERkJnBGmrfau7MRv+PBQhuM4zaup2pyzdRxg89C7LWJkH+VTMcAVllosv2Xo3M1w5sqZpZZ+gVzKZplJQ2jKax1X4WXyCgIkVWcJjTEoqiutJJfSWasSj0A+vOUziBKgapX8pz+EGsLpKaHVVe2UEOXDntiUZiYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZ8YHf5K3+MqTgzYmmP8XAiay0/XJn5CrStvgAUpCcc=;
+ b=ep0EAjPSfUh+5QclpxltaCDPuIOgnLvKbmUPT/MvxmrZ3EW2H5AapqmvNqavY1Z6Xs47abRP7GFzCLrmXlogbISe/BBiDRJ1uby2KR5/72nkvcs6ATTRTuna5fmGBi/GlFLzj5lwRcOqHdgZOtw/qPOd2iKo8KgV9ZdGdrdKiujlq4WR/8W6Wh6+R136RB6pv7e7yHIediLEdMbltOluouZ1wpA/VsoF0e4/iCJIwSP7epXg/7Xa8Sx2xO+8HHoyI7Hl0O+qQaIuOV+Huh7tLnSQX0t/LqMXZbCrQv7zLq+dnLCKPv8DWISjPULkWnxHK6f3RzgrvO/Hanl5mLkzMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZ8YHf5K3+MqTgzYmmP8XAiay0/XJn5CrStvgAUpCcc=;
+ b=Ks1wZ9gEUnE2dqRxwuTEifdeypi+szKAWIYY7y42tR7nBIN2yW68kbaQrCy8+/kL5Lgw2iOkg8vlJtJB0P1UWo0RpnzzvnbRI8wPULPPob53lYtB9Pu3hOFZrjSGmTEjzCYQOR3Y1LlO39gdyuvs+xAVljnM9zrxeTeYrHOPlA4=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
+ CO2PR01MB2007.prod.exchangelabs.com (2603:10b6:102:12::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.25; Mon, 17 May 2021 04:00:55 +0000
+Received: from MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d840:7aa7:58d4:b503]) by MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d840:7aa7:58d4:b503%5]) with mapi id 15.20.4129.031; Mon, 17 May 2021
+ 04:00:54 +0000
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: [PATCH 0/3] Add support PSU and OCP card on Mt. Jade BMC
+Date:   Mon, 17 May 2021 11:00:33 +0700
+Message-Id: <20210517040036.13667-1-quan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.28.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [118.69.219.201]
+X-ClientProxiedBy: CH2PR05CA0036.namprd05.prod.outlook.com (2603:10b6:610::49)
+ To MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by CH2PR05CA0036.namprd05.prod.outlook.com (2603:10b6:610::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Mon, 17 May 2021 04:00:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1b234a80-fdcf-46f4-ee35-08d918e85e35
+X-MS-TrafficTypeDiagnostic: CO2PR01MB2007:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO2PR01MB20078B81A4E471CEF845FC18F22D9@CO2PR01MB2007.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VdZQvFHqjQKlAOj28lx2jx56jlZaPpv3kF/8+gH2ehOixPKsl7Xr0HGn+8W5cdYwmcjuRMSFWMF/siRvNQHtAG7bEPxxmmWqw/AOUtPsC5LZpVnioGGjiyauVeXaWd2EKL3HQJeXixl1g5c7+4Tin9Xg0bdOQeH7SEtjeh0vKj+SSCG5baZ/wEwL2DQmBQjlM2e6bBNJv7LRkKbwvxudTblhIrLW6pVw6Pg6VyrrHZ73oAxgk8sGUqW5m6l49vbVUC0s6nCcbNvE5N3gu3xFBeYi+l1vrKkms1GR0+cV6GnMrGELuV5G3YrHIa1EH0OR+BHp7Tkb+BDHGX1+lTYoriRG2RId+GXkTfLgBDwoSpN3+5+IvZI4BdzBBCS4k3bRU5FEQ4AlGIb2+2gBQXFtbT74dcnHVbozzhjvOIKd87oUVtvaDp2B/S4bmuQlMncMRQENXLZgSpaFdEgduQYlpl/8XJJyu9gffy3eUNK3bklxuVL7p9O9ZgwBFVvMVWs8lg2eMNrFv3dr3P84wHjuM63EVyQCthlxkw7v3fVSmqD+OuD3eXcTH6lA5lFvsF5W7m9N8NUCAp+ds2DrAFiGzV4/9vgWF4+Ev7uWdKKcthUTDuQEnfJaPuVa+5eR5Kmi0sxU3y4mxFVc7u3BXrySiA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(396003)(39850400004)(4744005)(2906002)(8676002)(1076003)(38350700002)(66476007)(8936002)(6486002)(66946007)(83380400001)(52116002)(26005)(6512007)(4326008)(956004)(66556008)(2616005)(186003)(16526019)(478600001)(107886003)(54906003)(110136005)(6506007)(316002)(5660300002)(86362001)(6666004)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5ZkfI88pWx84b/M2GC3VVUVhwm9kuoIdWTwe/ugghLZWhabIw5eBVJzRQTV3?=
+ =?us-ascii?Q?WbC788+eC2aehNzCctgKZXlJR2zWLXlQ4Mp/a0vL/hly9tzOJIZfoPs8URme?=
+ =?us-ascii?Q?bltVWGRayivX5egdd1TCPqF7iJcfX7mOiJXhQlc9wkHvbSAekSFLKc+vGAeW?=
+ =?us-ascii?Q?4ySMTKcWXuxXK2LruEZE1WNXZMaDOYSow7zKbJZTuglMocvImwXebotygIZd?=
+ =?us-ascii?Q?Kb02WYM7BJucoJ/C2YNPjhAqQGbydE9IH1DHYO/ja6GBP+L/Cb9HnB7s2oha?=
+ =?us-ascii?Q?LJdnXVvP6xW7Si5U85exRlAwEUCiz+CgnnMQ+chd+O8tahGFhi3XpB4Yycbp?=
+ =?us-ascii?Q?bTOV3agcF/M0VPQ9OpwErJcun4A6kVBahgfUknWrZQ2QnO6l/9CVikecc/BZ?=
+ =?us-ascii?Q?UufP2lCXA06lg/oPqMifpV2VmFHAUSnDUQUseOgyYnh7+wEEO7UKIHOFIyw1?=
+ =?us-ascii?Q?YsFjs7oDH1amnQS07xAayts4xfCEe25TQdm7wRWy0RKDUaOADdt9BdUkoHcg?=
+ =?us-ascii?Q?BPIanhSszl5K5TitqGTPqYLgAkOEwjgmK05pNpZCEzh1I0A9zvFNGm3YumiY?=
+ =?us-ascii?Q?1aVbd8bW6/UJ4n4PhiRbzzltOGck/AD2K0YILd4rNLZewx2N/zmFIIheUba4?=
+ =?us-ascii?Q?EsegfGNhbThljKYCpN7Our+ytkj7H9AyQxRDyBap9s6+s1crtXm6l9WQS+jn?=
+ =?us-ascii?Q?qhmYa1u9LBv5se1/z9m61CTQBcvLHNzLFpSEnzN4dxyTgxT087DgLgj3cPlE?=
+ =?us-ascii?Q?RZEvSskOnjcGZCoM/GwuY/lGrmiGRQyHsQXV56/EORygqVcYrf6p48n1iT2i?=
+ =?us-ascii?Q?Xvv/3rnImoRiCyqnoeFmKU2iMUHpj1Mbzd/9gjVzVK+BxjVkNETUpcT0EfSD?=
+ =?us-ascii?Q?ZTbiHW6f1ZHb/ni4+jYcqXVvvo4e42WCsYE4YKLYlWFQmnEWImqzrX1Bknq0?=
+ =?us-ascii?Q?bKedSbf+UJZ7jdix4H0ZrR2E07W343ruFfx+CU8Zztba5370hJT/WP62k96B?=
+ =?us-ascii?Q?45Yu4nKs2d11A/QHVSfNsnpU27PQ7dtPAwzpD5/W5J9k8RXPtyUjp8fZgy2n?=
+ =?us-ascii?Q?QFGALD8ZP72lcmic4SB7yOtSwh6YgjCW+8WEDzQ7qX4woZAR0YMorF5183ca?=
+ =?us-ascii?Q?1YuZlTgqP76INNfJe1AS4CHMKEPRRXkYVPrm/2JK1mLVU8fScrWADfCIvixh?=
+ =?us-ascii?Q?Vqx9gEAx/6+MU6TAvfki14oGLLBUGcMsBpSmUi5FDk/sp7GVmwSn5Jcx6sVK?=
+ =?us-ascii?Q?yhAKI/EQydqSlNmFQnmg33sYtPXWyS0sc62hb5eHWjDveeSehu3RYuCFU9RH?=
+ =?us-ascii?Q?JmolyBum5JKGLCI31GHQ79x8?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b234a80-fdcf-46f4-ee35-08d918e85e35
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2021 04:00:54.7564
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qIAHkU52FLRUB8JZfGlHWwUttMKPTy72D0NQMIzA3uItEvRdnmoja16I1+hQtEd32y33DKKiYtL7egXxsi4is1WNOpQDCtOVb5kOqldI0Z4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO2PR01MB2007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 45107ff6d526 ("checkpatch: if no filenames then read stdin"),
-if no filenames are given, it will read patch from stdin rather than exit
-directly, it is a bit confusing whether the script hangs, I do not quite
-know what to do next util I understand the code logic.
+The Mt. Jade BMC is an ASPEED AST2500-based BMC for the Mt. Jade
+hardware reference platform with Ampere's Altra Processor family.
+This series adds support PSU and OCP card on the Ampere's Mt. Jade BMC
+and switch to use the 64MB flash layout as the 32MB layout will soon be
+exhausted.
 
-At the beginning, I want to print some info if no filenames are given [1],
-but as Joe Perches said, this is unnecessary. It's like trying to make cat
-without command line arguments emit something.
+Quan Nguyen (3):
+  ARM: dts: aspeed: mtjade: Enable OCP card support via NC-SI
+  ARM: dts: aspeed: mtjade: Add PSU support
+  ARM: dts: aspeed: mtjade: switch to 64MB flash layout
 
-So as Lukas Bulwahn suggested, add description for somebody that actually
-reads the available kernel documentation on checkpatch.
+ .../arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 57 +++++++++++++++++--
+ 1 file changed, 53 insertions(+), 4 deletions(-)
 
-[1] https://lore.kernel.org/patchwork/patch/1429026/
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- Documentation/dev-tools/checkpatch.rst | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index 51fed1b..181b95e 100644
---- a/Documentation/dev-tools/checkpatch.rst
-+++ b/Documentation/dev-tools/checkpatch.rst
-@@ -210,6 +210,8 @@ Available options:
- 
-    Display the help text.
- 
-+When FILE is -, or no filenames are given, read standard input.
-+
- Message Levels
- ==============
- 
 -- 
-2.1.0
+2.28.0
 
