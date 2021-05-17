@@ -2,67 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749E0382396
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB683823A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 07:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbhEQE6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 00:58:02 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2983 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhEQE6B (ORCPT
+        id S233798AbhEQFHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 01:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhEQFHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 00:58:01 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fk6G42c6czQpGp;
-        Mon, 17 May 2021 12:53:16 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 12:56:44 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 12:56:43 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>
-CC:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>
-Subject: [PATCH -next] rtc: sysfs: Correct function name hctosys_show()
-Date:   Mon, 17 May 2021 12:59:01 +0800
-Message-ID: <20210517045901.3461800-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 17 May 2021 01:07:53 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D617FC061573;
+        Sun, 16 May 2021 22:06:36 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id 197so4621840qkl.12;
+        Sun, 16 May 2021 22:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wxTIt7EaGmZ3uYc414FQHUbL2Bjw3DIpD8O0/yF7DaU=;
+        b=rYuD1hewJ/zYRU5JJnDd6QOqRY7sg7eH7DWYZ8s63aXJoi0ob+j9xF55vqqL+xxoqS
+         wgbcUzvoh+WlQka+7v/dz8ABizUlSooIsIBham1xXCGhPdvb0L8ftAFxA1cxFepES0Hk
+         YoWevMMF3or45Eyo9DVx5oGOWc2rQLNmjWS8fyXlf8e7l6tP6ZYkpAPDeqI4j28JsYfv
+         nqqK+p8ahVzwvr5Q79bIfb2jzyqXXdZFONEMxmuc8B7TlGuXrLS6dPT8dtCTyjKGHaxj
+         pR8gLNE6RvDSGJ1quTog6Dkur5kWMusKYhhuMyPNAWo7jP+g1sncOvbygwzscAc8L9Vv
+         zB1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wxTIt7EaGmZ3uYc414FQHUbL2Bjw3DIpD8O0/yF7DaU=;
+        b=ex2GXIbAOeIRS+LBuJIkxWBWVsCrSm0vhsibvsVSSwotp8iOicyVQDE6rZKhDIsBQD
+         GWmtEsjtxCEdOGS+BWOMg0LgEjv0DBxo/lwdSFjOlKO1raZysziUEinRO1nrqES1URXD
+         1FV7LVpsGdYfXIb2azPfDAhN1jfBPl8DibOTuWTUoATwAAyGjUHS0/EpWOkfwtzA+vrL
+         A4TSGxUUvYbEFxc/Mcb/awcKzxXNBAggWFDu5Unh77qpSIBtG2kCBxc/Ooh0xlmAH0OD
+         FnwLRarM7+6BhGwGMv3GZdBi+RgDLeJ2lxM2oDSGqdtBblp3VFHiiOj41O8CN5JL3QcM
+         rQRA==
+X-Gm-Message-State: AOAM532CJIAOtlOLXgA200ZW/0+M0BIb+Z8VB2DInPZrpzXa+OjystK1
+        P8bxUZLR5XqhQ+tAgY05EuYTbSbrY9c=
+X-Google-Smtp-Source: ABdhPJxqAKpQ/12HG5V/L8qp2fiDPCYnNZ3OZjdNNHjPpP0L/d5nDAxQofswv/XvnUvE/NDhrjaO3A==
+X-Received: by 2002:a37:6554:: with SMTP id z81mr55966052qkb.472.1621227994344;
+        Sun, 16 May 2021 22:06:34 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f1sm9623000qkl.93.2021.05.16.22.06.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 May 2021 22:06:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@iguana.be>, John Crispin <john@phrozen.org>,
+        linux-mips@vger.kernel.org, linux-watchdog@vger.kernel.org
+References: <20210517005417.18338-1-rdunlap@infradead.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
+Message-ID: <e56fa6d9-1305-b3c5-d385-37042835686c@roeck-us.net>
+Date:   Sun, 16 May 2021 22:06:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210517005417.18338-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following make W=1 kernel build warning:
+On 5/16/21 5:54 PM, Randy Dunlap wrote:
+> rt2880_wdt.c uses (well, attempts to use) rt_sysc_membase. However,
+> when this watchdog driver is built as a loadable module, there is a
+> build error since the rt_sysc_membase symbol is not exported.
+> Export it to quell the build error.
+> 
+> ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
+> 
+> Fixes: 473cf939ff34 ("watchdog: add ralink watchdog driver")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Wim Van Sebroeck <wim@iguana.be>
 
-  drivers/rtc/sysfs.c:115: warning: expecting prototype for rtc_sysfs_show_hctosys(). Prototype was for hctosys_show() instead
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/rtc/sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Cc: John Crispin <john@phrozen.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-watchdog@vger.kernel.org
+> ---
+> or make the Kconfig symbol RALINK_WDT bool instead of tristate?
+> 
 
-diff --git a/drivers/rtc/sysfs.c b/drivers/rtc/sysfs.c
-index 74026f67fdfb..00f1945bcb7e 100644
---- a/drivers/rtc/sysfs.c
-+++ b/drivers/rtc/sysfs.c
-@@ -102,7 +102,7 @@ max_user_freq_store(struct device *dev, struct device_attribute *attr,
- static DEVICE_ATTR_RW(max_user_freq);
- 
- /**
-- * rtc_sysfs_show_hctosys - indicate if the given RTC set the system time
-+ * hctosys_show - indicate if the given RTC set the system time
-  * @dev: The device that the attribute belongs to.
-  * @attr: The attribute being read.
-  * @buf: The result buffer.
--- 
-2.25.1
+You'd have to change several other config symbols to boolean as well.
+
+Example with PHY_MT7621_PCI=m:
+
+ERROR: modpost: "rt_sysc_membase" [drivers/phy/ralink/phy-mt7621-pci.ko] undefined!
+make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
+
+Same with MT7621_WDT=m.
+
+ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/mt7621_wdt.ko] undefined!
+
+At that point I stopped looking.
+
+Guenter
+
+>   arch/mips/ralink/of.c |    2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> --- linux-next-20210514.orig/arch/mips/ralink/of.c
+> +++ linux-next-20210514/arch/mips/ralink/of.c
+> @@ -8,6 +8,7 @@
+>   
+>   #include <linux/io.h>
+>   #include <linux/clk.h>
+> +#include <linux/export.h>
+>   #include <linux/init.h>
+>   #include <linux/sizes.h>
+>   #include <linux/of_fdt.h>
+> @@ -25,6 +26,7 @@
+>   
+>   __iomem void *rt_sysc_membase;
+>   __iomem void *rt_memc_membase;
+> +EXPORT_SYMBOL_GPL(rt_sysc_membase);
+>   
+>   __iomem void *plat_of_remap_node(const char *node)
+>   {
+> 
 
