@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB9D3838A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0953836BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241200AbhEQP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:58:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
+        id S243647AbhEQPf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245411AbhEQPjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:39:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8367561CFC;
-        Mon, 17 May 2021 14:41:10 +0000 (UTC)
+        id S244419AbhEQPUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:20:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25EC56191C;
+        Mon, 17 May 2021 14:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262471;
-        bh=9/deoVy0/tN1by8qL0WOlNlc4En/IMSnzchfO2hrlYI=;
+        s=korg; t=1621262054;
+        bh=u0cuOepqDr5lz0DiSS8gKOWHOLaJIYMmmSUixmLFq8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JjYTfhI/amm+yAxke7O6joQnvuYICLBhBN11z5omdkkmv0jMq8tLNlPGl2rxGTnxf
-         aJJjzCxFygbPu9jZKFvJDauwJFCAYWhnJrRKC6jBVxRN6nYvl/uSNCqU5CimWB4/NI
-         FX9VpSAhUCMrlnkYz2p41kBCqvRY2qO3lt+4tb8w=
+        b=rBf6Z6pzubNecGqZrmOWh+6f/LWv6dUaAtrBVmMWIxs5vrGhChpBO2SYrsiIIeyq1
+         JgHXlfirzz0aXqZtOuMrfAwRae41biTkezFCuw1p8lKbcmw+P9bS+YvFgzSdxFV0fT
+         dS16QMzxoMUxDzVoXJxuTPZuiZwZUBDUIAV7kUmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shahab Vahedi <shahab@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 5.10 194/289] ARC: entry: fix off-by-one error in syscall number validation
-Date:   Mon, 17 May 2021 16:01:59 +0200
-Message-Id: <20210517140311.640148412@linuxfoundation.org>
+        stable@vger.kernel.org, Nucca Chen <nuccachen@google.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        David Ahern <dsahern@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@mellanox.com>, Jiri Pirko <jiri@resnulli.us>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 209/329] net: fix nla_strcmp to handle more then one trailing null character
+Date:   Mon, 17 May 2021 16:02:00 +0200
+Message-Id: <20210517140309.205916341@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Maciej Żenczykowski <maze@google.com>
 
-commit 3433adc8bd09fc9f29b8baddf33b4ecd1ecd2cdc upstream.
+[ Upstream commit 2c16db6c92b0ee4aa61e88366df82169e83c3f7e ]
 
-We have NR_syscall syscalls from [0 .. NR_syscall-1].
-However the check for invalid syscall number is "> NR_syscall" as
-opposed to >=. This off-by-one error erronesously allows "NR_syscall"
-to be treated as valid syscall causeing out-of-bounds access into
-syscall-call table ensuing a crash (holes within syscall table have a
-invalid-entry handler but this is beyond the array implementing the
-table).
+Android userspace has been using TCA_KIND with a char[IFNAMESIZ]
+many-null-terminated buffer containing the string 'bpf'.
 
-This problem showed up on v5.6 kernel when testing glibc 2.33 (v5.10
-kernel capable, includng faccessat2 syscall 439). The v5.6 kernel has
-NR_syscalls=439 (0 to 438). Due to the bug, 439 passed by glibc was
-not handled as -ENOSYS but processed leading to a crash.
+This works on 4.19 and ceases to work on 5.10.
 
-Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
-Reported-by: Shahab Vahedi <shahab@synopsys.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I'm not entirely sure what fixes tag to use, but I think the issue
+was likely introduced in the below mentioned 5.4 commit.
+
+Reported-by: Nucca Chen <nuccachen@google.com>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Jiri Pirko <jiri@mellanox.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Fixes: 62794fc4fbf5 ("net_sched: add max len check for TCA_KIND")
+Change-Id: I66dc281f165a2858fc29a44869a270a2d698a82b
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/kernel/entry.S |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/nlattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -177,7 +177,7 @@ tracesys:
+diff --git a/lib/nlattr.c b/lib/nlattr.c
+index 5b6116e81f9f..1d051ef66afe 100644
+--- a/lib/nlattr.c
++++ b/lib/nlattr.c
+@@ -828,7 +828,7 @@ int nla_strcmp(const struct nlattr *nla, const char *str)
+ 	int attrlen = nla_len(nla);
+ 	int d;
  
- 	; Do the Sys Call as we normally would.
- 	; Validate the Sys Call number
--	cmp     r8,  NR_syscalls
-+	cmp     r8,  NR_syscalls - 1
- 	mov.hi  r0, -ENOSYS
- 	bhi     tracesys_exit
+-	if (attrlen > 0 && buf[attrlen - 1] == '\0')
++	while (attrlen > 0 && buf[attrlen - 1] == '\0')
+ 		attrlen--;
  
-@@ -255,7 +255,7 @@ ENTRY(EV_Trap)
- 	;============ Normal syscall case
- 
- 	; syscall num shd not exceed the total system calls avail
--	cmp     r8,  NR_syscalls
-+	cmp     r8,  NR_syscalls - 1
- 	mov.hi  r0, -ENOSYS
- 	bhi     .Lret_from_system_call
- 
+ 	d = attrlen - len;
+-- 
+2.30.2
+
 
 
