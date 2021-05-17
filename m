@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6923836C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329203838B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243384AbhEQPfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55934 "EHLO mail.kernel.org"
+        id S1344288AbhEQP7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:59:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244426AbhEQPUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F313561928;
-        Mon, 17 May 2021 14:34:22 +0000 (UTC)
+        id S245742AbhEQPjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:39:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4477561CFB;
+        Mon, 17 May 2021 14:41:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262063;
-        bh=rpSqR4MR4S37JY+TbR1OCsT8vEv9VQu8ZuJfas7Qs2M=;
+        s=korg; t=1621262479;
+        bh=NjA1dweoYFafyPsVsG2C6HmvH3v42wGI6CA5LFo+kfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZV343FNVo4kxF7y5FgzjVVMb2E79LEcplHAZZWc2WP6TWAwqcU/l4mMUOGUvqgTkO
-         Ih8lqs+NNQ30+lHzpOKebBCBDVWnhczhiCd909ZG/7ro2Qkxr+eyumZgGEOjqJcW5E
-         cUdxe1IrVYfE9wdEt0PEVILKmJYh25Sev01dFXXU=
+        b=WeyrGT2GPaGV43HUaE6uCfwXLjB8gUiZboZe63DeIbE5IIOMC2iEOz4IyycFAOAoI
+         Rn/jbVGmdo2fgT0p/+DYAT2xHa0lS8lil6R5yHaNmLb1HtnYq4+prdtBddghyHfTtT
+         7l4H5BF3LhUAI+kXhoADmME8QV/WbGVVT2IAxdss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
-Subject: [PATCH 5.11 210/329] smc: disallow TCP_ULP in smc_setsockopt()
+        stable@vger.kernel.org, Vladimir Isaev <isaev@synopsys.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 5.10 196/289] ARC: mm: Use max_high_pfn as a HIGHMEM zone border
 Date:   Mon, 17 May 2021 16:02:01 +0200
-Message-Id: <20210517140309.243688750@linuxfoundation.org>
+Message-Id: <20210517140311.712058384@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+From: Vladimir Isaev <isaev@synopsys.com>
 
-[ Upstream commit 8621436671f3a4bba5db57482e1ee604708bf1eb ]
+commit 1d5e4640e5df15252398c1b621f6bd432f2d7f17 upstream.
 
-syzbot is able to setup kTLS on an SMC socket which coincidentally
-uses sk_user_data too. Later, kTLS treats it as psock so triggers a
-refcnt warning. The root cause is that smc_setsockopt() simply calls
-TCP setsockopt() which includes TCP_ULP. I do not think it makes
-sense to setup kTLS on top of SMC sockets, so we should just disallow
-this setup.
+Commit 4af22ded0ecf ("arc: fix memory initialization for systems
+with two memory banks") fixed highmem, but for the PAE case it causes
+bug messages:
 
-It is hard to find a commit to blame, but we can apply this patch
-since the beginning of TCP_ULP.
+| BUG: Bad page state in process swapper  pfn:80000
+| page:(ptrval) refcount:0 mapcount:1 mapping:00000000 index:0x0 pfn:0x80000 flags: 0x0()
+| raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
+| raw: 00000000
+| page dumped because: nonzero mapcount
+| Modules linked in:
+| CPU: 0 PID: 0 Comm: swapper Not tainted 5.12.0-rc5-00003-g1e43c377a79f #1
 
-Reported-and-tested-by: syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
-Fixes: 734942cc4ea6 ("tcp: ULP infrastructure")
-Cc: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This is because the fix expects highmem to be always less than
+lowmem and uses min_low_pfn as an upper zone border for highmem.
+
+max_high_pfn should be ok for both highmem and highmem+PAE cases.
+
+Fixes: 4af22ded0ecf ("arc: fix memory initialization for systems with two memory banks")
+Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: stable@vger.kernel.org  #5.8 onwards
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/smc/af_smc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arc/mm/init.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 47340b3b514f..cb23cca72c24 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -2162,6 +2162,9 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
- 	struct smc_sock *smc;
- 	int val, rc;
+--- a/arch/arc/mm/init.c
++++ b/arch/arc/mm/init.c
+@@ -158,7 +158,16 @@ void __init setup_arch_memory(void)
+ 	min_high_pfn = PFN_DOWN(high_mem_start);
+ 	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
  
-+	if (level == SOL_TCP && optname == TCP_ULP)
-+		return -EOPNOTSUPP;
-+
- 	smc = smc_sk(sk);
+-	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
++	/*
++	 * max_high_pfn should be ok here for both HIGHMEM and HIGHMEM+PAE.
++	 * For HIGHMEM without PAE max_high_pfn should be less than
++	 * min_low_pfn to guarantee that these two regions don't overlap.
++	 * For PAE case highmem is greater than lowmem, so it is natural
++	 * to use max_high_pfn.
++	 *
++	 * In both cases, holes should be handled by pfn_valid().
++	 */
++	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
  
- 	/* generic setsockopts reaching us here always apply to the
-@@ -2186,7 +2189,6 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
- 	if (rc || smc->use_fallback)
- 		goto out;
- 	switch (optname) {
--	case TCP_ULP:
- 	case TCP_FASTOPEN:
- 	case TCP_FASTOPEN_CONNECT:
- 	case TCP_FASTOPEN_KEY:
--- 
-2.30.2
-
+ 	high_memory = (void *)(min_high_pfn << PAGE_SHIFT);
+ 	kmap_init();
 
 
