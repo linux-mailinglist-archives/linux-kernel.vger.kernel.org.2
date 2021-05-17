@@ -2,93 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0993822E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4BF3822E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhEQCv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 22:51:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229661AbhEQCvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 22:51:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EBAB61185;
-        Mon, 17 May 2021 02:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621219809;
-        bh=X5ngr4Uil22+BzVfrBo4TeLtOT8gxEtRZ54sQyy4Mm0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cVpJuIfZ67ZtRqeV5waou19NoOp3QzFmmCi87p8kkGFQ7g1/Id2iFmXqUmPJkjO7X
-         Wx+DuUgPpwzBHGr438yjb/s9CPCYSaPxCSObPL9Ri+lc66kw1dhUzrtc+JPIapA/uE
-         BsGv4Tpbgym1cPaY6Rj8bF5ipPXgILPTDKTN2JGFcWUujBQbCKoudvq7yI5Tu4FOAS
-         13ry/UYgQGkPnawO6XpGe7HpEcYhVs+331fkXuDXVgOC5pv8ZtdLkKSiuV2gjeQm15
-         0AyAh6mgt5pA6HLfkmJ51ij0CIc9m1ObrhPNvu0XJGz3ZlFJzNj3vUXUKg9z5ebVtu
-         pH69lDz8c/yqw==
-Date:   Sun, 16 May 2021 22:50:08 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Wolfgang =?iso-8859-1?Q?M=FCller?= <wolf@oriole.systems>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>, Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH 5.10 392/530] iommu/vt-d: Preset Access/Dirty bits for
- IOVA over FL
-Message-ID: <YKHZ4AEUkXEqkFNW@sashalap>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144832.660153884@linuxfoundation.org>
- <20210515132855.4bn7ve2ozvdhpnj4@nabokov.fritz.box>
- <5d9b2c1a-f2f4-a9db-a14b-b6a31da59f54@linux.intel.com>
+        id S234009AbhEQCwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 22:52:43 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:19062 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233907AbhEQCwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 22:52:40 -0400
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 14H2oqi6003301;
+        Mon, 17 May 2021 11:50:52 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 14H2oqi6003301
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1621219852;
+        bh=GgOSs8zrb6fLGJr3oX36VWe647ayOr3nv+9MJ33ntoU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o2QF8k95BMd8yhaXpsSiR12h1WwoGQhuf6AogBWQhx0hd6uZim4vlBPqoOtsyyeQQ
+         cvU0I/NGzjEBHN6ahVL2tBSNez3Xr8xH1cByT+nQiwp6D+c1Mpzma1cjbVCZr1y7Gu
+         R8P1XgddxgdgdtWSQr8lt7ZNlxhUU4llODBzipDIkRQfGLvbhbxTEqZ41FzvrTbiou
+         tjJc4+JWh6kT6xsIxCIlpwHROtMNycDo9qyNZmTc+ocbbDrKhOsxW9ClbBljB9bgAq
+         EOEHueRbdgTkZhDFS4gjiCRwoGMR7btphCV3/DhLSS4IRaF5gAbXGyqcbfmWlWazIU
+         zbq0R1XRmUplg==
+X-Nifty-SrcIP: [209.85.210.182]
+Received: by mail-pf1-f182.google.com with SMTP id w1so1304944pfu.0;
+        Sun, 16 May 2021 19:50:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530HiufWOQlo4/mOUIBiR9hP5Ukp/gRQPa40892Ft6NdoKl0+r1e
+        TeCLp/SbAlHhzHjKyYDWd2KW8i+HFMzc54G+Tow=
+X-Google-Smtp-Source: ABdhPJxHRD6T/mKjM2LPR3y2zbxRWMIy2ygj/8UQJQ2AC/w5yjA+g2CgCkcdSnelIqt5K0XEhroFgs1hNWdr3p9PtXM=
+X-Received: by 2002:aa7:94af:0:b029:28e:80ff:cc1d with SMTP id
+ a15-20020aa794af0000b029028e80ffcc1dmr57693078pfl.63.1621219851803; Sun, 16
+ May 2021 19:50:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5d9b2c1a-f2f4-a9db-a14b-b6a31da59f54@linux.intel.com>
+References: <20210512065201.35268-1-masahiroy@kernel.org> <20210512065201.35268-2-masahiroy@kernel.org>
+ <CAEf4BzbsuivHaX0SHdBBV6+wpdtViFXOw=oWLyytzcRPiq+QSg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbsuivHaX0SHdBBV6+wpdtViFXOw=oWLyytzcRPiq+QSg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 17 May 2021 11:50:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAThrg9BCCoyPwpxzha86DhjsHUFjzD_xMV7U+bsdpVXzg@mail.gmail.com>
+Message-ID: <CAK7LNAThrg9BCCoyPwpxzha86DhjsHUFjzD_xMV7U+bsdpVXzg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: remove libelf checks from top Makefile
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:38:42AM +0800, Lu Baolu wrote:
->Hi Wolfgang,
->
->On 5/15/21 9:28 PM, Wolfgang Müller wrote:
->>Hi!
->>
->>First of all, apologies if this is the wrong place to post a problem
->>report. I figured since I was going to reference a particular commit
->>anyway I might as well reply to the patch series that (seemed to have)
->>introduced the problem.
->>
->>>From: Lu Baolu <baolu.lu@linux.intel.com>
->>>
->>>[ Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3 ]
->>>
->>>The Access/Dirty bits in the first level page table entry will be set
->>>whenever a page table entry was used for address translation or write
->>>permission was successfully translated. This is always true when using
->>>the first-level page table for kernel IOVA. Instead of wasting hardware
->>>cycles to update the certain bits, it's better to set them up at the
->>>beginning.
->>
->>This commit seems to trigger a kernel panic very early in boot for me in
->>5.10.37 (36 is fine):
->
->It seems due to the back-ported patch:
->
->-	if (!sg) {
->-		sg_res = nr_pages;
->-		pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
->+		if (domain->domain.type == IOMMU_DOMAIN_DMA) {
->+			attr |= DMA_FL_PTE_ACCESS;
->+			if (prot & DMA_PTE_WRITE)
->+				attr |= DMA_FL_PTE_DIRTY;
->+		}
-> 	}
->
->+	pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
->
->Greg, do you want me to rework this patch, or submit an incremental fix?
+(+CC: Josh, Peter)
 
-Could you send a reworked patch please?
+On Thu, May 13, 2021 at 4:36 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, May 11, 2021 at 11:52 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > I do not see a good reason why only the libelf development package must
+> > be so carefully checked.
+> >
+> > Kbuild generally does not check host tools or libraries.
+> >
+> > For example, x86_64 defconfig fails to build with no libssl development
+> > package installed.
+> >
+> > scripts/extract-cert.c:21:10: fatal error: openssl/bio.h: No such file or directory
+> >    21 | #include <openssl/bio.h>
+> >       |          ^~~~~~~~~~~~~~~
+> >
+> > To solve the build error, you need to install libssl-dev or openssl-devel
+> > package, depending on your distribution.
+> >
+> > 'apt-file search', 'dnf provides', etc. is your frined to find a proper
+> > package to install.
+> >
+> > This commit removes all the libelf checks from the top Makefile.
+> >
+> > If libelf is missing, objtool will fail to build in a similar pattern:
+> >
+> > .../linux/tools/objtool/include/objtool/elf.h:10:10: fatal error: gelf.h: No such file or directory
+> >    10 | #include <gelf.h>
+> >
+> > You need to install libelf-dev, libelf-devel, or elfutils-libelf-devel
+> > to proceed.
+> >
+> > Another remarkable change is, CONFIG_STACK_VALIDATION (without
+> > CONFIG_UNWINDER_ORC) previously continued to build with a warning,
+> > but now it will treat missing libelf as an error.
+> >
+> > This is just a one-time installation, so it should not matter to break
+> > a build and make a user install the package.
+> >
+> > BTW, the traditional way to handle such checks is autotool, but according
+> > to [1], I do not expect the kernel build would have similar scripting
+> > like './configure' does.
+> >
+> > [1]: https://lore.kernel.org/lkml/CA+55aFzr2HTZVOuzpHYDwmtRJLsVzE-yqg2DHpHi_9ePsYp5ug@mail.gmail.com/
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+>
+> resolve_btfids part looks good to me:
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> >  Makefile                  | 78 +++++++++++----------------------------
+> >  scripts/Makefile.build    |  2 -
+> >  scripts/Makefile.modfinal |  2 -
+> >  3 files changed, 22 insertions(+), 60 deletions(-)
+> >
+>
+> [...]
+
+
 
 -- 
-Thanks,
-Sasha
+Best Regards
+Masahiro Yamada
