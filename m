@@ -2,107 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CA338230B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 05:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A54138230F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 05:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbhEQDXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 23:23:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:18703 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhEQDXr (ORCPT
+        id S234205AbhEQDYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 23:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhEQDYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 23:23:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621221751; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=BnqGq1pzoqqb3qyX2lCRDxOTjJMep8szFP0fRb15D7M=;
- b=tAPikW7xB0qPhZ5hxMOBprwlniXtIQM/lHH5es+YHrYJz2/j4PPm4FtdA2mQXWGnW2VWZmne
- xeLzktebolzHHxupZ5XGyZRiC7YVfvj1OAcuylzgYlLfqazP//S0RM+jt6rzMtDR9PU7W8tH
- QtEYBUT8XkpUbrPFAg7hdwCoBlU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60a1e1745f788b52a59218c2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 May 2021 03:22:28
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 98CB5C43217; Mon, 17 May 2021 03:22:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 04DEAC433F1;
-        Mon, 17 May 2021 03:22:27 +0000 (UTC)
+        Sun, 16 May 2021 23:24:33 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26DDC06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 20:23:17 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id h127so3993495pfe.9
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 20:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=fOR5pnDEPGBJt3faYvRqJP82Hiak0OwwFyZyM93jpF0=;
+        b=GulJ6QioiL7oOOn+tAThXcktBX6kWZjGIaP4a41f8XvVqSISg49RV8/LFBF4mZnQp6
+         ZZ4Np93/Nnq8Urx9XGPrg86WEUnOGJGvGwHwf1om5bi5VLDXuHTRqtUzvgFrEiwJS7ND
+         7HrAIUiHACm277b9Z1AF4uAoVLXHHaz8BFtb88zHeMw+z7GtPJiSHGO74emYZ48QBFMK
+         aOdJ5rJJSynvSgsr/7ruh/LXO5xR8jpsG1oQcFY1n/c7q/EY/maMV3F65k4titSAENEs
+         cxlY3BABf0vVg845cflGqjUuDbiYhwsi4e1J0lG0H+jM0eCFB2hfdwE1YFLP4HotPMu0
+         bY2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=fOR5pnDEPGBJt3faYvRqJP82Hiak0OwwFyZyM93jpF0=;
+        b=arjeVWj3OOlSBdiLu/Qw3ZhRRkgxmgA9Rmn+UnUxb7a78zxzdCULY+kKDcQ0Ql3+5E
+         MFSvsXjl4UvFEKb+zqYrZfLjSjsoyWo5HxMvYOoYERCeEDyp3lqwV7aR9YqCgJKdSIzR
+         0hcyYqzTTXje1+stPsUAtxRUqdLIvEA84wVSWeOReE5xWP4T8fAZNa9gUJ2rz+XHO3+z
+         +QG/6NgwyBTEV/1OtlcqGMWEUArYGGiZ0guYKD0pPUEtWDhk1cbrR8X8Qh81AcS+OdaA
+         FhDAqYY/Zpb9cNMwQY27X/4iFoVmGgZ7GiA7a9sUSfndpDh925D0ndMHV5uhuSjytI85
+         NqXw==
+X-Gm-Message-State: AOAM532O46P9/0gRAOtTAZ7V5tsof3zw4JsyE3XLy76MC86YzDbVYNrX
+        AT6daaqCfnPfctfaxafa1EbTlA==
+X-Google-Smtp-Source: ABdhPJwWnFqJVFQof9/l0qEiWwHso3BEziWmmjX0EDlJSIF69+PivmFZHh/kMI8wS2YVSCMaIC+1yQ==
+X-Received: by 2002:a62:8f45:0:b029:28e:a5f2:2f2a with SMTP id n66-20020a628f450000b029028ea5f22f2amr57274586pfd.44.1621221797301;
+        Sun, 16 May 2021 20:23:17 -0700 (PDT)
+Received: from localhost (110-175-254-242.static.tpgi.com.au. [110.175.254.242])
+        by smtp.gmail.com with UTF8SMTPSA id z62sm8585359pfb.110.2021.05.16.20.23.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 May 2021 20:23:16 -0700 (PDT)
+Message-ID: <f8d64d7d-cd2b-342a-de6a-c14a5df9462c@ozlabs.ru>
+Date:   Mon, 17 May 2021 13:23:11 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH kernel v3] powerpc/makefile: Do not redefine $(CPP) for
+ preprocessor
+Content-Language: en-US
+To:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20210513115904.519912-1-aik@ozlabs.ru>
+ <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
+ <CAK7LNASFhRE=1EBj9AoTMMEd2YJdu7bCxARAGJfZ7aXcBrMAUw@mail.gmail.com>
+ <20210514084649.GI10366@gate.crashing.org>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210514084649.GI10366@gate.crashing.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 17 May 2021 11:22:27 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 5/6] scsi: ufs: Let host_sem cover the entire system
- suspend/resume
-In-Reply-To: <b59e0cd4-d560-6724-3f30-a5232dd41a8f@acm.org>
-References: <1620885319-15151-1-git-send-email-cang@codeaurora.org>
- <1620885319-15151-7-git-send-email-cang@codeaurora.org>
- <b59e0cd4-d560-6724-3f30-a5232dd41a8f@acm.org>
-Message-ID: <98a7135ef1ce34e23e84817cf6167e1a@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
 
-On 2021-05-14 11:55, Bart Van Assche wrote:
-> On 5/12/21 10:55 PM, Can Guo wrote:
->> UFS error handling now is doing more than just re-probing, but also 
->> sending
->> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, 
->> which
->> may change runtime status of scsi devices. To protect system 
->> suspend/resume
->> from being disturbed by error handling, move the host_sem from wl pm 
->> ops
->> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
-> 
-> In ufshcd.h I found the following:
-> 
->  * @host_sem: semaphore used to serialize concurrent contexts
-> 
-> That's the wrong way to use a synchronization object. A synchronization
-> object must protect data instead of code. Does host_sem perhaps need to
-> be split into multiple synchronization objects?
 
-Thanks for the comments. These contexts are changing critical data and
-registers, so the sem is used to protect data actually, just like the
-scaling_lock protecting scaling and cmd transations.
+On 5/14/21 18:46, Segher Boessenkool wrote:
+> Hi!
+> 
+> On Fri, May 14, 2021 at 11:42:32AM +0900, Masahiro Yamada wrote:
+>> In my best guess, the reason why powerpc adding the endian flag to CPP
+>> is this line in arch/powerpc/kernel/vdso64/vdso64.lds.S
+>>
+>> #ifdef __LITTLE_ENDIAN__
+>> OUTPUT_FORMAT("elf64-powerpcle", "elf64-powerpcle", "elf64-powerpcle")
+>> #else
+>> OUTPUT_FORMAT("elf64-powerpc", "elf64-powerpc", "elf64-powerpc")
+>> #endif
+> 
+> Which is equivalent to
+> 
+> #ifdef __LITTLE_ENDIAN__
+> OUTPUT_FORMAT("elf64-powerpcle")
+> #else
+> OUTPUT_FORMAT("elf64-powerpc")
+> #endif
+> 
+> so please change that at the same time if you touch this :-)
 
-Thanks,
+"If you touch this" approach did not work well with this patch so sorry 
+but no ;)
 
-Can Guo.
+and for a separate patch, I'll have to dig since when it is equal, do 
+you know?
+
 
 > 
-> Thanks,
+>> __LITTLE_ENDIAN__  is defined by powerpc gcc and clang.
 > 
-> Bart.
+> This predefined macro is required by the newer ABIs, but all older
+
+That's good so I'll stick to it.
+
+> compilers have it as well.  _LITTLE_ENDIAN is not supported on all
+> platforms (but it is if your compiler targets Linux, which you cannot
+> necessarily rely on).  These macros are PowerPC-specific.
+> 
+> For GCC, for all targets, you can say
+>    #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+> You do not need any of the other *ORDER__ macros in most cases.
+> See "info cpp" for the sordid details.
+> 
+>> [2] powerpc-linux-gnu-gcc + -mlittle-endian    -> __LITTLE_ENDIAN__ is defined
+> 
+> You can just write -mbig and -mlittle btw.  Those aren't available on
+> all targets, but neither are the long-winded -m{big,little}-endian
+> option names.  Pet peeve, I know :-)
+
+I am looking the same guarantees across modern enough gcc and clang and 
+I am not sure all of the above is valid for clang 10.0.something (or 
+whatever we say we support) ;)
+
+
+-- 
+Alexey
