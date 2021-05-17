@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65AB3834CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BB838354F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242798AbhEQPMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        id S243499AbhEQPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241665AbhEQPCx (ORCPT
+        with ESMTP id S241351AbhEQPG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:02:53 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E350BC0613ED;
-        Mon, 17 May 2021 07:23:40 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id y9so7489641ljn.6;
-        Mon, 17 May 2021 07:23:40 -0700 (PDT)
+        Mon, 17 May 2021 11:06:58 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF2DC08EAE9;
+        Mon, 17 May 2021 07:24:22 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso5670713ots.10;
+        Mon, 17 May 2021 07:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iS/P8JiADakXJGpN4rrcz4d8YhejJnZchwPjq0v9rUg=;
-        b=qdykRinAL18KEqBuWZcfNfQwfm2z5zM89Pt2ZxhKeISsCCNJXp+34w7VvYYx6RrRyu
-         7uJYpa4fylSL7d1W+5w8a9LMZE6J9PWjkINlF6GzajPwIOnsZE7xssJUL6dHHVpHhsJD
-         7+xGKFL9Jo4LWYRhb4I2/DkGGJ9CPhFNRGHcOlfBJPCyq4NdMS9X54gD06rEMXJVoYxD
-         8gWRTUX7ORdkJ2jN5QvAtchpQJglMSmGJWdrMLgbdntkE42ufH6ImzjChsnMnT6yJ/fB
-         9TsJnQcU02+vQiKTS2qQOJhxOQK6pXLWipGJ0o8E3lQJtTgsTIZm/8Z5GJjWTc+6TRyQ
-         qSCg==
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=wP0qVRRFLaqKdNsvIebHqzMAQA0sHv3p78V+XQan4IE=;
+        b=SIIetbEYExbcUM1QfmpytUTa2IVHHxjrX5L6JO2j1xRF6GNf1rzKAyM40K3Hi5hYwf
+         REzXM3GmnmYKtfOC3JTzd+8Q5wzYuan+AmqRuwrgoXOPPqC9S/ccK8CLcBCIZT7ro76q
+         vdQ4N0tLO/zXJP4b5wg1VMck/JcqcLbL+m0YijN1z9Wy4KH1jVjVXeFNlbqjhBuEZpFL
+         clyJPWEn6AwkURWyVxA9BsFa3GCFHCy/9/3s1au+ksMHEydPpvbnXHqdH34qXED252Fr
+         3ipPzVpKQiT02tYGuDwi4Puho9+BjNndIhyvsV44R5iSoKNE4kJ2qajjZsijf8TctP+u
+         qB3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iS/P8JiADakXJGpN4rrcz4d8YhejJnZchwPjq0v9rUg=;
-        b=Pl2DwaYXTywtr6IvwFf3yb+aJVXGwPD1eduVaAfgtCfbUNE0FVACp2FVk9NtmuYffH
-         jZU4InijRBywiHbGFwWHUotv4OOyUcSu67IpeO+uYP0a7JZpyW3/b582Pz/7Cu7q5kib
-         /Lv/3eAgPx64MZq/AQGZN8c5sFyg4jeR703n2Y+ktPn/IKOMTqjvwV57Vf3pSXoTkwQI
-         RcVBBLp5jMxX4PkzxwsQ24sKeTcSOKBBwQ+NRtXgYKWwphXMAOKXNxZJ9X8tCJRJq+Z9
-         2bITaJq9ZTePy2dknWq5hNTSXVDmZ9flVQQNTiEv06DPY1N5NwgNb+JyJ+4B149P/ufB
-         BYIQ==
-X-Gm-Message-State: AOAM532Rh/eH7f1H0AXy/OuTOJ4TmjCa9EEd18BdYnRzBjhdcs38wUpJ
-        DGg2hmtlgZ9y7QpnVezHjOPZcSVETiI=
-X-Google-Smtp-Source: ABdhPJxBqu6DBuFtNyji6ErZhGCmOHqKJY0GsPKMO5PS+6vo4jWyVaEXfhEZ6RwwNRXxtnui0t3jNg==
-X-Received: by 2002:a2e:884c:: with SMTP id z12mr51260433ljj.276.1621261419242;
-        Mon, 17 May 2021 07:23:39 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id s11sm2821069ljc.66.2021.05.17.07.23.38
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=wP0qVRRFLaqKdNsvIebHqzMAQA0sHv3p78V+XQan4IE=;
+        b=osMoT7u9T5fXUzO5HXAqTH1oLoA5zd5l+57LBKYBRAZOZY5Ph3o4owJ/0b/DQMa/zo
+         J9cxcUmHpxFLryZEnhKC1elFv9BOcHOmAtoXI/7Trj54YSGtFdMnOfIsi6CBy5JJIHeo
+         iIZEQCvxv2lLclDr9+siCCpmakBN6lVU6jWv67oqDHw7cESaGJEnNSDp5bbpvYWCH+N7
+         duojR+cZN2zqlf2QBvueN5gzxxu5J6m0U5J9748S4ziAe/f4NWovf9/kuYXLBIRhNTl9
+         5iYAhF5vo7PM2yBTWBEe1Vo38S9tgC/I8wYWC86gVyxeaNamolO/rgBw0/OdT7F/NpCY
+         PH0w==
+X-Gm-Message-State: AOAM533YJjx3Z8vU1/EKkOIuWoLCUx/2pxDNGvlyv8qt/FJqSMwtug0s
+        q3aXOOMVgYxHHUCv3BJK9zY=
+X-Google-Smtp-Source: ABdhPJxdOLV4H8+0nYsjoYe7S0t3PHTaJfdsTy6vFeUExppMn/WtX8UkSoPTI9j9rQzIApvCTHBZWA==
+X-Received: by 2002:a9d:4e88:: with SMTP id v8mr28025140otk.110.1621261462130;
+        Mon, 17 May 2021 07:24:22 -0700 (PDT)
+Received: from [192.168.99.80] (142-79-211-230.starry-inc.net. [142.79.211.230])
+        by smtp.gmail.com with ESMTPSA id 19sm2728380oiy.11.2021.05.17.07.24.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:23:39 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] memory: tegra124-emc: Fix compilation warnings on
- 64bit platforms
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210516161214.4693-1-digetx@gmail.com>
- <20210516161214.4693-4-digetx@gmail.com>
- <936cfc7d-737e-a582-ea60-ad2ba5b4ca72@canonical.com>
- <1d80ee0f-de4c-24d0-154f-20841874bf20@gmail.com>
- <4ea1bf29-c353-6fcf-5248-bfee67d5c361@canonical.com>
- <c120ecf5-7202-9f1d-6e70-a99db2f5335f@gmail.com>
- <1cde1d43-f139-cb90-395e-8f8fceb41bce@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <9c2b7fe8-551f-288d-eeab-37810aa3f6ba@gmail.com>
-Date:   Mon, 17 May 2021 17:23:38 +0300
+        Mon, 17 May 2021 07:24:21 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] usb: early: Avoid using DbC if already enabled
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Jann Horn <jannh@google.com>, Lee Jones <lee.jones@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <cover.1620950220.git.connojdavis@gmail.com>
+ <d160cee9b61c0ec41c2cd5ff9b4e107011d39d8c.1620952511.git.connojdavis@gmail.com>
+ <8ccce25a-e3ca-cb30-f6a3-f9243a85a49b@suse.com>
+ <16400ee4-4406-8b26-10c0-a423b2b1fed0@gmail.com>
+ <ddb58cbd-0a72-f680-80f4-ce09b13a2cee@suse.com>
+From:   Connor Davis <connojdavis@gmail.com>
+Message-ID: <55325db1-b086-fc81-9117-6560c4914a12@gmail.com>
+Date:   Mon, 17 May 2021 08:24:41 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <1cde1d43-f139-cb90-395e-8f8fceb41bce@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <ddb58cbd-0a72-f680-80f4-ce09b13a2cee@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.05.2021 17:04, Krzysztof Kozlowski пишет:
-> On 17/05/2021 09:47, Dmitry Osipenko wrote:
->> 17.05.2021 16:39, Krzysztof Kozlowski пишет:
->>>>>>  #define DRAM_DEV_SEL_ALL			0
->>>>>> -#define DRAM_DEV_SEL_0				(2 << 30)
->>>>>> -#define DRAM_DEV_SEL_1				(1 << 30)
->>>>>> +#define DRAM_DEV_SEL_0				(2u << 30)
->>>>>> +#define DRAM_DEV_SEL_1				(1u << 30)
->>>>>
->>>>> Why not using BIT()? This would make even this 2<<30 less awkard...
->>>>
->>>> The bitfield 31:30 is a enum, 3 is a wrong value. Formally it's
->>>> incorrect to use the BIT() macro here.
->>>
->>> Why "3"? BIT(31) is the same as 2<<30.
->>
->> By 3 I meant BIT(31)|BIT(30). This bitfield is explicitly designated as
->> a enum in the hardware documentation.
-> 
-> I understand it and using BIT() here does not mean someone has to set
-> both of them. BIT() is a helper pointing out that you want to toggle one
-> bit. It does not mean that it is allowed to do so always!
-> 
->>
->>> It's common to use BIT for
->>> register fields which do not accept all possible values. Now you
->>> basically reimplement BIT() which is error-prone.
->>
->> Could you please show couple examples? The common practice today is to
->> use FIELD_PREP helpers, but this driver was written before these helpers
->> existed.
-> 
-> 
-> There are plenty of such examples so I guess it would be easier to ask
-> you to provide counter ones. Few IT for enum-like registers found within 2 minutes:
-> 
-> https://elixir.bootlin.com/linux/latest/C/ident/MAX77620_CNFG_GPIO_INT_MASK
-> https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/max77650-regulator.c#L18
-> https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/tps6524x-regulator.c#L62
-> https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/tps80031-regulator.c#L39
-> https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/da9121-regulator.h#L200
-> https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/da9121-regulator.h#L231
 
-Alright, I'll use the BIT macro in the v3.
+On 5/17/21 8:13 AM, Jan Beulich wrote:
+> On 17.05.2021 15:48, Connor Davis wrote:
+>> On 5/17/21 3:32 AM, Jan Beulich wrote:
+>>> On 14.05.2021 02:56, Connor Davis wrote:
+>>>> Check if the debug capability is enabled in early_xdbc_parse_parameter,
+>>>> and if it is, return with an error. This avoids collisions with whatever
+>>>> enabled the DbC prior to linux starting.
+>>> Doesn't this go too far and prevent use even if firmware (perhaps
+>>> mistakenly) left it enabled?
+>> Yes, but how is one supposed to distinguish the broken firmware and
+>> non-broken
+>>
+>> firmware cases?
+> Well, a first step might be to only check if running virtualized.
+> And then if your running virtualized, there might be a way to
+> inquire the hypervisor?
 
-I also realized now that the tegra30-emc drivers needs the same change.
+Right, but if it was enabled by something other than a hypervisor,
 
-Thank you for the review.
+or you're not running virtualized, how do you distinguish then? IMO
+
+the proper thing to do in any case is to simply not use the DbC in linux.
+
+Thanks,
+
+Connor
+
