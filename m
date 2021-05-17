@@ -2,98 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36B0383A79
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A788383A7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238770AbhEQQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S240380AbhEQQvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240906AbhEQQuj (ORCPT
+        with ESMTP id S239078AbhEQQvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:50:39 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D06C059CA6;
-        Mon, 17 May 2021 09:33:31 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id b13so1581364pfv.4;
-        Mon, 17 May 2021 09:33:30 -0700 (PDT)
+        Mon, 17 May 2021 12:51:06 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D61C07538A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 09:35:04 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id o9so6620066ilh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 09:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eR/7fI1UFI0lbQbmLWNbiWwZ7NzStsvm/sdwpBqswd0=;
-        b=YpQxAxLj8w0Ov99/r0AUt037+MfErX0qTGo5iVaekc37rGTNYoxlHwhMiHUt+6hMtS
-         MGIpLeCi4PYLkbwO0dQBEBV6xJFOgRA8CY1FdSSbX5GTPuSECIPHs8XRKg2PskvD/UIk
-         O6g/rM4wxw93depEXe1vGOQko0ofni8DFniWWKznqTfo29OJjdosMgkmozNQ4yet0ohz
-         y1wIiR2iF9BekJCmqxa302j/zGoQLBbbW59PLC5Mcvs7Os1Id0y1YQAITsIzWEqQBAjZ
-         IeJ094Fog0MfyOpApsegpaN89SqQjl0+B9Do9pcNF0HSeHFeR7YJpPMq8sbrlVpz4UIg
-         O02g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8XjCzUGwVIiP3+YZrLjLAcXTaHRHGnoKVgLiqwR9S0M=;
+        b=Q6bRC7J4OtYLgKndA++vo/4BHK+kvEiFv6aZ8jWWH77vI3wtldPu8UuBa/t1erlYQM
+         T9idF8OhWYtD4zivdzckr+jwdarqAhWdL9CsBic6mokrIQJq4owNlFkKFmTYWAlWgF1S
+         buzzozZu0YuX24RDIBlPoWalnO7Y8mpaLV+LZ4JC7Z7vgp4pk/rjuft2exRvDVyZo05N
+         UnayAVciQIo5al9hYnYbt+HnJkklbO7h56O5J6IZfcUnUGM0hJMghwzRvT0ezkG8wAUU
+         1Q8Is/HVfDrTV5SZUAMLudhbv00hpSn56L6Tm7auH3RSOIUMUJLNHSv9g6ASVHr+kh0D
+         88HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eR/7fI1UFI0lbQbmLWNbiWwZ7NzStsvm/sdwpBqswd0=;
-        b=Pd81aMfenrYlS4G8LeR0yaWsHKsKF/68nZ7RIl2/s+bE6JoFe390qwgcTuSpmpm7Rt
-         YbrSpSV86Vcp//XGlU9KP6/vpF8PaLF0uaidbQ+iQsh0I2V2kLBsPHB27LMLNZJh9jbo
-         RKwJMTh8lpbb7KGn+MP3x6bolSfXUkvjbpC3Fyld68/IOTotuV7jBddUtTY/SUK/lDpX
-         708UL8Qy7jOxAwb6HHs3aiFRZ1GVyjLlbKyqQTTc0eFzHMxFQcYKdApLecEFr5C1AY9g
-         vEMvYjfcl63ZcQNEOL+RaWeUGkVShiGVOWim3I08iz5aRnv0GvdLQrRD7G3j8ovzs/ct
-         0VtA==
-X-Gm-Message-State: AOAM531y09DCctAsc4fPRQSgK8qcQ45yuHzGzLIhyAEakwtCY4UkIdUi
-        1f8qqKWyti/6aIhUugbcj7kaXZ1i70E=
-X-Google-Smtp-Source: ABdhPJzqkzDWpRHL5jbgrcGXxzY6jPAuG0Xj1ArabHHEbF1FBHe1x/cG5HbxhwOz7KmrKfQOMy9K5A==
-X-Received: by 2002:a63:9350:: with SMTP id w16mr400363pgm.53.1621269210218;
-        Mon, 17 May 2021 09:33:30 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id n11sm10202260pfu.121.2021.05.17.09.33.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 09:33:29 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/141] 5.4.120-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210517140242.729269392@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7f205669-205f-0d18-05d5-1a06364f54b9@gmail.com>
-Date:   Mon, 17 May 2021 09:33:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8XjCzUGwVIiP3+YZrLjLAcXTaHRHGnoKVgLiqwR9S0M=;
+        b=Ac0V2EQ+oUge2QfdE0kTVkABZ7UdDXWwEnd0TOSAGenJxs3UUSKrPUzSz6G67pZFFx
+         ZxfTc1gizRGolAfh5/Zs2ioLrzs93MB/emTvUaRrFN08ygpBBVl44R+byDZne29FK7qZ
+         4kL+VUROqznPk1wQUF+K+AdF9ZpIQ/jHdXIKQ9n7d08x9NxV0MTe+BB6AAV2Ze/gNewK
+         z//RkKRsKT1EdVe/S9Od9FYewpSesT02muVFx+/LAHBx9slsgqTs1Zr+gCcayyJ9KonI
+         NGlT3AO6IerZTpqidlZbaBD6Ocw9d3nw6hppVE0iaNXzlu5l2LWtM67x7L8ppfagZR/r
+         pE7Q==
+X-Gm-Message-State: AOAM532VYNC/vip4qlVLeVxiSTEJ7td7wyXvKwpFXV4xTUl1VB0GMVvW
+        GBMlLgtFZpRrpku/c0JixPlR4z7/t516QC2ggChvhA==
+X-Google-Smtp-Source: ABdhPJz0NB7vJP6/zgoqy7G+HsgYZlposuUO5ZTrETUd2kYON8RUI88LoaUUJPMRD7ZtJUnnXCq7UIfwvLcbolZTWsY=
+X-Received: by 2002:a92:cda5:: with SMTP id g5mr457366ild.245.1621269303543;
+ Mon, 17 May 2021 09:35:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Mon, 17 May 2021 09:34:38 -0700
+Message-ID: <CALzav=c+=Bi5HeuYfYKi3FRB6V88o7hCsGbgG+x3a4Mf3e9nVA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] KVM: exit halt polling on need_resched() for both
+ book3s and generic halt-polling
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 17, 2021 at 7:01 AM Wanpeng Li <kernellwp@gmail.com> wrote:
+>
+> From: Wanpeng Li <wanpengli@tencent.com>
+>
+> Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+> as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+> one task to get the task to block. It was likely allowing VMs to overrun their
+> quota when halt polling. Due to PPC implements an arch specific halt polling
+> logic, we should add the need_resched() checking there as well. This
+> patch adds a helper function that to be shared between book3s and generic
+> halt-polling loop.
+>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Venkatesh Srinivas <venkateshs@chromium.org>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: David Matlack <dmatlack@google.com>
+> Cc: Paul Mackerras <paulus@ozlabs.org>
+> Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-On 5/17/2021 7:00 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.120 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 19 May 2021 14:02:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.120-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> ---
+> v2 -> v3:
+>  * add a helper function
+> v1 -> v2:
+>  * update patch description
+>
+>  arch/powerpc/kvm/book3s_hv.c | 2 +-
+>  include/linux/kvm_host.h     | 2 ++
+>  virt/kvm/kvm_main.c          | 9 +++++++--
+>  3 files changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> index 28a80d240b76..360165df345b 100644
+> --- a/arch/powerpc/kvm/book3s_hv.c
+> +++ b/arch/powerpc/kvm/book3s_hv.c
+> @@ -3936,7 +3936,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+>                                 break;
+>                         }
+>                         cur = ktime_get();
+> -               } while (single_task_running() && ktime_before(cur, stop));
+> +               } while (kvm_vcpu_can_block(cur, stop));
+>
+>                 spin_lock(&vc->lock);
+>                 vc->vcore_state = VCORE_INACTIVE;
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 2f34487e21f2..bf4fd60c4699 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1583,4 +1583,6 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
+>  /* Max number of entries allowed for each kvm dirty ring */
+>  #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
+>
+> +bool kvm_vcpu_can_block(ktime_t cur, ktime_t stop);
+> +
+>  #endif
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 6b4feb92dc79..c81080667fd1 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -2945,6 +2945,12 @@ update_halt_poll_stats(struct kvm_vcpu *vcpu, u64 poll_ns, bool waited)
+>                 vcpu->stat.halt_poll_success_ns += poll_ns;
+>  }
+>
+> +
+> +bool kvm_vcpu_can_block(ktime_t cur, ktime_t stop)
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+nit: kvm_vcpu_can_poll() would be a more accurate name for this function.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> +{
+> +       return single_task_running() && !need_resched() && ktime_before(cur, stop);
+> +}
+> +
+>  /*
+>   * The vCPU has executed a HLT instruction with in-kernel mode enabled.
+>   */
+> @@ -2973,8 +2979,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>                                 goto out;
+>                         }
+>                         poll_end = cur = ktime_get();
+> -               } while (single_task_running() && !need_resched() &&
+> -                        ktime_before(cur, stop));
+> +               } while (kvm_vcpu_can_block(cur, stop));
+>         }
+>
+>         prepare_to_rcuwait(&vcpu->wait);
+> --
+> 2.25.1
+>
