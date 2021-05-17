@@ -2,124 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FA9383C52
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06117383C54
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237128AbhEQSew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:34:52 -0400
-Received: from mga01.intel.com ([192.55.52.88]:28960 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237050AbhEQSet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:34:49 -0400
-IronPort-SDR: gUK88/s9XlBelmYFx85KX2g35eRkU8l7kNkZ68ffOSpERgGF09h7nblgsN8Z79Wd1tREQjU+lq
- jsugUUEel8TQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="221578255"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="221578255"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:33:32 -0700
-IronPort-SDR: PqScEedPVH6BjnSbuf1qfn/wvGilmloPG18hP5whiy7Qe/NmyIcRkiwcmnhp8q18AR7mkprOys
- c7/F8eubCerQ==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="404467496"
-Received: from seanlmol-mobl.amr.corp.intel.com (HELO [10.209.32.11]) ([10.209.32.11])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:33:31 -0700
-Subject: Re: [RFC v2 26/32] x86/mm: Move force_dma_unencrypted() to common
- code
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <7c5adf75d69ea327b22b404b7c37b29712d73640.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <5536639a-918d-de8d-ff32-934a13902a03@intel.com>
- <d04e5992-8800-a8df-99de-4dbb40e45d09@linux.intel.com>
- <bbcb688c-5aa0-eeb1-192a-45edaccc2f32@intel.com>
- <20210512130821.7r2rtzcyjltecun7@box.shutemov.name>
- <e8886298-83fa-212e-ab3a-5e5b21a7ab6c@intel.com>
- <YJv6EWJmDYQL4Eqt@google.com>
- <c6b40305-d643-6023-907b-e6858d422a36@linux.intel.com>
- <943645b7-3974-bf05-073c-03ef4f889379@intel.com>
- <a72bce3a-d7da-c595-9456-cfda42d9cdc3@linux.intel.com>
- <YKKzCOW9u6q06E5I@google.com>
- <d5fb2565-110e-17d1-ea00-35cf4d196f1e@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5cc06488-09fe-17b5-077b-02c4ba9ca198@intel.com>
-Date:   Mon, 17 May 2021 11:33:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237178AbhEQSft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237050AbhEQSfs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 14:35:48 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39707C061573;
+        Mon, 17 May 2021 11:34:31 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id v6so8455940ljj.5;
+        Mon, 17 May 2021 11:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gPQVB2Gxpm829WebDVfYWATfDREweKl2ZF11NUCj36U=;
+        b=r5irQvcboz80jzWteaD0Tgi6/vM06PZ17sWzl0p338iOE+oDhn4I1BHjKBDZRnpkyP
+         e+FJ9NwG0wznJs5obORewSZFRZfDek/2hIgziLEeudXBqN+gGWsdjb5geKww0SBM1J1j
+         wmFsTHtZIicLrXktt8dfFpovNICXUuvX5zlCBVo3Wr4NBKiqxfV6RKwZ2M0h4U3MT9Qd
+         ljTIgwx0gdwJc6/u2FaALwRCaURkZy3vHoE+rBqurjjaD/azZsJPrrXgqF2PZ37myGEY
+         8VEo+Heg1EDMSvGPbRuhSBkSk4pr+IV3uUaYJ89eLsBf86kf2PFrHqJAy8yERHpyPZlC
+         frSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gPQVB2Gxpm829WebDVfYWATfDREweKl2ZF11NUCj36U=;
+        b=EvBrDNPbNoTSj1qVIA759j/Xags0RI3vdfgO2bg4P4Xd5qK0v1mqfaeA1rXLzdYWFw
+         KcVAxddLQusYmHODyOn76RRgYCCzuJCUO7EmjmHweSo+pj7KblQp5GRhq7IiyILMvkWK
+         S8d81g8yubSiTZDkdfBx3xd+1eyHRFlYtFjkeH0KtEfzACHzSwqC7OpbonB0ttyaKMKV
+         G08vVqIQgJ0ujTeLP7z3BDOmdQzzS8Ep230gtQkZ5d9tJIcwhbaXJn0ZIQ2td1aoThiu
+         lJUeDn81Qdbs1R9cRjgFTktMOZfJgnj213Z1mv+j71anDaMNpAoMlzJ4Zw+aL4vuUBtO
+         93yQ==
+X-Gm-Message-State: AOAM530g5X13z6RsaIRYpRHZSC+ea4z76gOqYEUo0q7qLlCBriGZ/+uG
+        1V5j0djSeWVab+HV/a/vOt0=
+X-Google-Smtp-Source: ABdhPJwd3HpNJ6zf+bUM6K7ZqfzWMSfWRqib8AAwTPQ10ZqTPO9prVv3x2gDbl1KUXvn8KRInXCgTQ==
+X-Received: by 2002:a2e:22c4:: with SMTP id i187mr575687lji.465.1621276469689;
+        Mon, 17 May 2021 11:34:29 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.227])
+        by smtp.gmail.com with ESMTPSA id d16sm2040623lfm.202.2021.05.17.11.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 11:34:29 -0700 (PDT)
+Date:   Mon, 17 May 2021 21:34:27 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ext4: fix memory leak in ext4_fill_super
+Message-ID: <20210517213427.3ac17247@gmail.com>
+In-Reply-To: <20210517164034.1e7d712b@gmail.com>
+References: <YIt9IFY4Xsf5K+eZ@mit.edu>
+        <20210430185046.15742-1-paskripkin@gmail.com>
+        <20210517164034.1e7d712b@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <d5fb2565-110e-17d1-ea00-35cf4d196f1e@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 11:27 AM, Kuppuswamy, Sathyanarayanan wrote:
-> On 5/17/21 11:16 AM, Sean Christopherson wrote:
->> What generic code needs access to SEV vs. TDX? 
->> force_dma_unencrypted() is called from generic code, but its
->> implementation is x86 specific.
+On Mon, 17 May 2021 16:40:34 +0300
+Pavel Skripkin <paskripkin@gmail.com> wrote:
+> Hi!
 > 
-> When the hardening the drivers for TDX usage, we will have
-> requirement to check for is_protected_guest() to add code specific to
-> protected guests. Since this will be outside arch/x86, we need common
-> framework for it.
+> Is all ok with this one, or I should send v3? :)
+> 
 
-Just remember, a "common framework" doesn't mean that it can't be backed
-by extremely arch-specific mechanisms.
+BTW, this patch fixes this bug as well
+https://syzkaller.appspot.com/bug?id=e2765a883959fd094e6a1c40f3502114fa17c550
 
-For instance, there's a lot of pkey-specific code in mm/mprotect.c.  It
-still gets optimized away on x86 with all the goodness of X86_FEATUREs.
+
+With regards,
+Pavel Skripkin
+
+> With regards,
+> Pavel Skripkin
+> 
+> On Fri, 30 Apr 2021 21:50:46 +0300
+> Pavel Skripkin <paskripkin@gmail.com> wrote:
+> > static int kthread(void *_create) will return -ENOMEM
+> > or -EINTR in case of internal failure or
+> > kthread_stop() call happens before threadfn call.
+> > 
+> > To prevent fancy error checking and make code
+> > more straightforward we moved all cleanup code out
+> > of kmmpd threadfn.
+> > 
+> > Also, dropped struct mmpd_data at all. Now struct super_block
+> > is a threadfn data and struct buffer_head embedded into
+> > struct ext4_sb_info.
+> > 
+> > Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> > ---
+> >  fs/ext4/ext4.h  |  4 ++++
+> >  fs/ext4/mmp.c   | 28 +++++++++++++---------------
+> >  fs/ext4/super.c | 10 ++++------
+> >  3 files changed, 21 insertions(+), 21 deletions(-)
+> > 
+> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > index 826a56e3bbd2..62210cbea84b 100644
+> > --- a/fs/ext4/ext4.h
+> > +++ b/fs/ext4/ext4.h
+> > @@ -1490,6 +1490,7 @@ struct ext4_sb_info {
+> >  	struct kobject s_kobj;
+> >  	struct completion s_kobj_unregister;
+> >  	struct super_block *s_sb;
+> > +	struct buffer_head *s_mmp_bh;
+> >  
+> >  	/* Journaling */
+> >  	struct journal_s *s_journal;
+> > @@ -3663,6 +3664,9 @@ extern struct ext4_io_end_vec
+> > *ext4_last_io_end_vec(ext4_io_end_t *io_end); /* mmp.c */
+> >  extern int ext4_multi_mount_protect(struct super_block *,
+> > ext4_fsblk_t); 
+> > +/* mmp.c */
+> > +extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
+> > +
+> >  /* verity.c */
+> >  extern const struct fsverity_operations ext4_verityops;
+> >  
+> > diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> > index 795c3ff2907c..623bad399612 100644
+> > --- a/fs/ext4/mmp.c
+> > +++ b/fs/ext4/mmp.c
+> > @@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *sb,
+> > struct mmp_struct *mmp, */
+> >  static int kmmpd(void *data)
+> >  {
+> > -	struct super_block *sb = ((struct mmpd_data *) data)->sb;
+> > -	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
+> > +	struct super_block *sb = (struct super_block *) data;
+> >  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+> > +	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
+> >  	struct mmp_struct *mmp;
+> >  	ext4_fsblk_t mmp_block;
+> >  	u32 seq = 0;
+> > @@ -245,12 +245,18 @@ static int kmmpd(void *data)
+> >  	retval = write_mmp_block(sb, bh);
+> >  
+> >  exit_thread:
+> > -	EXT4_SB(sb)->s_mmp_tsk = NULL;
+> > -	kfree(data);
+> > -	brelse(bh);
+> >  	return retval;
+> >  }
+> >  
+> > +void ext4_stop_mmpd(struct ext4_sb_info *sbi)
+> > +{
+> > +	if (sbi->s_mmp_tsk) {
+> > +		kthread_stop(sbi->s_mmp_tsk);
+> > +		brelse(sbi->s_mmp_bh);
+> > +		sbi->s_mmp_tsk = NULL;
+> > +	}
+> > +}
+> > +
+> >  /*
+> >   * Get a random new sequence number but make sure it is not greater
+> > than
+> >   * EXT4_MMP_SEQ_MAX.
+> > @@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct super_block
+> > *sb, struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+> >  	struct buffer_head *bh = NULL;
+> >  	struct mmp_struct *mmp = NULL;
+> > -	struct mmpd_data *mmpd_data;
+> >  	u32 seq;
+> >  	unsigned int mmp_check_interval =
+> > le16_to_cpu(es->s_mmp_update_interval); unsigned int wait_time = 0;
+> > @@ -364,24 +369,17 @@ int ext4_multi_mount_protect(struct
+> > super_block *sb, goto failed;
+> >  	}
+> >  
+> > -	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
+> > -	if (!mmpd_data) {
+> > -		ext4_warning(sb, "not enough memory for
+> > mmpd_data");
+> > -		goto failed;
+> > -	}
+> > -	mmpd_data->sb = sb;
+> > -	mmpd_data->bh = bh;
+> > +	EXT4_SB(sb)->s_mmp_bh = bh;
+> >  
+> >  	/*
+> >  	 * Start a kernel thread to update the MMP block
+> > periodically. */
+> > -	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data,
+> > "kmmpd-%.*s",
+> > +	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb,
+> > "kmmpd-%.*s", (int)sizeof(mmp->mmp_bdevname),
+> >  					     bdevname(bh->b_bdev,
+> >  						      mmp->mmp_bdevname));
+> >  	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
+> >  		EXT4_SB(sb)->s_mmp_tsk = NULL;
+> > -		kfree(mmpd_data);
+> >  		ext4_warning(sb, "Unable to create kmmpd thread for
+> > %s.", sb->s_id);
+> >  		goto failed;
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index b9693680463a..539f89c5431f 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -1244,8 +1244,8 @@ static void ext4_put_super(struct super_block
+> > *sb) ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
+> >  	sbi->s_ea_block_cache = NULL;
+> >  
+> > -	if (sbi->s_mmp_tsk)
+> > -		kthread_stop(sbi->s_mmp_tsk);
+> > +	ext4_stop_mmpd(sbi);
+> > +
+> >  	brelse(sbi->s_sbh);
+> >  	sb->s_fs_info = NULL;
+> >  	/*
+> > @@ -5156,8 +5156,7 @@ static int ext4_fill_super(struct super_block
+> > *sb, void *data, int silent) failed_mount3:
+> >  	flush_work(&sbi->s_error_work);
+> >  	del_timer_sync(&sbi->s_err_report);
+> > -	if (sbi->s_mmp_tsk)
+> > -		kthread_stop(sbi->s_mmp_tsk);
+> > +	ext4_stop_mmpd(sbi);
+> >  failed_mount2:
+> >  	rcu_read_lock();
+> >  	group_desc = rcu_dereference(sbi->s_group_desc);
+> > @@ -5952,8 +5951,7 @@ static int ext4_remount(struct super_block
+> > *sb, int *flags, char *data) */
+> >  				ext4_mark_recovery_complete(sb,
+> > es); }
+> > -			if (sbi->s_mmp_tsk)
+> > -				kthread_stop(sbi->s_mmp_tsk);
+> > +			ext4_stop_mmpd(sbi);
+> >  		} else {
+> >  			/* Make sure we can mount this feature set
+> > readwrite */ if (ext4_has_feature_readonly(sb) ||
+> 
