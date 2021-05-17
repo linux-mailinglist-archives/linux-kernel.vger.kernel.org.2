@@ -2,142 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD37383BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C47383BBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236679AbhEQRwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 13:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
+        id S236698AbhEQRzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 13:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236507AbhEQRwi (ORCPT
+        with ESMTP id S236507AbhEQRzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 13:52:38 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4124C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:51:21 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 22so5093407pfv.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:51:21 -0700 (PDT)
+        Mon, 17 May 2021 13:55:48 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0DBC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:54:32 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id z1so6887743ils.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ciacKr636GewtgsdE94vzZWJiDRA/jOYAWlm7tYbsAM=;
-        b=jhr8KXpG3ATpqaLg3GYGyGOVhrqPv2QGXPeWxrmPsAyeUeaLjh49AEP/r3E5bH9eDQ
-         fne7rlNXAdGPuOzqR2kfv0JZGQfYznRpXyjQG7erzg67bvJlnGubu68ey8ZEVm6vMP7N
-         r/lAYYFVtytYdzKhqFG1lWo05USsTCLOKkN6PgNjs8gvjXhegiSrZIl+ZVaoEUyRez9F
-         JmUfbzSdy2AEb+4CcKvafS+h3vMg0EwdBTfXryVSnLks754c9ymD9bIrytIsiJ8FX8w9
-         pnx0nzh/Uo/4TmKVxImg822u9idfaU05KDiGBKb1pPO/1mM284SKTOstpI+S1QiXc7aN
-         ilUw==
+        d=sargun.me; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zLSBrGc0WfP3Pu9mRhepzRhhSNQ0d1+mv4ZIuny3PCE=;
+        b=apMSSFZpnC0TCNR6wciOFVOjRv8HfBGsEB0/NxZxsirwzsFUiv6nrFHwONXyfMSlEE
+         A1gPKjm42FG93MI7TR/J504p6LZ3yq44igR52eJTPS8fSneRQbJ+w67uroW9BpNdf1FK
+         f7jpVKFrswoQOw/92eHdDcfxYbpaJ+ymYLPl0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ciacKr636GewtgsdE94vzZWJiDRA/jOYAWlm7tYbsAM=;
-        b=LeYtpS7zulwNufa10yLwH0DziO4rnR094laLaA9tQyglhC+1/rtONyggu87rGzMwPX
-         TKnaJoae8GfCUue71O1+m+4cQ9aGxdCswQb1vTk+krsgAwT3q6Za+B/klarMfbtg1le0
-         ED0cE1WwyFWpJtyVEDXVGodGHZ8U+IsygygXXE8Lbfw5UuWbN0VrvId8ezigrU0InIxt
-         QlVa1KzNeH3nYrSqn6HFZS2FeEYCfbX4L2nO7ifN48UqGAo3vsbHZhr4nSfJWuA2mSvD
-         zw7J0kS7cScQphAzYtcMFF1hB0ZRXbL38R+GUsgKICyUGTEr5PReZtZkZW1umgQ2Fq13
-         ltuw==
-X-Gm-Message-State: AOAM530HanYdcipgrn2mrFJoBFcs7Fxecj1fRUdc/7zlvU6ovSu0ZpZM
-        J5o4vBv9rNM5HD6PBrrzkUQwI21V9KhyYg==
-X-Google-Smtp-Source: ABdhPJwZP3EtD+A7BoLpz/XlT/ZgJtw1J+xYsFpN4wG23HIhBmO3CcSW0LLoYcrJ6ex93FoTc10Qgw==
-X-Received: by 2002:a63:5160:: with SMTP id r32mr705352pgl.83.1621273881285;
-        Mon, 17 May 2021 10:51:21 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id k1sm4452219pfa.30.2021.05.17.10.51.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 10:51:20 -0700 (PDT)
-Date:   Mon, 17 May 2021 17:51:16 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v3 5/5] KVM: LAPIC: Narrow the timer latency between
- wait_lapic_expire and world switch
-Message-ID: <YKKtFOl3oklFp1lW@google.com>
-References: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
- <1621260028-6467-5-git-send-email-wanpengli@tencent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zLSBrGc0WfP3Pu9mRhepzRhhSNQ0d1+mv4ZIuny3PCE=;
+        b=ar0Ggrn5N4cyIzncokax7JUtKcSjHqy1srqDEzBVvafaccLLZ2cRX/M1vnpSkrPduy
+         rEViwG2fO2xPNVWLqxuK4XxZn6llO5/6FP4qoOKPjp8rsIrhVwIUccJ6B4n19FWG1C6w
+         N/8OC3Gq08SouS3im9mnggvj+yzOJeBY4cefwoH+SuXb7C34fAzpqdczNl2s0u7RAzUM
+         RYYNpi9/ik1eLzMgcSMi+UldEeJD+WKnKCgUrcqt2sY/1HcHaidhKCQewtCMKURo3YTz
+         Vw1JnMAlB+B6ZmIZvla7K2eV7fwHHkNZHuE7liDC0obIvc7xgJMNizWCGQcvQZTs17tj
+         ZFNQ==
+X-Gm-Message-State: AOAM533eY7Daw11Z+U1ahmGTx4BNY+Y3C2L422k6lHZ9xiEXTWVEGM7x
+        bDw/4O96S8c9OoSRg/A8DyQzmtRLk7HFp4re9BoemQ==
+X-Google-Smtp-Source: ABdhPJz0yLEKO0WcXF7iyAjs9lEnYLEYrMbzmli7FuGJ1q9A81v4fu3+IcyiLYeLQyULoMrRAZ/WMgIDAxvC2AxDVno=
+X-Received: by 2002:a92:2a0a:: with SMTP id r10mr765713ile.274.1621274071101;
+ Mon, 17 May 2021 10:54:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621260028-6467-5-git-send-email-wanpengli@tencent.com>
+References: <20210502001851.3346-1-sargun@sargun.me> <20210502001851.3346-4-sargun@sargun.me>
+ <20210511215010.GB1964106@cisco>
+In-Reply-To: <20210511215010.GB1964106@cisco>
+From:   Sargun Dhillon <sargun@sargun.me>
+Date:   Mon, 17 May 2021 10:53:55 -0700
+Message-ID: <CAMp4zn-crcdi6AR9VfAmpb0TO9sDtpdwA4C59ERqwdoQW7yTAg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] seccomp: Support atomic "addfd + send reply"
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Andy Lutomirski <luto@kernel.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> Let's treat lapic_timer_advance_ns automatically tune logic as hypervisor
-> overhead, move it before wait_lapic_expire instead of between wait_lapic_expire 
-> and the world switch, the wait duration should be calculated by the 
-> up-to-date guest_tsc after the overhead of automatically tune logic. This 
-> patch reduces ~30+ cycles for kvm-unit-tests/tscdeadline-latency when testing 
-> busy waits.
-> 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->  arch/x86/kvm/lapic.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index c0ebef560bd1..552d2acf89ab 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -1598,11 +1598,12 @@ static void __kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
->  	guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
->  	apic->lapic_timer.advance_expire_delta = guest_tsc - tsc_deadline;
->  
-> -	if (guest_tsc < tsc_deadline)
-> -		__wait_lapic_expire(vcpu, tsc_deadline - guest_tsc);
-> -
->  	if (lapic_timer_advance_dynamic)
->  		adjust_lapic_timer_advance(vcpu, apic->lapic_timer.advance_expire_delta);
-> +
-> +	guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
+On Tue, May 11, 2021 at 2:50 PM Tycho Andersen <tycho@tycho.pizza> wrote:
+>
+> Hi,
+>
+> On Sat, May 01, 2021 at 05:18:50PM -0700, Sargun Dhillon wrote:
+>
+> [snip]
+>
+> > Other patches in this series add a way to block signals when a syscall
+> > is put to wait by seccomp.
+>
+> I guess we can drop this bit from the message if the series is split.
+>
+Makes sense.
 
-This is redundant and unnecessary if automatic tuning is disabled, or if the
-timer did not arrive early.  A comment would also be helpful.  E.g. I think this
-would micro-optimize all paths:
+> > The struct seccomp_notif_resp, used when doing SECCOMP_IOCTL_NOTIF_SEND
+> > ioctl() to send a response to the target, has three more fields that we
+> > don't allow to set when doing the addfd ioctl() to also return. The
+> > reasons to disallow each field are:
+> >  * val: This will be set to the new allocated fd. No point taking it
+> >    from userspace in this case.
+> >  * error: If this is non-zero, the value is ignored. Therefore,
+> >    it is pointless in this case as we want to return the value.
+> >  * flags: The only flag is to let userspace continue to execute the
+> >    syscall. This seems pointless, as we want the syscall to return the
+> >    allocated fd.
+> >
+> > This is why those fields are not possible to set when using this new
+> > flag.
+>
+> I don't quite understand this; you don't need a NOTIF_SEND at all
+> with the way this currently works, right?
+>
+I reworded:
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index c0ebef560bd1..5d91f2367c31 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1598,11 +1598,19 @@ static void __kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
-        guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
-        apic->lapic_timer.advance_expire_delta = guest_tsc - tsc_deadline;
+This effectively combines SECCOMP_IOCTL_NOTIF_ADDFD and
+SECCOMP_IOCTL_NOTIF_SEND into an atomic opteration. The notification's
+return value, nor error can be set by the user. Upon successful invocation
+of the SECCOMP_IOCTL_NOTIF_ADDFD ioctl with the SECCOMP_ADDFD_FLAG_SEND
+flag, the notifying process's errno will be 0, and the return value will
+be the file descriptor number that was installed.
 
-+       if (lapic_timer_advance_dynamic) {
-+               adjust_lapic_timer_advance(vcpu, apic->lapic_timer.advance_expire_delta);
-+               /*
-+                * If the timer fired early, reread the TSC to account for the
-+                * overhead of the above adjustment to avoid waiting longer
-+                * than is necessary.
-+                */
-+               if (guest_tsc < tsc_deadline)
-+                       guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
-+       }
-+
-        if (guest_tsc < tsc_deadline)
-                __wait_lapic_expire(vcpu, tsc_deadline - guest_tsc);
--
--       if (lapic_timer_advance_dynamic)
--               adjust_lapic_timer_advance(vcpu, apic->lapic_timer.advance_expire_delta);
- }
+How does that sound?
 
- void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
+> > @@ -1113,7 +1136,7 @@ static int seccomp_do_user_notification(int this_syscall,
+> >                                                struct seccomp_kaddfd, list);
+> >               /* Check if we were woken up by a addfd message */
+> >               if (addfd)
+> > -                     seccomp_handle_addfd(addfd);
+> > +                     seccomp_handle_addfd(addfd, &n);
+> >
+> >       }  while (n.state != SECCOMP_NOTIFY_REPLIED);
+> >
+>
+> This while() bit is introduced in the previous patch, can we fold this
+> deletion into that somehow?
+I'm not sure what you're getting at. This just an argument change which
+also passes the notification to the addfd function. The patch is split out
+to allow it to be backported to stable.
 
-> +	if (guest_tsc < tsc_deadline)
-> +		__wait_lapic_expire(vcpu, tsc_deadline - guest_tsc);
->  }
->  
->  void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
-> -- 
-> 2.25.1
-> 
+>
+> Thanks,
+>
+> Tycho
