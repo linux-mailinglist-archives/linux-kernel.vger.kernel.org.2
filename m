@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953933839F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18573839FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244218AbhEQQeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        id S238992AbhEQQew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244511AbhEQQdr (ORCPT
+        with ESMTP id S244391AbhEQQeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:33:47 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CF3C059C94
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:22:40 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id et19so2726921ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:22:40 -0700 (PDT)
+        Mon, 17 May 2021 12:34:06 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B39C059CB3;
+        Mon, 17 May 2021 08:23:30 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id v9so8038279lfa.4;
+        Mon, 17 May 2021 08:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P+7sG3/Jmv/wBWtoh3/MZVcO8CZp8esktTkHoMkDLYo=;
-        b=F2kCUFghNi6IMOwnEJibP3dYc7YqvFgTZRqgv0xN8X19MV446rQsXUcEQTHrUX+IH9
-         b3aEfLWz5VrQO2SZY2ERucBM5qXFxazXeiOSwUeAl9bu5pm5zYVFgJ3dB1GRWiR6sr1/
-         JT/MatQ0LcOORLBA1T5NPbfJw88/xAUnmY8uGuisHdBLiDhsZJ2o6mR+amJDTDgRpQMa
-         Fw5fW7O0cPzFlpqINJJuAgiKa2MngUnmHxHL8LDbZdgOTkN4Twui+G12qnwO3P29p186
-         p+XpStg/jKOKzpzS4Fs49ZvFkC688Ad4QvNn+WtP2grmMXurFleD3rk1Qo+Mi/vXmPCn
-         6IEQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2OqPCWblZqQUHbVbXGLguvvYFLYM5hl9NYVI5IJeouQ=;
+        b=RqAK24xE5a+KAYZ0qaHplXQMkqJIw1N75QY8lR00aGJXkps0nhL0ugQGfnvL808F6r
+         gj/nuFRULXt+HO29bNE7eNnkouyaZdoCIxg0Ug5ROMPOoqP6dma0YPTp/pmAnoWxlw03
+         fNcLUlNx3BzQoC5ht043qZvlinMqoa0DbpNU/AMlJAKITMmTZrHSOUUHxtl/cQy6v1Hc
+         a/Jwt4H6f5qA4o26hCIB6j7CdmPFFQ7MtkyMtxXT/5o1hGdApl4LpRTs7dTlWRwO7LXb
+         aRFWA07qz4XOx6bDacw7+ewxUDvWl1rWwuDLKWQhossNn8RiX1YXcAnb8EJZRieiSqnp
+         T92w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=P+7sG3/Jmv/wBWtoh3/MZVcO8CZp8esktTkHoMkDLYo=;
-        b=bQPo0GXWbkxvkEGV4rcvQ1WrHrg2fW5F8igeekM2iKEKS7VQjoz3dL0b4BXWeDV3B2
-         eji0+D8bFS73m11Ohb136lG5VC1hKfmU7q2Xq2y7Edg6VzjdXB3oKo5nEA+VR+jpmI1Z
-         YSFL5P06ajPDUsGW08ZS9Fn4oHWAJQfBi+uG2XvsfMknHALsaMwI+01NNhqJqdH5cWHm
-         5x0caWTSmJ38veATBPuqZSkgxpNsxcteICTJQ39pGuKZwFTrWD+UlZ8q6rYqwwnFsui4
-         T1r6s2q3vymIp5r+E4g2hTiEz2PVSygdiftjzEWIz77CYIj0qcYJ4XFnIo8NL7gUvFbf
-         52jg==
-X-Gm-Message-State: AOAM531fc6ViplKU6FoSOLDpwGlTST0koPo3dZTipu0tX+kgqduJJQC0
-        TdcMyeuuwSRXMmSWSn8WWU9GdQ==
-X-Google-Smtp-Source: ABdhPJxV3U48zfxePLyqfMNwTJz43JF4mRuLiwZeYnOUA0alPW+w8WU00vbcmni2jZSBFVQmZoYrCQ==
-X-Received: by 2002:a17:906:fcb4:: with SMTP id qw20mr474669ejb.216.1621264958826;
-        Mon, 17 May 2021 08:22:38 -0700 (PDT)
-Received: from localhost.localdomain ([195.24.90.54])
-        by smtp.gmail.com with ESMTPSA id jw9sm3028375ejb.77.2021.05.17.08.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 08:22:38 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH] venus: hfi_cmds: Fix conceal color property
-Date:   Mon, 17 May 2021 18:22:25 +0300
-Message-Id: <20210517152225.482511-1-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        bh=2OqPCWblZqQUHbVbXGLguvvYFLYM5hl9NYVI5IJeouQ=;
+        b=nXqIu/35uUZXL1DprkmnYpFv8Od7eLyEx6av3AJEJPUuvPwUtqZfql5Wr/xV8UnqaE
+         SaqgJmsESO91miGIIanqEF+qVdKG24+EEoLGriKNM1TTit/kKPJIsFLQuEXgNYFHXtRt
+         4U3A94ItDQ76Nk7mVAuZUuqsd9gD4i6fKXvsu3KjV15++Fbtvpj9P/cXYWnWwd7yt/Fw
+         yGi7hO6ny1lJBxv+KXIHBQT4a03bvYZ9j6KtdPgjzRAJybLWsmrjhXTIM3SHOcKgPq76
+         zzY06gvZ0yCHqZnoRMQ8ppRABXIChp5iTfyqla6KI8UQxZ1txWKAP+HP0qA+rV2XaKFl
+         nUGg==
+X-Gm-Message-State: AOAM531pNI2+nzJuEnjvNlOkBUEwt4K3+bMjexi2LvPhP11BFEW27KJQ
+        9Q2/uFsm3902w1iY3RXx4BhBCl7TPvM=
+X-Google-Smtp-Source: ABdhPJxHcSgi3Z6+dri4Znutzp1ikREyb8zwg9DjuRYhjhJP76La3Tdo3WJGmIZ9jIdpjogKBmiS0g==
+X-Received: by 2002:a05:6512:3251:: with SMTP id c17mr287867lfr.431.1621265008637;
+        Mon, 17 May 2021 08:23:28 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id a15sm1089438lfo.244.2021.05.17.08.23.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 08:23:28 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] soc/tegra: Add
+ devm_tegra_core_dev_init_opp_table()
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210516205138.22501-1-digetx@gmail.com>
+ <20210516205138.22501-2-digetx@gmail.com>
+ <3ea6b48f-af3f-51db-8d7b-1292a68ae74e@canonical.com>
+ <a3b42449-4cd8-f692-c41a-205cbaa987eb@gmail.com>
+ <d56d1e1e-73fe-9708-34ec-e31f10e17b44@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <203ffe4d-2b8e-7550-2fab-f5e3c7b5f4fe@gmail.com>
+Date:   Mon, 17 May 2021 18:23:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <d56d1e1e-73fe-9708-34ec-e31f10e17b44@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conceal color property used for Venus v4 and v6 has the same
-payload structure. But currently v4 follow down to payload
-structure for v1. Correct this by moving set_property to v4.
+17.05.2021 17:52, Krzysztof Kozlowski пишет:
+>>>> +static int tegra_core_dev_init_opp_state(struct device *dev)
+>>>> +{
+>>>> +	struct dev_pm_opp *opp;
+>>>> +	unsigned long rate;
+>>>> +	struct clk *clk;
+>>>> +	int err;
+>>>> +
+>>>> +	clk = devm_clk_get(dev, NULL);
+>>>> +	if (IS_ERR(clk)) {
+>>>> +		dev_err(dev, "failed to get clk: %pe\n", clk);
+>>>> +		return PTR_ERR(clk);
+>>>> +	}
+>>>> +
+>>>> +	rate = clk_get_rate(clk);
+>>>> +	if (!rate) {
+>>>> +		dev_err(dev, "failed to get clk rate\n");
+>>>> +		return -EINVAL;
+>>>> +	}
+>>>> +
+>>>> +	opp = dev_pm_opp_find_freq_ceil(dev, &rate);
+>>>> +
+>>>> +	if (opp == ERR_PTR(-ERANGE))
+>>>> +		opp = dev_pm_opp_find_freq_floor(dev, &rate);
+>>>> +
+>>>> +	err = PTR_ERR_OR_ZERO(opp);
+>>>> +	if (err) {
+>>>> +		dev_err(dev, "failed to get OPP for %ld Hz: %d\n",
+>>>> +			rate, err);
+>>>> +		return err;
+>>>> +	}
+>>>> +
+>>>> +	dev_pm_opp_put(opp);
+>>>> +
+>>>> +	/* first dummy rate-setting initializes voltage vote */
+>>>> +	err = dev_pm_opp_set_rate(dev, rate);
+>>>> +	if (err) {
+>>>> +		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
+>>>> +		return err;
+>>>> +	}
+>>>
+>>> The devm_pm_opp_set_clkname will call clk_get(), so here you should drop
+>>> the clk reference at the end. Why having it twice?
+>> The devm_pm_opp_set_clkname assigns clock to the OPP table.
+>>
+>> The devm_clk_get() is needed for the clk_get_rate(). OPP core doesn't
+>> initialize voltage vote and we need this initialization for the Tegra
+>> memory drivers.
+> I did not get the answer to my question. Why you need to keep the clk
+> reference past this point? Why you cannot drop it after getting rate?
+> 
+>> The reference count of the clk will be dropped automatically once device
+>> driver is released. The resource-managed helper avoids the need to care
+>> about the error unwinding in the code, making it clean and easy to follow.
+> I am not saying there is a leak.
+> 
 
-Fixes: 4ef6039fad8f ("media: venus: vdec: Add support for conceal control")
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/hfi_cmds.c | 22 ++++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 11a8347e5f5c..4b9dea7f6940 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1226,6 +1226,17 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*hdr10);
- 		break;
- 	}
-+	case HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR: {
-+		struct hfi_conceal_color_v4 *color = prop_data;
-+		u32 *in = pdata;
-+
-+		color->conceal_color_8bit = *in & 0xff;
-+		color->conceal_color_8bit |= ((*in >> 10) & 0xff) << 8;
-+		color->conceal_color_8bit |= ((*in >> 20) & 0xff) << 16;
-+		color->conceal_color_10bit = *in;
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
-+		break;
-+	}
- 
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
-@@ -1279,17 +1290,6 @@ pkt_session_set_property_6xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*cq);
- 		break;
- 	}
--	case HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR: {
--		struct hfi_conceal_color_v4 *color = prop_data;
--		u32 *in = pdata;
--
--		color->conceal_color_8bit = *in & 0xff;
--		color->conceal_color_8bit |= ((*in >> 10) & 0xff) << 8;
--		color->conceal_color_8bit |= ((*in >> 20) & 0xff) << 16;
--		color->conceal_color_10bit = *in;
--		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
--		break;
--	}
- 	default:
- 		return pkt_session_set_property_4xx(pkt, cookie, ptype, pdata);
- 	}
--- 
-2.25.1
-
+The clk reference is not needed past this point. It doesn't hurt to have
+additional reference since this allows to make code cleaner.
