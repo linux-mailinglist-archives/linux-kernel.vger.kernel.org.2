@@ -2,92 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25475383A5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A030383A74
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237733AbhEQQs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39150 "EHLO mail.kernel.org"
+        id S241256AbhEQQuK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 May 2021 12:50:10 -0400
+Received: from aposti.net ([89.234.176.197]:49728 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235874AbhEQQsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:48:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 133D161028;
-        Mon, 17 May 2021 16:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621270055;
-        bh=X9VzPoSNITbIIcT8AyahccEJh1UTsUwx2wk0Kx+CyBg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=K3uFebAz0W8lwnYqM/Y2y41M0PQGFireBX6NU8tjYjmIFmAX0exRgntZg2Ca1yYQm
-         ebHLqk/wtH7eFVKLr/00j4kY9lShwmdvxZ++KM61nSXyD39vUTGECNQTYo9GAVKSBB
-         shmqvqipq6UPOOepgXLFWxG8yJC061X0Wo93l6/PXfYqoVDnbWDLNbYcot3ierqmSo
-         XaQRVibSXXk64ne90pgumZJ/BIwPhVjuPijR3n3O+DpcDV22FtoaQgeAT3hB/lFaLe
-         ryJ4tjMVAHwra4bS7rnZlABEAtkZrPUki5X+U0v1M+iieyqUmZn6XWE9JRsEPPwqts
-         fITJeFytpcEGg==
-Date:   Mon, 17 May 2021 11:47:33 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Jon Hunter <jonathanh@nvidia.com>, Vidya Sagar <vidyas@nvidia.com>,
-        robh@kernel.org, bhelgaas@google.com, thierry.reding@gmail.com,
-        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH] PCI: tegra: Fix host initialization during resume
-Message-ID: <20210517164733.GA22939@bjorn-Precision-5520>
+        id S240137AbhEQQtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:49:39 -0400
+Date:   Mon, 17 May 2021 17:48:09 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/2] drm: xlnx: add is_layer_vid() to simplify the code
+To:     quanyang.wang@windriver.com
+Cc:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-Id: <90G9TQ.H0YO8VGDCBTU@crapouillou.net>
+In-Reply-To: <20210513114540.1241122-2-quanyang.wang@windriver.com>
+References: <20210513114540.1241122-1-quanyang.wang@windriver.com>
+        <20210513114540.1241122-2-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517161835.GA9796@lpieralisi>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 05:18:36PM +0100, Lorenzo Pieralisi wrote:
-> On Mon, May 17, 2021 at 03:11:00PM +0100, Jon Hunter wrote:
-> > Hi Lorenzo, Bjorn,
-> > 
-> > On 06/05/2021 09:49, Jon Hunter wrote:
-> > > 
-> > > On 04/05/2021 18:21, Vidya Sagar wrote:
-> > >> Commit 275e88b06a27 ("PCI: tegra: Fix host link initialization") broke
-> > >> host initialization during resume as it misses out calling the API
-> > >> dw_pcie_setup_rc() which is required for host and MSI initialization.
-> > >>
-> > >> Fixes: 275e88b06a27 ("PCI: tegra: Fix host link initialization")
-> > >> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> > >> ---
-> > >>  drivers/pci/controller/dwc/pcie-tegra194.c | 2 ++
-> > >>  1 file changed, 2 insertions(+)
-> > >>
-> > >> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > >> index 6fa216e52d14..4c3c0738f2e6 100644
-> > >> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> > >> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > >> @@ -2214,6 +2214,8 @@ static int tegra_pcie_dw_resume_noirq(struct device *dev)
-> > >>  		goto fail_host_init;
-> > >>  	}
-> > >>  
-> > >> +	dw_pcie_setup_rc(&pcie->pci.pp);
-> > >> +
-> > >>  	ret = tegra_pcie_dw_start_link(&pcie->pci);
-> > >>  	if (ret < 0)
-> > >>  		goto fail_host_init;
-> > > 
-> > > Thanks for fixing!
-> > > 
-> > > Tested-by: Jon Hunter <jonathanh@nvidia.com>
-> > > 
-> > > We should also mark this for stable so that this gets back-ported.
-> > 
-> > Can we queue this as a fix for v5.13 and tag for stable?
-> 
-> We usually send fixes for -rc* when the patches they are fixing
-> were merged in the current cycle (ie merged for v5.13).
+Hi Quanyang,
 
-Looks like this has been broken since v5.11-rc1 (December 27, 2020),
-when 275e88b06a27 was merged.  Probably would be worth an occasional
-boot test to make sure things stay working.
-
-> This is not the case so I shall send it for v5.14.
+Le jeu., mai 13 2021 at 19:45:39 +0800, quanyang.wang@windriver.com a 
+écrit :
+> From: Quanyang Wang <quanyang.wang@windriver.com>
 > 
-> Lorenzo
+> Add a new function is_layer_vid() to simplify the code that
+> judges if a layer is the video layer.
+> 
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c | 39 
+> +++++++++++++++++-------------
+>  1 file changed, 22 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c 
+> b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> index 109d627968ac..c55e24412f8c 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -434,30 +434,35 @@ static void zynqmp_disp_avbuf_write(struct 
+> zynqmp_disp_avbuf *avbuf,
+>  	writel(val, avbuf->base + reg);
+>  }
+> 
+> +static bool is_layer_vid(struct zynqmp_disp_layer *layer)
+
+'layer' should be const.
+
+> +{
+> +	return (layer->id == ZYNQMP_DISP_LAYER_VID) ? true : false;
+
+return layer->id == ZYNQMP_DISP_LAYER_VID;
+
+The rest looks good.
+
+With these fixed:
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
+> +}
+> +
+>  /**
+>   * zynqmp_disp_avbuf_set_format - Set the input format for a layer
+>   * @avbuf: Audio/video buffer manager
+> - * @layer: The layer ID
+> + * @layer: The layer
+>   * @fmt: The format information
+>   *
+>   * Set the video buffer manager format for @layer to @fmt.
+>   */
+>  static void zynqmp_disp_avbuf_set_format(struct zynqmp_disp_avbuf 
+> *avbuf,
+> -					 enum zynqmp_disp_layer_id layer,
+> +					 struct zynqmp_disp_layer *layer,
+>  					 const struct zynqmp_disp_format *fmt)
+>  {
+>  	unsigned int i;
+>  	u32 val;
+> 
+>  	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_FMT);
+> -	val &= layer == ZYNQMP_DISP_LAYER_VID
+> +	val &= is_layer_vid(layer)
+>  	    ? ~ZYNQMP_DISP_AV_BUF_FMT_NL_VID_MASK
+>  	    : ~ZYNQMP_DISP_AV_BUF_FMT_NL_GFX_MASK;
+>  	val |= fmt->buf_fmt;
+>  	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_FMT, val);
+> 
+>  	for (i = 0; i < ZYNQMP_DISP_AV_BUF_NUM_SF; i++) {
+> -		unsigned int reg = layer == ZYNQMP_DISP_LAYER_VID
+> +		unsigned int reg = is_layer_vid(layer)
+>  				 ? ZYNQMP_DISP_AV_BUF_VID_COMP_SF(i)
+>  				 : ZYNQMP_DISP_AV_BUF_GFX_COMP_SF(i);
+> 
+> @@ -573,19 +578,19 @@ static void 
+> zynqmp_disp_avbuf_disable_audio(struct zynqmp_disp_avbuf *avbuf)
+>  /**
+>   * zynqmp_disp_avbuf_enable_video - Enable a video layer
+>   * @avbuf: Audio/video buffer manager
+> - * @layer: The layer ID
+> + * @layer: The layer
+>   * @mode: Operating mode of layer
+>   *
+>   * Enable the video/graphics buffer for @layer.
+>   */
+>  static void zynqmp_disp_avbuf_enable_video(struct zynqmp_disp_avbuf 
+> *avbuf,
+> -					   enum zynqmp_disp_layer_id layer,
+> +					   struct zynqmp_disp_layer *layer,
+>  					   enum zynqmp_disp_layer_mode mode)
+>  {
+>  	u32 val;
+> 
+>  	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
+> -	if (layer == ZYNQMP_DISP_LAYER_VID) {
+> +	if (is_layer_vid(layer)) {
+>  		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
+>  		if (mode == ZYNQMP_DISP_LAYER_NONLIVE)
+>  			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MEM;
+> @@ -605,17 +610,17 @@ static void 
+> zynqmp_disp_avbuf_enable_video(struct zynqmp_disp_avbuf *avbuf,
+>  /**
+>   * zynqmp_disp_avbuf_disable_video - Disable a video layer
+>   * @avbuf: Audio/video buffer manager
+> - * @layer: The layer ID
+> + * @layer: The layer
+>   *
+>   * Disable the video/graphics buffer for @layer.
+>   */
+>  static void zynqmp_disp_avbuf_disable_video(struct zynqmp_disp_avbuf 
+> *avbuf,
+> -					    enum zynqmp_disp_layer_id layer)
+> +					    struct zynqmp_disp_layer *layer)
+>  {
+>  	u32 val;
+> 
+>  	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
+> -	if (layer == ZYNQMP_DISP_LAYER_VID) {
+> +	if (is_layer_vid(layer)) {
+>  		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
+>  		val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_NONE;
+>  	} else {
+> @@ -807,7 +812,7 @@ static void 
+> zynqmp_disp_blend_layer_set_csc(struct zynqmp_disp_blend *blend,
+>  		}
+>  	}
+> 
+> -	if (layer->id == ZYNQMP_DISP_LAYER_VID)
+> +	if (is_layer_vid(layer))
+>  		reg = ZYNQMP_DISP_V_BLEND_IN1CSC_COEFF(0);
+>  	else
+>  		reg = ZYNQMP_DISP_V_BLEND_IN2CSC_COEFF(0);
+> @@ -818,7 +823,7 @@ static void 
+> zynqmp_disp_blend_layer_set_csc(struct zynqmp_disp_blend *blend,
+>  		zynqmp_disp_blend_write(blend, reg + 8, coeffs[i + swap[2]]);
+>  	}
+> 
+> -	if (layer->id == ZYNQMP_DISP_LAYER_VID)
+> +	if (is_layer_vid(layer))
+>  		reg = ZYNQMP_DISP_V_BLEND_IN1CSC_OFFSET(0);
+>  	else
+>  		reg = ZYNQMP_DISP_V_BLEND_IN2CSC_OFFSET(0);
+> @@ -1025,7 +1030,7 @@ zynqmp_disp_layer_find_format(struct 
+> zynqmp_disp_layer *layer,
+>   */
+>  static void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer)
+>  {
+> -	zynqmp_disp_avbuf_enable_video(&layer->disp->avbuf, layer->id,
+> +	zynqmp_disp_avbuf_enable_video(&layer->disp->avbuf, layer,
+>  				       ZYNQMP_DISP_LAYER_NONLIVE);
+>  	zynqmp_disp_blend_layer_enable(&layer->disp->blend, layer);
+> 
+> @@ -1046,7 +1051,7 @@ static void zynqmp_disp_layer_disable(struct 
+> zynqmp_disp_layer *layer)
+>  	for (i = 0; i < layer->drm_fmt->num_planes; i++)
+>  		dmaengine_terminate_sync(layer->dmas[i].chan);
+> 
+> -	zynqmp_disp_avbuf_disable_video(&layer->disp->avbuf, layer->id);
+> +	zynqmp_disp_avbuf_disable_video(&layer->disp->avbuf, layer);
+>  	zynqmp_disp_blend_layer_disable(&layer->disp->blend, layer);
+>  }
+> 
+> @@ -1067,7 +1072,7 @@ static void zynqmp_disp_layer_set_format(struct 
+> zynqmp_disp_layer *layer,
+>  	layer->disp_fmt = zynqmp_disp_layer_find_format(layer, 
+> info->format);
+>  	layer->drm_fmt = info;
+> 
+> -	zynqmp_disp_avbuf_set_format(&layer->disp->avbuf, layer->id,
+> +	zynqmp_disp_avbuf_set_format(&layer->disp->avbuf, layer,
+>  				     layer->disp_fmt);
+> 
+>  	/*
+> @@ -1244,8 +1249,8 @@ static int zynqmp_disp_create_planes(struct 
+> zynqmp_disp *disp)
+>  			drm_formats[j] = layer->info->formats[j].drm_fmt;
+> 
+>  		/* Graphics layer is primary, and video layer is overlay. */
+> -		type = i == ZYNQMP_DISP_LAYER_GFX
+> -		     ? DRM_PLANE_TYPE_PRIMARY : DRM_PLANE_TYPE_OVERLAY;
+> +		type = is_layer_vid(layer)
+> +		     ? DRM_PLANE_TYPE_OVERLAY : DRM_PLANE_TYPE_PRIMARY;
+>  		ret = drm_universal_plane_init(disp->drm, &layer->plane, 0,
+>  					       &zynqmp_disp_plane_funcs,
+>  					       drm_formats,
+
+
