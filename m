@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32781382ADE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EC2382AE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236709AbhEQLYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:24:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37074 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236528AbhEQLYU (ORCPT
+        id S236704AbhEQL0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:26:06 -0400
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:38398 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236631AbhEQL0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:24:20 -0400
-Received: from mail-qt1-f199.google.com ([209.85.160.199])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1libKw-0000dC-OC
-        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 11:23:02 +0000
-Received: by mail-qt1-f199.google.com with SMTP id s11-20020ac85ecb0000b02901ded4f15245so4917023qtx.22
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:23:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mAhpswL6pA+76vcO9Kp8F8tyniQOjj0n+aDmrDsqL0U=;
-        b=eT5G2ftnvQ8HCwAXsz20w+XQmIHo+d+a0R1HkvQPRcVCKwRjzBVlzmrcVER2QJqFQb
-         bN0ZzEm1fovq+zu6/4XVRElvogN/36dBjgevSOr9exQLQQ4cNjmBLUQ9m9ECilCW/jsa
-         GLxcXcJ03IDHwWMlXFGVaKJH04qbWwRyUKRGpiSlMPq9mq3HUhF7UoUKj35EUDlXj2GX
-         AqVnHD7hTNhX1BHu46NJALJjcdgW5v9VJUo61/C2XeEcfkHojb9ABMf67/8Hj0LkGMM3
-         821gkHmQl86YTig0kWKqarRrX2UiqeEQsa9py+SfGVKcMOvTfxDAHSE5XktKPDWXmXaW
-         1tfQ==
-X-Gm-Message-State: AOAM531dcvXQnTne3Ct8FtxEcLdfXtUPBudKkgoQorNwR8bUUO/KiUBv
-        0BMweVnmJVAQtB/glB4uYth1ZvzkgMikjCaArefSyGFEictdE+Eovb1zw7fyCDoKH0g+x9lD+hU
-        mfPkqx3+3XT5PJ1yr9XkkjuTJqGU1YbyGjP0DIltpjw==
-X-Received: by 2002:a37:44cb:: with SMTP id r194mr947792qka.197.1621250581578;
-        Mon, 17 May 2021 04:23:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/DTigg9RrTXO/O8wXUDAnbwv8oBKSob9dwO4Gq0wsxVfUKiKadqmLJgKdvTFK65OS8RCOJw==
-X-Received: by 2002:a37:44cb:: with SMTP id r194mr947780qka.197.1621250581409;
-        Mon, 17 May 2021 04:23:01 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.48.6])
-        by smtp.gmail.com with ESMTPSA id b3sm8788275qtg.55.2021.05.17.04.22.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 04:23:00 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 1/1] memory: pl353: Fix error return code in pl353_smc_probe()
-Date:   Mon, 17 May 2021 07:22:57 -0400
-Message-Id: <162125055246.5300.15627879267121505532.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210515040004.6983-1-thunder.leizhen@huawei.com>
-References: <20210515040004.6983-1-thunder.leizhen@huawei.com>
+        Mon, 17 May 2021 07:26:04 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d66 with ME
+        id 5nQi2500A21Fzsu03nQi5b; Mon, 17 May 2021 13:24:47 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 17 May 2021 13:24:47 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH 1/2] misc/pvpanic: Fix error handling in
+ 'pvpanic_pci_probe()'
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        mihai.carabas@oracle.com, pizhenwei@bytedance.com,
+        pbonzini@redhat.com, linqiheng@huawei.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <7efa7b4b9867ac44f398783b89f3a21deac4ce8b.1621175108.git.christophe.jaillet@wanadoo.fr>
+ <YKIi1hljnjvqMCVA@smile.fi.intel.com>
+ <ada55e25-5eb3-9b6b-5783-d2303db9bf83@wanadoo.fr>
+ <YKJGrGTHz+DzfiHN@smile.fi.intel.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <a5759f89-0617-29a1-26bd-0ed9a4bc41b8@wanadoo.fr>
+Date:   Mon, 17 May 2021 13:24:42 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YKJGrGTHz+DzfiHN@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 15 May 2021 12:00:04 +0800, Zhen Lei wrote:
-> When no child nodes are matched, an appropriate error code -ENODEV should
-> be returned. However, we currently do not explicitly assign this error
-> code to 'err'. As a result, 0 was incorrectly returned.
+Le 17/05/2021 à 12:34, Andy Shevchenko a écrit :
+> On Mon, May 17, 2021 at 12:02:24PM +0200, Christophe JAILLET wrote:
+>> Le 17/05/2021 à 10:01, Andy Shevchenko a écrit :
+>>> On Sun, May 16, 2021 at 04:36:55PM +0200, Christophe JAILLET wrote:
+>>>> There is no error handling path in the probe function.
+>>>> Switch to managed resource so that errors in the probe are handled easily
+>>>> and simplify the remove function accordingly.
+>>>
+>>> Yes, that's what I suggested earlier to another contributor.
+>>>
+>>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>>
+>>> Thanks!
+>>>
+>>> P.S. You may consider the following things as well:
+>>>    1) converting to use pci_set_drvdata() / pci_get_drvdata()
+>>
+>> I can send a patch for that if you want.
+>> But it looks really low value for a driver that is already very short and
+>> clean.
+> 
+> Yep, that's why 2) below came to my mind (then you will remove drvdata call).
+> 
+>>>    2) providing devm_pvpanic_probe() [via devm_add_action() /
+>>>       devm_add_action_or_reset()]
+>>
+>> I don't follow you here.
+>> The goal would be to avoid the remove function and "record" the needed
+>> action directly in the probe?
+>>
+>> If this is it, I would only see an unusual pattern and a harder to follow
+>> logic.
+> 
+>> Did I miss something?
+>> What would be the benefit?
+> 
+> First of all it's a usual pattern when one, often used in ->probe(), function
+> gains its devm variant. See, for example, `return devm_gpiochip_add_data(...);`
+> used in the code.
+> 
+> Benefit is to have everything under managed resources and yes, no ->remove()
+> will be needed in the individual drivers.
+> 
+> But it's up to you. It was just a proposal that you may simply refuse to follow,
+> it's fine.
+> 
 
-Applied, thanks!
+Ok, I'll propose something when/if my first patches reach -next.
 
-[1/1] memory: pl353: Fix error return code in pl353_smc_probe()
-      commit: 76e5624f3f9343a621dd3f4006f4e4d9c3f91e33
+I now better see your point. I first read devm_pvpanic_pci_probe (i.e. 
+with pci inside), instead of devm_pvpanic_probe.
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+CJ
