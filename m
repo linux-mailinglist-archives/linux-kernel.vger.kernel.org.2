@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91A9382D62
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E600382D6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235940AbhEQN0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:26:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29344 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235544AbhEQN0O (ORCPT
+        id S235994AbhEQN2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235885AbhEQN2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:26:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621257898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4C6fFCyDeeziYXRKHCjm+MM9+mWW1Oj4OkJbOQOd//w=;
-        b=Apo6aANBUIy95OXu+Y1UDICImH19Yrr7T5WFzK3rgpN+rWmzGrDXo523fLwtjSEWxas7oA
-        3tNtKCBskg4ZWMngHCNdWoF2y/QOvMI9gArFurR9VyidYGYOc9gA/8cO9K3OXl+Cj0wzkH
-        aB//VlIlRiC3D8+680icPRS7X36JV20=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-tM5jU-UhNPy_lXtwHQ9tCw-1; Mon, 17 May 2021 09:24:56 -0400
-X-MC-Unique: tM5jU-UhNPy_lXtwHQ9tCw-1
-Received: by mail-qt1-f200.google.com with SMTP id s11-20020ac85ecb0000b02901ded4f15245so5148493qtx.22
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:24:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4C6fFCyDeeziYXRKHCjm+MM9+mWW1Oj4OkJbOQOd//w=;
-        b=eMcyhl+wlin+/MRH4Yo6ZiLltCOLSs6KCh5WZzGccj8Jm2Ix/hXgYSg92vgXtTl+LH
-         FTQ7VoDP+6CdL2Xn7YXNa8YIlvNCb8q1gZmuSqiwIFFgO07hkpPgdP5sPkLfHCheNH0j
-         8JdlD1CHjRKc7vPP1Rry/JT30c/WNEjjStoK5VVfPlTALD43fr5HBt+8u5Y9elgp/fE7
-         YDqYEsAwu01eIrgG6z+L5KHUiPpyLcPda3SPuzR1GXm8KwCuxXRozpWDDOTzVamO4Lyu
-         2kahGMoXhqZeRPC7oWPlAgvZ/UDOcghTeprbkbDoxs+O4iJ8uj6YtS7mdWILIA9wTmI2
-         qrQA==
-X-Gm-Message-State: AOAM531ba3j+MioI9vsxQjI5Y9/xcFUq/VFug0XNzSX+bYnKx+zET9c2
-        FXS0v1LyZE9y3EVEMVDm6fHgjUDv3FT+xmBzpW+hNLvH6YJAJqF+KOw2nGluIPBVC/KtEI00q1T
-        s+TsZkiAq6eqJOqtkl+MNGU+T
-X-Received: by 2002:a37:a6c6:: with SMTP id p189mr57669820qke.161.1621257896167;
-        Mon, 17 May 2021 06:24:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCOpr7LsznsbLnBxVZvK3QSovzHlEmsmNqkrCGex478g/I2PC7rttrh4zgDS9QtpOkt9JzMw==
-X-Received: by 2002:a37:a6c6:: with SMTP id p189mr57669805qke.161.1621257895984;
-        Mon, 17 May 2021 06:24:55 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 195sm10125537qkj.1.2021.05.17.06.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 06:24:55 -0700 (PDT)
-From:   trix@redhat.com
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] scsi: aic7xxx: restore several defines for aix7xxx firmware build
-Date:   Mon, 17 May 2021 06:24:51 -0700
-Message-Id: <20210517132451.1832233-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        Mon, 17 May 2021 09:28:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B10C061573;
+        Mon, 17 May 2021 06:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1TkaZMCH4yU+NNIwz6Q7XkI/dtRqVzRXjzjhd8deeS4=; b=eUv4w/6y+TmCqLanxh4zcXig9e
+        ub0gCJacdgHQaQlH4W7PJM+ot+4/rQabSVoABRPfwlq08nStwh7edm/dGsg+ecq2jOPDj0ih5LRGX
+        +4WSmEFqmB6f9jhkYa+CD9+Jiqw5tvKfYBu4wVrIn9/yD6JGsFgCiMaXCMrb3NSHNr8OonAn084R1
+        dqYuNmAG2V2ZhVvgFqOAoD6sV+z8KwJ39rW+ybfawjnLQ8TR01ggvQQHOqibWdI8hKb7ntMkdgGpE
+        NDKcs/pxVj9cznhm34mKROc7Xyza/dVp+wMcjv3p7JEp5QSbM922yZjQHXotDfNdH6llcc/V48IaG
+        AT9HqXwg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lidGY-00F4UM-WD; Mon, 17 May 2021 13:26:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4010530022C;
+        Mon, 17 May 2021 15:26:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 21ACB2028F05C; Mon, 17 May 2021 15:26:35 +0200 (CEST)
+Date:   Mon, 17 May 2021 15:26:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v6 08/16] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
+ support guest DS
+Message-ID: <YKJvC5T5UOoCFwhL@hirez.programming.kicks-ass.net>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-9-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511024214.280733-9-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, May 11, 2021 at 10:42:06AM +0800, Like Xu wrote:
+> @@ -3897,6 +3898,8 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>  {
+>  	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>  	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+> +	struct debug_store *ds = __this_cpu_read(cpu_hw_events.ds);
+> +	struct kvm_pmu *pmu = (struct kvm_pmu *)data;
 
-With CONFIG_AIC7XXX_BUILD_FIRMWARE, there is this
-representative error
+You can do without the cast, this is C, 'void *' silently casts to any
+other pointer type.
 
-aicasm: Stopped at file ./drivers/scsi/aic7xxx/aic7xxx.seq,
-  line 271 - Undefined symbol MSG_SIMPLE_Q_TAG referenced
+>  	u64 intel_ctrl = hybrid(cpuc->pmu, intel_ctrl);
+>  	u64 pebs_mask = (x86_pmu.flags & PMU_FL_PEBS_ALL) ?
+>  		cpuc->pebs_enabled : (cpuc->pebs_enabled & PEBS_COUNTER_MASK);
 
-MSG_SIMPLE_Q_TAG used to be defined in
-drivers/scsi/aic7xxx/scsi_message.h as
-  #define MSG_SIMPLE_Q_TAG	0x20 /* O/O */
+> @@ -3931,6 +3934,12 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>  	if (!x86_pmu.pebs_vmx)
+>  		return arr;
+>  
+> +	arr[(*nr)++] = (struct perf_guest_switch_msr){
+> +		.msr = MSR_IA32_DS_AREA,
+> +		.host = (unsigned long)ds,
 
-The new definition in include/scsi/scsi.h is
-  #define SIMPLE_QUEUE_TAG    0x20
+Using:
+		(unsigned long)cpuc->ds;
 
-But aicasm can not handle the all the preprocessor directives
-in scsi.h, so add MSG_SIMPLE_Q_TAB and similar back to
-scsi_message.h
+was too complicated? :-)
 
-Fixes: d8cd784ff7b3 ("scsi: aic7xxx: aic79xx: Drop internal SCSI message definition"
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/scsi/aic7xxx/scsi_message.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/drivers/scsi/aic7xxx/scsi_message.h b/drivers/scsi/aic7xxx/scsi_message.h
-index a7515c3039edb..53343a6d8ae19 100644
---- a/drivers/scsi/aic7xxx/scsi_message.h
-+++ b/drivers/scsi/aic7xxx/scsi_message.h
-@@ -3,6 +3,17 @@
-  * $FreeBSD: src/sys/cam/scsi/scsi_message.h,v 1.2 2000/05/01 20:21:29 peter Exp $
-  */
- 
-+/* Messages (1 byte) */		     /* I/T (M)andatory or (O)ptional */
-+#define MSG_SAVEDATAPOINTER	0x02 /* O/O */
-+#define MSG_RESTOREPOINTERS	0x03 /* O/O */
-+#define MSG_DISCONNECT		0x04 /* O/O */
-+#define MSG_MESSAGE_REJECT	0x07 /* M/M */
-+#define MSG_NOOP		0x08 /* M/M */
-+
-+/* Messages (2 byte) */
-+#define MSG_SIMPLE_Q_TAG	0x20 /* O/O */
-+#define MSG_IGN_WIDE_RESIDUE	0x23 /* O/O */
-+
- /* Identify message */		     /* M/M */	
- #define MSG_IDENTIFYFLAG	0x80 
- #define MSG_IDENTIFY_DISCFLAG	0x40 
--- 
-2.26.3
-
+> +		.guest = pmu->ds_area,
+> +	};
+> +
+>  	arr[*nr] = (struct perf_guest_switch_msr){
+>  		.msr = MSR_IA32_PEBS_ENABLE,
+>  		.host = cpuc->pebs_enabled & ~cpuc->intel_ctrl_guest_mask,
