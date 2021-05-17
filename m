@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A06382486
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C76138248C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbhEQGmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 02:42:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2985 "EHLO
+        id S235158AbhEQGmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 02:42:19 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3564 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234939AbhEQGlx (ORCPT
+        with ESMTP id S234617AbhEQGlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 02:41:53 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fk8Yq3YH2zQp98;
-        Mon, 17 May 2021 14:37:03 +0800 (CST)
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fk8Zg3CyKzmWHb;
+        Mon, 17 May 2021 14:37:47 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Mon, 17 May 2021 14:40:31 +0800
 Received: from localhost.localdomain (10.67.165.24) by
@@ -27,9 +27,9 @@ From:   Xiaofei Tan <tanxiaofei@huawei.com>
 To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
         <linuxarm@openeuler.org>, Xiaofei Tan <tanxiaofei@huawei.com>
-Subject: [PATCH 7/9] tty: hvc_console: Add a blank line after declarations
-Date:   Mon, 17 May 2021 14:37:11 +0800
-Message-ID: <1621233433-27094-8-git-send-email-tanxiaofei@huawei.com>
+Subject: [PATCH 8/9] tty: hvc_console: Remove the repeated words 'no' and 'from'
+Date:   Mon, 17 May 2021 14:37:12 +0800
+Message-ID: <1621233433-27094-9-git-send-email-tanxiaofei@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
 References: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
@@ -43,25 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a blank line after declarations, reported by checkpatch.pl.
+Remove the repeated words 'no' and 'from', reported by checkpatch.pl.
 
 Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
 ---
- drivers/tty/hvc/hvc_console.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/hvc/hvc_console.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-index a61cdf0..f31efeb 100644
+index f31efeb..b6720b0 100644
 --- a/drivers/tty/hvc/hvc_console.c
 +++ b/drivers/tty/hvc/hvc_console.c
-@@ -922,6 +922,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
- 	/* We wait until a driver actually comes along */
- 	if (atomic_inc_not_zero(&hvc_needs_init)) {
- 		int err = hvc_init();
-+
- 		if (err)
- 			return ERR_PTR(err);
- 	}
+@@ -293,7 +293,7 @@ int hvc_instantiate(uint32_t vtermno, int index, const struct hv_ops *ops)
+ 	if (vtermnos[index] != -1)
+ 		return -1;
+ 
+-	/* make sure no no tty has been registered in this index */
++	/* make sure no tty has been registered in this index */
+ 	hp = hvc_get_by_index(index);
+ 	if (hp) {
+ 		tty_port_put(&hp->port);
+@@ -622,7 +622,7 @@ static u32 timeout = MIN_TIMEOUT;
+ /*
+  * Maximum number of bytes to get from the console driver if hvc_poll is
+  * called from driver (and can't sleep). Any more than this and we break
+- * and start polling with khvcd. This value was derived from from an OpenBMC
++ * and start polling with khvcd. This value was derived from an OpenBMC
+  * console with the OPAL driver that results in about 0.25ms interrupts off
+  * latency.
+  */
 -- 
 2.8.1
 
