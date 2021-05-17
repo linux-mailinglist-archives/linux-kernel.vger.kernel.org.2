@@ -2,122 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FCE382841
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3BF382842
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbhEQJ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235923AbhEQJZc (ORCPT
+        id S236012AbhEQJ0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:26:30 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:60378 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235985AbhEQJ0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:25:32 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8135C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:24:14 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso1286118wmm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RoIebCss24vMlDVC6yQ1C6afToK7d/dI1S2GbQ2aSEA=;
-        b=zB7jCsOxnFL/LDXgSuYO6D2FTj4cBSLSuAU27wIBOhnahIP2hOkz7trtV6WVxPJeca
-         EP4d9ktdjIouHp9QZrwEfbtEUBfoUCLVSERtAzPohlfQOVey1nsvp1RHh1BhPkS2yFce
-         Htatp3cWHBLsreKDSbbsMX6ZPdQo+xkXJaFun59UbDBmzLWph1WskJ+wyn4t+fLl3cT3
-         vKPFFvwf5VQD5v3vJ1iCNcI/3JSlzvYdnDWdqgaY7LrjMBLrALRwW7EHoe5CLH5eNaej
-         EFh8iDbEam6THt30dmyEy7YCt4kTs97TzsIBzQhAMcXAeZLU2E07yB2QUVArO7SnNaTF
-         R46g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RoIebCss24vMlDVC6yQ1C6afToK7d/dI1S2GbQ2aSEA=;
-        b=ZOnSNS4sWcu8GflIURjWJGJGC9Ug+Mv9p7Skxie5HDRk/C+WapDDc2jSar+L37GqLE
-         fbd08aDJ7u7Znqe/ktNSDnxGY+QsQQeUN7NRUD27AUcmgau/Ct/F27fwe0Adpsu6vD/r
-         zxrmUx7zvJ2zISVEEpNuInn/ZP32oXUM/R3sevZMiw5bnxEazw7rtNFLvKSp/n7qEJMQ
-         b2SXUUehMEUPtkutOAf61uZeh1hrSz/n0TEBqMEckuvWgOz3bWNzqmjk/YKhp/qMVRrZ
-         rfN3TBRKWfoj211XWPzR3eQKjOego+4i1siZKRgZm1vvMOachWjdAjVm9vh/yaHVtguG
-         4ibQ==
-X-Gm-Message-State: AOAM531+s4E/svWjcEs1jwSNq2NTx6uOu7Qu2C8LbErDExc2OV2kLvR4
-        KpdJBovDXqBWRKrNe8eLMiGCQQ==
-X-Google-Smtp-Source: ABdhPJzje+M84O/1ehD0jh8/ySTOUiW1cfrHAJHU8AG2hcTKBQwooqzolhHORH3JodDIn+R46zTCXw==
-X-Received: by 2002:a05:600c:2909:: with SMTP id i9mr62634571wmd.116.1621243453678;
-        Mon, 17 May 2021 02:24:13 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id j14sm16456506wmj.19.2021.05.17.02.24.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 May 2021 02:24:13 -0700 (PDT)
-Subject: Re: [PATCH v2] nvmem: qfprom: minor nit fixes
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rbokka@codeaurora.org
-References: <1619416452-6852-1-git-send-email-rnayak@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <3b78bf7d-6e41-2df5-caee-20bce46ba0bf@linaro.org>
-Date:   Mon, 17 May 2021 10:24:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 17 May 2021 05:26:25 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14H9MVPX006903;
+        Mon, 17 May 2021 11:24:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=WdwIYz9n3q739UyFGFQQ8DkrMAYz9kYQ1+zwMXuZRIw=;
+ b=Zl+fOtSTT2eODREyYEydwBwD54dsZLEwbQGFuEKtwdHagmycLkJ6orZnxLqCRJrf3W8W
+ pXbPaAWBxZ1uPgNLg7vKFCeDFd0fDvgDGFi16t7vCX4gEMN4B9cMD1ZEj0YZnnX7Xmwo
+ DuTTkIG4B68gUdFLbxMSxGl8v6I/N4sI2lpsk5Xo/b3UKuIrvf8dlD0y1GYViih3GOPb
+ xnv0b0lXZCL6+7TiyLMQ7LeVC5r86+1rq/4zxSUt6M3HdFdALO/gZ/roG48f6FUM/lnL
+ HYS+fLEWiu16ptqXYJaNn91aMBw1xSIJd34Y6aC2Eggnr4SJEuCt0kyw9l2Q9eevFxw9 iQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38km7pgm91-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 11:24:28 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 27C2D10002A;
+        Mon, 17 May 2021 11:24:27 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 12D9A221060;
+        Mon, 17 May 2021 11:24:27 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 17 May
+ 2021 11:24:26 +0200
+Subject: Re: [PATCH v2 1/3] spi: spi-mem: add automatic poll status functions
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+References: <20210507131756.17028-1-patrice.chotard@foss.st.com>
+ <20210507131756.17028-2-patrice.chotard@foss.st.com>
+ <20210517094140.53cb643a@collabora.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <e70b13ba-7f65-7ff1-0517-94b39615dcdb@foss.st.com>
+Date:   Mon, 17 May 2021 11:24:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1619416452-6852-1-git-send-email-rnayak@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210517094140.53cb643a@collabora.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-17_03:2021-05-12,2021-05-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Boris
 
-
-On 26/04/2021 06:54, Rajendra Nayak wrote:
-> Fix a missed newline, change an 'if' to 'else if' and update
-> a comment which is stale after the merge of '5a1bea2a: nvmem:
-> qfprom: Add support for fuseblowing on sc7280'
+On 5/17/21 9:41 AM, Boris Brezillon wrote:
+> On Fri, 7 May 2021 15:17:54 +0200
+> <patrice.chotard@foss.st.com> wrote:
 > 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-
-Applied thanks,
-
---srini
-
-> ---
-> v2: Added the change to move the 'if' to 'else if'
-> Sending a follow-up patch for these nits since they came in after
-> the previous patch was already pulled in
-> https://lore.kernel.org/patchwork/patch/1401964/
+>> +/**
+>> + * spi_mem_poll_status() - Poll memory device status
+>> + * @mem: SPI memory device
+>> + * @op: the memory operation to execute
+>> + * @mask: status bitmask to ckeck
+>> + * @match: (status & mask) expected value
+>> + * @timeout_ms: timeout in milliseconds
+>> + *
+>> + * This function send a polling status request to the controller driver
+>> + *
+>> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+>> + *         -EOPNOTSUPP if not supported.
+>> + */
+>> +int spi_mem_poll_status(struct spi_mem *mem,
+>> +			const struct spi_mem_op *op,
+>> +			u16 mask, u16 match, u16 timeout_ms)
 > 
->   drivers/nvmem/qfprom.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
+> Maybe you should pass a delay_us too, to poll the status at the right
+> rate in the SW-based case (can also be used by drivers if they need to
+
+Ok, i will add a polling_rate_us parameter to poll_status() callback,
+even if in STM32 driver case we will not use it, i agree it should be useful 
+depending of driver's implementation.
+
+> configure the polling rate). You could also add an initial_delay_us to
+> avoid polling the status too early: an erase operation will take longer
+> than a write which will take longer than a read. No need to check the
+> status just after issuing the command, especially if the polling is
+> done in SW. Those 2 arguments should also be passed to the driver.
+
+Regarding the addition of an initial_delay_us. We got two solution:
+  - use the same polling rate already used by read_poll_timeout() and 
+    set read_poll_timeout()'s sleep_before_read parameter to true (in our case 20 us
+    will be used as initial delay and as polling rate).
+
+  - add an udelay(initial_delay_us) or even better usleep_range(initial_delay_us,
+    initial_delay_us + delta) before calling read_poll_timeout().
+
+I imagine you prefer the second solution ?
+
+By adding polling_rate_us and initial_delay_us parameters to 
+spi_mem_poll_status(), it implies to update all spinand_wait() calls for 
+different operations (reset, read page, write page, erase) with respective  
+initial_delay_us/polling_rate_us values for spi_mem_poll_status()'s parameters.
+
+Can you provide adequate initial_delay_us and polling rate_us for each operation type ?.
+
+Thanks
+Patrice
 > 
-> diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
-> index d6d3f24..1ba666b 100644
-> --- a/drivers/nvmem/qfprom.c
-> +++ b/drivers/nvmem/qfprom.c
-> @@ -122,6 +122,7 @@ static const struct qfprom_soc_compatible_data sc7280_qfprom = {
->   	.keepout = sc7280_qfprom_keepout,
->   	.nkeepout = ARRAY_SIZE(sc7280_qfprom_keepout)
->   };
-> +
->   /**
->    * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
->    * @priv: Our driver data.
-> @@ -195,7 +196,7 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
->   	}
->   
->   	/*
-> -	 * Hardware requires 1.8V min for fuse blowing; this may be
-> +	 * Hardware requires a min voltage for fuse blowing; this may be
->   	 * a rail shared do don't specify a max--regulator constraints
->   	 * will handle.
->   	 */
-> @@ -399,7 +400,7 @@ static int qfprom_probe(struct platform_device *pdev)
->   
->   		if (major_version == 7 && minor_version == 8)
->   			priv->soc_data = &qfprom_7_8_data;
-> -		if (major_version == 7 && minor_version == 15)
-> +		else if (major_version == 7 && minor_version == 15)
->   			priv->soc_data = &qfprom_7_15_data;
->   
->   		priv->vcc = devm_regulator_get(&pdev->dev, "vcc");
-> 
+>> +{
+>> +	struct spi_controller *ctlr = mem->spi->controller;
+>> +	unsigned long ms;
+>> +	int ret = -EOPNOTSUPP;
+>> +	int exec_op_ret;
+>> +	u16 *status;
+>> +
+>> +	if (!spi_mem_supports_op(mem, op))
+>> +		return ret;
+>> +
+>> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+>> +		ret = spi_mem_access_start(mem);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		reinit_completion(&ctlr->xfer_completion);
+>> +
+>> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
+>> +						 timeout_ms);
+>> +
+>> +		ms = wait_for_completion_timeout(&ctlr->xfer_completion,
+>> +						 msecs_to_jiffies(timeout_ms));
+>> +
+>> +		spi_mem_access_end(mem);
+>> +		if (!ms)
+>> +			return -ETIMEDOUT;
+>> +	} else {
+>> +		status = (u16 *)op->data.buf.in;
+>> +		ret = read_poll_timeout(spi_mem_exec_op, exec_op_ret,
+>> +					((*status) & mask) == match, 20,
+>> +					timeout_ms * 1000, false, mem, op);
+>> +		if (exec_op_ret)
+>> +			return exec_op_ret;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
+>> +
