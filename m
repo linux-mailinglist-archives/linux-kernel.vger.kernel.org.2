@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B1F383856
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC099383624
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244980AbhEQPvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40236 "EHLO mail.kernel.org"
+        id S244356AbhEQP2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:28:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343675AbhEQPel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:34:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CEF761CDF;
-        Mon, 17 May 2021 14:39:29 +0000 (UTC)
+        id S243513AbhEQPOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:14:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DBEF61C51;
+        Mon, 17 May 2021 14:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262370;
-        bh=sVWSqwsCjEediVEth53I4tx8AYE5sxNh7/5+UMoiWTo=;
+        s=korg; t=1621261921;
+        bh=G5ssfBGRLK53uQMuqh6icA54W4r/oxerTpHLqKs707Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p0ku+QDeAoX31rQqXEL1Glo7VasRtJ5qR3BIh7NyeFO5qDWIXQxn+DGF1BwZaESKR
-         39h8WaXKtxkHEC1RAJVUxiC4bP5gYE30Mvgfj3a7wTma2V4aeWhDjQyrDE0EPE96rh
-         d4jHl77CnPjgz+DcPt6SLQBagFS7UIBZf9jhwLuA=
+        b=XXOU5ZD6dl9BRgsHUNcEJlbQ/6tzrx1LhdXqeEV5+EluvAt52CseeIlzzVGh+LMZr
+         YYbvTF4far2B2P1QY4MwwVDx4vGlpxiVLP5U2mhwTWaOZwnkuuLeLtdUNWhwMlUBeb
+         EwhOPsCBy/dn7bNx6leUVuZWA0CjMpvZ5Fwmanlc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fernando Fernandez Mancera <ffmancera@riseup.net>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Brendan Jackman <jackmanb@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 173/289] ethtool: fix missing NLM_F_MULTI flag when dumping
+Subject: [PATCH 5.11 187/329] libbpf: Fix signed overflow in ringbuf_process_ring
 Date:   Mon, 17 May 2021 16:01:38 +0200
-Message-Id: <20210517140310.942145599@linuxfoundation.org>
+Message-Id: <20210517140308.452003031@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fernando Fernandez Mancera <ffmancera@riseup.net>
+From: Brendan Jackman <jackmanb@google.com>
 
-[ Upstream commit cf754ae331be7cc192b951756a1dd031e9ed978a ]
+[ Upstream commit 2a30f9440640c418bcfbea9b2b344d268b58e0a2 ]
 
-When dumping the ethtool information from all the interfaces, the
-netlink reply should contain the NLM_F_MULTI flag. This flag allows
-userspace tools to identify that multiple messages are expected.
+One of our benchmarks running in (Google-internal) CI pushes data
+through the ringbuf faster htan than userspace is able to consume
+it. In this case it seems we're actually able to get >INT_MAX entries
+in a single ring_buffer__consume() call. ASAN detected that cnt
+overflows in this case.
 
-Link: https://bugzilla.redhat.com/1953847
-Fixes: 365f9ae4ee36 ("ethtool: fix genlmsg_put() failure handling in ethnl_default_dumpit()")
-Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix by using 64-bit counter internally and then capping the result to
+INT_MAX before converting to the int return type. Do the same for
+the ring_buffer__poll().
+
+Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210429130510.1621665-1-jackmanb@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ethtool/netlink.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/lib/bpf/ringbuf.c | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 50d3c8896f91..25a55086d2b6 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -384,7 +384,8 @@ static int ethnl_default_dump_one(struct sk_buff *skb, struct net_device *dev,
- 	int ret;
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index e7a8d847161f..1d80ad4e0de8 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -202,9 +202,11 @@ static inline int roundup_len(__u32 len)
+ 	return (len + 7) / 8 * 8;
+ }
  
- 	ehdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
--			   &ethtool_genl_family, 0, ctx->ops->reply_cmd);
-+			   &ethtool_genl_family, NLM_F_MULTI,
-+			   ctx->ops->reply_cmd);
- 	if (!ehdr)
- 		return -EMSGSIZE;
+-static int ringbuf_process_ring(struct ring* r)
++static int64_t ringbuf_process_ring(struct ring* r)
+ {
+-	int *len_ptr, len, err, cnt = 0;
++	int *len_ptr, len, err;
++	/* 64-bit to avoid overflow in case of extreme application behavior */
++	int64_t cnt = 0;
+ 	unsigned long cons_pos, prod_pos;
+ 	bool got_new_data;
+ 	void *sample;
+@@ -244,12 +246,14 @@ done:
+ }
  
+ /* Consume available ring buffer(s) data without event polling.
+- * Returns number of records consumed across all registered ring buffers, or
+- * negative number if any of the callbacks return error.
++ * Returns number of records consumed across all registered ring buffers (or
++ * INT_MAX, whichever is less), or negative number if any of the callbacks
++ * return error.
+  */
+ int ring_buffer__consume(struct ring_buffer *rb)
+ {
+-	int i, err, res = 0;
++	int64_t err, res = 0;
++	int i;
+ 
+ 	for (i = 0; i < rb->ring_cnt; i++) {
+ 		struct ring *ring = &rb->rings[i];
+@@ -259,18 +263,24 @@ int ring_buffer__consume(struct ring_buffer *rb)
+ 			return err;
+ 		res += err;
+ 	}
++	if (res > INT_MAX)
++		return INT_MAX;
+ 	return res;
+ }
+ 
+ /* Poll for available data and consume records, if any are available.
+- * Returns number of records consumed, or negative number, if any of the
+- * registered callbacks returned error.
++ * Returns number of records consumed (or INT_MAX, whichever is less), or
++ * negative number, if any of the registered callbacks returned error.
+  */
+ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+ {
+-	int i, cnt, err, res = 0;
++	int i, cnt;
++	int64_t err, res = 0;
+ 
+ 	cnt = epoll_wait(rb->epoll_fd, rb->events, rb->ring_cnt, timeout_ms);
++	if (cnt < 0)
++		return -errno;
++
+ 	for (i = 0; i < cnt; i++) {
+ 		__u32 ring_id = rb->events[i].data.fd;
+ 		struct ring *ring = &rb->rings[ring_id];
+@@ -280,7 +290,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+ 			return err;
+ 		res += err;
+ 	}
+-	return cnt < 0 ? -errno : res;
++	if (res > INT_MAX)
++		return INT_MAX;
++	return res;
+ }
+ 
+ /* Get an fd that can be used to sleep until data is available in the ring(s) */
 -- 
 2.30.2
 
