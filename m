@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87AA383951
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4BA383958
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345708AbhEQQN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:13:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45422 "EHLO mail.kernel.org"
+        id S1344240AbhEQQON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:14:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345084AbhEQPuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CD6E61D41;
-        Mon, 17 May 2021 14:45:36 +0000 (UTC)
+        id S1345105AbhEQPuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:50:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B48C2613B0;
+        Mon, 17 May 2021 14:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262737;
-        bh=B6qVT6Uo7bLg9NTm7gUOg0A/uEvfZb13VC+BllLnX70=;
+        s=korg; t=1621262739;
+        bh=eFLFcCVjj/Juat7SVA7Sv9+IO9Wv0EhmVYpN/GkN9u4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=COwRHLDJbN1kWmsJFEfhtSzbLzuItgbXe1/IPHV0FYq3Rnocjjc1z0FxV4lWTc03Y
-         2fbqM2C4p+wGGyv+U4wSSN9b0X0YFkXTDJ8ZGFiU5gy/b3PuwUGY52YuhcM6T4qEdt
-         B7iPMJGHYHPddggy5YSxnY4FUCNViEG2fQZkjW9k=
+        b=xqUWHg0GNe89hJ2RWT/fkAERF0uoRweX72wZSJz+a5k72rHb9eH/ZV5g+YtfhkDN/
+         RL/dOXXTnQQAd88qnESWk28n515BmfmgYVSoWqnIE6CnWr1k60uCxcdlewuGFemWmz
+         mH/V7gNfTxVFNiuex6kFaUgUhzIWrMPA18hTXkxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.10 285/289] dt-bindings: serial: 8250: Remove duplicated compatible strings
-Date:   Mon, 17 May 2021 16:03:30 +0200
-Message-Id: <20210517140314.735186624@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Enderborg <peter.enderborg@sony.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.10 286/289] debugfs: Make debugfs_allow RO after init
+Date:   Mon, 17 May 2021 16:03:31 +0200
+Message-Id: <20210517140314.774159493@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -39,34 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit a7277a73984114b38dcb62c8548850800ffe864e upstream.
+commit 312723a0b34d6d110aa4427a982536bb36ab8471 upstream.
 
-The compatible strings "mediatek,*" appears two times, remove one of them.
+Since debugfs_allow is only set at boot time during __init, make it
+read-only after being set.
 
-Fixes: e69f5dc623f9 ("dt-bindings: serial: Convert 8250 to json-schema")
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210422090857.583-1-thunder.leizhen@huawei.com
-Signed-off-by: Rob Herring <robh@kernel.org>
+Fixes: a24c6f7bc923 ("debugfs: Add access restriction option")
+Cc: Peter Enderborg <peter.enderborg@sony.com>
+Reviewed-by: Peter Enderborg <peter.enderborg@sony.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210405213959.3079432-1-keescook@chromium.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/devicetree/bindings/serial/8250.yaml |    5 -----
- 1 file changed, 5 deletions(-)
+ fs/debugfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/Documentation/devicetree/bindings/serial/8250.yaml
-+++ b/Documentation/devicetree/bindings/serial/8250.yaml
-@@ -94,11 +94,6 @@ properties:
-               - mediatek,mt7623-btif
-           - const: mediatek,mtk-btif
-       - items:
--          - enum:
--              - mediatek,mt7622-btif
--              - mediatek,mt7623-btif
--          - const: mediatek,mtk-btif
--      - items:
-           - const: mrvl,mmp-uart
-           - const: intel,xscale-uart
-       - items:
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -35,7 +35,7 @@
+ static struct vfsmount *debugfs_mount;
+ static int debugfs_mount_count;
+ static bool debugfs_registered;
+-static unsigned int debugfs_allow = DEFAULT_DEBUGFS_ALLOW_BITS;
++static unsigned int debugfs_allow __ro_after_init = DEFAULT_DEBUGFS_ALLOW_BITS;
+ 
+ /*
+  * Don't allow access attributes to be changed whilst the kernel is locked down
 
 
