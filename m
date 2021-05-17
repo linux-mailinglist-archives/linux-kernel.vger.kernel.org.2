@@ -2,131 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69598386B56
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA1D386B59
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242364AbhEQUZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241818AbhEQUZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:25:10 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43F9C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:23:52 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id f15so2467671vsq.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:23:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TNVxp+4uYZU44gvo81BAyFu2mBsVyk6HxBgwuTdRjGw=;
-        b=Xb7tt3YStfK16ujxVVCoZcExFZ22Uh+FtP8r3MT4LMYX1A5AgkQEaEGiKG5wJH+qdP
-         PeNZ4c6i8DVxyi57luCsqW5Ang2kb43bKhIFOEcYFm/B8/pxVqavwixiTK5k8mW1PvXM
-         f8ipUarjrgWCa6PhRPlYtawPv/yyGxu3TENCGJfGc6r6YdP326WIN+M1FxI5Ie18ylvj
-         c5ONkEc6z+UwtEdeUnoVROVztdfeshg5E4q3VJu1YsYwfEc0Gsi8mBDqlrDwOfmwYbWO
-         xZd4kPYJn8JPLDxoDJ6i7VJUIWRFHKeR00WgLYTTv5UT07AcWjY2IpnpdzAO254m4FmG
-         epkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TNVxp+4uYZU44gvo81BAyFu2mBsVyk6HxBgwuTdRjGw=;
-        b=hd9rS++37LGpyoCUCavtSZUXGEZulRMVpcP2cpiGpfIkEDMpTW7vhqYPyf7MS9e1mY
-         PiwDA6ZsdKuqG5DPyHyFEqgOerl4fedAZRKknN+LUsC+YBmtznn0ZPNWHy/Ah81PIJPA
-         Xkd4xxI7psS8z4dklTdrjSUQtyiJ+osBUhH7zFJczN+17k14cfeud1ijwm6Wrhw6opWE
-         id3jRE97TAyr/iBaUAKE9qh3YV6Q+hnRkigaXmRuM7td+gYO68jyEenIN3hw/5tE0TPG
-         vEH/6VOe4i0Ob+2WpJA/Fy9hdCfo12UU4DEAgQhUxABNIL2zaA7kwoQYeod2VPxNEBMn
-         rDSw==
-X-Gm-Message-State: AOAM532BNd1GeAjZQCPIHS/QtkwWQ99Rbah2B0uoiorDpqpKzySHwiX4
-        Behde3Cx09M89qd/7xZLmxGciG9l2r2aWPBu
-X-Google-Smtp-Source: ABdhPJy0wNcMTKIzs2VLyzUq/TqeyawQ8QlDbvH2c/w7PPfUPrP30nU9sGj3Hq3gfTv70gO4RhHg4A==
-X-Received: by 2002:a67:ce81:: with SMTP id c1mr2072204vse.28.1621283031663;
-        Mon, 17 May 2021 13:23:51 -0700 (PDT)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id m27sm1917686vsj.4.2021.05.17.13.23.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 13:23:50 -0700 (PDT)
-Received: by mail-vs1-f47.google.com with SMTP id j13so3793374vsf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:23:49 -0700 (PDT)
-X-Received: by 2002:a67:fe57:: with SMTP id m23mr2025033vsr.47.1621283029295;
- Mon, 17 May 2021 13:23:49 -0700 (PDT)
+        id S242595AbhEQUZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:25:58 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:59263 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239459AbhEQUZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 16:25:53 -0400
+Received: from [IPv6:2601:646:8602:8be1:c569:1cd0:3c83:3a98] ([IPv6:2601:646:8602:8be1:c569:1cd0:3c83:3a98])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14HKO82p3798008
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Mon, 17 May 2021 13:24:12 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14HKO82p3798008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621283052;
+        bh=aTYSqhCKxLgX68/2PoXpp4s/LEOV3rjxKcfUXJ3LzYk=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=Byk55k+ywBwqDv/QZTAuLYM2fNPKX6CfkKinvB4Uij4G2DoECnoicoDBYXITADva3
+         c0TDd9gYGGa+JQHIYexlcwIXfl7mlkxt+I5tjH+O9IPOd8KRwIt6DZbIxqFKpV2iQJ
+         AeBOdoGXwgKl9myuEckARqAYkwshwTKbm22g5EjY0AB216uE1IMzePjKvBvnMpyUMS
+         nwNDqbP9f01PKmA4cbfDWcfgYGTcpnb74y4VY3d2x+S3lcvJYIEi9BHBNhjDIThcZe
+         ViY0YokJjrhriow39NKlMITJngXq+woqEzQWf2o0KtZ91FE7w6KaTukcMSGGfEFyVK
+         WF5BIaE4h4mtQ==
+Date:   Mon, 17 May 2021 13:23:59 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YKDOQxRS+kX1WhQq@gmail.com>
+References: <20210515011015.2707542-1-hpa@zytor.com> <20210515011015.2707542-2-hpa@zytor.com> <YKDOQxRS+kX1WhQq@gmail.com>
 MIME-Version: 1.0
-References: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com> <CAA93jw6LUAnWZj0b5FvefpDKUyd6cajCNLoJ6OKrwbu-V_ffrA@mail.gmail.com>
-In-Reply-To: <CAA93jw6LUAnWZj0b5FvefpDKUyd6cajCNLoJ6OKrwbu-V_ffrA@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 17 May 2021 16:23:10 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSf0Af2RXEG=rCthNNEb5mwKTG37gpEBBZU16qKkvmF=qw@mail.gmail.com>
-Message-ID: <CA+FuTSf0Af2RXEG=rCthNNEb5mwKTG37gpEBBZU16qKkvmF=qw@mail.gmail.com>
-Subject: Re: virtio_net: BQL?
-To:     Dave Taht <dave.taht@gmail.com>
-Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 1/4] x86/syscall: sign-extend system calls on entry to int
+To:     Ingo Molnar <mingo@kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <4127D74A-A110-4EAB-9745-46997B1B031C@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 2:44 PM Dave Taht <dave.taht@gmail.com> wrote:
+No, this is what the Linux kernel did for a very long time=2E
+
+On May 16, 2021 12:48:19 AM PDT, Ingo Molnar <mingo@kernel=2Eorg> wrote:
 >
-> Not really related to this patch, but is there some reason why virtio
-> has no support for BQL?
-
-There have been a few attempts to add it over the years.
-
-Most recently, https://lore.kernel.org/lkml/20181205225323.12555-2-mst@redh=
-at.com/
-
-That thread has a long discussion. I think the key open issue remains
-
-"The tricky part is the mode switching between napi and no napi."
-
-> On Mon, May 17, 2021 at 11:41 AM Xianting Tian
-> <xianting.tian@linux.alibaba.com> wrote:
-> >
-> > BUG_ON() uses unlikely in if(), which can be optimized at compile time.
-> >
-> > Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> > ---
-> >   drivers/net/virtio_net.c | 5 ++---
-> >   1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index c921ebf3ae82..212d52204884 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -1646,10 +1646,9 @@ static int xmit_skb(struct send_queue *sq, struc=
-t
-> > sk_buff *skb)
-> >         else
-> >                 hdr =3D skb_vnet_hdr(skb);
-> >
-> > -       if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
-> > +       BUG_ON(virtio_net_hdr_from_skb(skb, &hdr->hdr,
-> >                                     virtio_is_little_endian(vi->vdev), =
-false,
-> > -                                   0))
-> > -               BUG();
-> > +                                   0));
-> >
-> >         if (vi->mergeable_rx_bufs)
-> >                 hdr->num_buffers =3D 0;
-> > --
-> > 2.17.1
-> >
+>* H=2E Peter Anvin <hpa@zytor=2Ecom> wrote:
 >
+>> This is an ABI change, but is in fact a revert to the original x86-64
+>> ABI=2E The original assembly entry code would zero-extend the system
+>> call number; this patch uses sign extend to be explicit that this is
+>> treated as a signed number (although in practice it makes no
+>> difference, of course) and to avoid people getting the idea of
+>> "optimizing" it, as has happened on at least two(!) separate
+>> occasions=2E
 >
-> --
-> Latest Podcast:
-> https://www.linkedin.com/feed/update/urn:li:activity:6791014284936785920/
+>The original x86-64 ABI as documented by AMD, as we (probably) never
+>had=20
+>this in Linux, right?
 >
-> Dave T=C3=A4ht CTO, TekLibre, LLC
+>Sounds sensible to do this, assuming nothing relies on the weirdness=2E
+>
+>Thanks,
+>
+>	Ingo
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
