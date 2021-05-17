@@ -2,116 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789D9386C95
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26798386C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245509AbhEQVt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
+        id S245468AbhEQVtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhEQVtX (ORCPT
+        with ESMTP id S230508AbhEQVtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:49:23 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998EFC061573;
-        Mon, 17 May 2021 14:48:06 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t4so3923036plc.6;
-        Mon, 17 May 2021 14:48:06 -0700 (PDT)
+        Mon, 17 May 2021 17:49:20 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C0BC061573;
+        Mon, 17 May 2021 14:48:03 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id c20so7394533qkm.3;
+        Mon, 17 May 2021 14:48:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JMkvV6BdFFXMjoCPNmiDQhek94rpMVEncluqG5MRowE=;
-        b=odxstFZqYrucY4FAfwODmpJzT6jRu7CDGlVwp/MPxyAZ5p9mR28hLz1AkSgOslTZeH
-         EIDdzCusL/6HN6ufV+7hRqOUVJ33NqiOFxdJNrVI/7sRKrD4q0nalj3luYUxyM4Q5uxm
-         ZDugFjJPLXqNtbvB39cv3zngXvS9ERO4hylEjckcNaovm1kD8GuMQsNVRaOWRVnXx5fX
-         zqJgd6EM3XSGhHt60if0R4V/1ed5kazBt1Icnb3dGk6d/tmS1dM1ZSlXx1v0LFprjblB
-         DFwBVIUHdqP2N4bekTtJjXd8PkealEG31X2Lsh3wAx74Z7tAwi7gCIT1RL8YVytRlGS/
-         6oyg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6DqWCueOVy+KKDmUzeIT3Pc8Hvr7DDML2WOb6qWHEFk=;
+        b=Iqjd3wmClbb4tXj8FjSiEaDTV2iPWWADkI1RR7Pgykt5bILM8oKZ+uD69p26i15le2
+         zon+xEW+FvCV/0SmPpK9FHFiptn3bvHC/A0oWTRUsftrlbhLvpnvf1UcWN4KZDwIEvpn
+         Gw4CoGpx+CB4NLDDwa5rxilX4HoDyiWb69SfjKuPWZgMaKTD8h5Fqsysmcln/wa0gD8G
+         cIvIGNHTNDwfD2yDSba7a6ESEPBcdueq7UAm5lIEq1/9GYe8JVaNM9N4Ev8la9Yn9huf
+         kmPXBCW1NK1eQZ5fqW0ySCXMZvYBzfe2VXLT+Pv1UNVriL46jCjELwev33ev6o+xXDaE
+         w9uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JMkvV6BdFFXMjoCPNmiDQhek94rpMVEncluqG5MRowE=;
-        b=eucsUs/s3y5lLuc7tn27WclB/joGVHWRqXCkfMZQNU7eKDivZ9YHK2Z2IjiuwZC7Rb
-         68X9gdZK5f3JCrm9RE8uK4lWY2zqjqEQjHyEs92BgVELkByxArJvc6Ace+Ip8CCov9VC
-         A7eqodnA+FFZz5VYkdK56nabkc4vR8FgICA5y0T+rQJT2dAQIx7oUDtRnb6O93Eijbuu
-         Fe8aNX2pBZNaIwj83Zt5Vj70KwHBt+2JIMZi3+FTJ2nkgPNYFOxo25YWA2efaCOWEIiG
-         F0K5//k8MsRS9T10Y0IClMCxBqn3olu518RYMRHpoSBGmfY5LXyIslxS74s59FLyqse+
-         Ihhw==
-X-Gm-Message-State: AOAM530BgE1f9pQf6OFd8uc70Nw76CVVYPltsNxMRfCubjqS/glQAFcc
-        6aTEFqA2QEs8IJ5a5TfqpO+l0HW6IomteKXjyoA=
-X-Google-Smtp-Source: ABdhPJzVb2Ly6gYRoFRDwWBuQTVhXViFr9CR8JTQUS5JsuSaXSK84r6AwxbxCyo6EbuMLLARNKHhdo+ukDZYWYSa8L0=
-X-Received: by 2002:a17:902:264:b029:eb:3d3a:a09c with SMTP id
- 91-20020a1709020264b02900eb3d3aa09cmr622880plc.0.1621288086211; Mon, 17 May
- 2021 14:48:06 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=6DqWCueOVy+KKDmUzeIT3Pc8Hvr7DDML2WOb6qWHEFk=;
+        b=HeS+wEokIFY2PCgrUpqEMF7Nu+PKsATD2USFsBfdfpRus8H5HHsoJnlUsOdHuAzKiR
+         ur7XJyBTbGPzwVr54e5aGoxtMvUmu32v5TzEOyMeWMsds5k0gq5ejJQzdP80as+xcs8G
+         JHclbFggSLjleFl2mhKC7t/7bUPg+LDDSJbmsbZ/ffaqzdFG63PMHoT8DQzC4jQ2RNcT
+         cHOxOvAFnud2bwOc/FtfgQcAsIBReAcVJI27NIbKQkcAczLmJfI/gGAfDUn+9Gxml2Oa
+         bQXL1sAVy9ZGaYX0rGsce0k7+Gh0HSnHfcCxEgjAAAy27gastKue5IcLYvynw5ciLF+q
+         6tCg==
+X-Gm-Message-State: AOAM532I3pGalcHHPdFl8j4FdTD/zo5v/qaMH5VOjgwhO5WOHYuwQpb8
+        2LqKj0QFJ31Sl3XqKYuYoFY=
+X-Google-Smtp-Source: ABdhPJxTt7huSvsM43negINDBDM7xI6cAuilm6xm0a3pYsPPSpZrtWMUPvOHjJDzHWAbLSbJAX8yZg==
+X-Received: by 2002:ae9:c218:: with SMTP id j24mr2111212qkg.94.1621288082849;
+        Mon, 17 May 2021 14:48:02 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j6sm11403038qti.4.2021.05.17.14.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 14:48:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 17 May 2021 14:48:00 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+Subject: Re: [PATCH v1 1/1] watchdog: sp805: Use devm_clk_get_optional()
+Message-ID: <20210517214800.GA3623005@roeck-us.net>
+References: <20210517174456.22050-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20210222130735.1313443-1-djrscally@gmail.com> <20210222130735.1313443-6-djrscally@gmail.com>
- <CAHp75Vd2Dc2Poq7VNRXRT-0VjkYdEFY2WKpz8fWpAQViQRO4jA@mail.gmail.com> <0241df24-11cb-fd3b-12a5-f98dea55fac5@gmail.com>
-In-Reply-To: <0241df24-11cb-fd3b-12a5-f98dea55fac5@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 18 May 2021 00:47:50 +0300
-Message-ID: <CAHp75VdQ-BYs2MhKA0g+e5No6qP1-BpPBv5L9091yX9c51ZxKw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] platform/x86: Add intel_skl_int3472 driver
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Rajmohan Mani <rajmohan.mani@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        =?UTF-8?Q?Fabian_W=C3=BCthrich?= <me@fabwu.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517174456.22050-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 12:43 AM Daniel Scally <djrscally@gmail.com> wrote:
->
-> Hi Andy
->
-> On 22/02/2021 14:58, Andy Shevchenko wrote
-> >> +#include <linux/clk-provider.h>
-> >
-> > This is definitely not for *.h. (Not all C files needed this)
-> >
-> >> +#include <linux/gpio/machine.h>
-> >
-> > Ditto.
-> >
-> >> +#include <linux/regulator/driver.h>
-> >> +#include <linux/regulator/machine.h>
-> >
-> > Ditto.
->
-> Bit more delayed than I wanted to be, but I'm just finishing off the v4
-> of this. For these includes, I'm using the actual structs from them
-> rather than pointers, so removing these would mean moving the definition
-> of struct int3472_discrete_device into one of the source files; you're
-> happy with that?
+On Mon, May 17, 2021 at 08:44:56PM +0300, Andy Shevchenko wrote:
+> Replace open coded variants of devm_clk_get_optional().
+> 
+> While at it, drop unneeded OF and ACPI dependency as the APIs in use
+> are provider agnostic.
+> 
+> Cc: Srinath Mannam <srinath.mannam@broadcom.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Either way, please send a v4 and we start over from a fresh view.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+> ---
+>  drivers/watchdog/sp805_wdt.c | 40 +++++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/watchdog/sp805_wdt.c b/drivers/watchdog/sp805_wdt.c
+> index 58a00e1ab23b..531551216c8c 100644
+> --- a/drivers/watchdog/sp805_wdt.c
+> +++ b/drivers/watchdog/sp805_wdt.c
+> @@ -11,7 +11,6 @@
+>   * warranty of any kind, whether express or implied.
+>   */
+>  
+> -#include <linux/acpi.h>
+>  #include <linux/device.h>
+>  #include <linux/resource.h>
+>  #include <linux/amba/bus.h>
+> @@ -23,8 +22,8 @@
+>  #include <linux/math64.h>
+>  #include <linux/module.h>
+>  #include <linux/moduleparam.h>
+> -#include <linux/of.h>
+>  #include <linux/pm.h>
+> +#include <linux/property.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/types.h>
+> @@ -231,6 +230,7 @@ static int
+>  sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
+>  {
+>  	struct sp805_wdt *wdt;
+> +	u64 rate = 0;
+>  	int ret = 0;
+>  
+>  	wdt = devm_kzalloc(&adev->dev, sizeof(*wdt), GFP_KERNEL);
+> @@ -243,25 +243,23 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
+>  	if (IS_ERR(wdt->base))
+>  		return PTR_ERR(wdt->base);
+>  
+> -	if (adev->dev.of_node) {
+> -		wdt->clk = devm_clk_get(&adev->dev, NULL);
+> -		if (IS_ERR(wdt->clk)) {
+> -			dev_err(&adev->dev, "Clock not found\n");
+> -			return PTR_ERR(wdt->clk);
+> -		}
+> -		wdt->rate = clk_get_rate(wdt->clk);
+> -	} else if (has_acpi_companion(&adev->dev)) {
+> -		/*
+> -		 * When Driver probe with ACPI device, clock devices
+> -		 * are not available, so watchdog rate get from
+> -		 * clock-frequency property given in _DSD object.
+> -		 */
+> -		device_property_read_u64(&adev->dev, "clock-frequency",
+> -					 &wdt->rate);
+> -		if (!wdt->rate) {
+> -			dev_err(&adev->dev, "no clock-frequency property\n");
+> -			return -ENODEV;
+> -		}
+> +	/*
+> +	 * When driver probe with ACPI device, clock devices
+> +	 * are not available, so watchdog rate get from
+> +	 * clock-frequency property given in _DSD object.
+> +	 */
+> +	device_property_read_u64(&adev->dev, "clock-frequency", &rate);
+> +
+> +	wdt->clk = devm_clk_get_optional(&adev->dev, NULL);
+> +	if (IS_ERR(wdt->clk))
+> +		return dev_err_probe(&adev->dev, PTR_ERR(wdt->clk), "Clock not found\n");
+> +
+> +	wdt->rate = clk_get_rate(wdt->clk);
+> +	if (!wdt->rate)
+> +		wdt->rate = rate;
+> +	if (!wdt->rate) {
+> +		dev_err(&adev->dev, "no clock-frequency property\n");
+> +		return -ENODEV;
+>  	}
+>  
+>  	wdt->adev = adev;
+> -- 
+> 2.30.2
+> 
