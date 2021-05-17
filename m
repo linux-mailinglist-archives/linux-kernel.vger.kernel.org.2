@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C03438389F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158363836A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346027AbhEQP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:57:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
+        id S242264AbhEQPfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244966AbhEQPi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:38:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3196B61946;
-        Mon, 17 May 2021 14:41:06 +0000 (UTC)
+        id S244337AbhEQPUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:20:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB348613E8;
+        Mon, 17 May 2021 14:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262466;
-        bh=qAYjFm1d6REHx7asIHAbKhI6yyXQ1YitqL0796GaLa0=;
+        s=korg; t=1621262048;
+        bh=sVWSqwsCjEediVEth53I4tx8AYE5sxNh7/5+UMoiWTo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VRXCMWaeNXdZACJC8uNPSgpmuUtNA7krW+fQmuMWgfB+qfPdtlYN+vvgxXx/G9ikP
-         7UW3YUlni8Q68gu+wsuBBtgRj/Z/D4aITLaSTXygy0wdiXCCaCoRcbEEt7UFaeo5ar
-         Yv8E5yQj6Z6ZeuOM8s/Wqaf7XrHgYlpUtyRmoNus=
+        b=phWXgegj14RWxB5N760k+WfN5jGfaDL7sgz/ol/qHGwxkdT8/oV+ueL5sTidbXK3B
+         1ZTavsy8ya2lvQ3JVn12nJiqA9dBIY3XKmOyjhRZokL36/4G1XeV7WECYEuFYFyZPP
+         dnUGR2E75eL5ArzbvEEywtGl4OtCm1h622bwNwaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org,
+        Fernando Fernandez Mancera <ffmancera@riseup.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 193/289] f2fs: avoid unneeded data copy in f2fs_ioc_move_range()
-Date:   Mon, 17 May 2021 16:01:58 +0200
-Message-Id: <20210517140311.605707433@linuxfoundation.org>
+Subject: [PATCH 5.11 208/329] ethtool: fix missing NLM_F_MULTI flag when dumping
+Date:   Mon, 17 May 2021 16:01:59 +0200
+Message-Id: <20210517140309.165413756@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Fernando Fernandez Mancera <ffmancera@riseup.net>
 
-[ Upstream commit 3a1b9eaf727b4ab84ebf059e09c38fc6a53e5614 ]
+[ Upstream commit cf754ae331be7cc192b951756a1dd031e9ed978a ]
 
-Fields in struct f2fs_move_range won't change in f2fs_ioc_move_range(),
-let's avoid copying this structure's data to userspace.
+When dumping the ethtool information from all the interfaces, the
+netlink reply should contain the NLM_F_MULTI flag. This flag allows
+userspace tools to identify that multiple messages are expected.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Link: https://bugzilla.redhat.com/1953847
+Fixes: 365f9ae4ee36 ("ethtool: fix genlmsg_put() failure handling in ethnl_default_dumpit()")
+Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/file.c | 6 ------
- 1 file changed, 6 deletions(-)
+ net/ethtool/netlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 9f857e5709b6..5c74b2997197 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2913,12 +2913,6 @@ static int __f2fs_ioc_move_range(struct file *filp,
- 					range->pos_out, range->len);
+diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
+index 50d3c8896f91..25a55086d2b6 100644
+--- a/net/ethtool/netlink.c
++++ b/net/ethtool/netlink.c
+@@ -384,7 +384,8 @@ static int ethnl_default_dump_one(struct sk_buff *skb, struct net_device *dev,
+ 	int ret;
  
- 	mnt_drop_write_file(filp);
--	if (err)
--		goto err_out;
--
--	if (copy_to_user((struct f2fs_move_range __user *)arg,
--						&range, sizeof(range)))
--		err = -EFAULT;
- err_out:
- 	fdput(dst);
- 	return err;
+ 	ehdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
+-			   &ethtool_genl_family, 0, ctx->ops->reply_cmd);
++			   &ethtool_genl_family, NLM_F_MULTI,
++			   ctx->ops->reply_cmd);
+ 	if (!ehdr)
+ 		return -EMSGSIZE;
+ 
 -- 
 2.30.2
 
