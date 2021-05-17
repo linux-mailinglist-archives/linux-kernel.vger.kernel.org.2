@@ -2,229 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FEB382DA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFE4382DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbhEQNl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237414AbhEQNl4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:41:56 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B61C061573;
-        Mon, 17 May 2021 06:40:39 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j10so8828344lfb.12;
-        Mon, 17 May 2021 06:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uwmsFmAlOo76er6Ji5UTRtBzo940BiJI4cuJFCDeXfU=;
-        b=UbVcU25g+r45EQTwnm5XC1IOOnRNwgWrtDyxScOR/YTVoFKqzGlP4B1BOwrph9s3j0
-         wCamxC//WsFQ6rS/eOHdKdkoehjoCvPCGuhzp7YR311zH5Jpe+QUZhmHsZ+sI0eyKz3E
-         39Gc+YlVZCGtGnfkUbwP4EzVSjxny52IRi/pjVXPLsAdcl5R1zD2aIZfOYHRllPGVG1x
-         8sCO9BTybuIFShckdHjyLXzCGDs/jfsm7zMUGeEBhAZghwrbI4dWlNmbc/4XbM2zz5qC
-         8Cqd6Bde0S1c3aP9Jn01B1i4bfoUPM/jTrBo95gmh9E2hOuQwllvwrZ/H5L8POG1PAo4
-         zp8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uwmsFmAlOo76er6Ji5UTRtBzo940BiJI4cuJFCDeXfU=;
-        b=oJlIqDGmSQokT+9C63HVy4LW/Hvrj1I3B3cbj7EkNfkLcqoziOwva180kqzujUn1uh
-         4Bhmsc0f+EbLr08L5f50+nVXa+DS7fcCJsFhtQ2FVGf/FT8fBPpyJpZI08WwzRaM7eKH
-         HTb6AHry63atpce8jGaotLKKovcXwqCyfhTEZ0dCgb2wL3W5LWnphm8JlPwTvDBJMb4P
-         VPJaYuLGCMnU733HrqQTEbSlGF56QEZd6WIjhsE40ZHIO3B48Yf0K0vzk6aaFn0Wb4WT
-         /4GWbQw8wo39318dtC169foSlBFlmv3OVamKuQIMznK+WO4B1nPcdC3GjmUgfJbMusaQ
-         pfqQ==
-X-Gm-Message-State: AOAM530rrPcZI90hYhiPEDh5XjE7+u7R1V1GmgtQ9CVxfCJRpr0QgRly
-        SItu5laLoLt5C9Cf7OBtkA8=
-X-Google-Smtp-Source: ABdhPJzTPGDuXem4nPuheC3gCCJ7o7R2hUL5WcXmbbZB/BMgNw7/iq3HGgGkVdvgElCr2q/6mB1vGg==
-X-Received: by 2002:a19:7012:: with SMTP id h18mr2838021lfc.432.1621258837508;
-        Mon, 17 May 2021 06:40:37 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.227])
-        by smtp.gmail.com with ESMTPSA id r1sm2899113ljj.21.2021.05.17.06.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 06:40:37 -0700 (PDT)
-Date:   Mon, 17 May 2021 16:40:34 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] ext4: fix memory leak in ext4_fill_super
-Message-ID: <20210517164034.1e7d712b@gmail.com>
-In-Reply-To: <20210430185046.15742-1-paskripkin@gmail.com>
-References: <YIt9IFY4Xsf5K+eZ@mit.edu>
-        <20210430185046.15742-1-paskripkin@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S237470AbhEQNno convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 May 2021 09:43:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237408AbhEQNnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 09:43:41 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B702611BD;
+        Mon, 17 May 2021 13:42:25 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lidVn-001odN-Hc; Mon, 17 May 2021 14:42:23 +0100
+Date:   Mon, 17 May 2021 14:42:22 +0100
+Message-ID: <87eee5v5mp.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 0/9] arm64: dts: rockchip: Initial Toybrick TB-RK1808M0 support
+In-Reply-To: <e633c5ac-7cd6-c733-a295-6dca8ba9c605@suse.de>
+References: <20210516230551.12469-1-afaerber@suse.de>
+        <87im3hvikv.wl-maz@kernel.org>
+        <e633c5ac-7cd6-c733-a295-6dca8ba9c605@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: afaerber@suse.de, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Andreas,
 
-Is all ok with this one, or I should send v3? :)
+On Mon, 17 May 2021 13:22:27 +0100,
+Andreas Färber <afaerber@suse.de> wrote:
+> 
+> Hi Marc,
+> 
+> On 17.05.21 11:02, Marc Zyngier wrote:
+> > On Mon, 17 May 2021 00:05:42 +0100,
+> > Andreas Färber <afaerber@suse.de> wrote:
+> >> Patches are based on the shipping toybrick.dtb file.
+> 
+> >> http://t.rock-chips.com/en/wiki.php?mod=view&id=110 gives instructions for
+> 
+> >> compiling sources, but no source download or link is actually provided.
+> 
+> >> 
+> 
+> >> I encountered a hang: earlycon revealed it being related to KVM and
+> >> vGIC.  Disabling KVM in Kconfig works around it, as does removing
+> >> the vGIC irq in DT.  I've already tried low and high for the vGIC
+> >> interrupt, so no clue what might cause it. On an mPCIe card with 1
+> >> GiB of RAM I figured KVM is not going to be a major use case, so if
+> >> we find no other solution, we could just delete the interrupts
+> >> property in its .dts, as demonstrated here.
+> > 
+> > I think you figured it out wrong,
+> 
+> Did I? I identified that an issue resulting in no serial console was
+> dependent on CONFIG_KVM being enabled and specifically to the vGIC
+> interrupt being specified in my DT. That's all I said.
 
-With regards,
-Pavel Skripkin
+I guess we have a different way to approach these issues. Rather than
+disabling a feature, I would have reached out to narrow the problem
+down *before* posting a series.
 
-On Fri, 30 Apr 2021 21:50:46 +0300
-Pavel Skripkin <paskripkin@gmail.com> wrote:
-> static int kthread(void *_create) will return -ENOMEM
-> or -EINTR in case of internal failure or
-> kthread_stop() call happens before threadfn call.
-> 
-> To prevent fancy error checking and make code
-> more straightforward we moved all cleanup code out
-> of kmmpd threadfn.
-> 
-> Also, dropped struct mmpd_data at all. Now struct super_block
-> is a threadfn data and struct buffer_head embedded into
-> struct ext4_sb_info.
-> 
-> Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  fs/ext4/ext4.h  |  4 ++++
->  fs/ext4/mmp.c   | 28 +++++++++++++---------------
->  fs/ext4/super.c | 10 ++++------
->  3 files changed, 21 insertions(+), 21 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 826a56e3bbd2..62210cbea84b 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1490,6 +1490,7 @@ struct ext4_sb_info {
->  	struct kobject s_kobj;
->  	struct completion s_kobj_unregister;
->  	struct super_block *s_sb;
-> +	struct buffer_head *s_mmp_bh;
->  
->  	/* Journaling */
->  	struct journal_s *s_journal;
-> @@ -3663,6 +3664,9 @@ extern struct ext4_io_end_vec
-> *ext4_last_io_end_vec(ext4_io_end_t *io_end); /* mmp.c */
->  extern int ext4_multi_mount_protect(struct super_block *,
-> ext4_fsblk_t); 
-> +/* mmp.c */
-> +extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
-> +
->  /* verity.c */
->  extern const struct fsverity_operations ext4_verityops;
->  
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 795c3ff2907c..623bad399612 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *sb,
-> struct mmp_struct *mmp, */
->  static int kmmpd(void *data)
->  {
-> -	struct super_block *sb = ((struct mmpd_data *) data)->sb;
-> -	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
-> +	struct super_block *sb = (struct super_block *) data;
->  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> +	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
->  	struct mmp_struct *mmp;
->  	ext4_fsblk_t mmp_block;
->  	u32 seq = 0;
-> @@ -245,12 +245,18 @@ static int kmmpd(void *data)
->  	retval = write_mmp_block(sb, bh);
->  
->  exit_thread:
-> -	EXT4_SB(sb)->s_mmp_tsk = NULL;
-> -	kfree(data);
-> -	brelse(bh);
->  	return retval;
->  }
->  
-> +void ext4_stop_mmpd(struct ext4_sb_info *sbi)
-> +{
-> +	if (sbi->s_mmp_tsk) {
-> +		kthread_stop(sbi->s_mmp_tsk);
-> +		brelse(sbi->s_mmp_bh);
-> +		sbi->s_mmp_tsk = NULL;
-> +	}
-> +}
-> +
->  /*
->   * Get a random new sequence number but make sure it is not greater
-> than
->   * EXT4_MMP_SEQ_MAX.
-> @@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct super_block
-> *sb, struct ext4_super_block *es = EXT4_SB(sb)->s_es;
->  	struct buffer_head *bh = NULL;
->  	struct mmp_struct *mmp = NULL;
-> -	struct mmpd_data *mmpd_data;
->  	u32 seq;
->  	unsigned int mmp_check_interval =
-> le16_to_cpu(es->s_mmp_update_interval); unsigned int wait_time = 0;
-> @@ -364,24 +369,17 @@ int ext4_multi_mount_protect(struct super_block
-> *sb, goto failed;
->  	}
->  
-> -	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
-> -	if (!mmpd_data) {
-> -		ext4_warning(sb, "not enough memory for mmpd_data");
-> -		goto failed;
-> -	}
-> -	mmpd_data->sb = sb;
-> -	mmpd_data->bh = bh;
-> +	EXT4_SB(sb)->s_mmp_bh = bh;
->  
->  	/*
->  	 * Start a kernel thread to update the MMP block
-> periodically. */
-> -	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data,
-> "kmmpd-%.*s",
-> +	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb, "kmmpd-%.*s",
->  					     (int)sizeof(mmp->mmp_bdevname),
->  					     bdevname(bh->b_bdev,
->  						      mmp->mmp_bdevname));
->  	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
->  		EXT4_SB(sb)->s_mmp_tsk = NULL;
-> -		kfree(mmpd_data);
->  		ext4_warning(sb, "Unable to create kmmpd thread for
-> %s.", sb->s_id);
->  		goto failed;
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index b9693680463a..539f89c5431f 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1244,8 +1244,8 @@ static void ext4_put_super(struct super_block
-> *sb) ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
->  	sbi->s_ea_block_cache = NULL;
->  
-> -	if (sbi->s_mmp_tsk)
-> -		kthread_stop(sbi->s_mmp_tsk);
-> +	ext4_stop_mmpd(sbi);
-> +
->  	brelse(sbi->s_sbh);
->  	sb->s_fs_info = NULL;
->  	/*
-> @@ -5156,8 +5156,7 @@ static int ext4_fill_super(struct super_block
-> *sb, void *data, int silent) failed_mount3:
->  	flush_work(&sbi->s_error_work);
->  	del_timer_sync(&sbi->s_err_report);
-> -	if (sbi->s_mmp_tsk)
-> -		kthread_stop(sbi->s_mmp_tsk);
-> +	ext4_stop_mmpd(sbi);
->  failed_mount2:
->  	rcu_read_lock();
->  	group_desc = rcu_dereference(sbi->s_group_desc);
-> @@ -5952,8 +5951,7 @@ static int ext4_remount(struct super_block *sb,
-> int *flags, char *data) */
->  				ext4_mark_recovery_complete(sb, es);
->  			}
-> -			if (sbi->s_mmp_tsk)
-> -				kthread_stop(sbi->s_mmp_tsk);
-> +			ext4_stop_mmpd(sbi);
->  		} else {
->  			/* Make sure we can mount this feature set
-> readwrite */ if (ext4_has_feature_readonly(sb) ||
+> I never claimed KVM code was to blame, you should know me better by
+> now!
 
+Maybe it *is* to blame, and I'd really like to know.
+
+> > for a number of reasons:
+> > 
+> > - KVM hanging is usually a sign that you have described the platform
+> >   the wrong way. Either you are stepping over reserved memory regions,
+> >   or you have badly described the GIC itself.
+> 
+> This whole series is about a new DT hardware description, so yes, that
+> is the most likely source of the problem I'm observing. Without further
+> hints how to verify what may cause it, you're just stating the obvious.
+>
+> The only /reserved-memory entries in the shipping DTB are drm-logo of
+> size 0 and ramoops - the latter I could try to test, but I'd assume that
+> to just be a software convention that for lack of oops should not affect
+> KVM here?
+> 
+> And why would reserved memory affect the vGIC but no other driver doing
+> allocations? Any way to narrow it down, does vGIC allocate specially?
+
+Not an existing reserved memory, but instead the lack of a reserved
+memory description in the DT, on which KVM would happily step as part
+of its own allocations. Having a working vGIC adds a substantial
+amount of code paths and (surprise!) interrupt handling.
+
+> Only other issue I'm seeing is Debian failing to mount partitions that I
+> checked I do have drivers built in for and ends up failing to provide an
+> emergency shell. In order to boot a clean openSUSE rootfs for comparison
+> I'd first need to figure out adding any USB host nodes and clocks.
+> 
+> > 
+> > - It could also be a bug in KVM, which will need to be fixed. If
+> >   that's because the HW is broken, we need to be able to detect it.
+> > 
+> > - You cannot be prescriptive of what a user is going to run. People
+> >   have been running KVM on systems with less memory than that.
+> > 
+> > So no, we don't paper over these issues.
+> 
+> As you can see in patch 3, it does include the vGIC interrupt, so that
+> anyone with access to the TB-96AIoT or any EVB can test KVM and report
+> success or failure. Thus I don't see me as papering over something here.
+> 
+> However, patch 5 is needed to test this patchset on at least M0 - to
+> have serial and eMMC rootfs working - until a better fix is found.
+
+And that's not papering over the problem? OK, nevermind. Not to
+mention that the GIC node has some obvious mistakes which result from
+copy-paste.
+
+> > We work out what is going
+> > wrong and we fix it.
+> 
+> Thanks. You were specifically copied to advise on
+> how to figure out what might cause it, so that we/I can fix it properly. :)
+> 
+> As I mentioned, I already tried changing the interrupt between high and
+> low (which was a likely bug source on Realtek RK1319 (where I'm still
+> waiting on them to confirm a ~year later...)).
+
+Which has no influence since the GIC-500 PPIs are not configurable in
+SW, and the presence of this attribute in the DT is just for
+documentation.
+
+> I don't have a data source other than the downstream .dtb to check the
+> interrupt number - mainline PX30/RK3308/RK3328/RK3368/RK3399 do all use
+> 9 and high consistently though, so I figured it's likely correct.
+> 
+> What I was wondering is whether the vGIC, similar to arch timer, might
+> need some initialization in the bootloader? (Note: No U-Boot sources
+> either at the link.)
+
+As long as the PPIs are set as group-1NS, this is enough. You can find
+out by dumping the redistributors' GICR_IGROUPR0 registers. Nothing
+else is required for the GIC to behave.
+
+> Unfortunately I'm seeing a recurring pattern (cf. Realtek) that vendors
+> in their BSPs don't enable KVM and thus don't validate their hardware
+> description against KVM; their shipping 4.4 based kernel here does not
+> seem to have KVM enabled.
+> 
+> Or is it possible for vendors to actually have a Cortex-A35 without the
+> Armv8 Virtualization Extensions in silicon? If so, how could one verify?
+
+There is no "Armv8 Virtualization Extensions". There is only EL2, and
+you are already booting at that exception level, or KVM wouldn't even
+try to initialise.
+
+It would probably help if you posted a full dmesg as well as added
+some basic tracing in the vgic init code so that we can figure out
+*what* is going wrong, so that we can all stop making idle guesses.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
