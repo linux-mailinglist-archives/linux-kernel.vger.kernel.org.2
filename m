@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E721382870
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E72E38286F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236136AbhEQJiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        id S236098AbhEQJiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236133AbhEQJgm (ORCPT
+        with ESMTP id S236129AbhEQJgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 05:36:42 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A2AC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:22 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id 69so2813223plc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:22 -0700 (PDT)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529ABC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:26 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id 69so2813311plc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
         bh=qhT2oruqWOyUnDFHXgc4qBLIeLeeWvSX3CAEBFhznlI=;
-        b=iA7Y2txEd2pgfIphtl6bQNpUVtIJiWwArsdRmTRUaP0HpBvgfzUGeV8grsWVnlepYj
-         jIwK3AEFyaqlp9dBgQ6d9ahGongqOWA9KFyMFbEpx8R0K4pXglliKVTg/PyBDcFmgHrN
-         bQYOJ4jG11axphWT2UhNq0/sN/Poz1VCPxvqvLX52Hoas9j+gGLwfbPhtUVMtoEV3Yz3
-         kryYduzCFIpCZcCO5gCsOKA4fcwOdTUD1tKk9rnUyt0io8ZacFIyoPEqnr+9fgG2Iekc
-         MW5m2gpQ63Y2f8b1XPpadiKDeDxbVjRYFOrdWEnHQ4h0HlbRd0xPWqLT/BmZneP4tMgK
-         QU7g==
+        b=TX+GMbXIrrPtgOG2AE3TEXIy17+ENDzDbHNynziVieS2QyYEJKiaXgRh/zPV85qFwy
+         s/niTFQuTBUpM59l+b2Oc7IhU4rIK2crQ33Sc2uSU42MLkTRDTzj8sNJjcqRm3ZQ18ph
+         sRE9v3+lRC+RSr5miXlmKHXRue+nBAuvhjUcIJ67p2nueURG7tWLQrPiBoXGCvMN/RJw
+         GY95Mykc5G45xJfCLycIctyLbnViEqcXnfjgeKLhIRgeA4wlWkxYCuJ24mdpI/Fd4YaV
+         PwhO204xme7mShE3iswDiST6E6pPhac2/bzOc535QIl0Hkba3egSJgQ0YV0DF1f7mXsl
+         jcIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=qhT2oruqWOyUnDFHXgc4qBLIeLeeWvSX3CAEBFhznlI=;
-        b=Tdg1ApKOtSBrONjg6IfPsF6ku5V4F3mZkHAw0wuJSEv56hZ4TZkIfK9VojhOjp8c9G
-         WmizCuAPfT8+cuJVR0ysS/VXEx0vtfXDhOp0EpOzSx004kzArCjhdDAVIir29IEaw8xl
-         vdf8TpB6XVzTD1IzLG7Y2kwDo6IJccfv60oCMyu3lVWFB+A7r/+4CWtQk34h3lz7LUED
-         Bk+K9kgcTYPDQYZmr/buGV/VaoVQvVQ38eC7HTcc8a2ED2UNDI7AYFS9DoTscjwKLsd0
-         IdxWQsaHSd1MzFUvBst4o6E1GGB4vxHaNg38eKyG4lIsnMhN4NqRnGclUkZcUQQxJ4Am
-         n7bQ==
-X-Gm-Message-State: AOAM5329Z1piMQlZul/fLxJxAvSNyB9AFgXIx9Nbl2YHeLRLpIhpno5f
-        gpMVe+t/Q1OvJuDfER9P4nO3
-X-Google-Smtp-Source: ABdhPJwfd8FHInyqiNNHfVR5FHKoD54wbkMl0fjIgeVGdKc44r9K5zlr92W5s8woU3aOTUY01cTKKw==
-X-Received: by 2002:a17:902:8bc3:b029:e9:9639:be21 with SMTP id r3-20020a1709028bc3b02900e99639be21mr59230213plo.59.1621244122022;
-        Mon, 17 May 2021 02:35:22 -0700 (PDT)
+        b=NmxRE+fbf22K16ojjJC/m0YPM51LMCIoLjrwXXmGK9yQr1k5tgGx7tFwNhQs88UrUn
+         4sTBQHPRM1GNUF3EujyRF0i0RVe0D0rBDYX8luhcGWIxLuBaC7CT+ykBKK2N5bRq7uok
+         jrVjPzboPFfZO0c2FUjp241S0dLgNB7oPCBl+kEfxi03XH9+i2yhyizxXBNUFpRvXUjC
+         jUNc2J+Ukyl9NkkUi5hmSXQUGemShRRHmhDaUvBNj1G0/dLXRFmMnVhcOxNx8XzDyCvb
+         4CXHyNgxU1x/toN1ARrsQSvHkitCrUvZQvg6CSt/4UFQpZKyu7npW8I9oPECDphEJ9Qk
+         8vTQ==
+X-Gm-Message-State: AOAM530YeZq3lJB/Uoll6KKySdarJ3Z3UX/LRK06CmSmqe06KSJXFhQM
+        EclOSvuzNlcPdJJu1V8sEYLa
+X-Google-Smtp-Source: ABdhPJxo+Nvqe2iZGj5qVhoXU8RDT8ZI7XMHZodr4A2fbcZAZ2CNR07p3ge9lzW+g8yHSA6cwPr9Hg==
+X-Received: by 2002:a17:902:ea06:b029:f1:9082:3ddc with SMTP id s6-20020a170902ea06b02900f190823ddcmr3308206plg.43.1621244125930;
+        Mon, 17 May 2021 02:35:25 -0700 (PDT)
 Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id t22sm11932801pjr.43.2021.05.17.02.35.20
+        by smtp.gmail.com with ESMTPSA id f14sm10735404pjq.50.2021.05.17.02.35.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 02:35:21 -0700 (PDT)
+        Mon, 17 May 2021 02:35:25 -0700 (PDT)
 From:   Xie Yongji <xieyongji@bytedance.com>
 To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com
 Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
@@ -57,8 +57,8 @@ Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
 Subject: [RFC PATCH 07/15] virtio-net: Handle virtio_device_ready() failure
-Date:   Mon, 17 May 2021 17:34:20 +0800
-Message-Id: <20210517093428.670-8-xieyongji@bytedance.com>
+Date:   Mon, 17 May 2021 17:34:21 +0800
+Message-Id: <20210517093428.670-9-xieyongji@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210517093428.670-1-xieyongji@bytedance.com>
 References: <20210517093428.670-1-xieyongji@bytedance.com>
