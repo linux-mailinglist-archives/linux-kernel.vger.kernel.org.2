@@ -2,77 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EBC382B7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AF2382B8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236849AbhEQLxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        id S236872AbhEQL4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhEQLxU (ORCPT
+        with ESMTP id S229772AbhEQL4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:53:20 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4558CC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:52:03 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id z12so7330313ejw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:52:03 -0700 (PDT)
+        Mon, 17 May 2021 07:56:33 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9C0C061573;
+        Mon, 17 May 2021 04:55:17 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so5421839pjb.2;
+        Mon, 17 May 2021 04:55:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eOBbNnzXd5jDSyNZK3+7RsaXbe+7IZ4EESXVsBeqm6Q=;
-        b=YLXweJIH9XeTkd0h43dqIzoxxKTEZ2tFaW+VSOlnndWvyDeJ/676eYfmb6WaAurqbe
-         HHPaympL0jFvNJBqG+YyK1trYDSOB9cRLIdLp1PH6bWO/brWpRMIczF90CZ8HN68ZMlw
-         4Yido0/9ENIzoWlWzh4SxS6KsuUYaIPv0Kh0xAp6DA6eOzwkNJdl9Pe4wyB0BGCIDMlJ
-         OC+wPdftMwCu62wcZDD9D4FddDMO2iB9hfiYyWA8OAdFAWUL/CRoKxe57e1yBn2ttoX5
-         EwdvUL1HS+UVSp5i738E7mff7pZOUql04TKrIpEDgbxRG3o96BlhS4xRjAOByOC9m03k
-         Wvxw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ofjIyFEqH+7WozIJCmE480eSgTaWZPmeSBdcRECXJis=;
+        b=mXO7ZhJSPfKtHLNKVr4WDbaAtD3yrYXItsdqwovHZLBQocO8KZfsR0ipDkbzw+DJLn
+         wddLb82NK8mf4owZm3C05Q1Fz9PY0Feb7O4GcyYjnok6RRzBZhgaKpJZvpdWE+WEaB36
+         04UvBwhgf4FJMuxnmRzN59Zb5C2prGWlRiBAoutaMWiOZIWph7MqUV/mZYWtK3V4AbVc
+         WVzLki5u2g4lzEMjPrREOyu73aDdaiuwDksQL47ePsT8GnUoErl7QkzqnmMgcn041iEn
+         HSTZ+SQsAUXc+RMxP9qPy+LnJJc8KtysIpJTHCgLWZdzrBec3q7KyPm2lk0Fft18X04T
+         q1ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eOBbNnzXd5jDSyNZK3+7RsaXbe+7IZ4EESXVsBeqm6Q=;
-        b=Udq0eirO52nAUb4/k1ti9pmuVNt1E6/eFlpaGWaZlL7cUJjtQcOp40iJ6xOB34Hzi7
-         e5TuD0G0e1ugOvXEKgDY8L11yHQtJAqczUcVdBSnRda2p5orbzeCh8WcSTPwEgVt62Fb
-         0R1IC4OAcz3iL0XdhYL80gEunRR++fI6S3xjhd2hE9l27fATpJQ3QpgDUzJFpZebXuR2
-         NCdSm7jKUBxii5d/sJV/0O3W/51cQEZR+s6mqMPvuSBk55Ypa+u4ShTsDDnhEIsrs+2/
-         kJnvivzu3JotVx3sfLqhVNUqkGnp7u5KJ0j84rK4KCHSZTT/gwFKlLfUsRBtw62UEsvs
-         zQsQ==
-X-Gm-Message-State: AOAM532nHM2vT7k3b5NG0/96rqRaM+zowCy+2WN3DkJhHzHodtN1AtXs
-        hMFN3Gni0zHFXZmKbYFv34DqeVxTeYvVuQKVSZs=
-X-Google-Smtp-Source: ABdhPJw0DKItARIlJ5c5jQitKk0OjDf/tD3PqrbDvvDlhuMj1/tBvobGvQih53TbY52GyyV5fZjml8A2Qql1IbdS5kw=
-X-Received: by 2002:a17:906:924a:: with SMTP id c10mr22660696ejx.415.1621252321911;
- Mon, 17 May 2021 04:52:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ofjIyFEqH+7WozIJCmE480eSgTaWZPmeSBdcRECXJis=;
+        b=E0LrSH2Qj/YW1AkE2TkHXUOb7VHprQ7YGT020Ttl/gH5tM8kTNySyv/NGpWdyIRyMx
+         MJpw9+i09R+hTd31pdQf5aAJQNBbUukbXs0ll19PH31hkE1TxoruFqd1iIboaEIL2NGu
+         ox/pKr4v6RFl0pT/Rv1E4dP2QJFQFcKs0QDiN1B1VGhJKOWYY8XQBfxL1RAV8AfOpBoQ
+         1AqFwPQ2J/HMzwarsdTyUhmGvC6iIg9oOyOJ0Xk66wS8XrCTidVLbBTvNyTE9DAsSetw
+         SNqhNvbciRLc0dP4D2s45tcKTryFJL6sbjEFkFJ3vbby21EUtUcKVr1QdsBoOuKkta03
+         LR/g==
+X-Gm-Message-State: AOAM530A5pCY2fPOY87yGCCaD/oz5wgSWfymOzm/Brb3IaQCyAZ10Yt+
+        EZ6cZ5V+8R12cJ5gwTH7p2yH323fcC4SWw==
+X-Google-Smtp-Source: ABdhPJxb7dGfS/9MSFW7k9eaStxevFWdaq8ErD2qNHtOT9Hyj1xP+ujvKramZmfeRAPGo2+oZK7iPQ==
+X-Received: by 2002:a17:903:20cc:b029:f0:cc11:51c2 with SMTP id i12-20020a17090320ccb02900f0cc1151c2mr9847849plb.32.1621252516720;
+        Mon, 17 May 2021 04:55:16 -0700 (PDT)
+Received: from localhost (g1.222-224-229.ppp.wakwak.ne.jp. [222.224.229.1])
+        by smtp.gmail.com with ESMTPSA id e1sm10534600pgl.25.2021.05.17.04.55.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 04:55:16 -0700 (PDT)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     jirislaby@kernel.org, Stafford Horne <shorne@gmail.com>,
+        Florent Kermarrec <florent@enjoy-digital.fr>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        "Gabriel L . Somlo" <gsomlo@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH v2] serial: liteuart: Add support for earlycon
+Date:   Mon, 17 May 2021 20:54:52 +0900
+Message-Id: <20210517115453.24365-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210516202056.2120-1-urezki@gmail.com> <20210516202056.2120-3-urezki@gmail.com>
- <20210517082449.GT3672@suse.de>
-In-Reply-To: <20210517082449.GT3672@suse.de>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Mon, 17 May 2021 13:51:50 +0200
-Message-ID: <CA+KHdyXMqMPhffiQ84h_+c7ckBe3U0Nfv+612EsfgJQPq_o3dA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm/vmalloc: Switch to bulk allocator in __vmalloc_area_node()
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> FWIW, it passed build and boot tests.
->
-> Acked-by: Mel Gorman <mgorman@suse.de>
->
-Thanks!
+Most litex boards using RISC-V soft cores us the sbi earlycon, however
+this is not available for non RISC-V litex SoC's.  This patch enables
+earlycon for liteuart which is available on all Litex SoC's making
+support for earycon debugging more widely available.
 
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+Cc: Florent Kermarrec <florent@enjoy-digital.fr>
+Cc: Mateusz Holenko <mholenko@antmicro.com>
+Cc: Joel Stanley <joel@jms.id.au>
+Cc: Gabriel L. Somlo <gsomlo@gmail.com>
+Reviewed-and-tested-by: Gabriel Somlo <gsomlo@gmail.com>
+---
+Changes since v1:
+ - Fixed subject
+ - Fixed ifdef and config issues pointed out by Jiri
+ - Use liteuart_putchar instead of early_liteuart_putc
+
+ .../admin-guide/kernel-parameters.txt         |  5 +++++
+ drivers/tty/serial/Kconfig                    |  1 +
+ drivers/tty/serial/liteuart.c                 | 21 +++++++++++++++++++
+ 3 files changed, 27 insertions(+)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 04545725f187..2d4a43af8de2 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1084,6 +1084,11 @@
+ 			the driver will use only 32-bit accessors to read/write
+ 			the device registers.
+ 
++		liteuart,<addr>
++			Start an early console on a litex serial port at the
++			specified address. The serial port must already be
++			setup and configured. Options are not yet supported.
++
+ 		meson,<addr>
+ 			Start an early, polled-mode console on a meson serial
+ 			port at the specified address. The serial port must
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 0c4cd4a348f4..af41e534483c 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1550,6 +1550,7 @@ config SERIAL_LITEUART_CONSOLE
+ 	bool "LiteUART serial port console support"
+ 	depends on SERIAL_LITEUART=y
+ 	select SERIAL_CORE_CONSOLE
++	select SERIAL_EARLYCON
+ 	help
+ 	  Say 'Y' or 'M' here if you wish to use the FPGA-based LiteUART serial
+ 	  controller from LiteX SoC builder as the system console
+diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
+index 64842f3539e1..1b75a4bf7c56 100644
+--- a/drivers/tty/serial/liteuart.c
++++ b/drivers/tty/serial/liteuart.c
+@@ -370,6 +370,27 @@ static int __init liteuart_console_init(void)
+ 	return 0;
+ }
+ console_initcall(liteuart_console_init);
++
++static void early_liteuart_write(struct console *console, const char *s,
++				    unsigned int count)
++{
++	struct earlycon_device *device = console->data;
++	struct uart_port *port = &device->port;
++
++	uart_console_write(port, s, count, liteuart_putchar);
++}
++
++static int __init early_liteuart_setup(struct earlycon_device *device,
++				       const char *options)
++{
++	if (!device->port.membase)
++		return -ENODEV;
++
++	device->con->write = early_liteuart_write;
++	return 0;
++}
++
++OF_EARLYCON_DECLARE(liteuart, "litex,liteuart", early_liteuart_setup);
+ #endif /* CONFIG_SERIAL_LITEUART_CONSOLE */
+ 
+ static int __init liteuart_init(void)
 -- 
-Vlad Rezki
+2.31.1
+
