@@ -2,77 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE11382631
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55EC38266D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234905AbhEQIGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:06:51 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3777 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232195AbhEQIGq (ORCPT
+        id S235068AbhEQIP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhEQIP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:06:46 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FkBRr13V7zmjFf;
-        Mon, 17 May 2021 16:02:00 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 16:05:27 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 17
- May 2021 16:05:26 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
-CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] perf stat: Fix error return code in bperf__load()
-Date:   Mon, 17 May 2021 16:12:54 +0800
-Message-ID: <20210517081254.1561564-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Mon, 17 May 2021 04:15:26 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E4EC061573;
+        Mon, 17 May 2021 01:14:10 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id a11so2699145plh.3;
+        Mon, 17 May 2021 01:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4RsJHAkXM13g+/qrHRXPZI6LQum424LLJFzHPADOTkg=;
+        b=ijdufWDWPGznD7QEMu3dOT+uzMupZ0bWeJoCCehjcbjWi5nZ8sEjO/238STVhDt/VA
+         nlIIS6alNXavim6RtzW/ULyvmEYcTFZ728Ig0dA3f+zFGKS1B2YlT0HiTAK3iCjEYbhE
+         Pcn9mxqBqbv7cTXorHb0AGPoV2nkUsWqe9U8N4WUXn9WUNkv2P7hwfSPIC5cRhBqYETO
+         VIrKYlJyjpLgF7mGvPzU99DB4Ccw/z9i6QOitrrTKJWp8ffwwlJpn0NDwJyYYgWpIwUp
+         nrhVcA0dshY1GTxmWx06wDwhgIc4v2cDtLFqF1r3KHQpfWT63k+ReawdqpMJP3ZlBTMU
+         zofA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4RsJHAkXM13g+/qrHRXPZI6LQum424LLJFzHPADOTkg=;
+        b=aaiIEAPMvD2gFmmm5PKJ9PTdHAC28bibePPmtjYGU5FNM2bvAShq+FZpnO0J8KaUOQ
+         NKOQQCPvx/iz5HeC1gElT7bYtKd3SuvhNNUCDt9ywaHBDltX9oTd4SPtODUnqQckC0m+
+         560v/NU73rSpr17Tu859VAOxsDY0Ga28xgyu5EWyGZCFwK/+IOdoZ0ONeMD08YfbEWvT
+         8pgXFKEqqTFsCofxY2LdEofEQDhnfJzFTdZKd14Xz2Pm/DK46baamvYnjTya/eSGxgI5
+         TWNxH9k7sGPBUkjGhEhtvSJutMfwJx6VuyD3+66Fnf3lgOmBq+UBl74/dvz34ElSRQpD
+         YPDA==
+X-Gm-Message-State: AOAM530B7s3CVjA4/dubzhW0SaiKtp28G+a/5A5w4s2p4NoozHeVD/IL
+        b2r9kid7JbFUASWPDZU9xhskHKAB8vYI50XQ/G8MbEMQFfI=
+X-Google-Smtp-Source: ABdhPJwfykSolhqvWJ+YlKXhqn13Qc5iEjFXiZuhIO/gwNJuDK8GoDS8r31itW8qiQuCa4uObrLYpwbmPoUsLqXpxz4=
+X-Received: by 2002:a17:90a:6c23:: with SMTP id x32mr30526126pjj.228.1621239249794;
+ Mon, 17 May 2021 01:14:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+References: <cover.1620735871.git.sander@svanheule.net> <CAHp75VffoKyyPJbdtKMLx575c9LT0S8+EHOk7Mw36j=aTL6Q4Q@mail.gmail.com>
+ <b7d39a26bc3a90de4d8e4fdbf8f944de43d12a56.camel@svanheule.net>
+In-Reply-To: <b7d39a26bc3a90de4d8e4fdbf8f944de43d12a56.camel@svanheule.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 17 May 2021 11:13:53 +0300
+Message-ID: <CAHp75VdS63n55b3RG7ZL1=uVgB=7ZiBtTOmV0t+5hw6xKoLFSg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] RTL8231 GPIO expander support
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+On Mon, May 17, 2021 at 12:40 AM Sander Vanheule <sander@svanheule.net> wrote:
+> On Wed, 2021-05-12 at 18:29 +0300, Andy Shevchenko wrote:
+> > On Tuesday, May 11, 2021, Sander Vanheule <sander@svanheule.net> wrote:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- tools/perf/util/bpf_counter.c | 2 ++
- 1 file changed, 2 insertions(+)
+...
 
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index ddb52f748c8e..843b20aa6688 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -522,6 +522,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
- 	evsel->bperf_leader_link_fd = bpf_link_get_fd_by_id(entry.link_id);
- 	if (evsel->bperf_leader_link_fd < 0 &&
- 	    bperf_reload_leader_program(evsel, attr_map_fd, &entry))
-+		err = -1;
- 		goto out;
- 
- 	/*
-@@ -550,6 +551,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
- 	/* Step 2: load the follower skeleton */
- 	evsel->follower_skel = bperf_follower_bpf__open();
- 	if (!evsel->follower_skel) {
-+		err = -1;
- 		pr_err("Failed to open follower skeleton\n");
- 		goto out;
- 	}
+> > I have several comments to the series, but I may give them next week.
+> >
+> > Just couple here:
+> > 1. If subsystem provides a regmap API I would suggest to use it, I.o.w. try
+> > again to understand what is wrong with MDIO case.
+>
+> Are you referring to the MDIO regmap interface, or the GPIO regmap interface?
+
+MDIO
+
+> For the MDIO regmap interface, I have been able to resolve the Kconfig
+> dependency issue. So I can reintroduce that, if that's preferred over the
+> solution in this v1.
+>
+> With an extra patch, I was able to use the gpio-regmap interface, dropping most
+> of the GPIO code. The current gpio-regmap implementation makes the assumption
+> that an output value can be set while a pin is configured as an input. That
+> assumption is invalid for this chip, so I had to provide an extra flag for
+> gpio_regmap_config, similar to how this is handled in gpio-mmio.
+>
+>
+> > 2. Please, switch to fwnode API in LED driver
+>
+> Since you had the same comment on my previous patch set, I had already tried to
+> this this into account as much as possible.
+>
+> There's a few things I couldn't find the fwnode-equivalent for:
+>  * I use of_node_name_prefix to enforce the naming required by the binding. I
+>    could just walk over all (available) child nodes, which would be mostly
+>    equivalent.
+
+AFAIU the LED traditional bindings is that you define LED compatible
+nodes and all child nodes of it are the one-per-LED ones, there
+shouldn't be others.
+
+>  * To get the address of an LED child node, I use of_get_address, since this
+>    appeared to provide what I want to do: get the address of the node. I know
+>    next to nothing about ACPI. Does the equivalent exist there? Or am I taking
+>    the wrong approach?
+
+What are the means of an address in this case?
+
+> I have updated patches ready, if you would rather just review a v2.
+
 -- 
-2.25.4
-
+With Best Regards,
+Andy Shevchenko
