@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B3D386DF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2DD386DEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344677AbhEQXzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 19:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239375AbhEQXz1 (ORCPT
+        id S1344662AbhEQXzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 19:55:15 -0400
+Received: from gateway23.websitewelcome.com ([192.185.50.107]:21001 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239375AbhEQXzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 19:55:27 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D34C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 16:54:09 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id v9so9966652lfa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 16:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JbhlmfPa5s+HmHF2AkgVRLQaiXQBSVARBK7bDpva6h0=;
-        b=G0JFaE5M3Vu3bo7EXsLiB6MuKFBihbF0+5Gj0JkCdWDC/4eI8kflgVFBuq3ERfsVHX
-         S6SzU/5NmSDGhKsT9ym/tPH2muXKg0aNbFYrP2zEw1/R1lToYN6mnKThDgo/PXQkLANS
-         QH54ygk7MUqpL2PyCkwlcKhqaoybOav7MybC/jzLwiNM7lyO0zcgDR7Vf6TTtvNJQmHs
-         9iZfsfCKqsQLN35lVJqjoZNwYs98xrZg+FFUF75Cu87wJXiRcfoV0I1YrZE+86SdRHpN
-         fMEu/pUrHPx/GFyPSmjuJTAwloseNGXOhhwlV3+UnwUg/6GUOVoqUSUA6bCO5wcwNRkz
-         PBSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JbhlmfPa5s+HmHF2AkgVRLQaiXQBSVARBK7bDpva6h0=;
-        b=byeRQbtYzhsxYCKCs9S12WKF4cIGFBKA6ahw/ioNzxfLeJwiedi6vQkt41CWynUd3f
-         9bQTLkV2QcMIjPXTI50bjEfaIz//x0EfmJwVAzzz+oiC2bLDmzd9KgpbDf4peFeFBmc3
-         59TYbd5k2odDj9bzG6D3bQYsW5nQzKVv2ZS1xEN1RkzCYXXV1imDgnlwmgxQqrZVA9EL
-         KzRCcWDiYTv4sfORs/nFYIV68vxMMPRqAgIOf+C1cMHF0w/hoq0gCPwnkBER5wTTaVlf
-         7ApdWEZ/9jO5R0ZRhMUdvuv8IfZpQ87eO7MCkxpUUwQIx6Cg+k84lnBJwqiU2YzyYHbX
-         DMrw==
-X-Gm-Message-State: AOAM531mT96qp72/GtYc36w/sjfpYiznOlaxfe8XK6lumuzfQComrgHJ
-        j9bwgj1PBh3f+vt1nZs2D4R8oax/frwq/uPGl2N3lg==
-X-Google-Smtp-Source: ABdhPJz7J+GqpZt/lpIho+kd7mX00GTqQd481/bCTFXSF+rls5RoKbTDY/QIdG8vSFWmcfrAMHryQevnYCUDghbS/G0=
-X-Received: by 2002:a19:a418:: with SMTP id q24mr1724759lfc.649.1621295648198;
- Mon, 17 May 2021 16:54:08 -0700 (PDT)
+        Mon, 17 May 2021 19:55:13 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 892B81532B
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:53:54 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id in3al2gujAEP6in3alexUM; Mon, 17 May 2021 18:53:54 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KaZSgQ5AwwL1G4KSoPBBVOyY8ngU6DX5pQRS+K4Gsp8=; b=LXF5j1v8WL1XOaR/22XEPW0FO2
+        sfvoBZirqQhtHjUdNK+prxqKNQNulcOptOMZ14ko798RBwi60avG/wUFWjmFyoBLD8KdmUSvX5Mk+
+        atqBqFXTlae2cb3O9iUwvDrHzyExVIbeKdvnfwDO+TOvUYBsvleDoyK13yDw9Mjp7Pefe57COxB2D
+        oBe0C7bYTeyPaZFf3TXPhBoL/IRqtmwPMGT9E7WUpcMtXy4Q2CjhB3OzPoL/CgCahjpPhJK981rP7
+        rwN/yYrq6x940ofwtq1e4LFAg05fZevh7cJF6zAfVyEaFhcWUJ8aP7X3TDk4LnASfaIljeBNycQnD
+        8bhTS5UA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53332 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lin3Y-001qui-5i; Mon, 17 May 2021 18:53:52 -0500
+Subject: Re: [PATCH 057/141] watchdog: Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <713aa26be06d50dd3bb582a3cb71f04787ad5d5b.1605896059.git.gustavoars@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <66f87bbf-3693-3dda-7bf4-12becb16bf31@embeddedor.com>
+Date:   Mon, 17 May 2021 18:54:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210505202618.2663889-1-clabbe@baylibre.com>
-In-Reply-To: <20210505202618.2663889-1-clabbe@baylibre.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 18 May 2021 01:53:56 +0200
-Message-ID: <CACRpkdbR9mt-X-Dt9uR9vGtg_EDJCk3H5Umuh2eUX-PGZ7VBfQ@mail.gmail.com>
-Subject: Re: [PATCH 00/11] crypto: start to fix ixp4xx
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     chohnstaedt@innominate.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <713aa26be06d50dd3bb582a3cb71f04787ad5d5b.1605896059.git.gustavoars@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lin3Y-001qui-5i
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53332
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 18
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 10:26 PM Corentin Labbe <clabbe@baylibre.com> wrote:
+Hi all,
 
-> Loading the ixp4xx crypto driver exhibits lots of error.
-> All algorithm fail selftests with different reasons.
-> This series start to fixes some of thoses problem.
+I'm taking this in my -next[1] branch for v5.14.
 
-Excellent! Thanks for taking over this Corentin!!
-FWIW:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks
+--
+Gustavo
 
-If I merge my 3 additional patches through ARM SoC
-will it work out or do I need to think about some clever
-merging strategy?
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
 
-Yours,
-Linus Walleij
+On 11/20/20 12:32, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a fallthrough pseudo-keyword instead of letting the
+> code fall through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/watchdog/machzwd.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/watchdog/machzwd.c b/drivers/watchdog/machzwd.c
+> index 743377c5b173..73f2221f6222 100644
+> --- a/drivers/watchdog/machzwd.c
+> +++ b/drivers/watchdog/machzwd.c
+> @@ -174,6 +174,7 @@ static inline void zf_set_timer(unsigned short new, unsigned char n)
+>  		fallthrough;
+>  	case WD2:
+>  		zf_writeb(COUNTER_2, new > 0xff ? 0xff : new);
+> +		fallthrough;
+>  	default:
+>  		return;
+>  	}
+> 
