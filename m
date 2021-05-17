@@ -2,159 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B9D383D37
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD8F383D3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbhEQTY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
+        id S233362AbhEQT1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbhEQTY5 (ORCPT
+        with ESMTP id S232773AbhEQT1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:24:57 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929AFC061573;
-        Mon, 17 May 2021 12:23:39 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso6528296ots.10;
-        Mon, 17 May 2021 12:23:39 -0700 (PDT)
+        Mon, 17 May 2021 15:27:12 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76719C061573;
+        Mon, 17 May 2021 12:25:55 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id v6so8634399ljj.5;
+        Mon, 17 May 2021 12:25:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RgO5PZp5sg1uOBfz6Mo0I/T1+iA05mzESFPtCNaQU/M=;
-        b=dzqv6P4+T6AJsl2STE/YPGX+AwgvEtOpPIi/7MmlW7CKBSYhMK2cjZFM7HP6aZSo5A
-         vXutRcoufTlpPu9v3aI3Uj7u+KXVnsyhSsbMjQeSnlY1cXAbKnUfdwDulJC+CjEFyKSG
-         4p8skbHH/R3nZk7SKOKX6K+iHbSFnhOeZvCwnajObAUGMwgjB40l6RayQY0tQwaNxiLI
-         VqgfsrINYcegnyCm4Dvru2/Yxi+C+jYpXgXnd+yA9O4boacGpteapRqdLHpyHEokSo6V
-         6K19loSQQRjjq788k4ttQEywq58rwd2Yg6RF6y23fIPxpu3/NLq9BLS/A4jpc4eJMvNY
-         bpIQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uu1FDu9fGs5Pi33teMn7ZfwLLr8waPYX+ZIqVV1QiCg=;
+        b=PiBFvUPgqtVxl+xiMFNQSDCJqXcn9ed/tGhQZAcCdjWqlWxcsk9F1jb9q0xb2uK/BO
+         +1eQ88vsT6/wNIc1aCCzgStt/IdYhkIxH52juEeTLIfeZcHuSAi6Vk1tkPIznQ7qJiNf
+         7v9y4ti3ZBjYHgaxgPtmYQ/Vk4MfrjzBP0E8i3nfAYWU/xJc5dTwQ9lCSpqzRCkFY8z7
+         GfCd0DylNIzGzD5/IT+TRrhZr+9WnmJcgf1dXM8l30/t4HnBfvYykrtaMMZ+ZV8LRpCU
+         ykKQnkM1+xti/4GAtS+dqjCTmPS8sy1b+T1ilMOVvv74+9c8B67Hr1P0y8EySdjgcojs
+         GOZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RgO5PZp5sg1uOBfz6Mo0I/T1+iA05mzESFPtCNaQU/M=;
-        b=RIMWZhuhgJkXUWoSGv8fVlnqfCWk8/CkKQ1YoYjjtKqNJOmvAiyNrLP+SEl8J0CsOs
-         V7HOgMdmO/zfA3FmdpZF+1K9ZhONmvgoZE12Y+pEF3c/MDTAIVrmd3jXRmClHFLyVvKw
-         bce6pAKgRYVVdhgZaf847vzExqSKwhMeVTKwclmvdWqL931JLUqjrNDWZlR0RNmJiIgK
-         b43QpDIymRDcfrXqcfC70e6AHPWYGpvRGTdgimPwRpBRSsiqPmvq2Eicrre1jq9jfP/3
-         nSWt+0QHL/dgyNGT3tN7M8fculyrHHpV25aR1wxicF5YIB506wgTrvDPQYtebD33K5cz
-         CKww==
-X-Gm-Message-State: AOAM530/2mw5G5ue5Y7z9sZXGtfZbB6IwiZyoFDyLoL/YQlRNzZngUxJ
-        qXwMqtwdF/P+35ByUfG/nUbcyLknoP/M2goznRc=
-X-Google-Smtp-Source: ABdhPJyYEMDOZEmGiHRamUQqPfxH8/7OCMHXD6a0sDixsaX5l5mHTqz1OZyvzkb0toQThpy4wMO9b4hP6cEl465AA/g=
-X-Received: by 2002:a9d:74c6:: with SMTP id a6mr971495otl.132.1621279418884;
- Mon, 17 May 2021 12:23:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uu1FDu9fGs5Pi33teMn7ZfwLLr8waPYX+ZIqVV1QiCg=;
+        b=eZKkwqLBLI4H8hKffyBCwrXsA7e2X7cSsSGnUuWWl0ar+OdDs53RimGgejkdhQzE1m
+         E6Vmc9DfwGNOqcbHgjE3nZ/9tDqUTsnt28VdFwolr/cQwdgOeS1jEBrSrcpjP3JaemhU
+         riHcufbidzVmtx+PaLhYTsb6A1+cj/aWIyz8NpJQGfmZgN7VfJifXS44Rm1zqGOFIZ8O
+         e7HfYgjGVeTAMKk6GGNYHg7+OXqIrSDFBzpxlx49t1ej16Y69OPAkK/+ULlciz/aV4b3
+         QmjZjAFeZ5LUDallrpRtcbj4G22qIdpRbP0x7zBce44Tzh5qyGjSmtAtJY8/oL0BtHAF
+         n7gQ==
+X-Gm-Message-State: AOAM531xZcF5MjUR3pHeJ12hSQsKYTAiGD3R/dvQN3ifknw51+siJCfA
+        xyX9LBKjNFOaHJaEg7+DQ9l95HhDTuY=
+X-Google-Smtp-Source: ABdhPJxp2QOGsnmEnlQRU/ADYLvdAILbnamoueNzhGdqbJERogp1LTDuu652SO6NNTeAAagYkgj7ig==
+X-Received: by 2002:a2e:b8c9:: with SMTP id s9mr760554ljp.422.1621279553536;
+        Mon, 17 May 2021 12:25:53 -0700 (PDT)
+Received: from [10.17.0.15] ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id t24sm1632410lfk.198.2021.05.17.12.25.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 12:25:53 -0700 (PDT)
+Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Laight <David.Laight@aculab.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <87a6otfblh.ffs@nanos.tec.linutronix.de>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <b509418f-9fff-ab27-b460-ecbe6fdea09a@gmail.com>
+Date:   Mon, 17 May 2021 21:25:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <YJ42MEgwDZrAEQLl@kroah.com> <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
- <YKIeBdwFb9Ng275X@phenom.ffwll.local> <503d101d-7273-757a-2809-e272db93c45d@suse.de>
-In-Reply-To: <503d101d-7273-757a-2809-e272db93c45d@suse.de>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 17 May 2021 15:23:27 -0400
-Message-ID: <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87a6otfblh.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 3:12 PM Thomas Zimmermann <tzimmermann@suse.de> wro=
-te:
->
-> Hi
->
-> Am 17.05.21 um 09:40 schrieb Daniel Vetter:
-> > On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
-> >> On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
-> >> <gregkh@linuxfoundation.org> wrote:
-> >>> On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:
-> >>>> Dear kernel maintainers,
-> >>>>
-> >>>> This submission is a kernel driver to support Intel(R) Gaussian & Ne=
-ural
-> >>>> Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-pr=
-ocessor
-> >>>> available on multiple Intel platforms. AI developers and users can o=
-ffload
-> >>>> continuous inference workloads to an Intel(R) GNA device in order to
-> free
-> >>>> processor resources and save power. Noise reduction and speech recog=
-nition
-> >>>> are the examples of the workloads Intel(R) GNA deals with while its =
-usage
-> >>>> is not limited to the two.
-> >>>
-> >>> How does this compare with the "nnpi" driver being proposed here:
-> >>>          https://lore.kernel.org/r/20210513085725.45528-1-guy.zadicar=
-io@intel.com
-> >>>
-> >>> Please work with those developers to share code and userspace api and
-> >>> tools.  Having the community review two totally different apis and
-> >>> drivers for the same type of functionality from the same company is
-> >>> totally wasteful of our time and energy.
-> >>
-> >> Agreed, but I think we should go further than this and work towards a
-> >> subsystem across companies for machine learning and neural networks
-> >> accelerators for both inferencing and training.
-> >
-> > We have, it's called drivers/gpu. Feel free to rename to drivers/xpu or
-> > think G as in General, not Graphisc.
->
-> I hope this was a joke.
->
-> Just some thoughts:
->
-> AFAICT AI first came as an application of GPUs, but has now
-> evolved/specialized into something of its own. I can imagine sharing
-> some code among the various subsystems, say GEM/TTM internals for memory
-> management. Besides that there's probably little that can be shared in
-> the userspace interfaces. A GPU is device that puts an image onto the
-> screen and an AI accelerator isn't. Treating both as the same, even if
-> they share similar chip architectures, seems like a stretch. They might
-> evolve in different directions and fit less and less under the same
-> umbrella.
+On 5/17/21 8:40 PM, Thomas Gleixner wrote:
+> Max,
+> 
+> On Sat, May 15 2021 at 00:47, Maximilian Luz wrote:
+>> I believe the theory was that, while the PIC is advertised in ACPI, it
+>> might be expected to not be used and only present for some legacy reason
+>> (therefore untested and buggy). Which I believe led to the question
+>> whether we shouldn't prefer IOAPIC on systems like that in general. So I
+>> guess it comes down to how you define "systems like that". By Tomas'
+>> comment, I guess it should be possible to implement this as "systems
+>> that should prefer IOAPIC over legacy PIC" quirk.
+>>
+>> I guess all modern machines should have an IOAPIC, so it might also be
+>> preferable to expand that definition, maybe over time and with enough
+>> testing.
+> 
+> I just double checked and we actually can boot just fine without the
+> PIC even when it is advertised, but disfunctional.
+> 
+> Can you please add "apic=verbose" to the kernel command line and provide
+> full dmesg output for a kernel w/o your patch and one with your patch
+> applied?
 
-The putting something on the screen is just a tiny part of what GPUs
-do these days.  Many GPUs don't even have display hardware anymore.
-Even with drawing APIs, it's just some operation that you do with
-memory.  The display may be another device entirely.  GPUs also do
-video encode and decode, jpeg acceleration, etc.  drivers/gpu seems
-like a logical place to me.  Call it drivers/accelerators if you like.
-Other than modesetting most of the shared infrastructure in
-drivers/gpu is around memory management and synchronization which are
-all the hard parts.  Better to try and share that than to reinvent
-that in some other subsystem.
+I don't actually own an affected device, but I'm sure Sachi can provide
+you with that.
 
-Alex
+As far as we can tell, due to the NULL PIC being chosen nr_legacy_irqs()
+returns 0. That in turn causes mp_check_pin_attr() to return false
+because is_level and active_low don't seem to match the expected values.
+That check is essentially ignored if nr_legacy_irqs() returns a high
+enough value. I guess that might also be a firmware bug here? Not sure
+where the expected values come from.
 
->
-> And as Dave mentioned, these devices are hard to obtain. We don't really
-> know what we sign up for.
->
-> Just my 2 cents.
->
-> Best regards
-> Thomas
->
->
->
-> --
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-> (HRB 36809, AG N=C3=BCrnberg)
-> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
->
+Due to this, mp_map_pin_to_irq() fails with -EBUSY which causes
+acpi_register_gsi() to fail. That fails in acpi_dev_get_irqresource(),
+which causes the IRQ resource to be marked as disabled.
+
+Down the line, this then causes platform_get_irq() to return -EINVAL,
+because the IRQ we're trying to get has the IORESOURCE_DISABLED bit set.
+
+Sachi can probably walk you through this a bit better as she's the one
+who tracked this down. See also [1, 2] and following comments.
+
+Regards,
+Max
+
+[1]: https://github.com/linux-surface/linux-surface/issues/425#issuecomment-835309201
+[2]: https://github.com/linux-surface/linux-surface/issues/425#issuecomment-835261784
