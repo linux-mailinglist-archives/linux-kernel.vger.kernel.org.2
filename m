@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280E43828D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C993828D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbhEQJyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S232426AbhEQJz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhEQJyT (ORCPT
+        with ESMTP id S229474AbhEQJzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:54:19 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7BFC061573;
-        Mon, 17 May 2021 02:53:02 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id v5so6396024ljg.12;
-        Mon, 17 May 2021 02:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ngU07/Nz5uBaGKSNQDKxKqJRj7ed23twEteeceYcPE0=;
-        b=kzsE5o55kTlANbGYoIAaMo6gz3+pJ8pWPgcfyFQ5twZZEpcSLTTAdGQ3xXjZ6soUKu
-         W4q89rLrsjkUb8rgpSvYZbIf/PrvJtRcn4mUJGVDkKKBEApvmDh9D4/az1H1Trh8ch5q
-         TGG7ypBl+Vr8MT0NdwRQnpjmchGWB2IrgfoP//7fgogV5dkUTDrdJtFbeUO6FbFkh2oH
-         06sk0X4MNBgILAs2RGblxKrde3R1TJgV6VRufgQ27lrf9DLP5qjKxvZNvjuvdqg0YaqM
-         PRgG2oKxdum9s4b4gGlcpE8jxOTHPAwN9X4PZ+YzxNVfuBhsrcGjS6mCUfO9epuLYmca
-         PG6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ngU07/Nz5uBaGKSNQDKxKqJRj7ed23twEteeceYcPE0=;
-        b=SWkOimIipT67yiWM41C2tRH+75Uxx6pQOtopLkA9WyMBrM2fcoFF3VhkYlRteLDTHH
-         mcRz83GHcqVS2SYo6X1BG99squKlZimoov7kpFefmxKQSW7DiTIu8F9M0leAJagSYmZA
-         KzrB/PGF0NEYKcnr7seGiX4wd9ROkXV05OdByjHvaY04aSZ5AlCkUy5zxgX/OIURkJWp
-         STxj5D0OK2x+C08MQfGxrp/BOxng6M1qIi3MTSKkWahzdfvRmZPmleFEf5c4D9DdDYE3
-         q1vz7Ds/y8F0JCFj+JFHNBwC8oLe6WlKq1fQLUFwDLNViwDkTPFTJbhHi/+BgRpBtXp1
-         YQcA==
-X-Gm-Message-State: AOAM533PpA6xEQ6n+ulhtLjALIfUuPXzuHM+zfkneASd9TRzx0cbnTpb
-        YXnrfRXvwXlSJkkQPRAwl50xFK8vELxTKcYz92PrB4jJG0J3IyQXSr0=
-X-Google-Smtp-Source: ABdhPJxacRlBrpdQvL2FKypzz7N/PoKwJjW0iAWZZji59hz8CQ78tlF69OrjNztXNreHnvt+7Idh/NpHti6xPDktDdg=
-X-Received: by 2002:a2e:9211:: with SMTP id k17mr49792574ljg.284.1621245181177;
- Mon, 17 May 2021 02:53:01 -0700 (PDT)
+        Mon, 17 May 2021 05:55:24 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3284C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:54:08 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id B5864C022; Mon, 17 May 2021 11:54:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1621245243; bh=hQ3FIc3FP39hQ5sinVKlpsPMQdlr7pQOzU9Lg3Kuuuk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=THvcf4nEk20zx43KQ4LuIpoZy/4f04nE7K3wdJIUyHn93AEJ/Qd6PVjvLf30BEQ9A
+         yQsa4HQILtkj07srQrxej3oRVG4EgZeUtlsyX2DnosEI1CtH0iKYukDUXXPY6IVbxY
+         ZXYvC0RhiiuCn/qTVwET+ZYWJl46FTkaOXClh//Zt6gswNPHQPHoKT/FL/2ewvpvOD
+         QvS9aq3YTz71mOF3Xl4uioBqbEGDKEvf7efSXPWJtzzr82a/r1V4IDtvmRNMBGHzHd
+         HNY6k8IKx6tKEuDlk/hyt5nsYT12qAnmlsuPOBPO4X7CDpQWKLhbBjzasM6cx5y9TN
+         liJdD+Tj8t16Q==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id 10DD3C009;
+        Mon, 17 May 2021 11:53:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1621245242; bh=hQ3FIc3FP39hQ5sinVKlpsPMQdlr7pQOzU9Lg3Kuuuk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=4kmQtAPfPpp5uxDjwZJVSDRtBlkdcMvHGcC7EqjXyJnNXCvgheRE9z7yBRmPjWogE
+         XPnL+vWpTZi7A9LL0SBl1i4VisYN+2IYeqgf5OI35lpD7+2DhjAH6HQSU0/u3mdh7k
+         lEItSYNyetultBuJuCnsbzlR2V6vOW/H1zhie1TGQyXfL94evvDHe/uj1wjNhKf9OA
+         XbrX262RhR9feraS4tXciTmMAw9djTAUj13+RLNw6FsjmqroVEcICPbT69TCUeNQFa
+         FKnWeBfxKuGqNUYyAMOV4by40oQijgsnWWOyCUNicHz8IQs1dFf10MDn2oyzuOT5BS
+         bc39PXNegUN5g==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 6f2eecd4;
+        Mon, 17 May 2021 09:53:54 +0000 (UTC)
+Date:   Mon, 17 May 2021 18:53:39 +0900
+From:   asmadeus@codewreck.org
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
+        kraxel@redhat.com, jean-philippe@linaro.org, ohad@wizery.com,
+        bjorn.andersson@linaro.org, david@redhat.com, vgoyal@redhat.com,
+        miklos@szeredi.hu, lucho@ionkov.net,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 15/15] 9p/trans_virtio: Handle virtio_device_ready()
+ failure
+Message-ID: <YKI9I9qg2iISlz65@codewreck.org>
+References: <20210517093428.670-1-xieyongji@bytedance.com>
+ <20210517093428.670-16-xieyongji@bytedance.com>
 MIME-Version: 1.0
-References: <1621243800-27702-1-git-send-email-yangtiezhu@loongson.cn> <CAKXUXMyVSf_HsjKhD2FeZzyz6pbA7JN=KkWrvdRswkba60OXww@mail.gmail.com>
-In-Reply-To: <CAKXUXMyVSf_HsjKhD2FeZzyz6pbA7JN=KkWrvdRswkba60OXww@mail.gmail.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 17 May 2021 15:22:50 +0530
-Message-ID: <CABJPP5C9URoCVsGwQxref9Z9V0SvgpNfCY5Aib_HGG6M8LmdRQ@mail.gmail.com>
-Subject: Re: [PATCH v3] Documentation: checkpatch: add description if no
- filenames are given
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210517093428.670-16-xieyongji@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 3:13 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> On Mon, May 17, 2021 at 11:30 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-> >
-> > After commit 45107ff6d526 ("checkpatch: if no filenames then read stdin"),
-> > if no filenames are given, it will read patch from stdin rather than exit
-> > directly. This means the script waits for input indefinitely, which
-> > confuses new checkpatch users at first.
-> >
-> > Add some basic documentation on this behaviour of checkpatch to lower
-> > the confusion.
-> >
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >
-> > v3: Update the commit message, thank you Lukas.
-> >
->
-> Thanks.
->
-> Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->
-> Dwaipayan, can you acknowledge this as well?
->
+Xie Yongji wrote on Mon, May 17, 2021 at 05:34:28PM +0800:
+> Now virtio_device_ready() will return error if we get
+> invalid status. Let's handle this case on probe.
 
-Yes it looks good to me too. Thanks for the patch Tiezhu.
+The change itself looks good to me
 
-Acked-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+It's going to be a pain to apply though because it depends on
+https://lkml.kernel.org/r/20210517083557.172-1-xieyongji@bytedance.com
+you just sent, so this won't apply to virtio maintainers on one hand,
+and I can't take just this patch because it depends on the first patch
+in the patchset (well if it weren't RFC)...
 
-> Jonathan, I assume you will pick this up in your doc tree once
-> Dwaipayan ack is there, right?
->
-> Lukas
->
-> >  Documentation/dev-tools/checkpatch.rst | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-> > index 51fed1b..3eb9ead 100644
-> > --- a/Documentation/dev-tools/checkpatch.rst
-> > +++ b/Documentation/dev-tools/checkpatch.rst
-> > @@ -22,6 +22,8 @@ Usage::
-> >
-> >    ./scripts/checkpatch.pl [OPTION]... [FILE]...
-> >
-> > +When FILE is -, or absent, checkpatch reads from standard input.
-> > +
-> >  Available options:
-> >
-> >   - -q,  --quiet
-> > --
-> > 2.1.0
-> >
+I guess sending the other patch to Linus fast-ish so it can go in virtio
+tree would be the best way forward? other maintainers please advise, I'm
+bad at this.
+
+
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+
+Acked-by: Dominique Martinet <asmadeus@codewreck.org>
+
+-- 
+Dominique
