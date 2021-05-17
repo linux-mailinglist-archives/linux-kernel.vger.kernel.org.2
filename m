@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBD43833B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE06638311F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241971AbhEQPBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41378 "EHLO mail.kernel.org"
+        id S240680AbhEQOe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240242AbhEQOvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:51:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF04B61456;
-        Mon, 17 May 2021 14:23:29 +0000 (UTC)
+        id S239999AbhEQO3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:29:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC495616E9;
+        Mon, 17 May 2021 14:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261410;
-        bh=yftM6nqAefA7ptEWgSruD+RvbnqgI2fSuJKH8OISk18=;
+        s=korg; t=1621260902;
+        bh=xiLMgV3JWHy1zcRe+lLh2fP2RJ6mVRo6FGGHrg0eZgg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BWclBvHn5YQIfSjDt+ymhiiZyLoUrhuQy95ZOwoXla4jmJIFmQ7wX0sMvv1iAU8Jj
-         a2vyQuv9qa1WCU6oaIq8owBKyn7GbXontOmkhAUf/iIfgVd0NWWoCjgI+aMGRmgHAZ
-         Wxi29bYiI4XSPgaO6TYzOpFfsgfOE/Uk96cIHXpg=
+        b=cRFEtghpBdNv1ALQF7XO/SrWNaSCtQQcUK5TOlzyrHNTVsTl0yL2pVRgjmMlfGEBE
+         U+yp/9JdrJF0n6DaJZmNY8+Lwu/XI3C7yBS0jxBiiCx65NxfS81tqzSdEjK0iv3ct7
+         MJhNkYk3fvbsZ3YeSBwj/Gk5t9UN9Cbjx28+3FPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Tong Zhang <ztong0001@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 017/289] ASoC: Intel: bytcr_rt5640: Enable jack-detect support on Asus T100TAF
+Subject: [PATCH 5.11 031/329] ALSA: rme9652: dont disable if not enabled
 Date:   Mon, 17 May 2021 15:59:02 +0200
-Message-Id: <20210517140305.764079148@linuxfoundation.org>
+Message-Id: <20210517140303.097146494@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit b7c7203a1f751348f35fc4bcb157572d303f7573 ]
+[ Upstream commit f57a741874bb6995089020e97a1dcdf9b165dcbe ]
 
-The Asus T100TAF uses the same jack-detect settings as the T100TA,
-this has been confirmed on actual hardware.
+rme9652 wants to disable a not enabled pci device, which makes kernel
+throw a warning. Make sure the device is enabled before calling disable.
 
-Add these settings to the T100TAF quirks to enable jack-detect support
-on the T100TAF.
+[    1.751595] snd_rme9652 0000:00:03.0: disabling already-disabled device
+[    1.751605] WARNING: CPU: 0 PID: 174 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.759968] Call Trace:
+[    1.760145]  snd_rme9652_card_free+0x76/0xa0 [snd_rme9652]
+[    1.760434]  release_card_device+0x4b/0x80 [snd]
+[    1.760679]  device_release+0x3b/0xa0
+[    1.760874]  kobject_put+0x94/0x1b0
+[    1.761059]  put_device+0x13/0x20
+[    1.761235]  snd_card_free+0x61/0x90 [snd]
+[    1.761454]  snd_rme9652_probe+0x3be/0x700 [snd_rme9652]
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210312114850.13832-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210321153840.378226-4-ztong0001@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/rme9652/rme9652.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index d5812e73eb63..2d887406ca85 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -478,6 +478,9 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
- 		},
- 		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
- 					BYT_RT5640_MONO_SPEAKER |
- 					BYT_RT5640_DIFF_MIC |
- 					BYT_RT5640_SSP0_AIF2 |
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 012fbec5e6a7..0f4ab86a29f6 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -1733,7 +1733,8 @@ static int snd_rme9652_free(struct snd_rme9652 *rme9652)
+ 	if (rme9652->port)
+ 		pci_release_regions(rme9652->pci);
+ 
+-	pci_disable_device(rme9652->pci);
++	if (pci_is_enabled(rme9652->pci))
++		pci_disable_device(rme9652->pci);
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
