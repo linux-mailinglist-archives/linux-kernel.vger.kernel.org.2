@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB4638378A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9DC3837B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344555AbhEQPpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:45:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55330 "EHLO mail.kernel.org"
+        id S244273AbhEQPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:46:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244805AbhEQP2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:28:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C807461CA5;
-        Mon, 17 May 2021 14:37:11 +0000 (UTC)
+        id S242143AbhEQPbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:31:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 217A86112F;
+        Mon, 17 May 2021 14:38:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262232;
-        bh=f2dkVTFYo8l5vSyBOFZGqDhbF9aUxfTWN/s1ntZpyzI=;
+        s=korg; t=1621262293;
+        bh=DOSFAV5FBTUWvEG2rJoTVl/CMvEPtierD6XEI9p0b9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dXrXQit2MoB8d5ZgtkIZRUk0wS17vjGMRwwCza4O+iD/aJn81gzg/Kneuh1vwN9H1
-         ginffAktpwpgOe4eCjLkEa1TArnKbXQrwENXgn8kipMjWeuIUxwabsxIODMKc5h3ny
-         SA0DtYdaNjasgR4adrTiyCjqpskPpvZVF4ci3m8c=
+        b=rqY8MPBYcLvCvocvdm2K4v+6DIkG1FLwAlasAOeXE/kzzSfWstQDw2b29nG3j56X/
+         KtNorfe3eleDK84YtWMGQHIlW29RzFpJsGbSFqnEUZ/Pu4fZm3dK6/ogUxdrOEve0m
+         TprzPGjjGcqDdZTdiKWo98cbM4woDqAK9tiMHUbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Yugui <wangyugui@e16-tech.com>,
-        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.11 244/329] btrfs: fix deadlock when cloning inline extents and using qgroups
-Date:   Mon, 17 May 2021 16:02:35 +0200
-Message-Id: <20210517140310.363274080@linuxfoundation.org>
+Subject: [PATCH 5.11 245/329] btrfs: fix race leading to unpersisted data and metadata on fsync
+Date:   Mon, 17 May 2021 16:02:36 +0200
+Message-Id: <20210517140310.393774335@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -42,227 +41,277 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-commit f9baa501b4fd6962257853d46ddffbc21f27e344 upstream.
+commit 626e9f41f7c281ba3e02843702f68471706aa6d9 upstream.
 
-There are a few exceptional cases where cloning an inline extent needs to
-copy the inline extent data into a page of the destination inode.
+When doing a fast fsync on a file, there is a race which can result in the
+fsync returning success to user space without logging the inode and without
+durably persisting new data.
 
-When this happens, we end up starting a transaction while having a dirty
-page for the destination inode and while having the range locked in the
-destination's inode iotree too. Because when reserving metadata space
-for a transaction we may need to flush existing delalloc in case there is
-not enough free space, we have a mechanism in place to prevent a deadlock,
-which was introduced in commit 3d45f221ce627d ("btrfs: fix deadlock when
-cloning inline extent and low on free metadata space").
+The following example shows one possible scenario for this:
 
-However when using qgroups, a transaction also reserves metadata qgroup
-space, which can also result in flushing delalloc in case there is not
-enough available space at the moment. When this happens we deadlock, since
-flushing delalloc requires locking the file range in the inode's iotree
-and the range was already locked at the very beginning of the clone
-operation, before attempting to start the transaction.
+   $ mkfs.btrfs -f /dev/sdc
+   $ mount /dev/sdc /mnt
 
-When this issue happens, stack traces like the following are reported:
+   $ touch /mnt/bar
+   $ xfs_io -f -c "pwrite -S 0xab 0 1M" -c "fsync" /mnt/baz
 
-  [72747.556262] task:kworker/u81:9   state:D stack:    0 pid:  225 ppid:     2 flags:0x00004000
-  [72747.556268] Workqueue: writeback wb_workfn (flush-btrfs-1142)
-  [72747.556271] Call Trace:
-  [72747.556273]  __schedule+0x296/0x760
-  [72747.556277]  schedule+0x3c/0xa0
-  [72747.556279]  io_schedule+0x12/0x40
-  [72747.556284]  __lock_page+0x13c/0x280
-  [72747.556287]  ? generic_file_readonly_mmap+0x70/0x70
-  [72747.556325]  extent_write_cache_pages+0x22a/0x440 [btrfs]
-  [72747.556331]  ? __set_page_dirty_nobuffers+0xe7/0x160
-  [72747.556358]  ? set_extent_buffer_dirty+0x5e/0x80 [btrfs]
-  [72747.556362]  ? update_group_capacity+0x25/0x210
-  [72747.556366]  ? cpumask_next_and+0x1a/0x20
-  [72747.556391]  extent_writepages+0x44/0xa0 [btrfs]
-  [72747.556394]  do_writepages+0x41/0xd0
-  [72747.556398]  __writeback_single_inode+0x39/0x2a0
-  [72747.556403]  writeback_sb_inodes+0x1ea/0x440
-  [72747.556407]  __writeback_inodes_wb+0x5f/0xc0
-  [72747.556410]  wb_writeback+0x235/0x2b0
-  [72747.556414]  ? get_nr_inodes+0x35/0x50
-  [72747.556417]  wb_workfn+0x354/0x490
-  [72747.556420]  ? newidle_balance+0x2c5/0x3e0
-  [72747.556424]  process_one_work+0x1aa/0x340
-  [72747.556426]  worker_thread+0x30/0x390
-  [72747.556429]  ? create_worker+0x1a0/0x1a0
-  [72747.556432]  kthread+0x116/0x130
-  [72747.556435]  ? kthread_park+0x80/0x80
-  [72747.556438]  ret_from_fork+0x1f/0x30
+   # Now we have:
+   # file bar == inode 257
+   # file baz == inode 258
 
-  [72747.566958] Workqueue: btrfs-flush_delalloc btrfs_work_helper [btrfs]
-  [72747.566961] Call Trace:
-  [72747.566964]  __schedule+0x296/0x760
-  [72747.566968]  ? finish_wait+0x80/0x80
-  [72747.566970]  schedule+0x3c/0xa0
-  [72747.566995]  wait_extent_bit.constprop.68+0x13b/0x1c0 [btrfs]
-  [72747.566999]  ? finish_wait+0x80/0x80
-  [72747.567024]  lock_extent_bits+0x37/0x90 [btrfs]
-  [72747.567047]  btrfs_invalidatepage+0x299/0x2c0 [btrfs]
-  [72747.567051]  ? find_get_pages_range_tag+0x2cd/0x380
-  [72747.567076]  __extent_writepage+0x203/0x320 [btrfs]
-  [72747.567102]  extent_write_cache_pages+0x2bb/0x440 [btrfs]
-  [72747.567106]  ? update_load_avg+0x7e/0x5f0
-  [72747.567109]  ? enqueue_entity+0xf4/0x6f0
-  [72747.567134]  extent_writepages+0x44/0xa0 [btrfs]
-  [72747.567137]  ? enqueue_task_fair+0x93/0x6f0
-  [72747.567140]  do_writepages+0x41/0xd0
-  [72747.567144]  __filemap_fdatawrite_range+0xc7/0x100
-  [72747.567167]  btrfs_run_delalloc_work+0x17/0x40 [btrfs]
-  [72747.567195]  btrfs_work_helper+0xc2/0x300 [btrfs]
-  [72747.567200]  process_one_work+0x1aa/0x340
-  [72747.567202]  worker_thread+0x30/0x390
-  [72747.567205]  ? create_worker+0x1a0/0x1a0
-  [72747.567208]  kthread+0x116/0x130
-  [72747.567211]  ? kthread_park+0x80/0x80
-  [72747.567214]  ret_from_fork+0x1f/0x30
+   $ mv /mnt/baz /mnt/foo
 
-  [72747.569686] task:fsstress        state:D stack:    0 pid:841421 ppid:841417 flags:0x00000000
-  [72747.569689] Call Trace:
-  [72747.569691]  __schedule+0x296/0x760
-  [72747.569694]  schedule+0x3c/0xa0
-  [72747.569721]  try_flush_qgroup+0x95/0x140 [btrfs]
-  [72747.569725]  ? finish_wait+0x80/0x80
-  [72747.569753]  btrfs_qgroup_reserve_data+0x34/0x50 [btrfs]
-  [72747.569781]  btrfs_check_data_free_space+0x5f/0xa0 [btrfs]
-  [72747.569804]  btrfs_buffered_write+0x1f7/0x7f0 [btrfs]
-  [72747.569810]  ? path_lookupat.isra.48+0x97/0x140
-  [72747.569833]  btrfs_file_write_iter+0x81/0x410 [btrfs]
-  [72747.569836]  ? __kmalloc+0x16a/0x2c0
-  [72747.569839]  do_iter_readv_writev+0x160/0x1c0
-  [72747.569843]  do_iter_write+0x80/0x1b0
-  [72747.569847]  vfs_writev+0x84/0x140
-  [72747.569869]  ? btrfs_file_llseek+0x38/0x270 [btrfs]
-  [72747.569873]  do_writev+0x65/0x100
-  [72747.569876]  do_syscall_64+0x33/0x40
-  [72747.569879]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   # Now we have:
+   # file bar == inode 257
+   # file foo == inode 258
 
-  [72747.569899] task:fsstress        state:D stack:    0 pid:841424 ppid:841417 flags:0x00004000
-  [72747.569903] Call Trace:
-  [72747.569906]  __schedule+0x296/0x760
-  [72747.569909]  schedule+0x3c/0xa0
-  [72747.569936]  try_flush_qgroup+0x95/0x140 [btrfs]
-  [72747.569940]  ? finish_wait+0x80/0x80
-  [72747.569967]  __btrfs_qgroup_reserve_meta+0x36/0x50 [btrfs]
-  [72747.569989]  start_transaction+0x279/0x580 [btrfs]
-  [72747.570014]  clone_copy_inline_extent+0x332/0x490 [btrfs]
-  [72747.570041]  btrfs_clone+0x5b7/0x7a0 [btrfs]
-  [72747.570068]  ? lock_extent_bits+0x64/0x90 [btrfs]
-  [72747.570095]  btrfs_clone_files+0xfc/0x150 [btrfs]
-  [72747.570122]  btrfs_remap_file_range+0x3d8/0x4a0 [btrfs]
-  [72747.570126]  do_clone_file_range+0xed/0x200
-  [72747.570131]  vfs_clone_file_range+0x37/0x110
-  [72747.570134]  ioctl_file_clone+0x7d/0xb0
-  [72747.570137]  do_vfs_ioctl+0x138/0x630
-  [72747.570140]  __x64_sys_ioctl+0x62/0xc0
-  [72747.570143]  do_syscall_64+0x33/0x40
-  [72747.570146]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   $ xfs_io -c "pwrite -S 0xcd 0 1M" /mnt/foo
 
-So fix this by skipping the flush of delalloc for an inode that is
-flagged with BTRFS_INODE_NO_DELALLOC_FLUSH, meaning it is currently under
-such a special case of cloning an inline extent, when flushing delalloc
-during qgroup metadata reservation.
+   # fsync bar before foo, it is important to trigger the race.
+   $ xfs_io -c "fsync" /mnt/bar
+   $ xfs_io -c "fsync" /mnt/foo
 
-The special cases for cloning inline extents were added in kernel 5.7 by
-by commit 05a5a7621ce66c ("Btrfs: implement full reflink support for
-inline extents"), while having qgroup metadata space reservation flushing
-delalloc when low on space was added in kernel 5.9 by commit
-c53e9653605dbf ("btrfs: qgroup: try to flush qgroup space when we get
--EDQUOT"). So use a "Fixes:" tag for the later commit to ease stable
-kernel backports.
+   # After this:
+   # inode 257, file bar, is empty
+   # inode 258, file foo, has 1M filled with 0xcd
 
-Reported-by: Wang Yugui <wangyugui@e16-tech.com>
-Link: https://lore.kernel.org/linux-btrfs/20210421083137.31E3.409509F4@e16-tech.com/
-Fixes: c53e9653605dbf ("btrfs: qgroup: try to flush qgroup space when we get -EDQUOT")
-CC: stable@vger.kernel.org # 5.9+
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+   <power failure>
+
+   # Replay the log:
+   $ mount /dev/sdc /mnt
+
+   # After this point file foo should have 1M filled with 0xcd and not 0xab
+
+The following steps explain how the race happens:
+
+1) Before the first fsync of inode 258, when it has the "baz" name, its
+   ->logged_trans is 0, ->last_sub_trans is 0 and ->last_log_commit is -1.
+   The inode also has the full sync flag set;
+
+2) After the first fsync, we set inode 258 ->logged_trans to 6, which is
+   the generation of the current transaction, and set ->last_log_commit
+   to 0, which is the current value of ->last_sub_trans (done at
+   btrfs_log_inode()).
+
+   The full sync flag is cleared from the inode during the fsync.
+
+   The log sub transaction that was committed had an ID of 0 and when we
+   synced the log, at btrfs_sync_log(), we incremented root->log_transid
+   from 0 to 1;
+
+3) During the rename:
+
+   We update inode 258, through btrfs_update_inode(), and that causes its
+   ->last_sub_trans to be set to 1 (the current log transaction ID), and
+   ->last_log_commit remains with a value of 0.
+
+   After updating inode 258, because we have previously logged the inode
+   in the previous fsync, we log again the inode through the call to
+   btrfs_log_new_name(). This results in updating the inode's
+   ->last_log_commit from 0 to 1 (the current value of its
+   ->last_sub_trans).
+
+   The ->last_sub_trans of inode 257 is updated to 1, which is the ID of
+   the next log transaction;
+
+4) Then a buffered write against inode 258 is made. This leaves the value
+   of ->last_sub_trans as 1 (the ID of the current log transaction, stored
+   at root->log_transid);
+
+5) Then an fsync against inode 257 (or any other inode other than 258),
+   happens. This results in committing the log transaction with ID 1,
+   which results in updating root->last_log_commit to 1 and bumping
+   root->log_transid from 1 to 2;
+
+6) Then an fsync against inode 258 starts. We flush delalloc and wait only
+   for writeback to complete, since the full sync flag is not set in the
+   inode's runtime flags - we do not wait for ordered extents to complete.
+
+   Then, at btrfs_sync_file(), we call btrfs_inode_in_log() before the
+   ordered extent completes. The call returns true:
+
+     static inline bool btrfs_inode_in_log(...)
+     {
+         bool ret = false;
+
+         spin_lock(&inode->lock);
+         if (inode->logged_trans == generation &&
+             inode->last_sub_trans <= inode->last_log_commit &&
+             inode->last_sub_trans <= inode->root->last_log_commit)
+                 ret = true;
+         spin_unlock(&inode->lock);
+         return ret;
+     }
+
+   generation has a value of 6 (fs_info->generation), ->logged_trans also
+   has a value of 6 (set when we logged the inode during the first fsync
+   and when logging it during the rename), ->last_sub_trans has a value
+   of 1, set during the rename (step 3), ->last_log_commit also has a
+   value of 1 (set in step 3) and root->last_log_commit has a value of 1,
+   which was set in step 5 when fsyncing inode 257.
+
+   As a consequence we don't log the inode, any new extents and do not
+   sync the log, resulting in a data loss if a power failure happens
+   after the fsync and before the current transaction commits.
+   Also, because we do not log the inode, after a power failure the mtime
+   and ctime of the inode do not match those we had before.
+
+   When the ordered extent completes before we call btrfs_inode_in_log(),
+   then the call returns false and we log the inode and sync the log,
+   since at the end of ordered extent completion we update the inode and
+   set ->last_sub_trans to 2 (the value of root->log_transid) and
+   ->last_log_commit to 1.
+
+This problem is found after removing the check for the emptiness of the
+inode's list of modified extents in the recent commit 209ecbb8585bf6
+("btrfs: remove stale comment and logic from btrfs_inode_in_log()"),
+added in the 5.13 merge window. However checking the emptiness of the
+list is not really the way to solve this problem, and was never intended
+to, because while that solves the problem for COW writes, the problem
+persists for NOCOW writes because in that case the list is always empty.
+
+In the case of NOCOW writes, even though we wait for the writeback to
+complete before returning from btrfs_sync_file(), we end up not logging
+the inode, which has a new mtime/ctime, and because we don't sync the log,
+we never issue disk barriers (send REQ_PREFLUSH to the device) since that
+only happens when we sync the log (when we write super blocks at
+btrfs_sync_log()). So effectively, for a NOCOW case, when we return from
+btrfs_sync_file() to user space, we are not guaranteeing that the data is
+durably persisted on disk.
+
+Also, while the example above uses a rename exchange to show how the
+problem happens, it is not the only way to trigger it. An alternative
+could be adding a new hard link to inode 258, since that also results
+in calling btrfs_log_new_name() and updating the inode in the log.
+An example reproducer using the addition of a hard link instead of a
+rename operation:
+
+  $ mkfs.btrfs -f /dev/sdc
+  $ mount /dev/sdc /mnt
+
+  $ touch /mnt/bar
+  $ xfs_io -f -c "pwrite -S 0xab 0 1M" -c "fsync" /mnt/foo
+
+  $ ln /mnt/foo /mnt/foo_link
+  $ xfs_io -c "pwrite -S 0xcd 0 1M" /mnt/foo
+
+  $ xfs_io -c "fsync" /mnt/bar
+  $ xfs_io -c "fsync" /mnt/foo
+
+  <power failure>
+
+  # Replay the log:
+  $ mount /dev/sdc /mnt
+
+  # After this point file foo often has 1M filled with 0xab and not 0xcd
+
+The reasons leading to the final fsync of file foo, inode 258, not
+persisting the new data are the same as for the previous example with
+a rename operation.
+
+So fix by never skipping logging and log syncing when there are still any
+ordered extents in flight. To avoid making the conditional if statement
+that checks if logging an inode is needed harder to read, place all the
+logic into an helper function with separate if statements to make it more
+manageable and easier to read.
+
+A test case for fstests will follow soon.
+
+For NOCOW writes, the problem existed before commit b5e6c3e170b770
+("btrfs: always wait on ordered extents at fsync time"), introduced in
+kernel 4.19, then it went away with that commit since we started to always
+wait for ordered extent completion before logging.
+
+The problem came back again once the fast fsync path was changed again to
+avoid waiting for ordered extent completion, in commit 487781796d3022
+("btrfs: make fast fsyncs wait only for writeback"), added in kernel 5.10.
+
+However, for COW writes, the race only happens after the recent
+commit 209ecbb8585bf6 ("btrfs: remove stale comment and logic from
+btrfs_inode_in_log()"), introduced in the 5.13 merge window. For NOCOW
+writes, the bug existed before that commit. So tag 5.10+ as the release
+for stable backports.
+
+CC: stable@vger.kernel.org # 5.10+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/ctree.h  |    2 +-
- fs/btrfs/inode.c  |    4 ++--
- fs/btrfs/ioctl.c  |    2 +-
- fs/btrfs/qgroup.c |    2 +-
- fs/btrfs/send.c   |    4 ++--
- 5 files changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/file.c     |   36 +++++++++++++++++++++++++-----------
+ fs/btrfs/tree-log.c |    3 ++-
+ 2 files changed, 27 insertions(+), 12 deletions(-)
 
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3104,7 +3104,7 @@ int btrfs_truncate_inode_items(struct bt
- 			       struct btrfs_inode *inode, u64 new_size,
- 			       u32 min_type);
- 
--int btrfs_start_delalloc_snapshot(struct btrfs_root *root);
-+int btrfs_start_delalloc_snapshot(struct btrfs_root *root, bool in_reclaim_context);
- int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, u64 nr,
- 			       bool in_reclaim_context);
- int btrfs_set_extent_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9475,7 +9475,7 @@ out:
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2082,6 +2082,30 @@ static int start_ordered_ops(struct inod
  	return ret;
  }
  
--int btrfs_start_delalloc_snapshot(struct btrfs_root *root)
-+int btrfs_start_delalloc_snapshot(struct btrfs_root *root, bool in_reclaim_context)
++static inline bool skip_inode_logging(const struct btrfs_log_ctx *ctx)
++{
++	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++
++	if (btrfs_inode_in_log(inode, fs_info->generation) &&
++	    list_empty(&ctx->ordered_extents))
++		return true;
++
++	/*
++	 * If we are doing a fast fsync we can not bail out if the inode's
++	 * last_trans is <= then the last committed transaction, because we only
++	 * update the last_trans of the inode during ordered extent completion,
++	 * and for a fast fsync we don't wait for that, we only wait for the
++	 * writeback to complete.
++	 */
++	if (inode->last_trans <= fs_info->last_trans_committed &&
++	    (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) ||
++	     list_empty(&ctx->ordered_extents)))
++		return true;
++
++	return false;
++}
++
+ /*
+  * fsync call for both files and directories.  This logs the inode into
+  * the tree log instead of forcing full commits whenever possible.
+@@ -2097,7 +2121,6 @@ int btrfs_sync_file(struct file *file, l
  {
- 	struct writeback_control wbc = {
- 		.nr_to_write = LONG_MAX,
-@@ -9488,7 +9488,7 @@ int btrfs_start_delalloc_snapshot(struct
- 	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
- 		return -EROFS;
+ 	struct dentry *dentry = file_dentry(file);
+ 	struct inode *inode = d_inode(dentry);
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 	struct btrfs_trans_handle *trans;
+ 	struct btrfs_log_ctx ctx;
+@@ -2196,17 +2219,8 @@ int btrfs_sync_file(struct file *file, l
  
--	return start_delalloc_inodes(root, &wbc, true, false);
-+	return start_delalloc_inodes(root, &wbc, true, in_reclaim_context);
- }
+ 	atomic_inc(&root->log_batch);
  
- int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, u64 nr,
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1042,7 +1042,7 @@ static noinline int btrfs_mksnapshot(con
+-	/*
+-	 * If we are doing a fast fsync we can not bail out if the inode's
+-	 * last_trans is <= then the last committed transaction, because we only
+-	 * update the last_trans of the inode during ordered extent completion,
+-	 * and for a fast fsync we don't wait for that, we only wait for the
+-	 * writeback to complete.
+-	 */
+ 	smp_mb();
+-	if (btrfs_inode_in_log(BTRFS_I(inode), fs_info->generation) ||
+-	    (BTRFS_I(inode)->last_trans <= fs_info->last_trans_committed &&
+-	     (full_sync || list_empty(&ctx.ordered_extents)))) {
++	if (skip_inode_logging(&ctx)) {
+ 		/*
+ 		 * We've had everything committed since the last time we were
+ 		 * modified so clear this flag in case it was set for whatever
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6066,7 +6066,8 @@ static int btrfs_log_inode_parent(struct
+ 	 * (since logging them is pointless, a link count of 0 means they
+ 	 * will never be accessible).
  	 */
- 	btrfs_drew_read_lock(&root->snapshot_lock);
- 
--	ret = btrfs_start_delalloc_snapshot(root);
-+	ret = btrfs_start_delalloc_snapshot(root, false);
- 	if (ret)
- 		goto out;
- 
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3579,7 +3579,7 @@ static int try_flush_qgroup(struct btrfs
- 		return 0;
- 	}
- 
--	ret = btrfs_start_delalloc_snapshot(root);
-+	ret = btrfs_start_delalloc_snapshot(root, true);
- 	if (ret < 0)
- 		goto out;
- 	btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -7159,7 +7159,7 @@ static int flush_delalloc_roots(struct s
- 	int i;
- 
- 	if (root) {
--		ret = btrfs_start_delalloc_snapshot(root);
-+		ret = btrfs_start_delalloc_snapshot(root, false);
- 		if (ret)
- 			return ret;
- 		btrfs_wait_ordered_extents(root, U64_MAX, 0, U64_MAX);
-@@ -7167,7 +7167,7 @@ static int flush_delalloc_roots(struct s
- 
- 	for (i = 0; i < sctx->clone_roots_cnt; i++) {
- 		root = sctx->clone_roots[i].root;
--		ret = btrfs_start_delalloc_snapshot(root);
-+		ret = btrfs_start_delalloc_snapshot(root, false);
- 		if (ret)
- 			return ret;
- 		btrfs_wait_ordered_extents(root, U64_MAX, 0, U64_MAX);
+-	if (btrfs_inode_in_log(inode, trans->transid) ||
++	if ((btrfs_inode_in_log(inode, trans->transid) &&
++	     list_empty(&ctx->ordered_extents)) ||
+ 	    inode->vfs_inode.i_nlink == 0) {
+ 		ret = BTRFS_NO_LOG_SYNC;
+ 		goto end_no_trans;
 
 
