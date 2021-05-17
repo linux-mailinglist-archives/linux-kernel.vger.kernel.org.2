@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A46382D75
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4933382D7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237356AbhEQNcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:32:41 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54227 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236025AbhEQNci (ORCPT
+        id S237376AbhEQNeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:34:10 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:49091 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S235266AbhEQNeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:32:38 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UZA5KT9_1621258279;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UZA5KT9_1621258279)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 17 May 2021 21:31:20 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] virtio_net: Use BUG_ON instead of if condition followed by
- BUG
-Message-ID: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
-Date:   Mon, 17 May 2021 21:31:19 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Mon, 17 May 2021 09:34:05 -0400
+Received: (qmail 1084954 invoked by uid 1000); 17 May 2021 09:32:47 -0400
+Date:   Mon, 17 May 2021 09:32:47 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Qiang Ma <maqianga@uniontech.com>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-usb@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: usbhid: enable remote wakeup for mouse
+Message-ID: <20210517133247.GB1083813@rowland.harvard.edu>
+References: <20210517060145.32359-1-maqianga@uniontech.com>
+ <1327a9251c74587670970baa0f662cd61006f576.camel@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1327a9251c74587670970baa0f662cd61006f576.camel@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BUG_ON() uses unlikely in if(), which can be optimized at compile time.
+On Mon, May 17, 2021 at 10:31:45AM +0200, Oliver Neukum wrote:
+> Am Montag, den 17.05.2021, 14:01 +0800 schrieb Qiang Ma:
+> > This patch enables remote wakeup by default for USB mouse
+> > devices.  Mouse in general are supposed to be wakeup devices, but
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
----
-  drivers/net/virtio_net.c | 5 ++---
-  1 file changed, 2 insertions(+), 3 deletions(-)
+I disagree with that statement.  Who decided that mice are supposed to 
+be wakeup devices?
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index c921ebf3ae82..212d52204884 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1646,10 +1646,9 @@ static int xmit_skb(struct send_queue *sq, struct 
-sk_buff *skb)
-  	else
-  		hdr = skb_vnet_hdr(skb);
+> > the correct place to enable it depends on the device's bus; no single
+> > approach will work for all mouse devices.  In particular, this
+> > covers only USB mouse (and then only those supporting the boot
+> > protocol).
+> > 
+> 
+> Hi,
+> 
+> have you tested this? In my experience the issue with mice
+> is that they wake up only when you press a mouse button, not when you
+> move the mouse. Do we make a promise we cannot keep here?
 
--	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
-+	BUG_ON(virtio_net_hdr_from_skb(skb, &hdr->hdr,
-  				    virtio_is_little_endian(vi->vdev), false,
--				    0))
--		BUG();
-+				    0));
+Even worse, if a mouse is enabled for wakeup then the system may get 
+woken up at the wrong time.  The example people often use is a laptop 
+with a USB mouse thrown into a backpack while it is asleep.  Something 
+else inside the backpack may accidentally press against a mouse button, 
+causing the system to wake up even though the user wants it to remain 
+asleep.
 
-  	if (vi->mergeable_rx_bufs)
-  		hdr->num_buffers = 0;
--- 
-2.17.1
-
+Alan Stern
