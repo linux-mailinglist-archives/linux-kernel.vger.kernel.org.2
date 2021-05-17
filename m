@@ -2,56 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE81D3830FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A232383364
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240088AbhEQOdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:33:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53290 "EHLO mail.kernel.org"
+        id S241469AbhEQO5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:57:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235329AbhEQO2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:28:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DEF761627;
-        Mon, 17 May 2021 14:14:09 +0000 (UTC)
+        id S241906AbhEQOs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:48:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 110C461978;
+        Mon, 17 May 2021 14:22:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260850;
-        bh=K1jWZImZhN+LCmTN8JjNk7t0AysYUeLwb62XkbKZ95c=;
+        s=korg; t=1621261349;
+        bh=byXudzPcATVaf19KfyA9vcbW285hb40G/t66SVxVDAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1cVimAydWW9NbRh5tcmiwNtoq/3LV94s86Cgdmd+szz+Q6gO/Gj0ULWWLcPgWRVRi
-         c5Tzjl5UqghoMUmzJH0b/jWu39j8MJnqF7KdRH2YorsxyyCtLxtLvIlCoYOGphnPYy
-         UIRfog/G8qhdBnbg6XADdwwtNSr/YwWcXqJTTHac=
+        b=JCUyvb08QNQ6wdEIwY6PM+VJT7tlC2ueijxh+9a/HU3dfec8hYtZ7pIO1zfdkhy8p
+         dGK6VJhaVmMXhAc4oZy1GABtYahbeVQaVD+QaoOCbm71KBOWc4u8M/Jb3vuXZr6sKS
+         affjtimU4rdU6g0Bsp3YsCRb9A49ioOm3JXEvzkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morris <jmorris@namei.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.12 222/363] mm/gup: return an error on migration failure
+        stable@vger.kernel.org,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 036/141] powerpc/smp: Set numa node before updating mask
 Date:   Mon, 17 May 2021 16:01:28 +0200
-Message-Id: <20210517140310.100904587@linuxfoundation.org>
+Message-Id: <20210517140243.981312069@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-References: <20210517140302.508966430@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,94 +43,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Tatashin <pasha.tatashin@soleen.com>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit f0f4463837da17a89d965dcbe4e411629dbcf308 ]
+[ Upstream commit 6980d13f0dd189846887bbbfa43793d9a41768d3 ]
 
-When migration failure occurs, we still pin pages, which means that we
-may pin CMA movable pages which should never be the case.
+Geethika reported a trace when doing a dlpar CPU add.
 
-Instead return an error without pinning pages when migration failure
-happens.
+------------[ cut here ]------------
+WARNING: CPU: 152 PID: 1134 at kernel/sched/topology.c:2057
+CPU: 152 PID: 1134 Comm: kworker/152:1 Not tainted 5.12.0-rc5-master #5
+Workqueue: events cpuset_hotplug_workfn
+NIP:  c0000000001cfc14 LR: c0000000001cfc10 CTR: c0000000007e3420
+REGS: c0000034a08eb260 TRAP: 0700   Not tainted  (5.12.0-rc5-master+)
+MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28828422  XER: 00000020
+CFAR: c0000000001fd888 IRQMASK: 0 #012GPR00: c0000000001cfc10
+c0000034a08eb500 c000000001f35400 0000000000000027 #012GPR04:
+c0000035abaa8010 c0000035abb30a00 0000000000000027 c0000035abaa8018
+#012GPR08: 0000000000000023 c0000035abaaef48 00000035aa540000
+c0000035a49dffe8 #012GPR12: 0000000028828424 c0000035bf1a1c80
+0000000000000497 0000000000000004 #012GPR16: c00000000347a258
+0000000000000140 c00000000203d468 c000000001a1a490 #012GPR20:
+c000000001f9c160 c0000034adf70920 c0000034aec9fd20 0000000100087bd3
+#012GPR24: 0000000100087bd3 c0000035b3de09f8 0000000000000030
+c0000035b3de09f8 #012GPR28: 0000000000000028 c00000000347a280
+c0000034aefe0b00 c0000000010a2a68
+NIP [c0000000001cfc14] build_sched_domains+0x6a4/0x1500
+LR [c0000000001cfc10] build_sched_domains+0x6a0/0x1500
+Call Trace:
+[c0000034a08eb500] [c0000000001cfc10] build_sched_domains+0x6a0/0x1500 (unreliable)
+[c0000034a08eb640] [c0000000001d1e6c] partition_sched_domains_locked+0x3ec/0x530
+[c0000034a08eb6e0] [c0000000002936d4] rebuild_sched_domains_locked+0x524/0xbf0
+[c0000034a08eb7e0] [c000000000296bb0] rebuild_sched_domains+0x40/0x70
+[c0000034a08eb810] [c000000000296e74] cpuset_hotplug_workfn+0x294/0xe20
+[c0000034a08ebc30] [c000000000178dd0] process_one_work+0x300/0x670
+[c0000034a08ebd10] [c0000000001791b8] worker_thread+0x78/0x520
+[c0000034a08ebda0] [c000000000185090] kthread+0x1a0/0x1b0
+[c0000034a08ebe10] [c00000000000ccec] ret_from_kernel_thread+0x5c/0x70
+Instruction dump:
+7d2903a6 4e800421 e8410018 7f67db78 7fe6fb78 7f45d378 7f84e378 7c681b78
+3c62ff1a 3863c6f8 4802dc35 60000000 <0fe00000> 3920fff4 f9210070 e86100a0
+---[ end trace 532d9066d3d4d7ec ]---
 
-No need to retry migrating, because migrate_pages() already retries 10
-times.
+Some of the per-CPU masks use cpu_cpu_mask as a filter to limit the search
+for related CPUs. On a dlpar add of a CPU, update cpu_cpu_mask before
+updating the per-CPU masks. This will ensure the cpu_cpu_mask is updated
+correctly before its used in setting the masks. Setting the numa_node will
+ensure that when cpu_cpu_mask() gets called, the correct node number is
+used. This code movement helped fix the above call trace.
 
-Link: https://lkml.kernel.org/r/20210215161349.246722-4-pasha.tatashin@soleen.com
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210401154200.150077-1-srikar@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/gup.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ arch/powerpc/kernel/smp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 6530672131db..2b48c65e27cc 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1553,7 +1553,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- {
- 	unsigned long i;
- 	bool drain_allow = true;
--	bool migrate_allow = true;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
- 	struct page *prev_head, *head;
-@@ -1604,17 +1603,15 @@ check_again:
- 			for (i = 0; i < nr_pages; i++)
- 				put_page(pages[i]);
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index ea6adbf6a221..b24d860bbab9 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1254,6 +1254,9 @@ void start_secondary(void *unused)
  
--		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
--			/*
--			 * some of the pages failed migration. Do get_user_pages
--			 * without migration.
--			 */
--			migrate_allow = false;
--
-+		ret = migrate_pages(&cma_page_list, alloc_migration_target,
-+				    NULL, (unsigned long)&mtc, MIGRATE_SYNC,
-+				    MR_CONTIG_RANGE);
-+		if (ret) {
- 			if (!list_empty(&cma_page_list))
- 				putback_movable_pages(&cma_page_list);
-+			return ret > 0 ? -ENOMEM : ret;
- 		}
+ 	vdso_getcpu_init();
+ #endif
++	set_numa_node(numa_cpu_lookup_table[cpu]);
++	set_numa_mem(local_memory_node(numa_cpu_lookup_table[cpu]));
 +
- 		/*
- 		 * We did migrate all the pages, Try to get the page references
- 		 * again migrating any new CMA pages which we failed to isolate
-@@ -1624,7 +1621,7 @@ check_again:
- 						   pages, vmas, NULL,
- 						   gup_flags);
+ 	/* Update topology CPU masks */
+ 	add_cpu_to_masks(cpu);
  
--		if ((ret > 0) && migrate_allow) {
-+		if (ret > 0) {
- 			nr_pages = ret;
- 			drain_allow = true;
- 			goto check_again;
+@@ -1266,9 +1269,6 @@ void start_secondary(void *unused)
+ 	if (!cpumask_equal(cpu_l2_cache_mask(cpu), sibling_mask(cpu)))
+ 		shared_caches = true;
+ 
+-	set_numa_node(numa_cpu_lookup_table[cpu]);
+-	set_numa_mem(local_memory_node(numa_cpu_lookup_table[cpu]));
+-
+ 	smp_wmb();
+ 	notify_cpu_starting(cpu);
+ 	set_cpu_online(cpu, true);
 -- 
 2.30.2
 
