@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0781E38311D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952B73833A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240639AbhEQOez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:34:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43402 "EHLO mail.kernel.org"
+        id S240597AbhEQPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:00:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239966AbhEQO3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:29:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81F9D616E8;
-        Mon, 17 May 2021 14:14:57 +0000 (UTC)
+        id S241689AbhEQOu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 247766197D;
+        Mon, 17 May 2021 14:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260898;
-        bh=zpv5bnEDtuF3dFb7A4ZqLy1eAHZ08rMYDgZskHDYy4w=;
+        s=korg; t=1621261399;
+        bh=ltPnM2g22KvBxBhFEn+obnsGfdj0ICGUjMx526Tdgs8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DD3xM4Kqq2xHvjNQg1i3cjNcrk0QmhCWSgaRDSa11Y+TB8JUrINo2+37UMM3/FPYm
-         vm272TgXc9smg4VY6sp7LM4xIdDDU2GILDKW7oNgNGJSKmcZWl/z+00o63Ofa2cPZy
-         vE0+0FZc145Bpndl6l6u08P2lYyPqRgdVjkFfQNk=
+        b=Nmbz/VGw37OvggAUG80HhWDpX8DYe2yPHSMzzYvlDXLn0tE9xdPNXV9eb7ZVxIN5P
+         y2ridEGT4gbWjJbCNcNAJ+DXR3BMCneyxmU8cr13q94en8FEAMgbcJpjkM1quK5WAr
+         ECjsbvTmPQPw7YkfZpqWmH9IqpR0OaWdYshR3mOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Tong Zhang <ztong0001@gmail.com>,
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 030/329] ALSA: hdspm: dont disable if not enabled
+Subject: [PATCH 5.10 016/289] tipc: convert dest nodes address to network order
 Date:   Mon, 17 May 2021 15:59:01 +0200
-Message-Id: <20210517140303.055698419@linuxfoundation.org>
+Message-Id: <20210517140305.726545036@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-[ Upstream commit 790f5719b85e12e10c41753b864e74249585ed08 ]
+[ Upstream commit 1980d37565061ab44bdc2f9e4da477d3b9752e81 ]
 
-hdspm wants to disable a not enabled pci device, which makes kernel
-throw a warning. Make sure the device is enabled before calling disable.
+(struct tipc_link_info)->dest is in network order (__be32), so we must
+convert the value to network order before assigning. The problem detected
+by sparse:
 
-[    1.786391] snd_hdspm 0000:00:03.0: disabling already-disabled device
-[    1.786400] WARNING: CPU: 0 PID: 182 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.795181] Call Trace:
-[    1.795320]  snd_hdspm_card_free+0x58/0xa0 [snd_hdspm]
-[    1.795595]  release_card_device+0x4b/0x80 [snd]
-[    1.795860]  device_release+0x3b/0xa0
-[    1.796072]  kobject_put+0x94/0x1b0
-[    1.796260]  put_device+0x13/0x20
-[    1.796438]  snd_card_free+0x61/0x90 [snd]
-[    1.796659]  snd_hdspm_probe+0x97b/0x1440 [snd_hdspm]
+net/tipc/netlink_compat.c:699:24: warning: incorrect type in assignment (different base types)
+net/tipc/netlink_compat.c:699:24:    expected restricted __be32 [usertype] dest
+net/tipc/netlink_compat.c:699:24:    got int
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210321153840.378226-3-ztong0001@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/rme9652/hdspm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/tipc/netlink_compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 04e878a0f773..49fee31ad905 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6884,7 +6884,8 @@ static int snd_hdspm_free(struct hdspm * hdspm)
- 	if (hdspm->port)
- 		pci_release_regions(hdspm->pci);
+diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
+index 1c7aa51cc2a3..49e893313652 100644
+--- a/net/tipc/netlink_compat.c
++++ b/net/tipc/netlink_compat.c
+@@ -693,7 +693,7 @@ static int tipc_nl_compat_link_dump(struct tipc_nl_compat_msg *msg,
+ 	if (err)
+ 		return err;
  
--	pci_disable_device(hdspm->pci);
-+	if (pci_is_enabled(hdspm->pci))
-+		pci_disable_device(hdspm->pci);
- 	return 0;
- }
- 
+-	link_info.dest = nla_get_flag(link[TIPC_NLA_LINK_DEST]);
++	link_info.dest = htonl(nla_get_flag(link[TIPC_NLA_LINK_DEST]));
+ 	link_info.up = htonl(nla_get_flag(link[TIPC_NLA_LINK_UP]));
+ 	nla_strlcpy(link_info.str, link[TIPC_NLA_LINK_NAME],
+ 		    TIPC_MAX_LINK_NAME);
 -- 
 2.30.2
 
