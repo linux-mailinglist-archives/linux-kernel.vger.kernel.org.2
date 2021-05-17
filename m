@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68AC3825A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A673825A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbhEQHre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:47:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53356 "EHLO
+        id S235419AbhEQHsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:48:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51648 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231787AbhEQHrd (ORCPT
+        by vger.kernel.org with ESMTP id S232040AbhEQHsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:47:33 -0400
+        Mon, 17 May 2021 03:48:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621237577;
+        s=mimecast20190719; t=1621237624;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oW3LzEcy6xhREj6wjyfZMKHY6gt96o4WsFjzrVstiLo=;
-        b=QuCL3B8suBxuTTqw+Xgx/ADfOp9Xv2Cvl0U5grI9CpcR6DKrA86dAPftRPB83pw46KIOhg
-        tWAhZg0jh7HOZBRY7escjf9c6vQAJuvQdG8k0noGSYmFHYokdNQ8Dd6viwIYJ16bn1qjFE
-        ObLMe5qkq5cCYt4bmGY3Zk7tjnpVq8U=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-51a54doqMlSq815_HPeq-w-1; Mon, 17 May 2021 03:46:15 -0400
-X-MC-Unique: 51a54doqMlSq815_HPeq-w-1
-Received: by mail-wm1-f72.google.com with SMTP id g206-20020a1c39d70000b029016ac627fbe9so1094072wma.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:46:15 -0700 (PDT)
+        bh=Pr+SsTDKN3t1n8i1sa/wBoRt+XTnEThJ5HCbyq0kBx8=;
+        b=imEL/CWCpH8JehSfzermR39Fl6bjn+7L3pceZLMpIn94R7wVGB39kEO0V5Tj7AtsCfKz2d
+        +JAbzai6FjVQjjIToRjweqqSbRXzCWXwi2cdQcnlZq/isA1tX1pgZ4+kX4how8eqEKw64+
+        q0HGuob+R6k80OBkv402gZzMTPZKq/s=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-LO38JR1EO5iOvei9zPNiwA-1; Mon, 17 May 2021 03:46:58 -0400
+X-MC-Unique: LO38JR1EO5iOvei9zPNiwA-1
+Received: by mail-wr1-f72.google.com with SMTP id i102-20020adf90ef0000b029010dfcfc46c0so3455914wri.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:46:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=oW3LzEcy6xhREj6wjyfZMKHY6gt96o4WsFjzrVstiLo=;
-        b=phQ4iqy1nclDW+ItQizet1XWK2xqICqPXYp9FJSBYFvZvaTuO/7+wfZ87sVjcQ8k9g
-         LxvyjygAQoW8PAtpySXnYMJo7fNodk2l3DpsIAv8BHaKYgnV5nXuB7JVU1LmffaGhWsh
-         OulNIH8bf0nk/R0CYSfk/zM/AgAke1GqaCetp2J+gsDJ1DaKZJGeaC89btyj1u1NX5Cp
-         vRZ8U5hL/LMv8P93GMgiLQqHtts72HPwaEpDItS4DzEDvYVsWe3khihyjxa9Xe8EB4Rf
-         ORA/MmdM+OjNxGHcHocFGqTBUDXQQFiKFGSwVlKuygaarMHa0cOEQGc0Fds8EGsTaY+Q
-         xd0g==
-X-Gm-Message-State: AOAM533of1At7tIRZtze2UbNw/vE8t6RYkTVPL17qD4XJX6q2Jp/bImp
-        XVmij1RbqP6lO88Mu+pPO6g4KofPz4wkmdfJwV4LQG/KIJRxBIW6GVf22KJ58BMPMOsYkQrQOI7
-        swM+++FlHign8CFA54+tE+xyP
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr26903792wrq.44.1621237574409;
-        Mon, 17 May 2021 00:46:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwROdnuXYbqFLPiHMKE8n+P0duVXjs1e5WKix8FiCyLOl1Qa/HiqWLT3lnItQNHmk8XZbmiTQ==
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr26903768wrq.44.1621237574201;
-        Mon, 17 May 2021 00:46:14 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6833.dip0.t-ipconnect.de. [91.12.104.51])
-        by smtp.gmail.com with ESMTPSA id f4sm16730658wrz.33.2021.05.17.00.46.13
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pr+SsTDKN3t1n8i1sa/wBoRt+XTnEThJ5HCbyq0kBx8=;
+        b=h0m4Y9ZTzlUFBtcG7frzhEPE8hO8hM1jpbA9hDqYaDiVw+NrOXNj/9KjYiIe0K1Mpj
+         UziLx8PeSbhkIjMQNRUQWUOXslnSUP2tisW/YEKPaJNhj8tGLYtokGD84SJjGZ9zCEfK
+         o7Y0PMWd0LJmfOXnuG7/Gnkzj34eTalJl6vcVPXx9hLceSssG3b891uJAzDBOF8DJV4U
+         c/tget3BltMnBWVeffJ+sEYIBFgw06lbrgjvkRNdposFMbWaEaktOO15QqUa+Q+iQcqj
+         9ovM6j3geWiPw58eMFTIdJdoCZZBsdzdISspfQBCfZAiqkF560w6+qwKTuFl+KGgTaC0
+         r07A==
+X-Gm-Message-State: AOAM530A7DWlziFQfHEZiy4bjB0E/B7TlAKmj/EUISeHpJ5v1bN/BFUO
+        uEV1A+3bgn9BE3xmDp5Bxeg0AtU0vnxJNsYj0b80gDZVDq4kYgMv/Q7NLvfGVOsyABhrOmiV1kp
+        U4Omrxgf6IsMjPh49gWLKX3fv
+X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr16693579wmi.26.1621237617435;
+        Mon, 17 May 2021 00:46:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzm4jiR+tISqpR6IaJiPZ+D+MPdL5pwgbbRsQbejqSDR/kgRrGrSsT+qLBVIWkGpvL5Gds3XA==
+X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr16693534wmi.26.1621237617222;
+        Mon, 17 May 2021 00:46:57 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id s6sm23233419wms.0.2021.05.17.00.46.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 00:46:13 -0700 (PDT)
-Subject: Re: alloc_contig_range() with MIGRATE_MOVABLE performance regression
- since 4.9
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, l.stach@pengutronix.de,
+        Mon, 17 May 2021 00:46:56 -0700 (PDT)
+To:     Andy Lutomirski <luto@kernel.org>, Jon Kohler <jon@nutanix.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Juergen Gross <jgross@suse.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
         LKML <linux-kernel@vger.kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>,
-        Michal Nazarewicz <mina86@mina86.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Oscar Salvador <OSalvador@suse.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <dbdf7b8c-9165-f87c-92d4-cfb5a4f01221@gmail.com>
- <YIEqpIOAyrs26soC@dhcp22.suse.cz>
- <8919b724-ce5b-a80f-bbea-98b99af97357@redhat.com>
- <58726a6b-5468-a6b4-7c26-371ef5d71ee2@gmail.com>
- <9df905cf-cc4f-c739-26cb-c2e5c6e5a234@redhat.com>
- <a0420344-4d9b-8e90-69cd-b0de20d683e0@gmail.com>
- <a15bd5c9-870d-3824-99cc-e5073d4d42a1@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <d2bf87c0-7a2d-d663-a0ac-99840c77cd44@redhat.com>
-Date:   Mon, 17 May 2021 09:46:12 +0200
+        kvm list <kvm@vger.kernel.org>
+References: <20210507164456.1033-1-jon@nutanix.com>
+ <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] KVM: x86: add hint to skip hidden rdpkru under
+ kvm_load_host_xsave_state
+Message-ID: <5e01d18b-123c-b91f-c7b4-7ec583dd1ec6@redhat.com>
+Date:   Mon, 17 May 2021 09:46:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <a15bd5c9-870d-3824-99cc-e5073d4d42a1@gmail.com>
+In-Reply-To: <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -87,67 +98,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.05.21 18:13, Florian Fainelli wrote:
-> 
-> 
-> On 4/22/2021 12:31 PM, Florian Fainelli wrote:
->>> For
->>>
->>> https://lkml.kernel.org/r/20210121175502.274391-3-minchan@kernel.org
->>>
->>> to do its work you'll have to pass  __GFP_NORETRY to
->>> alloc_contig_range(). This requires CMA adaptions, from where we call
->>> alloc_contig_range().
+On 14/05/21 07:11, Andy Lutomirski wrote:
+> That's nice, but it fails to restore XINUSE[PKRU].  As far as I know,
+> that bit is live, and the only way to restore it to 0 is with
+> XRSTOR(S).
+
+The manual says "It is possible for XINUSE[i] to be 1 even when state 
+component i is in its initial configuration" so this is architecturally 
+valid.  Does the XINUSE optimization matter for PKRU which is a single word?
+
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index cebdaa1e3cf5..cd95adbd140c 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -912,10 +912,10 @@ void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu)
+>>          }
 >>
->> Yes, I did modify the alloc_contig_range() caller to pass GFP_KERNEL |
->> __GFP_NORETRY. I did run for a more iterations (1000) and the results
->> are not very conclusive as with __GFP_NORETRY the allocation time per
->> allocation was not significantly better, in fact it was slightly worse
->> by 100us than without.
+>>          if (static_cpu_has(X86_FEATURE_PKU) &&
+>> -           (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
+>> -            (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU)) &&
+>> -           vcpu->arch.pkru != vcpu->arch.host_pkru)
+>> -               __write_pkru(vcpu->arch.pkru);
+>> +           vcpu->arch.pkru != vcpu->arch.host_pkru &&
+>> +           ((vcpu->arch.xcr0 & XFEATURE_MASK_PKRU) ||
+>> +            kvm_read_cr4_bits(vcpu, X86_CR4_PKE)))
+>> +               __write_pkru(vcpu->arch.pkru, false);
+> 
+> Please tell me I'm missing something (e.g. KVM very cleverly managing
+> the PKRU register using intercepts) that makes this reliably load the
+> guest value.  An innocent or malicious guest could easily make that
+> condition evaluate to false, thus allowing the host PKRU value to be
+> live in guest mode.  (Or is something fancy going on here?)
+
+RDPKRU/WRPKRU cannot be used unless CR4.PKE=1, but PKRU can still be 
+accessed using XSAVE/XRSTOR.  However both CR4 and XCR0 have their 
+writes trapped, so the guest will not use the host PKRU value before the 
+next vmexit if CR4.PKE=0 and XCR0.PKRU=0.
+
+> I don't even want to think about what happens if a perf NMI hits and
+> accesses host user memory while the guest PKRU is live (on VMX -- I
+> think this can't happen on SVM).
+
+This is indeed a problem, which indeed cannot happen on SVM but is there 
+on VMX.  Note that the function above is not handling all of the xstate, 
+it's handling the *XSAVE state*, that is XCR0, XSS and PKRU.  Thus the 
+window is small, but it's there.
+
+Is it solvable at all, without having PKRU fields in the VMCS (and 
+without masking NMIs in the LAPIC which would be too expensive)?  Dave, 
+Sean, what do you think?
+
+>>   }
+>>   EXPORT_SYMBOL_GPL(kvm_load_guest_xsave_state);
 >>
->> My x86 VM with 1GB of DRAM including 512MB being in ZONE_MOVABLE does
->> shows identical numbers for both 4.9 and 5.4 so this must be something
->> specific to ARM64 and/or the code we added to create a ZONE_MOVABLE on
->> that architecture since movablecore does not appear to have any effect
->> unlike x86.
+>> @@ -925,11 +925,11 @@ void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu)
+>>                  return;
+>>
+>>          if (static_cpu_has(X86_FEATURE_PKU) &&
+>> -           (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
+>> -            (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU))) {
+>> +           ((vcpu->arch.xcr0 & XFEATURE_MASK_PKRU) ||
+>> +            kvm_read_cr4_bits(vcpu, X86_CR4_PKE))) {
+>>                  vcpu->arch.pkru = rdpkru();
+>>                  if (vcpu->arch.pkru != vcpu->arch.host_pkru)
+>> -                       __write_pkru(vcpu->arch.host_pkru);
+>> +                       __write_pkru(vcpu->arch.host_pkru, true);
+>>          }
 > 
-> We tracked down the slowdowns to be caused by two major contributors:
-> 
-> - for a reason that we do not fully understand yet the same cpufreq
-> governor (conservative) did not cause alloc_contig_range() to be slowed
-> down on 4.9 as much as it it with 5.4, running tests with the
-> performance cpufreq governor works a tad better and the results are more
-> consistent from run to run with a smaller variation.
+> Suppose the guest writes to PKRU and then, without exiting, sets PKE =
+> 0 and XCR0[PKRU] = 0.  (Or are the intercepts such that this can't
+> happen except on SEV where maybe SEV magic makes the problem go away?)
 
-Interesting! So your CPU is down-clocking while performing (heavy) 
-kernel work? Is that expected or are we mis-accounting kernel cpu time 
-somehow when it comes to determining the CPU target frequency?
+Yes, see above.  KVM needs to trap CR4 and XCR0 anyway (CR4 because you 
+don't want the guest to clear e.g. MCE, XCR0 to forbid setting bits that 
+the host kernel does not have in its own xstate).
 
-> 
-> - another large contributor to the slowdown was having enabled
-> CONFIG_IRQSOFF_TRACER. After c3bc8fd637a9623f5c507bd18f9677effbddf584
-> ("tracing: Centralize preemptirq tracepoints and unify their usage") we
-> now prepare arguments for tracing even if we end-up not using them since
-> tracing is not enabled at runtime. Getting the caller function's return
-> address is cheap on arm64 for level == 0, but getting the preceding
-> caller involves doing a backtrace walk which is expensive (see
-> arch/arm64/kernel/return_address.c).
+> I admit I'm fairly mystified as to why KVM doesn't handle PKRU like
+> the rest of guest XSTATE.
+Because the rest of the guest XSTATE is live too early.  The problem you 
+mention above with respect to perf, where you access host memory with 
+the guest PKRU, would be very much amplified.
 
-Again, very interesting finding.
+It is basically the opposite problem of what you have in 
+switch_fpu_finish, which loads PKRU eagerly while delaying the rest to 
+the switch to userland.
 
-> 
-> So with these two variables eliminated we are only about x2 slower on
-> 5.4 than we were on 4.9 and this is acceptable for our use case. I would
-> not say the case is closed but at least we understand it better. We now
-> have 5.10 brought up to speed so any new investigation will be focused
-> on that kernel.
-> 
-
-Thanks for the insight, please do let me know when you learn more. x2 
-slowdown still is quite a lot.
-
--- 
-Thanks,
-
-David / dhildenb
+Paolo
 
