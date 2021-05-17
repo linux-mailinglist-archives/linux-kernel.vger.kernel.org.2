@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA56B3830CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D999382EC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238978AbhEQObL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:31:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53296 "EHLO mail.kernel.org"
+        id S238456AbhEQOKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238624AbhEQO0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:26:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C3A561350;
-        Mon, 17 May 2021 14:13:27 +0000 (UTC)
+        id S238110AbhEQOH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:07:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE96B6124C;
+        Mon, 17 May 2021 14:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260808;
-        bh=PeEuDQ1RPr0AL0urufJWxpvRE4VsKXS8HuL0uvj1oms=;
+        s=korg; t=1621260383;
+        bh=xCRDy6YwbgJQKS1kjq0Dn5Fl6sJjYPcS2H5tXuTZ7uo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SLFMh7w14Cf6pD7pbv5YLzm02o8UXZ+KBaoLWK/EScycjDE/TthBwnOtHFo0n6IBB
-         9aZv2bhA2f4R9sGfuxpT6pUwoUg1JTxwMVRJTudK964f15UoDllAy1QPZbcduxR5Gg
-         9O3QBirSYEsSjbXRfyH2749J9qcH+uTrcr1LXgLM=
+        b=L4tZd7iz3vP/YuKbekKZTDuGdNW3I4kvJwr82eribsVoj6FS2yrfvH0VWvB6h1jCN
+         ZtpnKUV+Gx8ZZ00IKz0shITjGMcJZWS2nhuZvpb/GFH/ayatEghRZErOViWa2m7AuE
+         vUXSFMa88HUefnCICIZCfrz1n2//3aaQlGYK0t8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.11 009/329] PM: runtime: Fix unpaired parent child_count for force_resume
-Date:   Mon, 17 May 2021 15:58:40 +0200
-Message-Id: <20210517140302.358557966@linuxfoundation.org>
+        stable@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 055/363] IB/hfi1: Correct oversized ring allocation
+Date:   Mon, 17 May 2021 15:58:41 +0200
+Message-Id: <20210517140304.470421246@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,110 +42,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-commit c745253e2a691a40c66790defe85c104a887e14a upstream.
+[ Upstream commit b536d4b2a279733f440c911dc831764690b90050 ]
 
-As pm_runtime_need_not_resume() relies also on usage_count, it can return
-a different value in pm_runtime_force_suspend() compared to when called in
-pm_runtime_force_resume(). Different return values can happen if anything
-calls PM runtime functions in between, and causes the parent child_count
-to increase on every resume.
+The completion ring for tx is using the wrong size to size the ring,
+oversizing the ring by two orders of magniture.
 
-So far I've seen the issue only for omapdrm that does complicated things
-with PM runtime calls during system suspend for legacy reasons:
+Correct the allocation size and use kcalloc_node() to allocate the ring.
+Fix mistaken GFP defines in similar allocations.
 
-omap_atomic_commit_tail() for omapdrm.0
- dispc_runtime_get()
-  wakes up 58000000.dss as it's the dispc parent
-   dispc_runtime_resume()
-    rpm_resume() increases parent child_count
- dispc_runtime_put() won't idle, PM runtime suspend blocked
-pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
- __update_runtime_status()
-system suspended
-pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
- pm_runtime_enable() only called because of pm_runtime_need_not_resume()
-omap_atomic_commit_tail() for omapdrm.0
- dispc_runtime_get()
-  wakes up 58000000.dss as it's the dispc parent
-   dispc_runtime_resume()
-    rpm_resume() increases parent child_count
- dispc_runtime_put() won't idle, PM runtime suspend blocked
-...
-rpm_suspend for 58000000.dss but parent child_count is now unbalanced
-
-Let's fix the issue by adding a flag for needs_force_resume and use it in
-pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
-
-Additionally omapdrm system suspend could be simplified later on to avoid
-lots of unnecessary PM runtime calls and the complexity it adds. The
-driver can just use internal functions that are shared between the PM
-runtime and system suspend related functions.
-
-Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Tested-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: 4.16+ <stable@vger.kernel.org> # 4.16+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/1617026056-50483-4-git-send-email-dennis.dalessandro@cornelisnetworks.com
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/power/runtime.c |   10 +++++++---
- include/linux/pm.h           |    1 +
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/hfi1/ipoib.h    |  3 ++-
+ drivers/infiniband/hw/hfi1/ipoib_tx.c | 14 +++++++-------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -1637,6 +1637,7 @@ void pm_runtime_init(struct device *dev)
- 	dev->power.request_pending = false;
- 	dev->power.request = RPM_REQ_NONE;
- 	dev->power.deferred_resume = false;
-+	dev->power.needs_force_resume = 0;
- 	INIT_WORK(&dev->power.work, pm_runtime_work);
+diff --git a/drivers/infiniband/hw/hfi1/ipoib.h b/drivers/infiniband/hw/hfi1/ipoib.h
+index f650cac9d424..d30c23b6527a 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib.h
++++ b/drivers/infiniband/hw/hfi1/ipoib.h
+@@ -52,8 +52,9 @@ union hfi1_ipoib_flow {
+  * @producer_lock: producer sync lock
+  * @consumer_lock: consumer sync lock
+  */
++struct ipoib_txreq;
+ struct hfi1_ipoib_circ_buf {
+-	void **items;
++	struct ipoib_txreq **items;
+ 	unsigned long head;
+ 	unsigned long tail;
+ 	unsigned long max_items;
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+index edd4eeac8dd1..cdc26ee3cf52 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+@@ -702,14 +702,14 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
  
- 	dev->power.timer_expires = 0;
-@@ -1804,10 +1805,12 @@ int pm_runtime_force_suspend(struct devi
- 	 * its parent, but set its status to RPM_SUSPENDED anyway in case this
- 	 * function will be called again for it in the meantime.
- 	 */
--	if (pm_runtime_need_not_resume(dev))
-+	if (pm_runtime_need_not_resume(dev)) {
- 		pm_runtime_set_suspended(dev);
--	else
-+	} else {
- 		__update_runtime_status(dev, RPM_SUSPENDED);
-+		dev->power.needs_force_resume = 1;
-+	}
+ 	priv->tx_napis = kcalloc_node(dev->num_tx_queues,
+ 				      sizeof(struct napi_struct),
+-				      GFP_ATOMIC,
++				      GFP_KERNEL,
+ 				      priv->dd->node);
+ 	if (!priv->tx_napis)
+ 		goto free_txreq_cache;
  
- 	return 0;
+ 	priv->txqs = kcalloc_node(dev->num_tx_queues,
+ 				  sizeof(struct hfi1_ipoib_txq),
+-				  GFP_ATOMIC,
++				  GFP_KERNEL,
+ 				  priv->dd->node);
+ 	if (!priv->txqs)
+ 		goto free_tx_napis;
+@@ -741,9 +741,9 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
+ 					     priv->dd->node);
  
-@@ -1834,7 +1837,7 @@ int pm_runtime_force_resume(struct devic
- 	int (*callback)(struct device *);
- 	int ret = 0;
+ 		txq->tx_ring.items =
+-			vzalloc_node(array_size(tx_ring_size,
+-						sizeof(struct ipoib_txreq)),
+-				     priv->dd->node);
++			kcalloc_node(tx_ring_size,
++				     sizeof(struct ipoib_txreq *),
++				     GFP_KERNEL, priv->dd->node);
+ 		if (!txq->tx_ring.items)
+ 			goto free_txqs;
  
--	if (!pm_runtime_status_suspended(dev) || pm_runtime_need_not_resume(dev))
-+	if (!pm_runtime_status_suspended(dev) || !dev->power.needs_force_resume)
- 		goto out;
+@@ -764,7 +764,7 @@ free_txqs:
+ 		struct hfi1_ipoib_txq *txq = &priv->txqs[i];
  
- 	/*
-@@ -1853,6 +1856,7 @@ int pm_runtime_force_resume(struct devic
+ 		netif_napi_del(txq->napi);
+-		vfree(txq->tx_ring.items);
++		kfree(txq->tx_ring.items);
+ 	}
  
- 	pm_runtime_mark_last_busy(dev);
- out:
-+	dev->power.needs_force_resume = 0;
- 	pm_runtime_enable(dev);
- 	return ret;
- }
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -600,6 +600,7 @@ struct dev_pm_info {
- 	unsigned int		idle_notification:1;
- 	unsigned int		request_pending:1;
- 	unsigned int		deferred_resume:1;
-+	unsigned int		needs_force_resume:1;
- 	unsigned int		runtime_auto:1;
- 	bool			ignore_children:1;
- 	unsigned int		no_callbacks:1;
+ 	kfree(priv->txqs);
+@@ -817,7 +817,7 @@ void hfi1_ipoib_txreq_deinit(struct hfi1_ipoib_dev_priv *priv)
+ 		hfi1_ipoib_drain_tx_list(txq);
+ 		netif_napi_del(txq->napi);
+ 		(void)hfi1_ipoib_drain_tx_ring(txq, txq->tx_ring.max_items);
+-		vfree(txq->tx_ring.items);
++		kfree(txq->tx_ring.items);
+ 	}
+ 
+ 	kfree(priv->txqs);
+-- 
+2.30.2
+
 
 
