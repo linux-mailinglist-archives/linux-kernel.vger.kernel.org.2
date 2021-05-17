@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8474738389A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6018538368C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345905AbhEQP5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
+        id S242737AbhEQPdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:33:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244510AbhEQPio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:38:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6639D61CF9;
-        Mon, 17 May 2021 14:40:50 +0000 (UTC)
+        id S243963AbhEQPSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:18:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 827A861C72;
+        Mon, 17 May 2021 14:33:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262450;
-        bh=x6K84QG3HR9iITJc6J1QC6FonyXIiybpclJ9Qed+jzA=;
+        s=korg; t=1621262018;
+        bh=kyz1Z4j1fx7MLGJPzpfVnpMljw7rHnaU+HUC3GaINkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PIw7mVSuPRZ3ekS1NmN+eZCcLVVAwioVABnYjlmieeL0osCfg+8KCqj75Wf0+zdLs
-         uOWfzvCjzCo5N9lHOHCK0mRuPBfBNB4k7xSyJ9CF4SY6StlEuMKsqOzStTeWq8if61
-         VwTLJ6jGIFoh6o7KEzuRik9VcfpTUymBRLLOI29U=
+        b=1Qka3AMwdOlx4iKO47+xMb0jDBPSNquzZfosc9SJspF40NWfyeKjrKydkn+eQJsAA
+         WxYouxCJSAu92lw3+mIRE3fXYgW26821UGs6DAufwiT4B4dAd7Kp2+kaps5BRU8njw
+         iYXsjQrVacJ5SvqgiVfa7w5LLdxYQHm1ufrrf2KQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 190/289] i40e: fix the restart auto-negotiation after FEC modified
+Subject: [PATCH 5.11 204/329] ksm: fix potential missing rmap_item for stable_node
 Date:   Mon, 17 May 2021 16:01:55 +0200
-Message-Id: <20210517140311.507682527@linuxfoundation.org>
+Message-Id: <20210517140309.012809493@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 61343e6da7810de81d6b826698946ae4f9070819 ]
+[ Upstream commit c89a384e2551c692a9fe60d093fd7080f50afc51 ]
 
-When FEC mode was changed the link didn't know it because
-the link was not reset and new parameters were not negotiated.
-Set a flag 'I40E_AQ_PHY_ENABLE_ATOMIC_LINK' in 'abilities'
-to restart the link and make it run with the new settings.
+When removing rmap_item from stable tree, STABLE_FLAG of rmap_item is
+cleared with head reserved.  So the following scenario might happen: For
+ksm page with rmap_item1:
 
-Fixes: 1d96340196f1 ("i40e: Add support FEC configuration for Fortville 25G")
-Signed-off-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+cmp_and_merge_page
+  stable_node->head = &migrate_nodes;
+  remove_rmap_item_from_tree, but head still equal to stable_node;
+  try_to_merge_with_ksm_page failed;
+  return;
+
+For the same ksm page with rmap_item2, stable node migration succeed this
+time.  The stable_node->head does not equal to migrate_nodes now.  For ksm
+page with rmap_item1 again:
+
+cmp_and_merge_page
+ stable_node->head != &migrate_nodes && rmap_item->head == stable_node
+ return;
+
+We would miss the rmap_item for stable_node and might result in failed
+rmap_walk_ksm().  Fix this by set rmap_item->head to NULL when rmap_item
+is removed from stable tree.
+
+Link: https://lkml.kernel.org/r/20210330140228.45635-5-linmiaohe@huawei.com
+Fixes: 4146d2d673e8 ("ksm: make !merge_across_nodes migration safe")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Hugh Dickins <hughd@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/ksm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index 31d48a85cfaf..13554706c180 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -1409,7 +1409,8 @@ static int i40e_set_fec_cfg(struct net_device *netdev, u8 fec_cfg)
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 9694ee2c71de..b32391ccf6d5 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -794,6 +794,7 @@ static void remove_rmap_item_from_tree(struct rmap_item *rmap_item)
+ 		stable_node->rmap_hlist_len--;
  
- 		memset(&config, 0, sizeof(config));
- 		config.phy_type = abilities.phy_type;
--		config.abilities = abilities.abilities;
-+		config.abilities = abilities.abilities |
-+				   I40E_AQ_PHY_ENABLE_ATOMIC_LINK;
- 		config.phy_type_ext = abilities.phy_type_ext;
- 		config.link_speed = abilities.link_speed;
- 		config.eee_capability = abilities.eee_capability;
+ 		put_anon_vma(rmap_item->anon_vma);
++		rmap_item->head = NULL;
+ 		rmap_item->address &= PAGE_MASK;
+ 
+ 	} else if (rmap_item->address & UNSTABLE_FLAG) {
 -- 
 2.30.2
 
