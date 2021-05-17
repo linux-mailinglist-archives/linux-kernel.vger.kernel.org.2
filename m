@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FBC386C58
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8820386C5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245187AbhEQVgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbhEQVgr (ORCPT
+        id S245225AbhEQVhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:37:16 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:44575 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232924AbhEQVhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:36:47 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6329DC061573;
-        Mon, 17 May 2021 14:35:30 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id t4so3908817plc.6;
-        Mon, 17 May 2021 14:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=attsytHbipYOgWpcPcHpCKVvuqA3N68XPfEcSSoxPl4=;
-        b=iD4SGUZBwMZn+yiNQThfZPnDo/oWRoyVWa/mOrYLbx6DkDNhae0qy28018ofSx6CLH
-         XVur7zjLaQUgql8lZYMaPAAeCqAiJwRCqHWP+xn83pnXJ8/M5ih3u24gsxUjnrA0VSpp
-         oJpnhusNH/V51CsqE/DScakTZl3Xc5pVS0f+WCJbtWySDRsPyStR2gAyy/f0C9RapEeU
-         rO9Q9yCKKQQJCsYMp9OBxuSsjZ5L1nA2GaEUWhcLVZue4g+EGRqY4QCgN+X3lmj97Nll
-         U2hDzobCbEGVHYkAPMhdejgyT9WYyY3JPzR3u6IAwgHYqNgDAV7Y4Sei7TP53gWpsb4/
-         mO7A==
+        Mon, 17 May 2021 17:37:15 -0400
+Received: by mail-ot1-f52.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so6835448otp.11;
+        Mon, 17 May 2021 14:35:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=attsytHbipYOgWpcPcHpCKVvuqA3N68XPfEcSSoxPl4=;
-        b=kSIgLal0m8II8AhyQPm9PR/yEYkTJg5Xm15RucrlypNRyWFg/VBu6o+/lPwfASIB6D
-         Umg4NmUKMQUNF8GvQfirkwp0ll1umLViDuWZYsUtK8qVXIFTn4/dHG1VyYY4M0tMrAmu
-         mtXBtMBM/anbi3vQpeaZWom9hjW9mOZin/GzP5dQjNGWwF+6KugTM87DaQCczuz3Pg9F
-         kZ1t0nUKG0UHKdEK3i31zAB+zI/qA1jSGe569nw2a1BGjxX1LSnkeSycggsxu6WxPVmT
-         X8m+bqeBXUhO8Ey+oJj8hoEcZP07MZ5+jBNiTnmfgYieSHKEovQUQ6ERKJ476qWo6urS
-         IjnA==
-X-Gm-Message-State: AOAM532F3XZ0TggCc32sIcPM8fjyJhO0JAA3oF5NvqSkH00tVHxxxFm/
-        K3t2g3jjGWpF5lsZM060vJluKqiOm4DUt8X1hkA=
-X-Google-Smtp-Source: ABdhPJwee59COR8BdsR2cusX9UMgl3OqHaZG/atIfTb4g+UFP73ptSdjhXjC8Ewe2BJXHJyDd4yYJA==
-X-Received: by 2002:a17:90a:e7c2:: with SMTP id kb2mr1541458pjb.193.1621287329445;
-        Mon, 17 May 2021 14:35:29 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id u12sm10293593pfh.122.2021.05.17.14.35.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XPdlbaqLwEbxelncGzNkxhlDf0GmnJJ0Y3ECBpVsnQc=;
+        b=NvBn1DYwmckUv/3a3TwNfL5LmJuBPR1Z5XMxMtp+13MCb6GIcelyGmnO0A4ubpfV7Z
+         6TIqXI3xnyuA93Py6Yz2aKB+H433WcfCmEEEzutEwrbEsJSyM143yTfMVudtJFPo2Rwh
+         jpP6uFlu0u0fkCJdAc8Swe3gJxQ+l/AHe7SJyAOtIL86vmLwdZ+tZ1LAMyvRTpLU0veI
+         Int493Ozt4yE9nlY3Eokidd3TJxtoz07NID44Rb9jq+thyslbkpXH2ms44l/hXYHZs6K
+         tHZj08hX4dc8mxhK7Lr3G8sOMkTtwswXDeegfevfp4shzGEAu2x7nHC1tre4XSnvQPxK
+         DASg==
+X-Gm-Message-State: AOAM532K3pht84+28NrWUUK9KhH8hRj8AtjXXTFQ+jizIKGtVXlbb9RD
+        llSisYe/exdS0r2dM/mTgw==
+X-Google-Smtp-Source: ABdhPJy5R0OV5QZ4VZ4nYQRLK3iULnhu/xdvLPZ60UxcSHkTEXdEyHyKte/+dsU9ACBHlr6Pdl2I5g==
+X-Received: by 2002:a9d:58c1:: with SMTP id s1mr1254300oth.361.1621287357107;
+        Mon, 17 May 2021 14:35:57 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 34sm3343602otf.38.2021.05.17.14.35.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 14:35:28 -0700 (PDT)
-Message-ID: <60a2e1a0.1c69fb81.8df1.388f@mx.google.com>
-Date:   Mon, 17 May 2021 14:35:28 -0700 (PDT)
-X-Google-Original-Date: Mon, 17 May 2021 21:35:27 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-Subject: RE: [PATCH 5.12 000/363] 5.12.5-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 17 May 2021 14:35:55 -0700 (PDT)
+Received: (nullmailer pid 3242373 invoked by uid 1000);
+        Mon, 17 May 2021 21:35:54 -0000
+Date:   Mon, 17 May 2021 16:35:54 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Matt Merhar <mattmerhar@protonmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>, linux-kernel@vger.kernel.org,
+        Zhang Rui <rui.zhang@intel.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        devicetree@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, Amit Kucheria <amitk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 1/7] dt-bindings: thermal: Add binding for Tegra30
+ thermal sensor
+Message-ID: <20210517213554.GA3242321@robh.at.kernel.org>
+References: <20210510223816.18565-1-digetx@gmail.com>
+ <20210510223816.18565-2-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510223816.18565-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 15:57:46 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.12.5 release.
-> There are 363 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, 11 May 2021 01:38:10 +0300, Dmitry Osipenko wrote:
+> All NVIDIA Tegra30 SoCs have on-chip sensors which monitor temperature
+> and voltage of the SoC. Sensors also controls CPU x2 freq throttle and
+> emits emergency shutdown signal. TSENSOR has has two separate channels
+> for each sensor placed in a different parts of the SoC. Add binding for
+> the sensor hardware.
 > 
-> Responses should be made by Wed, 19 May 2021 14:02:12 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../thermal/nvidia,tegra30-tsensor.yaml       | 78 +++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/thermal/nvidia,tegra30-tsensor.yaml
 > 
 
-5.12.5-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
-
+Reviewed-by: Rob Herring <robh@kernel.org>
