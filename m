@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F5E382DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94DC382DDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237519AbhEQNs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
+        id S237526AbhEQNtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237511AbhEQNs5 (ORCPT
+        with ESMTP id S237488AbhEQNtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:48:57 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D012EC061573;
-        Mon, 17 May 2021 06:47:39 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id f12so7349792ljp.2;
-        Mon, 17 May 2021 06:47:39 -0700 (PDT)
+        Mon, 17 May 2021 09:49:51 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F20C061573;
+        Mon, 17 May 2021 06:48:33 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so5624723oto.0;
+        Mon, 17 May 2021 06:48:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9e7zfBcBd7A/Xvu3PkPKu0pjzUxa1GWfBXHzfl9E570=;
-        b=PrZdyOJqKOUek2FqnlPjbdD1anGIxKZ1HM6fk8hWPAX2d6ZqJ4n3KH8ZZl9+WlP31q
-         jSu6wZ3/tOehlUE2tl+w9gEYhKIEoDsQ8dDoT0EGeWGwh9+cwfDLzNYLbJiFKdQ/Sf//
-         1Sp1h9z6RhF993Gsl3eKjIrh38JceX0p9CMhoe1CjJMuqsdC0TuIn3FQvME5sr5684yA
-         0VQikEPAfD0/of8svrmBTdtnr5HX8XCkBn8M1aMLLtCIywQAQoJNHJ/TXeUb5IB3UZkh
-         OyWXj6REjPn898hmT/ncGBAnI+JxIiXq/ABeL6odiccbtVM/c57+FORXFePyNpSJw0Vw
-         NsLA==
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Y7G3TzUfMF26NrwSfO4KjIdPwYhYispCIDNJBE6rnKU=;
+        b=IlUjmEUztnRpvBfIDXO7inyXDXdMskWLTvaqVIFQNg/sz7Sm85rGV+V/NycCnzCMqp
+         pR41oIEn6xzSWBDCE66TpcjX6qvaIxxkpGkrsNqRDG6fpqnsu2OSG8vTPdzkJ4UQcAmF
+         vCk4Og0AUaXC+Rx6Tycg1z1yITNJBeGIVh+EKO+wJpyfqne9xBYo6GBQVfvgLU03xVpB
+         qHvIQ3dwr+nVtRMdn4xrH2UGRqgIu9jxk4ditSoGxHEyIiEN7hQeODI70v97xH6/mTw3
+         0h3rOWsJ0JiedFQaXs1hiDZDR4l0+g8RR+/wHKjxHwaBPWEc0DGLcB9//Ng8jc9U+/9E
+         a5MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9e7zfBcBd7A/Xvu3PkPKu0pjzUxa1GWfBXHzfl9E570=;
-        b=SSyI9q+KIDQlRo2IGs8J62mXx9Foqo9SjufX9tTJo1q42LRefSXLYHFbf9JXoCKPqV
-         fEePDOZnJlzY6q2KwqBRot/GT0qxCYuT3YrPcN7YfB42YVEtqbBNJPaklPXHTkxohepv
-         tIBtgRhFipV5JNM9OXBXj4pqOqxUrSYpTjJJa0PUrCia97kMfsm82C6DzMyPklUSqGDa
-         /ULfYrk4bZtvoiX1xa5UaXqUHZ25wht8mL/+baoT/Jyyo197JbwLEm0fB6XWSj8mAUSo
-         eLsx4ixD+JXzPSuCI4vcxELDjfp4IJGMPds8kn/oXZoAwRlvc9tXRXNNrZFFC7v/AWqY
-         Z69w==
-X-Gm-Message-State: AOAM531CofyhBm5yq5Yc4dZX/2+P0zeI75YwO1a6N2rwwpO8EO0tEd+z
-        uF8QbVykx3Jzgvs8mg+JdVtKLxxxXJM=
-X-Google-Smtp-Source: ABdhPJxq3aqCts1cBMnRl6Ni2/bjF59U5Ibji2h43oSZvIXB9q/82V9fZ3JtbZ+bOZYSSGWMFIsUCA==
-X-Received: by 2002:a2e:b5d6:: with SMTP id g22mr49686115ljn.423.1621259258139;
-        Mon, 17 May 2021 06:47:38 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id l2sm1962641lfc.121.2021.05.17.06.47.37
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Y7G3TzUfMF26NrwSfO4KjIdPwYhYispCIDNJBE6rnKU=;
+        b=VbvS1DaTaWkbW40H2+c6Ve4sFIAaXcEHMKxwiWEv2GqBQ/D2oLLpL9PTUXe/EKqZs5
+         /eWv+UQvH/imgRNUSbPVAAwAPLP2aEpCsPNS/3s4oiGlrrdfYY1JREWLFDmKmnMQsRo8
+         IUSVE0iE78Kei+/079H4QioLD0RG/eRvZDEiauqxvt4ljHEKC6XHmuRCSQdmXTJdk6sj
+         T62GUaa7fJ5UGxF4nykZpCK5NxBLorrtNBY3iJhiPQE+zRlf5unqqnLMkZZM4daYNERN
+         ZLz/5XXgIbA3B8DkZiuAw0gTunMNARWIYSGwtiZpIb8TBdtuHK7hxbzR4WqYCX+9dPRQ
+         iaWw==
+X-Gm-Message-State: AOAM530mlWSn3ll8uwQtblMdUBVWhqMzCmW7rAL+JGAuOKF33NpPaAeE
+        X0qLbuQZ+veohiIHWnYUvwyOxu4Ty3KYTQ==
+X-Google-Smtp-Source: ABdhPJyLzO83i4D+oIyg6HoPQKkQpEgGaCBeACLMXfFi8Xmghwtvoqj4t3iSgcq4bojWvN+4i7BQhA==
+X-Received: by 2002:a9d:a14:: with SMTP id 20mr45335812otg.86.1621259312975;
+        Mon, 17 May 2021 06:48:32 -0700 (PDT)
+Received: from [192.168.99.80] (142-79-211-230.starry-inc.net. [142.79.211.230])
+        by smtp.gmail.com with ESMTPSA id f9sm3160208otq.27.2021.05.17.06.48.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 06:47:37 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] memory: tegra124-emc: Fix compilation warnings on
- 64bit platforms
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210516161214.4693-1-digetx@gmail.com>
- <20210516161214.4693-4-digetx@gmail.com>
- <936cfc7d-737e-a582-ea60-ad2ba5b4ca72@canonical.com>
- <1d80ee0f-de4c-24d0-154f-20841874bf20@gmail.com>
- <4ea1bf29-c353-6fcf-5248-bfee67d5c361@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c120ecf5-7202-9f1d-6e70-a99db2f5335f@gmail.com>
-Date:   Mon, 17 May 2021 16:47:37 +0300
+        Mon, 17 May 2021 06:48:32 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] usb: early: Avoid using DbC if already enabled
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Jann Horn <jannh@google.com>, Lee Jones <lee.jones@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <cover.1620950220.git.connojdavis@gmail.com>
+ <d160cee9b61c0ec41c2cd5ff9b4e107011d39d8c.1620952511.git.connojdavis@gmail.com>
+ <8ccce25a-e3ca-cb30-f6a3-f9243a85a49b@suse.com>
+From:   Connor Davis <connojdavis@gmail.com>
+Message-ID: <16400ee4-4406-8b26-10c0-a423b2b1fed0@gmail.com>
+Date:   Mon, 17 May 2021 07:48:52 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <4ea1bf29-c353-6fcf-5248-bfee67d5c361@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <8ccce25a-e3ca-cb30-f6a3-f9243a85a49b@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.05.2021 16:39, Krzysztof Kozlowski пишет:
-> On 17/05/2021 09:35, Dmitry Osipenko wrote:
->> 17.05.2021 14:28, Krzysztof Kozlowski пишет:
->>> On 16/05/2021 12:12, Dmitry Osipenko wrote:
->>>> Fix compilation warning on 64bit platforms caused by implicit promotion
->>>> of 32bit signed integer to a 64bit unsigned value which happens after
->>>> enabling compile-testing of the driver.
->>>>
->>>> Suggested-by: Nathan Chancellor <nathan@kernel.org>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  drivers/memory/tegra/tegra124-emc.c | 4 ++--
->>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
->>>> index 5699d909abc2..c9eb948cf4df 100644
->>>> --- a/drivers/memory/tegra/tegra124-emc.c
->>>> +++ b/drivers/memory/tegra/tegra124-emc.c
->>>> @@ -272,8 +272,8 @@
->>>>  #define EMC_PUTERM_ADJ				0x574
->>>>  
->>>>  #define DRAM_DEV_SEL_ALL			0
->>>> -#define DRAM_DEV_SEL_0				(2 << 30)
->>>> -#define DRAM_DEV_SEL_1				(1 << 30)
->>>> +#define DRAM_DEV_SEL_0				(2u << 30)
->>>> +#define DRAM_DEV_SEL_1				(1u << 30)
->>>
->>> Why not using BIT()? This would make even this 2<<30 less awkard...
+
+On 5/17/21 3:32 AM, Jan Beulich wrote:
+> On 14.05.2021 02:56, Connor Davis wrote:
+>> Check if the debug capability is enabled in early_xdbc_parse_parameter,
+>> and if it is, return with an error. This avoids collisions with whatever
+>> enabled the DbC prior to linux starting.
+> Doesn't this go too far and prevent use even if firmware (perhaps
+> mistakenly) left it enabled?
+>
+> Jan
+
+Yes, but how is one supposed to distinguish the broken firmware and 
+non-broken
+
+firmware cases?
+
+>
+>> Signed-off-by: Connor Davis <connojdavis@gmail.com>
+>> ---
+>>   drivers/usb/early/xhci-dbc.c | 10 ++++++++++
+>>   1 file changed, 10 insertions(+)
 >>
->> The bitfield 31:30 is a enum, 3 is a wrong value. Formally it's
->> incorrect to use the BIT() macro here.
-> 
-> Why "3"? BIT(31) is the same as 2<<30.
+>> diff --git a/drivers/usb/early/xhci-dbc.c b/drivers/usb/early/xhci-dbc.c
+>> index be4ecbabdd58..ca67fddc2d36 100644
+>> --- a/drivers/usb/early/xhci-dbc.c
+>> +++ b/drivers/usb/early/xhci-dbc.c
+>> @@ -642,6 +642,16 @@ int __init early_xdbc_parse_parameter(char *s)
+>>   	}
+>>   	xdbc.xdbc_reg = (struct xdbc_regs __iomem *)(xdbc.xhci_base + offset);
+>>   
+>> +	if (readl(&xdbc.xdbc_reg->control) & CTRL_DBC_ENABLE) {
+>> +		pr_notice("xhci debug capability already in use\n");
+>> +		early_iounmap(xdbc.xhci_base, xdbc.xhci_length);
+>> +		xdbc.xdbc_reg = NULL;
+>> +		xdbc.xhci_base = NULL;
+>> +		xdbc.xhci_length = 0;
+>> +
+>> +		return -ENODEV;
+>> +	}
+>> +
+>>   	return 0;
+>>   }
+>>   
+>>
+Thanks,
 
-By 3 I meant BIT(31)|BIT(30). This bitfield is explicitly designated as
-a enum in the hardware documentation.
+Connor
 
-> It's common to use BIT for
-> register fields which do not accept all possible values. Now you
-> basically reimplement BIT() which is error-prone.
-
-Could you please show couple examples? The common practice today is to
-use FIELD_PREP helpers, but this driver was written before these helpers
-existed.
