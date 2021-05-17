@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946A03824F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1703824FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbhEQHEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234274AbhEQHEr (ORCPT
+        id S235137AbhEQHGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:06:03 -0400
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:38433 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235197AbhEQHFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:04:47 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB86FC061573;
-        Mon, 17 May 2021 00:03:31 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso3145522pjb.5;
-        Mon, 17 May 2021 00:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kso+u5oDEUI6hC/TpN6G+VEPeqtVt8JMKDkpe0hvQw4=;
-        b=NEbHNwThWEj/g23crYRi7RqFA8QTN7P7vSE8qulvyTyQ6IEA61lbeLgBIMLxpkA5kZ
-         ugEXfzy15FDU6bAn2yycy1il8SfAeERdmFfccsen7A2kODq5Zn/w4FvX3wlsdKrU+8u9
-         a5RfT7u8xCwzH96fptkWr3fGInei2PDt1l9JfMIdwsktQ2Tl149U+R07krzvwhkl/iY5
-         HAGionsDO3VG4dnaLIokeyFqrTBmQydqVgclx0qJUoLbm/BQycSSeAHfJF7YkxQPzVz1
-         IF4DXfGjlsuH2IOQ5ETXDc2Kia28lut6eHhyLpVZzQtXKD2MyEw8puW1psx4VfHsiJ13
-         SfBQ==
+        Mon, 17 May 2021 03:05:44 -0400
+Received: by mail-ua1-f50.google.com with SMTP id k45so1780428uag.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:04:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kso+u5oDEUI6hC/TpN6G+VEPeqtVt8JMKDkpe0hvQw4=;
-        b=AhHFJq6bxUM/lRkmY+mOBtlLQ9k/rNYWYJRA3970rlhd4CVjr1rSM5Ys6rdWG6uowf
-         coPQO9t1pV6ZvBnNwvCcGk+UFhlKi8uyN1RP7Kgzks9cByS2oo14PpYt3cHCeVDEPl6R
-         ljWaMGJn1crzJhxcOQt/GBFlUdcI91O/TMOY6cZQdj2e7uT6xriouBlYPSViEmIn7CyK
-         P8ZBq+AoKTow40abOsKJECtPYS1Eyj9BhcT7vFtmGcMu8vToIK6YZ3wRgK9GSfCJAc0w
-         b7p7uUnQ4PwX0EGqF7D+My8VQkAQ7qw2BdwUQ0IGPGP2Ibm5xCAs6d7vV8+Gk6QVQk4N
-         yphw==
-X-Gm-Message-State: AOAM533G446OIKOH39jxCKjk31pU2vU/MHLxw3D1BN0po/TYaidLU2Wc
-        o3CgxIbnYbgbRBQOAFnaVz61tuu/ebjGs3+oSZE=
-X-Google-Smtp-Source: ABdhPJzEYwkmCqhc0PcoCvbscW8cdar0csJ9Ro1rhG3jcTsBopXsi87oK+hq4MY+OFYFMaVphW4HofSxoxS8Snj4u4Q=
-X-Received: by 2002:a17:90a:d184:: with SMTP id fu4mr1421945pjb.129.1621235011120;
- Mon, 17 May 2021 00:03:31 -0700 (PDT)
+        bh=5C/REeXdcVCAYpjd6rjo76Xzl3K9167BGJ9+kDZAb2U=;
+        b=MBhaO9uxEoQAjBjwKzypRIQ6ctDenaCx7kdUMWjzyxshYdiRKe8YKjHYQvtht7l3Em
+         wJi2EPCui+YVx8voCG49a/p+uuLbe9HjKXJhK6mbXLVO5jsu3gf8wWIcIeoymKCcnIE/
+         aU+vFhq1H6E+WIxzlJQ6cVvBF3t8iqQC/co+R3V2NQItCTFnQIrak4OtXQe6Lko3fKVY
+         PA/FZR9NfRVvp5tXS5YDraA3n0i889VQceH4LCvxDY7FTpqsNvqyJfarBqQ46XBYAHzS
+         yPBI8Yqq42GvkhMyj9vxVvcUTb9bfsttSMrmTPWGgs9uZMMx0gTW36e6pJESECt8QLoN
+         wEag==
+X-Gm-Message-State: AOAM531YsNlycATOqfHSTzMCt4YlzPDoMaAeToKy+DIhpma/nCEaA874
+        U/vCvCtrXn9bg0jnhg8jMxRhKFI3qDMJvoEVJrU=
+X-Google-Smtp-Source: ABdhPJz2PVXrgSVOWviCZuZPvaBSRA/JmtIT5f0KqhEH9sqGhNAumf4FL1IjHkG5hnZmIkTIzjg4AS9uFXqWndx2MQE=
+X-Received: by 2002:ab0:2a8b:: with SMTP id h11mr28365814uar.4.1621235067214;
+ Mon, 17 May 2021 00:04:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210513085227.54392-1-colin.king@canonical.com>
-In-Reply-To: <20210513085227.54392-1-colin.king@canonical.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 17 May 2021 10:03:15 +0300
-Message-ID: <CAHp75VdvZEhdmui0+1eS0BXvxBs60=uB0zOPex_TTDTrK7ewnQ@mail.gmail.com>
-Subject: Re: [PATCH][next] gpio: xilinx: Fix potential integer overflow on
- shift of a u32 int
-To:     Colin King <colin.king@canonical.com>
-Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210428063203.691-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210428063203.691-1-thunder.leizhen@huawei.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 17 May 2021 09:04:15 +0200
+Message-ID: <CAMuHMdWX7rC2zswHoo6aFf3CYp3NKAfJ7E0x4W2wbVkybGa84g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] lib: devres: Add error information printing for __devm_ioremap_resource()
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 12:12 PM Colin King <colin.king@canonical.com> wrote:
+Hi Zhen,
+
+On Wed, Apr 28, 2021 at 8:33 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> Ensure that all error handling branches print error information. In this
+> way, when this function fails, the upper-layer functions can directly
+> return an error code without missing debugging information. Otherwise,
+> the error message will be printed redundantly or missing.
 >
-> From: Colin Ian King <colin.king@canonical.com>
+> Fixes: 35bd8c07db2c ("devres: keep both device name and resource name in pretty name")
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+Thanks for your patch, which is now commit 5c3e241f5246445d ("lib:
+devres: Add error information printing for __devm_ioremap_resource()")
+in driver-core-next.
+
+> --- a/lib/devres.c
+> +++ b/lib/devres.c
+> @@ -157,8 +157,10 @@ __devm_ioremap_resource(struct device *dev, const struct resource *res,
+>                                              dev_name(dev), res->name);
+>         else
+>                 pretty_name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
+> -       if (!pretty_name)
+> +       if (!pretty_name) {
+> +               dev_err(dev, "can't generate pretty name for resource %pR\n", res);
+
+If the above fails, it is due to a memory allocation failure, and the
+memory allocation core will have already printed an error message.
+So there is no need to print a second message.
+Hence IMHO this commit should be reverted.
+
+>                 return IOMEM_ERR_PTR(-ENOMEM);
+> +       }
 >
-> The left shift of the u32 integer v is evaluated using 32 bit
-> arithmetic and then assigned to a u64 integer. There are cases
-> where v will currently overflow on the shift. Avoid this by
-> casting it to unsigned long (same type as map[]) before shifting
-> it.
->
-> Addresses-Coverity: ("Unintentional integer overflow")
-> Fixes: 02b3f84d9080 ("gpio: xilinx: Switch to use bitmap APIs")
+>         if (!devm_request_mem_region(dev, res->start, size, pretty_name)) {
+>                 dev_err(dev, "can't request region for resource %pR\n", res);
 
-No, it is a false positive,
+Gr{oetje,eeting}s,
 
->         const unsigned long offset = (bit % BITS_PER_LONG) & BIT(5);
-
-See above, offset is 0 when BITS_PER_LONG == 32 and 32 when it's equal to 64.
-
-> -       map[index] |= v << offset;
-> +       map[index] |= (unsigned long)v << offset;
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
