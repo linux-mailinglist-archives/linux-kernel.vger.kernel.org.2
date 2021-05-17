@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69FB7383788
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE163838CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344517AbhEQPoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:44:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55428 "EHLO mail.kernel.org"
+        id S244128AbhEQQBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:01:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244826AbhEQP2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:28:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C5D561CB6;
-        Mon, 17 May 2021 14:37:20 +0000 (UTC)
+        id S239015AbhEQPlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:41:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7584561D13;
+        Mon, 17 May 2021 14:42:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262241;
-        bh=XfB93B0iqSXfeJP3MGmy9gtOaMXAym7u33cGOrQejFY=;
+        s=korg; t=1621262522;
+        bh=pnKSpHyz9pQmxPkhijylRsJgz8hvUcVRIQ3sz0mB/KM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUsmSxIap4Xk52pZDcuPoEfVdeXHHOccSNQCm7cOo4NgRA2ne7CpZ6PtcFRT0v5uh
-         ZtehcDzbLxZTVHSXxK1Tf1RUINq6Nw3tlZarAaavKnb1hjyyzIZ85Y3BX6kQ9FdzPR
-         F6ePc1PaX6dZDphpCOYFyh5mBH6lM1TQwS7NfW4w=
+        b=IW2YTMMDpi5WF1u1ess6nff4NKml2BOpOmtzjQWO2+ZeoQ9KzniG/97jAVZb7OCXN
+         eAvtSPY6HHMqex8CIlT5XLp/1ipY4ybbHNihwJDFDsgbtcdem/Iker+CKf3cxzlygk
+         Rcll5FVPjfcC944xVC8MSSbnGbKmIXOPiDtLMQtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>,
-        Baoquan He <bhe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 220/329] kernel: kexec_file: fix error return code of kexec_calculate_store_digests()
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>
+Subject: [PATCH 5.10 206/289] arm64: Fix race condition on PG_dcache_clean in __sync_icache_dcache()
 Date:   Mon, 17 May 2021 16:02:11 +0200
-Message-Id: <20210517140309.575076781@linuxfoundation.org>
+Message-Id: <20210517140312.047235100@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
 
-[ Upstream commit 31d82c2c787d5cf65fedd35ebbc0c1bd95c1a679 ]
+commit 588a513d34257fdde95a9f0df0202e31998e85c6 upstream.
 
-When vzalloc() returns NULL to sha_regions, no error return code of
-kexec_calculate_store_digests() is assigned.  To fix this bug, ret is
-assigned with -ENOMEM in this case.
+To ensure that instructions are observable in a new mapping, the arm64
+set_pte_at() implementation cleans the D-cache and invalidates the
+I-cache to the PoU. As an optimisation, this is only done on executable
+mappings and the PG_dcache_clean page flag is set to avoid future cache
+maintenance on the same page.
 
-Link: https://lkml.kernel.org/r/20210309083904.24321-1-baijiaju1990@gmail.com
-Fixes: a43cac0d9dc2 ("kexec: split kexec_file syscall code to kexec_file.c")
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Acked-by: Baoquan He <bhe@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+When two different processes map the same page (e.g. private executable
+file or shared mapping) there's a potential race on checking and setting
+PG_dcache_clean via set_pte_at() -> __sync_icache_dcache(). While on the
+fault paths the page is locked (PG_locked), mprotect() does not take the
+page lock. The result is that one process may see the PG_dcache_clean
+flag set but the I/D cache maintenance not yet performed.
+
+Avoid test_and_set_bit(PG_dcache_clean) in favour of separate test_bit()
+and set_bit(). In the rare event of a race, the cache maintenance is
+done twice.
+
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: <stable@vger.kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Steven Price <steven.price@arm.com>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210514095001.13236-1-catalin.marinas@arm.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/kexec_file.c | 4 +++-
+ arch/arm64/mm/flush.c |    4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index 5c3447cf7ad5..33400ff051a8 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -740,8 +740,10 @@ static int kexec_calculate_store_digests(struct kimage *image)
+--- a/arch/arm64/mm/flush.c
++++ b/arch/arm64/mm/flush.c
+@@ -55,8 +55,10 @@ void __sync_icache_dcache(pte_t pte)
+ {
+ 	struct page *page = pte_page(pte);
  
- 	sha_region_sz = KEXEC_SEGMENT_MAX * sizeof(struct kexec_sha_region);
- 	sha_regions = vzalloc(sha_region_sz);
--	if (!sha_regions)
-+	if (!sha_regions) {
-+		ret = -ENOMEM;
- 		goto out_free_desc;
+-	if (!test_and_set_bit(PG_dcache_clean, &page->flags))
++	if (!test_bit(PG_dcache_clean, &page->flags)) {
+ 		sync_icache_aliases(page_address(page), page_size(page));
++		set_bit(PG_dcache_clean, &page->flags);
 +	}
+ }
+ EXPORT_SYMBOL_GPL(__sync_icache_dcache);
  
- 	desc->tfm   = tfm;
- 
--- 
-2.30.2
-
 
 
