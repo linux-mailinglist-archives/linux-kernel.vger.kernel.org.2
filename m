@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D17383323
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB66C3831A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242270AbhEQOyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39072 "EHLO mail.kernel.org"
+        id S240376AbhEQOiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:38:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240437AbhEQOq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:46:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BCE26141A;
-        Mon, 17 May 2021 14:21:44 +0000 (UTC)
+        id S240217AbhEQOcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:32:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6698D613F2;
+        Mon, 17 May 2021 14:15:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261305;
-        bh=F0wwMLFZkfjf8sQf792pUgIM9/L+mtzINs5RBxdQOxI=;
+        s=korg; t=1621260952;
+        bh=M5+oJRYsV3pUQaiHvw5PgbCbW1aT7Sa7iR37zhCCqJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kY0VigoFvdjIeElXB5j4ivsKn/IS0gqXB3h1z9gLXxqQs/LOQMpSg7GOORKqxk08y
-         Z7Q0GYEODjkjdFtWJknocX7aAYV213K3jX0hZkrR6VacmUQjO4ak1BYMsI4nGEcwqn
-         iG9TXMUW/ZnK89PZbhI9QsIcYlZjrd60J4PAHvZI=
+        b=jGGKwSXKWlkrCi84gEPuzsQVKHXR20118OcpV1jjWWWU4KNqSMvhGuFgWC8dsI2Zr
+         h/5ZkK7Rf2ih1szdLOYaD4zgXBpmJL1TF+WjvRYKqjIK7nq7drEizcv5Ty8Ycp+mAq
+         kjytUV1jzOq8wY6FIK0dQqM5utD2MzGgWBVeVi8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 5.10 003/289] tpm, tpm_tis: Extend locality handling to TPM2 in tpm_tis_gen_interrupt()
-Date:   Mon, 17 May 2021 15:58:48 +0200
-Message-Id: <20210517140305.264795892@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 018/329] fs: dlm: change allocation limits
+Date:   Mon, 17 May 2021 15:58:49 +0200
+Message-Id: <20210517140302.672693733@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Sakkinen <jarkko@kernel.org>
+From: Alexander Aring <aahringo@redhat.com>
 
-commit e630af7dfb450d1c00c30077314acf33032ff9e4 upstream.
+[ Upstream commit c45674fbdda138814ca21138475219c96fa5aa1f ]
 
-The earlier fix (linked) only partially fixed the locality handling bug
-in tpm_tis_gen_interrupt(), i.e. only for TPM 1.x.
+While running tcpkill I experienced invalid header length values while
+receiving to check that a node doesn't try to send a invalid dlm message
+we also check on applications minimum allocation limit. Also use
+DEFAULT_BUFFER_SIZE as maximum allocation limit. The define
+LOWCOMMS_MAX_TX_BUFFER_LEN is to calculate maximum buffer limits on
+application layer, future midcomms layer will subtract their needs from
+this define.
 
-Extend the locality handling to cover TPM2.
-
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-integrity/20210220125534.20707-1-jarkko@kernel.org/
-Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()")
-Reported-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Tested-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_tis_core.c |   10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ fs/dlm/lowcomms.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -709,16 +709,14 @@ static int tpm_tis_gen_interrupt(struct
- 	cap_t cap;
- 	int ret;
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index 0f7fa23cccf0..f827d0b3962a 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -1375,9 +1375,11 @@ void *dlm_lowcomms_get_buffer(int nodeid, int len, gfp_t allocation, char **ppc)
+ 	struct writequeue_entry *e;
+ 	int offset = 0;
  
--	/* TPM 2.0 */
--	if (chip->flags & TPM_CHIP_FLAG_TPM2)
--		return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
--
--	/* TPM 1.2 */
- 	ret = request_locality(chip, 0);
- 	if (ret < 0)
- 		return ret;
+-	if (len > LOWCOMMS_MAX_TX_BUFFER_LEN) {
+-		BUILD_BUG_ON(PAGE_SIZE < LOWCOMMS_MAX_TX_BUFFER_LEN);
++	if (len > DEFAULT_BUFFER_SIZE ||
++	    len < sizeof(struct dlm_header)) {
++		BUILD_BUG_ON(PAGE_SIZE < DEFAULT_BUFFER_SIZE);
+ 		log_print("failed to allocate a buffer of size %d", len);
++		WARN_ON(1);
+ 		return NULL;
+ 	}
  
--	ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc, 0);
-+	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-+		ret = tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
-+	else
-+		ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc, 0);
- 
- 	release_locality(chip, 0);
- 
+-- 
+2.30.2
+
 
 
