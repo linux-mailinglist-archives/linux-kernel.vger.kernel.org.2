@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9547038294B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84B1382951
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbhEQKDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:03:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53218 "EHLO mail.kernel.org"
+        id S236114AbhEQKHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:07:07 -0400
+Received: from www.zeus03.de ([194.117.254.33]:38108 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236220AbhEQKCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:02:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93AEB610CC;
-        Mon, 17 May 2021 10:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621245680;
-        bh=pjeAlJGuvwLhGLn3o0lfWDQoXSJm2BhpCrCVT9m6IZM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E4NxQ1KvX3S5RZrMBneYOB11TYofOPoGoOj9eGevUmsY3m/uw1yPxzanp3l5o8aq1
-         9wvjdwCqpw9Q2UtKidb+dz01ImDCrJRQuBzk1wiwi2rMGuOn9GPPuNRLp3tl8cL1YV
-         Eu3zSk4MMbZs1jjxYBJm+vl+7TOm+IcveEG2228k=
-Date:   Mon, 17 May 2021 12:01:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     sashal@kernel.org, ashok.raj@intel.com, jroedel@suse.de,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [REWORKED PATCH 1/1] iommu/vt-d: Preset Access/Dirty bits for
- IOVA over FL
-Message-ID: <YKI+7mbHwJCeHS6o@kroah.com>
-References: <20210517034913.3432-1-baolu.lu@linux.intel.com>
- <YKIWS0lFKTcZ9094@kroah.com>
- <726aede1-3d9f-6666-b31d-9db8e4301a0c@linux.intel.com>
- <YKIa9dczRk0v9Y2N@kroah.com>
- <cfe7a99c-a5b1-3c27-f44f-101ecdb84f12@linux.intel.com>
+        id S236042AbhEQKDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:03:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=/FxvbSuKC1tmr9/+95uisDIUwuZu
+        1r+6F20Yx4PySKw=; b=AgHOb03L0EvWeU3YMajBBb1smLBdbUYpODjjrJ36Z7x6
+        nqAQRYctI4C/CUUTj8IT+1gDRmnYnS8hGJtgBHSG2JqwSEU2PHZjUb+VgLu+RfQq
+        xPQLJMBME0JAaC/M8qxBlUGBSS+AfKQMTeoIPFXQJ9MYs0sZJdlfODnH0EBJU2Y=
+Received: (qmail 2469005 invoked from network); 17 May 2021 12:02:12 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 May 2021 12:02:12 +0200
+X-UD-Smtp-Session: l3s3148p1@r7iAr4PC7rggARa4RYY7ATBvQ5FTVwg4
+Date:   Mon, 17 May 2021 12:02:04 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] platform/x86: samsung-laptop: use octal numbers
+ for rwx file permissions
+Message-ID: <YKI/HD7qZB6Seh/+@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+References: <20210504170030.58447-1-wsa+renesas@sang-engineering.com>
+ <CAHp75VepeO6-A9-xJqjpEDZa0XDyNbat0PBrtrgFEgJ4yxh4kA@mail.gmail.com>
+ <CAHp75VdSv4Ja7+bjPDvOawuv1ukhKZ==bjQ_MQbNPUds_7mVZw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AuwULfkSGg+bPGLa"
 Content-Disposition: inline
-In-Reply-To: <cfe7a99c-a5b1-3c27-f44f-101ecdb84f12@linux.intel.com>
+In-Reply-To: <CAHp75VdSv4Ja7+bjPDvOawuv1ukhKZ==bjQ_MQbNPUds_7mVZw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 03:51:13PM +0800, Lu Baolu wrote:
-> Hi Greg,
-> 
-> On 5/17/21 3:27 PM, Greg KH wrote:
-> > On Mon, May 17, 2021 at 03:17:53PM +0800, Lu Baolu wrote:
-> > > Hi Greg,
-> > > 
-> > > On 5/17/21 3:07 PM, Greg KH wrote:
-> > > > On Mon, May 17, 2021 at 11:49:13AM +0800, Lu Baolu wrote:
-> > > > > [ Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3 ]
-> > > > > 
-> > > > > The Access/Dirty bits in the first level page table entry will be set
-> > > > > whenever a page table entry was used for address translation or write
-> > > > > permission was successfully translated. This is always true when using
-> > > > > the first-level page table for kernel IOVA. Instead of wasting hardware
-> > > > > cycles to update the certain bits, it's better to set them up at the
-> > > > > beginning.
-> > > > > 
-> > > > > Suggested-by: Ashok Raj <ashok.raj@intel.com>
-> > > > > Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> > > > > Link: https://lore.kernel.org/r/20210115004202.953965-1-baolu.lu@linux.intel.com
-> > > > > Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > > ---
-> > > > >    drivers/iommu/intel/iommu.c | 14 ++++++++++++--
-> > > > >    include/linux/intel-iommu.h |  2 ++
-> > > > >    2 files changed, 14 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > [Note:
-> > > > > - This is a reworked patch of
-> > > > >     https://lore.kernel.org/stable/20210512144819.664462530@linuxfoundation.org/T/#m65267f0a0091c2fcbde097cea91089775908faad.
-> > > > > - It aims to fix a reported issue of
-> > > > >     https://bugzilla.kernel.org/show_bug.cgi?id=213077.
-> > > > > - Please help to review and test.]
-> > > > 
-> > > > What stable tree(s) is this supposed to be for?
-> > > 
-> > > It's for 5.10.37.
-> > 
-> > But the above commit is already in 5.10.y.  And what about 5.11 and
-> > 5.12, were those backports incorrect?
-> 
-> Above commit is now only in v5.10.37. Other 5.10.y are not impacted.
-> 
-> 5.11 and 5.12 both have correct backports.
 
-Thanks for this, I've reverted the offending commit and added this one
-in it's place.
+--AuwULfkSGg+bPGLa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+
+> > > -       debugfs_create_file("call", S_IFREG | S_IRUGO, root, samsung,
+> > > +       debugfs_create_file("call", S_IFREG | 0444, root, samsung,
+>=20
+> Actually you may drop IFREG as well as debugfs will add it if there is
+> no conflicting file type defined.
+
+Oh, I missed this back then. Quoting only relevant parts of a message
+helps me to avoid that ;)
+
+I will add this, to patch 2, though. This is only a plain conversion. v3
+coming in a minute.
+
+
+--AuwULfkSGg+bPGLa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCiPxgACgkQFA3kzBSg
+KbZfAxAAn+fNp1VOJnan7vF9NWywThmWildOGGMg40sGFK7hS1TCQS9sEgzXpXAo
+wMm0HKPlLRCSS0K+7KJNnMIOP88tJz6gedVJE6lCeookcUVtyR84tsg6w7JsPONN
+z+U0CyXszO7PXj17huNUb0J1+sstu0q/ZcmiCIFEjcHAfmKTFffCYxU6GjCkdNek
+QLRq9v9qfgb6B+YfVSkF4Md0knusaOjxQSqxxT7Pzv0RM/9ptymd2MFSDYBrKi8/
+xcuLM0wk/d88AE7ijOYGCD2Zt0Eaa8ZopgEB93QtAQOS5qf4GpLOew7HHfVZ5twp
+vacvF2s920DK3ZSkHluqY1yQ1Lwwcciv3FcnlULi3ZnqFP83HY06j5PTUnjgMzQh
+Sn7ueRnnNKExi60dP/PpcOtC4yJKdbFVk+lcS7OGPMf4VQMFbow91Wv+IsgtGc9W
+V5CErITA2WBRuAO98o0uHC2JAjVKu990CopWAE4N48D80WLK5Dbd8go8RzE7CSss
+EE59l4tkhCA7cwPPffWldor9aoLlJV9eKD08+RpIBQtSvBfPbHG1ED/m77xtTZKK
+YKGso2jKiw1MFzMX0BlEDwC+wfj6Zd0ln73mu++dOydcvkM7asre1j6vJi5A/584
+GUV36prkavJpi1qfcxQHBNevHUfLeKSOeFNUhpJ/YtqLQfPXkyw=
+=AH4s
+-----END PGP SIGNATURE-----
+
+--AuwULfkSGg+bPGLa--
