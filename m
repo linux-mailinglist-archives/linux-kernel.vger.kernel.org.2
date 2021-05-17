@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62265383794
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20749383635
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344829AbhEQPpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:45:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
+        id S245540AbhEQP3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:29:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245615AbhEQPaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:30:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7C5B61CBE;
-        Mon, 17 May 2021 14:37:46 +0000 (UTC)
+        id S243735AbhEQPOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:14:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F7C161C56;
+        Mon, 17 May 2021 14:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262267;
-        bh=9xg9DjWPm80NFEFeJY2ru9czhFAf2tGbfjjfirMF4rM=;
+        s=korg; t=1621261938;
+        bh=wDJhxQOEDc8aQnJw65IidDYadfoMb8yQtlHWv0gz6kE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FLpRZaJQd0MtfZQFRClArrJPmUEjv0WXV8z66WeGRY9LKXBBKFxqmNpd4/6/RH91P
-         aiNKiIPV0a2nHr/H0ifE9u7A3+DZTOFA+KbakDAVqT6WOq7W0E7l4tbFKc9IB7675y
-         jYg28D5pJGPlpgq+eCDOfVSLTgSmjCrnQ8dBq3MU=
+        b=dKoSqXB930A3zW1Q70TpKUsKdi2wE4ZcoMpUSDWf6qcLeu5wpbfGL1nwepygs6SPj
+         63ANlG3YuTQTQlqBlKng7gRLqh6vALtQuCxcI/zudd4DHJu8f0wwH2QJWCH+lNfUly
+         XdGT0LKmJtBT0rA2baNXklbpyBZwm9Aq2EE5CFBs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 253/329] KVM: x86: Cancel pvclock_gtod_work on module removal
+        stable@vger.kernel.org, Jan Stancek <jstancek@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 5.4 112/141] iomap: fix sub-page uptodate handling
 Date:   Mon, 17 May 2021 16:02:44 +0200
-Message-Id: <20210517140310.665706942@linuxfoundation.org>
+Message-Id: <20210517140246.570238914@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +42,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 594b27e677b35f9734b1969d175ebc6146741109 ]
+commit 1cea335d1db1ce6ab71b3d2f94a807112b738a0f upstream.
 
-Nothing prevents the following:
+bio completions can race when a page spans more than one file system
+block.  Add a spinlock to synchronize marking the page uptodate.
 
-  pvclock_gtod_notify()
-    queue_work(system_long_wq, &pvclock_gtod_work);
-  ...
-  remove_module(kvm);
-  ...
-  work_queue_run()
-    pvclock_gtod_work()	<- UAF
-
-Ditto for any other operation on that workqueue list head which touches
-pvclock_gtod_work after module removal.
-
-Cancel the work in kvm_arch_exit() to prevent that.
-
-Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Message-Id: <87czu4onry.ffs@nanos.tec.linutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9dc55f1389f9 ("iomap: add support for sub-pagesize buffered I/O without buffer heads")
+Reported-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/iomap/buffered-io.c |   34 ++++++++++++++++++++++++----------
+ include/linux/iomap.h  |    1 +
+ 2 files changed, 25 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3b3f96e87b8c..b010ad6cbd14 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8005,6 +8005,7 @@ void kvm_arch_exit(void)
- 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
- #ifdef CONFIG_X86_64
- 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
-+	cancel_work_sync(&pvclock_gtod_work);
- #endif
- 	kvm_x86_ops.hardware_enable = NULL;
- 	kvm_mmu_module_exit();
--- 
-2.30.2
-
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -30,6 +30,7 @@ iomap_page_create(struct inode *inode, s
+ 	iop = kmalloc(sizeof(*iop), GFP_NOFS | __GFP_NOFAIL);
+ 	atomic_set(&iop->read_count, 0);
+ 	atomic_set(&iop->write_count, 0);
++	spin_lock_init(&iop->uptodate_lock);
+ 	bitmap_zero(iop->uptodate, PAGE_SIZE / SECTOR_SIZE);
+ 
+ 	/*
+@@ -118,25 +119,38 @@ iomap_adjust_read_range(struct inode *in
+ }
+ 
+ static void
+-iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
++iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+ {
+ 	struct iomap_page *iop = to_iomap_page(page);
+ 	struct inode *inode = page->mapping->host;
+ 	unsigned first = off >> inode->i_blkbits;
+ 	unsigned last = (off + len - 1) >> inode->i_blkbits;
+-	unsigned int i;
+ 	bool uptodate = true;
++	unsigned long flags;
++	unsigned int i;
+ 
+-	if (iop) {
+-		for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
+-			if (i >= first && i <= last)
+-				set_bit(i, iop->uptodate);
+-			else if (!test_bit(i, iop->uptodate))
+-				uptodate = false;
+-		}
++	spin_lock_irqsave(&iop->uptodate_lock, flags);
++	for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
++		if (i >= first && i <= last)
++			set_bit(i, iop->uptodate);
++		else if (!test_bit(i, iop->uptodate))
++			uptodate = false;
+ 	}
+ 
+-	if (uptodate && !PageError(page))
++	if (uptodate)
++		SetPageUptodate(page);
++	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
++}
++
++static void
++iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
++{
++	if (PageError(page))
++		return;
++
++	if (page_has_private(page))
++		iomap_iop_set_range_uptodate(page, off, len);
++	else
+ 		SetPageUptodate(page);
+ }
+ 
+--- a/include/linux/iomap.h
++++ b/include/linux/iomap.h
+@@ -139,6 +139,7 @@ loff_t iomap_apply(struct inode *inode,
+ struct iomap_page {
+ 	atomic_t		read_count;
+ 	atomic_t		write_count;
++	spinlock_t		uptodate_lock;
+ 	DECLARE_BITMAP(uptodate, PAGE_SIZE / 512);
+ };
+ 
 
 
