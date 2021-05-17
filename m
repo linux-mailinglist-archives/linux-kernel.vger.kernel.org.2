@@ -2,109 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56755382995
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA47A382999
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236305AbhEQKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:14:43 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:17378 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231840AbhEQKOm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:14:42 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HADDpg018783;
-        Mon, 17 May 2021 10:13:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=f87dLmC0j6gWoUu+50r2vzkGFGGPi5tJfQ5olNEG49s=;
- b=l7I+RyQgNSZd3XMG37nqg7Rah4RXlne6Oz1c34kgq4rOKJGXywBa7+xHy652oucPhr9b
- dZr2rTI2MNrx7wsHM6H4oBVq20SVKZwfVQiZwmEI2IwsvEjofGWErgm4o6hz74h8T/1b
- FlpASzHa4Wa0+caui38tITaa8CoqR2fiZFxskxaZ8XVuI9FCyLsoffGU5fIbsXV/s+eL
- 8Z17hAyGnx/HuHL93LgR4ZuRahECjTwEIbyRFBNOwYxlJ6AshNrbickuMlqpcBDrlXfH
- AKSX3sq7Q6Po18HNpfEwCT/rqGGZytajyzClrz+elEJYVANCzyZNbgbS9+F8hwxzlnD3 Kg== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38kfhwg4qq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 10:13:13 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14HADCMA025213;
-        Mon, 17 May 2021 10:13:12 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38j4bb1d4t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 10:13:12 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14HADCLc025196;
-        Mon, 17 May 2021 10:13:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 38j4bb1d4e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 10:13:12 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14HADBVG008187;
-        Mon, 17 May 2021 10:13:11 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 May 2021 10:13:10 +0000
-Date:   Mon, 17 May 2021 13:13:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     gregkh@linuxfoundation.org, marcocesati@gmail.com,
-        fabioaiuto83@gmail.com, fmdefrancesco@gmail.com,
-        eantoranz@gmail.com, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net, skhan@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 7/7] Staging: rtl8723bs: fix block comment in
- HalBtc8723b1Ant.c
-Message-ID: <20210517101302.GF1955@kadam>
-References: <20210516122927.1132356-1-desmondcheongzx@gmail.com>
- <20210516122927.1132356-8-desmondcheongzx@gmail.com>
+        id S236316AbhEQKP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:15:28 -0400
+Received: from mout.gmx.net ([212.227.15.15]:37943 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhEQKPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:15:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621246437;
+        bh=v94oBgU27MM+bPMwIq+5aXQmdE9Vdj1PZQAxw8h2u24=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=c/Pc4PFw4OplGruKpXYpfyLHMAmlItPh6lURIPdrPBMk1ZTJKSBBgQjTiaFegYQKr
+         RyMcABxzYgRnlUoooONbjkCk8YNzuzggtqXnClXSt1uBmHe4zhHrNcj8O1wNhtuFjz
+         nrEfxIpEQEj3i/z5lU/0WB7p9PaDFL7sVuSsi9Ow=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7zBR-1lMQlj0u8Z-014zCc; Mon, 17
+ May 2021 12:13:56 +0200
+To:     Yang Li <yang.lee@linux.alibaba.com>, clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com, nathan@kernel.org,
+        ndesaulniers@google.com, linux-btrfs@vger.kernel.org,
+        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <1621244810-38832-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v2] btrfs: Remove redundant initialization of 'to_add'
+Message-ID: <5938551d-a083-a62c-4ab3-bc29fc62b1df@gmx.com>
+Date:   Mon, 17 May 2021 18:13:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210516122927.1132356-8-desmondcheongzx@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: esNB97Fc0mpYUVaDvyoiC-TtUK7SLMQF
-X-Proofpoint-ORIG-GUID: esNB97Fc0mpYUVaDvyoiC-TtUK7SLMQF
+In-Reply-To: <1621244810-38832-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0U/g3hMrG3o9fGlDnHRwXK68W/K/FH6/b8eQv0VDDz9dIoTuExD
+ xiqwfwDQjRUSbpsNx+V1gb4ixIk+Gbu8vRb48DLnUwvhlCqjKIizRtaHsZpe0hoW7KvFJyw
+ NKlCxDKqndQ3Bdx5RHdM/anE7VyaVFQpGiMtm5BBwqE4eSZaOTiIynYlx3a9sS6WhDItKGV
+ I79EuEnKM4vzA+F17vjEw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EPaV5kE0SOE=:ncrqL6P/aa5VszjRuabaVJ
+ v0NDRFGqT4o6+C9MIYC7tdXkezCnrPaKX9AQ5GKXGf7MSx2vRxowMoZ8aM4nUNGd0OyrhPPs5
+ lN/e26mL0DtMbaMvr2SxteBC889RsSy+vRoo4u9SVFtuAXC35t2CpZFxWGhM6Qq73vcbylXSF
+ 8Vnxi/goLea5bds1eDCTsqdcrMWFA4NiaxzGh+YaNrpWUJYThjnDx9+uT6ejO95IkU91ftHfc
+ V62Q59Qq2sLj4xjbw4Edqb86Vib3OeXGxvqWL8mC8wjooh0YGfPYEG6wNlzD1b4d5wrLqHZy5
+ Vrm20vkgElTZ5ztgOeNoatMxMKENNFoBXM6nt+RuVm/f9qexL90qh2iQE1I6E8pWYj5cWNpwo
+ +aphho6SZ0pjVjsLdgZhRZwvhA6pGIr/1Gpx9JaQ8N/yi6rpbZ8wAlWTYhtO5ZVIfWAlo+BFs
+ u2J4iStZPztdOJUnXSDzwxoHRiB4QwnQkqOX4UQkKPdLgzYeoFiMeUsugl+WMfjTibxlhxzwz
+ CDSCRddDCuhXIrUI0y0aJiLEd4kP8ri3fItabECW9Nit+bT/aJm+ggHz/ixUNEEuQjRjzbiVV
+ YfSF7Zpo22yPT56/e0hJGWAVEv1EMII5IDlMWFRVNKLfYAXh41yLsotWOMi0gnBmxEKu+OQre
+ dAk4yQtxMe5T0PCgT83ZbSCu0OCsuKdQvBRGSUNFM48oz46P0N74AvYeMtK7GrA8/bpq7rQYE
+ OJLRtVM0h/TVNNGo+FIXSKsV9+FPJt622p/LswSXuEJ/4joFh3xM14Vg1xqgmAq0CHSdDFBdc
+ f8rfEcEvIEnDxG7R/0xghEY1WsjKQVBw2T4yKTHWc/SOvwF0dHOg593EVnzim6ninde/Zvc9B
+ grKyMlFCIx3qQt/f9ZZvrvfKmBRN/0H80yLXfElckzsFk+FDzF+b6wbMSKCwDtCzsflfqB6sl
+ t4kFHkiu+vUxMdRw+musVAi1DQpXFYKabqX/HKu2gyJF9IYNIqt0n1GzA2dnaEiOCm+321OQz
+ 3aE1ckDLPWBDX1DlrTW+6dOrWKIpkbZzP2Ca9Mo2wnVJ6pTlW0PL488zRoJJOnonsU+wks9J1
+ 92VvhgivSrjCLLESNVBSdDJnk89YmTAKQlVhOSTo4C93nrNHDUkshMrxjeUD1wX3PfeSeorV8
+ O2JTWFXuUEXjiXRL3XAwY0PBfPvN9zufUtQGpWUDUDmfJhTLDNwSCfpTWWAqlumWwgMaO5LQ2
+ ogOYv3hOMnM8x6XXv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 08:29:27AM -0400, Desmond Cheong Zhi Xi wrote:
-> This commit fixes the following checkpatch.pl warning:
-> 
-> WARNING: Block comments use * on subsequent lines
-> +		/*
-> +		CL_SPRINTF(cliBuf, BT_TMP_BUF_SIZE, "\r\n %-35s = 0x%x ", "Latest error condition(should be 0)", \
-> 
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+
+
+On 2021/5/17 =E4=B8=8B=E5=8D=885:46, Yang Li wrote:
+> Variable 'to_add' is being initialized however this value is never
+> read as 'to_add' is assigned a new value in if statement. Remove the
+> redundant assignment. At the same time, move its declaration into the
+> if statement, because the variable is not used elsewhere.
+>
+> Clean up clang warning:
+>
+> fs/btrfs/extent-tree.c:2774:8: warning: Value stored to 'to_add' during
+> its initialization is never read [clang-analyzer-deadcode.DeadStores]
+
+Personally speaking, compiler should be able to optimize out such
+problem, nothing really worthy bothering.
+
+Especially considering these "fixes" just randomly pop up, distracting
+the reviewers' time.
+
+If you really believe these "fixes" are really worthy (not to just
+fulfill the stupid KPI), please at least pack them into a larger
+patchset (but keep the separate patches), not just sending one when you
+find one.
+
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+
+I know some maintainers are already very upset about the bot, although
+in your case it reduces a lifespan of a variable, thus it's marginally
+acceptable, but under other cases, it doesn't really help much.
+
+If such fixes come from indie developers, I'm pretty fine or even happy
+to help them to start more contribution.
+
+But a sponsored bot just repeating clang static analyzer
+
+Trust me, no maintainer will be happy with that, and you're destroying
+the reputation of your company (if the reputation hasn't been destoryed
+already).
+
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-> index cc7f558903ac..87156b2cd1f0 100644
-> --- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-> +++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-> @@ -2511,10 +2511,10 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
->  		CL_PRINTF(cliBuf);
->  
->  		/*
-> -		CL_SPRINTF(cliBuf, BT_TMP_BUF_SIZE, "\r\n %-35s = 0x%x ", "Latest error condition(should be 0)", \
-> -			pCoexDm->errorCondition);
-> -		CL_PRINTF(cliBuf);
-> -		*/
-> +		 *CL_SPRINTF(cliBuf, BT_TMP_BUF_SIZE, "\r\n %-35s = 0x%x ", "Latest error condition(should be 0)",
-> +		 *	pCoexDm->errorCondition);
-> +		 *CL_PRINTF(cliBuf);
-> +		 */
->  	}
+>
+> Change in v2:
+> --According to Lukas's suggestion, combine the declaration and assignmen=
+t of
+>    variable 'to_add' into one line, just as "u64 to_add =3D min(len, ...=
+);"
+>    https://lore.kernel.org/patchwork/patch/1428697/
+>
+>   fs/btrfs/extent-tree.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index f1d15b6..13ac978 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2774,11 +2774,9 @@ static int unpin_extent_range(struct btrfs_fs_inf=
+o *fs_info,
+>   		spin_unlock(&cache->lock);
+>   		if (!readonly && return_free_space &&
+>   		    global_rsv->space_info =3D=3D space_info) {
+> -			u64 to_add =3D len;
+> -
+>   			spin_lock(&global_rsv->lock);
+>   			if (!global_rsv->full) {
+> -				to_add =3D min(len, global_rsv->size -
+> +				u64 to_add =3D min(len, global_rsv->size -
+>   					     global_rsv->reserved);
 
-Always just delete dead code.  Otherwise the patchset seems good.
+Have you ever wondered why "global_rsv" is not indented by tab only, but
+with extra spaces?
 
-regards,
-dan carpenter
+It's supposed to be aligned with "len".
 
+Thanks,
+Qu
+>   				global_rsv->reserved +=3D to_add;
+>   				btrfs_space_info_update_bytes_may_use(fs_info,
+>
