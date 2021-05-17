@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9559E382AAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33C3382AB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236675AbhEQLO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:14:27 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2953 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236679AbhEQLOY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:14:24 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FkGd83pSrzCsgp;
-        Mon, 17 May 2021 19:10:20 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:13:05 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 19:13:04 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <linux-imx@nxp.com>, <shawnguo@kernel.org>
-Subject: [PATCH -next] ARM: imx: add missing clk_disable_unprepare() in imx_mmdc_remove()
-Date:   Mon, 17 May 2021 19:15:23 +0800
-Message-ID: <20210517111523.477889-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S236658AbhEQLSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:18:33 -0400
+Received: from ozlabs.org ([203.11.71.1]:49725 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236514AbhEQLSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 07:18:32 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FkGn600Vgz9sWQ;
+        Mon, 17 May 2021 21:17:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1621250235;
+        bh=nJjXqApLsijq4iamHZjICarpBzR+JQck/GF+uqkszS8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=N+V8hRpEakOARG2G2zsylDtnrtm26/IFpj+b8IdhWtSPtzR0ev66qahUuCSAGoHAN
+         hfsdx08YzYKbX54mNSOnzz6lXmiGemNxw+pbeu3VKi+wYKXseahPwGzJ23NTSANaUh
+         xHwGCewelibArv6jzWXb3uBBpegWOMQL0FvHcxreOmoGXvQsHdREig+Mco8inN2fLW
+         yUCyLkDIrpCUOTET0vsu942jlCOOgjCNMjTU/+inmTUqbkqhsEP3lnUVJbw3ykYlBK
+         fkn1/1hWfVKZzV1UNQKhWHj8U36M4+EXfZM47XlKtCbcJeoysuFvgGbUFAYs889gPp
+         msLJxeIat6hdA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-watchdog@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] watchdog: Remove MV64x60 watchdog driver
+In-Reply-To: <31d702e5-22d1-1766-76dd-e24860e5b1a4@roeck-us.net>
+References: <9c2952bcfaec3b1789909eaa36bbce2afbfab7ab.1616085654.git.christophe.leroy@csgroup.eu>
+ <31d702e5-22d1-1766-76dd-e24860e5b1a4@roeck-us.net>
+Date:   Mon, 17 May 2021 21:17:13 +1000
+Message-ID: <87im3hk3t2.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clock source is prepared and enabled by clk_prepare_enable()
-in probe function, but no disable or unprepare in remove.
+Guenter Roeck <linux@roeck-us.net> writes:
+> On 3/18/21 10:25 AM, Christophe Leroy wrote:
+>> Commit 92c8c16f3457 ("powerpc/embedded6xx: Remove C2K board support")
+>> removed the last selector of CONFIG_MV64X60.
+>> 
+>> Therefore CONFIG_MV64X60_WDT cannot be selected anymore and
+>> can be removed.
+>> 
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>
+>> ---
+>>  drivers/watchdog/Kconfig       |   4 -
+>>  drivers/watchdog/Makefile      |   1 -
+>>  drivers/watchdog/mv64x60_wdt.c | 324 ---------------------------------
+>>  include/linux/mv643xx.h        |   8 -
+>>  4 files changed, 337 deletions(-)
+>>  delete mode 100644 drivers/watchdog/mv64x60_wdt.c
 
-Fixes: 9454a0caff6a ("ARM: imx: add mmdc ipg clock operation for mmdc")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- arch/arm/mach-imx/mmdc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I assumed this would go via the watchdog tree, but seems like I
+misinterpreted.
 
-diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-index 0dfd0ae7a63d..7d87fa8c70a9 100644
---- a/arch/arm/mach-imx/mmdc.c
-+++ b/arch/arm/mach-imx/mmdc.c
-@@ -77,6 +77,7 @@ static const struct of_device_id imx_mmdc_dt_ids[] = {
- 	{ /* sentinel */ }
- };
- 
-+struct clk *mmdc_ipg_clk;
- #ifdef CONFIG_PERF_EVENTS
- 
- static enum cpuhp_state cpuhp_mmdc_state;
-@@ -463,6 +464,7 @@ static int imx_mmdc_remove(struct platform_device *pdev)
- 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
- 	perf_pmu_unregister(&pmu_mmdc->pmu);
- 	kfree(pmu_mmdc);
-+	clk_disable_unprepare(mmdc_ipg_clk);
- 	return 0;
- }
- 
-@@ -536,7 +538,6 @@ static int imx_mmdc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	void __iomem *mmdc_base, *reg;
--	struct clk *mmdc_ipg_clk;
- 	u32 val;
- 	int err;
- 
--- 
-2.25.1
+Should I take this via the powerpc tree for v5.14 ?
 
+cheers
