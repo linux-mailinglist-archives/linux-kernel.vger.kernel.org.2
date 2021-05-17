@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DBB3838B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344A73836F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344380AbhEQP7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:59:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51450 "EHLO mail.kernel.org"
+        id S243747AbhEQPhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:37:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343528AbhEQPjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C095661CFF;
-        Mon, 17 May 2021 14:41:27 +0000 (UTC)
+        id S244832AbhEQPWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:22:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28E7361C94;
+        Mon, 17 May 2021 14:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262488;
-        bh=WunRfjUgmSekC9nRkUs4dFH3ggSHfyxtdwAgmpGxhu8=;
+        s=korg; t=1621262089;
+        bh=sR9RtU9rmIeaagdxWOfkIzp4CvBkwCckfDcFl20vvUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PiF0IEY7Pzo+6a3DgdbrFx4Md5pkBgSfvMw/f5CpsjmYCQwu4dFbpSTw/En/Nylam
-         I1Fbb2NsaPtf7npitc/vH7zH0W7LUXrULeKjxJFQdB7EGbd/sUvoH0voprRWf5cKWU
-         CkKLuXmV/a3gYt06h56DiebP9A7ZNCNqwlHRbFRs=
+        b=G5iHwcENShI0VDWxrzCvze/jGDNHebcAUCN6DlAOm2KUOPFDRY+j3mXxMJOc9fQPV
+         AEuB1ENr5O/1pvbyZvC28TtG2Nlc48Ke+xOBLVCSQUrf5FEgpkvzmNlatm9IFYpkgN
+         0R9nJ6suD7aL9Ea1z1Th6lFhsmvvi6TKMuPLXBZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 276/329] f2fs: compress: fix race condition of overwrite vs truncate
+        "kernelci.org bot" <bot@kernelci.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 5.4 135/141] ARM: 9027/1: head.S: explicitly map DT even if it lives in the first physical section
 Date:   Mon, 17 May 2021 16:03:07 +0200
-Message-Id: <20210517140311.444802455@linuxfoundation.org>
+Message-Id: <20210517140247.368131857@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,148 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit a949dc5f2c5cfe0c910b664650f45371254c0744 ]
+commit 10fce53c0ef8f6e79115c3d9e0d7ea1338c3fa37 upstream
 
-pos_fsstress testcase complains a panic as belew:
+The early ATAGS/DT mapping code uses SECTION_SHIFT to mask low order
+bits of R2, and decides that no ATAGS/DTB were provided if the resulting
+value is 0x0.
 
-------------[ cut here ]------------
-kernel BUG at fs/f2fs/compress.c:1082!
-invalid opcode: 0000 [#1] SMP PTI
-CPU: 4 PID: 2753477 Comm: kworker/u16:2 Tainted: G           OE     5.12.0-rc1-custom #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-Workqueue: writeback wb_workfn (flush-252:16)
-RIP: 0010:prepare_compress_overwrite+0x4c0/0x760 [f2fs]
-Call Trace:
- f2fs_prepare_compress_overwrite+0x5f/0x80 [f2fs]
- f2fs_write_cache_pages+0x468/0x8a0 [f2fs]
- f2fs_write_data_pages+0x2a4/0x2f0 [f2fs]
- do_writepages+0x38/0xc0
- __writeback_single_inode+0x44/0x2a0
- writeback_sb_inodes+0x223/0x4d0
- __writeback_inodes_wb+0x56/0xf0
- wb_writeback+0x1dd/0x290
- wb_workfn+0x309/0x500
- process_one_work+0x220/0x3c0
- worker_thread+0x53/0x420
- kthread+0x12f/0x150
- ret_from_fork+0x22/0x30
+This means that on systems where DRAM starts at 0x0 (such as Raspberry
+Pi), no explicit mapping of the DT will be created if R2 points into the
+first 1 MB section of memory. This was not a problem before, because the
+decompressed kernel is loaded at the base of DRAM and mapped using
+sections as well, and so as long as the DT is referenced via a virtual
+address that uses the same translation (the linear map, in this case),
+things work fine.
 
-The root cause is truncate() may race with overwrite as below,
-so that one reference count left in page can not guarantee the
-page attaching in mapping tree all the time, after truncation,
-later find_lock_page() may return NULL pointer.
+However, commit 7a1be318f579 ("9012/1: move device tree mapping out of
+linear region") changes this, and now the DT is referenced via a virtual
+address that is disjoint from the linear mapping of DRAM, and so we need
+the early code to create the DT mapping unconditionally.
 
-- prepare_compress_overwrite
- - f2fs_pagecache_get_page
- - unlock_page
-					- f2fs_setattr
-					 - truncate_setsize
-					  - truncate_inode_page
-					   - delete_from_page_cache
- - find_lock_page
+So let's create the early DT mapping for any value of R2 != 0x0.
 
-Fix this by avoiding referencing updated page.
-
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: "kernelci.org bot" <bot@kernelci.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/f2fs/compress.c | 35 ++++++++++++-----------------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+ arch/arm/kernel/head.S |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index ac12adc17f5e..8093d06116b4 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -123,19 +123,6 @@ static void f2fs_unlock_rpages(struct compress_ctx *cc, int len)
- 	f2fs_drop_rpages(cc, len, true);
- }
- 
--static void f2fs_put_rpages_mapping(struct address_space *mapping,
--				pgoff_t start, int len)
--{
--	int i;
--
--	for (i = 0; i < len; i++) {
--		struct page *page = find_get_page(mapping, start + i);
--
--		put_page(page);
--		put_page(page);
--	}
--}
--
- static void f2fs_put_rpages_wbc(struct compress_ctx *cc,
- 		struct writeback_control *wbc, bool redirty, int unlock)
- {
-@@ -1008,7 +995,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
- 		}
- 
- 		if (PageUptodate(page))
--			unlock_page(page);
-+			f2fs_put_page(page, 1);
- 		else
- 			f2fs_compress_ctx_add_page(cc, page);
- 	}
-@@ -1018,32 +1005,34 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
- 
- 		ret = f2fs_read_multi_pages(cc, &bio, cc->cluster_size,
- 					&last_block_in_bio, false, true);
-+		f2fs_put_rpages(cc);
- 		f2fs_destroy_compress_ctx(cc);
- 		if (ret)
--			goto release_pages;
-+			goto out;
- 		if (bio)
- 			f2fs_submit_bio(sbi, bio, DATA);
- 
- 		ret = f2fs_init_compress_ctx(cc);
- 		if (ret)
--			goto release_pages;
-+			goto out;
- 	}
- 
- 	for (i = 0; i < cc->cluster_size; i++) {
- 		f2fs_bug_on(sbi, cc->rpages[i]);
- 
- 		page = find_lock_page(mapping, start_idx + i);
--		f2fs_bug_on(sbi, !page);
-+		if (!page) {
-+			/* page can be truncated */
-+			goto release_and_retry;
-+		}
- 
- 		f2fs_wait_on_page_writeback(page, DATA, true, true);
--
- 		f2fs_compress_ctx_add_page(cc, page);
--		f2fs_put_page(page, 0);
- 
- 		if (!PageUptodate(page)) {
-+release_and_retry:
-+			f2fs_put_rpages(cc);
- 			f2fs_unlock_rpages(cc, i + 1);
--			f2fs_put_rpages_mapping(mapping, start_idx,
--					cc->cluster_size);
- 			f2fs_destroy_compress_ctx(cc);
- 			goto retry;
- 		}
-@@ -1075,10 +1064,10 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
- 	}
- 
- unlock_pages:
-+	f2fs_put_rpages(cc);
- 	f2fs_unlock_rpages(cc, i);
--release_pages:
--	f2fs_put_rpages_mapping(mapping, start_idx, i);
- 	f2fs_destroy_compress_ctx(cc);
-+out:
- 	return ret;
- }
- 
--- 
-2.30.2
-
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -274,10 +274,10 @@ __create_page_tables:
+ 	 * We map 2 sections in case the ATAGs/DTB crosses a section boundary.
+ 	 */
+ 	mov	r0, r2, lsr #SECTION_SHIFT
+-	movs	r0, r0, lsl #SECTION_SHIFT
++	cmp	r2, #0
+ 	ldrne	r3, =FDT_FIXED_BASE >> (SECTION_SHIFT - PMD_ORDER)
+ 	addne	r3, r3, r4
+-	orrne	r6, r7, r0
++	orrne	r6, r7, r0, lsl #SECTION_SHIFT
+ 	strne	r6, [r3], #1 << PMD_ORDER
+ 	addne	r6, r6, #1 << SECTION_SHIFT
+ 	strne	r6, [r3]
 
 
