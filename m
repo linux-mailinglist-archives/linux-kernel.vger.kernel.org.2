@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFB43827D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3F63827D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbhEQJKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
+        id S235860AbhEQJKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235760AbhEQJKb (ORCPT
+        with ESMTP id S235758AbhEQJKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:10:31 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA13C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:05 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id i5so4246603pgm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:05 -0700 (PDT)
+        Mon, 17 May 2021 05:10:32 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5C1C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:09 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id c17so4501436pfn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jhBni8X9QlkQeBD83OCCLKYlOWpAQU218tM5q8w0H+0=;
-        b=zNeom1/c4JETV9Ylyw5hZIeynCnit4Wbt6c304XuokR0k+a45tZD2uBp9M/n2N3uPR
-         oBjm53E1ySAaL558bAQ0BYVu8DPdQ6/nQ7w4DXMAcfFp9p5Ld7Guwong4ue91XQ58blM
-         kSGxZHC0uD47KdXx2/3x3lhH0JcmilfY3sUJHo+J2sU4er1D6p8ecHzsbg8q1Dy6Ddee
-         V3h9sLwoJ6GD4m7Zy5gO0hlWJ2RHlw40PRd70IMgro2mIKetn8C5wIKkonZFb6ftHrsr
-         vdCMgkggSk6rwBMJzGkRKlvl3lpQRoOH3vl2usBrSHwQ/zeh1sev0K28fVvm7BfVq/YE
-         jHLA==
+        bh=533Tv/3qZAVceJ3+hZ7LAdLhXyODElEgCY13Ks4GR1A=;
+        b=ATMQIDoC+fS9uzhpLngnmDLKRJiKZhG6SXtqzVZ1Gp1N3kcbgc68ooGxvjc0vEz0Ub
+         kiNa4h2PDmP/4TmeK0Kii6toA3UUJAl6e1Vj3quxDzc81TjtE6OZ4op4rtRoQdWHL23p
+         eu2fbzvd5pBQYfKzSGiD37s4AsACl4WbmHPbydSAXq1x/e9YMVkgn4z0vjW9QydYXst7
+         0yQjXpRrlhqKAuPtFBmXLbU6j7l6odqyDw76pueueHj3xifVBjyYWTKxKQzxuwDn6tgw
+         fxXq/4Oze9FTriDJdBCLxb7gMdOmeINXVwtGkw93ZPTSk5AjzTJ5xIZhuVYVXnESAgUu
+         cTAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jhBni8X9QlkQeBD83OCCLKYlOWpAQU218tM5q8w0H+0=;
-        b=ajfjKVVwgezj+97zRRCjTJAtgfuldYLrU1V3BrnppXtt2QJV1KisgHUXOA+b6+DBre
-         ojT3SjLfjmJRIH+rzFEyO0ZNo2J5PWApU7Nq0nUj5qcVQ2XfFzpWwJy+Wh6y1qp9AbZe
-         EJEhxQmWOzF63JCdzPt2NsuJx8eTDoTMf1iy0QRw1npTW0/kjrxg8s5gmssM+Lg27U55
-         i+AS6qkPGqibejUojfGWs95Y7HavgLydRCJr2DD4BlsaDTAILuAfrD4SInC4LJJaly+v
-         Tu9WAjOOrN27nXJgBKRTZLehLl75KA0f0AzpICGaCEBLwXueo50FitDllCa0ijJbxyWX
-         gcCQ==
-X-Gm-Message-State: AOAM533+3UZupwe1bqtgvZz56kpktXpHOMRcxQU2f3DKg2zFhVPDkPyj
-        HgucVwBcKgYoGjwitGqlRlGe
-X-Google-Smtp-Source: ABdhPJy/hEKqaQGNe2OZcLBRD+qHcI1uhJO0z8QLc8+PhEyP7nCQSnHbBxvbObTjLSCaov+8hQeeVA==
-X-Received: by 2002:aa7:95b6:0:b029:28e:aa31:dd3c with SMTP id a22-20020aa795b60000b029028eaa31dd3cmr59113227pfk.43.1621242545386;
-        Mon, 17 May 2021 02:09:05 -0700 (PDT)
+        bh=533Tv/3qZAVceJ3+hZ7LAdLhXyODElEgCY13Ks4GR1A=;
+        b=QV0benOvHl/1YkHD3behKMVkMfwpDglfSXMzKyLK5U72QUbiW5j9ZAo4eIcYlHdcP1
+         eqwG9CXie8OplopaAXvSo9Mo9GOEpD6cu+ShygnmDgZnO4uGZJC7XYhPnzHQtfd2PC7G
+         sH03Y0xsXSbD7+qB+RfRqrCkciyCF+320Tb/8roiGxPCkzkC9bQHnJq+MXMFosbmqf2U
+         0M2gx2lIwzom2U6kEoZrsAXou3vf25K+CCMORCHqiglEbp6KJ6YYXUx3CfbmpQ+mLtCP
+         Fqby6aYOXIOGQf2NYj7+pOOj6NQfECKfj/uHz2V6JgFcTKTZ6N4n2C/Ivv2oND3Jh2d1
+         +fSA==
+X-Gm-Message-State: AOAM531vzyh5PVp5ayXetooNBA0OewcMua1zdomFsXskUKx8+OXe9UFi
+        ClRqWfARPA7SYt8Y+sTcedoY
+X-Google-Smtp-Source: ABdhPJxy56tlzeFdZOV5rTIFt2Z5ctad0u0HLGSAyPPLlpCwjOeTqU5SAPx2ZO405AGl+C/MhA3+8A==
+X-Received: by 2002:a63:185c:: with SMTP id 28mr9053638pgy.158.1621242549012;
+        Mon, 17 May 2021 02:09:09 -0700 (PDT)
 Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id t7sm2956257pjr.29.2021.05.17.02.09.04
+        by smtp.gmail.com with ESMTPSA id t25sm6703431pfl.68.2021.05.17.02.09.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 02:09:05 -0700 (PDT)
+        Mon, 17 May 2021 02:09:08 -0700 (PDT)
 From:   Xie Yongji <xieyongji@bytedance.com>
 To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com
 Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
@@ -57,9 +57,9 @@ Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
         miklos@szeredi.hu, sgarzare@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 01/17] virtio_ring: Avoid reading unneeded used length
-Date:   Mon, 17 May 2021 17:08:20 +0800
-Message-Id: <20210517090836.533-2-xieyongji@bytedance.com>
+Subject: [RFC PATCH 02/17] virtio-blk: Remove unused used length
+Date:   Mon, 17 May 2021 17:08:21 +0800
+Message-Id: <20210517090836.533-3-xieyongji@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210517090836.533-1-xieyongji@bytedance.com>
 References: <20210517090836.533-1-xieyongji@bytedance.com>
@@ -69,40 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If device driver doesn't need used length, it can pass a NULL
-len in virtqueue_get_buf()/virtqueue_get_buf_ctx(). Then
-we can avoid reading and validating the len value in used
-ring entries.
+The used length is not used. Let's drop it and
+pass NULL to virtqueue_get_buf() instead.
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 ---
- drivers/virtio/virtio_ring.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/block/virtio_blk.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 54e12dd91310..d999a1d6d271 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -772,7 +772,8 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
- 	last_used = (vq->last_used_idx & (vq->split.vring.num - 1));
- 	i = virtio32_to_cpu(_vq->vdev,
- 			vq->split.vring.used->ring[last_used].id);
--	*len = virtio32_to_cpu(_vq->vdev,
-+	if (len)
-+		*len = virtio32_to_cpu(_vq->vdev,
- 			vq->split.vring.used->ring[last_used].len);
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 425bae618131..255adb7a768c 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -178,12 +178,11 @@ static void virtblk_done(struct virtqueue *vq)
+ 	int qid = vq->index;
+ 	struct virtblk_req *vbr;
+ 	unsigned long flags;
+-	unsigned int len;
  
- 	if (unlikely(i >= vq->split.vring.num)) {
-@@ -1444,7 +1445,8 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
+ 	spin_lock_irqsave(&vblk->vqs[qid].lock, flags);
+ 	do {
+ 		virtqueue_disable_cb(vq);
+-		while ((vbr = virtqueue_get_buf(vblk->vqs[qid].vq, &len)) != NULL) {
++		while ((vbr = virtqueue_get_buf(vblk->vqs[qid].vq, NULL)) != NULL) {
+ 			struct request *req = blk_mq_rq_from_pdu(vbr);
  
- 	last_used = vq->last_used_idx;
- 	id = le16_to_cpu(vq->packed.vring.desc[last_used].id);
--	*len = le32_to_cpu(vq->packed.vring.desc[last_used].len);
-+	if (len)
-+		*len = le32_to_cpu(vq->packed.vring.desc[last_used].len);
- 
- 	if (unlikely(id >= vq->packed.vring.num)) {
- 		BAD_RING(vq, "id %u out of range\n", id);
+ 			if (likely(!blk_should_fake_timeout(req->q)))
 -- 
 2.11.0
 
