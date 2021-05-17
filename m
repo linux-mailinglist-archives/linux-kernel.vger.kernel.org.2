@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0792C38389E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691E13836E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346006AbhEQP55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:57:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
+        id S244338AbhEQPhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244588AbhEQPi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:38:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3AA061943;
-        Mon, 17 May 2021 14:41:03 +0000 (UTC)
+        id S244666AbhEQPVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:21:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66CD661C91;
+        Mon, 17 May 2021 14:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262464;
-        bh=C69sFFjLTwRGrFM8sFyWi7PxzrJIrS93PYxgSNh2q44=;
+        s=korg; t=1621262080;
+        bh=SszRPVGUxvCf8F0XMBRaHAJA7OrsDzb5CH7hIPePVd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lw34eqHpg0LWRqphqeH86LqS8V4k4Rkp/wXwXuGMsMtfw3Z0smDTRA010O1Arttrf
-         FIwoV2NtX3YDJ2/yN0KNb8mMZrRgpeSVPLTV5rLSCEgDVNhBs7di9g+sqTjDFAEjWw
-         9wVf0mU/x9zIaS3pd54H/eC7T0v18dFsWqOv1ma4=
+        b=h9roauv9vkfBe6Uukaq2cM8hvbT/1HCZvkwJqRH2BJ2QbXxglCieogJgvBWULCq59
+         HE9CQA1nTA7TuV+nF37BuP4bdBjPn7miOSrSH44yIDoA7A9/zTp0ltGZAm4Hu3t3X2
+         1t83VYLBDyDpZfSIHokTx5iUWnYGmx9FAYfIhY4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shai Malin <smalin@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 274/329] nvmet-rdma: Fix NULL deref when SEND is completed with error
-Date:   Mon, 17 May 2021 16:03:05 +0200
-Message-Id: <20210517140311.384532229@linuxfoundation.org>
+        Joel Stanley <joel@jms.id.au>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 5.4 134/141] ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
+Date:   Mon, 17 May 2021 16:03:06 +0200
+Message-Id: <20210517140247.329237638@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Kalderon <michal.kalderon@marvell.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 8cc365f9559b86802afc0208389f5c8d46b4ad61 ]
+commit fc2933c133744305236793025b00c2f7d258b687 upstream
 
-When running some traffic and taking down the link on peer, a
-retry counter exceeded error is received. This leads to
-nvmet_rdma_error_comp which tried accessing the cq_context to
-obtain the queue. The cq_context is no longer valid after the
-fix to use shared CQ mechanism and should be obtained similar
-to how it is obtained in other functions from the wc->qp.
+Commit
 
-[ 905.786331] nvmet_rdma: SEND for CQE 0x00000000e3337f90 failed with status transport retry counter exceeded (12).
-[ 905.832048] BUG: unable to handle kernel NULL pointer dereference at 0000000000000048
-[ 905.839919] PGD 0 P4D 0
-[ 905.842464] Oops: 0000 1 SMP NOPTI
-[ 905.846144] CPU: 13 PID: 1557 Comm: kworker/13:1H Kdump: loaded Tainted: G OE --------- - - 4.18.0-304.el8.x86_64 #1
-[ 905.872135] RIP: 0010:nvmet_rdma_error_comp+0x5/0x1b [nvmet_rdma]
-[ 905.878259] Code: 19 4f c0 e8 89 b3 a5 f6 e9 5b e0 ff ff 0f b7 75 14 4c 89 ea 48 c7 c7 08 1a 4f c0 e8 71 b3 a5 f6 e9 4b e0 ff ff 0f 1f 44 00 00 <48> 8b 47 48 48 85 c0 74 08 48 89 c7 e9 98 bf 49 00 e9 c3 e3 ff ff
-[ 905.897135] RSP: 0018:ffffab601c45fe28 EFLAGS: 00010246
-[ 905.902387] RAX: 0000000000000065 RBX: ffff9e729ea2f800 RCX: 0000000000000000
-[ 905.909558] RDX: 0000000000000000 RSI: ffff9e72df9567c8 RDI: 0000000000000000
-[ 905.916731] RBP: ffff9e729ea2b400 R08: 000000000000074d R09: 0000000000000074
-[ 905.923903] R10: 0000000000000000 R11: ffffab601c45fcc0 R12: 0000000000000010
-[ 905.931074] R13: 0000000000000000 R14: 0000000000000010 R15: ffff9e729ea2f400
-[ 905.938247] FS: 0000000000000000(0000) GS:ffff9e72df940000(0000) knlGS:0000000000000000
-[ 905.938249] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 905.950067] nvmet_rdma: SEND for CQE 0x00000000c7356cca failed with status transport retry counter exceeded (12).
-[ 905.961855] CR2: 0000000000000048 CR3: 000000678d010004 CR4: 00000000007706e0
-[ 905.961855] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 905.961856] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 905.961857] PKRU: 55555554
-[ 906.010315] Call Trace:
-[ 906.012778] __ib_process_cq+0x89/0x170 [ib_core]
-[ 906.017509] ib_cq_poll_work+0x26/0x80 [ib_core]
-[ 906.022152] process_one_work+0x1a7/0x360
-[ 906.026182] ? create_worker+0x1a0/0x1a0
-[ 906.030123] worker_thread+0x30/0x390
-[ 906.033802] ? create_worker+0x1a0/0x1a0
-[ 906.037744] kthread+0x116/0x130
-[ 906.040988] ? kthread_flush_work_fn+0x10/0x10
-[ 906.045456] ret_from_fork+0x1f/0x40
+  149a3ffe62b9dbc3 ("9012/1: move device tree mapping out of linear region")
 
-Fixes: ca0f1a8055be2 ("nvmet-rdma: use new shared CQ mechanism")
-Signed-off-by: Shai Malin <smalin@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+created a permanent, read-only section mapping of the device tree blob
+provided by the firmware, and added a set of macros to get the base and
+size of the virtually mapped FDT based on the physical address. However,
+while the mapping code uses the SECTION_SIZE macro correctly, the macros
+use PMD_SIZE instead, which means something entirely different on ARM when
+using short descriptors, and is therefore not the right quantity to use
+here. So replace PMD_SIZE with SECTION_SIZE. While at it, change the names
+of the macro and its parameter to clarify that it returns the virtual
+address of the start of the FDT, based on the physical address in memory.
+
+Tested-by: Joel Stanley <joel@jms.id.au>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/target/rdma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/include/asm/memory.h |    6 +++---
+ arch/arm/kernel/setup.c       |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
-index 6c1f3ab7649c..7d607f435e36 100644
---- a/drivers/nvme/target/rdma.c
-+++ b/drivers/nvme/target/rdma.c
-@@ -700,7 +700,7 @@ static void nvmet_rdma_send_done(struct ib_cq *cq, struct ib_wc *wc)
- {
- 	struct nvmet_rdma_rsp *rsp =
- 		container_of(wc->wr_cqe, struct nvmet_rdma_rsp, send_cqe);
--	struct nvmet_rdma_queue *queue = cq->cq_context;
-+	struct nvmet_rdma_queue *queue = wc->qp->qp_context;
+--- a/arch/arm/include/asm/memory.h
++++ b/arch/arm/include/asm/memory.h
+@@ -68,8 +68,8 @@
+ #define XIP_VIRT_ADDR(physaddr)  (MODULES_VADDR + ((physaddr) & 0x000fffff))
  
- 	nvmet_rdma_release_rsp(rsp);
+ #define FDT_FIXED_BASE		UL(0xff800000)
+-#define FDT_FIXED_SIZE		(2 * PMD_SIZE)
+-#define FDT_VIRT_ADDR(physaddr)	((void *)(FDT_FIXED_BASE | (physaddr) % PMD_SIZE))
++#define FDT_FIXED_SIZE		(2 * SECTION_SIZE)
++#define FDT_VIRT_BASE(physbase)	((void *)(FDT_FIXED_BASE | (physbase) % SECTION_SIZE))
  
-@@ -786,7 +786,7 @@ static void nvmet_rdma_write_data_done(struct ib_cq *cq, struct ib_wc *wc)
- {
- 	struct nvmet_rdma_rsp *rsp =
- 		container_of(wc->wr_cqe, struct nvmet_rdma_rsp, write_cqe);
--	struct nvmet_rdma_queue *queue = cq->cq_context;
-+	struct nvmet_rdma_queue *queue = wc->qp->qp_context;
- 	struct rdma_cm_id *cm_id = rsp->queue->cm_id;
- 	u16 status;
+ #if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
+ /*
+@@ -111,7 +111,7 @@ extern unsigned long vectors_base;
+ #define MODULES_VADDR		PAGE_OFFSET
  
--- 
-2.30.2
-
+ #define XIP_VIRT_ADDR(physaddr)  (physaddr)
+-#define FDT_VIRT_ADDR(physaddr)  ((void *)(physaddr))
++#define FDT_VIRT_BASE(physbase)  ((void *)(physbase))
+ 
+ #endif /* !CONFIG_MMU */
+ 
+--- a/arch/arm/kernel/setup.c
++++ b/arch/arm/kernel/setup.c
+@@ -1080,7 +1080,7 @@ void __init setup_arch(char **cmdline_p)
+ 	void *atags_vaddr = NULL;
+ 
+ 	if (__atags_pointer)
+-		atags_vaddr = FDT_VIRT_ADDR(__atags_pointer);
++		atags_vaddr = FDT_VIRT_BASE(__atags_pointer);
+ 
+ 	setup_processor();
+ 	if (atags_vaddr) {
 
 
