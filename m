@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA17383CEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6821383CF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhEQTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:09:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54512 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhEQTJq (ORCPT
+        id S231555AbhEQTK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231379AbhEQTK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:09:46 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621278508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CZq0Zc1ElW6yPz6imj2oxDmoySZoSSEBMbiufUA2Zmg=;
-        b=o9SQmC70s2eFvxz//H6OLHxYHDqY03vKEABdmcJffUJdxoDE87/lhAJMMZVY2Dwze1oLsn
-        zQgHg1g7DlquvL0lXHsQKQZ4CFqYDHyZSrDXTTKUcrxeUH2CGy41KWgB620tLMpaygbqVR
-        6j+VVrHb7m5+VPg2F/w78jRZ4o2me/U07mY4WQpWYY8J1iJHN5CSuxBf26syFS2tbRkWa7
-        MBfFKEgk5mVCma/Or3ouChFirAD3Ev4R5uo7+jq4PJpCgKQoPA7Ehfx2jKKHe1uqKMz4lB
-        Q1VvgjDheJp1mUFX3NqVjFSclKy0ySROj49btfkJRKs03KvwAGdj0yBp0+ASoQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621278508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CZq0Zc1ElW6yPz6imj2oxDmoySZoSSEBMbiufUA2Zmg=;
-        b=e0aQcF3w2r0jSv9EnzJ3s3M+MP2CDaqYaTFGXis35a5At/TqI3mnTBo4LHbiRLWFFb0+5r
-        qoL7yx7aWNgupPDQ==
-To:     Robin Murphy <robin.murphy@arm.com>, Nitesh Lal <nilal@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>,
-        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when setting the hint
-In-Reply-To: <d1d5e797-49ee-4968-88c6-c07119343492@arm.com>
-References: <20210501021832.743094-1-jesse.brandeburg@intel.com> <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com> <20210504092340.00006c61@intel.com> <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com> <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com> <87sg2lz0zz.ffs@nanos.tec.linutronix.de> <d1d5e797-49ee-4968-88c6-c07119343492@arm.com>
-Date:   Mon, 17 May 2021 21:08:27 +0200
-Message-ID: <874kf1faac.ffs@nanos.tec.linutronix.de>
+        Mon, 17 May 2021 15:10:58 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529CBC061573;
+        Mon, 17 May 2021 12:09:41 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id l129so6871115qke.8;
+        Mon, 17 May 2021 12:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AaJatBQ6OYQTtgU7UHzX0hFSZvnFSb6xpuL4KTh9MtI=;
+        b=R5DIbv1+g1uOPJzqmkjwdMYfT/EA9OdSUS2Cq07wjeKPJxIlSh8+YeVJyHSmqCJJYy
+         pEJs8+DlEYM7KE9pgm8s/rIdd7NoaUIrAu9C4yP4JWgXnel5EerWloYlHSSI1ZpOjjeR
+         B4F65zx0Qhar6SiLmlwFf810bxJZzOljBJbCHcm9fSy7a02lAtHreWo09K7N0X6poh8F
+         Vy2zOuys0FTeShZQGct4UsMn8RjfPo+0m2FD1XuaskK/clfHMcJNiiiyOWYnIJfzIs+i
+         YmWnChd92e+DMTzTOWl8EaLSKNA10EtEd9EJs/6UfpOZR2jKa4zMSxwd9QnolTBTvkk5
+         tlHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AaJatBQ6OYQTtgU7UHzX0hFSZvnFSb6xpuL4KTh9MtI=;
+        b=NB+Gj/kLQUF9Z7qxfN0svByHgO5fZ96LzI5e55nEZMAW55X5VPOnDwmrNEOR3ciFMp
+         /Wxe+fusvljdeR6cN0mQiz7UW8USXZBu9Bj6lxkpBPgctVSKNBQdpNd2DkkcUZR5LKuB
+         0u9lCPZktqMTMbnkj63Aiu9xfR/dhmtdtjYD8pIgF0Tk9TOc1lPxppHlpmZZHOOSy8E4
+         9xBuNxrz7z9Y2IdNJaguSbFA93qu+4Bm3FY/wj01WvmKK7bfB1YrH9y3oPgg1pGFlbEi
+         ZXJsSzElrE2dXWQBJcf8Se2zJah0Wce2rxMWoWI1DTeDQ/qhBhIOhAd/rXdrYUptnyJo
+         DpMQ==
+X-Gm-Message-State: AOAM530atFFMciR8+NkUhy45QHGnHfr5jPZYPq1fNSOibJlMd4673BS0
+        jh1hks90FxmKdXfFrbbCyYJYqRsE73o=
+X-Google-Smtp-Source: ABdhPJzoO/fJ8E1N10zXVLOT/35WBvGZbzAE8Q7sKzEeLW27fmGGe/PpRnvMnGIcBI+cL8c/aLGrTw==
+X-Received: by 2002:a05:620a:14b5:: with SMTP id x21mr1364351qkj.298.1621278580627;
+        Mon, 17 May 2021 12:09:40 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p9sm12175630qtl.78.2021.05.17.12.09.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 12:09:40 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: (adt7462) Add settings for manual fan control.
+To:     Ashwin H <ashwin@pensando.io>, jdelvare@suse.com, corbet@lwn.net,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, snelson@pensando.io
+References: <20210517182427.12904-1-ashwin@pensando.io>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <e30343c0-2e8e-9412-08ed-f839e998248d@roeck-us.net>
+Date:   Mon, 17 May 2021 12:09:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210517182427.12904-1-ashwin@pensando.io>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17 2021 at 19:50, Robin Murphy wrote:
+On 5/17/21 11:24 AM, Ashwin H wrote:
+> ADT7462 can operate in manual mode for fan control.
+> Currently if we want to read fan speed,
+> there is a check if TACH measurement is enabled for a fan.
+> (In fan_enabled function).
+> There is no way to enable TACH measurement currently.
+> This is addressed in this commit.
+> 
+> Along with the above support few more features are enabled
+> - Support for setting fan presence.
+> - Support for setting low and high frequency mode.
+> - Support for setting easy config option.
+> - Support for setting the duration of the fan startup timeout.
+> - Once the setting is done, there is a setup complete bit in cfg1 register.
+>    Settings this bit will start the monitoring of all selected channels.
+>    Added support for that.
+> 
+> Based on this, below is the flow to set/get fan speed (example:pwm1)
+> 
+> echo 1 > pwm1_enable            #Set to manual mode
+> echo 1 > pwm_freq_mode          #High freq mode (optional.newly added)
+> echo 1 > fan1_presence          #Set fan 1 as present(newly added)
+> echo 1 > fan1_tach_enable       #Start TACH measurement-fan1(newly added)
+> echo 1 > setup_complete         #Mark as setup complete (newly added)
 
-> On 2021-05-17 19:08, Thomas Gleixner wrote:
->> On Mon, May 17 2021 at 18:26, Robin Murphy wrote:
->>> On 2021-05-17 17:57, Nitesh Lal wrote:
->>> I'm not implying that there isn't a bug, or that this code ever made
->>> sense in the first place, just that fixing it will unfortunately be a
->>> bit more involved than a simple revert. This patch as-is *will* subtly
->>> break at least the system PMU drivers currently using
->> 
->> s/using/abusing/
->> 
->>> irq_set_affinity_hint() - those I know require the IRQ affinity to
->>> follow whichever CPU the PMU context is bound to, in order to meet perf
->>> core's assumptions about mutual exclusion.
->> 
->> Which driver is that?
->
-> Right now, any driver which wants to control an IRQ's affinity and also 
-> build as a module, for one thing. I'm familiar with drivers/perf/ where 
-> a basic pattern has been widely copied;
+Please refrain from adding non-standard attributes. Several of the above
+non-standard attributes can be expressed as standard attributes, which is
+even less acceptable.
 
-Bah. Why the heck can't people talk and just go and rumage until they
-find something which hopefully does what they want...
+Also, please follow Documentation/process/submitting-patches.rst, which
+clearly states
 
-The name of that function should have rang all alarm bells...
+	Separate each **logical change** into a separate patch.
 
-> some of the callers in other subsystems appear to *expect* it to set
-> the underlying affinity as well, but whether any of those added within
-> the last 6 years represent a functional dependency rather than just a
-> performance concern I don't know.
-
-Sigh. Let me do yet another tree wide audit...
-
-Thanks,
-
-        tglx
-
-
+Guenter
