@@ -2,182 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626D03833FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047D238344B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242689AbhEQPEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:04:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42895 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241844AbhEQOyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:54:06 -0400
-Received: from mail-qt1-f197.google.com ([209.85.160.197])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1liebv-0000UT-KN
-        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 14:52:47 +0000
-Received: by mail-qt1-f197.google.com with SMTP id b19-20020ac84f130000b02901d543c52248so5392362qte.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:52:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5YT3ArZkIAvGWeYJPmgevYctfMIJLv6m5yBthvtx2HM=;
-        b=q3GvT+L96JoSSusgAJhiVcneUBhxZfz9MIehPeJwRxQ/QfV4JhG+SLi+IcQFKe9SAB
-         k04R0/RrPQeRVD6aNN3LlEeetIpzGdq0J89uKklEZchClu3cZS22UyN3a+7HRU0LGXPa
-         j/RXThQREg5id6OqOY7EGA17NTtlFiE7hVyIhWeuSkxZOMGn7kQPmbi6pGiEPoU8DjBl
-         o0MpDEqV8vrhWooFNXIS40Cck/jdDX+n53q23YlGyl7JJeZQv4rsf9NQJn1KtXeiHKgj
-         K+LpgwyF1gZ42TMesnRagLKCD2oSk07LbgvPAXazw52FP8Rtpt0Z7HXvDoZoIr8qnXOx
-         +MKQ==
-X-Gm-Message-State: AOAM530r1DKV4h1qdAIu2VVk8qFhlaDgt24WjXp1RNB9vM8ZK2L+OBHf
-        VA1529KtySOl833MzvkaagyrMob1cAxEUqP6rd2dkENFXJAgZRYaQoB+oq6hTpvo267JvC/JhEU
-        XrHXL+zNeZefaxvfw9TA8mx2dBAmNevM3iZD9yNBjZw==
-X-Received: by 2002:ad4:5613:: with SMTP id ca19mr93492qvb.3.1621263166302;
-        Mon, 17 May 2021 07:52:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwz1sTR2nEo8tVy3soUcg7dJtwe6XA2FzYNjxD+WxF5X8O633T/gloDETC7dA01uBs4CI398A==
-X-Received: by 2002:ad4:5613:: with SMTP id ca19mr93463qvb.3.1621263166122;
-        Mon, 17 May 2021 07:52:46 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.1])
-        by smtp.gmail.com with ESMTPSA id h65sm10642727qkd.112.2021.05.17.07.52.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:52:45 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] soc/tegra: Add
- devm_tegra_core_dev_init_opp_table()
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210516205138.22501-1-digetx@gmail.com>
- <20210516205138.22501-2-digetx@gmail.com>
- <3ea6b48f-af3f-51db-8d7b-1292a68ae74e@canonical.com>
- <a3b42449-4cd8-f692-c41a-205cbaa987eb@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <d56d1e1e-73fe-9708-34ec-e31f10e17b44@canonical.com>
-Date:   Mon, 17 May 2021 10:52:41 -0400
+        id S241522AbhEQPHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:07:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:54446 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239476AbhEQO5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:57:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19BD2106F;
+        Mon, 17 May 2021 07:56:36 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 815AE3F73B;
+        Mon, 17 May 2021 07:56:33 -0700 (PDT)
+Subject: Re: [PATCH v12 1/8] arm64: mte: Handle race when synchronising tags
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-2-steven.price@arm.com> <87cztpv4mo.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <37fe19b5-6494-41c5-e541-ddc873a82be0@arm.com>
+Date:   Mon, 17 May 2021 15:56:28 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <a3b42449-4cd8-f692-c41a-205cbaa987eb@gmail.com>
+In-Reply-To: <87cztpv4mo.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/05/2021 10:47, Dmitry Osipenko wrote:
-> 17.05.2021 14:43, Krzysztof Kozlowski пишет:
-> ...
->>> +static int tegra_core_dev_init_opp_state(struct device *dev)
->>> +{
->>> +	struct dev_pm_opp *opp;
->>> +	unsigned long rate;
->>> +	struct clk *clk;
->>> +	int err;
->>> +
->>> +	clk = devm_clk_get(dev, NULL);
->>> +	if (IS_ERR(clk)) {
->>> +		dev_err(dev, "failed to get clk: %pe\n", clk);
->>> +		return PTR_ERR(clk);
->>> +	}
->>> +
->>> +	rate = clk_get_rate(clk);
->>> +	if (!rate) {
->>> +		dev_err(dev, "failed to get clk rate\n");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	opp = dev_pm_opp_find_freq_ceil(dev, &rate);
->>> +
->>> +	if (opp == ERR_PTR(-ERANGE))
->>> +		opp = dev_pm_opp_find_freq_floor(dev, &rate);
->>> +
->>> +	err = PTR_ERR_OR_ZERO(opp);
->>> +	if (err) {
->>> +		dev_err(dev, "failed to get OPP for %ld Hz: %d\n",
->>> +			rate, err);
->>> +		return err;
->>> +	}
->>> +
->>> +	dev_pm_opp_put(opp);
->>> +
->>> +	/* first dummy rate-setting initializes voltage vote */
->>> +	err = dev_pm_opp_set_rate(dev, rate);
->>> +	if (err) {
->>> +		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
->>> +		return err;
->>> +	}
+On 17/05/2021 15:03, Marc Zyngier wrote:
+> Hi Steven,
+
+Hi Marc,
+
+> On Mon, 17 May 2021 13:32:32 +0100,
+> Steven Price <steven.price@arm.com> wrote:
 >>
+>> mte_sync_tags() used test_and_set_bit() to set the PG_mte_tagged flag
+>> before restoring/zeroing the MTE tags. However if another thread were to
+>> race and attempt to sync the tags on the same page before the first
+>> thread had completed restoring/zeroing then it would see the flag is
+>> already set and continue without waiting. This would potentially expose
+>> the previous contents of the tags to user space, and cause any updates
+>> that user space makes before the restoring/zeroing has completed to
+>> potentially be lost.
 >>
->> The devm_pm_opp_set_clkname will call clk_get(), so here you should drop
->> the clk reference at the end. Why having it twice?
-> 
-> The devm_pm_opp_set_clkname assigns clock to the OPP table.
-> 
-> The devm_clk_get() is needed for the clk_get_rate(). OPP core doesn't
-> initialize voltage vote and we need this initialization for the Tegra
-> memory drivers.
-
-I did not get the answer to my question. Why you need to keep the clk
-reference past this point? Why you cannot drop it after getting rate?
-
-> The reference count of the clk will be dropped automatically once device
-> driver is released. The resource-managed helper avoids the need to care
-> about the error unwinding in the code, making it clean and easy to follow.
-
-I am not saying there is a leak.
-
-> 
-> ...
->>> +EXPORT_SYMBOL_GPL(devm_tegra_core_dev_init_opp_table);
->>> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
->>> index 98027a76ce3d..e8eab13aa199 100644
->>> --- a/include/soc/tegra/common.h
->>> +++ b/include/soc/tegra/common.h
->>> @@ -6,6 +6,36 @@
->>>  #ifndef __SOC_TEGRA_COMMON_H__
->>>  #define __SOC_TEGRA_COMMON_H__
->>>  
->>> +#include <linux/errno.h>
->>> +#include <linux/types.h>
->>> +
->>> +struct device;
->>> +
->>> +/**
->>> + * Tegra SoC core device OPP table configuration
->>> + *
->>> + * @init_state: pre-initialize OPP state of a device
->>> + */
->>> +struct tegra_core_opp_params {
->>> +	bool init_state;
->>> +};
->>> +
->>> +#ifdef CONFIG_ARCH_TEGRA
->>>  bool soc_is_tegra(void);
->>> +int devm_tegra_core_dev_init_opp_table(struct device *dev,
->>> +				       struct tegra_core_opp_params *params);
->>> +#else
->>> +static inline bool soc_is_tegra(void)
+>> Since this code is run from atomic contexts we can't just lock the page
+>> during the process. Instead implement a new (global) spinlock to protect
+>> the mte_sync_page_tags() function.
 >>
->> This looks unrelated. Please make it a separate patch.
+>> Fixes: 34bfeea4a9e9 ("arm64: mte: Clear the tags when a page is mapped in user-space with PROT_MTE")
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>> ---
+>>  arch/arm64/kernel/mte.c | 21 ++++++++++++++++++---
+>>  1 file changed, 18 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index 125a10e413e9..c88e778c2fa9 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -25,6 +25,7 @@
+>>  u64 gcr_kernel_excl __ro_after_init;
+>>  
+>>  static bool report_fault_once = true;
+>> +static spinlock_t tag_sync_lock;
 > 
-> The missing stub for soc_is_tegra() popped up multiple times before.
-> Hence it didn't look like a bad idea to me to add stub for it since this
-> patch touches code around it.
-> 
-> I'll factor it out into a separate patch in v2.
+> What initialises this spinlock? Have you tried this with lockdep? I'd
+> expect it to be defined with DEFINE_SPINLOCK(), which always does the
+> right thing.
 
-Thanks!
+You of course are absolute right, and this will blow up with lockdep.
+Sorry about that. DEFINE_SPINLOCK() solves the problem.
 
+Thanks,
 
-Best regards,
-Krzysztof
+Steve
