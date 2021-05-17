@@ -2,183 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B91386509
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1CD38656F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237396AbhEQUEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        id S241899AbhEQUKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237381AbhEQUEF (ORCPT
+        with ESMTP id S238228AbhEQUJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:04:05 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AD4C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:02:48 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id d14so2241527ybe.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:02:48 -0700 (PDT)
+        Mon, 17 May 2021 16:09:36 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7062AC06138E;
+        Mon, 17 May 2021 13:08:18 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id c20so11058451ejm.3;
+        Mon, 17 May 2021 13:08:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WOt8pDHxf8UyV1g+frGSSeqaqXf66O0fXn4ZHmPI4BY=;
-        b=IBDLeDDyYTZmykeL/+LFDwgPTgobab9QhFzNZXP5nCatE9wX6vMPUuVFw47KyiCuJj
-         s3tU2+Z6FlHGFt5jub3pypsxakKfEMMWX8JATwGw+A6DOZ7IcS97vNj0j58FP2I6dMra
-         9aucHTVz60UpOes9MJ1DrxSliX2MFb2qU8bNHwF+dmLlJbtrVzgsT+g1gqcM26hZKqiP
-         LdOdJAhVBxMrYEXcMZv3cYMHzJm32/KS5+qeTwTRxUFE9jek/lSR+D1+lQbN5wleKBMO
-         1RICp7/Xo9U75cigVEV0k4hoFPPHitNmba1xyZzwzQ3Ij2DYpLc+nHIHgFjOFHf82Pwh
-         um3w==
+        bh=FPQpPkineiPmOw2bdcHutS4i1NfXxZpf/y7WCO0sLws=;
+        b=m30KpS05l2vCC41X/iSl7gdZ6Llls/0MRrXJp91bWT6xsFG1liRpHtVW6AMFQlpPVu
+         tIGyeKLISAL5LJCvy8gz1iJraKvU4HQbjF95dAUJafw6u3sxLQIoZulyn6S8PlnFFVv3
+         QevP8TSNBy1aZ5rXm1kEPB4i4LFj9YNl9+eJ9SnHF/VRP/oExxFnrvFvyj5wXsxITY61
+         WHN3lYZFx6D3OEYpsuZTYlKRXWUnAu4noKWgvoX928hvEB0fYLYi88oKNbxqgeizPrXN
+         GjknArAPPV4RNln3Nb/T4VUecfU6sWo3ICSUhKSblTQ1m1auKBwKBLcHiQcwtvX1WS4d
+         zG7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WOt8pDHxf8UyV1g+frGSSeqaqXf66O0fXn4ZHmPI4BY=;
-        b=kpn/ArgWTW320SDFbbvab5zx6b4UaxE6yM04bvFCIJp8Rsdo54G+ozJInl+95m6zpo
-         LCCADIPlVcsrshUmd5aWcLYEP8cqNaGxbNnqD0gGZonsFMxMza8V14n3I7gXl7h42k5R
-         CLrEkq0hi/hd5OeSCYRXZCiQQIcxiQBtuFek2sHnb7ZRXun7LNAoHxkggmoeCcALkOAp
-         WPw/6WlABjMECxMIwKBXJAho2hnoO2msH/VppWDf697m5sTSX2XFDZUdRU++a29P9agV
-         jAg1xfo2TMlLRCEwgr6MlVpXdkPzBCu8ZA3cTfHKNy37NWHamy9UG2U5ocflZ9RPwQtN
-         cS7w==
-X-Gm-Message-State: AOAM533/+XR2ls8GkgXGkYX70mK1N8GtmQgO4CVV237q9ud+2zvSmPY4
-        oWd70xog5PV+bedF66nogaQS0yqGQo5Vt9h/ltqA2w==
-X-Google-Smtp-Source: ABdhPJwS6fAI4vrD9cHbCMoV0PUsmjjznxmSh8H/3YOVLg1P9jZ7axn+uajLPV4AvemovAOd5w3sbp0WFM4/ejFVXUc=
-X-Received: by 2002:a5b:7c5:: with SMTP id t5mr2189351ybq.190.1621281767582;
- Mon, 17 May 2021 13:02:47 -0700 (PDT)
+        bh=FPQpPkineiPmOw2bdcHutS4i1NfXxZpf/y7WCO0sLws=;
+        b=i8lQ7X/CbpBFFgiq739C3kP7iyzjgcpFR5gNvhNcmxLf2MTEMqBXdy9pM5l5K7sMDR
+         p9vBPpKGnnXcSmme2yplzLE/rfATSEsUzi05styIa81oI+fQTk8q0/WoLDXuS1KaIUDj
+         DMDy77MaSGao1/3IB6eV5x7d+kS1MpuqJTaaziLHNoGUwlVpA6cW5kRmv2CyP3uV0lhW
+         HR/Pprx+HgOTXwokz5bvy2zAJi3G2kREfLafAST8UQPyZZU6E1Wr2LAD2Q0/j1pHjkfE
+         Q+udxRI1+mgyDbz40GF3EGLKuaNdmZ9JQZtWPUZ2V9XSaevbrWhviMT7POLv2HqWQBP2
+         DzCQ==
+X-Gm-Message-State: AOAM531Zcl8jK15kHfcdUNHSVHdhxEuYw2JprkREpl3Zf1AVcWaJe99m
+        irBd3S7xWsx1wI7ZcKa2UiFkIRkdYZfl30BgPaI=
+X-Google-Smtp-Source: ABdhPJzjlQao+FlWA/u+k5w1aTOIgcJSpc4UjIQ+FK7vnybDLv6iqkd/6zSfKKUIOoyo3k9D8hIrLHCVAZPxcxHGFYM=
+X-Received: by 2002:a17:906:b853:: with SMTP id ga19mr1714092ejb.386.1621282097074;
+ Mon, 17 May 2021 13:08:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
- <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
- <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net> <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
- <CAJuCfpH2X47_3VvfZXs_eWhYDziOh13qdUwcfxPJe=Zg_Nkvqw@mail.gmail.com>
- <CAJuCfpEznCYhjbM+1=dMdEn1J2NVw88M+4AThD99PBKg41RgTw@mail.gmail.com> <YKK2ZumDWcaGWvBj@cmpxchg.org>
-In-Reply-To: <YKK2ZumDWcaGWvBj@cmpxchg.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 17 May 2021 13:02:36 -0700
-Message-ID: <CAJuCfpGx7w2E8Bq7jcq7HS41i40r4Lp+-z9m1P095B+MkAOWqg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
-        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Minchan Kim <minchan@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
-        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
+References: <20210511204834.2675271-1-dougdev334@gmail.com>
+ <20210511204834.2675271-3-dougdev334@gmail.com> <20210513022036.GA890569@robh.at.kernel.org>
+ <CABa6EMYdY9WBN0+edgcEFc0uiBmWUDert7nXCN+FWeRMG=0S6A@mail.gmail.com> <20210516183135.GA26985@duo.ucw.cz>
+In-Reply-To: <20210516183135.GA26985@duo.ucw.cz>
+From:   Doug Zobel <dougdev334@gmail.com>
+Date:   Mon, 17 May 2021 15:07:41 -0500
+Message-ID: <CABa6EMaEFLKrrhnH2+3wEEGJkWH7fQQpQrKRh=KHR6KfSgTsnA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt: bindings: lp55xx: Add predefined LED pattern
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Rob Herring <robh@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:31 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Sun, May 16, 2021 at 12:52:32PM -0700, Suren Baghdasaryan wrote:
-> > After reworking the code to add a static key I had to expand the
-> > #ifdef CONFIG_CGROUPS section, so I think a code refactoring below
-> > would make sense. It localizes config-specific code and it has the
-> > same exact code for CONFIG_CGROUPS=n and for
-> > cgroup_psi_enabled()==false. WDYT?:
-> >
-> > --- a/kernel/sched/psi.c
-> > +++ b/kernel/sched/psi.c
-> > @@ -181,6 +181,7 @@ struct psi_group psi_system = {
-> >  };
-> >
-> >  static void psi_avgs_work(struct work_struct *work);
-> > +static void cgroup_iterator_init(void);
-> >
-> >  static void group_init(struct psi_group *group)
-> >  {
-> > @@ -211,6 +212,8 @@ void __init psi_init(void)
-> >                  return;
-> >          }
-> >
-> > +        cgroup_iterator_init();
-> > +
-> >          psi_period = jiffies_to_nsecs(PSI_FREQ);
-> >          group_init(&psi_system);
-> >  }
-> > @@ -742,11 +745,31 @@ static void psi_group_change(struct psi_group
-> > *group, int cpu,
-> >                  schedule_delayed_work(&group->avgs_work, PSI_FREQ);
-> >  }
-> >
-> > -static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> > +static inline struct psi_group *sys_group_iterator(struct task_struct *task,
-> > +                                                   void **iter)
-> >  {
-> > +        *iter = &psi_system;
-> > +        return &psi_system;
-> > +}
-> > +
-> >  #ifdef CONFIG_CGROUPS
-> > +
-> > +DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
-> > +
-> > +static void cgroup_iterator_init(void)
-> > +{
-> > +        if (!cgroup_psi_enabled())
-> > +                static_branch_enable(&psi_cgroups_disabled);
-> > +}
-> > +
-> > +static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> > +{
-> >          struct cgroup *cgroup = NULL;
-> >
-> > +        /* Skip to psi_system if per-cgroup accounting is disabled */
-> > +        if (static_branch_unlikely(&psi_cgroups_disabled))
-> > +                return *iter ? NULL : sys_group_iterator(task, iter);
-> > +
-> >          if (!*iter)
-> >                  cgroup = task->cgroups->dfl_cgrp;
->
-> That looks over-engineered. You have to check iter whether cgroups are
-> enabled or not. Pulling the jump label check up doesn't save anything,
-> but it ends up duplicating code.
->
-> What you had in the beginning was better, it just had the system label
-> in an unexpected place where it would check iter twice in a row.
->
-> The (*iter == &psi_system) check inside the cgroups branch has the
-> same purpose as the (*iter) check in the else branch. We could
-> consolidate that by pulling it up front.
->
-> If we wrap the entire cgroup iteration block into the static branch,
-> IMO it becomes a bit clearer as well.
->
-> How about this?
->
-> static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> {
->         if (*iter == &psi_system)
->                 return NULL;
->
-> #ifdef CONFIG_CGROUPS
->         if (!static_branch_likely(&psi_cgroups_disabled)) {
->                 struct cgroup *cgroup = NULL;
->
->                 if (!*iter)
->                         cgroup = task->cgroups->dfl_cgrp;
->                 else
->                         cgroup = cgroup_parent(*iter);
->
->                 if (cgroup && cgroup_parent(cgroup)) {
->                         *iter = cgroup;
->                         return cgroup_psi(cgroup);
->                 }
->         }
-> #endif
->
->         *iter = &psi_system;
->         return &psi_system;
-> }
+> Take a look at the pattern trigger. That's the way to change patterns
+> at runtime, no need for firmware loading.
 
-This looks great to me. Will use it in the next version. Thanks!
+Thanks for the pointer.  That looks like it could work.  I would need
+to add support for the lp5562 to run the patterns in hardware.  The
+only problem I see is in synchronizing the 3 color channels.  Since
+the pattern triggers are associated with each individual channel, I
+don't see a clean way to run a multi-chanel (RGB) pattern and keep it
+in sync.  I was thinking I could restart all 3 channels' programs
+anytime a channel program is changed.  This would assure they start in
+sync.  However that would cause glitches in the patterns if they are
+being used as 3 independent (non-RGB) patterns.
+
+> I may even have compiler from that interface to the bytecode lp55xx
+> uses. Some assembly will be required. Doing so with the RGB LED will
+> be even more fun.
+
+If you have some previous work on this, I could use it.  Otherwise
+I'll just write my own bytecode generator.  As far as I know the
+lp5562 is the only lp55xx controller which supports on chip
+programming.  So I would add the support in the lp5562 driver.
+
+> We'll want to deprecate the firmware loading interface at some point.
+
+If I add support for running the pattern triggers in lp5562 hardware,
+then this will now be the 3rd method (firmware &
+lp5562_run_predef_led_pattern() are the other two) for loading custom
+patterns onto the chip.  Will this be a problem?
+
+-Doug
