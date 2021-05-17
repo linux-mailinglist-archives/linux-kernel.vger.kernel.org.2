@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED561383110
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B5138337B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237315AbhEQOeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:34:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55002 "EHLO mail.kernel.org"
+        id S241759AbhEQO6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:58:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239720AbhEQO2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:28:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B13561601;
-        Mon, 17 May 2021 14:14:33 +0000 (UTC)
+        id S240728AbhEQOtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:49:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F5B46197F;
+        Mon, 17 May 2021 14:22:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260873;
-        bh=kEnxKvRvXtsSjAMGQKobqwfi53MrIc8FrAhY6aWVDy8=;
+        s=korg; t=1621261362;
+        bh=enR9fvpoMci803EPJsInd9Zej7fSXQVmWoPu6wDqnOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cLk8/YWdo8TxLJXM1JHjh2TheuurmkkUzn3L8zpYXEWaNGDnB3X1XdEFLkDIUmYJt
-         IG1TdqX4l83abWEl15J1vsZOBsggcKtBRyv/0AzMudqzA1LPmgwnlucsEsvJl4XdwE
-         UzjbP/vWWBmqJ99rZ1rVSkioqpm4/AujoJ+EQS+A=
+        b=qjBqzcU8oubktlR1ZSGwDdSKM+cDnqSQor2WKeiOUsjnj7DkqfDA2ngEb+/XJWnuv
+         wtKYjr9eFpGztBDt6pIoaqgzufb7rJTpQ/871yZoDoN8kdG0dqoXgUIOI/lm9wkD89
+         9ytqQFKv/dR77rgVSb/tW7AgkkM9LkSSrEvohfT8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 025/329] net: stmmac: Set FIFO sizes for ipq806x
-Date:   Mon, 17 May 2021 15:58:56 +0200
-Message-Id: <20210517140302.901899015@linuxfoundation.org>
+Subject: [PATCH 5.10 012/289] fs: dlm: fix debugfs dump
+Date:   Mon, 17 May 2021 15:58:57 +0200
+Message-Id: <20210517140305.592473256@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan McDowell <noodles@earth.li>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit e127906b68b49ddb3ecba39ffa36a329c48197d3 ]
+[ Upstream commit 92c48950b43f4a767388cf87709d8687151a641f ]
 
-Commit eaf4fac47807 ("net: stmmac: Do not accept invalid MTU values")
-started using the TX FIFO size to verify what counts as a valid MTU
-request for the stmmac driver.  This is unset for the ipq806x variant.
-Looking at older patches for this it seems the RX + TXs buffers can be
-up to 8k, so set appropriately.
+This patch fixes the following message which randomly pops up during
+glocktop call:
 
-(I sent this as an RFC patch in June last year, but received no replies.
-I've been running with this on my hardware (a MikroTik RB3011) since
-then with larger MTUs to support both the internal qca8k switch and
-VLANs with no problems. Without the patch it's impossible to set the
-larger MTU required to support this.)
+seq_file: buggy .next function table_seq_next did not update position index
 
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The issue is that seq_read_iter() in fs/seq_file.c also needs an
+increment of the index in an non next record case as well which this
+patch fixes otherwise seq_read_iter() will print out the above message.
+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/dlm/debug_fs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index bf3250e0e59c..749585fe6fc9 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -352,6 +352,8 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 	plat_dat->bsp_priv = gmac;
- 	plat_dat->fix_mac_speed = ipq806x_gmac_fix_mac_speed;
- 	plat_dat->multicast_filter_bins = 0;
-+	plat_dat->tx_fifo_size = 8192;
-+	plat_dat->rx_fifo_size = 8192;
+diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
+index d6bbccb0ed15..d5bd990bcab8 100644
+--- a/fs/dlm/debug_fs.c
++++ b/fs/dlm/debug_fs.c
+@@ -542,6 +542,7 @@ static void *table_seq_next(struct seq_file *seq, void *iter_ptr, loff_t *pos)
  
- 	err = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- 	if (err)
+ 		if (bucket >= ls->ls_rsbtbl_size) {
+ 			kfree(ri);
++			++*pos;
+ 			return NULL;
+ 		}
+ 		tree = toss ? &ls->ls_rsbtbl[bucket].toss : &ls->ls_rsbtbl[bucket].keep;
 -- 
 2.30.2
 
