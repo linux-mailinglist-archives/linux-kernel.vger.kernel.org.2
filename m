@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E763865FF
+	by mail.lfdr.de (Postfix) with ESMTP id BA02C386601
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239916AbhEQUL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S240381AbhEQUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238323AbhEQULP (ORCPT
+        with ESMTP id S237977AbhEQULQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:11:15 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87825C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:58 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id y32so5388239pga.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:58 -0700 (PDT)
+        Mon, 17 May 2021 16:11:16 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD423C06138B
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:59 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q2so5713267pfh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WlNMhXEMVlZjVUXqmHsr4gjek/M5L9VF2F3wmQwU67I=;
-        b=cFRgeXV8NlsiS1oD3xuRnGX2XdP/0u/Kfh3xQWMNBi0KIswi1XczxBDDe4cB0Dbkbq
-         Kdak7ghVHhJTL2Jn0niy+ac3uD0OnZQ1KJFuHlQOrBCCMMbiB1NS0QTrfqn9e4OxLATN
-         TvogIgE0Q4ZS5kdq7VJwctsxLa5CRIb8fbWGA=
+        bh=1UwU9EkWrODMcI+U3WAgeVuEyP427IMNTKjMOHdxTM0=;
+        b=g3WODAH2i+aU+cIRqG6vWZWK6LQgC1mekg1RDZdIZDKEeUXLHcvmDCqvKlfaD7S6rV
+         JZ+Qxs96T0EbefFWIa/JHdYoMv+YpZRS1o9PjVIdQoFMpJ/H7/rctpfzO7ERO9Rd51Ac
+         FZBndcyste7QBFWzJ5dgIIzdbdVzmdxR+iguM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WlNMhXEMVlZjVUXqmHsr4gjek/M5L9VF2F3wmQwU67I=;
-        b=MbtroRNNnVgNwMVGlpEsnWr3ez6hf4mEXrZ2yD9N47kY6mntRp950HYnyJKjPk7SrR
-         h64KP53HNZ4PYRjcf20ystld/qeEDzKnFunslYiaKJekzET28SDNBYC7YvJuL0U2QHBz
-         4Pji8Tw7rXalX/zsiyPexWtPrU2oYwOPQ6W76z4+5yZIkvc/Z8UEn30YlfpxDanoHktK
-         u0RWCmuL8LdAXtrtaMC7cfeS4ZbBCDbs4PPU8nO69oBQemO426qwb3/kAGiya1DtzCEF
-         W4+L/mlIKxTBOqzfX/npmrhrJmtgXUdgWsNKSnCpAAintrLqYhWpPYLkcRa1np3yD3v9
-         HtPQ==
-X-Gm-Message-State: AOAM530DDzc9Gb/QNqkKGvCLIsi7/mcEKDIHfoirhr1zBe4gu5xaDvuR
-        RBaMZGDSZyYOM237IQejQZrwLw==
-X-Google-Smtp-Source: ABdhPJzi1KCO1xj+wYDwMfBGJlV4IAZi3JbQkP29/R/2HZ+M6izq2Ry4gf+aiumrkOUg3ubgLkAhWQ==
-X-Received: by 2002:aa7:8a87:0:b029:27d:a1e:bc71 with SMTP id a7-20020aa78a870000b029027d0a1ebc71mr1205648pfc.14.1621282198096;
-        Mon, 17 May 2021 13:09:58 -0700 (PDT)
+        bh=1UwU9EkWrODMcI+U3WAgeVuEyP427IMNTKjMOHdxTM0=;
+        b=LbfDT+NWq4eC2z9qQQ4xVfAugP6MmSUEgAwvQACz9/O5djmetAcPy+vmWPj3o0qXdz
+         LZLH8OxkTFgbGZWo09OriA5XfzOQiK5viaQ26RmGFEQWSGh7UDd2SSiymKHrwXT5aW1Q
+         6E1GE4Uigten0ycuAMj4wkfSM1GkAw6+/22j3+7pgWwnToqUWDraG/GUlutFa+EsFVi2
+         vBKbYEq82saVQMWOrP9klWlQq8nRB/nJtTqLWwey5ScSXhydh97ohn+6i5B6TTC7gjJd
+         tAPfe39m2yCSAa8unrvgYNpYu1FKP/oyGb7HPNKyO/Jm3hnyJ56KHXLuBI5fCTw4Icyw
+         beZA==
+X-Gm-Message-State: AOAM5315hYrkfAuUiMSl2IITkXKVMD/amLXf49S6mWWRjJt92ktMHX+r
+        K20nmXu4CSIM4lS43hc3nOZ63g==
+X-Google-Smtp-Source: ABdhPJxyl3CVtWgAW9niHq8RrZzZop7XLx8u0xYbliB0AtmGj6fTylsaoI37vUp6/6aPr25KW3J3vw==
+X-Received: by 2002:a63:a019:: with SMTP id r25mr1198145pge.139.1621282199381;
+        Mon, 17 May 2021 13:09:59 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:bc91:c597:ded0:7930])
-        by smtp.gmail.com with ESMTPSA id x19sm9078941pgj.66.2021.05.17.13.09.57
+        by smtp.gmail.com with ESMTPSA id x19sm9078941pgj.66.2021.05.17.13.09.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 13:09:57 -0700 (PDT)
+        Mon, 17 May 2021 13:09:59 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -63,13 +63,12 @@ Cc:     Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
         dri-devel@lists.freedesktop.org, robdclark@chromium.org,
         Steev Klimaszewski <steev@kali.org>,
         Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 09/10] drm/bridge: ti-sn65dsi86: Don't read EDID blob over DDC
-Date:   Mon, 17 May 2021 13:09:06 -0700
-Message-Id: <20210517130450.v7.9.I9330684c25f65bb318eff57f0616500f83eac3cc@changeid>
+Subject: [PATCH v7 10/10] arm64: dts: qcom: sc7180-trogdor: Move panel under the bridge chip
+Date:   Mon, 17 May 2021 13:09:07 -0700
+Message-Id: <20210517130450.v7.10.Ibdb7735fb1844561b902252215a69526a14f9abd@changeid>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 In-Reply-To: <20210517200907.1459182-1-dianders@chromium.org>
 References: <20210517200907.1459182-1-dianders@chromium.org>
@@ -79,111 +78,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is really just a revert of commit 58074b08c04a ("drm/bridge:
-ti-sn65dsi86: Read EDID blob over DDC"), resolving conflicts.
+Putting the panel under the bridge chip (under the aux-bus node)
+allows the panel driver to get access to the DP AUX bus, enabling all
+sorts of fabulous new features.
 
-The old code failed to read the EDID properly in a very important
-case: before the bridge's pre_enable() was called. The way things need
-to work:
-1. Read the EDID.
-2. Based on the EDID, decide on video settings and pixel clock.
-3. Enable the bridge w/ the desired settings.
+While we're at this, get rid of a level of hierarchy for the panel
+node. It doesn't need "ports / port" and can just have a "port" child.
 
-The way things were working:
-1. Try to read the EDID but fail; fall back to hardcoded values.
-2. Based on hardcoded values, decide on video settings and pixel clock.
-3. Enable the bridge w/ the desired settings.
-4. Try again to read the EDID, it works now!
-5. Realize that the hardcoded settings weren't quite right.
-6. Disable / reenable the bridge w/ the right settings.
+For Linux, this patch has a hard requirement on the patches adding DP
+AUX bus support to the ti-sn65dsi86 bridge chip driver. See the patch
+("drm/bridge: ti-sn65dsi86: Add support for the DP AUX bus").
 
-The reasons for the failures were twofold:
-a) Since we never ran the bridge chip's pre-enable then we never set
-   the bit to ignore HPD. This meant the bridge chip didn't even _try_
-   to go out on the bus and communicate with the panel.
-b) Even if we fixed things to ignore HPD, the EDID still wouldn't read
-   if the panel wasn't on.
-
-Instead of reverting the code, we could fix it to set the HPD bit and
-also power on the panel. However, it also works nicely to just let the
-panel code read the EDID. Now that we've split the driver up we can
-expose the DDC AUX channel bus to the panel node. The panel can take
-charge of reading the EDID.
-
-NOTE: in order for things to work, anyone that needs to read the EDID
-will need to instantiate their panel using the new DP AUX bus (AKA by
-listing their panel under the "aux-bus" node of the bridge chip in the
-device tree).
-
-In the future if we want to use the bridge chip to provide a full
-external DP port (which won't have a panel) then we will have to
-conditinally add EDID reading back in.
-
-Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
 
 Changes in v7:
-- Adjusted commit message to talk about DP AUX bus.
+- Panel now under bridge chip instead of getting a link to ddc-i2c
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 22 ----------------------
- 1 file changed, 22 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 30 ++++++++++----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index a59497f7e504..c9311e6e3799 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -126,7 +126,6 @@
-  * @connector:    Our connector.
-  * @host_node:    Remote DSI node.
-  * @dsi:          Our MIPI DSI source.
-- * @edid:         Detected EDID of eDP panel.
-  * @refclk:       Our reference clock.
-  * @panel:        Our panel.
-  * @enable_gpio:  The GPIO we toggle to enable the bridge.
-@@ -157,7 +156,6 @@ struct ti_sn65dsi86 {
- 	struct drm_dp_aux		aux;
- 	struct drm_bridge		bridge;
- 	struct drm_connector		connector;
--	struct edid			*edid;
- 	struct device_node		*host_node;
- 	struct mipi_dsi_device		*dsi;
- 	struct clk			*refclk;
-@@ -406,24 +404,6 @@ connector_to_ti_sn65dsi86(struct drm_connector *connector)
- static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
- {
- 	struct ti_sn65dsi86 *pdata = connector_to_ti_sn65dsi86(connector);
--	struct edid *edid = pdata->edid;
--	int num, ret;
--
--	if (!edid) {
--		pm_runtime_get_sync(pdata->dev);
--		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
--		pm_runtime_put_autosuspend(pdata->dev);
--	}
--
--	if (edid && drm_edid_is_valid(edid)) {
--		ret = drm_connector_update_edid_property(connector, edid);
--		if (!ret) {
--			num = drm_add_edid_modes(connector, edid);
--			if (num)
--				return num;
--		}
--	}
--
- 	return drm_panel_get_modes(pdata->panel, connector);
- }
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 24d293ef56d7..c76afd857b54 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -260,21 +260,6 @@ max98357a: audio-codec-0 {
+ 		#sound-dai-cells = <0>;
+ 	};
  
-@@ -1354,8 +1334,6 @@ static void ti_sn_bridge_remove(struct auxiliary_device *adev)
- 		mipi_dsi_device_unregister(pdata->dsi);
- 	}
- 
--	kfree(pdata->edid);
+-	panel: panel {
+-		/* Compatible will be filled in per-board */
+-		power-supply = <&pp3300_dx_edp>;
+-		backlight = <&backlight>;
+-		hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
 -
- 	drm_bridge_remove(&pdata->bridge);
+-		ports {
+-			port {
+-				panel_in_edp: endpoint {
+-					remote-endpoint = <&sn65dsi86_out>;
+-				};
+-			};
+-		};
+-	};
+-
+ 	pwmleds {
+ 		compatible = "pwm-leds";
+ 		keyboard_backlight: keyboard-backlight {
+@@ -674,6 +659,21 @@ sn65dsi86_out: endpoint {
+ 				};
+ 			};
+ 		};
++
++		aux-bus {
++			panel: panel {
++				/* Compatible will be filled in per-board */
++				power-supply = <&pp3300_dx_edp>;
++				backlight = <&backlight>;
++				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
++
++				port {
++					panel_in_edp: endpoint {
++						remote-endpoint = <&sn65dsi86_out>;
++					};
++				};
++			};
++		};
+ 	};
+ };
  
- 	of_node_put(pdata->host_node);
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
