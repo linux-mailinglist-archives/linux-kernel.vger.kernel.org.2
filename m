@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EF73838AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313103838B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242738AbhEQP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:58:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50648 "EHLO mail.kernel.org"
+        id S1344593AbhEQP7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:59:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245521AbhEQPjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:39:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18DCC61CFE;
-        Mon, 17 May 2021 14:41:16 +0000 (UTC)
+        id S1343929AbhEQPkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:40:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3BBF61D00;
+        Mon, 17 May 2021 14:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262477;
-        bh=TZev9StsWgHu4WF6G+FIHP5tmHQKm6mneARLeqjVLIw=;
+        s=korg; t=1621262492;
+        bh=J7/uHK0KGnWBQpkhBwvc/eTQATuU2zP7WnytlIQjRbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1nOeHgcV8V21IpkGmfnbLRSpVSv7eBcUL8OUR3+/utnSKK7uOWXqxr7slowoIgxji
-         x8arsj1ebdcs9cSPOkIvbelRRTg8Nqjkq9ncrjPKD0ItgzjTlGAxzoVXkVPg4IwkIy
-         d4EJwg4se7YFn3CYzbPwNjksqYp+78sWQUMugE7I=
+        b=ZW12P5bth7e8GtvAHVOO4AvEN8mClG1huVyyzYbJ93eha8reRirPRN6iQ/adYBqWD
+         wRCRjxmh+3Oh/YhdgfGzFZVh2CewJ5suPY8Ts5CpCfZETEnR233dlmI8rU8fI7EgOE
+         z4EynFXFsN+sXGyj3qXKxw+7aH1MgvMimk0Ve5Ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
         Jim Mattson <jmattson@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 299/329] KVM: x86: Move RDPID emulation intercept to its own enum
-Date:   Mon, 17 May 2021 16:03:30 +0200
-Message-Id: <20210517140312.207282886@linuxfoundation.org>
+Subject: [PATCH 5.11 301/329] KVM: VMX: Do not advertise RDPID if ENABLE_RDTSCP control is unsupported
+Date:   Mon, 17 May 2021 16:03:32 +0200
+Message-Id: <20210517140312.278259976@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -42,57 +43,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <seanjc@google.com>
 
-commit 2183de4161b90bd3851ccd3910c87b2c9adfc6ed upstream.
+commit 8aec21c04caa2000f91cf8822ae0811e4b0c3971 upstream.
 
-Add a dedicated intercept enum for RDPID instead of piggybacking RDTSCP.
-Unlike VMX's ENABLE_RDTSCP, RDPID is not bound to SVM's RDTSCP intercept.
+Clear KVM's RDPID capability if the ENABLE_RDTSCP secondary exec control is
+unsupported.  Despite being enumerated in a separate CPUID flag, RDPID is
+bundled under the same VMCS control as RDTSCP and will #UD in VMX non-root
+if ENABLE_RDTSCP is not enabled.
 
-Fixes: fb6d4d340e05 ("KVM: x86: emulate RDPID")
+Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210504171734.1434054-5-seanjc@google.com>
+Message-Id: <20210504171734.1434054-2-seanjc@google.com>
 Reviewed-by: Jim Mattson <jmattson@google.com>
+Reviewed-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/emulate.c     |    2 +-
- arch/x86/kvm/kvm_emulate.h |    1 +
- arch/x86/kvm/vmx/vmx.c     |    3 ++-
- 3 files changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/kvm/vmx/vmx.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -4502,7 +4502,7 @@ static const struct opcode group8[] = {
-  * from the register case of group9.
-  */
- static const struct gprefix pfx_0f_c7_7 = {
--	N, N, N, II(DstMem | ModRM | Op3264 | EmulateOnUD, em_rdpid, rdtscp),
-+	N, N, N, II(DstMem | ModRM | Op3264 | EmulateOnUD, em_rdpid, rdpid),
- };
- 
- 
---- a/arch/x86/kvm/kvm_emulate.h
-+++ b/arch/x86/kvm/kvm_emulate.h
-@@ -468,6 +468,7 @@ enum x86_intercept {
- 	x86_intercept_clgi,
- 	x86_intercept_skinit,
- 	x86_intercept_rdtscp,
-+	x86_intercept_rdpid,
- 	x86_intercept_icebp,
- 	x86_intercept_wbinvd,
- 	x86_intercept_monitor,
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7346,8 +7346,9 @@ static int vmx_check_intercept(struct kv
- 	/*
- 	 * RDPID causes #UD if disabled through secondary execution controls.
- 	 * Because it is marked as EmulateOnUD, we need to intercept it here.
-+	 * Note, RDPID is hidden behind ENABLE_RDTSCP.
- 	 */
--	case x86_intercept_rdtscp:
-+	case x86_intercept_rdpid:
- 		if (!nested_cpu_has2(vmcs12, SECONDARY_EXEC_ENABLE_RDTSCP)) {
- 			exception->vector = UD_VECTOR;
- 			exception->error_code_valid = false;
+@@ -7288,9 +7288,11 @@ static __init void vmx_set_cpu_caps(void
+ 	if (!cpu_has_vmx_xsaves())
+ 		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+ 
+-	/* CPUID 0x80000001 */
+-	if (!cpu_has_vmx_rdtscp())
++	/* CPUID 0x80000001 and 0x7 (RDPID) */
++	if (!cpu_has_vmx_rdtscp()) {
+ 		kvm_cpu_cap_clear(X86_FEATURE_RDTSCP);
++		kvm_cpu_cap_clear(X86_FEATURE_RDPID);
++	}
+ 
+ 	if (cpu_has_vmx_waitpkg())
+ 		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
 
 
