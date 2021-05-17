@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BBC3827A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E111E3827AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbhEQI7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235544AbhEQI7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58EB561184;
-        Mon, 17 May 2021 08:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621241893;
-        bh=hc8A8D9fFnzto48SzMasRY0xBuoa+Ue7uGSpDnxppJs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ifNid6jnHCdc7IjlazvZQRUXtKDcah37RAUUZ9cCj2owKZHjRNDYPN8bu0/MPwbVd
-         RCcY+QQIdt3+XvjRdk8qYmpBhWMOaFU5V8LbOkF1k4dzo95o8rk5h/gl0xJ9Ptfqcs
-         2ZZgMekRAH7ScOYh/J/u4R4TOCjpSiFoEY++LBrY=
-Date:   Mon, 17 May 2021 10:58:11 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Qiang Ma <maqianga@uniontech.com>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: usbhid: enable remote wakeup for mouse
-Message-ID: <YKIwIwx+nLyX/9LG@kroah.com>
-References: <20210517060145.32359-1-maqianga@uniontech.com>
+        id S235814AbhEQJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235711AbhEQJCl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 05:02:41 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876AFC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:01:24 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id i5so4233165pgm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9OkKHJwSRtsD1XoVSI9D7062oV0S6RC6cgh0CBzJGxQ=;
+        b=wurd6Th2hC0CtygbnWfpzXlmQIro6bMhdR7DCsDpr4cXF8QvJWfU2H7SuFcfuyl/on
+         xtOSzL9mRf6Qpm+/yH9LQawbpjRtEIfDuKPownnp0Bixi4DHYm0Cv4Ovg/7BeVIjwGte
+         Vgvdu50DNIgJdrMFWpziD3ZSowR3zWxzQazg7uoQJt6bE8+uPeOEhd7o2h/HBsYbh8lU
+         hlikFoTOsIDijq4sx06mXFj7NwWE6z4lsmpAtBJraB2mLA7f3Dcuke8KR7G53Vp1OhUK
+         kMKP77uZj4QYkMbZjh+ysYt/FSCyNPtmGQ0qYnuNvshMWQykCTz+CBHahzQff7YY7bCB
+         17QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9OkKHJwSRtsD1XoVSI9D7062oV0S6RC6cgh0CBzJGxQ=;
+        b=VqBqKcaIBVKwFkLui9oUX9rzExuRO3oBFgSfA8zFF4hCz3go/Z42AC8rvE22OuKktt
+         Soty8rEJ1uXu+fIORjOqspIvA1wcmDTVqMgn86veC9wiC8PwHTWYzdUtMTUtubEiSiSx
+         5gI4tSBnpUq7eHsb0wi+Z64lbHWjx2L6iCzr2DvpOFWgkj194V4Xe3SzbwuoWJcyiGAp
+         FUAchOY3TNCZ/3opaKBsnx4hMAjJxwhtyQHD/bC/Frr6iYhJVYG7rwenqIGvkeZ0HeEV
+         cA/1Wp1cfZx2f8HkRXmoKx6gyKfzPIKZwcrr8yCu4JcOLCauLiAdaIqO/vznUBnRhMJK
+         kC6A==
+X-Gm-Message-State: AOAM530T8CD8oavE2VZox+BNVc2zAA61mONubuiSH0niN8xF6DM9oypn
+        vL2Pp+9mQLxbLl2H53SUamHhAPO/xI/np3KFVTwxrQ==
+X-Google-Smtp-Source: ABdhPJyp+18LHyzRAiO7+sc3FHiRgXNmFI/UTNc7tUNrDDRlUREycMbppyLtZcKvXSr6KiyqKSsBhvaEt7CAlg7Cf0M=
+X-Received: by 2002:a63:4e01:: with SMTP id c1mr46758645pgb.265.1621242084104;
+ Mon, 17 May 2021 02:01:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517060145.32359-1-maqianga@uniontech.com>
+References: <20210514070306.606-1-linqiheng@huawei.com>
+In-Reply-To: <20210514070306.606-1-linqiheng@huawei.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Mon, 17 May 2021 11:01:13 +0200
+Message-ID: <CAG3jFytWqa9CwPto4Q1b5wZvHkviLgtY_pqYWyVCa5Trx0otwg@mail.gmail.com>
+Subject: Re: [PATCH -next] drm: bridge: fix wrong pointer passed to PTR_ERR()
+To:     Qiheng Lin <linqiheng@huawei.com>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 02:01:45PM +0800, Qiang Ma wrote:
-> This patch enables remote wakeup by default for USB mouse
-> devices.  Mouse in general are supposed to be wakeup devices, but
-> the correct place to enable it depends on the device's bus; no single
-> approach will work for all mouse devices.  In particular, this
-> covers only USB mouse (and then only those supporting the boot
-> protocol).
-> 
-> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+Hey Qiheng,
 
-Based on hardware testing, I do not think we can do this as no other
-operating system does this, right?  It's not a requirement of the USB
-specification to support this, so we can not enforce it either.
+Thanks for submitting this bugfix.
+
+The title of this patch should probably be:
+drm: bridge: it66121: fix wrong pointer passed to PTR_ERR()
+
+With this fixed, feel free to add my r-b.
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
 
+On Fri, 14 May 2021 at 09:03, Qiheng Lin <linqiheng@huawei.com> wrote:
+>
+> PTR_ERR should access the value just tested by IS_ERR, otherwise
+> the wrong error code will be returned.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
 > ---
->  drivers/hid/usbhid/hid-core.c | 12 +++++++-----
->  drivers/hid/usbhid/usbmouse.c |  1 +
->  2 files changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-> index 86257ce6d619..592aa57a97f5 100644
-> --- a/drivers/hid/usbhid/hid-core.c
-> +++ b/drivers/hid/usbhid/hid-core.c
-> @@ -1186,11 +1186,13 @@ static int usbhid_start(struct hid_device *hid)
->  	 * In addition, enable remote wakeup by default for all keyboard
->  	 * devices supporting the boot protocol.
->  	 */
-> -	if (interface->desc.bInterfaceSubClass == USB_INTERFACE_SUBCLASS_BOOT &&
-> -			interface->desc.bInterfaceProtocol ==
-> -				USB_INTERFACE_PROTOCOL_KEYBOARD) {
-> -		usbhid_set_leds(hid);
-> -		device_set_wakeup_enable(&dev->dev, 1);
-> +	if (interface->desc.bInterfaceSubClass == USB_INTERFACE_SUBCLASS_BOOT) {
-> +		if (interface->desc.bInterfaceProtocol == USB_INTERFACE_PROTOCOL_KEYBOARD ||
-> +			interface->desc.bInterfaceProtocol == USB_INTERFACE_PROTOCOL_MOUSE) {
-> +			if (interface->desc.bInterfaceProtocol == USB_INTERFACE_PROTOCOL_KEYBOARD)
-> +				usbhid_set_leds(hid);
-> +			device_set_wakeup_enable(&dev->dev, 1);
-> +		}
->  	}
->  
->  	mutex_unlock(&usbhid->mutex);
-> diff --git a/drivers/hid/usbhid/usbmouse.c b/drivers/hid/usbhid/usbmouse.c
-> index 073127e65ac1..cf785369a5ed 100644
-> --- a/drivers/hid/usbhid/usbmouse.c
-> +++ b/drivers/hid/usbhid/usbmouse.c
-> @@ -188,6 +188,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
->  		goto fail3;
->  
->  	usb_set_intfdata(intf, mouse);
-> +	device_set_wakeup_enable(&dev->dev, 1);
->  	return 0;
->  
->  fail3:	
-> -- 
-> 2.20.1
-
-How many different devices did you test this on?
-
-thanks,
-
-greg k-h
+>  drivers/gpu/drm/bridge/ite-it66121.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+> index d8a60691fd32..6980c9801d0d 100644
+> --- a/drivers/gpu/drm/bridge/ite-it66121.c
+> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
+> @@ -943,7 +943,7 @@ static int it66121_probe(struct i2c_client *client,
+>         ctx->regmap = devm_regmap_init_i2c(client, &it66121_regmap_config);
+>         if (IS_ERR(ctx->regmap)) {
+>                 ite66121_power_off(ctx);
+> -               return PTR_ERR(ctx);
+> +               return PTR_ERR(ctx->regmap);
+>         }
+>
+>         regmap_read(ctx->regmap, IT66121_VENDOR_ID0_REG, &vendor_ids[0]);
+>
