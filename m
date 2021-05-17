@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC423838BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12BE3836F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344842AbhEQP76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52062 "EHLO mail.kernel.org"
+        id S245180AbhEQPiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343956AbhEQPkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:40:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E6B61006;
-        Mon, 17 May 2021 14:41:34 +0000 (UTC)
+        id S244842AbhEQPWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:22:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5969461C99;
+        Mon, 17 May 2021 14:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262494;
-        bh=YtWrpDksy16CNvy7ZUAIzG9IVLdgDnmTWjRg9TIdu1A=;
+        s=korg; t=1621262091;
+        bh=GA5rW2YBXHrEsnKe09LXzWQNnw5qsL3A30/m4epHsIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hoJEGPXkLvO9w9FVJO5u73VDovvQEiQ3ml5xtM6ovB4NUWgzp+QifTEFnzbCfRYAd
-         D+A7+5eoSrWYdNtmXEwQ6ExxPOB8k8NuBWALSKzazHdTdJd4tnNP1ynqsIjAGeHb8y
-         2x73dtqts0svnNVzM4O7UinPmzTLQj6/s9mHa4G8=
+        b=1PdDHCeWYD88nhwrfuJjkKR3o0DQ1GRCkyAQA9UGJucSbsuKjW2DLt4L2E/tfRCEv
+         AjgZLxlaxyNguPGZMpX8rKmExbXs5BmHb8D61fed7EAKrd17JlpKFMILxl9sJugDdo
+         X8nnXWkvnPfnsBcdU9B4+1M+F0W4o3GAaoBEXYSM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
-        syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com,
-        syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 200/289] squashfs: fix divide error in calculate_skip()
+        stable@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 214/329] can: mcp251x: fix resume from sleep before interface was brought up
 Date:   Mon, 17 May 2021 16:02:05 +0200
-Message-Id: <20210517140311.848696901@linuxfoundation.org>
+Message-Id: <20210517140309.371299309@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +42,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Lougher <phillip@squashfs.org.uk>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-commit d6e621de1fceb3b098ebf435ef7ea91ec4838a1a upstream.
+[ Upstream commit 03c427147b2d3e503af258711af4fc792b89b0af ]
 
-Sysbot has reported a "divide error" which has been identified as being
-caused by a corrupted file_size value within the file inode.  This value
-has been corrupted to a much larger value than expected.
+Since 8ce8c0abcba3 the driver queues work via priv->restart_work when
+resuming after suspend, even when the interface was not previously
+enabled. This causes a null dereference error as the workqueue is only
+allocated and initialized in mcp251x_open().
 
-Calculate_skip() is passed i_size_read(inode) >> msblk->block_log.  Due to
-the file_size value corruption this overflows the int argument/variable in
-that function, leading to the divide error.
+To fix this we move the workqueue init to mcp251x_can_probe() as there
+is no reason to do it later and repeat it whenever mcp251x_open() is
+called.
 
-This patch changes the function to use u64.  This will accommodate any
-unexpectedly large values due to corruption.
-
-The value returned from calculate_skip() is clamped to be never more than
-SQUASHFS_CACHED_BLKS - 1, or 7.  So file_size corruption does not lead to
-an unexpectedly large return result here.
-
-Link: https://lkml.kernel.org/r/20210507152618.9447-1-phillip@squashfs.org.uk
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
-Reported-by: <syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com>
-Reported-by: <syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8ce8c0abcba3 ("can: mcp251x: only reset hardware as required")
+Link: https://lore.kernel.org/r/17d5d714-b468-482f-f37a-482e3d6df84e@kontron.de
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+[mkl: fix error handling in mcp251x_stop()]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/file.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/spi/mcp251x.c | 35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
---- a/fs/squashfs/file.c
-+++ b/fs/squashfs/file.c
-@@ -211,11 +211,11 @@ failure:
-  * If the skip factor is limited in this way then the file will use multiple
-  * slots.
-  */
--static inline int calculate_skip(int blocks)
-+static inline int calculate_skip(u64 blocks)
- {
--	int skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
-+	u64 skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
- 		 * SQUASHFS_META_INDEXES);
--	return min(SQUASHFS_CACHED_BLKS - 1, skip + 1);
-+	return min((u64) SQUASHFS_CACHED_BLKS - 1, skip + 1);
- }
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index e7be36dc2159..24ae221c2f10 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -956,8 +956,6 @@ static int mcp251x_stop(struct net_device *net)
  
+ 	priv->force_quit = 1;
+ 	free_irq(spi->irq, priv);
+-	destroy_workqueue(priv->wq);
+-	priv->wq = NULL;
  
+ 	mutex_lock(&priv->mcp_lock);
+ 
+@@ -1224,24 +1222,15 @@ static int mcp251x_open(struct net_device *net)
+ 		goto out_close;
+ 	}
+ 
+-	priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM,
+-				   0);
+-	if (!priv->wq) {
+-		ret = -ENOMEM;
+-		goto out_clean;
+-	}
+-	INIT_WORK(&priv->tx_work, mcp251x_tx_work_handler);
+-	INIT_WORK(&priv->restart_work, mcp251x_restart_work_handler);
+-
+ 	ret = mcp251x_hw_wake(spi);
+ 	if (ret)
+-		goto out_free_wq;
++		goto out_free_irq;
+ 	ret = mcp251x_setup(net, spi);
+ 	if (ret)
+-		goto out_free_wq;
++		goto out_free_irq;
+ 	ret = mcp251x_set_normal_mode(spi);
+ 	if (ret)
+-		goto out_free_wq;
++		goto out_free_irq;
+ 
+ 	can_led_event(net, CAN_LED_EVENT_OPEN);
+ 
+@@ -1250,9 +1239,7 @@ static int mcp251x_open(struct net_device *net)
+ 
+ 	return 0;
+ 
+-out_free_wq:
+-	destroy_workqueue(priv->wq);
+-out_clean:
++out_free_irq:
+ 	free_irq(spi->irq, priv);
+ 	mcp251x_hw_sleep(spi);
+ out_close:
+@@ -1373,6 +1360,15 @@ static int mcp251x_can_probe(struct spi_device *spi)
+ 	if (ret)
+ 		goto out_clk;
+ 
++	priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM,
++				   0);
++	if (!priv->wq) {
++		ret = -ENOMEM;
++		goto out_clk;
++	}
++	INIT_WORK(&priv->tx_work, mcp251x_tx_work_handler);
++	INIT_WORK(&priv->restart_work, mcp251x_restart_work_handler);
++
+ 	priv->spi = spi;
+ 	mutex_init(&priv->mcp_lock);
+ 
+@@ -1417,6 +1413,8 @@ static int mcp251x_can_probe(struct spi_device *spi)
+ 	return 0;
+ 
+ error_probe:
++	destroy_workqueue(priv->wq);
++	priv->wq = NULL;
+ 	mcp251x_power_enable(priv->power, 0);
+ 
+ out_clk:
+@@ -1438,6 +1436,9 @@ static int mcp251x_can_remove(struct spi_device *spi)
+ 
+ 	mcp251x_power_enable(priv->power, 0);
+ 
++	destroy_workqueue(priv->wq);
++	priv->wq = NULL;
++
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	free_candev(net);
+-- 
+2.30.2
+
 
 
