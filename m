@@ -2,75 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C773C382224
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 02:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B102382229
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 02:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhEQAC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 20:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234603AbhEQACZ (ORCPT
+        id S234740AbhEQAYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 20:24:47 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:31436 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234712AbhEQAYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 20:02:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A859CC061573;
-        Sun, 16 May 2021 17:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=5N5TZIB7JJZreCRW9HvNKNO9Wl72I2WwD3P3vzvDcW4=; b=sNSxULF17bZQDjtBgEa8JU4qlw
-        0+Gv1/U2e8pggmDmPj0u0H0y9Gq6lDFE3yUZ1Qs2tGP5yRTbxIP2sWCMaYPXddHnMKxr0PnTZRV/U
-        T608j5ZxnLY5cemAvZ8Ux2qCWCvhBYp/UD3nBiL+BmG7rAalk2u3XHAP2YOCbt3WO8N2TDYTnpyDI
-        g2QCM3RlYghwIFcW+koJ19UlcEfGly8xaLdR93WoAnp+VQbJ/thdfC96MLUFbGYbWqy+KFyWwpQeJ
-        TGNhZmd1TRC2PhN+zXBGnaMrq89DmJ7L/ekWfBUE1DM9M0mutW9IPS2CVHQ2kVGFaALWD2zuT3lWe
-        dCukbpug==;
-Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liQh2-00DMzd-Th; Mon, 17 May 2021 00:01:09 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Manuel Lauss <manuel.lauss@googlemail.com>,
-        Ralf Baechle <ralf@linux-mips.org>
-Subject: [PATCH] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
-Date:   Sun, 16 May 2021 17:01:08 -0700
-Message-Id: <20210517000108.26015-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 16 May 2021 20:24:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621211011; x=1652747011;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hXY7zw+zMyARqSZwPxm8mJRQM+A1FvXGIMT+V97aaew=;
+  b=ODWl99J79h7n4Gdl7wqsz2b/Z7EQWCwH4gFf6fPu4Ep/EvQl7vCbRliX
+   aUdT13h9QkQi1+yx69x1hP3S+9iVPHmfnWHhXvKOTCypjJeY6QYm+HG7o
+   KamGw4QdU5BOLZ6bJdpIWClcYC7TP8TpXzLqApHQ20kW8SFv5wEaFlhtX
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.82,306,1613433600"; 
+   d="scan'208";a="112501566"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 17 May 2021 00:23:29 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 3F69FA1BC5;
+        Mon, 17 May 2021 00:23:26 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Mon, 17 May 2021 00:23:26 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.28) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Mon, 17 May 2021 00:23:20 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Mon, 17 May 2021 09:22:47 +0900
+Message-ID: <20210517002258.75019-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.28]
+X-ClientProxiedBy: EX13D21UWA004.ant.amazon.com (10.43.160.252) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-board-xxs1500.c references 2 functions without declaring them, so add
-the header file to placate the build.
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation [1]. When a SYN packet is received, the connection is tied
+to a listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners on the same port could accept
+such connections.
 
-../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
-../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
-   56 |  alchemy_gpio1_input_enable();
-../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
-   57 |  alchemy_gpio2_enable();
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in the
+in-flight ACK of 3WHS is responded by RST.
 
-Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
----
- arch/mips/alchemy/board-xxs1500.c |    1 +
- 1 file changed, 1 insertion(+)
+To avoid such a situation, users have to know deeply how the kernel handles
+SYN packets and implement connection draining by eBPF [2]:
 
---- linux-next-20210514.orig/arch/mips/alchemy/board-xxs1500.c
-+++ linux-next-20210514/arch/mips/alchemy/board-xxs1500.c
-@@ -18,6 +18,7 @@
- #include <asm/reboot.h>
- #include <asm/setup.h>
- #include <asm/mach-au1x00/au1000.h>
-+#include <asm/mach-au1x00/gpio-au1000.h>
- #include <prom.h>
- 
- const char *get_system_type(void)
+  1. Stop routing SYN packets to the listener by eBPF.
+  2. Wait for all timers to expire to complete requests
+  3. Accept connections until EAGAIN, then close the listener.
+
+  or
+
+  1. Start counting SYN packets and accept syscalls using the eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
+
+In either way, we cannot close a listener immediately. However, ideally,
+the application need not drain the not yet accepted sockets because 3WHS
+and tying a connection to a listener are just the kernel behaviour. The
+root cause is within the kernel, so the issue should be addressed in kernel
+space and should not be visible to user space. This patchset fixes it so
+that users need not take care of kernel implementation and connection
+draining. With this patchset, the kernel redistributes requests and
+connections from a listener to the others in the same reuseport group
+at/after close or shutdown syscalls.
+
+Although some software does connection draining, there are still merits in
+migration. For some security reasons, such as replacing TLS certificates,
+we may want to apply new settings as soon as possible and/or we may not be
+able to wait for connection draining. The sockets in the accept queue have
+not started application sessions yet. So, if we do not drain such sockets,
+they can be handled by the newer listeners and could have a longer
+lifetime. It is difficult to drain all connections in every case, but we
+can decrease such aborted connections by migration. In that sense,
+migration is always better than draining. 
+
+Moreover, auto-migration simplifies user space logic and also works well in
+a case where we cannot modify and build a server program to implement the
+workaround.
+
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use the eBPF program to select a
+specific listener or to cancel migration.
+
+Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+snippets along the way.
+
+
+Link:
+ [1] The SO_REUSEPORT socket option
+ https://lwn.net/Articles/542629/
+
+ [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+ https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+
+
+Changelog:
+ v6:
+  * Change description in ip-sysctl.rst
+  * Test IPPROTO_TCP before reading tfo_listener
+  * Move reqsk_clone() to inet_connection_sock.c and rename to
+    inet_reqsk_clone()
+  * Pass req->rsk_listener to inet_csk_reqsk_queue_drop() and
+    reqsk_queue_removed() in the migration path of receiving ACK
+  * s/ARG_PTR_TO_SOCKET/PTR_TO_SOCKET/ in sk_reuseport_is_valid_access()
+  * In selftest, use atomic ops to increment global vars, drop ACK by XDP,
+    enable force fastopen, use "skel->bss" instead of "skel->data"
+
+ v5:
+ https://lore.kernel.org/bpf/20210510034433.52818-1-kuniyu@amazon.co.jp/
+  * Move initializtion of sk_node from 6th to 5th patch
+  * Initialize sk_refcnt in reqsk_clone()
+  * Modify some definitions in reqsk_timer_handler()
+  * Validate in which path/state migration happens in selftest
+
+ v4:
+ https://lore.kernel.org/bpf/20210427034623.46528-1-kuniyu@amazon.co.jp/
+  * Make some functions and variables 'static' in selftest
+  * Remove 'scalability' from the cover letter
+
+ v3:
+ https://lore.kernel.org/bpf/20210420154140.80034-1-kuniyu@amazon.co.jp/
+  * Add sysctl back for reuseport_grow()
+  * Add helper functions to manage socks[]
+  * Separate migration related logic into functions: reuseport_resurrect(),
+    reuseport_stop_listen_sock(), reuseport_migrate_sock()
+  * Clone request_sock to be migrated
+  * Migrate request one by one
+  * Pass child socket to eBPF prog
+
+ v2:
+ https://lore.kernel.org/netdev/20201207132456.65472-1-kuniyu@amazon.co.jp/
+  * Do not save closed sockets in socks[]
+  * Revert 607904c357c61adf20b8fd18af765e501d61a385
+  * Extract inet_csk_reqsk_queue_migrate() into a single patch
+  * Change the spin_lock order to avoid lockdep warning
+  * Add static to __reuseport_select_sock
+  * Use refcount_inc_not_zero() in reuseport_select_migrated_sock()
+  * Set the default attach type in bpf_prog_load_check_attach()
+  * Define new proto of BPF_FUNC_get_socket_cookie
+  * Fix test to be compiled successfully
+  * Update commit messages
+
+ v1:
+ https://lore.kernel.org/netdev/20201201144418.35045-1-kuniyu@amazon.co.jp/
+  * Remove the sysctl option
+  * Enable migration if eBPF progam is not attached
+  * Add expected_attach_type to check if eBPF program can migrate sockets
+  * Add a field to tell migration type to eBPF program
+  * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+  * Allocate an empty skb if skb is NULL
+  * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+  * Update commit messages and coverletter
+
+ RFC:
+ https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (11):
+  net: Introduce net.ipv4.tcp_migrate_req.
+  tcp: Add num_closed_socks to struct sock_reuseport.
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  tcp: Add reuseport_migrate_sock() to select a new listener.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+  bpf: Support BPF_FUNC_get_socket_cookie() for
+    BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Support socket migration by eBPF.
+  libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+ Documentation/networking/ip-sysctl.rst        |  25 +
+ include/linux/bpf.h                           |   1 +
+ include/linux/filter.h                        |   2 +
+ include/net/netns/ipv4.h                      |   1 +
+ include/net/sock_reuseport.h                  |   9 +-
+ include/uapi/linux/bpf.h                      |  16 +
+ kernel/bpf/syscall.c                          |  13 +
+ net/core/filter.c                             |  23 +-
+ net/core/sock_reuseport.c                     | 337 +++++++++--
+ net/ipv4/inet_connection_sock.c               | 190 +++++-
+ net/ipv4/inet_hashtables.c                    |   2 +-
+ net/ipv4/sysctl_net_ipv4.c                    |   9 +
+ net/ipv4/tcp_ipv4.c                           |  20 +-
+ net/ipv4/tcp_minisocks.c                      |   4 +-
+ net/ipv6/tcp_ipv6.c                           |  14 +-
+ tools/include/uapi/linux/bpf.h                |  16 +
+ tools/lib/bpf/libbpf.c                        |   5 +-
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../bpf/prog_tests/migrate_reuseport.c        | 553 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport.c        | 135 +++++
+ 21 files changed, 1314 insertions(+), 64 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+
+-- 
+2.30.2
+
