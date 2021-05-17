@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561BC383965
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3944E383960
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347169AbhEQQPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:15:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46276 "EHLO mail.kernel.org"
+        id S1347150AbhEQQPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:15:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240918AbhEQPun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243367AbhEQPun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 11:50:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D12261D51;
-        Mon, 17 May 2021 14:45:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 832BB61964;
+        Mon, 17 May 2021 14:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262758;
-        bh=TK1vhOP9TNbd+BwwN07QJ8vlsRwOi//a+plRLr3Q9po=;
+        s=korg; t=1621262761;
+        bh=WKdTFeahLlw2TRgqW++OGJYrUZHY5jcBxDyfvwbzW28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xj4Mjuiryk7sEy6dloNyTBniGdTtWMZCDjoxqi+I2S59WJZ1W56T7nuwVz/xNHcNN
-         nwlTwru4BEqBrl/rDdgBpsCdR2oEAzOFDxfqR41FGLTnzC792nguUiGnwNHZZJXTbc
-         Br4E8s/u7HN93gwBujNNz6mXU01Agvak54XUyc88=
+        b=vaJEuKoMip64YC7yEZtS6+9QUA7NTBMCUjay3QbzGgJpA4R7rPqfvDhno339nUz5A
+         36YGyJ6HdMTdmi94/FIj0kFLMbL44XIxPoA8+nFq8qWIFUMY00Rd80Z5l3mmPjIKCb
+         NgrZpExZAQjmhVc/seUeakpQNGTceEYgj6uUrPeM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Keerthy <j-keerthy@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 5.10 270/289] clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
-Date:   Mon, 17 May 2021 16:03:15 +0200
-Message-Id: <20210517140314.235800549@linuxfoundation.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 5.10 271/289] ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+Date:   Mon, 17 May 2021 16:03:16 +0200
+Message-Id: <20210517140314.266914888@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -41,205 +42,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 25de4ce5ed02994aea8bc111d133308f6fd62566 upstream.
+commit e9a2f8b599d0bc22a1b13e69527246ac39c697b4 upstream
 
-There is a timer wrap issue on dra7 for the ARM architected timer.
-In a typical clock configuration the timer fails to wrap after 388 days.
+Before moving the DT mapping out of the linear region, let's prepare
+for this change by removing all the phys-to-virt translations of the
+__atags_pointer variable, and perform this translation only once at
+setup time.
 
-To work around the issue, we need to use timer-ti-dm percpu timers instead.
-
-Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
-the issue if the dtb is not configured properly.
-
-Let's do this as a single patch so it can be backported to v5.8 and later
-kernels easily. Note that this patch depends on earlier timer-ti-dm
-systimer posted mode fixes, and a preparatory clockevent patch
-"clocksource/drivers/timer-ti-dm: Prepare to handle dra7 timer wrap issue".
-
-For more information, please see the errata for "AM572x Sitara Processors
-Silicon Revisions 1.1, 2.0":
-
-https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
-
-The concept is based on earlier reference patches done by Tero Kristo and
-Keerthy.
-
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210323074326.28302-3-tony@atomide.com
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/dra7-l4.dtsi             |    4 -
- arch/arm/boot/dts/dra7.dtsi                |   20 +++++++
- drivers/clocksource/timer-ti-dm-systimer.c |   76 +++++++++++++++++++++++++++++
- include/linux/cpuhotplug.h                 |    1 
- 4 files changed, 99 insertions(+), 2 deletions(-)
+ arch/arm/include/asm/prom.h   |    4 ++--
+ arch/arm/kernel/atags.h       |    4 ++--
+ arch/arm/kernel/atags_parse.c |    6 +++---
+ arch/arm/kernel/devtree.c     |    6 +++---
+ arch/arm/kernel/setup.c       |   14 +++++++++-----
+ arch/arm/mm/mmu.c             |    4 ++--
+ 6 files changed, 21 insertions(+), 17 deletions(-)
 
---- a/arch/arm/boot/dts/dra7-l4.dtsi
-+++ b/arch/arm/boot/dts/dra7-l4.dtsi
-@@ -1168,7 +1168,7 @@
- 			};
- 		};
+--- a/arch/arm/include/asm/prom.h
++++ b/arch/arm/include/asm/prom.h
+@@ -9,12 +9,12 @@
  
--		target-module@34000 {			/* 0x48034000, ap 7 46.0 */
-+		timer3_target: target-module@34000 {	/* 0x48034000, ap 7 46.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			reg = <0x34000 0x4>,
- 			      <0x34010 0x4>;
-@@ -1195,7 +1195,7 @@
- 			};
- 		};
+ #ifdef CONFIG_OF
  
--		target-module@36000 {			/* 0x48036000, ap 9 4e.0 */
-+		timer4_target: target-module@36000 {	/* 0x48036000, ap 9 4e.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			reg = <0x36000 0x4>,
- 			      <0x36010 0x4>;
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -46,6 +46,7 @@
+-extern const struct machine_desc *setup_machine_fdt(unsigned int dt_phys);
++extern const struct machine_desc *setup_machine_fdt(void *dt_virt);
+ extern void __init arm_dt_init_cpu_maps(void);
  
- 	timer {
- 		compatible = "arm,armv7-timer";
-+		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
-@@ -1090,3 +1091,22 @@
- 		assigned-clock-parents = <&sys_32k_ck>;
- 	};
- };
-+
-+/* Local timers, see ARM architected timer wrap erratum i940 */
-+&timer3_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER3_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
-+
-+&timer4_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER4_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
---- a/drivers/clocksource/timer-ti-dm-systimer.c
-+++ b/drivers/clocksource/timer-ti-dm-systimer.c
-@@ -2,6 +2,7 @@
- #include <linux/clk.h>
- #include <linux/clocksource.h>
- #include <linux/clockchips.h>
-+#include <linux/cpuhotplug.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
-@@ -630,6 +631,78 @@ err_out_free:
- 	return error;
+ #else /* CONFIG_OF */
+ 
+-static inline const struct machine_desc *setup_machine_fdt(unsigned int dt_phys)
++static inline const struct machine_desc *setup_machine_fdt(void *dt_virt)
+ {
+ 	return NULL;
+ }
+--- a/arch/arm/kernel/atags.h
++++ b/arch/arm/kernel/atags.h
+@@ -2,11 +2,11 @@
+ void convert_to_tag_list(struct tag *tags);
+ 
+ #ifdef CONFIG_ATAGS
+-const struct machine_desc *setup_machine_tags(phys_addr_t __atags_pointer,
++const struct machine_desc *setup_machine_tags(void *__atags_vaddr,
+ 	unsigned int machine_nr);
+ #else
+ static inline const struct machine_desc * __init __noreturn
+-setup_machine_tags(phys_addr_t __atags_pointer, unsigned int machine_nr)
++setup_machine_tags(void *__atags_vaddr, unsigned int machine_nr)
+ {
+ 	early_print("no ATAGS support: can't continue\n");
+ 	while (true);
+--- a/arch/arm/kernel/atags_parse.c
++++ b/arch/arm/kernel/atags_parse.c
+@@ -174,7 +174,7 @@ static void __init squash_mem_tags(struc
  }
  
-+/* Dmtimer as percpu timer. See dra7 ARM architected timer wrap erratum i940 */
-+static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
-+
-+static int __init dmtimer_percpu_timer_init(struct device_node *np, int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt;
-+	int error;
-+
-+	if (!cpu_possible(cpu))
-+		return -EINVAL;
-+
-+	if (!of_property_read_bool(np->parent, "ti,no-reset-on-init") ||
-+	    !of_property_read_bool(np->parent, "ti,no-idle"))
-+		pr_warn("Incomplete dtb for percpu dmtimer %pOF\n", np->parent);
-+
-+	clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+
-+	error = dmtimer_clkevt_init_common(clkevt, np, CLOCK_EVT_FEAT_ONESHOT,
-+					   cpumask_of(cpu), "percpu-dmtimer",
-+					   500);
-+	if (error)
-+		return error;
-+
-+	return 0;
-+}
-+
-+/* See TRM for timer internal resynch latency */
-+static int omap_dmtimer_starting_cpu(unsigned int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+	struct clock_event_device *dev = &clkevt->dev;
-+	struct dmtimer_systimer *t = &clkevt->t;
-+
-+	clockevents_config_and_register(dev, t->rate, 3, ULONG_MAX);
-+	irq_force_affinity(dev->irq, cpumask_of(cpu));
-+
-+	return 0;
-+}
-+
-+static int __init dmtimer_percpu_timer_startup(void)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, 0);
-+	struct dmtimer_systimer *t = &clkevt->t;
-+
-+	if (t->sysc) {
-+		cpuhp_setup_state(CPUHP_AP_TI_GP_TIMER_STARTING,
-+				  "clockevents/omap/gptimer:starting",
-+				  omap_dmtimer_starting_cpu, NULL);
-+	}
-+
-+	return 0;
-+}
-+subsys_initcall(dmtimer_percpu_timer_startup);
-+
-+static int __init dmtimer_percpu_quirk_init(struct device_node *np, u32 pa)
-+{
-+	struct device_node *arm_timer;
-+
-+	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
-+	if (of_device_is_available(arm_timer)) {
-+		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
-+		return 0;
-+	}
-+
-+	if (pa == 0x48034000)		/* dra7 dmtimer3 */
-+		return dmtimer_percpu_timer_init(np, 0);
-+	else if (pa == 0x48036000)	/* dra7 dmtimer4 */
-+		return dmtimer_percpu_timer_init(np, 1);
-+
-+	return 0;
-+}
-+
- /* Clocksource */
- static struct dmtimer_clocksource *
- to_dmtimer_clocksource(struct clocksource *cs)
-@@ -763,6 +836,9 @@ static int __init dmtimer_systimer_init(
- 	if (clockevent == pa)
- 		return dmtimer_clockevent_init(np);
+ const struct machine_desc * __init
+-setup_machine_tags(phys_addr_t __atags_pointer, unsigned int machine_nr)
++setup_machine_tags(void *atags_vaddr, unsigned int machine_nr)
+ {
+ 	struct tag *tags = (struct tag *)&default_tags;
+ 	const struct machine_desc *mdesc = NULL, *p;
+@@ -195,8 +195,8 @@ setup_machine_tags(phys_addr_t __atags_p
+ 	if (!mdesc)
+ 		return NULL;
  
-+	if (of_machine_is_compatible("ti,dra7"))
-+		return dmtimer_percpu_quirk_init(np, pa);
+-	if (__atags_pointer)
+-		tags = phys_to_virt(__atags_pointer);
++	if (atags_vaddr)
++		tags = atags_vaddr;
+ 	else if (mdesc->atag_offset)
+ 		tags = (void *)(PAGE_OFFSET + mdesc->atag_offset);
+ 
+--- a/arch/arm/kernel/devtree.c
++++ b/arch/arm/kernel/devtree.c
+@@ -203,12 +203,12 @@ static const void * __init arch_get_next
+ 
+ /**
+  * setup_machine_fdt - Machine setup when an dtb was passed to the kernel
+- * @dt_phys: physical address of dt blob
++ * @dt_virt: virtual address of dt blob
+  *
+  * If a dtb was passed to the kernel in r2, then use it to choose the
+  * correct machine_desc and to setup the system.
+  */
+-const struct machine_desc * __init setup_machine_fdt(unsigned int dt_phys)
++const struct machine_desc * __init setup_machine_fdt(void *dt_virt)
+ {
+ 	const struct machine_desc *mdesc, *mdesc_best = NULL;
+ 
+@@ -221,7 +221,7 @@ const struct machine_desc * __init setup
+ 	mdesc_best = &__mach_desc_GENERIC_DT;
+ #endif
+ 
+-	if (!dt_phys || !early_init_dt_verify(phys_to_virt(dt_phys)))
++	if (!dt_virt || !early_init_dt_verify(dt_virt))
+ 		return NULL;
+ 
+ 	mdesc = of_flat_dt_match_machine(mdesc_best, arch_get_next_mach);
+--- a/arch/arm/kernel/setup.c
++++ b/arch/arm/kernel/setup.c
+@@ -89,6 +89,7 @@ unsigned int cacheid __read_mostly;
+ EXPORT_SYMBOL(cacheid);
+ 
+ unsigned int __atags_pointer __initdata;
++void *atags_vaddr __initdata;
+ 
+ unsigned int system_rev;
+ EXPORT_SYMBOL(system_rev);
+@@ -1081,19 +1082,22 @@ void __init hyp_mode_check(void)
+ 
+ void __init setup_arch(char **cmdline_p)
+ {
+-	const struct machine_desc *mdesc;
++	const struct machine_desc *mdesc = NULL;
 +
- 	return 0;
++	if (__atags_pointer)
++		atags_vaddr = phys_to_virt(__atags_pointer);
+ 
+ 	setup_processor();
+-	mdesc = setup_machine_fdt(__atags_pointer);
++	if (atags_vaddr)
++		mdesc = setup_machine_fdt(atags_vaddr);
+ 	if (!mdesc)
+-		mdesc = setup_machine_tags(__atags_pointer, __machine_arch_type);
++		mdesc = setup_machine_tags(atags_vaddr, __machine_arch_type);
+ 	if (!mdesc) {
+ 		early_print("\nError: invalid dtb and unrecognized/unsupported machine ID\n");
+ 		early_print("  r1=0x%08x, r2=0x%08x\n", __machine_arch_type,
+ 			    __atags_pointer);
+ 		if (__atags_pointer)
+-			early_print("  r2[]=%*ph\n", 16,
+-				    phys_to_virt(__atags_pointer));
++			early_print("  r2[]=%*ph\n", 16, atags_vaddr);
+ 		dump_machine_table();
+ 	}
+ 
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -1489,7 +1489,7 @@ static void __init map_lowmem(void)
  }
  
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -135,6 +135,7 @@ enum cpuhp_state {
- 	CPUHP_AP_RISCV_TIMER_STARTING,
- 	CPUHP_AP_CLINT_TIMER_STARTING,
- 	CPUHP_AP_CSKY_TIMER_STARTING,
-+	CPUHP_AP_TI_GP_TIMER_STARTING,
- 	CPUHP_AP_HYPERV_TIMER_STARTING,
- 	CPUHP_AP_KVM_STARTING,
- 	CPUHP_AP_KVM_ARM_VGIC_INIT_STARTING,
+ #ifdef CONFIG_ARM_PV_FIXUP
+-extern unsigned long __atags_pointer;
++extern void *atags_vaddr;
+ typedef void pgtables_remap(long long offset, unsigned long pgd, void *bdata);
+ pgtables_remap lpae_pgtables_remap_asm;
+ 
+@@ -1520,7 +1520,7 @@ static void __init early_paging_init(con
+ 	 */
+ 	lpae_pgtables_remap = (pgtables_remap *)(unsigned long)__pa(lpae_pgtables_remap_asm);
+ 	pa_pgd = __pa(swapper_pg_dir);
+-	boot_data = __va(__atags_pointer);
++	boot_data = atags_vaddr;
+ 	barrier();
+ 
+ 	pr_info("Switching physical address space to 0x%08llx\n",
 
 
