@@ -2,167 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1865738392E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E2B383972
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347036AbhEQQK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        id S1344414AbhEQQQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244029AbhEQPqZ (ORCPT
+        with ESMTP id S1344215AbhEQP7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:46:25 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B1EC06129F;
-        Mon, 17 May 2021 07:37:19 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id v4so4993809qtp.1;
-        Mon, 17 May 2021 07:37:18 -0700 (PDT)
+        Mon, 17 May 2021 11:59:09 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C52FC06134E
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bWeAu9wBo7kEhJ8ZStrR0ZAYvo5nI5VtERiHciMCBA8=;
-        b=NdVhL73umarpt9VVRmR6S6XJmePnn8ZpCs6bdZb345TVyDE6JW+DAF1vwN/GrxWK4O
-         n/Dw9moK5NVPhWuEfVaKyi2fV5y96Diz4WCjOZEelVGaZXORELzDPbad168GBH6uYgaT
-         R/DGNg7+47WGYFRFNsFmA7fWJuRcgfEVer4IXebeYU20E7MM9GH6PevzPjhEdJb/0y/q
-         SK8OhSTpMvo93zkISg5kY1CXDb+LBanCUfoBT9RPZvi4ZK/XK3LT+ksQX0GuTe2eoVfA
-         ZRFwmd7u72oI0EYGo56FmrZmIzh8hFw2EXpRyDOitKpqgj+0x2nq8v6jWl73fOdtwI7d
-         QcvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bWeAu9wBo7kEhJ8ZStrR0ZAYvo5nI5VtERiHciMCBA8=;
-        b=gug3TVx44c8nDYeUo5nDKSvti1+ykOFWxxxvKLB3NAVnr32TjfKSomW+kUX+peRGOu
-         gZuGcHBtcmcIUYU45do7I/024y8v/XIwNKwPpRCwAlaaxvqrFIXnB2oBZ2+TqeCZUp9C
-         7QnpEvJ7/RASvoWW93C9IHnjqfxaBdXONecQNkrJytEQmeeCYbYYjqNTJnOxXZG1lqXf
-         wirwD1u06zRdIAroIQY55yrihxuvz9oqEmFh6eMpoCXX7Ebmxp6gUPHY83SyGKpIEkv5
-         fmtpFQB9wmhumVu/4czZWkZsPjTz2a/W3pwCTR8yqfoJy3oLUqCAAgbpzW7DJ1Fr4Qck
-         8ndw==
-X-Gm-Message-State: AOAM532xvpv2wTMmR3x4FKwwBPAO+YAwOv3YgDhfdhCgnQtG2utNILdt
-        7vHFOerHfZymZgnfCnbe/nACFenlLBY=
-X-Google-Smtp-Source: ABdhPJy7AKPheNgCfhXoaNmTgZV/adbyZtCzhr9tt1LxBv4uvXvG01pLehadn3xQND6GJG0fWq5VBA==
-X-Received: by 2002:ac8:7ed2:: with SMTP id x18mr57448266qtj.26.1621262237924;
-        Mon, 17 May 2021 07:37:17 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y1sm10228992qkp.21.2021.05.17.07.37.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:37:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v1 3/4] usb: typec: tcpm: Move TCPC to APPLY_RC state
- during PR_SWAP
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
-References: <20210515052613.3261340-1-badhri@google.com>
- <20210515052613.3261340-3-badhri@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <752b5b58-03a4-7f53-adc5-97d2aa2d6784@roeck-us.net>
-Date:   Mon, 17 May 2021 07:37:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=WGx65fce1oBfuRHn2aIcVVMFYx4c1v7iBP
+        TdHW/wnEw=; b=KztkkXQPE8CSEQV4nqwurSnRUEDioLZNf4CtmOuJkfuV3lbGrp
+        G4VmzOSyQZsGWqyzbAXbyHpaPyNGD8Ff2J1zlPms1wOuvipl1GALRqXM7isxfA7J
+        aeLZoZYDJ40jI2In++30+pA9WTrf6/PGSOwvyeGoxCG97iEK3Id+QpExI=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn7Z0PgaJgHhLyAA--.21660S2;
+        Mon, 17 May 2021 22:43:27 +0800 (CST)
+Date:   Mon, 17 May 2021 22:38:06 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Jisheng Zhang <jszhang@kernel.org>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: arch/riscv/kernel/probes/kprobes.c:90:22: error: use of
+ undeclared identifier 'PAGE_KERNEL_READ_EXEC'
+Message-ID: <20210517223752.425cbcf8@xhacker>
+In-Reply-To: <22c9edf5-1112-40e4-bd61-ad8ddf2d4732@infradead.org>
+References: <202105070646.RiY8StjM-lkp@intel.com>
+        <22c9edf5-1112-40e4-bd61-ad8ddf2d4732@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210515052613.3261340-3-badhri@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDn7Z0PgaJgHhLyAA--.21660S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JF1rXw4kAF4fJF1kXrWkJFb_yoWfXrWDpF
+        s5ur1qqFZ5Zr15Gws093W2y34Utw45G342yry5Wry29F17trWxuwn8urWDKF1vvr4q9ay8
+        KrW7C3yagryUXaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUy2b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s02
+        6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
+        I_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
+        6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj4
+        0_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j
+        6r4UYxBIdaVFxhVjvjDU0xZFpf9x07b0a0QUUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 10:26 PM, Badhri Jagan Sridharan wrote:
-> When vbus auto discharge is enabled, TCPCI based TCPC transitions
-> into Attached.SNK/Attached.SRC state. During PR_SWAP, TCPCI based
-> TCPC would disconnect when partner changes power roles. TCPC has
-> to be moved APPLY RC state during PR_SWAP. This is done by
-> ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and
-> POWER_CONTROL.AutodischargeDisconnect is 0. Once the swap sequence
-> is done, AutoDischargeDisconnect is re-enabled.
-> 
-> Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
->   drivers/usb/typec/tcpm/tcpm.c | 16 ++++++++++++++++
->   include/linux/usb/tcpm.h      |  4 ++++
->   2 files changed, 20 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index b475d9b9d38d..5bac4978efb3 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -786,6 +786,19 @@ static int tcpm_enable_auto_vbus_discharge(struct tcpm_port *port, bool enable)
->   	return ret;
->   }
->   
-> +static void tcpm_apply_rc(struct tcpm_port *port)
-> +{
-> +	/*
-> +	 * TCPCI: Move to APPLY_RC state to prevent disconnect during PR_SWAP
-> +	 * when Vbus auto discharge on disconnect is enabled.
-> +	 */
-> +	if (port->tcpc->enable_auto_vbus_discharge) {
-> +		tcpm_log(port, "Apply_RC");
-> +		port->tcpc->apply_rc(port->tcpc, port->cc_req, port->polarity);
+On Sun, 16 May 2021 12:10:01 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-This is called unconditionally. I think you'll need an additional
-		&& port->tcpc->apply_rc
-in the if statement above.
-
-> +		tcpm_enable_auto_vbus_discharge(port, false);
-> +	}
-> +}
-> +
->   /*
->    * Determine RP value to set based on maximum current supported
->    * by a port if configured as source.
-> @@ -4428,6 +4441,7 @@ static void run_state_machine(struct tcpm_port *port)
->   		tcpm_set_state(port, ready_state(port), 0);
->   		break;
->   	case PR_SWAP_START:
-> +		tcpm_apply_rc(port);
->   		if (port->pwr_role == TYPEC_SOURCE)
->   			tcpm_set_state(port, PR_SWAP_SRC_SNK_TRANSITION_OFF,
->   				       PD_T_SRC_TRANSITION);
-> @@ -4467,6 +4481,7 @@ static void run_state_machine(struct tcpm_port *port)
->   		tcpm_set_state(port, ERROR_RECOVERY, PD_T_PS_SOURCE_ON_PRS);
->   		break;
->   	case PR_SWAP_SRC_SNK_SINK_ON:
-> +		tcpm_enable_auto_vbus_discharge(port, true);
->   		/* Set the vbus disconnect threshold for implicit contract */
->   		tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, VSAFE5V);
->   		tcpm_set_state(port, SNK_STARTUP, 0);
-> @@ -4483,6 +4498,7 @@ static void run_state_machine(struct tcpm_port *port)
->   			       PD_T_PS_SOURCE_OFF);
->   		break;
->   	case PR_SWAP_SNK_SRC_SOURCE_ON:
-> +		tcpm_enable_auto_vbus_discharge(port, true);
->   		tcpm_set_cc(port, tcpm_rp_cc(port));
->   		tcpm_set_vbus(port, true);
->   		/*
-> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> index 42fcfbe10590..bffc8d3e14ad 100644
-> --- a/include/linux/usb/tcpm.h
-> +++ b/include/linux/usb/tcpm.h
-> @@ -66,6 +66,8 @@ enum tcpm_transmit_type {
->    *		For example, some tcpcs may include BC1.2 charger detection
->    *		and use that in this case.
->    * @set_cc:	Called to set value of CC pins
-> + * @apply_rc:	Optional; Needed to move TCPCI based chipset to APPLY_RC state
-> + *		as stated by the TCPCI specification.
->    * @get_cc:	Called to read current CC pin values
->    * @set_polarity:
->    *		Called to set polarity
-> @@ -120,6 +122,8 @@ struct tcpc_dev {
->   	int (*get_vbus)(struct tcpc_dev *dev);
->   	int (*get_current_limit)(struct tcpc_dev *dev);
->   	int (*set_cc)(struct tcpc_dev *dev, enum typec_cc_status cc);
-> +	int (*apply_rc)(struct tcpc_dev *dev, enum typec_cc_status cc,
-> +			enum typec_cc_polarity polarity);
->   	int (*get_cc)(struct tcpc_dev *dev, enum typec_cc_status *cc1,
->   		      enum typec_cc_status *cc2);
->   	int (*set_polarity)(struct tcpc_dev *dev,
+> On 5/6/21 3:11 PM, kernel test robot wrote:
+> > Hi Jisheng,
+> > 
+> > FYI, the error/warning still remains.
+> > 
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   38182162b50aa4e970e5997df0a0c4288147a153
+> > commit: cdd1b2bd358ffda2638fe18ff47191e84e18525f riscv: kprobes: Implement alloc_insn_page()
+> > date:   10 days ago
+> > config: riscv-randconfig-r006-20210506 (attached as .config)
+> > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 8f5a2a5836cc8e4c1def2bdeb022e7b496623439)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install riscv cross compiling tool for clang build
+> >         # apt-get install binutils-riscv64-linux-gnu
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cdd1b2bd358ffda2638fe18ff47191e84e18525f
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout cdd1b2bd358ffda2638fe18ff47191e84e18525f
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=riscv 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> >    include/uapi/linux/byteorder/little_endian.h:36:51: note: expanded from macro '__le16_to_cpu'
+> >    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+> >                                                      ^
+> >    In file included from arch/riscv/kernel/probes/kprobes.c:3:
+> >    In file included from include/linux/kprobes.h:29:
+> >    In file included from include/linux/ftrace.h:10:
+> >    In file included from include/linux/trace_recursion.h:5:
+> >    In file included from include/linux/interrupt.h:11:
+> >    In file included from include/linux/hardirq.h:10:
+> >    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+> >    In file included from include/asm-generic/hardirq.h:17:
+> >    In file included from include/linux/irq.h:20:
+> >    In file included from include/linux/io.h:13:
+> >    In file included from arch/riscv/include/asm/io.h:149:
+> >    include/asm-generic/io.h:572:9: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+> >            return inl(addr);
+> >                   ^~~~~~~~~
+> >    arch/riscv/include/asm/io.h:57:76: note: expanded from macro 'inl'
+> >    #define inl(c)          ({ u32 __v; __io_pbr(); __v = readl_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
+> >                                                                            ~~~~~~~~~~ ^
+> >    arch/riscv/include/asm/mmio.h:89:76: note: expanded from macro 'readl_cpu'
+> >    #define readl_cpu(c)            ({ u32 __r = le32_to_cpu((__force __le32)__raw_readl(c)); __r; })
+> >                                                                                         ^
+> >    include/uapi/linux/byteorder/little_endian.h:34:51: note: expanded from macro '__le32_to_cpu'
+> >    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+> >                                                      ^
+> >    In file included from arch/riscv/kernel/probes/kprobes.c:3:
+> >    In file included from include/linux/kprobes.h:29:
+> >    In file included from include/linux/ftrace.h:10:
+> >    In file included from include/linux/trace_recursion.h:5:
+> >    In file included from include/linux/interrupt.h:11:
+> >    In file included from include/linux/hardirq.h:10:
+> >    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+> >    In file included from include/asm-generic/hardirq.h:17:
+> >    In file included from include/linux/irq.h:20:
+> >    In file included from include/linux/io.h:13:
+> >    In file included from arch/riscv/include/asm/io.h:149:
+> >    include/asm-generic/io.h:580:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+> >            outb(value, addr);
+> >            ^~~~~~~~~~~~~~~~~
+> >    arch/riscv/include/asm/io.h:59:68: note: expanded from macro 'outb'
+> >    #define outb(v,c)       ({ __io_pbw(); writeb_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
+> >                                                                  ~~~~~~~~~~ ^
+> >    arch/riscv/include/asm/mmio.h:91:52: note: expanded from macro 'writeb_cpu'
+> >    #define writeb_cpu(v, c)        ((void)__raw_writeb((v), (c)))
+> >                                                              ^
+> >    In file included from arch/riscv/kernel/probes/kprobes.c:3:
+> >    In file included from include/linux/kprobes.h:29:
+> >    In file included from include/linux/ftrace.h:10:
+> >    In file included from include/linux/trace_recursion.h:5:
+> >    In file included from include/linux/interrupt.h:11:
+> >    In file included from include/linux/hardirq.h:10:
+> >    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+> >    In file included from include/asm-generic/hardirq.h:17:
+> >    In file included from include/linux/irq.h:20:
+> >    In file included from include/linux/io.h:13:
+> >    In file included from arch/riscv/include/asm/io.h:149:
+> >    include/asm-generic/io.h:588:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+> >            outw(value, addr);
+> >            ^~~~~~~~~~~~~~~~~
+> >    arch/riscv/include/asm/io.h:60:68: note: expanded from macro 'outw'
+> >    #define outw(v,c)       ({ __io_pbw(); writew_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
+> >                                                                  ~~~~~~~~~~ ^
+> >    arch/riscv/include/asm/mmio.h:92:76: note: expanded from macro 'writew_cpu'
+> >    #define writew_cpu(v, c)        ((void)__raw_writew((__force u16)cpu_to_le16(v), (c)))
+> >                                                                                      ^
+> >    In file included from arch/riscv/kernel/probes/kprobes.c:3:
+> >    In file included from include/linux/kprobes.h:29:
+> >    In file included from include/linux/ftrace.h:10:
+> >    In file included from include/linux/trace_recursion.h:5:
+> >    In file included from include/linux/interrupt.h:11:
+> >    In file included from include/linux/hardirq.h:10:
+> >    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+> >    In file included from include/asm-generic/hardirq.h:17:
+> >    In file included from include/linux/irq.h:20:
+> >    In file included from include/linux/io.h:13:
+> >    In file included from arch/riscv/include/asm/io.h:149:
+> >    include/asm-generic/io.h:596:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+> >            outl(value, addr);
+> >            ^~~~~~~~~~~~~~~~~
+> >    arch/riscv/include/asm/io.h:61:68: note: expanded from macro 'outl'
+> >    #define outl(v,c)       ({ __io_pbw(); writel_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
+> >                                                                  ~~~~~~~~~~ ^
+> >    arch/riscv/include/asm/mmio.h:93:76: note: expanded from macro 'writel_cpu'
+> >    #define writel_cpu(v, c)        ((void)__raw_writel((__force u32)cpu_to_le32(v), (c)))
+> >                                                                                      ^
+> >    In file included from arch/riscv/kernel/probes/kprobes.c:3:
+> >    In file included from include/linux/kprobes.h:29:
+> >    In file included from include/linux/ftrace.h:10:
+> >    In file included from include/linux/trace_recursion.h:5:
+> >    In file included from include/linux/interrupt.h:11:
+> >    In file included from include/linux/hardirq.h:10:
+> >    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+> >    In file included from include/asm-generic/hardirq.h:17:
+> >    In file included from include/linux/irq.h:20:
+> >    In file included from include/linux/io.h:13:
+> >    In file included from arch/riscv/include/asm/io.h:149:
+> >    include/asm-generic/io.h:1005:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+> >            return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
+> >                                                      ~~~~~~~~~~ ^  
+> >>> arch/riscv/kernel/probes/kprobes.c:90:22: error: use of undeclared identifier 'PAGE_KERNEL_READ_EXEC'  
+> >                                         GFP_KERNEL, PAGE_KERNEL_READ_EXEC,
+> >                                                     ^
+> >    7 warnings and 1 error generated.
+> > 
+> > 
+> > vim +/PAGE_KERNEL_READ_EXEC +90 arch/riscv/kernel/probes/kprobes.c
+> > 
+> >     86	
+> >     87	void *alloc_insn_page(void)
+> >     88	{
+> >     89		return  __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,  
+> >   > 90					     GFP_KERNEL, PAGE_KERNEL_READ_EXEC,  
+> >     91					     VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+> >     92					     __builtin_return_address(0));
+> >     93	}
+> >     94	
+> > 
+> > ---  
 > 
+> >>> arch/riscv/kernel/probes/kprobes.c:90:22: error: use of undeclared identifier 'PAGE_KERNEL_READ_EXEC'  
+> >                                         GFP_KERNEL, PAGE_KERNEL_READ_EXEC,  
+> 
+> is due to
+> # CONFIG_MMU is not set
+> 
+> 
+
+I have sent out patch to fix this isue:
+http://lists.infradead.org/pipermail/linux-riscv/2021-May/006291.html
+
+thanks
 
