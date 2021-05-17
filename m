@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7464383A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96919383A81
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245467AbhEQQh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:37:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245137AbhEQQhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:37:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 648FF611BD;
-        Mon, 17 May 2021 16:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621269384;
-        bh=+X4+bVfzpXfIBWRjakB4ifMEjfwf5eB74K2ooB0BvKs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=mrYMtv1M6tHlqyA6CqYBWaIneywFJ8hwyUoaWmJWO1aBoBlYRnCcmyhZMKC0yLyaR
-         L7mvWpGdybVWGaENMBE6mq9gjH0sfYPnaY1+eRq8R+ZOHeLGqZceQDDNgUAU0f4Jvq
-         MmibiOMYL5cSc1+YOUeDBcM1IQIsyMe4+riNcK3g3bdQyJCSbq3WIx37g6RM4islnV
-         tptmI49809/uRmboehthxjM3H/6kET4bnLxDOynWRLSYv7o0+atkGxN/ZW5CMwwhYq
-         3vMKLyMt36Uaghsjc+qHPKSjyJnedWRE4+zCKZq6d1L1tfMgKtHkfBDF39YZXot178
-         zFp+kV+EOkf3A==
-Date:   Mon, 17 May 2021 11:36:23 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Subject: Re: [PATCH 0/5] PCI: dwc: pci-dra7xx: miscellaneous improvements
-Message-ID: <20210517163623.GA21579@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517154122.430544-1-luca@lucaceresoli.net>
+        id S241264AbhEQQvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239515AbhEQQvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:51:16 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36472C0612F3;
+        Mon, 17 May 2021 09:37:17 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso201567pjx.1;
+        Mon, 17 May 2021 09:37:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=Ku3CeTnQSRaVc2X1/GF1fGNFdAKhq49AjgponOMKyJM=;
+        b=Yqc0/wJImvABIgC8VqFgCTvjU4ZTPZxZ7VTxDs8BIBr4JzW6N4SDUbAJN77IJwBMTU
+         ekOAYGgHImk9s5T3bw6W7d+gnv5ZIvbxIn1AEq8omiDpbz3t58EgTMC0nDzELhAYckH6
+         sdTnPpN/K8LILGmB5BgkdUyX3m9ABNbnrIpofY22x5BXbxUvaB2DuC67eLjo2GU4uo+M
+         2QEkBK/BBT44U7QH67nQA01348kfQL2FnAeKre5h2R3uM5+vSKiNLfrCy+mWu5SFCWXK
+         tN9skvYnin4L5p9JQwyBAJ6twfbi2VzINvuPukTMKQjaN7doKLlHe4OuyQoFDzfbt1FG
+         j3bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=Ku3CeTnQSRaVc2X1/GF1fGNFdAKhq49AjgponOMKyJM=;
+        b=qPtmr6hfuYh0aKb3NoJcQVyZmfF2pfhqQt3+HHvb/f3RORj1eYEU+IrDosLNWwpX0y
+         3LdfMmTtZjjifzeBdwNT8npo+iJY2v/OlM4nAVw4Mek+AQX52rSorKMBIeL/rIl3+ki7
+         lDz0+nDkGK9ptho/mhf7Adc0dJnM90bexxbN8hEdiIhifoBZaWRTR5I1w8qTLZq7z9UG
+         JmQ5n4eXaPbL6mqtF6dfVzOQtiYy0rLRWr5XeJ9GuYfCdfaxUDVrbPHQZ+R6cQK2VXzb
+         25h7B8TdHwS0RBQNApR8uYS4ukWzPsgSLTrPR4W406G9XzPHO0g/nMqVPngjVDGfLt8y
+         SCiQ==
+X-Gm-Message-State: AOAM532UAT70DwNwMAgYB3y9Sa30iO5lE8Bx1lLjO/ZPQIsgK6tKDx7r
+        gW8vbbpcCJUGK8jZDUF/CRr54LoBkCuicwvW
+X-Google-Smtp-Source: ABdhPJyR0akPL3Xy1IHIRGiXb5liXXG08IUodzhkOki7JgWAlaWTR8Qlim0CgsEG+g1GLrLrB0sPEw==
+X-Received: by 2002:a17:90a:dc82:: with SMTP id j2mr14063pjv.138.1621269436141;
+        Mon, 17 May 2021 09:37:16 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id 35sm2255422pgq.91.2021.05.17.09.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 09:37:15 -0700 (PDT)
+Message-ID: <60a29bbb.1c69fb81.f06d1.69a0@mx.google.com>
+Date:   Mon, 17 May 2021 09:37:15 -0700 (PDT)
+X-Google-Original-Date: Mon, 17 May 2021 16:37:14 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 000/289] 5.10.38-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 05:41:17PM +0200, Luca Ceresoli wrote:
-> This is an series of mixed improvements to the DRA7 PCI controller driver:
-> allow building as a loadabel module, allow to get and enable a clock and a
-> small cleanup.
+On Mon, 17 May 2021 15:58:45 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.38 release.
+> There are 289 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Luca
+> Responses should be made by Wed, 19 May 2021 14:02:24 +0000.
+> Anything received after that time might be too late.
 > 
-> Luca Ceresoli (5):
->   PCI: dwc: export more symbols to allow modular drivers
->   PCI: dwc: pci-dra7xx: make it a kernel module
->   PCI: dwc: pci-dra7xx: allow to build as a loadable module
->   PCI: dwc: pci-dra7xx: remove unused include
->   PCI: dwc: pci-dra7xx: get an optional clock
-
-This driver has a poor record of subject lines:
-
-  PCI: pci-dra7xx: Prepare for deferred probe with module_platform_driver
-  PCI: dwc: Move dw_pcie_setup_rc() to DWC common code
-  PCI: dwc/dra7xx: Use the common MSI irq_chip
-  PCI: dwc: pci-dra7xx: Fix runtime PM imbalance on error
-
-The "PCI: dwc:" ones are fine -- they apply to the shared dwc core,
-not specifically to dra7xx.
-
-The driver-specific ones:
-
-  PCI: pci-dra7xx:
-  PCI: dwc/dra7xx:
-  PCI: dwc: pci-dra7xx:
-
-are redundant and waste space.  There's no need to mention "dwc" for
-dra7xx-specific things, and no need to mention "PCI" twice.
-
-We should use the "PCI: dra7xx:" prefix for things specific to this
-driver.
-
-The rest of the subject line should start with a capital letter.  The
-subject line should contain specific information when practical.  For
-example,
-
-  PCI: dwc: Export dw_pcie_link_up(), dw_pcie_ep_reset_bar() for modular drivers
-  PCI: dra7xx: Allow building as module
-  PCI: dra7xx: Remove unused linux/init.h include
-  PCI: dra7xx: Get optional external clock
-
-I would squash 2/5 and 3/5, similar to a98d2187efd9 ("PCI: meson:
-Build as module by default") and 526a76991b7b ("PCI: aardvark:
-Implement driver 'remove' function and allow to build it as module").
-
->  drivers/pci/controller/dwc/Kconfig            |  6 +++---
->  drivers/pci/controller/dwc/pci-dra7xx.c       | 21 +++++++++++++++++--
->  .../pci/controller/dwc/pcie-designware-ep.c   |  1 +
->  drivers/pci/controller/dwc/pcie-designware.c  |  1 +
->  4 files changed, 24 insertions(+), 5 deletions(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.38-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> -- 
-> 2.25.1
+> thanks,
 > 
+> greg k-h
+> 
+
+5.10.38-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
+
