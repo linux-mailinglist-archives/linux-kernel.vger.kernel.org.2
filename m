@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275BE3833DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CFD3833E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241067AbhEQPC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49086 "EHLO mail.kernel.org"
+        id S239207AbhEQPDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240902AbhEQOwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:52:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E60A6199C;
-        Mon, 17 May 2021 14:23:58 +0000 (UTC)
+        id S241211AbhEQOxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:53:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93C8761987;
+        Mon, 17 May 2021 14:24:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261438;
-        bh=BMgVRc07yMdSNpu4EtODLQluJHjs8aTrZ8NbIbKt+d4=;
+        s=korg; t=1621261448;
+        bh=AYvKDmHSqkXvGF5u65iwXgvIsvrCbrBW9qOo7GDoyMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UxFKBPQZyCMoQi77oO1CG78yngZrR5l6dAdTA4dXhCe/yl3cdmURsxn4U7A6AaRoF
-         /CZYyN29ntNpwjipSVeGrXOOO4s7TBP3KZWby+EEbiFtmQ9ZaMGDv1/8nvaHU6LYH4
-         8STCTW4qrvYl/1PXuFY5VmMzyUw7OsBa7UslW+GI=
+        b=msj+zDKbtrkYbvVQZtBcvK4PkrRXh+OVpY/W1vZMr28ZTLwlzE59wkNKP36vXZWfA
+         Pwa6pbY9O4VVTs42VW5VDvMpZs518BCPndYF+7uNyKTmU/Z9xh2AxoZJDjfdqf1xMQ
+         kKASPNgqkomy0twy0eDg8d2X6xc5B+ih0dqD8y+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikhail Durnev <mikhail_durnev@mentor.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Ayush Garg <ayush.garg@samsung.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 020/289] ASoC: rsnd: core: Check convert rate in rsnd_hw_params
-Date:   Mon, 17 May 2021 15:59:05 +0200
-Message-Id: <20210517140305.862589919@linuxfoundation.org>
+Subject: [PATCH 5.10 021/289] Bluetooth: Fix incorrect status handling in LE PHY UPDATE event
+Date:   Mon, 17 May 2021 15:59:06 +0200
+Message-Id: <20210517140305.893756088@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,111 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikhail Durnev <mikhail_durnev@mentor.com>
+From: Ayush Garg <ayush.garg@samsung.com>
 
-[ Upstream commit 19c6a63ced5e07e40f3a5255cb1f0fe0d3be7b14 ]
+[ Upstream commit 87df8bcccd2cede62dfb97dc3d4ca1fe66cb4f83 ]
 
-snd_pcm_hw_params_set_rate_near can return incorrect sample rate in
-some cases, e.g. when the backend output rate is set to some value higher
-than 48000 Hz and the input rate is 8000 Hz. So passing the value returned
-by snd_pcm_hw_params_set_rate_near to snd_pcm_hw_params will result in
-"FSO/FSI ratio error" and playing no audio at all while the userland
-is not properly notified about the issue.
+Skip updation of tx and rx PHYs values, when PHY Update
+event's status is not successful.
 
-If SRC is unable to convert the requested sample rate to the sample rate
-the backend is using, then the requested sample rate should be adjusted in
-rsnd_hw_params. The userland will be notified about that change in the
-returned hw_params structure.
-
-Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
-Link: https://lore.kernel.org/r/1615870055-13954-1-git-send-email-mikhail_durnev@mentor.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Ayush Garg <ayush.garg@samsung.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 69 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 68 insertions(+), 1 deletion(-)
+ net/bluetooth/hci_event.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 6e670b3e92a0..289928d4c0c9 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1428,8 +1428,75 @@ static int rsnd_hw_params(struct snd_soc_component *component,
- 		}
- 		if (io->converted_chan)
- 			dev_dbg(dev, "convert channels = %d\n", io->converted_chan);
--		if (io->converted_rate)
-+		if (io->converted_rate) {
-+			/*
-+			 * SRC supports convert rates from params_rate(hw_params)/k_down
-+			 * to params_rate(hw_params)*k_up, where k_up is always 6, and
-+			 * k_down depends on number of channels and SRC unit.
-+			 * So all SRC units can upsample audio up to 6 times regardless
-+			 * its number of channels. And all SRC units can downsample
-+			 * 2 channel audio up to 6 times too.
-+			 */
-+			int k_up = 6;
-+			int k_down = 6;
-+			int channel;
-+			struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
-+
- 			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
-+
-+			channel = io->converted_chan ? io->converted_chan :
-+				  params_channels(hw_params);
-+
-+			switch (rsnd_mod_id(src_mod)) {
-+			/*
-+			 * SRC0 can downsample 4, 6 and 8 channel audio up to 4 times.
-+			 * SRC1, SRC3 and SRC4 can downsample 4 channel audio
-+			 * up to 4 times.
-+			 * SRC1, SRC3 and SRC4 can downsample 6 and 8 channel audio
-+			 * no more than twice.
-+			 */
-+			case 1:
-+			case 3:
-+			case 4:
-+				if (channel > 4) {
-+					k_down = 2;
-+					break;
-+				}
-+				fallthrough;
-+			case 0:
-+				if (channel > 2)
-+					k_down = 4;
-+				break;
-+
-+			/* Other SRC units do not support more than 2 channels */
-+			default:
-+				if (channel > 2)
-+					return -EINVAL;
-+			}
-+
-+			if (params_rate(hw_params) > io->converted_rate * k_down) {
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
-+					io->converted_rate * k_down;
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
-+					io->converted_rate * k_down;
-+				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
-+			} else if (params_rate(hw_params) * k_up < io->converted_rate) {
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
-+					(io->converted_rate + k_up - 1) / k_up;
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
-+					(io->converted_rate + k_up - 1) / k_up;
-+				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
-+			}
-+
-+			/*
-+			 * TBD: Max SRC input and output rates also depend on number
-+			 * of channels and SRC unit:
-+			 * SRC1, SRC3 and SRC4 do not support more than 128kHz
-+			 * for 6 channel and 96kHz for 8 channel audio.
-+			 * Perhaps this function should return EINVAL if the input or
-+			 * the output rate exceeds the limitation.
-+			 */
-+		}
- 	}
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index e0a542849735..4676e4b0be2b 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5897,7 +5897,7 @@ static void hci_le_phy_update_evt(struct hci_dev *hdev, struct sk_buff *skb)
  
- 	return rsnd_dai_call(hw_params, io, substream, hw_params);
+ 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
+ 
+-	if (!ev->status)
++	if (ev->status)
+ 		return;
+ 
+ 	hci_dev_lock(hdev);
 -- 
 2.30.2
 
