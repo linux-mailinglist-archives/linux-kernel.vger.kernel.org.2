@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0C8383CA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5989D383CB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbhEQSrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:47:45 -0400
-Received: from mga05.intel.com ([192.55.52.43]:1909 "EHLO mga05.intel.com"
+        id S237319AbhEQSwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:52:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:60350 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235486AbhEQSro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:47:44 -0400
-IronPort-SDR: l36sVhyjRggpiuaY6dIvURWi9zPLehtd0wWlj7h/eZfBF8Mw0mGuXsARxMd8MUbDSI5WbM1XWg
- CRncXS1CJQ5A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="286068099"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="286068099"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:46:27 -0700
-IronPort-SDR: ow5fnO3Rv0w3EMf4yV9xevk+7ZgBecb5WfB0gY9Dnc5yPENpB5PjeMKhn8xKJXoSDQeGxba0xQ
- HGMP9f3S9vZw==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="630118842"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:46:27 -0700
-Date:   Mon, 17 May 2021 18:46:21 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
+        id S234049AbhEQSwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 14:52:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28FB331B;
+        Mon, 17 May 2021 11:50:45 -0700 (PDT)
+Received: from [10.57.66.179] (unknown [10.57.66.179])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60CBF3F73D;
+        Mon, 17 May 2021 11:50:41 -0700 (PDT)
+Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
+ setting the hint
 To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: Re: [PATCH 0/4] x86/bus_lock: Set rate limit for bus lock
-Message-ID: <YKK5/fgD4w+TVinx@otcwcpicx3.sc.intel.com>
-References: <20210419214958.4035512-1-fenghua.yu@intel.com>
+        Nitesh Lal <nilal@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>
+References: <20210501021832.743094-1-jesse.brandeburg@intel.com>
+ <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com>
+ <20210504092340.00006c61@intel.com>
+ <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com>
+ <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com>
+ <87sg2lz0zz.ffs@nanos.tec.linutronix.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d1d5e797-49ee-4968-88c6-c07119343492@arm.com>
+Date:   Mon, 17 May 2021 19:50:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419214958.4035512-1-fenghua.yu@intel.com>
+In-Reply-To: <87sg2lz0zz.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dear X86 maintainers,
-
-On Mon, Apr 19, 2021 at 09:49:54PM +0000, Fenghua Yu wrote:
-> Bus lock warn and fatal handling is in tip. This series sets system
-> wide bus lock rate limit to throttle malicious code.
+On 2021-05-17 19:08, Thomas Gleixner wrote:
+> On Mon, May 17 2021 at 18:26, Robin Murphy wrote:
+>> On 2021-05-17 17:57, Nitesh Lal wrote:
+>> I'm not implying that there isn't a bug, or that this code ever made
+>> sense in the first place, just that fixing it will unfortunately be a
+>> bit more involved than a simple revert. This patch as-is *will* subtly
+>> break at least the system PMU drivers currently using
 > 
-> This series is applied on top of tip master branch.
+> s/using/abusing/
 > 
-> Change Log:
-> -Set system wide rate limit instead of per-user rate limit (Thomas).
-> -Thomas suggested to split the previous bus lock into warn and fatal
-> patch set and this rate limit patch set:
-> https://lore.kernel.org/lkml/871rca6dbp.fsf@nanos.tec.linutronix.de/
+>> irq_set_affinity_hint() - those I know require the IRQ affinity to
+>> follow whichever CPU the PMU context is bound to, in order to meet perf
+>> core's assumptions about mutual exclusion.
+> 
+> Which driver is that?
 
-Any comment on this series?
+Right now, any driver which wants to control an IRQ's affinity and also 
+build as a module, for one thing. I'm familiar with drivers/perf/ where 
+a basic pattern has been widely copied; some of the callers in other 
+subsystems appear to *expect* it to set the underlying affinity as well, 
+but whether any of those added within the last 6 years represent a 
+functional dependency rather than just a performance concern I don't know.
 
-The series can be applied to 5.13-rc cleanly without any change.
-
-Thanks.
-
--Fenghua
+Robin.
