@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70933382271
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 03:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5BF382272
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 03:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhEQBDI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 16 May 2021 21:03:08 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:57664 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhEQBDG (ORCPT
+        id S232119AbhEQBEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 21:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhEQBEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 21:03:06 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14H11UQr8024911, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14H11UQr8024911
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 17 May 2021 09:01:30 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 17 May 2021 09:01:29 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 17 May 2021 09:01:28 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74]) by
- RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74%5]) with mapi id
- 15.01.2106.013; Mon, 17 May 2021 09:01:28 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: RE: [syzbot] WARNING in rtl8152_probe
-Thread-Topic: [syzbot] WARNING in rtl8152_probe
-Thread-Index: AQHXRxMNo04dZcfiN0eNJrSRsQsh6qrguwNggAA4ewCAAVQHMP//vp6AgACQRgCAAAIjgIAESHmw
-Date:   Mon, 17 May 2021 01:01:28 +0000
-Message-ID: <547984d34f58406aa2e37861d7e8a44d@realtek.com>
-References: <0000000000009df1b605c21ecca8@google.com>
- <7de0296584334229917504da50a0ac38@realtek.com>
- <20210513142552.GA967812@rowland.harvard.edu>
- <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com> <YJ4dU3yCwd2wMq5f@kroah.com>
- <bddf302301f5420db0fa049c895c9b14@realtek.com>
- <20210514153253.GA1007561@rowland.harvard.edu>
-In-Reply-To: <20210514153253.GA1007561@rowland.harvard.edu>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/5/16_=3F=3F_11:41:00?=
-x-kse-attachment-filter-triggered-rules: Clean
-x-kse-attachment-filter-triggered-filters: Clean
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Sun, 16 May 2021 21:04:44 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C2FC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 18:03:28 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id c17so3837157pfn.6
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 18:03:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xfp/CZSlq0nUTfGq9imaIPDDNtjzYw1PPenTa+58Dqo=;
+        b=kS74OyXhMmnVrcnUGBLLHJjvg7PqOxe7oz/sxiDvDGf6MhSkFGCDxSzGxBK7DQvrTY
+         LV+9mQL0afWiLEa377cNmrh8cW0xkrZqqDdv2GEtlCLJZlTevdXDXuwH265C4e37DxPu
+         QZAKga1dXRZ6CzwZ4hAHxvQqqr86BXRn+tPmqIf3ohoQ/LxYuitXVx0JwHKQlw1r4HP3
+         lLan7bYAnf+qGmd1lBgvfZJME+jyTQXsIzwMyU/AiRLywqIxNJxLsZhyxuj5FY29EjDo
+         eWuDLPCcVbJF94KzmRuhX98uOeHKvkjrLQxecqcOoY3W/OlMSwYnIKMKXKUYLuKz0r/O
+         UYRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xfp/CZSlq0nUTfGq9imaIPDDNtjzYw1PPenTa+58Dqo=;
+        b=q6/hJGOpED8tTaRTYlmxQeF6tpZPTbp+AmEGorT5YULOA+9iTMoJzG2lPLUSIvGtm3
+         hCHk93Zpbp2LC4uKRYkxdwziJmjHKmcsEpMUx9faHm8tlJD6zx+T3xRUofWxd6KwlkO9
+         AejzhYt+qoN17y7GT0JfjZo0AvLBBm7g2OxJGwZR4Lu2I9VMd5Lo9ks+Iu8ltLb9YKa0
+         U88E8YScbituN3QAapkldbAuSjLHjAzQzEdqG57dAp3+RzbNgIZxR3BDQlzeQu6aL1bV
+         QU3KzZdXhrVF2bgrZpqsImec9INPF6hw8MDwlDwec9ATaV84BT+NkLUtUEYlFFHv3YN1
+         vfZA==
+X-Gm-Message-State: AOAM533bN/1ukwalONf/BB+H0Wsrb2IwkDjV7jroxF/r3/hLWoipfsQd
+        PTEYsMfi/vEO1/QiDRbbbBJMVw==
+X-Google-Smtp-Source: ABdhPJz06jmsRTIRKIBzZHXJ7VIgifp8v4+ig/SrCD4SIYxWcxIfFBGp/sv7xtP7Y0dKn3zp1pz/tA==
+X-Received: by 2002:a63:6207:: with SMTP id w7mr60126732pgb.260.1621213407959;
+        Sun, 16 May 2021 18:03:27 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id 187sm8334434pff.139.2021.05.16.18.03.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 18:03:27 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Joseph Chen <chenjh@rock-chips.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/2] regulator: fan53555: Fix slew_shift setting for tcs4525
+Date:   Mon, 17 May 2021 09:03:17 +0800
+Message-Id: <20210517010318.1027949-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/17/2021 00:47:47
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163679 [May 17 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/17/2021 00:49:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alan Stern <stern@rowland.harvard.edu>
-> Sent: Friday, May 14, 2021 11:33 PM
-[...]
-> The real motivation here, which nobody has mentioned explicitly yet, is
-> that the driver needs to be careful enough that it won't crash no matter
-> what bizarre, malfunctioning, or malicious device is attached.
-> 
-> Even if a device isn't malicious, if it is buggy, broken, or
-> malfunctioning in some way then it can present input that a normal
-> device would never generate.  If the driver isn't prepared to handle
-> this unusual input, it may crash.  That is specifically what we want to
-> avoid.
-> 
-> So if a peculiar emulated device created by syzbot is capable of
-> crashing the driver, then somewhere there is a bug which needs to be
-> fixed.  It's true that fixing all these bugs might not protect against a
-> malicious device which deliberately behaves in an apparently reasonable
-> manner.  But it does reduce the attack surface.
+Fix trivial copy-paste mistake.
 
-Thanks for your response.
-I will add some checks.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/fan53555.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best Regards,
-Hayes
+diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
+index 2695be617373..d582ef3a3aeb 100644
+--- a/drivers/regulator/fan53555.c
++++ b/drivers/regulator/fan53555.c
+@@ -376,7 +376,7 @@ static int fan53526_voltages_setup_tcs(struct fan53555_device_info *di)
+ 	case TCS4525_CHIP_ID_12:
+ 		di->slew_reg = TCS4525_TIME;
+ 		di->slew_mask = TCS_SLEW_MASK;
+-		di->slew_shift = TCS_SLEW_MASK;
++		di->slew_shift = TCS_SLEW_SHIFT;
+ 
+ 		/* Init voltage range and step */
+ 		di->vsel_min = 600000;
+-- 
+2.25.1
 
