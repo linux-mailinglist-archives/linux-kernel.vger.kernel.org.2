@@ -2,40 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1E538389B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88184383694
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345932AbhEQP5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40232 "EHLO mail.kernel.org"
+        id S245205AbhEQPeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244525AbhEQPip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:38:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C437161945;
-        Mon, 17 May 2021 14:40:54 +0000 (UTC)
+        id S244143AbhEQPTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:19:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6414F61C76;
+        Mon, 17 May 2021 14:33:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262455;
-        bh=Ml+rbwkOqOnHdPKJB7om6PTw+fGYm+kJ/QzE3psgn60=;
+        s=korg; t=1621262030;
+        bh=wANwn/r44ErjICI6BND58o0NYrEVFW5L9D4tm+uV7ME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wTcYcaEiWvylAv/J6daj4YVsKa3h1qobNgrR9u+PdRM51Tqd3gn3edfhnJ4jlmp/T
-         blRfuC6XK5ctcSkY2v0j8NgQ9AztASxUh1ACef9xSRwwKgvQ2CyuRad/CyLtSSsVcG
-         fGtFZgb7co9fFlyNp6atGqtUDmPNtmA/arQbJ4Hc=
+        b=0VCkmSa+CgD+OhuspA06xlSZokBM1oz4eI5dOqyOifsTxGbXjWDbmS7ZlliLY2CKe
+         +JHcgtwRquZUrfOpzrwuBpUahATElCsWOKNdqpLew18c/MTI3KI6vs7XKPhtzRvRpd
+         EUhZXgHGCeqIJzH5X4fQQKrLk+4FebcGikGLnKNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dawid Lukwinski <dawid.lukwinski@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 191/289] i40e: Fix PHY type identifiers for 2.5G and 5G adapters
-Date:   Mon, 17 May 2021 16:01:56 +0200
-Message-Id: <20210517140311.538072143@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morris <jmorris@namei.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.11 206/329] mm/gup: return an error on migration failure
+Date:   Mon, 17 May 2021 16:01:57 +0200
+Message-Id: <20210517140309.089039294@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,94 +60,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Palczewski <mateusz.palczewski@intel.com>
+From: Pavel Tatashin <pasha.tatashin@soleen.com>
 
-[ Upstream commit 15395ec4685bd45a43d1b54b8fd9846b87e2c621 ]
+[ Upstream commit f0f4463837da17a89d965dcbe4e411629dbcf308 ]
 
-Unlike other supported adapters, 2.5G and 5G use different
-PHY type identifiers for reading/writing PHY settings
-and for reading link status. This commit introduces
-separate PHY identifiers for these two operation types.
+When migration failure occurs, we still pin pages, which means that we
+may pin CMA movable pages which should never be the case.
 
-Fixes: 2e45d3f4677a ("i40e: Add support for X710 B/P & SFP+ cards")
-Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Instead return an error without pinning pages when migration failure
+happens.
+
+No need to retry migrating, because migrate_pages() already retries 10
+times.
+
+Link: https://lkml.kernel.org/r/20210215161349.246722-4-pasha.tatashin@soleen.com
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sasha Levin <sashal@kernel.org>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h | 6 ++++--
- drivers/net/ethernet/intel/i40e/i40e_common.c     | 4 ++--
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c    | 4 ++--
- drivers/net/ethernet/intel/i40e/i40e_type.h       | 7 ++-----
- 4 files changed, 10 insertions(+), 11 deletions(-)
+ mm/gup.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-index 1e960c3c7ef0..e84054fb8213 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-@@ -1565,8 +1565,10 @@ enum i40e_aq_phy_type {
- 	I40E_PHY_TYPE_25GBASE_LR		= 0x22,
- 	I40E_PHY_TYPE_25GBASE_AOC		= 0x23,
- 	I40E_PHY_TYPE_25GBASE_ACC		= 0x24,
--	I40E_PHY_TYPE_2_5GBASE_T		= 0x30,
--	I40E_PHY_TYPE_5GBASE_T			= 0x31,
-+	I40E_PHY_TYPE_2_5GBASE_T		= 0x26,
-+	I40E_PHY_TYPE_5GBASE_T			= 0x27,
-+	I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS	= 0x30,
-+	I40E_PHY_TYPE_5GBASE_T_LINK_STATUS	= 0x31,
- 	I40E_PHY_TYPE_MAX,
- 	I40E_PHY_TYPE_NOT_SUPPORTED_HIGH_TEMP	= 0xFD,
- 	I40E_PHY_TYPE_EMPTY			= 0xFE,
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
-index adc9e4fa4789..ba109073d605 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_common.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
-@@ -1154,8 +1154,8 @@ static enum i40e_media_type i40e_get_media_type(struct i40e_hw *hw)
- 		break;
- 	case I40E_PHY_TYPE_100BASE_TX:
- 	case I40E_PHY_TYPE_1000BASE_T:
--	case I40E_PHY_TYPE_2_5GBASE_T:
--	case I40E_PHY_TYPE_5GBASE_T:
-+	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
-+	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
- 	case I40E_PHY_TYPE_10GBASE_T:
- 		media = I40E_MEDIA_TYPE_BASET;
- 		break;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index 13554706c180..5d48bc0c3f6c 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -841,8 +841,8 @@ static void i40e_get_settings_link_up(struct i40e_hw *hw,
- 							     10000baseT_Full);
- 		break;
- 	case I40E_PHY_TYPE_10GBASE_T:
--	case I40E_PHY_TYPE_5GBASE_T:
--	case I40E_PHY_TYPE_2_5GBASE_T:
-+	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
-+	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
- 	case I40E_PHY_TYPE_1000BASE_T:
- 	case I40E_PHY_TYPE_100BASE_TX:
- 		ethtool_link_ksettings_add_link_mode(ks, supported, Autoneg);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
-index c0bdc666f557..add67f7b73e8 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_type.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
-@@ -239,11 +239,8 @@ struct i40e_phy_info {
- #define I40E_CAP_PHY_TYPE_25GBASE_ACC BIT_ULL(I40E_PHY_TYPE_25GBASE_ACC + \
- 					     I40E_PHY_TYPE_OFFSET)
- /* Offset for 2.5G/5G PHY Types value to bit number conversion */
--#define I40E_PHY_TYPE_OFFSET2 (-10)
--#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T + \
--					     I40E_PHY_TYPE_OFFSET2)
--#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T + \
--					     I40E_PHY_TYPE_OFFSET2)
-+#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T)
-+#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T)
- #define I40E_HW_CAP_MAX_GPIO			30
- /* Capabilities of a PF or a VF or the whole device */
- struct i40e_hw_capabilities {
+diff --git a/mm/gup.c b/mm/gup.c
+index 84d392886d85..2d7a567b4056 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1550,7 +1550,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ {
+ 	unsigned long i;
+ 	bool drain_allow = true;
+-	bool migrate_allow = true;
+ 	LIST_HEAD(cma_page_list);
+ 	long ret = nr_pages;
+ 	struct page *prev_head, *head;
+@@ -1601,17 +1600,15 @@ check_again:
+ 			for (i = 0; i < nr_pages; i++)
+ 				put_page(pages[i]);
+ 
+-		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
+-			/*
+-			 * some of the pages failed migration. Do get_user_pages
+-			 * without migration.
+-			 */
+-			migrate_allow = false;
+-
++		ret = migrate_pages(&cma_page_list, alloc_migration_target,
++				    NULL, (unsigned long)&mtc, MIGRATE_SYNC,
++				    MR_CONTIG_RANGE);
++		if (ret) {
+ 			if (!list_empty(&cma_page_list))
+ 				putback_movable_pages(&cma_page_list);
++			return ret > 0 ? -ENOMEM : ret;
+ 		}
++
+ 		/*
+ 		 * We did migrate all the pages, Try to get the page references
+ 		 * again migrating any new CMA pages which we failed to isolate
+@@ -1621,7 +1618,7 @@ check_again:
+ 						   pages, vmas, NULL,
+ 						   gup_flags);
+ 
+-		if ((ret > 0) && migrate_allow) {
++		if (ret > 0) {
+ 			nr_pages = ret;
+ 			drain_allow = true;
+ 			goto check_again;
 -- 
 2.30.2
 
