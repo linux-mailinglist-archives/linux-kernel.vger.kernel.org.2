@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73B5386D0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1ADB386D13
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343976AbhEQWld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 18:41:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343905AbhEQWl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 18:41:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F3C0561263;
-        Mon, 17 May 2021 22:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621291210;
-        bh=LZE2iRtRE9Ou2/z8ye8EEydsHVnc3WBAzTs+rmw1Caw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EM3iTFPe/Bfq3eUH8LPiJYRf1tqWRxbLkTnMbZL0Oydx+Ys2YTwgJxzKn9TBWgekk
-         vnJxIoNuzwhEM7a+jqcvHwG+PZ0MF5K9lElpQC/5Igjz+IhdtqLt8z9MuuTVf1yw7m
-         K4slJ+NiyqEpkJ7nxQ3XuqGIgh8Z6JkYcHxrYjeT13Taog/UiG9NGOj3oZRkSuV99N
-         6UMRFiZPIY64drmEG9Pf5inmosK4qPleu0darpOzh8mAWlHo2gQvFxBChNoH8kjJiM
-         lS04vpkS7hShsmo6NotxRcpkrmHgfjVGBx2nFYQ5ucLUx19346w29JlntslN+DUmg2
-         wv/mmL1rHGy6Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EB0D860A4F;
-        Mon, 17 May 2021 22:40:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1344005AbhEQWn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 18:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234833AbhEQWn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 18:43:58 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431ECC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:42:41 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso6994506otn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=n3Djli0CBbr/m3SaXSvVNvzipKsQbtn+bmmLzOnVVqI=;
+        b=nCoLyuMlxHCUgeTLjyz9XLZgPJV8gVt7fHvVleOKVgXyMbYoTOTnjn4s2niBe2ZQmP
+         Y1QLjAH7k6zw/Fj/f8O8N7U9ittx6ZQUrVx6sj04EOjq6C+tjhUTZU6ugXRuzUR1bRUG
+         YaqYd770CHzQfDlKuHqA8JhTB1zLEDRVfC860=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=n3Djli0CBbr/m3SaXSvVNvzipKsQbtn+bmmLzOnVVqI=;
+        b=fV318OTS3xiPnESdqowCD0kIIuREU33qj/AteNbuqgaB+AkS4tZoyvtDoy73HJKM0I
+         MwkYN+9OGymER4ZMJmGIBuEB92d4FE88aexJPJac/svQ0GFwyTYjj0X6vLfBSR09fzGP
+         D7GaWaoZ7e69p4NVeelgjeTWiONHHBV+raX/TA0wDu1LBh718fXcJLkzY/cgFt6NcjT/
+         fDkWQGdIYRRE88TvEJj4QyVMN71kpVzBjxIzEReuJWPVpFhSa1vPLMnnjzGVa8zLvJb+
+         ptnGoWgYAQgCv5F2II8O1fymmXv2+h8rIuUrFaVt4bVr3wiLkBQGQ2bH5l8SM0fDDkOz
+         YOcQ==
+X-Gm-Message-State: AOAM531q2qRPFstFreVyHBTmRZiPU9wB9/dKD1OOq+0iAXt71b3rX9+k
+        0MWSg1tRhO5IPu7YJWUWz+0DhzigzYF804Xgbt0Btw==
+X-Google-Smtp-Source: ABdhPJyrlcKA5TRpRHBaLxQm81FvqdUsYD3Zuf8Wq5ItOf2C8GCdiAJD8DSnsXJA9rpT0DGnCkm7oobN8EvyA4mOsRo=
+X-Received: by 2002:a05:6830:4a1:: with SMTP id l1mr1582306otd.25.1621291360739;
+ Mon, 17 May 2021 15:42:40 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 17 May 2021 15:42:40 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: Remove the member netns_ok
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162129120995.10606.11207863324142799499.git-patchwork-notify@kernel.org>
-Date:   Mon, 17 May 2021 22:40:09 +0000
-References: <1621254125-21588-1-git-send-email-yejunedeng@gmail.com>
-In-Reply-To: <1621254125-21588-1-git-send-email-yejunedeng@gmail.com>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, xeb@mail.ru, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, vyasevich@gmail.com,
-        nhorman@tuxdriver.com, marcelo.leitner@gmail.com,
-        edumazet@google.com, yejunedeng@gmail.com, weiwan@google.com,
-        paul@paul-moore.com, rdunlap@infradead.org, rdias@singlestore.com,
-        fw@strlen.de, andrew@lunn.ch, tparkin@katalix.com,
-        stefan@datenfreihafen.org, matthieu.baerts@tessares.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dccp@vger.kernel.org, linux-sctp@vger.kernel.org
+In-Reply-To: <20210514122051.266169-2-ikjn@chromium.org>
+References: <20210514122051.266169-1-ikjn@chromium.org> <20210514122051.266169-2-ikjn@chromium.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 17 May 2021 15:42:40 -0700
+Message-ID: <CAE-0n52_fypoKrobC+fSrMqf9aovHFgu71qRqKK7J_Q4g-tPTw@mail.gmail.com>
+Subject: Re: [RESEND PATCH v7 1/2] mfd: google,cros-ec: add DT bindings for a
+ baseboard's switch device
+To:     Ikjoon Jang <ikjn@chromium.org>, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        linux-input@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Jiri Kosina <jikos@kernel.org>, Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Mon, 17 May 2021 20:22:05 +0800 you wrote:
-> Every protocol has the 'netns_ok' member and it is euqal to 1. The
-> 'if (!prot->netns_ok)' always false in inet_add_protocol().
-> 
-> Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
+Quoting Ikjoon Jang (2021-05-14 05:20:49)
+> This is for ChromeOS tablets which have a 'cros_cbas' switch device
+> in the "Whiskers" base board. This device can be instantiated only by
+> device tree on ARM platforms. ChromeOS EC doesn't provide a way to
+> probe the device.
+>
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>
 > ---
->  include/net/protocol.h    | 1 -
->  net/dccp/ipv4.c           | 1 -
->  net/ipv4/af_inet.c        | 4 ----
->  net/ipv4/gre_demux.c      | 1 -
->  net/ipv4/ipmr.c           | 1 -
->  net/ipv4/protocol.c       | 6 ------
->  net/ipv4/tunnel4.c        | 3 ---
->  net/ipv4/udplite.c        | 1 -
->  net/ipv4/xfrm4_protocol.c | 3 ---
->  net/l2tp/l2tp_ip.c        | 1 -
->  net/sctp/protocol.c       | 1 -
->  11 files changed, 23 deletions(-)
 
-Here is the summary with links:
-  - net: Remove the member netns_ok
-    https://git.kernel.org/netdev/net-next/c/5796254e467b
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
