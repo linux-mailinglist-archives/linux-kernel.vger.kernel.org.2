@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784A1383826
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8068B38368A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344702AbhEQPuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:50:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55422 "EHLO mail.kernel.org"
+        id S240679AbhEQPdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:33:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245025AbhEQPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0F0F61CCE;
-        Mon, 17 May 2021 14:38:45 +0000 (UTC)
+        id S243866AbhEQPSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:18:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0AC761363;
+        Mon, 17 May 2021 14:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262326;
-        bh=4VmMxC+e+Hz6FH+qIsqesV5a2Jh7fJYo4OHneZ9G1qs=;
+        s=korg; t=1621262011;
+        bh=2gZmmfGC9HVSSIa8H1Z8lKSKb9sj9E6e3jDl9b3X4wY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Np63jMpRjeBLKr0qsei+ypwT+thk+C+sOfWKTgc1WpYwjNw/zOfS9WvIukKKQBqW1
-         OiwKUrvAi87pN+1gLe+keDjNN0p1qoBKG3w2ftq5LI6B/N13Hy5q22fqYYgEjKftRm
-         ejuU5wGaLFWDC+xYnBL7B7QckLPCJ4LP5/2+VKuQ=
+        b=gprV4+mGieJ1IXRQ3I34CNfyYFfKK991N/yvUC6UItmgqcRj6RTiK8hbPxNt5IYHR
+         rTbLkjXaKQdhVEnMLR+72sjdjhOE5FZv+qyTjuVE9Bwh5qmEt2yAVKa4+qr/UzeuX5
+         YPlyb6EJKtKEP+rupda1w4LAnCS5LV+ZUv4PM9Ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 265/329] usb: fotg210-hcd: Fix an error message
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 124/141] KVM: x86: Cancel pvclock_gtod_work on module removal
 Date:   Mon, 17 May 2021 16:02:56 +0200
-Message-Id: <20210517140311.075538406@linuxfoundation.org>
+Message-Id: <20210517140246.986921356@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit a60a34366e0d09ca002c966dd7c43a68c28b1f82 ]
+commit 594b27e677b35f9734b1969d175ebc6146741109 upstream.
 
-'retval' is known to be -ENODEV here.
-This is a hard-coded default error code which is not useful in the error
-message. Moreover, another error message is printed at the end of the
-error handling path. The corresponding error code (-ENOMEM) is more
-informative.
+Nothing prevents the following:
 
-So remove simplify the first error message.
+  pvclock_gtod_notify()
+    queue_work(system_long_wq, &pvclock_gtod_work);
+  ...
+  remove_module(kvm);
+  ...
+  work_queue_run()
+    pvclock_gtod_work()	<- UAF
 
-While at it, also remove the useless initialization of 'retval'.
+Ditto for any other operation on that workqueue list head which touches
+pvclock_gtod_work after module removal.
 
-Fixes: 7d50195f6c50 ("usb: host: Faraday fotg210-hcd driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/94531bcff98e46d4f9c20183a90b7f47f699126c.1620333419.git.christophe.jaillet@wanadoo.fr
+Cancel the work in kvm_arch_exit() to prevent that.
+
+Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Message-Id: <87czu4onry.ffs@nanos.tec.linutronix.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/fotg210-hcd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kvm/x86.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-index 5617ef30530a..f0e4a315cc81 100644
---- a/drivers/usb/host/fotg210-hcd.c
-+++ b/drivers/usb/host/fotg210-hcd.c
-@@ -5568,7 +5568,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
- 	struct usb_hcd *hcd;
- 	struct resource *res;
- 	int irq;
--	int retval = -ENODEV;
-+	int retval;
- 	struct fotg210_hcd *fotg210;
- 
- 	if (usb_disabled())
-@@ -5588,7 +5588,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
- 	hcd = usb_create_hcd(&fotg210_fotg210_hc_driver, dev,
- 			dev_name(dev));
- 	if (!hcd) {
--		dev_err(dev, "failed to create hcd with err %d\n", retval);
-+		dev_err(dev, "failed to create hcd\n");
- 		retval = -ENOMEM;
- 		goto fail_create_hcd;
- 	}
--- 
-2.30.2
-
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7356,6 +7356,7 @@ void kvm_arch_exit(void)
+ 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
+ #ifdef CONFIG_X86_64
+ 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
++	cancel_work_sync(&pvclock_gtod_work);
+ #endif
+ 	kvm_x86_ops = NULL;
+ 	kvm_mmu_module_exit();
 
 
