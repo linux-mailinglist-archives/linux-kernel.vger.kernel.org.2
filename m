@@ -2,163 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AF2382B8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32E2382B8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236872AbhEQL4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhEQL4d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:56:33 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9C0C061573;
-        Mon, 17 May 2021 04:55:17 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so5421839pjb.2;
-        Mon, 17 May 2021 04:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ofjIyFEqH+7WozIJCmE480eSgTaWZPmeSBdcRECXJis=;
-        b=mXO7ZhJSPfKtHLNKVr4WDbaAtD3yrYXItsdqwovHZLBQocO8KZfsR0ipDkbzw+DJLn
-         wddLb82NK8mf4owZm3C05Q1Fz9PY0Feb7O4GcyYjnok6RRzBZhgaKpJZvpdWE+WEaB36
-         04UvBwhgf4FJMuxnmRzN59Zb5C2prGWlRiBAoutaMWiOZIWph7MqUV/mZYWtK3V4AbVc
-         WVzLki5u2g4lzEMjPrREOyu73aDdaiuwDksQL47ePsT8GnUoErl7QkzqnmMgcn041iEn
-         HSTZ+SQsAUXc+RMxP9qPy+LnJJc8KtysIpJTHCgLWZdzrBec3q7KyPm2lk0Fft18X04T
-         q1ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ofjIyFEqH+7WozIJCmE480eSgTaWZPmeSBdcRECXJis=;
-        b=E0LrSH2Qj/YW1AkE2TkHXUOb7VHprQ7YGT020Ttl/gH5tM8kTNySyv/NGpWdyIRyMx
-         MJpw9+i09R+hTd31pdQf5aAJQNBbUukbXs0ll19PH31hkE1TxoruFqd1iIboaEIL2NGu
-         ox/pKr4v6RFl0pT/Rv1E4dP2QJFQFcKs0QDiN1B1VGhJKOWYY8XQBfxL1RAV8AfOpBoQ
-         1AqFwPQ2J/HMzwarsdTyUhmGvC6iIg9oOyOJ0Xk66wS8XrCTidVLbBTvNyTE9DAsSetw
-         SNqhNvbciRLc0dP4D2s45tcKTryFJL6sbjEFkFJ3vbby21EUtUcKVr1QdsBoOuKkta03
-         LR/g==
-X-Gm-Message-State: AOAM530A5pCY2fPOY87yGCCaD/oz5wgSWfymOzm/Brb3IaQCyAZ10Yt+
-        EZ6cZ5V+8R12cJ5gwTH7p2yH323fcC4SWw==
-X-Google-Smtp-Source: ABdhPJxb7dGfS/9MSFW7k9eaStxevFWdaq8ErD2qNHtOT9Hyj1xP+ujvKramZmfeRAPGo2+oZK7iPQ==
-X-Received: by 2002:a17:903:20cc:b029:f0:cc11:51c2 with SMTP id i12-20020a17090320ccb02900f0cc1151c2mr9847849plb.32.1621252516720;
-        Mon, 17 May 2021 04:55:16 -0700 (PDT)
-Received: from localhost (g1.222-224-229.ppp.wakwak.ne.jp. [222.224.229.1])
-        by smtp.gmail.com with ESMTPSA id e1sm10534600pgl.25.2021.05.17.04.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 04:55:16 -0700 (PDT)
-From:   Stafford Horne <shorne@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     jirislaby@kernel.org, Stafford Horne <shorne@gmail.com>,
-        Florent Kermarrec <florent@enjoy-digital.fr>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        "Gabriel L . Somlo" <gsomlo@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v2] serial: liteuart: Add support for earlycon
-Date:   Mon, 17 May 2021 20:54:52 +0900
-Message-Id: <20210517115453.24365-1-shorne@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S236880AbhEQL5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:57:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229772AbhEQL5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 07:57:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D20C6101E;
+        Mon, 17 May 2021 11:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621252597;
+        bh=Dj6gZws6a8rjbatIhlG40lHC0N0qKimZtARuilCF21E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bi1qEoLq5OymfCs8yWPk95LgHjsQfiwKFuronHICmu+CTSWKQu+73EcPn3JiyLuL0
+         6Zp1PlP8L0pRiDI+p1ZeZ9qe4c/vPhvWB1oeHiTTwxkMTsKbY/HGqr8B8ff0dN7nVF
+         tiXwhzlSDTqA3RMnJGz+jA1+x3CK8ONKMTJxrGfM=
+Date:   Mon, 17 May 2021 13:56:35 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "yekai(A)" <yekai13@huawei.com>
+Cc:     linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, zhangfei.gao@linaro.org,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH] uacce: use sysfs_emit instead of sprintf
+Message-ID: <YKJZ8278k0GEcF87@kroah.com>
+References: <1621247137-42693-1-git-send-email-yekai13@huawei.com>
+ <YKJHGP9LTnCRfIx6@kroah.com>
+ <e5290000-5481-c662-974f-85eea7660953@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5290000-5481-c662-974f-85eea7660953@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most litex boards using RISC-V soft cores us the sbi earlycon, however
-this is not available for non RISC-V litex SoC's.  This patch enables
-earlycon for liteuart which is available on all Litex SoC's making
-support for earycon debugging more widely available.
+On Mon, May 17, 2021 at 07:49:37PM +0800, yekai(A) wrote:
+> 
+> 
+> On 2021/5/17 18:36, Greg KH wrote:
+> > On Mon, May 17, 2021 at 06:25:37PM +0800, Kai Ye wrote:
+> > > Use the sysfs_emit to replace sprintf.
+> > 
+> > That says _what_ you did, not _why_ you are doing this.  What problem
+> > are you solving with this change?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > .
+> > 
+> sprintf is not safe, and it not recommended to use.
 
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Cc: Florent Kermarrec <florent@enjoy-digital.fr>
-Cc: Mateusz Holenko <mholenko@antmicro.com>
-Cc: Joel Stanley <joel@jms.id.au>
-Cc: Gabriel L. Somlo <gsomlo@gmail.com>
-Reviewed-and-tested-by: Gabriel Somlo <gsomlo@gmail.com>
----
-Changes since v1:
- - Fixed subject
- - Fixed ifdef and config issues pointed out by Jiri
- - Use liteuart_putchar instead of early_liteuart_putc
+Why not?  What is "unsafe" with it in this function?
 
- .../admin-guide/kernel-parameters.txt         |  5 +++++
- drivers/tty/serial/Kconfig                    |  1 +
- drivers/tty/serial/liteuart.c                 | 21 +++++++++++++++++++
- 3 files changed, 27 insertions(+)
+> sprintf does not know the PAGE_SIZE maximum of the temporary buffer
+> used for outputting sysfs content and it's possible to overrun the
+> PAGE_SIZE buffer length. so used sysfs_emit that  knows that the size
+> of the call situations that also ensures that no overrun is done. so use
+> sysfs_emit to replace sprintf maybe better.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 04545725f187..2d4a43af8de2 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1084,6 +1084,11 @@
- 			the driver will use only 32-bit accessors to read/write
- 			the device registers.
- 
-+		liteuart,<addr>
-+			Start an early console on a litex serial port at the
-+			specified address. The serial port must already be
-+			setup and configured. Options are not yet supported.
-+
- 		meson,<addr>
- 			Start an early, polled-mode console on a meson serial
- 			port at the specified address. The serial port must
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 0c4cd4a348f4..af41e534483c 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -1550,6 +1550,7 @@ config SERIAL_LITEUART_CONSOLE
- 	bool "LiteUART serial port console support"
- 	depends on SERIAL_LITEUART=y
- 	select SERIAL_CORE_CONSOLE
-+	select SERIAL_EARLYCON
- 	help
- 	  Say 'Y' or 'M' here if you wish to use the FPGA-based LiteUART serial
- 	  controller from LiteX SoC builder as the system console
-diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
-index 64842f3539e1..1b75a4bf7c56 100644
---- a/drivers/tty/serial/liteuart.c
-+++ b/drivers/tty/serial/liteuart.c
-@@ -370,6 +370,27 @@ static int __init liteuart_console_init(void)
- 	return 0;
- }
- console_initcall(liteuart_console_init);
-+
-+static void early_liteuart_write(struct console *console, const char *s,
-+				    unsigned int count)
-+{
-+	struct earlycon_device *device = console->data;
-+	struct uart_port *port = &device->port;
-+
-+	uart_console_write(port, s, count, liteuart_putchar);
-+}
-+
-+static int __init early_liteuart_setup(struct earlycon_device *device,
-+				       const char *options)
-+{
-+	if (!device->port.membase)
-+		return -ENODEV;
-+
-+	device->con->write = early_liteuart_write;
-+	return 0;
-+}
-+
-+OF_EARLYCON_DECLARE(liteuart, "litex,liteuart", early_liteuart_setup);
- #endif /* CONFIG_SERIAL_LITEUART_CONSOLE */
- 
- static int __init liteuart_init(void)
--- 
-2.31.1
+But that's not a problem at all for these calls, right?  If so, please
+show me how that could ever happen.
 
+thanks,
+
+greg k-h
