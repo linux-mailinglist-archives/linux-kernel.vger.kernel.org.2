@@ -2,469 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9183825E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE3A3825E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhEQHzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhEQHzD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:55:03 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F747C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:53:47 -0700 (PDT)
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id AA3E88065C;
-        Mon, 17 May 2021 09:53:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1621238023;
-        bh=+oFOD5axhaR2QxMG/99ig+HlPXW2khmyuitHw6lo6LM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bq2sKYA76WIFNjvTHI33ZleQuK0cIxTIQmLd8iI3Jkzdy0WCtjf2oMMvKSDOacpw2
-         Jx966G31FJqNY7APQ1aW+NqDaIVO/Y5xPfkSe7tZmzEA4E7JHKg0LdkwXwKdASjcsF
-         BdTHU9jWo5hbwQzP4IiuKutkY3+lvYW/V19mqWlHHktesCu5praOHz98zFdPRaOf+Z
-         mXGdVXsZvtnFBQrllVJR/zJXk/co0/jLfnPTwQBahFvxpFAiY2OfWOrox5lDv89FLJ
-         xU4ln/pn2zbx1DTooxl7HbZrX9HFE8etLIBWD/4R8p8mL3JAkdjtxu4aHS0O1XHQzN
-         md0hy39jNiS3Q==
-Date:   Mon, 17 May 2021 09:53:33 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        Olof Johansson <olof@lixom.net>, soc@kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ARM: dts: imx28: Add DTS description of imx28 based
- XEA board
-Message-ID: <20210517095333.48d811be@ktm>
-In-Reply-To: <20210513033631.GL3425@dragon>
-References: <20210409122036.31628-1-lukma@denx.de>
-        <20210513033631.GL3425@dragon>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S235420AbhEQHzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:55:46 -0400
+Received: from mail-dm6nam08on2053.outbound.protection.outlook.com ([40.107.102.53]:18528
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231482AbhEQHzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:55:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JyYl4N/C9kD/tJTDZJSuAtnE+LO2J0KgtfItsertWGb5RRhqbtBUXCPi0xqcBiUiCK1ITZfn6jMlbjVZauG8IkaEPxaYpp+joikkQKsLK7ydt4qedcHgidVti7k5rqMGEWUF4G9Op2ePFCqL3pWnYo/aG5L4T2HMI8E+01g4xxn6wo6qz4EdqCDmgOPjb61pTaOBokCam4/vyEcXwu4ULC9nCk9Wup/j5PROSO1LlmjZ3k3cVjhtJp2n58JVHIi9z026TJxOounqk+eV8+dBhqP1k2vOD4dYszAQxkiaex8oYEl5+cy0GDxe4I7ZnE2vN+tusF74DIaQgqa1ZvZCRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JWbqnjhQiNunk1/r8yb2W2yUWZt6tdzG4lXocU95T1Q=;
+ b=NKaQ3E9v6IXBGFQUplYtvzZO21pFlGZCjwd3zsZ5QrQpDsCyOUh23iu/ktSsJCEMoqC+C55H7StllMVq2eCqD4pLByjmAZvha9fEIzy++5vVGAswSVUabbqfm0tT+4LI7t0/2J523tSxbD4St8NJNAVfwRU5z4Jdn7Y3essk19ldkq/qjZjh7n2XO+KvwMUpKgA1ODfzODPqonU6xJGOHaNoEPAP4Hpq8OsOoG9140nG7VqwUj8h+xtZiLOAg5+7EMlgY/Ue/mZl/6R86k4RAeVA9o9TYfsYcjiHyxJZOvmTFBLp4opwoYTKb0TvnuXDP6CblUEw8YrmJUdqHiL/Tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=pengutronix.de smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JWbqnjhQiNunk1/r8yb2W2yUWZt6tdzG4lXocU95T1Q=;
+ b=U4OZZlFci511TrDJ7JiJIl8w0qHE9VV3yBrWOSMFGaCawJ6ACr3Q1O11c35wSqQU0E0by3SXnLax3coGoH85zVHjDN107HrP9JqMUccxiCx+oqEWyhYIteOX/mfwY5bVpTvfidtyQLMcp4fZLhVCvmtuAxX9d6aJALlYK8XedhA=
+Received: from BN8PR15CA0041.namprd15.prod.outlook.com (2603:10b6:408:80::18)
+ by DM5PR02MB2667.namprd02.prod.outlook.com (2603:10b6:3:10d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Mon, 17 May
+ 2021 07:54:22 +0000
+Received: from BN1NAM02FT014.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:80:cafe::94) by BN8PR15CA0041.outlook.office365.com
+ (2603:10b6:408:80::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend
+ Transport; Mon, 17 May 2021 07:54:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT014.mail.protection.outlook.com (10.13.2.131) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4129.27 via Frontend Transport; Mon, 17 May 2021 07:54:22 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 17 May 2021 00:54:22 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 17 May 2021 00:54:22 -0700
+Envelope-to: u.kleine-koenig@pengutronix.de,
+ tglx@linutronix.de,
+ thierry.reding@gmail.com,
+ lee.jones@linaro.org,
+ daniel.lezcano@linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ alvaro.gamez@hazent.com,
+ devicetree@vger.kernel.org,
+ linux-pwm@vger.kernel.org,
+ sean.anderson@seco.com
+Received: from [172.30.17.109] (port=49080)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1liY4z-0008CY-NC; Mon, 17 May 2021 00:54:22 -0700
+To:     Sean Anderson <sean.anderson@seco.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        <linux-pwm@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC:     Alvaro Gamez <alvaro.gamez@hazent.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+References: <20210511191239.774570-1-sean.anderson@seco.com>
+ <20210511191239.774570-2-sean.anderson@seco.com>
+ <d4bb7b5d-9f38-cf60-fb0b-18f8e0ca2b1e@xilinx.com>
+ <5f960034-174d-0ed8-9f52-3d5fde90e16a@seco.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Subject: Re: [PATCH v3 2/2] clocksource: Add support for Xilinx AXI Timer
+Message-ID: <9f227f96-a310-0fbd-fd34-91eb386306b9@xilinx.com>
+Date:   Mon, 17 May 2021 09:54:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/pqViHQNJP4pms0nw.KJFIvk"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
-X-Virus-Status: Clean
+In-Reply-To: <5f960034-174d-0ed8-9f52-3d5fde90e16a@seco.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f17c3f0f-fc29-4ec2-1d77-08d91908fbfd
+X-MS-TrafficTypeDiagnostic: DM5PR02MB2667:
+X-Microsoft-Antispam-PRVS: <DM5PR02MB266707BBCD524E18659A5F95C62D9@DM5PR02MB2667.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yW3+amuZf/sq/uYsJIJZXWj1FKiGVnOsEKn3Tp9Ja4TfVOnl+c19ro+19T7/awQtN0AEv2Pu8hKBt22w/zpFMw+j98zlYHugQ8x1q/kFXAh5OSd1EO4SrCz0WtbAGQAniMhwsRbIoIMsPQR0+K8TYQE90RzmIAjoigdCSMmzbgz4k3S80KITaTp736k1H2oklxiT8bakDz8E/FcUCpH+B2TSfPmXmmYKTLZh2bVJAsZKOgGyVUH1BBauhNqyYw7aCmN7T4JwHRh37uGgEFlHlcKQMa+0BrQU46hbK20PxYqkCvY3DUimneEn6LgE65UWStWZD+RrLgu0m5mxhWsDK9tghnc4UKqX/IdBlM/LtbJsJRCl4cUAnn9+5WdUpQbSgLjEazjZMNET/49ciNoCirD07PWJA7QHzz9DRfVolTDaGR6jXh64XuMO7x5F4xXX9ibOpU2clnKkVMpGwyv1wLDJPs87ssQzb58lxRED4Uyditrge6xtLXsOv0e1RAaQqYJ8dg7RfNTKhkQmffalcxAnvKROXgLIMqUFg+Jt4EOjxrPhjFwvuqpovyRVZTseDq+fFZ/9QpkbyTHYMZrkPTsZFUBeyJJqRufR3LCja7Ux1dK7lhA50eTbSLpfW1eg+OekbwLuFs7H7zknFd/6+flE8K8y7E6JOdtgK+3sV97M4CYyDa/yeJAbZZ/rmIJsrq9AoMCSeY7KPr5d/vm8zT600igsKQHRrtMTtF/6ybrYv1ojA6eyvYEhM9CGAnu+BaQQrrJto0D/yxqRUmTVbZfO5S9fgfePjzRrY2Esnhtpy7X2EELXwNfOFkIrP55vtv/u5JXTop+vT+sIBGtaFw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(396003)(39850400004)(136003)(376002)(46966006)(36840700001)(356005)(336012)(5660300002)(31686004)(7636003)(36860700001)(47076005)(6666004)(82740400003)(426003)(478600001)(82310400003)(2906002)(186003)(4326008)(31696002)(110136005)(316002)(7416002)(36906005)(2616005)(83380400001)(44832011)(53546011)(9786002)(36756003)(54906003)(70586007)(70206006)(8936002)(8676002)(966005)(26005)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2021 07:54:22.6188
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f17c3f0f-fc29-4ec2-1d77-08d91908fbfd
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT014.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB2667
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/pqViHQNJP4pms0nw.KJFIvk
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Shawn,
-
-Thank you for your feedback.
-
-> On Fri, Apr 09, 2021 at 02:20:36PM +0200, Lukasz Majewski wrote:
-> > This patch adds DTS definition of the imx278 based XEA board.
-> >=20
-> > Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> >=20
-> > ---
-> > Changes for v2:
-> > - Fix 'memory' node and remove regulators subnode
-> > - Rename 'flash0: s25fl256s0@0' to flash@0
-> > - Add proper compatible for XEA board
-> > ---
-> >  arch/arm/boot/dts/Makefile       |   3 +-
-> >  arch/arm/boot/dts/imx28-lwe.dtsi | 174
-> > +++++++++++++++++++++++++++++++ arch/arm/boot/dts/imx28-xea.dts  |
-> > 99 ++++++++++++++++++ 3 files changed, 275 insertions(+), 1
-> > deletion(-) create mode 100644 arch/arm/boot/dts/imx28-lwe.dtsi
-> >  create mode 100644 arch/arm/boot/dts/imx28-xea.dts
-> >=20
-> > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> > index 8e5d4ab4e75e..d2398a090e4d 100644
-> > --- a/arch/arm/boot/dts/Makefile
-> > +++ b/arch/arm/boot/dts/Makefile
-> > @@ -721,7 +721,8 @@ dtb-$(CONFIG_ARCH_MXS) +=3D \
-> >  	imx28-m28evk.dtb \
-> >  	imx28-sps1.dtb \
-> >  	imx28-ts4600.dtb \
-> > -	imx28-tx28.dtb
-> > +	imx28-tx28.dtb \
-> > +	imx28-xea.dtb
-> >  dtb-$(CONFIG_ARCH_NOMADIK) +=3D \
-> >  	ste-nomadik-s8815.dtb \
-> >  	ste-nomadik-nhk15.dtb
-> > diff --git a/arch/arm/boot/dts/imx28-lwe.dtsi
-> > b/arch/arm/boot/dts/imx28-lwe.dtsi new file mode 100644
-> > index 000000000000..2d14a8ae91f8
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/imx28-lwe.dtsi
-> > @@ -0,0 +1,174 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> > +/*
-> > + * Copyright 2021
-> > + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
-> > + */
-> > +
-> > +/dts-v1/;
-> > +#include "imx28.dtsi"
-> > +
-> > +/ {
-> > +	aliases {
-> > +		spi2 =3D &ssp3;
-> > +	};
-> > +
-> > +	chosen {
-> > +		bootargs =3D "root=3D/dev/mmcblk0p2 rootfstype=3Dext4 ro
-> > rootwait console=3DttyAMA0,115200 panic=3D1"; =20
->=20
-> Shouldn't it come from bootloader?
-
-This is used when we start from the "Falcon boot". It is usefull to
-have such "fallback" in the dtb.
-
->=20
-> > +	};
-> > +
-> > +	memory@0x40000000 { =20
->=20
-> memory@40000000
->=20
-> > +		reg =3D <0x40000000 0x08000000>;
-> > +	};
-> > +
-> > +	reg_3v3: regulator-reg-3v3 {
-> > +		compatible =3D "regulator-fixed";
-> > +		regulator-name =3D "3V3";
-> > +		regulator-min-microvolt =3D <3300000>;
-> > +		regulator-max-microvolt =3D <3300000>;
-> > +		regulator-always-on; =20
->=20
-> regulator-always-on makes no sense to a regulator that doesn't on/off
-> control at all.
-
-I think that this is some kind of leftover from U-Boot specific dts.
-
-I will remove it.
-
->=20
-> > +	};
-> > +
-> > +	reg_usb_5v: regulator-reg-usb-5v {
-> > +		compatible =3D "regulator-fixed";
-> > +		regulator-name =3D "usb_vbus";
-> > +		regulator-min-microvolt =3D <5000000>;
-> > +		regulator-max-microvolt =3D <5000000>;
-> > +		enable-active-high; =20
->=20
-> enable-active-high is meaningful only when there is a GPIO controlling
-> on/off.
-
-Thanks for the tip - I've removed it.
-
->=20
-> > +	};
-> > +
-> > +	reg_fec_3v3: regulator-reg-fec-3v3 {
-> > +		compatible =3D "regulator-fixed";
-> > +		regulator-name =3D "fec-phy";
-> > +		regulator-min-microvolt =3D <3300000>;
-> > +		regulator-max-microvolt =3D <3300000>;
-> > +		enable-active-high;
-> > +		regulator-boot-on; =20
->=20
-> Ditto
->=20
-> > +	};
-> > +};
-> > +
-> > +&duart {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&duart_pins_a>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&i2c0 {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&i2c0_pins_a>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&saif0 {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&saif0_pins_a>;
-> > +	#sound-dai-cells =3D <0>;
-> > +	assigned-clocks =3D <&clks 53>;
-> > +	assigned-clock-rates =3D <12000000>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&saif1 {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&saif1_pins_a>;
-> > +	fsl,saif-master =3D <&saif0>;
-> > +	#sound-dai-cells =3D <0>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&spi3_pins_a {
-> > +	fsl,pinmux-ids =3D <
-> > +		MX28_PAD_AUART2_RX__SSP3_D4
-> > +		MX28_PAD_AUART2_TX__SSP3_D5
-> > +		MX28_PAD_SSP3_SCK__SSP3_SCK
-> > +		MX28_PAD_SSP3_MOSI__SSP3_CMD
-> > +		MX28_PAD_SSP3_MISO__SSP3_D0
-> > +		MX28_PAD_SSP3_SS0__SSP3_D3
-> > +		MX28_PAD_AUART2_TX__GPIO_3_9
-> > +	>;
-> > +};
-> > +
-> > +&ssp3 {
-> > +	compatible =3D "fsl,imx28-spi";
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&spi3_pins_a>;
-> > +	status =3D "okay";
-> > +
-> > +	flash@0 {
-> > +		compatible =3D "jedec,spi-nor";
-> > +		spi-max-frequency =3D <40000000>;
-> > +		reg =3D <0>;
-> > +
-> > +		partitions {
-> > +			compatible =3D "fixed-partitions";
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <1>;
-> > +
-> > +			partition@0 {
-> > +				label =3D "u-boot";
-> > +				reg =3D <0 0x80000>;
-> > +				read-only;
-> > +			};
-> > +
-> > +			partition@80000 {
-> > +				label =3D "env0";
-> > +				reg =3D <0x80000 0x10000>;
-> > +			};
-> > +
-> > +			partition@90000 {
-> > +				label =3D "env1";
-> > +				reg =3D <0x90000 0x10000>;
-> > +			};
-> > +
-> > +			partition@100000 {
-> > +				label =3D "kernel";
-> > +				reg =3D <0x100000 0x400000>;
-> > +			};
-> > +
-> > +			partition@500000 {
-> > +				label =3D "swupdate";
-> > +				reg =3D <0x500000 0x800000>;
-> > +			};
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&ssp2 {
-> > +	compatible =3D "fsl,imx28-spi";
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&spi2_pins_a>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&ssp0 {
-> > +	compatible =3D "fsl,imx28-mmc";
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&mmc0_8bit_pins_a>;
-> > +	bus-width =3D <8>;
-> > +	vmmc-supply =3D <&reg_3v3>;
-> > +	non-removable;
-> > +	status =3D "okay";
-> > +}; =20
->=20
-> The order should be like:
->=20
-> &ssp0
-> &ssp2
-> &ssp3
-
-Ok
-
->=20
-> > +
-> > +&usb0 {
-> > +	vbus-supply =3D <&reg_usb_5v>;
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&usb0_pins_b>, <&usb0_id_pins_a>;
-> > +	dr_mode =3D "host";
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&usbphy0 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&usb1 {
-> > +	vbus-supply =3D <&reg_usb_5v>;
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&usb1_pins_b>;
-> > +	dr_mode =3D "host";
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&usbphy1 {
-> > +	status =3D "okay";
-> > +};
-> > diff --git a/arch/arm/boot/dts/imx28-xea.dts
-> > b/arch/arm/boot/dts/imx28-xea.dts new file mode 100644
-> > index 000000000000..a400c108f66a
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/imx28-xea.dts
-> > @@ -0,0 +1,99 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> > +/*
-> > + * Copyright 2021
-> > + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
-> > + */
-> > +
-> > +/dts-v1/;
-> > +#include "imx28-lwe.dtsi"
-> > +
-> > +/ {
-> > +	compatible =3D "lwn,imx28-xea", "fsl,imx28"; =20
->=20
-> Compatible needs to be documented.
->=20
-> > +};
-> > +
-> > +&can0 {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&can1_pins_a>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&i2c1 {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&i2c1_pins_b>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&pinctrl {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&hog_pins_a &hog_pins_tiva>;
-> > +
-> > +	hog_pins_a: hog@0 {
-> > +		reg =3D <0>;
-> > +		fsl,pinmux-ids =3D <
-> > +			MX28_PAD_GPMI_D00__GPIO_0_0
-> > +			MX28_PAD_GPMI_D02__GPIO_0_2
-> > +			MX28_PAD_GPMI_D05__GPIO_0_5
-> > +			MX28_PAD_GPMI_CE1N__GPIO_0_17
-> > +			MX28_PAD_GPMI_RDY0__GPIO_0_20
-> > +			MX28_PAD_GPMI_RDY1__GPIO_0_21
-> > +			MX28_PAD_GPMI_RDY2__GPIO_0_22
-> > +			MX28_PAD_GPMI_RDN__GPIO_0_24
-> > +			MX28_PAD_GPMI_CLE__GPIO_0_27
-> > +			MX28_PAD_LCD_VSYNC__GPIO_1_28
-> > +			MX28_PAD_SSP1_SCK__GPIO_2_12
-> > +			MX28_PAD_SSP1_CMD__GPIO_2_13
-> > +			MX28_PAD_SSP2_SS1__GPIO_2_20
-> > +			MX28_PAD_SSP2_SS2__GPIO_2_21
-> > +			MX28_PAD_LCD_D00__GPIO_1_0
-> > +			MX28_PAD_LCD_D01__GPIO_1_1
-> > +			MX28_PAD_LCD_D02__GPIO_1_2
-> > +			MX28_PAD_LCD_D03__GPIO_1_3
-> > +			MX28_PAD_LCD_D04__GPIO_1_4
-> > +			MX28_PAD_LCD_D05__GPIO_1_5
-> > +			MX28_PAD_LCD_D06__GPIO_1_6
-> > +		>;
-> > +		fsl,drive-strength =3D <MXS_DRIVE_4mA>;
-> > +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
-> > +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
-> > +	};
-> > +
-> > +	hog_pins_tiva: hog@1 {
-> > +		reg =3D <1>;
-> > +		fsl,pinmux-ids =3D <
-> > +			MX28_PAD_GPMI_RDY3__GPIO_0_23
-> > +			MX28_PAD_GPMI_WRN__GPIO_0_25
-> > +		>;
-> > +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
-> > +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
-> > +	};
-> > +
-> > +	hog_pins_coding: hog@2 {
-> > +		reg =3D <2>;
-> > +		fsl,pinmux-ids =3D <
-> > +			MX28_PAD_GPMI_D01__GPIO_0_1
-> > +			MX28_PAD_GPMI_D03__GPIO_0_3
-> > +			MX28_PAD_GPMI_D04__GPIO_0_4
-> > +			MX28_PAD_GPMI_D06__GPIO_0_6
-> > +			MX28_PAD_GPMI_D07__GPIO_0_7
-> > +		>;
-> > +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
-> > +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
-> > +	};
-> > +};
-> > +
-> > +&reg_fec_3v3 {
-> > +	gpio =3D <&gpio0 0 0>;
-> > +};
-> > +
-> > +&reg_usb_5v {
-> > +	gpio =3D <&gpio0 2 0>;
-> > +};
-> > +
-> > +&spi2_pins_a { =20
->=20
-> Out of order.
-
-As fair as I can tell it is alphabethically ordered.
-
-I need to put this here (in the imx28-xea.dts file) as the spi2 has
-different wiring for other board, which I also plan to upstream.
-
->=20
-> Shawn
->=20
-> > +	fsl,pinmux-ids =3D <
-> > +		MX28_PAD_SSP2_SCK__SSP2_SCK
-> > +		MX28_PAD_SSP2_MOSI__SSP2_CMD
-> > +		MX28_PAD_SSP2_MISO__SSP2_D0
-> > +		MX28_PAD_SSP2_SS0__GPIO_2_19
-> > +	>;
-> > +};
-> > --=20
-> > 2.20.1
-> >  =20
 
 
+On 5/14/21 4:40 PM, Sean Anderson wrote:
+> 
+> 
+> On 5/14/21 4:59 AM, Michal Simek wrote:
+>>
+>>
+>> On 5/11/21 9:12 PM, Sean Anderson wrote:
+>>> This adds generic clocksource and clockevent support for Xilinx
+> LogiCORE IP
+>>> AXI soft timers commonly found on Xilinx FPGAs. This timer is also the
+>>> primary timer for Microblaze processors. This commit also adds
+> support for
+>>> configuring this timer as a PWM (though this could be split off if
+>>> necessary). This whole driver lives in clocksource because it is
+> primarily
+>>> clocksource stuff now (even though it started out as a PWM driver). I
+> think
+>>> teasing apart the driver would not be worth it since they share so many
+>>> functions.
+>>>
+>>> This driver configures timer 0 (which is always present) as a
+> clocksource,
+>>> and timer 1 (which might be missing) as a clockevent. I don't know if
+> this
+>>> is the correct priority for these timers, or whether we should be
+> using a
+>>> more dynamic allocation scheme.
+>>>
+>>> At the moment clock control is very basic: we just enable the clock
+> during
+>>> probe and pin the frequency. In the future, someone could add support
+> for
+>>> disabling the clock when not in use. Cascade mode is also unsupported.
+>>>
+>>> This driver was written with reference to Xilinx DS764 for v1.03.a [1].
+>>>
+>>> [1]
+> https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v1_03_a/axi_timer_ds764.pdf
+> 
+>>>
+>>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+>>> ---
+>>> Please let me know if I should organize this differently or if it should
+>>> be broken up.
+>>>
+>>> Changes in v3:
+>>> - Add clockevent and clocksource support
+>>> - Rewrite probe to only use a device_node, since timers may need to be
+>>>    initialized before we have proper devices. This does bloat the
+> code a bit
+>>>    since we can no longer rely on helpers such as dev_err_probe. We also
+>>>    cannot rely on device resources being free'd on failure, so we
+> must free
+>>>    them manually.
+>>> - We now access registers through xilinx_timer_(read|write). This
+> allows us
+>>>    to deal with endianness issues, as originally seen in the microblaze
+>>>    driver. CAVEAT EMPTOR: I have not tested this on big-endian!
+>>> - Remove old microblaze driver
+>>>
+>>> Changes in v2:
+>>> - Don't compile this module by default for arm64
+>>> - Add dependencies on COMMON_CLK and HAS_IOMEM
+>>> - Add comment explaining why we depend on !MICROBLAZE
+>>> - Add comment describing device
+>>> - Rename TCSR_(SET|CLEAR) to TCSR_RUN_(SET|CLEAR)
+>>> - Use NSEC_TO_SEC instead of defining our own
+>>> - Use TCSR_RUN_MASK to check if the PWM is enabled, as suggested by Uwe
+>>> - Cast dividends to u64 to avoid overflow
+>>> - Check for over- and underflow when calculating TLR
+>>> - Set xilinx_pwm_ops.owner
+>>> - Don't set pwmchip.base to -1
+>>> - Check range of xlnx,count-width
+>>> - Ensure the clock is always running when the pwm is registered
+>>> - Remove debugfs file :l
+>>> - Report errors with dev_error_probe
+>>>
+>>>   arch/microblaze/kernel/Makefile    |   2 +-
+>>>   arch/microblaze/kernel/timer.c     | 326 ---------------
+>>>   drivers/clocksource/Kconfig        |  15 +
+>>>   drivers/clocksource/Makefile       |   1 +
+>>>   drivers/clocksource/timer-xilinx.c | 650 +++++++++++++++++++++++++++++
+>>>   5 files changed, 667 insertions(+), 327 deletions(-)
+>>>   delete mode 100644 arch/microblaze/kernel/timer.c
+>>>   create mode 100644 drivers/clocksource/timer-xilinx.c
+>>
+>> I don't think this is the right way to go.
+>> The first patch should be move current timer driver from microblaze to
+>> generic location and then apply patches on the top based on what you are
+>> adding/fixing to be able to review every change separately.
+>> When any issue happens it can be bisected and exact patch is identified.
+>> With this way we will end up in this patch and it will take a lot of
+>> time to find where that problem is.
+> 
+> What parts would you like to see split? Fundamentally, this current
+> patch is a reimplementation of the driver. I think the only reasonable
+> split would be to add PWM support in a separate patch.
+> 
+> I do not think that genericizing the microblaze timer driver is an
+> integral part of adding PWM support. This is especially since you seem
+> opposed to using existing devicetree properties to inform the driver. I
+> am inclined to just add a patch adding a check for '#-pwm-cells' to the
+> existing driver and otherwise leave it untouched.
 
-Best regards,
+As I said I think the patches should be like this.
+1. Cover existing DT binding based on current code.
+2. Move time out of arch/microblaze to drivers/clocksource/ and even
+enable it via Kconfig just for Microblaze.
+3. Remove dependency on Microblaze and enable build for others. I have
+seen at least one cpuinfo.cpu_clock_freq assignment. This code can be
+likely completely removed or deprecate.
+4. Make driver as module
+5. Do whatever changes you want before adding pwm support
+6. Extend DT binding doc for PWM support
+7. Add PWM support
 
-Lukasz Majewski
+I expect you know that some time ago we have also added support for
+Microblaze SMP and this code has never been sent upstream. You should
+just be aware about it.
+https://github.com/Xilinx/linux-xlnx/blob/master/arch/microblaze/kernel/timer.c
 
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/pqViHQNJP4pms0nw.KJFIvk
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmCiIP0ACgkQAR8vZIA0
-zr2/bwf/eG7aBbjCqGzEYF33xGuQKpoGq6PqHDjJGnu5ImwzW4dSbAf8AIzbqmct
-EeKyjd2oJBea3oEP5OV5WewB+/M0LnYjGVo4K26BqhMRoXdn9AqJHnE+zL4Mf5ns
-eSagg72kotrJZNHLmHY/HOFo4XYl3dwHGpQ+SJqtc+o67qZtER29MxDzLMLDpdv3
-JHWNGAyHgvINjcAU+aNHqoxw8+YDdlm/yC4JQsz4okCqH55JMXDh/Y8HBks5fzel
-lyZ4LZFRodOockOQy++Bo0wNQC84smqLYHz1FTmEpxJEYpbtIugj53OlYpJnFuxa
-fk71ybArPvhHDzS7gbObrlTPD1Vn0Q==
-=miD2
------END PGP SIGNATURE-----
-
---Sig_/pqViHQNJP4pms0nw.KJFIvk--
+Thanks,
+Michal
