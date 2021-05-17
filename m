@@ -2,247 +2,1130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C060383973
+	by mail.lfdr.de (Postfix) with ESMTP id 758F5383974
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238995AbhEQQQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:16:53 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:51166 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344974AbhEQQAO (ORCPT
+        id S241010AbhEQQRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:17:01 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:38855 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244036AbhEQQBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:00:14 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14HFn2Nf149176;
-        Mon, 17 May 2021 15:57:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=46zegLTyORjCsXmwBaOGpVU+tbqb7CJ5loKuJs3uNxI=;
- b=LoOhFOOChJ1O0mbu+1ddqtqACKixTcROK0cYkmViFNP/xYon6ykXEhyvQ12VKxKIL2Qu
- yHkBvo4uUh3AkjEUaQpOKkSfUh2TAA+EOu272cKjBgUM/x/7J+iBXGgTMadpxd1Ww9dA
- h5C26sZ8QI3q6Pp2GP0SGK5b72P0/LTYoB1M3PM3/KpcRrtATcgyJql6QoTJok4Y1PqB
- 6z2FwKwqv43Gq6Hewj2+t18bw/d82aLsgkUru6ZoOtXxcms0HKlOo/FZ5wIoNYEFG1Pq
- qKrZU1Zhdxc9qVaCI9RFeTj3QVupbqwmyGM9TC3nuG99Nn7aDnp1Ke10ofdZAlQNFqb9 hQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 38j5qr3q5b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 15:57:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14HFjnoo066746;
-        Mon, 17 May 2021 15:57:47 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38j645y8j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 15:57:47 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14HFt3QU150609;
-        Mon, 17 May 2021 15:57:47 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 38j645y8gf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 15:57:46 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14HFvfJx029187;
-        Mon, 17 May 2021 15:57:41 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 May 2021 08:57:40 -0700
-Date:   Mon, 17 May 2021 18:57:33 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] staging: rtl8188eu: use safe iterator in
- rtw_free_network_queue
-Message-ID: <20210517155733.GK1955@kadam>
-References: <20210516160613.30489-1-martin@kaiser.cx>
+        Mon, 17 May 2021 12:01:42 -0400
+Received: by mail-io1-f70.google.com with SMTP id i13-20020a5e9e0d0000b029042f7925649eso3731062ioq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 09:00:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HO4zHcF8xb4JZ4yQh0Gr77M93NwiZbQGWT7Q4a8ctyY=;
+        b=IUTXFvv9wjn+sB+cgIA7kyTZgGTZcEIR+pTUZ4a2ItIhF2MCMEriSFRBQJQZLYTIbJ
+         ZGH4FLMkZQJC5ZOedYcWB4yu3XWwhaTM/qLomV5DBQTgs30zmhmUkASGRW6fLsI7U81g
+         aWLr4gPEhc6epJnwzDC7NT0Rw0obkKQmrnbJqZt4nzBjKLhOFRQXqJGkd7JZxT2SZb4i
+         IZslNztdgUU/Z9RIa5gDZHNN7cGjf7Q6klZ+XIfVQwOZ9ka53FNy0ij/ULM/tScOzKkm
+         562sy49MPAasepVqc5+ekwnImtTXAwqR7w9IRj+1Ae19U+372sYuOI2AJofMwgF+6pMB
+         OZGg==
+X-Gm-Message-State: AOAM530HI1mItaajqfwT35T/n+6k6bT7NL7SYPcd4l+ooXloa3ZZAe+y
+        jvlSqK4qHwy/+Lj9BfnGYr6gu663Al7ikmsJh1u3PgtJP5ds
+X-Google-Smtp-Source: ABdhPJziJGbmMoZ0f0HVv7bXDP3P0weHXJGZ46CJy2meyEs+mo60n8I9Q/lbXqSiyc9rkhI1ljn4wWibOd2sgZYoBiVZRR1gH43x
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210516160613.30489-1-martin@kaiser.cx>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: HW1ESqbzC4QZTidz2X09wEVQvnux-4f8
-X-Proofpoint-ORIG-GUID: HW1ESqbzC4QZTidz2X09wEVQvnux-4f8
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9987 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
- mlxscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105170109
+X-Received: by 2002:a6b:c981:: with SMTP id z123mr582910iof.6.1621267225550;
+ Mon, 17 May 2021 09:00:25 -0700 (PDT)
+Date:   Mon, 17 May 2021 09:00:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000010a43c05c288b153@google.com>
+Subject: [syzbot] KMSAN: uninit-value in sctp_inq_pop
+From:   syzbot <syzbot+0beedf55972341845fa1@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+        marcelo.leitner@gmail.com, netdev@vger.kernel.org,
+        nhorman@tuxdriver.com, syzkaller-bugs@googlegroups.com,
+        vyasevich@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for catching these...  I've created a new Smatch static checker
-warning for this but it only works for list_for_each_entry().
-Eventually someone would have run the coccinelle script to convert these
-list_for_each loops into list_for_each_entry().  Otherwise you have to
-parse container_of() and I've been meaning to do that for a while but I
-haven't yet.
+Hello,
 
-Anyway, I'm going to test it out overnight and see what it finds.  It's
-sort a new use for the modification_hook(), before I had only ever used
-it to silence warnings but this check uses it to trigger warnings.  So
-perhaps it will generate a lot of false positives.  We'll see.
+syzbot found the following issue on:
 
-It sets the state of the iterator to &start at the start of the loop
-and if it's not &start state at the end then it prints a warning.
+HEAD commit:    bdefec9a minor fix
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=154a6123d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4e6842a91012889c
+dashboard link: https://syzkaller.appspot.com/bug?extid=0beedf55972341845fa1
+compiler:       Debian clang version 11.0.1-2
+userspace arch: i386
 
-regards,
-dan carpenter
+Unfortunately, I don't have any reproducer for this issue yet.
 
-/*
- * Copyright (C) 2021 Oracle.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see http://www.gnu.org/copyleft/gpl.txt
- */
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0beedf55972341845fa1@syzkaller.appspotmail.com
 
-#include "smatch.h"
-#include "smatch_extra.h"
+=====================================================
+BUG: KMSAN: uninit-value in sctp_inq_pop+0x15cb/0x1970 net/sctp/inqueue.c:205
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G        W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_inq_pop+0x15cb/0x1970 net/sctp/inqueue.c:205
+ sctp_assoc_bh_rcv+0x207/0xe10 net/sctp/associola.c:994
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-static int my_id;
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ __msan_chain_origin+0x54/0xa0 mm/kmsan/kmsan_instr.c:147
+ sctp_inq_pop+0x155b/0x1970 net/sctp/inqueue.c:201
+ sctp_assoc_bh_rcv+0x207/0xe10 net/sctp/associola.c:994
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
 
-STATE(start);
-STATE(watch);
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_inq_pop+0x1622/0x1970 net/sctp/inqueue.c:208
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_inq_pop+0x1622/0x1970 net/sctp/inqueue.c:208
+ sctp_assoc_bh_rcv+0x207/0xe10 net/sctp/associola.c:994
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-static struct statement *iterator_stmt, *pre_stmt, *post_stmt;
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ __msan_chain_origin+0x54/0xa0 mm/kmsan/kmsan_instr.c:147
+ sctp_inq_pop+0x155b/0x1970 net/sctp/inqueue.c:201
+ sctp_assoc_bh_rcv+0x207/0xe10 net/sctp/associola.c:994
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
 
-static void set_watch(struct sm_state *sm, struct expression *mod_expr)
-{
-	set_state(my_id, sm->name, sm->sym, &watch);
-}
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_assoc_bh_rcv+0x425/0xe10 net/sctp/associola.c:1001
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_assoc_bh_rcv+0x425/0xe10 net/sctp/associola.c:1001
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-static bool is_list_macro(const char *macro)
-{
-	if (strcmp(macro, "list_for_each_entry") == 0)
-		return true;
-	return false;
-}
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_assoc_bh_rcv+0x94d/0xe10 net/sctp/associola.c:1035
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_assoc_bh_rcv+0x94d/0xe10 net/sctp/associola.c:1035
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-static void match_iterator_statement(struct statement *stmt)
-{
-	const char *macro;
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_chunk_event_lookup net/sctp/sm_statetable.c:976 [inline]
+BUG: KMSAN: uninit-value in sctp_sm_lookup_event+0x5b0/0x740 net/sctp/sm_statetable.c:73
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_chunk_event_lookup net/sctp/sm_statetable.c:976 [inline]
+ sctp_sm_lookup_event+0x5b0/0x740 net/sctp/sm_statetable.c:73
+ sctp_do_sm+0x191/0xa160 net/sctp/sm_sideeffect.c:1148
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-	if (stmt->type != STMT_ITERATOR ||
-	    !stmt->iterator_pre_statement ||
-	    !stmt->iterator_post_statement)
-		return;
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_do_sm+0x9808/0xa160 net/sctp/sm_sideeffect.c:1153
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_do_sm+0x9808/0xa160 net/sctp/sm_sideeffect.c:1153
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-	macro = get_macro_name(stmt->pos);
-	if (!macro)
-		return;
-	if (!is_list_macro(macro))
-		return;
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_sf_eat_data_6_2+0x80a/0x12e0 net/sctp/sm_statefuns.c:3101
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_sf_eat_data_6_2+0x80a/0x12e0 net/sctp/sm_statefuns.c:3101
+ sctp_do_sm+0x29a/0xa160 net/sctp/sm_sideeffect.c:1153
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-	iterator_stmt = stmt;
-	pre_stmt = stmt->iterator_pre_statement;
-	post_stmt = stmt->iterator_post_statement;
-}
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_sf_abort_violation+0x484/0x16a0 net/sctp/sm_statefuns.c:4624
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_sf_abort_violation+0x484/0x16a0 net/sctp/sm_statefuns.c:4624
+ sctp_sf_eat_data_6_2+0x36c/0x12e0 net/sctp/sm_statefuns.c:4717
+ sctp_do_sm+0x29a/0xa160 net/sctp/sm_sideeffect.c:1153
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-static bool stmt_matches(struct expression *expr, struct statement *stmt)
-{
-	struct expression *tmp;
-	struct statement *parent;
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in sctp_ulpevent_make_assoc_change+0x96a/0xff0 net/sctp/ulpevent.c:126
+CPU: 0 PID: 4692 Comm: systemd-udevd Tainted: G    B   W         5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ sctp_ulpevent_make_assoc_change+0x96a/0xff0 net/sctp/ulpevent.c:126
+ sctp_cmd_assoc_failed net/sctp/sm_sideeffect.c:625 [inline]
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1608 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x374f/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x22f/0x280 kernel/softirq.c:422
+ irq_exit_rcu+0xe/0x10 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0xc6/0xf0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:650
+RIP: 0010:kmsan_get_shadow_origin_ptr+0x6/0xb0 mm/kmsan/kmsan_shadow.c:133
+Code: 0f 00 75 10 48 8b 45 b8 c6 80 3c 1a 00 00 01 e9 63 fe ff ff 48 c7 c7 7f 3a 7a 90 31 c0 e8 eb e5 25 ff cc cc 55 48 89 e5 41 57 <41> 56 53 41 89 d7 48 89 f3 49 89 fe 48 81 fe 01 10 00 00 73 6e 80
+RSP: 0018:ffff8881174eb498 EFLAGS: 00000246
+RAX: ffff88811777c628 RBX: 0000000000000000 RCX: 00000001170eb740
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811777c618
+RBP: ffff8881174eb4a0 R08: ffffea000000000f R09: ffff88813fffa000
+R10: 0000000000000002 R11: ffff8881117eddc0 R12: ffff88811777c618
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8881174eb740
+ __msan_metadata_ptr_for_load_8+0x10/0x20 mm/kmsan/kmsan_instr.c:55
+ tomoyo_path_matches_pattern+0x88/0x4d0 security/tomoyo/util.c:941
+ tomoyo_compare_name_union security/tomoyo/file.c:87 [inline]
+ tomoyo_check_path_acl+0x272/0x360 security/tomoyo/file.c:260
+ tomoyo_check_acl+0x249/0x5d0 security/tomoyo/domain.c:175
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_check_open_permission+0x61f/0xdf0 security/tomoyo/file.c:777
+ tomoyo_file_open+0x24c/0x2d0 security/tomoyo/tomoyo.c:313
+ security_file_open+0xb1/0x1f0 security/security.c:1589
+ do_dentry_open+0x4d5/0x1b50 fs/open.c:813
+ vfs_open+0xaf/0xe0 fs/open.c:940
+ do_open fs/namei.c:3365 [inline]
+ path_openat+0x5731/0x6be0 fs/namei.c:3498
+ do_filp_open+0x2b8/0x710 fs/namei.c:3525
+ do_sys_openat2+0x25f/0x830 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open+0x271/0x2d0 fs/open.c:1207
+ __x64_sys_open+0x4a/0x70 fs/open.c:1207
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fbf5e7ec9b1
+Code: f7 d8 bf ff ff ff ff 64 89 02 eb cb 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 80 3f 00 74 1b be 00 08 09 00 b8 02 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1f 89 c7 e9 00 ff ff ff 48 8b 05 b1 54 2e 00
+RSP: 002b:00007ffeaa699a98 EFLAGS: 00000202 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563f833af280 RCX: 00007fbf5e7ec9b1
+RDX: 00000000000000fe RSI: 0000000000090800 RDI: 0000563f83376370
+RBP: 00007fbf5f9a2710 R08: 0000563f83392900 R09: 0000000000001010
+R10: 0000000000000030 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000563f83376370 R14: 00000000000000fe R15: 0000563f83376370
 
-	if (!stmt)
-		return false;
-	while ((tmp = expr_get_parent_expr(expr)))
-		expr = tmp;
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ sctp_packet_pack net/sctp/output.c:442 [inline]
+ sctp_packet_transmit+0x17ac/0x44c0 net/sctp/output.c:588
+ sctp_outq_flush_transports net/sctp/outqueue.c:1154 [inline]
+ sctp_outq_flush+0x1e56/0x6510 net/sctp/outqueue.c:1202
+ sctp_outq_uncork+0x105/0x120 net/sctp/outqueue.c:758
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x9a18/0xa160 net/sctp/sm_sideeffect.c:1156
+ sctp_assoc_bh_rcv+0xa3f/0xe10 net/sctp/associola.c:1048
+ sctp_inq_push+0x31c/0x440 net/sctp/inqueue.c:80
+ sctp_rcv+0x562f/0x60d0 net/sctp/input.c:256
+ sctp6_rcv+0x64/0xd0 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x1402/0x25f0 net/ipv6/ip6_input.c:422
+ ip6_input_finish net/ipv6/ip6_input.c:463 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip6_input+0x12b/0x390 net/ipv6/ip6_input.c:472
+ dst_input include/net/dst.h:458 [inline]
+ ip6_rcv_finish+0x5fc/0x7f0 net/ipv6/ip6_input.c:76
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x1d1/0x460 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core net/core/dev.c:5384 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5498
+ process_backlog+0x517/0xbd0 net/core/dev.c:6365
+ __napi_poll+0x13e/0xca0 net/core/dev.c:6912
+ napi_poll net/core/dev.c:6979 [inline]
+ net_rx_action+0x726/0x14a0 net/core/dev.c:7065
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+=====================================================
 
-	parent = expr_get_parent_stmt(expr);
-	return parent == stmt;
-}
 
-static char *get_iterator_member(void)
-{
-	struct expression *expr;
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-	if (!iterator_stmt ||
-	    !iterator_stmt->iterator_pre_condition)
-		return NULL;
-
-	expr = iterator_stmt->iterator_pre_condition;
-	if (expr->type != EXPR_PREOP || expr->op != '!')
-		return NULL;
-	expr = strip_parens(expr->unop);
-	if (expr->type != EXPR_COMPARE)
-		return NULL;
-	expr = strip_parens(expr->left);
-	if (expr->type != EXPR_PREOP || expr->op != '&')
-		return NULL;
-	expr = strip_expr(expr->unop);
-	if (expr->type != EXPR_DEREF || !expr->member)
-		return NULL;
-	return expr->member->name;
-}
-
-static void match_pre_statement(struct expression *expr)
-{
-	char *name, *member;
-	struct symbol *sym;
-	char buf[64];
-
-	if (!stmt_matches(expr, pre_stmt))
-		return;
-
-	name = expr_to_var_sym(expr->left, &sym);
-	if (!name)
-		return;
-	member = get_iterator_member();
-
-	snprintf(buf, sizeof(buf), "%s->%s.next", name, member);
-	set_state(my_id, buf, sym, &start);
-}
-
-static void match_post_statement(struct expression *expr)
-{
-	struct smatch_state *state;
-	char *name, *member;
-	struct symbol *sym;
-	char buf[64];
-
-	if (!stmt_matches(expr, post_stmt))
-		return;
-
-	name = expr_to_var_sym(expr->left, &sym);
-	if (!name)
-		return;
-	member = get_iterator_member();
-
-	snprintf(buf, sizeof(buf), "%s->%s.next", name, member);
-	state = get_state(my_id, buf, sym);
-	if (!state || state == &start)
-		return;
-
-	sm_warning("iterator '%s' changed during iteration", buf);
-}
-
-void check_list_set_inside(int id)
-{
-	my_id = id;
-
-	if (option_project != PROJ_KERNEL)
-		return;
-
-	add_hook(match_iterator_statement, STMT_HOOK);
-	add_hook(match_pre_statement, ASSIGNMENT_HOOK);
-	add_hook(match_post_statement, ASSIGNMENT_HOOK);
-
-	add_modification_hook(my_id, &set_watch);
-}
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
