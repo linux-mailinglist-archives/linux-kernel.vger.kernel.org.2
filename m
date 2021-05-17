@@ -2,78 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0089382D41
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAAA382D4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235888AbhEQNVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:21:32 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42174 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235627AbhEQNVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:21:31 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Cx6cmAbaJg5GwYAA--.37607S2;
-        Mon, 17 May 2021 21:20:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Heiko Stuebner <heiko@sntech.de>, kbuild@lists.01.org
-Subject: [PATCH] phy: phy-mtk-tphy: Fix some resource leaks in mtk_phy_init()
-Date:   Mon, 17 May 2021 21:20:00 +0800
-Message-Id: <1621257600-15046-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Cx6cmAbaJg5GwYAA--.37607S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr43Kw1fZF1kKw4UuF1rJFb_yoWfurc_uF
-        1vgwnxWan8WF1akw1UKr1xZFyI93W0qFykGrySy3yFkryjgw1Y9rsFvFZ3uF4DCan3CF13
-        J3s09ana9r4xAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsxYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Cr0_Gr1UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xK
-        xwCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
-        jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x07j5_-9UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S236088AbhEQNWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:22:40 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39770 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234106AbhEQNWj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 09:22:39 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14HDLBiG069884;
+        Mon, 17 May 2021 08:21:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621257671;
+        bh=aKJhphHTIRz/4OvbHwmcRnGbnQph6vycfFRpDRJ4ZTQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Y6ONEvtWW8yJl7ikIF/WZmnNX6D/zs73ktDaaR8tx00/h0vg0Zsi1fUVKGuj9HjI0
+         cMkr3f0Pg/Tcec5nXy3Bp49FoG+Ot27PCx1eYip+3yLNv5oJjZbkZ/TjY+bWuhfQro
+         SjUzh82+jcCDvBEGZ58DGAssywV4wV2mF7ROEKII=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14HDLBN1060693
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 17 May 2021 08:21:11 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 17
+ May 2021 08:21:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 17 May 2021 08:21:10 -0500
+Received: from [10.250.232.247] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14HDL6G1130696;
+        Mon, 17 May 2021 08:21:07 -0500
+Subject: Re: [PATCH 0/6] PCI: Add legacy interrupt support in Keystone
+To:     Christian Gmeiner <christian.gmeiner@gmail.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+References: <20210325090026.8843-1-kishon@ti.com>
+ <CAH9NwWeOysq9yLheFAXgX0c7bOZAAX7ZuQHXM9Rmb1an_Z5ZYg@mail.gmail.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <692ce108-c85f-7aa6-8e9e-987d54703e93@ti.com>
+Date:   Mon, 17 May 2021 18:51:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAH9NwWeOysq9yLheFAXgX0c7bOZAAX7ZuQHXM9Rmb1an_Z5ZYg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use clk_disable_unprepare() in the error path of mtk_phy_init() to fix
-some resource leaks.
+Hi Christian,
 
-Fixes: cd4ec4b03dc1 ("phy: phy-mt65xx-usb3: add mediatek directory and rename file")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- drivers/phy/mediatek/phy-mtk-tphy.c | 2 ++
- 1 file changed, 2 insertions(+)
+On 17/05/21 6:45 pm, Christian Gmeiner wrote:
+> Hi
+> 
+> Am Do., 25. März 2021 um 10:04 Uhr schrieb Kishon Vijay Abraham I
+> <kishon@ti.com>:
+>>
+>> Keystone driver is used by K2G and AM65 and the interrupt handling of
+>> both of them is different. Add support to handle legacy interrupt for
+>> both K2G and AM65 here.
+>>
+>> Some discussions regarding this was already done here [1] and it was
+>> around having pulse interrupt for legacy interrupt.
+>>
+>> The HW interrupt line connected to GIC is a pulse interrupt whereas
+>> the legacy interrupts by definition is level interrupt. In order to
+>> provide level interrupt functionality to edge interrupt line, PCIe
+>> in AM654 has provided IRQ_EOI register. When the SW writes to IRQ_EOI
+>> register after handling the interrupt, the IP checks the state of
+>> legacy interrupt and re-triggers pulse interrupt invoking the handler
+>> again.
+>>
+>> Patch series also includes converting AM65 binding to YAML and an
+>> errata applicable for i2037.
+>>
+>> [1] -> https://lore.kernel.org/linux-arm-kernel/20190221101518.22604-4-kishon@ti.com/
+>>
+>> Kishon Vijay Abraham I (6):
+>>   dt-bindings: PCI: ti,am65: Add PCIe host mode dt-bindings for TI's
+>>     AM65 SoC
+>>   dt-bindings: PCI: ti,am65: Add PCIe endpoint mode dt-bindings for TI's
+>>     AM65 SoC
+>>   irqdomain: Export of_phandle_args_to_fwspec()
+>>   PCI: keystone: Convert to using hierarchy domain for legacy interrupts
+>>   PCI: keystone: Add PCI legacy interrupt support for AM654
+>>   PCI: keystone: Add workaround for Errata #i2037 (AM65x SR 1.0)
+>>
+>>  .../bindings/pci/ti,am65-pci-ep.yaml          |  80 ++++
+>>  .../bindings/pci/ti,am65-pci-host.yaml        | 111 ++++++
+>>  drivers/pci/controller/dwc/pci-keystone.c     | 343 +++++++++++++-----
+>>  include/linux/irqdomain.h                     |   2 +
+>>  kernel/irq/irqdomain.c                        |   6 +-
+>>  5 files changed, 440 insertions(+), 102 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
+>>  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+>>
+>> --
+>> 2.17.1
+>>
+> 
+> Is there somewhere an updated version of this patch series?
 
-diff --git a/drivers/phy/mediatek/phy-mtk-tphy.c b/drivers/phy/mediatek/phy-mtk-tphy.c
-index cdbcc49..731c483 100644
---- a/drivers/phy/mediatek/phy-mtk-tphy.c
-+++ b/drivers/phy/mediatek/phy-mtk-tphy.c
-@@ -949,6 +949,8 @@ static int mtk_phy_init(struct phy *phy)
- 		break;
- 	default:
- 		dev_err(tphy->dev, "incompatible PHY type\n");
-+		clk_disable_unprepare(instance->ref_clk);
-+		clk_disable_unprepare(instance->da_ref_clk);
- 		return -EINVAL;
- 	}
- 
--- 
-2.1.0
+I haven't posted an updated version yet. My plan was to re-work and post
+it by early June.
 
+Thanks
+Kishon
