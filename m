@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B0B383B98
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B16383B96
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240018AbhEQRu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 13:50:27 -0400
-Received: from ms.lwn.net ([45.79.88.28]:48018 "EHLO ms.lwn.net"
+        id S239398AbhEQRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 13:50:12 -0400
+Received: from mga18.intel.com ([134.134.136.126]:39399 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235250AbhEQRu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 13:50:26 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 3614F2E7;
-        Mon, 17 May 2021 17:49:09 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3614F2E7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1621273749; bh=iWmm4hnq2CtqA3pXgnL0gun99p0HjfnwoUQ5bnL5xUw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Dh6l9slO5Rjlx2Alqras6Ho1QBga++8vMcOzhoQq+BQYowEF3ttjETzhETTjfdVmQ
-         z0UxwlG29pu7+czVO5o40Airn26gLaKCDwcCOfHtUMPh75ZoQ30WvmKu8xB1X064tf
-         MGTqEPO4GK0YVwV7Ril2VTX3kyaVRFgPD0wVVKMIbYSNnuGGFLEMpskVswlDQ0EhfX
-         DW2E6tbY2VfINtDO4FIjpYs500ukh0XkVb4NXfcmHrLe9NjgkclljQuDiVfc2Cnekk
-         eOiuU3zgf7sN8CqdSD9gEgURb6Q1V2Xr2PkaW6KFhhWuzu+cT9XePDAPhwrnNVMXsX
-         X/2KK8OeVnODQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com, willy@infradead.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v4] scripts: kernel-doc: reduce repeated regex expressions
- into variables
-In-Reply-To: <20210514144244.25341-1-yashsri421@gmail.com>
-References: <87bl9ujy2r.fsf@meer.lwn.net>
- <20210514144244.25341-1-yashsri421@gmail.com>
-Date:   Mon, 17 May 2021 11:49:08 -0600
-Message-ID: <878s4d45ez.fsf@meer.lwn.net>
+        id S235250AbhEQRuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 13:50:11 -0400
+IronPort-SDR: VE1uIgloMkvg5r/JiHXokcdt/KJHsom+6ghXeIGBVcz38NWrLEX/r0Ksc/TBv4Q1kFRXb/Tekm
+ vMjE0Y2dD8ow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="187929921"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="187929921"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 10:48:54 -0700
+IronPort-SDR: wEQZSJljAWnaZNKGdHmhbtk7Taf0Nysh5hkq1nA53VQhEypDjein5JPQ94FeLwLCylEVStXva+
+ uKs2WK5jtZJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="432739813"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 17 May 2021 10:48:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2ED2E12F; Mon, 17 May 2021 20:49:14 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+Subject: [PATCH v1 1/1] watchdog: sp805: Fix kernel doc description
+Date:   Mon, 17 May 2021 20:49:12 +0300
+Message-Id: <20210517174912.26419-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aditya Srivastava <yashsri421@gmail.com> writes:
+Kernel doc validation script is not happy
 
-> There are some regex expressions in the kernel-doc script, which are used
-> repeatedly in the script.
->
-> Reduce such expressions into variables, which can be used everywhere.
->
-> A quick manual check found that no errors and warnings were added/removed
-> in this process.
->
-> Suggested-by: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> Changes in v4:
-> - Fix htmldocs warning at function parsing, involving repeated $type2 identifiers capture
-> - Re-tested against all files in kernel tree
+  CHECK   .../sp805_wdt.c
+  .../sp805_wdt.c:73: warning: Function parameter or member 'rate' not described in 'sp805_wdt'
 
-Applied, thanks for stickint with this.
+Fix this by describing rate parameter.
 
-jon
+While at it, mark clk one optional.
+
+Fixes: dc0e4a3bb7dc ("watchdog: sp805: Add clock-frequency property")
+Cc: Srinath Mannam <srinath.mannam@broadcom.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/watchdog/sp805_wdt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/sp805_wdt.c b/drivers/watchdog/sp805_wdt.c
+index 531551216c8c..dbeb2146c968 100644
+--- a/drivers/watchdog/sp805_wdt.c
++++ b/drivers/watchdog/sp805_wdt.c
+@@ -57,7 +57,8 @@
+  * @wdd: instance of struct watchdog_device
+  * @lock: spin lock protecting dev structure and io access
+  * @base: base address of wdt
+- * @clk: clock structure of wdt
++ * @clk: (optional) clock structure of wdt
++ * @rate: (optional) clock rate when provided via properties
+  * @adev: amba device structure of wdt
+  * @status: current status of wdt
+  * @load_val: load value to be set for current timeout
+-- 
+2.30.2
+
