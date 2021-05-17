@@ -2,241 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06117383C54
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1472383C56
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237178AbhEQSft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
+        id S237050AbhEQSgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237050AbhEQSfs (ORCPT
+        with ESMTP id S237141AbhEQSgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:35:48 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39707C061573;
-        Mon, 17 May 2021 11:34:31 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id v6so8455940ljj.5;
-        Mon, 17 May 2021 11:34:31 -0700 (PDT)
+        Mon, 17 May 2021 14:36:01 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288E3C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:34:45 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id k5so4166321pjj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:34:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gPQVB2Gxpm829WebDVfYWATfDREweKl2ZF11NUCj36U=;
-        b=r5irQvcboz80jzWteaD0Tgi6/vM06PZ17sWzl0p338iOE+oDhn4I1BHjKBDZRnpkyP
-         e+FJ9NwG0wznJs5obORewSZFRZfDek/2hIgziLEeudXBqN+gGWsdjb5geKww0SBM1J1j
-         wmFsTHtZIicLrXktt8dfFpovNICXUuvX5zlCBVo3Wr4NBKiqxfV6RKwZ2M0h4U3MT9Qd
-         ljTIgwx0gdwJc6/u2FaALwRCaURkZy3vHoE+rBqurjjaD/azZsJPrrXgqF2PZ37myGEY
-         8VEo+Heg1EDMSvGPbRuhSBkSk4pr+IV3uUaYJ89eLsBf86kf2PFrHqJAy8yERHpyPZlC
-         frSQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bzvl/cyI6Vow+Fou3NqkXda8XWse6PpXRNaY31CBjZU=;
+        b=uXaQuk1ku0CrWVjOMU4k4deRZE8OOKuwRLCyNjyg+v7qPW/KrVncQ7ybChG9+D+bx7
+         PuBTTAi3SPDbT3STpXVq1Ubmq0ModxFtsymoP1K/zrzMi4d325lLsC1Erjpmy85wDx7h
+         Sc6CsNX7pW5uQ8vG1iyxGsAKEIlqbVnr3Zhk2xwsHLinIzBNskD214vo3q8T7qDuBNcS
+         aMEQ4E5WVRGoqy0QBPnXCiogGShmcivVjmK+bIxSvecHoPKadjGHKL+OkLgbV4ElIFzi
+         DO+nJ+KnGmC3wX8UjQor3DdvJ4eW2mEFWwPGfwZ5qkp89ng6u1b7kZLVyyUHRVca2/4G
+         I3oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gPQVB2Gxpm829WebDVfYWATfDREweKl2ZF11NUCj36U=;
-        b=EvBrDNPbNoTSj1qVIA759j/Xags0RI3vdfgO2bg4P4Xd5qK0v1mqfaeA1rXLzdYWFw
-         KcVAxddLQusYmHODyOn76RRgYCCzuJCUO7EmjmHweSo+pj7KblQp5GRhq7IiyILMvkWK
-         S8d81g8yubSiTZDkdfBx3xd+1eyHRFlYtFjkeH0KtEfzACHzSwqC7OpbonB0ttyaKMKV
-         G08vVqIQgJ0ujTeLP7z3BDOmdQzzS8Ep230gtQkZ5d9tJIcwhbaXJn0ZIQ2td1aoThiu
-         lJUeDn81Qdbs1R9cRjgFTktMOZfJgnj213Z1mv+j71anDaMNpAoMlzJ4Zw+aL4vuUBtO
-         93yQ==
-X-Gm-Message-State: AOAM530g5X13z6RsaIRYpRHZSC+ea4z76gOqYEUo0q7qLlCBriGZ/+uG
-        1V5j0djSeWVab+HV/a/vOt0=
-X-Google-Smtp-Source: ABdhPJwd3HpNJ6zf+bUM6K7ZqfzWMSfWRqib8AAwTPQ10ZqTPO9prVv3x2gDbl1KUXvn8KRInXCgTQ==
-X-Received: by 2002:a2e:22c4:: with SMTP id i187mr575687lji.465.1621276469689;
-        Mon, 17 May 2021 11:34:29 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.227])
-        by smtp.gmail.com with ESMTPSA id d16sm2040623lfm.202.2021.05.17.11.34.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bzvl/cyI6Vow+Fou3NqkXda8XWse6PpXRNaY31CBjZU=;
+        b=O1LfjkPEyu+C0bbAQyPGlGvo9YXLHJutcgJqwP2XiStZWzgRZ85Dcrirlh+7CBeeBR
+         jYpbcwe2FcWf5FhA21vz+59fZ6NO8lFQfJ1KrYgf9F2ZQ/rFfsz29e5cG1McpC3dGozt
+         HO2Gq7/87G+c90rJhnOYQs5/o1VYHcUl165PPZcJSLCtut1w6cjg0TP+7ip/BAmXAsIF
+         eNfsWYTWKzzqtI8h8fMxnTpf2NPGG4UVa+9+TAGg0ly8+OYh/HjphLuV63nxunuxm6hj
+         B4Q1nD0QePgIkHZyHmCU2/TrPUCGj9YGZkaC7RGcESNS1WbTV7shWiF73t6G0+ia16fN
+         D5cg==
+X-Gm-Message-State: AOAM530AlWjKRAcl/BKj50qZ6fNox715A/868uSMrCdvnEUQESLHDKpY
+        HZu5GwEx2IjfpqZBnif508Z+Qg==
+X-Google-Smtp-Source: ABdhPJzOuuaprPntwecuzo2ZpnXzkx8fj6a6DdNi1LG7EL8cdvGS96KWq0ZX0xTFX/RMOWE+AlgewA==
+X-Received: by 2002:a17:902:dacf:b029:ee:ac0e:d0fe with SMTP id q15-20020a170902dacfb02900eeac0ed0femr1460779plx.30.1621276484513;
+        Mon, 17 May 2021 11:34:44 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h19sm10926752pgm.40.2021.05.17.11.34.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 11:34:29 -0700 (PDT)
-Date:   Mon, 17 May 2021 21:34:27 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] ext4: fix memory leak in ext4_fill_super
-Message-ID: <20210517213427.3ac17247@gmail.com>
-In-Reply-To: <20210517164034.1e7d712b@gmail.com>
-References: <YIt9IFY4Xsf5K+eZ@mit.edu>
-        <20210430185046.15742-1-paskripkin@gmail.com>
-        <20210517164034.1e7d712b@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Mon, 17 May 2021 11:34:43 -0700 (PDT)
+Date:   Mon, 17 May 2021 18:34:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jon Kohler <jon@nutanix.com>, Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Juergen Gross <jgross@suse.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>
+Subject: Re: [PATCH] KVM: x86: add hint to skip hidden rdpkru under
+ kvm_load_host_xsave_state
+Message-ID: <YKK3QLr2OsUdrX5D@google.com>
+References: <20210507164456.1033-1-jon@nutanix.com>
+ <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
+ <5e01d18b-123c-b91f-c7b4-7ec583dd1ec6@redhat.com>
+ <YKKqQZH7bX+7PDjX@google.com>
+ <4e6f7056-6b66-46b9-9eac-922ae1c7b526@www.fastmail.com>
+ <342a8ba9-037e-b841-f9b1-cb62e46c0db8@intel.com>
+ <YKKwSLnkzc77HcnG@google.com>
+ <CALMp9eS80a+Oy6spKT3cG7DCTW6jVwhyBuZ_t0SND=80Lg1XWA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALMp9eS80a+Oy6spKT3cG7DCTW6jVwhyBuZ_t0SND=80Lg1XWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 16:40:34 +0300
-Pavel Skripkin <paskripkin@gmail.com> wrote:
-> Hi!
+On Mon, May 17, 2021, Jim Mattson wrote:
+> On Mon, May 17, 2021 at 11:05 AM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Mon, May 17, 2021, Dave Hansen wrote:
+> > > On 5/17/21 10:49 AM, Andy Lutomirski wrote:
+> > > >> The least awful solution would be to have the NMI handler restore
+> > > >> the host's PKRU.  The NMI handler would need to save/restore the
+> > > >> register, a la CR2, but the whole thing could be optimized to run
+> > > >> if and only if the NMI lands in the window where the guest's PKRU
+> > > >> is loaded.
+> > > >
+> > > > Or set a flag causing nmi_uaccess_ok() to return false.
+> > >
+> > > Oh, that doesn't sound too bad.  The VMENTER/EXIT paths are also
+> > > essentially a context switch.
+> >
+> > I like that idea, too.
+> >
+> > The flag might also be useful to fix the issue where the NMI handler activates
+> > PEBS after KVM disables it.  Jim?
 > 
-> Is all ok with this one, or I should send v3? :)
-> 
+> The issue is actually that the NMI handler *clears* IA32_PEBS_ENABLE
+> bits after giving out the host value of the MSR to KVM. If we were to
+> block the NMI handler from modifying IA32_PEBS_ENABLE until after the
+> next VM-exit, that could solve this issue. I don't know if it makes
+> sense to piggyback on nmi_uaccess(), though.
 
-BTW, this patch fixes this bug as well
-https://syzkaller.appspot.com/bug?id=e2765a883959fd094e6a1c40f3502114fa17c550
+I wasn't thinking about using nmi_uaccess_okay(), but rather whatever flag is
+added so that can KVM can inform the NMI handler that KVM is in the middle of
+its version of a context switch.
 
-
-With regards,
-Pavel Skripkin
-
-> With regards,
-> Pavel Skripkin
-> 
-> On Fri, 30 Apr 2021 21:50:46 +0300
-> Pavel Skripkin <paskripkin@gmail.com> wrote:
-> > static int kthread(void *_create) will return -ENOMEM
-> > or -EINTR in case of internal failure or
-> > kthread_stop() call happens before threadfn call.
-> > 
-> > To prevent fancy error checking and make code
-> > more straightforward we moved all cleanup code out
-> > of kmmpd threadfn.
-> > 
-> > Also, dropped struct mmpd_data at all. Now struct super_block
-> > is a threadfn data and struct buffer_head embedded into
-> > struct ext4_sb_info.
-> > 
-> > Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> > ---
-> >  fs/ext4/ext4.h  |  4 ++++
-> >  fs/ext4/mmp.c   | 28 +++++++++++++---------------
-> >  fs/ext4/super.c | 10 ++++------
-> >  3 files changed, 21 insertions(+), 21 deletions(-)
-> > 
-> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > index 826a56e3bbd2..62210cbea84b 100644
-> > --- a/fs/ext4/ext4.h
-> > +++ b/fs/ext4/ext4.h
-> > @@ -1490,6 +1490,7 @@ struct ext4_sb_info {
-> >  	struct kobject s_kobj;
-> >  	struct completion s_kobj_unregister;
-> >  	struct super_block *s_sb;
-> > +	struct buffer_head *s_mmp_bh;
-> >  
-> >  	/* Journaling */
-> >  	struct journal_s *s_journal;
-> > @@ -3663,6 +3664,9 @@ extern struct ext4_io_end_vec
-> > *ext4_last_io_end_vec(ext4_io_end_t *io_end); /* mmp.c */
-> >  extern int ext4_multi_mount_protect(struct super_block *,
-> > ext4_fsblk_t); 
-> > +/* mmp.c */
-> > +extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
-> > +
-> >  /* verity.c */
-> >  extern const struct fsverity_operations ext4_verityops;
-> >  
-> > diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> > index 795c3ff2907c..623bad399612 100644
-> > --- a/fs/ext4/mmp.c
-> > +++ b/fs/ext4/mmp.c
-> > @@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *sb,
-> > struct mmp_struct *mmp, */
-> >  static int kmmpd(void *data)
-> >  {
-> > -	struct super_block *sb = ((struct mmpd_data *) data)->sb;
-> > -	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
-> > +	struct super_block *sb = (struct super_block *) data;
-> >  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> > +	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
-> >  	struct mmp_struct *mmp;
-> >  	ext4_fsblk_t mmp_block;
-> >  	u32 seq = 0;
-> > @@ -245,12 +245,18 @@ static int kmmpd(void *data)
-> >  	retval = write_mmp_block(sb, bh);
-> >  
-> >  exit_thread:
-> > -	EXT4_SB(sb)->s_mmp_tsk = NULL;
-> > -	kfree(data);
-> > -	brelse(bh);
-> >  	return retval;
-> >  }
-> >  
-> > +void ext4_stop_mmpd(struct ext4_sb_info *sbi)
-> > +{
-> > +	if (sbi->s_mmp_tsk) {
-> > +		kthread_stop(sbi->s_mmp_tsk);
-> > +		brelse(sbi->s_mmp_bh);
-> > +		sbi->s_mmp_tsk = NULL;
-> > +	}
-> > +}
-> > +
-> >  /*
-> >   * Get a random new sequence number but make sure it is not greater
-> > than
-> >   * EXT4_MMP_SEQ_MAX.
-> > @@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct super_block
-> > *sb, struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> >  	struct buffer_head *bh = NULL;
-> >  	struct mmp_struct *mmp = NULL;
-> > -	struct mmpd_data *mmpd_data;
-> >  	u32 seq;
-> >  	unsigned int mmp_check_interval =
-> > le16_to_cpu(es->s_mmp_update_interval); unsigned int wait_time = 0;
-> > @@ -364,24 +369,17 @@ int ext4_multi_mount_protect(struct
-> > super_block *sb, goto failed;
-> >  	}
-> >  
-> > -	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
-> > -	if (!mmpd_data) {
-> > -		ext4_warning(sb, "not enough memory for
-> > mmpd_data");
-> > -		goto failed;
-> > -	}
-> > -	mmpd_data->sb = sb;
-> > -	mmpd_data->bh = bh;
-> > +	EXT4_SB(sb)->s_mmp_bh = bh;
-> >  
-> >  	/*
-> >  	 * Start a kernel thread to update the MMP block
-> > periodically. */
-> > -	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data,
-> > "kmmpd-%.*s",
-> > +	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb,
-> > "kmmpd-%.*s", (int)sizeof(mmp->mmp_bdevname),
-> >  					     bdevname(bh->b_bdev,
-> >  						      mmp->mmp_bdevname));
-> >  	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
-> >  		EXT4_SB(sb)->s_mmp_tsk = NULL;
-> > -		kfree(mmpd_data);
-> >  		ext4_warning(sb, "Unable to create kmmpd thread for
-> > %s.", sb->s_id);
-> >  		goto failed;
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index b9693680463a..539f89c5431f 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -1244,8 +1244,8 @@ static void ext4_put_super(struct super_block
-> > *sb) ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
-> >  	sbi->s_ea_block_cache = NULL;
-> >  
-> > -	if (sbi->s_mmp_tsk)
-> > -		kthread_stop(sbi->s_mmp_tsk);
-> > +	ext4_stop_mmpd(sbi);
-> > +
-> >  	brelse(sbi->s_sbh);
-> >  	sb->s_fs_info = NULL;
-> >  	/*
-> > @@ -5156,8 +5156,7 @@ static int ext4_fill_super(struct super_block
-> > *sb, void *data, int silent) failed_mount3:
-> >  	flush_work(&sbi->s_error_work);
-> >  	del_timer_sync(&sbi->s_err_report);
-> > -	if (sbi->s_mmp_tsk)
-> > -		kthread_stop(sbi->s_mmp_tsk);
-> > +	ext4_stop_mmpd(sbi);
-> >  failed_mount2:
-> >  	rcu_read_lock();
-> >  	group_desc = rcu_dereference(sbi->s_group_desc);
-> > @@ -5952,8 +5951,7 @@ static int ext4_remount(struct super_block
-> > *sb, int *flags, char *data) */
-> >  				ext4_mark_recovery_complete(sb,
-> > es); }
-> > -			if (sbi->s_mmp_tsk)
-> > -				kthread_stop(sbi->s_mmp_tsk);
-> > +			ext4_stop_mmpd(sbi);
-> >  		} else {
-> >  			/* Make sure we can mount this feature set
-> > readwrite */ if (ext4_has_feature_readonly(sb) ||
-> 
+> > > Will widening the window where nmi_uaccess_okay()==false anger any of
+> > > the perf folks?  It looks like perf knows how to handle it nicely.
