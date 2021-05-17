@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB75E382A28
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC780382A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbhEQKuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbhEQKuK (ORCPT
+        id S236493AbhEQKx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:53:58 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:29001 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236381AbhEQKx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:50:10 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0736EC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:48:54 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id i7so5267012ioa.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MfNJDWbvDasEDyltN5nF+mBEbLf5r1gXweNdB3AxYHk=;
-        b=NvC9NVOGb7gcWuttAUiYoW0O7H+RUEhA1kcDUh9HB2e3Rm73BZAoa6AQOMYf1GGJNU
-         HmnIcxv1VygZBq7nKCswt4+3AlrP1PSMbydeJC5dRuzFEfiZNLiv80FtPLNis59O5LJ4
-         j0nY8aHu9MK0ArO0/QF8hCqG78Y5BZ/HrLQypxzLyb7l01Qu9fr42wXQZG8K3kAA0JZe
-         8Ai79cjmSVlZ7M97O7g1NtL06z7tSSAO4JO+AlHU68+DlkS6QKIgmizgU4K5s9tMDQ+4
-         xzUdantEJuVKMMoaBBuv5H+xM/lfI/k0JXvFs5Jqv0mjlw/eodnBPq4CHpEQWki/Cfxr
-         nMbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MfNJDWbvDasEDyltN5nF+mBEbLf5r1gXweNdB3AxYHk=;
-        b=qGK2Fwwgzxf1Df7E17JtV62/zDMfc0y4vdFV08DspW+ihVVtkhXdlouNJdfR2EWyDY
-         bTVMsARNkazDwX1RxWEqeqamST1Fnc6+iTjx9cfQcTDH21oyPjYxeM+1DsbKeoYGFedp
-         vjrYISDocFkbJOV6/2rmkJnGAzfPFNnnEJvQtl6k9d2bMKM2F49/TNhEzahL6te/H7tH
-         eApbsjJXrggLA9qxel61xvPb4yiDM0Uy+wCYJfXtb3YnO9awZ5k4K4FmQEzKpSI5fMCl
-         HcQbo4nUXEtUC+FgY+S/9rvZXAvmWYrO5F/4pouGz2KzwPnX3yAI5fH2OSCW/XijIf07
-         1cWg==
-X-Gm-Message-State: AOAM532xirUh6fAp/aIfiOjdkGe+iw4tHPJ67crdBdJG7vm5PBQTpGSs
-        tRs0VSC3o/3eUAZgAfS5kVla9LpUZ4vm6OcilIOByg==
-X-Google-Smtp-Source: ABdhPJyvYS3AvWBcifGaM9dVug2M9VRVkeWJUFEkHuPEJ3rYFWoTC8lXGQXFjT1qks6eN7j3dV0meMeR/IlnjWiXuik=
-X-Received: by 2002:a05:6602:189:: with SMTP id m9mr1635409ioo.88.1621248533502;
- Mon, 17 May 2021 03:48:53 -0700 (PDT)
+        Mon, 17 May 2021 06:53:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1621248752; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=bbBugWMAXPY0x5O2WIR8tzxY8oLH+9Em6l8WAALxh4wcqPphbRKur2hst09f6mHe57
+    kncv4hCI+uPe9Ck337tVvSo5aemUoqYSKpn63kg/fB+Q5uGBhKd2fdvoYvKFE+xEKYHZ
+    ev5f7EH+pmocBcur5B60rVNYXwLbrDj93zZEW+FsNYbJLk90wFDmjucWSRAy0+lKi0u0
+    6sbpXV+oZfPa+AX9da0WkAsRVjFzdB2AQI092H7jd/WXepBJt/uYuKdv1D12MkXx5+xR
+    IG9+KVZsa0vuIheZhPqsI4n/+ByBMpW5YdLY1ErfX7MrCbXZsbPaAnAqrdqCuNKRgtS4
+    ZmrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1621248752;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=UVrmOlkunBWm8CTCc2zVAt3rt0YhWagI6/xeD1B+H7Y=;
+    b=Lk6nQN5SpBvHKpwviSAN6vQWmGlUwOHOTF1r6q/eI/zZHRKwjOeVHzrndqFu3LOWsJ
+    UGbqFdFkrszIXKQUt/M9gMJ5Wc+VrKQPAJgtCupgVW0bo8pqEEfeVfkIClbnbb15q7ST
+    8nO7nzvFtj/5xnA3AMBGdjJi4yDNyT4tksT1y9vrzVkyUzYNCDPwui+BtNAyK4iNCOVi
+    CVhkkkBy7K79tywI3Cm8t8Ihl48QCuT6r3HZnGLwF+lWHxztdQUYMuih/gOybARkG28f
+    IpNpCyOzNv1Sn9EDKM3vI1f5lRyRDQuN/qYPGokm8WaS9BSXiG2ydj/PBLTneTo1N1gl
+    72Jg==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1621248752;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=UVrmOlkunBWm8CTCc2zVAt3rt0YhWagI6/xeD1B+H7Y=;
+    b=KhayggNT2xefDq3dqPIYZwNWK0VyBu3Op4EQ+wMyOm5CEGYZ2sS3m0hipKZ1HgRmaK
+    UUlCdUUB+RGM3amahKZyT/Vy9zikoNDCx+csNjjhyBUHN3eN/JMYkAFzTUQgtdPlkxMZ
+    w4cMsmIBYRkv4vyVE/ty2qaxOSo0pjiDxvz4/cB2uRLFEfAUlzo1Tnxmjwrl542k0Pk2
+    Q4XqLpmkqq1c/bqL0rPl4kgd7YJRGZC9y5McRJ+pBOBfVNklZtAK9lBrqE26AkzQffVj
+    3znh0GYuI6m8JvOOrpVX3jH7F9OmZJQu65fllRhpIL+jqjyghUFQ5jhDCA9XQaR+jQzd
+    Nkow==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526NcMiO"
+X-RZG-CLASS-ID: mo00
+Received: from droid..
+    by smtp.strato.de (RZmta 47.26.0 DYNA|AUTH)
+    with ESMTPSA id 50be75x4HAqV1VY
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 17 May 2021 12:52:31 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Beomho Seo <beomho.seo@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH v2 0/3] Fix RT5033 battery device tree probing
+Date:   Mon, 17 May 2021 12:51:10 +0200
+Message-Id: <20210517105113.240379-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210504114826.64376-1-robert.marko@sartura.hr> <0870f5c7cadf86d102747ec4f3d1b77e@codeaurora.org>
-In-Reply-To: <0870f5c7cadf86d102747ec4f3d1b77e@codeaurora.org>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Mon, 17 May 2021 12:48:42 +0200
-Message-ID: <CA+HBbNEqr2AxvUNm_kVC2n5i2qvJipDZJWbCRFNQZCnM8+RuGg@mail.gmail.com>
-Subject: Re: [PATCH] soc: qcom: socinfo: Add remaining IPQ6018 family ID-s
-To:     Kathiravan T <kathirav@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 12:46 PM Kathiravan T <kathirav@codeaurora.org> wrote:
->
-> On 2021-05-04 17:18, Robert Marko wrote:
-> > ID for IPQ6018 was previously added, but ID-s for rest of the
-> > family are missing.
-> > So, lets add those based on downstream driver.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
->
-> Reviewed-by: Kathiravan T <kathirav@codeaurora.org>
->
-> Nit: May be you can add the IPQ6005(453) variant as well? or you want to
-> add it later on need basis?
-Hi, I completely missed that one.
-I will send a v2 with it then.
+At the moment, the RT5033 MFD and battery driver suggest that the
+battery driver should probe as a sub-device of the MFD driver. However,
+this does not make any sense since the fuel gauge part of RT5033 has its
+own I2C device and interrupt line.
 
-Regards,
-Robert
->
-> > ---
-> >  drivers/soc/qcom/socinfo.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-> > index f6cfb79338f0..28bbc7a9227e 100644
-> > --- a/drivers/soc/qcom/socinfo.c
-> > +++ b/drivers/soc/qcom/socinfo.c
-> > @@ -255,6 +255,9 @@ static const struct soc_id soc_id[] = {
-> >       { 351, "SDA450" },
-> >       { 356, "SM8250" },
-> >       { 402, "IPQ6018" },
-> > +     { 403, "IPQ6028" },
-> > +     { 421, "IPQ6000" },
-> > +     { 422, "IPQ6010" },
-> >       { 425, "SC7180" },
-> >       { 455, "QRB5165" },
-> >  };
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of Code Aurora Forum, hosted by The Linux Foundation
+It was also documented as separate I2C device in the original device
+tree bindings [1] (that were never finished up and merged) but for some
+reason the code does not match the documentation (and reality). :/
 
+Given other fairly critical mistakes like setting the wrong bits
+in the regulator driver (see [2]), unfortunately I get the feeling
+that none of the RT5033 drivers were ever tested properly. :(
 
+This patch sets adds a proper of_match_table to rt5033-battery
+and removes the rt5033-battery sub-device from the MFD driver.
+There is no compile/runtime dependency of the power supply / MFD patch
+so they can just be applied separately through the power supply / MFD tree.
+
+With these changes, rt5033-battery seems to work fine on the
+Samsung Galaxy A5 (2015) at least (it reports a reasonable
+battery percentage).
+
+[1]: https://lore.kernel.org/linux-pm/1425864191-4121-3-git-send-email-beomho.seo@samsung.com/
+[2]: https://lore.kernel.org/lkml/20201110130047.8097-1-michael.srba@seznam.cz/
+
+Changes in v2: Fix stupid typo in second patch :(
+v1: Honestly, not worth looking at :)
+
+Stephan Gerhold (3):
+  dt-bindings: power: supply: Add DT schema for richtek,rt5033-battery
+  power: supply: rt5033_battery: Fix device tree enumeration
+  mfd: rt5033: Drop rt5033-battery sub-device
+
+ .../power/supply/richtek,rt5033-battery.yaml  | 54 +++++++++++++++++++
+ drivers/mfd/rt5033.c                          |  3 --
+ drivers/power/supply/Kconfig                  |  3 +-
+ drivers/power/supply/rt5033_battery.c         |  7 +++
+ 4 files changed, 63 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/richtek,rt5033-battery.yaml
 
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+2.31.1
+
