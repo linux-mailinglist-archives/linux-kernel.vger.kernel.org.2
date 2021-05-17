@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACA9383317
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C50383113
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241860AbhEQOyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:54:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55124 "EHLO mail.kernel.org"
+        id S240405AbhEQOeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241646AbhEQOp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:45:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 569D661442;
-        Mon, 17 May 2021 14:21:15 +0000 (UTC)
+        id S239212AbhEQO2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C083261626;
+        Mon, 17 May 2021 14:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261275;
-        bh=TlW828ly46jTTIUlPqwNRPDzw9XVkdGxE839ceIld94=;
+        s=korg; t=1621260854;
+        bh=owXmZOYrZFTscCWbK1gsEsA9aZW+UUmh7ljGDKKekLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PyXdZTUyl0qhOpGSIIyRGVQuxXL60ZkJC3rpdanVlleJiQkFI0rc3RU4xiUtbQMDK
-         HIAp2m5FEwJHEx8F/utG7ewB34JcAXbTLIZDzU5I0qf3v9L0HSvpUuo9RUm3AOoyUW
-         FxVM+e7SsAlHBFWwtNdAO/9hjU47iIETJf9H5fdM=
+        b=Z4yYU8UBNNEw02lE5lAQB3ufzLi1Wy5VgzYPXZZOBNcpsW7uTtUWyfz84zLwrb7JQ
+         dgS40imvRZKxzD3H6GxLHbRj8ULlranikNjPk7mXtmZvmhthxZLdy210M5OYovQD8B
+         JVUfVUiY6exuihCLR3pagG53JO26TfqmlbcAhL6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Tj (Elloe Linux)" <ml.linux@elloe.vision>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        David Coe <david.coe@live.co.uk>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 028/141] Revert "iommu/amd: Fix performance counter initialization"
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 214/363] drm/radeon: Avoid power table parsing memory leaks
 Date:   Mon, 17 May 2021 16:01:20 +0200
-Message-Id: <20210517140243.714868702@linuxfoundation.org>
+Message-Id: <20210517140309.812339261@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,123 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Menzel <pmenzel@molgen.mpg.de>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 715601e4e36903a653cd4294dfd3ed0019101991 ]
+[ Upstream commit c69f27137a38d24301a6b659454a91ad85dff4aa ]
 
-This reverts commit 6778ff5b21bd8e78c8bd547fd66437cf2657fd9b.
+Avoid leaving a hanging pre-allocated clock_info if last mode is
+invalid, and avoid heap corruption if no valid modes are found.
 
-The original commit tries to address an issue, where PMC power-gating
-causing the IOMMU PMC pre-init test to fail on certain desktop/mobile
-platforms where the power-gating is normally enabled.
-
-There have been several reports that the workaround still does not
-guarantee to work, and can add up to 100 ms (on the worst case)
-to the boot process on certain platforms such as the MSI B350M MORTAR
-with AMD Ryzen 3 2200G.
-
-Therefore, revert this commit as a prelude to removing the pre-init
-test.
-
-Link: https://lore.kernel.org/linux-iommu/alpine.LNX.3.20.13.2006030935570.3181@monopod.intra.ispras.ru/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
-Cc: Tj (Elloe Linux) <ml.linux@elloe.vision>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Alexander Monakov <amonakov@ispras.ru>
-Cc: David Coe <david.coe@live.co.uk>
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Link: https://lore.kernel.org/r/20210409085848.3908-2-suravee.suthikulpanit@amd.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=211537
+Fixes: 6991b8f2a319 ("drm/radeon/kms: fix segfault in pm rework")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd_iommu_init.c | 45 +++++++++-------------------------
- 1 file changed, 11 insertions(+), 34 deletions(-)
+ drivers/gpu/drm/radeon/radeon_atombios.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
-index ad714ff375f8..31d7e2d4f304 100644
---- a/drivers/iommu/amd_iommu_init.c
-+++ b/drivers/iommu/amd_iommu_init.c
-@@ -12,7 +12,6 @@
- #include <linux/acpi.h>
- #include <linux/list.h>
- #include <linux/bitmap.h>
--#include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/syscore_ops.h>
- #include <linux/interrupt.h>
-@@ -254,8 +253,6 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
- static int amd_iommu_enable_interrupts(void);
- static int __init iommu_go_to_state(enum iommu_init_state state);
- static void init_device_table_dma(void);
--static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
--				u8 fxn, u64 *value, bool is_write);
- 
- static bool amd_iommu_pre_enabled = true;
- 
-@@ -1675,11 +1672,13 @@ static int __init init_iommu_all(struct acpi_table_header *table)
- 	return 0;
- }
- 
--static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
-+static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
-+				u8 fxn, u64 *value, bool is_write);
+diff --git a/drivers/gpu/drm/radeon/radeon_atombios.c b/drivers/gpu/drm/radeon/radeon_atombios.c
+index f9f4efa1738c..28c4413f4dc8 100644
+--- a/drivers/gpu/drm/radeon/radeon_atombios.c
++++ b/drivers/gpu/drm/radeon/radeon_atombios.c
+@@ -2120,11 +2120,14 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
+ 		return state_index;
+ 	/* last mode is usually default, array is low to high */
+ 	for (i = 0; i < num_modes; i++) {
+-		rdev->pm.power_state[state_index].clock_info =
+-			kcalloc(1, sizeof(struct radeon_pm_clock_info),
+-				GFP_KERNEL);
++		/* avoid memory leaks from invalid modes or unknown frev. */
++		if (!rdev->pm.power_state[state_index].clock_info) {
++			rdev->pm.power_state[state_index].clock_info =
++				kzalloc(sizeof(struct radeon_pm_clock_info),
++					GFP_KERNEL);
++		}
+ 		if (!rdev->pm.power_state[state_index].clock_info)
+-			return state_index;
++			goto out;
+ 		rdev->pm.power_state[state_index].num_clock_modes = 1;
+ 		rdev->pm.power_state[state_index].clock_info[0].voltage.type = VOLTAGE_NONE;
+ 		switch (frev) {
+@@ -2243,8 +2246,15 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
+ 			break;
+ 		}
+ 	}
++out:
++	/* free any unused clock_info allocation. */
++	if (state_index && state_index < num_modes) {
++		kfree(rdev->pm.power_state[state_index].clock_info);
++		rdev->pm.power_state[state_index].clock_info = NULL;
++	}
 +
-+static void init_iommu_perf_ctr(struct amd_iommu *iommu)
- {
--	int retry;
- 	struct pci_dev *pdev = iommu->dev;
--	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
-+	u64 val = 0xabcd, val2 = 0, save_reg = 0;
- 
- 	if (!iommu_feature(iommu, FEATURE_PC))
- 		return;
-@@ -1687,39 +1686,17 @@ static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
- 	amd_iommu_pc_present = true;
- 
- 	/* save the value to restore, if writable */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
--	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
--		goto pc_false;
--
--	/*
--	 * Disable power gating by programing the performance counter
--	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
--	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
--	 * which never get incremented during this init phase.
--	 * (Note: The event is also deprecated.)
--	 */
--	val = 20;
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
- 		goto pc_false;
- 
- 	/* Check if the performance counters can be written to */
--	val = 0xabcd;
--	for (retry = 5; retry; retry--) {
--		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
--		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
--		    val2)
--			break;
--
--		/* Wait about 20 msec for power gating to disable and retry. */
--		msleep(20);
--	}
--
--	/* restore */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
--	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
-+	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
-+	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
-+	    (val != val2))
- 		goto pc_false;
- 
--	if (val != val2)
-+	/* restore */
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
- 		goto pc_false;
- 
- 	pci_info(pdev, "IOMMU performance counters supported\n");
+ 	/* last mode is usually default */
+-	if (rdev->pm.default_power_state_index == -1) {
++	if (state_index && rdev->pm.default_power_state_index == -1) {
+ 		rdev->pm.power_state[state_index - 1].type =
+ 			POWER_STATE_TYPE_DEFAULT;
+ 		rdev->pm.default_power_state_index = state_index - 1;
 -- 
 2.30.2
 
