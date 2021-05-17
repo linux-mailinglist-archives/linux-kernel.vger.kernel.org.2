@@ -2,67 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896CF3823A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 07:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8E03823B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 07:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbhEQFJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 01:09:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2984 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhEQFJY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 01:09:24 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fk6WB6PtxzQpL1;
-        Mon, 17 May 2021 13:04:38 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 13:08:06 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 13:08:06 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-CC:     <amitk@kernel.org>, <daniel.lezcano@linaro.org>
-Subject: [PATCH -next] thermal/core: Correct function name thermal_zone_device_unregister()
-Date:   Mon, 17 May 2021 13:10:20 +0800
-Message-ID: <20210517051020.3463536-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S234109AbhEQF20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 01:28:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61588 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234074AbhEQF2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 01:28:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621229229; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=MuCdQ3B8kZ30d41nu+ytgA3HhxH13/BnvH4pMsPHBHI=;
+ b=WnYPlopQZi5sPHe93LMChdEEicwxiaRJRrbDw84UoVRWu3YrytpdqRarQKEXO5t1V/JvsrWn
+ PYRrYLC4ncZAC4DyZW1U7qzrQwArrl15c4aGgWCj9siiVN3QRT18u/G6iCGafU+eqFQ10v78
+ dtICZsUFIMCNqY8hHWq7Q+Mde+w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60a1fead2bff04e53b736e29 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 May 2021 05:27:09
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1C8E4C4338A; Mon, 17 May 2021 05:27:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4472FC433D3;
+        Mon, 17 May 2021 05:27:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 17 May 2021 10:57:08 +0530
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V4 8/8] arm64: dts: qcom: sc7280: Include PMIC DT files
+ for sc7280-idp
+In-Reply-To: <YJKyc09bL/Z6YcK1@google.com>
+References: <1620197726-23802-1-git-send-email-skakit@codeaurora.org>
+ <1620197726-23802-9-git-send-email-skakit@codeaurora.org>
+ <YJKyc09bL/Z6YcK1@google.com>
+Message-ID: <e2ce6842d253bdfa5e166d9e31b32615@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following make W=1 kernel build warning:
+On 2021-05-05 20:27, Matthias Kaehlcke wrote:
+> On Wed, May 05, 2021 at 12:25:26PM +0530, satya priya wrote:
+>> The sc7280-idp has four PMICs, include their .dtsi files.
+>> 
+>> Signed-off-by: satya priya <skakit@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> index 02a14fc..704fb9a 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> @@ -12,6 +12,10 @@
+>>  #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
+>>  #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
+>>  #include "sc7280.dtsi"
+>> +#include "pm7325.dtsi"
+>> +#include "pmr735a.dtsi"
+>> +#include "pm8350c.dtsi"
+>> +#include "pmk8350.dtsi"
+> 
+> Patch '[7/8] arm64: dts: qcom: sc7280: Add channel nodes for 
+> sc7280-idp'
+> of this series makes use of the label 'pmk8350_vadc', which doesn't 
+> exist
+> at that point.
+> 
+> A series should be organized in a way that applying only a
+> subset of the series (in order, starting with patch 1) doesn't
+> cause any build or runtime issues. To achieve this patch [7/8]
+> and [8/8] of this series need to be swapped.
 
-  drivers/thermal/thermal_core.c:1376: warning: expecting prototype for thermal_device_unregister(). Prototype was for thermal_zone_device_unregister() instead
+Okay, I will re-arrange the series and resend v4.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/thermal/thermal_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index d20b25f40d19..142dcf5e4a18 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1369,7 +1369,7 @@ thermal_zone_device_register(const char *type, int trips, int mask,
- EXPORT_SYMBOL_GPL(thermal_zone_device_register);
- 
- /**
-- * thermal_device_unregister - removes the registered thermal zone device
-+ * thermal_zone_device_unregister - removes the registered thermal zone device
-  * @tz: the thermal zone device to remove
-  */
- void thermal_zone_device_unregister(struct thermal_zone_device *tz)
--- 
-2.25.1
-
+Thanks,
+Satya Priya
