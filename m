@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501B03827C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4760B3827C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235800AbhEQJGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:06:10 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:31682 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230087AbhEQJGI (ORCPT
+        id S235815AbhEQJGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235711AbhEQJGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:06:08 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14H926mm018652;
-        Mon, 17 May 2021 09:04:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=OITtMnOQqFatshRwK/G3cSME8UfYiuTbecRPw4JvaYQ=;
- b=rvXSzhOqaSNxmoXYQ0Sy4E0sk9Q7pzYyLGi5pg0hmU4/wtC1q6rZyHatai6JdhcIG99D
- DCwo/fGS/srO8PwIyB3W2YeYXu63R0vFLbTxfqD2ng0XuB5lmTZQ6XPE8Y+dVjaOwcpC
- 0+BpSpk9jfhgtzmU5hlS0oGWZWeU7UOmO6l8/DiJwDEaHua1Bq6LG0rBTjbEZ1LGdRNk
- /AV0M8xFM9kFq/M8jNvRjGCksvT8kUePbJywjF73rxcKnSdilPqfYpajaoVbB/0BAeas
- ziL1Yt5OCzfOJ/WqzkBc1WKlpkar5Bimur4+EDSN2eeWHsnHSPBDwkFWSUxVf1BGT1h6 Bw== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38kjp6g26x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 09:04:29 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14H93qxP064798;
-        Mon, 17 May 2021 09:04:28 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 38j644u58k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 09:04:28 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14H94Mgt025989;
-        Mon, 17 May 2021 09:04:22 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 May 2021 09:04:21 +0000
-Date:   Mon, 17 May 2021 12:04:13 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH net v2] net: mdiobus: get rid of a BUG_ON()
-Message-ID: <20210517090413.GC1955@kadam>
+        Mon, 17 May 2021 05:06:48 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7539DC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:05:30 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id z1so5504407ils.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o60wPNLr21xWpD+QwBWtK7YH8IFJi6smJPucpJVnzMY=;
+        b=oG167cCo5raGDssXdEmdUQlIdmaHQVF5t31VR1SsNkqG5d/rhAg6Tv/rjbL2BdrXlF
+         T4S//obYm6TeUseFLMj8i86rcCBTfsekBZuA1NqR1Hvt6llzpfqeYmEZ4/ORyJmShOqy
+         d1wb/6dO2bAoFSZjKki/OS2d8gh7OnVy1ZiioADr5eAm4FdxBh7AasoXJYPjmfdNVGvG
+         PHT7pl4vDF+FWRF7Q02XVzcuIxa1YWK0wveJSD38M1z1FVkDd9eNZ8ZXtU/tR0xe1TDi
+         xovUSpuOGnV9VME7mHt5Lc+Q71gQ45OpJOskyEa5VzP8e2EwLO6It7QOH4j9G7zz8Tkg
+         91zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o60wPNLr21xWpD+QwBWtK7YH8IFJi6smJPucpJVnzMY=;
+        b=l4wcTjASGSiBjaBscq2ofQNgeF1ZmEYNHknCuyzd8HN/MmZ0Y6tbImgjJqcGHahH2R
+         OGQO53U5I8m4e1mw/JqIU2i8mKDpb2/7TtYeeJwYrgYr5br4LsPWshCbOeGBvz6w/WxU
+         vJ71pmaGuj7W/uoOyL9BbeDcstLQq0iQlhdnhktiqSQjvNk6mRS/D+voMfg2xJVu4537
+         0IdhfvmNdmpTP9hldn5ACs2f5/7Orj05DvhAEzO1pcJxVlip8IbcEfS0W/7OrACUU3U9
+         6mMw/LTd6SPks5SvtKpptw1y9zGmRbrgFWfUnnrRZXdFQhPPcq5W5u75i8qdIUMn/ytB
+         URAQ==
+X-Gm-Message-State: AOAM533gvGBT8aaPgYEOZhCWf0j1gP6sFoi3UgP379EhSk9al8X9GETJ
+        zeSWGLDnmTre1IY9C2O7zGTVAzpSHaObnR4D9KD4mg==
+X-Google-Smtp-Source: ABdhPJxZbp3diLrvyq3dgrYuMRWfC3H9RpmazP77wsFU4Fo/hGGzNwxhNiPkwUYI7ddMGxLaJexigKtM+k4YmlmUSmM=
+X-Received: by 2002:a05:6e02:1b05:: with SMTP id i5mr38832882ilv.204.1621242329564;
+ Mon, 17 May 2021 02:05:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210515101522.GM12395@shell.armlinux.org.uk>
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9986 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 mlxlogscore=999 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105170064
-X-Proofpoint-ORIG-GUID: tjSKhXC8lCcUCFRVPsLh710U9N5CiUY6
-X-Proofpoint-GUID: tjSKhXC8lCcUCFRVPsLh710U9N5CiUY6
+References: <20210517063553.554955-1-pihsun@chromium.org>
+In-Reply-To: <20210517063553.554955-1-pihsun@chromium.org>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Mon, 17 May 2021 17:05:18 +0800
+Message-ID: <CA+Px+wXePF0Pi1binoZyhZY=9QSX53N-ThWN4mn+fGBoHk1s3A@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] drm/bridge: anx7625: refactor power control to use
+ runtime PM framework
+To:     Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We spotted a bug recently during a review where a driver was
-unregistering a bus that wasn't registered, which would trigger this
-BUG_ON().  Let's handle that situation more gracefully, and just print
-a warning and return.
+On Mon, May 17, 2021 at 2:36 PM Pi-Hsun Shih <pihsun@chromium.org> wrote:
+>
+> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
 
-Reported-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
-v2: Update the Reported-by tag.
+With some minor comments,
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
 
- drivers/net/phy/mdio_bus.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> @@ -1228,22 +1173,25 @@ static void anx7625_work_func(struct work_struct *work)
+>                                                 struct anx7625_data, work);
+>
+>         mutex_lock(&ctx->lock);
+> +
+> +       if (pm_runtime_suspended(&ctx->client->dev))
+> +               goto unlock;
+> +
+>         event = anx7625_hpd_change_detect(ctx);
+> -       mutex_unlock(&ctx->lock);
+>         if (event < 0)
+> -               return;
+> +               goto unlock;
+>
+>         if (ctx->bridge_attached)
+>                 drm_helper_hpd_irq_event(ctx->bridge.dev);
+> +
+> +unlock:
+> +       mutex_unlock(&ctx->lock);
+>  }
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index dadf75ff3ab9..6045ad3def12 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -607,7 +607,8 @@ void mdiobus_unregister(struct mii_bus *bus)
- 	struct mdio_device *mdiodev;
- 	int i;
- 
--	BUG_ON(bus->state != MDIOBUS_REGISTERED);
-+	if (WARN_ON_ONCE(bus->state != MDIOBUS_REGISTERED))
-+		return;
- 	bus->state = MDIOBUS_UNREGISTERED;
- 
- 	for (i = 0; i < PHY_MAX_ADDR; i++) {
--- 
-2.30.2
+Reminder: the lock now also protects the invoke of drm_helper_hpd_irq_event().
+
+> +static int __maybe_unused anx7625_runtime_pm_suspend(struct device *dev)
+> +{
+> +       struct anx7625_data *ctx = dev_get_drvdata(dev);
+> +
+> +       mutex_lock(&ctx->lock);
+> +
+> +       anx7625_stop_dp_work(ctx);
+> +       anx7625_power_standby(ctx);
+> +
+> +       mutex_unlock(&ctx->lock);
+> +
+> +       return 0;
+> +}
+> +
+> +static int __maybe_unused anx7625_runtime_pm_resume(struct device *dev)
+> +{
+> +       struct anx7625_data *ctx = dev_get_drvdata(dev);
+> +
+> +       mutex_lock(&ctx->lock);
+> +
+> +       anx7625_power_on_init(ctx);
+> +       anx7625_hpd_polling(ctx);
+> +
+> +       mutex_unlock(&ctx->lock);
+> +
+> +       return 0;
+> +}
+
+Maybe in another patch: the ctx->lock looks to protect too much code.
