@@ -2,146 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C8D382353
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58068382383
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhEQEXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 00:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        id S232742AbhEQEdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 00:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhEQEXT (ORCPT
+        with ESMTP id S230148AbhEQEdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 00:23:19 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCD7C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:21:56 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id k19so4024600qta.2
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:21:56 -0700 (PDT)
+        Mon, 17 May 2021 00:33:11 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543F7C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:31:55 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id p20so5526538ljj.8
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 21:31:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xb34FPi7cF+OIAodLJ7j5vSLf2bUONJcOXJTLDUg2DQ=;
-        b=L147CuVkKjMBD7J166MsIYSxw529dKPyYMY7ugJ3qWBdZ2qIymXujkiALbmh7tnLhj
-         OXJfCvIzd84Xvd/PLwE+i8XdnbJJ1Z89FUv9O60njnVgg74EUtcy7CH7YY+HSiU+n03t
-         XiONVlF13nxWS08ShdXeVm1uR6zYEXsygsoJ2vVNWouVkxxKuPMPGvQpRMQCGynTnLfu
-         Q09Kt4HRIxAfVpw5uRNozCNO7+zU2wYmsIak9PYKatqqjjRpOksNe1aWD5ryAUrJ6kP8
-         K2Mgm2hteErUgv6cciq0qwvlV6ZMH4D1FobR7ZMQlymiwt1pmisEXGuO2LgcD+vBX7J2
-         TJ5Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3iLQ1tptdplZl/aA36a0VSppXS1DKptyQ7u4dZiuFvw=;
+        b=htGSXP2RKllOoPfes+o5aRs8N2SAYwNscFGSNbl9cx5FhQ9rViWuCBFdPR36VqoBsK
+         Yi3FnyGyt1dzyMOrBDqX1lD1gDoLSqakbv0GVZiGh+DtSmt+pI5jEyuv2m3mbbTlGzp0
+         aIdSlhpb0vcg4sFVEJ9Zz3rRzMPFnA71fZLsUQIjTZnlikSv5BX7fmtjePmriTaTkEzn
+         Cv6Fs5H4z1aKLQ35eL2Ltym6CA0CX9N2wWuXrWALTDfXPiWdiAGKaYx80gEVKIli4ZUX
+         0D79p6ZJejHmCI1lOqC82Jzm+t7Rkc6lFOcyTPF4Lvr6F1Ud+eX7BOrvAab29mtGdvSs
+         T4QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xb34FPi7cF+OIAodLJ7j5vSLf2bUONJcOXJTLDUg2DQ=;
-        b=WkUtOETFc5fyqp+2KdHcwclcEOj+qH+4Kgm1XzNMY52DVgIZD4mf1dQ6Bjfcr2KNwZ
-         O5i3JdaeblBgcMZcsg1jVlsBlW4NVY3iRS6LAXfYWpw64dPG8i4CE9Xws5QiAlsBhqmi
-         vlZkMJU7ApvkEyddfsApU01kctflqtAyQv70Lv2IWSMKdJxROdD0eafM+pRClrN7XZZ8
-         0hHxlNfEmWDV69PjmaRqB+PFJOir+ux7Vyz+3/hJ727ozFipH3dU5V0P9rfUqypcPNOG
-         yKfG5YkiW+7hWxfeEWcexfsWuN8Oit3UToeVr1dmpzD6fi6MsJZOPpaLgQxMY49VQYcI
-         UhWw==
-X-Gm-Message-State: AOAM530uG6HJtVhcPkXDuB7x2jAe3KxU9Htmyphe8I1v30v6lZlnv6cW
-        tfCpkuD/o+/gTdk5ZihAM4o=
-X-Google-Smtp-Source: ABdhPJxAdHYHFd7qXInHiMe8WY3p9PZI6QxmJZLk1pf7cmJIVJK5XwXbPQX6iECVZxniAP9PLl/QdA==
-X-Received: by 2002:ac8:5dce:: with SMTP id e14mr17669292qtx.183.1621225315947;
-        Sun, 16 May 2021 21:21:55 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id n15sm9687358qti.51.2021.05.16.21.21.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 21:21:55 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id A17B927C0054;
-        Mon, 17 May 2021 00:21:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 17 May 2021 00:21:54 -0400
-X-ME-Sender: <xms:Ye-hYNXfaSYBGImgxmvdDWAsF9ad9YHnfjOH7gFY-RIV4oKf10ia7Q>
-    <xme:Ye-hYNnHf9Aw-S6b2o8qy0djQMoR3r-j6D0dueqeG3iMAHRVbzTS3wj-fsPxq28J6
-    v_8AKRxnv-IgpjZlg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeigedgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepleetkefhgfehveetveettdetleefveehveefuefgleevtdfgteegkedvgeet
-    ieevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdplhhkmhhlrdhorhhgnecukfhppe
-    dufedurddutdejrddurddvheegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlih
-    hthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhm
-    rghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:Ye-hYJZlYfUmHZSi32KW5XtSSykfnwYdol4EvtcHv6lvVYRpcb3Tzw>
-    <xmx:Ye-hYAVx6PqPKTyNCDMZz6XVoowaQ6u2hrdGDxh2WCT0lFHL9ZXCdg>
-    <xmx:Ye-hYHlhYm3X0PP4tgIa91y0PzUtVZ1k96IJ2wNc_o8L9jCPWto_5g>
-    <xmx:Yu-hYCsjAa0df9TOt5sJee5tLqHY5u5PdMWVd7EIhTiSXKjdCdsvw7WFrzk>
-Received: from localhost (unknown [131.107.1.254])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 17 May 2021 00:21:53 -0400 (EDT)
-Date:   Mon, 17 May 2021 12:21:38 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Joel Fernandes <joelaf@google.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: Silencing false lockdep warning related to seq lock
-Message-ID: <YKHvUkxpytzSewEC@boqun-archlinux>
-References: <CAJWu+orW9PA7m_s5LHhQv-bEO0xFq7n+9-fznd79boKkmQUR6g@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3iLQ1tptdplZl/aA36a0VSppXS1DKptyQ7u4dZiuFvw=;
+        b=LeRxpbyqIHya0ZzMrAJ41F8cuQtgrUFq3nfIhazjP9Qw3b5RbyKX2fioXXioXV9ODh
+         AujOPsy+gwLt3LlgGxUs/u52wc4gPHJKyh/S/QdSJ0hSP//2KGoqlOEA84VAya0VlTjF
+         KO5he+dk+1qPFPTQCk8CDQ40sFCp4S3mUS0st0tjQUAA616WqEHVrkBOFbTnT9u2tXzs
+         uyI2EhOSfjHZ3CYc+QrZxq/5fsbmw+K0Hq8V+ChdrtneK7cGQdIGe7pVH+vfQ6oJ9gXV
+         dKb1umBv3DUl4/6SWvcit8e7tKXJhtHlFd5Uj/AOZT1czMT/qmEWzKpd0LsT6vMv7Khl
+         SDhg==
+X-Gm-Message-State: AOAM533gAsn0vZ+YcIQHUZtFPWJYY441WiA8iI8eTs24jIpl2lLSbIfQ
+        dYI0Y4z2fQb8f1Yrfi15j2kjHGJiNJg8G+4mRgVcew==
+X-Google-Smtp-Source: ABdhPJy9XKM6yMZGl/SkQSsxH9fddXvLgPCMEc4WrJH0e325bQpEilNCV6FPBbChgfnUa8E3aFcGaY9aVg0IP//PUgI=
+X-Received: by 2002:a2e:9896:: with SMTP id b22mr47225301ljj.329.1621225913369;
+ Sun, 16 May 2021 21:31:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJWu+orW9PA7m_s5LHhQv-bEO0xFq7n+9-fznd79boKkmQUR6g@mail.gmail.com>
+References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
+ <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org> <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
+ <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org> <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
+In-Reply-To: <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
+From:   Archie Pusaka <apusaka@google.com>
+Date:   Mon, 17 May 2021 12:31:42 +0800
+Message-ID: <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Marcel,
 
-On Fri, May 14, 2021 at 10:52:31AM -0400, Joel Fernandes wrote:
-> Hi Boqun,
-> You might have worked on such issues so I thought you're a good person to ask.
-> 
-> After apply Laurent's SPF patchset [1] , we're facing a large number
-> of (seemingly false positive) lockdep reports which are related to
-> circular dependencies with seq locks.
-> 
->  lock(A); write_seqcount(B)
->   vs.
-> write_seqcount(B); lock(A)
-> 
+On Fri, 14 May 2021 at 19:40, Archie Pusaka <apusaka@google.com> wrote:
+>
+> Hi Marcel,
+>
+> On Fri, 14 May 2021 at 03:03, Marcel Holtmann <marcel@holtmann.org> wrote=
+:
+> >
+> > Hi Archie,
+> >
+> > >>> RTL8822 chipset supports WBS, and this information is conveyed in
+> > >>> btusb.c. However, the UART driver doesn't have this information jus=
+t
+> > >>> yet.
+> > >>>
+> > >>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > >>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > >>> ---
+> > >>>
+> > >>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
+> > >>> drivers/bluetooth/btrtl.h  |  2 ++
+> > >>> drivers/bluetooth/hci_h5.c |  5 +----
+> > >>> 3 files changed, 19 insertions(+), 14 deletions(-)
+> > >>>
+> > >>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+> > >>> index e7fe5fb22753..988a09860c6b 100644
+> > >>> --- a/drivers/bluetooth/btrtl.c
+> > >>> +++ b/drivers/bluetooth/btrtl.c
+> > >>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hd=
+ev,
+> > >>> }
+> > >>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
+> > >>>
+> > >>> -int btrtl_setup_realtek(struct hci_dev *hdev)
+> > >>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_in=
+fo *btrtl_dev)
+> > >>> {
+> > >>> -     struct btrtl_device_info *btrtl_dev;
+> > >>> -     int ret;
+> > >>> -
+> > >>> -     btrtl_dev =3D btrtl_initialize(hdev, NULL);
+> > >>> -     if (IS_ERR(btrtl_dev))
+> > >>> -             return PTR_ERR(btrtl_dev);
+> > >>> -
+> > >>> -     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
+> > >>> -
+> > >>>      /* Enable controller to do both LE scan and BR/EDR inquiry
+> > >>>       * simultaneously.
+> > >>>       */
+> > >>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+> > >>>              rtl_dev_dbg(hdev, "WBS supported not enabled.");
+> > >>>              break;
+> > >>>      }
+> > >>> +}
+> > >>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
+> > >>> +
+> > >>> +int btrtl_setup_realtek(struct hci_dev *hdev)
+> > >>> +{
+> > >>> +     struct btrtl_device_info *btrtl_dev;
+> > >>> +     int ret;
+> > >>> +
+> > >>> +     btrtl_dev =3D btrtl_initialize(hdev, NULL);
+> > >>> +     if (IS_ERR(btrtl_dev))
+> > >>> +             return PTR_ERR(btrtl_dev);
+> > >>> +
+> > >>> +     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
+> > >>> +
+> > >>> +     btrtl_set_quirks(hdev, btrtl_dev);
+> > >>>
+> > >>>      btrtl_free(btrtl_dev);
+> > >>>      return ret;
+> > >>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
+> > >>> index 2a582682136d..260167f01b08 100644
+> > >>> --- a/drivers/bluetooth/btrtl.h
+> > >>> +++ b/drivers/bluetooth/btrtl.h
+> > >>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct=
+ hci_dev *hdev,
+> > >>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
+> > >>> int btrtl_download_firmware(struct hci_dev *hdev,
+> > >>>                          struct btrtl_device_info *btrtl_dev);
+> > >>> +void btrtl_set_quirks(struct hci_dev *hdev,
+> > >>> +                   struct btrtl_device_info *btrtl_dev);
+> > >>> int btrtl_setup_realtek(struct hci_dev *hdev);
+> > >>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
+> > >>> int btrtl_get_uart_settings(struct hci_dev *hdev,
+> > >>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.=
+c
+> > >>> index 27e96681d583..e0520639f4ba 100644
+> > >>> --- a/drivers/bluetooth/hci_h5.c
+> > >>> +++ b/drivers/bluetooth/hci_h5.c
+> > >>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
+> > >>>      /* Give the device some time before the hci-core sends it a re=
+set */
+> > >>>      usleep_range(10000, 20000);
+> > >>>
+> > >>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
+> > >>> -      * simultaneously.
+> > >>> -      */
+> > >>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quir=
+ks);
+> > >>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
+> > >>
+> > >> any reason why not just setting WBS quirk here?
+> > >
+> > > Hmm, I think WBS is the feature of the chipset and not the transport.
+> > > Therefore isn't it better to just have it set in one place?
+> > > Setting the quirks here means we need to copy paste the settings from=
+ btrtl.c.
+> >
+> > but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY righ=
+t now, I don=E2=80=99t see the difference.
+>
+> Sorry, I don't get what you mean.
+> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
+> btrtl.c, so it's together with the WBS quirk.
+>
+> > Can we actually verify that we still need the WBS quirk. I think we fix=
+ed the broken errerrnous packet flag handling.
+>
+> To be honest, I am not aware about the story of the broken erroneous
+> packet flag.
+> Last time I checked I still needed the quirk to have RTL8822 on UART
+> properly run WBS, but that was months ago...
+> Let me verify whether this quirk is still needed.
 
-Two questions here:
+It looks like we still need the WBS quirk because otherwise the host
+wouldn't know whether the controller supports WBS or not. It's used in
+get_supported_settings() in mgmt.c.
 
-*	Could you provide the lockdep splats you saw? I wonder whether
-	it's similar to the one mentioned in patch #9[1].
-
-*	What keeps write_seqcount(vm_seqcount) serialized? If it's only
-	one lock that serializes the writers, we probably can make it
-	as the nest_lock argument for seqcount_acquire(), and that will
-	help prevent the false positives.
-
-Regards,
-Boqun
-
-[1]: https://lore.kernel.org/lkml/20190416134522.17540-10-ldufour@linux.ibm.com/
-
-> This cannot deadlock obviously. My current strategy which I hate is to
-> make it a raw seqcount write which bypasses lockdep. That's horrible
-> for obvious reasons. Do you have any tricks/patches up your sleeve to
-> silence these?
-> 
-> I suppose we still want to catch lockdep issues of the form (which
-> peterz chatted to me about):
-> 
->  lock(A); write_seqcount(B)
->   vs.
-> read_seqcount(B); lock(A)
-> 
-> which seems like it can deadlock.
-> 
-> I would rather make lockdep useful to catch these and not miss out on
-> them. Let me know what you think?
-> 
 > Cheers,
-> -Joel
-> 
-> [1] https://lkml.org/lkml/2019/4/16/615
+> Archie
