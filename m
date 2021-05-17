@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B068382A60
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2AB382A68
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhEQK6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236528AbhEQK6L (ORCPT
+        id S236615AbhEQK7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:59:09 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:40088 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236471AbhEQK7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:58:11 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F16C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:56:55 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id f8so4474652qth.6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xULAoSsHU2psX2VG0qF90GajX4WbVpZyRpzX3ewwy9E=;
-        b=RE26Ae9jS9kLTiE7fYGBWExaibp7ZjVLQmoqXAzNeSdHR9u31zfI7so12UiJl8gaAH
-         40gBR3KFMNzle6nO7pR3ICx3pzCKGh9Tt+YB90ArqV0uLgWr752eo/F6QD9fyM5u8wGP
-         1yZha3wGJ0wSnSQ5Thjz+UX7x9iLLGjuJcVJkUQxv6OrDaJZx5W0Lu3fFufivyca912j
-         +mHcsfmuPOw0zKPMbijsau/CII/axc4Sr4tM3qqNyjTiSFHxAXUu+C00e3kp2h0YmQ5n
-         DNN84FmJmWcUc1+73qzPRRPWSqAVxkrHAa4CC6zmDleRydpWWzbQiZicS0irzDgzRgZz
-         KmVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xULAoSsHU2psX2VG0qF90GajX4WbVpZyRpzX3ewwy9E=;
-        b=W3Pu+NA9d8gUCFs8+X0lPuEadGhxQWjfG43VreUO5wvwmqMhddNb2DXRrJYoMJXFP/
-         HsyOr1LwpRNdxhr/H4u+oVIbnYOTiu7ruLtp+QcRqyF5AcX+3mPMzKOtu/dOdy5UFUxY
-         D84dlqCyYIDAu1SxKvyUkunbwbluyUpP/YfR4ULb9Y8EtTcbSxG09UnuaINS++jFtXQx
-         7yyecj6glllopzLJ8x8mUyjtMFVbVGI5NoEHROyzB3TKBHusshcfykR4FWyVWKJhqbN5
-         rZBet72LodQaT23e4UAefIUOAjjkKc9Pjew4fSupWvYe40wdp/HA93VPUHFNrXsJvEN4
-         GIVg==
-X-Gm-Message-State: AOAM533GoleqY28wpJGh5Z84+tgHWC9gRJVrUmUeZ/2rcHsPw6ORGH5Y
-        28FNVjHxVHnbXaCdkEgxkH+/V438Pfdc66jUw/8=
-X-Google-Smtp-Source: ABdhPJzgGeYq6XyfP59AYy3eG/5/dPH5GFT2NC4BqTz90/7V6DyFbIZDPncGv87Nh+TTBAWk1vA9eDrycYqmOVexodY=
-X-Received: by 2002:ac8:47da:: with SMTP id d26mr55254795qtr.292.1621249014870;
- Mon, 17 May 2021 03:56:54 -0700 (PDT)
+        Mon, 17 May 2021 06:59:05 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 5EE7664151;
+        Mon, 17 May 2021 12:56:54 +0200 (CEST)
+Date:   Mon, 17 May 2021 12:57:45 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        syzbot <syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com>,
+        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook (4)
+Message-ID: <20210517105745.GA19031@salvia>
+References: <0000000000008ce91e05bf9f62bc@google.com>
+ <CACT4Y+a6L_x22XNJVX+VYY-XKmLQ0GaYndCVYnaFmoxk58GPgw@mail.gmail.com>
+ <20210508144657.GC4038@breakpoint.cc>
+ <20210513005608.GA23780@salvia>
+ <CACT4Y+YhQQtHBErLYRDqHyw16Bxu9FCMQymviMBR-ywiKf3VQw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210514213118.630427-1-arnd@kernel.org>
-In-Reply-To: <20210514213118.630427-1-arnd@kernel.org>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Mon, 17 May 2021 18:56:44 +0800
-Message-ID: <CAA+D8AOAUd3t8TBNtvf8rm_dXgYgL9nZe95wizaoyf5rTfNAcA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl: fix SND_SOC_IMX_RPMSG dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YhQQtHBErLYRDqHyw16Bxu9FCMQymviMBR-ywiKf3VQw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 5:33 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Kconfig produces a warning with SND_SOC_FSL_RPMSG=y and SND_IMX_SOC=m:
->
-> WARNING: unmet direct dependencies detected for SND_SOC_IMX_RPMSG
->   Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m] && RPMSG [=y]
->   Selected by [y]:
->   - SND_SOC_FSL_RPMSG [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && COMMON_CLK [=y] && RPMSG [=y] && SND_IMX_SOC [=m]!=n
->
-> Add a dependency to prevent this configuration.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Thu, May 13, 2021 at 09:08:20AM +0200, Dmitry Vyukov wrote:
+> On Thu, May 13, 2021 at 2:56 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> >
+> > On Sat, May 08, 2021 at 04:46:57PM +0200, Florian Westphal wrote:
+> > > Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com
+> > > >
+> > > > Is this also fixed by "netfilter: arptables: use pernet ops struct
+> > > > during unregister"?
+> > > > The warning is the same, but the stack is different...
+> > >
+> > > No, this is a different bug.
+> > >
+> > > In both cases the caller attempts to unregister a hook that the core
+> > > can't find, but in this case the caller is nftables, not arptables.
+> >
+> > I see no reproducer for this bug. Maybe I broke the dormant flag handling?
+> >
+> > Or maybe syzbot got here after the arptables bug has been hitted?
+> 
+> syzbot always stops after the first bug to give you perfect "Not
+> tainted" oopses.
 
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+Looking at the log file:
 
-Best regards
-Wang Shengjiu
+https://syzkaller.appspot.com/text?tag=CrashLog&x=110a3096d00000
+
+This is mixing calls to nftables:
+
+14:43:16 executing program 0:
+r0 = socket$nl_netfilter(0x10, 0x3, 0xc)
+sendmsg$NFT_BATCH(r0, &(0x7f000000c2c0)={0x0, 0x0, &(0x7f0000000000)={&(0x7f00000001c0)={{0x9}, [@NFT_MSG_NEWTABLE={0x28, 0x0, 0xa, 0x3, 0x0, 0x0, {0x2}, [@NFTA_TABLE_NAME={0x9, 0x1, 'syz0\x00'}, @NFTA_TABLE_FLAGS={0x8}]}], {0x14}}, 0x50}}, 0x0)
+
+with arptables:
+
+14:43:16 executing program 1:
+r0 = socket$inet_udp(0x2, 0x2, 0x0)
+setsockopt$ARPT_SO_SET_REPLACE(r0, 0x0, 0x60, &(0x7f0000000000)={'filter\x00', 0x4, 0x4, 0x3f8, 0x310, 0x200, 0x200, 0x310, 0x310, 0x310, 0x4, 0x0, {[{{@arp={@broadcast, @rand_addr, 0x87010000, 0x0, 0x0, 0x0, {@mac=@link_local}, {@mac}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'bridge0\x00', 'erspan0\x00'}, 0xc0, 0x100}, @unspec=@RATEEST={0x40, 'RATEEST\x00', 0x0, {'syz1\x00', 0x0, 0x4}}}, {{@arp={@initdev={0xac, 0x1e, 0x0, 0x0}, @local, 0x0, 0x0, 0x0, 0x0, {@mac=@remote}, {}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'veth0_to_bridge\x00', 'geneve1\x00'}, 0xc0, 0x100}, @unspec=@RATEEST={0x40, 'RATEEST\x00', 0x0, {'syz0\x00', 0x0, 0x2}}}, {{@arp={@local, @multicast1, 0x0, 0x0, 0x0, 0x0, {}, {@mac=@broadcast}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'veth0_to_batadv\x00', 'veth0_to_hsr\x00'}, 0xc0, 0x110}, @mangle={0x50, 'mangle\x00', 0x0, {@mac=@remote, @mac=@local, @multicast2, @initdev={0xac, 0x1e, 0x0, 0x0}}}}], {{[], 0xc0, 0xe8}, {0x28}}}}, 0x448)
+
+arptables was buggy at the time this bug has been reported.
+
+Am I understanding correctly the syzbot log?
+
+I wonder if the (buggy) arptables removed the incorrect hook from
+nftables, then nftables crashed on the same location when removing the
+hook. I don't see a clear sequence for this to happen though.
+
+Would it be possible to make syzbot exercise the NFT_MSG_NEWTABLE
+codepath (with NFTA_TABLE_FLAGS) to check if the problem still
+persists?
+
+Thanks.
