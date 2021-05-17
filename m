@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FFA38328F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14757383291
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241992AbhEQOt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:49:27 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:34759 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239534AbhEQOkk (ORCPT
+        id S242035AbhEQOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:49:41 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:33670 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240240AbhEQOll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:40:40 -0400
-Received: by mail-il1-f178.google.com with SMTP id c16so6311491ilo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:39:23 -0700 (PDT)
+        Mon, 17 May 2021 10:41:41 -0400
+Received: by mail-oi1-f176.google.com with SMTP id b25so6737797oic.0;
+        Mon, 17 May 2021 07:40:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jH0fCm6/ssgqTQFTtYAxRzZAnMgRul40cu4aOLtnS2s=;
-        b=UKZLohwHmqWAw1tZjA+KYAX6m9EBndA62UT92/8NM5MD0isXR2WVpmTIgezqxrNtar
-         tiTVZGiRP+8rF681iakwJ5jq10DeFMVSKhcvpXqeQNeKQ8lGJH4DVvzVvPuvHF28vn1h
-         aDgj8JWe8IHJZ1reAFAnNbub6VDiB9AbCRZBe6VlE37Bi/Q+XVSyuORX9ba2vNtuuq0r
-         EVgdu1qn6dl5z/ld0FJF38O43p3cWECIRHGaAnpz6FAjlW2+Skb1MKQCANiXdnlYySfU
-         8s0i6S3JEuZsTBT2tq8FWutUPvASWOvLm+SygMplE4vX7WAdPXokR3qZuXxwH2PMOkZH
-         P8dg==
-X-Gm-Message-State: AOAM5308kL5nZg1lchbomuYhRShYktVaqlCLi6gR2U1jNlzNKqPViPMw
-        E3xaeuAu+84yE2VQziZberU=
-X-Google-Smtp-Source: ABdhPJycdz0JtI1u2VVpJ/hbQoX+Bdowg/jnuMQPSv/KFHO5P0NxYLYnt+QC2OC5JOsMPJu3bdR/ZQ==
-X-Received: by 2002:a05:6e02:1a0c:: with SMTP id s12mr6006ild.201.1621262363435;
-        Mon, 17 May 2021 07:39:23 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id u18sm1112124ilj.20.2021.05.17.07.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 07:39:22 -0700 (PDT)
-Date:   Mon, 17 May 2021 14:39:21 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     tj@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] percpu: initialize best_upa variable
-Message-ID: <YKKAGbOyRSX5jmxY@google.com>
-References: <20210515180817.1751084-1-trix@redhat.com>
- <YKHPV4QAXmaWb6jJ@google.com>
- <dd1dabe0-73a5-8a39-ba58-bb58a1453d90@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nCTj6HgOq3kiS9EgLLQMGC5yw5m63tUFyLTYwxvC2gM=;
+        b=tg/ev4ENmNbgBm7WLLIgJQAgYOEEE34Iq87uZnaHd5fTOKyuLCp9B66vK7EDa1NSWq
+         lmKNHPMNinEzFgv5aRNLhcDylxPRaIBQR8lz03Nl91ca2XAwdNZCaF4gKvFp2b7SkuIp
+         YyLMvIURBsmc1iSy02o3Qi4yjuYoGP8ObZ2B5idkRur3QcGboQTMUyp2/KodKkOCGA5M
+         f7tRre17n2c4m1+ZuTENGJnoIRa7xL6ZJz1Vj1B4nLcXnlHy2dDLOs3OZ9XVwvKYj62y
+         HTYYsfaDgIArSWj8rF4/TFQGow8AgXjIMrKUevLvhXxOjDcVqvvdgsw/aeSiWNzmm10g
+         GH9w==
+X-Gm-Message-State: AOAM530j/9xREABeNu2QAtTjiPB36w/hJI2KBlVMgTp7HP63+O2EpaaO
+        dQQahwqFcuC9Uudw3PEFwJDsY8S826Hp2eMxIlc=
+X-Google-Smtp-Source: ABdhPJwQ2qgBZtQf/GnZT0PoBoRySutc7ORD6yx1CUs52aGO/rZAy/KrZNJkaPf5W8Dy093AtfDOuOqLknHJKlQByhs=
+X-Received: by 2002:aca:380a:: with SMTP id f10mr109907oia.157.1621262424289;
+ Mon, 17 May 2021 07:40:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd1dabe0-73a5-8a39-ba58-bb58a1453d90@redhat.com>
+References: <20210511063835.7794-1-jhp@endlessos.org> <CAJZ5v0hsNSpL+1ero_+pzz97Xz4UCwjBv7swg+3CAne7_OUKkQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hsNSpL+1ero_+pzz97Xz4UCwjBv7swg+3CAne7_OUKkQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 17 May 2021 16:40:13 +0200
+Message-ID: <CAJZ5v0iU15F42yGm5etxmMLsDwC=u7p1eT6EoVADnJnV8+S4VA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI / EC: Fix media keys not working problem on more
+ Asus laptops
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Jian-Hong Pan <jhp@endlessos.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux@endlessos.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 06:17:47AM -0700, Tom Rix wrote:
-> 
-> On 5/16/21 7:05 PM, Dennis Zhou wrote:
-> > Hello,
-> > 
-> > On Sat, May 15, 2021 at 11:08:17AM -0700, trix@redhat.com wrote:
-> > > From: Tom Rix <trix@redhat.com>
-> > > 
-> > > Static analysis reports this problem
-> > > percpu.c:2945:6: warning: Assigned value is garbage or undefined
-> > >          upa = best_upa;
-> > >              ^ ~~~~~~~~
-> > > best_upa may not be set, so initialize it.
-> > > 
-> > > Signed-off-by: Tom Rix <trix@redhat.com>
-> > > ---
-> > >   mm/percpu.c | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/mm/percpu.c b/mm/percpu.c
-> > > index a257c3efdf18b..6578b706fae81 100644
-> > > --- a/mm/percpu.c
-> > > +++ b/mm/percpu.c
-> > > @@ -2916,6 +2916,7 @@ static struct pcpu_alloc_info * __init __flatten pcpu_build_alloc_info(
-> > >   	 * Related to atom_size, which could be much larger than the unit_size.
-> > >   	 */
-> > >   	last_allocs = INT_MAX;
-> > > +	best_upa = max_upa;
-> > >   	for (upa = max_upa; upa; upa--) {
-> > >   		int allocs = 0, wasted = 0;
-> > > -- 
-> > > 2.26.3
-> > > 
-> > I think the proper fix would be:
-> > 
-> > best_upa = 0;
-> 
-> I was looking for initializing with something that would work.
-> 
+On Mon, May 17, 2021 at 4:32 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Tue, May 11, 2021 at 8:40 AM Jian-Hong Pan <jhp@endlessos.org> wrote:
+> >
+> > From: Chris Chiu <chiu@endlessm.com>
+> >
+> > More ASUS laptops have the _GPE define in the DSDT table with a
+> > different value than the _GPE number in the ECDT.
+> >
+> > This is causing media keys not working on ASUS X505BA/BP, X542BA/BP
+> >
+> > Add model info to the quirks list.
+> >
+> > Signed-off-by: Chris Chiu <chiu@endlessm.com>
+> > Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> > ---
+> >  drivers/acpi/ec.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+> > index 13565629ce0a..e8c5da2b964a 100644
+> > --- a/drivers/acpi/ec.c
+> > +++ b/drivers/acpi/ec.c
+> > @@ -1846,6 +1846,22 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
+> >         DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> >         DMI_MATCH(DMI_PRODUCT_NAME, "GL702VMK"),}, NULL},
+> >         {
+> > +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BA", {
+> > +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> > +       DMI_MATCH(DMI_PRODUCT_NAME, "X505BA"),}, NULL},
+> > +       {
+> > +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BP", {
+> > +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> > +       DMI_MATCH(DMI_PRODUCT_NAME, "X505BP"),}, NULL},
+> > +       {
+> > +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BA", {
+> > +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> > +       DMI_MATCH(DMI_PRODUCT_NAME, "X542BA"),}, NULL},
+> > +       {
+> > +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BP", {
+> > +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> > +       DMI_MATCH(DMI_PRODUCT_NAME, "X542BP"),}, NULL},
+> > +       {
+> >         ec_honor_ecdt_gpe, "ASUS X550VXK", {
+> >         DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> >         DMI_MATCH(DMI_PRODUCT_NAME, "X550VXK"),}, NULL},
+> > --
+>
+> Applied as 5.14 material under a different subject ("ACPI: EC: Make
+> more Asus laptops use ECDT _GPE"), thanks!
 
-I think I prefer setting it to 0 because it forces the loop to have
-succeeded vs being able to bypass it if the for loop logic was changed.
+And dropped, because the chiu@endlessm.com email address is bouncing.
 
-> > for (...) { }
-> > BUG_ON(!best_upa);
-> WARN_ON instead?
-
-This is initialization code. So if upa == 0, it really is a problem.
-Having 0 units per allocation is bogus.
-
-> > upa = best_upa;
-> > 
-> > If you're fine with this I'll make the changes and apply it to
-> > for-5.13-fixes.
-> > 
-> > Can you also tell me what static analysis tool produced this? I'm just a
-> > little curious because this code hasn't changed in several years so I'd
-> > have expected some static analyzer to have caught this by now.
-> 
-> Clang 10
-> 
-> Tom
-> 
-
-Thanks,
-Dennis
+Please resend with a valid email address in the From: field, thanks!
