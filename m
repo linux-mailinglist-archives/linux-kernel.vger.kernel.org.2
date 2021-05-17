@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA8A3834B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383123834A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239476AbhEQPLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:11:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34300 "EHLO mail.kernel.org"
+        id S242323AbhEQPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:11:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242179AbhEQPB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242196AbhEQPB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 11:01:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3821E60FE9;
-        Mon, 17 May 2021 14:27:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B504061581;
+        Mon, 17 May 2021 14:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261638;
-        bh=rSZaz4r9YN81N5jfCrcTwbkMhDQERcc+u3Q9FHKcthU=;
+        s=korg; t=1621261645;
+        bh=I2iL6Wg3fn7TPnzjJPaqUYbBnc4XA51WJqYyBZmsfRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E5FQmPHUIogqw2wN8FsNq+zceT2MQQcEkVbG/qjnB2Q++QXEEFmMoav8M5EoOcWY+
-         S7YTfm5/zJzDAevGDshx241wUHOTBnwEmYc+UoiBOhVLTv9R+VkfPXi78DCNAY+2+x
-         eQItR0L7SYViNfXaiQVJCTQxMvChrCnTkkdUd7j4=
+        b=G+vLSdxeXRHO0LYrSOMWJD5DKYyV964QWDSJoqU+L0D8FFeiklL6zcaAI+XgEgOaQ
+         gCTXKzho/ZfgiISaq+NMEJy8puQjDa8Nj9jSpjwifHylyXGgaEMOFivNMaNbzUi7TH
+         hb9roo9x3OBpdoy4GycfnYhTxj8r+clKulGHD9HE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hao Chen <chenhao288@hisilicon.com>,
+        stable@vger.kernel.org, Peng Li <lipeng321@huawei.com>,
         Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 069/141] net: hns3: fix for vxlan gpe tx checksum bug
-Date:   Mon, 17 May 2021 16:02:01 +0200
-Message-Id: <20210517140245.096950394@linuxfoundation.org>
+Subject: [PATCH 5.4 070/141] net: hns3: use netif_tx_disable to stop the transmit queue
+Date:   Mon, 17 May 2021 16:02:02 +0200
+Message-Id: <20210517140245.136296479@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -41,49 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Chen <chenhao288@hisilicon.com>
+From: Peng Li <lipeng321@huawei.com>
 
-[ Upstream commit 905416f18fe74bdd4de91bf94ef5a790a36e4b99 ]
+[ Upstream commit b416e872be06fdace3c36cf5210130509d0f0e72 ]
 
-When skb->ip_summed is CHECKSUM_PARTIAL, for non-tunnel udp packet,
-which has a dest port as the IANA assigned, the hardware is expected
-to do the checksum offload, but the hardware whose version is below
-V3 will not do the checksum offload when udp dest port is 4790.
+Currently, netif_tx_stop_all_queues() is used to ensure that
+the xmit is not running, but for the concurrent case it will
+not take effect, since netif_tx_stop_all_queues() just sets
+a flag without locking to indicate that the xmit queue(s)
+should not be run.
 
-So fixes it by doing the checksum in software for this case.
+So use netif_tx_disable() to replace netif_tx_stop_all_queues(),
+it takes the xmit queue lock while marking the queue stopped.
 
 Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
-Signed-off-by: Hao Chen <chenhao288@hisilicon.com>
+Signed-off-by: Peng Li <lipeng321@huawei.com>
 Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 6b43cbf4f909..3dd3b8047968 100644
+index 3dd3b8047968..5f2948bafff2 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -796,7 +796,7 @@ static int hns3_get_l4_protocol(struct sk_buff *skb, u8 *ol4_proto,
-  * and it is udp packet, which has a dest port as the IANA assigned.
-  * the hardware is expected to do the checksum offload, but the
-  * hardware will not do the checksum offload when udp dest port is
-- * 4789 or 6081.
-+ * 4789, 4790 or 6081.
-  */
- static bool hns3_tunnel_csum_bug(struct sk_buff *skb)
- {
-@@ -806,7 +806,8 @@ static bool hns3_tunnel_csum_bug(struct sk_buff *skb)
+@@ -539,8 +539,8 @@ static int hns3_nic_net_stop(struct net_device *netdev)
+ 	if (h->ae_algo->ops->set_timer_task)
+ 		h->ae_algo->ops->set_timer_task(priv->ae_handle, false);
  
- 	if (!(!skb->encapsulation &&
- 	      (l4.udp->dest == htons(IANA_VXLAN_UDP_PORT) ||
--	      l4.udp->dest == htons(GENEVE_UDP_PORT))))
-+	      l4.udp->dest == htons(GENEVE_UDP_PORT) ||
-+	      l4.udp->dest == htons(4790))))
- 		return false;
+-	netif_tx_stop_all_queues(netdev);
+ 	netif_carrier_off(netdev);
++	netif_tx_disable(netdev);
  
- 	skb_checksum_help(skb);
+ 	hns3_nic_net_down(netdev);
+ 
 -- 
 2.30.2
 
