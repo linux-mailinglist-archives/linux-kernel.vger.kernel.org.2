@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53333836FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78336383868
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245370AbhEQPi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:38:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
+        id S1343959AbhEQPwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244921AbhEQPWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:22:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0AA16113C;
-        Mon, 17 May 2021 14:35:02 +0000 (UTC)
+        id S1343778AbhEQPe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CD7061CD6;
+        Mon, 17 May 2021 14:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262103;
-        bh=LnGGExNcUTjQB6r41cBkpiSRuxFT6a9BFdRTamgqnu0=;
+        s=korg; t=1621262380;
+        bh=2j2jhf6Z6Vx2RoOzm/w9aNQAOUdVhdHEmRxMAXW6q8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xDCLXWQ031VUGeTMeQava/efz7ZUPgWwWjZpEx8G5icWpL6GwJHL99PIaIb9aq5Vx
-         1bOyPmrsbufOMeV44HBE3VULbqKRd6+XugN0ZorntH/rYK1HBz2tWxdbDsbOaCQU4K
-         vio1cpufmViKa+FWzp1V1iroCiI0eIPHlxTp/6eY=
+        b=q2x+LkKmSH+MdOxdQZhgd51Bax8hdqtj3HRqipEDFGPl7fGGb6MrnoWK/DAONqyaH
+         yjYUKa8Nv0zd1T6XV6A1pwfJYq9JiQQKxP/GOdf9Il41CdYUqFg5L+0NNX/icrrpPW
+         J4jaWYlkGPM+As3VO5YO9AkrQ8aw/rLaElqV7oE8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com
-Subject: [PATCH 5.4 137/141] kobject_uevent: remove warning in init_uevent_argv()
-Date:   Mon, 17 May 2021 16:03:09 +0200
-Message-Id: <20210517140247.446065314@linuxfoundation.org>
+        stable@vger.kernel.org, Yanhui Ma <yama@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        kashyap.desai@broadcom.com, Ming Lei <ming.lei@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 279/329] blk-mq: plug request for shared sbitmap
+Date:   Mon, 17 May 2021 16:03:10 +0200
+Message-Id: <20210517140311.550249674@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit b4104180a2efb85f55e1ba1407885c9421970338 upstream.
+[ Upstream commit 03f26d8f11403295de445b6e4e0e57ac57755791 ]
 
-syzbot can trigger the WARN() in init_uevent_argv() which isn't the
-nicest as the code does properly recover and handle the error.  So
-change the WARN() call to pr_warn() and provide some more information on
-what the buffer size that was needed.
+In case of shared sbitmap, request won't be held in plug list any more
+sine commit 32bc15afed04 ("blk-mq: Facilitate a shared sbitmap per
+tagset"), this way makes request merge from flush plug list & batching
+submission not possible, so cause performance regression.
 
-Link: https://lore.kernel.org/r/20201107082206.GA19079@kroah.com
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Reported-by: syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20210405094852.1348499-1-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Yanhui reports performance regression when running sequential IO
+test(libaio, 16 jobs, 8 depth for each job) in VM, and the VM disk
+is emulated with image stored on xfs/megaraid_sas.
+
+Fix the issue by recovering original behavior to allow to hold request
+in plug list.
+
+Cc: Yanhui Ma <yama@redhat.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: kashyap.desai@broadcom.com
+Fixes: 32bc15afed04 ("blk-mq: Facilitate a shared sbitmap per tagset")
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210514022052.1047665-1-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/kobject_uevent.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ block/blk-mq.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
-@@ -251,12 +251,13 @@ static int kobj_usermode_filter(struct k
- 
- static int init_uevent_argv(struct kobj_uevent_env *env, const char *subsystem)
- {
-+	int buffer_size = sizeof(env->buf) - env->buflen;
- 	int len;
- 
--	len = strlcpy(&env->buf[env->buflen], subsystem,
--		      sizeof(env->buf) - env->buflen);
--	if (len >= (sizeof(env->buf) - env->buflen)) {
--		WARN(1, KERN_ERR "init_uevent_argv: buffer size too small\n");
-+	len = strlcpy(&env->buf[env->buflen], subsystem, buffer_size);
-+	if (len >= buffer_size) {
-+		pr_warn("init_uevent_argv: buffer size of %d too small, needed %d\n",
-+			buffer_size, len);
- 		return -ENOMEM;
- 	}
- 
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index f285a9123a8b..2cd922579b2f 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2189,8 +2189,9 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
+ 		/* Bypass scheduler for flush requests */
+ 		blk_insert_flush(rq);
+ 		blk_mq_run_hw_queue(data.hctx, true);
+-	} else if (plug && (q->nr_hw_queues == 1 || q->mq_ops->commit_rqs ||
+-				!blk_queue_nonrot(q))) {
++	} else if (plug && (q->nr_hw_queues == 1 ||
++		   blk_mq_is_sbitmap_shared(rq->mq_hctx->flags) ||
++		   q->mq_ops->commit_rqs || !blk_queue_nonrot(q))) {
+ 		/*
+ 		 * Use plugging if we have a ->commit_rqs() hook as well, as
+ 		 * we know the driver uses bd->last in a smart fashion.
+-- 
+2.30.2
+
 
 
