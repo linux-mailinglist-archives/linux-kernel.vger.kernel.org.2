@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B04382300
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 05:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CA338230B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 05:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234384AbhEQDPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 23:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232509AbhEQDPN (ORCPT
+        id S231744AbhEQDXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 23:23:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18703 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhEQDXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 23:15:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D60C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 20:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ntHCwS6vuOQS1pbrYRyU4GJgiqYXxM4C5/zbAtZ1vac=; b=e4fTWzOoq6Hg00RkJQvHtaclMk
-        hyHps9zpV6nbGVRGr+S2AZ26F5kpPr85TsWhwsorONeTWYTDaaPtyPnSTa21YF/5V0+4cCMPhkEbD
-        iLIo5cglJK6byTc3nJJm0RZHBBc1HXgntubsJyl+27SFqg1c5F9grCK6jW6XgB3MF+5rkhuzSG+OV
-        I9UiUYcKjyAccgolMfpV2Gu/zlktBfsxMJkUcS+KEduFZYqUjZEXwqUWrqeu2wfGc2nsr6iS5vqT7
-        TYGmkGzfLEWAV9gU4lLm9mS2nivr7yX79498A0JJqXJt5P6rQVhR45TSHsec/SFkpCJ4J9aweBv0X
-        X8vpSERA==;
-Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liThb-00DRcQ-N4; Mon, 17 May 2021 03:13:55 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] nds32: add a Kconfig symbol for LOCKDEP_SUPPORT
-Date:   Sun, 16 May 2021 20:13:54 -0700
-Message-Id: <20210517031354.9646-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 16 May 2021 23:23:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621221751; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=BnqGq1pzoqqb3qyX2lCRDxOTjJMep8szFP0fRb15D7M=;
+ b=tAPikW7xB0qPhZ5hxMOBprwlniXtIQM/lHH5es+YHrYJz2/j4PPm4FtdA2mQXWGnW2VWZmne
+ xeLzktebolzHHxupZ5XGyZRiC7YVfvj1OAcuylzgYlLfqazP//S0RM+jt6rzMtDR9PU7W8tH
+ QtEYBUT8XkpUbrPFAg7hdwCoBlU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60a1e1745f788b52a59218c2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 May 2021 03:22:28
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 98CB5C43217; Mon, 17 May 2021 03:22:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 04DEAC433F1;
+        Mon, 17 May 2021 03:22:27 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 17 May 2021 11:22:27 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 5/6] scsi: ufs: Let host_sem cover the entire system
+ suspend/resume
+In-Reply-To: <b59e0cd4-d560-6724-3f30-a5232dd41a8f@acm.org>
+References: <1620885319-15151-1-git-send-email-cang@codeaurora.org>
+ <1620885319-15151-7-git-send-email-cang@codeaurora.org>
+ <b59e0cd4-d560-6724-3f30-a5232dd41a8f@acm.org>
+Message-ID: <98a7135ef1ce34e23e84817cf6167e1a@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each architecture (arch/) should define its own LOCKDEP_SUPPORT
-Kconfig symbol (if it is needed). arch/nds32/ is the only one
-that does "select LOCKDEP_SUPPORT", which is basically a no-op
-since the symbol is not defined. (It might be nice for kconfig
-to warn about that.)
+Hi Bart,
 
-Add a "config LOCKDEP_SUPPORT" to arch/nds32/Kconfig to correct
-this issue.
+On 2021-05-14 11:55, Bart Van Assche wrote:
+> On 5/12/21 10:55 PM, Can Guo wrote:
+>> UFS error handling now is doing more than just re-probing, but also 
+>> sending
+>> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, 
+>> which
+>> may change runtime status of scsi devices. To protect system 
+>> suspend/resume
+>> from being disturbed by error handling, move the host_sem from wl pm 
+>> ops
+>> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
+> 
+> In ufshcd.h I found the following:
+> 
+>  * @host_sem: semaphore used to serialize concurrent contexts
+> 
+> That's the wrong way to use a synchronization object. A synchronization
+> object must protect data instead of code. Does host_sem perhaps need to
+> be split into multiple synchronization objects?
 
-Since the current Kconfig file selects LOCKDEP_SUPPORT unconditionally,
-use "def_bool y" to set/enable it always.
+Thanks for the comments. These contexts are changing critical data and
+registers, so the sem is used to protect data actually, just like the
+scaling_lock protecting scaling and cmd transations.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Nick Hu <nickhu@andestech.com>
-Cc: Greentime Hu <green.hu@gmail.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- arch/nds32/Kconfig |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thanks,
 
---- linux-next-20210514.orig/arch/nds32/Kconfig
-+++ linux-next-20210514/arch/nds32/Kconfig
-@@ -36,7 +36,6 @@ config NDS32
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_PERF_EVENTS
- 	select IRQ_DOMAIN
--	select LOCKDEP_SUPPORT
- 	select MODULES_USE_ELF_RELA
- 	select OF
- 	select OF_EARLY_FLATTREE
-@@ -64,6 +63,9 @@ config GENERIC_LOCKBREAK
- 	def_bool y
- 	depends on PREEMPTION
- 
-+config LOCKDEP_SUPPORT
-+	def_bool y
-+
- config TRACE_IRQFLAGS_SUPPORT
- 	def_bool y
- 
+Can Guo.
+
+> 
+> Thanks,
+> 
+> Bart.
