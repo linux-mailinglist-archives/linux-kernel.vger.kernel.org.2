@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31FD386BA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED91386BAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244439AbhEQUsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:48:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52942 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244292AbhEQUr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:47:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621284402; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=OCZ7uak29LEl8jJmUhLI4AIqfTsr8cXO52ZSocwTCrQ=; b=hO5z3x0P+jN9Ju2mLwftv7bZy7fDocZc+3VJ/sjFnPPEop+MTanqeUUxaJMbnNsHSH0ElrSE
- 43hY1dlfeMldino3fCUXU4/IYnMmGKDpigU7wdNqr/l/kXBSsA1Cfb+dEWMHHCg0iiNjJLf5
- 8rIA3AdzZApwxiLKvYf+vLsv92I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60a2d61160c53c8c9dec21ed (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 May 2021 20:46:09
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DF8EBC433D3; Mon, 17 May 2021 20:46:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC5E3C433D3;
-        Mon, 17 May 2021 20:46:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC5E3C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-To:     bjorn.andersson@linaro.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org
-Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
-        stable@vger.kernel.org
-Subject: [PATCH 3/3] remoteproc: core: Cleanup device in case of failure
-Date:   Mon, 17 May 2021 13:45:49 -0700
-Message-Id: <1621284349-22752-4-git-send-email-sidgup@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621284349-22752-1-git-send-email-sidgup@codeaurora.org>
-References: <1621284349-22752-1-git-send-email-sidgup@codeaurora.org>
+        id S237120AbhEQUty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229776AbhEQUtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 16:49:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F46C061573;
+        Mon, 17 May 2021 13:48:36 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621284514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=N9j0B7b156ySsfMwDJsNRd7Lot/GWP1durNGX4F30bE=;
+        b=1ZpNYLsTCuxDd2w4It1l3dHPjwwAqXAEgSY+DEPNfEPoHcR+Tj8HSX/lM6OuPLk7dDZQVW
+        W1mANCzHmyx/moYnbSqJIsfksQzHubt7JiZM2zKDIcbWHzozO2ubMZ64DlHO+vvi6SI3/u
+        kzgUMF1r1LiMVSf6GAg4a80TbFVuMBAThFvwPAqShd0TKE41wvAv3ecwduS+Wu1jdbDg0I
+        AbAfl/Kx/MAGDQmSaMwvUS+//Ee8ZAgjroZ+SaUJfqQ5dTIfSI6X60+ohc6ZLvj7Z1TR8t
+        CqFlk/za3NV3QACI21PFNIS7CqVMAmhb4Di/XCXQ8oCYUumaEBmQw4P267xG8Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621284514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=N9j0B7b156ySsfMwDJsNRd7Lot/GWP1durNGX4F30bE=;
+        b=Cq5gGnOum9YEtmqRoidToVZ0cJKjg3O1ZDCn247dy6VTZmmSgwiY8J34jS0r/5mY/3Ru7v
+        WBWf4Bc9muZaDeDA==
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic\@kernel.org" <frederic@kernel.org>,
+        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
+        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Nitesh Lal <nilal@redhat.com>, Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when setting the hint
+In-Reply-To: <20210504092340.00006c61@intel.com>
+Date:   Mon, 17 May 2021 22:48:33 +0200
+Message-ID: <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a failure occurs in rproc_add() it returns an error, but does
-not cleanup after itself. This change adds the failure path in such
-cases.
+On Tue, May 04 2021 at 09:23, Jesse Brandeburg wrote:
+> I'd add in addition that irqbalance daemon *stopped* paying attention
+> to hints quite a while ago, so I'm not quite sure what purpose they
+> serve.
 
-Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
----
- drivers/remoteproc/remoteproc_core.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+The hint was added so that userspace has a better understanding where it
+should place the interrupt. So if irqbalanced ignores it anyway, then
+what's the point of the hint? IOW, why is it still used drivers?
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 45d09bf..6f5fa81 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2326,8 +2326,10 @@ int rproc_add(struct rproc *rproc)
- 		return ret;
- 
- 	ret = device_add(dev);
--	if (ret < 0)
--		return ret;
-+	if (ret < 0) {
-+		put_device(dev);
-+		goto rproc_remove_cdev;
-+	}
- 
- 	dev_info(dev, "%s is available\n", rproc->name);
- 
-@@ -2338,7 +2340,7 @@ int rproc_add(struct rproc *rproc)
- 	if (rproc->auto_boot) {
- 		ret = rproc_trigger_auto_boot(rproc);
- 		if (ret < 0)
--			return ret;
-+			goto rproc_remove_dev;
- 	}
- 
- 	/* expose to rproc_get_by_phandle users */
-@@ -2347,6 +2349,13 @@ int rproc_add(struct rproc *rproc)
- 	mutex_unlock(&rproc_list_mutex);
- 
- 	return 0;
-+
-+rproc_remove_dev:
-+	rproc_delete_debug_dir(rproc);
-+	device_del(dev);
-+rproc_remove_cdev:
-+	rproc_char_device_remove(rproc);
-+	return ret;
- }
- EXPORT_SYMBOL(rproc_add);
- 
--- 
-Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Now there is another aspect to that. What happens if irqbalanced does
+not run at all and a driver relies on the side effect of the hint
+setting the initial affinity. Bah...
 
+While none of the drivers (except the perf muck) actually prevents
+userspace from fiddling with the affinity (via IRQF_NOBALANCING) a
+deeper inspection shows that they actually might rely on the current
+behaviour if irqbalanced is disabled. Of course every driver has its own
+convoluted way to do that and all of those functions are well
+documented. What a mess.
+
+If the hint still serves a purpose then we can provide a variant which
+solely applies the hint and does not fiddle with the actual affinity,
+but if the hint is useless anyway then we have a way better option to
+clean that up.
+
+Most users are in networking, there are a few in crypto, a couple of
+leftovers in scsi, virtio and a handfull of oddball drivers.
+
+The perf muck wants to be cleaned up anyway as it's just crystal clear
+abuse.
+
+Thanks,
+
+        tglx
