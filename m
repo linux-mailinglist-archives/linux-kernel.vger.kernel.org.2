@@ -2,87 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9D6383BEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38A2383BF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241981AbhEQSKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhEQSKH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:10:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B482EC061573;
-        Mon, 17 May 2021 11:08:50 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621274929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CvTjUMP0IFpl0qRUVo9p7Gf+50VNC5rcsZbQA53CimU=;
-        b=Ey7OfTMIuqEtByYZx90mXd53djFEoEu8K6IQPlvipZNXg5ghONNRHkNCn3ng4fZHJ14yVJ
-        GJFvsrF4jaDT1+cvSLA20ljvzp6GSJku4d78C4Cl9fB+KBVB6k3f9aAEbnFAygXcIBDtoa
-        dZQSyUeukUjJ+r7QVVaTL2WMe2VWaCxzYKzcGwcQEKSHyNyhpuw482nShODXmgnLX53zj0
-        FNDDJY5gMC1aK6TVCRecA6Mj0F9fHIdZGSDYxUF0THBl2/Qu2LsiPsOHutrwBUp5iHhR+W
-        ShmIS0ZMS9bRH5pEk0GZOCGZBu3XBYTzL065HM+NcjX/kLs6ukQ09rczJrw+Ig==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621274929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CvTjUMP0IFpl0qRUVo9p7Gf+50VNC5rcsZbQA53CimU=;
-        b=nwk42rkPCNh3s3mfln/GYYElC6A2IeHtvkPV0s3OY/6QuCU3sny3CL8c02/ZY3eO7ySjyt
-        gJbDII33Hb8QQmAg==
-To:     Robin Murphy <robin.murphy@arm.com>, Nitesh Lal <nilal@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>,
-        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when setting the hint
-In-Reply-To: <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com>
-References: <20210501021832.743094-1-jesse.brandeburg@intel.com> <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com> <20210504092340.00006c61@intel.com> <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com> <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com>
-Date:   Mon, 17 May 2021 20:08:48 +0200
-Message-ID: <87sg2lz0zz.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S242239AbhEQSLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:11:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236729AbhEQSK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 14:10:57 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9144D611BF;
+        Mon, 17 May 2021 18:09:40 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lihgQ-001v3k-MQ; Mon, 17 May 2021 19:09:38 +0100
+Date:   Mon, 17 May 2021 19:09:37 +0100
+Message-ID: <87r1i5teou.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 8/8] KVM: arm64: Document MTE capability and ioctl
+In-Reply-To: <20210517123239.8025-9-steven.price@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+        <20210517123239.8025-9-steven.price@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17 2021 at 18:26, Robin Murphy wrote:
-> On 2021-05-17 17:57, Nitesh Lal wrote:
-> I'm not implying that there isn't a bug, or that this code ever made 
-> sense in the first place, just that fixing it will unfortunately be a 
-> bit more involved than a simple revert. This patch as-is *will* subtly 
-> break at least the system PMU drivers currently using
+On Mon, 17 May 2021 13:32:39 +0100,
+Steven Price <steven.price@arm.com> wrote:
+> 
+> A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
+> granting a guest access to the tags, and provides a mechanism for the
+> VMM to enable it.
+> 
+> A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
+> access the tags of a guest without having to maintain a PROT_MTE mapping
+> in userspace. The above capability gates access to the ioctl.
+> 
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>  Documentation/virt/kvm/api.rst | 53 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 22d077562149..a31661b870ba 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -5034,6 +5034,40 @@ see KVM_XEN_VCPU_SET_ATTR above.
+>  The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
+>  with the KVM_XEN_VCPU_GET_ATTR ioctl.
+>  
+> +4.130 KVM_ARM_MTE_COPY_TAGS
+> +---------------------------
+> +
+> +:Capability: KVM_CAP_ARM_MTE
+> +:Architectures: arm64
+> +:Type: vm ioctl
+> +:Parameters: struct kvm_arm_copy_mte_tags
+> +:Returns: 0 on success, < 0 on error
+> +
+> +::
+> +
+> +  struct kvm_arm_copy_mte_tags {
+> +	__u64 guest_ipa;
+> +	__u64 length;
+> +	union {
+> +		void __user *addr;
+> +		__u64 padding;
+> +	};
+> +	__u64 flags;
+> +	__u64 reserved[2];
+> +  };
 
-s/using/abusing/
+This doesn't exactly match the structure in the previous patch :-(.
 
-> irq_set_affinity_hint() - those I know require the IRQ affinity to 
-> follow whichever CPU the PMU context is bound to, in order to meet perf 
-> core's assumptions about mutual exclusion.
+> +
+> +Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
+> +``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
+> +fieldmust point to a buffer which the tags will be copied to or from.
+> +
+> +``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
+> +``KVM_ARM_TAGS_FROM_GUEST``.
+> +
+> +The size of the buffer to store the tags is ``(length / MTE_GRANULE_SIZE)``
 
-Which driver is that?
+Should we add a UAPI definition for MTE_GRANULE_SIZE?
+
+> +bytes (i.e. 1/16th of the corresponding size). Each byte contains a single tag
+> +value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
+> +``PTRACE_POKEMTETAGS``.
+> +
+>  5. The kvm_run structure
+>  ========================
+>  
+> @@ -6362,6 +6396,25 @@ default.
+>  
+>  See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
+>  
+> +7.26 KVM_CAP_ARM_MTE
+> +--------------------
+> +
+> +:Architectures: arm64
+> +:Parameters: none
+> +
+> +This capability indicates that KVM (and the hardware) supports exposing the
+> +Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
+> +VMM before the guest will be granted access.
+> +
+> +When enabled the guest is able to access tags associated with any memory given
+> +to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
+> +that the tags are maintained during swap or hibernation of the host; however
+> +the VMM needs to manually save/restore the tags as appropriate if the VM is
+> +migrated.
+> +
+> +When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
+> +perform a bulk copy of tags to/from the guest.
+> +
+
+Missing limitation to AArch64 guests.
 
 Thanks,
 
-        tglx
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
