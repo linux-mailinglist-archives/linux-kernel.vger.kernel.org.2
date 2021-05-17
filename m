@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C5A38390D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582CF3838FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhEQQHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:07:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
+        id S1346500AbhEQQGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344487AbhEQPon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:44:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B4A61D21;
-        Mon, 17 May 2021 14:43:20 +0000 (UTC)
+        id S1344502AbhEQPow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:44:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E594161D26;
+        Mon, 17 May 2021 14:43:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262601;
-        bh=EDO3RclybQGy3YqOroCi95bJy+M1XUMA544bAQr6lAQ=;
+        s=korg; t=1621262605;
+        bh=nrLbR1qS2oetQEG6q1ppywEyY3I4leNoq2ksalzIrvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rIeUHEGDGTFLC3H+EiOjP7Y3RB2hlinjdw/3xrjX7Hg1I4j3XICrFT+VBMu1FrwmS
-         tkFrs80HggaI566Ngv7XWe28c6MDrtb7r3DAF8lsD5Alkmsy5wyN5Ovj1kHgpOZDuO
-         MdmMtBt1ATD6dnh8OiFaCSgYnTd38p7o4RhM7gyk=
+        b=Nv4Cuf2PA4+zPhy81vCIHn4Z6OvDrmjC8fIzZl/yHJJJA/s53b5Mte8ZpNn502/SN
+         2Plv3+3VfPiXV/UPXDnFXCk09jUerLt1IF2dfxwyEViav6i2DSA6a+pYrOG64BkmDY
+         oM7+UgTCv5EOgrrqPlwUTADgdC93PPGSb7WxBjuQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 222/289] usb: dwc3: gadget: Free gadget structure only after freeing endpoints
-Date:   Mon, 17 May 2021 16:02:27 +0200
-Message-Id: <20210517140312.626006320@linuxfoundation.org>
+Subject: [PATCH 5.10 223/289] iio: light: gp2ap002: Fix rumtime PM imbalance on error
+Date:   Mon, 17 May 2021 16:02:28 +0200
+Message-Id: <20210517140312.672769607@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,62 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit bb9c74a5bd1462499fe5ccb1e3c5ac40dcfa9139 ]
+[ Upstream commit 8edb79af88efc6e49e735f9baf61d9f0748b881f ]
 
-As part of commit e81a7018d93a ("usb: dwc3: allocate gadget structure
-dynamically") the dwc3_gadget_release() was added which will free
-the dwc->gadget structure upon the device's removal when
-usb_del_gadget_udc() is called in dwc3_gadget_exit().
+When devm_request_threaded_irq() fails, we should decrease the
+runtime PM counter to keep the counter balanced. But when
+iio_device_register() fails, we need not to decrease it because
+we have already decreased it before.
 
-However, simply freeing the gadget results a dangling pointer
-situation: the endpoints created in dwc3_gadget_init_endpoints()
-have their dep->endpoint.ep_list members chained off the list_head
-anchored at dwc->gadget->ep_list.  Thus when dwc->gadget is freed,
-the first dwc3_ep in the list now has a dangling prev pointer and
-likewise for the next pointer of the dwc3_ep at the tail of the list.
-The dwc3_gadget_free_endpoints() that follows will result in a
-use-after-free when it calls list_del().
-
-This was caught by enabling KASAN and performing a driver unbind.
-The recent commit 568262bf5492 ("usb: dwc3: core: Add shutdown
-callback for dwc3") also exposes this as a panic during shutdown.
-
-There are a few possibilities to fix this.  One could be to perform
-a list_del() of the gadget->ep_list itself which removes it from
-the rest of the dwc3_ep chain.
-
-Another approach is what this patch does, by splitting up the
-usb_del_gadget_udc() call into its separate "del" and "put"
-components.  This allows dwc3_gadget_free_endpoints() to be
-called before the gadget is finally freed with usb_put_gadget().
-
-Fixes: e81a7018d93a ("usb: dwc3: allocate gadget structure dynamically")
-Reviewed-by: Peter Chen <peter.chen@kernel.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Link: https://lore.kernel.org/r/20210501093558.7375-1-jackp@codeaurora.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 97d642e23037 ("iio: light: Add a driver for Sharp GP2AP002x00F")
+Link: https://lore.kernel.org/r/20210407034927.16882-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/gadget.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/iio/light/gp2ap002.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 84d1487e9f06..dab9b5fd15a9 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -3948,8 +3948,9 @@ int dwc3_gadget_init(struct dwc3 *dwc)
+diff --git a/drivers/iio/light/gp2ap002.c b/drivers/iio/light/gp2ap002.c
+index 7ba7aa59437c..040d8429a6e0 100644
+--- a/drivers/iio/light/gp2ap002.c
++++ b/drivers/iio/light/gp2ap002.c
+@@ -583,7 +583,7 @@ static int gp2ap002_probe(struct i2c_client *client,
+ 					"gp2ap002", indio_dev);
+ 	if (ret) {
+ 		dev_err(dev, "unable to request IRQ\n");
+-		goto out_disable_vio;
++		goto out_put_pm;
+ 	}
+ 	gp2ap002->irq = client->irq;
  
- void dwc3_gadget_exit(struct dwc3 *dwc)
- {
--	usb_del_gadget_udc(dwc->gadget);
-+	usb_del_gadget(dwc->gadget);
- 	dwc3_gadget_free_endpoints(dwc);
-+	usb_put_gadget(dwc->gadget);
- 	dma_free_coherent(dwc->sysdev, DWC3_BOUNCE_SIZE, dwc->bounce,
- 			  dwc->bounce_addr);
- 	kfree(dwc->setup_buf);
+@@ -613,8 +613,9 @@ static int gp2ap002_probe(struct i2c_client *client,
+ 
+ 	return 0;
+ 
+-out_disable_pm:
++out_put_pm:
+ 	pm_runtime_put_noidle(dev);
++out_disable_pm:
+ 	pm_runtime_disable(dev);
+ out_disable_vio:
+ 	regulator_disable(gp2ap002->vio);
 -- 
 2.30.2
 
