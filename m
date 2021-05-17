@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7BE383717
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DDA383719
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343968AbhEQPkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:40:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
+        id S1344007AbhEQPkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:40:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245102AbhEQPYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:24:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83AD261C95;
-        Mon, 17 May 2021 14:35:55 +0000 (UTC)
+        id S245192AbhEQPZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:25:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8CBD61C9D;
+        Mon, 17 May 2021 14:35:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262156;
-        bh=9Pck8uEsAuHLM+Qc0nQL61vL9H2IKMCi+aB92EwLo40=;
+        s=korg; t=1621262160;
+        bh=9/deoVy0/tN1by8qL0WOlNlc4En/IMSnzchfO2hrlYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eI11HfufFZz3rbPUAG+ZKlhfVZow0l+RcHFbc+Os4v/EBH+ARVCUgFz+yzQFwEIzj
-         xMgNoIbKfJ2M9u3V0DNe4S4Ge9eT4du46ra1C4SHdYGUNaHrsIQdAdB97OScMQjUfX
-         ijHBXpy4ux5atqIMGQEfJ4rXk4BQIyAeo9wdnBaw=
+        b=VZ2j8jKyrkb4Sh9BsXVpj14couFRlYp3g91RA4/eH5fL6+AA+yCH2WTnSRXQ5Zo0U
+         Ydy4WvkjpMivuIQcsgVWnmf8YXlkIhBDyIRk4S3GElBYgxU4vYawXPaiOgdj7T/mcK
+         di6No5W2ySyFhDYF0MK+63+tmuSyN7JuyGo2szDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 228/329] mptcp: fix splat when closing unaccepted socket
-Date:   Mon, 17 May 2021 16:02:19 +0200
-Message-Id: <20210517140309.831036661@linuxfoundation.org>
+        stable@vger.kernel.org, Shahab Vahedi <shahab@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 5.11 229/329] ARC: entry: fix off-by-one error in syscall number validation
+Date:   Mon, 17 May 2021 16:02:20 +0200
+Message-Id: <20210517140309.861621685@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -42,50 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit 578c18eff1627d6a911f08f4cf351eca41fdcc7d ]
+commit 3433adc8bd09fc9f29b8baddf33b4ecd1ecd2cdc upstream.
 
-If userspace exits before calling accept() on a listener that had at least
-one new connection ready, we get:
+We have NR_syscall syscalls from [0 .. NR_syscall-1].
+However the check for invalid syscall number is "> NR_syscall" as
+opposed to >=. This off-by-one error erronesously allows "NR_syscall"
+to be treated as valid syscall causeing out-of-bounds access into
+syscall-call table ensuing a crash (holes within syscall table have a
+invalid-entry handler but this is beyond the array implementing the
+table).
 
-   Attempt to release TCP socket in state 8
+This problem showed up on v5.6 kernel when testing glibc 2.33 (v5.10
+kernel capable, includng faccessat2 syscall 439). The v5.6 kernel has
+NR_syscalls=439 (0 to 438). Due to the bug, 439 passed by glibc was
+not handled as -ENOSYS but processed leading to a crash.
 
-This happens because the mptcp socket gets cloned when the TCP connection
-is ready, but the socket is never exposed to userspace.
-
-The client additionally sends a DATA_FIN, which brings connection into
-CLOSE_WAIT state.  This in turn prevents the orphan+state reset fixup
-in mptcp_sock_destruct() from doing its job.
-
-Fixes: 3721b9b64676b ("mptcp: Track received DATA_FIN sequence number and add related helpers")
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/185
-Tested-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Link: https://lore.kernel.org/r/20210507001638.225468-1-mathew.j.martineau@linux.intel.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
+Reported-by: Shahab Vahedi <shahab@synopsys.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mptcp/subflow.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arc/kernel/entry.S |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index f97f29df4505..371a114f3a5f 100644
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -479,8 +479,7 @@ static void mptcp_sock_destruct(struct sock *sk)
- 	 * ESTABLISHED state and will not have the SOCK_DEAD flag.
- 	 * Both result in warnings from inet_sock_destruct.
- 	 */
--
--	if (sk->sk_state == TCP_ESTABLISHED) {
-+	if ((1 << sk->sk_state) & (TCPF_ESTABLISHED | TCPF_CLOSE_WAIT)) {
- 		sk->sk_state = TCP_CLOSE;
- 		WARN_ON_ONCE(sk->sk_socket);
- 		sock_orphan(sk);
--- 
-2.30.2
-
+--- a/arch/arc/kernel/entry.S
++++ b/arch/arc/kernel/entry.S
+@@ -177,7 +177,7 @@ tracesys:
+ 
+ 	; Do the Sys Call as we normally would.
+ 	; Validate the Sys Call number
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     tracesys_exit
+ 
+@@ -255,7 +255,7 @@ ENTRY(EV_Trap)
+ 	;============ Normal syscall case
+ 
+ 	; syscall num shd not exceed the total system calls avail
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     .Lret_from_system_call
+ 
 
 
