@@ -2,197 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04BA3826F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060BC3826F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235653AbhEQI1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:27:06 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2995 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbhEQI1D (ORCPT
+        id S235680AbhEQI1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:27:10 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:37432 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235599AbhEQI1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:27:03 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkBvF2f8lzQpPG;
-        Mon, 17 May 2021 16:22:17 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 16:25:45 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 16:25:44 +0800
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Mon, 17 May 2021 04:27:05 -0400
+Received: by mail-ej1-f44.google.com with SMTP id et19so810898ejc.4;
+        Mon, 17 May 2021 01:25:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zlEP3w+94KRiLe6VBAU5FX/rnIZsbArHdn1PJkGhu/w=;
+        b=rqrye2H5JrwHeNZM/NIhM2t3tXRyM8o6FoaHCUj0ocLwGBe1UOjepDuXf37dE9sUX0
+         xF86S5ACLkcJE9HROT9J5wVTXZhEgLL6yuBInnfMj2fPR/IYJ6TPX2+DP0tv4joDH/mR
+         OMLdBG6OeyTygGzbaSW5+NfUuoc5kkrvG50VYzYZ7017WUKXqHBxyXveQjptjJVid+Kn
+         09jPdGmDgvShZpCjn8kOErEG4Ti940wkbFqEyxn4ugoi8eOa35DK6txJAXebbXOy5OPd
+         xxaiP7cNc/uhTTZVN0uG4r7ZTdLqGYrEmy2hJgY2bqgCbNQ9a7AypE/AjHaNeQtP3BAg
+         d4mQ==
+X-Gm-Message-State: AOAM530CXHO1kRRnwtQ3tqSJ79ZsA7UVf/aOkKTD7MMzyhXQqrAnmQmp
+        faHAeSd39m3cOd5pmsLRK9SgBOTQVLT1aA==
+X-Google-Smtp-Source: ABdhPJyqqz3mcU71IqpGIyIUK/HQ/Lm1GTsUPyLxcZAw9oL1LIwER0Hox94JVW4oWm3lJmSdGPtG0A==
+X-Received: by 2002:a17:906:4155:: with SMTP id l21mr10207322ejk.424.1621239947675;
+        Mon, 17 May 2021 01:25:47 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id n12sm756976edr.84.2021.05.17.01.25.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 01:25:47 -0700 (PDT)
+Subject: Re: [PATCH] serial/liteuart; Add support for earlycon
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Florent Kermarrec <florent@enjoy-digital.fr>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        "Gabriel L . Somlo" <gsomlo@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
- <YJ5APhzabmAKIKCE@apalos.home>
- <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
- <YKIPcF9ACNmFtksz@enceladus>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <fade4bc7-c1c7-517e-a775-0a5bb2e66be6@huawei.com>
-Date:   Mon, 17 May 2021 16:25:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thomas Gleixner <tglx@linutronix.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20210515084519.167343-1-shorne@gmail.com>
+ <adb78be2-18a6-224d-1fa7-36b7912fa1cf@kernel.org> <YKIn6PHlGGsK+70W@antec>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <d17a43ab-facf-8ffb-5147-7492fb85b0b5@kernel.org>
+Date:   Mon, 17 May 2021 10:25:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <YKIPcF9ACNmFtksz@enceladus>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YKIn6PHlGGsK+70W@antec>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/17 14:38, Ilias Apalodimas wrote:
-> [...]
->>
+On 17. 05. 21, 10:23, Stafford Horne wrote:
+> On Mon, May 17, 2021 at 10:16:43AM +0200, Jiri Slaby wrote:
+>> On 15. 05. 21, 10:45, Stafford Horne wrote:
+>>> Most litex boards using RISC-V soft cores us the sbi earlycon, however
+>>> this is not available for non RISC-V litex SoC.  This patch enables
+>>> earlycon for liteuart which is available on all Litex SoC's making
+>>> support for earycon debugging more widely available.
 >>>
->>>> Maybe we can add a parameter in "struct page_pool_params" to let driver
->>>> to decide if the page pool ptr is stored in page->pp while the page pool
->>>> owns the page?
+>>> Signed-off-by: Stafford Horne <shorne@gmail.com>
+>>> Cc: Florent Kermarrec <florent@enjoy-digital.fr>
+>>> Cc: Mateusz Holenko <mholenko@antmicro.com>
+>>> Cc: Joel Stanley <joel@jms.id.au>
+>>> Cc: Gabriel L. Somlo <gsomlo@gmail.com>
+>>> ---
+>>>    .../admin-guide/kernel-parameters.txt         |  5 +++
+>>>    drivers/tty/serial/Kconfig                    |  1 +
+>>>    drivers/tty/serial/liteuart.c                 | 31 +++++++++++++++++++
+>>>    3 files changed, 37 insertions(+)
 >>>
->>> Then you'd have to check the page pool config before saving the meta-data,
+>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>>> index 04545725f187..2d4a43af8de2 100644
+>>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>>> @@ -1084,6 +1084,11 @@
+>>>    			the driver will use only 32-bit accessors to read/write
+>>>    			the device registers.
+>>> +		liteuart,<addr>
+>>> +			Start an early console on a litex serial port at the
+>>> +			specified address. The serial port must already be
+>>> +			setup and configured. Options are not yet supported.
+>>> +
+>>>    		meson,<addr>
+>>>    			Start an early, polled-mode console on a meson serial
+>>>    			port at the specified address. The serial port must
+>>> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+>>> index 0c4cd4a348f4..9ceffe6ab6fd 100644
+>>> --- a/drivers/tty/serial/Kconfig
+>>> +++ b/drivers/tty/serial/Kconfig
+>>> @@ -1531,6 +1531,7 @@ config SERIAL_LITEUART
+>>>    	depends on OF || COMPILE_TEST
+>>>    	depends on LITEX
+>>>    	select SERIAL_CORE
+>>> +	select SERIAL_EARLYCON
+>>>    	help
+>>>    	  This driver is for the FPGA-based LiteUART serial controller from LiteX
+>>>    	  SoC builder.
+>>> diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
+>>> index 64842f3539e1..38c472487e68 100644
+>>> --- a/drivers/tty/serial/liteuart.c
+>>> +++ b/drivers/tty/serial/liteuart.c
+>>> @@ -372,6 +372,37 @@ static int __init liteuart_console_init(void)
+>>>    console_initcall(liteuart_console_init);
+>>>    #endif /* CONFIG_SERIAL_LITEUART_CONSOLE */
+>>> +#ifdef CONFIG_SERIAL_EARLYCON
+>>> +static void early_liteuart_putc(struct uart_port *port, int c)
+>>> +{
+>>> +	while (litex_read8(port->membase + OFF_TXFULL))
+>>> +		cpu_relax();
+>>> +
+>>> +	litex_write8(port->membase + OFF_RXTX, c);
 >>
->> I am not sure what the "saving the meta-data" meant?
+>> Hi,
+>>
+>> am I missing something or this doesn't differ to liteuart_putchar?
 > 
-> I was referring to struct page_pool* and the signature we store in struct
-> page.
+> Hi, No you are right, I missed that thanks for catching it.
 > 
->>
->>> and you would have to make the skb path aware of that as well (I assume you
->>> mean replace pp_recycle with this?).
->>
->> I meant we could set the in page->pp when the page is allocated from
->> alloc_pages() in __page_pool_alloc_pages_slow() unconditionally or
->> according to a newly add filed in pool->p, and only clear it in
->> page_pool_release_page(), between which the page is owned by page pool,
->> right?
->>
->>> If not and you just want to add an extra flag on page_pool_params and be able 
->>> to enable recycling depending on that flag, we just add a patch afterwards.
->>> I am not sure we need an extra if for each packet though.
->>
->> In that case, the skb_mark_for_recycle() could only set the skb->pp_recycle,
->> but not the pool->p.
->>
->>>
->>>>
->>>> Another thing accured to me is that if the driver use page from the
->>>> page pool to form a skb, and it does not call skb_mark_for_recycle(),
->>>> then there will be resource leaking, right? if yes, it seems the
->>>> skb_mark_for_recycle() call does not seems to add any value?
->>>>
->>>
->>> Not really, the driver has 2 choices:
->>> - call page_pool_release_page() once it receives the payload. That will
->>>   clean up dma mappings (if page pool is responsible for them) and free the
->>>   buffer
->>
->> The is only needed before SKB recycling is supported or the driver does not
->> want the SKB recycling support explicitly, right?
->>
-> 
-> This is needed in general even before recycling.  It's used to unmap the
-> buffer, so once you free the SKB you don't leave any stale DMA mappings.  So
-> that's what all the drivers that use page_pool call today.
+> I should be able to remove this function and use putchar below.
 
-As my understanding:
-1. If the driver is using page allocated from page allocator directly to
-   form a skb, let's say the page is owned by skb(or not owned by anyone:)),
-   when a skb is freed, the put_page() should be called.
+OK.
 
-2. If the driver is using page allocated from page pool to form a skb, let's
-   say the page is owned by page pool, when a skb is freed, page_pool_put_page()
-   should be called.
+I've just noticed you add an ifdef CONFIG_SERIAL_EARLYCON here, but you 
+select SERIAL_EARLYCON in Kconfig above. So the ifdef is sort of 
+pointless? (Or you shouldn't select SERIAL_EARLYCON.)
 
-What page_pool_release_page() mainly do is to make page in case 2 return back
-to case 1.
-
-And page_pool_release_page() is replaced with skb_mark_for_recycle() in patch
-4/5 to avoid the above "case 2" -> "case 1" changing, so that the page is still
-owned by page pool, right?
-
-So the point is that skb_mark_for_recycle() does not really do anything about
-the owner of the page, it is still owned by page pool, so it makes more sense
-to keep the page pool ptr instead of setting it every time when
-skb_mark_for_recycle() is called?
-
-> 
->>> - call skb_mark_for_recycle(). Which will end up recycling the buffer.
->>
->> If the driver need to add extra flag to enable recycling based on skb
->> instead of page pool, then adding skb_mark_for_recycle() makes sense to
->> me too, otherwise it seems adding a field in pool->p to recycling based
->> on skb makes more sense?
->>
-> 
-> The recycling is essentially an SKB feature though isn't it?  You achieve the
-> SKB recycling with the help of page_pool API, not the other way around.  So I
-> think this should remain on the SKB and maybe in the future find ways to turn
-> in on/off?
-
-As above, does it not make more sense to call page_pool_release_page() if the
-driver does not need the SKB recycling?
-
-Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
-or page pool are both supported, so it seems page->signature need to be reliable
-to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
-is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
-the page->signature does not need checking?
-
-> 
-> Thanks
-> /Ilias
-
+thanks,
+-- 
+js
+suse labs
