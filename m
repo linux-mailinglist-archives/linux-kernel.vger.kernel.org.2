@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D95383638
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0E6383797
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245608AbhEQPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:30:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51696 "EHLO mail.kernel.org"
+        id S1344890AbhEQPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:45:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243942AbhEQPPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:15:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF14A6124C;
-        Mon, 17 May 2021 14:32:24 +0000 (UTC)
+        id S245694AbhEQPad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:30:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5352E61CC4;
+        Mon, 17 May 2021 14:37:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261945;
-        bh=MBOQYnE2mOI5zp9tE0zlOseQc4zBVgAXWE1oPuGi4DU=;
+        s=korg; t=1621262273;
+        bh=a+76ESXoPOw3Ev4y4VzpXrP8duFzucx1aof+adZ6SJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDTx3oGg1YnW9oZhd5aTmdGfKLYJUhwRzNhJUQEln2gtnwnORm9F3EmtQjmqI0sdt
-         bUVqPF26bJWNFPeOV39Qze9hKemihwoFy1dhdmCvZ9sgFChlpNaJjDatSlc7NQdiUH
-         LKUoCRG2H37OzynE7yHfsZeJpWZk4fpgAfQjriMU=
+        b=Ck3hCiq2Umf7/7HI6XlRAGsZu65k1fGjAyWvdgeh04JCG1mm2zXWHaqm8wC/VHQ08
+         C2Op/NBSQIGN6r8U2HhKptfyo/FhVl42Xufg4uIkiW5k6mtFgyYkFNtwgEMOff44ZK
+         8/z0WucLKsKI1zwPasdfy+MRjM9CdT6qrC5Y8lGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marcel Hamer <marcel@solidxs.se>
-Subject: [PATCH 5.4 113/141] usb: dwc3: omap: improve extcon initialization
+        stable@vger.kernel.org,
+        syzbot+6beae4000559d41d80f8@syzkaller.appspotmail.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 254/329] KVM: x86: Prevent deadlock against tk_core.seq
 Date:   Mon, 17 May 2021 16:02:45 +0200
-Message-Id: <20210517140246.605182959@linuxfoundation.org>
+Message-Id: <20210517140310.699634146@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,44 +42,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcel Hamer <marcel@solidxs.se>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit e17b02d4970913233d543c79c9c66e72cac05bdd upstream.
+[ Upstream commit 3f804f6d201ca93adf4c3df04d1bfd152c1129d6 ]
 
-When extcon is used in combination with dwc3, it is assumed that the dwc3
-registers are untouched and as such are only configured if VBUS is valid
-or ID is tied to ground.
+syzbot reported a possible deadlock in pvclock_gtod_notify():
 
-In case VBUS is not valid or ID is floating, the registers are not
-configured as such during driver initialization, causing a wrong
-default state during boot.
+CPU 0  		  	   	    	    CPU 1
+write_seqcount_begin(&tk_core.seq);
+  pvclock_gtod_notify()			    spin_lock(&pool->lock);
+    queue_work(..., &pvclock_gtod_work)	    ktime_get()
+     spin_lock(&pool->lock);		      do {
+     						seq = read_seqcount_begin(tk_core.seq)
+						...
+				              } while (read_seqcount_retry(&tk_core.seq, seq);
 
-If the registers are not in a default state, because they are for
-instance touched by a boot loader, this can cause for a kernel error.
+While this is unlikely to happen, it's possible.
 
-Signed-off-by: Marcel Hamer <marcel@solidxs.se>
-Link: https://lore.kernel.org/r/20210427122118.1948340-1-marcel@solidxs.se
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Delegate queue_work() to irq_work() which postpones it until the
+tk_core.seq write held region is left and interrupts are reenabled.
+
+Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
+Reported-by: syzbot+6beae4000559d41d80f8@syzkaller.appspotmail.com
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Message-Id: <87h7jgm1zy.ffs@nanos.tec.linutronix.de>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-omap.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/kvm/x86.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/dwc3/dwc3-omap.c
-+++ b/drivers/usb/dwc3/dwc3-omap.c
-@@ -437,8 +437,13 @@ static int dwc3_omap_extcon_register(str
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index b010ad6cbd14..8105e9ae1ff8 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7872,6 +7872,18 @@ static void pvclock_gtod_update_fn(struct work_struct *work)
  
- 		if (extcon_get_state(edev, EXTCON_USB) == true)
- 			dwc3_omap_set_mailbox(omap, OMAP_DWC3_VBUS_VALID);
-+		else
-+			dwc3_omap_set_mailbox(omap, OMAP_DWC3_VBUS_OFF);
+ static DECLARE_WORK(pvclock_gtod_work, pvclock_gtod_update_fn);
+ 
++/*
++ * Indirection to move queue_work() out of the tk_core.seq write held
++ * region to prevent possible deadlocks against time accessors which
++ * are invoked with work related locks held.
++ */
++static void pvclock_irq_work_fn(struct irq_work *w)
++{
++	queue_work(system_long_wq, &pvclock_gtod_work);
++}
 +
- 		if (extcon_get_state(edev, EXTCON_USB_HOST) == true)
- 			dwc3_omap_set_mailbox(omap, OMAP_DWC3_ID_GROUND);
-+		else
-+			dwc3_omap_set_mailbox(omap, OMAP_DWC3_ID_FLOAT);
++static DEFINE_IRQ_WORK(pvclock_irq_work, pvclock_irq_work_fn);
++
+ /*
+  * Notification about pvclock gtod data update.
+  */
+@@ -7883,13 +7895,14 @@ static int pvclock_gtod_notify(struct notifier_block *nb, unsigned long unused,
  
- 		omap->edev = edev;
- 	}
+ 	update_pvclock_gtod(tk);
+ 
+-	/* disable master clock if host does not trust, or does not
+-	 * use, TSC based clocksource.
++	/*
++	 * Disable master clock if host does not trust, or does not use,
++	 * TSC based clocksource. Delegate queue_work() to irq_work as
++	 * this is invoked with tk_core.seq write held.
+ 	 */
+ 	if (!gtod_is_based_on_tsc(gtod->clock.vclock_mode) &&
+ 	    atomic_read(&kvm_guest_has_master_clock) != 0)
+-		queue_work(system_long_wq, &pvclock_gtod_work);
+-
++		irq_work_queue(&pvclock_irq_work);
+ 	return 0;
+ }
+ 
+@@ -8005,6 +8018,7 @@ void kvm_arch_exit(void)
+ 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
+ #ifdef CONFIG_X86_64
+ 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
++	irq_work_sync(&pvclock_irq_work);
+ 	cancel_work_sync(&pvclock_gtod_work);
+ #endif
+ 	kvm_x86_ops.hardware_enable = NULL;
+-- 
+2.30.2
+
 
 
