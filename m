@@ -2,165 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50E438278D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68903382797
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235781AbhEQIyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235731AbhEQIyn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:54:43 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F798C061573;
-        Mon, 17 May 2021 01:53:26 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id m190so4193084pga.2;
-        Mon, 17 May 2021 01:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nJVJSykwKfy3n47FOydKmpx61QhCYnnGnyws86EkojY=;
-        b=Pp0JhHNFdCdWiXk8ejDs2Cnk2Bfb+hGWEiTqMM+RlKNRzRwS3Cdnhdp9f8mOHJ74co
-         SJyUCBVElX+y5M8qvmkcpvMLEVWM2lBH7KbCOpv9MB3BBScvptqYTMW4WP8DaTYOP7VP
-         IHvlTfckZd83ecQoMi67xIQSzgZ1tJsT6yyd1r0gwadndNJy7Z6MRidGd/8TL+Ez7Ao8
-         hdH74JM05BrkehF97QUtaSqmvPip1ugkRw2JfNj53Y/I3obln/LHoaQn3rgW5IizFXly
-         zHw8/0YmQvPMJVmBzZw2MltzsMFxmbYwaVei1XegJ9fc52z2jPS9tuO0/EKTU/FZVjUG
-         XonQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nJVJSykwKfy3n47FOydKmpx61QhCYnnGnyws86EkojY=;
-        b=Z23QPd8pXao511NKmapEORAkfhWHI+oe6yM4Oe6ylVVO+/3OjSg623T2tBTZfHc7/Y
-         mbA0WCLRG6F5663DZGY+OP0SWYSJ0Yu5EbhtxIaJozVh9UwMaKwvTMRDmBgKyVRV9l7E
-         uanRw6LCEEZf/wxcnn6Siqs+BC30mblMVpzPamhXTVGkAbJr67hNEj5+LXbatMx943fT
-         zUBJHvPW8h8XInmajSuoA9HxS75E6HBQ52Cq49PeK5gwhHx2N853OgxKzLwEw8+BzY+i
-         jNIupaQwbuvGSQ+gNOg1C88xZqsB5X2P3+E8ccFPQWkaTrMKQV1VhKi7rc30k1i7i+QO
-         LJ9A==
-X-Gm-Message-State: AOAM531wEmmqYwa024GbVKQZjpp1K+NSmwPGHG45J/wSzaZxriZCIAFL
-        nUSc+KJjZxCgXTYF23s1Dm4=
-X-Google-Smtp-Source: ABdhPJzz6Xm+OOVvSIHMjdKAIS5jJ0thRb5snIak00jxc+LcKn3DFO4U2qOY8pzfVzHbvNYQ+3MbpA==
-X-Received: by 2002:a05:6a00:706:b029:217:9e8d:f9cc with SMTP id 6-20020a056a000706b02902179e8df9ccmr59333025pfl.1.1621241605810;
-        Mon, 17 May 2021 01:53:25 -0700 (PDT)
-Received: from localhost (g1.222-224-229.ppp.wakwak.ne.jp. [222.224.229.1])
-        by smtp.gmail.com with ESMTPSA id v18sm9859441pff.90.2021.05.17.01.53.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 01:53:25 -0700 (PDT)
-Date:   Mon, 17 May 2021 17:53:23 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Florent Kermarrec <florent@enjoy-digital.fr>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        "Gabriel L . Somlo" <gsomlo@gmail.com>,
+        id S235786AbhEQI4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232924AbhEQI4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 04:56:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA9960249;
+        Mon, 17 May 2021 08:55:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621241737;
+        bh=sayPBYIL2BgAEIQlb6vIdXR5Z7eP5vsC+Bvmfq6hWEk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OzOSg6YGcP4EgQga6m2YpUt3k4HmJid9bja8rhhh4Z0aWI1PzR71CAOIwB6uZ1lpv
+         IfNbmxWtsUPXIZIRDhS57/dhTzfSdsTOH+eawQ0CTxWK6e+hcMT/KjH4xWSsu4Tv2p
+         R0kL9A4dbbp0cLz7I5gX12tekg4AeC7z8TgHcqTI=
+Date:   Mon, 17 May 2021 10:55:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>,
+        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] serial/liteuart; Add support for earlycon
-Message-ID: <YKIvA+fgbgaoB5sc@antec>
-References: <20210515084519.167343-1-shorne@gmail.com>
- <adb78be2-18a6-224d-1fa7-36b7912fa1cf@kernel.org>
- <YKIn6PHlGGsK+70W@antec>
- <d17a43ab-facf-8ffb-5147-7492fb85b0b5@kernel.org>
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+Message-ID: <YKIvh9wbrOnd1yvj@kroah.com>
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+ <YKIigHrwqp8zd036@kroah.com>
+ <CAKMK7uEg2khb7wDzHTGEPwfbYe+T_5Av=_BTnt91CBW5U4yWvg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d17a43ab-facf-8ffb-5147-7492fb85b0b5@kernel.org>
+In-Reply-To: <CAKMK7uEg2khb7wDzHTGEPwfbYe+T_5Av=_BTnt91CBW5U4yWvg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:25:46AM +0200, Jiri Slaby wrote:
-> On 17. 05. 21, 10:23, Stafford Horne wrote:
-> > On Mon, May 17, 2021 at 10:16:43AM +0200, Jiri Slaby wrote:
-> > > On 15. 05. 21, 10:45, Stafford Horne wrote:
-> > > > Most litex boards using RISC-V soft cores us the sbi earlycon, however
-> > > > this is not available for non RISC-V litex SoC.  This patch enables
-> > > > earlycon for liteuart which is available on all Litex SoC's making
-> > > > support for earycon debugging more widely available.
-> > > > 
-> > > > Signed-off-by: Stafford Horne <shorne@gmail.com>
-> > > > Cc: Florent Kermarrec <florent@enjoy-digital.fr>
-> > > > Cc: Mateusz Holenko <mholenko@antmicro.com>
-> > > > Cc: Joel Stanley <joel@jms.id.au>
-> > > > Cc: Gabriel L. Somlo <gsomlo@gmail.com>
-> > > > ---
-> > > >    .../admin-guide/kernel-parameters.txt         |  5 +++
-> > > >    drivers/tty/serial/Kconfig                    |  1 +
-> > > >    drivers/tty/serial/liteuart.c                 | 31 +++++++++++++++++++
-> > > >    3 files changed, 37 insertions(+)
-> > > > 
-> > > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > > index 04545725f187..2d4a43af8de2 100644
-> > > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > > @@ -1084,6 +1084,11 @@
-> > > >    			the driver will use only 32-bit accessors to read/write
-> > > >    			the device registers.
-> > > > +		liteuart,<addr>
-> > > > +			Start an early console on a litex serial port at the
-> > > > +			specified address. The serial port must already be
-> > > > +			setup and configured. Options are not yet supported.
-> > > > +
-> > > >    		meson,<addr>
-> > > >    			Start an early, polled-mode console on a meson serial
-> > > >    			port at the specified address. The serial port must
-> > > > diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> > > > index 0c4cd4a348f4..9ceffe6ab6fd 100644
-> > > > --- a/drivers/tty/serial/Kconfig
-> > > > +++ b/drivers/tty/serial/Kconfig
-> > > > @@ -1531,6 +1531,7 @@ config SERIAL_LITEUART
-> > > >    	depends on OF || COMPILE_TEST
-> > > >    	depends on LITEX
-> > > >    	select SERIAL_CORE
-> > > > +	select SERIAL_EARLYCON
-> > > >    	help
-> > > >    	  This driver is for the FPGA-based LiteUART serial controller from LiteX
-> > > >    	  SoC builder.
-> > > > diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
-> > > > index 64842f3539e1..38c472487e68 100644
-> > > > --- a/drivers/tty/serial/liteuart.c
-> > > > +++ b/drivers/tty/serial/liteuart.c
-> > > > @@ -372,6 +372,37 @@ static int __init liteuart_console_init(void)
-> > > >    console_initcall(liteuart_console_init);
-> > > >    #endif /* CONFIG_SERIAL_LITEUART_CONSOLE */
-> > > > +#ifdef CONFIG_SERIAL_EARLYCON
-> > > > +static void early_liteuart_putc(struct uart_port *port, int c)
-> > > > +{
-> > > > +	while (litex_read8(port->membase + OFF_TXFULL))
-> > > > +		cpu_relax();
-> > > > +
-> > > > +	litex_write8(port->membase + OFF_RXTX, c);
-> > > 
-> > > Hi,
-> > > 
-> > > am I missing something or this doesn't differ to liteuart_putchar?
-> > 
-> > Hi, No you are right, I missed that thanks for catching it.
-> > 
-> > I should be able to remove this function and use putchar below.
+On Mon, May 17, 2021 at 10:49:09AM +0200, Daniel Vetter wrote:
+> On Mon, May 17, 2021 at 10:00 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, May 17, 2021 at 09:40:53AM +0200, Daniel Vetter wrote:
+> > > On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
+> > > > On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:
+> > > > > > Dear kernel maintainers,
+> > > > > >
+> > > > > > This submission is a kernel driver to support Intel(R) Gaussian & Neural
+> > > > > > Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-processor
+> > > > > > available on multiple Intel platforms. AI developers and users can offload
+> > > > > > continuous inference workloads to an Intel(R) GNA device in order to free
+> > > > > > processor resources and save power. Noise reduction and speech recognition
+> > > > > > are the examples of the workloads Intel(R) GNA deals with while its usage
+> > > > > > is not limited to the two.
+> > > > >
+> > > > > How does this compare with the "nnpi" driver being proposed here:
+> > > > >         https://lore.kernel.org/r/20210513085725.45528-1-guy.zadicario@intel.com
+> > > > >
+> > > > > Please work with those developers to share code and userspace api and
+> > > > > tools.  Having the community review two totally different apis and
+> > > > > drivers for the same type of functionality from the same company is
+> > > > > totally wasteful of our time and energy.
+> > > >
+> > > > Agreed, but I think we should go further than this and work towards a
+> > > > subsystem across companies for machine learning and neural networks
+> > > > accelerators for both inferencing and training.
+> > >
+> > > We have, it's called drivers/gpu. Feel free to rename to drivers/xpu or
+> > > think G as in General, not Graphisc.
+> > >
+> > > > We have support for Intel habanalabs hardware in drivers/misc, and there are
+> > > > countless hardware solutions out of tree that would hopefully go the same
+> > > > way with an upstream submission and open source user space, including
+> > > >
+> > > > - Intel/Mobileye EyeQ
+> > > > - Intel/Movidius Keembay
+> > > > - Nvidia NVDLA
+> > > > - Gyrfalcon Lightspeeur
+> > > > - Apple Neural Engine
+> > > > - Google TPU
+> > > > - Arm Ethos
+> > > >
+> > > > plus many more that are somewhat less likely to gain fully open source
+> > > > driver stacks.
+> > >
+> > > We also had this entire discussion 2 years ago with habanalabs. The
+> > > hang-up is that drivers/gpu folks require fully open source userspace,
+> > > including compiler and anything else you need to actually use the chip.
+> > > Greg doesn't, he's happy if all he has is the runtime library with some
+> > > tests.
 > 
-> OK.
+> I guess we're really going to beat this horse into pulp ... oh well.
 > 
-> I've just noticed you add an ifdef CONFIG_SERIAL_EARLYCON here, but you
-> select SERIAL_EARLYCON in Kconfig above. So the ifdef is sort of pointless?
-> (Or you shouldn't select SERIAL_EARLYCON.)
+> > All you need is a library, what you write on top of that is always
+> > application-specific, so how can I ask for "more"?
+> 
+> This is like accepting a new cpu port, where all you require is that
+> the libc port is open source, but the cpu compiler is totally fine as
+> a blob (doable with llvm now being supported). It makes no sense at
+> all, at least to people who have worked with accelerators like this
+> before.
+> 
+> We are not requiring that applications are open. We're only requiring
+> that at least one of the compilers you need (no need to open the fully
+> optimized one with all the magic sauce) to create any kind of
+> applications is open, because without that you can't use the device,
+> you can't analyze the stack, and you have no idea at all about what
+> exactly it is you're merging. With these devices, the uapi visible in
+> include/uapi is the smallest part of the interface exposed to
+> userspace.
 
-Ah yes, this I thought might have been wrong when I wrote it.  I think my
-problem here is I was just copying how some other patches implemented earlycon.
+Ok, sorry, I was not aware that the habanalabs compiler was not
+available to all under an open source license.  All I was trying to
+enforce was that the library to use the kernel api was open so that
+anyone could use it.  Trying to enforce compiler requirements like this
+might feel to be a bit of a reach as the CPU on the hardware really
+doesn't fall under the license of the operating system running on this
+CPU over here :)
 
- omap-serial - has ifdefs, doesn't select SERIAL_EARLYCON - looks ok
- sifive - has ifdefs + select SERIAL_EARLYCON - maybe needs cleanup too
+thanks,
 
--Stafford
+greg k-h
