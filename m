@@ -2,164 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C5338252D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A33382539
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235164AbhEQHTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhEQHTv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:19:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E245C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:18:35 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1liXWG-0003Tn-F2; Mon, 17 May 2021 09:18:28 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1liXWE-0005IZ-L3; Mon, 17 May 2021 09:18:26 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: touchscreen: Convert resistive-adc-touch binding to json schema
-Date:   Mon, 17 May 2021 09:18:24 +0200
-Message-Id: <20210517071825.20316-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
+        id S235228AbhEQHWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:22:13 -0400
+Received: from mga14.intel.com ([192.55.52.115]:44010 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230144AbhEQHWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:22:00 -0400
+IronPort-SDR: /rGWpKg/tsGgYywzcG14Ksa5GqaOmtGM6mfJrflrlIa38NWD6o2hVkamjsy5cKZfkgnaiglPX4
+ e8dYfTiAt28Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="200091577"
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="200091577"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:20:38 -0700
+IronPort-SDR: qtW4z5bbW322z0qZvkkjRDL/Dcz1QaNsEBaVRkDR6rYQ51+cISpp6hH4U6JVIN+qpuDSIEJw6p
+ gBU4A149evMA==
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="472276011"
+Received: from unknown (HELO [10.239.13.114]) ([10.239.13.114])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 00:20:35 -0700
+Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Tao Xu <tao3.xu@intel.com>, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20201102061445.191638-1-tao3.xu@intel.com>
+ <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
+ <20201102173130.GC21563@linux.intel.com>
+ <CALCETrV0ZsTcQKVCPPSKHnuVgERMC0x86G5y_6E5Rhf=h5JzsA@mail.gmail.com>
+ <20201102183359.GE21563@linux.intel.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <5117f8d3-c40c-204d-b09c-e49af42ad665@intel.com>
+Date:   Mon, 17 May 2021 15:20:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201102183359.GE21563@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the resistive-adc-touch binding to DT schema format using json-schema.
+Hi Sean, Andy and Paolo,
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- .../input/touchscreen/resistive-adc-touch.txt | 33 ----------
- .../touchscreen/resistive-adc-touch.yaml      | 61 +++++++++++++++++++
- 2 files changed, 61 insertions(+), 33 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+On 11/3/2020 2:33 AM, Sean Christopherson wrote:
+> On Mon, Nov 02, 2020 at 10:01:16AM -0800, Andy Lutomirski wrote:
+>> On Mon, Nov 2, 2020 at 9:31 AM Sean Christopherson
+>> <sean.j.christopherson@intel.com> wrote:
+>>>
+>>> Tao, this patch should probably be tagged RFC, at least until we can experiment
+>>> with the threshold on real silicon.  KVM and kernel behavior may depend on the
+>>> accuracy of detecting actual attacks, e.g. if we can set a threshold that has
+>>> zero false negatives and near-zero false postives, then it probably makes sense
+>>> to be more assertive in how such VM-Exits are reported and logged.
+>>
+>> If you can actually find a threshold that reliably mitigates the bug
+>> and does not allow a guest to cause undesirably large latency in the
+>> host, then fine.  1/10 if a tick is way too long, I think.
+> 
+> Yes, this was my internal review feedback as well.  Either that got lost along
+> the way or I wasn't clear enough in stating what should be used as a placeholder
+> until we have silicon in hand.
+> 
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
-deleted file mode 100644
-index af5223bb5bdd..000000000000
---- a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--Generic resistive touchscreen ADC
--
--Required properties:
--
-- - compatible: must be "resistive-adc-touch"
--The device must be connected to an ADC device that provides channels for
--position measurement and optional pressure.
--Refer to
--https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
--for details
--
-- - iio-channels: must have at least two channels connected to an ADC device.
--These should correspond to the channels exposed by the ADC device and should
--have the right index as the ADC device registers them. These channels
--represent the relative position on the "x" and "y" axes.
-- - iio-channel-names: must have all the channels' names. Mandatory channels
--are "x" and "y".
--
--Optional properties:
-- - iio-channels: The third channel named "pressure" is optional and can be
--used if the ADC device also measures pressure besides position.
--If this channel is missing, pressure will be ignored and the touchscreen
--will only report position.
-- - iio-channel-names: optional channel named "pressure".
--
--Example:
--
--	resistive_touch: resistive_touch {
--		compatible = "resistive-adc-touch";
--		touchscreen-min-pressure = <50000>;
--		io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
--		io-channel-names = "x", "y", "pressure";
--	};
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
-new file mode 100644
-index 000000000000..53df21a6589e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/input/touchscreen/resistive-adc-touch.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Generic resistive touchscreen ADC
-+
-+maintainers:
-+  - Oleksij Rempel <o.rempel@pengutronix.de>
-+
-+description: |
-+  Generic ADC based resistive touchscreen controller
-+  The device must be connected to an ADC device that provides channels for
-+  position measurement and optional pressure.
-+
-+allOf:
-+  - $ref: touchscreen.yaml#
-+
-+properties:
-+  compatible:
-+    const: resistive-adc-touch
-+
-+  io-channels:
-+    minItems: 2
-+    maxItems: 3
-+    items:
-+      - description: x
-+      - description: y
-+      - description: pressure (optional)
-+
-+  io-channel-names:
-+    items:
-+      - const: x
-+      - const: y
-+      - const: pressure
-+
-+  touchscreen-size-x: true
-+  touchscreen-size-y: true
-+  touchscreen-fuzz-x: true
-+  touchscreen-fuzz-y: true
-+  touchscreen-inverted-x: true
-+  touchscreen-inverted-y: true
-+  touchscreen-swapped-x-y: true
-+  touchscreen-min-pressure: true
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - io-channels
-+  - io-channel-names
-+
-+examples:
-+  - |
-+    resistive_touch {
-+      compatible = "resistive-adc-touch";
-+      touchscreen-min-pressure = <50000>;
-+      io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
-+      io-channel-names = "x", "y", "pressure";
-+    };
--- 
-2.29.2
+We have tested on real silicon and found it can work even with threshold 
+being set to 0.
+
+It has an internal threshold, which is added to vmcs.notify_window as 
+the final effective threshold. The internal threshold is big enough to 
+cover normal instructions. For those long latency instructions like 
+WBINVD, the processor knows they cannot cause no interrupt window 
+attack. So no Notify VM exit will happen on them.
+
+Initially, our hardware architect wants to set the notify window to 
+scheduler tick to not break kernel scheduling. But you folks want a 
+smaller one. So are you OK to set the window to 0?
+
 
