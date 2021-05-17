@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCA4382551
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6CB38254C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbhEQH33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:29:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56088 "EHLO mail.kernel.org"
+        id S233187AbhEQH3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:29:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233560AbhEQH30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:29:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E9E061007;
-        Mon, 17 May 2021 07:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621236490;
-        bh=WoQ2Tt9j1s8lZ+rFGz15/N+rcvIN9GuIXZT/n/mvPAI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rz4nCnRs3MKPRjz0dKaFcIG7wjHT6KBRybD6Trvo3cwl2LtMEliatXLWXADfjInf4
-         ZurKjK+HSZugMQq4T93FIGYUf91CGscakYmybanqXsxFHKKMCODe6xFeOm9T4yqIKc
-         1PaYuHpasSko+WxNDMe/gfVOhwl02LQ7a9Q/twcx9iZj61UkRUvXQRv6inWu6oavnW
-         obIpBqlhMQ/9yzY5mvgiJYqKx/MlTHMrtTi9MYZWODtd1l34GSGJWS/BxBmTR6Pumm
-         mvZXtZTbU+uaHHN0eAih41AV/xVH950QQXPiSEe7NfGz1XKg22SmkmCmsyEzM+o5W0
-         8dyhDgzdQ8Egg==
-Received: by mail-wr1-f50.google.com with SMTP id p7so1496936wru.10;
-        Mon, 17 May 2021 00:28:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532IjHGmc41MxoLc1bsvlVLAWGoQGXiijz7M6A7+ny0o5GqYW3dM
-        VJkjr3bAZKBVsYtZW+VXUYHVJHjGIBmRznO70FY=
-X-Google-Smtp-Source: ABdhPJxk7eLWYGXPzamV742l9EnpMjLM0lyklUBUE5IGJo+cNnB5FKY+yx8/GMxQQ0Oji3ZyvDfH+BybrBLsoLFOZbo=
-X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr74796509wrz.105.1621236489115;
- Mon, 17 May 2021 00:28:09 -0700 (PDT)
+        id S229755AbhEQH3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 03:29:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A72EB61007;
+        Mon, 17 May 2021 07:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621236471;
+        bh=wm9rTBwxrFjpfeBtExDxSI5AqdoTtDawv0VDGnK3Cls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dp0CsjluWTYDyAVHwdGd3zJAFHX/7UYPtXvyJzs+zgkImMOhuLxcjpFk8Nn44MtlF
+         uS+NeE3BIft0xPbitTD2nk5RtmvHcrC0hUV7jHv74AoX7ENwV90sUtX2L15k5ThJ/K
+         AJBnmemRZymb96KYM4Z2+YN/jf78z6ocd3abIiI4=
+Date:   Mon, 17 May 2021 09:27:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     sashal@kernel.org, ashok.raj@intel.com, jroedel@suse.de,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [REWORKED PATCH 1/1] iommu/vt-d: Preset Access/Dirty bits for
+ IOVA over FL
+Message-ID: <YKIa9dczRk0v9Y2N@kroah.com>
+References: <20210517034913.3432-1-baolu.lu@linux.intel.com>
+ <YKIWS0lFKTcZ9094@kroah.com>
+ <726aede1-3d9f-6666-b31d-9db8e4301a0c@linux.intel.com>
 MIME-Version: 1.0
-References: <20210515101803.924427-1-arnd@kernel.org> <20210515101803.924427-6-arnd@kernel.org>
- <20210517062018.GC23581@lst.de>
-In-Reply-To: <20210517062018.GC23581@lst.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 17 May 2021 09:27:01 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2eDeSgB76SyzcpmQmV3uR1jwtOjZUoG9UYfDnYAWGyog@mail.gmail.com>
-Message-ID: <CAK8P3a2eDeSgB76SyzcpmQmV3uR1jwtOjZUoG9UYfDnYAWGyog@mail.gmail.com>
-Subject: Re: [PATCH 5/6] [v2] asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Sid Manning <sidneym@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-um <linux-um@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <726aede1-3d9f-6666-b31d-9db8e4301a0c@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 8:20 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Sat, May 15, 2021 at 12:18:02PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Consolidate the asm-generic implementation with the library version
-> > that is used everywhere else.
-> >
-> > These are the three versions for NOMMU kernels,
->
-> I don't get the three versions part?
+On Mon, May 17, 2021 at 03:17:53PM +0800, Lu Baolu wrote:
+> Hi Greg,
+> 
+> On 5/17/21 3:07 PM, Greg KH wrote:
+> > On Mon, May 17, 2021 at 11:49:13AM +0800, Lu Baolu wrote:
+> > > [ Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3 ]
+> > > 
+> > > The Access/Dirty bits in the first level page table entry will be set
+> > > whenever a page table entry was used for address translation or write
+> > > permission was successfully translated. This is always true when using
+> > > the first-level page table for kernel IOVA. Instead of wasting hardware
+> > > cycles to update the certain bits, it's better to set them up at the
+> > > beginning.
+> > > 
+> > > Suggested-by: Ashok Raj <ashok.raj@intel.com>
+> > > Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> > > Link: https://lore.kernel.org/r/20210115004202.953965-1-baolu.lu@linux.intel.com
+> > > Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >   drivers/iommu/intel/iommu.c | 14 ++++++++++++--
+> > >   include/linux/intel-iommu.h |  2 ++
+> > >   2 files changed, 14 insertions(+), 2 deletions(-)
+> > > 
+> > > [Note:
+> > > - This is a reworked patch of
+> > >    https://lore.kernel.org/stable/20210512144819.664462530@linuxfoundation.org/T/#m65267f0a0091c2fcbde097cea91089775908faad.
+> > > - It aims to fix a reported issue of
+> > >    https://bugzilla.kernel.org/show_bug.cgi?id=213077.
+> > > - Please help to review and test.]
+> > 
+> > What stable tree(s) is this supposed to be for?
+> 
+> It's for 5.10.37.
 
-Right, that was confusing. Rewording to
+But the above commit is already in 5.10.y.  And what about 5.11 and
+5.12, were those backports incorrect?
 
-| The inline version is used on three NOMMU architectures and is
-| particularly inefficient when it scans the string one byte at a time
-| twice. It also lacks a check for user_addr_max(), but this is
-| probably ok on NOMMU targets.
-|
-| Consolidate the asm-generic implementation with the library version
-| that is used everywhere else.  This version is generalized enough to
-| work efficiently on both MMU and NOMMU targets, and using the
-| same code everywhere reduces the potential for subtle bugs.
+confused,
 
-> > +     select GENERIC_STRNCPY_FROM_USER
-> > +     select GENERIC_STRNLEN_USER
->
-> Given that most architetures select the generic version I wonder
-> if it might be worth to add another patch to invert the logic so
-> that architectures with their own implementation need to sekect a symbol.
-
-Done now, using 'CONFIG_ARCH_HAS_{STRNCPY_FROM,STRNLEN}_USER'.
-
-There are still seven or eight architectures that provide their own though.
-
-> > +extern long strncpy_from_user(char *dst, const char __user *src, long count);
-> > +extern long strnlen_user(const char __user *src, long n);
->
-> No need for the extern here.
-
-Removed.
-
-       Arnd
+greg k-h
