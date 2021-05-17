@@ -2,140 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76463382CD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB76382CDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237221AbhEQNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237210AbhEQNJO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:09:14 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41939C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:07:47 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id u144so6395495oie.6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dZeinS6LE1NP88+BR+f1LcsUBMPUh7N3G4KpQRQogBk=;
-        b=aGBMVprGuoTf9++f+DatDpeTnGL5ZmpmA0esmGNR7sOjh15bPnJ5xl4LQ5QM8p55SZ
-         k0Gr9tasB7CXqw4F9//xhZFkDKTW8P+jDQg2ksKWGRr8PQl3uomjjBlkpx26Llf80vsO
-         aqPf6OCmWnkSEJ6/iAg/YkwZbF/CzGgpR2sG0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dZeinS6LE1NP88+BR+f1LcsUBMPUh7N3G4KpQRQogBk=;
-        b=c2C1s4YdFVBhV/3D4kqQan9R03QB1tksqT7x5UbKn3Ps6xZuox9u/lCz+wN33Tepca
-         lJW7Y3XwUj3QRgyFFgYlNpQbfqO2ar4h06RVRj/pgQHCUVhrl2iq054XmSPcgrYkrhyX
-         RKmV554mBVuxUxH3nrcWvGKN7Er+U9tGN6B7wLJv/QbKugDL5bdEpcQwcuZavkNMCeUW
-         mCD63mCcYlMQ1gRYY7aWO5+k79dyLY5dM0HWvw8rEwbVf7idVgO6B+TPdYjBWSy8LBIN
-         PQX6rH57BSWNfSmUFxoApueylEWy2anhdpDzBCds70Lfz0yIi5Psjq4vukCGGZxN9muG
-         qh2g==
-X-Gm-Message-State: AOAM531vd636dzmgWy0FiJ9hE4pMrxiitHQhCs7gLmYt0qarWnhA+qZw
-        3Fid8UdhfQmpuhCpH5RcbnM0hezJ3rK90FM9rfExPuuQ41o=
-X-Google-Smtp-Source: ABdhPJy7GTk1BfTS88fw/8gIr6/ZDBTUprv35YFaMITbfmvjl7jiiSuHvPGnKkFzht+U6iHn/HLP2JVzKLU+U28GVkY=
-X-Received: by 2002:a54:4809:: with SMTP id j9mr15251365oij.14.1621256866371;
- Mon, 17 May 2021 06:07:46 -0700 (PDT)
+        id S237244AbhEQNJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:09:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:50876 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237232AbhEQNJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 09:09:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F6E1113E;
+        Mon, 17 May 2021 06:08:21 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.3.85])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D6DB3F73B;
+        Mon, 17 May 2021 06:08:18 -0700 (PDT)
+Date:   Mon, 17 May 2021 14:08:15 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        KY Srinivasan <kys@microsoft.com>
+Subject: Re: [PATCH v10 3/7] arm64: hyperv: Add Hyper-V
+ clocksource/clockevent support
+Message-ID: <20210517130815.GC62656@C02TD0UTHF1T.local>
+References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
+ <1620841067-46606-4-git-send-email-mikelley@microsoft.com>
+ <20210514123711.GB30645@C02TD0UTHF1T.local>
+ <MWHPR21MB15932B44EC1E55614B219F5ED7509@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
- <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
- <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
- <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
- <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk> <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
-In-Reply-To: <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Mon, 17 May 2021 15:07:35 +0200
-Message-ID: <CAKMK7uGLP2zn7LX4ATExA4DLo16shVivSd_W58X-rBZNPSb3_w@mail.gmail.com>
-Subject: Re: [PATCH] video: fbdev: vga16fb: fix OOB write in vga16fb_imageblit()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Antonino A. Daplas" <adaplas@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB15932B44EC1E55614B219F5ED7509@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:33 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, May 14, 2021 at 1:25 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
-> >
-> >  Overall I think it does make sense to resize the text console at any
-> > time, even if the visible console (VT) chosen is in the graphics mode,
->
-> It might make sense, but only if we call the function to update the
-> low-level data.
->
-> Not calling it, and then starting to randomly use the (wrong)
-> geometry, and just limiting it so that it's all within the buffer -
-> THAT does not make sense.
->
-> So I think your patch is fundamentally wrong. It basically says "let's
-> use random stale incorrect data, but just make sure that the end
-> result is still within the allocated buffer".
->
-> My patch is at least conceptually sane.
->
-> An alternative would be to just remove the "vcmode != KD_GRAPHICS"
-> check entirely, and always call con_resize() to update the low-level
-> data, but honestly, that seems very likelty to break something very
-> fundamentally, since it's not how any of fbcon has ever been tested,
+On Fri, May 14, 2021 at 03:35:15PM +0000, Michael Kelley wrote:
+> From: Mark Rutland <mark.rutland@arm.com> Sent: Friday, May 14, 2021 5:37 AM
+> > On Wed, May 12, 2021 at 10:37:43AM -0700, Michael Kelley wrote:
+> > > Add architecture specific definitions and functions needed
+> > > by the architecture independent Hyper-V clocksource driver.
+> > > Update the Hyper-V clocksource driver to be initialized
+> > > on ARM64.
+> > 
+> > Previously we've said that for a clocksource we must use the architected
+> > counter, since that's necessary for things like the VDSO to work
+> > correctly and efficiently.
+> > 
+> > Given that, I'm a bit confused that we're registering a per-cpu
+> > clocksource that is in part based on the architected counter. Likewise,
+> > I don't entirely follow why it's necessary to PV the clock_event_device.
+> > 
+> > Are the architected counter and timer reliable without this PV
+> > infrastructure? Why do we need to PV either of those?
+> > 
+> > Thanks,
+> > Mark.
+> 
+> For the clocksource, we have a requirement to live migrate VMs
+> between Hyper-V hosts running on hardware that may have different
+> arch counter frequencies (it's not conformant to the ARM v8.6 1 GHz
+> requirement).  The Hyper-V virtualization does scaling to handle the
+> frequency difference.  And yes, there's a tradeoff with vDSO not
+> working, though we have an out-of-tree vDSO implementation that
+> we can use when necessary.
 
-Just an aside: I think with fbdev drivers this would go boom, because
-you'd have fbcon interferring with a direct /dev/fb/* user.
+Just to be clear, the vDSO is *one example* of something that won't
+function correctly. More generally, because this undermines core
+architectural guarantees, it requires more invasive changes (e.g. we'd
+have to weaken the sanity checks, and not use the counter in things like
+kexec paths), impacts any architectural features tied to the generic
+timer/counter (e.g. the event stream, SPE and tracing, future features),
+and means that other SW (e.g. bootloaders and other EFI applications)
+are unlikley to function correctly in this environment.
 
-But if your fbdev driver is actually a drm modeset driver, then we
-have additional limitations: If the userspace accesses the display
-through /dev/dri/card0, then the kernel blocks all access through
-/dev/fb/* (including fbcon) to the actual display (it only goes into
-the buffer used for fbdev emulation). And everything would be fine.
+I am very much not keen on trying to PV this.
 
-Also generally you'd get away with this even in problematic cases,
-since usually you resize your console when looking at it, not when X
-or something else is using your fbdev direct access.
+What does the guest see when it reads CNTFRQ_EL0? Does this match the
+real HW value (and can this change over time)? Or is this entirely
+synthetic?
 
-The one thing that's left out here a bit in the cold is userspace
-modeset drivers in X. Those would get hosed. But also, we stopped
-supporting those in at least i915/amd/radeon/nouveau drivers,
-automatically falling back to the fbdev stuff in most cases (with or
-without the drm drivers underneath that), and no one screamed. So
-probably not many users left.
+What do the ACPI tables look like in the guest? Is there a GTDT table at
+all?
 
-So I /think/ we could wager this, if it's the least intrusive fix from
-the kernel pov. But it has some risks that we need to revert again if
-we break some of the really old use-cases here.
+How does the counter event stream behave?
 
-Cheers, Daniel
+Are there other architectural features which Hyper-V does not implement
+for a guest?
 
-> Another alternative would be to just delay the resize to when vcmode
-> is put back to text mode again. That sounds somewhat reasonable to me,
-> but it's a pretty big thing.
->
-> But no, your patch to just "knowingly use entirely wrong values, then
-> add a limit check because we know the values are possibly garbage and
-> not consistent with reality" is simply not acceptable.
->
->               Linus
+Is there anything else that may change across a migration? e.g. MIDR?
+MPIDR? Any of the ID registers?
 
+> For clockevents, the only timer interrupt that Hyper-V provides
+> in a guest VM is its virtualized "STIMER" interrupt.  There's no
+> virtualization of the ARM arch timer in the guest.
 
+I think that is rather unfortunate, given it's a core architectural
+feature. Is it just the interrupt that's missing? i.e. does all the
+PE-local functionality behave as the architecture requires?
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+Mark.
+
+> 
+> > >
+> > > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> > > Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > ---
+> > >  arch/arm64/include/asm/mshyperv.h  | 12 ++++++++++++
+> > >  drivers/clocksource/hyperv_timer.c | 14 ++++++++++++++
+> > >  2 files changed, 26 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/include/asm/mshyperv.h b/arch/arm64/include/asm/mshyperv.h
+> > > index c448704..b17299c 100644
+> > > --- a/arch/arm64/include/asm/mshyperv.h
+> > > +++ b/arch/arm64/include/asm/mshyperv.h
+> > > @@ -21,6 +21,7 @@
+> > >  #include <linux/types.h>
+> > >  #include <linux/arm-smccc.h>
+> > >  #include <asm/hyperv-tlfs.h>
+> > > +#include <clocksource/arm_arch_timer.h>
+> > >
+> > >  /*
+> > >   * Declare calls to get and set Hyper-V VP register values on ARM64, which
+> > > @@ -41,6 +42,17 @@ static inline u64 hv_get_register(unsigned int reg)
+> > >  	return hv_get_vpreg(reg);
+> > >  }
+> > >
+> > > +/* Define the interrupt ID used by STIMER0 Direct Mode interrupts. This
+> > > + * value can't come from ACPI tables because it is needed before the
+> > > + * Linux ACPI subsystem is initialized.
+> > > + */
+> > > +#define HYPERV_STIMER0_VECTOR	31
+> > > +
+> > > +static inline u64 hv_get_raw_timer(void)
+> > > +{
+> > > +	return arch_timer_read_counter();
+> > > +}
+> > > +
+> > >  /* SMCCC hypercall parameters */
+> > >  #define HV_SMCCC_FUNC_NUMBER	1
+> > >  #define HV_FUNC_ID	ARM_SMCCC_CALL_VAL(			\
+> > > diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+> > > index 977fd05..270ad9c 100644
+> > > --- a/drivers/clocksource/hyperv_timer.c
+> > > +++ b/drivers/clocksource/hyperv_timer.c
+> > > @@ -569,3 +569,17 @@ void __init hv_init_clocksource(void)
+> > >  	hv_setup_sched_clock(read_hv_sched_clock_msr);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(hv_init_clocksource);
+> > > +
+> > > +/* Initialize everything on ARM64 */
+> > > +static int __init hyperv_timer_init(struct acpi_table_header *table)
+> > > +{
+> > > +	if (!hv_is_hyperv_initialized())
+> > > +		return -EINVAL;
+> > > +
+> > > +	hv_init_clocksource();
+> > > +	if (hv_stimer_alloc(true))
+> > > +		return -EINVAL;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +TIMER_ACPI_DECLARE(hyperv, ACPI_SIG_GTDT, hyperv_timer_init);
+> > > --
+> > > 1.8.3.1
+> > >
