@@ -2,138 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2006386B1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57738386B1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238569AbhEQUSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
+        id S238710AbhEQUSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238337AbhEQUSg (ORCPT
+        with ESMTP id S235703AbhEQUSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:18:36 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E392DC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:17:19 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id h21so5855122qtu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:17:19 -0700 (PDT)
+        Mon, 17 May 2021 16:18:15 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74176C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:16:58 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e14so7136078ils.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:16:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vLJpaxOqtbI+Qb2zKdqGEkILQIDGWpq1zNOEwsHFtPQ=;
-        b=ZrQnlImcr9WmIFORVAFZEDpXisiakdk1c7hJMqPolW1P1zOfpLXZ3jX5JU9XArrkzs
-         G34/AQNfxUiOIu9TsyBjCX92VuSpj1TU4tm1DDgZ1LYT+tZzk7hX8XHH+P0xYvW8BNO5
-         78J1WTzrDq24zp159QAD+LFEZPxjmaEHktb1o=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fDQTNaQmAXFNwN76z6d0dvXjcYPHqqxGBKpJxNqD/DQ=;
+        b=EG98P0gmuTNxCqd3/01WOeAhqMcIkxKVOWstf6h55Csp/hFo+Iv3rmeGP8JKFzNHJP
+         7HqhL3y4qSYPKp2DQg9twjJQiBmufrFvNmb/9/ZLVWckDyTD6BzzSzH+fLBrDxvWRU3J
+         le9t1ss4TYy9rAeLyN4fuc86wInQZ3lfgzBbI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vLJpaxOqtbI+Qb2zKdqGEkILQIDGWpq1zNOEwsHFtPQ=;
-        b=UrMilbeJkdbySpXVKEU213a+dWX9Kh4v50t4gRz6DuysrquCA1YkG6/OCwTKKrWTn4
-         HTbBivKYPh2FoCzbXfHPPfKOGvchNtvC0CpBX9f0ZkZguXZKyVj2QZjqUNjaWiuKqYXU
-         useO1x/skX5RpdDqIvAZiUBep/MseeEw2lMh+y0tVUy7y8ZJoWSnbza6ejeEHMwG/H1m
-         RGCbF4YwFNkqTnJOF4JsWMfXVXfrrVPlZFf771lY00lQjGArUQpNPXYRRkkbfHEiGMOn
-         HFc26eLeZZ/vQCWOa+/5mA1dNIR7czfx3euMvaGyW2Bj2ggfAwv1yVkHjO72iXI+WXcT
-         ZWVw==
-X-Gm-Message-State: AOAM530bo9XgKkUFUHrjnjDLGMtF0wveN7GqgM+9Oxea4knMNbshoinh
-        eiQee6YCe/tLpqFpE2U0RQW2C+8GauBSVQ==
-X-Google-Smtp-Source: ABdhPJwnROUYxs3aohEReDo+k0lKuWnhfeiAg3MC5V9pfIf8GDvQ/F6XhqMWHO57ZvE/suiahBdpyA==
-X-Received: by 2002:ac8:5649:: with SMTP id 9mr1279927qtt.148.1621282639236;
-        Mon, 17 May 2021 13:17:19 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id 123sm11458318qkg.0.2021.05.17.13.17.00
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fDQTNaQmAXFNwN76z6d0dvXjcYPHqqxGBKpJxNqD/DQ=;
+        b=ZexV2zvLexwLucyOxaFpeRWAh1U99zSNv93kjF7Isib7DfCyNMuq2aPRQavpMxY3sD
+         V/GKKPu1FAx5Kr4aPHXVAEsPq6dT6pjXsKPQKictnGstn2fZB199wjpsLQPAEqfI1EC8
+         xvpIY4Zf2UrFKQanOwjI4eZAOCUdvXEBbGua+fMIGn7BrbU/NZihD143q++wpAX7UPp7
+         JU+VrySfOMsIM2jRuXPqFJ8QYw7jk0dCueaoGspOlabOTBCxVbGXHXoXR9fp4+lXkiVP
+         akMuOPMsO5tfN8/4xu2I/xOk/JIX8hMfV6lSZG8Ff6yjVL0iG9Z8uSyW71Nhi7hiS03Y
+         rBCA==
+X-Gm-Message-State: AOAM530AQ+hpoLWwVWKG7e44GT6PvPVG0InnN2Kl0PQd5pUIWoMxIAcC
+        Vn76960jUpYi6sG0m4/EiAgEHQ==
+X-Google-Smtp-Source: ABdhPJxtb8QeIoO3IB50Q43v/C6DbMLsuqPnLWzXrbCzctyGwdG/f4wWrFTzEa9MeZlNQ7YiTYMdjA==
+X-Received: by 2002:a92:d110:: with SMTP id a16mr1237752ilb.84.1621282617907;
+        Mon, 17 May 2021 13:16:57 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s17sm9108635ilq.26.2021.05.17.13.16.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 13:17:06 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id i4so10270035ybe.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:17:00 -0700 (PDT)
-X-Received: by 2002:a25:aad4:: with SMTP id t78mr2151750ybi.343.1621282601374;
- Mon, 17 May 2021 13:16:41 -0700 (PDT)
+        Mon, 17 May 2021 13:16:57 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <fc3b9880-32c0-99ba-90a5-cc2303cb67e8@linuxfoundation.org>
+Date:   Mon, 17 May 2021 14:16:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210503215844.2996320-1-dianders@chromium.org> <20210503145750.v6.1.Ib7e3a4af2f3e2cb3bd8e4adbac3bcfc966f27791@changeid>
-In-Reply-To: <20210503145750.v6.1.Ib7e3a4af2f3e2cb3bd8e4adbac3bcfc966f27791@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 17 May 2021 13:16:29 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UuBo_T_FiPWT3Wz1SGtcAkwnsKKAtxtLkGDnzeYaybtg@mail.gmail.com>
-Message-ID: <CAD=FV=UuBo_T_FiPWT3Wz1SGtcAkwnsKKAtxtLkGDnzeYaybtg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/5] i2c: i2c-core-of: Fix corner case of finding
- adapter by node
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Lyude Paul <lyude@redhat.com>, Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Linus W <linus.walleij@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 5/17/21 7:57 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.5 release.
+> There are 363 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 19 May 2021 14:02:12 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-On Mon, May 3, 2021 at 2:59 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> The of_find_i2c_adapter_by_node() could end up failing to find an
-> adapter in certain conditions. Specifically it's possible that
-> of_dev_or_parent_node_match() could end up finding an I2C client in
-> the list and cause bus_find_device() to stop early even though an I2C
-> adapter was present later in the list.
->
-> Let's move the i2c_verify_adapter() into the predicate function to
-> prevent this. Now we'll properly skip over the I2C client and be able
-> to find the I2C adapter.
->
-> This issue has always been a potential problem if a single device tree
-> node could represent both an I2C client and an adapter. I believe this
-> is a sane thing to do if, for instance, an I2C-connected DP bridge
-> chip is present. The bridge chip is an I2C client but it can also
-> provide an I2C adapter (DDC tunneled over AUX channel). We don't want
-> to have to create a sub-node just so a panel can link to it with the
-> "ddc-i2c-bus" property.
->
-> I believe that this problem got worse, however, with commit
-> e814e688413a ("i2c: of: Try to find an I2C adapter matching the
-> parent"). Starting at that commit it would be even easier to
-> accidentally miss finding the adapter.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> Later patches in this series won't work right without this one, but
-> they won't crash. If we can't find the i2c bus we'll just fall back to
-> the hardcoded panel modes which, at least today, all panels have.
->
-> I'll also note that part of me wonders if we should actually fix this
-> further to run two passes through everything: first look to see if we
-> find an exact match and only look at the parent pointer if there is no
-> match. I don't currently have a need for that and it's a slightly
-> bigger change, but it seems conceivable that it could affect someone?
->
-> (no changes since v1)
->
->  drivers/i2c/i2c-core-of.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
+Compiled and booted on my test system. No dmesg regressions.
 
-FYI that I've just posted v7 of this series and I've dropped
-${SUBJECT} patch from my series.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-I think that ${SUBJECT} patch is still correct and could be useful to
-land, but it's no longer needed by my series since I'm getting access
-to the DDC bus in a different way. If this patch needs to be spun,
-please let me know. ...or, feel free to land it! :-)
-
--Doug
+thanks,
+-- Shuah
