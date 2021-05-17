@@ -2,60 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A7438376E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E8B383781
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344216AbhEQPn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:43:28 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43951 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244294AbhEQP2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:28:10 -0400
-Received: by mail-ot1-f43.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso5857159ots.10;
-        Mon, 17 May 2021 08:26:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CZchp1Yf1GVmWnCUsrOiK0XjGAYstQKHWudIigD+jL8=;
-        b=BTrKa0//DFRPpeyzD824lCvX84JX/ZLtrEkIlMxAPqV0Gk+ZNTulALfQnV+mP9/7Qf
-         lXXhXjLyVkliD0owm71H7GEvV9eBKI62Xc+3yTvsW4FkGpsW7HbYqPm65EaYV+MXVcw6
-         dBrk1IQohco5kM4tr3aEzJrzpbjA1uqIT853G0mkS+C3+6cdNY07Y5qhsBLX+t0w6Jka
-         Lwti5u27+T+mYqESI34jvD9StxlNJE3sJDVjgsSnVIJQBc7YN11Xbd0rT38rRN2poMDS
-         mEjIFgKaZYR1GenXaRbHoupMicfT7xwwVhkXeNZU7vtUzk8/usqd813z5RgHbUiclqrw
-         7M6A==
-X-Gm-Message-State: AOAM531wsBvU4MZ4rjWXtUymq3+12qowpbKnBX6smzaWF8iSHM54jxS9
-        igFrU/bhl3u2Q45/XzmcaalVZzy1MBm+OkUT3Ao=
-X-Google-Smtp-Source: ABdhPJwyVUsmk+27ZZTxl+ZL5cYi68KOh4QXyIRpDYJSmFILWYFE4IBTh35Xy83JjG8y+8U+SN6qDGbK9WZ+I+JnX6o=
-X-Received: by 2002:a9d:1e1:: with SMTP id e88mr121644ote.260.1621265213424;
- Mon, 17 May 2021 08:26:53 -0700 (PDT)
+        id S1344349AbhEQPo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:44:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41048 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244839AbhEQP2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:28:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8F64FB038;
+        Mon, 17 May 2021 15:27:23 +0000 (UTC)
+Date:   Mon, 17 May 2021 16:27:21 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     kirill.shutemov@linux.intel.com, ziy@nvidia.com, mhocko@suse.com,
+        ying.huang@intel.com, hughd@google.com,
+        gerald.schaefer@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 3/7] mm: thp: refactor NUMA fault handling
+Message-ID: <20210517152721.GW3672@suse.de>
+References: <20210413212416.3273-1-shy828301@gmail.com>
+ <20210413212416.3273-4-shy828301@gmail.com>
 MIME-Version: 1.0
-References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
- <20210513132051.31465-1-ggherdovich@suse.cz> <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
-In-Reply-To: <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 17 May 2021 17:26:42 +0200
-Message-ID: <CAJZ5v0g5_BY3DCi=VxqkRh+TYPS5nkJ-J96EzPVrc975uiWf3Q@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support in
- no-HWP mode
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210413212416.3273-4-shy828301@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 5:31 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> Hi All,
->
-> Can I on-board to this patch or do you want me to submit another?
+On Tue, Apr 13, 2021 at 02:24:12PM -0700, Yang Shi wrote:
+> When the THP NUMA fault support was added THP migration was not supported yet.
+> So the ad hoc THP migration was implemented in NUMA fault handling.  Since v4.14
+> THP migration has been supported so it doesn't make too much sense to still keep
+> another THP migration implementation rather than using the generic migration
+> code.
+> 
+> This patch reworked the NUMA fault handling to use generic migration implementation
+> to migrate misplaced page.  There is no functional change.
+> 
+> After the refactor the flow of NUMA fault handling looks just like its
+> PTE counterpart:
+>   Acquire ptl
+>   Prepare for migration (elevate page refcount)
+>   Release ptl
+>   Isolate page from lru and elevate page refcount
+>   Migrate the misplaced THP
+> 
+> If migration is failed just restore the old normal PMD.
+> 
+> In the old code anon_vma lock was needed to serialize THP migration
+> against THP split, but since then the THP code has been reworked a lot,
+> it seems anon_vma lock is not required anymore to avoid the race.
+> 
+> The page refcount elevation when holding ptl should prevent from THP
+> split.
+> 
+> Use migrate_misplaced_page() for both base page and THP NUMA hinting
+> fault and remove all the dead and duplicate code.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-Please send another one.
+I did not spot any big problems and FWIW, the series overall passed a
+series of tests that exercise NUMA balancing migrations so...
+
+Acked-by: Mel Gorman <mgorman@suse.de>
+
+-- 
+Mel Gorman
+SUSE Labs
