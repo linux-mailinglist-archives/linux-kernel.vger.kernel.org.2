@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD43B382856
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DEF38285B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236051AbhEQJbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:31:24 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:49086 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236004AbhEQJbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:31:21 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv++aN6JgBEUYAA--.3368S2;
-        Mon, 17 May 2021 17:30:02 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] Documentation: checkpatch: add description if no filenames are given
-Date:   Mon, 17 May 2021 17:30:00 +0800
-Message-Id: <1621243800-27702-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxv++aN6JgBEUYAA--.3368S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4Dtw4xXF1Utw4xuFW7urg_yoWDJFgEyr
-        4UJF98WF97Jry5tFn0yr4rXr12v3y5Zr18Awn8Ar98A34Yk398XFZrKr9rAr1UCrWj9F9x
-        Cw4UZFZ8Ars2yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4fMxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxT5dDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S235977AbhEQJdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:33:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36312 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235863AbhEQJdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 05:33:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621243914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tA3XRwdT8ok6d1059+xvA8E+I4telJ7GeyBKUaR4o14=;
+        b=mAhY5yhHPYD3W2hP39/fxKfs6wNBqpydeAo2pLbRj/XbaPdsPUkMCt6xWN9nmg3GUvnzvm
+        wr5LGulJL3xSZQwJhPg0+IBh/7/6VEr9qNracpZIJ+ImNiIFacbG2ajapD5UzViYA/wdy1
+        EEOK7ksb34J50ytZqhi9FMnaPebwk5s=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 372A5B05C;
+        Mon, 17 May 2021 09:31:54 +0000 (UTC)
+Subject: Re: [PATCH v2 1/4] usb: early: Avoid using DbC if already enabled
+To:     Connor Davis <connojdavis@gmail.com>
+Cc:     Jann Horn <jannh@google.com>, Lee Jones <lee.jones@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <cover.1620950220.git.connojdavis@gmail.com>
+ <d160cee9b61c0ec41c2cd5ff9b4e107011d39d8c.1620952511.git.connojdavis@gmail.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <8ccce25a-e3ca-cb30-f6a3-f9243a85a49b@suse.com>
+Date:   Mon, 17 May 2021 11:32:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <d160cee9b61c0ec41c2cd5ff9b4e107011d39d8c.1620952511.git.connojdavis@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 45107ff6d526 ("checkpatch: if no filenames then read stdin"),
-if no filenames are given, it will read patch from stdin rather than exit
-directly. This means the script waits for input indefinitely, which
-confuses new checkpatch users at first.
+On 14.05.2021 02:56, Connor Davis wrote:
+> Check if the debug capability is enabled in early_xdbc_parse_parameter,
+> and if it is, return with an error. This avoids collisions with whatever
+> enabled the DbC prior to linux starting.
 
-Add some basic documentation on this behaviour of checkpatch to lower
-the confusion.
+Doesn't this go too far and prevent use even if firmware (perhaps
+mistakenly) left it enabled?
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+Jan
 
-v3: Update the commit message, thank you Lukas.
-
- Documentation/dev-tools/checkpatch.rst | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index 51fed1b..3eb9ead 100644
---- a/Documentation/dev-tools/checkpatch.rst
-+++ b/Documentation/dev-tools/checkpatch.rst
-@@ -22,6 +22,8 @@ Usage::
- 
-   ./scripts/checkpatch.pl [OPTION]... [FILE]...
- 
-+When FILE is -, or absent, checkpatch reads from standard input.
-+
- Available options:
- 
-  - -q,  --quiet
--- 
-2.1.0
+> Signed-off-by: Connor Davis <connojdavis@gmail.com>
+> ---
+>  drivers/usb/early/xhci-dbc.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/usb/early/xhci-dbc.c b/drivers/usb/early/xhci-dbc.c
+> index be4ecbabdd58..ca67fddc2d36 100644
+> --- a/drivers/usb/early/xhci-dbc.c
+> +++ b/drivers/usb/early/xhci-dbc.c
+> @@ -642,6 +642,16 @@ int __init early_xdbc_parse_parameter(char *s)
+>  	}
+>  	xdbc.xdbc_reg = (struct xdbc_regs __iomem *)(xdbc.xhci_base + offset);
+>  
+> +	if (readl(&xdbc.xdbc_reg->control) & CTRL_DBC_ENABLE) {
+> +		pr_notice("xhci debug capability already in use\n");
+> +		early_iounmap(xdbc.xhci_base, xdbc.xhci_length);
+> +		xdbc.xdbc_reg = NULL;
+> +		xdbc.xhci_base = NULL;
+> +		xdbc.xhci_length = 0;
+> +
+> +		return -ENODEV;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> 
 
