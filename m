@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACBA383DDE
+	by mail.lfdr.de (Postfix) with ESMTP id 54381383DDF
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236934AbhEQTzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:55:44 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:38822 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236743AbhEQTzd (ORCPT
+        id S236988AbhEQTzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:55:46 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:45614 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236822AbhEQTze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:55:33 -0400
-Received: by mail-oi1-f170.google.com with SMTP id z3so7568405oib.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 12:54:16 -0700 (PDT)
+        Mon, 17 May 2021 15:55:34 -0400
+Received: by mail-ot1-f53.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so6589877otc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 12:54:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4cNBCoea0mf78a2MH4F0spkjulstbsJuX6u2flP4NwM=;
-        b=HxbAnZZzIRGJqwwyezl7eVaohZEk53YQVd41Y19SiudY2/V8knopMz+m39o7RyJFPd
-         yIUFyODXP3RbUg5bEHllvh87BP+oaMfemMY3pkLNTcRygjc7GgoerfOe3E+57NJUD+Py
-         RdvI69hrEkP/GIst8UP34oW9gwxaVogGbH5UtPj+5VFAL54FK61GrrK+f8RUmLnQ0cFN
-         m7p427bkaBJQIid9GmhAdUTii5rbHL8XE6PZmlAiOGe6YdObPqWcm2UeHrqGqtIe2aW9
-         bi1UMqTOmEbyEPPRheUIZCDp4dMFoaRD76jXK8lHX/qF9rYE9N+nd3UVGJIvZrZCwm/w
-         CQrw==
-X-Gm-Message-State: AOAM532w8b0/bVqsKj+2VhrWZVO9xxhbao2+IZf65yKzQjo5QBMkIGJn
-        8caZIAYlxG2bbrIZdvLNvQ==
-X-Google-Smtp-Source: ABdhPJwsT9q/WJRnG8Ec/1MXZWl7bJ6fKA4esaU21p/pJRaBjygtmPU1lk3pGfOayWL+IWpPgQCGHg==
-X-Received: by 2002:a05:6808:13d5:: with SMTP id d21mr1087201oiw.31.1621281255773;
-        Mon, 17 May 2021 12:54:15 -0700 (PDT)
+        bh=ox5Uad03HIvUneUEV0ZALlKBmbYKT82BLfWq3q/UJso=;
+        b=PLcV2wDMYCx5XhJFjFTYP54mzXTwMg9A/dCHe9Iim6SARtE0qQx58uDiuEco+qL2Q+
+         Z8ACw2pUeZMuS1KY0GfuS4M9jsjtZqTQGhve6YskNlSNlAdCPevH85yHfa4k4PZgWm6x
+         W35jj1/WGLduf/PVamzXLaJDfJVC8d1SLl4JdLeh7kEs4t95dvDHl3hPuyzugwuIh+9Z
+         btC2GM/V/R5Snnuz7mQsV6iMY6SGmdf4Ln6wNk45AHOGYSqzgAp3dzeRkrSsij4wvSo6
+         WQBe+A3bZYVyBQdWpx1x+JPXf/eCaPlfu+IEn4HkkEbevQnJo+u6EN2hkacThjpC6bmF
+         LnBg==
+X-Gm-Message-State: AOAM530tT0De17oocZS77KWVC6Znw3vFJbpcVckcWILPE8aGjLVzEtje
+        GOgZMMuD5BujQordDAIf7w==
+X-Google-Smtp-Source: ABdhPJxA55TueFl6ZH0b8jUa6655l5IlMrQ6hNVNItlskSFPY1EzoUbAAg7NtPBD/z5noHYY2Xiaqg==
+X-Received: by 2002:a9d:6244:: with SMTP id i4mr1019131otk.182.1621281257538;
+        Mon, 17 May 2021 12:54:17 -0700 (PDT)
 Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id m81sm2920758oig.43.2021.05.17.12.54.13
+        by smtp.googlemail.com with ESMTPSA id m81sm2920758oig.43.2021.05.17.12.54.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 12:54:14 -0700 (PDT)
+        Mon, 17 May 2021 12:54:16 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -51,9 +51,9 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Itaru Kitayama <itaru.kitayama@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 4/5] arm64: perf: Add userspace counter access disable switch
-Date:   Mon, 17 May 2021 14:54:04 -0500
-Message-Id: <20210517195405.3079458-5-robh@kernel.org>
+Subject: [PATCH v8 5/5] Documentation: arm64: Document PMU counters access from userspace
+Date:   Mon, 17 May 2021 14:54:05 -0500
+Message-Id: <20210517195405.3079458-6-robh@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210517195405.3079458-1-robh@kernel.org>
 References: <20210517195405.3079458-1-robh@kernel.org>
@@ -63,153 +63,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like x86, some users may want to disable userspace PMU counter
-altogether. Add a sysfs 'rdpmc' file to control userspace counter
-access. The default is '1' which is enabled. Writing '0' disables
-access.
+From: Raphael Gault <raphael.gault@arm.com>
 
-In the case of multiple PMUs (i.e. big.LITTLE), the control is per PMU
-and userspace must disable access on each PMU.
+Add documentation to describe the access to the pmu hardware counters from
+userspace.
 
-Note that x86 also supports writing '2' to globally enable user access.
-As there's not existing userspace support to worry about, this shouldn't
-be necessary for Arm. It could be added later if the need arises.
-
+Signed-off-by: Raphael Gault <raphael.gault@arm.com>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
 v8:
- - Adjust due to patch 3 changes
+ - Reword that config1:1 must always be set to request user access
 v7:
- - New patch
+ - Merge into existing arm64 perf.rst
+v6:
+  - Update the chained event section with attr.config1 details
+v2:
+  - Update links to test examples
+
+Changes from Raphael's v4:
+  - Convert to rSt
+  - Update chained event status
+  - Add section for heterogeneous systems
 ---
- arch/arm64/kernel/perf_event.c | 64 ++++++++++++++++++++++++++++++++--
- include/linux/perf/arm_pmu.h   |  4 ++-
- 2 files changed, 65 insertions(+), 3 deletions(-)
+ Documentation/arm64/perf.rst | 68 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 67 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index dc79cf7b58ee..4e7b93c23db9 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -334,6 +334,60 @@ static const struct attribute_group armv8_pmuv3_caps_attr_group = {
- 	.attrs = armv8_pmuv3_caps_attrs,
- };
-
-+static void armv8pmu_disable_user_access(void);
+diff --git a/Documentation/arm64/perf.rst b/Documentation/arm64/perf.rst
+index b567f177d385..5dcbb508586f 100644
+--- a/Documentation/arm64/perf.rst
++++ b/Documentation/arm64/perf.rst
+@@ -2,7 +2,10 @@
+ 
+ .. _perf_index:
+ 
+-=====================
++====
++Perf
++====
 +
-+static void armv8pmu_disable_user_access_ipi(void *unused)
-+{
-+	armv8pmu_disable_user_access();
-+}
+ Perf Event Attributes
+ =====================
+ 
+@@ -88,3 +91,66 @@ exclude_host. However when using !exclude_hv there is a small blackout
+ window at the guest entry/exit where host events are not captured.
+ 
+ On VHE systems there are no blackout windows.
 +
-+static ssize_t get_attr_rdpmc(struct device *dev,
-+			      struct device_attribute *attr,
-+			      char *buf)
-+{
-+	struct pmu *pmu = dev_get_drvdata(dev);
-+	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
++Perf Userspace PMU Hardware Counter Access
++==========================================
 +
-+	return snprintf(buf, 40, "%d\n", cpu_pmu->attr_rdpmc);
-+}
++Overview
++--------
++The perf userspace tool relies on the PMU to monitor events. It offers an
++abstraction layer over the hardware counters since the underlying
++implementation is cpu-dependent.
++Arm64 allows userspace tools to have access to the registers storing the
++hardware counters' values directly.
 +
-+static ssize_t set_attr_rdpmc(struct device *dev,
-+			      struct device_attribute *attr,
-+			      const char *buf, size_t count)
-+{
-+	struct pmu *pmu = dev_get_drvdata(dev);
-+	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
-+	unsigned long val;
-+	ssize_t ret;
++This targets specifically self-monitoring tasks in order to reduce the overhead
++by directly accessing the registers without having to go through the kernel.
 +
-+	ret = kstrtoul(buf, 0, &val);
-+	if (ret)
-+		return ret;
++How-to
++------
++The focus is set on the armv8 PMUv3 which makes sure that the access to the pmu
++registers is enabled and that the userspace has access to the relevant
++information in order to use them.
 +
-+	if (val > 1)
-+		return -EINVAL;
++In order to have access to the hardware counter it is necessary to open the 
++event using the perf tool interface with config1:1 attr bit set: the 
++sys_perf_event_open syscall returns a fd which can subsequently be used 
++with the mmap syscall in order to retrieve a page of memory containing 
++information about the event. The PMU driver uses this page to expose to 
++the user the hardware counter's index and other necessary data. Using 
++this index enables the user to access the PMU registers using the `mrs` 
++instruction.
 +
-+	if (!!val != cpu_pmu->attr_rdpmc) {
-+		cpu_pmu->attr_rdpmc = !!val;
-+		if (!val)
-+			on_each_cpu_mask(&cpu_pmu->supported_cpus,
-+				armv8pmu_disable_user_access_ipi, NULL, 1);
-+	}
++The userspace access is supported in libperf using the perf_evsel__mmap()
++and perf_evsel__read() functions. See `tools/lib/perf/tests/test-evsel.c`_ for
++an example.
 +
-+	return count;
-+}
++About heterogeneous systems
++---------------------------
++On heterogeneous systems such as big.LITTLE, userspace PMU counter access can
++only be enabled when the tasks are pinned to a homogeneous subset of cores and
++the corresponding PMU instance is opened by specifying the 'type' attribute.
++The use of generic event types is not supported in this case.
 +
-+static DEVICE_ATTR(rdpmc, S_IRUSR | S_IWUSR, get_attr_rdpmc, set_attr_rdpmc);
++Have a look at `tools/perf/arch/arm64/tests/user-events.c`_ for an example. It
++can be run using the perf tool to check that the access to the registers works
++correctly from userspace:
 +
-+static struct attribute *armv8_pmuv3_rdpmc_attrs[] = {
-+	&dev_attr_rdpmc.attr,
-+	NULL,
-+};
++.. code-block:: sh
 +
-+static const struct attribute_group armv8_pmuv3_rdpmc_attr_group = {
-+	.attrs = armv8_pmuv3_rdpmc_attrs,
-+};
++  perf test -v user
 +
- /*
-  * Perf Events' indices
-  */
-@@ -711,6 +765,9 @@ static void armv8pmu_enable_user_access(struct arm_pmu *cpu_pmu)
- {
- 	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
-
-+	if (!cpu_pmu->attr_rdpmc)
-+		return;
++About chained events and 64-bit counters
++----------------------------------------
++Chained events are not supported in conjunction with userspace counter
++access. If a 64-bit counter is requested (attr.config1:0) with userspace 
++access (attr.config1:1 set), then counter chaining will be disabled. The 
++'pmc_width' in the user page will indicate the actual width of the 
++counter which could be only 32-bits depending on the event and PMU 
++features.
 +
- 	if (!bitmap_empty(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS)) {
- 		int i;
- 		/* Don't need to clear assigned counters. */
-@@ -918,7 +975,7 @@ static void armv8pmu_clear_event_idx(struct pmu_hw_events *cpuc,
-
- static int armv8pmu_access_event_idx(struct perf_event *event)
- {
--	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
-+	if (!to_arm_pmu(event->pmu)->attr_rdpmc || !(event->hw.flags & ARMPMU_EL0_RD_CNTR))
- 		return 0;
-
- 	/*
-@@ -1071,7 +1128,7 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
- 		event->hw.flags |= ARMPMU_EVT_64BIT;
-
- 	/* Userspace counter access only enabled if requested and a per task event */
--	if (armv8pmu_event_want_user_access(event) && event->hw.target)
-+	if (to_arm_pmu(event->pmu)->attr_rdpmc && armv8pmu_event_want_user_access(event) && event->hw.target)
- 		event->hw.flags |= ARMPMU_EL0_RD_CNTR;
-
- 	/* Only expose micro/arch events supported by this PMU */
-@@ -1219,6 +1276,9 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
- 	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = caps ?
- 			caps : &armv8_pmuv3_caps_attr_group;
-
-+	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_RDPMC] = &armv8_pmuv3_rdpmc_attr_group;
-+	cpu_pmu->attr_rdpmc = true;
-+
- 	return 0;
- }
-
-diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-index 02ab0010c6d0..2ecd41df29dd 100644
---- a/include/linux/perf/arm_pmu.h
-+++ b/include/linux/perf/arm_pmu.h
-@@ -81,6 +81,7 @@ enum armpmu_attr_groups {
- 	ARMPMU_ATTR_GROUP_EVENTS,
- 	ARMPMU_ATTR_GROUP_FORMATS,
- 	ARMPMU_ATTR_GROUP_CAPS,
-+	ARMPMU_ATTR_GROUP_RDPMC,
- 	ARMPMU_NR_ATTR_GROUPS
- };
-
-@@ -106,7 +107,8 @@ struct arm_pmu {
- 	int		(*map_event)(struct perf_event *event);
- 	int		(*filter_match)(struct perf_event *event);
- 	int		num_events;
--	bool		secure_access; /* 32-bit ARM only */
-+	bool		secure_access:1; /* 32-bit ARM only */
-+	bool		attr_rdpmc:1;
- #define ARMV8_PMUV3_MAX_COMMON_EVENTS		0x40
- 	DECLARE_BITMAP(pmceid_bitmap, ARMV8_PMUV3_MAX_COMMON_EVENTS);
- #define ARMV8_PMUV3_EXT_COMMON_EVENT_BASE	0x4000
---
++.. Links
++.. _tools/perf/arch/arm64/tests/user-events.c:
++   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
++.. _tools/lib/perf/tests/test-evsel.c:
++   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
+-- 
 2.27.0
+
