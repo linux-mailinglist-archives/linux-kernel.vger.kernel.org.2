@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A03B3827FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A602A382805
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235944AbhEQJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
+        id S235892AbhEQJRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236055AbhEQJPz (ORCPT
+        with ESMTP id S235887AbhEQJRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:15:55 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F34C061345;
-        Mon, 17 May 2021 02:14:03 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 6so4214754pgk.5;
-        Mon, 17 May 2021 02:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y6Pn9mx0oa+zZOR1RR5HsAVqA5vf2WVvZJFn6cIRn3Y=;
-        b=bk2ubwLcnz9XD9HYt/P3H/Exsf1giR1Z53CCh6ZfnzPxlhfo11b0bYMHJdiL/eIkry
-         7YEPMWWTHuHUqJkZICFM1PTD+vgX/FYQrdPRbA29t/pymZKjo6MMk9IECVCpZijqkEL6
-         4I2KCSFbttOI305WKfAA9Uxz/UC/ckaUFk0FZ0CD0RsNEUhLZXVsmHQSzhSjRxXnVS0b
-         QPtDRelH7ZJqgJmUtUBPunynOhWy1ZZuQ2WO1hFKykvSSOnPHBbQjwFZiIYWuSy9Trkt
-         eKKEtkLndUqFbJD9pdRGTIhC0jIe8TNBhah1gM/F1G66F4Mndv4RvVT6rIpRvnspDSoG
-         2IcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y6Pn9mx0oa+zZOR1RR5HsAVqA5vf2WVvZJFn6cIRn3Y=;
-        b=MXsLB/l+EMEmSxYYLGY6srYUKJMXX4jhSKmmlUfo13UhmRn8H+8vT50xxZoqVv9sXH
-         6V/a+8/2xIhxBPEaEr65VVDMaiFX0T5aRHj6EdN2OZQhXIcJjMlTEr7K0F4nnaeQKDTa
-         lpokUjbsTmMvadpttML9XT7U15WAHZ98daZgOHNcNeNRnelQQhj6lx8/bV8Rg4DKl1Lc
-         Qta2mJgg0nOdOkWHNB6lZtE0OkLryfc6DxO2QSSDMrm67QOUp/2Q3Zsa7gh78efQEOQ8
-         5DAiZtv22iknD5XTs5Xe0Fp+OEF1j21C8mWspurR9YNHEZZysvJc65ur2g5S9GBcWMg8
-         ECmA==
-X-Gm-Message-State: AOAM532DayS+Pdl+oQXI9KPLofn+8X4mlK0p1rCZfc9fQm8K9CmVQWso
-        RuvpNczEjvaNkG13avt33Vy+7UKOkBWo/+7VfJM=
-X-Google-Smtp-Source: ABdhPJz0MRXMOypn+UFBhKbHbrC57AMWMbpyv/JFcsDJFcnIRWj5yYuJ4VGMxKiloxebjn+yB7zZGtKZW/sCWozi78o=
-X-Received: by 2002:aa7:985c:0:b029:2c4:b940:f77b with SMTP id
- n28-20020aa7985c0000b02902c4b940f77bmr36446374pfq.73.1621242842553; Mon, 17
- May 2021 02:14:02 -0700 (PDT)
+        Mon, 17 May 2021 05:17:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC12C061763;
+        Mon, 17 May 2021 02:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fCrrb2wfn5Zi32JbXpVG62C+jD1F3AjSSjfgB0Dmat8=; b=G48hOt5WAJAMdzdaFVHcJvE8D+
+        ZVcQ1Old/mPKH9bPE+m1O+zMsvVEt1M5sePG1vncrhbTVAyb73A5J+kKaV4qPTUIOo9REid6MBe0p
+        vgJNCjFYP2BP/KKiX1XYE7ySKaTj2J46WG+T1YaZ4M3VnGLpVS2McgYkJeLh9AIU6w9QNArl4DR4O
+        ZmcvW9RAm1ocHDz4Ly2PwcXGVXOAPZL611MFky/KfmtXeVqEkEjS4usApoy2V4aavKIC8xNrzKUIF
+        zziHoJ6Mr76nLaWhzLvdNIQg/8fIqBqLhYYjXPdMJI0UI33NFytH8k0+BaR/7iT9x0vKXRHehVEZu
+        UiIQVH2g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1liZKg-00Cjt0-F6; Mon, 17 May 2021 09:14:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD098300095;
+        Mon, 17 May 2021 11:14:36 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9C1702D4489BD; Mon, 17 May 2021 11:14:36 +0200 (CEST)
+Date:   Mon, 17 May 2021 11:14:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v6 07/16] KVM: x86/pmu: Reprogram PEBS event to emulate
+ guest PEBS counter
+Message-ID: <YKIz/J1HoOvbmR42@hirez.programming.kicks-ass.net>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-8-like.xu@linux.intel.com>
 MIME-Version: 1.0
-References: <20210516034730.621461-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20210516034730.621461-1-bjorn.andersson@linaro.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 17 May 2021 12:13:46 +0300
-Message-ID: <CAHp75VdfnM+Vr-8__zHPaQ5wDyv8Eg=DMQ0+HRCpWWrSQBZniw@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: mux: Fix matching with typec_altmode_desc
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jun Li <jun.li@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511024214.280733-8-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 6:47 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> In typec_mux_match() "nval" is assigned the number of elements in the
-> "svid" fwnode property, then the variable is used to store the success
-> of the read and finally attempts to loop between 0 and "success" - i.e.
-> not at all - and the code returns indicating that no match was found.
->
-> Fix this by using a separate variable to track the success of the read,
-> to allow the loop to get a change to find a match.
->
-> Fixes: 96a6d031ca99 ("usb: typec: mux: Find the muxes by also matching against the device node")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/usb/typec/mux.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
-> index 9da22ae3006c..8514bec7e1b8 100644
-> --- a/drivers/usb/typec/mux.c
-> +++ b/drivers/usb/typec/mux.c
-> @@ -191,6 +191,7 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
->         bool match;
->         int nval;
->         u16 *val;
-> +       int ret;
->         int i;
->
->         /*
-> @@ -218,10 +219,10 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
->         if (!val)
->                 return ERR_PTR(-ENOMEM);
->
-> -       nval = fwnode_property_read_u16_array(fwnode, "svid", val, nval);
-> -       if (nval < 0) {
-> +       ret = fwnode_property_read_u16_array(fwnode, "svid", val, nval);
-> +       if (ret < 0) {
->                 kfree(val);
-> -               return ERR_PTR(nval);
-> +               return ERR_PTR(ret);
->         }
+On Tue, May 11, 2021 at 10:42:05AM +0800, Like Xu wrote:
+> @@ -99,6 +109,7 @@ static void pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type,
+>  				  bool exclude_kernel, bool intr,
+>  				  bool in_tx, bool in_tx_cp)
+>  {
+> +	struct kvm_pmu *pmu = vcpu_to_pmu(pmc->vcpu);
+>  	struct perf_event *event;
+>  	struct perf_event_attr attr = {
+>  		.type = type,
+> @@ -110,6 +121,7 @@ static void pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type,
+>  		.exclude_kernel = exclude_kernel,
+>  		.config = config,
+>  	};
+> +	bool pebs = test_bit(pmc->idx, (unsigned long *)&pmu->pebs_enable);
+>  
+>  	attr.sample_period = get_sample_period(pmc, pmc->counter);
+>  
+> @@ -124,9 +136,23 @@ static void pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type,
+>  		attr.sample_period = 0;
+>  		attr.config |= HSW_IN_TX_CHECKPOINTED;
+>  	}
+> +	if (pebs) {
+> +		/*
+> +		 * The non-zero precision level of guest event makes the ordinary
+> +		 * guest event becomes a guest PEBS event and triggers the host
+> +		 * PEBS PMI handler to determine whether the PEBS overflow PMI
+> +		 * comes from the host counters or the guest.
+> +		 *
+> +		 * For most PEBS hardware events, the difference in the software
+> +		 * precision levels of guest and host PEBS events will not affect
+> +		 * the accuracy of the PEBS profiling result, because the "event IP"
+> +		 * in the PEBS record is calibrated on the guest side.
+> +		 */
+> +		attr.precise_ip = 1;
+> +	}
+>  
+>  	event = perf_event_create_kernel_counter(&attr, -1, current,
+> -						 intr ? kvm_perf_overflow_intr :
+> +						 (intr || pebs) ? kvm_perf_overflow_intr :
+>  						 kvm_perf_overflow, pmc);
 
-This changes the behaviour of the original code, i.e. nval can be
-still positive but less than we got from previous call. Some fwnode
-backends in some cases potentially can _successfully_ read less than
-asked.
+How would pebs && !intr be possible? Also; wouldn't this be more legible
+when written like:
 
-Perhaps
+	perf_overflow_handler_t ovf = kvm_perf_overflow;
 
-  nval = ret;
+	...
 
-or drop the patch.
+	if (intr)
+		ovf = kvm_perf_overflow_intr;
 
->         for (i = 0; i < nval; i++) {
+	...
 
+	event = perf_event_create_kernel_counter(&attr, -1, current, ovf, pmc);
 
--- 
-With Best Regards,
-Andy Shevchenko
