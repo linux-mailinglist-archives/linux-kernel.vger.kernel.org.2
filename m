@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18963383899
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88CD383898
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345872AbhEQP5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40288 "EHLO mail.kernel.org"
+        id S1345837AbhEQP5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244507AbhEQPio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:38:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9733F61CFA;
-        Mon, 17 May 2021 14:40:52 +0000 (UTC)
+        id S244523AbhEQPip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:38:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED60761944;
+        Mon, 17 May 2021 14:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262453;
-        bh=3d+IWm9c/O8sHKIwBHAISjeRkekeqprqysvOxnSGRLc=;
+        s=korg; t=1621262457;
+        bh=5a0i6618Sf3aj//L1ZmO2dcxrnJP/ZYs+X1dx/dkXyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kPaAEWWtAbeSX4gMiuODPUQylwMwvxFsu2hmyisk3ynMIUxw4frR/v4O2XGs9cGAM
-         gW249x/ASKUDIG3Q6G+w47mbvIbEZIue4q9o7SacHzGzaKuCQf7Im090n7eXivKTiO
-         +5viReRpGtVnmPnP6ORPUKzZqZwLKNeMb/bvCQG4=
+        b=o1E9GHEH4FrZDLERe0EfCz5YLTZMuVfYzHK7qxhUxKydz7CLApxxZsEN/tiS3OFvQ
+         16YtAIkVI7IhjEShvvzZAyALvNd72ibL9EeZTmPb1dgxdA8n4Sc2rQNl/fM+IIUsTm
+         PsdyXt4+ieb7NBMFXxNiylz6QlSY7MzUaw+9URyM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Svyatoslav Ryhel <clamor95@gmail.com>,
-        Andy Shevchenko <Andy.Shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>
-Subject: [PATCH 5.11 294/329] iio: gyro: mpu3050: Fix reported temperature value
-Date:   Mon, 17 May 2021 16:03:25 +0200
-Message-Id: <20210517140312.050626750@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.11 295/329] iio: tsl2583: Fix division by a zero lux_val
+Date:   Mon, 17 May 2021 16:03:26 +0200
+Message-Id: <20210517140312.084526034@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -44,59 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit f73c730774d88a14d7b60feee6d0e13570f99499 upstream.
+commit af0e1871d79cfbb91f732d2c6fa7558e45c31038 upstream.
 
-The raw temperature value is a 16-bit signed integer. The sign casting
-is missing in the code, which results in a wrong temperature reported
-by userspace tools, fix it.
+The lux_val returned from tsl2583_get_lux can potentially be zero,
+so check for this to avoid a division by zero and an overflowed
+gain_trim_val.
 
-Cc: stable@vger.kernel.org
-Fixes: 3904b28efb2c ("iio: gyro: Add driver for the MPU-3050 gyroscope")
-Datasheet: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
-Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
-Tested-by: Svyatoslav Ryhel <clamor95@gmail.com> # Asus TF201
-Reported-by: Svyatoslav Ryhel <clamor95@gmail.com>
-Reviewed-by: Andy Shevchenko <Andy.Shevchenko@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Acked-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-Link: https://lore.kernel.org/r/20210423020959.5023-1-digetx@gmail.com
+Fixes clang scan-build warning:
+
+drivers/iio/light/tsl2583.c:345:40: warning: Either the
+condition 'lux_val<0' is redundant or there is division
+by zero at line 345. [zerodivcond]
+
+Fixes: ac4f6eee8fe8 ("staging: iio: TAOS tsl258x: Device driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/gyro/mpu3050-core.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/iio/light/tsl2583.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -272,7 +272,16 @@ static int mpu3050_read_raw(struct iio_d
- 	case IIO_CHAN_INFO_OFFSET:
- 		switch (chan->type) {
- 		case IIO_TEMP:
--			/* The temperature scaling is (x+23000)/280 Celsius */
-+			/*
-+			 * The temperature scaling is (x+23000)/280 Celsius
-+			 * for the "best fit straight line" temperature range
-+			 * of -30C..85C.  The 23000 includes room temperature
-+			 * offset of +35C, 280 is the precision scale and x is
-+			 * the 16-bit signed integer reported by hardware.
-+			 *
-+			 * Temperature value itself represents temperature of
-+			 * the sensor die.
-+			 */
- 			*val = 23000;
- 			return IIO_VAL_INT;
- 		default:
-@@ -329,7 +338,7 @@ static int mpu3050_read_raw(struct iio_d
- 				goto out_read_raw_unlock;
- 			}
+--- a/drivers/iio/light/tsl2583.c
++++ b/drivers/iio/light/tsl2583.c
+@@ -341,6 +341,14 @@ static int tsl2583_als_calibrate(struct
+ 		return lux_val;
+ 	}
  
--			*val = be16_to_cpu(raw_val);
-+			*val = (s16)be16_to_cpu(raw_val);
- 			ret = IIO_VAL_INT;
- 
- 			goto out_read_raw_unlock;
++	/* Avoid division by zero of lux_value later on */
++	if (lux_val == 0) {
++		dev_err(&chip->client->dev,
++			"%s: lux_val of 0 will produce out of range trim_value\n",
++			__func__);
++		return -ENODATA;
++	}
++
+ 	gain_trim_val = (unsigned int)(((chip->als_settings.als_cal_target)
+ 			* chip->als_settings.als_gain_trim) / lux_val);
+ 	if ((gain_trim_val < 250) || (gain_trim_val > 4000)) {
 
 
