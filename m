@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0E6383797
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0063383639
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344890AbhEQPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:45:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55194 "EHLO mail.kernel.org"
+        id S245634AbhEQPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:30:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245694AbhEQPad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:30:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5352E61CC4;
-        Mon, 17 May 2021 14:37:53 +0000 (UTC)
+        id S242289AbhEQPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:15:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19F5161C78;
+        Mon, 17 May 2021 14:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262273;
-        bh=a+76ESXoPOw3Ev4y4VzpXrP8duFzucx1aof+adZ6SJk=;
+        s=korg; t=1621261951;
+        bh=3XGgN5Ew7afySlUqdGrQmXChzoB6Gf7xuxi02REcKn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ck3hCiq2Umf7/7HI6XlRAGsZu65k1fGjAyWvdgeh04JCG1mm2zXWHaqm8wC/VHQ08
-         C2Op/NBSQIGN6r8U2HhKptfyo/FhVl42Xufg4uIkiW5k6mtFgyYkFNtwgEMOff44ZK
-         8/z0WucLKsKI1zwPasdfy+MRjM9CdT6qrC5Y8lGE=
+        b=vy5W5RUQ/7Cu9EVNnEUhpEQPAw/XYZXVaS34rsMZZAsgZr9g5BMVlaexsiw0hsCoS
+         T7N8Nl1R+gtF1Flruz52R+reyuQH7Px7jK7G9JVv8om5SfPsZ3JQUZWGj5qsdic5qq
+         wf1o9CUUpMqLVBRdsd7B/g3kwRJoo2X9t/UFWPxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+6beae4000559d41d80f8@syzkaller.appspotmail.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 254/329] KVM: x86: Prevent deadlock against tk_core.seq
-Date:   Mon, 17 May 2021 16:02:45 +0200
-Message-Id: <20210517140310.699634146@linuxfoundation.org>
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ferry Toth <ftoth@exalondelft.nl>
+Subject: [PATCH 5.4 114/141] usb: dwc3: pci: Enable usb2-gadget-lpm-disable for Intel Merrifield
+Date:   Mon, 17 May 2021 16:02:46 +0200
+Message-Id: <20210517140246.634735533@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,88 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Ferry Toth <ftoth@exalondelft.nl>
 
-[ Upstream commit 3f804f6d201ca93adf4c3df04d1bfd152c1129d6 ]
+commit 04357fafea9c7ed34525eb9680c760245c3bb958 upstream.
 
-syzbot reported a possible deadlock in pvclock_gtod_notify():
+On Intel Merrifield LPM is causing host to reset port after a timeout.
+By disabling LPM entirely this is prevented.
 
-CPU 0  		  	   	    	    CPU 1
-write_seqcount_begin(&tk_core.seq);
-  pvclock_gtod_notify()			    spin_lock(&pool->lock);
-    queue_work(..., &pvclock_gtod_work)	    ktime_get()
-     spin_lock(&pool->lock);		      do {
-     						seq = read_seqcount_begin(tk_core.seq)
-						...
-				              } while (read_seqcount_retry(&tk_core.seq, seq);
-
-While this is unlikely to happen, it's possible.
-
-Delegate queue_work() to irq_work() which postpones it until the
-tk_core.seq write held region is left and interrupts are reenabled.
-
-Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
-Reported-by: syzbot+6beae4000559d41d80f8@syzkaller.appspotmail.com
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Message-Id: <87h7jgm1zy.ffs@nanos.tec.linutronix.de>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 066c09593454 ("usb: dwc3: pci: Enable extcon driver for Intel Merrifield")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210425150947.5862-1-ftoth@exalondelft.nl
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ drivers/usb/dwc3/dwc3-pci.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b010ad6cbd14..8105e9ae1ff8 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7872,6 +7872,18 @@ static void pvclock_gtod_update_fn(struct work_struct *work)
- 
- static DECLARE_WORK(pvclock_gtod_work, pvclock_gtod_update_fn);
- 
-+/*
-+ * Indirection to move queue_work() out of the tk_core.seq write held
-+ * region to prevent possible deadlocks against time accessors which
-+ * are invoked with work related locks held.
-+ */
-+static void pvclock_irq_work_fn(struct irq_work *w)
-+{
-+	queue_work(system_long_wq, &pvclock_gtod_work);
-+}
-+
-+static DEFINE_IRQ_WORK(pvclock_irq_work, pvclock_irq_work_fn);
-+
- /*
-  * Notification about pvclock gtod data update.
-  */
-@@ -7883,13 +7895,14 @@ static int pvclock_gtod_notify(struct notifier_block *nb, unsigned long unused,
- 
- 	update_pvclock_gtod(tk);
- 
--	/* disable master clock if host does not trust, or does not
--	 * use, TSC based clocksource.
-+	/*
-+	 * Disable master clock if host does not trust, or does not use,
-+	 * TSC based clocksource. Delegate queue_work() to irq_work as
-+	 * this is invoked with tk_core.seq write held.
- 	 */
- 	if (!gtod_is_based_on_tsc(gtod->clock.vclock_mode) &&
- 	    atomic_read(&kvm_guest_has_master_clock) != 0)
--		queue_work(system_long_wq, &pvclock_gtod_work);
--
-+		irq_work_queue(&pvclock_irq_work);
- 	return 0;
- }
- 
-@@ -8005,6 +8018,7 @@ void kvm_arch_exit(void)
- 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
- #ifdef CONFIG_X86_64
- 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
-+	irq_work_sync(&pvclock_irq_work);
- 	cancel_work_sync(&pvclock_gtod_work);
- #endif
- 	kvm_x86_ops.hardware_enable = NULL;
--- 
-2.30.2
-
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -138,6 +138,7 @@ static const struct property_entry dwc3_
+ 	PROPERTY_ENTRY_BOOL("snps,disable_scramble_quirk"),
+ 	PROPERTY_ENTRY_BOOL("snps,dis_u3_susphy_quirk"),
+ 	PROPERTY_ENTRY_BOOL("snps,dis_u2_susphy_quirk"),
++	PROPERTY_ENTRY_BOOL("snps,usb2-gadget-lpm-disable"),
+ 	PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
+ 	{}
+ };
 
 
