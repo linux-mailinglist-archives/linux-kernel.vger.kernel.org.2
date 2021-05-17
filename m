@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B25138339C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0781E38311D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241095AbhEQPAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39052 "EHLO mail.kernel.org"
+        id S240639AbhEQOez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:34:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241249AbhEQOua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:50:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D5A561464;
-        Mon, 17 May 2021 14:23:10 +0000 (UTC)
+        id S239966AbhEQO3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:29:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81F9D616E8;
+        Mon, 17 May 2021 14:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261390;
-        bh=GTG8bbh8V6Po43xFaE8EyHLkS4c8grvCURbwrR39XoI=;
+        s=korg; t=1621260898;
+        bh=zpv5bnEDtuF3dFb7A4ZqLy1eAHZ08rMYDgZskHDYy4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ct3oLnkbnKFRie6KGjlVF3zeB12Qv68WPNfFXuQGjedSOZO9MpfyeZmEp3INNNAuP
-         Sez4zU6Kz/TnTSL1vJuAAcD+WHEwMMoliYZvM/4gP89qIE5Q5oScTh1GoQtW1PIEGM
-         TwnlQqb6ZeynocvRw3lLKHv3JOIv1f+fz7plNCAw=
+        b=DD3xM4Kqq2xHvjNQg1i3cjNcrk0QmhCWSgaRDSa11Y+TB8JUrINo2+37UMM3/FPYm
+         vm272TgXc9smg4VY6sp7LM4xIdDDU2GILDKW7oNgNGJSKmcZWl/z+00o63Ofa2cPZy
+         vE0+0FZc145Bpndl6l6u08P2lYyPqRgdVjkFfQNk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Tong Zhang <ztong0001@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 015/289] fs: dlm: flush swork on shutdown
-Date:   Mon, 17 May 2021 15:59:00 +0200
-Message-Id: <20210517140305.689779548@linuxfoundation.org>
+Subject: [PATCH 5.11 030/329] ALSA: hdspm: dont disable if not enabled
+Date:   Mon, 17 May 2021 15:59:01 +0200
+Message-Id: <20210517140303.055698419@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit eec054b5a7cfe6d1f1598a323b05771ee99857b5 ]
+[ Upstream commit 790f5719b85e12e10c41753b864e74249585ed08 ]
 
-This patch fixes the flushing of send work before shutdown. The function
-cancel_work_sync() is not the right workqueue functionality to use here
-as it would cancel the work if the work queues itself. In cases of
-EAGAIN in send() for dlm message we need to be sure that everything is
-send out before. The function flush_work() will ensure that every send
-work is be done inclusive in EAGAIN cases.
+hdspm wants to disable a not enabled pci device, which makes kernel
+throw a warning. Make sure the device is enabled before calling disable.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
+[    1.786391] snd_hdspm 0000:00:03.0: disabling already-disabled device
+[    1.786400] WARNING: CPU: 0 PID: 182 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.795181] Call Trace:
+[    1.795320]  snd_hdspm_card_free+0x58/0xa0 [snd_hdspm]
+[    1.795595]  release_card_device+0x4b/0x80 [snd]
+[    1.795860]  device_release+0x3b/0xa0
+[    1.796072]  kobject_put+0x94/0x1b0
+[    1.796260]  put_device+0x13/0x20
+[    1.796438]  snd_card_free+0x61/0x90 [snd]
+[    1.796659]  snd_hdspm_probe+0x97b/0x1440 [snd_hdspm]
+
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210321153840.378226-3-ztong0001@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/lowcomms.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/pci/rme9652/hdspm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
-index 79f56f16bc2c..44e2716ac158 100644
---- a/fs/dlm/lowcomms.c
-+++ b/fs/dlm/lowcomms.c
-@@ -612,10 +612,7 @@ static void shutdown_connection(struct connection *con)
- {
- 	int ret;
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 04e878a0f773..49fee31ad905 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -6884,7 +6884,8 @@ static int snd_hdspm_free(struct hdspm * hdspm)
+ 	if (hdspm->port)
+ 		pci_release_regions(hdspm->pci);
  
--	if (cancel_work_sync(&con->swork)) {
--		log_print("canceled swork for node %d", con->nodeid);
--		clear_bit(CF_WRITE_PENDING, &con->flags);
--	}
-+	flush_work(&con->swork);
+-	pci_disable_device(hdspm->pci);
++	if (pci_is_enabled(hdspm->pci))
++		pci_disable_device(hdspm->pci);
+ 	return 0;
+ }
  
- 	mutex_lock(&con->sock_mutex);
- 	/* nothing to shutdown */
 -- 
 2.30.2
 
