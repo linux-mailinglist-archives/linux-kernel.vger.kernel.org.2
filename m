@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B81838372A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4728383741
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244719AbhEQPki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:40:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39772 "EHLO mail.kernel.org"
+        id S244887AbhEQPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242810AbhEQPZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:25:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4ACB613F3;
-        Mon, 17 May 2021 14:36:10 +0000 (UTC)
+        id S243264AbhEQP0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:26:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24AFE61924;
+        Mon, 17 May 2021 14:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262171;
-        bh=NSsqVeWI/aMWf9NH32tBVF3Q4W4cpI/mjD7psRtOA+Y=;
+        s=korg; t=1621262175;
+        bh=oDdmwiAs4OkF35TIcoVtoX+ScytIn7uyrYIh5qLdz2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W9+gBqbrMuCT8RdXtTlrNHtsncQRfFcoCXW1eVQXF/TB8W39UnJvw5sNXPbB7yWXt
-         CKjgQKSVyfF1VCy7sStHYZ+9geG+Wg2TmlMkwsXYyT+gMkvKUVbBJ7C5BRfLbxfYH4
-         HQrEmeG2XNnX29ond94aH0E9nAB7Fb+QHca6+1eE=
+        b=nkKBjbdaUiHtCm8STjxGFGE4xGSf+WKapZ7iwRYfJE7wiLQYdXQLAl6yXQVs5bngK
+         dYxj1JSGDwZvmnhg/Gn1v6w5RQK4aP+qe7KOf4ck7lKmKU2Ar4NhMJt+1I5MXIr8vC
+         OCERrd+dc6gb0ubvm+OWAF8akduns+EQfJBSgeJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Isaev <isaev@synopsys.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 5.11 231/329] ARC: mm: Use max_high_pfn as a HIGHMEM zone border
-Date:   Mon, 17 May 2021 16:02:22 +0200
-Message-Id: <20210517140309.925703257@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.11 232/329] sh: Remove unused variable
+Date:   Mon, 17 May 2021 16:02:23 +0200
+Message-Id: <20210517140309.961473835@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -40,56 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Isaev <isaev@synopsys.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 1d5e4640e5df15252398c1b621f6bd432f2d7f17 upstream.
+commit 0d3ae948741ac6d80e39ab27b45297367ee477de upstream.
 
-Commit 4af22ded0ecf ("arc: fix memory initialization for systems
-with two memory banks") fixed highmem, but for the PAE case it causes
-bug messages:
+Removes this annoying warning:
 
-| BUG: Bad page state in process swapper  pfn:80000
-| page:(ptrval) refcount:0 mapcount:1 mapping:00000000 index:0x0 pfn:0x80000 flags: 0x0()
-| raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
-| raw: 00000000
-| page dumped because: nonzero mapcount
-| Modules linked in:
-| CPU: 0 PID: 0 Comm: swapper Not tainted 5.12.0-rc5-00003-g1e43c377a79f #1
+arch/sh/kernel/traps.c: In function ‘nmi_trap_handler’:
+arch/sh/kernel/traps.c:183:15: warning: unused variable ‘cpu’ [-Wunused-variable]
+  183 |  unsigned int cpu = smp_processor_id();
 
-This is because the fix expects highmem to be always less than
-lowmem and uses min_low_pfn as an upper zone border for highmem.
-
-max_high_pfn should be ok for both highmem and highmem+PAE cases.
-
-Fixes: 4af22ded0ecf ("arc: fix memory initialization for systems with two memory banks")
-Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: stable@vger.kernel.org  #5.8 onwards
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Fixes: fe3f1d5d7cd3 ("sh: Get rid of nmi_count()")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210414170517.1205430-1-eric.dumazet@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arc/mm/init.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ arch/sh/kernel/traps.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/arc/mm/init.c
-+++ b/arch/arc/mm/init.c
-@@ -157,7 +157,16 @@ void __init setup_arch_memory(void)
- 	min_high_pfn = PFN_DOWN(high_mem_start);
- 	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
+--- a/arch/sh/kernel/traps.c
++++ b/arch/sh/kernel/traps.c
+@@ -180,7 +180,6 @@ static inline void arch_ftrace_nmi_exit(
  
--	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
-+	/*
-+	 * max_high_pfn should be ok here for both HIGHMEM and HIGHMEM+PAE.
-+	 * For HIGHMEM without PAE max_high_pfn should be less than
-+	 * min_low_pfn to guarantee that these two regions don't overlap.
-+	 * For PAE case highmem is greater than lowmem, so it is natural
-+	 * to use max_high_pfn.
-+	 *
-+	 * In both cases, holes should be handled by pfn_valid().
-+	 */
-+	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
+ BUILD_TRAP_HANDLER(nmi)
+ {
+-	unsigned int cpu = smp_processor_id();
+ 	TRAP_HANDLER_DECL;
  
- 	high_memory = (void *)(min_high_pfn << PAGE_SHIFT);
- 
+ 	arch_ftrace_nmi_enter();
 
 
