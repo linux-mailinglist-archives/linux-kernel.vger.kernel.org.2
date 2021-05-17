@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965AB38367C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8474738389A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244916AbhEQPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:33:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54996 "EHLO mail.kernel.org"
+        id S1345905AbhEQP5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243347AbhEQPSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:18:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B343161C6E;
-        Mon, 17 May 2021 14:33:28 +0000 (UTC)
+        id S244510AbhEQPio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:38:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6639D61CF9;
+        Mon, 17 May 2021 14:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262009;
-        bh=LlLP6X09O5DlDYbL590+9uh82tEFBXAaaL5feOB3nik=;
+        s=korg; t=1621262450;
+        bh=x6K84QG3HR9iITJc6J1QC6FonyXIiybpclJ9Qed+jzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a4Uo7DDr/KntlAyiWqKgilC/Vy3oQY/CQUuI+X6I25JRFVy6bryAvs96+gKtk2AL/
-         U56+KEaMwCTOixIT/reS0/y2kQuJ7ti8Dmd7lkLVPrWr1fMG3aFI7jGtLmQhiJWaLO
-         w0PTsGqH4w1eeEspT+13Fa6ehtInPZt506kgLFVE=
+        b=PIw7mVSuPRZ3ekS1NmN+eZCcLVVAwioVABnYjlmieeL0osCfg+8KCqj75Wf0+zdLs
+         uOWfzvCjzCo5N9lHOHCK0mRuPBfBNB4k7xSyJ9CF4SY6StlEuMKsqOzStTeWq8if61
+         VwTLJ6jGIFoh6o7KEzuRik9VcfpTUymBRLLOI29U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 203/329] mm/migrate.c: fix potential indeterminate pte entry in migrate_vma_insert_page()
-Date:   Mon, 17 May 2021 16:01:54 +0200
-Message-Id: <20210517140308.980753642@linuxfoundation.org>
+Subject: [PATCH 5.10 190/289] i40e: fix the restart auto-negotiation after FEC modified
+Date:   Mon, 17 May 2021 16:01:55 +0200
+Message-Id: <20210517140311.507682527@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
 
-[ Upstream commit 34f5e9b9d1990d286199084efa752530ee3d8297 ]
+[ Upstream commit 61343e6da7810de81d6b826698946ae4f9070819 ]
 
-If the zone device page does not belong to un-addressable device memory,
-the variable entry will be uninitialized and lead to indeterminate pte
-entry ultimately.  Fix this unexpected case and warn about it.
+When FEC mode was changed the link didn't know it because
+the link was not reset and new parameters were not negotiated.
+Set a flag 'I40E_AQ_PHY_ENABLE_ATOMIC_LINK' in 'abilities'
+to restart the link and make it run with the new settings.
 
-Link: https://lkml.kernel.org/r/20210325131524.48181-4-linmiaohe@huawei.com
-Fixes: df6ad69838fc ("mm/device-public-memory: device memory cache coherent with CPU")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Cc: Alistair Popple <apopple@nvidia.com>
-Cc: Jerome Glisse <jglisse@redhat.com>
-Cc: Rafael Aquini <aquini@redhat.com>
-Cc: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 1d96340196f1 ("i40e: Add support FEC configuration for Fortville 25G")
+Signed-off-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/migrate.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 20ca887ea769..4754f2489d78 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2967,6 +2967,13 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 31d48a85cfaf..13554706c180 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -1409,7 +1409,8 @@ static int i40e_set_fec_cfg(struct net_device *netdev, u8 fec_cfg)
  
- 			swp_entry = make_device_private_entry(page, vma->vm_flags & VM_WRITE);
- 			entry = swp_entry_to_pte(swp_entry);
-+		} else {
-+			/*
-+			 * For now we only support migrating to un-addressable
-+			 * device memory.
-+			 */
-+			pr_warn_once("Unsupported ZONE_DEVICE page type.\n");
-+			goto abort;
- 		}
- 	} else {
- 		entry = mk_pte(page, vma->vm_page_prot);
+ 		memset(&config, 0, sizeof(config));
+ 		config.phy_type = abilities.phy_type;
+-		config.abilities = abilities.abilities;
++		config.abilities = abilities.abilities |
++				   I40E_AQ_PHY_ENABLE_ATOMIC_LINK;
+ 		config.phy_type_ext = abilities.phy_type_ext;
+ 		config.link_speed = abilities.link_speed;
+ 		config.eee_capability = abilities.eee_capability;
 -- 
 2.30.2
 
