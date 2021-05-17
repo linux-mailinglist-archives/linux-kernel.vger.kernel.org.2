@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C42C382F55
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BC9382F67
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237759AbhEQOPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:15:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46476 "EHLO mail.kernel.org"
+        id S238754AbhEQOQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:16:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238410AbhEQOMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:12:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39200613DD;
-        Mon, 17 May 2021 14:08:14 +0000 (UTC)
+        id S238463AbhEQOM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:12:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BB8E61350;
+        Mon, 17 May 2021 14:08:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260494;
-        bh=z1JhGDeB17MKFB/MhzFJ7kYoweVrYHPn4TnLDlE7ItE=;
+        s=korg; t=1621260496;
+        bh=2AQnckqxS9feE4LaNaTfupbxIBj+QVQWIJUO9IRnjvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mC1nK1HEmvrDE+QC+9OnfvBGmcVA6XBdHXdE1KlRWXmdM906hD0H/3xDjxF1nE3R0
-         X63dNswiykJvV/SdDZVgKZzXnXSlaIRTGbMepu5hVxjVoMhmkgWAdY8pbdMtFLrvoD
-         CJJreQxZPXaGd7uF81hJA49cDim+77n8GB3+NE2g=
+        b=K4mWYSsQ5a+glHGN3RtSmweFKNbENY8ukPDS6XA/uP7vqTIdTzTkzTsrxwumRK+MU
+         BAVuOQU/l3rNnhYLhgtN45TwFGm2cCy7gySew8qjWE4Jr7FkrrivI8jLrILyHIv4f3
+         XQkxgXnBc+tZMKmQUCcWDK8O+GAyPIv/ZCd2igs8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 071/363] mt76: mt7915: add wifi subsystem reset
-Date:   Mon, 17 May 2021 15:58:57 +0200
-Message-Id: <20210517140304.995348082@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Ye Weihua <yeweihua4@huawei.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 072/363] i2c: imx: Fix PM reference leak in i2c_imx_reg_slave()
+Date:   Mon, 17 May 2021 15:58:58 +0200
+Message-Id: <20210517140305.025937706@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
 References: <20210517140302.508966430@linuxfoundation.org>
@@ -39,175 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryder Lee <ryder.lee@mediatek.com>
+From: Ye Weihua <yeweihua4@huawei.com>
 
-[ Upstream commit e07419a7dca97dd9bddfe5d099380857c19535f3 ]
+[ Upstream commit c4b1fcc310e655fa8414696c38a84d36c00684c8 ]
 
-Reset wifi subsystem when MCU is already running.
-Fixes firmware download failure after soft reboot on systems where the PCIe
-reset could not be performed properly.
+pm_runtime_get_sync() will increment the PM reference count even on
+failure. Forgetting to put the reference again will result in a leak.
 
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Co-developed-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Replace it with pm_runtime_resume_and_get() to keep the usage counter
+balanced.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Weihua <yeweihua4@huawei.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt7915/init.c  | 58 ++++++++++++++++++-
- .../net/wireless/mediatek/mt76/mt7915/mcu.c   | 15 +----
- .../net/wireless/mediatek/mt76/mt7915/regs.h  | 13 +++++
- 3 files changed, 70 insertions(+), 16 deletions(-)
+ drivers/i2c/busses/i2c-imx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-index 894016fdcf07..c7d4268d860a 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-@@ -4,6 +4,7 @@
- #include <linux/etherdevice.h>
- #include "mt7915.h"
- #include "mac.h"
-+#include "mcu.h"
- #include "eeprom.h"
+diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+index dc9c4b4cc25a..dc5ca71906db 100644
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -801,7 +801,7 @@ static int i2c_imx_reg_slave(struct i2c_client *client)
+ 	i2c_imx->last_slave_event = I2C_SLAVE_STOP;
  
- #define CCK_RATE(_idx, _rate) {						\
-@@ -283,9 +284,50 @@ static void mt7915_init_work(struct work_struct *work)
- 	mt7915_register_ext_phy(dev);
- }
- 
-+static void mt7915_wfsys_reset(struct mt7915_dev *dev)
-+{
-+	u32 val = MT_TOP_PWR_KEY | MT_TOP_PWR_SW_PWR_ON | MT_TOP_PWR_PWR_ON;
-+	u32 reg = mt7915_reg_map_l1(dev, MT_TOP_MISC);
-+
-+#define MT_MCU_DUMMY_RANDOM	GENMASK(15, 0)
-+#define MT_MCU_DUMMY_DEFAULT	GENMASK(31, 16)
-+
-+	mt76_wr(dev, MT_MCU_WFDMA0_DUMMY_CR, MT_MCU_DUMMY_RANDOM);
-+
-+	/* change to software control */
-+	val |= MT_TOP_PWR_SW_RST;
-+	mt76_wr(dev, MT_TOP_PWR_CTRL, val);
-+
-+	/* reset wfsys */
-+	val &= ~MT_TOP_PWR_SW_RST;
-+	mt76_wr(dev, MT_TOP_PWR_CTRL, val);
-+
-+	/* release wfsys then mcu re-excutes romcode */
-+	val |= MT_TOP_PWR_SW_RST;
-+	mt76_wr(dev, MT_TOP_PWR_CTRL, val);
-+
-+	/* switch to hw control */
-+	val &= ~MT_TOP_PWR_SW_RST;
-+	val |= MT_TOP_PWR_HW_CTRL;
-+	mt76_wr(dev, MT_TOP_PWR_CTRL, val);
-+
-+	/* check whether mcu resets to default */
-+	if (!mt76_poll_msec(dev, MT_MCU_WFDMA0_DUMMY_CR, MT_MCU_DUMMY_DEFAULT,
-+			    MT_MCU_DUMMY_DEFAULT, 1000)) {
-+		dev_err(dev->mt76.dev, "wifi subsystem reset failure\n");
-+		return;
-+	}
-+
-+	/* wfsys reset won't clear host registers */
-+	mt76_clear(dev, reg, MT_TOP_MISC_FW_STATE);
-+
-+	msleep(100);
-+}
-+
- static int mt7915_init_hardware(struct mt7915_dev *dev)
- {
- 	int ret, idx;
-+	u32 val;
- 
- 	mt76_wr(dev, MT_INT_SOURCE_CSR, ~0);
- 
-@@ -295,6 +337,12 @@ static int mt7915_init_hardware(struct mt7915_dev *dev)
- 
- 	dev->dbdc_support = !!(mt7915_l1_rr(dev, MT_HW_BOUND) & BIT(5));
- 
-+	val = mt76_rr(dev, mt7915_reg_map_l1(dev, MT_TOP_MISC));
-+
-+	/* If MCU was already running, it is likely in a bad state */
-+	if (FIELD_GET(MT_TOP_MISC_FW_STATE, val) > FW_STATE_FW_DOWNLOAD)
-+		mt7915_wfsys_reset(dev);
-+
- 	ret = mt7915_dma_init(dev);
- 	if (ret)
+ 	/* Resume */
+-	ret = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
++	ret = pm_runtime_resume_and_get(i2c_imx->adapter.dev.parent);
+ 	if (ret < 0) {
+ 		dev_err(&i2c_imx->adapter.dev, "failed to resume i2c controller");
  		return ret;
-@@ -308,8 +356,14 @@ static int mt7915_init_hardware(struct mt7915_dev *dev)
- 	mt76_wr(dev, MT_SWDEF_MODE, MT_SWDEF_NORMAL_MODE);
- 
- 	ret = mt7915_mcu_init(dev);
--	if (ret)
--		return ret;
-+	if (ret) {
-+		/* Reset and try again */
-+		mt7915_wfsys_reset(dev);
-+
-+		ret = mt7915_mcu_init(dev);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	ret = mt7915_eeprom_init(dev);
- 	if (ret < 0)
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index c747349a4c13..f069a5a03e14 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -2764,21 +2764,8 @@ out:
- 
- static int mt7915_load_firmware(struct mt7915_dev *dev)
- {
-+	u32 reg = mt7915_reg_map_l1(dev, MT_TOP_MISC);
- 	int ret;
--	u32 val, reg = mt7915_reg_map_l1(dev, MT_TOP_MISC);
--
--	val = FIELD_PREP(MT_TOP_MISC_FW_STATE, FW_STATE_FW_DOWNLOAD);
--
--	if (!mt76_poll_msec(dev, reg, MT_TOP_MISC_FW_STATE, val, 1000)) {
--		/* restart firmware once */
--		__mt76_mcu_restart(&dev->mt76);
--		if (!mt76_poll_msec(dev, reg, MT_TOP_MISC_FW_STATE,
--				    val, 1000)) {
--			dev_err(dev->mt76.dev,
--				"Firmware is not ready for download\n");
--			return -EIO;
--		}
--	}
- 
- 	ret = mt7915_load_patch(dev);
- 	if (ret)
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/regs.h b/drivers/net/wireless/mediatek/mt76/mt7915/regs.h
-index ed0c9a24bb53..dfb8880657bf 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/regs.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/regs.h
-@@ -4,6 +4,11 @@
- #ifndef __MT7915_REGS_H
- #define __MT7915_REGS_H
- 
-+/* MCU WFDMA0 */
-+#define MT_MCU_WFDMA0_BASE		0x2000
-+#define MT_MCU_WFDMA0(ofs)		(MT_MCU_WFDMA0_BASE + (ofs))
-+#define MT_MCU_WFDMA0_DUMMY_CR		MT_MCU_WFDMA0(0x120)
-+
- /* MCU WFDMA1 */
- #define MT_MCU_WFDMA1_BASE		0x3000
- #define MT_MCU_WFDMA1(ofs)		(MT_MCU_WFDMA1_BASE + (ofs))
-@@ -396,6 +401,14 @@
- #define MT_WFDMA1_PCIE1_BUSY_ENA_TX_FIFO1	BIT(1)
- #define MT_WFDMA1_PCIE1_BUSY_ENA_RX_FIFO	BIT(2)
- 
-+#define MT_TOP_RGU_BASE				0xf0000
-+#define MT_TOP_PWR_CTRL				(MT_TOP_RGU_BASE + (0x0))
-+#define MT_TOP_PWR_KEY				(0x5746 << 16)
-+#define MT_TOP_PWR_SW_RST			BIT(0)
-+#define MT_TOP_PWR_SW_PWR_ON			GENMASK(3, 2)
-+#define MT_TOP_PWR_HW_CTRL			BIT(4)
-+#define MT_TOP_PWR_PWR_ON			BIT(7)
-+
- #define MT_INFRA_CFG_BASE		0xf1000
- #define MT_INFRA(ofs)			(MT_INFRA_CFG_BASE + (ofs))
- 
 -- 
 2.30.2
 
