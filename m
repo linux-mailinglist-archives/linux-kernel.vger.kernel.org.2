@@ -2,123 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B75383AE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59691383AC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241970AbhEQROP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 13:14:15 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:50964 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243316AbhEQROK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 13:14:10 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 370E541370;
-        Mon, 17 May 2021 17:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1621271570; x=1623085971; bh=yk9EC+Dve1pamEtbvjpjbU1uw
-        Oxf7cDLNNgPjnJ+aDs=; b=eZ7Z2RRNqXGEHeDei3cSHutMBxCxQz6+J9MLIYwI0
-        VadwEH4iVup8LD2PLNo3DSPrh4nP1Sa+rMH5TjMejtDYdNCTJM1f4RYuPX5inWKz
-        W/nAVSKemIWYdu4I7bYJAZtyMFvMBQk/bfqhFKLLLIAnuoHag+432eZPROhdQmlF
-        gU=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id He7ny6xBWzgN; Mon, 17 May 2021 20:12:50 +0300 (MSK)
-Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 835F241384;
-        Mon, 17 May 2021 19:59:49 +0300 (MSK)
-Received: from localhost.localdomain (10.199.0.36) by T-EXCH-03.corp.yadro.com
- (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Mon, 17
- May 2021 19:59:49 +0300
-Message-ID: <f6d48db00698793b9d6a8c04a228101a0898e671.camel@yadro.com>
-Subject: Re: [PATCH 4/4] hwmon: vcnl3020: add hwmon driver for intrusion
- sensor
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "Jean Delvare" <jdelvare@suse.com>, <linux-kernel@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-hwmon@vger.kernel.org>
-Date:   Mon, 17 May 2021 20:08:24 +0300
-In-Reply-To: <20210505140208.GA1913659@roeck-us.net>
-References: <20210430152419.261757-1-i.mikhaylov@yadro.com>
-         <20210430152419.261757-5-i.mikhaylov@yadro.com>
-         <20210430163831.GA3163069@roeck-us.net>
-         <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
-         <20210505140208.GA1913659@roeck-us.net>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S235587AbhEQRK6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 May 2021 13:10:58 -0400
+Received: from aposti.net ([89.234.176.197]:52370 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232261AbhEQRK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 13:10:56 -0400
+Date:   Mon, 17 May 2021 18:09:26 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/2] drm: xlnx: consolidate the functions which
+ programming AUDIO_VIDEO_SELECT register
+To:     quanyang.wang@windriver.com
+Cc:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-Id: <QZG9TQ.LU7WK53ECH511@crapouillou.net>
+In-Reply-To: <20210513114540.1241122-3-quanyang.wang@windriver.com>
+References: <20210513114540.1241122-1-quanyang.wang@windriver.com>
+        <20210513114540.1241122-3-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.199.0.36]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-03.corp.yadro.com (172.17.100.103)
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-05-05 at 07:02 -0700, Guenter Roeck wrote:
-> On Tue, May 04, 2021 at 10:46:53PM +0300, Ivan Mikhaylov wrote:
-> > On Fri, 2021-04-30 at 09:38 -0700, Guenter Roeck wrote:
-> > > On Fri, Apr 30, 2021 at 06:24:19PM +0300, Ivan Mikhaylov wrote:
-> > > > Intrusion status detection via Interrupt Status Register.
-> > > > 
-> > > > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> > > 
-> > > I think this should, if at all, be handled using the
-> > > iio->hwmon bridge (or, in other words, require a solution
-> > > which is not chip specific).
-> > 
-> > Thanks a lot for suggestion, it's actually looks what's needed here instead
-> > of
-> > this driver. Anyways, there is no IIO_PROXIMITY support inside supported
-> > types
-> > in iio_hwmon.c. Should I add additional case inside this driver for
-> > IIO_PROXIMITY type?
-> > 
-> > > I am also not sure if "proximity" is really appropriate to use
-> > > for intrusion detection in the sense of hardware monitoring.
-> > > This would require a proximity sensor within a chassis, which
-> > > would be both overkill and unlikely to happen in the real world.
-> > > "Intrusion", in hardware monitoring context, means "someone
-> > > opened the chassis", not "someone got [too] close".
-> > > 
-> > 
-> > I'm not sure either but it exists :) And it's exactly for this purpose:
-> > "someone opened the chassis", "how near/far is cover?".
-> > 
+Hi,
+
+Le jeu., mai 13 2021 at 19:45:40 +0800, quanyang.wang@windriver.com a 
+écrit :
+> From: Quanyang Wang <quanyang.wang@windriver.com>
 > 
-> The cost for VCNL3020, for a full reel with 3,300 chips, is $1.17 per chip
-> at Mouser. A mechanical switch costs a couple of cents. A single proximity
-> sensor won't cover all parts of a chassis; one would likely need several
-> chips to be sure that are no blind spots (if that is even possible - I don't
-> think it is in any of my PC chassis due to mechanical limitations). This
-> is on top of programming, which would be sensitive to generating false
-> alarms (or missing alarms, for that matter). That sounds quite impractical
-> and expensive to me. I'd really like to see the actual use case where a
-> proximity sensor (or set of proximity sensors) is used for intrusion
-> detection in the sense of hardware monitoring - not just the technical
-> possibility of doing so, but an actual use case (as in "this vendor,
-> in this chassis, is doing it").
+> For now, the functions zynqmp_disp_avbuf_enable/disable_audio and
+> zynqmp_disp_avbuf_enable/disable_video are all programming the 
+> register
+> AV_BUF_OUTPUT_AUDIO_VIDEO_SELECT to select the output for audio or 
+> video.
+> And in the future, many drm properties (like video_tpg, audio_tpg,
+> audio_pl, etc) also need to access it. So let's introduce some 
+> variables
+> of enum type and consolidate the code to unify handling this.
 > 
-> Thanks,
-> Guenter
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c      | 166 
+> ++++++++++++++----------
+>  drivers/gpu/drm/xlnx/zynqmp_disp_regs.h |  15 +--
+>  2 files changed, 101 insertions(+), 80 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c 
+> b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> index c55e24412f8c..a82bc88a98aa 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -102,12 +102,39 @@ enum zynqmp_disp_layer_id {
+> 
+>  /**
+>   * enum zynqmp_disp_layer_mode - Layer mode
+> - * @ZYNQMP_DISP_LAYER_NONLIVE: non-live (memory) mode
+> + * @ZYNQMP_DISP_LAYER_MEM: memory mode
+>   * @ZYNQMP_DISP_LAYER_LIVE: live (stream) mode
+> + * @ZYNQMP_DISP_LAYER_TPG: tpg mode (only for video layer)
+> + * @ZYNQMP_DISP_LAYER_DISABLE: disable mode
+>   */
+>  enum zynqmp_disp_layer_mode {
+> -	ZYNQMP_DISP_LAYER_NONLIVE,
+> -	ZYNQMP_DISP_LAYER_LIVE
+> +	ZYNQMP_DISP_LAYER_MEM,
+> +	ZYNQMP_DISP_LAYER_LIVE,
+> +	ZYNQMP_DISP_LAYER_TPG,
+> +	ZYNQMP_DISP_LAYER_DISABLE
+> +};
+> +
+> +enum avbuf_vid_mode {
+> +	VID_MODE_LIVE,
+> +	VID_MODE_MEM,
+> +	VID_MODE_TPG,
+> +	VID_MODE_NONE
+> +};
+> +
+> +enum avbuf_gfx_mode {
+> +	GFX_MODE_DISABLE,
+> +	GFX_MODE_MEM,
+> +	GFX_MODE_LIVE,
+> +	GFX_MODE_NONE
+> +};
+> +
+> +enum avbuf_aud_mode {
+> +	AUD1_MODE_LIVE,
+> +	AUD1_MODE_MEM,
+> +	AUD1_MODE_TPG,
+> +	AUD1_MODE_DISABLE,
+> +	AUD2_MODE_DISABLE,
+> +	AUD2_MODE_ENABLE
+>  };
+> 
+>  /**
+> @@ -542,92 +569,98 @@ static void 
+> zynqmp_disp_avbuf_disable_channels(struct zynqmp_disp_avbuf *avbuf)
+>  }
+> 
+>  /**
+> - * zynqmp_disp_avbuf_enable_audio - Enable audio
+> + * zynqmp_disp_avbuf_output_select - Select the buffer manager 
+> outputs
+>   * @avbuf: Audio/video buffer manager
+> + * @layer: The layer
+> + * @mode: The mode for this layer
+>   *
+> - * Enable all audio buffers with a non-live (memory) source.
+> + * Select the buffer manager outputs for @layer.
+>   */
+> -static void zynqmp_disp_avbuf_enable_audio(struct zynqmp_disp_avbuf 
+> *avbuf)
+> +static void zynqmp_disp_avbuf_output_select(struct zynqmp_disp_avbuf 
+> *avbuf,
+> +					   struct zynqmp_disp_layer *layer, u32 mode)
 
+You can put 'mode' on a new line to avoid getting over 80 characters.
 
-Guenter, VCNL3020 is indeed used as an intrusion detection sensor at least in
-one real design. That is YADRO VESNIN Rev. C where the proximity sensor is
-installed in a very tight space on an nvme switch board where installation of a
-mechanical switch was not possible without substantial redesign of the existing
-other components that would cost a lot more than the price of VCNL3020.
+>  {
+> -	u32 val;
+> -
+> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
+> -	val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK;
+> -	val |= ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MEM;
+> -	val |= ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_EN;
+> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
+> +	u32 reg;
+> +
+> +	reg = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
 
-VESNIN is a very tight-packed design of 4 x POWER8 CPUs, up to 8TB of RAM, and 26 nvme disks, all that in just 2U.
-* https://imgur.com/a/wU9wEd4
+Empty line here (spacing before comment)
+
+> +	/* Select audio mode when the layer is NULL */
+> +	if (layer == NULL) {
+> +		if (mode >= AUD2_MODE_DISABLE) {
+> +			reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_MASK;
+> +			reg |= (mode - AUD2_MODE_DISABLE)
+> +				<< ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_SHIFT;
+
+Please consider using the FIELD_PREP() macro from <linux/bitfield.h>. 
+Then you can get rid of your *_SHIFT macros.
+
+> +		} else {
+> +			reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK;
+> +			reg |= mode << ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_SHIFT;
+> +		}
+> +	} else if (is_layer_vid(layer)) {
+> +		reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
+> +		reg |= mode << ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_SHIFT;
+> +	} else {
+> +		reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK;
+> +		reg |= mode << ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_SHIFT;
+> +	}
+
+Empty line here (spacing after block)
+
+> +	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, reg);
+>  }
+> 
+>  /**
+> - * zynqmp_disp_avbuf_disable_audio - Disable audio
+> + * zynqmp_disp_avbuf_enable_audio - Enable audio
+>   * @avbuf: Audio/video buffer manager
+>   *
+> - * Disable all audio buffers.
+> + * Enable all audio buffers.
+>   */
+> -static void zynqmp_disp_avbuf_disable_audio(struct zynqmp_disp_avbuf 
+> *avbuf)
+> +static void zynqmp_disp_avbuf_enable_audio(struct zynqmp_disp_avbuf 
+> *avbuf)
+>  {
+> -	u32 val;
+> -
+> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
+> -	val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK;
+> -	val |= ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_DISABLE;
+
+Same as above with FIELD_PREP().
+
+> -	val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_EN;
+> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
+> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD1_MODE_MEM);
+> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD2_MODE_ENABLE);
+>  }
+> 
+>  /**
+> - * zynqmp_disp_avbuf_enable_video - Enable a video layer
+> + * zynqmp_disp_avbuf_disable_audio - Disable audio
+>   * @avbuf: Audio/video buffer manager
+> - * @layer: The layer
+> - * @mode: Operating mode of layer
+>   *
+> - * Enable the video/graphics buffer for @layer.
+> + * Disable all audio buffers.
+>   */
+> -static void zynqmp_disp_avbuf_enable_video(struct zynqmp_disp_avbuf 
+> *avbuf,
+> -					   struct zynqmp_disp_layer *layer,
+> -					   enum zynqmp_disp_layer_mode mode)
+> +static void zynqmp_disp_avbuf_disable_audio(struct zynqmp_disp_avbuf 
+> *avbuf)
+>  {
+> -	u32 val;
+> -
+> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
+> -	if (is_layer_vid(layer)) {
+> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
+> -		if (mode == ZYNQMP_DISP_LAYER_NONLIVE)
+> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MEM;
+> -		else
+> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_LIVE;
+> -	} else {
+> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK;
+> -		val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MEM;
+> -		if (mode == ZYNQMP_DISP_LAYER_NONLIVE)
+> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MEM;
+> -		else
+> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_LIVE;
+> -	}
+> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
+> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD1_MODE_DISABLE);
+> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD2_MODE_DISABLE);
+>  }
+> 
+>  /**
+> - * zynqmp_disp_avbuf_disable_video - Disable a video layer
+> - * @avbuf: Audio/video buffer manager
+> + * zynqmp_disp_avbuf_set_layer_output -Set layer output
+
+You're missing a space after the dash character.
+
+>   * @layer: The layer
+> + * @mode: The layer mode
+>   *
+> - * Disable the video/graphics buffer for @layer.
+> + * Set output for @layer
+>   */
+> -static void zynqmp_disp_avbuf_disable_video(struct zynqmp_disp_avbuf 
+> *avbuf,
+> -					    struct zynqmp_disp_layer *layer)
+> +static void zynqmp_disp_avbuf_set_layer_output(struct 
+> zynqmp_disp_layer *layer,
+> +					   enum zynqmp_disp_layer_mode mode)
+>  {
+> -	u32 val;
+> -
+> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
+> -	if (is_layer_vid(layer)) {
+> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
+> -		val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_NONE;
+> -	} else {
+> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK;
+> -		val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_DISABLE;
+> +	int val;
+> +	struct zynqmp_disp *disp = layer->disp;
+
+I'd swap these two lines above - variables are usually defined in 
+"reverse christmas tree" order, the longest line first, the smallest 
+line last. No big deal though.
+
+> +
+> +	switch (mode) {
+> +	case ZYNQMP_DISP_LAYER_LIVE:
+> +		val = is_layer_vid(layer) ? VID_MODE_LIVE : GFX_MODE_LIVE;
+> +		break;
+> +	case ZYNQMP_DISP_LAYER_MEM:
+> +		val = is_layer_vid(layer) ? VID_MODE_MEM : GFX_MODE_MEM;
+> +		break;
+> +	case ZYNQMP_DISP_LAYER_TPG:
+> +		if (!is_layer_vid(layer)) {
+> +			dev_err(disp->dev, "gfx layer has no tpg mode\n");
+> +			return;
+> +		}
+> +		val = VID_MODE_TPG;
+> +		break;
+> +	case ZYNQMP_DISP_LAYER_DISABLE:
+> +		val = is_layer_vid(layer) ? VID_MODE_NONE : GFX_MODE_DISABLE;
+> +		break;
+> +	default:
+> +		dev_err(disp->dev, "invalid layer mode\n");
+> +		return;
+>  	}
+> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
+
+While you're at it, you can add an empty line here (spacing after block)
+
+> +	zynqmp_disp_avbuf_output_select(&disp->avbuf, layer, val);
+>  }
+> 
+>  /**
+> @@ -1030,11 +1063,10 @@ zynqmp_disp_layer_find_format(struct 
+> zynqmp_disp_layer *layer,
+>   */
+>  static void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer)
+>  {
+> -	zynqmp_disp_avbuf_enable_video(&layer->disp->avbuf, layer,
+> -				       ZYNQMP_DISP_LAYER_NONLIVE);
+> +	zynqmp_disp_avbuf_set_layer_output(layer, ZYNQMP_DISP_LAYER_MEM);
+>  	zynqmp_disp_blend_layer_enable(&layer->disp->blend, layer);
+> 
+> -	layer->mode = ZYNQMP_DISP_LAYER_NONLIVE;
+> +	layer->mode = ZYNQMP_DISP_LAYER_MEM;
+>  }
+> 
+>  /**
+> @@ -1051,7 +1083,7 @@ static void zynqmp_disp_layer_disable(struct 
+> zynqmp_disp_layer *layer)
+>  	for (i = 0; i < layer->drm_fmt->num_planes; i++)
+>  		dmaengine_terminate_sync(layer->dmas[i].chan);
+> 
+> -	zynqmp_disp_avbuf_disable_video(&layer->disp->avbuf, layer);
+> +	zynqmp_disp_avbuf_set_layer_output(layer, 
+> ZYNQMP_DISP_LAYER_DISABLE);
+>  	zynqmp_disp_blend_layer_disable(&layer->disp->blend, layer);
+>  }
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h 
+> b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
+> index f92a006d5070..dad3e356d9ab 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
+> @@ -120,23 +120,12 @@
+>  #define ZYNQMP_DISP_AV_BUF_OUTPUT			0x70
+>  #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_SHIFT		0
+>  #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK		(0x3 << 0)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_LIVE		(0 << 0)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MEM		(1 << 0)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_PATTERN		(2 << 0)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_NONE		(3 << 0)
+>  #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_SHIFT		2
+>  #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK		(0x3 << 2)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_DISABLE		(0 << 2)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MEM		(1 << 2)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_LIVE		(2 << 2)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_NONE		(3 << 2)
+>  #define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_SHIFT		4
+>  #define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK		(0x3 << 4)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_PL		(0 << 4)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MEM		(1 << 4)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_PATTERN		(2 << 4)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_DISABLE		(3 << 4)
+> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_EN		BIT(6)
+> +#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_MASK		(0x1 << 6)
+> +#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_SHIFT		6
+
+Please use BIT() or GENMASK(). You don't need the _SHIFT macros if you 
+use FIELD_PREP() / FIELD_GET().
+
+Cheers,
+-Paul
+
+>  #define ZYNQMP_DISP_AV_BUF_HCOUNT_VCOUNT_INT0		0x74
+>  #define ZYNQMP_DISP_AV_BUF_HCOUNT_VCOUNT_INT1		0x78
+>  #define ZYNQMP_DISP_AV_BUF_PATTERN_GEN_SELECT		0x100
+
 
