@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B2E382A3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFD4382A4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236552AbhEQKyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:54:03 -0400
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.102]:31746 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236466AbhEQKx7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:53:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1621248753; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=m113RwB0gSIQ3fvmP9w4rbNtV6j4btx/FuYll0TaG313uq5MaMPvPtcKK58Nqa36Rg
-    VF0IDHOnUG8s3eofnTtq/8H3BaBRPE8xQ/5QpNBAzmcw6Sf+65MOaRDd6fyRBApOTbbj
-    cmIGUPnxxbXL2oeME9uE6UZpDYMEwHpzcL3DfqL/J5J0+mCotRC8WNIAbDPLDbpyIzmD
-    eiJsY5zUYDqAVM9NS/cjVAgLd9KdLnNKyTtYb69hRAVZEKMdXr+FYC5OcH0Ps4HK75D6
-    Ixa7aMNxfKy7KnkfgQwIiLJVVlpJjNhOy4004KYwrZ01LfgPXNPV4NrdHFilnNch05Tb
-    n9Ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1621248753;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=4Dcy2LTLgJk8PaoF6Y+q8hdBpMw3cHT4pkb5zRFtSJs=;
-    b=d5PwweypdFNHpvJ0zEqyMHc9qsbPCh3++xx+C7jDpSfopWlGT58Yuhl7VU0B/wecFc
-    jmSlOwwzTRpaXWvzVLYs70T+PhYsYX9dhtnWt1QfrD5HwXUhmmmxjLaj47SWQ0z0xpMe
-    wuUL2pbxiMKkm4rznvBlCyN+EjO5J7zVNNcyJzOFpYL1GE4+C9jhNgIsu8NwEr5PshRP
-    9wCVpGbuCTpkQf+lzTPJ+/A984o3DMfFLwOYm6u7bv2oNUIH4D5mHFow9ZnHJTfddyVA
-    YDdIIJq6gKHBIXfKHWpSdhEagAujoM7JsaPTFcrUu2rq1Qy2jsusuPI/OU03TI7kcE7R
-    Lu2g==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1621248753;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=4Dcy2LTLgJk8PaoF6Y+q8hdBpMw3cHT4pkb5zRFtSJs=;
-    b=bbvWQHOZPg85k46M2/t5+1qXW81G7StYdTlHatE4e3LScWLY1xi1QRY+iFiIbv+TTh
-    kFCqBL2uhiKvYP/uEvv3dQvJKyefAoiMDSzZoCeAnI0s2fmcrAnqatuLDY19OlWlWiKp
-    tli/anMLU99VpPaVkHTAVrdM8BjDxff41UgOyfvRLzhkq0sjGHHRNWifmbgsBKRGowar
-    qQV51OZCuVBdzREdtV/Aui3svRtVSH27Zs4cbMn0P7GAUwwH5YuPtcQSx2SWr4yBqVYy
-    lVkQxTQYgbqBKOyrdhdOGnYOYb5YImtEimOi0U9fScdO221DNTBq3+xxbChWmIgxScNm
-    EyTQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526NcMiO"
-X-RZG-CLASS-ID: mo00
-Received: from droid..
-    by smtp.strato.de (RZmta 47.26.0 DYNA|AUTH)
-    with ESMTPSA id 50be75x4HAqX1Vb
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 17 May 2021 12:52:33 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Beomho Seo <beomho.seo@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v2 3/3] mfd: rt5033: Drop rt5033-battery sub-device
-Date:   Mon, 17 May 2021 12:51:13 +0200
-Message-Id: <20210517105113.240379-4-stephan@gerhold.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517105113.240379-1-stephan@gerhold.net>
-References: <20210517105113.240379-1-stephan@gerhold.net>
+        id S236596AbhEQKzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:55:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35202 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236591AbhEQKzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:55:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 96607B039;
+        Mon, 17 May 2021 10:53:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2F468DAF1B; Mon, 17 May 2021 12:51:18 +0200 (CEST)
+Date:   Mon, 17 May 2021 12:51:18 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210517105117.GL7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Khaled ROMDHANI <khaledromdhani216@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210501225046.9138-1-khaledromdhani216@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fuel gauge in the RT5033 PMIC (rt5033-battery) has its own I2C bus
-and interrupt lines. Therefore, it is not part of the MFD device
-and needs to be specified separately in the device tree.
+On Sat, May 01, 2021 at 11:50:46PM +0100, Khaled ROMDHANI wrote:
+> Fix the warning: variable 'zone' is used
+> uninitialized whenever '?:' condition is true.
+> 
+> Fix that by preventing the code to reach
+> the last assertion. If the variable 'mirror'
+> is invalid, the assertion fails and we return
+> immediately.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
 
-Cc: Beomho Seo <beomho.seo@samsung.com>
-Cc: Chanwoo Choi <cw00.choi@samsung.com>
-Fixes: 0b271258544b ("mfd: rt5033: Add Richtek RT5033 driver core.")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- drivers/mfd/rt5033.c | 3 ---
- 1 file changed, 3 deletions(-)
+This took several rounds and none of them was close to what I'd consider
+a proper fix, for something that's not really important. As Dan said,
+smatch does understand the values passed from the callers and the
+function is a static inline so the complete information is available. No
+tricky analysis is required, so why does not coverity see that too?
 
-diff --git a/drivers/mfd/rt5033.c b/drivers/mfd/rt5033.c
-index f1236a9acf30..df095e91e266 100644
---- a/drivers/mfd/rt5033.c
-+++ b/drivers/mfd/rt5033.c
-@@ -41,9 +41,6 @@ static const struct mfd_cell rt5033_devs[] = {
- 	{
- 		.name = "rt5033-charger",
- 		.of_compatible = "richtek,rt5033-charger",
--	}, {
--		.name = "rt5033-battery",
--		.of_compatible = "richtek,rt5033-battery",
- 	}, {
- 		.name = "rt5033-led",
- 		.of_compatible = "richtek,rt5033-led",
--- 
-2.31.1
+We use assertions to namely catch programmer errors and API misuse,
+anything that can happen at runtime or depends on input needs proper
+checks and error handling. But for the super block copies, the constant
+won't change so all we want is to catch the stupid errors.
 
+> ---
+>  fs/btrfs/zoned.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 8250ab3f0868..23da9d8dc184 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -145,7 +145,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
+>  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+>  	default:
+>  		ASSERT((u32)mirror < 3);
+> -		break;
+> +		return 0;
+
+It's been pointed out that this does not apply on the current code but
+on top of previous versions, so it's not making it easy for me to apply
+the patch and do maybe some tweaks only.
+
+I don't mind merging trivial patches, people can learn the process and
+few iterations are not a big deal. What I also hope for is to get some
+understanding of the code being changed and not just silencing some
+tools' warnings.
