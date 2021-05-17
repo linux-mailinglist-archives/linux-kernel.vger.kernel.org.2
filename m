@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16D2382EB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BA53830A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238396AbhEQOKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:10:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58348 "EHLO mail.kernel.org"
+        id S239923AbhEQO3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:29:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238083AbhEQOHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:07:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CDB66128E;
-        Mon, 17 May 2021 14:06:07 +0000 (UTC)
+        id S239752AbhEQOYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:24:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C280361492;
+        Mon, 17 May 2021 14:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260367;
-        bh=mKkjTfBgYYQuYW9XJMVZqW5OfGH+RE/LXevOvmxnd4I=;
+        s=korg; t=1621260789;
+        bh=tOjdbv3reowCEeF77LzsZV2jZhw3zHhG610IDc5p/VQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fYrzvpHdHbnIjUYjxYgnV8FifZ6tXueo3J/eWraj0jorJBO1cydIrI2A2iiiJusJa
-         /wz9cHna8gXNacLrQ+CpXFr9FZf1+S2U5vZUWbzyHvyp11Qk6m4O4SXfLhpKda7ef1
-         karUH0XOIGtVZpUBMGimzNssGVtGkiSVmYIDB9wM=
+        b=0bxZctW9sdMZ/oKEufE7f+SG27ScivoCTjPVTekb1Epjt4bGiawsxdUfErQ8+Vdid
+         qO9ya7n+a78NzNhaBI5vUXUBF2kxZVO65wWFc+K8BBAIRjt2xhBHkaIpfy2hQYR+8S
+         1162FCIRM4A57cp0Y5PZw2Un5h1ysOGjx2b4njeQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 049/363] ASoC: rt5670: Add a quirk for the Dell Venue 10 Pro 5055
-Date:   Mon, 17 May 2021 15:58:35 +0200
-Message-Id: <20210517140304.265476505@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.11 005/329] KVM: SVM: Make sure GHCB is mapped before updating
+Date:   Mon, 17 May 2021 15:58:36 +0200
+Message-Id: <20210517140302.218719849@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-References: <20210517140302.508966430@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-[ Upstream commit 84cb0d5581b6a7bd5d96013f67e9f2eb0c7b4378 ]
+commit a3ba26ecfb569f4aa3f867e80c02aa65f20aadad upstream.
 
-Add a quirk with the jack-detect and dmic settings necessary to make
-jack-detect and the builtin mic work on Dell Venue 10 Pro 5055 tablets.
+Access to the GHCB is mainly in the VMGEXIT path and it is known that the
+GHCB will be mapped. But there are two paths where it is possible the GHCB
+might not be mapped.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210402140747.174716-5-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The sev_vcpu_deliver_sipi_vector() routine will update the GHCB to inform
+the caller of the AP Reset Hold NAE event that a SIPI has been delivered.
+However, if a SIPI is performed without a corresponding AP Reset Hold,
+then the GHCB might not be mapped (depending on the previous VMEXIT),
+which will result in a NULL pointer dereference.
+
+The svm_complete_emulated_msr() routine will update the GHCB to inform
+the caller of a RDMSR/WRMSR operation about any errors. While it is likely
+that the GHCB will be mapped in this situation, add a safe guard
+in this path to be certain a NULL pointer dereference is not encountered.
+
+Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
+Fixes: 647daca25d24 ("KVM: SVM: Add support for booting APs in an SEV-ES guest")
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: stable@vger.kernel.org
+Message-Id: <a5d3ebb600a91170fc88599d5a575452b3e31036.1617979121.git.thomas.lendacky@amd.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/rt5670.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/x86/kvm/svm/sev.c |    3 +++
+ arch/x86/kvm/svm/svm.c |    2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 4063aac2a443..dd69d874bad2 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2980,6 +2980,18 @@ static const struct dmi_system_id dmi_platform_intel_quirks[] = {
- 						 RT5670_GPIO1_IS_IRQ |
- 						 RT5670_JD_MODE3),
- 	},
-+	{
-+		.callback = rt5670_quirk_cb,
-+		.ident = "Dell Venue 10 Pro 5055",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Venue 10 Pro 5055"),
-+		},
-+		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
-+						 RT5670_DMIC2_INR |
-+						 RT5670_GPIO1_IS_IRQ |
-+						 RT5670_JD_MODE1),
-+	},
- 	{
- 		.callback = rt5670_quirk_cb,
- 		.ident = "Aegex 10 tablet (RU2)",
--- 
-2.30.2
-
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -2062,5 +2062,8 @@ void sev_vcpu_deliver_sipi_vector(struct
+ 	 * the guest will set the CS and RIP. Set SW_EXIT_INFO_2 to a
+ 	 * non-zero value.
+ 	 */
++	if (!svm->ghcb)
++		return;
++
+ 	ghcb_set_sw_exit_info_2(svm->ghcb, 1);
+ }
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2724,7 +2724,7 @@ static int svm_get_msr(struct kvm_vcpu *
+ static int svm_complete_emulated_msr(struct kvm_vcpu *vcpu, int err)
+ {
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+-	if (!sev_es_guest(svm->vcpu.kvm) || !err)
++	if (!err || !sev_es_guest(vcpu->kvm) || WARN_ON_ONCE(!svm->ghcb))
+ 		return kvm_complete_insn_gp(&svm->vcpu, err);
+ 
+ 	ghcb_set_sw_exit_info_1(svm->ghcb, 1);
 
 
