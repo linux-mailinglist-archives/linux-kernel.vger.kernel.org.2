@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158363836A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB9D3838A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242264AbhEQPfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:35:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54748 "EHLO mail.kernel.org"
+        id S241200AbhEQP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244337AbhEQPUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:20:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB348613E8;
-        Mon, 17 May 2021 14:34:07 +0000 (UTC)
+        id S245411AbhEQPjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:39:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8367561CFC;
+        Mon, 17 May 2021 14:41:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262048;
-        bh=sVWSqwsCjEediVEth53I4tx8AYE5sxNh7/5+UMoiWTo=;
+        s=korg; t=1621262471;
+        bh=9/deoVy0/tN1by8qL0WOlNlc4En/IMSnzchfO2hrlYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=phWXgegj14RWxB5N760k+WfN5jGfaDL7sgz/ol/qHGwxkdT8/oV+ueL5sTidbXK3B
-         1ZTavsy8ya2lvQ3JVn12nJiqA9dBIY3XKmOyjhRZokL36/4G1XeV7WECYEuFYFyZPP
-         dnUGR2E75eL5ArzbvEEywtGl4OtCm1h622bwNwaQ=
+        b=JjYTfhI/amm+yAxke7O6joQnvuYICLBhBN11z5omdkkmv0jMq8tLNlPGl2rxGTnxf
+         aJJjzCxFygbPu9jZKFvJDauwJFCAYWhnJrRKC6jBVxRN6nYvl/uSNCqU5CimWB4/NI
+         FX9VpSAhUCMrlnkYz2p41kBCqvRY2qO3lt+4tb8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fernando Fernandez Mancera <ffmancera@riseup.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 208/329] ethtool: fix missing NLM_F_MULTI flag when dumping
+        stable@vger.kernel.org, Shahab Vahedi <shahab@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 5.10 194/289] ARC: entry: fix off-by-one error in syscall number validation
 Date:   Mon, 17 May 2021 16:01:59 +0200
-Message-Id: <20210517140309.165413756@linuxfoundation.org>
+Message-Id: <20210517140311.640148412@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fernando Fernandez Mancera <ffmancera@riseup.net>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit cf754ae331be7cc192b951756a1dd031e9ed978a ]
+commit 3433adc8bd09fc9f29b8baddf33b4ecd1ecd2cdc upstream.
 
-When dumping the ethtool information from all the interfaces, the
-netlink reply should contain the NLM_F_MULTI flag. This flag allows
-userspace tools to identify that multiple messages are expected.
+We have NR_syscall syscalls from [0 .. NR_syscall-1].
+However the check for invalid syscall number is "> NR_syscall" as
+opposed to >=. This off-by-one error erronesously allows "NR_syscall"
+to be treated as valid syscall causeing out-of-bounds access into
+syscall-call table ensuing a crash (holes within syscall table have a
+invalid-entry handler but this is beyond the array implementing the
+table).
 
-Link: https://bugzilla.redhat.com/1953847
-Fixes: 365f9ae4ee36 ("ethtool: fix genlmsg_put() failure handling in ethnl_default_dumpit()")
-Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This problem showed up on v5.6 kernel when testing glibc 2.33 (v5.10
+kernel capable, includng faccessat2 syscall 439). The v5.6 kernel has
+NR_syscalls=439 (0 to 438). Due to the bug, 439 passed by glibc was
+not handled as -ENOSYS but processed leading to a crash.
+
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
+Reported-by: Shahab Vahedi <shahab@synopsys.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ethtool/netlink.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arc/kernel/entry.S |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 50d3c8896f91..25a55086d2b6 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -384,7 +384,8 @@ static int ethnl_default_dump_one(struct sk_buff *skb, struct net_device *dev,
- 	int ret;
+--- a/arch/arc/kernel/entry.S
++++ b/arch/arc/kernel/entry.S
+@@ -177,7 +177,7 @@ tracesys:
  
- 	ehdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
--			   &ethtool_genl_family, 0, ctx->ops->reply_cmd);
-+			   &ethtool_genl_family, NLM_F_MULTI,
-+			   ctx->ops->reply_cmd);
- 	if (!ehdr)
- 		return -EMSGSIZE;
+ 	; Do the Sys Call as we normally would.
+ 	; Validate the Sys Call number
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     tracesys_exit
  
--- 
-2.30.2
-
+@@ -255,7 +255,7 @@ ENTRY(EV_Trap)
+ 	;============ Normal syscall case
+ 
+ 	; syscall num shd not exceed the total system calls avail
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     .Lret_from_system_call
+ 
 
 
