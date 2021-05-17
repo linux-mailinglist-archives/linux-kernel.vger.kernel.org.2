@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7BE383100
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092E4383352
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240265AbhEQOdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:33:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53884 "EHLO mail.kernel.org"
+        id S239954AbhEQO5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:57:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237546AbhEQO2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:28:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64F2F61352;
-        Mon, 17 May 2021 14:14:20 +0000 (UTC)
+        id S239301AbhEQOsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:48:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBCC261973;
+        Mon, 17 May 2021 14:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260860;
-        bh=tYasmsVH0Piz6byNcOMr5ONyvpW8tVB6xO4yCUZpBes=;
+        s=korg; t=1621261334;
+        bh=qWnEuDp7tInVLGa7lowuhueGdRtSWa778KG1J/vM9ns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tEa3GeqMDJUAdhu8G4ycjLekDzdazgkGHb2qoeXiCPuncVK0H9oL0iiEtTSUX9dgd
-         +XhhMdVXcfoKqyEn+ER+Y2qRRozEKOip4BisORQkCCgNmdKLd0V76jOmvchaY5nD8E
-         pU2/oe5ZAqFYstAJUivHrF+XNmqGn80pk6sj7HII=
+        b=FLURY65LdWtXuHX8x3Awy/LJdtNFftoCliShUI9vY4amIG8rXa6QZMGhAg+0er3vw
+         uQhzkc3GOnF4v2ramzDA4pd+x62PZx5u0iA/PswWOa350YbgHCwcBOaHrWucAL+CdM
+         ds1aBiT8kHn9KnnfnvxY5Xyw1nJBJbVG0lXE7EOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 022/329] tipc: convert dest nodes address to network order
-Date:   Mon, 17 May 2021 15:58:53 +0200
-Message-Id: <20210517140302.810556950@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.10 009/289] cpufreq: intel_pstate: Use HWP if enabled by platform firmware
+Date:   Mon, 17 May 2021 15:58:54 +0200
+Message-Id: <20210517140305.489057408@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 1980d37565061ab44bdc2f9e4da477d3b9752e81 ]
+commit e5af36b2adb858e982d78d41d7363d05d951a19a upstream.
 
-(struct tipc_link_info)->dest is in network order (__be32), so we must
-convert the value to network order before assigning. The problem detected
-by sparse:
+It turns out that there are systems where HWP is enabled during
+initialization by the platform firmware (BIOS), but HWP EPP support
+is not advertised.
 
-net/tipc/netlink_compat.c:699:24: warning: incorrect type in assignment (different base types)
-net/tipc/netlink_compat.c:699:24:    expected restricted __be32 [usertype] dest
-net/tipc/netlink_compat.c:699:24:    got int
+After commit 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP
+if EPP is not supported") intel_pstate refuses to use HWP on those
+systems, but the fallback PERF_CTL interface does not work on them
+either because of enabled HWP, and once enabled, HWP cannot be
+disabled.  Consequently, the users of those systems cannot control
+CPU performance scaling.
 
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Address this issue by making intel_pstate use HWP unconditionally if
+it is enabled already when the driver starts.
+
+Fixes: 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP if EPP is not supported")
+Reported-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Tested-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/netlink_compat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/intel_pstate.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
-index 5a1ce64039f7..0749df80454d 100644
---- a/net/tipc/netlink_compat.c
-+++ b/net/tipc/netlink_compat.c
-@@ -696,7 +696,7 @@ static int tipc_nl_compat_link_dump(struct tipc_nl_compat_msg *msg,
- 	if (err)
- 		return err;
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -3019,6 +3019,14 @@ static const struct x86_cpu_id hwp_suppo
+ 	{}
+ };
  
--	link_info.dest = nla_get_flag(link[TIPC_NLA_LINK_DEST]);
-+	link_info.dest = htonl(nla_get_flag(link[TIPC_NLA_LINK_DEST]));
- 	link_info.up = htonl(nla_get_flag(link[TIPC_NLA_LINK_UP]));
- 	nla_strscpy(link_info.str, link[TIPC_NLA_LINK_NAME],
- 		    TIPC_MAX_LINK_NAME);
--- 
-2.30.2
-
++static bool intel_pstate_hwp_is_enabled(void)
++{
++	u64 value;
++
++	rdmsrl(MSR_PM_ENABLE, value);
++	return !!(value & 0x1);
++}
++
+ static int __init intel_pstate_init(void)
+ {
+ 	const struct x86_cpu_id *id;
+@@ -3037,8 +3045,12 @@ static int __init intel_pstate_init(void
+ 		 * Avoid enabling HWP for processors without EPP support,
+ 		 * because that means incomplete HWP implementation which is a
+ 		 * corner case and supporting it is generally problematic.
++		 *
++		 * If HWP is enabled already, though, there is no choice but to
++		 * deal with it.
+ 		 */
+-		if (!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) {
++		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
++		    intel_pstate_hwp_is_enabled()) {
+ 			hwp_active++;
+ 			hwp_mode_bdw = id->driver_data;
+ 			intel_pstate.attr = hwp_cpufreq_attrs;
 
 
