@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5D83831F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BB4383212
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240391AbhEQOmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:42:44 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43896 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240959AbhEQOgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:36:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=+etklaO9vkFUBnNppWvW4wT/pFgZKsFAvZPj7+HIov0=; b=zpD4UKF6csA6gWp48EJrtM/Jcv
-        pr7Ed12Me36Es1mhkIPUQI9CBD7Sqd6mSIVYVSGi4JtlVUhHPk+SPqr9NxuKQqsIUg4vi4+ynw3Ix
-        AEGn9kD+0a4htguaZTizw+/0CSrCsLhA+setHgH0Fm4heqTWKbybbmOQVAzf+DhTgPj8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lieL2-004ZSU-Np; Mon, 17 May 2021 16:35:20 +0200
-Date:   Mon, 17 May 2021 16:35:20 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virtio_net: Use BUG_ON instead of if condition followed
- by BUG
-Message-ID: <YKJ/KPtw5Xcjsea+@lunn.ch>
-References: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
+        id S241576AbhEQOpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:45:14 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:42598 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239981AbhEQOhy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:37:54 -0400
+Received: by mail-ot1-f50.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso5705213otg.9;
+        Mon, 17 May 2021 07:36:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NckZasYwppczdByDqqFewgoeWqW3ZlCi71o1s2rUwaY=;
+        b=KfA15S5sdGPsjAk9coVCjszEkArnwEuPK6U8RsBqyphpEY4AgFlO7C9tSEWEb7YQdT
+         Uo7GpTNij31zFQ4QLSpQX73KOgaWvYwpwac3ag63Usk3FJoSn98WOBqows88X5H0p3tK
+         5Mw0Iyh0Av6JBe3MROIpF5Hh8Q0X6UmSeNTzYxssXZ/wVLQiXiTeuHnRH17WU5aWpTQ2
+         VHYsHzf3zdK0BKqvynDn4oNsCcPFGAaboiIVZbQodhYmdZDwbek0Mkb3bPk7R6JxaVTD
+         MoA4O0o0+xyk8V2baxsI0Ez2Fs3R0wQdA4kHxx1pyyxLZLtPafvAj0Oef0p5BRPa66q3
+         iZow==
+X-Gm-Message-State: AOAM532R9tjgLoS0JU2V74MkXCrvsS/wof5kkBpNUcLYNNVfQHFqhtG+
+        OIip++CCFZXaLFHDXvqQjX/m7WjGCacLiRGUCQ4=
+X-Google-Smtp-Source: ABdhPJwhVqoBYNIct/wNc+DRDIxz7kt6HXUIBG5QLvj9XI6ejhHdyqVlLPCg5r726gZEIOfgOTy57M7GuFgYsqydXbk=
+X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr52576774otc.206.1621262196656;
+ Mon, 17 May 2021 07:36:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
+References: <20210511125528.18525-1-heikki.krogerus@linux.intel.com>
+ <20210514103912.GA16131@lpieralisi> <YJ53eBRGXtabyT5K@kuha.fi.intel.com>
+In-Reply-To: <YJ53eBRGXtabyT5K@kuha.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 17 May 2021 16:36:25 +0200
+Message-ID: <CAJZ5v0huzEY=hHVrtkGsxy7sR5kPGFAr6=R5_khA=WFLhSMgtg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI/IORT: Handle device properties with software node API
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Eric Auger <eric.auger@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 09:31:19PM +0800, Xianting Tian wrote:
-> BUG_ON() uses unlikely in if(), which can be optimized at compile time.
-> 
-> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index c921ebf3ae82..212d52204884 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1646,10 +1646,9 @@ static int xmit_skb(struct send_queue *sq, struct
-> sk_buff *skb)
->  	else
->  		hdr = skb_vnet_hdr(skb);
-> 
-> -	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+On Fri, May 14, 2021 at 3:13 PM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Fri, May 14, 2021 at 11:39:12AM +0100, Lorenzo Pieralisi wrote:
+> > On Tue, May 11, 2021 at 03:55:28PM +0300, Heikki Krogerus wrote:
+> > > The older device property API is going to be removed.
+> > > Replacing the device_add_properties() call with software
+> > > node API equivalent device_create_managed_software_node().
+> > >
+> > > Fixes: 434b73e61cc6 ("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
+> >
+> > Is this really fixing anything ? I am not sure I understand what you
+> > would like to achieve with this tag.
+>
+> Right now it's not possible to simply remove the old API because some
+> of the maintainers want to take care of the conversion themselves, but
+> at the same time I also do not want to see any new releases of the
+> kernel that introduce more users for it. That's why it's a fix.
 
-How fatal is it not being able to get the header from the skb? There
-has been push back on the use of BUG() or its variants, since it kills
-the machine dead. Would it be possible to turn this into a WARN_ON and
-return -EPROTO or something?
-
-       Andrew
+With the assumption that the above clarification is sufficient,
+applied as 5.14 material, thanks!
