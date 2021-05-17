@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEB7383605
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CF13833CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244246AbhEQP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:27:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39786 "EHLO mail.kernel.org"
+        id S242402AbhEQPCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243123AbhEQPNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:13:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4E9D61263;
-        Mon, 17 May 2021 14:31:38 +0000 (UTC)
+        id S241499AbhEQOv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:51:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B6A361983;
+        Mon, 17 May 2021 14:23:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261899;
-        bh=XRbHs93sm3GJ7gPHs6x49J65cQWND6a7iJjf3IL7raU=;
+        s=korg; t=1621261416;
+        bh=NS2JOLMoLr/08u929xkiwFJ5hhuDieTn0k0jOpZFb70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uwYuN3zECVK0WCXW61MvoMPrx6ZMbqO0c3920iQ2N5eX156tIYB10dWNIiSNdgGrn
-         0fQ6F7ruMuFARMEhzwp5Q0gMVeL3m9gxgT1r6cyTCqjFgBcR+56j/M5qKul6WsFBoa
-         z++6xrcpIW3YP6RznxQ9WlpzRcIYNkUBbO3KrcLo=
+        b=wt/9sy8XTxNQig+U191lnPLzeVuIgdMwatG4iE67ex9Szn+D7cchR/Kr4S29uPwZB
+         oI5CP04Zm5sZ04LXQr6cxmJc4RX2LX+EL2WUQlVDCvAI06IKi1SfVQnjzAWYWcStOm
+         BzISMQRD5E8PcOpoZtCuTveVb9xK7SAtpZhnR9pA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        syzbot+bbe538efd1046586f587@syzkaller.appspotmail.com,
-        Michal Tesar <mtesar@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 184/329] sctp: do asoc update earlier in sctp_sf_do_dupcook_a
+Subject: [PATCH 5.4 043/141] wl3501_cs: Fix out-of-bounds warnings in wl3501_send_pkt
 Date:   Mon, 17 May 2021 16:01:35 +0200
-Message-Id: <20210517140308.349782793@linuxfoundation.org>
+Message-Id: <20210517140244.233168226@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,94 +42,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[ Upstream commit 35b4f24415c854cd718ccdf38dbea6297f010aae ]
+[ Upstream commit 820aa37638a252b57967bdf4038a514b1ab85d45 ]
 
-There's a panic that occurs in a few of envs, the call trace is as below:
+Fix the following out-of-bounds warnings by enclosing structure members
+daddr and saddr into new struct addr, in structures wl3501_md_req and
+wl3501_md_ind:
 
-  [] general protection fault, ... 0x29acd70f1000a: 0000 [#1] SMP PTI
-  [] RIP: 0010:sctp_ulpevent_notify_peer_addr_change+0x4b/0x1fa [sctp]
-  []  sctp_assoc_control_transport+0x1b9/0x210 [sctp]
-  []  sctp_do_8_2_transport_strike.isra.16+0x15c/0x220 [sctp]
-  []  sctp_cmd_interpreter.isra.21+0x1231/0x1a10 [sctp]
-  []  sctp_do_sm+0xc3/0x2a0 [sctp]
-  []  sctp_generate_timeout_event+0x81/0xf0 [sctp]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
 
-This is caused by a transport use-after-free issue. When processing a
-duplicate COOKIE-ECHO chunk in sctp_sf_do_dupcook_a(), both COOKIE-ACK
-and SHUTDOWN chunks are allocated with the transort from the new asoc.
-However, later in the sideeffect machine, the old asoc is used to send
-them out and old asoc's shutdown_last_sent_to is set to the transport
-that SHUTDOWN chunk attached to in sctp_cmd_setup_t2(), which actually
-belongs to the new asoc. After the new_asoc is freed and the old asoc
-T2 timeout, the old asoc's shutdown_last_sent_to that is already freed
-would be accessed in sctp_sf_t2_timer_expire().
+Refactor the code, accordingly:
 
-Thanks Alexander and Jere for helping dig into this issue.
+$ pahole -C wl3501_md_req drivers/net/wireless/wl3501_cs.o
+struct wl3501_md_req {
+	u16                        next_blk;             /*     0     2 */
+	u8                         sig_id;               /*     2     1 */
+	u8                         routing;              /*     3     1 */
+	u16                        data;                 /*     4     2 */
+	u16                        size;                 /*     6     2 */
+	u8                         pri;                  /*     8     1 */
+	u8                         service_class;        /*     9     1 */
+	struct {
+		u8                 daddr[6];             /*    10     6 */
+		u8                 saddr[6];             /*    16     6 */
+	} addr;                                          /*    10    12 */
 
-To fix it, this patch is to do the asoc update first, then allocate
-the COOKIE-ACK and SHUTDOWN chunks with the 'updated' old asoc. This
-would make more sense, as a chunk from an asoc shouldn't be sent out
-with another asoc. We had fixed quite a few issues caused by this.
+	/* size: 22, cachelines: 1, members: 8 */
+	/* last cacheline: 22 bytes */
+};
 
-Fixes: 145cb2f7177d ("sctp: Fix bundling of SHUTDOWN with COOKIE-ACK")
-Reported-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Reported-by: syzbot+bbe538efd1046586f587@syzkaller.appspotmail.com
-Reported-by: Michal Tesar <mtesar@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+$ pahole -C wl3501_md_ind drivers/net/wireless/wl3501_cs.o
+struct wl3501_md_ind {
+	u16                        next_blk;             /*     0     2 */
+	u8                         sig_id;               /*     2     1 */
+	u8                         routing;              /*     3     1 */
+	u16                        data;                 /*     4     2 */
+	u16                        size;                 /*     6     2 */
+	u8                         reception;            /*     8     1 */
+	u8                         pri;                  /*     9     1 */
+	u8                         service_class;        /*    10     1 */
+	struct {
+		u8                 daddr[6];             /*    11     6 */
+		u8                 saddr[6];             /*    17     6 */
+	} addr;                                          /*    11    12 */
+
+	/* size: 24, cachelines: 1, members: 9 */
+	/* padding: 1 */
+	/* last cacheline: 24 bytes */
+};
+
+The problem is that the original code is trying to copy data into a
+couple of arrays adjacent to each other in a single call to memcpy().
+Now that a new struct _addr_ enclosing those two adjacent arrays
+is introduced, memcpy() doesn't overrun the length of &sig.daddr[0]
+and &sig.daddr, because the address of the new struct object _addr_
+is used, instead.
+
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/d260fe56aed7112bff2be5b4d152d03ad7b78e78.1618442265.git.gustavoars@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/sm_statefuns.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
+ drivers/net/wireless/wl3501.h    | 12 ++++++++----
+ drivers/net/wireless/wl3501_cs.c | 10 ++++++----
+ 2 files changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index af2b7041fa4e..c7138f85f18f 100644
---- a/net/sctp/sm_statefuns.c
-+++ b/net/sctp/sm_statefuns.c
-@@ -1852,20 +1852,35 @@ static enum sctp_disposition sctp_sf_do_dupcook_a(
- 			SCTP_TO(SCTP_EVENT_TIMEOUT_T4_RTO));
- 	sctp_add_cmd_sf(commands, SCTP_CMD_PURGE_ASCONF_QUEUE, SCTP_NULL());
+diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
+index efdce9ae36ea..077a934ae3b5 100644
+--- a/drivers/net/wireless/wl3501.h
++++ b/drivers/net/wireless/wl3501.h
+@@ -471,8 +471,10 @@ struct wl3501_md_req {
+ 	u16	size;
+ 	u8	pri;
+ 	u8	service_class;
+-	u8	daddr[ETH_ALEN];
+-	u8	saddr[ETH_ALEN];
++	struct {
++		u8	daddr[ETH_ALEN];
++		u8	saddr[ETH_ALEN];
++	} addr;
+ };
  
--	repl = sctp_make_cookie_ack(new_asoc, chunk);
-+	/* Update the content of current association. */
-+	if (sctp_assoc_update((struct sctp_association *)asoc, new_asoc)) {
-+		struct sctp_chunk *abort;
-+
-+		abort = sctp_make_abort(asoc, NULL, sizeof(struct sctp_errhdr));
-+		if (abort) {
-+			sctp_init_cause(abort, SCTP_ERROR_RSRC_LOW, 0);
-+			sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(abort));
-+		}
-+		sctp_add_cmd_sf(commands, SCTP_CMD_SET_SK_ERR, SCTP_ERROR(ECONNABORTED));
-+		sctp_add_cmd_sf(commands, SCTP_CMD_ASSOC_FAILED,
-+				SCTP_PERR(SCTP_ERROR_RSRC_LOW));
-+		SCTP_INC_STATS(net, SCTP_MIB_ABORTEDS);
-+		SCTP_DEC_STATS(net, SCTP_MIB_CURRESTAB);
-+		goto nomem;
-+	}
-+
-+	repl = sctp_make_cookie_ack(asoc, chunk);
- 	if (!repl)
- 		goto nomem;
+ struct wl3501_md_ind {
+@@ -484,8 +486,10 @@ struct wl3501_md_ind {
+ 	u8	reception;
+ 	u8	pri;
+ 	u8	service_class;
+-	u8	daddr[ETH_ALEN];
+-	u8	saddr[ETH_ALEN];
++	struct {
++		u8	daddr[ETH_ALEN];
++		u8	saddr[ETH_ALEN];
++	} addr;
+ };
  
- 	/* Report association restart to upper layer. */
- 	ev = sctp_ulpevent_make_assoc_change(asoc, 0, SCTP_RESTART, 0,
--					     new_asoc->c.sinit_num_ostreams,
--					     new_asoc->c.sinit_max_instreams,
-+					     asoc->c.sinit_num_ostreams,
-+					     asoc->c.sinit_max_instreams,
- 					     NULL, GFP_ATOMIC);
- 	if (!ev)
- 		goto nomem_ev;
+ struct wl3501_md_confirm {
+diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
+index 007bf6803293..96eb69678855 100644
+--- a/drivers/net/wireless/wl3501_cs.c
++++ b/drivers/net/wireless/wl3501_cs.c
+@@ -469,6 +469,7 @@ static int wl3501_send_pkt(struct wl3501_card *this, u8 *data, u16 len)
+ 	struct wl3501_md_req sig = {
+ 		.sig_id = WL3501_SIG_MD_REQ,
+ 	};
++	size_t sig_addr_len = sizeof(sig.addr);
+ 	u8 *pdata = (char *)data;
+ 	int rc = -EIO;
  
--	/* Update the content of current association. */
--	sctp_add_cmd_sf(commands, SCTP_CMD_UPDATE_ASSOC, SCTP_ASOC(new_asoc));
- 	sctp_add_cmd_sf(commands, SCTP_CMD_EVENT_ULP, SCTP_ULPEVENT(ev));
- 	if ((sctp_state(asoc, SHUTDOWN_PENDING) ||
- 	     sctp_state(asoc, SHUTDOWN_SENT)) &&
+@@ -484,9 +485,9 @@ static int wl3501_send_pkt(struct wl3501_card *this, u8 *data, u16 len)
+ 			goto out;
+ 		}
+ 		rc = 0;
+-		memcpy(&sig.daddr[0], pdata, 12);
+-		pktlen = len - 12;
+-		pdata += 12;
++		memcpy(&sig.addr, pdata, sig_addr_len);
++		pktlen = len - sig_addr_len;
++		pdata += sig_addr_len;
+ 		sig.data = bf;
+ 		if (((*pdata) * 256 + (*(pdata + 1))) > 1500) {
+ 			u8 addr4[ETH_ALEN] = {
+@@ -980,7 +981,8 @@ static inline void wl3501_md_ind_interrupt(struct net_device *dev,
+ 	} else {
+ 		skb->dev = dev;
+ 		skb_reserve(skb, 2); /* IP headers on 16 bytes boundaries */
+-		skb_copy_to_linear_data(skb, (unsigned char *)&sig.daddr, 12);
++		skb_copy_to_linear_data(skb, (unsigned char *)&sig.addr,
++					sizeof(sig.addr));
+ 		wl3501_receive(this, skb->data, pkt_len);
+ 		skb_put(skb, pkt_len);
+ 		skb->protocol	= eth_type_trans(skb, dev);
 -- 
 2.30.2
 
