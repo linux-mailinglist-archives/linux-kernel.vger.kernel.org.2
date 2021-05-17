@@ -2,130 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA20382A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9559E382AAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236652AbhEQLLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:11:31 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3569 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236528AbhEQLL3 (ORCPT
+        id S236675AbhEQLO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:14:27 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2953 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236679AbhEQLOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:11:29 -0400
+        Mon, 17 May 2021 07:14:24 -0400
 Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkGYp48QHzmVSc;
-        Mon, 17 May 2021 19:07:26 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FkGd83pSrzCsgp;
+        Mon, 17 May 2021 19:10:20 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:10:10 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 19:10:10 +0800
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
- <YJ5APhzabmAKIKCE@apalos.home>
- <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
- <YKIPcF9ACNmFtksz@enceladus>
- <fade4bc7-c1c7-517e-a775-0a5bb2e66be6@huawei.com>
- <YKI5JxG2rw2y6C1P@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
-Date:   Mon, 17 May 2021 19:10:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+ 15.1.2176.2; Mon, 17 May 2021 19:13:05 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 17 May
+ 2021 19:13:04 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <linux-imx@nxp.com>, <shawnguo@kernel.org>
+Subject: [PATCH -next] ARM: imx: add missing clk_disable_unprepare() in imx_mmdc_remove()
+Date:   Mon, 17 May 2021 19:15:23 +0800
+Message-ID: <20210517111523.477889-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YKI5JxG2rw2y6C1P@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/17 17:36, Ilias Apalodimas wrote:
- >>
->> Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
->> or page pool are both supported, so it seems page->signature need to be reliable
->> to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
->> is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
->> the page->signature does not need checking?
-> 
-> Yes, the idea for the recycling bit, is that you don't have to fetch the page
-> in cache do do more processing (since freeing is asynchronous and we
-> can't have any guarantees on what the cache will have at that point).  So we
-> are trying to affect the existing release path a less as possible. However it's
-> that new skb bit that triggers the whole path.
-> 
-> What you propose could still be doable though.  As you said we can add the
-> page pointer to struct page when we allocate a page_pool page and never
-> reset it when we recycle the buffer. But I don't think there will be any
-> performance impact whatsoever. So I prefer the 'visible' approach, at least for
+clock source is prepared and enabled by clk_prepare_enable()
+in probe function, but no disable or unprepare in remove.
 
-setting and unsetting the page_pool ptr every time the page is recycled may
-cause a cache bouncing problem when rx cleaning and skb releasing is not
-happening on the same cpu.
+Fixes: 9454a0caff6a ("ARM: imx: add mmdc ipg clock operation for mmdc")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ arch/arm/mach-imx/mmdc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> the first iteration.
-> 
-> Thanks
-> /Ilias
->  
-> 
-> .
-> 
+diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
+index 0dfd0ae7a63d..7d87fa8c70a9 100644
+--- a/arch/arm/mach-imx/mmdc.c
++++ b/arch/arm/mach-imx/mmdc.c
+@@ -77,6 +77,7 @@ static const struct of_device_id imx_mmdc_dt_ids[] = {
+ 	{ /* sentinel */ }
+ };
+ 
++struct clk *mmdc_ipg_clk;
+ #ifdef CONFIG_PERF_EVENTS
+ 
+ static enum cpuhp_state cpuhp_mmdc_state;
+@@ -463,6 +464,7 @@ static int imx_mmdc_remove(struct platform_device *pdev)
+ 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
+ 	perf_pmu_unregister(&pmu_mmdc->pmu);
+ 	kfree(pmu_mmdc);
++	clk_disable_unprepare(mmdc_ipg_clk);
+ 	return 0;
+ }
+ 
+@@ -536,7 +538,6 @@ static int imx_mmdc_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	void __iomem *mmdc_base, *reg;
+-	struct clk *mmdc_ipg_clk;
+ 	u32 val;
+ 	int err;
+ 
+-- 
+2.25.1
 
