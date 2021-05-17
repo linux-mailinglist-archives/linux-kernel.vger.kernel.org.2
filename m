@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE305382E50
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C2C382EA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237730AbhEQOGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:06:17 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41265 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237863AbhEQOFl (ORCPT
+        id S238285AbhEQOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:09:57 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52552 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237925AbhEQOGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:05:41 -0400
-Received: from mail-qt1-f200.google.com ([209.85.160.200])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lidr6-0004TN-CW
-        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 14:04:24 +0000
-Received: by mail-qt1-f200.google.com with SMTP id h12-20020ac8776c0000b02901f1228fdb1bso1768658qtu.6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:04:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8nNt7p8/XpkMjdfYomnfwPohk68DN8/DKf++9T5aVd0=;
-        b=UinjGARH1hQCzch9VfbCtKJhmM64x9bGLj+go2ZZrLE4RXdfmrLkbq8M2XTasfDOHR
-         C2FCaSxNZdhx8HxRy+9RNgxUiTH0P1vbb4OdSkukbz9Lxn4Fz2u+R9Rj9Vabc86TVMhZ
-         reT9lLn4c0pBIHx5rlMxoHI8BTJTfpa2RR+PIJ7GCq5zp9+ma3Li2bmBgqXeuXPjxMkk
-         1aVJxDH3SSfE0yqVo+QKkLhFkMmtdyoZWQnqMMDMQoia/anYTOa9HDsEz0G9t7WtiQp9
-         FctB4BqQbRZ0Ubg3fbVvlVKLGpRYC42XedS7ri8lhoRPL6n23bD9sDfPbwNFDYwGisA3
-         V/vg==
-X-Gm-Message-State: AOAM533sA0zHr4wIDT3Hqg/0f26/aN2ASde+cwYDsk4ijPnK4xfskfkr
-        MXrrQrs0EiK4vXxOz48BtlUhJIeT1oqTr/hCE3mgTzMu14PQLh8J2OyaEpsQMsS6qgdKQ2NKWgu
-        s7Rjiinh2wTIfCAQTEw2GOTOaaUkbWs1NNYw/M3I7CQ==
-X-Received: by 2002:ac8:4319:: with SMTP id z25mr58436994qtm.262.1621260263525;
-        Mon, 17 May 2021 07:04:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWt/qyHrHTiRrV9XefovdlniWXO+Q/V4ZIQpCKkD+hCnqGqyLmKZ5nKHMU30KlJqDxYO14Ug==
-X-Received: by 2002:ac8:4319:: with SMTP id z25mr58436977qtm.262.1621260263312;
-        Mon, 17 May 2021 07:04:23 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.5])
-        by smtp.gmail.com with ESMTPSA id i129sm10505301qke.103.2021.05.17.07.04.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:04:22 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] memory: tegra124-emc: Fix compilation warnings on
- 64bit platforms
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210516161214.4693-1-digetx@gmail.com>
- <20210516161214.4693-4-digetx@gmail.com>
- <936cfc7d-737e-a582-ea60-ad2ba5b4ca72@canonical.com>
- <1d80ee0f-de4c-24d0-154f-20841874bf20@gmail.com>
- <4ea1bf29-c353-6fcf-5248-bfee67d5c361@canonical.com>
- <c120ecf5-7202-9f1d-6e70-a99db2f5335f@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <1cde1d43-f139-cb90-395e-8f8fceb41bce@canonical.com>
-Date:   Mon, 17 May 2021 10:04:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 10:06:43 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14HE5KFh090728;
+        Mon, 17 May 2021 09:05:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621260320;
+        bh=kmaEG3lVRhUTp1BUJ0Ejv46ZvX4BgEHKo5jIPbz7/zM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=jBsRh8dgEjJ0OCSw/1Gz+jB4zTpNJHpbXefLM9v2Iib0B4UShhZYVQZLoFIbx+R8q
+         Q1ECV6uPL9r/sPX1tK1TvNkBEcHr3OBBw1OV/CUOWcchL9TDmzZpRZb8+GnkKxXfm6
+         WSdxb+15JJhXokqfp+ClgnlTzsgdO6E3kWUO0dHg=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14HE5K14068998
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 17 May 2021 09:05:20 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 17
+ May 2021 09:05:19 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 17 May 2021 09:05:19 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14HE5KUQ027523;
+        Mon, 17 May 2021 09:05:20 -0500
+Date:   Mon, 17 May 2021 09:05:19 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 1/4] arm64: dts: ti: k3-j721e-main: Fix external refclk
+ input to SERDES
+Message-ID: <20210517140519.4ltzvw3k74z72urz@dingo>
+References: <20210512151209.27560-1-kishon@ti.com>
+ <20210512151209.27560-2-kishon@ti.com>
+ <20210512185157.q5sr2xqf3w5igfte@imagines>
+ <68c95cf1-84fa-2194-7bb1-e3c60e7f1fc0@ti.com>
+ <20210513140137.5uvftgtsku3xfobz@engraving>
+ <81b7dc76-0918-0a95-5715-cf701e638bbe@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <c120ecf5-7202-9f1d-6e70-a99db2f5335f@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <81b7dc76-0918-0a95-5715-cf701e638bbe@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/05/2021 09:47, Dmitry Osipenko wrote:
-> 17.05.2021 16:39, Krzysztof Kozlowski пишет:
->>>>>  #define DRAM_DEV_SEL_ALL			0
->>>>> -#define DRAM_DEV_SEL_0				(2 << 30)
->>>>> -#define DRAM_DEV_SEL_1				(1 << 30)
->>>>> +#define DRAM_DEV_SEL_0				(2u << 30)
->>>>> +#define DRAM_DEV_SEL_1				(1u << 30)
->>>>
->>>> Why not using BIT()? This would make even this 2<<30 less awkard...
->>>
->>> The bitfield 31:30 is a enum, 3 is a wrong value. Formally it's
->>> incorrect to use the BIT() macro here.
->>
->> Why "3"? BIT(31) is the same as 2<<30.
+On 14:00-20210517, Kishon Vijay Abraham I wrote:
+> Hi Nishanth,
 > 
-> By 3 I meant BIT(31)|BIT(30). This bitfield is explicitly designated as
-> a enum in the hardware documentation.
-
-I understand it and using BIT() here does not mean someone has to set
-both of them. BIT() is a helper pointing out that you want to toggle one
-bit. It does not mean that it is allowed to do so always!
-
+> On 13/05/21 7:31 pm, Nishanth Menon wrote:
+> > On 17:41-20210513, Kishon Vijay Abraham I wrote:
+> >> Hi Nishanth,
+> >>
+> >> On 13/05/21 12:21 am, Nishanth Menon wrote:
+> >>> On 20:42-20210512, Kishon Vijay Abraham I wrote:
+> >>>> Rename the external refclk inputs to the SERDES from
+> >>>> dummy_cmn_refclk/dummy_cmn_refclk1 to cmn_refclk/cmn_refclk1
+> >>>> respectively. Also move the external refclk DT nodes outside the
+> >>>> cbass_main DT node. Since in j721e common processor board, only the
+> >>>> cmn_refclk1 is connected to 100MHz clock, fix the clock frequency.
+> >>>>
+> >>>> Fixes: afd094ebe69f ("arm64: dts: ti: k3-j721e-main: Add WIZ and SERDES PHY nodes")
+> >>>
+> >>> Assume we want this part of 5.13 fixes?
+> >>
+> >> This doesn't fix any functionality. Okay for me to go in 5.14 along with
+> >> the rest of the series.
+> > 
+> > 
+> >>>
+> >>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >>>> ---
+> >>>>  .../dts/ti/k3-j721e-common-proc-board.dts     |  4 ++
+> >>>>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 58 ++++++++++---------
+> >>>>  2 files changed, 34 insertions(+), 28 deletions(-)
+> >>>>
+> >>>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> >>>> index 60764366e22b..86f7ab511ee8 100644
+> >>>> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> >>>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> >>>> @@ -635,6 +635,10 @@
+> >>>>  	status = "disabled";
+> >>>>  };
+> >>>>  
+> >>>> +&cmn_refclk1 {
+> >>>> +	clock-frequency = <100000000>;
+> >>>> +};
+> >>>> +
+> >>>>  &serdes0 {
+> >>>>  	serdes0_pcie_link: link@0 {
+> >>>>  		reg = <0>;
+> >>>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> >>>> index c2aa45a3ac79..002a0c1520ee 100644
+> >>>> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> >>>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> >>>> @@ -8,6 +8,20 @@
+> >>>>  #include <dt-bindings/mux/mux.h>
+> >>>>  #include <dt-bindings/mux/ti-serdes.h>
+> >>>>  
+> >>>> +/ {
+> >>>> +	cmn_refclk: cmn-refclk {
+> >>>> +		#clock-cells = <0>;
+> >>>> +		compatible = "fixed-clock";
+> >>>> +		clock-frequency = <0>;
+> >>>> +	};
+> >>>> +
+> >>>> +	cmn_refclk1: cmn-refclk1 {
+> >>>
+> >>> Just curious: why cant we use the standard nodenames with clock?
+> >>
+> >> We can use standard names here. Is there any defined nodename for
+> >> clocks? clk or clock? Don't see $nodename defined for clocks in
+> >> dt-schema repository.
+> > 
+> > Looking at the fixed-clock example, lets go with clock
 > 
->> It's common to use BIT for
->> register fields which do not accept all possible values. Now you
->> basically reimplement BIT() which is error-prone.
+> Since I have two clocks here adding clock@0 and clock@1 introduces the
+> following error.
+> /home/a0393678/repos/linux-wip/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
+> /: clock@0: 'anyOf' conditional failed, one must be fixed:
+>         'reg' is a required property
+>         'ranges' is a required property
 > 
-> Could you please show couple examples? The common practice today is to
-> use FIELD_PREP helpers, but this driver was written before these helpers
-> existed.
+> The current "fixed-clock" binding doesn't allow adding "reg" property.
+> We'll stick to non standard names? or do you think the binding has to be
+> fixed?
 
+Look at other fixed-clock examples in other arm64 examples
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/freescale/imx8mm.dtsi#n147
+is a good one.. Binding is fine, IMHO.
 
-There are plenty of such examples so I guess it would be easier to ask
-you to provide counter ones. Few IT for enum-like registers found within 2 minutes:
-
-https://elixir.bootlin.com/linux/latest/C/ident/MAX77620_CNFG_GPIO_INT_MASK
-https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/max77650-regulator.c#L18
-https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/tps6524x-regulator.c#L62
-https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/tps80031-regulator.c#L39
-https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/da9121-regulator.h#L200
-https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/regulator/da9121-regulator.h#L231
-
-Best regards,
-Krzysztof
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
