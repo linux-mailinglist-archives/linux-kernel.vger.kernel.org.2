@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356C9382AE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32781382ADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236746AbhEQLYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236725AbhEQLYX (ORCPT
+        id S236709AbhEQLYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:24:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37074 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236528AbhEQLYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:24:23 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C92CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:23:07 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c20so5302388qkm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:23:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cGXyzC3xCgpRlUaTw4nhuXE8ujIwP8PHRI02BxbUIzk=;
-        b=hHnlguesEZvTDV6FOr8biYKXwcmYfPCRrejdnY94HsmRi2/jQTnWUY4HKqmrXf8ozA
-         TTjZe/epTZyVJHXPeLl1mpSV0TzB0gxtGp15c8cP8u5caTgj/Z0BDwryv9yU0JgYt/Zi
-         VeQZh9Pe4j3DdVPKJAxyHIfONc95kupj3AR2ygeJOk9Py5pZgm3CsfGPq8ODhYpYx6zg
-         xMtgAJdMG9IpQr6T/a3G3/GbIfbVnKu6F3qIm6a5xoacOiNBOc9jZW1rar6TCl1wWe8n
-         HHRMZYs2AoqT8MOgUGqpdetz8TRZWgNqOVFuGdOTVRHqsx5iyug639wN4Hm2Dy7zHkg+
-         rIsA==
+        Mon, 17 May 2021 07:24:20 -0400
+Received: from mail-qt1-f199.google.com ([209.85.160.199])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1libKw-0000dC-OC
+        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 11:23:02 +0000
+Received: by mail-qt1-f199.google.com with SMTP id s11-20020ac85ecb0000b02901ded4f15245so4917023qtx.22
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:23:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cGXyzC3xCgpRlUaTw4nhuXE8ujIwP8PHRI02BxbUIzk=;
-        b=mic1xFWc85stPKKDWViIRpuxzUYMGaEzYJbTbXue3G7410gG3PzDCNNOh6KrGplWKf
-         m8pR3r7vfLNkwEqyDiwCh0VlH8R8DHxhMPtZEH3uI5Q6JX592wfZQ1+27rvOghoFi2K2
-         8ujkHzDZ+AGDWAeUKdBj7IBmEt1EqbiudTnLcCBb0TCbs8vvY+Vy1sOOzVG7za357Z3j
-         S9891aGFFqNapT45x0OMW07F2nBIbln6Wxzrd6Z1o/SxTzqiwhTbxD684zKF7j0pLKca
-         1r5Hdom36nVKf1OO0ydM3PW1w8PdAsMBe0/BhoLy2XvmDX7oixrfWnLsIQrNGVZxuS2C
-         r5RA==
-X-Gm-Message-State: AOAM530/CBxknR/XhCY09iC0kBMJtLXSHTBUVyBUhijqMilZNOGHzqHl
-        TPzmW6INjZo1iRtQorwfYHgmKM7fRhTzHjGhp01u2w==
-X-Google-Smtp-Source: ABdhPJwgPIEbKldHHF9kAFjl5ptOQnByTRSDuEzK1mg0bz7f2HWmxIgJRgFHN3bsULOZlBTHNecgUD8eHFY2e+kgTlU=
-X-Received: by 2002:a37:c20a:: with SMTP id i10mr56682524qkm.350.1621250585598;
- Mon, 17 May 2021 04:23:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mAhpswL6pA+76vcO9Kp8F8tyniQOjj0n+aDmrDsqL0U=;
+        b=eT5G2ftnvQ8HCwAXsz20w+XQmIHo+d+a0R1HkvQPRcVCKwRjzBVlzmrcVER2QJqFQb
+         bN0ZzEm1fovq+zu6/4XVRElvogN/36dBjgevSOr9exQLQQ4cNjmBLUQ9m9ECilCW/jsa
+         GLxcXcJ03IDHwWMlXFGVaKJH04qbWwRyUKRGpiSlMPq9mq3HUhF7UoUKj35EUDlXj2GX
+         AqVnHD7hTNhX1BHu46NJALJjcdgW5v9VJUo61/C2XeEcfkHojb9ABMf67/8Hj0LkGMM3
+         821gkHmQl86YTig0kWKqarRrX2UiqeEQsa9py+SfGVKcMOvTfxDAHSE5XktKPDWXmXaW
+         1tfQ==
+X-Gm-Message-State: AOAM531dcvXQnTne3Ct8FtxEcLdfXtUPBudKkgoQorNwR8bUUO/KiUBv
+        0BMweVnmJVAQtB/glB4uYth1ZvzkgMikjCaArefSyGFEictdE+Eovb1zw7fyCDoKH0g+x9lD+hU
+        mfPkqx3+3XT5PJ1yr9XkkjuTJqGU1YbyGjP0DIltpjw==
+X-Received: by 2002:a37:44cb:: with SMTP id r194mr947792qka.197.1621250581578;
+        Mon, 17 May 2021 04:23:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/DTigg9RrTXO/O8wXUDAnbwv8oBKSob9dwO4Gq0wsxVfUKiKadqmLJgKdvTFK65OS8RCOJw==
+X-Received: by 2002:a37:44cb:: with SMTP id r194mr947780qka.197.1621250581409;
+        Mon, 17 May 2021 04:23:01 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.6])
+        by smtp.gmail.com with ESMTPSA id b3sm8788275qtg.55.2021.05.17.04.22.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 04:23:00 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 1/1] memory: pl353: Fix error return code in pl353_smc_probe()
+Date:   Mon, 17 May 2021 07:22:57 -0400
+Message-Id: <162125055246.5300.15627879267121505532.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210515040004.6983-1-thunder.leizhen@huawei.com>
+References: <20210515040004.6983-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-References: <00000000000005887605c284c0c9@google.com>
-In-Reply-To: <00000000000005887605c284c0c9@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 17 May 2021 13:22:54 +0200
-Message-ID: <CACT4Y+YUYhGr9yTmW4ZHYp_Wa6sEoTTwtAD2JSS4kfc-0fcnjA@mail.gmail.com>
-Subject: Re: [syzbot] net-next boot error: can't ssh into the instance (4)
-To:     syzbot <syzbot+f9386e897a8781058604@syzkaller.appspotmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:18 PM syzbot
-<syzbot+f9386e897a8781058604@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    392c36e5 Merge branch 'ehtool-fec-stats'
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11a7cbf9d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a90b0da0842a411c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f9386e897a8781058604
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f9386e897a8781058604@syzkaller.appspotmail.com
+On Sat, 15 May 2021 12:00:04 +0800, Zhen Lei wrote:
+> When no child nodes are matched, an appropriate error code -ENODEV should
+> be returned. However, we currently do not explicitly assign this error
+> code to 'err'. As a result, 0 was incorrectly returned.
 
+Applied, thanks!
 
-Not sure if this was a flake or not:
+[1/1] memory: pl353: Fix error return code in pl353_smc_probe()
+      commit: 76e5624f3f9343a621dd3f4006f4e4d9c3f91e33
 
-[  109.072545][    T1] systemd[1]: Timed out waiting for device
-dev-ttyS0.device.
- [K[ [0;1;31m TIME  [0m] Timed out waiting for device dev-ttyS0.device.
-[  109.118547][    T1] systemd[1]: Dependency failed for Serial Getty on ttyS0.
-
-but this is very old.
-
-#syz invalid
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
