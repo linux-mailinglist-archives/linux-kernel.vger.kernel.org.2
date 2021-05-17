@@ -2,75 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A6A383C88
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B3A383C91
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235748AbhEQSlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:41:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54262 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234106AbhEQSl2 (ORCPT
+        id S234748AbhEQSoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234106AbhEQSoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:41:28 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621276810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=hSz2gY5PBw/ohaaE/xoXB86FUhBxqR4Jkj21Xx9CCZw=;
-        b=yzENOyXq0yf/YzL7rs2JYKg8+TBIqYBdHRqCgPECQup3/NzL5Vv/Gh6338vpPdPXHZC8QI
-        LVsLaMcKwedxTsWAalunKRM/mo5dgdmy1a0XE9FoceVSDyWkOYFQaNiLg11CLoerbBbDEb
-        kQtz9q56bxlAIGznleq6XmkKDlbLkW+Tu9PLbUuiQDP/TcqpiPPKgQHiGz1GqvQ0ZWVWNb
-        P7Pjv2r9u8k1YzUZk0Ar3DZ14x2+bTuysA6lzW+sLYxjaUQUy+J332ZNfkyrVyfgHP5dKQ
-        d/ZMlrCVUPnbY7rXQ2mSVxBNhyz5C0VahxT/IQ02Tu7CC6Tzimnpo1spekRj8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621276810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=hSz2gY5PBw/ohaaE/xoXB86FUhBxqR4Jkj21Xx9CCZw=;
-        b=A3n+0E4CGWZNLr66xF6rzictHGSTewgQlD+xz3QBFBRXHmouPNH49pYvEF3t83NW3KF0p9
-        0YRgZXxJ4kPTNYAg==
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Laight <David.Laight@aculab.com>
-Cc:     "x86\@kernel.org" <x86@kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable\@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-In-Reply-To: <087c418e-53fb-b3a6-0d9b-e738e4c821c7@gmail.com>
-Date:   Mon, 17 May 2021 20:40:10 +0200
-Message-ID: <87a6otfblh.ffs@nanos.tec.linutronix.de>
+        Mon, 17 May 2021 14:44:38 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D28AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:43:21 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id u144so7381873oie.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BxvqsrFgd+zMtCRd69oHn28UvTzcbEEuRZRz15PKi7U=;
+        b=XVzPZWUltbaoqBA2ZQvL4WiJi+iLKqWxauVJQqNEcDghVLSlvCcOrzyLw7bjwcjfy1
+         hqgu1D+Ncghg2RIGUO4R9kIB/I/rm7mWSwHw5ZnbP7YpLoND3gYPrDiI7sFNxp6F00G9
+         0wT2G5bIdfXYCC1amHDE2n4Pa1HP9FxJiuvxg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BxvqsrFgd+zMtCRd69oHn28UvTzcbEEuRZRz15PKi7U=;
+        b=KWLEGrvzYyYbpuALszn16f44LBY7Vu0wYMCjpoeHoUw0zpHN00OBIAD955Ow1cni62
+         zdEXvWvFbkOd863+HprEA3cDVJN5hq6m/jj6uFw0WS3vIaZOGoetqPS0ieZMkcudhS/k
+         dsRz0qZPzuCz9jFiq+8qYIO/FN2NqFSlQZA2P8gAM2y6OEA8CyMVDX6CbDnnKXxijKCp
+         da9w2AcM1ASI9kZUBs7TfWElKCfRBd7UgA6ZxKinBThuMdh35/EXwfeRsUoFZIU9ZB+w
+         flte6tIrBn6gKZce20kzuXTDVt4aqw48DeHKQc1D2bqqOyKhjEXhPiwsPUH7MBChHgf8
+         +WiQ==
+X-Gm-Message-State: AOAM531Hl6geKw4QmioUg3MLEf1bMmT4nWE3BQ/2LjjjQb6FNaant6wn
+        YcxIfERi4SqRXxKWGaUI8dsqPfUtdJvSAUvzJXiEMA==
+X-Google-Smtp-Source: ABdhPJxtvu+wUUKtSE5d3Ll1DuAvUzIFUzUP9Vhcztl5S5WK2jFn11QU8wwFGOivQf7ox/HfXvH9UJBvh1P9rwzHuGI=
+X-Received: by 2002:aca:c1d4:: with SMTP id r203mr397440oif.176.1621277000748;
+ Mon, 17 May 2021 11:43:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-5-like.xu@linux.intel.com> <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
+ <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com> <YJvx4tr2iXo4bQ/d@google.com>
+ <5ef2215b-1c43-fc8a-42ef-46c22e093f40@intel.com>
+In-Reply-To: <5ef2215b-1c43-fc8a-42ef-46c22e093f40@intel.com>
+From:   Venkatesh Srinivas <venkateshs@chromium.org>
+Date:   Mon, 17 May 2021 11:43:25 -0700
+Message-ID: <CAA0tLErHZwyk_01jzy3u4Y+iGEM05zt-+inrhFXy4a5iw0X8-A@mail.gmail.com>
+Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, Stephane Eranian <eranian@google.com>,
+        liuxiangdong5@huawei.com, linux-kernel@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org, Yao Yuan <yuan.yao@intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Max,
-
-On Sat, May 15 2021 at 00:47, Maximilian Luz wrote:
-> I believe the theory was that, while the PIC is advertised in ACPI, it
-> might be expected to not be used and only present for some legacy reason
-> (therefore untested and buggy). Which I believe led to the question
-> whether we shouldn't prefer IOAPIC on systems like that in general. So I
-> guess it comes down to how you define "systems like that". By Tomas'
-> comment, I guess it should be possible to implement this as "systems
-> that should prefer IOAPIC over legacy PIC" quirk.
+On Wed, May 12, 2021 at 7:50 PM Xu, Like <like.xu@intel.com> wrote:
 >
-> I guess all modern machines should have an IOAPIC, so it might also be
-> preferable to expand that definition, maybe over time and with enough
-> testing.
+> On 2021/5/12 23:18, Sean Christopherson wrote:
+> > On Wed, May 12, 2021, Xu, Like wrote:
+> >> Hi Venkatesh Srinivas,
+> >>
+> >> On 2021/5/12 9:58, Venkatesh Srinivas wrote:
+> >>> On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
+> >>>> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
+> >>>> detect whether the processor supports performance monitoring facility.
+> >>>>
+> >>>> It depends on the PMU is enabled for the guest, and a software write
+> >>>> operation to this available bit will be ignored.
+> >>> Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
+> >>> documented someplace?
+> >> The bit[7] behavior of the real hardware on the native host is quite
+> >> suspicious.
+> > Ugh.  Can you file an SDM bug to get the wording and accessibility updated?  The
+> > current phrasing is a mess:
+> >
+> >    Performance Monitoring Available (R)
+> >    1 = Performance monitoring enabled.
+> >    0 = Performance monitoring disabled.
+> >
+> > The (R) is ambiguous because most other entries that are read-only use (RO), and
+> > the "enabled vs. disabled" implies the bit is writable and really does control
+> > the PMU.  But on my Haswell system, it's read-only.
+>
+> On your Haswell system, does it cause #GP or just silent if you change this
+> bit ?
+>
+> > Assuming the bit is supposed
+> > to be a read-only "PMU supported bit", the SDM should be:
+> >
+> >    Performance Monitoring Available (RO)
+> >    1 = Performance monitoring supported.
+> >    0 = Performance monitoring not supported.
 
-I just double checked and we actually can boot just fine without the
-PIC even when it is advertised, but disfunctional.
+Can't speak to Haswell, but on Apollo Lake/Goldmont, this bit is _not_
+set natively
+and we get a #GP when attempting to set it, even though the PMU is available.
 
-Can you please add "apic=verbose" to the kernel command line and provide
-full dmesg output for a kernel w/o your patch and one with your patch
-applied?
+Should this bit be conditional on the host having it set?
 
-Thanks,
-
-        tglx
-
-
+> >
+> > And please update the changelog to explain the "why" of whatever the behavior
+> > ends up being.  The "what" is obvious from the code.
+>
+> Thanks for your "why" comment.
+>
+> >
+> >> To keep the semantics consistent and simple, we propose ignoring write
+> >> operation in the virtualized world, since whether or not to expose PMU is
+> >> configured by the hypervisor user space and not by the guest side.
+> > Making up our own architectural behavior because it's convient is not a good
+> > idea.
+>
+> Sometime we do change it.
+>
+> For example, the scope of some msrs may be "core level share"
+> but we likely keep it as a "thread level" variable in the KVM out of
+> convenience.
+>
+> >
+> >>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> >>>> index 9efc1a6b8693..d9dbebe03cae 100644
+> >>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> >>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> >>>> @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+> >>>>            if (!pmu->version)
+> >>>>                    return;
+> >>>>
+> >>>> +  vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
+> > Hmm, normally I would say overwriting the guest's value is a bad idea, but if
+> > the bit really is a read-only "PMU supported" bit, then this is the correct
+> > behavior, albeit weird if userspace does a late CPUID update (though that's
+> > weird no matter what).
+> >
+> >>>>            perf_get_x86_pmu_capability(&x86_pmu);
+> >>>>
+> >>>>            pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+> >>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> >>>> index 5bd550eaf683..abe3ea69078c 100644
+> >>>> --- a/arch/x86/kvm/x86.c
+> >>>> +++ b/arch/x86/kvm/x86.c
+> >>>> @@ -3211,6 +3211,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct
+> >>>> msr_data *msr_info)
+> >>>>                    }
+> >>>>                    break;
+> >>>>            case MSR_IA32_MISC_ENABLE:
+> >>>> +          data &= ~MSR_IA32_MISC_ENABLE_EMON;
+> > However, this is not.  If it's a read-only bit, then toggling the bit should
+> > cause a #GP.
+>
+> The proposal here is trying to make it as an
+> unchangeable bit and don't make it #GP if guest changes it.
+>
+> It may different from the host behavior but
+> it doesn't cause potential issue if some guest code
+> changes it during the use of performance monitoring.
+>
+> Does this make sense to you or do you want to
+> keep it strictly the same as the host side?
+>
+> >
+> >>>>                    if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)
+> >>>> &&
+> >>>>                        ((vcpu->arch.ia32_misc_enable_msr ^ data) &
+> >>>> MSR_IA32_MISC_ENABLE_MWAIT)) {
+> >>>>                            if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+> >>>> --
+>
