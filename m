@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EDC386B88
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F23386B87
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239565AbhEQUjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S239252AbhEQUi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238806AbhEQUiy (ORCPT
+        with ESMTP id S238372AbhEQUiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 16:38:54 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9ECC061573;
-        Mon, 17 May 2021 13:37:36 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id y184-20020a1ce1c10000b02901769b409001so295658wmg.3;
-        Mon, 17 May 2021 13:37:36 -0700 (PDT)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED4CC06175F;
+        Mon, 17 May 2021 13:37:37 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so291089wmh.4;
+        Mon, 17 May 2021 13:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WyvXp9JIBkDb38VgDaE0Gu4BsKjCEQ64wDu6xyl4Vh0=;
-        b=DX84cj7xin3BlWyZgOKjH3yfQPEykMnICRJ+G0I6oNuOUNGPdz8KeChDbJlir7EMRP
-         Uxdop8zZVE7Fill0n8PhWvG9CdYqUebfpq6jWxBAFxioA7pNcZcPEgNPfPfVPAbB6WdK
-         xlx63HsBayRF/4MHi5nuUu+km9R1o4Isn7CKU3UfyXyT2w1pSeJ2gqo1zw7XKRy4ihOx
-         e9HESr/2vFcM93lmUroLtAWN1AGEjVEkMQOIYaN3/cPtR2YLl4dLpmIcsreBhCz4Wyfd
-         DxbXYK8UkYkXV8QfeaMLY/4qo+LyEeSsfMQjT0GCvPdT0+Ct0riMxTI/Y0O6z0z742Gj
-         WU4A==
+        bh=JdlOUWCFrqhk74UvYiMcqHdWI1N1+oYHII4ZRq2kZ3Q=;
+        b=iGYBbJ7VV+sih5JcSVBhAw+WygMf8lzLPqsrC86lDfO6oZdOx7a8AdYoopCJYyhvOQ
+         7VM0R4hkIWexulCPuRs5G41v6DhcisDIhFvO5wY5mO4iy5ZFgM2wAHmzLbJIjlVFdMRs
+         K8gas4JH270iFfnPW2id7L0eyizQl3gPfQ0R95gZc5aOKqPfziCTyJ6e4hhCWIFJ1iKP
+         1cBuDoA6YvvMtU3s4N3IuPdOSXoFR7dAncB8QyfG7cFtYDQ8S12Mo7in+3ySv0fgOSad
+         VOBaglZ5ViFafsKgH1SGAlSl9rkV/J/9Ln2shol0Wx6uxgghiDW7KItMlGX/CMfHvvKZ
+         AfXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WyvXp9JIBkDb38VgDaE0Gu4BsKjCEQ64wDu6xyl4Vh0=;
-        b=IiZXUuM9uhkkgw2SET2krCIozdFS8R56LvpUbaLayHEHU9I9WIk8Q34s1ofyGP1g4y
-         A4o3rTeCDKPNfewVPpfUvjCrpJn5bojx04a9yIsBQwUlNLgCk3Ws6HtZOQfO9k1DMR1w
-         XV51rchthFVfmSs/vgrOhNK5VIPiFGi4n/8E5rhoU8VPfkkrAmXULQUNttVt8IyZvNF/
-         eN2NreQ7oPGTpAtgKkM3DMO3YwUa0ygjvjL/VGaCvGfvrS4/MrRArowxhLUwkIBMhvgU
-         R0wevGHAFh3vx5rp2Y9aywux9Gigxr9n2D3oqEtzlEHA1M4+gQmV6ePolPJE5FGdImzZ
-         8YTA==
-X-Gm-Message-State: AOAM530Rx8twrX+j+VrUDMSyQA3EQ6b6S69Ihiu+MQo7ehDWk+rMmiuB
-        co6Vg0hpZjjcI53L9YBYPl+gNmSSE88=
-X-Google-Smtp-Source: ABdhPJyVPcoCkDKXCWePaIDmy/NoeGPDwPZ+hww3qa91Mk6i6IYJg+EBt5pMIkiGK8r+xrX0PfVEdg==
-X-Received: by 2002:a05:600c:3796:: with SMTP id o22mr840081wmr.139.1621283855411;
-        Mon, 17 May 2021 13:37:35 -0700 (PDT)
+        bh=JdlOUWCFrqhk74UvYiMcqHdWI1N1+oYHII4ZRq2kZ3Q=;
+        b=f3hF24tCsbQfCtrNRjbuph9o7+nyZ2+sTpBO8XurAMlJSXGDbnQjx6wco6V1pg3Vwr
+         67SmmVZglzy+TT5hvxpmLTz6J1360d1C8VPM/LlOwCO/XJth41zx6tt3VVoisgoqmM1S
+         gkqOKlRLwGXJWrGP4np7Zc0BXz4jgVNGG5wL3u6Aqpc+EpOIQ9wOjjygqi2Q1Yff3R2M
+         ZgpkHklbfOpd9GpLcS/ztVGkDBhh2hs/SmZxtj8qj6xt272VvFhfkB93lJBm2t4DRxur
+         pR/UUgAgh5uwrN0SLV3mpMvc4rZ9HWUh+D0PX3sh1aPZq4SQIyEpm20YcCGuqWIBB2r5
+         rzbw==
+X-Gm-Message-State: AOAM530h3VRXQPEqQ9Tv1IEWE40pxZiAQCTsmt6hIBrHYSP6NrzHvGSd
+        Gi50960eLM6EtbZRSsU+kHeeu+sb6dE=
+X-Google-Smtp-Source: ABdhPJyUym/2wMl+zRWG2tm3iJbsKFKDbcljcr3Vp0/EZQwKDXOiJPSAJif7+TfZO0XWr0cKN3EUuw==
+X-Received: by 2002:a7b:c346:: with SMTP id l6mr1351729wmj.109.1621283856162;
+        Mon, 17 May 2021 13:37:36 -0700 (PDT)
 Received: from localhost.localdomain (p200300f1371adf00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:371a:df00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id p6sm3840448wma.4.2021.05.17.13.37.34
+        by smtp.googlemail.com with ESMTPSA id p6sm3840448wma.4.2021.05.17.13.37.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 17 May 2021 13:37:35 -0700 (PDT)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
@@ -55,9 +55,9 @@ Cc:     khilman@baylibre.com, linux-kernel@vger.kernel.org,
         linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH RFC v1 2/3] clk: meson: regmap: switch to determine_rate for the dividers
-Date:   Mon, 17 May 2021 22:37:23 +0200
-Message-Id: <20210517203724.1006254-3-martin.blumenstingl@googlemail.com>
+Subject: [PATCH RFC v1 3/3] clk: meson: pll: switch to determine_rate for the PLL ops
+Date:   Mon, 17 May 2021 22:37:24 +0200
+Message-Id: <20210517203724.1006254-4-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517203724.1006254-1-martin.blumenstingl@googlemail.com>
 References: <20210517203724.1006254-1-martin.blumenstingl@googlemail.com>
@@ -78,65 +78,76 @@ higher frequencies on 32-bit systems.
 
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/clk/meson/clk-regmap.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/clk/meson/clk-pll.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/clk/meson/clk-regmap.c b/drivers/clk/meson/clk-regmap.c
-index dcd1757cc5df..8ad8977cf1c2 100644
---- a/drivers/clk/meson/clk-regmap.c
-+++ b/drivers/clk/meson/clk-regmap.c
-@@ -75,8 +75,8 @@ static unsigned long clk_regmap_div_recalc_rate(struct clk_hw *hw,
- 				   div->width);
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index 49f27fe53213..9e55617bc3b4 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -242,8 +242,8 @@ static int meson_clk_get_pll_settings(unsigned long rate,
+ 	return best ? 0 : -EINVAL;
  }
  
--static long clk_regmap_div_round_rate(struct clk_hw *hw, unsigned long rate,
--				      unsigned long *prate)
-+static int clk_regmap_div_determine_rate(struct clk_hw *hw,
-+					 struct clk_rate_request *req)
+-static long meson_clk_pll_round_rate(struct clk_hw *hw, unsigned long rate,
+-				     unsigned long *parent_rate)
++static int meson_clk_pll_determine_rate(struct clk_hw *hw,
++					struct clk_rate_request *req)
  {
  	struct clk_regmap *clk = to_clk_regmap(hw);
- 	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
-@@ -87,18 +87,17 @@ static long clk_regmap_div_round_rate(struct clk_hw *hw, unsigned long rate,
- 	if (div->flags & CLK_DIVIDER_READ_ONLY) {
- 		ret = regmap_read(clk->map, div->offset, &val);
- 		if (ret)
--			/* Gives a hint that something is wrong */
--			return 0;
-+			return ret;
+ 	struct meson_clk_pll_data *pll = meson_clk_pll_data(clk);
+@@ -251,22 +251,26 @@ static long meson_clk_pll_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	unsigned long round;
+ 	int ret;
  
- 		val >>= div->shift;
- 		val &= clk_div_mask(div->width);
+-	ret = meson_clk_get_pll_settings(rate, *parent_rate, &m, &n, pll);
++	ret = meson_clk_get_pll_settings(req->rate, req->best_parent_rate,
++					 &m, &n, pll);
+ 	if (ret)
+-		return meson_clk_pll_recalc_rate(hw, *parent_rate);
++		return ret;
  
--		return divider_ro_round_rate(hw, rate, prate, div->table,
--					     div->width, div->flags, val);
-+		return divider_ro_determine_rate(hw, req, div->table,
-+						 div->width, div->flags, val);
- 	}
+-	round = __pll_params_to_rate(*parent_rate, m, n, 0, pll);
++	round = __pll_params_to_rate(req->best_parent_rate, m, n, 0, pll);
  
--	return divider_round_rate(hw, rate, prate, div->table, div->width,
--				  div->flags);
-+	return divider_determine_rate(hw, req, div->table, div->width,
-+				      div->flags);
+-	if (!MESON_PARM_APPLICABLE(&pll->frac) || rate == round)
+-		return round;
++	if (!MESON_PARM_APPLICABLE(&pll->frac) || req->rate == round) {
++		req->rate = round;
++		return 0;
++	}
+ 
+ 	/*
+ 	 * The rate provided by the setting is not an exact match, let's
+ 	 * try to improve the result using the fractional parameter
+ 	 */
+-	frac = __pll_params_with_frac(rate, *parent_rate, m, n, pll);
++	frac = __pll_params_with_frac(req->rate, req->best_parent_rate, m, n, pll);
++	req->rate = __pll_params_to_rate(req->best_parent_rate, m, n, frac, pll);
+ 
+-	return __pll_params_to_rate(*parent_rate, m, n, frac, pll);
++	return 0;
  }
  
- static int clk_regmap_div_set_rate(struct clk_hw *hw, unsigned long rate,
-@@ -123,14 +122,14 @@ static int clk_regmap_div_set_rate(struct clk_hw *hw, unsigned long rate,
- 
- const struct clk_ops clk_regmap_divider_ops = {
- 	.recalc_rate = clk_regmap_div_recalc_rate,
--	.round_rate = clk_regmap_div_round_rate,
-+	.determine_rate = clk_regmap_div_determine_rate,
- 	.set_rate = clk_regmap_div_set_rate,
- };
- EXPORT_SYMBOL_GPL(clk_regmap_divider_ops);
- 
- const struct clk_ops clk_regmap_divider_ro_ops = {
- 	.recalc_rate = clk_regmap_div_recalc_rate,
--	.round_rate = clk_regmap_div_round_rate,
-+	.determine_rate = clk_regmap_div_determine_rate,
- };
- EXPORT_SYMBOL_GPL(clk_regmap_divider_ro_ops);
- 
+ static int meson_clk_pll_wait_lock(struct clk_hw *hw)
+@@ -419,7 +423,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+  */
+ const struct clk_ops meson_clk_pcie_pll_ops = {
+ 	.recalc_rate	= meson_clk_pll_recalc_rate,
+-	.round_rate	= meson_clk_pll_round_rate,
++	.determine_rate	= meson_clk_pll_determine_rate,
+ 	.is_enabled	= meson_clk_pll_is_enabled,
+ 	.enable		= meson_clk_pcie_pll_enable,
+ 	.disable	= meson_clk_pll_disable
+@@ -429,7 +433,7 @@ EXPORT_SYMBOL_GPL(meson_clk_pcie_pll_ops);
+ const struct clk_ops meson_clk_pll_ops = {
+ 	.init		= meson_clk_pll_init,
+ 	.recalc_rate	= meson_clk_pll_recalc_rate,
+-	.round_rate	= meson_clk_pll_round_rate,
++	.determine_rate	= meson_clk_pll_determine_rate,
+ 	.set_rate	= meson_clk_pll_set_rate,
+ 	.is_enabled	= meson_clk_pll_is_enabled,
+ 	.enable		= meson_clk_pll_enable,
 -- 
 2.31.1
 
