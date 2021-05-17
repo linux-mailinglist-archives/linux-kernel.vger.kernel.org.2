@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFBE3838FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82366383961
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346477AbhEQQGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:06:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
+        id S1347190AbhEQQPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:15:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344496AbhEQPou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:44:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0C261D24;
-        Mon, 17 May 2021 14:43:22 +0000 (UTC)
+        id S244766AbhEQPvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 759D861D47;
+        Mon, 17 May 2021 14:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262603;
-        bh=TpbOr6elZi+PPwNfI3J7bCp2pEpHJnlhWoG5yRXdSxU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zbHTvUgAsBh0tzyyHGK6+NuxQyQ9+gJ649LNRBwlTlXaWavcLuYpICzYoNVLgnESp
-         EMrRUImKNAN38Xpipd6+rmP5NadJPoQYNaLlbiG6eJcHiiVjGdTbfXHg6JBj9Fi0Lo
-         ONpcm3qD3OZNsQHNthIoKd8qCgVv6mvekLzCT5hQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.11 329/329] ASoC: rsnd: check all BUSIF status when error
-Date:   Mon, 17 May 2021 16:04:00 +0200
-Message-Id: <20210517140313.212229861@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=korg; t=1621262782;
+        bh=y7lobXNEl29UJeAhMhyDmSKuFIoD0SytKc1vbhMDieg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aG62Q6vcuDN92+cqpoea4jwDFSODUNnskkMIjRJEsjP1+JdIveCOmCNHWP7zMOkiW
+         qYM/w8RswSw4noCvt+e8DBwAHhHcf14sl+BUGDfiXfPF+mfyz3y/LbgdW863HW9r65
+         6xBMmjmmtW9h1bL5QlnN0q/PQ/vuJsGoQ8fdI+Vo=
+Date:   Mon, 17 May 2021 16:15:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-serial@vger.kernel.org, jirislaby@kernel.org, joel@jms.id.au,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        jenmin_yuan@aspeedtech.com, ryan_chen@aspeedtech.com,
+        miltonm@us.ibm.com, ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Subject: Re: [PATCH] tty: 8250: Add UART_BUG_TXRACE workaround for Aspeed
+ VUART
+Message-ID: <YKJ6aP/xqAe1hW6A@kroah.com>
+References: <20210517124105.3565860-1-andrew@aj.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517124105.3565860-1-andrew@aj.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Mon, May 17, 2021 at 10:11:05PM +0930, Andrew Jeffery wrote:
+> Aspeed Virtual UARTs directly bridge e.g. the system console UART on the
+> LPC bus to the UART interface on the BMC's internal APB. As such there's
+> no RS-232 signalling involved - the UART interfaces on each bus are
+> directly connected as the producers and consumers of the one set of
+> FIFOs.
+> 
+> The APB in the AST2600 generally runs at 100MHz while the LPC bus peaks
+> at 33MHz. The difference in clock speeds exposes a race in the VUART
+> design where a Tx data burst on the APB interface can result in a byte
+> lost on the LPC interface. The symptom is LSR[DR] remains clear on the
+> LPC interface despite data being present in its Rx FIFO, while LSR[THRE]
+> remains clear on the APB interface as the host has not consumed the data
+> the BMC has transmitted. In this state, the UART has stalled and no
+> further data can be transmitted without manual intervention (e.g.
+> resetting the FIFOs, resulting in loss of data).
+> 
+> The recommended work-around is to insert a read cycle on the APB
+> interface between writes to THR.
+> 
+> Cc: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+>  drivers/tty/serial/8250/8250.h              | 1 +
+>  drivers/tty/serial/8250/8250_aspeed_vuart.c | 1 +
+>  drivers/tty/serial/8250/8250_port.c         | 2 ++
+>  3 files changed, 4 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+> index 52bb21205bb6..4d6f5e0ecd4c 100644
+> --- a/drivers/tty/serial/8250/8250.h
+> +++ b/drivers/tty/serial/8250/8250.h
+> @@ -88,6 +88,7 @@ struct serial8250_config {
+>  #define UART_BUG_NOMSR	(1 << 2)	/* UART has buggy MSR status bits (Au1x00) */
+>  #define UART_BUG_THRE	(1 << 3)	/* UART has buggy THRE reassertion */
+>  #define UART_BUG_PARITY	(1 << 4)	/* UART mishandles parity if FIFO enabled */
+> +#define UART_BUG_TXRACE (1 << 5)	/* UART Tx fails to set remote DR */
 
-commit a4856e15e58b54977f1c0c0299309ad4d1f13365 upstream.
+BUG()?
 
-commit 66c705d07d784 ("SoC: rsnd: add interrupt support for SSI BUSIF
-buffer") adds __rsnd_ssi_interrupt() checks for BUSIF status,
-but is using "break" at for loop.
-This means it is not checking all status. Let's check all BUSIF status.
+>  #ifdef CONFIG_SERIAL_8250_SHARE_IRQ
+> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> index a28a394ba32a..4caab8714e2c 100644
+> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> @@ -440,6 +440,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+>  	port.port.status = UPSTAT_SYNC_FIFO;
+>  	port.port.dev = &pdev->dev;
+>  	port.port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_8250_CONSOLE);
+> +	port.bugs |= UART_BUG_TXRACE;
+>  
+>  	rc = sysfs_create_group(&vuart->dev->kobj, &aspeed_vuart_attr_group);
+>  	if (rc < 0)
+> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> index d45dab1ab316..6c032abfc321 100644
+> --- a/drivers/tty/serial/8250/8250_port.c
+> +++ b/drivers/tty/serial/8250/8250_port.c
+> @@ -1809,6 +1809,8 @@ void serial8250_tx_chars(struct uart_8250_port *up)
+>  	count = up->tx_loadsz;
+>  	do {
+>  		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
+> +		if (up->bugs & UART_BUG_TXRACE)
+> +			serial_in(up, UART_SCR);
 
-Fixes: commit 66c705d07d784 ("SoC: rsnd: add interrupt support for SSI BUSIF buffer")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/874kgh1jsw.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- sound/soc/sh/rcar/ssi.c |    2 --
- 1 file changed, 2 deletions(-)
+Can you document why you are doing a call here to serial_in(), otherwise
+someone running "automated checking scripts" will remove it later as it
+seems to be doing nothing.
 
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -797,7 +797,6 @@ static void __rsnd_ssi_interrupt(struct
- 						       SSI_SYS_STATUS(i * 2),
- 						       0xf << (id * 4));
- 					stop = true;
--					break;
- 				}
- 			}
- 			break;
-@@ -815,7 +814,6 @@ static void __rsnd_ssi_interrupt(struct
- 						SSI_SYS_STATUS((i * 2) + 1),
- 						0xf << 4);
- 					stop = true;
--					break;
- 				}
- 			}
- 			break;
+thanks,
 
-
+greg k-h
