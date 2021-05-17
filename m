@@ -2,198 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AAB382BBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92C6382BC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236928AbhEQMFu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 May 2021 08:05:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:49458 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236859AbhEQMFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:05:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D3CE113E;
-        Mon, 17 May 2021 05:04:31 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AD163F73B;
-        Mon, 17 May 2021 05:04:30 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Beata Michalska <beata.michalska@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] sched/topology: Rework CPU capacity asymmetry detection
-In-Reply-To: <1621239831-5870-3-git-send-email-beata.michalska@arm.com>
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com> <1621239831-5870-3-git-send-email-beata.michalska@arm.com>
-Date:   Mon, 17 May 2021 13:04:25 +0100
-Message-ID: <87mtst1s8m.mognet@arm.com>
+        id S236931AbhEQMGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:06:37 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:11264 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236859AbhEQMGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:06:33 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HBup8e021853;
+        Mon, 17 May 2021 14:05:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=2KwkkuHfRJE0R9CP+OHANEZfxy/RymkNrjObI5KIHhQ=;
+ b=gZJB3FgoPvoon//iQ+hgH13FcffMIydpr0sUF6PJpS4lHi458zGK5ciqye1a6xNEAq44
+ FQj3Hx/g6I6Gg4cus9TN5TieSvvu66lPfaIPjnlzvDEDMbGmOGZF8b8qja2uue9GDhRZ
+ D9guc+TvZz3gYklc/nHqMVibunhWsOgDwnY3lRDMSlBrrQwTv1CM+bWrI0deCsbL2257
+ sNaeYmbZxUrxGAITluHI0QBUfteLm8JZ5hcuny28NniA72yqrmBd36T8wYbAH8Gdc/Y8
+ xusY7byum1cc87K+N50C1lu6N0t+Y6FL6Nv8TLJpHyvEyMN9t2wtixefzGOr7/Qs77Nr +A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38kmb2seew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 14:05:00 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CB7D210002A;
+        Mon, 17 May 2021 14:04:59 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B78B722D625;
+        Mon, 17 May 2021 14:04:59 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 17 May
+ 2021 14:04:58 +0200
+Subject: Re: [PATCH v2 1/3] spi: spi-mem: add automatic poll status functions
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+References: <20210507131756.17028-1-patrice.chotard@foss.st.com>
+ <20210507131756.17028-2-patrice.chotard@foss.st.com>
+ <20210517094140.53cb643a@collabora.com>
+ <e70b13ba-7f65-7ff1-0517-94b39615dcdb@foss.st.com>
+ <20210517132551.7dd56a5e@collabora.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <45ee6378-271d-aeb5-90ea-ed2e0673f3fb@foss.st.com>
+Date:   Mon, 17 May 2021 14:04:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210517132551.7dd56a5e@collabora.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-17_04:2021-05-17,2021-05-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/05/21 09:23, Beata Michalska wrote:
-> Currently the CPU capacity asymmetry detection, performed through
-> asym_cpu_capacity_level, tries to identify the lowest topology level
-> at which the highest CPU capacity is being observed, not necessarily
-> finding the level at which all possible capacity values are visible
-> to all CPUs, which might be bit problematic for some possible/valid
-> asymmetric topologies i.e.:
->
-> DIE      [                                ]
-> MC       [                       ][       ]
->
-> CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
-> Capacity  |.....| |.....| |.....|  |.....|
->            L	     M       B        B
->
-> Where:
->  arch_scale_cpu_capacity(L) = 512
->  arch_scale_cpu_capacity(M) = 871
->  arch_scale_cpu_capacity(B) = 1024
->
-> In this particular case, the asymmetric topology level will point
-> at MC, as all possible CPU masks for that level do cover the CPU
-> with the highest capacity. It will work just fine for the first
-> cluster, not so much for the second one though (consider the
-> find_energy_efficient_cpu which might end up attempting the energy
-> aware wake-up for a domain that does not see any asymmetry at all)
->
-> Rework the way the capacity asymmetry levels are being detected,
-> allowing to point to the lowest topology level (for a given CPU), where
-> full range of available CPU capacities is visible to all CPUs within given
-> domain. As a result, the per-cpu sd_asym_cpucapacity might differ across
-> the domains. This will have an impact on EAS wake-up placement in a way
-> that it might see different rage of CPUs to be considered, depending on
-> the given current and target CPUs.
->
-> Additionally, those levels, where any range of asymmetry (not
-> necessarily full) is being detected will get identified as well.
-> The selected asymmetric topology level will be denoted by
-> SD_ASYM_CPUCAPACITY_FULL sched domain flag whereas the 'sub-levels'
-> would receive the already used SD_ASYM_CPUCAPACITY flag. This allows
-> maintaining the current behaviour for asymmetric topologies, with
-> misfit migration operating correctly on lower levels, if applicable,
-> as any asymmetry is enough to trigger the misfit migration.
-> The logic there relies on the SD_ASYM_CPUCAPACITY flag and does not
-> relate to the full asymmetry level denoted by the sd_asym_cpucapacity
-> pointer.
->
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
 
-That does look quite simpler :-)
 
-A lesson for me as a reviewer here is to resist biting into the nitty
-gritty code details and spend more time on a first conceptual / high level
-review pass. It's not the first time I'm guilty of it, so I do need to work
-on that.
+On 5/17/21 1:25 PM, Boris Brezillon wrote:
+> On Mon, 17 May 2021 11:24:25 +0200
+> Patrice CHOTARD <patrice.chotard@foss.st.com> wrote:
+> 
+>> Hi Boris
+>>
+>> On 5/17/21 9:41 AM, Boris Brezillon wrote:
+>>> On Fri, 7 May 2021 15:17:54 +0200
+>>> <patrice.chotard@foss.st.com> wrote:
+>>>   
+>>>> +/**
+>>>> + * spi_mem_poll_status() - Poll memory device status
+>>>> + * @mem: SPI memory device
+>>>> + * @op: the memory operation to execute
+>>>> + * @mask: status bitmask to ckeck
+>>>> + * @match: (status & mask) expected value
+>>>> + * @timeout_ms: timeout in milliseconds
+>>>> + *
+>>>> + * This function send a polling status request to the controller driver
+>>>> + *
+>>>> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+>>>> + *         -EOPNOTSUPP if not supported.
+>>>> + */
+>>>> +int spi_mem_poll_status(struct spi_mem *mem,
+>>>> +			const struct spi_mem_op *op,
+>>>> +			u16 mask, u16 match, u16 timeout_ms)  
+>>>
+>>> Maybe you should pass a delay_us too, to poll the status at the right
+>>> rate in the SW-based case (can also be used by drivers if they need to  
+>>
+>> Ok, i will add a polling_rate_us parameter to poll_status() callback,
+>> even if in STM32 driver case we will not use it, i agree it should be useful 
+>> depending of driver's implementation.
+>>
+>>> configure the polling rate). You could also add an initial_delay_us to
+>>> avoid polling the status too early: an erase operation will take longer
+>>> than a write which will take longer than a read. No need to check the
+>>> status just after issuing the command, especially if the polling is
+>>> done in SW. Those 2 arguments should also be passed to the driver.  
+>>
+>> Regarding the addition of an initial_delay_us. We got two solution:
+>>   - use the same polling rate already used by read_poll_timeout() and 
+>>     set read_poll_timeout()'s sleep_before_read parameter to true (in our case 20 us
+>>     will be used as initial delay and as polling rate).
+>>
+>>   - add an udelay(initial_delay_us) or even better usleep_range(initial_delay_us,
+>>     initial_delay_us + delta) before calling read_poll_timeout().
+>>
+>> I imagine you prefer the second solution ?
+> 
+> Yep, you might want to use udelay() when the delay is small and
+> usleep_range() otherwise.
+> 
+>>
+>> By adding polling_rate_us and initial_delay_us parameters to 
+>> spi_mem_poll_status(), it implies to update all spinand_wait() calls for 
+>> different operations (reset, read page, write page, erase) with respective  
+>> initial_delay_us/polling_rate_us values for spi_mem_poll_status()'s parameters.
+>>
+>> Can you provide adequate initial_delay_us and polling rate_us for each operation type ?.
+> 
+> If I refer to the datasheets I have,
+> 
+> tBERS (erase) 1ms to 4ms
+> tPROG 300us to 400us
+> tREAD 25us to 100us
+> 
+> Let's assume we want to minimize the latency, I'd recommend dividing
+> the min value by 4 for the initial delay, and dividing it by 20 for the
+> poll delay, which gives:
+> 
+> ERASE -> initial_delay = 250us, poll_delay = 50us
+> PROG -> initial_delay = 100us, poll_delay = 20us
 
-> ---
->  kernel/sched/topology.c | 129 +++++++++++++++++++++++++++++-------------------
->  1 file changed, 79 insertions(+), 50 deletions(-)
->
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 55a0a24..81957f7 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -675,7 +675,7 @@ static void update_top_cache_domain(int cpu)
->       sd = highest_flag_domain(cpu, SD_ASYM_PACKING);
->       rcu_assign_pointer(per_cpu(sd_asym_packing, cpu), sd);
->
-> -	sd = lowest_flag_domain(cpu, SD_ASYM_CPUCAPACITY);
-> +	sd = lowest_flag_domain(cpu, SD_ASYM_CPUCAPACITY_FULL);
->       rcu_assign_pointer(per_cpu(sd_asym_cpucapacity, cpu), sd);
->  }
->
-> @@ -1989,66 +1989,96 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
->
->       return true;
->  }
-> -
-> +/**
-> + * Asym capacity bits
+another remark, it should be:  PROG -> initial_delay = 75 us (300 / 4) , poll_delay = 15us ( 300 / 20)
 
-Nit: Dietmar would have us phrase this "Asymmetric CPU capacity bits".
+Patrice
 
-> + */
-> +struct asym_cap_data {
-> +	struct list_head link;
-> +	unsigned long    capacity;
-> +	struct cpumask   *cpu_mask;
-> +};
-
-> +/*
-> + * Verify whether given CPU at a given topology level belongs to a sched domain
-> + * that does span CPUs with different capacities.
-> + * Provides sd_flags reflecting the asymmetry scope.
-> + */
-> +static inline int
-> +asym_cpu_capacity_classify(struct sched_domain_topology_level *tl, int cpu)
-> +{
-> +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
-> +	const struct cpumask *tl_mask = tl->mask(cpu);
-> +	struct asym_cap_data *entry;
-> +	int asym_cap_count = 0;
-> +
-> +	if (list_is_singular(&asym_cap_list))
-> +		goto leave;
-> +
-> +	list_for_each_entry(entry, &asym_cap_list, link) {
-> +		if (cpumask_intersects(tl_mask, entry->cpu_mask))
-> +			++asym_cap_count;
-
-Ah, this is using tl->mask() which *isn't* masked by the root_domain's
-cpu_map...
-
-See comment below on the scan; long story short we could issue this *after*
-build_sched_domain() so we can directly use sched_domain_span(sd) which
-*is* masked by the cpu_map. This kind of removes the need for that dflags
-param, but then we're already sidestepping it for SD_OVERLAP.
-
-EDIT: nope, we have a check against SD_ASYM_CPUCAPACITY in sd_init()... I
-guess we could issue asym_cpu_capacity_classify() in sd_init() itself?
-
-> +/*
-> + * Build-up/update list of CPUs grouped by their capacities
-> + */
-> +static void asym_cpu_capacity_scan(const struct cpumask *cpu_map)
-> +{
-> +	struct asym_cap_data *entry, *next;
-> +	int cpu;
->
-> -		for_each_sd_topology(tl) {
-> -			if (tl_id < asym_level)
-> -				goto next_level;
-> +	if (!list_empty(&asym_cap_list))
-> +		list_for_each_entry(entry, &asym_cap_list, link)
-> +			cpumask_clear(entry->cpu_mask);
->
-
-The topology isn't going to change between domain rebuilds, so why
-recompute the masks? The sched_domain spans are already masked by cpu_map,
-so no need to do this masking twice. I'm thinking this scan should be done
-once against the cpu_possible_mask - kinda like sched_init_numa() done once
-against the possible nodes.
-
-Ideally I'd see this as an __init function, unfortunately we need that to
-happen after cpufreq drivers have been loaded (in case all CPUs have same
-µarch but some can reach higher frequencies, which would yield asymmetry),
-and some of those can be built as modules :/
-
-> +		entry = kzalloc(sizeof(*entry) + cpumask_size(), GFP_KERNEL);
-> +		if (entry) {
-> +			entry->capacity = capacity;
-> +			entry->cpu_mask = (struct cpumask *)((char *)entry +
-> +					   sizeof(*entry));
-> +			list_add(&entry->link, &asym_cap_list);
->               }
-> +		WARN_ONCE(!entry,
-> +		    "Failed to allocate memory for capacity asymmetry detection\n");
-> +next:
-> +		__cpumask_set_cpu(cpu, entry->cpu_mask);
-
-That looks like a NULL deref if the above WARN is hit.
+> READ -> initial_delay = 6us, poll_delay = 5us
+> 
+> Of course, that'd be even better if we were able to extract this
+> information from the NAND ID (or ONFI table), but I guess we can live
+> with those optimistic values in the meantime.
+> 
