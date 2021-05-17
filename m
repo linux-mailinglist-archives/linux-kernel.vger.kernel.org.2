@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482F8382471
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134E0382482
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhEQGgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 02:36:53 -0400
-Received: from mga11.intel.com ([192.55.52.93]:26155 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230260AbhEQGgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 02:36:52 -0400
-IronPort-SDR: X7J+FDf9IVebI0tUqwLSyQD7cBzfz4Ks7+AAhoWQxmGbcAMif+q12l/d475pOboxvXkxlrYlNN
- G4oMK/HrNOBw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="197308894"
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="197308894"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2021 23:35:36 -0700
-IronPort-SDR: lAXmrOYT2oX1A2RdYUaSvrb0mGQQTKsYwRlGqIA+nrv+A5dhb9HdqI0K+Ov0CEhOqFqVRMUTP6
- MCcyt98Ao47g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="472256369"
-Received: from host.sh.intel.com ([10.239.154.115])
-  by orsmga001.jf.intel.com with ESMTP; 16 May 2021 23:35:34 -0700
-From:   Ye Xiang <xiang.ye@intel.com>
-To:     jikos@kernel.org, jic23@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
-Subject: [PATCH] HID: intel-ish-hid: ipc: Add Alder Lake device IDs
-Date:   Mon, 17 May 2021 14:36:09 +0800
-Message-Id: <20210517063609.23267-1-xiang.ye@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S235026AbhEQGl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 02:41:57 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2993 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234578AbhEQGlx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 02:41:53 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fk8bC4zY0zmWBt;
+        Mon, 17 May 2021 14:38:15 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 17 May 2021 14:40:30 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 17 May 2021 14:40:29 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linuxarm@openeuler.org>, Xiaofei Tan <tanxiaofei@huawei.com>
+Subject: [PATCH 0/9] tty: hvc_console: Fix some coding style issues
+Date:   Mon, 17 May 2021 14:37:04 +0800
+Message-ID: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Alder Lake PCI device IDs to the supported device list.
+Fix some issues reported by checkpatch.pl. All of them are
+coding style issues, no function changes.
 
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
----
- drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 2 ++
- drivers/hid/intel-ish-hid/ipc/pci-ish.c | 2 ++
- 2 files changed, 4 insertions(+)
+Xiaofei Tan (9):
+  tty: hvc_console: Fix spaces required around that '='
+  tty: hvc_console: Fix "foo * bar" should be "foo *bar"
+  tty: hvc_console: Remove trailing whitespace
+  tty: hvc_console: Fix issues of code indent should use tabs
+  tty: hvc_console: Delete spaces prohibited around open parenthesis '('
+    and ')'
+  tty: hvc_console: Fix coding style issues of block comments
+  tty: hvc_console: Add a blank line after declarations
+  tty: hvc_console: Remove the repeated words 'no' and 'from'
+  tty: hvc_console: Move open brace { on the previous line
 
-diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-index 21b87e4003af..07e3cbc86bef 100644
---- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-+++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-@@ -28,6 +28,8 @@
- #define EHL_Ax_DEVICE_ID	0x4BB3
- #define TGL_LP_DEVICE_ID	0xA0FC
- #define TGL_H_DEVICE_ID		0x43FC
-+#define ADL_S_DEVICE_ID		0x7AF8
-+#define ADL_P_DEVICE_ID		0x51FC
- 
- #define	REVISION_ID_CHT_A0	0x6
- #define	REVISION_ID_CHT_Ax_SI	0x0
-diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-index 06081cf9b85a..a6d5173ac003 100644
---- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-+++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-@@ -39,6 +39,8 @@ static const struct pci_device_id ish_pci_tbl[] = {
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, EHL_Ax_DEVICE_ID)},
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_LP_DEVICE_ID)},
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_H_DEVICE_ID)},
-+	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, ADL_S_DEVICE_ID)},
-+	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, ADL_P_DEVICE_ID)},
- 	{0, }
- };
- MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
+ drivers/tty/hvc/hvc_console.c | 37 ++++++++++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 15 deletions(-)
+
 -- 
-2.17.1
+2.8.1
 
