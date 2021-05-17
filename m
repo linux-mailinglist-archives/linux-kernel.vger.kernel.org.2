@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47623829A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE693829AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbhEQKST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
+        id S236386AbhEQKTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhEQKSQ (ORCPT
+        with ESMTP id S236379AbhEQKTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:18:16 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F29C061573;
-        Mon, 17 May 2021 03:17:00 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lg14so8340018ejb.9;
-        Mon, 17 May 2021 03:17:00 -0700 (PDT)
+        Mon, 17 May 2021 06:19:33 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10680C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:18:17 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id m11so7990052lfg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:18:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=O61mLnBohDelrXy5jyEb8/b2q8aYYlIu4kGyelK2l6Q=;
-        b=rOSe6Yj3yl4Zgb4OWWe25FgdsrQFEPBxVM9DHVtuhcIbMlMoFl+N8aIS70uYUbtllU
-         5vGid/3GUvjRlhyYnUakYC9i02JpWQtA2NyxwG50rs0VdFuPaziS5zeulhVkSFM8oU7J
-         dzjlrZARlkTKz8k5/pxcgc7E8CxxHSvJOlLMGiRQ7XCpITo7HFZ2M3+zTtqqVp2r25u9
-         k5yIwdF/d5bjDakxyUQ5tD1boLvDYdKymysN6b1xG8aRamiY/v0olrWFKMFEOc9Uuhql
-         JI03I/W+zQNWFCmRcQPAzkzeW2SIRQVrsaPdB+Ta4+/8/6hiVtIhVBWsmjhPkYAPQ22Z
-         XYiw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QpD2zMBxw5znlPKt4SJEqzKdA2fPgb5vzD+kazPbf2Q=;
+        b=YW8aguL1Or6+vxZUZkBLdiM0tAjt2lRGVb2q7Un8iQZCfMuLZ2s8l9onWyOmLEsvC2
+         RwXXtW47esnkr/mlxu3DOWSA42AjLpTbAnm03enYxdFOJS30ZdBaRz4V3m5kqPh8wO+e
+         bP6ouEwKpEOmN5KZ91tONBJCRfXitJt2PPXzLmPLcik0JewIp1qw2qP+SKdC/g+1iYSX
+         tjA1aSLFOg1/7qFlAqANS4ZDVVaJu4fdn+U+eSYObQSbNxoMo27nxIOS1x8AlhvfqQjR
+         4uDfcuUAbBvrIjjFa3/5nmwLwPi3KHmFYu4J6V+HcwT9C6d3e6N3vQIpUCmDPtW07MEZ
+         dmJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=O61mLnBohDelrXy5jyEb8/b2q8aYYlIu4kGyelK2l6Q=;
-        b=InHLwcEBA/APuhEtPx2cGhUUQv6trwjljKkcUVNhE3sqW4qn3CDnoeHwxjCQs8em+C
-         ukEkrW9K+L/dLRPI3/2ItB932/YbxR0Cty4b6e3prn2s45h9f2IHexdN13xT/2EAvbhx
-         6e5RNGm+hKOgVjJ6UWlZNcR7qRFpJdEgVRY/aBVxMUJlpHF8HTPRRbIIssJsIE14wttX
-         cK2ICws1ldDE9TFUx1tdBI+fOlz8X8A75o8uSf+bbAu+Lepu35qjA5D7jjZN8kTMa5MS
-         8JuTGhSojth7vHlamilBLJTAn85BuqH5PiPNTzvnZ+UNJrs4eMdPeMu1qRcwxCYT8/6d
-         jIGQ==
-X-Gm-Message-State: AOAM532gqMCIiK+mb/EVFnCiTPZj5/NVIrL4h/GMMM/3UArZxbgZsOn2
-        Jm9vMzxog/oorvITJ6RCpXw=
-X-Google-Smtp-Source: ABdhPJzN+QqZIMCo0M9ryL0N7psIVJilRc8/khRPNwua2F9RP9nQB+ZXg6xEYCLrlw8BHItUJHVFNw==
-X-Received: by 2002:a17:907:c15:: with SMTP id ga21mr51769479ejc.141.1621246619384;
-        Mon, 17 May 2021 03:16:59 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2dca:fb00:e0e5:3623:aa29:cf48])
-        by smtp.gmail.com with ESMTPSA id l6sm8415243ejc.92.2021.05.17.03.16.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 03:16:59 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: repair reference in DRM DRIVER FOR SIMPLE FRAMEBUFFERS
-Date:   Mon, 17 May 2021 12:16:48 +0200
-Message-Id: <20210517101648.29906-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QpD2zMBxw5znlPKt4SJEqzKdA2fPgb5vzD+kazPbf2Q=;
+        b=K0Napnw0wxdNebFbqP35YcZohbofacDZh7+bXKtLibn/p6nfcMJ+M0GHgHV2IOOnjS
+         w4NfG0ORzoxGAhHjNPPhU9zzYn5AMiJPow9TDvQQW6r9CCF8Qloau8U0AVVKTSMMepUT
+         T5+JxZGJ/OAsPSguHQUUxIXbCgex5YZwA4MZrMD15RmSn7RwqvgU6Ad27FeKZ2hYODZT
+         Wl1pGg4aN4GWB58BcDv2FAb1yjP2SPxLlKP56mNhSw44K+X6XgZQ1cphX61DbyoUz3kW
+         VVeR8niZif3PVEw2ZN0xRLrQnNXPWQrSLYNm6ABc0lxx2EUhj4DLlj3q4rUN7o83ymEw
+         s+5Q==
+X-Gm-Message-State: AOAM530kB0Dl/Rxd0rfLYGFu3q1pi4grwO6i5NF42rLmcdiXgklD6cJi
+        gs88VvZKBJcwLrqOvj9dipSeCc4J9qi2OSiGoqgMRA==
+X-Google-Smtp-Source: ABdhPJzT4oOH3/URfeXgpdb2qfPLVl7Vky9lNpykIEHlPPjpp1cuGfZpwwmjydsYIVL9+54HTwIFWa7+cUxSgD2UsVI=
+X-Received: by 2002:a05:6512:11ea:: with SMTP id p10mr89321lfs.157.1621246695068;
+ Mon, 17 May 2021 03:18:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210512081211.200025-1-arnd@kernel.org>
+In-Reply-To: <20210512081211.200025-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 17 May 2021 12:18:04 +0200
+Message-ID: <CACRpkdbpYkLeh3bJ9U42fCHMLj=XY17Of-vvt_1JxEukYWPSHg@mail.gmail.com>
+Subject: Re: [PATCH] ARM: fix gcc-10 thumb2-kernel regression
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, stable <stable@vger.kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 11e8f5fd223b ("drm: Add simpledrm driver") adds the file
-./drivers/gpu/drm/tiny/simpledrm.c, but refers to the file
-./drivers/gpu/drm/tiny/simplekms.c with the new MAINTAINERS section
-DRM DRIVER FOR SIMPLE FRAMEBUFFERS.
+On Wed, May 12, 2021 at 10:13 AM Arnd Bergmann <arnd@kernel.org> wrote:
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When building the kernel wtih gcc-10 or higher using the
+> CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y flag, the compiler picks a slightly
+> different set of registers for the inline assembly in cpu_init() that
+> subsequently results in a corrupt kernel stack as well as remaining in
+> FIQ mode. If a banked register is used for the last argument, the wrong
+> version of that register gets loaded into CPSR_c.  When building in Arm
+> mode, the arguments are passed as immediate values and the bug cannot
+> happen.
+>
+> This got introduced when Daniel reworked the FIQ handling and was
+> technically always broken, but happened to work with both clang and gcc
+> before gcc-10 as long as they picked one of the lower registers.
+> This is probably an indication that still very few people build the
+> kernel in Thumb2 mode.
+>
+> Marek pointed out the problem on IRC, Arnd narrowed it down to this
+> inline assembly and Russell pinpointed the exact bug.
+>
+> Change the constraints to force the final mode switch to use a non-banked
+> register for the argument to ensure that the correct constant gets loaded.
+> Another alternative would be to always use registers for the constant
+> arguments to avoid the #ifdef that has now become more complex.
+>
+> Cc: <stable@vger.kernel.org> # v3.18+
+> Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> Reported-by: Marek Vasut <marek.vasut@gmail.com>
+> Fixes: c0e7f7ee717e ("ARM: 8150/3: fiq: Replace default FIQ handler")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-  warning: no file matches    F:    drivers/gpu/drm/tiny/simplekms.c
+Wow. Nice bug hunt here, hats off!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Repair the file entry by referring to the right location.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210514
-
-Thomas, Daniel, please pick this minor clean-up patch for your -next tree.
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6582d19cdf7a..88277ff25d43 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5885,7 +5885,7 @@ M:	Thomas Zimmermann <tzimmermann@suse.de>
- L:	dri-devel@lists.freedesktop.org
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
--F:	drivers/gpu/drm/tiny/simplekms.c
-+F:	drivers/gpu/drm/tiny/simpledrm.c
- 
- DRM DRIVER FOR SIS VIDEO CARDS
- S:	Orphan / Obsolete
--- 
-2.17.1
-
+Yours,
+Linus Walleij
