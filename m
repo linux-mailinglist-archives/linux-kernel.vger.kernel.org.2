@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AEB382A5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E509382A5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236605AbhEQK5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:57:44 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:42944 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236441AbhEQK5j (ORCPT
+        id S236482AbhEQK5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:57:47 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:52997 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236587AbhEQK5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:57:39 -0400
-Received: by mail-il1-f200.google.com with SMTP id d3-20020a9287430000b0290181f7671fa1so5973881ilm.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:56:22 -0700 (PDT)
+        Mon, 17 May 2021 06:57:40 -0400
+Received: by mail-il1-f197.google.com with SMTP id b7-20020a056e020487b02901bb31b56af8so5926367ils.19
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:56:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Mvw1ZMzypgw0dQW963IDZFGXoWO2KAZbgmwYDsY4n3I=;
-        b=jOZ6Tv/8V41KsKFcruv3OQuQcKjLFjTOvpovUbTr3hLk+YUYFuRG/Ds3wDbnZMrrwR
-         8kOQFo5mbrDPHykJIBD65SlwSyrP19hsFtpnW1vyaDyzX8Az7DWO4hBaMrNf55cGZ2LD
-         ZK7greVzRQyF137l04i2by6ZHSvXOTAOFyPtVYWigWT0e3L6nvJOW/9FOkIVVzN3pmBZ
-         TjBKeh3cD56EP+O8IeujuVABmneH64w2DAj7Ih4h48+Asht3QYHggMxkjnCEv7+EWVTa
-         sHxuuX7tegs2RdnpislNDm+J5H74nFRUNSGnDlH60BPDQlrgzXxSl4MsFtJigg8xPrWi
-         fgjQ==
-X-Gm-Message-State: AOAM5337blV3npgpC4zCWAE3PLjg4DQ5nyeWf+RgnPnEzGvKWdWcsHOI
-        awZhjoEiGukRAooiBPMbYQJUUjDdJ9x9VN1AWO81mZJJfHhd
-X-Google-Smtp-Source: ABdhPJwcoreSZ65eBKWqAeGid1eFwnSu3Jb5EUFDNlwPnE8ubwDlEEHGQk72Yq0jPhbf3scDuQ/rLtPj6xuAApTY4mEU0twlynJx
+        bh=5iIoTlWmHOI2C29PmRlvFB6YEj33u2SIMrpUVwF/jMM=;
+        b=uTAqj+o1O9LK1UbVgM+zSrnrEV97SKotrbhIO+lww4KwScSp4SYWQe911un/0L0XBc
+         i/pG3FcK3r6uCB/3w5Wog8OAR+DEg7q4yHKkDfwCotDdxYVZakP6aNIJi5pIAjyn+YkJ
+         TFGkMWK3v97u6hf7axgcYC+cUwCNHZ9eHp/d61Gl0BvGEf1Un3miAFTFJOlVH13WZ+KH
+         g7qu2UnXIS6Y18OGjaeD7zB1t+JCTmwzRhOjA8lYBY9LdBQKIRzIO3EH7zUoz1qmgazC
+         xRW+hUfMJdtocwXxlFin1LLoL1Rd9Rl4PhjcqDXPDliJoFBhE6BO187CVMro/hexMvEz
+         ktYw==
+X-Gm-Message-State: AOAM53214NV0Lktv+YaG6qi+rRqCyvoUPLlK4KVMO84l+pz8seos+sNs
+        YbVVmoiKLVqGQ3SzHD8ECoj3zeJazkJKSLKdoFZ0ID/ErldQ
+X-Google-Smtp-Source: ABdhPJzoIrNNbHx/OG3cWTzepju2sQ9MGkhjikNOEKFOW0RGNu6VXw2cwktthHzkoC58cveAdi07n7pD1vfLaXaOGfcl8zAeZmON
 MIME-Version: 1.0
-X-Received: by 2002:a5d:81c9:: with SMTP id t9mr7528052iol.45.1621248982635;
+X-Received: by 2002:a05:6e02:1002:: with SMTP id n2mr49711952ilj.260.1621248982875;
  Mon, 17 May 2021 03:56:22 -0700 (PDT)
 Date:   Mon, 17 May 2021 03:56:22 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b3d89a05c284718f@google.com>
-Subject: [syzbot] WARNING in __perf_install_in_context
-From:   syzbot <syzbot+0fb24f56fa707081e4f2@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Message-ID: <000000000000b782b505c2847180@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in ntfs_test_inode
+From:   syzbot <syzbot+2751da923b5eb8307b0b@syzkaller.appspotmail.com>
+To:     anton@tuxera.com, linux-kernel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,141 +48,139 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    18a3c5f7 Merge tag 'for_linus' of git://git.kernel.org/pub..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=1662c153d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b8ac1fe5995f69d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=0fb24f56fa707081e4f2
-userspace arch: riscv64
+HEAD commit:    9cdbf646 Merge tag 'io_uring-5.12-2021-04-16' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11684629d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=330c6a2c09278509
+dashboard link: https://syzkaller.appspot.com/bug?extid=2751da923b5eb8307b0b
+compiler:       Debian clang version 11.0.1-2
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0fb24f56fa707081e4f2@syzkaller.appspotmail.com
+Reported-by: syzbot+2751da923b5eb8307b0b@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8643 at kernel/events/core.c:2781 __perf_install_in_context+0x1c0/0x47c kernel/events/core.c:2781
-Modules linked in:
-CPU: 1 PID: 8643 Comm: syz-executor.0 Not tainted 5.12.0-rc8-syzkaller-00011-g18a3c5f7abfd #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : __perf_install_in_context+0x1c0/0x47c kernel/events/core.c:2781
- ra : __perf_install_in_context+0x1c0/0x47c kernel/events/core.c:2781
-epc : ffffffe00027d7ba ra : ffffffe00027d7ba sp : ffffffe00818faf0
- gp : ffffffe0045883c0 tp : ffffffe006dbaf80 t0 : ffffffc4010812b2
- t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffffe00818fb50
- s1 : ffffffe01ca95000 a0 : ffffffe066d79118 a1 : 00000000000f0000
- a2 : ffffffd010ada000 a3 : ffffffe00027d7ba a4 : ffffffd010ae31f0
- a5 : 000000000000123e a6 : 0000000000f00000 a7 : ffffffe00027d6ba
- s2 : ffffffe066d78f70 s3 : ffffffe01ca950a8 s4 : ffffffe00aacfc00
- s5 : ffffffe006dbaf80 s6 : ffffffe066d78f78 s7 : ffffffe00d98bc00
- s8 : ffffffe006dbaf80 s9 : ffffffe00458c0d0 s10: 0000000000000000
- s11: 0000000000000000 t3 : 2699545dc3e5be00 t4 : ffffffc401031f97
- t5 : ffffffc401031f99 t6 : ffffffe00f58c1f4
-status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
+ntfs: volume version 3.1.
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: use-after-free in test_bit include/asm-generic/bitops/instrumented-non-atomic.h:134 [inline]
+BUG: KASAN: use-after-free in NInoAttr fs/ntfs/inode.h:200 [inline]
+BUG: KASAN: use-after-free in ntfs_test_inode+0x7b/0x2d0 fs/ntfs/inode.c:55
+Read of size 8 at addr ffff8880974790f0 by task syz-executor.3/12887
+
+CPU: 1 PID: 12887 Comm: syz-executor.3 Not tainted 5.12.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
-[<ffffffe00027d7ba>] __perf_install_in_context+0x1c0/0x47c kernel/events/core.c:2781
-[<ffffffe00026bcbc>] remote_function kernel/events/core.c:91 [inline]
-[<ffffffe00026bcbc>] remote_function+0xa8/0xc0 kernel/events/core.c:71
-[<ffffffe0001452b2>] generic_exec_single+0x1a6/0x212 kernel/smp.c:293
-[<ffffffe000145452>] smp_call_function_single+0x134/0x2ba kernel/smp.c:513
-[<ffffffe00026af46>] task_function_call+0x90/0xee kernel/events/core.c:119
-[<ffffffe00027c5da>] perf_install_in_context+0x174/0x2e6 kernel/events/core.c:2902
-[<ffffffe000288d1c>] __do_sys_perf_event_open+0x10ea/0x199e kernel/events/core.c:12169
-[<ffffffe00028fa72>] sys_perf_event_open+0x34/0x46 kernel/events/core.c:11775
-[<ffffffe000005578>] ret_from_syscall+0x0/0x2
-irq event stamp: 1944
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] mod_memcg_lruvec_state include/linux/memcontrol.h:979 [inline]
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] mod_objcg_state mm/slab.h:296 [inline]
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] memcg_slab_post_alloc_hook+0x2ea/0x46a mm/slab.h:327
-hardirqs last disabled at (1944): [<ffffffe0001452ae>] generic_exec_single+0x1a2/0x212 kernel/smp.c:292
-softirqs last  enabled at (1900): [<ffffffe0020f5fd2>] spin_unlock_bh include/linux/spinlock.h:399 [inline]
-softirqs last  enabled at (1900): [<ffffffe0020f5fd2>] release_sock+0xf6/0x122 net/core/sock.c:3085
-softirqs last disabled at (1898): [<ffffffe0020f5f06>] spin_lock_bh include/linux/spinlock.h:359 [inline]
-softirqs last disabled at (1898): [<ffffffe0020f5f06>] release_sock+0x2a/0x122 net/core/sock.c:3072
----[ end trace 757ee55d225523fe ]---
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8643 at kernel/events/core.c:3210 ctx_sched_out+0x312/0x548 kernel/events/core.c:3210
-Modules linked in:
-CPU: 1 PID: 8643 Comm: syz-executor.0 Tainted: G        W         5.12.0-rc8-syzkaller-00011-g18a3c5f7abfd #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : ctx_sched_out+0x312/0x548 kernel/events/core.c:3210
- ra : ctx_sched_out+0x312/0x548 kernel/events/core.c:3210
-epc : ffffffe00027ca5e ra : ffffffe00027ca5e sp : ffffffe00818fa90
- gp : ffffffe0045883c0 tp : ffffffe006dbaf80 t0 : ffffffc4010812b2
- t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffffe00818faf0
- s1 : ffffffe00aacfc00 a0 : ffffffe066d79118 a1 : 00000000000f0000
- a2 : ffffffd010ada000 a3 : ffffffe00027ca5e a4 : ffffffd010c9c740
- a5 : 00000000000384e8 a6 : 0000000000f00000 a7 : ffffffe00027d6ba
- s2 : ffffffe066d78f70 s3 : 0000000000000004 s4 : 0000000000000000
- s5 : 0000000000000000 s6 : ffffffe00aacfd40 s7 : 0000000000000000
- s8 : ffffffe006dbaf80 s9 : ffffffe00458c0d0 s10: 0000000000000000
- s11: 0000000000000000 t3 : 2699545dc3e5be00 t4 : ffffffc401031f97
- t5 : ffffffc401031f99 t6 : ffffffe00f58c1f4
-status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
-Call Trace:
-[<ffffffe00027ca5e>] ctx_sched_out+0x312/0x548 kernel/events/core.c:3210
-[<ffffffe00027d7ee>] __perf_install_in_context+0x1f4/0x47c kernel/events/core.c:2799
-[<ffffffe00026bcbc>] remote_function kernel/events/core.c:91 [inline]
-[<ffffffe00026bcbc>] remote_function+0xa8/0xc0 kernel/events/core.c:71
-[<ffffffe0001452b2>] generic_exec_single+0x1a6/0x212 kernel/smp.c:293
-[<ffffffe000145452>] smp_call_function_single+0x134/0x2ba kernel/smp.c:513
-[<ffffffe00026af46>] task_function_call+0x90/0xee kernel/events/core.c:119
-[<ffffffe00027c5da>] perf_install_in_context+0x174/0x2e6 kernel/events/core.c:2902
-[<ffffffe000288d1c>] __do_sys_perf_event_open+0x10ea/0x199e kernel/events/core.c:12169
-[<ffffffe00028fa72>] sys_perf_event_open+0x34/0x46 kernel/events/core.c:11775
-[<ffffffe000005578>] ret_from_syscall+0x0/0x2
-irq event stamp: 1944
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] mod_memcg_lruvec_state include/linux/memcontrol.h:979 [inline]
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] mod_objcg_state mm/slab.h:296 [inline]
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] memcg_slab_post_alloc_hook+0x2ea/0x46a mm/slab.h:327
-hardirqs last disabled at (1944): [<ffffffe0001452ae>] generic_exec_single+0x1a2/0x212 kernel/smp.c:292
-softirqs last  enabled at (1900): [<ffffffe0020f5fd2>] spin_unlock_bh include/linux/spinlock.h:399 [inline]
-softirqs last  enabled at (1900): [<ffffffe0020f5fd2>] release_sock+0xf6/0x122 net/core/sock.c:3085
-softirqs last disabled at (1898): [<ffffffe0020f5f06>] spin_lock_bh include/linux/spinlock.h:359 [inline]
-softirqs last disabled at (1898): [<ffffffe0020f5f06>] release_sock+0x2a/0x122 net/core/sock.c:3072
----[ end trace 757ee55d225523ff ]---
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8643 at kernel/events/core.c:2668 task_ctx_sched_out+0x5c/0x60 kernel/events/core.c:2668
-Modules linked in:
-CPU: 1 PID: 8643 Comm: syz-executor.0 Tainted: G        W         5.12.0-rc8-syzkaller-00011-g18a3c5f7abfd #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : task_ctx_sched_out+0x5c/0x60 kernel/events/core.c:2668
- ra : task_ctx_sched_out+0x5c/0x60 kernel/events/core.c:2668
-epc : ffffffe00027ccf0 ra : ffffffe00027ccf0 sp : ffffffe00818fa70
- gp : ffffffe0045883c0 tp : ffffffe006dbaf80 t0 : ffffffc4010812b2
- t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffffe00818faa0
- s1 : ffffffe066d78f70 a0 : ffffffe066d79118 a1 : 00000000000f0000
- a2 : ffffffd010ada000 a3 : ffffffe00027ccf0 a4 : 0000000000040000
- a5 : 0000000000040000 a6 : 0000000000f00000 a7 : ffffffe00027d6ba
- s2 : ffffffe00aacfc00 s3 : 0000000000000001 s4 : ffffffe00d98bc00
- s5 : ffffffe0050495a8 s6 : ffffffe00aacfc00 s7 : ffffffe00423cdc8
- s8 : 0000000000000000 s9 : ffffffe00458c0d0 s10: 0000000000000000
- s11: 0000000000000000 t3 : 2699545dc3e5be00 t4 : ffffffc401031f97
- t5 : ffffffc401031f99 t6 : ffffffe00f58c1f4
-status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
-Call Trace:
-[<ffffffe00027ccf0>] task_ctx_sched_out+0x5c/0x60 kernel/events/core.c:2668
-[<ffffffe00027cdca>] ctx_resched+0xd6/0x1ba kernel/events/core.c:2719
-[<ffffffe00027d80e>] __perf_install_in_context+0x214/0x47c kernel/events/core.c:2801
-[<ffffffe00026bcbc>] remote_function kernel/events/core.c:91 [inline]
-[<ffffffe00026bcbc>] remote_function+0xa8/0xc0 kernel/events/core.c:71
-[<ffffffe0001452b2>] generic_exec_single+0x1a6/0x212 kernel/smp.c:293
-[<ffffffe000145452>] smp_call_function_single+0x134/0x2ba kernel/smp.c:513
-[<ffffffe00026af46>] task_function_call+0x90/0xee kernel/events/core.c:119
-[<ffffffe00027c5da>] perf_install_in_context+0x174/0x2e6 kernel/events/core.c:2902
-[<ffffffe000288d1c>] __do_sys_perf_event_open+0x10ea/0x199e kernel/events/core.c:12169
-[<ffffffe00028fa72>] sys_perf_event_open+0x34/0x46 kernel/events/core.c:11775
-[<ffffffe000005578>] ret_from_syscall+0x0/0x2
-irq event stamp: 1944
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] mod_memcg_lruvec_state include/linux/memcontrol.h:979 [inline]
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] mod_objcg_state mm/slab.h:296 [inline]
-hardirqs last  enabled at (1943): [<ffffffe0003b3950>] memcg_slab_post_alloc_hook+0x2ea/0x46a mm/slab.h:327
-hardirqs last disabled at (1944): [<ffffffe0001452ae>] generic_exec_single+0x1a2/0x212 kernel/smp.c:292
-softirqs last  enabled at (1900): [<ffffffe0020f5fd2>] spin_unlock_bh include/linux/spinlock.h:399 [inline]
-softirqs last  enabled at (1900): [<ffffffe0020f5fd2>] release_sock+0xf6/0x122 net/core/sock.c:3085
-softirqs last disabled at (1898): [<ffffffe0020f5f06>] spin_lock_bh include/linux/spinlock.h:359 [inline]
-softirqs last disabled at (1898): [<ffffffe0020f5f06>] release_sock+0x2a/0x122 net/core/sock.c:3072
----[ end trace 757ee55d22552400 ]---
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x176/0x24e lib/dump_stack.c:120
+ print_address_description+0x5f/0x3a0 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report+0x15c/0x200 mm/kasan/report.c:416
+ check_region_inline mm/kasan/generic.c:135 [inline]
+ kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:186
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ test_bit include/asm-generic/bitops/instrumented-non-atomic.h:134 [inline]
+ NInoAttr fs/ntfs/inode.h:200 [inline]
+ ntfs_test_inode+0x7b/0x2d0 fs/ntfs/inode.c:55
+ find_inode+0x10c/0x3e0 fs/inode.c:825
+ ilookup5_nowait fs/inode.c:1335 [inline]
+ ilookup5+0x9d/0x1f0 fs/inode.c:1364
+ iget5_locked+0x30/0x3d0 fs/inode.c:1145
+ ntfs_iget+0x73/0x130 fs/ntfs/inode.c:168
+ load_and_check_logfile fs/ntfs/super.c:1208 [inline]
+ load_system_files fs/ntfs/super.c:1941 [inline]
+ ntfs_fill_super+0x58f2/0x88e0 fs/ntfs/super.c:2893
+ mount_bdev+0x26c/0x3a0 fs/super.c:1367
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1497
+ do_new_mount fs/namespace.c:2903 [inline]
+ path_mount+0x188a/0x29a0 fs/namespace.c:3233
+ do_mount fs/namespace.c:3246 [inline]
+ __do_sys_mount fs/namespace.c:3454 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3431
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46797a
+Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f50a372bfa8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 000000000046797a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f50a372c000
+RBP: 00007f50a372c040 R08: 00007f50a372c040 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020000000
+R13: 0000000020000100 R14: 00007f50a372c000 R15: 000000002007dc00
+
+Allocated by task 11540:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ __kasan_slab_alloc+0x8f/0xc0 mm/kasan/common.c:460
+ kasan_slab_alloc include/linux/kasan.h:223 [inline]
+ slab_post_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2907 [inline]
+ slab_alloc mm/slub.c:2915 [inline]
+ kmem_cache_alloc+0x1c3/0x350 mm/slub.c:2920
+ reiserfs_alloc_inode+0x19/0xb0 fs/reiserfs/super.c:642
+ alloc_inode fs/inode.c:234 [inline]
+ new_inode_pseudo+0x61/0x220 fs/inode.c:928
+ new_inode+0x25/0x1d0 fs/inode.c:957
+ reiserfs_mkdir+0x129/0x800 fs/reiserfs/namei.c:812
+ xattr_mkdir fs/reiserfs/xattr.c:76 [inline]
+ create_privroot fs/reiserfs/xattr.c:889 [inline]
+ reiserfs_xattr_init+0x34b/0x730 fs/reiserfs/xattr.c:1012
+ reiserfs_fill_super+0x2aac/0x3160 fs/reiserfs/super.c:2177
+ mount_bdev+0x26c/0x3a0 fs/super.c:1367
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1497
+ do_new_mount fs/namespace.c:2903 [inline]
+ path_mount+0x188a/0x29a0 fs/namespace.c:3233
+ do_mount fs/namespace.c:3246 [inline]
+ __do_sys_mount fs/namespace.c:3454 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3431
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0x130/0x8e0 kernel/rcu/tree.c:3114
+ reiserfs_new_inode+0x690/0x2660 fs/reiserfs/inode.c:2164
+ reiserfs_mkdir+0x4a0/0x800 fs/reiserfs/namei.c:842
+ xattr_mkdir fs/reiserfs/xattr.c:76 [inline]
+ create_privroot fs/reiserfs/xattr.c:889 [inline]
+ reiserfs_xattr_init+0x34b/0x730 fs/reiserfs/xattr.c:1012
+ reiserfs_fill_super+0x2aac/0x3160 fs/reiserfs/super.c:2177
+ mount_bdev+0x26c/0x3a0 fs/super.c:1367
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1497
+ do_new_mount fs/namespace.c:2903 [inline]
+ path_mount+0x188a/0x29a0 fs/namespace.c:3233
+ do_mount fs/namespace.c:3246 [inline]
+ __do_sys_mount fs/namespace.c:3454 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3431
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888097478c20
+ which belongs to the cache reiser_inode_cache of size 1424
+The buggy address is located 1232 bytes inside of
+ 1424-byte region [ffff888097478c20, ffff8880974791b0)
+The buggy address belongs to the page:
+page:ffffea00025d1e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888097479840 pfn:0x97478
+head:ffffea00025d1e00 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888018116500
+raw: ffff888097479840 0000000080150014 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888097478f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888097479000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888097479080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                             ^
+ ffff888097479100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888097479180: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
 
 ---
