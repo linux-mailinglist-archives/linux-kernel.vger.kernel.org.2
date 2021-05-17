@@ -2,150 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA02C386601
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1A7386603
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240381AbhEQUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237977AbhEQULQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:11:16 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD423C06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:59 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id q2so5713267pfh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1UwU9EkWrODMcI+U3WAgeVuEyP427IMNTKjMOHdxTM0=;
-        b=g3WODAH2i+aU+cIRqG6vWZWK6LQgC1mekg1RDZdIZDKEeUXLHcvmDCqvKlfaD7S6rV
-         JZ+Qxs96T0EbefFWIa/JHdYoMv+YpZRS1o9PjVIdQoFMpJ/H7/rctpfzO7ERO9Rd51Ac
-         FZBndcyste7QBFWzJ5dgIIzdbdVzmdxR+iguM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1UwU9EkWrODMcI+U3WAgeVuEyP427IMNTKjMOHdxTM0=;
-        b=LbfDT+NWq4eC2z9qQQ4xVfAugP6MmSUEgAwvQACz9/O5djmetAcPy+vmWPj3o0qXdz
-         LZLH8OxkTFgbGZWo09OriA5XfzOQiK5viaQ26RmGFEQWSGh7UDd2SSiymKHrwXT5aW1Q
-         6E1GE4Uigten0ycuAMj4wkfSM1GkAw6+/22j3+7pgWwnToqUWDraG/GUlutFa+EsFVi2
-         vBKbYEq82saVQMWOrP9klWlQq8nRB/nJtTqLWwey5ScSXhydh97ohn+6i5B6TTC7gjJd
-         tAPfe39m2yCSAa8unrvgYNpYu1FKP/oyGb7HPNKyO/Jm3hnyJ56KHXLuBI5fCTw4Icyw
-         beZA==
-X-Gm-Message-State: AOAM5315hYrkfAuUiMSl2IITkXKVMD/amLXf49S6mWWRjJt92ktMHX+r
-        K20nmXu4CSIM4lS43hc3nOZ63g==
-X-Google-Smtp-Source: ABdhPJxyl3CVtWgAW9niHq8RrZzZop7XLx8u0xYbliB0AtmGj6fTylsaoI37vUp6/6aPr25KW3J3vw==
-X-Received: by 2002:a63:a019:: with SMTP id r25mr1198145pge.139.1621282199381;
-        Mon, 17 May 2021 13:09:59 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:bc91:c597:ded0:7930])
-        by smtp.gmail.com with ESMTPSA id x19sm9078941pgj.66.2021.05.17.13.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 13:09:59 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Linus W <linus.walleij@linaro.org>,
-        dri-devel@lists.freedesktop.org, robdclark@chromium.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 10/10] arm64: dts: qcom: sc7180-trogdor: Move panel under the bridge chip
-Date:   Mon, 17 May 2021 13:09:07 -0700
-Message-Id: <20210517130450.v7.10.Ibdb7735fb1844561b902252215a69526a14f9abd@changeid>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-In-Reply-To: <20210517200907.1459182-1-dianders@chromium.org>
-References: <20210517200907.1459182-1-dianders@chromium.org>
+        id S238931AbhEQUMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:12:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57438 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238981AbhEQULp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 16:11:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1E039AEB3;
+        Mon, 17 May 2021 20:10:27 +0000 (UTC)
+To:     Daniel Stone <daniel@fooishbar.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+ <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+ <CAPj87rMqYNdHMT5v9fiMuDzcB8462nJuthB9To70JOsORgxk=w@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+Message-ID: <6e26562f-5ccf-9014-c0c4-00241659a95b@suse.de>
+Date:   Mon, 17 May 2021 22:10:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPj87rMqYNdHMT5v9fiMuDzcB8462nJuthB9To70JOsORgxk=w@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="NFHqMJwoHIrsns3XVxpIlH2sC2mAI5CYJ"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Putting the panel under the bridge chip (under the aux-bus node)
-allows the panel driver to get access to the DP AUX bus, enabling all
-sorts of fabulous new features.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--NFHqMJwoHIrsns3XVxpIlH2sC2mAI5CYJ
+Content-Type: multipart/mixed; boundary="K92ICiUqb6mZ9P0TPPbr7Mp5YSGvgYWXg";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Daniel Stone <daniel@fooishbar.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, Derek Kiernan <derek.kiernan@xilinx.com>,
+ Dragan Cvetic <dragan.cvetic@xilinx.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ DRI Development <dri-devel@lists.freedesktop.org>
+Message-ID: <6e26562f-5ccf-9014-c0c4-00241659a95b@suse.de>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com>
+ <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+ <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+ <CAPj87rMqYNdHMT5v9fiMuDzcB8462nJuthB9To70JOsORgxk=w@mail.gmail.com>
+In-Reply-To: <CAPj87rMqYNdHMT5v9fiMuDzcB8462nJuthB9To70JOsORgxk=w@mail.gmail.com>
 
-While we're at this, get rid of a level of hierarchy for the panel
-node. It doesn't need "ports / port" and can just have a "port" child.
+--K92ICiUqb6mZ9P0TPPbr7Mp5YSGvgYWXg
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-For Linux, this patch has a hard requirement on the patches adding DP
-AUX bus support to the ti-sn65dsi86 bridge chip driver. See the patch
-("drm/bridge: ti-sn65dsi86: Add support for the DP AUX bus").
+Hi
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Am 17.05.21 um 21:32 schrieb Daniel Stone:
+> Hi,
+>=20
+> On Mon, 17 May 2021 at 20:12, Thomas Zimmermann <tzimmermann@suse.de> w=
+rote:
+>> Am 17.05.21 um 09:40 schrieb Daniel Vetter:
+>>> We have, it's called drivers/gpu. Feel free to rename to drivers/xpu =
+or
+>>> think G as in General, not Graphisc.
+>>
+>> I hope this was a joke.
+>>
+>> Just some thoughts:
+>>
+>> AFAICT AI first came as an application of GPUs, but has now
+>> evolved/specialized into something of its own. I can imagine sharing
+>> some code among the various subsystems, say GEM/TTM internals for memo=
+ry
+>> management. Besides that there's probably little that can be shared in=
 
-Changes in v7:
-- Panel now under bridge chip instead of getting a link to ddc-i2c
+>> the userspace interfaces. A GPU is device that puts an image onto the
+>> screen and an AI accelerator isn't.
+>=20
+> But it isn't. A GPU is a device that has a kernel-arbitrated MMU
+> hosting kernel-managed buffers, executes user-supplied compiled
+> programs with reference to those buffers and other jobs, and informs
+> the kernel about progress.
+>=20
+> KMS lies under the same third-level directory, but even when GPU and
+> display are on the same die, they're totally different IP blocks
+> developed on different schedules which are just periodically glued
+> together.
 
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 30 ++++++++++----------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+I mentioned this elsewhere: it's not about the chip architecture, it's=20
+about the UAPI. In the end, the GPU is about displaying things on a=20
+screen. Even if the rendering and the scanout engines are on different=20
+IP blocks. (Or different devices.)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 24d293ef56d7..c76afd857b54 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -260,21 +260,6 @@ max98357a: audio-codec-0 {
- 		#sound-dai-cells = <0>;
- 	};
- 
--	panel: panel {
--		/* Compatible will be filled in per-board */
--		power-supply = <&pp3300_dx_edp>;
--		backlight = <&backlight>;
--		hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
--
--		ports {
--			port {
--				panel_in_edp: endpoint {
--					remote-endpoint = <&sn65dsi86_out>;
--				};
--			};
--		};
--	};
--
- 	pwmleds {
- 		compatible = "pwm-leds";
- 		keyboard_backlight: keyboard-backlight {
-@@ -674,6 +659,21 @@ sn65dsi86_out: endpoint {
- 				};
- 			};
- 		};
-+
-+		aux-bus {
-+			panel: panel {
-+				/* Compatible will be filled in per-board */
-+				power-supply = <&pp3300_dx_edp>;
-+				backlight = <&backlight>;
-+				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
-+
-+				port {
-+					panel_in_edp: endpoint {
-+						remote-endpoint = <&sn65dsi86_out>;
-+					};
-+				};
-+			};
-+		};
- 	};
- };
- 
--- 
-2.31.1.751.gd2f1c929bd-goog
+The fact that one can do general purpose computing on a GPU is a=20
+byproduct of the evolution of graphics hardware. It never was the goal.
 
+
+>=20
+>> Treating both as the same, even if
+>> they share similar chip architectures, seems like a stretch. They migh=
+t
+>> evolve in different directions and fit less and less under the same
+>> umbrella.
+>=20
+> Why not? All we have in common in GPU land right now is MMU + buffer
+> references + job scheduling + synchronisation. None of this has common
+> top-level API, or even a common top-level model. It's not just ISA
+> differences, but we have very old-school devices where the kernel
+> needs to register fill on every job, living next to middle-age devices
+> where the kernel and userspace co-operate to fill a ring buffer,
+> living next to modern devices where userspace does some stuff and then
+> the hardware makes it happen with the bare minimum of kernel
+> awareness.
+
+I see all this as an example why AI should not live under gpu/. There=20
+are already many generations of GPUs with different feature sets=20
+supported. Why lump more behind the same abstractions if AI can take a=20
+fresh start? Why should we care about AI and why should AI care about=20
+all our legacy.
+
+We can still share all the internal code if AI needs any of it.=20
+Meanwhile AI drivers can provide their own UAPIs until a common=20
+framework emerges.
+
+Again, just my 2 cents.
+
+Best regards
+Thomas
+
+>=20
+> Honestly I think there's more difference between lima and amdgpu then
+> there is between amdgpu and current NN/ML devices.
+>=20
+> Cheers,
+> Daniel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--K92ICiUqb6mZ9P0TPPbr7Mp5YSGvgYWXg--
+
+--NFHqMJwoHIrsns3XVxpIlH2sC2mAI5CYJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCizbEFAwAAAAAACgkQlh/E3EQov+A8
+kQ//a1dFkecSMSxjo3CuElZhkeSdPEjiiN5ZeVIzu9sRyF7VCzK6CyMWatau941D29mIGsti8H4b
+tsLYTym7dJVH9r6d+lvvb+b57VGSA1DnN4422x+Zd/jl/KrFbVj5qcYoCIgIhlFav5omHGoHxigN
+whLuhwc00USOYaY+TafWZwmBILgY2sz2+SyJPjSbFy1JkmNDeDEa7uGQjmBAaTq0OP7k1c60jd6C
+wwZuI8uImxjtqJeOMNk9xtoLKnHUUTV0esZYAUQkQJSmWz+8f+0ShGlur3lG2lGJiL9FhXtBMZ5p
+yBXaGbLD7l+e5ioRTCCYyRbQab0HCacARp/+l+TSYcEtI9Si5uI3K5AR1gq8n8Mo5UOniNdWRz5d
+p4wv1qzw1f5nTnt6XH4TiWL13nm6BWr2WpnH1aEZfZkjacHkptFsY8t0cheiL/VicRIdZmwnbrnF
+27qtY2h092RgWeigFsRhzD/jK2LSixh+MnB6pM7A8kGILq6alg8j0DwMo9uEo8ozc5/gwhesaYm1
+9EYtTkI5gQVKs7CN5+bjF0n+p4Nzso/RUMC8bWKLXYxnRJKJd+C63ApQbdkQYxYEfWaj3rfTdL4a
+ipgyR7zJXT8Jxo+sQnrXpeEuydrSP9oMl2uujbqWiSPBxDH4uEy7QU8X/Al5+PFYKvvI85HifgL2
+Xv8=
+=mHQv
+-----END PGP SIGNATURE-----
+
+--NFHqMJwoHIrsns3XVxpIlH2sC2mAI5CYJ--
