@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B25438361A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B1F383856
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244315AbhEQP2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:28:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42180 "EHLO mail.kernel.org"
+        id S244980AbhEQPvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:51:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240706AbhEQPN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:13:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1380061C4E;
-        Mon, 17 May 2021 14:31:53 +0000 (UTC)
+        id S1343675AbhEQPel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:34:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CEF761CDF;
+        Mon, 17 May 2021 14:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261914;
-        bh=InIh6HKvECFj20U6L9vgh3JjpNCfwKZj7DEXA3TKNOk=;
+        s=korg; t=1621262370;
+        bh=sVWSqwsCjEediVEth53I4tx8AYE5sxNh7/5+UMoiWTo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yfOtOXI6dBeKDM++lJMeNkO95zj3Or2UVwYT1X3g176NWxTVIZpyQ2Or+kglaDC0t
-         zkTCVXdzKU4A0NyhaWNZC1ICxrx0K+qU5bYvJ7is+l6SXeYKCT9T4RMx8hL/aWZeoc
-         YHG2xTYcbS7py2xPbV27VQOZXOAtgUhgIFzTH88k=
+        b=p0ku+QDeAoX31rQqXEL1Glo7VasRtJ5qR3BIh7NyeFO5qDWIXQxn+DGF1BwZaESKR
+         39h8WaXKtxkHEC1RAJVUxiC4bP5gYE30Mvgfj3a7wTma2V4aeWhDjQyrDE0EPE96rh
+         d4jHl77CnPjgz+DcPt6SLQBagFS7UIBZf9jhwLuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Baptiste Lepers <baptiste.lepers@gmail.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Fernando Fernandez Mancera <ffmancera@riseup.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 186/329] sunrpc: Fix misplaced barrier in call_decode
-Date:   Mon, 17 May 2021 16:01:37 +0200
-Message-Id: <20210517140308.419829091@linuxfoundation.org>
+Subject: [PATCH 5.10 173/289] ethtool: fix missing NLM_F_MULTI flag when dumping
+Date:   Mon, 17 May 2021 16:01:38 +0200
+Message-Id: <20210517140310.942145599@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baptiste Lepers <baptiste.lepers@gmail.com>
+From: Fernando Fernandez Mancera <ffmancera@riseup.net>
 
-[ Upstream commit f8f7e0fb22b2e75be55f2f0c13e229e75b0eac07 ]
+[ Upstream commit cf754ae331be7cc192b951756a1dd031e9ed978a ]
 
-Fix a misplaced barrier in call_decode. The struct rpc_rqst is modified
-as follows by xprt_complete_rqst:
+When dumping the ethtool information from all the interfaces, the
+netlink reply should contain the NLM_F_MULTI flag. This flag allows
+userspace tools to identify that multiple messages are expected.
 
-req->rq_private_buf.len = copied;
-/* Ensure all writes are done before we update */
-/* req->rq_reply_bytes_recvd */
-smp_wmb();
-req->rq_reply_bytes_recvd = copied;
-
-And currently read as follows by call_decode:
-
-smp_rmb(); // misplaced
-if (!req->rq_reply_bytes_recvd)
-   goto out;
-req->rq_rcv_buf.len = req->rq_private_buf.len;
-
-This patch places the smp_rmb after the if to ensure that
-rq_reply_bytes_recvd and rq_private_buf.len are read in order.
-
-Fixes: 9ba828861c56a ("SUNRPC: Don't try to parse incomplete RPC messages")
-Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Link: https://bugzilla.redhat.com/1953847
+Fixes: 365f9ae4ee36 ("ethtool: fix genlmsg_put() failure handling in ethnl_default_dumpit()")
+Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/clnt.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ net/ethtool/netlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-index c2a01125be1a..f555d335e910 100644
---- a/net/sunrpc/clnt.c
-+++ b/net/sunrpc/clnt.c
-@@ -2456,12 +2456,6 @@ call_decode(struct rpc_task *task)
- 		task->tk_flags &= ~RPC_CALL_MAJORSEEN;
- 	}
+diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
+index 50d3c8896f91..25a55086d2b6 100644
+--- a/net/ethtool/netlink.c
++++ b/net/ethtool/netlink.c
+@@ -384,7 +384,8 @@ static int ethnl_default_dump_one(struct sk_buff *skb, struct net_device *dev,
+ 	int ret;
  
--	/*
--	 * Ensure that we see all writes made by xprt_complete_rqst()
--	 * before it changed req->rq_reply_bytes_recvd.
--	 */
--	smp_rmb();
--
- 	/*
- 	 * Did we ever call xprt_complete_rqst()? If not, we should assume
- 	 * the message is incomplete.
-@@ -2470,6 +2464,11 @@ call_decode(struct rpc_task *task)
- 	if (!req->rq_reply_bytes_recvd)
- 		goto out;
- 
-+	/* Ensure that we see all writes made by xprt_complete_rqst()
-+	 * before it changed req->rq_reply_bytes_recvd.
-+	 */
-+	smp_rmb();
-+
- 	req->rq_rcv_buf.len = req->rq_private_buf.len;
- 	trace_rpc_xdr_recvfrom(task, &req->rq_rcv_buf);
+ 	ehdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
+-			   &ethtool_genl_family, 0, ctx->ops->reply_cmd);
++			   &ethtool_genl_family, NLM_F_MULTI,
++			   ctx->ops->reply_cmd);
+ 	if (!ehdr)
+ 		return -EMSGSIZE;
  
 -- 
 2.30.2
