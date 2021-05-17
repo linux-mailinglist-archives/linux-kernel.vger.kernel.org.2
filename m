@@ -2,54 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9D238388C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37EF383661
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345541AbhEQP40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:56:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37738 "EHLO mail.kernel.org"
+        id S244048AbhEQPbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244584AbhEQPhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:37:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 878F961941;
-        Mon, 17 May 2021 14:40:26 +0000 (UTC)
+        id S242887AbhEQPQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:16:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74F386190A;
+        Mon, 17 May 2021 14:33:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262427;
-        bh=1qRHNux75ZxngztiyNmBzy8JNZLOeETwbgw2PDNUHaU=;
+        s=korg; t=1621261980;
+        bh=MFTrq0pgtW/5OfDwTcaQIhMYGXz32QqzKOIC6CTuCTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VX61vrqcVBmueV8uVFJynRt15TYvALPIEQK3LA3f5gD8cJz2M/MC9iORex3EuXRVc
-         byUzYx47vW7UW7EE+9fEuEW7TuhekuA7B7BS66bsp0XbZwYBSCpgMjw62jWwXmihM0
-         LWTJod05lACkXJKHdSSCQH0opqw4jgRmKXGRRhws=
+        b=pWqBm35QeXx5qs6pnaijT9tRfw4Bm7z595cvmw5Y0QJHSjKACizOT+WTR2NCOt8RB
+         xcwvnVq2ZWiBgPsq6mPh6OBSy4Ump4DJr1T1n0ucP6WWM4g0Z6RrgBc2Mq4n7VWFOH
+         g4Przvy7VQ56OJV4NOMFoQ+tF5o5Nj3GlVdd8+RM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Baoquan He <bhe@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
-        Oscar Salvador <osalvador@suse.de>,
-        Eric Biederman <ebiederm@xmission.com>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        James Morse <james.morse@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 185/289] kernel/resource: make walk_system_ram_res() find all busy IORESOURCE_SYSTEM_RAM resources
+Subject: [PATCH 5.11 199/329] arm64: entry: factor irq triage logic into macros
 Date:   Mon, 17 May 2021 16:01:50 +0200
-Message-Id: <20210517140311.334636478@linuxfoundation.org>
+Message-Id: <20210517140308.855389232@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,102 +45,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 97f61c8f44ec9020708b97a51188170add4f3084 ]
+[ Upstream commit 9eb563cdabe1d583c262042d5d44cc256f644543 ]
 
-Patch series "kernel/resource: make walk_system_ram_res() and walk_mem_res() search the whole tree", v2.
+In subsequent patches we'll allow an FIQ handler to be registered, and
+FIQ exceptions will need to be triaged very similarly to IRQ exceptions.
+So that we can reuse the existing logic, this patch factors the IRQ
+triage logic out into macros that can be reused for FIQ.
 
-Playing with kdump+virtio-mem I noticed that kexec_file_load() does not
-consider System RAM added via dax/kmem and virtio-mem when preparing the
-elf header for kdump.  Looking into the details, the logic used in
-walk_system_ram_res() and walk_mem_res() seems to be outdated.
+The macros are named to follow the elX_foo_handler scheme used by the C
+exception handlers. For consistency with other top-level exception
+handlers, the kernel_entry/kernel_exit logic is not moved into the
+macros. As FIQ will use a different C handler, this handler name is
+provided as an argument to the macros.
 
-walk_system_ram_range() already does the right thing, let's change
-walk_system_ram_res() and walk_mem_res(), and clean up.
+There should be no functional change as a result of this patch.
 
-Loading a kdump kernel via "kexec -p -s" ...  will result in the kdump
-kernel to also dump dax/kmem and virtio-mem added System RAM now.
-
-Note: kexec-tools on x86-64 also have to be updated to consider this
-memory in the kexec_load() case when processing /proc/iomem.
-
-This patch (of 3):
-
-It used to be true that we can have system RAM (IORESOURCE_SYSTEM_RAM |
-IORESOURCE_BUSY) only on the first level in the resource tree.  However,
-this is no longer holds for driver-managed system RAM (i.e., added via
-dax/kmem and virtio-mem), which gets added on lower levels, for example,
-inside device containers.
-
-We have two users of walk_system_ram_res(), which currently only
-consideres the first level:
-
-a) kernel/kexec_file.c:kexec_walk_resources() -- We properly skip
-   IORESOURCE_SYSRAM_DRIVER_MANAGED resources via
-   locate_mem_hole_callback(), so even after this change, we won't be
-   placing kexec images onto dax/kmem and virtio-mem added memory.  No
-   change.
-
-b) arch/x86/kernel/crash.c:fill_up_crash_elf_data() -- we're currently
-   not adding relevant ranges to the crash elf header, resulting in them
-   not getting dumped via kdump.
-
-This change fixes loading a crashkernel via kexec_file_load() and
-including dax/kmem and virtio-mem added System RAM in the crashdump on
-x86-64.  Note that e.g,, arm64 relies on memblock data and, therefore,
-always considers all added System RAM already.
-
-Let's find all IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY resources, making
-the function behave like walk_system_ram_range().
-
-Link: https://lkml.kernel.org/r/20210325115326.7826-1-david@redhat.com
-Link: https://lkml.kernel.org/r/20210325115326.7826-2-david@redhat.com
-Fixes: ebf71552bb0e ("virtio-mem: Add parent resource for all added "System RAM"")
-Fixes: c221c0b0308f ("device-dax: "Hotplug" persistent memory for use like normal RAM")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Baoquan He <bhe@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Keith Busch <keith.busch@intel.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Qian Cai <cai@lca.pw>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Eric Biederman <ebiederm@xmission.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+[Mark: rework macros, commit message, rebase before DAIF rework]
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Tested-by: Hector Martin <marcan@marcan.st>
+Cc: James Morse <james.morse@arm.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Will Deacon <will@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210315115629.57191-5-mark.rutland@arm.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kernel/entry.S | 80 +++++++++++++++++++++------------------
+ 1 file changed, 43 insertions(+), 37 deletions(-)
 
-diff --git a/kernel/resource.c b/kernel/resource.c
-index 3ae2f56cc79d..88a0ed866777 100644
---- a/kernel/resource.c
-+++ b/kernel/resource.c
-@@ -450,7 +450,7 @@ int walk_system_ram_res(u64 start, u64 end, void *arg,
- {
- 	unsigned long flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index 14d5119489fe..9ce041e1078a 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -493,8 +493,8 @@ tsk	.req	x28		// current thread_info
+ /*
+  * Interrupt handling.
+  */
+-	.macro	irq_handler
+-	ldr_l	x1, handle_arch_irq
++	.macro	irq_handler, handler:req
++	ldr_l	x1, \handler
+ 	mov	x0, sp
+ 	irq_stack_entry
+ 	blr	x1
+@@ -533,6 +533,45 @@ alternative_endif
+ #endif
+ 	.endm
  
--	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, true,
-+	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
- 				     arg, func);
- }
++	.macro el1_interrupt_handler, handler:req
++	gic_prio_irq_setup pmr=x20, tmp=x1
++	enable_da_f
++
++	mov	x0, sp
++	bl	enter_el1_irq_or_nmi
++
++	irq_handler	\handler
++
++#ifdef CONFIG_PREEMPTION
++	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
++alternative_if ARM64_HAS_IRQ_PRIO_MASKING
++	/*
++	 * DA_F were cleared at start of handling. If anything is set in DAIF,
++	 * we come back from an NMI, so skip preemption
++	 */
++	mrs	x0, daif
++	orr	x24, x24, x0
++alternative_else_nop_endif
++	cbnz	x24, 1f				// preempt count != 0 || NMI return path
++	bl	arm64_preempt_schedule_irq	// irq en/disable is done inside
++1:
++#endif
++
++	mov	x0, sp
++	bl	exit_el1_irq_or_nmi
++	.endm
++
++	.macro el0_interrupt_handler, handler:req
++	gic_prio_irq_setup pmr=x20, tmp=x0
++	user_exit_irqoff
++	enable_da_f
++
++	tbz	x22, #55, 1f
++	bl	do_el0_irq_bp_hardening
++1:
++	irq_handler	\handler
++	.endm
++
+ 	.text
+ 
+ /*
+@@ -662,32 +701,7 @@ SYM_CODE_END(el1_sync)
+ 	.align	6
+ SYM_CODE_START_LOCAL_NOALIGN(el1_irq)
+ 	kernel_entry 1
+-	gic_prio_irq_setup pmr=x20, tmp=x1
+-	enable_da_f
+-
+-	mov	x0, sp
+-	bl	enter_el1_irq_or_nmi
+-
+-	irq_handler
+-
+-#ifdef CONFIG_PREEMPTION
+-	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
+-alternative_if ARM64_HAS_IRQ_PRIO_MASKING
+-	/*
+-	 * DA_F were cleared at start of handling. If anything is set in DAIF,
+-	 * we come back from an NMI, so skip preemption
+-	 */
+-	mrs	x0, daif
+-	orr	x24, x24, x0
+-alternative_else_nop_endif
+-	cbnz	x24, 1f				// preempt count != 0 || NMI return path
+-	bl	arm64_preempt_schedule_irq	// irq en/disable is done inside
+-1:
+-#endif
+-
+-	mov	x0, sp
+-	bl	exit_el1_irq_or_nmi
+-
++	el1_interrupt_handler handle_arch_irq
+ 	kernel_exit 1
+ SYM_CODE_END(el1_irq)
+ 
+@@ -727,15 +741,7 @@ SYM_CODE_END(el0_error_compat)
+ SYM_CODE_START_LOCAL_NOALIGN(el0_irq)
+ 	kernel_entry 0
+ el0_irq_naked:
+-	gic_prio_irq_setup pmr=x20, tmp=x0
+-	user_exit_irqoff
+-	enable_da_f
+-
+-	tbz	x22, #55, 1f
+-	bl	do_el0_irq_bp_hardening
+-1:
+-	irq_handler
+-
++	el0_interrupt_handler handle_arch_irq
+ 	b	ret_to_user
+ SYM_CODE_END(el0_irq)
  
 -- 
 2.30.2
