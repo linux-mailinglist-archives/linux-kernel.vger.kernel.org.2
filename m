@@ -2,131 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9543138251A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FA738251F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 09:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhEQHMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 03:12:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S235105AbhEQHOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 03:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhEQHMW (ORCPT
+        with ESMTP id S234737AbhEQHOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 03:12:22 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C027C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:11:06 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id r11so5516092edt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 00:11:06 -0700 (PDT)
+        Mon, 17 May 2021 03:14:09 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DE5C061573;
+        Mon, 17 May 2021 00:12:49 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id r8so7168187ybb.9;
+        Mon, 17 May 2021 00:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EWyJokz4bieElImfwurmiJOl8vOUBld5Swkb1bhKswc=;
-        b=Dmrhbzy0x2SMKqESiOBZjHxgUn61zc6Xsh2TIaAznGX4WLXegX/aY7uoN2EHbwSCg4
-         3V3gw/vyIaN1ZdhKpXHTepT9CDpwZW4oT5HMHtbzxPsZLjnZe5PzjSkyNKd3ilyRCgts
-         RwR6loIsMMua/WgUv5aHK6UFobOQinzdYxNpAeDGPxK94n9K4RY7fNNYT514ko7No83e
-         0eCYxqrGc70W0xa7iUb7JIKRVxJrUWx4Yr43snORpt/mh8gxMbE7geStNiecbZ76i0Tg
-         LkR5r4/Gm9fN2G4iZW2Gkar9uR/6ZZR4hYC+P42YSW/TA6wQSiyafFieH5+U+P8gaZBf
-         nF9w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZnfM4fo4oFuAPVsrltUK26/fkolufI98kOjdPlwBBSs=;
+        b=sCHz9T1r7pQoPrnpmLqVHffncPimVZ34tPFdaSdpCyyRmbI4Bw3dFCYBoNaHQfs2aM
+         x4LC/UHilSXaDbQyq/4lODNs6RHLkQwrQ4pnqts1hIX7m8GXq+VZCloO2acNQPvRjZC8
+         nglxT+eRVpvnqJzCIEgcNaLk912N/KZAdP6X9R6yU4US8h+yBsCO6w6A4KieZrh81kyG
+         WFjtQ3AXvTMaHgIfZNNkkdTD6+q/qdhDj1bfvvqnUIGHmtDNoQCMOUgv5vMgK8ZE6tYd
+         5r80kL1d0ezowYexxgyQybHP/RFvWWp4MARDBG2kjL7e8XWIVJnrL592aMS7N+T8grKB
+         CDaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=EWyJokz4bieElImfwurmiJOl8vOUBld5Swkb1bhKswc=;
-        b=R/1BDV6BqPq647e3FpBrpxVXynTaH0aM2AufxYuKJPGL06lEmzvUSE1o+l+9nTM9pi
-         sGmrXmnXIN2DIXvY3pdPHp6TY905gtZTs5zBjVGN3l8Jfl5VwkXBh31Rvq6bH2eYtoj2
-         RM2BH2F7/fJfIyI0wywjy+yfWgWT8OKjPkGQdnl9X42CyMmTbXcpnm8VnbfZmYY5iBdE
-         yhrFeeYhQ+VuzGO4xMVN+jA+BmTGeBeD9NBXPJx9JRj2NE0/yfm5bh1X+drvW2PLswxf
-         NC5CqKyjf4Kgl8Tc/QhOFKlk3mzLFA6gShpSAcXdzWuBM9waFJGcbgxyWxF+eiCX+47D
-         Gifg==
-X-Gm-Message-State: AOAM533HddoLk7ZsPl2VqECLDiUWlMWE4WJv9jPnaYk+rZ9eDNjNh2TC
-        kgpkHh+YEultHfapLWr1mU8=
-X-Google-Smtp-Source: ABdhPJzCqZLbZtnV+6tg2tCpMw92i8y05K4hoi7xXk1jfNwVIAZNEmmoLefUEbbcNUZW37L7mZdH8A==
-X-Received: by 2002:aa7:d3c8:: with SMTP id o8mr8054972edr.181.1621235464732;
-        Mon, 17 May 2021 00:11:04 -0700 (PDT)
-Received: from gmail.com (563BBFD3.dsl.pool.telekom.hu. [86.59.191.211])
-        by smtp.gmail.com with ESMTPSA id d15sm5917572eds.68.2021.05.17.00.11.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 00:11:04 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 17 May 2021 09:11:02 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH] LOCKDEP: use depends on LOCKDEP_SUPPORT instead of $ARCH
- list
-Message-ID: <YKIXBpxyvhzdb1uv@gmail.com>
-References: <20210517034430.9569-1-rdunlap@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZnfM4fo4oFuAPVsrltUK26/fkolufI98kOjdPlwBBSs=;
+        b=ahlfZ9UIOuvAxKS0euvTxjwDL/+iZLauVYNqkGBcYkDUOW7Jq8dnn+ik0RTwSRQCVp
+         6HuJ+wVMkEmE76ANPZx3LeR70L4RshfvlvcfrZ5qs2TVTn0osN+fsez6R9Hf+YrdGEcm
+         JedkQ6398E/KlDgKFmkWqKEaxm+ts0aIysm5p2TXels8c8r31kd9NI4KD6apHxpEis9B
+         9V5TeH5BWTpKqwJ4tYZs1kYUCZGTSoFUdFSM14al+JbWnGrImSbJye4Yce9qpW+VVCXe
+         HyDH35t5Md792MSmzgVe4FZL9aVKf7v1V/NF5N7ZAg8bfJ09SipRug5d1xg3MDO6XqEE
+         bW9A==
+X-Gm-Message-State: AOAM532VUACrzWTZt+g82e59Y+yLmyNgWOtqj8znLWW/Jjrx4W4M1+Xa
+        kiFp2ktDEPbenE9Ini1yzn9kS13aXmQ/1dYyoI9ZSj4x
+X-Google-Smtp-Source: ABdhPJwhy8QlrIdBrKJb/MrNu8oi1LeLLZbLVd1iqr2w97cP4tUSJtamdpFZ04wpLC1o2Hggcr7AVCw0mnBO/qVK/RA=
+X-Received: by 2002:a25:55d5:: with SMTP id j204mr79927377ybb.157.1621235568717;
+ Mon, 17 May 2021 00:12:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517034430.9569-1-rdunlap@infradead.org>
+References: <1621224036-32092-1-git-send-email-yangtiezhu@loongson.cn> <CABJPP5DRw3pNs0da4HdCLXVHSa6sE88xJOO6C3c_oBESLoWq3A@mail.gmail.com>
+In-Reply-To: <CABJPP5DRw3pNs0da4HdCLXVHSa6sE88xJOO6C3c_oBESLoWq3A@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 17 May 2021 09:12:51 +0200
+Message-ID: <CAKXUXMyE_q9VCXVbZLPP77anaotTjW9rk0RfK=m8Njy44XpvEA@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: checkpatch: add description if no
+ filenames are given
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joe Perches <joe@perches.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 17, 2021 at 8:21 AM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+>
+> Hey,
+>
+> On Mon, May 17, 2021 at 9:30 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+> >
+> > After commit 45107ff6d526 ("checkpatch: if no filenames then read stdin"),
+> > if no filenames are given, it will read patch from stdin rather than exit
+> > directly, it is a bit confusing whether the script hangs, I do not quite
+> > know what to do next util I understand the code logic.
+>
+> util -> until
 
-* Randy Dunlap <rdunlap@infradead.org> wrote:
+s/I understand/I understood/
 
-> Both arch/um/ and arch/xtensa/ cause a Kconfig warning for LOCKDEP.
-> These arch-es select LOCKDEP_SUPPORT but they are not listed as one
-> of the arch-es that LOCKDEP depends on.
-> 
-> Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
-> intend to have LOCKDEP support, replace the awkward list of
-> arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
-> 
-> Fixes this kconfig warning: (for both um and xtensa)
-> 
-> WARNING: unmet direct dependencies detected for LOCKDEP
->   Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
->   Selected by [y]:
->   - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
->   - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
->   - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: linux-um@lists.infradead.org
-> ---
->  lib/Kconfig.debug |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20210514.orig/lib/Kconfig.debug
-> +++ linux-next-20210514/lib/Kconfig.debug
-> @@ -1383,7 +1383,7 @@ config LOCKDEP
->  	bool
->  	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
->  	select STACKTRACE
-> -	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
-> +	depends on FRAME_POINTER || LOCKDEP_SUPPORT
+> >
+> > At the beginning, I want to print some info if no filenames are given [1],
+> > but as Joe Perches said, this is unnecessary. It's like trying to make cat
+> > without command line arguments emit something.
+> >
+> > So as Lukas Bulwahn suggested, add description for somebody that actually
+> > reads the available kernel documentation on checkpatch.
+> >
+> > [1] https://lore.kernel.org/patchwork/patch/1429026/
+> >
 
-Ok - the FRAME_POINTER bit is weird. Are there any architectures that have 
-FRAME_POINTER defined but no LOCKDEP_SUPPORT?
+Generally, I think this commit message is a bit "too much the personal
+experience report" rather than focussing on the technical motivation.
+I prefer the same content with less "I" and more focus on the
+technically valid arguments rather than people (your experience,
+Joe's, Lukas' opinion etc.).
 
-Thanks,
+> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > ---
+> >  Documentation/dev-tools/checkpatch.rst | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+> > index 51fed1b..181b95e 100644
+> > --- a/Documentation/dev-tools/checkpatch.rst
+> > +++ b/Documentation/dev-tools/checkpatch.rst
+> > @@ -210,6 +210,8 @@ Available options:
+> >
+> >     Display the help text.
+> >
+> > +When FILE is -, or no filenames are given, read standard input.
+> > +
+>
+> The addition is reasonable but the position of the text is a bit weird.
+> Let's have it after the Usage:: text:
+>
+> -----------
+> diff --git a/Documentation/dev-tools/checkpatch.rst
+> b/Documentation/dev-tools/checkpatch.rst
+> index d4bb55723a86..7bf1e48207ce 100644
+> --- a/Documentation/dev-tools/checkpatch.rst
+> +++ b/Documentation/dev-tools/checkpatch.rst
+> @@ -22,6 +22,8 @@ Usage::
+>
+>   ./scripts/checkpatch.pl [OPTION]... [FILE]...
+>
+> +When FILE is -, or absent, checkpatch reads from standard input.
+> +
+> Available options:
+>
+>  - -q,  --quiet
+> @@ -210,7 +212,6 @@ Available options:
+>
+>    Display the help text.
+>
+> -When FILE is -, or no filenames are given, read standard input.
+>
+> Message Levels
+> ==============
+> -------------
+>
 
-	Ingo
+Fully agree with Dwaipayan here. This is the better place this
+sentence should be added. Please send a patch v2.
+
+And if you want to contribute more, please add some typical example
+how to invoke checkpatch with a filename and a good example how
+checkpatch could be used reading from stdin (e.g., by piping in some
+suitable git log or git show output).
+
+Lukas
