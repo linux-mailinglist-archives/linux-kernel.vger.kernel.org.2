@@ -2,187 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37ED383C48
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E88383C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237074AbhEQSc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237050AbhEQScY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:32:24 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AAEC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:31:05 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id t7so5584823qtn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UIgRSmdq0WSwZaTtDLga+2Wo1ADVfnOj+xZ3R2W4aJE=;
-        b=i7yNQh/t5w8KCHFJtkLOXFF/z0IQpwrTuwjqD9dtDYQ2cv3wWZwNmT+5J2eNdbNIsp
-         jVc3tBvDnYe7g8TVQ7jB9EgnK+rHhFDzdm6w/+Mev63PyENqwu3wA7uuEDcgno0uUWbV
-         pwnNxHmshKit3PlgRbvYerc8maRx/B1pMM85eAr+3yTJHF7ZH3Ws7zj0sfbgs7NzUFnb
-         D7yk38tPRufil/zPmCQZyLqyknqyiNzuA+Hr+IUYFCdxIoin1YT3qmOggCDEQoxpgY2W
-         Pg6aUbK9WjDk19fq4FplcFRD5XAWKc/hzyhtzryYrhmXdMx19f4cGyXvKyk561xC6+Kr
-         LD5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UIgRSmdq0WSwZaTtDLga+2Wo1ADVfnOj+xZ3R2W4aJE=;
-        b=URismtkevJ2xPtgY7qdnP8JHaPIpdkTYCa0UQfkZh8UzeF2Fjv8Yh8c2G5F40PC93l
-         eLaSP1OVflEukGBeikhWMYuWrrpsIQLKBseyeBoz89nGEaFDI7re36AjZtadpTIh9rjW
-         u5aYtbIQHwBjehXLGPhoTysWuwT/Rh4aAgHClgy98THIChS5upLAhxby2AKP/yPg5gJg
-         C5xauyxGKmhIoOWUn8Xe0Y5BKV65631K2YSO5vfteLo6kT0wfF//Yihy/Mj3A4QEo9d9
-         5fo3ECtB0VAkonjXUc40F09YZmoZxwWdCtFTxg3tEG8UbhXITQja1vzx/J60k9PYcUTT
-         KmvA==
-X-Gm-Message-State: AOAM532jQKOall11RGzCzGaGCO+crK8lnKOwUMwF8B1Nyl6Z+zJwTOFY
-        S4Hh0Wd2keQDnpEdHb8z5aXL1Q==
-X-Google-Smtp-Source: ABdhPJxsm4usnCyHlHyi2wzcTlQRJx6GHv9pjrNBzmHXQDjs9e+PuobeYdeh41QsPjBb0czMSVzDng==
-X-Received: by 2002:ac8:7956:: with SMTP id r22mr127252qtt.361.1621276264239;
-        Mon, 17 May 2021 11:31:04 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:8d28])
-        by smtp.gmail.com with ESMTPSA id f16sm11036738qtv.82.2021.05.17.11.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 11:31:03 -0700 (PDT)
-Date:   Mon, 17 May 2021 14:31:02 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
-        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Minchan Kim <minchan@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
-        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking
- configurable
-Message-ID: <YKK2ZumDWcaGWvBj@cmpxchg.org>
-References: <20210513175349.959661-1-surenb@google.com>
- <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
- <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
- <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net>
- <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
- <CAJuCfpH2X47_3VvfZXs_eWhYDziOh13qdUwcfxPJe=Zg_Nkvqw@mail.gmail.com>
- <CAJuCfpEznCYhjbM+1=dMdEn1J2NVw88M+4AThD99PBKg41RgTw@mail.gmail.com>
+        id S237087AbhEQSdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:33:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237050AbhEQSc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 14:32:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE86960FD8;
+        Mon, 17 May 2021 18:31:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621276302;
+        bh=Fxpe+QB7sQgi1r4WTLIIc0qePivJrHj1sVwQWdo0XlA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kuH/HHRw116WwoMW9lKI8H1aP/GF0MCSyvx1/MH9CoZLQqUywVAWvP1l6T7NvCMkM
+         dTCShO4ZcZiL9i3vh4L20E+g2e70sHpsUUtYCIqbFdlg6b/h3QARhBwCr8Seka5qSO
+         3kBEpaRiS+TWsGWb0qCw1merxLwqY/IEAvCIkqdv6loqP7oYQ8uLiY6ZJBxcKJkIcn
+         Tp0edXOOJbx7og1puIA+jYY1yXwOpENZfI0E1grMpSph0ASbMdQOqd1CbD7g+XryEI
+         SP3YFld0m7gOdyeRdeKsW/rCXOTIXHypV+YjsDGLb5/VipnIIpUysjBjJHFhXBdiKZ
+         jTsSC1skfxLRA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A18F95C00C6; Mon, 17 May 2021 11:31:42 -0700 (PDT)
+Date:   Mon, 17 May 2021 11:31:42 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, 1vier1@web.de
+Subject: Re: ipc/sem, ipc/msg, ipc/mqueue.c kcsan questions
+Message-ID: <20210517183142.GB2013824@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <a9b36c77-dc42-4ab2-9740-f27b191dd403@colorfullife.com>
+ <20210512201743.GW975577@paulmck-ThinkPad-P17-Gen-1>
+ <343390da-2307-442e-8073-d1e779c85eeb@colorfullife.com>
+ <20210513190201.GE975577@paulmck-ThinkPad-P17-Gen-1>
+ <9c9739ec-1273-5137-7b6d-00a27a22ffca@colorfullife.com>
+ <20210514184455.GJ975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpEznCYhjbM+1=dMdEn1J2NVw88M+4AThD99PBKg41RgTw@mail.gmail.com>
+In-Reply-To: <20210514184455.GJ975577@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 12:52:32PM -0700, Suren Baghdasaryan wrote:
-> After reworking the code to add a static key I had to expand the
-> #ifdef CONFIG_CGROUPS section, so I think a code refactoring below
-> would make sense. It localizes config-specific code and it has the
-> same exact code for CONFIG_CGROUPS=n and for
-> cgroup_psi_enabled()==false. WDYT?:
+On Fri, May 14, 2021 at 11:44:55AM -0700, Paul E. McKenney wrote:
+> On Fri, May 14, 2021 at 07:41:02AM +0200, Manfred Spraul wrote:
+> > On 5/13/21 9:02 PM, Paul E. McKenney wrote:
+> > > On Thu, May 13, 2021 at 08:10:51AM +0200, Manfred Spraul wrote:
+> > > > On 5/12/21 10:17 PM, Paul E. McKenney wrote:
+
+[ . . . ]
+
+> > > > > 	int foo;
+> > > > > 	DEFINE_RWLOCK(foo_rwlock);
+> > > > > 
+> > > > > 	void update_foo(int newval)
+> > > > > 	{
+> > > > > 		write_lock(&foo_rwlock);
+> > > > > 		foo = newval;
+> > > > > 		do_something(newval);
+> > > > > 		write_unlock(&foo_rwlock);
+> > > > > 	}
+> > > > > 
+> > > > > 	int read_foo(void)
+> > > > > 	{
+> > > > > 		int ret;
+> > > > > 
+> > > > > 		read_lock(&foo_rwlock);
+> > > > > 		do_something_else();
+> > > > > 		ret = foo;
+> > > > > 		read_unlock(&foo_rwlock);
+> > > > > 		return ret;
+> > > > > 	}
+> > > > > 
+> > > > > 	int read_foo_diagnostic(void)
+> > > > > 	{
+> > > > > 		return data_race(foo);
+> > > > > 	}
+> > > > The text didn't help, the example has helped:
+> > > > 
+> > > > It was not clear to me if I have to use data_race() both on the read and the
+> > > > write side, or only on one side.
+> > > > 
+> > > > Based on this example: plain C may be paired with data_race(), there is no
+> > > > need to mark both sides.
+> > > Actually, you just demonstrated that this example is quite misleading.
+> > > That data_race() works only because the read is for diagnostic
+> > > purposes.  I am queuing a commit with your Reported-by that makes
+> > > read_foo_diagnostic() just do a pr_info(), like this:
+> > > 
+> > > 	void read_foo_diagnostic(void)
+> > > 	{
+> > > 		pr_info("Current value of foo: %d\n", data_race(foo));
+> > > 	}
+> > > 
+> > > So thank you for that!
+> > 
+> > I would not like this change at all.
+> > Assume you chase a rare bug, and notice an odd pr_info() output.
+> > It will take you really long until you figure out that a data_race() mislead
+> > you.
+> > Thus for a pr_info(), I would consider READ_ONCE() as the correct thing.
 > 
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -181,6 +181,7 @@ struct psi_group psi_system = {
->  };
+> It depends, but I agree with a general preference for READ_ONCE() over
+> data_race().
 > 
->  static void psi_avgs_work(struct work_struct *work);
-> +static void cgroup_iterator_init(void);
+> However, for some types of concurrency designs, using a READ_ONCE()
+> can make it more difficult to enlist KCSAN's help.  For example, if this
+> variable is read or written only while holding a particular lock, so that
+> read_foo_diagnostic() is the only lockless read, then using READ_ONCE()
+> adds a concurrent read.  In RCU, the updates would now need WRITE_ONCE(),
+> which would cause KCSAN to fail to detect a buggy lockless WRITE_ONCE().
+> If data_race() is used, then adding a buggy lockless WRITE_ONCE() will
+> cause KCSAN to complain.
 > 
->  static void group_init(struct psi_group *group)
->  {
-> @@ -211,6 +212,8 @@ void __init psi_init(void)
->                  return;
->          }
+> Of course, you would be quite correct to say that this must be balanced
+> against the possibility of a messed-up pr_info() due to compiler mischief.
+> Tradeoffs, tradeoffs!  ;-)
 > 
-> +        cgroup_iterator_init();
-> +
->          psi_period = jiffies_to_nsecs(PSI_FREQ);
->          group_init(&psi_system);
->  }
-> @@ -742,11 +745,31 @@ static void psi_group_change(struct psi_group
-> *group, int cpu,
->                  schedule_delayed_work(&group->avgs_work, PSI_FREQ);
->  }
-> 
-> -static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> +static inline struct psi_group *sys_group_iterator(struct task_struct *task,
-> +                                                   void **iter)
->  {
-> +        *iter = &psi_system;
-> +        return &psi_system;
-> +}
-> +
->  #ifdef CONFIG_CGROUPS
-> +
-> +DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
-> +
-> +static void cgroup_iterator_init(void)
-> +{
-> +        if (!cgroup_psi_enabled())
-> +                static_branch_enable(&psi_cgroups_disabled);
-> +}
-> +
-> +static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> +{
->          struct cgroup *cgroup = NULL;
-> 
-> +        /* Skip to psi_system if per-cgroup accounting is disabled */
-> +        if (static_branch_unlikely(&psi_cgroups_disabled))
-> +                return *iter ? NULL : sys_group_iterator(task, iter);
-> +
->          if (!*iter)
->                  cgroup = task->cgroups->dfl_cgrp;
+> I should document this tradeoff, shouldn't I?
 
-That looks over-engineered. You have to check iter whether cgroups are
-enabled or not. Pulling the jump label check up doesn't save anything,
-but it ends up duplicating code.
+Except that Marco Elver reminds me that there are two other possibilities:
 
-What you had in the beginning was better, it just had the system label
-in an unexpected place where it would check iter twice in a row.
+1.	data_race(READ_ONCE(foo)), which both suppresses compiler
+	optimizations and causes KCSAN to ignore the access.
 
-The (*iter == &psi_system) check inside the cgroups branch has the
-same purpose as the (*iter) check in the else branch. We could
-consolidate that by pulling it up front.
+2.	"void __no_kcsan read_foo_diagnostic(void)" to cause KCSAN to
+	ignore the entire function, and READ_ONCE() on the access.
 
-If we wrap the entire cgroup iteration block into the static branch,
-IMO it becomes a bit clearer as well.
+So things might be the way you want anyway.  Does the patch below work
+for you?
 
-How about this?
+							Thanx, Paul
 
-static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-{
-	if (*iter == &psi_system)
-		return NULL;
 
-#ifdef CONFIG_CGROUPS
-	if (!static_branch_likely(&psi_cgroups_disabled)) {
-		struct cgroup *cgroup = NULL;
+------------------------------------------------------------------------
 
-		if (!*iter)
-			cgroup = task->cgroups->dfl_cgrp;
-		else
-			cgroup = cgroup_parent(*iter);
-
-		if (cgroup && cgroup_parent(cgroup)) {
-			*iter = cgroup;
-			return cgroup_psi(cgroup);
-		}
-	}
-#endif
-
-	*iter = &psi_system;
-	return &psi_system;
-}
+diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
+index fe4ad6d12d24..e3012f666e62 100644
+--- a/tools/memory-model/Documentation/access-marking.txt
++++ b/tools/memory-model/Documentation/access-marking.txt
+@@ -279,19 +279,34 @@ tells KCSAN that data races are expected, and should be silently
+ ignored.  This data_race() also tells the human reading the code that
+ read_foo_diagnostic() might sometimes return a bogus value.
+ 
+-However, please note that your kernel must be built with
+-CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n in order for KCSAN to
+-detect a buggy lockless write.  If you need KCSAN to detect such a
+-write even if that write did not change the value of foo, you also
+-need CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n.  If you need KCSAN to
+-detect such a write happening in an interrupt handler running on the
+-same CPU doing the legitimate lock-protected write, you also need
+-CONFIG_KCSAN_INTERRUPT_WATCHER=y.  With some or all of these Kconfig
+-options set properly, KCSAN can be quite helpful, although it is not
+-necessarily a full replacement for hardware watchpoints.  On the other
+-hand, neither are hardware watchpoints a full replacement for KCSAN
+-because it is not always easy to tell hardware watchpoint to conditionally
+-trap on accesses.
++If it is necessary to suppress compiler optimization and also detect
++buggy lockless writes, read_foo_diagnostic() can be updated as follows:
++
++	void read_foo_diagnostic(void)
++	{
++		pr_info("Current value of foo: %d\n", data_race(READ_ONCE(foo)));
++	}
++
++Alternatively, given that KCSAN is to ignore all accesses in this function,
++this function can be marked __no_kcsan and the data_race() can be dropped:
++
++	void __no_kcsan read_foo_diagnostic(void)
++	{
++		pr_info("Current value of foo: %d\n", READ_ONCE(foo));
++	}
++
++However, in order for KCSAN to detect buggy lockless writes, your kernel
++must be built with CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n.  If you
++need KCSAN to detect such a write even if that write did not change
++the value of foo, you also need CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n.
++If you need KCSAN to detect such a write happening in an interrupt handler
++running on the same CPU doing the legitimate lock-protected write, you
++also need CONFIG_KCSAN_INTERRUPT_WATCHER=y.  With some or all of these
++Kconfig options set properly, KCSAN can be quite helpful, although
++it is not necessarily a full replacement for hardware watchpoints.
++On the other hand, neither are hardware watchpoints a full replacement
++for KCSAN because it is not always easy to tell hardware watchpoint to
++conditionally trap on accesses.
+ 
+ 
+ Lock-Protected Writes With Lockless Reads
