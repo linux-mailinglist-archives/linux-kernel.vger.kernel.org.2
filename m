@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C84382D8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92BF8382D90
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237389AbhEQNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237379AbhEQNhH (ORCPT
+        id S237379AbhEQNi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:38:27 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:42110 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234748AbhEQNiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:37:07 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EF4C061756;
-        Mon, 17 May 2021 06:35:50 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id v6so7280082ljj.5;
-        Mon, 17 May 2021 06:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WQqDABHDGgDQCU0WnTFwCSsQA9jF51qzAZtjkZ18AOU=;
-        b=I1RXfaR+fQaCMswosSWi6tpGukzhRb3nEIRrgwDshVD4JWgGPCaYncHyUcfiGgpTYv
-         q8+LYoXpZ4yUAJdPJgbAxMAx0Xompgtm5vMgehYbmlEdmBPghejbOxbr1iO9JTrznqdQ
-         FRDLcCYbmyeis2gIfFsnoM06Vb4a4meVjfQ9kz24/DlNHeSlugf6YMpg7O6VS8DIjcLU
-         oLce8CT73ZVcZMdAisEVg6rID4detd8vdc1giOQUDmDTZArfjJeFyrZt/0/l+c9djIiZ
-         mOJLullq7A1zmTyNWeJnbos7uQPPgldvpBRugOfsSSvdCronpcATZjBfntWkAIyLv9yt
-         MTKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WQqDABHDGgDQCU0WnTFwCSsQA9jF51qzAZtjkZ18AOU=;
-        b=PndERzeBVDFftRGNhF/KLCSizDrgp0wxfb1gMLfXCcsV1HB2HmHhn1tah7IRFmY5KE
-         PkYxaJSw6KfG5lO0zES67OY5LGd6j0g5jqqkzsHqeJ93kSL4mCtBnJtFsuwzfZoBLJ3F
-         IBmfLK3pbVkV4EOrzfAYBJp3+YaeR9WNsAVsDNJDEOJxrEovJNO295/qP6ohoFcfJueJ
-         gzxuGckLLNeIUkaRMIDJlXnvHW4AaLFC0+S9drJQOVOH4apRJfwB26lfDLtodxdm8Ywt
-         JYzXnNmMHLHvi+znjacnGWGJNXxAuajnjU+s6ennYJ4HtGlBGcRlE4bxytcdx3i3vmbI
-         DzTA==
-X-Gm-Message-State: AOAM531tcWK8kXr8FfLQfsjGdUarqnVI+TH5Bj6Iy02qALJJXVnINvet
-        bbmmiOQ906AB+YFon7NI6wfNlfgFJ0I=
-X-Google-Smtp-Source: ABdhPJxLvlETmFTqcDLi1Mn2/MUIK3cxp4Q7EAzvHXI+H41aZhEIHklSeJOjZvMqbABjHI51UQb9IA==
-X-Received: by 2002:a2e:b4b1:: with SMTP id q17mr41060196ljm.40.1621258548300;
-        Mon, 17 May 2021 06:35:48 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id a9sm145819ljb.73.2021.05.17.06.35.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 06:35:47 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] memory: tegra124-emc: Fix compilation warnings on
- 64bit platforms
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210516161214.4693-1-digetx@gmail.com>
- <20210516161214.4693-4-digetx@gmail.com>
- <936cfc7d-737e-a582-ea60-ad2ba5b4ca72@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1d80ee0f-de4c-24d0-154f-20841874bf20@gmail.com>
-Date:   Mon, 17 May 2021 16:35:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 09:38:25 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HDVD3h021203;
+        Mon, 17 May 2021 13:36:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=O8xo1agX3REWXjxQUJndTeVR5fSyPXUXRmD8lmbJu8M=;
+ b=nJ0mKjgJQ46+ty9wqve0Kv+3thlu0263L0L1uO4+I5Myea7l+UOT/amoeIllV0Evk8Lp
+ h2JTQVFNYDNnN6RkmMZfdB1xGfoazAhDyG/Z571fQf05f08OA8iG180NbWtdr1U9+Qwr
+ fk2kzRr1ggjl8C5+WJ4PJ/PpYw0z9YgezVAS3m2SDNj/M9qTOGz78M/wIsFzYePc51Yl
+ EkpvgXYPQgZ4qZDH92w33nDAt/ZykhR2wt3Y/UzTg3Xiq1+TE2I0wWhaFQ60v+YIqKOr
+ M7RScz0Qbuiz8RDJ0i31FqttFrF7Yj+muXTMFIU2QAwlzfdntJDX5/9Uxr4iIIUBMz6D ZA== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38kfhwg72g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 13:36:58 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14HDXXTn119439;
+        Mon, 17 May 2021 13:36:57 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38j3dtbgse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 13:36:57 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14HDXrvv120420;
+        Mon, 17 May 2021 13:36:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 38j3dtbgrw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 13:36:56 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14HDaqhO028744;
+        Mon, 17 May 2021 13:36:52 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 17 May 2021 06:36:51 -0700
+Date:   Mon, 17 May 2021 16:36:43 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] gpio: xilinx: Fix potential integer overflow on
+ shift of a u32 int
+Message-ID: <20210517133643.GI1955@kadam>
+References: <20210513085227.54392-1-colin.king@canonical.com>
+ <20210514053754.GZ1955@kadam>
+ <CAHp75Ve-YWh_sfupwQV0xxL7Vk8GNObJ+6O29RqRMXCgAmemCw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <936cfc7d-737e-a582-ea60-ad2ba5b4ca72@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve-YWh_sfupwQV0xxL7Vk8GNObJ+6O29RqRMXCgAmemCw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: dLB8ec6Q_IuAwH4IsNLDCEHIoe1f52oG
+X-Proofpoint-ORIG-GUID: dLB8ec6Q_IuAwH4IsNLDCEHIoe1f52oG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.05.2021 14:28, Krzysztof Kozlowski пишет:
-> On 16/05/2021 12:12, Dmitry Osipenko wrote:
->> Fix compilation warning on 64bit platforms caused by implicit promotion
->> of 32bit signed integer to a 64bit unsigned value which happens after
->> enabling compile-testing of the driver.
->>
->> Suggested-by: Nathan Chancellor <nathan@kernel.org>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/memory/tegra/tegra124-emc.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
->> index 5699d909abc2..c9eb948cf4df 100644
->> --- a/drivers/memory/tegra/tegra124-emc.c
->> +++ b/drivers/memory/tegra/tegra124-emc.c
->> @@ -272,8 +272,8 @@
->>  #define EMC_PUTERM_ADJ				0x574
->>  
->>  #define DRAM_DEV_SEL_ALL			0
->> -#define DRAM_DEV_SEL_0				(2 << 30)
->> -#define DRAM_DEV_SEL_1				(1 << 30)
->> +#define DRAM_DEV_SEL_0				(2u << 30)
->> +#define DRAM_DEV_SEL_1				(1u << 30)
+On Mon, May 17, 2021 at 10:07:20AM +0300, Andy Shevchenko wrote:
+> On Fri, May 14, 2021 at 12:26 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > On Thu, May 13, 2021 at 09:52:27AM +0100, Colin King wrote:
 > 
-> Why not using BIT()? This would make even this 2<<30 less awkard...
+> ...
+> 
+> > >       const unsigned long offset = (bit % BITS_PER_LONG) & BIT(5);
+> > >
+> > >       map[index] &= ~(0xFFFFFFFFul << offset);
+> > > -     map[index] |= v << offset;
+> > > +     map[index] |= (unsigned long)v << offset;
+> >
+> > Doing a shift by BIT(5) is super weird.
+> 
+> Not the first place in the kernel with such a trick.
+> 
+> >  It looks like a double shift
+> > bug and should probably trigger a static checker warning.  It's like
+> > when people do BIT(BIT(5)).
+> >
+> > It would be more readable to write it as:
+> >
+> >         int shift = (bit % BITS_PER_LONG) ? 32 : 0;
+> 
+> Usually this code is in a kinda fast path. Have you checked if the
+> compiler generates the same or better code when you are using ternary?
 
-The bitfield 31:30 is a enum, 3 is a wrong value. Formally it's
-incorrect to use the BIT() macro here.
+I wrote a little benchmark to see which was faster and they're the same
+as far as I can see.
+
+regards,
+dan carpenter
+
+static inline __attribute__((__gnu_inline__)) unsigned long xgpio_set_value_orig(unsigned long *map, int bit, u32 v)
+{
+        int shift = (bit % 64) & ((((1UL))) << (5));
+        return v << shift;
+}
+
+static inline __attribute__((__gnu_inline__)) unsigned long xgpio_set_value_new(unsigned long *map, int bit, u32 v)
+{
+        int shift = (bit % 64) ? 32 : 0;
+        return v << shift;
+}
+
+int main(void)
+{
+        int i;
+
+        for (i = 0; i < INT_MAX; i++)
+                xgpio_set_value_orig(NULL, i, 0);
+
+//      for (i = 0; i < INT_MAX; i++)
+//              xgpio_set_value_new(NULL, i, 0);
+
+        return 0;
+}
+
