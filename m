@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92343838A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6923836C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244931AbhEQP63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:58:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
+        id S243384AbhEQPfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:35:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245510AbhEQPjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:39:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE02B61D06;
-        Mon, 17 May 2021 14:41:14 +0000 (UTC)
+        id S244426AbhEQPUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:20:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F313561928;
+        Mon, 17 May 2021 14:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262475;
-        bh=ayrtXFfexLm21Ax+2aCcvnfelywZrTIyJQle+XrJDzA=;
+        s=korg; t=1621262063;
+        bh=rpSqR4MR4S37JY+TbR1OCsT8vEv9VQu8ZuJfas7Qs2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ufYfBU9IBMYMa1eWmofKZha7qqHzDtZ+Ul1aG6TpvtOwPlMAEgqnC7ZoBFOosCAGM
-         06DJID42ydoMZFYZ2bddULYaa9Z4rxpEcot8DsTwdE6iYmY6A/N+MeDFUrPVnIJkkg
-         4yFpHRV7N5D27LZ6TBpqKVm1fazFYTPduVeWmDMM=
+        b=ZV343FNVo4kxF7y5FgzjVVMb2E79LEcplHAZZWc2WP6TWAwqcU/l4mMUOGUvqgTkO
+         Ih8lqs+NNQ30+lHzpOKebBCBDVWnhczhiCd909ZG/7ro2Qkxr+eyumZgGEOjqJcW5E
+         cUdxe1IrVYfE9wdEt0PEVILKmJYh25Sev01dFXXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Isaev <isaev@synopsys.com>,
-        kernel test robot <lkp@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 5.10 195/289] ARC: mm: PAE: use 40-bit physical page mask
-Date:   Mon, 17 May 2021 16:02:00 +0200
-Message-Id: <20210517140311.672651989@linuxfoundation.org>
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
+Subject: [PATCH 5.11 210/329] smc: disallow TCP_ULP in smc_setsockopt()
+Date:   Mon, 17 May 2021 16:02:01 +0200
+Message-Id: <20210517140309.243688750@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,133 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Isaev <isaev@synopsys.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-commit c5f756d8c6265ebb1736a7787231f010a3b782e5 upstream.
+[ Upstream commit 8621436671f3a4bba5db57482e1ee604708bf1eb ]
 
-32-bit PAGE_MASK can not be used as a mask for physical addresses
-when PAE is enabled. PAGE_MASK_PHYS must be used for physical
-addresses instead of PAGE_MASK.
+syzbot is able to setup kTLS on an SMC socket which coincidentally
+uses sk_user_data too. Later, kTLS treats it as psock so triggers a
+refcnt warning. The root cause is that smc_setsockopt() simply calls
+TCP setsockopt() which includes TCP_ULP. I do not think it makes
+sense to setup kTLS on top of SMC sockets, so we should just disallow
+this setup.
 
-Without this, init gets SIGSEGV if pte_modify was called:
+It is hard to find a commit to blame, but we can apply this patch
+since the beginning of TCP_ULP.
 
-| potentially unexpected fatal signal 11.
-| Path: /bin/busybox
-| CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc5-00003-g1e43c377a79f-dirty
-| Insn could not be fetched
-|     @No matching VMA found
-|  ECR: 0x00040000 EFA: 0x00000000 ERET: 0x00000000
-| STAT: 0x80080082 [IE U     ]   BTA: 0x00000000
-|  SP: 0x5f9ffe44  FP: 0x00000000 BLK: 0xaf3d4
-| LPS: 0x000d093e LPE: 0x000d0950 LPC: 0x00000000
-| r00: 0x00000002 r01: 0x5f9fff14 r02: 0x5f9fff20
-| ...
-| Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-
-Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-and-tested-by: syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
+Fixes: 734942cc4ea6 ("tcp: ULP infrastructure")
+Cc: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/include/asm/page.h      |   12 ++++++++++++
- arch/arc/include/asm/pgtable.h   |   12 +++---------
- arch/arc/include/uapi/asm/page.h |    1 -
- arch/arc/mm/ioremap.c            |    5 +++--
- arch/arc/mm/tlb.c                |    2 +-
- 5 files changed, 19 insertions(+), 13 deletions(-)
+ net/smc/af_smc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arc/include/asm/page.h
-+++ b/arch/arc/include/asm/page.h
-@@ -7,6 +7,18 @@
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 47340b3b514f..cb23cca72c24 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -2162,6 +2162,9 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
+ 	struct smc_sock *smc;
+ 	int val, rc;
  
- #include <uapi/asm/page.h>
- 
-+#ifdef CONFIG_ARC_HAS_PAE40
++	if (level == SOL_TCP && optname == TCP_ULP)
++		return -EOPNOTSUPP;
 +
-+#define MAX_POSSIBLE_PHYSMEM_BITS	40
-+#define PAGE_MASK_PHYS			(0xff00000000ull | PAGE_MASK)
-+
-+#else /* CONFIG_ARC_HAS_PAE40 */
-+
-+#define MAX_POSSIBLE_PHYSMEM_BITS	32
-+#define PAGE_MASK_PHYS			PAGE_MASK
-+
-+#endif /* CONFIG_ARC_HAS_PAE40 */
-+
- #ifndef __ASSEMBLY__
+ 	smc = smc_sk(sk);
  
- #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
---- a/arch/arc/include/asm/pgtable.h
-+++ b/arch/arc/include/asm/pgtable.h
-@@ -107,8 +107,8 @@
- #define ___DEF (_PAGE_PRESENT | _PAGE_CACHEABLE)
- 
- /* Set of bits not changed in pte_modify */
--#define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY | _PAGE_SPECIAL)
--
-+#define _PAGE_CHG_MASK	(PAGE_MASK_PHYS | _PAGE_ACCESSED | _PAGE_DIRTY | \
-+							   _PAGE_SPECIAL)
- /* More Abbrevaited helpers */
- #define PAGE_U_NONE     __pgprot(___DEF)
- #define PAGE_U_R        __pgprot(___DEF | _PAGE_READ)
-@@ -132,13 +132,7 @@
- #define PTE_BITS_IN_PD0		(_PAGE_GLOBAL | _PAGE_PRESENT | _PAGE_HW_SZ)
- #define PTE_BITS_RWX		(_PAGE_EXECUTE | _PAGE_WRITE | _PAGE_READ)
- 
--#ifdef CONFIG_ARC_HAS_PAE40
--#define PTE_BITS_NON_RWX_IN_PD1	(0xff00000000 | PAGE_MASK | _PAGE_CACHEABLE)
--#define MAX_POSSIBLE_PHYSMEM_BITS 40
--#else
--#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK | _PAGE_CACHEABLE)
--#define MAX_POSSIBLE_PHYSMEM_BITS 32
--#endif
-+#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK_PHYS | _PAGE_CACHEABLE)
- 
- /**************************************************************************
-  * Mapping of vm_flags (Generic VM) to PTE flags (arch specific)
---- a/arch/arc/include/uapi/asm/page.h
-+++ b/arch/arc/include/uapi/asm/page.h
-@@ -33,5 +33,4 @@
- 
- #define PAGE_MASK	(~(PAGE_SIZE-1))
- 
--
- #endif /* _UAPI__ASM_ARC_PAGE_H */
---- a/arch/arc/mm/ioremap.c
-+++ b/arch/arc/mm/ioremap.c
-@@ -53,9 +53,10 @@ EXPORT_SYMBOL(ioremap);
- void __iomem *ioremap_prot(phys_addr_t paddr, unsigned long size,
- 			   unsigned long flags)
- {
-+	unsigned int off;
- 	unsigned long vaddr;
- 	struct vm_struct *area;
--	phys_addr_t off, end;
-+	phys_addr_t end;
- 	pgprot_t prot = __pgprot(flags);
- 
- 	/* Don't allow wraparound, zero size */
-@@ -72,7 +73,7 @@ void __iomem *ioremap_prot(phys_addr_t p
- 
- 	/* Mappings have to be page-aligned */
- 	off = paddr & ~PAGE_MASK;
--	paddr &= PAGE_MASK;
-+	paddr &= PAGE_MASK_PHYS;
- 	size = PAGE_ALIGN(end + 1) - paddr;
- 
- 	/*
---- a/arch/arc/mm/tlb.c
-+++ b/arch/arc/mm/tlb.c
-@@ -576,7 +576,7 @@ void update_mmu_cache(struct vm_area_str
- 		      pte_t *ptep)
- {
- 	unsigned long vaddr = vaddr_unaligned & PAGE_MASK;
--	phys_addr_t paddr = pte_val(*ptep) & PAGE_MASK;
-+	phys_addr_t paddr = pte_val(*ptep) & PAGE_MASK_PHYS;
- 	struct page *page = pfn_to_page(pte_pfn(*ptep));
- 
- 	create_tlb(vma, vaddr, ptep);
+ 	/* generic setsockopts reaching us here always apply to the
+@@ -2186,7 +2189,6 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
+ 	if (rc || smc->use_fallback)
+ 		goto out;
+ 	switch (optname) {
+-	case TCP_ULP:
+ 	case TCP_FASTOPEN:
+ 	case TCP_FASTOPEN_CONNECT:
+ 	case TCP_FASTOPEN_KEY:
+-- 
+2.30.2
+
 
 
