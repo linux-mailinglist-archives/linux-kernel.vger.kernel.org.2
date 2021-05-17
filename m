@@ -2,178 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C014D3834C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065633834CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242686AbhEQPMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:12:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50660 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242448AbhEQPCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:02:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621263675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AThSGm5OQuAO1AbHn0HdByw0Hz9ncErXKEkKWb45GJ8=;
-        b=ipxYmDuF/AuIA53EP8K7Ur6NTgRzEYx73crGDJKllXSOtmxmWimFsuicZ1PJdlxYTXKbAl
-        h2ublfy0HBRvjRM7I8/pjOIifrfvscoA5iibedw5MouKA1zFCG1gQGCiIAKteLNccOiRtM
-        tbnz9whjmTVlSTSYLG02eNswraHxQ+8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1DE7BAF2C;
-        Mon, 17 May 2021 15:01:15 +0000 (UTC)
-Date:   Mon, 17 May 2021 17:01:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Laurence Oberman <loberman@redhat.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] watchdog: Cleanup handling of false positives
-Message-ID: <YKKFOoMVfAZtDWqE@alley>
-References: <YKD3/RuL/2qUcRhL@google.com>
+        id S242775AbhEQPMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:12:17 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:35740 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242483AbhEQPCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:02:43 -0400
+Received: by mail-oi1-f182.google.com with SMTP id v22so6752929oic.2;
+        Mon, 17 May 2021 08:01:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wwp1lADG0O4ybcf+aZxFjCEd/2sWMhI3vZ4lEWKa5o8=;
+        b=c0ZVEx+p43Pw4+RdbSwqKxJTcE9ClZOMbO3+pkI54uL0Q//o4Q3E0yqknq5vnjPdnD
+         egZNOtcTtPSHUnO45iiSQk4QAymAqkObgOpOu61ncRK80uSrdIZe0oV1bFCOizqfGsRd
+         UHowJeVS8/mXGHyf9nVckSpjHLJx4BkSMoSkhEWKRO8Ci3LnH7RPDi4KeRdt/lcWjaBr
+         OYpdOYGdo7asP31i2rh/87KMfguLMOPMgD+lQqupf9l96IpgK9fz3LTiAuO8F0wPRwB2
+         A5WNPiBlDDP2D15CepkETDLZAXSXhPw54sNWSAtfjqxLQ7VprPcQk2seEWFZb1BaewJJ
+         750A==
+X-Gm-Message-State: AOAM533Ed4ktxuF61TR2l7L711lqfrqN1lr2wdESOB+SrzsrjD0Nveo9
+        gbT/gef8tC5/c8lB/ezic0QmQp4MQEYzZl78AiA=
+X-Google-Smtp-Source: ABdhPJx+qvqH9oHalBbXzgcQAFus6QvTqi08L99jPCG1ATRBrUbLBs/6bVT0SnufG+9VMm+E0EYYL3aofAMJXkvqqTY=
+X-Received: by 2002:aca:380a:: with SMTP id f10mr183028oia.157.1621263686629;
+ Mon, 17 May 2021 08:01:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKD3/RuL/2qUcRhL@google.com>
+References: <20210512210413.1982933-1-luzmaximilian@gmail.com>
+In-Reply-To: <20210512210413.1982933-1-luzmaximilian@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 17 May 2021 17:01:15 +0200
+Message-ID: <CAJZ5v0j=_GuzgXdGj8R-MMAGDkgMx-tP1JwQ1kxb+dWyEi8DCQ@mail.gmail.com>
+Subject: Re: [PATCH] serial: 8250_dw: Add device HID for new AMD UART controller
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-serial@vger.kernel.org, Stable <stable@vger.kernel.org>,
+        Sachi King <nakato@nakato.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2021-05-16 19:46:21, Sergey Senozhatsky wrote:
-> Hi,
-> 
-> // This was never in my inbox, so sorry if I mess up the "Reply-to"
-> // Original message:  https://lore.kernel.org/lkml/20210311122130.6788-7-pmladek@suse.com/
-> 
-> 
-> >@@ -375,7 +375,14 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
-> > 	/* .. and repeat */
-> > 	hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
-> >
-> > -	/* Reset the interval when touched externally by a known slow code. */
-> > +	/*
-> > +	 * If a virtual machine is stopped by the host it can look to
-> > +	 * the watchdog like a soft lockup. Check to see if the host
-> > +	 * stopped the vm before we process the timestamps.
-> > +	 */
-> > +	kvm_check_and_clear_guest_paused();
-> > +
-> [..]
-> >@@ -401,14 +405,6 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
-> > 	 */
-> > 	duration = is_softlockup(touch_ts, period_ts);
-> > 	if (unlikely(duration)) {
-> > -		/*
-> > -		 * If a virtual machine is stopped by the host it can look to
-> > -		 * the watchdog like a soft lockup, check to see if the host
-> > -		 * stopped the vm before we issue the warning
-> > -		 */
-> > -		if (kvm_check_and_clear_guest_paused())
-> > -			return HRTIMER_RESTART;
-> 
-> This looks racy to me. I believe kvm_check_and_clear_guest_paused()
-> was in the right place.
-> 
-> VCPU can be scheduled out/preepmpted any time at any point; and then
-> guest VM (or even the entire system) can be suspended. When we resume
-> the VM we continue from where we were preempted (from VCPU POW).
-> 
-> So what the old code did
-> 
-> watchdog_timer_fn()
-> {
-> 	...
-> 	<<!!>>
-> 
-> 	// Suppose we are suspended here. When we are getting resumed
-> 	// jiffies jump forward, which may look like a soft lockup.
-> 	duration = is_softlockup(touch_ts, period_ts);
-> 	if (unlikely(duration)) {
-> 		// And this is where kvm_check_and_clear_guest_paused()
-> 		// jumps in. We know already that jiffies have jumped,
-> 		// we don't know if jiffies jumped because the VM was
-> 		// suspended. And this is what we figure out here and
-> 		// bail out
-> 		if (kvm_check_and_clear_guest_paused())
-> 			return HRTIMER_RESTART;
-> 	}
-> }
-> 
-> The new code does the following
-> 
-> watchdog_timer_fn()
-> {
-> 	...
-> 	kvm_check_and_clear_guest_paused(); // PVCLOCK_GUEST_STOPPED is not set
-> 
-> 	<<!!>>
-> 
-> 	// Suppose the VM got suspended at this point. PVCLOCK_GUEST_STOPPED
-> 	// is set, but we don't check it. jiffies will jump and this will look
-> 	// like a lockup, but we don't check if jiffies jumped because the VM
-> 	// was suspended
-> 	duration = is_softlockup(touch_ts, period_ts);
-> 	if (unlikely(duration)) {
-> 		// report the lockup and perhaps panic the system,
-> 		// depending on the configuration
-> 	}
-> }
-> 
-> What am I missing?
+On Thu, May 13, 2021 at 12:25 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>
+> Add device HID AMDI0022 to the AMD UART controller driver match table
+> and create a platform device for it. This controller can be found on
+> Microsoft Surface Laptop 4 devices and seems similar enough that we can
+> just copy the existing AMDI0020 entries.
+>
+> Cc: <stable@vger.kernel.org> # 5.10+
+> Tested-by: Sachi King <nakato@nakato.io>
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-Great catch! You have a point.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Well, I think that the entire code is racy. touch_ts and period_ts are
-set by:
+or please let me know if this needs to go in through ACPI (I'm
+assuming that it doesn't).
 
-	unsigned long touch_ts = __this_cpu_read(watchdog_touch_ts);
-	unsigned long period_ts = __this_cpu_read(watchdog_report_ts);
-
-They are neither volatile not there are any barriers. It means that
-period_ts might be re-read in these two checks:
-
-	/* Reset the interval when touched by known problematic code. */
-	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
-		update_report_ts();
-		return HRTIMER_RESTART;
-	}
-
-and
-
-	duration = is_softlockup(touch_ts, period_ts);
-
-
-where:
-
-static int is_softlockup(unsigned long touch_ts, unsigned long period_ts)
-{
-	unsigned long now = get_timestamp();
-
-	if ((watchdog_enabled & SOFT_WATCHDOG_ENABLED) && watchdog_thresh){
-		/* Warn about unreasonable delays. */
-		if (time_after(now, period_ts + get_softlockup_thresh()))
-			return now - touch_ts;
-	}
-	return 0;
-}
-
-Now, if the watchdog is touched from NMI. period_ts might be
-SOFTLOCKUP_DELAY_REPORT. It is ULONG_MAX.
-
-As a result period_ts + get_softlockup_thresh() would overflow and
-we could report softlockup even when there is none.
-
-I probably does not happen because the per-CPU variable is read only
-once. And watchdogs are not typically touched from NMI. Except that
-show_regs() actually touch the watchdog.
-
-That said. This patch most likely made things worse and should be
-reverted. But even better solution would be to remove this race.
-I mean to make the code safe and sane at the same time.
-
-Best Regards,
-Petr
+> ---
+>  drivers/acpi/acpi_apd.c           | 1 +
+>  drivers/tty/serial/8250/8250_dw.c | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
+> index 0ec5b3f69112..6e02448d15d9 100644
+> --- a/drivers/acpi/acpi_apd.c
+> +++ b/drivers/acpi/acpi_apd.c
+> @@ -226,6 +226,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
+>         { "AMDI0010", APD_ADDR(wt_i2c_desc) },
+>         { "AMD0020", APD_ADDR(cz_uart_desc) },
+>         { "AMDI0020", APD_ADDR(cz_uart_desc) },
+> +       { "AMDI0022", APD_ADDR(cz_uart_desc) },
+>         { "AMD0030", },
+>         { "AMD0040", APD_ADDR(fch_misc_desc)},
+>         { "HYGO0010", APD_ADDR(wt_i2c_desc) },
+> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+> index 9e204f9b799a..a3a0154da567 100644
+> --- a/drivers/tty/serial/8250/8250_dw.c
+> +++ b/drivers/tty/serial/8250/8250_dw.c
+> @@ -714,6 +714,7 @@ static const struct acpi_device_id dw8250_acpi_match[] = {
+>         { "APMC0D08", 0},
+>         { "AMD0020", 0 },
+>         { "AMDI0020", 0 },
+> +       { "AMDI0022", 0 },
+>         { "BRCM2032", 0 },
+>         { "HISI0031", 0 },
+>         { },
+> --
