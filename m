@@ -2,112 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40123824C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13283824CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbhEQGxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 02:53:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55795 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230148AbhEQGw4 (ORCPT
+        id S234482AbhEQGyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 02:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229826AbhEQGyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 02:52:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621234297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f7qNgC8imSHKbn6li286hRYwuW3Kgkex7BvbIupjpGc=;
-        b=L2im/GdJyeCvDavHITZJK9gfie3E3kI7t1TWGb82a/XBAPPFfJZcDSFoHUa0cO1GvZtN/F
-        kHFjuIowdmOhoBKc8JvhkO8sh92oXSmEpoxObJ2pvQ9lyYhgy2Nz94YxU4e7E5/l274IF9
-        EJSqvYhhneBWPIcCMrxCwINGS9acD7A=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-n8NL2SwyOF-xeb6H69X4nQ-1; Mon, 17 May 2021 02:51:35 -0400
-X-MC-Unique: n8NL2SwyOF-xeb6H69X4nQ-1
-Received: by mail-wm1-f70.google.com with SMTP id o10-20020a05600c4fcab029014ae7fdec90so1051947wmq.5
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 23:51:33 -0700 (PDT)
+        Mon, 17 May 2021 02:54:01 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50675C061573;
+        Sun, 16 May 2021 23:52:44 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id s19so2029727pfe.8;
+        Sun, 16 May 2021 23:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TVCa0hmWpkwkTGf73se5+D4y141i/19PSQZ8UiPfJ/M=;
+        b=TBdGyzMMDwvS5OT7Z4XISKlDvgSrLrXHy7AEAMRlN7N53TRxqZ8SmA1rjvZOQ9HjIY
+         Z/f3nskWkuSAT3v4GxOB7UoJg0QfhCQqilS84jBGtFRaWVsbiPl+kdlrhV6oSHD06UD+
+         UAwny6YZKU/GBQtCP7a94a+6dirUHQIjA5f04MLcAhdQY/0VDgBvWPPVdpipKwx8GgPy
+         DdNV5gTsn2ADCGAXCBBgS7sQat2JwDKzh4QtVo23Mafz9nNjQWIy3GuIe/04RACHjTIW
+         JphqH/IQDEI4FdWD0Su6SK+EE2yGuV7Q2IRV/oSdHmRfe8S/EmBr0rRbp1RYN1Ho1zvN
+         c2QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=f7qNgC8imSHKbn6li286hRYwuW3Kgkex7BvbIupjpGc=;
-        b=ogtU9cPFyr09v+SkvAywBLKFcfVr9LzSKNoWTo8IYP0Gx4OEIMLAQ9Dj4LNyLPJM4c
-         8xZxOTJrnW+MZjt71zodKeHX+nsDE1l9JuVe7BqBv1kXsvTO6er++F7jqp6PGrJrhydc
-         /YXgj3XYIQr3HPdVwHzLN97SmT9GIIJadcjaBnWaK2r0/tNFO068whImNZzmrbczd16m
-         XIQVr1/pWos64ZJco3/HvBH7BX6Je6LkD/FiQQXkTpY4w2xFyh4+a33T4OO5C3Cjpdqg
-         LelS3TiJis8cc80HyWZFBCBRubz3Z1Kdo8SUq4M47fs7GBUcslfkcGzpS9mK0Uzcygc6
-         NXCA==
-X-Gm-Message-State: AOAM5321GY6LWUPRWVj+7JrSf4KN5nmU24pzpxeXMY8PCd54+h6BED8Q
-        ESa5c+j5RnAzUPPUv0eS8NqFNYuKV32DiE1kAc6lVhvI1Sg1MY13WaGvESBQmgXYYSxsUsh6Lgy
-        q6s126nrgiP/NgAYvMJTXxRHV
-X-Received: by 2002:adf:fd82:: with SMTP id d2mr73783376wrr.218.1621234292984;
-        Sun, 16 May 2021 23:51:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9tfRW+YS/gxDEIQCy7gwUfbRmVNS3PFiKPseSRXngi3Mq9CGDyrCDyAFl1I6VqBfyTpMgVQ==
-X-Received: by 2002:adf:fd82:: with SMTP id d2mr73783362wrr.218.1621234292843;
-        Sun, 16 May 2021 23:51:32 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-245-104.dyn.eolo.it. [146.241.245.104])
-        by smtp.gmail.com with ESMTPSA id k7sm16778838wro.8.2021.05.16.23.51.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 23:51:32 -0700 (PDT)
-Message-ID: <2e1ffc55aedb5d10eacce34cb7a5809138528d03.camel@redhat.com>
-Subject: Re: [PATCH 5.10 380/530] udp: never accept GSO_FRAGLIST packets
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Date:   Mon, 17 May 2021 08:51:31 +0200
-In-Reply-To: <20210515083717.GD30461@amd>
-References: <20210512144819.664462530@linuxfoundation.org>
-         <20210512144832.263718249@linuxfoundation.org> <20210515083717.GD30461@amd>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TVCa0hmWpkwkTGf73se5+D4y141i/19PSQZ8UiPfJ/M=;
+        b=EKfpQ2XwvjZoSjX89C+NMb2Hkgx8lsidbawkgcka+QCW7tpCdq9WNYCphdDcXrQ8Jn
+         qMmyoH11NyYLm5Yb8Z1eS9NdAKg9y420WjDMX9lHTmmqDJxB6Vf+Lq6R5zeLODkJT6Nd
+         CRpmOjd3oQ4l5EEnrIGIOCoqqXBszHFXshZL9oMJRYD70FfSPKs/4LlVN1gkCKQLeSU2
+         EOLMdJQpfHqaugqtL2j/+Sf2QP1FiGhC3QByTjB+9YaJHp/5XrhW0/m0qNuGtJ7CSmns
+         VMZbYqPmi5015bwC022X0PmQmfvfzqt/31YAK/QCmZcAIlLfRvmkUEskwWM2b6OIxE+D
+         jtcg==
+X-Gm-Message-State: AOAM533p4OQntpa5ShT9xTI16AgP3Ffijw0OtHM4ZuaNF7271T9eI1P8
+        hkGDCn5JqJae9FsnCw6KftRkxcxP13Rw0xOJgUJb01ZrJcQ=
+X-Google-Smtp-Source: ABdhPJwMADGLeEf9tXmzQvLIhEr3xBv/TW6mJJf01CNg1gixRSdcTSdJdaSZFmwQ8feMaCA6OgY/h0kLAleKAko67Vk=
+X-Received: by 2002:a63:4145:: with SMTP id o66mr36934761pga.4.1621234363775;
+ Sun, 16 May 2021 23:52:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210513193204.816681-1-davidgow@google.com> <20210513193204.816681-10-davidgow@google.com>
+In-Reply-To: <20210513193204.816681-10-davidgow@google.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 17 May 2021 09:52:27 +0300
+Message-ID: <CAHp75VcJ0tJw_FuNWoFWuNBsE5H4CiLUT6RsUtLwk-S7JW-vnA@mail.gmail.com>
+Subject: Re: [PATCH v2 10/10] lib/cmdline_kunit: Remove a cast which are
+ no-longer required
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-05-15 at 10:37 +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > From: Paolo Abeni <pabeni@redhat.com>
-> > 
-> > [ Upstream commit 78352f73dc5047f3f744764cc45912498c52f3c9 ]
-> > 
-> > Currently the UDP protocol delivers GSO_FRAGLIST packets to
-> > the sockets without the expected segmentation.
-> > 
-> > This change addresses the issue introducing and maintaining
-> > a couple of new fields to explicitly accept SKB_GSO_UDP_L4
-> > or GSO_FRAGLIST packets. Additionally updates  udp_unexpected_gso()
-> > accordingly.
-> > 
-> > UDP sockets enabling UDP_GRO stil keep accept_udp_fraglist
-> > zeroed.
-> 
-> What is going on here? accept_udp_fraglist variable is read-only.
+On Fri, May 14, 2021 at 2:32 AM David Gow <davidgow@google.com> wrote:
+>
+> With some of the stricter type checking in KUnit's EXPECT macros
+> removed, a cast in cmdline_kunit is no longer required.
+>
+> Remove the unnecessary cast, using NULL instead of (int *) to make it
+> clearer.
 
-Thank you for checking this!
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-The 'accept_udp_fraglist' field is implicitly initilized to zero at UDP
-socket allocation time (done by sk_alloc).
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+> This should be a no-op functionality wise, and while it depends on the
+> first couple of patches in this series, it's otherwise independent from
+> the others. I think this makes the test more readable, but if you
+> particularly dislike it, I'm happy to drop it.
+>
+>  lib/cmdline_kunit.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/cmdline_kunit.c b/lib/cmdline_kunit.c
+> index 018bfc8113c4..a72a2c16066e 100644
+> --- a/lib/cmdline_kunit.c
+> +++ b/lib/cmdline_kunit.c
+> @@ -124,7 +124,7 @@ static void cmdline_do_one_range_test(struct kunit *test, const char *in,
+>                             n, e[0], r[0]);
+>
+>         p = memchr_inv(&r[1], 0, sizeof(r) - sizeof(r[0]));
+> -       KUNIT_EXPECT_PTR_EQ_MSG(test, p, (int *)0, "in test %u at %u out of bound", n, p - r);
+> +       KUNIT_EXPECT_PTR_EQ_MSG(test, p, NULL, "in test %u at %u out of bound", n, p - r);
+>  }
+>
+>  static void cmdline_test_range(struct kunit *test)
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+>
 
-So this patch effectively force segmentation of SKB_GSO_FRAGLIST
-packets via the udp_unexpected_gso() helper.
 
-We introduce the above field instead of unconditionally
-segmenting SKB_GSO_FRAGLIST, because the next patch will use it (to
-avoid unneeded segmentation for performance's sake for UDP tunnel), as
-you noted.
-
-Please let me know if the above clarifies the situation.
-
-Thanks!
-
-Paolo
-
+-- 
+With Best Regards,
+Andy Shevchenko
