@@ -2,115 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059CC382C11
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CD2382C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237011AbhEQM3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
+        id S237033AbhEQMbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhEQM3A (ORCPT
+        with ESMTP id S237014AbhEQMas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:29:00 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBA2C061573;
-        Mon, 17 May 2021 05:27:43 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id w9so2930092qvi.13;
-        Mon, 17 May 2021 05:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RrMgSrZtTqdB/wlv0id/9NlOUPd01Z7kAGWKqnT2c2M=;
-        b=CctOlq+UkKn18QqKAOdc7VqJDwwJKN9HU/A5tTPZ0EUkYGQMbFanD0RNwVHW2f6R4E
-         7fGATCP3I/aegDtzmOBa5y7HYnBAOTRIl+10jhJuS7FOhQbBKJ3dZOOA6X3ITygKqzls
-         GYKmF56nNhO+08TdkpRANu9VXaTwgiFhOUXy8+b44TjtqJNCthTAiLbF/r709SBk+TTr
-         JFfUCWgDEX967xOAuQfbJGZ4in3xZj/3kE8Mf/9i0HFQ65dEhwLg/3wrcJKdfUh8FmVT
-         hxlDPhEvB3cXIZu0UWRwRNkFRYiWjfn70i3oucULeBS2i2/4Qn1sRdt3WfdmU+uTZ/f+
-         PWNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RrMgSrZtTqdB/wlv0id/9NlOUPd01Z7kAGWKqnT2c2M=;
-        b=o0mOKwYepWVVpxPVVWFgoPaBZbfTrIsGxkrg/g/y8NEukfd3Sm3jGA8VJzzbc6BGXc
-         DYTumsMOoVyJSPRDVZvNZdluPAxmeUhbmqlK6g9pxDY15LbtCS0hqTYT5tWMN39Tu6nJ
-         BYUrkcagLw6weSS33nn7OKNnvBNq87qwrQti34z+LV6zqA5d45Yq5lzFrFjGluSXrkkk
-         CN+WNfro4jJMRgyUGtbLuj2omndjJWFNfK8DSAhsoo8q3A1CdJmq8pZPKF2ibuBJwYFG
-         N14jhdmq4u1qfh+XVAdPvWu9WDygAAgXa0cyhJYCunxYx3suvhyfd0XpnEuJIg8iNUqs
-         wxMQ==
-X-Gm-Message-State: AOAM530ciHkAjoKLfSTKclWUICNuAVLZx7SmAT7uS9qPJSoK8bcg04hf
-        VtHrez+i2bnO3WAg/URPHt44nRWh7r3NABm3
-X-Google-Smtp-Source: ABdhPJzM+6xSTMZ2jK4banMxGU90aLBTrZTJZYJp2Lr/pLBs4nDcAdGVJO5Aq8VNiSxT+2/N1fJnug==
-X-Received: by 2002:a05:6214:87:: with SMTP id n7mr16082560qvr.1.1621254462149;
-        Mon, 17 May 2021 05:27:42 -0700 (PDT)
-Received: from ?IPv6:2804:14c:125:811b::1003? ([2804:14c:125:811b::1003])
-        by smtp.gmail.com with ESMTPSA id 10sm10377983qka.23.2021.05.17.05.27.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 05:27:41 -0700 (PDT)
-Subject: Re: [PATCH] video: hgafb: correctly handle card detect failure during
- probe
-To:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        kernel test robot <oliver.sang@intel.com>,
-        stable <stable@vger.kernel.org>,
-        linux-nvidia@lists.surfsouth.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210516192714.25823-1-mail@anirudhrb.com>
-From:   Igor Torrente <igormtorrente@gmail.com>
-Message-ID: <2b945eaa-4288-1601-3f1a-60f2ceaa1ea7@gmail.com>
-Date:   Mon, 17 May 2021 09:27:38 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Mon, 17 May 2021 08:30:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A514AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 05:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+pTARd/J+Nn5q3ByAbyk/qheF0T8+IAYZW0neGnkNm0=; b=hZVpyqZ0bo24554QSUuKPU47V8
+        PHGgjab6IazWR79JIaq3y/ZsKgnMjI8lsJP4oJkkc6iM6YOqNt+2apHYhoLypQ23JSLt+YNeO0VsA
+        nGJgycsNs3nlcdDLA/zTPBh8HqQmhI6WidmBen3r7/lPAjBbxYoudY+kIRRtD8aFP+ib5RjTuxvwJ
+        /QVIKh93c2FSBnGfSvD/FL7e1tLfMqa2VPnERb7i/Hz769h2ROS2gOymOqLjCM9lmzxXBELl0Mzg3
+        2b8RgP4eYbEZN02PG7V4WuI1sUrX+u5VQj8G8XDM3eeXCmnZWla/erQSxgWQfLflcgqHo5/49X30j
+        DWPbDZ5g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1licMt-00CtlD-9F; Mon, 17 May 2021 12:29:09 +0000
+Date:   Mon, 17 May 2021 13:29:07 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v1 1/1] drm/i915: Include only needed headers in ascii85.h
+Message-ID: <YKJhk9nrDs3oWe46@infradead.org>
+References: <20210407122337.77493-1-andriy.shevchenko@linux.intel.com>
+ <YKJfZXn3P/ZdslRP@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210516192714.25823-1-mail@anirudhrb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKJfZXn3P/ZdslRP@smile.fi.intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 5/16/21 4:27 PM, Anirudh Rayabharam wrote:
-> The return value of hga_card_detect() is not properly handled causing
-> the probe to succeed even though hga_card_detect() failed. Since probe
-> succeeds, hgafb_open() can be called which will end up operating on an
-> unmapped hga_vram. This results in an out-of-bounds access as reported
-> by kernel test robot [1].
-> 
-> To fix this, correctly detect failure of hga_card_detect() by checking
-> for a non-zero error code.
-> 
-> [1]: https://lore.kernel.org/lkml/20210516150019.GB25903@xsang-OptiPlex-9020/
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Fixes: dc13cac4862c ("video: hgafb: fix potential NULL pointer dereference")
-> Cc: stable <stable@vger.kernel.org>
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->   drivers/video/fbdev/hgafb.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/hgafb.c b/drivers/video/fbdev/hgafb.c
-> index cc8e62ae93f6..bd3d07aa4f0e 100644
-> --- a/drivers/video/fbdev/hgafb.c
-> +++ b/drivers/video/fbdev/hgafb.c
-> @@ -558,7 +558,7 @@ static int hgafb_probe(struct platform_device *pdev)
->   	int ret;
->   
->   	ret = hga_card_detect();
-> -	if (!ret)
-> +	if (ret)
->   		return ret;
->   
->   	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
-> 
-
-In fact, this return isn't being properly handled. Thanks for fix it!
-
-Reviewed-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Btw, can someone please add a few comments to ascii85.h?
+I have no idea WTF "ascii85" is, why it matters and how the two helpers
+should be used.
