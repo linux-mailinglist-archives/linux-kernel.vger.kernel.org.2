@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551BE383896
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965AB38367C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345783AbhEQP5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
+        id S244916AbhEQPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:33:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244908AbhEQPiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:38:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12E0C61CF8;
-        Mon, 17 May 2021 14:40:45 +0000 (UTC)
+        id S243347AbhEQPSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:18:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B343161C6E;
+        Mon, 17 May 2021 14:33:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262446;
-        bh=InQ/DaQMQc5IC6GQp9VEPqpCpjRgNmmJMdj9NHRkRrI=;
+        s=korg; t=1621262009;
+        bh=LlLP6X09O5DlDYbL590+9uh82tEFBXAaaL5feOB3nik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bl4oz8a/EEKfxOJdR+54wyVtaDmtiLG3x/mbuKKoW3hqGSeCbsPf15I5r2k5jTgqC
-         A+XdSsIYBhcdaA3KM56u9spjCCZWed6OhydlQf3zHILrtLNsP0PcMkyhia04r3qnoA
-         i0qL2knygqkElvkNacp6bRqV17s5VIkZwBdtc88k=
+        b=a4Uo7DDr/KntlAyiWqKgilC/Vy3oQY/CQUuI+X6I25JRFVy6bryAvs96+gKtk2AL/
+         U56+KEaMwCTOixIT/reS0/y2kQuJ7ti8Dmd7lkLVPrWr1fMG3aFI7jGtLmQhiJWaLO
+         w0PTsGqH4w1eeEspT+13Fa6ehtInPZt506kgLFVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 189/289] i40e: Fix use-after-free in i40e_client_subtask()
+Subject: [PATCH 5.11 203/329] mm/migrate.c: fix potential indeterminate pte entry in migrate_vma_insert_page()
 Date:   Mon, 17 May 2021 16:01:54 +0200
-Message-Id: <20210517140311.475914844@linuxfoundation.org>
+Message-Id: <20210517140308.980753642@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +46,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 38318f23a7ef86a8b1862e5e8078c4de121960c3 ]
+[ Upstream commit 34f5e9b9d1990d286199084efa752530ee3d8297 ]
 
-Currently the call to i40e_client_del_instance frees the object
-pf->cinst, however pf->cinst->lan_info is being accessed after
-the free. Fix this by adding the missing return.
+If the zone device page does not belong to un-addressable device memory,
+the variable entry will be uninitialized and lead to indeterminate pte
+entry ultimately.  Fix this unexpected case and warn about it.
 
-Addresses-Coverity: ("Read from pointer after free")
-Fixes: 7b0b1a6d0ac9 ("i40e: Disable iWARP VSI PETCP_ENA flag on netdev down events")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Link: https://lkml.kernel.org/r/20210325131524.48181-4-linmiaohe@huawei.com
+Fixes: df6ad69838fc ("mm/device-public-memory: device memory cache coherent with CPU")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: Rafael Aquini <aquini@redhat.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_client.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/migrate.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c b/drivers/net/ethernet/intel/i40e/i40e_client.c
-index a2dba32383f6..32f3facbed1a 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_client.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
-@@ -375,6 +375,7 @@ void i40e_client_subtask(struct i40e_pf *pf)
- 				clear_bit(__I40E_CLIENT_INSTANCE_OPENED,
- 					  &cdev->state);
- 				i40e_client_del_instance(pf);
-+				return;
- 			}
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 20ca887ea769..4754f2489d78 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2967,6 +2967,13 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
+ 
+ 			swp_entry = make_device_private_entry(page, vma->vm_flags & VM_WRITE);
+ 			entry = swp_entry_to_pte(swp_entry);
++		} else {
++			/*
++			 * For now we only support migrating to un-addressable
++			 * device memory.
++			 */
++			pr_warn_once("Unsupported ZONE_DEVICE page type.\n");
++			goto abort;
  		}
- 	}
+ 	} else {
+ 		entry = mk_pte(page, vma->vm_page_prot);
 -- 
 2.30.2
 
