@@ -2,63 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E7D383D15
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4786383D19
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhEQTTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:19:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232147AbhEQTTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:19:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04C9E610CD;
-        Mon, 17 May 2021 19:18:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621279102;
-        bh=HAKoW8K/5XrQq2g0wnbVbhYoAtUrGPLMrypMPpHIgYI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KW9vmrjRXLUqh0HY98qVLCPD8mQkBwXRKFpUjJHXfNePjXOKF98Mv8aB8OKVdwwe4
-         YRshmT9jUrrMfWBBFzIH75ognU2xr+eqSD/VXBRh4qAvWcIJzj9ML8dxdCkbtld4mU
-         kg/0i82CdTjp7pKILzeTfIUhrmdg4AfERCfhgYlIzXtJeW2VHupfTPRpGvKBxGa8qM
-         aDTuw7KrdnxvVy5nZDaW6h1gBCfoyD9temEkXYo+8YyqXoLC/yNSEw5u+yjTaGh4lB
-         FVlJzGBWYZFFqlpS7sMdzxjGyK+O388jgaCpRIVYKzsDPZq/RNCpisZcyd0zHnoE3u
-         DQFm3uv6rle4g==
-Received: by mail-ed1-f44.google.com with SMTP id df21so8232165edb.3;
-        Mon, 17 May 2021 12:18:21 -0700 (PDT)
-X-Gm-Message-State: AOAM533R79XsLKBPGzPqc+qVqbdIYDKA5Ci4zowDkeetA4XCc9fn+H4P
-        jUdZug8pe5A+pWvdcGR+ByOjHIkF2J/lkhRVnQ==
-X-Google-Smtp-Source: ABdhPJz+6aWvjzH5PdK+QuiEHy8Gi0mQlL/xEEsxsNv6ghzQALuDWCDRqsPr6e9menX7UxjucT/5htQ8RPa24aidTYo=
-X-Received: by 2002:a05:6402:100c:: with SMTP id c12mr1886379edu.165.1621279100579;
- Mon, 17 May 2021 12:18:20 -0700 (PDT)
+        id S232471AbhEQTTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232517AbhEQTTp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 15:19:45 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD34C061573;
+        Mon, 17 May 2021 12:18:24 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j10so10407936lfb.12;
+        Mon, 17 May 2021 12:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7BU0ow4QR93mOB74FmJ4kFwJgWXgNPCN3wgoS7EpDVg=;
+        b=VHB5JqmkcVWB42P5/6IQUPbsTgEhLAj+tpXRJrXIfQWzJ01MJA26rN9sr0AtYsdP7k
+         JxLYIGh5aPbTbFQXZ+uUjTkxkKfCPotg4mU7nfMaXvV0p2nYw/MMReHdEuVJKGndusty
+         NO9KvOWLfKfq1Y7UW8mUjfgw6A+yP0LV5Aws6Ty7LePGhtilU0gx5pVhUODGFFdDPeqE
+         ITtrq0CjjIxM66bjMy3/i5MvJ6So5A1XQIakybLDK2ytE6HYa9kEfNM17c/aUqr85LaE
+         o8lqlT0tzSfSdZSfsGJLKQnlCFOFyzagoPAHbj479aF/CMV+hyqtmol3o6RtgMonyzYi
+         rBYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7BU0ow4QR93mOB74FmJ4kFwJgWXgNPCN3wgoS7EpDVg=;
+        b=G+892r92pF0XVQmSryV7BrsKFYIHBpg/dvwwvuUlD/lHVQ+12ywFXKO8NjOtrfkAw4
+         twyWU0o+xTUfZ24MYr5cH3b0NQwm+2fby56jQmT22NPGt2JnHeCOavjYWDzBvIgzoFAO
+         iwNlm+fxS96QkA/89CLuyyLrEHHnGU6sbDYq4h/WLg79ACxBnelWJXw69HxWwLDrGrtW
+         LtJkvRWQlQPvchtlitcNa03JWWbmnE2IRD9TXB0Fxatd9KzB4uaAJUX7L3TgW0P3e+cB
+         iWZVhg85OnO4dTK41nmKYWiQpxBRvJq6gMMJKnJPhH6hOm99Fjhyblhi7BYh6sMdBRxh
+         zb7g==
+X-Gm-Message-State: AOAM532OZ7rJwhTJqDHnssD148Y0iuJV34ti/yYWsWuJXFkYS4YuTDHZ
+        knBkwtAuP/zmwu1NkbDFyVs=
+X-Google-Smtp-Source: ABdhPJxfJ5AnQ0NtLlstk6v0EMuNUrDW4o3QNS5RnVAO91gR4wfH20CQNbXTGvla4RxqSeO4zaogGw==
+X-Received: by 2002:a05:6512:3090:: with SMTP id z16mr910138lfd.402.1621279103243;
+        Mon, 17 May 2021 12:18:23 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.227])
+        by smtp.gmail.com with ESMTPSA id 8sm3017947ljj.138.2021.05.17.12.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 12:18:22 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     royale@zerezo.com, mchehab@kernel.org, lamarque@gmail.com
+Cc:     linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org,
+        syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com
+Subject: [PATCH] media: zr364xx: fix memory leak in zr364xx_start_readpipe
+Date:   Mon, 17 May 2021 22:18:14 +0300
+Message-Id: <20210517191814.1761-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210517153946.9502-1-michael@walle.cc>
-In-Reply-To: <20210517153946.9502-1-michael@walle.cc>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 17 May 2021 14:18:08 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJPJj-3e7CZ4UQ=8FbJ3naduHrfQ+TmHH4x+4MBeubuAQ@mail.gmail.com>
-Message-ID: <CAL_JsqJPJj-3e7CZ4UQ=8FbJ3naduHrfQ+TmHH4x+4MBeubuAQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: spi: spi-mux: rename flash node
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-spi <linux-spi@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:39 AM Michael Walle <michael@walle.cc> wrote:
->
-> The recent conversion of the common MTD properties to YAML now mandates
-> a particular node name for SPI flash devices.
->
-> Reported-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  Documentation/devicetree/bindings/spi/spi-mux.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+syzbot reported memory leak in zr364xx driver.
+The problem was in non-freed urb in case of
+usb_submit_urb() fail.
 
-Thanks for the quick fix.
+backtrace:
+  [<ffffffff82baedf6>] kmalloc include/linux/slab.h:561 [inline]
+  [<ffffffff82baedf6>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+  [<ffffffff82f7cce8>] zr364xx_start_readpipe+0x78/0x130 drivers/media/usb/zr364xx/zr364xx.c:1022
+  [<ffffffff84251dfc>] zr364xx_board_init drivers/media/usb/zr364xx/zr364xx.c:1383 [inline]
+  [<ffffffff84251dfc>] zr364xx_probe+0x6a3/0x851 drivers/media/usb/zr364xx/zr364xx.c:1516
+  [<ffffffff82bb6507>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+  [<ffffffff826018a9>] really_probe+0x159/0x500 drivers/base/dd.c:576
 
-Acked-by: Rob Herring <robh@kernel.org>
+Fixes: ccbf035ae5de ("V4L/DVB (12278): zr364xx: implement V4L2_CAP_STREAMING")
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/media/usb/zr364xx/zr364xx.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
+index 1ef611e08323..538a330046ec 100644
+--- a/drivers/media/usb/zr364xx/zr364xx.c
++++ b/drivers/media/usb/zr364xx/zr364xx.c
+@@ -1032,6 +1032,7 @@ static int zr364xx_start_readpipe(struct zr364xx_camera *cam)
+ 	DBG("submitting URB %p\n", pipe_info->stream_urb);
+ 	retval = usb_submit_urb(pipe_info->stream_urb, GFP_KERNEL);
+ 	if (retval) {
++		usb_free_urb(pipe_info->stream_urb);
+ 		printk(KERN_ERR KBUILD_MODNAME ": start read pipe failed\n");
+ 		return retval;
+ 	}
+-- 
+2.31.1
+
