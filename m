@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012553833A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E803638311B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242306AbhEQO70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:59:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37928 "EHLO mail.kernel.org"
+        id S240593AbhEQOew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:34:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242134AbhEQOt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:49:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D715E613BE;
-        Mon, 17 May 2021 14:23:01 +0000 (UTC)
+        id S239958AbhEQO3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:29:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ADE96162A;
+        Mon, 17 May 2021 14:14:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261382;
-        bh=zD/XlO3nFglcr4ayUhe59PHYI1gbpAn+M8Dg02aSF6A=;
+        s=korg; t=1621260893;
+        bh=1fgGe6EVea6dgSAsAZvzBziRCktDtmZTRV18UlD/8CU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v86S3mwZgG6i0MGkibSd5voiKealLxrqkKtYxgOInmxClFEBOk/euz/WcrRF9ftB5
-         9lUTx63KLUv5gpOQaxP8JinfrXsl4QGAfGCPiPuGm/TWAPnveRfhWLpCSXGFCJzi34
-         papWh7Z5GlOKWGvfpSJTaEjGQ6kVdkLy2rwATO7o=
+        b=vUpnTKMy1tCoaGUL88kkXuawcBIKiXmuOwWbd9a5M1G7wMX9i106F7a4ReSGqPvDQ
+         3PeNy26mWH0SFeROekiVCxDqrnmdzMDz70tDw5aOKbdWQOAOAS+W4QBjty3ygWkTvj
+         vGG18UJoNXYWAT+xC52oVFxqoJiknx9nbwnOYKRA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Tong Zhang <ztong0001@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 014/289] fs: dlm: check on minimum msglen size
-Date:   Mon, 17 May 2021 15:58:59 +0200
-Message-Id: <20210517140305.659710659@linuxfoundation.org>
+Subject: [PATCH 5.11 029/329] ALSA: hdsp: dont disable if not enabled
+Date:   Mon, 17 May 2021 15:59:00 +0200
+Message-Id: <20210517140303.024556910@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 710176e8363f269c6ecd73d203973b31ace119d3 ]
+[ Upstream commit 507cdb9adba006a7798c358456426e1aea3d9c4f ]
 
-This patch adds an additional check for minimum dlm header size which is
-an invalid dlm message and signals a broken stream. A msglen field cannot
-be less than the dlm header size because the field is inclusive header
-lengths.
+hdsp wants to disable a not enabled pci device, which makes kernel
+throw a warning. Make sure the device is enabled before calling disable.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
+[    1.758292] snd_hdsp 0000:00:03.0: disabling already-disabled device
+[    1.758327] WARNING: CPU: 0 PID: 180 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.766985] Call Trace:
+[    1.767121]  snd_hdsp_card_free+0x94/0xf0 [snd_hdsp]
+[    1.767388]  release_card_device+0x4b/0x80 [snd]
+[    1.767639]  device_release+0x3b/0xa0
+[    1.767838]  kobject_put+0x94/0x1b0
+[    1.768027]  put_device+0x13/0x20
+[    1.768207]  snd_card_free+0x61/0x90 [snd]
+[    1.768430]  snd_hdsp_probe+0x524/0x5e0 [snd_hdsp]
+
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210321153840.378226-2-ztong0001@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/midcomms.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/pci/rme9652/hdsp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/dlm/midcomms.c b/fs/dlm/midcomms.c
-index fde3a6afe4be..0bedfa8606a2 100644
---- a/fs/dlm/midcomms.c
-+++ b/fs/dlm/midcomms.c
-@@ -49,9 +49,10 @@ int dlm_process_incoming_buffer(int nodeid, unsigned char *buf, int len)
- 		 * cannot deliver this message to upper layers
- 		 */
- 		msglen = get_unaligned_le16(&hd->h_length);
--		if (msglen > DEFAULT_BUFFER_SIZE) {
--			log_print("received invalid length header: %u, will abort message parsing",
--				  msglen);
-+		if (msglen > DEFAULT_BUFFER_SIZE ||
-+		    msglen < sizeof(struct dlm_header)) {
-+			log_print("received invalid length header: %u from node %d, will abort message parsing",
-+				  msglen, nodeid);
- 			return -EBADMSG;
- 		}
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index cea53a878c36..4aee30db034d 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -5321,7 +5321,8 @@ static int snd_hdsp_free(struct hdsp *hdsp)
+ 	if (hdsp->port)
+ 		pci_release_regions(hdsp->pci);
+ 
+-	pci_disable_device(hdsp->pci);
++	if (pci_is_enabled(hdsp->pci))
++		pci_disable_device(hdsp->pci);
+ 	return 0;
+ }
  
 -- 
 2.30.2
