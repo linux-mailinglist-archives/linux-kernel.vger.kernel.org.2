@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDA938371C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D71E383877
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344106AbhEQPkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39318 "EHLO mail.kernel.org"
+        id S243315AbhEQPxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241870AbhEQPZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:25:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CFB61921;
-        Mon, 17 May 2021 14:36:06 +0000 (UTC)
+        id S243296AbhEQPfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:35:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E4D261CE8;
+        Mon, 17 May 2021 14:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262166;
-        bh=bvR8HuecYlXXhRF3yFCk0xYMBnSlqP3ovpl2s8zifok=;
+        s=korg; t=1621262389;
+        bh=MBOQYnE2mOI5zp9tE0zlOseQc4zBVgAXWE1oPuGi4DU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W8AM2xrCLp2C8RtKL/K34Dwg09oroSRP6ZyK1FD1U7nVegzu5KsFQVGkqVWeJ7fUk
-         1xkvbFeW0r/s3ReE0SdvjKjLMb/5Ba48sCHP/a4fHAV8qYV8gb6x7wSI2adk3ZgZvr
-         kKYm+ev95lKI/H0jtM4nvFEAflQ9eaSz7EUkWb+M=
+        b=naz4a9dfShmDbhMByPGqr2NROoJUELZRR4E0GpndFounC+GR2I9dxZ8GUxYUet29v
+         Tf/dvEu+k1Ro9H5Y/Ap7FotKQ2RsWmUYdeaxen3oI67KMOjuI6+KTAFRBHygvLrbup
+         mK/tdBou1y1f0LKCBHwuDfmMJi0KVC5WBAU2SqCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Liu <liupeng17@lenovo.com>,
-        Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>
-Subject: [PATCH 5.4 140/141] nvme: do not try to reconfigure APST when the controller is not live
+        stable@vger.kernel.org, Marcel Hamer <marcel@solidxs.se>
+Subject: [PATCH 5.11 281/329] usb: dwc3: omap: improve extcon initialization
 Date:   Mon, 17 May 2021 16:03:12 +0200
-Message-Id: <20210517140247.543267847@linuxfoundation.org>
+Message-Id: <20210517140311.611750179@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +38,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Marcel Hamer <marcel@solidxs.se>
 
-commit 53fe2a30bc168db9700e00206d991ff934973cf1 upstream.
+commit e17b02d4970913233d543c79c9c66e72cac05bdd upstream.
 
-Do not call nvme_configure_apst when the controller is not live, given
-that nvme_configure_apst will fail due the lack of an admin queue when
-the controller is being torn down and nvme_set_latency_tolerance is
-called from dev_pm_qos_hide_latency_tolerance.
+When extcon is used in combination with dwc3, it is assumed that the dwc3
+registers are untouched and as such are only configured if VBUS is valid
+or ID is tied to ground.
 
-Fixes: 510a405d945b("nvme: fix memory leak for power latency tolerance")
-Reported-by: Peng Liu <liupeng17@lenovo.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+In case VBUS is not valid or ID is floating, the registers are not
+configured as such during driver initialization, causing a wrong
+default state during boot.
+
+If the registers are not in a default state, because they are for
+instance touched by a boot loader, this can cause for a kernel error.
+
+Signed-off-by: Marcel Hamer <marcel@solidxs.se>
+Link: https://lore.kernel.org/r/20210427122118.1948340-1-marcel@solidxs.se
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/dwc3/dwc3-omap.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2414,7 +2414,8 @@ static void nvme_set_latency_tolerance(s
+--- a/drivers/usb/dwc3/dwc3-omap.c
++++ b/drivers/usb/dwc3/dwc3-omap.c
+@@ -437,8 +437,13 @@ static int dwc3_omap_extcon_register(str
  
- 	if (ctrl->ps_max_latency_us != latency) {
- 		ctrl->ps_max_latency_us = latency;
--		nvme_configure_apst(ctrl);
-+		if (ctrl->state == NVME_CTRL_LIVE)
-+			nvme_configure_apst(ctrl);
+ 		if (extcon_get_state(edev, EXTCON_USB) == true)
+ 			dwc3_omap_set_mailbox(omap, OMAP_DWC3_VBUS_VALID);
++		else
++			dwc3_omap_set_mailbox(omap, OMAP_DWC3_VBUS_OFF);
++
+ 		if (extcon_get_state(edev, EXTCON_USB_HOST) == true)
+ 			dwc3_omap_set_mailbox(omap, OMAP_DWC3_ID_GROUND);
++		else
++			dwc3_omap_set_mailbox(omap, OMAP_DWC3_ID_FLOAT);
+ 
+ 		omap->edev = edev;
  	}
- }
- 
 
 
