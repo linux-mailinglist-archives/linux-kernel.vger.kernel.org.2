@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DABF383822
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD0E38382B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343911AbhEQPtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:49:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52508 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244705AbhEQPdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:33:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621265504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D78x0RQykGxtuFVKDLK2tegONNqQIINNV1fp5HE+u1o=;
-        b=UlpURxft8mCNp5WtrDPvtUpGOpEsRnDR0jJF0c7mh+vDsIm6ScJ7qTGjqT60UiVDQRJ6k0
-        41KGiWtA9xdJD4l8MO7kltHMJ9fUX+Dq08VZR9dbQatXEsB9+Cf/xLGKQnaKCC2nOvEHGu
-        Hwt42g0mrif5bw2UWDSVartMsW1ZQPg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4AAFDB038;
-        Mon, 17 May 2021 15:31:44 +0000 (UTC)
-Subject: Re: [PATCH 7/8] xen/netfront: don't trust the backend response data
- blindly
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-8-jgross@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <18aa307e-edf0-cb8b-1fd2-2b5c89522d02@suse.com>
-Date:   Mon, 17 May 2021 17:31:43 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1345209AbhEQPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:50:31 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:35496 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244990AbhEQPd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:33:28 -0400
+Received: by mail-ot1-f42.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so5896917otg.2;
+        Mon, 17 May 2021 08:32:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qLabWeFWWUTFvcwZHvdf6d9/NKDpE7SLOGHOguQ8yP0=;
+        b=Rt4gTDxAbTpYvZzySezezBQfpHXfPqz9mHJvkBhwm0HPBIjIGGQCVvOjwx94JEIPc6
+         q9Dqh6qhDDqXqDh11PVH0FIkoSTwRtfBfSwGSeYcb6TXpDyOpnYPYq+hKY9aHWqe3/c9
+         hhhuMzTmSBQuM9uzz7X2z7c6X3UT39riNzOac4xcgn5jydN/TjZCCEEUJRXTDhWaVzqS
+         pcPAoH3tyRE6BPtFm8pScfKKee8nB7Xh8Ybkqx4SlqrJWMBETOg6g3YMH8xZQ/W46UdO
+         XnAitpCItgDNOictpmAKzbuRqACnnLTllZ9jwbd08ayQxEEcYyNncTBiv2P/0OunCqsE
+         35Hw==
+X-Gm-Message-State: AOAM5302jCm//YKof3/U5zBkHj8sQIcM/UXk3h12QXz6MNokEpP1+Oue
+        EXOZyickEC0wBVjKrOqyiHe8pS1MNwnLOXW1bjU=
+X-Google-Smtp-Source: ABdhPJz8EaCRfO+89bvTzzIpwv9fxsJQPwePYnpt5jdL657j8M4bnnBiEHAfUXlkhLZIIb+awOW8EVF4DZefr8M3qcA=
+X-Received: by 2002:a9d:1e1:: with SMTP id e88mr141134ote.260.1621265530975;
+ Mon, 17 May 2021 08:32:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210513100302.22027-8-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
+ <YJ4hrrUkKRkKsUtf@gmail.com> <CAJZ5v0h0Z3pfwpL2SsJ53=SfqE2d+7PrG+nt0PXjYrqeAkc27g@mail.gmail.com>
+ <YJ5O5gytKMDOCnFz@gmail.com>
+In-Reply-To: <YJ5O5gytKMDOCnFz@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 17 May 2021 17:31:59 +0200
+Message-ID: <CAJZ5v0gE4GC6R=FW39Xp_xiLzc0RgPGu0VJygz4gN-OOBr4YCg@mail.gmail.com>
+Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
+To:     Ingo Molnar <mingo@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.05.2021 12:03, Juergen Gross wrote:
-> @@ -429,6 +453,12 @@ static void xennet_tx_buf_gc(struct netfront_queue *queue)
->  	} while (more_to_do);
->  
->  	xennet_maybe_wake_tx(queue);
-> +
-> +	return;
-> +
-> + err:
-> +	queue->info->broken = true;
-> +	dev_alert(dev, "Disabled for further use\n");
->  }
+On Fri, May 14, 2021 at 12:20 PM Ingo Molnar <mingo@kernel.org> wrote:
+>
+>
+> * Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> > On Fri, May 14, 2021 at 9:07 AM Ingo Molnar <mingo@kernel.org> wrote:
+> > >
+> > >
+> > > * Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> > >
+> > > > Switching to pr_debug et al has two benefits:
+> > > > - We don't have to add PREFIX to each log statement
+> > > > - Debug output is suppressed except DEBUG is defined or dynamic
+> > > >   debugging is enabled for the respective code piece.
+> > > >
+> > > > In addition ensure that longer messages aren't split to multiple lines
+> > > > in source code, checkpatch complains otherwise.
+> > > >
+> > > > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> > > > ---
+> > > >  arch/x86/kernel/acpi/boot.c | 118 ++++++++++++++----------------------
+> > > >  1 file changed, 47 insertions(+), 71 deletions(-)
+> > >
+> > > Reviewed-by: Ingo Molnar <mingo@kernel.org>
+> >
+> > So I'm going to take this through the ACPI tree if that's OK.
+>
+> Sure!
 
-If in blkfront the ability to revive a device via a suspend/resume cycle
-is "a nice side effect", wouldn't it be nice for all frontends to behave
-similarly in this regard? I.e. wouldn't you want to also clear this flag
-somewhere? And shouldn't additionally / more generally a disconnect /
-connect cycle allow proper operation again?
-
-> @@ -472,6 +502,13 @@ static void xennet_tx_setup_grant(unsigned long gfn, unsigned int offset,
->  
->  	*tx = info->tx_local;
->  
-> +	/*
-> +	 * The request is not in its final form, as size and flags might be
-> +	 * modified later, but even if a malicious backend will send a response
-> +	 * now, nothing bad regarding security could happen.
-> +	 */
-> +	queue->tx_pending[id] = true;
-
-I'm not sure I can agree with what the comment says. If the backend
-sent a response prematurely, wouldn't the underlying slot(s) become
-available for re-use, and hence potentially get filled / updated by
-two parties?
-
-Jan
+So applied as 5.14 material, thanks!
