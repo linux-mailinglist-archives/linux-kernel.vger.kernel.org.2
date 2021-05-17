@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C973838BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB76383712
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344997AbhEQQAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:00:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52294 "EHLO mail.kernel.org"
+        id S1343559AbhEQPjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344012AbhEQPkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:40:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35ABB61D0C;
-        Mon, 17 May 2021 14:41:47 +0000 (UTC)
+        id S243944AbhEQPYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:24:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6450D61C9E;
+        Mon, 17 May 2021 14:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262507;
-        bh=lBmajCjIQ/09p1KgMeI9jgaURLMVarkzR9C9MZGAk2o=;
+        s=korg; t=1621262142;
+        bh=MezwKVfeMlw3FXUOd7hfkb6rZQSNh9McEAZLyv0jj5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EK53ExbEcqPlvw8PwBNUtTr2A9c7zhOlfxfrH7zFRmPaPZ4sPHUtF7eErZ+/9BsBy
-         rZT9IJ7Vnp/Bt122ffjDtyfC61vM7Lf8RIk4G/65mh6HOmeYd+dyd1wrXymlOx0rPs
-         l4WcVD9/rDC+fHMKMzkAFzEUziRPoUmVFkj33bOg=
+        b=nm7YvV0cjFwIjhjwcSD/6uNH8CNDh8yhOb7u2Gl0smqpn9FPr9tUzmjXkQ5X0YaE7
+         itLoBaa1Nb5ZyAXl9M/PouHvpLAwSyY1q4sGAmqKXtr4rYrc7dXCxqFsn+nNWrunLG
+         MDd6k0Xg9ausnZfShl4xPuftaRQhnvYAvO9Y0zjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 203/289] mm/hugetlb: fix F_SEAL_FUTURE_WRITE
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 217/329] sched/fair: Fix unfairness caused by missing load decay
 Date:   Mon, 17 May 2021 16:02:08 +0200
-Message-Id: <20210517140311.947246302@linuxfoundation.org>
+Message-Id: <20210517140309.471640394@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,150 +41,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Xu <peterx@redhat.com>
+From: Odin Ugedal <odin@uged.al>
 
-commit 22247efd822e6d263f3c8bd327f3f769aea9b1d9 upstream.
+[ Upstream commit 0258bdfaff5bd13c4d2383150b7097aecd6b6d82 ]
 
-Patch series "mm/hugetlb: Fix issues on file sealing and fork", v2.
+This fixes an issue where old load on a cfs_rq is not properly decayed,
+resulting in strange behavior where fairness can decrease drastically.
+Real workloads with equally weighted control groups have ended up
+getting a respective 99% and 1%(!!) of cpu time.
 
-Hugh reported issue with F_SEAL_FUTURE_WRITE not applied correctly to
-hugetlbfs, which I can easily verify using the memfd_test program, which
-seems that the program is hardly run with hugetlbfs pages (as by default
-shmem).
+When an idle task is attached to a cfs_rq by attaching a pid to a cgroup,
+the old load of the task is attached to the new cfs_rq and sched_entity by
+attach_entity_cfs_rq. If the task is then moved to another cpu (and
+therefore cfs_rq) before being enqueued/woken up, the load will be moved
+to cfs_rq->removed from the sched_entity. Such a move will happen when
+enforcing a cpuset on the task (eg. via a cgroup) that force it to move.
 
-Meanwhile I found another probably even more severe issue on that hugetlb
-fork won't wr-protect child cow pages, so child can potentially write to
-parent private pages.  Patch 2 addresses that.
+The load will however not be removed from the task_group itself, making
+it look like there is a constant load on that cfs_rq. This causes the
+vruntime of tasks on other sibling cfs_rq's to increase faster than they
+are supposed to; causing severe fairness issues. If no other task is
+started on the given cfs_rq, and due to the cpuset it would not happen,
+this load would never be properly unloaded. With this patch the load
+will be properly removed inside update_blocked_averages. This also
+applies to tasks moved to the fair scheduling class and moved to another
+cpu, and this path will also fix that. For fork, the entity is queued
+right away, so this problem does not affect that.
 
-After this series applied, "memfd_test hugetlbfs" should start to pass.
+This applies to cases where the new process is the first in the cfs_rq,
+issue introduced 3d30544f0212 ("sched/fair: Apply more PELT fixes"), and
+when there has previously been load on the cgroup but the cgroup was
+removed from the leaflist due to having null PELT load, indroduced
+in 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing
+path").
 
-This patch (of 2):
+For a simple cgroup hierarchy (as seen below) with two equally weighted
+groups, that in theory should get 50/50 of cpu time each, it often leads
+to a load of 60/40 or 70/30.
 
-F_SEAL_FUTURE_WRITE is missing for hugetlb starting from the first day.
-There is a test program for that and it fails constantly.
+parent/
+  cg-1/
+    cpu.weight: 100
+    cpuset.cpus: 1
+  cg-2/
+    cpu.weight: 100
+    cpuset.cpus: 1
 
-$ ./memfd_test hugetlbfs
-memfd-hugetlb: CREATE
-memfd-hugetlb: BASIC
-memfd-hugetlb: SEAL-WRITE
-memfd-hugetlb: SEAL-FUTURE-WRITE
-mmap() didn't fail as expected
-Aborted (core dumped)
+If the hierarchy is deeper (as seen below), while keeping cg-1 and cg-2
+equally weighted, they should still get a 50/50 balance of cpu time.
+This however sometimes results in a balance of 10/90 or 1/99(!!) between
+the task groups.
 
-I think it's probably because no one is really running the hugetlbfs test.
+$ ps u -C stress
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
+root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
 
-Fix it by checking FUTURE_WRITE also in hugetlbfs_file_mmap() as what we
-do in shmem_mmap().  Generalize a helper for that.
+parent/
+  cg-1/
+    cpu.weight: 100
+    sub-group/
+      cpu.weight: 1
+      cpuset.cpus: 1
+  cg-2/
+    cpu.weight: 100
+    sub-group/
+      cpu.weight: 10000
+      cpuset.cpus: 1
 
-Link: https://lkml.kernel.org/r/20210503234356.9097-1-peterx@redhat.com
-Link: https://lkml.kernel.org/r/20210503234356.9097-2-peterx@redhat.com
-Fixes: ab3948f58ff84 ("mm/memfd: add an F_SEAL_FUTURE_WRITE seal to memfd")
-Signed-off-by: Peter Xu <peterx@redhat.com>
-Reported-by: Hugh Dickins <hughd@google.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This can be reproduced by attaching an idle process to a cgroup and
+moving it to a given cpuset before it wakes up. The issue is evident in
+many (if not most) container runtimes, and has been reproduced
+with both crun and runc (and therefore docker and all its "derivatives"),
+and with both cgroup v1 and v2.
+
+Fixes: 3d30544f0212 ("sched/fair: Apply more PELT fixes")
+Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
+Signed-off-by: Odin Ugedal <odin@uged.al>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20210501141950.23622-2-odin@uged.al
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hugetlbfs/inode.c |    5 +++++
- include/linux/mm.h   |   32 ++++++++++++++++++++++++++++++++
- mm/shmem.c           |   22 ++++------------------
- 3 files changed, 41 insertions(+), 18 deletions(-)
+ kernel/sched/fair.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -131,6 +131,7 @@ static void huge_pagevec_release(struct
- static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f217e5251fb2..10b8b133145d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10885,16 +10885,22 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
  {
- 	struct inode *inode = file_inode(file);
-+	struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
- 	loff_t len, vma_len;
- 	int ret;
- 	struct hstate *h = hstate_file(file);
-@@ -146,6 +147,10 @@ static int hugetlbfs_file_mmap(struct fi
- 	vma->vm_flags |= VM_HUGETLB | VM_DONTEXPAND;
- 	vma->vm_ops = &hugetlb_vm_ops;
+ 	struct cfs_rq *cfs_rq;
  
-+	ret = seal_check_future_write(info->seals, vma);
-+	if (ret)
-+		return ret;
++	list_add_leaf_cfs_rq(cfs_rq_of(se));
 +
- 	/*
- 	 * page based offset in vm_pgoff could be sufficiently large to
- 	 * overflow a loff_t when converted to byte offset.  This can
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3178,5 +3178,37 @@ unsigned long wp_shared_mapping_range(st
+ 	/* Start to propagate at parent */
+ 	se = se->parent;
  
- extern int sysctl_nr_trim_pages;
+ 	for_each_sched_entity(se) {
+ 		cfs_rq = cfs_rq_of(se);
  
-+/**
-+ * seal_check_future_write - Check for F_SEAL_FUTURE_WRITE flag and handle it
-+ * @seals: the seals to check
-+ * @vma: the vma to operate on
-+ *
-+ * Check whether F_SEAL_FUTURE_WRITE is set; if so, do proper check/handling on
-+ * the vma flags.  Return 0 if check pass, or <0 for errors.
-+ */
-+static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
-+{
-+	if (seals & F_SEAL_FUTURE_WRITE) {
-+		/*
-+		 * New PROT_WRITE and MAP_SHARED mmaps are not allowed when
-+		 * "future write" seal active.
-+		 */
-+		if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
-+			return -EPERM;
-+
-+		/*
-+		 * Since an F_SEAL_FUTURE_WRITE sealed memfd can be mapped as
-+		 * MAP_SHARED and read-only, take care to not allow mprotect to
-+		 * revert protections on such mappings. Do this only for shared
-+		 * mappings. For private mappings, don't need to mask
-+		 * VM_MAYWRITE as we still want them to be COW-writable.
-+		 */
-+		if (vma->vm_flags & VM_SHARED)
-+			vma->vm_flags &= ~(VM_MAYWRITE);
-+	}
-+
-+	return 0;
-+}
-+
- #endif /* __KERNEL__ */
- #endif /* _LINUX_MM_H */
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2256,25 +2256,11 @@ out_nomem:
- static int shmem_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	struct shmem_inode_info *info = SHMEM_I(file_inode(file));
-+	int ret;
+-		if (cfs_rq_throttled(cfs_rq))
+-			break;
++		if (!cfs_rq_throttled(cfs_rq)){
++			update_load_avg(cfs_rq, se, UPDATE_TG);
++			list_add_leaf_cfs_rq(cfs_rq);
++			continue;
++		}
  
--	if (info->seals & F_SEAL_FUTURE_WRITE) {
--		/*
--		 * New PROT_WRITE and MAP_SHARED mmaps are not allowed when
--		 * "future write" seal active.
--		 */
--		if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
--			return -EPERM;
--
--		/*
--		 * Since an F_SEAL_FUTURE_WRITE sealed memfd can be mapped as
--		 * MAP_SHARED and read-only, take care to not allow mprotect to
--		 * revert protections on such mappings. Do this only for shared
--		 * mappings. For private mappings, don't need to mask
--		 * VM_MAYWRITE as we still want them to be COW-writable.
--		 */
--		if (vma->vm_flags & VM_SHARED)
--			vma->vm_flags &= ~(VM_MAYWRITE);
--	}
-+	ret = seal_check_future_write(info->seals, vma);
-+	if (ret)
-+		return ret;
- 
- 	/* arm64 - allow memory tagging on RAM-based files */
- 	vma->vm_flags |= VM_MTE_ALLOWED;
+-		update_load_avg(cfs_rq, se, UPDATE_TG);
++		if (list_add_leaf_cfs_rq(cfs_rq))
++			break;
+ 	}
+ }
+ #else
+-- 
+2.30.2
+
 
 
