@@ -2,125 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F41386CBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29901386CC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238213AbhEQWGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 18:06:16 -0400
-Received: from gimli.rothwell.id.au ([103.230.158.156]:59043 "EHLO
-        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbhEQWGO (ORCPT
+        id S241045AbhEQWJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 18:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235143AbhEQWJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 18:06:14 -0400
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4FkY8L0S1vzyQJ;
-        Tue, 18 May 2021 08:04:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1621289095;
-        bh=3zQXipN+5rOCvuSWYiWEGaHiIwQkUt3DbG1nZj86/GA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HR05GDKDWir9rgKkNqrsP3gB9XDLsEcqyIvUHVkqm/81SVLRh95UaKWlAzs1Sv6FS
-         EdvTZ8ePSqaUgMoCtJCdWuOxNjbJmVGI/qoV1ZtToTpr7LyBtOkCSmwQWJNLB1FxbS
-         xNnTzmmQMrtA4DtMnGhNGAiHbbBLeNAGOEU/cyfS97qKdCVfXGRHy5wqGsG6rUZXQw
-         YK79e1iKJTXf5ReYrjvWE3sClmplCce00k8aYXkPKYKAgDp44J2EI76SN2V7aApLp+
-         J7h8ZC+kEmV6Ye048s2mUco9cIxyfmgfOdrsuXWrSuhKR1oSXX9qdoN0b7AYBFGXb8
-         giw94aHB87aDg==
-Date:   Tue, 18 May 2021 08:04:42 +1000
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
-Subject: Re: [PULL] topic/iomem-mmap-vs-gup
-Message-ID: <20210518080442.28080686@elm.ozlabs.ibm.com>
-In-Reply-To: <CAKMK7uFsRPod-tAJ8ZrzXM6B_+5VgvRs-U0_TiG75da62cnVnw@mail.gmail.com>
-References: <YJBHiRiCGzojk25U@phenom.ffwll.local>
-        <CAHk-=wiwgOPQ+4Eaf0GD5P_GveE6vUHsKxAT=pMsjk1v_kh4ig@mail.gmail.com>
-        <YJVijmznt1xnsCxc@phenom.ffwll.local>
-        <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
-        <CAKMK7uELBbkhFBQoSfvMx+AKnbk-fgbamBm3sC20-dJwMq3Xmg@mail.gmail.com>
-        <YJjg3DRnG1RG6VDK@infradead.org>
-        <CAKMK7uFsRPod-tAJ8ZrzXM6B_+5VgvRs-U0_TiG75da62cnVnw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 17 May 2021 18:09:41 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848E8C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:08:24 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id h4so11092245lfv.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:08:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aiAV+qQwXJPcgqn7w7rtnZLrlnP8hVpl9lvjv8Yo2sY=;
+        b=tQvNXBxdwDPqbLqjYG25+dmpte5t2V+AHEoNAFG90ASop/VChpJCqRvSrOuulXa0ID
+         twX6UdmqgrC2HxiQNCJZ0jDAHKLJ5VA7NdfJnYpuvmo5XXs+RNE+YuoK1yygcRNKip6H
+         ZXw5LBKh+tM+NrRbihA8FZE96E51dgQx1Q1aBD7DxGXMj/TwgGn9HMPnqIIRNHefTR0b
+         TOUE91a8csnml9YUdnfjlsZOc58VMcvNyRe21xZia55gdQeIiDmZJl0IjJ5xS0CSl+dV
+         tPly+owazy8SlBOUlmNU8CAZoDz2ZmmWp+6vrDDyWq96YuzV+p4M1b774wz+ZVlk12/T
+         T2lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aiAV+qQwXJPcgqn7w7rtnZLrlnP8hVpl9lvjv8Yo2sY=;
+        b=E2n3jamCKYFSx+bEK0lW65c4/197Udl775G5D/4ti+1YP5ZaUN77egpJoWo2agEU9J
+         514HaoPy+cQgiu+zDAFe0gTSEBqCyn8LNhKYXMVVccL1z5yoN/7nY0lRzxV8bi1AksPP
+         4sFcv27gvjbXBZVZ29w3aKqHUTS5W5oobUwyWw0Iq2SSR9r2peCuq0IgMbasIIKYZ/LE
+         TrHCTpewPkYTu4gQ33f2rI0dhyf/fCrl+WIBDwIoDXecJGzeg5NrB0IXQ3HQjzkqeSvv
+         o4cf5+Ws7kGmWsiCu+Y/UasE+wZXPK+Z1dvJxvNwfAUsKJWSVVPGsEsEHYtA4QViWOS2
+         PZuw==
+X-Gm-Message-State: AOAM530RbjBQcSgcfPWdff8/LH+1EyCYPNrcSH7UnqCf5uwIC7hr1IMB
+        Wyjo9J5rKoFmxFjuWbXFtQethNoEIgn9RuHQVIDwfg==
+X-Google-Smtp-Source: ABdhPJwGAGeHOPO+pSRncF+SHNzmQW2bsT2QYdnwvYysLsHsO7D14iw+rv4VLZVCxq115tsNhumTSCl1KfGHMvn86+w=
+X-Received: by 2002:a19:a418:: with SMTP id q24mr1317211lfc.649.1621289302961;
+ Mon, 17 May 2021 15:08:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/aggeSpPGRwf/ibiafiFMPrw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <alpine.DEB.2.22.394.2105112244370.50955@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2105112244370.50955@hadrien>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 18 May 2021 00:08:12 +0200
+Message-ID: <CACRpkdaq_+pG2zO19_zFQeT2aWYHg8+Cgx_rGjEQ-oPxL5NZYA@mail.gmail.com>
+Subject: Re: [PATCH] lib: fix for_each_child.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Julian Braha <julianbraha@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kbuild-all@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/aggeSpPGRwf/ibiafiFMPrw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 11, 2021 at 10:46 PM Julia Lawall <julia.lawall@inria.fr> wrote:
 
-Hi Daniel,
-
-On Mon, 17 May 2021 17:29:35 +0200 Daniel Vetter <daniel.vetter@ffwll.ch> w=
-rote:
+> From: kernel test robot <lkp@intel.com>
 >
-> On Mon, May 10, 2021 at 9:30 AM Christoph Hellwig <hch@infradead.org> wro=
-te:
-> >
-> > On Mon, May 10, 2021 at 09:16:58AM +0200, Daniel Vetter wrote: =20
-> > > > End result: not pulling it, unless somebody can explain to me in sm=
-all
-> > > > words why I'm wrong and have the mental capacity of a damaged roden=
-t. =20
-> > >
-> > > No rodents I think, just more backstory of how this all fits. tldr;
-> > > pin_user_pages is the only safe use of this vb2 userptr thing. =20
-> >
-> > Yes, which is why I advocate for just ripping the follow_pfn path
-> > out entirely.  It could have been used for crazy ad dangerous peer to
-> > peer transfers outside of any infrastructure making it safe, or for
-> > pre-CMA kernel memory carveouts for lage contiguous memory allocations
-> > (which are pretty broken by design as well).  So IMHO the only sensible
-> > thing is to remove this cruft entirely, and if it breaks a currently
-> > working setup (which I think is unlikely) we'll have to make sure it
-> > can work the proper way. =20
->=20
-> Since I'm not getting any cozy consenus vibes here on any option I
-> think I'll just drop this.
->=20
-> Stephen, can you pls drop
->=20
-> git://anongit.freedesktop.org/drm/drm topic/iomem-mmap-vs-gup
->=20
-> from linux-next? It's not going anywhere. I'll also go ahead and
-> delete the branch, to make sure you catch this update :-)
+> For_each_available_child_of_node should have of_node_put() before return
+> around line 1121.
+>
+> Generated by: scripts/coccinelle/iterators/for_each_child.cocci
+>
+> Fixes: 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS")
+> CC: Julian Braha <julianbraha@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
-I have dropped this now.  Thanks for letting me know.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
---=20
-Cheers,
-Stephen Rothwell
+Shall I apply it to the DRM tree or do you plan on funneling it
+some other way?
 
---Sig_/aggeSpPGRwf/ibiafiFMPrw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCi6HoACgkQAVBC80lX
-0GyNzAf+PsJKuLMSyGdrI9Eb1SKOtnkBb4Phs9Z2XAd9Ch2v94oPoiB9Q+2fMR3X
-YDjZPndyD/LzF1qIRGWDZLhcf8FBU80ZXRNxTfw+yjoH9wcj+cQl5Nlw/qTdINnZ
-FI/aXekpdIFmzXYWl3+6h2RCq/C/+/fl3hIDqRyNgSRWIx+oqk97eSB4WEnynGLB
-ng3poVuFFymwD/y9fDhCyEKfwjEDZqu+fiaYS0Jvl+e9nx19iScrMtm9jVmS7F4Y
-yHItNAj7wnhP+UqJ4Xs2LoQv+AfX0amYwjVqen/f4mEY5cVwBgMmTiVi/7I9nQVe
-5nXKiM/GXzrpZDuYnZelmd+uAsn+Gw==
-=3/Jz
------END PGP SIGNATURE-----
-
---Sig_/aggeSpPGRwf/ibiafiFMPrw--
+Yours,
+Linus Walleij
