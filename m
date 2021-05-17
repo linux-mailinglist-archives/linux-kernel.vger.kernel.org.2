@@ -2,127 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD62383D2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B9D383D37
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhEQTWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S233266AbhEQTY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbhEQTWk (ORCPT
+        with ESMTP id S232775AbhEQTY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:22:40 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE43BC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 12:21:23 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id e138-20020a25e7900000b029050df4b648fcso4501982ybh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 12:21:23 -0700 (PDT)
+        Mon, 17 May 2021 15:24:57 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929AFC061573;
+        Mon, 17 May 2021 12:23:39 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso6528296ots.10;
+        Mon, 17 May 2021 12:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=79DMjSxiP2F1AeRPgnsBg/R7gF79NxIe5NFXbthP6VI=;
-        b=MFAW2KY9zPq61R1HXjxZWc7oA7t20+c367OWkGm31d5kdUS65UbfPlI6yNMVqyuMnO
-         JZ/Vq2/nO8r1udNp4pIQN4xkD0zaqijcJtZggsgvVawgrwK73nPXhcQonCueCyT7rqG+
-         zJSnYj9QSKyYqzJsFP+hMArHnsBmMLBh506d8o3j9OBwIXpjGjN6ZnmI/tSfdMkzB+/G
-         ikBY/kmZ6Yxiyt60OygzXJrhamDOrdsIttQ3bSUIIB1/Ny/2+2wbSjIPrlwMJB/y4WvF
-         0JKJvYJpISCzuWkd4eVYF8QeEZ5ECCwOqFulXspVklIFV7/dAFP4rxgx8QA7l0y+xG09
-         7uuw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RgO5PZp5sg1uOBfz6Mo0I/T1+iA05mzESFPtCNaQU/M=;
+        b=dzqv6P4+T6AJsl2STE/YPGX+AwgvEtOpPIi/7MmlW7CKBSYhMK2cjZFM7HP6aZSo5A
+         vXutRcoufTlpPu9v3aI3Uj7u+KXVnsyhSsbMjQeSnlY1cXAbKnUfdwDulJC+CjEFyKSG
+         4p8skbHH/R3nZk7SKOKX6K+iHbSFnhOeZvCwnajObAUGMwgjB40l6RayQY0tQwaNxiLI
+         VqgfsrINYcegnyCm4Dvru2/Yxi+C+jYpXgXnd+yA9O4boacGpteapRqdLHpyHEokSo6V
+         6K19loSQQRjjq788k4ttQEywq58rwd2Yg6RF6y23fIPxpu3/NLq9BLS/A4jpc4eJMvNY
+         bpIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=79DMjSxiP2F1AeRPgnsBg/R7gF79NxIe5NFXbthP6VI=;
-        b=pvFQ8exvr8TzBfODGDkLkQOryQ2TBXxgLtrtzQEvUR6nFSQHOEE0LN9f74WyT/QkUP
-         L/HTNwFPmRWaWKtfGFOBPHv6+Ntg0u5cGyAz6gbFV8e14f/SWXL9GrYyztx4y7rCOAFY
-         0ebo40JroDSSecqAJUmB1PaWOn1V6P5RgFvfkKdIqIegHPD7ft6L613A/woZoHDqeWyQ
-         bp4vGsb9sLCfRkXncbNZL6er9McZ053rYpWx+Q5FYv+gVNcpMaOUHl+avlllgjrob1c5
-         TL3ajFMWGN4vvlMqBbvCQRgUBkkS7gGIivnE4Vm563G/+WiSa321vB2vQmGODyceFYKr
-         XkbQ==
-X-Gm-Message-State: AOAM533jkQ51YwXfdmOm7NXbPhRzOjxJiKyuHW4/AMV4TcrPMboUei9y
-        xMqDEBpkOSWTJZTfWnxIX5P6gW6g/PU=
-X-Google-Smtp-Source: ABdhPJweE4HBhuxz8PmhtWA0Hdo6sKmybMPGmOK564AHaorko3PoYnyRUB1tLJ3hTruPY1fVS9NogOY6Lv4=
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:b562:7011:fe35:1c9e])
- (user=badhri job=sendgmr) by 2002:a25:d8d6:: with SMTP id p205mr1919757ybg.485.1621279283104;
- Mon, 17 May 2021 12:21:23 -0700 (PDT)
-Date:   Mon, 17 May 2021 12:21:12 -0700
-In-Reply-To: <20210517192112.40934-1-badhri@google.com>
-Message-Id: <20210517192112.40934-4-badhri@google.com>
-Mime-Version: 1.0
-References: <20210517192112.40934-1-badhri@google.com>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v2 4/4] usb: typec: tcpci: Implement callback for apply_rc
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RgO5PZp5sg1uOBfz6Mo0I/T1+iA05mzESFPtCNaQU/M=;
+        b=RIMWZhuhgJkXUWoSGv8fVlnqfCWk8/CkKQ1YoYjjtKqNJOmvAiyNrLP+SEl8J0CsOs
+         V7HOgMdmO/zfA3FmdpZF+1K9ZhONmvgoZE12Y+pEF3c/MDTAIVrmd3jXRmClHFLyVvKw
+         bce6pAKgRYVVdhgZaf847vzExqSKwhMeVTKwclmvdWqL931JLUqjrNDWZlR0RNmJiIgK
+         b43QpDIymRDcfrXqcfC70e6AHPWYGpvRGTdgimPwRpBRSsiqPmvq2Eicrre1jq9jfP/3
+         nSWt+0QHL/dgyNGT3tN7M8fculyrHHpV25aR1wxicF5YIB506wgTrvDPQYtebD33K5cz
+         CKww==
+X-Gm-Message-State: AOAM530/2mw5G5ue5Y7z9sZXGtfZbB6IwiZyoFDyLoL/YQlRNzZngUxJ
+        qXwMqtwdF/P+35ByUfG/nUbcyLknoP/M2goznRc=
+X-Google-Smtp-Source: ABdhPJyYEMDOZEmGiHRamUQqPfxH8/7OCMHXD6a0sDixsaX5l5mHTqz1OZyvzkb0toQThpy4wMO9b4hP6cEl465AA/g=
+X-Received: by 2002:a9d:74c6:: with SMTP id a6mr971495otl.132.1621279418884;
+ Mon, 17 May 2021 12:23:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <YJ42MEgwDZrAEQLl@kroah.com> <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
+ <YKIeBdwFb9Ng275X@phenom.ffwll.local> <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+In-Reply-To: <503d101d-7273-757a-2809-e272db93c45d@suse.de>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 17 May 2021 15:23:27 -0400
+Message-ID: <CADnq5_NR+ysqmx6ftakGTjqjw0p6roiupa3sYTN8NuAMoGa6sQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-APPLY RC is defined as ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and
-POWER_CONTROL.AutodischargeDisconnect is 0. When ROLE_CONTROL.CC1 ==
-ROLE_CONTROL.CC2, set the other CC to OPEN.
+On Mon, May 17, 2021 at 3:12 PM Thomas Zimmermann <tzimmermann@suse.de> wro=
+te:
+>
+> Hi
+>
+> Am 17.05.21 um 09:40 schrieb Daniel Vetter:
+> > On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
+> >> On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
+> >> <gregkh@linuxfoundation.org> wrote:
+> >>> On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:
+> >>>> Dear kernel maintainers,
+> >>>>
+> >>>> This submission is a kernel driver to support Intel(R) Gaussian & Ne=
+ural
+> >>>> Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-pr=
+ocessor
+> >>>> available on multiple Intel platforms. AI developers and users can o=
+ffload
+> >>>> continuous inference workloads to an Intel(R) GNA device in order to
+> free
+> >>>> processor resources and save power. Noise reduction and speech recog=
+nition
+> >>>> are the examples of the workloads Intel(R) GNA deals with while its =
+usage
+> >>>> is not limited to the two.
+> >>>
+> >>> How does this compare with the "nnpi" driver being proposed here:
+> >>>          https://lore.kernel.org/r/20210513085725.45528-1-guy.zadicar=
+io@intel.com
+> >>>
+> >>> Please work with those developers to share code and userspace api and
+> >>> tools.  Having the community review two totally different apis and
+> >>> drivers for the same type of functionality from the same company is
+> >>> totally wasteful of our time and energy.
+> >>
+> >> Agreed, but I think we should go further than this and work towards a
+> >> subsystem across companies for machine learning and neural networks
+> >> accelerators for both inferencing and training.
+> >
+> > We have, it's called drivers/gpu. Feel free to rename to drivers/xpu or
+> > think G as in General, not Graphisc.
+>
+> I hope this was a joke.
+>
+> Just some thoughts:
+>
+> AFAICT AI first came as an application of GPUs, but has now
+> evolved/specialized into something of its own. I can imagine sharing
+> some code among the various subsystems, say GEM/TTM internals for memory
+> management. Besides that there's probably little that can be shared in
+> the userspace interfaces. A GPU is device that puts an image onto the
+> screen and an AI accelerator isn't. Treating both as the same, even if
+> they share similar chip architectures, seems like a stretch. They might
+> evolve in different directions and fit less and less under the same
+> umbrella.
 
-Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
----
-Changes since V1:
-- Added Reviewed-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/usb/typec/tcpm/tcpci.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+The putting something on the screen is just a tiny part of what GPUs
+do these days.  Many GPUs don't even have display hardware anymore.
+Even with drawing APIs, it's just some operation that you do with
+memory.  The display may be another device entirely.  GPUs also do
+video encode and decode, jpeg acceleration, etc.  drivers/gpu seems
+like a logical place to me.  Call it drivers/accelerators if you like.
+Other than modesetting most of the shared infrastructure in
+drivers/gpu is around memory management and synchronization which are
+all the hard parts.  Better to try and share that than to reinvent
+that in some other subsystem.
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index 25b480752266..34b5095cc84f 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -115,6 +115,32 @@ static int tcpci_set_cc(struct tcpc_dev *tcpc, enum typec_cc_status cc)
- 	return 0;
- }
- 
-+int tcpci_apply_rc(struct tcpc_dev *tcpc, enum typec_cc_status cc, enum typec_cc_polarity polarity)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-+	unsigned int reg;
-+	int ret;
-+
-+	ret = regmap_read(tcpci->regmap, TCPC_ROLE_CTRL, &reg);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * APPLY_RC state is when ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and vbus autodischarge on
-+	 * disconnect is disabled. Bail out when ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2.
-+	 */
-+	if (((reg & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) >>
-+	     TCPC_ROLE_CTRL_CC2_SHIFT) !=
-+	    ((reg & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) >>
-+	     TCPC_ROLE_CTRL_CC1_SHIFT))
-+		return 0;
-+
-+	return regmap_update_bits(tcpci->regmap, TCPC_ROLE_CTRL, polarity == TYPEC_POLARITY_CC1 ?
-+				  TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT :
-+				  TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT,
-+				  TCPC_ROLE_CTRL_CC_OPEN);
-+}
-+
- static int tcpci_start_toggling(struct tcpc_dev *tcpc,
- 				enum typec_port_type port_type,
- 				enum typec_cc_status cc)
-@@ -728,6 +754,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
- 	tcpci->tcpc.get_vbus = tcpci_get_vbus;
- 	tcpci->tcpc.set_vbus = tcpci_set_vbus;
- 	tcpci->tcpc.set_cc = tcpci_set_cc;
-+	tcpci->tcpc.apply_rc = tcpci_apply_rc;
- 	tcpci->tcpc.get_cc = tcpci_get_cc;
- 	tcpci->tcpc.set_polarity = tcpci_set_polarity;
- 	tcpci->tcpc.set_vconn = tcpci_set_vconn;
--- 
-2.31.1.751.gd2f1c929bd-goog
+Alex
 
+>
+> And as Dave mentioned, these devices are hard to obtain. We don't really
+> know what we sign up for.
+>
+> Just my 2 cents.
+>
+> Best regards
+> Thomas
+>
+>
+>
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>
