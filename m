@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284483822AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5ED73822AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbhEQCXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 22:23:15 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40970 "EHLO loongson.cn"
+        id S232273AbhEQCXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 22:23:13 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40966 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231755AbhEQCXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230147AbhEQCXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 16 May 2021 22:23:08 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP+4k06FgP_cXAA--.20760S2;
-        Mon, 17 May 2021 10:21:24 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP+4k06FgP_cXAA--.20760S3;
+        Mon, 17 May 2021 10:21:27 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Jonathan Corbet <corbet@lwn.net>, Marc Koderer <marc@koderer.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
@@ -29,41 +29,58 @@ To:     Jonathan Corbet <corbet@lwn.net>, Marc Koderer <marc@koderer.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Joe Perches <joe@perches.com>
 Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v4 0/2] Fix typos in samples/kprobes/kprobe_example.c
-Date:   Mon, 17 May 2021 10:21:21 +0800
-Message-Id: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v4 1/2] samples/kprobes: Fix typo in handler_fault()
+Date:   Mon, 17 May 2021 10:21:22 +0800
+Message-Id: <1621218083-23519-2-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxP+4k06FgP_cXAA--.20760S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYq7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
-        x2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5gAwDUUUU
+In-Reply-To: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxP+4k06FgP_cXAA--.20760S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFWxCw18JFW7KFWfKw18AFb_yoWDJFcEya
+        s7t34DWw45JFya9FyUKr4rJFnFqr1xWa1xGw4xXr1qyas3Xay7CF4vkrnrGw4fX398GFyU
+        trsrXry7Zr4rWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbyAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
+        0Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
+        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxd
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+        IY04v7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8
+        JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1V
+        AFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4
+        A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU
+        0xZFpf9x0JU5Ma5UUUUU=
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split the v3 patch [1] into two patches suggested by Masami Hiramatsu.
+Fix a defective format in handler_fault() ending with an 'n' that
+should be '\n'.
 
-[1] https://lore.kernel.org/patchwork/patch/1429021/
+Fixes: 804defea1c02 ("Kprobes: move kprobe examples to samples/")
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ samples/kprobes/kprobe_example.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tiezhu Yang (2):
-  samples/kprobes: Fix typo in handler_fault()
-  samples/kprobes: Fix typo in handler_post()
-
- samples/kprobes/kprobe_example.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
-
+diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
+index c495664..d77a546 100644
+--- a/samples/kprobes/kprobe_example.c
++++ b/samples/kprobes/kprobe_example.c
+@@ -101,7 +101,7 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
+  */
+ static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
+ {
+-	pr_info("fault_handler: p->addr = 0x%p, trap #%dn", p->addr, trapnr);
++	pr_info("fault_handler: p->addr = 0x%p, trap #%d\n", p->addr, trapnr);
+ 	/* Return 0 because we don't handle the fault. */
+ 	return 0;
+ }
 -- 
 2.1.0
 
