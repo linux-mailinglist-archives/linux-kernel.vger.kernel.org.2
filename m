@@ -2,111 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A5438297D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03050382981
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236274AbhEQKJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
+        id S236263AbhEQKK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236273AbhEQKJl (ORCPT
+        with ESMTP id S230157AbhEQKKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:09:41 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B74C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:08:24 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id n2so8312306ejy.7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:08:24 -0700 (PDT)
+        Mon, 17 May 2021 06:10:30 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F32BC06175F;
+        Mon, 17 May 2021 03:09:14 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id y32so4285901pga.11;
+        Mon, 17 May 2021 03:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YY0Ck0zSEdF0gTBX54lqL24Ab+0Kr/VRz/DFUzjuM+g=;
-        b=t2Qah4MVCccGQAbBlBUSHbq7DQayF2QSFlCfKfOm3pxH1qITcPNHssp1n8J6FBA26e
-         IX7lxhiAVIyAZqC+49tC46y4HCpqTw1hbvtrD42TbM3WZKgdbQhg184890hEo/tb5Shm
-         4s/ftORFUyF/qz+cckCmNnv78VJrZu7EWpUix7dSjo3n5+UbMYo0p7kf+IqoxvzJpw8q
-         b8wKN4CiATLnn6yC5e3Kjvw5OODAlpFcN7DePttM6RyYqyB/odkAhRjzJANG/baoYb/T
-         0ot9aXnrvN1KHUnwa1ZzNylWKWMYpPEjwxRS+IGJlaYj6BatTAPVzegiqRTsg3IP3N9L
-         g9zA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoXZ4vHVHP8vrBjP/Y8D4xxfMB8OzgmtkMwcyzbeX0Q=;
+        b=h39floIVlsNNX7rbb5fFw7ehnpgjfPOlxxaXmiu51qMlFCa3eNTyBkCKghenPFtHot
+         w22KYex6j6RTa2dpp4oky4+HF+lkye0N/S64nsQNkdtytq4BaWHVsRVge/HXgYX+Pql/
+         Y0pgyImyC76QyFhtFSnA+gyPo7Uvx0khpY64YIqQUlfuEnoSUpxguLwk14ctfaXxUTpY
+         q9A6FLnhCK22PO1amOYRWJyHNqFwMDxjFbb4FxBTE6UpYTHsTc/RTW2RfFRqQIwc6kAS
+         6x+3BbYBjYQvpbEXB/xvy/Dedk9VG/kkdN3VIGEmWO0Jdb4SFiA3mlGAWK6Lsvyu+krQ
+         WNbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YY0Ck0zSEdF0gTBX54lqL24Ab+0Kr/VRz/DFUzjuM+g=;
-        b=PWdQfSNG34+FKYxd7DeV6x4D9WnfxctlLbK0cTIbW4hNts4rYsvxM2CZuFN1zkAyzi
-         MwnSr+bdZ7kBLborEJgI229SaJ7L9nbwoKPKV5VoTSYV6H9rVx2Y/dtP/kzx3FLYyJXt
-         GdQwU1cxIYncysx/RoJm/83NXfLklJ9f9gEe3q2MMXGr1auMLGozR9c15O3rG3vNNrVw
-         2TxiCWXE3/qDSdv804dAfkHrH+gdcOb9xvZfFQjbZN0PzVQ4EFebFADJ8NEk1gTiB4AS
-         c8n8wo8S24CDAKI4A23glhwtVz5Uzq3pXXspF9M9mKk77/aAX55LqedmScKiIKmFRYPh
-         +jaA==
-X-Gm-Message-State: AOAM531YDsA1B8GmjDKmz1mi6PuZ2Vx4xtC07BgfA7kceAiEUd6+fSiQ
-        i5lqQOYAwMzCD+/EMKs4HCOMQ67kU0JU+dhP4SxE
-X-Google-Smtp-Source: ABdhPJyHmhdb6cFUkH+Qw1gIFQstYwMcmHhYtVTIHJIsAvKLCNTMmKuQvaiwd3TNse5uGZUOJe/+xEBp/ag4GkTzJpw=
-X-Received: by 2002:a17:906:c211:: with SMTP id d17mr26584774ejz.247.1621246103464;
- Mon, 17 May 2021 03:08:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoXZ4vHVHP8vrBjP/Y8D4xxfMB8OzgmtkMwcyzbeX0Q=;
+        b=qAIkWEB+mJR5qmAwWt81UgP1Zb6b0gPIU0ctlXzxqULns6fliIceFAglxXfpmzvx7s
+         77rbO82orNp/ZjQoJCVwTM5VGFcDQJCA8+85N6/ynRU040zxy37CVPRJ5cJ1fWoJbaJV
+         3/oeUj/vjICMCgLr5RKNNDY9LcktnYIKKBJLS6SsU9mCi8RlabaL3+qqxYQnrwYDAgTG
+         NE/99TECk8I3q9WeVJgCVrDbcx/U4TBSLIazYkZ4D84zY3UcIYKvqZciUN3eSYUpoGBx
+         1tousm15tgypxyFvMp0QiRpnnLOwO64ZLNBvvjmxz5U9ahPnpVjwT3snzZKEEA/L/6QM
+         ufVQ==
+X-Gm-Message-State: AOAM5303ygvZoEDfCisJJX5cH2T7R53uAlLOvHYnTxaIuFDLs+QXAXdP
+        0vRKE+4fz5xfhOZcsRg/22eXVjeRLZY=
+X-Google-Smtp-Source: ABdhPJz+0UcZFt4a1N9fMPs8K+Ea3wAXhWg1UaC49Ex05b9KOIstw3tWn11ldE1N2/QCo+g6qsCZ3w==
+X-Received: by 2002:a63:334b:: with SMTP id z72mr31953889pgz.46.1621246153590;
+        Mon, 17 May 2021 03:09:13 -0700 (PDT)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id u1sm1471193pfc.63.2021.05.17.03.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 03:09:13 -0700 (PDT)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     chaotian.jing@mediatek.com, ulf.hansson@linaro.org,
+        matthias.bgg@gmail.com
+Cc:     linux-mmc@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] mmc: mediatek: use data instead of mrq parameter from msdc_{un}prepare_data()
+Date:   Mon, 17 May 2021 18:09:00 +0800
+Message-Id: <20210517100900.1620-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-References: <20210517093428.670-1-xieyongji@bytedance.com> <20210517093428.670-14-xieyongji@bytedance.com>
- <20e1d79f-c3f6-5553-d6b6-1f1051c39ccc@redhat.com>
-In-Reply-To: <20e1d79f-c3f6-5553-d6b6-1f1051c39ccc@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Mon, 17 May 2021 18:08:12 +0800
-Message-ID: <CACycT3us0h_mpiZ+aeBt18HDwDs3GQf=-tDjQAyqtYfHCVw8YQ@mail.gmail.com>
-Subject: Re: Re: [RFC PATCH 13/15] virtio-mem: Handle virtio_device_ready() failure
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>, amit@kernel.org,
-        arei.gonglei@huawei.com, airlied@linux.ie, kraxel@redhat.com,
-        jean-philippe@linaro.org, Ohad Ben Cohen <ohad@wizery.com>,
-        bjorn.andersson@linaro.org, vgoyal@redhat.com, miklos@szeredi.hu,
-        lucho@ionkov.net, asmadeus@codewreck.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 5:48 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 17.05.21 11:34, Xie Yongji wrote:
-> > Now virtio_device_ready() will return error if we get
-> > invalid status. Let's handle this case on probe.
-> >
-> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > ---
-> >   drivers/virtio/virtio_mem.c | 6 +++++-
-> >   1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> > index 32a8e359a5c3..1148c392ff94 100644
-> > --- a/drivers/virtio/virtio_mem.c
-> > +++ b/drivers/virtio/virtio_mem.c
-> > @@ -2602,13 +2602,17 @@ static int virtio_mem_probe(struct virtio_device *vdev)
-> >       if (rc)
-> >               goto out_unreg_mem;
-> >
-> > -     virtio_device_ready(vdev);
-> > +     rc = virtio_device_ready(vdev);
-> > +     if (rc)
-> > +             goto out_unreg_device;
-> >
-> >       /* trigger a config update to start processing the requested_size */
-> >       atomic_set(&vm->config_changed, 1);
-> >       queue_work(system_freezable_wq, &vm->wq);
-> >
-> >       return 0;
-> > +out_unreg_device:
-> > +     unregister_virtio_mem_device(vm);
-> >   out_unreg_mem:
-> >       unregister_memory_notifier(&vm->memory_notifier);
-> >   out_del_resource:
-> >
->
-> I assume this will really be a corner case to hit, right?
->
+From: Yue Hu <huyue2@yulong.com>
 
-Yes, it should almost never happen if the device is trusted.
+We already have 'mrq->data' before calling these two functions, no
+need to find it again via 'mrq->data' internally. Also remove local
+data variable accordingly.
 
-Thanks,
-Yongji
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/mmc/host/mtk-sd.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 898ed1b..c4db944 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -724,10 +724,8 @@ static inline void msdc_dma_setup(struct msdc_host *host, struct msdc_dma *dma,
+ 	writel(lower_32_bits(dma->gpd_addr), host->base + MSDC_DMA_SA);
+ }
+ 
+-static void msdc_prepare_data(struct msdc_host *host, struct mmc_request *mrq)
++static void msdc_prepare_data(struct msdc_host *host, struct mmc_data *data)
+ {
+-	struct mmc_data *data = mrq->data;
+-
+ 	if (!(data->host_cookie & MSDC_PREPARE_FLAG)) {
+ 		data->host_cookie |= MSDC_PREPARE_FLAG;
+ 		data->sg_count = dma_map_sg(host->dev, data->sg, data->sg_len,
+@@ -735,10 +733,8 @@ static void msdc_prepare_data(struct msdc_host *host, struct mmc_request *mrq)
+ 	}
+ }
+ 
+-static void msdc_unprepare_data(struct msdc_host *host, struct mmc_request *mrq)
++static void msdc_unprepare_data(struct msdc_host *host, struct mmc_data *data)
+ {
+-	struct mmc_data *data = mrq->data;
+-
+ 	if (data->host_cookie & MSDC_ASYNC_FLAG)
+ 		return;
+ 
+@@ -1140,7 +1136,7 @@ static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+ 
+ 	msdc_track_cmd_data(host, mrq->cmd, mrq->data);
+ 	if (mrq->data)
+-		msdc_unprepare_data(host, mrq);
++		msdc_unprepare_data(host, mrq->data);
+ 	if (host->error)
+ 		msdc_reset_hw(host);
+ 	mmc_request_done(mmc_from_priv(host), mrq);
+@@ -1311,7 +1307,7 @@ static void msdc_ops_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 	host->mrq = mrq;
+ 
+ 	if (mrq->data)
+-		msdc_prepare_data(host, mrq);
++		msdc_prepare_data(host, mrq->data);
+ 
+ 	/* if SBC is required, we have HW option and SW option.
+ 	 * if HW option is enabled, and SBC does not have "special" flags,
+@@ -1332,7 +1328,7 @@ static void msdc_pre_req(struct mmc_host *mmc, struct mmc_request *mrq)
+ 	if (!data)
+ 		return;
+ 
+-	msdc_prepare_data(host, mrq);
++	msdc_prepare_data(host, data);
+ 	data->host_cookie |= MSDC_ASYNC_FLAG;
+ }
+ 
+@@ -1340,14 +1336,14 @@ static void msdc_post_req(struct mmc_host *mmc, struct mmc_request *mrq,
+ 		int err)
+ {
+ 	struct msdc_host *host = mmc_priv(mmc);
+-	struct mmc_data *data;
++	struct mmc_data *data = mrq->data;
+ 
+-	data = mrq->data;
+ 	if (!data)
+ 		return;
++
+ 	if (data->host_cookie) {
+ 		data->host_cookie &= ~MSDC_ASYNC_FLAG;
+-		msdc_unprepare_data(host, mrq);
++		msdc_unprepare_data(host, data);
+ 	}
+ }
+ 
+-- 
+1.9.1
+
