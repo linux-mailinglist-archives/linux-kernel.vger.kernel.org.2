@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FDD38331C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B63D3830F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242044AbhEQOy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:54:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37902 "EHLO mail.kernel.org"
+        id S239811AbhEQOdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:33:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241774AbhEQOqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:46:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD9F061448;
-        Mon, 17 May 2021 14:21:19 +0000 (UTC)
+        id S238969AbhEQO2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C1F613DC;
+        Mon, 17 May 2021 14:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261280;
-        bh=Kt9kyEWJd9xaRMNQHUWBMtEao+CZbeSDxxLpH2azuwM=;
+        s=korg; t=1621260841;
+        bh=uvsdfGNEu6fT7UN+VgqEadQGzd7+VAPyiU9OSLHDgc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=soD9DfllXu2RsQK11meg+2tnd+Go3jV/5xX6DmE1NThAWBYXgQ/nyy7kQkRDexuXs
-         Scug8P3A3ZSILQ5RRo88e4CMFURXhU5+596hfupJ2JcQv9/+PdIedZPGEXenOznipF
-         nUROJMetTFDQE8v59SrjHLvGBbi768tQauPMA8Ak=
+        b=sYOCJHotYz+VJUWgkiag+rnCVABEEy+wbfj62EkqwuvHwneGEeAjcT+mOaP52O8Fz
+         pMVsFEXg8sR/wiUSQQpvHfNVQxplSNxjG0dvJb0miaTbQjM1kJkLInYUV28+1woK9s
+         QCK9tlW6Q7vpy3lUunxJFxKzfEfSbxtr7kmMBGgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 5.10 001/289] KEYS: trusted: Fix memory leak on object td
-Date:   Mon, 17 May 2021 15:58:46 +0200
-Message-Id: <20210517140305.198832527@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 016/329] fs: dlm: add errno handling to check callback
+Date:   Mon, 17 May 2021 15:58:47 +0200
+Message-Id: <20210517140302.596874207@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,46 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-commit 83a775d5f9bfda95b1c295f95a3a041a40c7f321 upstream.
+[ Upstream commit 8aa9540b49e0833feba75dbf4f45babadd0ed215 ]
 
-Two error return paths are neglecting to free allocated object td,
-causing a memory leak. Fix this by returning via the error return
-path that securely kfree's td.
+This allows to return individual errno values for the config attribute
+check callback instead of returning invalid argument only.
 
-Fixes clang scan-build warning:
-security/keys/trusted-keys/trusted_tpm1.c:496:10: warning: Potential
-memory leak [unix.Malloc]
-
-Cc: stable@vger.kernel.org
-Fixes: 5df16caada3f ("KEYS: trusted: Fix incorrect handling of tpm_get_random()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/keys/trusted-keys/trusted_tpm1.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/dlm/config.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
---- a/security/keys/trusted-keys/trusted_tpm1.c
-+++ b/security/keys/trusted-keys/trusted_tpm1.c
-@@ -500,10 +500,12 @@ static int tpm_seal(struct tpm_buf *tb,
+diff --git a/fs/dlm/config.c b/fs/dlm/config.c
+index 582bffa09a66..8439610c266a 100644
+--- a/fs/dlm/config.c
++++ b/fs/dlm/config.c
+@@ -125,7 +125,7 @@ static ssize_t cluster_cluster_name_store(struct config_item *item,
+ CONFIGFS_ATTR(cluster_, cluster_name);
  
- 	ret = tpm_get_random(chip, td->nonceodd, TPM_NONCE_SIZE);
- 	if (ret < 0)
--		return ret;
-+		goto out;
+ static ssize_t cluster_set(struct dlm_cluster *cl, unsigned int *cl_field,
+-			   int *info_field, bool (*check_cb)(unsigned int x),
++			   int *info_field, int (*check_cb)(unsigned int x),
+ 			   const char *buf, size_t len)
+ {
+ 	unsigned int x;
+@@ -137,8 +137,11 @@ static ssize_t cluster_set(struct dlm_cluster *cl, unsigned int *cl_field,
+ 	if (rc)
+ 		return rc;
  
--	if (ret != TPM_NONCE_SIZE)
--		return -EIO;
-+	if (ret != TPM_NONCE_SIZE) {
-+		ret = -EIO;
-+		goto out;
+-	if (check_cb && check_cb(x))
+-		return -EINVAL;
++	if (check_cb) {
++		rc = check_cb(x);
++		if (rc)
++			return rc;
 +	}
  
- 	ordinal = htonl(TPM_ORD_SEAL);
- 	datsize = htonl(datalen);
+ 	*cl_field = x;
+ 	*info_field = x;
+@@ -161,14 +164,20 @@ static ssize_t cluster_##name##_show(struct config_item *item, char *buf)     \
+ }                                                                             \
+ CONFIGFS_ATTR(cluster_, name);
+ 
+-static bool dlm_check_zero(unsigned int x)
++static int dlm_check_zero(unsigned int x)
+ {
+-	return !x;
++	if (!x)
++		return -EINVAL;
++
++	return 0;
+ }
+ 
+-static bool dlm_check_buffer_size(unsigned int x)
++static int dlm_check_buffer_size(unsigned int x)
+ {
+-	return (x < DEFAULT_BUFFER_SIZE);
++	if (x < DEFAULT_BUFFER_SIZE)
++		return -EINVAL;
++
++	return 0;
+ }
+ 
+ CLUSTER_ATTR(tcp_port, dlm_check_zero);
+-- 
+2.30.2
+
 
 
