@@ -2,76 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35350382C6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B1D382C71
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhEQMoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:44:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43594 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237076AbhEQMn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:43:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621255362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aiM3vKTum70TM7QOTT95hhDvPgS+x6dBjBJHzOjqx/I=;
-        b=QdHKMwN4ulSsBGSBhH8tgLkK/uK0lznYQ65rTGPzuAamhg9LRNvAXtLDtw55K3SeGMptAC
-        mLZeVf1yRsjPEaeTYwz4gl6GaUAjHL30L91sdoOGhkvtei20FOKGwFmvBzKfTXRM6/oLc0
-        jQAaOIrt5Gt3ZNxhECuaCrvSKfWTi4Q=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0E5F2B1C3;
-        Mon, 17 May 2021 12:42:41 +0000 (UTC)
-Date:   Mon, 17 May 2021 14:42:39 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     JC Kuo <jckuo@nvidia.com>, Joe Perches <joe@perches.com>,
-        Sumit Garg <sumit.garg@linaro.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: [PATCH v2 1/4] lib/vsprintf: Allow to override ISO 8601 date and
- time separator
-Message-ID: <YKJkv2qik314kjAB@alley>
-References: <20210511153958.34527-1-andriy.shevchenko@linux.intel.com>
- <YJzymZ7m3R1ELjGD@alley>
+        id S237104AbhEQMoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237111AbhEQMoK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:44:10 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB42C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 05:42:53 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id k127so5495690qkc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 05:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6T4maM20wkpjUTzPHq1v9/9VNN9YGOt3sjTVfNPSz1A=;
+        b=nvQT7F/3r8Y0wxzeiOXETNl8o2OLI4D/k81fdrFR3vutCkklITXoCdrZz9ASp2ZBmB
+         BfcbXLPGRk2XfClI7UJK4ESMbXY+KvUO4w/UGZsvTUd8MZJ8UVl40oZnlzJycdVKsWYa
+         XWB6eqWVefR7y8PZpJB4NXbzuarlMoX5rifOyBq3pwdhnoFsaKvF4UIDhVx0jz0pVU/T
+         R88UfdeYaLiuVfgNA1u9m/iWYDVB7+dntp+c1JfJNdJox30QTs45OTsjzXWxs+VCo/Jk
+         lk510WDJIZZ8ocSVkI15fU6zHj5hxvUeU3461SsSyadTRbUH1lN2ezUL7m7uO1m8sYQa
+         rFWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6T4maM20wkpjUTzPHq1v9/9VNN9YGOt3sjTVfNPSz1A=;
+        b=OJbsVn85TPH9QGzuhWwcClCvD85x41EVx5rOg26zHqDi4MWW8mKLDIy1bNHXGivge0
+         mdcXgwrT7rvts96uA30R6H701LBHHBKAzjVxKW/fxL6IixIRLHrYJiK09dcdRxZvfhxB
+         6FgCafURUKEaNoskzvSMU0MS7dBVfFAyKABsUYXRXnLYTcW/eSlLPxV1bRWE5UXBOfmX
+         vbkIgNd6NUDeZZFWDZvy34BwAD4SecIHjw3Y2Gs+8vhkfgvutVMKP/DXZ5Q4eO2VxiLM
+         o87hqJ78/C8DQkdoENwDqqjHaGVu7xw0sTV8Oz9+DckpHlck64m1xKhUtMyJ1OHQMdGH
+         KRQQ==
+X-Gm-Message-State: AOAM533g+a7fx74w1U0xQLPsm4B/ELAzZk6OMhBNPyuE2lPr7sU5RFZ/
+        T3IuCjxRdprH7BtWal92pN2d1AQbPhH9HBEvoNiArA==
+X-Google-Smtp-Source: ABdhPJyPjy1frJ81yPJoA2iI4XVIbHNfQ2CW7ecWz7Hh38SxdjORxtgenMKkbPSq2yE5PrFX69JqZnQX3kEyDd/YeSM=
+X-Received: by 2002:ae9:e850:: with SMTP id a77mr52728763qkg.424.1621255372672;
+ Mon, 17 May 2021 05:42:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJzymZ7m3R1ELjGD@alley>
+References: <0000000000008ce91e05bf9f62bc@google.com> <CACT4Y+a6L_x22XNJVX+VYY-XKmLQ0GaYndCVYnaFmoxk58GPgw@mail.gmail.com>
+ <20210508144657.GC4038@breakpoint.cc> <20210513005608.GA23780@salvia>
+ <CACT4Y+YhQQtHBErLYRDqHyw16Bxu9FCMQymviMBR-ywiKf3VQw@mail.gmail.com> <20210517105745.GA19031@salvia>
+In-Reply-To: <20210517105745.GA19031@salvia>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 17 May 2021 14:42:41 +0200
+Message-ID: <CACT4Y+Y1M7ewJmipTB=B4fbYR2DMn_kX69Vks93yo=g2g-iXKw@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook (4)
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        syzbot <syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com>,
+        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-05-13 11:34:18, Petr Mladek wrote:
-> On Tue 2021-05-11 18:39:55, Andy Shevchenko wrote:
-> > ISO 8601 defines 'T' as a separator between date and time. Though,
-> > some ABIs use time and date with ' ' (space) separator instead.
-> > 
-> > Add a flavour to the %pt specifier to override default separator.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> 
-> I am going to queue the entire patchset for 5.14 via the printk tree
-> the following week unless anyone complains in the meantime.
+On Mon, May 17, 2021 at 12:57 PM Pablo Neira Ayuso <pablo@netfilter.org> wr=
+ote:
+> > > On Sat, May 08, 2021 at 04:46:57PM +0200, Florian Westphal wrote:
+> > > > Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > > > IMPORTANT: if you fix the issue, please add the following tag t=
+o the commit:
+> > > > > > Reported-by: syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.=
+com
+> > > > >
+> > > > > Is this also fixed by "netfilter: arptables: use pernet ops struc=
+t
+> > > > > during unregister"?
+> > > > > The warning is the same, but the stack is different...
+> > > >
+> > > > No, this is a different bug.
+> > > >
+> > > > In both cases the caller attempts to unregister a hook that the cor=
+e
+> > > > can't find, but in this case the caller is nftables, not arptables.
+> > >
+> > > I see no reproducer for this bug. Maybe I broke the dormant flag hand=
+ling?
+> > >
+> > > Or maybe syzbot got here after the arptables bug has been hitted?
+> >
+> > syzbot always stops after the first bug to give you perfect "Not
+> > tainted" oopses.
+>
+> Looking at the log file:
+>
+> https://syzkaller.appspot.com/text?tag=3DCrashLog&x=3D110a3096d00000
+>
+> This is mixing calls to nftables:
+>
+> 14:43:16 executing program 0:
+> r0 =3D socket$nl_netfilter(0x10, 0x3, 0xc)
+> sendmsg$NFT_BATCH(r0, &(0x7f000000c2c0)=3D{0x0, 0x0, &(0x7f0000000000)=3D=
+{&(0x7f00000001c0)=3D{{0x9}, [@NFT_MSG_NEWTABLE=3D{0x28, 0x0, 0xa, 0x3, 0x0=
+, 0x0, {0x2}, [@NFTA_TABLE_NAME=3D{0x9, 0x1, 'syz0\x00'}, @NFTA_TABLE_FLAGS=
+=3D{0x8}]}], {0x14}}, 0x50}}, 0x0)
+>
+> with arptables:
+>
+> 14:43:16 executing program 1:
+> r0 =3D socket$inet_udp(0x2, 0x2, 0x0)
+> setsockopt$ARPT_SO_SET_REPLACE(r0, 0x0, 0x60, &(0x7f0000000000)=3D{'filte=
+r\x00', 0x4, 0x4, 0x3f8, 0x310, 0x200, 0x200, 0x310, 0x310, 0x310, 0x4, 0x0=
+, {[{{@arp=3D{@broadcast, @rand_addr, 0x87010000, 0x0, 0x0, 0x0, {@mac=3D@l=
+ink_local}, {@mac}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'bridge0\x00', 'erspan0\x=
+00'}, 0xc0, 0x100}, @unspec=3D@RATEEST=3D{0x40, 'RATEEST\x00', 0x0, {'syz1\=
+x00', 0x0, 0x4}}}, {{@arp=3D{@initdev=3D{0xac, 0x1e, 0x0, 0x0}, @local, 0x0=
+, 0x0, 0x0, 0x0, {@mac=3D@remote}, {}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'veth0=
+_to_bridge\x00', 'geneve1\x00'}, 0xc0, 0x100}, @unspec=3D@RATEEST=3D{0x40, =
+'RATEEST\x00', 0x0, {'syz0\x00', 0x0, 0x2}}}, {{@arp=3D{@local, @multicast1=
+, 0x0, 0x0, 0x0, 0x0, {}, {@mac=3D@broadcast}, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0=
+, 'veth0_to_batadv\x00', 'veth0_to_hsr\x00'}, 0xc0, 0x110}, @mangle=3D{0x50=
+, 'mangle\x00', 0x0, {@mac=3D@remote, @mac=3D@local, @multicast2, @initdev=
+=3D{0xac, 0x1e, 0x0, 0x0}}}}], {{[], 0xc0, 0xe8}, {0x28}}}}, 0x448)
+>
+> arptables was buggy at the time this bug has been reported.
+>
+> Am I understanding correctly the syzbot log?
+>
+> I wonder if the (buggy) arptables removed the incorrect hook from
+> nftables, then nftables crashed on the same location when removing the
+> hook. I don't see a clear sequence for this to happen though.
+>
+> Would it be possible to make syzbot exercise the NFT_MSG_NEWTABLE
+> codepath (with NFTA_TABLE_FLAGS) to check if the problem still
+> persists?
 
-The patchset has been committed into print/linux.git, branch
-for-5.14-vsprintf-pts.
 
-Best Regards,
-Petr
+This happened only once so far 40 days ago. So if you consider it
+possible that it actually happened due to the arptables issue, I would
+mark it as invalid (with "#syz invalid") and move on. If it ever
+happens again, syzbot will notify, but then we know it happened with
+the aprtables issue fixed.
+
+This bug does not have a reproducer, so it's not possible to test this
+exact scenario. It's possible to replay the whole log, but somehow
+syzkaller wasn't able to retrigger it by replaying the log. I don't
+think it's worth our time at this point.
