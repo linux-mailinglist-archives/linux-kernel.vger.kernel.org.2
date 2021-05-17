@@ -2,139 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E746383BF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7A3383BFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243913AbhEQSMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:12:39 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:52837 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236884AbhEQSML (ORCPT
+        id S244065AbhEQSOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243988AbhEQSOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:12:11 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id D6AE65C0194;
-        Mon, 17 May 2021 14:10:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 17 May 2021 14:10:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=staAu2NQSD+sUEvD6aPKW7Ph2gm
-        xQzl1MyMLLgSmbIw=; b=3RDlHGPrfd1Khe9wxpViyXgqUn1BL+UvWv4TGjZ/QYS
-        kLi699KaIqzt6UCcbJl9oytmRhI2ww0nvVwVevbxOFysJXv+P9bVyzryOoY53iul
-        dCZS7FsbgSAdHzEJSPjnxdftKn6E9uDkjBxfwGhyOEX28H3qVl5htl7ht6cb3kNs
-        0WIvLkmlPGdfAuH5AwTyaAd3I13dyRqwzBdcZlilwSyBj4shjTm6bKtv9FKRxOpy
-        h0uaF2oI1DmDeKi5N+JKK6B0yaLYBXkuE1Xlvp11KXYdDgRcxhA+EcBjZLO2Y1eB
-        LvGdOEbBUg71gvzhLPIvuCFvZZUXVQfnKD/jaeOV9Ow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=staAu2
-        NQSD+sUEvD6aPKW7Ph2gmxQzl1MyMLLgSmbIw=; b=QWPTUklssD8iMmMu7zqjP/
-        kbcVPYoZB3wfVji1aRotB/ty6pkO6i+yzYKrzVhW+mWy/boQOMMHavIFG0xA1+hn
-        J3SdUKfch/NO6wQmHxFijBfppDAia5nbH5ogqtFDptlGZup80zhCu5579ZDVj//Z
-        +5nLP6H4YKMkAdGDVmd1Zu2fwF/baVTJskol3qn70Zv64l7EcFXgAl9CKK2spkkO
-        Q9hDBykBFtx5nxbisOA0c4EiY4clroAFggBH1B6Ektl3kXE/+Bscz5S71yHca8fr
-        up6lWnjlTy0/MUdkDoPuntnm69Vuy7RHCw4wplTEHn7eQFW4DrR/nGTphD/lXhfw
-        ==
-X-ME-Sender: <xms:n7GiYGSX7cO8sbFs-w4rkfV4PyZHVN4MiRiUcH4QZUFaTGd4-FHYYw>
-    <xme:n7GiYLxpU3JxymrxLIg_WVOzx9pM3amDWSYpBqCv2fXYArST42NGhyH4TkN_yUg6q
-    tUmyORRVdUXyvseorw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeihedguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
-    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
-    grthhtvghrnhepgeekfeejgeektdejgfefudelkeeuteejgefhhfeugffffeelheegieef
-    vdfgtefhnecukfhppeduvdekrddutdejrddvgedurddujeegnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhi
-    iiiirg
-X-ME-Proxy: <xmx:n7GiYD1FMxeBCstzj_0EYyjRZGQznwUt2xTFYVOR75bzGxCW-LG8cw>
-    <xmx:n7GiYCC1KPDc0aB4ReyJEzfYRvKtEmyu8szSDIcHIhcnAoxGlTpymw>
-    <xmx:n7GiYPii08k2lf8BkiqJQl_FzpHLoSPwNMQc7pbh4o_Qk94WrUSWYg>
-    <xmx:oLGiYPjamglJnJGNDhu6SeNT8xoBzVBmJ9DXYkG3F4yxXeGGQTbaHw>
-Received: from cisco (unknown [128.107.241.174])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 17 May 2021 14:10:37 -0400 (EDT)
-Date:   Mon, 17 May 2021 12:10:35 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Andy Lutomirski <luto@kernel.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
-        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH 3/4] seccomp: Support atomic "addfd + send reply"
-Message-ID: <20210517181035.GH1964106@cisco>
-References: <20210502001851.3346-1-sargun@sargun.me>
- <20210502001851.3346-4-sargun@sargun.me>
- <20210511215010.GB1964106@cisco>
- <CAMp4zn-crcdi6AR9VfAmpb0TO9sDtpdwA4C59ERqwdoQW7yTAg@mail.gmail.com>
+        Mon, 17 May 2021 14:14:34 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FECAC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:13:17 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so6399519oto.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EfKCKWBlWMB6WX2+gtYhC171DsA3+5IpegRuV4Mh9HU=;
+        b=Dc8Fi3CxSz/2Frmp7p/Ljzs3veaW9TpCZJGgQ4e6DcOz+Fqyg3dNGp8K0JmlghN9fC
+         rV0WWGPTdqxPArPg6Qro/+2M+bLWTmATE+NM9MXiBcfNtkpzMD0jtD+r4IPiWZiHZtJx
+         QJ0EFp6RkY5XHBuNFWud3yVeiF/7o9S/SCytM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EfKCKWBlWMB6WX2+gtYhC171DsA3+5IpegRuV4Mh9HU=;
+        b=cOp9vZq+FkuNH0gZwtrqQvqZGMhdSc5/rLV0fdJz0MvMqBtv89zjV/oAwO9jpRN5aY
+         tS1z0OKHr3zLV30Yxr5DOa/GWFQ+kThhHCl+b30YGg97pQPA7WRCi5mviGhRKBCEopNo
+         A836Twa/1yx019MkBtuDR6fj+KQSeU30n8EeEO8y1UwsqJa/OJBet3Wvthq2O1JwxEXm
+         vC167QRQGGOBHi+MMkp0MVEk/B+BCjM34hfKnXxwL/kUKZ0QvrsiXjs/gJovqLQBbljX
+         86UjxkTpz4WF6ppQtGlRdV2BSqxRfRGjKX/n0G4fob0u46pmkAKA8SW6r0Acfmxtk7gX
+         jKeg==
+X-Gm-Message-State: AOAM533Xw6szjgG4j39xWS6LRiz4RKGQsfnYjpvT6Q5neZuNMkgH+ZLY
+        f0RBaSw00Du8zg/fg5D3jdthR+SNaAZYkUvnWePjdMwYsSE=
+X-Google-Smtp-Source: ABdhPJxRcZ4Th/QCihyaKvX4fEEMVd/QmFmnKjGIk2Ki7mLJyY7rABhu90g+mCaVb3F1SP3ncmyWmKMpUNLwJTq4bH8=
+X-Received: by 2002:a9d:2966:: with SMTP id d93mr743560otb.56.1621275196944;
+ Mon, 17 May 2021 11:13:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMp4zn-crcdi6AR9VfAmpb0TO9sDtpdwA4C59ERqwdoQW7yTAg@mail.gmail.com>
+References: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
+From:   Venkatesh Srinivas <venkateshs@chromium.org>
+Date:   Mon, 17 May 2021 11:13:23 -0700
+Message-ID: <CAA0tLEqeAK76CcyMHkARGFvXsYxLnzm75aUm7bGaoQn939MfvA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] KVM: exit halt polling on need_resched() for both
+ book3s and generic halt-polling
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Ben Segall <bsegall@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:53:55AM -0700, Sargun Dhillon wrote:
-> On Tue, May 11, 2021 at 2:50 PM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > > The struct seccomp_notif_resp, used when doing SECCOMP_IOCTL_NOTIF_SEND
-> > > ioctl() to send a response to the target, has three more fields that we
-> > > don't allow to set when doing the addfd ioctl() to also return. The
-> > > reasons to disallow each field are:
-> > >  * val: This will be set to the new allocated fd. No point taking it
-> > >    from userspace in this case.
-> > >  * error: If this is non-zero, the value is ignored. Therefore,
-> > >    it is pointless in this case as we want to return the value.
-> > >  * flags: The only flag is to let userspace continue to execute the
-> > >    syscall. This seems pointless, as we want the syscall to return the
-> > >    allocated fd.
-> > >
-> > > This is why those fields are not possible to set when using this new
-> > > flag.
-> >
-> > I don't quite understand this; you don't need a NOTIF_SEND at all
-> > with the way this currently works, right?
-> >
-> I reworded:
-> 
-> This effectively combines SECCOMP_IOCTL_NOTIF_ADDFD and
-> SECCOMP_IOCTL_NOTIF_SEND into an atomic opteration. The notification's
-> return value, nor error can be set by the user. Upon successful invocation
-> of the SECCOMP_IOCTL_NOTIF_ADDFD ioctl with the SECCOMP_ADDFD_FLAG_SEND
-> flag, the notifying process's errno will be 0, and the return value will
-> be the file descriptor number that was installed.
-> 
-> How does that sound?
+On Mon, May 17, 2021 at 7:01 AM Wanpeng Li <kernellwp@gmail.com> wrote:
+>
+> From: Wanpeng Li <wanpengli@tencent.com>
+>
+> Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+> as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+> one task to get the task to block. It was likely allowing VMs to overrun their
+> quota when halt polling. Due to PPC implements an arch specific halt polling
+> logic, we should add the need_resched() checking there as well. This
+> patch adds a helper function that to be shared between book3s and generic
+> halt-polling loop.
+>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Venkatesh Srinivas <venkateshs@chromium.org>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: David Matlack <dmatlack@google.com>
+> Cc: Paul Mackerras <paulus@ozlabs.org>
+> Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+> v2 -> v3:
+>  * add a helper function
+> v1 -> v2:
+>  * update patch description
+>
+>  arch/powerpc/kvm/book3s_hv.c | 2 +-
+>  include/linux/kvm_host.h     | 2 ++
+>  virt/kvm/kvm_main.c          | 9 +++++++--
+>  3 files changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> index 28a80d240b76..360165df345b 100644
+> --- a/arch/powerpc/kvm/book3s_hv.c
+> +++ b/arch/powerpc/kvm/book3s_hv.c
+> @@ -3936,7 +3936,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+>                                 break;
+>                         }
+>                         cur = ktime_get();
+> -               } while (single_task_running() && ktime_before(cur, stop));
+> +               } while (kvm_vcpu_can_block(cur, stop));
+>
+>                 spin_lock(&vc->lock);
+>                 vc->vcore_state = VCORE_INACTIVE;
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 2f34487e21f2..bf4fd60c4699 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1583,4 +1583,6 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
+>  /* Max number of entries allowed for each kvm dirty ring */
+>  #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
+>
+> +bool kvm_vcpu_can_block(ktime_t cur, ktime_t stop);
+> +
+>  #endif
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 6b4feb92dc79..c81080667fd1 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -2945,6 +2945,12 @@ update_halt_poll_stats(struct kvm_vcpu *vcpu, u64 poll_ns, bool waited)
+>                 vcpu->stat.halt_poll_success_ns += poll_ns;
+>  }
+>
+> +
+> +bool kvm_vcpu_can_block(ktime_t cur, ktime_t stop)
+> +{
+> +       return single_task_running() && !need_resched() && ktime_before(cur, stop);
+> +}
+> +
+>  /*
+>   * The vCPU has executed a HLT instruction with in-kernel mode enabled.
+>   */
+> @@ -2973,8 +2979,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>                                 goto out;
+>                         }
+>                         poll_end = cur = ktime_get();
+> -               } while (single_task_running() && !need_resched() &&
+> -                        ktime_before(cur, stop));
+> +               } while (kvm_vcpu_can_block(cur, stop));
+>         }
+>
+>         prepare_to_rcuwait(&vcpu->wait);
+> --
+> 2.25.1
+>
 
-Works for me, thanks!
-
-> > > @@ -1113,7 +1136,7 @@ static int seccomp_do_user_notification(int this_syscall,
-> > >                                                struct seccomp_kaddfd, list);
-> > >               /* Check if we were woken up by a addfd message */
-> > >               if (addfd)
-> > > -                     seccomp_handle_addfd(addfd);
-> > > +                     seccomp_handle_addfd(addfd, &n);
-> > >
-> > >       }  while (n.state != SECCOMP_NOTIFY_REPLIED);
-> > >
-> >
-> > This while() bit is introduced in the previous patch, can we fold this
-> > deletion into that somehow?
-> I'm not sure what you're getting at. This just an argument change which
-> also passes the notification to the addfd function. The patch is split out
-> to allow it to be backported to stable.
-
-Yeah, I was mis-reading, you can ignore this. Sorry for the noise.
-
-If you send another version, you can call the series:
-
-Acked-by: Tycho Andersen <tycho@tycho.pizza>
-
-Tycho
+Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
