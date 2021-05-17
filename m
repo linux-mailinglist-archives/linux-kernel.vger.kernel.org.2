@@ -2,220 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08021386DE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF8E386DE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344403AbhEQXvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 19:51:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40464 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243685AbhEQXvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 19:51:44 -0400
-IronPort-SDR: 5l0ll1cV+B+kXfX3nxwqb2kJoArF130UoWXBec8HUEQabJihodEfjvBu6TIQkbyfEHcBM580NX
- jNHVeRsTECEA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="180868912"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="180868912"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 16:50:23 -0700
-IronPort-SDR: /XYq727h1UTcwXSk/FnF6+Np9tN8OzSkbCJV1eTeH8F3i8yPo1Ryz5maGiGtZMBscelK62SgqC
- 6Dtxr/1y1idg==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="472661384"
-Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 16:50:20 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2-fix 1/1] x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT
-Date:   Mon, 17 May 2021 16:50:08 -0700
-Message-Id: <20210517235008.257241-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <28f5b8c2-2307-45b0-19b4-0737df8f06f3@suse.com>
-References: <28f5b8c2-2307-45b0-19b4-0737df8f06f3@suse.com>
+        id S1344613AbhEQXwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 19:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344597AbhEQXwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 19:52:02 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA07C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 16:50:45 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id h7so4074111plt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 16:50:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rri/ZUWebCAURWUdOsBuRJz+8kSWlPQMsU2NIL6PvoY=;
+        b=FRMPueRDHgiD5iCfFvtD1s0ilAwmF/bus1HxUHlZsO4yO+Y4hKh9zMq4hstI9wA+yr
+         Ns3pzVTPc0f4VwxvgvaiwPAcXYq5wTkTUnEcw5bxrcDTzD7zqgsfQ1MyutHQP97qzgIo
+         ecMfPUCp/aKHEWCaIUKcnuTuMiSyd6R3+z64HVpN1n8fy5NIjhZggdtG6T8scxbMAYZi
+         nthZhEZrnsytJUDMpXJmY2YmWXPWE0xdmWlUKf3ihhZXJbPVkSjul1zUJqJ6AYuIG5hn
+         nJZdH4r8iXoMsNTCpb1NG+rMOvyOHBJQS8ZZnYa5EKDqIel5WoRnSevz3VAh/ZKh4bi1
+         5JyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rri/ZUWebCAURWUdOsBuRJz+8kSWlPQMsU2NIL6PvoY=;
+        b=lkiPtV3DQR/cr0wcWy0d9WlzJ26u1yJwxc1x701zZeGM2NVspzuVIu6KaM6lngd27q
+         WlU2H8+AxTEs9hEAZDD57wUwx5WO2BgLWaqQjNstZaJKuzV7zQsNle0LP3dD0VsOzh3Z
+         O1fuH4riQLgBgW0uoNGWG1E0u3/K28mBv3iSVbtSj1y2a7sOyVGSiTU9xfnaqxD2/LEd
+         lwCP6r6CLZyy6m3KWdM2c6RTcoZ8srgyzGMF2zTWoKoq8P3MConr1SJdkSxE9qtY3Xr+
+         21y+L8Ekj9wt86doNRBV2qj70nTw6PYyclUgtB78xXjCBJFdYdjFOrAf5dJv6wLy/NYg
+         sYwQ==
+X-Gm-Message-State: AOAM532ducTHDnzhtL4kH+Sf7Ll3ZjdJNtu/8fq6NNdVCX3thVvk9VK7
+        aGqtsJ0RVw6uwiSUbNq/69OA7rtUrfc4Kijz+iPN+w==
+X-Google-Smtp-Source: ABdhPJyy7iz0pvj/Fs0u3ozhUqVj0td4iHAzKCmbTFdgNCXrudwdwNQEWknZydQnZmI8D3Vrap2sp+6pKzwu8PknRfw=
+X-Received: by 2002:a17:90a:6f06:: with SMTP id d6mr2110560pjk.216.1621295444570;
+ Mon, 17 May 2021 16:50:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-36-seanjc@google.com>
+In-Reply-To: <20210424004645.3950558-36-seanjc@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Mon, 17 May 2021 16:50:28 -0700
+Message-ID: <CAAeT=Fx08jBjXoduko_O3v+q67a2fx6byU6z6gM=fBmSWFkt8g@mail.gmail.com>
+Subject: Re: [PATCH 35/43] KVM: x86: Move setting of sregs during vCPU
+ RESET/INIT to common x86
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1204,12 +1204,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
+>         init_sys_seg(&save->ldtr, SEG_TYPE_LDT);
+>         init_sys_seg(&save->tr, SEG_TYPE_BUSY_TSS16);
+>
+> -       svm_set_cr0(vcpu, X86_CR0_NW | X86_CR0_CD | X86_CR0_ET);
+> -       svm_set_cr4(vcpu, 0);
+> -       svm_set_efer(vcpu, 0);
+> -       kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+> -       vcpu->arch.regs[VCPU_REGS_RIP] = 0x0000fff0;
 
-CONFIG_PARAVIRT_XXL is mainly defined/used by XEN PV guests. For
-other VM guest types, features supported under CONFIG_PARAVIRT
-are self sufficient. CONFIG_PARAVIRT mainly provides support for
-TLB flush operations and time related operations.
+Reviewed-by: Reiji Watanabe <reijiw@google.com>
 
-For TDX guest as well, paravirt calls under CONFIG_PARVIRT meets
-most of its requirement except the need of HLT and SAFE_HLT
-paravirt calls, which is currently defined under
-COFNIG_PARAVIRT_XXL.
+Those your vCPU RESET/INIT changes look great.
 
-Since enabling CONFIG_PARAVIRT_XXL is too bloated for TDX guest
-like platforms, move HLT and SAFE_HLT paravirt calls under
-CONFIG_PARAVIRT.
+I think the change in init_vmcb() basically assumes that the
+function is called from kvm_vcpu_reset(via svm_vcpu_reset()).
+Although shutdown_interception() directly calls init_mcb(),
+I would think the change doesn't matter for the shutdown
+interception case.
 
-Moving HLT and SAFE_HLT paravirt calls are not fatal and should not
-break any functionality for current users of CONFIG_PARAVIRT.
+IMHO it would be a bit misleading that a function named 'init_vmcb',
+which is called from other than kvm_vcpu_reset (svm_vcpu_reset()),
+only partially resets the vmcb (probably just to me though).
+So, I personally think it would be better if its name or comment
+can give some more specific information about the assumption.
 
-Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
+BTW, it looks like two lines of "vcpu->arch.hflags = 0;"
+can be also removed from the init_vmcb() as well.
 
-Changes since v1:
- * Removed CONFIG_PARAVIRT_XL
- * Moved HLT and SAFE_HLT under CONFIG_PARAVIRT
-
- arch/x86/include/asm/irqflags.h       | 40 +++++++++++++++------------
- arch/x86/include/asm/paravirt.h       | 20 +++++++-------
- arch/x86/include/asm/paravirt_types.h |  3 +-
- arch/x86/kernel/paravirt.c            |  4 ++-
- 4 files changed, 36 insertions(+), 31 deletions(-)
-
-diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
-index 144d70ea4393..6671744dbf3c 100644
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -59,6 +59,28 @@ static inline __cpuidle void native_halt(void)
- 
- #endif
- 
-+#ifndef CONFIG_PARAVIRT
-+#ifndef __ASSEMBLY__
-+/*
-+ * Used in the idle loop; sti takes one instruction cycle
-+ * to complete:
-+ */
-+static inline __cpuidle void arch_safe_halt(void)
-+{
-+	native_safe_halt();
-+}
-+
-+/*
-+ * Used when interrupts are already enabled or to
-+ * shutdown the processor:
-+ */
-+static inline __cpuidle void halt(void)
-+{
-+	native_halt();
-+}
-+#endif /* __ASSEMBLY__ */
-+#endif /* CONFIG_PARAVIRT */
-+
- #ifdef CONFIG_PARAVIRT_XXL
- #include <asm/paravirt.h>
- #else
-@@ -80,24 +102,6 @@ static __always_inline void arch_local_irq_enable(void)
- 	native_irq_enable();
- }
- 
--/*
-- * Used in the idle loop; sti takes one instruction cycle
-- * to complete:
-- */
--static inline __cpuidle void arch_safe_halt(void)
--{
--	native_safe_halt();
--}
--
--/*
-- * Used when interrupts are already enabled or to
-- * shutdown the processor:
-- */
--static inline __cpuidle void halt(void)
--{
--	native_halt();
--}
--
- /*
-  * For spinlocks, etc:
-  */
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index 4abf110e2243..5d967bce8937 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -84,6 +84,16 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
- 	PVOP_VCALL1(mmu.exit_mmap, mm);
- }
- 
-+static inline void arch_safe_halt(void)
-+{
-+	PVOP_VCALL0(irq.safe_halt);
-+}
-+
-+static inline void halt(void)
-+{
-+	PVOP_VCALL0(irq.halt);
-+}
-+
- #ifdef CONFIG_PARAVIRT_XXL
- static inline void load_sp0(unsigned long sp0)
- {
-@@ -145,16 +155,6 @@ static inline void __write_cr4(unsigned long x)
- 	PVOP_VCALL1(cpu.write_cr4, x);
- }
- 
--static inline void arch_safe_halt(void)
--{
--	PVOP_VCALL0(irq.safe_halt);
--}
--
--static inline void halt(void)
--{
--	PVOP_VCALL0(irq.halt);
--}
--
- static inline void wbinvd(void)
- {
- 	PVOP_VCALL0(cpu.wbinvd);
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index de87087d3bde..68bf35ce6dd5 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -177,10 +177,9 @@ struct pv_irq_ops {
- 	struct paravirt_callee_save save_fl;
- 	struct paravirt_callee_save irq_disable;
- 	struct paravirt_callee_save irq_enable;
--
-+#endif
- 	void (*safe_halt)(void);
- 	void (*halt)(void);
--#endif
- } __no_randomize_layout;
- 
- struct pv_mmu_ops {
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index c60222ab8ab9..b001f5aaee4a 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -322,9 +322,11 @@ struct paravirt_patch_template pv_ops = {
- 	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
- 	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(native_irq_disable),
- 	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(native_irq_enable),
-+#endif /* CONFIG_PARAVIRT_XXL */
-+
-+	/* Irq HLT ops. */
- 	.irq.safe_halt		= native_safe_halt,
- 	.irq.halt		= native_halt,
--#endif /* CONFIG_PARAVIRT_XXL */
- 
- 	/* Mmu ops. */
- 	.mmu.flush_tlb_user	= native_flush_tlb_local,
--- 
-2.25.1
-
+Thanks,
+Reiji
