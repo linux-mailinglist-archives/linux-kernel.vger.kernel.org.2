@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98851383956
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBF2383950
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245552AbhEQQOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45426 "EHLO mail.kernel.org"
+        id S1345685AbhEQQNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:13:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345083AbhEQPuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345082AbhEQPuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 11:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E6AA61D4E;
-        Mon, 17 May 2021 14:45:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60C4361D4C;
+        Mon, 17 May 2021 14:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262732;
-        bh=4qn/o1jq7ot2iUr5OwZVguiLDDYmq2cO08lHXczxDQI=;
+        s=korg; t=1621262734;
+        bh=JwzO9mCEstcAbAC60jAhHeYtSsfctwpzPlwyw+po5SU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3Yss0GmNMya8bBVCDNrgc+uSOvqMKp0g7s9QG6HCeVxqWzYS7K9cvbrInEKHXa6w
-         1aBSu7xlgy5M4f+SDlw546qTL79r5OyJ7QfQ3Sk258mmCXhEEhIRdix5cxFb4Cu76n
-         nnify5tgk4keUz2yq2evjKCTf7hRTn8nkyDodMe4=
+        b=ogALzeCcQek97SU5lGpu0fBjchR+7FgCX8aLAWKydFHMR3BH7xoRRGJzl8pNI0Ap7
+         cip7uxaSikoRglnEC0bsPg7cHk8RzuOgjFf6C+5Mk5JA+ZzHBKXiPIl5ASSFZemp3N
+         C0u1cWMrpA6U97eTXHiqsWQ57zyDprbf5vzSxFeM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.10 283/289] i2c: mediatek: Fix send master code at more than 1MHz
-Date:   Mon, 17 May 2021 16:03:28 +0200
-Message-Id: <20210517140314.664246684@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 5.10 284/289] dt-bindings: media: renesas,vin: Make resets optional on R-Car Gen1
+Date:   Mon, 17 May 2021 16:03:29 +0200
+Message-Id: <20210517140314.704145134@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -39,60 +42,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qii Wang <qii.wang@mediatek.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 63ce8e3df8f6deca2da52eaf064751ad4018b46e upstream.
+commit 7935bb56e21b2add81149f4def8e59b4133fe57c upstream.
 
-There are some omissions in the previous patch about replacing
-I2C_MAX_FAST_MODE__FREQ with I2C_MAX_FAST_MODE_PLUS_FREQ and
-need to fix it.
+The "resets" property is not present on R-Car Gen1 SoCs.
+Supporting it would require migrating from renesas,cpg-clocks to
+renesas,cpg-mssr.
 
-Fixes: b44658e755b5("i2c: mediatek: Send i2c master code at more than 1MHz")
-Signed-off-by: Qii Wang <qii.wang@mediatek.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 905fc6b1bfb4a631 ("dt-bindings: rcar-vin: Convert bindings to json-schema")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Link: https://lore.kernel.org/r/217c8197efaee7d803b22d433abb0ea8e33b84c6.1619700314.git.geert+renesas@glider.be
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/media/renesas,vin.yaml |   44 +++++++++------
+ 1 file changed, 28 insertions(+), 16 deletions(-)
 
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -564,7 +564,7 @@ static const struct i2c_spec_values *mtk
+--- a/Documentation/devicetree/bindings/media/renesas,vin.yaml
++++ b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+@@ -278,23 +278,35 @@ required:
+   - interrupts
+   - clocks
+   - power-domains
+-  - resets
  
- static int mtk_i2c_max_step_cnt(unsigned int target_speed)
- {
--	if (target_speed > I2C_MAX_FAST_MODE_FREQ)
-+	if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ)
- 		return MAX_HS_STEP_CNT_DIV;
- 	else
- 		return MAX_STEP_CNT_DIV;
-@@ -635,7 +635,7 @@ static int mtk_i2c_check_ac_timing(struc
- 	if (sda_min > sda_max)
- 		return -3;
+-if:
+-  properties:
+-    compatible:
+-      contains:
+-        enum:
+-          - renesas,vin-r8a7778
+-          - renesas,vin-r8a7779
+-          - renesas,rcar-gen2-vin
+-then:
+-  required:
+-    - port
+-else:
+-  required:
+-    - renesas,id
+-    - ports
++allOf:
++  - if:
++      not:
++        properties:
++          compatible:
++            contains:
++              enum:
++                - renesas,vin-r8a7778
++                - renesas,vin-r8a7779
++    then:
++      required:
++        - resets
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - renesas,vin-r8a7778
++              - renesas,vin-r8a7779
++              - renesas,rcar-gen2-vin
++    then:
++      required:
++        - port
++    else:
++      required:
++        - renesas,id
++        - ports
  
--	if (check_speed > I2C_MAX_FAST_MODE_FREQ) {
-+	if (check_speed > I2C_MAX_FAST_MODE_PLUS_FREQ) {
- 		if (i2c->dev_comp->ltiming_adjust) {
- 			i2c->ac_timing.hs = I2C_TIME_DEFAULT_VALUE |
- 				(sample_cnt << 12) | (high_cnt << 8);
-@@ -850,7 +850,7 @@ static int mtk_i2c_do_transfer(struct mt
+ additionalProperties: false
  
- 	control_reg = mtk_i2c_readw(i2c, OFFSET_CONTROL) &
- 			~(I2C_CONTROL_DIR_CHANGE | I2C_CONTROL_RS);
--	if ((i2c->speed_hz > I2C_MAX_FAST_MODE_FREQ) || (left_num >= 1))
-+	if ((i2c->speed_hz > I2C_MAX_FAST_MODE_PLUS_FREQ) || (left_num >= 1))
- 		control_reg |= I2C_CONTROL_RS;
- 
- 	if (i2c->op == I2C_MASTER_WRRD)
-@@ -1067,7 +1067,8 @@ static int mtk_i2c_transfer(struct i2c_a
- 		}
- 	}
- 
--	if (i2c->auto_restart && num >= 2 && i2c->speed_hz > I2C_MAX_FAST_MODE_FREQ)
-+	if (i2c->auto_restart && num >= 2 &&
-+		i2c->speed_hz > I2C_MAX_FAST_MODE_PLUS_FREQ)
- 		/* ignore the first restart irq after the master code,
- 		 * otherwise the first transfer will be discarded.
- 		 */
 
 
