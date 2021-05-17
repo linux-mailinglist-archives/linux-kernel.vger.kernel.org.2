@@ -2,160 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C679382459
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EEC38245E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234339AbhEQGb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 02:31:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229452AbhEQGbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 02:31:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E55EB61209;
-        Mon, 17 May 2021 06:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621233007;
-        bh=5URBXUpemCQKQLKzWyeSByFQr9lp5HFfnasDIKcXx2I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ag8tid0+KcykMTy8sAm3uL7zsApsOuEuWfw63QF6ZSNqDik5k71msJ5BRCgF65k2K
-         9q1xebrMbw+h7gdT72TtOiUsS8xadlc447n2Cl4+BdPL1s3mY7YtceekACOTGutaVA
-         D0jjvsQA9TM0IdAyXG0CyTCUSJOH5ibGQFcmbGFfJyVw+0vryqieSO1zL1MTsZlwM0
-         0UDrD1Kw/uWpiWaeOk98KYKUAyVZ5VwZheRfRGjbgtoN06XNJikUAIOXBZnarKXZJl
-         V2LmJ+9ohUDATD86s8+T2edQuMqVRJSDHwU75yOZx7ddei4lNBUb+dS8zK3EE21DrB
-         f9GqkkYzmWBTQ==
-Date:   Mon, 17 May 2021 08:30:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     gregkh@linuxfoundation.org, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 17/17] staging: nuc-led: update the TODOs
-Message-ID: <20210517083001.7688acd7@coco.lan>
-In-Reply-To: <20210516182149.GA3666@localhost>
-References: <cover.1621161037.git.mchehab+huawei@kernel.org>
-        <f23fed6a89f66564f5af52f241016a4b9823ce04.1621161037.git.mchehab+huawei@kernel.org>
-        <20210516182149.GA3666@localhost>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S234452AbhEQGda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 02:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229452AbhEQGdY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 02:33:24 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428A6C061573;
+        Sun, 16 May 2021 23:32:08 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so4685096otg.2;
+        Sun, 16 May 2021 23:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ie0SvJLAVnukBdnR1QH9TyMAlD3l6NvpyUmRVBYG5OM=;
+        b=TG5DifERKl9iNqPG0E2T+TEQURb3zYbaADjc2V1XVmPJyQYoQd5P4j8KsJgj3Rp17c
+         N2+UPPvB6AbrnqB6zsWEXuGAjYlzHqccnAwaGIBEOAPNkqvyBb4l1CK9lGna5hwlIC4/
+         zOza1nbmi9FqwkejMr006NTVkEWlRaU/ePq73k7//0o1EDu9F+OgHijJkNV4/VyjDCUs
+         Uw5P4T/y7SuLTWAV2YjywWQvlX87wJmqXjITw7/o+/pfxJ1mUZtEGczyXzReoF5kQ9RS
+         bG22l1mKkSLUxKqu8wOQFjbX0HCBYl0JIl4SvyaUwxz3ucRGzVW7c2U/Sgq2+x+kbwwC
+         EbUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ie0SvJLAVnukBdnR1QH9TyMAlD3l6NvpyUmRVBYG5OM=;
+        b=bkWPyTvExnjeqyFVND+uh9phJh3uR31nyOs860A6Sw0lpqCrjwb/MFh0FrPO5dZBCa
+         Q/dSTotI1eJbNFOt8IjuiMQYmT2k+fSqIs9M4FlcyHgPIdQx+rdOdHSWs+ihwWmXjfsK
+         ue2vzyTZY8gNxPpL4n2XWacsesVo5PKCjTFoORaS2ij2LkpCRIdQUlBG+9cVSzGjp+z5
+         rjrnc9Ezj8EVAL69N2L+LbdfowI1TqQ/hYP1ybx4OUDx3NOFa2q11kg/L++XojX3zBbN
+         e3DMeDtcGzf+1N6OdQPnTc2jXlEedVb+c4MIceWEPQAzTRIZhbNbQoOTU+LpjKE1OfQD
+         OvTA==
+X-Gm-Message-State: AOAM532pjc1AgbpM/kI2+c3sDYZlZaTHWA9ZXAHC9MvHC302OVImLbpE
+        ko3lN0d+ekztzZPDO877tLCpe+UbQaXP3A5dEhhjbOuDT2Giuw==
+X-Google-Smtp-Source: ABdhPJxjC5r+0BGClxopx1pgtNNKYuabuin6oS0xx/Xg9kGTm/WcJZeJguQLHlAUx7KNjOJnZu4DMwdxp+EMEii3U44=
+X-Received: by 2002:a9d:2ae8:: with SMTP id e95mr50259208otb.72.1621233127733;
+ Sun, 16 May 2021 23:32:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210517005417.18338-1-rdunlap@infradead.org> <e56fa6d9-1305-b3c5-d385-37042835686c@roeck-us.net>
+In-Reply-To: <e56fa6d9-1305-b3c5-d385-37042835686c@roeck-us.net>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 17 May 2021 08:31:56 +0200
+Message-ID: <CAMhs-H9nfHxGTOgww-cC-s_gkZtJBtWsQkhNKCX3NdTJpD=R0Q@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Wim Van Sebroeck <wim@iguana.be>,
+        John Crispin <john@phrozen.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Hi Guenter,
 
-Em Sun, 16 May 2021 20:21:50 +0200
-Pavel Machek <pavel@ucw.cz> escreveu:
+On Mon, May 17, 2021 at 8:23 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 5/16/21 5:54 PM, Randy Dunlap wrote:
+> > rt2880_wdt.c uses (well, attempts to use) rt_sysc_membase. However,
+> > when this watchdog driver is built as a loadable module, there is a
+> > build error since the rt_sysc_membase symbol is not exported.
+> > Export it to quell the build error.
+> >
+> > ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
+> >
+> > Fixes: 473cf939ff34 ("watchdog: add ralink watchdog driver")
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Guenter Roeck <linux@roeck-us.net>
+> > Cc: Wim Van Sebroeck <wim@iguana.be>
+>
+> Acked-by: Guenter Roeck <linux@roeck-us.net>
+>
+> > Cc: John Crispin <john@phrozen.org>
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: linux-watchdog@vger.kernel.org
+> > ---
+> > or make the Kconfig symbol RALINK_WDT bool instead of tristate?
+> >
+>
+> You'd have to change several other config symbols to boolean as well.
+>
+> Example with PHY_MT7621_PCI=m:
+>
+> ERROR: modpost: "rt_sysc_membase" [drivers/phy/ralink/phy-mt7621-pci.ko] undefined!
+> make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
 
-> Hi!
->=20
-> > -  Need to validate the uAPI and document it before moving
-> >    this driver out of staging. =20
->=20
-> >  - Stabilize and document its sysfs interface. =20
->   =20
-> Would you mind starting with this one?
+This is already changed and not using this rt_* apis anymore. See:
 
-Do you mean writing the ABI document for it? Surely I can do that,
-but I'm not sure where to put such document while it is on staging.
+https://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git/commit/?h=next&id=60ece833ccd00c4fc9b10bbce2fa6291f61c6230
+https://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git/commit/?h=next&id=6eded551cefe3ef6e2b3ff76b6a77a2ecd4fa20a
 
-> We should have existing APIs
-> for most of functionality described...
+>
+> Same with MT7621_WDT=m.
+>
+> ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/mt7621_wdt.ko] undefined!
+>
+> At that point I stopped looking.
+>
+> Guenter
 
-I tried to stay as close as possible to the existing API, but
-there are some things that required a different one.
+Best regards,
+    Sergio Paracuellos
 
-For instance, with WMI rev 0.64 and 1.0, any LED of the device
-can be programmed to be a power indicator.
-
-When a LED is programmed this way, there are up to 3 (on rev 1.0) or up
-to 4 (on rev 0.64) different brightness level of the LED, and those
-are associated with a power status (like S0, S3, S5, "ready mode").
-
-So, the LED API standard "brightness" is meaningless. On the other
-hand, when the same LED is programmed to monitor, let's say, the
-WiFi or one of the two Ethernets (or both at the same time), the
-standard "brightness" level makes sense.
-
->=20
-> We really don't want to merge code with bad API, not even to staging.
-
-See, this is the API that it is exposed on with a NUC8:
-
-	$ tree /sys/class/leds/nuc\:\:front1/
-	/sys/class/leds/nuc::front1/
-	=E2=94=9C=E2=94=80=E2=94=80 blink_behavior
-	=E2=94=9C=E2=94=80=E2=94=80 blink_frequency
-	=E2=94=9C=E2=94=80=E2=94=80 brightness
-	=E2=94=9C=E2=94=80=E2=94=80 color
-	=E2=94=9C=E2=94=80=E2=94=80 device -> ../../../8C5DA44C-CDC3-46B3-8619-4E2=
-6D34390B7
-	=E2=94=9C=E2=94=80=E2=94=80 ethernet_type
-	=E2=94=9C=E2=94=80=E2=94=80 hdd_default
-	=E2=94=9C=E2=94=80=E2=94=80 indicator
-	=E2=94=9C=E2=94=80=E2=94=80 max_brightness
-	=E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=9C=E2=94=80=E2=94=80 power_limit_scheme
-	=E2=94=9C=E2=94=80=E2=94=80 ready_mode_blink_behavior
-	=E2=94=9C=E2=94=80=E2=94=80 ready_mode_blink_frequency
-	=E2=94=9C=E2=94=80=E2=94=80 ready_mode_brightness
-	=E2=94=9C=E2=94=80=E2=94=80 s0_blink_behavior
-	=E2=94=9C=E2=94=80=E2=94=80 s0_blink_frequency
-	=E2=94=9C=E2=94=80=E2=94=80 s0_brightness
-	=E2=94=9C=E2=94=80=E2=94=80 s3_blink_behavior
-	=E2=94=9C=E2=94=80=E2=94=80 s3_blink_frequency
-	=E2=94=9C=E2=94=80=E2=94=80 s3_brightness
-	=E2=94=9C=E2=94=80=E2=94=80 s5_blink_behavior
-	=E2=94=9C=E2=94=80=E2=94=80 s5_blink_frequency
-	=E2=94=9C=E2=94=80=E2=94=80 s5_brightness
-	=E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../../class/leds
-	=E2=94=9C=E2=94=80=E2=94=80 trigger
-	=E2=94=94=E2=94=80=E2=94=80 uevent
-
-As the behavior of the LEDs can be dynamically changed, each
-LED expose parameters for all types of hardware event it can
-deal, but only the ones that are applied to its current indicator
-type can be seen/changed.
-
-On other words, the "indicator" tells what type of hardware event
-the LED is currently measuring:
-
-	$ cat /sys/class/leds/nuc\:\:front1/indicator=20
-	Power State  [HDD Activity]  Ethernet  WiFi  Software  Power Limit  Disabl=
-e =20
-
-In this case, as it is measuring the HDD activity. If one tries to
-read/write something to, let's say, the Ethernet type, a -EINVAL
-is returned:
-
-	$ cat /sys/class/leds/nuc\:\:front1/ethernet_type=20
-	cat: '/sys/class/leds/nuc::front1/ethernet_type': Invalid argument
-
-So, before being able to use the ethernet_type, the indicator needs
-to be changed:
-
-	$ echo Ethernet > /sys/class/leds/nuc\:\:front1/indicator=20
-	$ cat /sys/class/leds/nuc\:\:front1/ethernet_type
-	LAN1  LAN2  [LAN1+LAN2] =20
-
-Anyway, I suspect that besides a document under ABI, it would
-make sense to add a .rst file describing it under admin-guide,
-explaining how to use the ABI.
-
-That should likely be easier to discuss if any changes at the
-ABI would be needed. Before moving it out of staging, I would
-add another one under Documentation/ABI describing the meaning
-of each sysfs node.
-
-Would that work for you?
-
-Thanks,
-Mauro
+>
+> >   arch/mips/ralink/of.c |    2 ++
+> >   1 file changed, 2 insertions(+)
+> >
+> > --- linux-next-20210514.orig/arch/mips/ralink/of.c
+> > +++ linux-next-20210514/arch/mips/ralink/of.c
+> > @@ -8,6 +8,7 @@
+> >
+> >   #include <linux/io.h>
+> >   #include <linux/clk.h>
+> > +#include <linux/export.h>
+> >   #include <linux/init.h>
+> >   #include <linux/sizes.h>
+> >   #include <linux/of_fdt.h>
+> > @@ -25,6 +26,7 @@
+> >
+> >   __iomem void *rt_sysc_membase;
+> >   __iomem void *rt_memc_membase;
+> > +EXPORT_SYMBOL_GPL(rt_sysc_membase);
+> >
+> >   __iomem void *plat_of_remap_node(const char *node)
+> >   {
+> >
+>
