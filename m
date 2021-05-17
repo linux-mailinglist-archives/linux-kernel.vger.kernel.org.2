@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83CB383109
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52B938336A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240299AbhEQOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:33:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40368 "EHLO mail.kernel.org"
+        id S241295AbhEQO6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:58:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239487AbhEQO2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:28:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BEF861628;
-        Mon, 17 May 2021 14:14:28 +0000 (UTC)
+        id S241197AbhEQOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:48:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EB556196E;
+        Mon, 17 May 2021 14:22:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260869;
-        bh=pA65frvz9Je2dhxeBGvonLp1FZJzdusgRI1gUhk9gCk=;
+        s=korg; t=1621261351;
+        bh=dKodwKUoJASrAFlw1LNyG9ld/2oU3AxtzmUdjccQb24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FXFJpf4Po+Q3/NvlBg1cVF029jqWyEI3Zq/RBTp/nX3NX1CLjK5PobZgzsXbVggnW
-         tr7FpvfmdmPj7CYM9EGWpVaDF/BXjwx2IbBNM5X2Hygdcyd5BN868f9PZkQWBJe2Cb
-         odKt7hh48TOwy/QZf44kzTg1fsSm7buQ9SJP2DLQ=
+        b=QEQt9o1VYY+6nlTPfR4mm6BrqFf2EHsuss9cbdPnmOmvJIVvp/L1Z57+Q50J31ucz
+         O7N0Red7Jg4TnjTJaSVMPqiqfWL1mDwGX1NFNf4sx6Oa3/h5tn5P+4sytX8hF+zRnq
+         7k896TWSmH3FY9k5aBgAwJogMrbQWpZsQCUmYUTo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
+        stable@vger.kernel.org,
+        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 024/329] net/mlx5e: Use net_prefetchw instead of prefetchw in MPWQE TX datapath
-Date:   Mon, 17 May 2021 15:58:55 +0200
-Message-Id: <20210517140302.872083544@linuxfoundation.org>
+Subject: [PATCH 5.10 011/289] ath11k: fix thermal temperature read
+Date:   Mon, 17 May 2021 15:58:56 +0200
+Message-Id: <20210517140305.562268058@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
 
-[ Upstream commit 991b2654605b455a94dac73e14b23480e7e20991 ]
+[ Upstream commit e3de5bb7ac1a4cb262f8768924fd3ef6182b10bb ]
 
-Commit e20f0dbf204f ("net/mlx5e: RX, Add a prefetch command for small
-L1_CACHE_BYTES") switched to using net_prefetchw at all places in mlx5e.
-In the same time frame, commit 5af75c747e2a ("net/mlx5e: Enhanced TX
-MPWQE for SKBs") added one more usage of prefetchw. When these two
-changes were merged, this new occurrence of prefetchw wasn't replaced
-with net_prefetchw.
+Fix dangling pointer in thermal temperature event which causes
+incorrect temperature read.
 
-This commit fixes this last occurrence of prefetchw in
-mlx5e_tx_mpwqe_session_start, making the same change that was done in
-mlx5e_xdp_mpwqe_session_start.
+Tested-on: IPQ8074 AHB WLAN.HK.2.4.0.1-00041-QCAHKSWPL_SILICONZ-1
 
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210218182708.8844-1-pradeepc@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath11k/wmi.c | 53 +++++++++++----------------
+ 1 file changed, 21 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 61ed671fe741..1b3c93c3fd23 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -553,7 +553,7 @@ static void mlx5e_tx_mpwqe_session_start(struct mlx5e_txqsq *sq,
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index 173ab6ceed1f..eca86225a341 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -4986,31 +4986,6 @@ int ath11k_wmi_pull_fw_stats(struct ath11k_base *ab, struct sk_buff *skb,
+ 	return 0;
+ }
  
- 	pi = mlx5e_txqsq_get_next_pi(sq, MLX5E_TX_MPW_MAX_WQEBBS);
- 	wqe = MLX5E_TX_FETCH_WQE(sq, pi);
--	prefetchw(wqe->data);
-+	net_prefetchw(wqe->data);
+-static int
+-ath11k_pull_pdev_temp_ev(struct ath11k_base *ab, u8 *evt_buf,
+-			 u32 len, const struct wmi_pdev_temperature_event *ev)
+-{
+-	const void **tb;
+-	int ret;
+-
+-	tb = ath11k_wmi_tlv_parse_alloc(ab, evt_buf, len, GFP_ATOMIC);
+-	if (IS_ERR(tb)) {
+-		ret = PTR_ERR(tb);
+-		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
+-	if (!ev) {
+-		ath11k_warn(ab, "failed to fetch pdev temp ev");
+-		kfree(tb);
+-		return -EPROTO;
+-	}
+-
+-	kfree(tb);
+-	return 0;
+-}
+-
+ size_t ath11k_wmi_fw_stats_num_vdevs(struct list_head *head)
+ {
+ 	struct ath11k_fw_stats_vdev *i;
+@@ -6390,23 +6365,37 @@ ath11k_wmi_pdev_temperature_event(struct ath11k_base *ab,
+ 				  struct sk_buff *skb)
+ {
+ 	struct ath11k *ar;
+-	struct wmi_pdev_temperature_event ev = {0};
++	const void **tb;
++	const struct wmi_pdev_temperature_event *ev;
++	int ret;
++
++	tb = ath11k_wmi_tlv_parse_alloc(ab, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ret = PTR_ERR(tb);
++		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
++		return;
++	}
  
- 	*session = (struct mlx5e_tx_mpwqe) {
- 		.wqe = wqe,
+-	if (ath11k_pull_pdev_temp_ev(ab, skb->data, skb->len, &ev) != 0) {
+-		ath11k_warn(ab, "failed to extract pdev temperature event");
++	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
++	if (!ev) {
++		ath11k_warn(ab, "failed to fetch pdev temp ev");
++		kfree(tb);
+ 		return;
+ 	}
+ 
+ 	ath11k_dbg(ab, ATH11K_DBG_WMI,
+-		   "pdev temperature ev temp %d pdev_id %d\n", ev.temp, ev.pdev_id);
++		   "pdev temperature ev temp %d pdev_id %d\n", ev->temp, ev->pdev_id);
+ 
+-	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev.pdev_id);
++	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev->pdev_id);
+ 	if (!ar) {
+-		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev.pdev_id);
++		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev->pdev_id);
++		kfree(tb);
+ 		return;
+ 	}
+ 
+-	ath11k_thermal_event_temperature(ar, ev.temp);
++	ath11k_thermal_event_temperature(ar, ev->temp);
++
++	kfree(tb);
+ }
+ 
+ static void ath11k_wmi_tlv_op_rx(struct ath11k_base *ab, struct sk_buff *skb)
 -- 
 2.30.2
 
