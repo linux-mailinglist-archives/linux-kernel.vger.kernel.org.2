@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40737383A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DEF383A05
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244097AbhEQQfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
+        id S245396AbhEQQfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239921AbhEQQex (ORCPT
+        with ESMTP id S244895AbhEQQf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:34:53 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFC1C0784B2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:26:17 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id n25so7404844edr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:26:17 -0700 (PDT)
+        Mon, 17 May 2021 12:35:29 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAD1C01CD56
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:28:01 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id i17so6831898wrq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:28:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FMXziopFsM5hZJ5tJCaOnr2WSysiINJBqzAKuPzSazg=;
-        b=zMnyJdRkgrggyXHkBPAoTzSgccs/deh3e9nQLHDXHS4oVzpWXsyeSHEqbgsHyMAGhu
-         hwaWpvMvCrv1Ow6jDJi1X7IhekkkkVTVFZmWxqdjFSrY4zBU0DceGjgtMqMKixH7UBeB
-         Z5RvPCxWGrq8RkegMijDx9uQC2JeY/ntjxv2Khu/ovOBezsdBdAEB9DbiTjHhLs35otL
-         BgU09nq8smNwZNADM7BYrtlXaK4ViiR5sbvIiBvVQLeqOmSa1w9JEbHO7I7pWm/TsYC2
-         Im7Vo2AOhSfwv6wiy/zcVVlB/e5c/re8cFxlfXoN1UP9c8s+GYes92/n3Smu5sT2oDt9
-         MAwg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0JwxGBKfDoUxq2NZLsErnRvzPdT2eYfu4gWuQeo9vCM=;
+        b=j1J70RTbH+qyRmD8QqmKri5WuNEcnX+J4adv/ycgORjHO5/WAJsOeJ65SrOYzUnVTP
+         VG3uUlqBj/EQMg9qfGG/nXtfTlY6ZLKRp2SQEaQiSmH7R+0WfsT2Otk71jl9cXMr2uWs
+         lv6P0aLshi5yaJ3YHGy4YH6gXZ6eGOOlkuT0VEtB5JwR0vRjFyyOx2BIq3tTJwrSyva3
+         zXyVDwm4utj0rSUQQR5h6hnEpgIu/WmZEkVoXxNdOE0mLuayt8biCpIw1qRCJ023YzUF
+         RF+nlucQSrsui7y4n+FDQuWg4Km5I/qb/leF70mGmkreZNJuKjKpFUJY2lxeMlL4uxYJ
+         aNMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FMXziopFsM5hZJ5tJCaOnr2WSysiINJBqzAKuPzSazg=;
-        b=Et28qgcz3Ah9tdw18MfSkG0gwyQz2HgXrnOV9gNjQ1+Xpr346vk3OTrJETlNXel3Sb
-         kxb4JdY3WDljDECStS4P8Ttb4E3lvJ3vE9eZgv3D/JnohKeF3T3i34MkmheUcgOz6Xcp
-         hN4NHT2pCCb4No15lP7NWwRjaaK9RFJ/8W3h6/1Sm2xz+j8UPqDkFEvOccY0CZ4iR0qh
-         DbziNBBuoVEXFO3WBw7tzi5OD9GQ/o85pW5q9l43S+ClPUXhX33RImW/qkWjevpZatwR
-         L6Uf8ZbZzMk8Q4N0F/D6CczhnDCraNRG6OVbwgnmKOhSWIrJ16HBKR8UtqA04HAe0NXY
-         oyRA==
-X-Gm-Message-State: AOAM532ZFKeo/2CSE2DkF+i5dGhn2MxXhs1j5fC7qiI9aGnD7588fyOU
-        pIrBD59/QAI1/bQuiJnu2KoYqQ==
-X-Google-Smtp-Source: ABdhPJz/rWM+jlM8kM4engSuvbup9nLXtzNT6IXPnl8FUn+YJnPEInF+khKW0iXcv4OdpH4knwBVxg==
-X-Received: by 2002:a50:f1ca:: with SMTP id y10mr695954edl.294.1621265176124;
-        Mon, 17 May 2021 08:26:16 -0700 (PDT)
-Received: from [192.168.1.14] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id qx18sm2481396ejb.113.2021.05.17.08.26.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 08:26:15 -0700 (PDT)
-Subject: Re: [PATCH v5 13/25] media: venus: core: use
- pm_runtime_resume_and_get()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-References: <cover.1620314616.git.mchehab+huawei@kernel.org>
- <492e148ae1c7b0a8858c1670037925d3e4adb719.1620314616.git.mchehab+huawei@kernel.org>
- <adb102ab-c197-fdc8-4858-5683bd97baf4@linaro.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <3f41387e-a15f-1e45-6b63-bd6ef647a47f@linaro.org>
-Date:   Mon, 17 May 2021 18:26:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0JwxGBKfDoUxq2NZLsErnRvzPdT2eYfu4gWuQeo9vCM=;
+        b=P3OJKyfdRvbJ+d594B9U8g0B1FXdbEQeKpve/cRzhK0/UvqpgeUcOwFtoeHmyxrKDW
+         bTdBE1iYVWIMzGmzSpnmaqEAlTSyxICaOgncVjA5XdRXW5e5SieHMkoa/hZ3jKbjxWJJ
+         dRba+nZsfIjoIDsMoa61ecUSAr2pqSp8/xfNrcmzp6Abv7f1ACqkvAzD1C6B44hE4jDi
+         5JWDanBd0Vlh3FQi2vfTa0ArYpWl1b9dvuSMXKJHzvan56hUCvrDXUG0Zs1hRo9kJAjm
+         FKe15XigMBPPWtSf5pv5SXTbmm0yVRpWN65gegOUoQuh1WzSE7aN7DmPiBehJze1Inhn
+         0rig==
+X-Gm-Message-State: AOAM532FPI1WIA8WZGJviDOfQG92mSB0RHo60BL9eYzmVT264pnzNEkS
+        P+8MajCltEXU5fSg3C8rYyHmAA==
+X-Google-Smtp-Source: ABdhPJwuwOUHqhdgm9HQRD81VC7JS4eqLC5JQc4toY1qtK7WE6GphAF3qIqwNcqwalRX4HpnUsEzSA==
+X-Received: by 2002:a5d:4e91:: with SMTP id e17mr296464wru.396.1621265280618;
+        Mon, 17 May 2021 08:28:00 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id f13sm14745840wrt.86.2021.05.17.08.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 08:27:59 -0700 (PDT)
+Date:   Mon, 17 May 2021 16:27:58 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Juerg Haefliger <juerg.haefliger@canonical.com>
+Cc:     lee.jones@linaro.org, jingoohan1@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, juergh@canonical.com
+Subject: Re: [PATCH] backlight: Remove leading spaces in Kconfig
+Message-ID: <20210517152758.lqwmborindqvavwo@maple.lan>
+References: <20210517095839.81833-1-juergh@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <adb102ab-c197-fdc8-4858-5683bd97baf4@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517095839.81833-1-juergh@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Mon, May 17, 2021 at 11:58:39AM +0200, Juerg Haefliger wrote:
+> Remove leading spaces before tabs in Kconfig file(s) by running the
+> following command:
+> 
+>   $ find drivers/video/backlight -name 'Kconfig*' | \
+>     xargs sed -r -i 's/^[ ]+\t/\t/'
+> 
+> Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+> ---
+>  drivers/video/backlight/Kconfig | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+> index d83c87b902c1..a967974f6cd6 100644
+> --- a/drivers/video/backlight/Kconfig
+> +++ b/drivers/video/backlight/Kconfig
+> @@ -129,11 +129,11 @@ config LCD_HX8357
+>  	  driver.
+>  
+>    config LCD_OTM3225A
 
-On 5/10/21 4:54 PM, Stanimir Varbanov wrote:
-> 
-> 
-> On 5/6/21 6:25 PM, Mauro Carvalho Chehab wrote:
->> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
->> added pm_runtime_resume_and_get() in order to automatically handle
->> dev->power.usage_count decrement on errors.
->>
->> Use the new API, in order to cleanup the error check logic.
->>
->> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->> ---
->>  drivers/media/platform/qcom/venus/pm_helpers.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> Tested-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> Acked-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> 
+Whilst removing the unwanted spaces (two of them on each line) could we
+also remove the two unwanted spaces from the config line as well.
 
-What is the plan for these venus patches. Do I need to take them through
-my Venus pull request for v5.14 or you will take them directly?
 
->>
->> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
->> index c7e1ebec47ee..d0fddf5e9a69 100644
->> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
->> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
->> @@ -990,9 +990,8 @@ static int core_power_v4(struct venus_core *core, int on)
->>  
->>  	if (on == POWER_ON) {
->>  		if (pmctrl) {
->> -			ret = pm_runtime_get_sync(pmctrl);
->> +			ret = pm_runtime_resume_and_get(pmctrl);
->>  			if (ret < 0) {
->> -				pm_runtime_put_noidle(pmctrl);
->>  				return ret;
->>  			}
->>  		}
->>
+Daniel.
+
+
+> -  	tristate "ORISE Technology OTM3225A support"
+> -  	depends on SPI
+> -  	help
+> -  	  If you have a panel based on the OTM3225A controller
+> -  	  chip then say y to include a driver for it.
+> +	tristate "ORISE Technology OTM3225A support"
+> +	depends on SPI
+> +	help
+> +	  If you have a panel based on the OTM3225A controller
+> +	  chip then say y to include a driver for it.
+>  
+>  endif # LCD_CLASS_DEVICE
+>  
+> -- 
+> 2.27.0
 > 
-
--- 
-regards,
-Stan
