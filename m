@@ -2,181 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B49F3839CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16EA3839CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245527AbhEQQ3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        id S1344292AbhEQQ3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245164AbhEQQ3A (ORCPT
+        with ESMTP id S1344056AbhEQQ3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:29:00 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F43FC08EAE8;
-        Mon, 17 May 2021 08:10:11 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id t4so3305728plc.6;
-        Mon, 17 May 2021 08:10:11 -0700 (PDT)
+        Mon, 17 May 2021 12:29:40 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A15C06F8CA
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:11:24 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id z24so6149957ioi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=chSInzVZxBkEohiqw1SSneAq3KAzecc9iWecdDSIEps=;
-        b=VGGER6JsFStjVyWTnshPBgAuAJjHuNWUX/Hz1O7f+PfPU8XV/SouDJW7etR8Uol357
-         kmnIeerL2eABoTYqwUcpLymGda6wjOTfL7h/27yKTauBT2onRFlJl79u2nbm80aDgSU2
-         0ti5XZrWLNLpW7qvkcjlxjqL1xwU9teHhn0f0QIbk0ZiNxviiIZsW0idt8LqX/Qq6QWa
-         ZAGjSXBCmhN55RsXQ7OzkEUdCxsY181ciSge1KaNttuKeTisW4mANDEzmnlCl3Gro5Wf
-         fzbx3I5ebVNsasqngkJU4F0AE+As5cGRZJRu6H9jKmGEvSaJBGvoF1Ofb/zvG/GommpR
-         Z59Q==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=pRAUC9+v8Sk7C/Q47QOkwMnbAOUM4aEvDCG5vpHsgkY=;
+        b=HCxWhnJ9ud2KBmbrMOkNzjZG0sJg0mOQ2jQ+rCqiEOBP1st3vQ+EMlf+dDVgb5uvC3
+         lqMP4gf1pb0tPwgGS2QnXf4155czubLcO2MNaXyWctIl+mV1ObziIEhJ82Lr2r/3qO4C
+         JkPZJxbr7cLXeYrKtazPL0PdZCouhfuA2zFKJn9dF1txDtbsyJuekgaHGwsPrGngA64/
+         GNc67pEXc0QPhWWR2UquS5xrJI2wsE33QhhwzFCwsMmECUbVjyiGE1FoIrMt2Gu7qohE
+         V6jeTX9YrsS5uJGSDKbcTSQHPbRxF4XHC6CWdhM+EGdzBNQLiriuK4FJC7FcLpTnXlXK
+         jFig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=chSInzVZxBkEohiqw1SSneAq3KAzecc9iWecdDSIEps=;
-        b=hnVuIEbtOfHFhDz3YHTw9Qx7Pc9hU1V+i58McN7qiXXBbYAD0nSyBeWIltdyRewpEO
-         nGfdm9VRfboIsV3mWEpSALK7v98pEM14lA5mW/nCrnKjvThydy/nDu7z/aE5SDF70gaQ
-         N1Fny/2xoQktGB7tkOj3SPG5e2PHnBMnngGwDn9pRsxkxS5pCyYxJosk3jwyeF82L9/H
-         lpwAOz4OY+q2SVrTtFVhfyj9d/cqJM2P2rTBZAfWZFGatFGBVxQTVSP9yCmyUp99q+3u
-         prCDFzkCi3g2RgE/dm+O7JRstd6qycr2Ww4Ya7G9oKgVy7+27m5uJQZTZRDrd0961QPo
-         HG0w==
-X-Gm-Message-State: AOAM531j3XrGKkBb9IXOt7yqVOmbpXT+JRmtOQANFk6q4O8wwsUrc9uI
-        fgJc+CONee/Cjs27PDHtR2Zxyao5ZZuWXOe8
-X-Google-Smtp-Source: ABdhPJzWj8Pj1VUZhjA/v60Rr8+P7a/bSwobTKIblHiZc9umGQHLN0J3fHj0IXKRF+sMRTGJD3J0LQ==
-X-Received: by 2002:a17:90b:1b4f:: with SMTP id nv15mr424297pjb.56.1621264210688;
-        Mon, 17 May 2021 08:10:10 -0700 (PDT)
-Received: from [192.168.0.111] ([113.172.200.89])
-        by smtp.gmail.com with ESMTPSA id j27sm11328508pgb.54.2021.05.17.08.10.05
+        bh=pRAUC9+v8Sk7C/Q47QOkwMnbAOUM4aEvDCG5vpHsgkY=;
+        b=rTgFPpx83dDNzQk/BkSfn9x1rjxerL6kF/hoMCYqBOdnTOJeizXAjQNHE4XdnU7X1l
+         /YcIIXRFL/l4ARkMaB76GHgRUnG4/nZy4+k6AqprTsKQqLAjy8rrI1CM0oNyp4HCFIWz
+         zd9fa7r7TGclnOWkf3EdAr7Zge33wsB0daUpjPdvpUUoRAmRwooHkXqRiVSjYJBP/cjp
+         McCeLY0C+WPTyYEea65vpEd4BlIe1X0LTtkdXfOONvtDJFk6ane1BofrxtLNwcdxpHZN
+         Sk8xUcIhgGT5oE94/IITBswLdZeuk3W6avUtYeGMTeVQZvMXVn9sJ3oEMezV+rS0t3lr
+         8UmQ==
+X-Gm-Message-State: AOAM532dyYoeWhnVBNRVhD3W80Ah5VFcRXD0DizBCNaicWc3w/EoCNKP
+        6LtyE2j+bkxRfWtpi1lPbiZVzS6oBk0Cyw==
+X-Google-Smtp-Source: ABdhPJw7UfVtSZD3LtGR1uZsCCQkhkJidWk6T7HZibxYOhhEOufvtrVP08oorLUpFso4Z4YiRjSZPg==
+X-Received: by 2002:a05:6602:70d:: with SMTP id f13mr433102iox.16.1621264283368;
+        Mon, 17 May 2021 08:11:23 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id s14sm8357313ilj.14.2021.05.17.08.11.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 08:10:10 -0700 (PDT)
-Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for
- bpf_map_area_alloc
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210126082606.3183-1-minhquangbui99@gmail.com>
- <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
- <20210127042341.GA4948@ubuntu>
- <f4d20d92-2370-a8d3-d56c-408819a5f7f4@iogearbox.net>
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-Message-ID: <728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com>
-Date:   Mon, 17 May 2021 22:10:03 +0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 08:11:22 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] ata: Replace inclusion of kernel.h by bits.h in
+ the header
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210409153456.87798-1-andriy.shevchenko@linux.intel.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b450b216-256b-a327-e363-93ec67da4b37@kernel.dk>
+Date:   Mon, 17 May 2021 09:11:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <f4d20d92-2370-a8d3-d56c-408819a5f7f4@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210409153456.87798-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 7:41 AM, Daniel Borkmann wrote:
-> On 1/27/21 5:23 AM, Bui Quang Minh wrote:
->> On Tue, Jan 26, 2021 at 09:36:57AM +0000, Lorenz Bauer wrote:
->>> On Tue, 26 Jan 2021 at 08:26, Bui Quang Minh 
->>> <minhquangbui99@gmail.com> wrote:
->>>>
->>>> In 32-bit architecture, the result of sizeof() is a 32-bit integer so
->>>> the expression becomes the multiplication between 2 32-bit integer 
->>>> which
->>>> can potentially leads to integer overflow. As a result,
->>>> bpf_map_area_alloc() allocates less memory than needed.
->>>>
->>>> Fix this by casting 1 operand to u64.
->>>
->>> Some quick thoughts:
->>> * Should this have a Fixes tag?
->>
->> Ok, I will add Fixes tag in later version patch.
->>
->>> * Seems like there are quite a few similar calls scattered around
->>> (cpumap, etc.). Did you audit these as well?
->>
-> [...]
->> In cpumap,
->>
->>     static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
->>     {
->>         cmap->cpu_map = bpf_map_area_alloc(cmap->map.max_entries *
->>                            sizeof(struct bpf_cpu_map_entry *),
->>                            cmap->map.numa_node);
->>     }
->>
->> I think this is safe because max_entries is not permitted to be larger 
->> than NR_CPUS.
-> 
-> Yes.
-> 
->> In stackmap, there is a place that I'm not very sure about
->>
->>     static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
->>     {
->>         u32 elem_size = sizeof(struct stack_map_bucket) + 
->> smap->map.value_size;
->>         smap->elems = bpf_map_area_alloc(elem_size * 
->> smap->map.max_entries,
->>                          smap->map.numa_node);
->>     }
->>
->> This is called after another bpf_map_area_alloc in stack_map_alloc(). 
->> In the first
->> bpf_map_area_alloc() the argument is calculated in an u64 variable; so 
->> if in the second
->> one, there is an integer overflow then the first one must be called 
->> with size > 4GB. I
->> think the first one will probably fail (I am not sure about the actual 
->> limit of vmalloc()),
->> so the second one might not be called.
-> 
-> I would sanity check this as well. Looks like k*alloc()/v*alloc() call 
-> sites typically
-> use array_size() which returns SIZE_MAX on overflow, 610b15c50e86 
-> ("overflow.h: Add
-> allocation size calculation helpers").
+On 4/9/21 9:34 AM, Andy Shevchenko wrote:
+> ata.h uses BIT() macro, hence bits.h must be included. Otherwise
+> there is no need to have kernel.h included, I do not see any
+> direct users of it in ata.h. Hence replace inclusion of kernel.h.
 
-Hi,
+Applied, thanks.
 
-I almost forget about this patch, I have checked the bpf_map_area_alloc 
-in in stackmap.c and I can see that integer overflow cannot happen in 
-this stackmap.c case.
+-- 
+Jens Axboe
 
-In stack_map_alloc(),
-
-	u64 cost;
-	...
-	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
-	cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
-	smap = bpf_map_area_alloc(cost, bpf_map_attr_numa_node(attr)); (1)
-	...
-	prealloc_elems_and_freelist(smap);
-
-In prealloc_elems_and_freelist(),
-
-	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
-	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries, 
-smap->map.numa_node); (2)
-
-Argument calculation at (1) is safe. Argument calculation at (2) can 
-potentially result in an integer overflow in 32-bit architecture. 
-However, if the integer overflow happens, it means argument at (1) must 
-be 2**32, which cannot pass the SIZE_MAX check in __bpf_map_area_alloc()
-
-In __bpf_map_area_alloc()
-
-	if (size >= SIZE_MAX)
-		return NULL;
-
-So I think the original patch has fixed instances of this bug pattern.
-
-Thank you,
-Quang Minh.
