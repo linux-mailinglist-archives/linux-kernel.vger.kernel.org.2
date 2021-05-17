@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD54383117
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012553833A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240497AbhEQOe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43250 "EHLO mail.kernel.org"
+        id S242306AbhEQO70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:59:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239942AbhEQO3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:29:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C207261359;
-        Mon, 17 May 2021 14:14:48 +0000 (UTC)
+        id S242134AbhEQOt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:49:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D715E613BE;
+        Mon, 17 May 2021 14:23:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260889;
-        bh=fxnDPLlPWYLf9/KzTkxHvikDC9lWN6ga0dBvtKr5d2I=;
+        s=korg; t=1621261382;
+        bh=zD/XlO3nFglcr4ayUhe59PHYI1gbpAn+M8Dg02aSF6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CBFhnd8RhBww60Pa12QGhORrbn+UIZwHyNM5un5Wec+X1AuLtXufSbbMMwjVWf7gY
-         DR8FgXCMcv6abuYak+LW9Nf+Lq+NTK+DG6MDaQC8GQfEsNV3uVVqG7Hjni23aD60iV
-         ocEjyRyLOi8rNFE6Usb9CYl/hhPCFxay4aN0GIBo=
+        b=v86S3mwZgG6i0MGkibSd5voiKealLxrqkKtYxgOInmxClFEBOk/euz/WcrRF9ftB5
+         9lUTx63KLUv5gpOQaxP8JinfrXsl4QGAfGCPiPuGm/TWAPnveRfhWLpCSXGFCJzi34
+         papWh7Z5GlOKWGvfpSJTaEjGQ6kVdkLy2rwATO7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 028/329] i2c: bail out early when RDWR parameters are wrong
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 014/289] fs: dlm: check on minimum msglen size
 Date:   Mon, 17 May 2021 15:58:59 +0200
-Message-Id: <20210517140302.994346641@linuxfoundation.org>
+Message-Id: <20210517140305.659710659@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 71581562ee36032d2d574a9b23ad4af6d6a64cf7 ]
+[ Upstream commit 710176e8363f269c6ecd73d203973b31ace119d3 ]
 
-The buggy parameters currently get caught later, but emit a noisy WARN.
-Userspace should not be able to trigger this, so add similar checks much
-earlier. Also avoids some unneeded code paths, of course. Apply kernel
-coding stlye to a comment while here.
+This patch adds an additional check for minimum dlm header size which is
+an invalid dlm message and signals a broken stream. A msglen field cannot
+be less than the dlm header size because the field is inclusive header
+lengths.
 
-Reported-by: syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com
-Tested-by: syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/i2c-dev.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/dlm/midcomms.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
-index 6ceb11cc4be1..6ef38a8ee95c 100644
---- a/drivers/i2c/i2c-dev.c
-+++ b/drivers/i2c/i2c-dev.c
-@@ -440,8 +440,13 @@ static long i2cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 				   sizeof(rdwr_arg)))
- 			return -EFAULT;
- 
--		/* Put an arbitrary limit on the number of messages that can
--		 * be sent at once */
-+		if (!rdwr_arg.msgs || rdwr_arg.nmsgs == 0)
-+			return -EINVAL;
-+
-+		/*
-+		 * Put an arbitrary limit on the number of messages that can
-+		 * be sent at once
-+		 */
- 		if (rdwr_arg.nmsgs > I2C_RDWR_IOCTL_MAX_MSGS)
- 			return -EINVAL;
+diff --git a/fs/dlm/midcomms.c b/fs/dlm/midcomms.c
+index fde3a6afe4be..0bedfa8606a2 100644
+--- a/fs/dlm/midcomms.c
++++ b/fs/dlm/midcomms.c
+@@ -49,9 +49,10 @@ int dlm_process_incoming_buffer(int nodeid, unsigned char *buf, int len)
+ 		 * cannot deliver this message to upper layers
+ 		 */
+ 		msglen = get_unaligned_le16(&hd->h_length);
+-		if (msglen > DEFAULT_BUFFER_SIZE) {
+-			log_print("received invalid length header: %u, will abort message parsing",
+-				  msglen);
++		if (msglen > DEFAULT_BUFFER_SIZE ||
++		    msglen < sizeof(struct dlm_header)) {
++			log_print("received invalid length header: %u from node %d, will abort message parsing",
++				  msglen, nodeid);
+ 			return -EBADMSG;
+ 		}
  
 -- 
 2.30.2
