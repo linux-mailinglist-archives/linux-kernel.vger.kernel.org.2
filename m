@@ -2,153 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9260E38656E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D56C3865D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238223AbhEQUKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:10:02 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6626 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237798AbhEQUJ1 (ORCPT
+        id S236986AbhEQULH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236705AbhEQULE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:09:27 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HK3sX8090796;
-        Mon, 17 May 2021 16:08:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=QKQ+SK18QjTdDDvFQeDw0dje8O3/N6slz7Qy6rKlj28=;
- b=rEq0J2EcrMIRQ5II0NWai8ORq9YKYgrqK6q/WZrhfRggxU79/oH+AqJyBEnfczL9S3E8
- TKqauasbhVfjO+BSzBaaBjrsK9e3vC2F69E+BfLeizZesqlceXujlUqFPwYn17+vxZcm
- PARzeAhdaXA0aZDbr7Ztt2/cPuklA3slFbGJRvIQuNsJQkJeMLiDOiOtvIedOZAuILE0
- YF+pt9hORmWcIU9pRcSQcEwjmrJUITShilmOUBeqaxyWst0BcpwKtHXtRxyXTZu/7FBl
- ZmmZfpVBhYxh/Ayeq6z1zAOR4amBBl0VDqKrs+DfPDecSObsedbjAIHSBSRtYrfa0zs1 lQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38ky5ng495-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 May 2021 16:08:09 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14HK3wsM093294;
-        Mon, 17 May 2021 16:08:09 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38ky5ng48n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 May 2021 16:08:09 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14HK87cs027595;
-        Mon, 17 May 2021 20:08:07 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 38j5x80kd3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 May 2021 20:08:07 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14HK84Md26935660
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 20:08:04 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4DFDD5204F;
-        Mon, 17 May 2021 20:08:04 +0000 (GMT)
-Received: from ibm-vm.ibmuc.com (unknown [9.145.14.34])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id DDD8E52051;
-        Mon, 17 May 2021 20:08:03 +0000 (GMT)
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
-        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 11/11] KVM: s390: pv: add support for UV feature bits
-Date:   Mon, 17 May 2021 22:07:58 +0200
-Message-Id: <20210517200758.22593-12-imbrenda@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517200758.22593-1-imbrenda@linux.ibm.com>
-References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
+        Mon, 17 May 2021 16:11:04 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2F3C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:47 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id cu11-20020a17090afa8bb029015d5d5d2175so237259pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rCGEEwwwRGKD1oMDJbEPaJuXUMyc6FPUtNPA7l9y81o=;
+        b=iwVQ4Y/uu3y3K160d47Xbb0z1F+EyQFQLfmkL66fXDaXo4r5PyawAg+Uq6mkotYAj3
+         hVNW95HY7wvcTT58I+7Pupa+orb2LxOcGP93Yize1SpSmimlYxp5fR1RUq7w2wwPIAol
+         z/PIrf+h4gxCuMubj6BjMmffuxSjkhRv9fi4g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rCGEEwwwRGKD1oMDJbEPaJuXUMyc6FPUtNPA7l9y81o=;
+        b=MBrX9BwAKR1K4iMB+RrrnGDtmCTpgAb9ErgeWONdHUib3+I1UeZlbCHpLS8wkgBU7/
+         WntyyYbsiD115QYCsRSUu9chM+64tHWrzwTbl5OJ9ppvMJjPVe77t8bCj4WbGgUqsMHK
+         asJDXenJRKK/fZLc3MWnu0q5RaEF3xo8Sn+YegZSwfDhzpMCkoDY4MCfHFiKtZzRNTnq
+         QOHCUk/BUMDkZHZMDOLsBaNhRp8jHc93yW8qwu+UUVl6S14qJqG9LOXatCN4QX1lhMdq
+         2PhBGR0WjQKCO2EEnWgb0CZtg83qM+KJCxm/ED3sv7amdnfntfQm7ljWQDIQ2awXrGsX
+         pSag==
+X-Gm-Message-State: AOAM532zUg+hOSwleS4f3+izReMs5ZyTFn7IMGMZB6GrIAli/PuCYfIJ
+        YxodTOXDYzgYviQEqO4n7O8Hiw==
+X-Google-Smtp-Source: ABdhPJzGJfCkJeK4TET+/0o4NbufssT9iOPSlLD7v+MwbNWHa2NMCrFnNscDFpQl9cxD6dEmN5BF9Q==
+X-Received: by 2002:a17:902:b101:b029:ed:56c1:e01d with SMTP id q1-20020a170902b101b02900ed56c1e01dmr227482plr.54.1621282186567;
+        Mon, 17 May 2021 13:09:46 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:bc91:c597:ded0:7930])
+        by smtp.gmail.com with ESMTPSA id x19sm9078941pgj.66.2021.05.17.13.09.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 13:09:46 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linus W <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org, robdclark@chromium.org,
+        Steev Klimaszewski <steev@kali.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 00/10] drm: Fix EDID reading on ti-sn65dsi86 by introducing the DP AUX bus
+Date:   Mon, 17 May 2021 13:08:57 -0700
+Message-Id: <20210517200907.1459182-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: S8AVUrw8zZZ6Itdop9DP46nZF83mSsdB
-X-Proofpoint-ORIG-GUID: 6nDfyXTqJQe0vxGqoBn2E345f3RPk03X
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-17_08:2021-05-17,2021-05-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 impostorscore=0 clxscore=1015 spamscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105170140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for Ultravisor feature bits, and take advantage of the
-functionality advertised to speed up the lazy destroy mechanism.
+The primary goal of this series is to try to properly fix EDID reading
+for eDP panels using the ti-sn65dsi86 bridge.
 
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
----
- arch/s390/boot/uv.c        | 1 +
- arch/s390/include/asm/uv.h | 9 ++++++++-
- arch/s390/kernel/uv.c      | 3 ++-
- 3 files changed, 11 insertions(+), 2 deletions(-)
+Previously we had a patch that added EDID reading but it turned out
+not to work at bootup. This caused some extra churn at bootup as we
+tried (and failed) to read the EDID several times and also ended up
+forcing us to use the hardcoded mode at boot. With this patch series I
+believe EDID reading is reliable at boot now and we never use the
+hardcoded mode.
 
-diff --git a/arch/s390/boot/uv.c b/arch/s390/boot/uv.c
-index 87641dd65ccf..efdb55364919 100644
---- a/arch/s390/boot/uv.c
-+++ b/arch/s390/boot/uv.c
-@@ -36,6 +36,7 @@ void uv_query_info(void)
- 		uv_info.max_sec_stor_addr = ALIGN(uvcb.max_guest_stor_addr, PAGE_SIZE);
- 		uv_info.max_num_sec_conf = uvcb.max_num_sec_conf;
- 		uv_info.max_guest_cpu_id = uvcb.max_guest_cpu_id;
-+		uv_info.feature_bits = uvcb.uv_feature_bits;
- 	}
- 
- #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
-diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
-index 1de5ff5e192a..808c2f0e0d7c 100644
---- a/arch/s390/include/asm/uv.h
-+++ b/arch/s390/include/asm/uv.h
-@@ -73,6 +73,11 @@ enum uv_cmds_inst {
- 	BIT_UVC_CMD_UNPIN_PAGE_SHARED = 22,
- };
- 
-+/* Bits in uv features field */
-+enum uv_features {
-+	BIT_UVC_FEAT_MISC_0 = 0,
-+};
-+
- struct uv_cb_header {
- 	u16 len;
- 	u16 cmd;	/* Command Code */
-@@ -97,7 +102,8 @@ struct uv_cb_qui {
- 	u64 max_guest_stor_addr;
- 	u8  reserved88[158 - 136];
- 	u16 max_guest_cpu_id;
--	u8  reserveda0[200 - 160];
-+	u64 uv_feature_bits;
-+	u8  reserveda0[200 - 168];
- } __packed __aligned(8);
- 
- /* Initialize Ultravisor */
-@@ -274,6 +280,7 @@ struct uv_info {
- 	unsigned long max_sec_stor_addr;
- 	unsigned int max_num_sec_conf;
- 	unsigned short max_guest_cpu_id;
-+	unsigned long feature_bits;
- };
- 
- extern struct uv_info uv_info;
-diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-index 434d81baceed..b1fa38d5c388 100644
---- a/arch/s390/kernel/uv.c
-+++ b/arch/s390/kernel/uv.c
-@@ -291,7 +291,8 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
- 
- static bool should_export_before_import(struct uv_cb_header *uvcb, struct mm_struct *mm)
- {
--	return uvcb->cmd != UVC_CMD_UNPIN_PAGE_SHARED &&
-+	return !test_bit_inv(BIT_UVC_FEAT_MISC_0, &uv_info.feature_bits) &&
-+		uvcb->cmd != UVC_CMD_UNPIN_PAGE_SHARED &&
- 		atomic_read(&mm->context.is_protected) > 1;
- }
- 
+High level note: in this series the EDID reading is driven by the
+panel driver, not by the bridge chip driver. I believe this makes a
+reasonable amount of sense since the panel driver already _could_
+drive reading the EDID if provided with the DDC bus and in future
+planned work we'll want to give the panel driver the DDC bus (to make
+decisions based on EDID) and the AUX bus (to control the
+backlight). There are also planned patches from Laurent to make
+ti-sn65dsi86 able to drive full DP monitors. In that case the bridge
+chip will still be in charge of reading the EDID, but it's not hard to
+make this dynamic.
+
+This series is the logical successor to the 3-part series containing
+the patch ("drm/bridge: ti-sn65dsi86: Properly get the EDID, but only
+if refclk") [1].
+
+This patch was tested against drm-misc-next commit 60a6b73dd821
+("drm/ingenic: Fix pixclock rate for 24-bit serial panels") on a
+sc7180-trogdor-lazor device.
+
+At v7 now, this patch series grew a bit from v6 because it introduces
+the DP AUX bus.
+
+Between v2 and v3, high-level view of changes:
+- stop doing the EDID caching in the core.
+
+Between v3 and v4, high-level view of changes:
+- EDID reading is actually driven by the panel driver now. See above.
+- Lots of chicken-and-egg problems solved w/ sub-devices.
+
+Between v4 and v5, high-level view of changes.
+- Some of the early patches landed, so dropped from series.
+- New pm_runtime_disable() fix (fixed a patch that already landed).
+- Added Bjorn's tags to most patches
+- Fixed problems when building as a module.
+- Reordered debugfs patch and fixed error handling there.
+- Dropped last patch. I'm not convinced it's safe w/out more work.
+
+Between v5 and v6, high-level view of changes:
+- Added the patch ("drm/dp: Allow an early call to register DDC i2c
+  bus")
+- Many patches had been landed, so only a few "controversial" ones
+  left.
+
+Between v6 and v7, high-level view of changes:
+- New AUX DP bus!
+
+[1] https://lore.kernel.org/r/20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid/
+
+Changes in v7:
+- pm_runtime_dont_use_autosuspend() fix new for v7.
+- List hpd properties bindings patch new for v7.
+- ti-sn65dsi86: Add aux-bus child patch new for v7.
+- Patch introducing the DP AUX bus is new for v7.
+- Patch to allow panel-simple to be DP AUX EP new for v7.
+- Patch using the DP AUX for DDC new for v7.
+- Remove use of now-dropped drm_dp_aux_register_ddc() call.
+- Beefed up commit message in context of the DP AUX bus.
+- Set the proper sub-device "dev" pointer in the AUX structure.
+- Patch to support for DP AUX bus on ti-sn65dsi86 new for v7.
+- Adjusted commit message to talk about DP AUX bus.
+- Panel now under bridge chip instead of getting a link to ddc-i2c
+
+Changes in v6:
+- Use new drm_dp_aux_register_ddc() calls.
+
+Douglas Anderson (10):
+  drm/panel: panel-simple: Add missing pm_runtime_dont_use_autosuspend()
+    calls
+  dt-bindings: display: simple: List hpd properties in panel-simple
+  dt-bindings: drm/bridge: ti-sn65dsi86: Add aux-bus child
+  drm: Introduce the DP AUX bus
+  drm/panel: panel-simple: Allow panel-simple be a DP AUX endpoint
+    device
+  drm/panel: panel-simple: Stash DP AUX bus; allow using it for DDC
+  drm/bridge: ti-sn65dsi86: Promote the AUX channel to its own sub-dev
+  drm/bridge: ti-sn65dsi86: Add support for the DP AUX bus
+  drm/bridge: ti-sn65dsi86: Don't read EDID blob over DDC
+  arm64: dts: qcom: sc7180-trogdor: Move panel under the bridge chip
+
+ .../bindings/display/bridge/ti,sn65dsi86.yaml |  22 +-
+ .../bindings/display/panel/panel-simple.yaml  |   2 +
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  30 +-
+ drivers/gpu/drm/Kconfig                       |   5 +
+ drivers/gpu/drm/Makefile                      |   2 +
+ drivers/gpu/drm/bridge/Kconfig                |   1 +
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c         | 111 ++++--
+ drivers/gpu/drm/drm_dp_aux_bus.c              | 322 ++++++++++++++++++
+ drivers/gpu/drm/panel/Kconfig                 |   1 +
+ drivers/gpu/drm/panel/panel-simple.c          |  66 +++-
+ include/drm/drm_dp_aux_bus.h                  |  57 ++++
+ 11 files changed, 563 insertions(+), 56 deletions(-)
+ create mode 100644 drivers/gpu/drm/drm_dp_aux_bus.c
+ create mode 100644 include/drm/drm_dp_aux_bus.h
+
 -- 
-2.31.1
+2.31.1.751.gd2f1c929bd-goog
 
