@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ADA383329
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7BE383100
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242401AbhEQOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:55:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41378 "EHLO mail.kernel.org"
+        id S240265AbhEQOdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:33:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240824AbhEQOrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:47:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 962586196A;
-        Mon, 17 May 2021 14:22:02 +0000 (UTC)
+        id S237546AbhEQO2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64F2F61352;
+        Mon, 17 May 2021 14:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261323;
-        bh=PeEuDQ1RPr0AL0urufJWxpvRE4VsKXS8HuL0uvj1oms=;
+        s=korg; t=1621260860;
+        bh=tYasmsVH0Piz6byNcOMr5ONyvpW8tVB6xO4yCUZpBes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HjWJ9SZlzvLGrlS4ogSl/kn4NDbnL0Ri/jY6GSWJkrSUcCqKIkFWl+faBLPiwFoG9
-         +DngtWDFgqn3DMSmril1qJ9Cu9tjudGJLLT5hT/OMph0DNuklCrYVBEbXp0REDD93w
-         5pMrSgjSzFg+EeNRgYACZpVmyJb6gB5jVPqzvOnc=
+        b=tEa3GeqMDJUAdhu8G4ycjLekDzdazgkGHb2qoeXiCPuncVK0H9oL0iiEtTSUX9dgd
+         +XhhMdVXcfoKqyEn+ER+Y2qRRozEKOip4BisORQkCCgNmdKLd0V76jOmvchaY5nD8E
+         pU2/oe5ZAqFYstAJUivHrF+XNmqGn80pk6sj7HII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 008/289] PM: runtime: Fix unpaired parent child_count for force_resume
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 022/329] tipc: convert dest nodes address to network order
 Date:   Mon, 17 May 2021 15:58:53 +0200
-Message-Id: <20210517140305.458489074@linuxfoundation.org>
+Message-Id: <20210517140302.810556950@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,110 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-commit c745253e2a691a40c66790defe85c104a887e14a upstream.
+[ Upstream commit 1980d37565061ab44bdc2f9e4da477d3b9752e81 ]
 
-As pm_runtime_need_not_resume() relies also on usage_count, it can return
-a different value in pm_runtime_force_suspend() compared to when called in
-pm_runtime_force_resume(). Different return values can happen if anything
-calls PM runtime functions in between, and causes the parent child_count
-to increase on every resume.
+(struct tipc_link_info)->dest is in network order (__be32), so we must
+convert the value to network order before assigning. The problem detected
+by sparse:
 
-So far I've seen the issue only for omapdrm that does complicated things
-with PM runtime calls during system suspend for legacy reasons:
+net/tipc/netlink_compat.c:699:24: warning: incorrect type in assignment (different base types)
+net/tipc/netlink_compat.c:699:24:    expected restricted __be32 [usertype] dest
+net/tipc/netlink_compat.c:699:24:    got int
 
-omap_atomic_commit_tail() for omapdrm.0
- dispc_runtime_get()
-  wakes up 58000000.dss as it's the dispc parent
-   dispc_runtime_resume()
-    rpm_resume() increases parent child_count
- dispc_runtime_put() won't idle, PM runtime suspend blocked
-pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
- __update_runtime_status()
-system suspended
-pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
- pm_runtime_enable() only called because of pm_runtime_need_not_resume()
-omap_atomic_commit_tail() for omapdrm.0
- dispc_runtime_get()
-  wakes up 58000000.dss as it's the dispc parent
-   dispc_runtime_resume()
-    rpm_resume() increases parent child_count
- dispc_runtime_put() won't idle, PM runtime suspend blocked
-...
-rpm_suspend for 58000000.dss but parent child_count is now unbalanced
-
-Let's fix the issue by adding a flag for needs_force_resume and use it in
-pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
-
-Additionally omapdrm system suspend could be simplified later on to avoid
-lots of unnecessary PM runtime calls and the complexity it adds. The
-driver can just use internal functions that are shared between the PM
-runtime and system suspend related functions.
-
-Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Tested-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: 4.16+ <stable@vger.kernel.org> # 4.16+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/power/runtime.c |   10 +++++++---
- include/linux/pm.h           |    1 +
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ net/tipc/netlink_compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -1637,6 +1637,7 @@ void pm_runtime_init(struct device *dev)
- 	dev->power.request_pending = false;
- 	dev->power.request = RPM_REQ_NONE;
- 	dev->power.deferred_resume = false;
-+	dev->power.needs_force_resume = 0;
- 	INIT_WORK(&dev->power.work, pm_runtime_work);
+diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
+index 5a1ce64039f7..0749df80454d 100644
+--- a/net/tipc/netlink_compat.c
++++ b/net/tipc/netlink_compat.c
+@@ -696,7 +696,7 @@ static int tipc_nl_compat_link_dump(struct tipc_nl_compat_msg *msg,
+ 	if (err)
+ 		return err;
  
- 	dev->power.timer_expires = 0;
-@@ -1804,10 +1805,12 @@ int pm_runtime_force_suspend(struct devi
- 	 * its parent, but set its status to RPM_SUSPENDED anyway in case this
- 	 * function will be called again for it in the meantime.
- 	 */
--	if (pm_runtime_need_not_resume(dev))
-+	if (pm_runtime_need_not_resume(dev)) {
- 		pm_runtime_set_suspended(dev);
--	else
-+	} else {
- 		__update_runtime_status(dev, RPM_SUSPENDED);
-+		dev->power.needs_force_resume = 1;
-+	}
- 
- 	return 0;
- 
-@@ -1834,7 +1837,7 @@ int pm_runtime_force_resume(struct devic
- 	int (*callback)(struct device *);
- 	int ret = 0;
- 
--	if (!pm_runtime_status_suspended(dev) || pm_runtime_need_not_resume(dev))
-+	if (!pm_runtime_status_suspended(dev) || !dev->power.needs_force_resume)
- 		goto out;
- 
- 	/*
-@@ -1853,6 +1856,7 @@ int pm_runtime_force_resume(struct devic
- 
- 	pm_runtime_mark_last_busy(dev);
- out:
-+	dev->power.needs_force_resume = 0;
- 	pm_runtime_enable(dev);
- 	return ret;
- }
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -600,6 +600,7 @@ struct dev_pm_info {
- 	unsigned int		idle_notification:1;
- 	unsigned int		request_pending:1;
- 	unsigned int		deferred_resume:1;
-+	unsigned int		needs_force_resume:1;
- 	unsigned int		runtime_auto:1;
- 	bool			ignore_children:1;
- 	unsigned int		no_callbacks:1;
+-	link_info.dest = nla_get_flag(link[TIPC_NLA_LINK_DEST]);
++	link_info.dest = htonl(nla_get_flag(link[TIPC_NLA_LINK_DEST]));
+ 	link_info.up = htonl(nla_get_flag(link[TIPC_NLA_LINK_UP]));
+ 	nla_strscpy(link_info.str, link[TIPC_NLA_LINK_NAME],
+ 		    TIPC_MAX_LINK_NAME);
+-- 
+2.30.2
+
 
 
