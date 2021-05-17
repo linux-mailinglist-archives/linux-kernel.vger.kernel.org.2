@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644A538336F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48ADA383329
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240941AbhEQO6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:58:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40386 "EHLO mail.kernel.org"
+        id S242401AbhEQOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:55:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241095AbhEQOqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:46:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F447601FC;
-        Mon, 17 May 2021 14:21:51 +0000 (UTC)
+        id S240824AbhEQOrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:47:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 962586196A;
+        Mon, 17 May 2021 14:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261312;
-        bh=KZ/LSntUBGWcZ6k7D3q0+rD8Uc8XWgYD3yisjBtc2mM=;
+        s=korg; t=1621261323;
+        bh=PeEuDQ1RPr0AL0urufJWxpvRE4VsKXS8HuL0uvj1oms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YDR5WwhSi2UdRvpxv+nqKPwpSqVaxR61FWoTw28MhDfU1lH/zVj9FjGlY82CVA1ow
-         fuseIxKQnbcJTqMKGe4FoGT+4vDbyPA9rBwBnAADIhgwHgMDYAjMjAaXXVYBAMCrnU
-         GeFaXUQ1upyhnC1yKwFGyPlEV+ViMvDRYItM8ptE=
+        b=HjWJ9SZlzvLGrlS4ogSl/kn4NDbnL0Ri/jY6GSWJkrSUcCqKIkFWl+faBLPiwFoG9
+         +DngtWDFgqn3DMSmril1qJ9Cu9tjudGJLLT5hT/OMph0DNuklCrYVBEbXp0REDD93w
+         5pMrSgjSzFg+EeNRgYACZpVmyJb6gB5jVPqzvOnc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 007/289] ACPI: PM: Add ACPI ID of Alder Lake Fan
-Date:   Mon, 17 May 2021 15:58:52 +0200
-Message-Id: <20210517140305.421606097@linuxfoundation.org>
+Subject: [PATCH 5.10 008/289] PM: runtime: Fix unpaired parent child_count for force_resume
+Date:   Mon, 17 May 2021 15:58:53 +0200
+Message-Id: <20210517140305.458489074@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -41,32 +41,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit 2404b8747019184002823dba7d2f0ecf89d802b7 upstream.
+commit c745253e2a691a40c66790defe85c104a887e14a upstream.
 
-Add a new unique fan ACPI device ID for Alder Lake to
-support it in acpi_dev_pm_attach() function.
+As pm_runtime_need_not_resume() relies also on usage_count, it can return
+a different value in pm_runtime_force_suspend() compared to when called in
+pm_runtime_force_resume(). Different return values can happen if anything
+calls PM runtime functions in between, and causes the parent child_count
+to increase on every resume.
 
-Fixes: 38748bcb940e ("ACPI: DPTF: Support Alder Lake")
-Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-Acked-by: Zhang Rui <rui.zhang@intel.com>
-Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
+So far I've seen the issue only for omapdrm that does complicated things
+with PM runtime calls during system suspend for legacy reasons:
+
+omap_atomic_commit_tail() for omapdrm.0
+ dispc_runtime_get()
+  wakes up 58000000.dss as it's the dispc parent
+   dispc_runtime_resume()
+    rpm_resume() increases parent child_count
+ dispc_runtime_put() won't idle, PM runtime suspend blocked
+pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
+ __update_runtime_status()
+system suspended
+pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
+ pm_runtime_enable() only called because of pm_runtime_need_not_resume()
+omap_atomic_commit_tail() for omapdrm.0
+ dispc_runtime_get()
+  wakes up 58000000.dss as it's the dispc parent
+   dispc_runtime_resume()
+    rpm_resume() increases parent child_count
+ dispc_runtime_put() won't idle, PM runtime suspend blocked
+...
+rpm_suspend for 58000000.dss but parent child_count is now unbalanced
+
+Let's fix the issue by adding a flag for needs_force_resume and use it in
+pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
+
+Additionally omapdrm system suspend could be simplified later on to avoid
+lots of unnecessary PM runtime calls and the complexity it adds. The
+driver can just use internal functions that are shared between the PM
+runtime and system suspend related functions.
+
+Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Tested-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: 4.16+ <stable@vger.kernel.org> # 4.16+
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/device_pm.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/base/power/runtime.c |   10 +++++++---
+ include/linux/pm.h           |    1 +
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/acpi/device_pm.c
-+++ b/drivers/acpi/device_pm.c
-@@ -1301,6 +1301,7 @@ int acpi_dev_pm_attach(struct device *de
- 		{"PNP0C0B", }, /* Generic ACPI fan */
- 		{"INT3404", }, /* Fan */
- 		{"INTC1044", }, /* Fan for Tiger Lake generation */
-+		{"INTC1048", }, /* Fan for Alder Lake generation */
- 		{}
- 	};
- 	struct acpi_device *adev = ACPI_COMPANION(dev);
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -1637,6 +1637,7 @@ void pm_runtime_init(struct device *dev)
+ 	dev->power.request_pending = false;
+ 	dev->power.request = RPM_REQ_NONE;
+ 	dev->power.deferred_resume = false;
++	dev->power.needs_force_resume = 0;
+ 	INIT_WORK(&dev->power.work, pm_runtime_work);
+ 
+ 	dev->power.timer_expires = 0;
+@@ -1804,10 +1805,12 @@ int pm_runtime_force_suspend(struct devi
+ 	 * its parent, but set its status to RPM_SUSPENDED anyway in case this
+ 	 * function will be called again for it in the meantime.
+ 	 */
+-	if (pm_runtime_need_not_resume(dev))
++	if (pm_runtime_need_not_resume(dev)) {
+ 		pm_runtime_set_suspended(dev);
+-	else
++	} else {
+ 		__update_runtime_status(dev, RPM_SUSPENDED);
++		dev->power.needs_force_resume = 1;
++	}
+ 
+ 	return 0;
+ 
+@@ -1834,7 +1837,7 @@ int pm_runtime_force_resume(struct devic
+ 	int (*callback)(struct device *);
+ 	int ret = 0;
+ 
+-	if (!pm_runtime_status_suspended(dev) || pm_runtime_need_not_resume(dev))
++	if (!pm_runtime_status_suspended(dev) || !dev->power.needs_force_resume)
+ 		goto out;
+ 
+ 	/*
+@@ -1853,6 +1856,7 @@ int pm_runtime_force_resume(struct devic
+ 
+ 	pm_runtime_mark_last_busy(dev);
+ out:
++	dev->power.needs_force_resume = 0;
+ 	pm_runtime_enable(dev);
+ 	return ret;
+ }
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -600,6 +600,7 @@ struct dev_pm_info {
+ 	unsigned int		idle_notification:1;
+ 	unsigned int		request_pending:1;
+ 	unsigned int		deferred_resume:1;
++	unsigned int		needs_force_resume:1;
+ 	unsigned int		runtime_auto:1;
+ 	bool			ignore_children:1;
+ 	unsigned int		no_callbacks:1;
 
 
