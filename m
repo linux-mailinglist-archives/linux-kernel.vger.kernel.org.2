@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0015C383328
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DCE3830F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242383AbhEQOzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:55:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
+        id S239856AbhEQOdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238951AbhEQOrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:47:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6058661074;
-        Mon, 17 May 2021 14:22:00 +0000 (UTC)
+        id S239192AbhEQO2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 809E261622;
+        Mon, 17 May 2021 14:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261320;
-        bh=p/fxQKVd8v5lMLxdVnAVvp6K+pG2uYX7GCoI+xOyPWE=;
+        s=korg; t=1621260846;
+        bh=kyz1Z4j1fx7MLGJPzpfVnpMljw7rHnaU+HUC3GaINkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xlTjSEI4WMovFqaKI+bHLLWqgx6gyIo5DZJ61p1+eSFCVlqG1Cyg5fQ3S8g2x1nNB
-         Tv9SnVsU01wGqzk6PrtjJxJXE2d+B8rMHWVwL2WEfch/leMB5pZZ9qfJgayVl9AO21
-         KR9M5kGesXZeW6O+nTWIqkv4IjpKonHZ/Vq6WeRQ=
+        b=bXrM2OA2B/dsJEmFPLumOS1WjUOsWAChg2PtDpuDhswKPiLkeAjCKIfM0rsKNIghM
+         /7758zWEC6lDts9RaBmsno8S1PUsBPrXIdO6/YiDZpk/p4d0B6DZnlwDHO3BHWlLLZ
+         S6O7TEsK0pR4k+YuZJTv3JQ/Oo3Kb7rQL+bsQUAA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 033/141] ALSA: hda/hdmi: fix race in handling acomp ELD notification at resume
-Date:   Mon, 17 May 2021 16:01:25 +0200
-Message-Id: <20210517140243.885541021@linuxfoundation.org>
+Subject: [PATCH 5.12 220/363] ksm: fix potential missing rmap_item for stable_node
+Date:   Mon, 17 May 2021 16:01:26 +0200
+Message-Id: <20210517140310.038935686@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 0c37e2eb6b83e375e8a654d01598292d5591fc65 ]
+[ Upstream commit c89a384e2551c692a9fe60d093fd7080f50afc51 ]
 
-When snd-hda-codec-hdmi is used with ASoC HDA controller like SOF (acomp
-used for ELD notifications), display connection change done during suspend,
-can be lost due to following sequence of events:
+When removing rmap_item from stable tree, STABLE_FLAG of rmap_item is
+cleared with head reserved.  So the following scenario might happen: For
+ksm page with rmap_item1:
 
-  1. system in S3 suspend
-  2. DP/HDMI receiver connected
-  3. system resumed
-  4. HDA controller resumed, but card->deferred_resume_work not complete
-  5. acomp eld_notify callback
-  6. eld_notify ignored as power state is not CTL_POWER_D0
-  7. HDA resume deferred work completed, power state set to CTL_POWER_D0
+cmp_and_merge_page
+  stable_node->head = &migrate_nodes;
+  remove_rmap_item_from_tree, but head still equal to stable_node;
+  try_to_merge_with_ksm_page failed;
+  return;
 
-This results in losing the notification, and the jack state reported to
-user-space is not correct.
+For the same ksm page with rmap_item2, stable node migration succeed this
+time.  The stable_node->head does not equal to migrate_nodes now.  For ksm
+page with rmap_item1 again:
 
-The check on step 6 was added in commit 8ae743e82f0b ("ALSA: hda - Skip
-ELD notification during system suspend"). It would seem with the deferred
-resume logic in ASoC core, this check is not safe.
+cmp_and_merge_page
+ stable_node->head != &migrate_nodes && rmap_item->head == stable_node
+ return;
 
-Fix the issue by modifying the check to use "dev.power.power_state.event"
-instead of ALSA specific card power state variable.
+We would miss the rmap_item for stable_node and might result in failed
+rmap_walk_ksm().  Fix this by set rmap_item->head to NULL when rmap_item
+is removed from stable tree.
 
-BugLink: https://github.com/thesofproject/linux/issues/2825
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20210416131157.1881366-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lkml.kernel.org/r/20210330140228.45635-5-linmiaohe@huawei.com
+Fixes: 4146d2d673e8 ("ksm: make !merge_across_nodes migration safe")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Hugh Dickins <hughd@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/ksm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index ce38b5d4670d..f620b402b309 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2567,7 +2567,7 @@ static void generic_acomp_pin_eld_notify(void *audio_ptr, int port, int dev_id)
- 	/* skip notification during system suspend (but not in runtime PM);
- 	 * the state will be updated at resume
- 	 */
--	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
-+	if (codec->core.dev.power.power_state.event == PM_EVENT_SUSPEND)
- 		return;
- 	/* ditto during suspend/resume process itself */
- 	if (snd_hdac_is_in_pm(&codec->core))
-@@ -2772,7 +2772,7 @@ static void intel_pin_eld_notify(void *audio_ptr, int port, int pipe)
- 	/* skip notification during system suspend (but not in runtime PM);
- 	 * the state will be updated at resume
- 	 */
--	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
-+	if (codec->core.dev.power.power_state.event == PM_EVENT_SUSPEND)
- 		return;
- 	/* ditto during suspend/resume process itself */
- 	if (snd_hdac_is_in_pm(&codec->core))
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 9694ee2c71de..b32391ccf6d5 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -794,6 +794,7 @@ static void remove_rmap_item_from_tree(struct rmap_item *rmap_item)
+ 		stable_node->rmap_hlist_len--;
+ 
+ 		put_anon_vma(rmap_item->anon_vma);
++		rmap_item->head = NULL;
+ 		rmap_item->address &= PAGE_MASK;
+ 
+ 	} else if (rmap_item->address & UNSTABLE_FLAG) {
 -- 
 2.30.2
 
