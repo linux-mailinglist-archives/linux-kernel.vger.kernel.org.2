@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C50383113
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6044D38331A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240405AbhEQOeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:34:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
+        id S241946AbhEQOyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:54:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239212AbhEQO2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:28:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C083261626;
-        Mon, 17 May 2021 14:14:13 +0000 (UTC)
+        id S241776AbhEQOqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:46:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E8461965;
+        Mon, 17 May 2021 14:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260854;
-        bh=owXmZOYrZFTscCWbK1gsEsA9aZW+UUmh7ljGDKKekLg=;
+        s=korg; t=1621261284;
+        bh=ljpqIVKiHbJo/PLt8SWRlqsfImtXPYOLTR7zHuMruQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z4yYU8UBNNEw02lE5lAQB3ufzLi1Wy5VgzYPXZZOBNcpsW7uTtUWyfz84zLwrb7JQ
-         dgS40imvRZKxzD3H6GxLHbRj8ULlranikNjPk7mXtmZvmhthxZLdy210M5OYovQD8B
-         JVUfVUiY6exuihCLR3pagG53JO26TfqmlbcAhL6Q=
+        b=S6DDoUoFuZ0iIH5hpozxBi0AAX6ioG/p5yAZGudKWT7BtBlG6afjmMkb9F8p7aNAq
+         4uA9uUOMGFjh5W1SHcNEz9o2uNxlMmUDhEssCatzbhqYhVxIf3jH7URvsEPjU8Gftf
+         PulaPuytKJHQebcC2yVcYbiqjn2xwmFBHqECNWrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 214/363] drm/radeon: Avoid power table parsing memory leaks
-Date:   Mon, 17 May 2021 16:01:20 +0200
-Message-Id: <20210517140309.812339261@linuxfoundation.org>
+        stable@vger.kernel.org, "Tj (Elloe Linux)" <ml.linux@elloe.vision>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        David Coe <david.coe@live.co.uk>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 029/141] iommu/amd: Remove performance counter pre-initialization test
+Date:   Mon, 17 May 2021 16:01:21 +0200
+Message-Id: <20210517140243.745600595@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-References: <20210517140302.508966430@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-[ Upstream commit c69f27137a38d24301a6b659454a91ad85dff4aa ]
+[ Upstream commit 994d6608efe4a4c8834bdc5014c86f4bc6aceea6 ]
 
-Avoid leaving a hanging pre-allocated clock_info if last mode is
-invalid, and avoid heap corruption if no valid modes are found.
+In early AMD desktop/mobile platforms (during 2013), when the IOMMU
+Performance Counter (PMC) support was first introduced in
+commit 30861ddc9cca ("perf/x86/amd: Add IOMMU Performance Counter
+resource management"), there was a HW bug where the counters could not
+be accessed. The result was reading of the counter always return zero.
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=211537
-Fixes: 6991b8f2a319 ("drm/radeon/kms: fix segfault in pm rework")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+At the time, the suggested workaround was to add a test logic prior
+to initializing the PMC feature to check if the counters can be programmed
+and read back the same value. This has been working fine until the more
+recent desktop/mobile platforms start enabling power gating for the PMC,
+which prevents access to the counters. This results in the PMC support
+being disabled unnecesarily.
+
+Unfortunatly, there is no documentation of since which generation
+of hardware the original PMC HW bug was fixed. Although, it was fixed
+soon after the first introduction of the PMC. Base on this, we assume
+that the buggy platforms are less likely to be in used, and it should
+be relatively safe to remove this legacy logic.
+
+Link: https://lore.kernel.org/linux-iommu/alpine.LNX.3.20.13.2006030935570.3181@monopod.intra.ispras.ru/
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
+Cc: Tj (Elloe Linux) <ml.linux@elloe.vision>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Alexander Monakov <amonakov@ispras.ru>
+Cc: David Coe <david.coe@live.co.uk>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210409085848.3908-3-suravee.suthikulpanit@amd.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/radeon/radeon_atombios.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/iommu/amd_iommu_init.c | 24 +-----------------------
+ 1 file changed, 1 insertion(+), 23 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_atombios.c b/drivers/gpu/drm/radeon/radeon_atombios.c
-index f9f4efa1738c..28c4413f4dc8 100644
---- a/drivers/gpu/drm/radeon/radeon_atombios.c
-+++ b/drivers/gpu/drm/radeon/radeon_atombios.c
-@@ -2120,11 +2120,14 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
- 		return state_index;
- 	/* last mode is usually default, array is low to high */
- 	for (i = 0; i < num_modes; i++) {
--		rdev->pm.power_state[state_index].clock_info =
--			kcalloc(1, sizeof(struct radeon_pm_clock_info),
--				GFP_KERNEL);
-+		/* avoid memory leaks from invalid modes or unknown frev. */
-+		if (!rdev->pm.power_state[state_index].clock_info) {
-+			rdev->pm.power_state[state_index].clock_info =
-+				kzalloc(sizeof(struct radeon_pm_clock_info),
-+					GFP_KERNEL);
-+		}
- 		if (!rdev->pm.power_state[state_index].clock_info)
--			return state_index;
-+			goto out;
- 		rdev->pm.power_state[state_index].num_clock_modes = 1;
- 		rdev->pm.power_state[state_index].clock_info[0].voltage.type = VOLTAGE_NONE;
- 		switch (frev) {
-@@ -2243,8 +2246,15 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
- 			break;
- 		}
- 	}
-+out:
-+	/* free any unused clock_info allocation. */
-+	if (state_index && state_index < num_modes) {
-+		kfree(rdev->pm.power_state[state_index].clock_info);
-+		rdev->pm.power_state[state_index].clock_info = NULL;
-+	}
-+
- 	/* last mode is usually default */
--	if (rdev->pm.default_power_state_index == -1) {
-+	if (state_index && rdev->pm.default_power_state_index == -1) {
- 		rdev->pm.power_state[state_index - 1].type =
- 			POWER_STATE_TYPE_DEFAULT;
- 		rdev->pm.default_power_state_index = state_index - 1;
+diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
+index 31d7e2d4f304..692401e941a7 100644
+--- a/drivers/iommu/amd_iommu_init.c
++++ b/drivers/iommu/amd_iommu_init.c
+@@ -1672,33 +1672,16 @@ static int __init init_iommu_all(struct acpi_table_header *table)
+ 	return 0;
+ }
+ 
+-static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
+-				u8 fxn, u64 *value, bool is_write);
+-
+ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
+ {
++	u64 val;
+ 	struct pci_dev *pdev = iommu->dev;
+-	u64 val = 0xabcd, val2 = 0, save_reg = 0;
+ 
+ 	if (!iommu_feature(iommu, FEATURE_PC))
+ 		return;
+ 
+ 	amd_iommu_pc_present = true;
+ 
+-	/* save the value to restore, if writable */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
+-		goto pc_false;
+-
+-	/* Check if the performance counters can be written to */
+-	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
+-	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
+-	    (val != val2))
+-		goto pc_false;
+-
+-	/* restore */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
+-		goto pc_false;
+-
+ 	pci_info(pdev, "IOMMU performance counters supported\n");
+ 
+ 	val = readl(iommu->mmio_base + MMIO_CNTR_CONF_OFFSET);
+@@ -1706,11 +1689,6 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
+ 	iommu->max_counters = (u8) ((val >> 7) & 0xf);
+ 
+ 	return;
+-
+-pc_false:
+-	pci_err(pdev, "Unable to read/write to IOMMU perf counter.\n");
+-	amd_iommu_pc_present = false;
+-	return;
+ }
+ 
+ static ssize_t amd_iommu_show_cap(struct device *dev,
 -- 
 2.30.2
 
