@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC14638379A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980843837BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344961AbhEQPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:46:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55470 "EHLO mail.kernel.org"
+        id S244283AbhEQPqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:46:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245718AbhEQPak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:30:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C2A60698;
-        Mon, 17 May 2021 14:38:06 +0000 (UTC)
+        id S1343583AbhEQPbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:31:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBA7E613F4;
+        Mon, 17 May 2021 14:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262287;
-        bh=Y1Fi/8EmZWG4KsmdkBqPpUUPzppWQTtjsGwFkKKu/P0=;
+        s=korg; t=1621262291;
+        bh=fngY5Z8pt3dkBwALJzRZGtAqNPMwfFVcNbPbxtMCDN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kldb5Xv3KVu0eXFITy5IQk479mAezkuto6GPeG0zijB0a93nyxONZKCjhxO2UVM/N
-         ExF4mfPgAx6GP/PDdWhZAR61PggSl4heXI/trAQq7TKAtX3zl2UYrcvndWSeVk5e+r
-         tCYH8TLJoATzEH/xwplloHk8wEh30B10GkdD5y2E=
+        b=ybLBR8bdoxLjAmXfC2OKExo6h3MbOZgM1ihlUy+tcn/f0IBGE0H0nHw4dttl9WTEz
+         YXaC9A45GIG4NmwpMlP5x8Dn4Ci8cOCCq4sv95TMDg7JrfqCLTpew6YcymsJI+BMcW
+         06tvNQA22cywYm/D/H3WWqyffS0E+oMHbfJjEqYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergio Lopez <slp@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Juergen Gross <jgross@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 257/329] dax: Wake up all waiters after invalidating dax entry
-Date:   Mon, 17 May 2021 16:02:48 +0200
-Message-Id: <20210517140310.803938885@linuxfoundation.org>
+Subject: [PATCH 5.11 258/329] xen/unpopulated-alloc: fix error return code in fill_list()
+Date:   Mon, 17 May 2021 16:02:49 +0200
+Message-Id: <20210517140310.835517390@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -42,79 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vivek Goyal <vgoyal@redhat.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 237388320deffde7c2d65ed8fc9eef670dc979b3 ]
+[ Upstream commit dbc03e81586fc33e4945263fd6e09e22eb4b980f ]
 
-I am seeing missed wakeups which ultimately lead to a deadlock when I am
-using virtiofs with DAX enabled and running "make -j". I had to mount
-virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
-the problem consistently.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-So here is the problem. put_unlocked_entry() wakes up waiters only
-if entry is not null as well as !dax_is_conflict(entry). But if I
-call multiple instances of invalidate_inode_pages2() in parallel,
-then I can run into a situation where there are waiters on
-this index but nobody will wake these waiters.
-
-invalidate_inode_pages2()
-  invalidate_inode_pages2_range()
-    invalidate_exceptional_entry2()
-      dax_invalidate_mapping_entry_sync()
-        __dax_invalidate_entry() {
-                xas_lock_irq(&xas);
-                entry = get_unlocked_entry(&xas, 0);
-                ...
-                ...
-                dax_disassociate_entry(entry, mapping, trunc);
-                xas_store(&xas, NULL);
-                ...
-                ...
-                put_unlocked_entry(&xas, entry);
-                xas_unlock_irq(&xas);
-        }
-
-Say a fault in in progress and it has locked entry at offset say "0x1c".
-Now say three instances of invalidate_inode_pages2() are in progress
-(A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-dax entry is locked, all tree instances A, B, C will wait in wait queue.
-
-When dax fault finishes, say A is woken up. It will store NULL entry
-at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-this means put_unlocked_entry() will not wake up next waiter, given
-the current code. And that means C continues to wait and is not woken
-up.
-
-This patch fixes the issue by waking up all waiters when a dax entry
-has been invalidated. This seems to fix the deadlock I am facing
-and I can make forward progress.
-
-Reported-by: Sergio Lopez <slp@redhat.com>
-Fixes: ac401cc78242 ("dax: New fault locking")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-Link: https://lore.kernel.org/r/20210428190314.1865312-4-vgoyal@redhat.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: a4574f63edc6 ("mm/memremap_pages: convert to 'struct range'")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/20210508021913.1727-1-thunder.leizhen@huawei.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dax.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/xen/unpopulated-alloc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/dax.c b/fs/dax.c
-index 56eb1c759ca5..df5485b4bddf 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -675,7 +675,7 @@ static int __dax_invalidate_entry(struct address_space *mapping,
- 	mapping->nrexceptional--;
- 	ret = 1;
- out:
--	put_unlocked_entry(&xas, entry, WAKE_NEXT);
-+	put_unlocked_entry(&xas, entry, WAKE_ALL);
- 	xas_unlock_irq(&xas);
- 	return ret;
- }
+diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
+index e64e6befc63b..87e6b7db892f 100644
+--- a/drivers/xen/unpopulated-alloc.c
++++ b/drivers/xen/unpopulated-alloc.c
+@@ -39,8 +39,10 @@ static int fill_list(unsigned int nr_pages)
+ 	}
+ 
+ 	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+-	if (!pgmap)
++	if (!pgmap) {
++		ret = -ENOMEM;
+ 		goto err_pgmap;
++	}
+ 
+ 	pgmap->type = MEMORY_DEVICE_GENERIC;
+ 	pgmap->range = (struct range) {
 -- 
 2.30.2
 
