@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95233382DD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F2A382DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237493AbhEQNsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:48:37 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:42293 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S237499AbhEQNsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:48:35 -0400
-Received: (qmail 1085329 invoked by uid 1000); 17 May 2021 09:47:18 -0400
-Date:   Mon, 17 May 2021 09:47:18 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Hayes Wang <hayeswang@realtek.com>,
-        syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: Re: [syzbot] WARNING in rtl8152_probe
-Message-ID: <20210517134718.GC1083813@rowland.harvard.edu>
-References: <0000000000009df1b605c21ecca8@google.com>
- <7de0296584334229917504da50a0ac38@realtek.com>
- <20210513142552.GA967812@rowland.harvard.edu>
- <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com>
- <YJ4dU3yCwd2wMq5f@kroah.com>
- <bddf302301f5420db0fa049c895c9b14@realtek.com>
- <20210514153253.GA1007561@rowland.harvard.edu>
- <547984d34f58406aa2e37861d7e8a44d@realtek.com>
- <93a10a341eccd8b680cdcc422947e4a1b83099db.camel@suse.com>
+        id S237538AbhEQNva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:51:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40558 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233139AbhEQNv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 09:51:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621259409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Yuynx1ZfQy1XbbVokHeTdBIN44lHNRY03oROZvyFNJA=;
+        b=sEzQL4TodnDnF/5IgSKRx8kBG0F/JxVxVGA1FHAe+Fq6knncU5thjDo8ORC2NOfkVisnVf
+        6DmckX9UZyzSC3m7ln5XY/OHcGakg4zPC8K3uLnu/92GvdG6crWbCPr0+HbLplvHJxQJS1
+        TtuBel6Et49RyEIK+k3bMY4+hLrojtw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ADBF4AC8F;
+        Mon, 17 May 2021 13:50:09 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 46AF7DB228; Mon, 17 May 2021 15:47:37 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.13-rc3
+Date:   Mon, 17 May 2021 15:47:35 +0200
+Message-Id: <cover.1621258094.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93a10a341eccd8b680cdcc422947e4a1b83099db.camel@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 12:00:19PM +0200, Oliver Neukum wrote:
-> Am Montag, den 17.05.2021, 01:01 +0000 schrieb Hayes Wang:
-> > Alan Stern <stern@rowland.harvard.edu>
-> > > Sent: Friday, May 14, 2021 11:33 PM
-> 
-> > > So if a peculiar emulated device created by syzbot is capable of
-> > > crashing the driver, then somewhere there is a bug which needs to
-> > > be
-> > > fixed.  It's true that fixing all these bugs might not protect
-> > > against a
-> > > malicious device which deliberately behaves in an apparently
-> > > reasonable
-> > > manner.  But it does reduce the attack surface.
-> > 
-> > Thanks for your response.
-> > I will add some checks.
-> 
-> Hi,
-> 
-> the problem in this particular case is in
-> static bool rtl_vendor_mode(struct usb_interface *intf)
-> which accepts any config number. It needs to bail out
-> if you find config #0 to be what the descriptors say,
-> treating that as an unrecoverable error.
+Hi,
 
-No, the problem is that the routine calls WARN_ON_ONCE when it doesn't 
-find an appropriate configuration.  WARN_ON_ONCE means there is a bug or 
-problem in the kernel.  That's not the issue here; the issue is that the 
-device doesn't have the expected descriptors.
+a few more fixes, please pull. Thanks.
 
-The line should be dev_warn(), not WARN_ON_ONCE.
+- fix fiemap to print extents that could get misreported due to internal
+  extent splitting and logical merging for fiemap output
 
-Alan Stern
+- fix RCU stalls during delayed iputs
+
+- fix removed dentries still existing after log is synced
+
+----------------------------------------------------------------
+The following changes since commit 77364faf21b4105ee5adbb4844fdfb461334d249:
+
+  btrfs: initialize return variable in cleanup_free_space_cache_v1 (2021-05-04 18:05:15 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc2-tag
+
+for you to fetch changes up to 54a40fc3a1da21b52dbf19f72fdc27a2ec740760:
+
+  btrfs: fix removed dentries still existing after log is synced (2021-05-14 01:23:04 +0200)
+
+----------------------------------------------------------------
+Boris Burkov (1):
+      btrfs: return whole extents in fiemap
+
+Filipe Manana (1):
+      btrfs: fix removed dentries still existing after log is synced
+
+Johannes Thumshirn (1):
+      btrfs: return 0 for dev_extent_hole_check_zoned hole_start in case of error
+
+Josef Bacik (1):
+      btrfs: avoid RCU stalls while running delayed iputs
+
+ fs/btrfs/extent_io.c |  7 ++++++-
+ fs/btrfs/inode.c     |  1 +
+ fs/btrfs/tree-log.c  | 18 ++++++++++++++++++
+ fs/btrfs/volumes.c   |  2 +-
+ 4 files changed, 26 insertions(+), 2 deletions(-)
