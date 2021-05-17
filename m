@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6821383CF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7AA383CFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhEQTK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbhEQTK6 (ORCPT
+        id S231731AbhEQTMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:12:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3832 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231379AbhEQTL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:10:58 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529CBC061573;
-        Mon, 17 May 2021 12:09:41 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id l129so6871115qke.8;
-        Mon, 17 May 2021 12:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AaJatBQ6OYQTtgU7UHzX0hFSZvnFSb6xpuL4KTh9MtI=;
-        b=R5DIbv1+g1uOPJzqmkjwdMYfT/EA9OdSUS2Cq07wjeKPJxIlSh8+YeVJyHSmqCJJYy
-         pEJs8+DlEYM7KE9pgm8s/rIdd7NoaUIrAu9C4yP4JWgXnel5EerWloYlHSSI1ZpOjjeR
-         B4F65zx0Qhar6SiLmlwFf810bxJZzOljBJbCHcm9fSy7a02lAtHreWo09K7N0X6poh8F
-         Vy2zOuys0FTeShZQGct4UsMn8RjfPo+0m2FD1XuaskK/clfHMcJNiiiyOWYnIJfzIs+i
-         YmWnChd92e+DMTzTOWl8EaLSKNA10EtEd9EJs/6UfpOZR2jKa4zMSxwd9QnolTBTvkk5
-         tlHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AaJatBQ6OYQTtgU7UHzX0hFSZvnFSb6xpuL4KTh9MtI=;
-        b=NB+Gj/kLQUF9Z7qxfN0svByHgO5fZ96LzI5e55nEZMAW55X5VPOnDwmrNEOR3ciFMp
-         /Wxe+fusvljdeR6cN0mQiz7UW8USXZBu9Bj6lxkpBPgctVSKNBQdpNd2DkkcUZR5LKuB
-         0u9lCPZktqMTMbnkj63Aiu9xfR/dhmtdtjYD8pIgF0Tk9TOc1lPxppHlpmZZHOOSy8E4
-         9xBuNxrz7z9Y2IdNJaguSbFA93qu+4Bm3FY/wj01WvmKK7bfB1YrH9y3oPgg1pGFlbEi
-         ZXJsSzElrE2dXWQBJcf8Se2zJah0Wce2rxMWoWI1DTeDQ/qhBhIOhAd/rXdrYUptnyJo
-         DpMQ==
-X-Gm-Message-State: AOAM530atFFMciR8+NkUhy45QHGnHfr5jPZYPq1fNSOibJlMd4673BS0
-        jh1hks90FxmKdXfFrbbCyYJYqRsE73o=
-X-Google-Smtp-Source: ABdhPJzoO/fJ8E1N10zXVLOT/35WBvGZbzAE8Q7sKzEeLW27fmGGe/PpRnvMnGIcBI+cL8c/aLGrTw==
-X-Received: by 2002:a05:620a:14b5:: with SMTP id x21mr1364351qkj.298.1621278580627;
-        Mon, 17 May 2021 12:09:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p9sm12175630qtl.78.2021.05.17.12.09.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 12:09:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] hwmon: (adt7462) Add settings for manual fan control.
-To:     Ashwin H <ashwin@pensando.io>, jdelvare@suse.com, corbet@lwn.net,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, snelson@pensando.io
-References: <20210517182427.12904-1-ashwin@pensando.io>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <e30343c0-2e8e-9412-08ed-f839e998248d@roeck-us.net>
-Date:   Mon, 17 May 2021 12:09:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 15:11:57 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HJ4EUF140018;
+        Mon, 17 May 2021 15:10:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=6hsvjsITPUCnrFWqTahbJoJfWrEF44ZPGCdggVB0zeM=;
+ b=AUvO04ReJBgvqkGfesc/EDb0CbFAdG5ReqwdkDYW/SAKdjaEX/yKsJXSt2Iv9bBK99ku
+ YM//N9YR0Q0C/ofwBVAJKcHrCwvTSGfWN3hOsu5v6mw/HHODuLvR/uViLGezqEhyJ/ra
+ xAo5OCgAs/QKFrmcSY+A7m8sSpCsRrbRQIK4p+0AwNpo/oExq+NyR7Gz1HTU19utlGIt
+ n28yUFjrWCByUAPtcC5xlMYxBMD2oouxo2TUuG1XptC31e5rOypVePfAXgKX7RRqnirl
+ hoh6jBMh10gYqUywpykoT9/IZvF6/GTqtGVbwulQUy+kaRbrqaj0JF2otqyVEwz37V/o Uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38kw8020wc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 15:10:39 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14HJ4moc144594;
+        Mon, 17 May 2021 15:10:39 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38kw8020v3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 15:10:38 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14HJ7DjI018412;
+        Mon, 17 May 2021 19:10:36 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 38j5x8925t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 19:10:36 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14HJAXWr44958092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 19:10:33 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2F0B14C044;
+        Mon, 17 May 2021 19:10:33 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B6DC4C046;
+        Mon, 17 May 2021 19:10:32 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.52.118])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 17 May 2021 19:10:32 +0000 (GMT)
+Date:   Mon, 17 May 2021 21:10:30 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
+ callback
+Message-ID: <20210517211030.368ca64b.pasic@linux.ibm.com>
+In-Reply-To: <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+ <20210512203536.4209c29c.pasic@linux.ibm.com>
+ <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
+ <20210513194541.58d1628a.pasic@linux.ibm.com>
+ <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
+ <20210514021500.60ad2a22.pasic@linux.ibm.com>
+ <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210517182427.12904-1-ashwin@pensando.io>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ogxqyuyO29QcstH-3LxOv6LJZsUHq7Il
+X-Proofpoint-GUID: AqVjBD1le3CgxS63pCX2SHd9lt62aNha
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-17_08:2021-05-17,2021-05-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 clxscore=1015 mlxscore=0 priorityscore=1501 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105170130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 11:24 AM, Ashwin H wrote:
-> ADT7462 can operate in manual mode for fan control.
-> Currently if we want to read fan speed,
-> there is a check if TACH measurement is enabled for a fan.
-> (In fan_enabled function).
-> There is no way to enable TACH measurement currently.
-> This is addressed in this commit.
+On Mon, 17 May 2021 09:37:42 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> >
+> > Because of this, I don't think the rest of your argument is valid.  
 > 
-> Along with the above support few more features are enabled
-> - Support for setting fan presence.
-> - Support for setting low and high frequency mode.
-> - Support for setting easy config option.
-> - Support for setting the duration of the fan startup timeout.
-> - Once the setting is done, there is a setup complete bit in cfg1 register.
->    Settings this bit will start the monitoring of all selected channels.
->    Added support for that.
-> 
-> Based on this, below is the flow to set/get fan speed (example:pwm1)
-> 
-> echo 1 > pwm1_enable            #Set to manual mode
-> echo 1 > pwm_freq_mode          #High freq mode (optional.newly added)
-> echo 1 > fan1_presence          #Set fan 1 as present(newly added)
-> echo 1 > fan1_tach_enable       #Start TACH measurement-fan1(newly added)
-> echo 1 > setup_complete         #Mark as setup complete (newly added)
+> Okay, so your concern is that between the point in time the
+> vcpu->kvm->arch.crypto.pqap_hook pointer is checked in
+> priv.c and the point in time the handle_pqap() function
+> in vfio_ap_ops.c is called, the memory allocated for the
+> matrix_mdev containing the struct kvm_s390_module_hook
+> may get freed, thus rendering the function pointer invalid.
+> While not impossible, that seems extremely unlikely to
+> happen. Can you articulate a scenario where that could
+> even occur?
 
-Please refrain from adding non-standard attributes. Several of the above
-non-standard attributes can be expressed as standard attributes, which is
-even less acceptable.
+Malicious userspace. We tend to do the pqap aqic just once
+in the guest right after the queue is detected. I do agree
+it ain't very likely to happen during normal operation. But why are
+you asking?
 
-Also, please follow Documentation/process/submitting-patches.rst, which
-clearly states
+I'm not sure I understood correctly what kind of a scenario are
+you asking for. PQAP AQIC and mdev remove are independent
+events originated in userspace, so AFAIK we may not assume
+that the execution of two won't overlap, nor are we allowed
+to make assumptions on how does the execution of these two
+overlap (except for the things we explicitly ensure -- e.g.
+some parts are made mutually exclusive using the matrix_dev->lock
+lock).
 
-	Separate each **logical change** into a separate patch.
+Regards,
+Halil
 
-Guenter
