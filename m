@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C11F382F3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57230382F4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238716AbhEQOO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:14:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60562 "EHLO mail.kernel.org"
+        id S238087AbhEQOPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238709AbhEQOMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:12:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E125613D2;
-        Mon, 17 May 2021 14:08:05 +0000 (UTC)
+        id S238747AbhEQOMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:12:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AFD2613C3;
+        Mon, 17 May 2021 14:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260485;
-        bh=7p6tEwovRvT2WrIfHuoK31hZhYVgfKlrH0G76qE3MfI=;
+        s=korg; t=1621260488;
+        bh=Trd0JJwDgDYGYiJyGxOi67JsTy68AChB3NgyOQtk2Ik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PVAgKB3eVd5gJ8n0B9mSix2mmfrhy3vExE50oKsrvpmO6sU0n6Cmzo34yloU4iIcA
-         D20pyNksxkZyl4WW4MVCFBNVpUAiHS/P74XNP1E9S0Nk5eMWEoZpCYcWSxlTrUXePE
-         vNPPi+VXWXkOxTElfmtyC4LUdfsp9Lf7oqemzJ3I=
+        b=GZPMUychhQjmp+F0E8/p8Y7o5RMzDcPRjcEAPuB4Yxh6XMLWEdMsLCAbB0xV4baz7
+         BFakOTphIX7YHftwHqqJQDN1euw+JTo6FWpHpX9DINBNXa8W8eEpP0CBfun76jrned
+         Y2ElAqq+H3b0W0KeDmqoErQDG8W1iU1S2hOmST2A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 067/363] mt76: mt7915: always check return value from mt7915_mcu_alloc_wtbl_req
-Date:   Mon, 17 May 2021 15:58:53 +0200
-Message-Id: <20210517140304.870300189@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 068/363] mt76: mt7915: fix key set/delete issue
+Date:   Mon, 17 May 2021 15:58:54 +0200
+Message-Id: <20210517140304.901564817@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
 References: <20210517140302.508966430@linuxfoundation.org>
@@ -39,66 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 45f93e368211fbbd247e1ece254ffb121e20fa10 ]
+[ Upstream commit 1da4fd48d28436f8b690cdc2879603dede6d8355 ]
 
-As done for mt76_connac_mcu_alloc_wtbl_req, even if this is not a real
-bug since mt7915_mcu_alloc_wtbl_req routine can fails just if nskb is NULL,
-always check return value from mt7915_mcu_alloc_wtbl_req in order to avoid
-possible future mistake.
+Deleting a key with the previous key index deletes the current key
+Rework the code to better keep track of multiple keys and check for the
+key index before deleting the current key
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../net/wireless/mediatek/mt76/mt7915/main.c  | 25 +++++++++++++------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index 443cb09ae7cb..c747349a4c13 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -1198,6 +1198,9 @@ mt7915_mcu_sta_ba(struct mt7915_dev *dev,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/main.c b/drivers/net/wireless/mediatek/mt76/mt7915/main.c
+index 98f4b49642a8..bf032d943f74 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/main.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/main.c
+@@ -317,7 +317,9 @@ static int mt7915_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 	struct mt7915_sta *msta = sta ? (struct mt7915_sta *)sta->drv_priv :
+ 				  &mvif->sta;
+ 	struct mt76_wcid *wcid = &msta->wcid;
++	u8 *wcid_keyidx = &wcid->hw_key_idx;
+ 	int idx = key->keyidx;
++	int err = 0;
  
- 	wtbl_hdr = mt7915_mcu_alloc_wtbl_req(dev, msta, WTBL_SET, sta_wtbl,
- 					     &skb);
-+	if (IS_ERR(wtbl_hdr))
-+		return PTR_ERR(wtbl_hdr);
+ 	/* The hardware does not support per-STA RX GTK, fallback
+ 	 * to software mode for these.
+@@ -332,6 +334,7 @@ static int mt7915_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 	/* fall back to sw encryption for unsupported ciphers */
+ 	switch (key->cipher) {
+ 	case WLAN_CIPHER_SUITE_AES_CMAC:
++		wcid_keyidx = &wcid->hw_key_idx2;
+ 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_MMIE;
+ 		break;
+ 	case WLAN_CIPHER_SUITE_TKIP:
+@@ -347,16 +350,24 @@ static int mt7915_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	if (cmd == SET_KEY) {
+-		key->hw_key_idx = wcid->idx;
+-		wcid->hw_key_idx = idx;
+-	} else if (idx == wcid->hw_key_idx) {
+-		wcid->hw_key_idx = -1;
+-	}
++	mutex_lock(&dev->mt76.mutex);
 +
- 	mt7915_mcu_wtbl_ba_tlv(skb, params, enable, tx, sta_wtbl, wtbl_hdr);
- 
- 	ret = mt76_mcu_skb_send_msg(&dev->mt76, skb,
-@@ -1714,6 +1717,9 @@ int mt7915_mcu_sta_update_hdr_trans(struct mt7915_dev *dev,
- 		return -ENOMEM;
- 
- 	wtbl_hdr = mt7915_mcu_alloc_wtbl_req(dev, msta, WTBL_SET, NULL, &skb);
-+	if (IS_ERR(wtbl_hdr))
-+		return PTR_ERR(wtbl_hdr);
++	if (cmd == SET_KEY)
++		*wcid_keyidx = idx;
++	else if (idx == *wcid_keyidx)
++		*wcid_keyidx = -1;
++	else
++		goto out;
 +
- 	mt7915_mcu_wtbl_hdr_trans_tlv(skb, vif, sta, NULL, wtbl_hdr);
+ 	mt76_wcid_key_setup(&dev->mt76, wcid,
+ 			    cmd == SET_KEY ? key : NULL);
  
- 	return mt76_mcu_skb_send_msg(&dev->mt76, skb, MCU_EXT_CMD(WTBL_UPDATE),
-@@ -1738,6 +1744,9 @@ int mt7915_mcu_add_smps(struct mt7915_dev *dev, struct ieee80211_vif *vif,
- 
- 	wtbl_hdr = mt7915_mcu_alloc_wtbl_req(dev, msta, WTBL_SET, sta_wtbl,
- 					     &skb);
-+	if (IS_ERR(wtbl_hdr))
-+		return PTR_ERR(wtbl_hdr);
+-	return mt7915_mcu_add_key(dev, vif, msta, key, cmd);
++	err = mt7915_mcu_add_key(dev, vif, msta, key, cmd);
 +
- 	mt7915_mcu_wtbl_smps_tlv(skb, sta, sta_wtbl, wtbl_hdr);
- 
- 	return mt76_mcu_skb_send_msg(&dev->mt76, skb,
-@@ -2263,6 +2272,9 @@ int mt7915_mcu_add_sta(struct mt7915_dev *dev, struct ieee80211_vif *vif,
- 
- 	wtbl_hdr = mt7915_mcu_alloc_wtbl_req(dev, msta, WTBL_RESET_AND_SET,
- 					     sta_wtbl, &skb);
-+	if (IS_ERR(wtbl_hdr))
-+		return PTR_ERR(wtbl_hdr);
++out:
++	mutex_unlock(&dev->mt76.mutex);
 +
- 	if (enable) {
- 		mt7915_mcu_wtbl_generic_tlv(skb, vif, sta, sta_wtbl, wtbl_hdr);
- 		mt7915_mcu_wtbl_hdr_trans_tlv(skb, vif, sta, sta_wtbl, wtbl_hdr);
++	return err;
+ }
+ 
+ static int mt7915_config(struct ieee80211_hw *hw, u32 changed)
 -- 
 2.30.2
 
