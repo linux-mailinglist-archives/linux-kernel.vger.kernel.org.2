@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DB3383483
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E4C383486
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243392AbhEQPJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:09:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
+        id S243462AbhEQPKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:10:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242563AbhEQO74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:59:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 902AF61002;
-        Mon, 17 May 2021 14:26:40 +0000 (UTC)
+        id S241330AbhEQPAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:00:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6815C619D4;
+        Mon, 17 May 2021 14:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261601;
-        bh=DyR27eA7BveT8S5A53uC42YSqXL53DAj2gw+VDf+7jA=;
+        s=korg; t=1621261609;
+        bh=dy/HUqn33uyjwkK/I4/+L9Yi7udlXE/KlqDEKweD/Ec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i8Fsh/4A4O8tuQQF/cjWQgk6ib4cbm6ogi+mb8LL7RTjpHWWvqHjamTCGHnf4XbQe
-         I+skf7ca2EWC7rANLM5m/029/ZojE0sKwDBU01Y951wOt+6LOeI+ires/mP/E1Y5zK
-         fm6WUyBec7kE0t9sG48TfKQK4JYMU7t5fZ3X3KMI=
+        b=NDg85qS2opYcOJ6SLSeCgEBGFYrebF2f6022eFtW7LumOP1jG9QMdaUhBw013AoFl
+         IvxaWcS0I5CYTU9ee/Lg443XhZZVweuwM6OItyrU5yOGl8gzh3xx/wr3IxDhhuxKZg
+         wwpn6pDRlbN2ak9fn4OSLCaeNpyX/Y3q+9wZKYXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 064/141] ceph: fix inode leak on getattr error in __fh_to_dentry
-Date:   Mon, 17 May 2021 16:01:56 +0200
-Message-Id: <20210517140244.917434824@linuxfoundation.org>
+Subject: [PATCH 5.4 065/141] rtc: ds1307: Fix wday settings for rx8130
+Date:   Mon, 17 May 2021 16:01:57 +0200
+Message-Id: <20210517140244.957688030@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -41,35 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 
-[ Upstream commit 1775c7ddacfcea29051c67409087578f8f4d751b ]
+[ Upstream commit 204756f016726a380bafe619438ed979088bd04a ]
 
-Fixes: 878dabb64117 ("ceph: don't return -ESTALE if there's still an open file")
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+rx8130 wday specifies the bit position, not BCD.
+
+Fixes: ee0981be7704 ("rtc: ds1307: Add support for Epson RX8130CE")
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210420023917.1949066-1-nobuhiro1.iwamatsu@toshiba.co.jp
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/export.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/rtc/rtc-ds1307.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ceph/export.c b/fs/ceph/export.c
-index e088843a7734..baa6368bece5 100644
---- a/fs/ceph/export.c
-+++ b/fs/ceph/export.c
-@@ -178,8 +178,10 @@ static struct dentry *__fh_to_dentry(struct super_block *sb, u64 ino)
- 		return ERR_CAST(inode);
- 	/* We need LINK caps to reliably check i_nlink */
- 	err = ceph_do_getattr(inode, CEPH_CAP_LINK_SHARED, false);
--	if (err)
-+	if (err) {
-+		iput(inode);
- 		return ERR_PTR(err);
-+	}
- 	/* -ESTALE if inode as been unlinked and no file is open */
- 	if ((inode->i_nlink == 0) && (atomic_read(&inode->i_count) == 1)) {
- 		iput(inode);
+diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
+index 1f7e8aefc1eb..99b93f56a2d5 100644
+--- a/drivers/rtc/rtc-ds1307.c
++++ b/drivers/rtc/rtc-ds1307.c
+@@ -265,7 +265,11 @@ static int ds1307_get_time(struct device *dev, struct rtc_time *t)
+ 	t->tm_min = bcd2bin(regs[DS1307_REG_MIN] & 0x7f);
+ 	tmp = regs[DS1307_REG_HOUR] & 0x3f;
+ 	t->tm_hour = bcd2bin(tmp);
+-	t->tm_wday = bcd2bin(regs[DS1307_REG_WDAY] & 0x07) - 1;
++	/* rx8130 is bit position, not BCD */
++	if (ds1307->type == rx_8130)
++		t->tm_wday = fls(regs[DS1307_REG_WDAY] & 0x7f);
++	else
++		t->tm_wday = bcd2bin(regs[DS1307_REG_WDAY] & 0x07) - 1;
+ 	t->tm_mday = bcd2bin(regs[DS1307_REG_MDAY] & 0x3f);
+ 	tmp = regs[DS1307_REG_MONTH] & 0x1f;
+ 	t->tm_mon = bcd2bin(tmp) - 1;
+@@ -312,7 +316,11 @@ static int ds1307_set_time(struct device *dev, struct rtc_time *t)
+ 	regs[DS1307_REG_SECS] = bin2bcd(t->tm_sec);
+ 	regs[DS1307_REG_MIN] = bin2bcd(t->tm_min);
+ 	regs[DS1307_REG_HOUR] = bin2bcd(t->tm_hour);
+-	regs[DS1307_REG_WDAY] = bin2bcd(t->tm_wday + 1);
++	/* rx8130 is bit position, not BCD */
++	if (ds1307->type == rx_8130)
++		regs[DS1307_REG_WDAY] = 1 << t->tm_wday;
++	else
++		regs[DS1307_REG_WDAY] = bin2bcd(t->tm_wday + 1);
+ 	regs[DS1307_REG_MDAY] = bin2bcd(t->tm_mday);
+ 	regs[DS1307_REG_MONTH] = bin2bcd(t->tm_mon + 1);
+ 
 -- 
 2.30.2
 
