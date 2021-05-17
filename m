@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115853838F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F23B3838F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346032AbhEQQEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
+        id S1346220AbhEQQE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243745AbhEQPoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243746AbhEQPoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 11:44:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A180B6194F;
-        Mon, 17 May 2021 14:42:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 056A36135D;
+        Mon, 17 May 2021 14:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262580;
-        bh=Y1Fi/8EmZWG4KsmdkBqPpUUPzppWQTtjsGwFkKKu/P0=;
+        s=korg; t=1621262584;
+        bh=zvP5z3xHUUP8GpW6ufPFOYxcKv8Sv1SSyqT4M5368b8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z6dQeKkOyUHuS8eyAnCA/ch+DtUMliloNMkx05wOlvVjksZBwHnOPEZgkLO6oAuTA
-         NL4q11+sTNqiZbYdBUoY4s6Lyq0vtye15U8bGwQ5gFHib4QC7IQ3OAHz7/xNiHoEoD
-         sqeve6+eB4/hz4N/7jvtJ52cfXbf4I604UlChygA=
+        b=npm/zE1wONcONbeAjSV9wQlNQnjiCIMlcliFskEDxgOwrNd5BPspXdCtAcUs5KRfh
+         jtE74VAE/Esegq7+U/IWp79vAeHlaYQ3dVOcoyKgsirI3r6sKiHkjhDpHalfSr2qPP
+         aM0IoNqexBsZ2ieLZuKURMzXbQc/mAE43KDb7W6I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergio Lopez <slp@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
+        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 218/289] dax: Wake up all waiters after invalidating dax entry
-Date:   Mon, 17 May 2021 16:02:23 +0200
-Message-Id: <20210517140312.481170746@linuxfoundation.org>
+Subject: [PATCH 5.10 219/289] xen/unpopulated-alloc: consolidate pgmap manipulation
+Date:   Mon, 17 May 2021 16:02:24 +0200
+Message-Id: <20210517140312.516794815@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -42,77 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vivek Goyal <vgoyal@redhat.com>
+From: Dan Williams <dan.j.williams@intel.com>
 
-[ Upstream commit 237388320deffde7c2d65ed8fc9eef670dc979b3 ]
+[ Upstream commit 3a250629d7325f27b278dad1aaf44eab00090e76 ]
 
-I am seeing missed wakeups which ultimately lead to a deadlock when I am
-using virtiofs with DAX enabled and running "make -j". I had to mount
-virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
-the problem consistently.
+Cleanup fill_list() to keep all the pgmap manipulations in a single
+location of the function.  Update the exit unwind path accordingly.
 
-So here is the problem. put_unlocked_entry() wakes up waiters only
-if entry is not null as well as !dax_is_conflict(entry). But if I
-call multiple instances of invalidate_inode_pages2() in parallel,
-then I can run into a situation where there are waiters on
-this index but nobody will wake these waiters.
-
-invalidate_inode_pages2()
-  invalidate_inode_pages2_range()
-    invalidate_exceptional_entry2()
-      dax_invalidate_mapping_entry_sync()
-        __dax_invalidate_entry() {
-                xas_lock_irq(&xas);
-                entry = get_unlocked_entry(&xas, 0);
-                ...
-                ...
-                dax_disassociate_entry(entry, mapping, trunc);
-                xas_store(&xas, NULL);
-                ...
-                ...
-                put_unlocked_entry(&xas, entry);
-                xas_unlock_irq(&xas);
-        }
-
-Say a fault in in progress and it has locked entry at offset say "0x1c".
-Now say three instances of invalidate_inode_pages2() are in progress
-(A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-dax entry is locked, all tree instances A, B, C will wait in wait queue.
-
-When dax fault finishes, say A is woken up. It will store NULL entry
-at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-this means put_unlocked_entry() will not wake up next waiter, given
-the current code. And that means C continues to wait and is not woken
-up.
-
-This patch fixes the issue by waking up all waiters when a dax entry
-has been invalidated. This seems to fix the deadlock I am facing
-and I can make forward progress.
-
-Reported-by: Sergio Lopez <slp@redhat.com>
-Fixes: ac401cc78242 ("dax: New fault locking")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-Link: https://lore.kernel.org/r/20210428190314.1865312-4-vgoyal@redhat.com
+Link: http://lore.kernel.org/r/6186fa28-d123-12db-6171-a75cb6e615a5@oracle.com
+Link: https://lkml.kernel.org/r/160272253442.3136502.16683842453317773487.stgit@dwillia2-desk3.amr.corp.intel.com
 Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Reported-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dax.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/xen/unpopulated-alloc.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/fs/dax.c b/fs/dax.c
-index 56eb1c759ca5..df5485b4bddf 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -675,7 +675,7 @@ static int __dax_invalidate_entry(struct address_space *mapping,
- 	mapping->nrexceptional--;
- 	ret = 1;
- out:
--	put_unlocked_entry(&xas, entry, WAKE_NEXT);
-+	put_unlocked_entry(&xas, entry, WAKE_ALL);
- 	xas_unlock_irq(&xas);
+diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
+index 7762c1bb23cb..e64e6befc63b 100644
+--- a/drivers/xen/unpopulated-alloc.c
++++ b/drivers/xen/unpopulated-alloc.c
+@@ -27,11 +27,6 @@ static int fill_list(unsigned int nr_pages)
+ 	if (!res)
+ 		return -ENOMEM;
+ 
+-	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+-	if (!pgmap)
+-		goto err_pgmap;
+-
+-	pgmap->type = MEMORY_DEVICE_GENERIC;
+ 	res->name = "Xen scratch";
+ 	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+ 
+@@ -43,6 +38,11 @@ static int fill_list(unsigned int nr_pages)
+ 		goto err_resource;
+ 	}
+ 
++	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
++	if (!pgmap)
++		goto err_pgmap;
++
++	pgmap->type = MEMORY_DEVICE_GENERIC;
+ 	pgmap->range = (struct range) {
+ 		.start = res->start,
+ 		.end = res->end,
+@@ -92,10 +92,10 @@ static int fill_list(unsigned int nr_pages)
+ 	return 0;
+ 
+ err_memremap:
+-	release_resource(res);
+-err_resource:
+ 	kfree(pgmap);
+ err_pgmap:
++	release_resource(res);
++err_resource:
+ 	kfree(res);
  	return ret;
  }
 -- 
