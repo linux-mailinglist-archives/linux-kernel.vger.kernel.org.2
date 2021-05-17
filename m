@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C533383478
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B57438347D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243097AbhEQPJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:09:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32850 "EHLO mail.kernel.org"
+        id S243230AbhEQPJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:09:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241962AbhEQO7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB9B619C6;
-        Mon, 17 May 2021 14:26:26 +0000 (UTC)
+        id S242551AbhEQO7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:59:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8157460FDB;
+        Mon, 17 May 2021 14:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261587;
-        bh=12x5PIXfBeEvut5Zn2rLhzSuwywtSimHMDMBn61Q4Fo=;
+        s=korg; t=1621261594;
+        bh=k5C75qtX6axUQoPUFNu69OAcxdQJxSQiBnEDC1eZvvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PqjgmK7aeQem15BTJ2x5FE7pYnC74urGQ97I4Rd1LIzfNGbYQPsJQqURaiZo05GlL
-         iF0HcQqIGIko86TfFoXNra2He5KqWfuv4Nsz64EZX5PIGSC8IROaI+W5BBsoybgazr
-         tT+E1UZ2Smv8OxjGR6Do4p1PnS7X7fzN3DApFMi0=
+        b=kASheDvLRf0EVoZj/FlRJYG8QklVbHHJmjbpRxnZjV+JzytBesU+2nYirPqUwgBPK
+         geS9BaKAZxPutYOUW0yzME2bcBaUnxIwNR/RMMiC0k28FVgzCMCWtrXyDP7AHJ8Y/a
+         MYAXn2SArgMEjAXG7ygxPl3YQjY85e0yeq6WbIQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 062/141] NFSv4.2 fix handling of sr_eof in SEEKs reply
-Date:   Mon, 17 May 2021 16:01:54 +0200
-Message-Id: <20210517140244.853295972@linuxfoundation.org>
+Subject: [PATCH 5.4 063/141] rtc: fsl-ftm-alarm: add MODULE_TABLE()
+Date:   Mon, 17 May 2021 16:01:55 +0200
+Message-Id: <20210517140244.884444912@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -40,41 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olga Kornievskaia <kolga@netapp.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 73f5c88f521a630ea1628beb9c2d48a2e777a419 ]
+[ Upstream commit 7fcb86185978661c9188397d474f90364745b8d9 ]
 
-Currently the client ignores the value of the sr_eof of the SEEK
-operation. According to the spec, if the server didn't find the
-requested extent and reached the end of the file, the server
-would return sr_eof=true. In case the request for DATA and no
-data was found (ie in the middle of the hole), then the lseek
-expects that ENXIO would be returned.
+The module doesn't load automatically. Fix it by adding the missing
+MODULE_TABLE().
 
-Fixes: 1c6dcbe5ceff8 ("NFS: Implement SEEK")
-Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 7b0b551dbc1e ("rtc: fsl-ftm-alarm: add FTM alarm driver")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210414084006.17933-1-michael@walle.cc
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs42proc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/rtc/rtc-fsl-ftm-alarm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/nfs/nfs42proc.c b/fs/nfs/nfs42proc.c
-index 5c84e5b8c0d6..6b7c926824ae 100644
---- a/fs/nfs/nfs42proc.c
-+++ b/fs/nfs/nfs42proc.c
-@@ -500,7 +500,10 @@ static loff_t _nfs42_proc_llseek(struct file *filep,
- 	if (status)
- 		return status;
+diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
+index 8df2075af9a2..835695bedaac 100644
+--- a/drivers/rtc/rtc-fsl-ftm-alarm.c
++++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
+@@ -316,6 +316,7 @@ static const struct of_device_id ftm_rtc_match[] = {
+ 	{ .compatible = "fsl,lx2160a-ftm-alarm", },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, ftm_rtc_match);
  
--	return vfs_setpos(filep, res.sr_offset, inode->i_sb->s_maxbytes);
-+	if (whence == SEEK_DATA && res.sr_eof)
-+		return -NFS4ERR_NXIO;
-+	else
-+		return vfs_setpos(filep, res.sr_offset, inode->i_sb->s_maxbytes);
- }
- 
- loff_t nfs42_proc_llseek(struct file *filep, loff_t offset, int whence)
+ static struct platform_driver ftm_rtc_driver = {
+ 	.probe		= ftm_rtc_probe,
 -- 
 2.30.2
 
