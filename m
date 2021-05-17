@@ -2,149 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4943382723
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9111D382727
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235707AbhEQIfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:35:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235650AbhEQIfn (ORCPT
+        id S235716AbhEQIgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235599AbhEQIgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:35:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621240467;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H0rIkLZVSWvcw5d0SRX5kn9M8zHvErYPyZMfehLrUnc=;
-        b=hQJu/Q9DiIwDZsPigFsECdGZgI7dhLjR8o5xX89/y1TC1IZINiym/UUegzE+cTRD3GG0ol
-        l5keOYQNMBqPJiGpSoxICfmnsvkyfuOpV0pEuZoKIXMoAm0nou/uRfyLt8+UPCIgDvn8iH
-        5SvCP6MyCUSGpL35pJQ38LbggjfzmUQ=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-BWotMYwWPnmUzhtgL3I4RQ-1; Mon, 17 May 2021 04:34:25 -0400
-X-MC-Unique: BWotMYwWPnmUzhtgL3I4RQ-1
-Received: by mail-yb1-f197.google.com with SMTP id d63-20020a254f420000b02904f91ef33453so8510875ybb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 01:34:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H0rIkLZVSWvcw5d0SRX5kn9M8zHvErYPyZMfehLrUnc=;
-        b=cHJeDY+AqRunsdi1JqmifxUsHeMvy587LCWAyTBs6N9Fhg9RbhqDExZ2kY7lYtFQHt
-         JUfibirIdDZgUesgGJyBSAfZOly2ruN9xr+QVBLyDmEl3EwAFKH9bL9kWCOn2ep8dcG4
-         sOBxseMO9LQjGsgfIyuELrN6mUMreogyD/HtjSRSnL8UyuHQtMz8+ok+rl56/BX7apsf
-         GLZZ6rCcEQcV1zS66+CnGnIgt29cStljpOQ8OWecB3xduGEoZ6B/K1lkdLp3aVoCZPVB
-         lqO1mtwZ4OG/YI2zmxQ/BvnC06SuZhE2CqlO722SsNRZYxbO4PK6AYuCzlnLtyK3uBPl
-         nB+A==
-X-Gm-Message-State: AOAM532NRN+zPIzvcIiOpFErQmeebPFAxsopjHyARsM9vsaMnlZntNq3
-        ChVEY1Pez47qrFYFOXhvtRtnv/QHRoG4DFSmuGZSgAw5P3FBz5PYBKv7QyqgKNPMxPzSunlJvsb
-        sgEbaaTB6RGtlgUn3/aG9augO1WSZgO+FCI8hlMqR
-X-Received: by 2002:a25:7451:: with SMTP id p78mr10684347ybc.227.1621240465229;
-        Mon, 17 May 2021 01:34:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzG+xOt2sI6iuR2d62PUilNKaHp2d8mDgxkq88vNwwlef+ekCp0Xow3HwXFMFBuMiPNKcW/vJ9jupOWJKiZWFg=
-X-Received: by 2002:a25:7451:: with SMTP id p78mr10684322ybc.227.1621240465001;
- Mon, 17 May 2021 01:34:25 -0700 (PDT)
+        Mon, 17 May 2021 04:36:08 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCC5C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 01:34:52 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:191b:76a4:cacd:68c5])
+        by xavier.telenet-ops.be with bizsmtp
+        id 5kao250051hnWsW01kaoFX; Mon, 17 May 2021 10:34:48 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1liYi8-006ab3-3D
+        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 10:34:48 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1liYi7-0054Pp-Jh
+        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 10:34:47 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v5.13-rc2
+Date:   Mon, 17 May 2021 10:34:47 +0200
+Message-Id: <20210517083447.1208570-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210507114048.138933-1-omosnace@redhat.com> <a8d138a6-1d34-1457-9266-4abeddb6fdba@schaufler-ca.com>
- <CAFqZXNtr1YjzRg7fTm+j=0oZF+7C5xEu5J0mCZynP-dgEzvyUg@mail.gmail.com>
- <24a61ff1-e415-adf8-17e8-d212364d4b97@schaufler-ca.com> <CAFqZXNvB-EyPz1Qz3cCRTr1u1+D+xT-dp7cUxFocYM1AOYSuxw@mail.gmail.com>
- <e8d60664-c7ad-61de-bece-8ab3316f77bc@schaufler-ca.com> <CAFqZXNu_DW1FgnVvtA+CnBMtdRDrzYo5B3_=SzKV7-o1CaV0RA@mail.gmail.com>
- <94486043-322f-74bd-dc33-83e43b531068@schaufler-ca.com>
-In-Reply-To: <94486043-322f-74bd-dc33-83e43b531068@schaufler-ca.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Mon, 17 May 2021 10:34:12 +0200
-Message-ID: <CAFqZXNucQhcYTZPGmi0MeHOvwCTsxxBSwzZ+W_MODX0_5WgcPg@mail.gmail.com>
-Subject: Re: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission checks
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 2:57 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 5/14/2021 8:12 AM, Ondrej Mosnacek wrote:
-> > On Wed, May 12, 2021 at 7:12 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >> On 5/12/2021 9:44 AM, Ondrej Mosnacek wrote:
-> >>> On Wed, May 12, 2021 at 6:18 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >>>> On 5/12/2021 6:21 AM, Ondrej Mosnacek wrote:
-> >>>>> On Sat, May 8, 2021 at 12:17 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >>>>>> On 5/7/2021 4:40 AM, Ondrej Mosnacek wrote:
-> >>>>>>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> >>>>>>> lockdown") added an implementation of the locked_down LSM hook to
-> >>>>>>> SELinux, with the aim to restrict which domains are allowed to perform
-> >>>>>>> operations that would breach lockdown.
-> >>>>>>>
-> >>>>>>> However, in several places the security_locked_down() hook is called in
-> >>>>>>> situations where the current task isn't doing any action that would
-> >>>>>>> directly breach lockdown, leading to SELinux checks that are basically
-> >>>>>>> bogus.
-> >>>>>>>
-> >>>>>>> Since in most of these situations converting the callers such that
-> >>>>>>> security_locked_down() is called in a context where the current task
-> >>>>>>> would be meaningful for SELinux is impossible or very non-trivial (and
-> >>>>>>> could lead to TOCTOU issues for the classic Lockdown LSM
-> >>>>>>> implementation), fix this by adding a separate hook
-> >>>>>>> security_locked_down_globally()
-> >>>>>> This is a poor solution to the stated problem. Rather than adding
-> >>>>>> a new hook you should add the task as a parameter to the existing hook
-> >>>>>> and let the security modules do as they will based on its value.
-> >>>>>> If the caller does not have an appropriate task it should pass NULL.
-> >>>>>> The lockdown LSM can ignore the task value and SELinux can make its
-> >>>>>> own decision based on the task value passed.
-> >>>>> The problem with that approach is that all callers would then need to
-> >>>>> be updated and I intended to keep the patch small as I'd like it to go
-> >>>>> to stable kernels as well.
-> >>>>>
-> >>>>> But it does seem to be a better long-term solution - would it work for
-> >>>>> you (and whichever maintainer would be taking the patch(es)) if I just
-> >>>>> added another patch that refactors it to use the task parameter?
-> >>>> I can't figure out what you're suggesting. Are you saying that you
-> >>>> want to add a new hook *and* add the task parameter?
-> >>> No, just to keep this patch as-is (and let it go to stable in this
-> >>> form) and post another (non-stable) patch on top of it that undoes the
-> >>> new hook and re-implements the fix using your suggestion. (Yeah, it'll
-> >>> look weird, but I'm not sure how better to handle such situation - I'm
-> >>> open to doing it whatever different way the maintainers prefer.)
-> >> James gets to make the call on this one. If it was my call I would
-> >> tell you to make the task parameter change and accept the backport
-> >> pain. I think that as a security developer community we spend way too
-> >> much time and effort trying to avoid being noticed in source trees.
-> > Hm... actually, what about this attached patch? It switches to a
-> > single hook with a cred argument (I figured cred makes more sense than
-> > task_struct, since the rest of task_struct should be irrelevant for
-> > the LSM, anyway...) right from the start and keeps the original
-> > security_locked_down() function only as a simple wrapper around the
-> > main hook.
-> >
-> > At that point I think converting the other callers to call
-> > security_cred_locked_down() directly isn't really worth it, since the
-> > resulting calls would just be more verbose without much benefit. So
-> > I'm tempted to just leave the security_locked_down() helper as is, so
-> > that the more common pattern can be still achieved with a simpler
-> > call.
-> >
-> > What do you think?
->
-> It's still a bit kludgy, but a big improvement over the previous version.
-> I wouldn't object to this approach.
+Below is the list of build error/warning regressions/improvements in
+v5.13-rc2[1] compared to v5.12[2].
 
-Ok, thanks. I'll post it as a v2 then.
+Summarized:
+  - build errors: +0/-5
+  - build warnings: +47/-21
 
--- 
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+JFYI, when comparing v5.13-rc2[1] to v5.13-rc1[3], the summaries are:
+  - build errors: +0/-0
+  - build warnings: +0/-1
 
+Note that there may be false regressions, as some logs are incomplete.
+Still, they're build errors/warnings.
+
+Happy fixing! ;-)
+
+Thanks to the linux-next team for providing the build service.
+
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/d07f6ca923ea0927a1024dfccafc5b53b61cfecc/ (191 out of 192 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9f4ad9e425a1d3b6a34617b8ea226d56a119a717/ (all 192 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6efb943b8616ec53a5e444193dccf1af9ad627b5/ (191 out of 192 configs)
+
+
+*** ERRORS ***
+
+5 error improvements:
+  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
+  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emaclite.ko] undefined!: N/A => 
+  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+  - error: modpost: "devm_platform_ioremap_resource" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+  - error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+
+
+*** WARNINGS ***
+
+47 warning regressions:
+  + /kisskb/src/arch/s390/kernel/syscall.c: warning: '__do_syscall' uses dynamic stack allocation:  => 169:1
+  + /kisskb/src/arch/s390/kernel/traps.c: warning: '__do_pgm_check' uses dynamic stack allocation:  => 359:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1112 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1236:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1120 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1236:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1680 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 1236:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1712 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 1236:1
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: (near initialization for 'cmd.lock_hw') [-Wmissing-braces]:  => 3392:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: missing braces around initializer [-Wmissing-braces]: 2664:11, 2483:11 => 2810:11, 2625:11, 3392:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_crtc_timing[0]') [-Wmissing-braces]:  => 1953:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1802:9 => 1814:9, 1953:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: (near initialization for 'cmd.cmd_common') [-Wmissing-braces]:  => 61:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: missing braces around initializer [-Wmissing-braces]:  => 61:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: (near initialization for 'info.head') [-Wmissing-braces]:  => 610:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: missing braces around initializer [-Wmissing-braces]:  => 610:9
+  + /kisskb/src/drivers/i2c/busses/i2c-icy.c: warning: unused variable 'new_fwnode' [-Wunused-variable]:  => 126:24
+  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
+  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2320 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
+  + /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: (near initialization for 'tx_conf_msg.nominal_bittiming') [-Wmissing-braces]:  => 400:9
+  + /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: missing braces around initializer [-Wmissing-braces]:  => 400:9
+  + /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: (near initialization for 'acl_entry.list') [-Wmissing-braces]:  => 2945:9
+  + /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2945:9
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_redirect_arr[0]') [-Wmissing-braces]:  => 1078:9
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_tx_arr[0]') [-Wmissing-braces]:  => 1245:9
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1245:9, 1078:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]: 604:9 => 654:9, 754:9, 604:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]: 605:9 => 605:9, 655:9, 755:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]: 605:9, 604:9 => 754:9, 605:9, 655:9, 654:9, 604:9, 755:9
+  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.13' uses dynamic stack allocation:  => 238:1
+  + /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.28' uses dynamic stack allocation:  => 3692:1
+  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.64' uses dynamic stack allocation:  => 2310:1
+  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.63' uses dynamic stack allocation:  => 2020:1
+  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.62' uses dynamic stack allocation:  => 2378:1
+  + /kisskb/src/net/openvswitch/actions.c: warning: (near initialization for 'ovs_rt.dst') [-Wmissing-braces]:  => 830:10
+  + /kisskb/src/net/openvswitch/actions.c: warning: missing braces around initializer [-Wmissing-braces]:  => 830:10
+  + /kisskb/src/net/sched/sch_frag.c: warning: (near initialization for 'sch_frag_rt.dst') [-Wmissing-braces]:  => 93:10
+  + /kisskb/src/net/sched/sch_frag.c: warning: missing braces around initializer [-Wmissing-braces]:  => 93:10
+  + /kisskb/src/security/landlock/ruleset.c: warning: passing argument 2 of 'create_rule' from incompatible pointer type:  => 196:34
+  + /kisskb/src/security/landlock/ruleset.c: warning: passing argument 3 of 'insert_rule' from incompatible pointer type:  => 240:38, 330:5, 300:47
+  + arch/arm64/configs/defconfig: warning: override: reassigning to symbol MTK_PMIC_WRAP:  => 1018
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x13c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x154): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x16c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x184): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x19c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1b4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1cc): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: lib/find_bit_benchmark.o(.text.unlikely+0x0): Section mismatch in reference from the (unknown reference) (unknown) to the variable .init.data:bitmap2:  => N/A
+
+21 warning improvements:
+  - /kisskb/src/arch/m68k/include/asm/raw_io.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 20:19, 26:31, 33:35, 30:32 => 30:32, 20:19
+  - /kisskb/src/arch/sh/kernel/traps.c: warning: unused variable 'cpu' [-Wunused-variable]: 183:15 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1160 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1168 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1720 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: (near initialization for 'nv12_metrics.CurrClock') [-Wmissing-braces]: 2297:2 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: missing braces around initializer [-Wmissing-braces]: 2297:2 => 
+  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.10' uses dynamic stack allocation: 238:1 => 
+  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.26' uses dynamic stack allocation: 3675:1 => 
+  - /kisskb/src/kernel/static_call.c: warning: unused variable 'mod' [-Wunused-variable]: 153:18 => 
+  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.65' uses dynamic stack allocation: 2304:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.64' uses dynamic stack allocation: 2014:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.63' uses dynamic stack allocation: 2372:1 => 
+  - modpost: WARNING: modpost: Symbol info of vmlinux is missing. Unresolved symbol check will be entirely skipped.: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x134): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x14c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x164): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x17c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x194): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1ac): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1c4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
