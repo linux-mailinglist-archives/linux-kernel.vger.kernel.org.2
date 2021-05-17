@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF03382A44
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CF5382A42
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236570AbhEQKyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
+        id S236565AbhEQKya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236568AbhEQKyh (ORCPT
+        with ESMTP id S236562AbhEQKyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:54:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93E7C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:53:20 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1liaru-0007ET-Ma; Mon, 17 May 2021 12:53:02 +0200
-Message-ID: <72fef3d9f79194876f2035e996bb83f9f8b12902.camel@pengutronix.de>
-Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
- register
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, kernel@collabora.com,
-        cphealy@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org
-Date:   Mon, 17 May 2021 12:52:57 +0200
-In-Reply-To: <831a59b052df02e9860b9766e631a7ab6a37c46a.camel@collabora.com>
-References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
-         <20210407073534.376722-4-benjamin.gaignard@collabora.com>
-         <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
-         <831a59b052df02e9860b9766e631a7ab6a37c46a.camel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        Mon, 17 May 2021 06:54:24 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7BBC061760;
+        Mon, 17 May 2021 03:53:07 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d78so3800407pfd.10;
+        Mon, 17 May 2021 03:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NdeCX4rjV+Zv636bnH2MvIF9sfediJRTDxYI7vsVq7k=;
+        b=KG7yrpr7MFAaHLzYMouAZxv9oYOv9wi/b9Rc3Z5FIjrar5ybjaMalFTe+M4WifUFR3
+         1WPNVODXgT711AWAOJpQ78shc6URv865j4YHD38PcADSNKkRbjyjiKwAFT8G4GLEbpT8
+         GBFXNal/CncMmsW23kg1jVtFP0xiQIohMkoDwY2St+2ltardX7wX7sg3fxhoVDuYxhJR
+         uBGQZ2AlQ6lSwEc+jq3C4oig0UOM0CL9zM2ReQJ1t3aOr/bfZ9UkBsPKY4LOLKo2uIiY
+         Qht/ITjszwrxIKA6h01Mdt9Gqklxd2vc9X7feBufOxj5O9UFmcGUipgAi8piOQS9+6Wb
+         i0NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NdeCX4rjV+Zv636bnH2MvIF9sfediJRTDxYI7vsVq7k=;
+        b=KRgBSgKCpJKz665JUANJ/Q+iIcpZjlCCr+kxukm6u0z7ZgIYjmWMndCs4nEP6Agaof
+         hxd1lIZrMUBrFcAAY8DGLfd17RtothPOCsM+9vFVHH6CnqgHieEaDvr0zsl9cXtVX7du
+         lr2kdnBholt/TLHWmXSRpm5IcsCf/UBHIz94V4E3WC4e7YEhAugQ1HI1TTWwHqFQfwnx
+         TJzxJuzvOtuT5coV2XX7MD11FNbS+10V4RjHxEux8YfDaBtTGZO0nXd2bWjWPS7noA1r
+         wvzgQMhXsMQX1N/g//BHiXpA9QK3w0lQFR6Gx/8cXArLpSIwco0YIIOSegBmn+fj6MFP
+         yKrw==
+X-Gm-Message-State: AOAM532xHUNCfg2yuQrEXA9uXtdDbC9BbYLPCi5O+4CsY70bspkYUPjx
+        KZTIH6SLd4/STdZGE6hCg54=
+X-Google-Smtp-Source: ABdhPJzDEhmdVneoa/XCfz/yhzalZIFsiA1AKlDrfI2clNnDIRj7U0J1kbN7rPLHWZOF5hi64uiwkQ==
+X-Received: by 2002:a65:6a05:: with SMTP id m5mr22050754pgu.319.1621248786769;
+        Mon, 17 May 2021 03:53:06 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id a16sm9825613pfa.95.2021.05.17.03.53.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 03:53:06 -0700 (PDT)
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: Re: [PATCH v3 16/16] docs: RCU: replace some characters
+To:     mchehab+huawei@kernel.org
+Cc:     bigeasy@linutronix.de, corbet@lwn.net, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mathieu.desnoyers@efficios.com, nfraprado@protonmail.com,
+        paulmck@kernel.org, rcu@vger.kernel.org, rdunlap@infradead.org,
+        rostedt@goodmis.org, tiwai@suse.de, will@kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <909f3108e85895828bf3633f183e8f364cb4d752.1621159997.git.mchehab+huawei@kernel.org>
+Message-ID: <57bb2653-8754-707f-6d54-9a64dccd3c50@gmail.com>
+Date:   Mon, 17 May 2021 19:53:00 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <909f3108e85895828bf3633f183e8f364cb4d752.1621159997.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+On Sun, 16 May 2021 12:18:33 +0200, Mauro Carvalho Chehab wrote:
+> The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
+> conversion and some cut-and-pasted text contain some characters that
+> aren't easily reachable on standard keyboards and/or could cause
+> troubles when parsed by the documentation build system.
+> 
+> Replace the occurences of the following characters:
+> 
+> 	- U+00a0 (' '): NO-BREAK SPACE
+> 	  as it can cause lines being truncated on PDF output
 
-Am Sonntag, dem 16.05.2021 um 19:40 -0300 schrieb Ezequiel Garcia:
-> Hi Lucas,
-> 
-> On Fri, 2021-04-16 at 12:54 +0200, Lucas Stach wrote:
-> > Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
-> > > In order to be able to share the control hardware block between
-> > > VPUs use a syscon instead a ioremap it in the driver.
-> > > To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
-> > > phandle is not found look at 'ctrl' reg-name.
-> > > With the method it becomes useless to provide a list of register
-> > > names so remove it.
-> > 
-> > Sorry for putting a spoke in the wheel after many iterations of the
-> > series.
-> > 
-> > We just discussed a way forward on how to handle the clocks and resets
-> > provided by the blkctl block on i.MX8MM and later and it seems there is
-> > a consensus on trying to provide virtual power domains from a blkctl
-> > driver, controlling clocks and resets for the devices in the power
-> > domain. I would like to avoid introducing yet another way of handling
-> > the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
-> > what we are planning to do on the later chip generations.
-> > 
-> > CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
-> > virtual power domain thing a shot.
-> > 
-> 
-> It seems the i.MX8MM BLK-CTL series are moving forward:
-> 
-> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=479175
-> 
-> ... but I'm unable to wrap my head around how this affects the
-> devicetree VPU modelling for i.MX8MQ (and also i.MX8MM, i.MX8MP, ...).
-> 
-> 
-For the i.MX8MQ we want to have the same virtual power-domains provided
-by a BLK-CTRL driver for the VPUs, as on i.MX8MM. This way we should be
-able to use the same DT bindings for the VPUs on i.MX8MQ and i.MX8MM,
-even though the SoC integration with the blk-ctrl is a little
-different.
+These NO-BREAK SPACEs originate from "&nbsp;"s in html docs converted by
+commit ccc9971e2147 ("docs: rcu: convert some articles from html to ReST").
 
-> Can you clarify that?
+I think the patterns found in these files ("~" denotes NO-BREAK SPACE):
+
+    CPU~0
+    Tasks~T1, T2, and~T3
+    line~n
+    lines~m and~n
+    ...
+
+are quite appropriate and nice-to-have contextual markers.
+
+Despite the claim above, I don't believe these NO-BREAK SPACEs can cause
+any truncation in the PDF output, because they combine short numbers or
+symbols with terms such as "CPU", "Task", and "line". 
+
+So I'd like you all to keep these NO-BREAK SPACEs.
+
+If there ever emerges such truncations, they can be taken care of
+case-by-case bases.
+
+        Thanks, Akira
+
 > 
-I'm planning on sending some patches adding i.MX8MQ VPU support to the
-BLK-CTRL driver in the next few days. I guess that should clarify
-things. :)
-
-Regards,
-Lucas
-
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../Data-Structures/Data-Structures.rst       | 46 ++++++------
+>  .../Expedited-Grace-Periods.rst               | 36 +++++-----
+>  .../Tree-RCU-Memory-Ordering.rst              |  2 +-
+>  .../RCU/Design/Requirements/Requirements.rst  | 70 +++++++++----------
+>  4 files changed, 77 insertions(+), 77 deletions(-)
 
