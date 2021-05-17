@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E8D38272B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774E3382733
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhEQIik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:38:40 -0400
-Received: from mail-m176231.qiye.163.com ([59.111.176.231]:45476 "EHLO
-        mail-m176231.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235544AbhEQIii (ORCPT
+        id S235692AbhEQIlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235286AbhEQIlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:38:38 -0400
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m176231.qiye.163.com (Hmail) with ESMTP id 0DE9D6C0101;
-        Mon, 17 May 2021 16:37:21 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AGAAqwBWDoTN1eybqS54h4qu.3.1621240641040.Hmail.wangqing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWOSAxLzJdIHdhdGNoZG9nOiBtdGs6IHN1cHBvcnQgcHJlLXRpbWVvdXQgd2hlbiB0aGUgYmFyayBpcnEgaXMgYXZhaWxhYmxl?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <ac2a3762-0b5d-a406-33e0-fca3073cd5ac@roeck-us.net>
+        Mon, 17 May 2021 04:41:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30B6C061573;
+        Mon, 17 May 2021 01:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=229IDtmq+Z8rEfJbRIPfNQwRGXcrW7sSmIFvvDMKEaI=; b=EV1ZxjmUqmj4jeBhsHifycK+tg
+        yLQIF2TXWcKLygFEzwkN8ndU7T6Yf4+1kIQRFEv83+/tR/FD8NC5iY2wHSHA+iX+zyXUkH/A7oJ7P
+        iC8cDxdVHbXEf0VCXsEBjmHzTg0vSFfeJzg+LbtMiPIjbAC1c6eNtIUTA/CwWPhb/WAcEVqzxBbSd
+        zZzVIiLW3SqrbPjMcyVQ7MXcl0Vg+513smtbxppu9WDxi+o8RvsRvg4n0Wa4TLTIqhX3Rdjuv80JS
+        lpqYzucgsiUPUJk8DIW8fZ8+sGLEtKuomEn5ROMJHm+H7fDfQuHhmT2+arJrPmGeeuaAQaXn1RYKH
+        P82xu/bA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1liYmV-00EHr2-SZ; Mon, 17 May 2021 08:39:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 884E130022C;
+        Mon, 17 May 2021 10:39:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7088C2D3FBA07; Mon, 17 May 2021 10:39:17 +0200 (CEST)
+Date:   Mon, 17 May 2021 10:39:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v6 07/16] KVM: x86/pmu: Reprogram PEBS event to emulate
+ guest PEBS counter
+Message-ID: <YKIrtdbXRcZSiohg@hirez.programming.kicks-ass.net>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-8-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 17 May 2021 16:37:21 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Mon, 17 May 2021 16:37:21 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUhNT1ZMGh4YHksZS0saGkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1ISElPTU5OTkpPN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6PDo6Cgw5LD8ULzVKHgIZCihOTxNPCg5VSFVKTUlKSU9LTU9KT0tKVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBSExDTDcG
-X-HM-Tid: 0a797978f624d9a9kuws0de9d6c0101
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511024214.280733-8-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiA1LzUvMjEgNjo1MSBQTSwg546L5pOOIHdyb3RlOgo+PiAKPj4+IE9uIDQvMjQvMjEgNjo1
-MiBQTSwgV2FuZyBRaW5nIHdyb3RlOgo+Pj4+IFVzZSB0aGUgYmFyayBpbnRlcnJ1cHQgYXMgdGhl
-IHByZXRpbWVvdXQgbm90aWZpZXIgaWYgYXZhaWxhYmxlLgo+Pj4+Cj4+Pj4gV2hlbiB0aGUgd2F0
-Y2hkb2cgdGltZXIgZXhwaXJlcyBpbiBkdWFsIG1vZGUsIGFuIGludGVycnVwdCB3aWxsIGJlCj4+
-Pj4gdHJpZ2dlcmVkIGZpcnN0LCB0aGVuIHRoZSB0aW1pbmcgcmVzdGFydHMuIFRoZSByZXNldCBz
-aWduYWwgd2lsbCBiZQo+Pj4+IGluaXRpYXRlZCB3aGVuIHRoZSB0aW1lciBleHBpcmVzIGFnYWlu
-Lgo+Pj4+Cj4+Pj4gVGhlIHByZXRpbWVvdXQgbm90aWZpY2F0aW9uIHNoYWxsIG9jY3VyIGF0IHRp
-bWVvdXQtc2VjLzIuCj4+Pj4KPj4+PiBWMjoKPj4+PiAtIHBhbmljKCkgYnkgZGVmYXVsdCBpZiBX
-QVRDSERPR19QUkVUSU1FT1VUX0dPViBpcyBub3QgZW5hYmxlZC4KPj4+Pgo+Pj4+IFYzOgo+Pj4+
-IC0gTW9kaWZ5IHRoZSBwcmV0aW1lb3V0IGJlaGF2aW9yLCBtYW51YWxseSByZXNldCBhZnRlciB0
-aGUgcHJldGltZW91dAo+Pj4+IC0gaXMgcHJvY2Vzc2VkIGFuZCB3YWl0IHVudGlsIHRpbWVvdXQu
-Cj4+Pj4KPj4+PiBWNDoKPj4+PiAtIFJlbW92ZSBwcmV0aW1lb3V0IHJlbGF0ZWQgcHJvY2Vzc2lu
-Zy4gCj4+Pj4gLSBBZGQgZHVhbCBtb2RlIGNvbnRyb2wgc2VwYXJhdGVseS4KPj4+Pgo+Pj4+IFY1
-Ogo+Pj4+IC0gRml4IHNvbWUgZm9ybWF0dGluZyBhbmQgcHJpbnRpbmcgcHJvYmxlbXMuCj4+Pj4K
-Pj4+PiBWNjoKPj4+PiAtIFJlYWxpemUgcHJldGltZW91dCBwcm9jZXNzaW5nIHRocm91Z2ggZHVh
-bG1vZGUuCj4+Pj4KPj4+PiBWNzoKPj4+PiAtIEFkZCBzZXRfcHJldGltZW91dCgpLgo+Pj4+Cj4+
-Pj4gVjgvVjk6Cj4+Pj4gLSBGaXggc29tZSBmb3JtYXR0aW5nIHByb2JsZW1zLgo+Pj4+Cj4+Pj4g
-U2lnbmVkLW9mZi1ieTogV2FuZyBRaW5nIDx3YW5ncWluZ0B2aXZvLmNvbT4KPj4+Cj4+PiBSZXZp
-ZXdlZC1ieTogR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stdXMubmV0Pgo+Pj4KPj4+IE5vdGUg
-dGhhdCB0aGUgdmVyc2lvbiBoaXN0b3J5IHNob3VsZCBiZSBhZnRlciAiLS0tIi4KPj4+Cj4+PiBH
-dWVudGVyCj4+Pgo+PiAKPj4gVGhhbmtzLCBHdWVudGVyLgo+PiBBbmQgd2hhdCBkbyBJIG5lZWQg
-dG8gZG8gaWYgSSB3YW50IG1lcmdlIGludG8gdGhlIG5leHQtdHJlZT8KPj4gCj5XaW0gc2hvdWxk
-IHRha2UgY2FyZSBvZiB0aGF0Lgo+Cj5HdWVudGVyCj4KV2ltLCBjYW4geW91IGhlbHAgdG8gcGlj
-ayBpdCB1cCB0byB0aGUgbmV4dC10cmVlPwoKVGhhbmtzLApRaW5nCg0KDQo=
+On Tue, May 11, 2021 at 10:42:05AM +0800, Like Xu wrote:
+> +	if (pebs) {
+> +		/*
+> +		 * The non-zero precision level of guest event makes the ordinary
+> +		 * guest event becomes a guest PEBS event and triggers the host
+> +		 * PEBS PMI handler to determine whether the PEBS overflow PMI
+> +		 * comes from the host counters or the guest.
+> +		 *
+> +		 * For most PEBS hardware events, the difference in the software
+> +		 * precision levels of guest and host PEBS events will not affect
+> +		 * the accuracy of the PEBS profiling result, because the "event IP"
+> +		 * in the PEBS record is calibrated on the guest side.
+> +		 */
+> +		attr.precise_ip = 1;
+> +	}
+
+You've just destroyed precdist, no?
