@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383123834A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D24383571
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242323AbhEQPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:11:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
+        id S244532AbhEQPVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242196AbhEQPB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:01:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B504061581;
-        Mon, 17 May 2021 14:27:24 +0000 (UTC)
+        id S242950AbhEQPI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:08:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 028FD61C20;
+        Mon, 17 May 2021 14:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261645;
-        bh=I2iL6Wg3fn7TPnzjJPaqUYbBnc4XA51WJqYyBZmsfRk=;
+        s=korg; t=1621261798;
+        bh=VCZlBdn1BxCVc5ME0HC+W+uIM+Z5oWHif+14XIJr8PY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G+vLSdxeXRHO0LYrSOMWJD5DKYyV964QWDSJoqU+L0D8FFeiklL6zcaAI+XgEgOaQ
-         gCTXKzho/ZfgiISaq+NMEJy8puQjDa8Nj9jSpjwifHylyXGgaEMOFivNMaNbzUi7TH
-         hb9roo9x3OBpdoy4GycfnYhTxj8r+clKulGHD9HE=
+        b=AyVKJ22tfORBmRrkjJO5IlHalSjBTZyVwLIGdSVuD480vJIUVn45giJExpHADpb7V
+         VyA/tRHAPALN76Sm4v/IJ0l21Q6Dn6zajQeHJGQAPhHRPvH9ACWfurH0GxrUwot3SQ
+         4nR1l/TCqRbdGwL/XVxChsNlhkoaSRO8mvdedMlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Li <lipeng321@huawei.com>,
+        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
         Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/141] net: hns3: use netif_tx_disable to stop the transmit queue
-Date:   Mon, 17 May 2021 16:02:02 +0200
-Message-Id: <20210517140245.136296479@linuxfoundation.org>
+Subject: [PATCH 5.4 071/141] net: hns3: disable phy loopback setting in hclge_mac_start_phy
+Date:   Mon, 17 May 2021 16:02:03 +0200
+Message-Id: <20210517140245.173251046@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -41,41 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+From: Yufeng Mo <moyufeng@huawei.com>
 
-[ Upstream commit b416e872be06fdace3c36cf5210130509d0f0e72 ]
+[ Upstream commit 472497d0bdae890a896013332a0b673f9acdf2bf ]
 
-Currently, netif_tx_stop_all_queues() is used to ensure that
-the xmit is not running, but for the concurrent case it will
-not take effect, since netif_tx_stop_all_queues() just sets
-a flag without locking to indicate that the xmit queue(s)
-should not be run.
+If selftest and reset are performed at the same time, the phy
+loopback setting may be still in enable state after the reset,
+and device cannot link up. So fix this issue by disabling phy
+loopback before phy_start().
 
-So use netif_tx_disable() to replace netif_tx_stop_all_queues(),
-it takes the xmit queue lock while marking the queue stopped.
-
-Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
-Signed-off-by: Peng Li <lipeng321@huawei.com>
+Fixes: 256727da7395 ("net: hns3: Add MDIO support to HNS3 Ethernet driver for hip08 SoC")
+Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
 Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mdio.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 3dd3b8047968..5f2948bafff2 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -539,8 +539,8 @@ static int hns3_nic_net_stop(struct net_device *netdev)
- 	if (h->ae_algo->ops->set_timer_task)
- 		h->ae_algo->ops->set_timer_task(priv->ae_handle, false);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mdio.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mdio.c
+index dc4dfd4602ab..c8f979c55fec 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mdio.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mdio.c
+@@ -255,6 +255,8 @@ void hclge_mac_start_phy(struct hclge_dev *hdev)
+ 	if (!phydev)
+ 		return;
  
--	netif_tx_stop_all_queues(netdev);
- 	netif_carrier_off(netdev);
-+	netif_tx_disable(netdev);
- 
- 	hns3_nic_net_down(netdev);
++	phy_loopback(phydev, false);
++
+ 	phy_start(phydev);
+ }
  
 -- 
 2.30.2
