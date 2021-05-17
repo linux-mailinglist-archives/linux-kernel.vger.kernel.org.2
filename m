@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46845383889
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6025383641
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345408AbhEQPzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:55:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40234 "EHLO mail.kernel.org"
+        id S1343566AbhEQPa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:30:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244200AbhEQPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:36:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E305A61938;
-        Mon, 17 May 2021 14:40:10 +0000 (UTC)
+        id S243959AbhEQPQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:16:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F6CD61C5E;
+        Mon, 17 May 2021 14:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262411;
-        bh=QdJyTKmatMGFNKJuuwIabCfDipLP/aY6gwPXk8PKwQc=;
+        s=korg; t=1621261966;
+        bh=c98Xh2EIf9ewuNlVYp7loEtMz2X168zaSkuxzeaPzdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NLMmG7E7vVkdWUqwRYb2s6i7UNk16Nk+OYNo40crMcBZ9Sks8ObAwQ4GRt86YE5f2
-         zKeaL6+q/rx3z24AYWOV7nBvXjMS0dDImODKyE9zWj5AEVAudwKUtXREsnicMoB0iY
-         xWRJufRaX7qcgxL2T9ZHZ4RhfVW9BMZm7h1i2vLs=
+        b=eGv4Bw+d2bf8fCO8cr3fhku4KEdhC1HR4RXcVzfa46mM1Xcf2bADUwJl2glwPulJc
+         6cUO4Assi8IILYUnM2SnUs8NCZe2n4jiny62AFMSyL7lwDRdHbofqXw5uIbZljOd4o
+         b24ilFy3xOzTNm9/WKL5xg3KSybTx/cPLTQanBk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
+        Kees Cook <keescook@chromium.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 182/289] sched/fair: Fix unfairness caused by missing load decay
-Date:   Mon, 17 May 2021 16:01:47 +0200
-Message-Id: <20210517140311.236947899@linuxfoundation.org>
+Subject: [PATCH 5.11 197/329] drm/radeon: Fix off-by-one power_state index heap overwrite
+Date:   Mon, 17 May 2021 16:01:48 +0200
+Message-Id: <20210517140308.792862496@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,121 +41,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 0258bdfaff5bd13c4d2383150b7097aecd6b6d82 ]
+[ Upstream commit 5bbf219328849e83878bddb7c226d8d42e84affc ]
 
-This fixes an issue where old load on a cfs_rq is not properly decayed,
-resulting in strange behavior where fairness can decrease drastically.
-Real workloads with equally weighted control groups have ended up
-getting a respective 99% and 1%(!!) of cpu time.
+An out of bounds write happens when setting the default power state.
+KASAN sees this as:
 
-When an idle task is attached to a cfs_rq by attaching a pid to a cgroup,
-the old load of the task is attached to the new cfs_rq and sched_entity by
-attach_entity_cfs_rq. If the task is then moved to another cpu (and
-therefore cfs_rq) before being enqueued/woken up, the load will be moved
-to cfs_rq->removed from the sched_entity. Such a move will happen when
-enforcing a cpuset on the task (eg. via a cgroup) that force it to move.
+[drm] radeon: 512M of GTT memory ready.
+[drm] GART: num cpu pages 131072, num gpu pages 131072
+==================================================================
+BUG: KASAN: slab-out-of-bounds in
+radeon_atombios_parse_power_table_1_3+0x1837/0x1998 [radeon]
+Write of size 4 at addr ffff88810178d858 by task systemd-udevd/157
 
-The load will however not be removed from the task_group itself, making
-it look like there is a constant load on that cfs_rq. This causes the
-vruntime of tasks on other sibling cfs_rq's to increase faster than they
-are supposed to; causing severe fairness issues. If no other task is
-started on the given cfs_rq, and due to the cpuset it would not happen,
-this load would never be properly unloaded. With this patch the load
-will be properly removed inside update_blocked_averages. This also
-applies to tasks moved to the fair scheduling class and moved to another
-cpu, and this path will also fix that. For fork, the entity is queued
-right away, so this problem does not affect that.
+CPU: 0 PID: 157 Comm: systemd-udevd Not tainted 5.12.0-E620 #50
+Hardware name: eMachines        eMachines E620  /Nile       , BIOS V1.03 09/30/2008
+Call Trace:
+ dump_stack+0xa5/0xe6
+ print_address_description.constprop.0+0x18/0x239
+ kasan_report+0x170/0x1a8
+ radeon_atombios_parse_power_table_1_3+0x1837/0x1998 [radeon]
+ radeon_atombios_get_power_modes+0x144/0x1888 [radeon]
+ radeon_pm_init+0x1019/0x1904 [radeon]
+ rs690_init+0x76e/0x84a [radeon]
+ radeon_device_init+0x1c1a/0x21e5 [radeon]
+ radeon_driver_load_kms+0xf5/0x30b [radeon]
+ drm_dev_register+0x255/0x4a0 [drm]
+ radeon_pci_probe+0x246/0x2f6 [radeon]
+ pci_device_probe+0x1aa/0x294
+ really_probe+0x30e/0x850
+ driver_probe_device+0xe6/0x135
+ device_driver_attach+0xc1/0xf8
+ __driver_attach+0x13f/0x146
+ bus_for_each_dev+0xfa/0x146
+ bus_add_driver+0x2b3/0x447
+ driver_register+0x242/0x2c1
+ do_one_initcall+0x149/0x2fd
+ do_init_module+0x1ae/0x573
+ load_module+0x4dee/0x5cca
+ __do_sys_finit_module+0xf1/0x140
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-This applies to cases where the new process is the first in the cfs_rq,
-issue introduced 3d30544f0212 ("sched/fair: Apply more PELT fixes"), and
-when there has previously been load on the cgroup but the cgroup was
-removed from the leaflist due to having null PELT load, indroduced
-in 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing
-path").
+Without KASAN, this will manifest later when the kernel attempts to
+allocate memory that was stomped, since it collides with the inline slab
+freelist pointer:
 
-For a simple cgroup hierarchy (as seen below) with two equally weighted
-groups, that in theory should get 50/50 of cpu time each, it often leads
-to a load of 60/40 or 70/30.
+invalid opcode: 0000 [#1] SMP NOPTI
+CPU: 0 PID: 781 Comm: openrc-run.sh Tainted: G        W 5.10.12-gentoo-E620 #2
+Hardware name: eMachines        eMachines E620  /Nile , BIOS V1.03       09/30/2008
+RIP: 0010:kfree+0x115/0x230
+Code: 89 c5 e8 75 ea ff ff 48 8b 00 0f ba e0 09 72 63 e8 1f f4 ff ff 41 89 c4 48 8b 45 00 0f ba e0 10 72 0a 48 8b 45 08 a8 01 75 02 <0f> 0b 44 89 e1 48 c7 c2 00 f0 ff ff be 06 00 00 00 48 d3 e2 48 c7
+RSP: 0018:ffffb42f40267e10 EFLAGS: 00010246
+RAX: ffffd61280ee8d88 RBX: 0000000000000004 RCX: 000000008010000d
+RDX: 4000000000000000 RSI: ffffffffba1360b0 RDI: ffffd61280ee8d80
+RBP: ffffd61280ee8d80 R08: ffffffffb91bebdf R09: 0000000000000000
+R10: ffff8fe2c1047ac8 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000100
+FS:  00007fe80eff6b68(0000) GS:ffff8fe339c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe80eec7bc0 CR3: 0000000038012000 CR4: 00000000000006f0
+Call Trace:
+ __free_fdtable+0x16/0x1f
+ put_files_struct+0x81/0x9b
+ do_exit+0x433/0x94d
+ do_group_exit+0xa6/0xa6
+ __x64_sys_exit_group+0xf/0xf
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe80ef64bea
+Code: Unable to access opcode bytes at RIP 0x7fe80ef64bc0.
+RSP: 002b:00007ffdb1c47528 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fe80ef64bea
+RDX: 00007fe80ef64f60 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 00007fe80ee2c620 R11: 0000000000000246 R12: 00007fe80eff41e0
+R13: 00000000ffffffff R14: 0000000000000024 R15: 00007fe80edf9cd0
+Modules linked in: radeon(+) ath5k(+) snd_hda_codec_realtek ...
 
-parent/
-  cg-1/
-    cpu.weight: 100
-    cpuset.cpus: 1
-  cg-2/
-    cpu.weight: 100
-    cpuset.cpus: 1
+Use a valid power_state index when initializing the "flags" and "misc"
+and "misc2" fields.
 
-If the hierarchy is deeper (as seen below), while keeping cg-1 and cg-2
-equally weighted, they should still get a 50/50 balance of cpu time.
-This however sometimes results in a balance of 10/90 or 1/99(!!) between
-the task groups.
-
-$ ps u -C stress
-USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
-root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
-
-parent/
-  cg-1/
-    cpu.weight: 100
-    sub-group/
-      cpu.weight: 1
-      cpuset.cpus: 1
-  cg-2/
-    cpu.weight: 100
-    sub-group/
-      cpu.weight: 10000
-      cpuset.cpus: 1
-
-This can be reproduced by attaching an idle process to a cgroup and
-moving it to a given cpuset before it wakes up. The issue is evident in
-many (if not most) container runtimes, and has been reproduced
-with both crun and runc (and therefore docker and all its "derivatives"),
-and with both cgroup v1 and v2.
-
-Fixes: 3d30544f0212 ("sched/fair: Apply more PELT fixes")
-Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210501141950.23622-2-odin@uged.al
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=211537
+Reported-by: Erhard F. <erhard_f@mailbox.org>
+Fixes: a48b9b4edb8b ("drm/radeon/kms/pm: add asic specific callbacks for getting power state (v2)")
+Fixes: 79daedc94281 ("drm/radeon/kms: minor pm cleanups")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/radeon/radeon_atombios.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c80d1a039d19..1ad0e52487f6 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10840,16 +10840,22 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
- {
- 	struct cfs_rq *cfs_rq;
- 
-+	list_add_leaf_cfs_rq(cfs_rq_of(se));
-+
- 	/* Start to propagate at parent */
- 	se = se->parent;
- 
- 	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
- 
--		if (cfs_rq_throttled(cfs_rq))
--			break;
-+		if (!cfs_rq_throttled(cfs_rq)){
-+			update_load_avg(cfs_rq, se, UPDATE_TG);
-+			list_add_leaf_cfs_rq(cfs_rq);
-+			continue;
-+		}
- 
--		update_load_avg(cfs_rq, se, UPDATE_TG);
-+		if (list_add_leaf_cfs_rq(cfs_rq))
-+			break;
+diff --git a/drivers/gpu/drm/radeon/radeon_atombios.c b/drivers/gpu/drm/radeon/radeon_atombios.c
+index be96d9b64e43..11eeabe13d22 100644
+--- a/drivers/gpu/drm/radeon/radeon_atombios.c
++++ b/drivers/gpu/drm/radeon/radeon_atombios.c
+@@ -2249,10 +2249,10 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
+ 		rdev->pm.default_power_state_index = state_index - 1;
+ 		rdev->pm.power_state[state_index - 1].default_clock_mode =
+ 			&rdev->pm.power_state[state_index - 1].clock_info[0];
+-		rdev->pm.power_state[state_index].flags &=
++		rdev->pm.power_state[state_index - 1].flags &=
+ 			~RADEON_PM_STATE_SINGLE_DISPLAY_ONLY;
+-		rdev->pm.power_state[state_index].misc = 0;
+-		rdev->pm.power_state[state_index].misc2 = 0;
++		rdev->pm.power_state[state_index - 1].misc = 0;
++		rdev->pm.power_state[state_index - 1].misc2 = 0;
  	}
+ 	return state_index;
  }
- #else
 -- 
 2.30.2
 
