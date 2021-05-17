@@ -2,102 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE353826B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC86382655
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhEQIUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235623AbhEQIT6 (ORCPT
+        id S235060AbhEQIMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:12:18 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3001 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhEQIMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:19:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9E0C06174A;
-        Mon, 17 May 2021 01:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ebgCnld2n4PAoHyPpWIkEqhlb5U8FfLblu7QnX1Ihas=; b=F77xpAPRdcBWfTtIJB6ARA1+xM
-        lYpavD2ob8Wi7ucTR1D5zGOJAnG3s4lECdILvNMqZC91JNMX9QeTixNMVyLPr+qqpYYZlLzKz5wi7
-        9IblGeAZ4oaJEj7EbHD3bHA7F3+n78JnKM1UPVHDtUvoO0BxOLqAetRXehZfRe56LqcudQymyazXj
-        TuZUJlqhjJgoIrANzyLSAnZfnkQblVBxIIHLELFTZ5saGB+RLjAnr44r1uE7ejoSnOGcrjwz0o8yV
-        Rd5vZNkOjfXQKsnFfo9TeNGK0an+e3Uf1PzkFcjX6WLwgYFJepSyGdj2Z5ufkSWFU7G1fvVz6FNYq
-        UnD1iHEg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liYS2-00ECLN-Qs; Mon, 17 May 2021 08:18:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2116A30022C;
-        Mon, 17 May 2021 10:18:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0AA292D1FEA3D; Mon, 17 May 2021 10:18:10 +0200 (CEST)
-Date:   Mon, 17 May 2021 10:18:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Luwei Kang <luwei.kang@intel.com>
-Subject: Re: [PATCH v6 05/16] KVM: x86/pmu: Introduce the ctrl_mask value for
- fixed counter
-Message-ID: <YKImwdg7LO/OPvVJ@hirez.programming.kicks-ass.net>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-6-like.xu@linux.intel.com>
+        Mon, 17 May 2021 04:12:17 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FkBbd5QMbzmWvc;
+        Mon, 17 May 2021 16:08:45 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 17 May 2021 16:11:00 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 17
+ May 2021 16:10:59 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <vkoul@kernel.org>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@foss.st.com>, <michal.simek@xilinx.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH 0/3] cleanup patches for PM reference leak
+Date:   Mon, 17 May 2021 16:18:23 +0800
+Message-ID: <20210517081826.1564698-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511024214.280733-6-like.xu@linux.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:42:03AM +0800, Like Xu wrote:
-> The mask value of fixed counter control register should be dynamic
-> adjusted with the number of fixed counters. This patch introduces a
-> variable that includes the reserved bits of fixed counter control
-> registers. This is needed for later Ice Lake fixed counter changes.
-> 
-> Co-developed-by: Luwei Kang <luwei.kang@intel.com>
-> Signed-off-by: Luwei Kang <luwei.kang@intel.com>
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 1 +
->  arch/x86/kvm/vmx/pmu_intel.c    | 6 +++++-
->  2 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 55efbacfc244..49b421bd3dd8 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -457,6 +457,7 @@ struct kvm_pmu {
->  	unsigned nr_arch_fixed_counters;
->  	unsigned available_event_types;
->  	u64 fixed_ctr_ctrl;
-> +	u64 fixed_ctr_ctrl_mask;
->  	u64 global_ctrl;
->  	u64 global_status;
->  	u64 global_ovf_ctrl;
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index d9dbebe03cae..ac7fe714e6c1 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -400,7 +400,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  	case MSR_CORE_PERF_FIXED_CTR_CTRL:
->  		if (pmu->fixed_ctr_ctrl == data)
->  			return 0;
-> -		if (!(data & 0xfffffffffffff444ull)) {
-> +		if (!(data & pmu->fixed_ctr_ctrl_mask)) {
+Yu Kuai (3):
+  dmaengine: stm32-mdma: fix PM reference leak in
+    stm32_mdma_alloc_chan_resourc()
+  dmaengine: usb-dmac: Fix PM reference leak in usb_dmac_probe()
+  dmaengine: zynqmp_dma: Fix PM reference leak in
+    zynqmp_dma_alloc_chan_resourc()
 
-Don't we already have hardware with more than 3 fixed counters?
+ drivers/dma/sh/usb-dmac.c       | 2 +-
+ drivers/dma/stm32-mdma.c        | 4 ++--
+ drivers/dma/xilinx/zynqmp_dma.c | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.25.4
+
