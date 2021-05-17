@@ -2,88 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DC0383AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C541A383AC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbhEQRLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 13:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
+        id S237810AbhEQRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 13:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbhEQRLs (ORCPT
+        with ESMTP id S235732AbhEQRL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 13:11:48 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99724C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:10:31 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id z12so8869566ejw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kQWXlUNmoTHMgeRbNpcw353UuhR2CLKe5FdjnZVXGlM=;
-        b=MEuKGQDcHa03p1BmMKDjhFT95CSl32JRfaB96FXizPYf8Meixkj8IxaD9gMkTgPIO0
-         XX1zZSj9S+z4pY43YRyS1MKao/+Jd+WrLUSpeMpoPnMOISUydf+tvToYznbDhtlUqb85
-         NjcKzHx/H/ClqIOIsnNOdcsfQ4XoGgo1836ZoDs/IonhB+P4ArtjGac/C73ltMYlPmH4
-         E3gqunowJ4mvgfMJ1UfCJEVd/F4p+ot+0aMEK4QEPGhMWi8StQGiCXkIKCHLyINRVCcM
-         /xyxbz71vbZCFW7sW2y2y4g8gHNjodC9L6wxGHNO78BArRWFkGxW2KJ9TJOA43gHei3q
-         s9Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kQWXlUNmoTHMgeRbNpcw353UuhR2CLKe5FdjnZVXGlM=;
-        b=coU3AaqtoYAnFJ4BdIoBDcOgYJuR0YJnRFcbvy8ZjQe6u9ttbmlDHyRoFxXksc8zxK
-         ZtZRVEXv6Je57KY09zd7x/USQ2D4+d+DWYyEzqlMmvpkO/uxDEVvlsDb03wHZtQfuVOJ
-         WSansSdY0cqPSWw5pUQZZi0jjFfhaJlMG5rx/9Z7KIIxKxSkVjjRLpfsx2Sj8sAvN5kR
-         /WMnitJcfy/QRUzE6yYx7mGbILE8yZ1R3nbpilwxFu8YPxMwntW9UUje/2Ni8u83PPu9
-         LKlyrfu/f0owBYwun5RnVWcyi0TwvZPvPBrRKxjvnYwlvN0Rve05YDcwerToCl1Vy+9g
-         IrBA==
-X-Gm-Message-State: AOAM531pC8WsguglUUyKtvHR2bUCzbChlvmLbbItm6Vp8n+mtxM1uwbG
-        5x9FUZBgDodVhPDv4VCbDZWipNpt0m17wd4IzEkXng==
-X-Google-Smtp-Source: ABdhPJxXNJ5er2bptuVybeBTe96h0U8ufAdgMDhfZnWJRD79gFPqAYeEfo4+/ynT0o+kO2+VTDRRV5Xudthz7jyEzxI=
-X-Received: by 2002:a17:906:d285:: with SMTP id ay5mr960608ejb.418.1621271430280;
- Mon, 17 May 2021 10:10:30 -0700 (PDT)
+        Mon, 17 May 2021 13:11:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894A3C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 10:10:40 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1liglF-0008Nn-Lo; Mon, 17 May 2021 19:10:33 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1liglB-0002jh-0K; Mon, 17 May 2021 19:10:29 +0200
+Date:   Mon, 17 May 2021 19:10:28 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [v5 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210517171028.qioxg53dpzlq4izu@pengutronix.de>
+References: <20210514024845.10531-1-billy_tsai@aspeedtech.com>
+ <20210514024845.10531-3-billy_tsai@aspeedtech.com>
+ <20210515151827.amiqh6j6brv44jif@pengutronix.de>
+ <7A439233-C5FF-4BCA-8A5C-945EB847F487@aspeedtech.com>
+ <20210517060615.3hyifoebyrddsrta@pengutronix.de>
+ <C451B628-C0CC-47E9-84EF-42DB8518FE1E@aspeedtech.com>
+ <20210517063500.toxlb2wbtbqpczwl@pengutronix.de>
+ <52C0ED72-65A7-4C39-820F-D4368191878B@aspeedtech.com>
 MIME-Version: 1.0
-References: <20210419213636.1514816-1-vgoyal@redhat.com> <20210419213636.1514816-3-vgoyal@redhat.com>
- <20210420093420.2eed3939@bahia.lan> <20210420140033.GA1529659@redhat.com>
- <CAPcyv4g2raipYhivwbiSvsHmSdgLO8wphh5dhY3hpjwko9G4Hw@mail.gmail.com> <20210422062458.GA4176641@infradead.org>
-In-Reply-To: <20210422062458.GA4176641@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 17 May 2021 10:10:19 -0700
-Message-ID: <CAPcyv4jukTfMroXaw+zWELp4JM=kbBaitG1FGwFhxP7u1yQMBA@mail.gmail.com>
-Subject: Re: [Virtio-fs] [PATCH v3 2/3] dax: Add a wakeup mode parameter to put_unlocked_entry()
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, Greg Kurz <groug@kaod.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xebupssd5zqcte57"
+Content-Disposition: inline
+In-Reply-To: <52C0ED72-65A7-4C39-820F-D4368191878B@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:25 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Wed, Apr 21, 2021 at 12:09:54PM -0700, Dan Williams wrote:
-> > Can you get in the habit of not replying inline with new patches like
-> > this? Collect the review feedback, take a pause, and resend the full
-> > series so tooling like b4 and patchwork can track when a new posting
-> > supersedes a previous one. As is, this inline style inflicts manual
-> > effort on the maintainer.
->
-> Honestly I don't mind it at all.  If you shiny new tooling can't handle
-> it maybe you should fix your shiny new tooling instead of changing
-> everyones workflow?
 
-Fyi, shiny new tooling has been fixed:
+--xebupssd5zqcte57
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-http://lore.kernel.org/r/20210517161317.teawoh5qovxpmqdc@nitro.local
+On Mon, May 17, 2021 at 07:12:53AM +0000, Billy Tsai wrote:
+> Hi,
+>=20
+>     > On 2021/5/17, 2:35 PM,Uwe Kleine-K=F6nigwrote:
+>=20
+>     >   On Mon, May 17, 2021 at 06:23:06AM +0000, Billy Tsai wrote:
+>     >   > Hi,
+>     >   > 	On 2021/5/17, 2:06 PM,Uwe Kleine-K=F6nigwrote:
+>     >   >=20
+>     >   > 	On Mon, May 17, 2021 at 02:53:44AM +0000, Billy Tsai wrote:
+>     >   > 	>	> On 2021/5/15, 11:57 PM,Uwe Kleine-K=F6nigwrote:
+>     >   > 	>	>=20
+>     >   > 	>	> 	>	> +	div_h =3D DIV_ROUND_DOWN_ULL(div_h,
+>     >   > 	>	> 	>	> +				   (FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1));
+>     >   > 	>	> 	>	> +	div_h =3D DIV_ROUND_DOWN_ULL(div_h, NSEC_PER_SEC);
+>     >   > 	>	>=20
+>     >   > 	>	> 	> As a division is an expensive operation you can better =
+first multiply
+>     >   > 	>	> 	> NSEC_PER_SEC and FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) +=
+ 1 and divide by
+>     >   > 	>	> 	> the result.
+>     >   > 	>	>=20
+>     >   > 	>	> When I multiply NSEC_PER_SEC and FIELD_MAX(PWM_ASPEED_CTRL=
+_CLK_DIV_L) + 1 the result will overflow
+>     >   > 	>	> for 32-bits and the divisor type of do_div is 32-bits so I=
+ need to do div twice to avoid the issue.
+>     >   > 	>	> Can you give me some suggests?
+>     >   >=20
+>     >   > 	> Hmm, you're right. There doesn't seem to be a div64_64, I th=
+ought there
+>     >   > 	> was one. Anyhow, while looking at the various divide functio=
+ns I saw
+>     >   > 	> that dividing by a constant shouldn't be that expensive, so =
+I think the
+>     >   > 	> sane way is to keep the two divisions and add a comment desc=
+ribing the
+>     >   > 	> problem.
+>     >   > According to our fixed value, I think that I can use bit shift =
+to reduce one divide function:
+>     >   >=20
+>     >   > rate =3D clk_get_rate(priv->clk);
+>     >   > /* Get the smallest value for div_h  */
+>     >   > div_h =3D rate * state->period;
+>     >   > div_h >>=3D (__fls(PWM_ASPEED_FIXED_PERIOD + 1) +
+>     >   > 	   __fls(FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1));
+>     >   > div_h =3D DIV_ROUND_DOWN_ULL(div_h, NSEC_PER_SEC);
+>=20
+>     > Did you check how this is compiled to code? I'd expect that it does=
+n't
+>     > result in better code than writing it as a division. Given that a
+>     > division is easier to understand for a human reader, I'd stick to t=
+hat.
+>=20
+> I found that I can use div64_64 through #include <linux/math64.h> and use=
+ "div64_u64":
+>=20
+> u64 div_h, div_l, divisor;
+> u32 index =3D pwm->hwpwm;
+>=20
+> rate =3D clk_get_rate(priv->clk);
+> /* Get the smallest value for div_h  */
+> div_h =3D rate * state->period;
+> divisor =3D (u64)NSEC_PER_SEC * (PWM_ASPEED_FIXED_PERIOD + 1) *
+>                 (FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1);
+> div_h =3D div64_u64(div_h, divisor);
+> div_h =3D order_base_2(div_h);
+> if (div_h > 0xf)
+>         div_h =3D 0xf;
+>=20
+> div_l =3D rate * state->period;
+> divisor =3D (u64)NSEC_PER_SEC * (PWM_ASPEED_FIXED_PERIOD + 1) *
+>                 BIT(div_h);
+> div_l =3D div64_u64(div_l, divisor);
+>=20
+> Can I use this one?
 
-...it still requires properly formatted patches with commentary below
-the "---" break line, but this should cut down on re-rolls.
+Looks good to me. If you want to improve further you can expand the
+comment about div_h to somethink like:
 
-Hat tip to Konstantin.
+	/*
+	 * Pick a small value for div_h so that div_l can be big which
+	 * results in a finer resolution near the target period value.
+	 */
+
+Another detail I don't like much is that the name div_h is only
+justified after the last assignment. I don't have a good suggestion here
+though.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xebupssd5zqcte57
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCio4IACgkQwfwUeK3K
+7Amhpwf/WtOHMRqxyC/ROADLloWz8ncu+TvosU/nXy3m3ZcuxpOqef8jPpFE8kis
+NmYnj+N9FqyCCJlsfAXJAzUe8B4j/mBUquCgHH/yeqQNoYyzE58poBXkBKX/4bAO
+DUqBPN51DxtLzx3abfrY0hnF8ilLMtz9an8FHyhdY5FqdNXLIBeImYM07kqOgGbw
+hLN5ZUi4XCfj0H0+Lm9b4ammvd4K2ovmYubvm3vON8f2hJNoSqjyTMoJPaE6Te8b
+5Bz+H8LllZqRSoQ4x13/bCRY+Nf8skLASEK5SCnUE0T5r+kMkvDQrf8TuXIXtvJ0
+nveFQR1y3vjvD0EJp7J7xSQSS7EB9A==
+=aEYS
+-----END PGP SIGNATURE-----
+
+--xebupssd5zqcte57--
