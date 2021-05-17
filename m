@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0953836BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92343838A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243647AbhEQPf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:35:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
+        id S244931AbhEQP63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:58:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244419AbhEQPUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:20:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25EC56191C;
-        Mon, 17 May 2021 14:34:14 +0000 (UTC)
+        id S245510AbhEQPjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:39:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE02B61D06;
+        Mon, 17 May 2021 14:41:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262054;
-        bh=u0cuOepqDr5lz0DiSS8gKOWHOLaJIYMmmSUixmLFq8A=;
+        s=korg; t=1621262475;
+        bh=ayrtXFfexLm21Ax+2aCcvnfelywZrTIyJQle+XrJDzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rBf6Z6pzubNecGqZrmOWh+6f/LWv6dUaAtrBVmMWIxs5vrGhChpBO2SYrsiIIeyq1
-         JgHXlfirzz0aXqZtOuMrfAwRae41biTkezFCuw1p8lKbcmw+P9bS+YvFgzSdxFV0fT
-         dS16QMzxoMUxDzVoXJxuTPZuiZwZUBDUIAV7kUmE=
+        b=ufYfBU9IBMYMa1eWmofKZha7qqHzDtZ+Ul1aG6TpvtOwPlMAEgqnC7ZoBFOosCAGM
+         06DJID42ydoMZFYZ2bddULYaa9Z4rxpEcot8DsTwdE6iYmY6A/N+MeDFUrPVnIJkkg
+         4yFpHRV7N5D27LZ6TBpqKVm1fazFYTPduVeWmDMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nucca Chen <nuccachen@google.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@mellanox.com>, Jiri Pirko <jiri@resnulli.us>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 209/329] net: fix nla_strcmp to handle more then one trailing null character
+        stable@vger.kernel.org, Vladimir Isaev <isaev@synopsys.com>,
+        kernel test robot <lkp@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 5.10 195/289] ARC: mm: PAE: use 40-bit physical page mask
 Date:   Mon, 17 May 2021 16:02:00 +0200
-Message-Id: <20210517140309.205916341@linuxfoundation.org>
+Message-Id: <20210517140311.672651989@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +40,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Vladimir Isaev <isaev@synopsys.com>
 
-[ Upstream commit 2c16db6c92b0ee4aa61e88366df82169e83c3f7e ]
+commit c5f756d8c6265ebb1736a7787231f010a3b782e5 upstream.
 
-Android userspace has been using TCA_KIND with a char[IFNAMESIZ]
-many-null-terminated buffer containing the string 'bpf'.
+32-bit PAGE_MASK can not be used as a mask for physical addresses
+when PAE is enabled. PAGE_MASK_PHYS must be used for physical
+addresses instead of PAGE_MASK.
 
-This works on 4.19 and ceases to work on 5.10.
+Without this, init gets SIGSEGV if pte_modify was called:
 
-I'm not entirely sure what fixes tag to use, but I think the issue
-was likely introduced in the below mentioned 5.4 commit.
+| potentially unexpected fatal signal 11.
+| Path: /bin/busybox
+| CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc5-00003-g1e43c377a79f-dirty
+| Insn could not be fetched
+|     @No matching VMA found
+|  ECR: 0x00040000 EFA: 0x00000000 ERET: 0x00000000
+| STAT: 0x80080082 [IE U     ]   BTA: 0x00000000
+|  SP: 0x5f9ffe44  FP: 0x00000000 BLK: 0xaf3d4
+| LPS: 0x000d093e LPE: 0x000d0950 LPC: 0x00000000
+| r00: 0x00000002 r01: 0x5f9fff14 r02: 0x5f9fff20
+| ...
+| Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-Reported-by: Nucca Chen <nuccachen@google.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Jiri Pirko <jiri@mellanox.com>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Fixes: 62794fc4fbf5 ("net_sched: add max len check for TCA_KIND")
-Change-Id: I66dc281f165a2858fc29a44869a270a2d698a82b
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/nlattr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arc/include/asm/page.h      |   12 ++++++++++++
+ arch/arc/include/asm/pgtable.h   |   12 +++---------
+ arch/arc/include/uapi/asm/page.h |    1 -
+ arch/arc/mm/ioremap.c            |    5 +++--
+ arch/arc/mm/tlb.c                |    2 +-
+ 5 files changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/lib/nlattr.c b/lib/nlattr.c
-index 5b6116e81f9f..1d051ef66afe 100644
---- a/lib/nlattr.c
-+++ b/lib/nlattr.c
-@@ -828,7 +828,7 @@ int nla_strcmp(const struct nlattr *nla, const char *str)
- 	int attrlen = nla_len(nla);
- 	int d;
+--- a/arch/arc/include/asm/page.h
++++ b/arch/arc/include/asm/page.h
+@@ -7,6 +7,18 @@
  
--	if (attrlen > 0 && buf[attrlen - 1] == '\0')
-+	while (attrlen > 0 && buf[attrlen - 1] == '\0')
- 		attrlen--;
+ #include <uapi/asm/page.h>
  
- 	d = attrlen - len;
--- 
-2.30.2
-
++#ifdef CONFIG_ARC_HAS_PAE40
++
++#define MAX_POSSIBLE_PHYSMEM_BITS	40
++#define PAGE_MASK_PHYS			(0xff00000000ull | PAGE_MASK)
++
++#else /* CONFIG_ARC_HAS_PAE40 */
++
++#define MAX_POSSIBLE_PHYSMEM_BITS	32
++#define PAGE_MASK_PHYS			PAGE_MASK
++
++#endif /* CONFIG_ARC_HAS_PAE40 */
++
+ #ifndef __ASSEMBLY__
+ 
+ #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
+--- a/arch/arc/include/asm/pgtable.h
++++ b/arch/arc/include/asm/pgtable.h
+@@ -107,8 +107,8 @@
+ #define ___DEF (_PAGE_PRESENT | _PAGE_CACHEABLE)
+ 
+ /* Set of bits not changed in pte_modify */
+-#define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY | _PAGE_SPECIAL)
+-
++#define _PAGE_CHG_MASK	(PAGE_MASK_PHYS | _PAGE_ACCESSED | _PAGE_DIRTY | \
++							   _PAGE_SPECIAL)
+ /* More Abbrevaited helpers */
+ #define PAGE_U_NONE     __pgprot(___DEF)
+ #define PAGE_U_R        __pgprot(___DEF | _PAGE_READ)
+@@ -132,13 +132,7 @@
+ #define PTE_BITS_IN_PD0		(_PAGE_GLOBAL | _PAGE_PRESENT | _PAGE_HW_SZ)
+ #define PTE_BITS_RWX		(_PAGE_EXECUTE | _PAGE_WRITE | _PAGE_READ)
+ 
+-#ifdef CONFIG_ARC_HAS_PAE40
+-#define PTE_BITS_NON_RWX_IN_PD1	(0xff00000000 | PAGE_MASK | _PAGE_CACHEABLE)
+-#define MAX_POSSIBLE_PHYSMEM_BITS 40
+-#else
+-#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK | _PAGE_CACHEABLE)
+-#define MAX_POSSIBLE_PHYSMEM_BITS 32
+-#endif
++#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK_PHYS | _PAGE_CACHEABLE)
+ 
+ /**************************************************************************
+  * Mapping of vm_flags (Generic VM) to PTE flags (arch specific)
+--- a/arch/arc/include/uapi/asm/page.h
++++ b/arch/arc/include/uapi/asm/page.h
+@@ -33,5 +33,4 @@
+ 
+ #define PAGE_MASK	(~(PAGE_SIZE-1))
+ 
+-
+ #endif /* _UAPI__ASM_ARC_PAGE_H */
+--- a/arch/arc/mm/ioremap.c
++++ b/arch/arc/mm/ioremap.c
+@@ -53,9 +53,10 @@ EXPORT_SYMBOL(ioremap);
+ void __iomem *ioremap_prot(phys_addr_t paddr, unsigned long size,
+ 			   unsigned long flags)
+ {
++	unsigned int off;
+ 	unsigned long vaddr;
+ 	struct vm_struct *area;
+-	phys_addr_t off, end;
++	phys_addr_t end;
+ 	pgprot_t prot = __pgprot(flags);
+ 
+ 	/* Don't allow wraparound, zero size */
+@@ -72,7 +73,7 @@ void __iomem *ioremap_prot(phys_addr_t p
+ 
+ 	/* Mappings have to be page-aligned */
+ 	off = paddr & ~PAGE_MASK;
+-	paddr &= PAGE_MASK;
++	paddr &= PAGE_MASK_PHYS;
+ 	size = PAGE_ALIGN(end + 1) - paddr;
+ 
+ 	/*
+--- a/arch/arc/mm/tlb.c
++++ b/arch/arc/mm/tlb.c
+@@ -576,7 +576,7 @@ void update_mmu_cache(struct vm_area_str
+ 		      pte_t *ptep)
+ {
+ 	unsigned long vaddr = vaddr_unaligned & PAGE_MASK;
+-	phys_addr_t paddr = pte_val(*ptep) & PAGE_MASK;
++	phys_addr_t paddr = pte_val(*ptep) & PAGE_MASK_PHYS;
+ 	struct page *page = pfn_to_page(pte_pfn(*ptep));
+ 
+ 	create_tlb(vma, vaddr, ptep);
 
 
