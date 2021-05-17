@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE38383A53
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E9F383A67
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbhEQQsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        id S239465AbhEQQth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242595AbhEQQrz (ORCPT
+        with ESMTP id S240200AbhEQQtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:47:55 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59841C04A04B;
-        Mon, 17 May 2021 09:15:55 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id i5so5024682pgm.0;
-        Mon, 17 May 2021 09:15:55 -0700 (PDT)
+        Mon, 17 May 2021 12:49:17 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC20AC06138A;
+        Mon, 17 May 2021 09:27:47 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id k15so4993685pgb.10;
+        Mon, 17 May 2021 09:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7Yp6Eyxkhp5gDluerel0QRWQ5C1YolOL9RSoU0qywaM=;
-        b=MlU0Vi0/gpo+dP0xQ6LB6sOFGJJJxPpV2/jC9BetYubue/P6ug1gAWSd+LZT9xzK04
-         5I5TwTECUr+giSG8P5oRVd0mAo6nUeso1hfM+kDMFS5FY1uNfhSKokDIUkLHh/9RbOtb
-         VueAqUYsisdxkZ9z9NqJr1wnkN+s8I7pimIFblHjm0lGWbg3qkO7LvzHugONHNdyFjPk
-         6x+SuNIjVPOqm+N5dJAuvzJRJkzmBN0ML1Hrg9cUmL7dYxbLPX8EA15LpUsAGNu9pbsN
-         nKmKAEZWDgWuQCZySWjM7wV2PYt/CAIh6FzuU44j2jHzQwvE9mkte6GH4/r+TpD7yNyN
-         A42w==
+        bh=mx4uew0MVPJR7i0oTY96YMZZ29hK38r70gY7hQXazqs=;
+        b=XOeQGM5hI1scTFGVvCJLQFicp9XWE9txAw3MjdtrsPblP5x3otLLx7Sk2zNqkBgVNJ
+         tCY7sW/AC8QVg7GsCy4j3Mw/go9Mnx2/IF0wRCz99lmTpztXkU3PYiYC7sDEU4m3fBPT
+         Od/8o28tV+kUWspNbUmYQqjwHXBg5iqB+SlCCqB46M320bQJsprZk0zVrbeJVLvY1w5h
+         s0V8n1Dm/PXCmZfb6egpNC7ogyzZPIwDnd828OFNBsxhNAd7UEbW45cO3OnlaMzgjiXM
+         +fxN82viqY38m1oLpTnRmZISnoPW1qFmTclrPqH+nr5umWfkbkPrTObptt4ImtHy27qF
+         hnlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=7Yp6Eyxkhp5gDluerel0QRWQ5C1YolOL9RSoU0qywaM=;
-        b=MVQ6Tj4JXQ2das3pT4yrGg3+iU6zbnmIs8t7L50AdQWkUDE2fiOU7wKdT14+XOsgY1
-         UrY5/UWgbRPpQwpEg1g/OSWcc5q2PnsruPcJFIE14/Q9F1gRvspBIf0ZhzHnKywfVYBc
-         ajuc7HkVmbwMFogXQwoz4xv3CamyEfIuRyeJ6vE+XuVoZT3A+NsjTy4OHnPNLNHrm7FH
-         Mdrc+SVWXfbh8ydSMXQEOWpqLMXVpqLqU4ZNcLOLQmKcPzG9bcOk0a7CsRCUw6LVlH6O
-         tsMkslhwiO2jo4ZiaBzsLE/JxCcc8W8GdCcqQRZQcpacqeYt5h1o5q0aMWaHOAmcRZD+
-         y4gQ==
-X-Gm-Message-State: AOAM533PnaVYNu1vMSkjrPtwdSoLLtx0yYUtXJOybRqxoRYCnkxnHB5g
-        MG/iLXlW/cVg23MY9rzpx1iVVTiv6q8=
-X-Google-Smtp-Source: ABdhPJwqnT3rwId+dbuCI+usvDj3AqTgxdldAtAQZg0gCY7ZzbT3Y7DNrZIRMmKVjm6xTNnrFUSsHw==
-X-Received: by 2002:a63:e114:: with SMTP id z20mr323553pgh.207.1621268154516;
-        Mon, 17 May 2021 09:15:54 -0700 (PDT)
+        bh=mx4uew0MVPJR7i0oTY96YMZZ29hK38r70gY7hQXazqs=;
+        b=ntpoe99ka6BrgEZfpaMS+0SIl9VNEnY7KRu9UTjITXO/MkEwW1WKhaIr1Lha7E9mCU
+         O4AQfQv/Tz7hEM5WaYOMQKDutMXUiKEf2713PphiIKlDypYxRT5VHoTDT+bS1Qf7ohJ7
+         BMjW3ra0rNG67ZLcH7TA3DSEPysvmscA9DCgZPHTbmB5UU1lOghjB8qvtnFlz9EtJs6U
+         dNRkiV3uzRDxKQN7ih8CXGNLbFtlKe7ANToMR35pHWD9peyHz06XBVGyrq5FaRjAWZdj
+         bej8CR/U/TQyvCCOSVKMWjxaWWWND0+8Zp3G3wNeXLzOivDAFmTJdJa7305VevBvG/dt
+         201Q==
+X-Gm-Message-State: AOAM531c0dM+GznL7ScDYL88wkNQdY0hQsIOlR+n1c62F/atKq9joGl+
+        iQXHzXaThDa5UNZNl5uFcMiVBmSWMpU=
+X-Google-Smtp-Source: ABdhPJyvAqve5o0RR+IPyfaArfEJYUMu4Kmx6h1WtwUYo9QHvZw5Q5MqLXSJuGEgsGHeLpw6vAyhdQ==
+X-Received: by 2002:a62:7e41:0:b029:249:287:3706 with SMTP id z62-20020a627e410000b029024902873706mr445658pfc.76.1621268866893;
+        Mon, 17 May 2021 09:27:46 -0700 (PDT)
 Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i17sm10251593pfd.84.2021.05.17.09.15.52
+        by smtp.gmail.com with ESMTPSA id n6sm11368923pgq.72.2021.05.17.09.27.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 09:15:54 -0700 (PDT)
-Subject: Re: [PATCH 5.11 000/329] 5.11.22-rc1 review
+        Mon, 17 May 2021 09:27:46 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/289] 5.10.38-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
         linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
         stable@vger.kernel.org
-References: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <e5bdf2ac-7082-1393-f793-bcca4e220564@gmail.com>
-Date:   Mon, 17 May 2021 09:15:50 -0700
+Message-ID: <3d273f4f-0b9e-2404-cd32-2e214cf586ca@gmail.com>
+Date:   Mon, 17 May 2021 09:27:44 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,26 +74,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 5/17/2021 6:58 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.11.22 release.
-> There are 329 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 5.10.38 release.
+> There are 289 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
-> Responses should be made by Wed, 19 May 2021 14:02:16 +0000.
+> Responses should be made by Wed, 19 May 2021 14:02:24 +0000.
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.22-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.38-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
 > and the diffstat can be found below.
 > 
 > thanks,
 > 
 > greg k-h
 
-Since we are still missing some key dependencies from 5.12 to boot
-properly on ARCH_BRCMSTB I only build tested this branch to make sure
-that ahci_brcm.c and pcie-brcmstb.c built fine, thanks!
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
 Florian
