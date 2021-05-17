@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A889383572
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE3738357E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244563AbhEQPVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:21:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47750 "EHLO mail.kernel.org"
+        id S244859AbhEQPWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:22:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242947AbhEQPI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:08:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EAC561C29;
-        Mon, 17 May 2021 14:30:00 +0000 (UTC)
+        id S243255AbhEQPJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:09:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 878AC61C37;
+        Mon, 17 May 2021 14:30:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261800;
-        bh=ysSzzWq83+bAihFpUjU/R8ZtCSyNJ369yjK25LYG5wU=;
+        s=korg; t=1621261816;
+        bh=Cxu0zFbOjpVKA500whwaPNp5dFDWzbf8E9eAXaorLlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LcqzOfOexCaSqXRyGuitDaIKAR1NKAQ/2PiAXUQjy2pwd5S+lT2bMajmHF2QVHK4g
-         LSrQim8Xy+ex35ZLrgu0MFgExBhibLYt894YcZhZm+vCwBwtxx/TlEznhi/b2uFngG
-         xBC9BYNz7FAH7OLIMYhHeNpofmTFQ8QBYsnzD6iQ=
+        b=oSSPJkkW+cZWXuV6+idw/xyTH4skFgcF3fVT0kC1Y0nnOKZA4vDdOMRA0I8Z+Hxst
+         wYQ6cTozK06oFlfeWg0HHJjeDOdYYU6qLfTl8R30bIRqRyQRmOTTPJvHfEzv+3wzv8
+         uaPM3aacxOnXaS5mgU80mJZ3BFQrxnnNE6HdboFs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 092/141] i40e: Fix use-after-free in i40e_client_subtask()
-Date:   Mon, 17 May 2021 16:02:24 +0200
-Message-Id: <20210517140245.869735343@linuxfoundation.org>
+        stable@vger.kernel.org, Shahab Vahedi <shahab@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 5.4 095/141] ARC: entry: fix off-by-one error in syscall number validation
+Date:   Mon, 17 May 2021 16:02:27 +0200
+Message-Id: <20210517140245.964886825@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -40,37 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit 38318f23a7ef86a8b1862e5e8078c4de121960c3 ]
+commit 3433adc8bd09fc9f29b8baddf33b4ecd1ecd2cdc upstream.
 
-Currently the call to i40e_client_del_instance frees the object
-pf->cinst, however pf->cinst->lan_info is being accessed after
-the free. Fix this by adding the missing return.
+We have NR_syscall syscalls from [0 .. NR_syscall-1].
+However the check for invalid syscall number is "> NR_syscall" as
+opposed to >=. This off-by-one error erronesously allows "NR_syscall"
+to be treated as valid syscall causeing out-of-bounds access into
+syscall-call table ensuing a crash (holes within syscall table have a
+invalid-entry handler but this is beyond the array implementing the
+table).
 
-Addresses-Coverity: ("Read from pointer after free")
-Fixes: 7b0b1a6d0ac9 ("i40e: Disable iWARP VSI PETCP_ENA flag on netdev down events")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This problem showed up on v5.6 kernel when testing glibc 2.33 (v5.10
+kernel capable, includng faccessat2 syscall 439). The v5.6 kernel has
+NR_syscalls=439 (0 to 438). Due to the bug, 439 passed by glibc was
+not handled as -ENOSYS but processed leading to a crash.
+
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
+Reported-by: Shahab Vahedi <shahab@synopsys.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_client.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arc/kernel/entry.S |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c b/drivers/net/ethernet/intel/i40e/i40e_client.c
-index e81530ca08d0..5706abb3c0ea 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_client.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
-@@ -377,6 +377,7 @@ void i40e_client_subtask(struct i40e_pf *pf)
- 				clear_bit(__I40E_CLIENT_INSTANCE_OPENED,
- 					  &cdev->state);
- 				i40e_client_del_instance(pf);
-+				return;
- 			}
- 		}
- 	}
--- 
-2.30.2
-
+--- a/arch/arc/kernel/entry.S
++++ b/arch/arc/kernel/entry.S
+@@ -165,7 +165,7 @@ tracesys:
+ 
+ 	; Do the Sys Call as we normally would.
+ 	; Validate the Sys Call number
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     tracesys_exit
+ 
+@@ -243,7 +243,7 @@ ENTRY(EV_Trap)
+ 	;============ Normal syscall case
+ 
+ 	; syscall num shd not exceed the total system calls avail
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     .Lret_from_system_call
+ 
 
 
