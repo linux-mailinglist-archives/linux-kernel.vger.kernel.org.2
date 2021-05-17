@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986B0382879
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D921938287C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbhEQJi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        id S236139AbhEQJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236131AbhEQJgy (ORCPT
+        with ESMTP id S236082AbhEQJiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:36:54 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A5BC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:38 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id s4so1255220plg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:38 -0700 (PDT)
+        Mon, 17 May 2021 05:38:07 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D24FC061761
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:42 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g24so3334687pji.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:35:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fNq8gr989Cum5eqHTtmZ5NFuzewoSMmlqjhN+Y3JjjU=;
-        b=zBB0D5s4sq1tRVYKSTHCHoewqcNYE9/9D3K5o+cRGAc0CclrS9NLlx+OnuGlvsbGae
-         kVors8xjwdFxeQpN/PKex1ymbZ+WoBMfjHORYmzxt9ksfMAx14q2X2wtHNU/RurNYqAQ
-         ROVHEpSJHT4iIqBNdWwi2KQSaxNTpu+pCSbMP2E+ZlrwLqRDD8vplVKp/ktzrHz23XRU
-         srVJkZc2hJFNwOpxPrRWF0uQQ7wvT5xWsJ4fRpJUscqBBTXymhl+/MI0Y4r4KucTj6Aw
-         euw1yoLymT68Qk5twmIoSJpfV9wHYVb8ok1R38dGMsp+YgwoVsvmgvS2WSKuP0Msr57L
-         I0Og==
+        bh=Qs/6MWizLDRTsHBDlMB0lVbYwFZNUVJyQTAL5c/FQ9Y=;
+        b=OKJMQZ1/3HMckxs7sIQHyj9Dg+oW3EUD3lyyq9eKvhk6OSYPrbTczkLNQlib26uwqq
+         btTRveshAEa3BiaK0kzns75V5R37Zt/GZHeF1Vk7XFLTN8ctXIBdYeQ4wlouJazP1g1R
+         MRFoJX8uyo1jK8ANDhP+ynIyMhzYD53Agyywh+Lfi52uLZVGpvBe4t8eMlJYhc0Upl0N
+         RY/x+UOoUkyXGkgNpyAu+9QgJ/YR+85Kb6CDNvA5fgEakOMVLIKFdfxFkDF33x3eW7ao
+         f5xqvnlw5EDEhVPDlkbY7S2go2ZADw/obcNAGLJPQ0l6kKRbo/P4n2QiP5ntbkRBZfBO
+         ZFyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fNq8gr989Cum5eqHTtmZ5NFuzewoSMmlqjhN+Y3JjjU=;
-        b=BsdquK1e5dwH3cDhfnvQn3z+0+d/AGwMoohbDUmTWvbsDYFHM2bxR1uyEQSu8lxv0r
-         VDbAspv1rXz/4kPwj9rF7a4HfoL57mZqHmtY4r25rHdzC0geVyHsZTVIP+5T+pk1F+xF
-         7qN9n+Jh0/HmthFb8mbcmj9xbgOeU8yDJjJIirNr7UUCNrr00k3XBfi2/S3YU/utTcQu
-         eS4JimQvofrh3MpMtD2Mvl0O5w/ryNUoQtwW4NOutjUEotm0ZWeckvCQHJQZOurxB4Ok
-         +DQdQfRt+jEDBIi+EN9Tw14ZHhIpcevcbT+1M5ZGs6AnrrbOf2DsfSiEZVb97T1/wM4h
-         L+AQ==
-X-Gm-Message-State: AOAM531CLjxM1r71xZiHfCdpPqKF6N4s4l7fUrEd+Zn2xdfVaudUpKVM
-        N0GIt7OueEehzyhfQtnmapE6
-X-Google-Smtp-Source: ABdhPJxSQA7/qLFgqM39uhNUgORKWUTMOCaXpx41h26BzChg4S+QHLSCkpAO3gGVi4z5OEYrEETn8Q==
-X-Received: by 2002:a17:90a:b38a:: with SMTP id e10mr67737493pjr.175.1621244137631;
-        Mon, 17 May 2021 02:35:37 -0700 (PDT)
+        bh=Qs/6MWizLDRTsHBDlMB0lVbYwFZNUVJyQTAL5c/FQ9Y=;
+        b=isirJRGIy6PPopOR07uAnI2pa8LpLGDp9xHNGilH9LwlYGaiUXVWpVmitWeT6vsQMg
+         rHL05FzhQiva6bPNJP5njBybd8NUaCOjM9oNzdP2QV+1bNep06MnmBkSW1eg10DL8R8x
+         RXP50HG0LxozGuhH0GPV/SBxQTGFGjq/xZ7Yhvq/2oxFYPEvskoqSEIXwHaIKWDOclPv
+         QwMBvgZ02IIMHN5mydQQsKqA2r5DI1LwtAHuIDgdGg2qCBMsn4ECg+iRMsssKmfm9fri
+         MeX7FfJuZczsZMx5WwyGVznh+mn9XK2rbVu8lkCMh1TLK7pLoYLD+LW/SKLuEWrbCIog
+         BZCg==
+X-Gm-Message-State: AOAM5322womJ/pyo0Jw0tSdDigDt8uQphrqXR2wRD9DPQu5Ub1xM67Gu
+        So1B5HhEpjQaxtOJz+xm3QGx
+X-Google-Smtp-Source: ABdhPJyLh304K+nbSTqdrmrdFXTzRQ8RPQoQ49KiWrqHOVO8Vpo6TZjXsHTl9LwMv9ZT5Xh/952Q6w==
+X-Received: by 2002:a17:90a:c68f:: with SMTP id n15mr391945pjt.112.1621244141705;
+        Mon, 17 May 2021 02:35:41 -0700 (PDT)
 Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id t22sm2584245pfl.50.2021.05.17.02.35.36
+        by smtp.gmail.com with ESMTPSA id w11sm1092482pfc.79.2021.05.17.02.35.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 02:35:37 -0700 (PDT)
+        Mon, 17 May 2021 02:35:41 -0700 (PDT)
 From:   Xie Yongji <xieyongji@bytedance.com>
 To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com
 Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
@@ -56,9 +56,9 @@ Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
         miklos@szeredi.hu, lucho@ionkov.net, asmadeus@codewreck.org,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 11/15] virtio-balloon: Handle virtio_device_ready() failure
-Date:   Mon, 17 May 2021 17:34:24 +0800
-Message-Id: <20210517093428.670-12-xieyongji@bytedance.com>
+Subject: [RFC PATCH 12/15] virtio-input: Handle virtio_device_ready() failure
+Date:   Mon, 17 May 2021 17:34:25 +0800
+Message-Id: <20210517093428.670-13-xieyongji@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210517093428.670-1-xieyongji@bytedance.com>
 References: <20210517093428.670-1-xieyongji@bytedance.com>
@@ -74,45 +74,38 @@ and resume paths.
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 ---
- drivers/virtio/virtio_balloon.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_input.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-index 7565970c3901..4f183dd901b3 100644
---- a/drivers/virtio/virtio_balloon.c
-+++ b/drivers/virtio/virtio_balloon.c
-@@ -997,12 +997,17 @@ static int virtballoon_probe(struct virtio_device *vdev)
- 			goto out_unregister_oom;
+diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
+index f83f8e556fba..a94940efad7a 100644
+--- a/drivers/virtio/virtio_input.c
++++ b/drivers/virtio/virtio_input.c
+@@ -312,7 +312,10 @@ static int virtinput_probe(struct virtio_device *vdev)
+ 		}
  	}
  
 -	virtio_device_ready(vdev);
 +	err = virtio_device_ready(vdev);
 +	if (err)
-+		goto out_unregister_page_report;
- 
- 	if (towards_target(vb))
- 		virtballoon_changed(vdev);
- 	return 0;
- 
-+out_unregister_page_report:
-+	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_REPORTING))
-+		page_reporting_unregister(&vb->pr_dev_info);
- out_unregister_oom:
- 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_DEFLATE_ON_OOM))
- 		unregister_oom_notifier(&vb->oom_nb);
-@@ -1096,7 +1101,11 @@ static int virtballoon_restore(struct virtio_device *vdev)
- 	if (ret)
- 		return ret;
++		goto err_mt_init_slots;
++
+ 	vi->ready = true;
+ 	err = input_register_device(vi->idev);
+ 	if (err)
+@@ -375,7 +378,11 @@ static int virtinput_restore(struct virtio_device *vdev)
+ 	if (err)
+ 		return err;
  
 -	virtio_device_ready(vdev);
-+	ret = virtio_device_ready(vdev);
-+	if (ret) {
++	err = virtio_device_ready(vdev);
++	if (err) {
 +		vdev->config->del_vqs(vdev);
-+		return ret;
++		return err;
 +	}
- 
- 	if (towards_target(vb))
- 		virtballoon_changed(vdev);
+ 	vi->ready = true;
+ 	virtinput_fill_evt(vi);
+ 	return 0;
 -- 
 2.11.0
 
