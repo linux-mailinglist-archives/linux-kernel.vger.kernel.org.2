@@ -2,38 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69169383696
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FEE3838A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343627AbhEQPe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57662 "EHLO mail.kernel.org"
+        id S1346111AbhEQP6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:58:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242997AbhEQPRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:17:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B1C76188B;
-        Mon, 17 May 2021 14:33:06 +0000 (UTC)
+        id S244831AbhEQPhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:37:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC20161CEC;
+        Mon, 17 May 2021 14:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261987;
-        bh=INkqsYrjxJt+znI2HPiEltHJKmR82DNgvgUJcvuM5OU=;
+        s=korg; t=1621262431;
+        bh=RgnXyFa4aiP4mg/aphn4O+kdtN8kh/vuQzBK7UhspZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rcsGWPJaBs5n/CpkGqUrZ9eHsERaqEcctJ8KUxUgI2FmGWW+5YOImf7t7eM3+YLUH
-         UK/yzQ5NHGn/pc2yxQTPvNuf73P+TlxfS1j31698G8xPTwe0897xykMvM5ZNMcKfDi
-         LvPvORTHA8SC13PgKh0wE9eFGRbVDNsDdOwGRBYw=
+        b=DLRwm38zCgI/hX2ECku4DWmM4eCTy++eNq5isgRyraUWRtP0YyjzhiN19FyQj0wEN
+         pci5SYA9nx5AHdpn1xXrEtLMoSZgrkpGAOIx9o4TNpdfb8b3S5UVKTvQFxfWkmG0i2
+         ikCS91+7VKb82ITkD7MefB91owE2ornqKhUM7XPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
+        Oscar Salvador <osalvador@suse.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 200/329] arm64: entry: always set GIC_PRIO_PSR_I_SET during entry
+Subject: [PATCH 5.10 186/289] kernel/resource: make walk_mem_res() find all busy IORESOURCE_MEM resources
 Date:   Mon, 17 May 2021 16:01:51 +0200
-Message-Id: <20210517140308.888459834@linuxfoundation.org>
+Message-Id: <20210517140311.373219930@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,217 +57,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit 4d6a38da8e79e94cbd1344aa90876f0f805db705 ]
+[ Upstream commit 3c9c797534364593b73ba6ab060a014af8934721 ]
 
-Zenghui reports that booting a kernel with "irqchip.gicv3_pseudo_nmi=1"
-on the command line hits a warning during kernel entry, due to the way
-we manipulate the PMR.
+It used to be true that we can have system RAM (IORESOURCE_SYSTEM_RAM |
+IORESOURCE_BUSY) only on the first level in the resource tree.  However,
+this is no longer holds for driver-managed system RAM (i.e., added via
+dax/kmem and virtio-mem), which gets added on lower levels, for example,
+inside device containers.
 
-Early in the entry sequence, we call lockdep_hardirqs_off() to inform
-lockdep that interrupts have been masked (as the HW sets DAIF wqhen
-entering an exception). Architecturally PMR_EL1 is not affected by
-exception entry, and we don't set GIC_PRIO_PSR_I_SET in the PMR early in
-the exception entry sequence, so early in exception entry the PMR can
-indicate that interrupts are unmasked even though they are masked by
-DAIF.
+IORESOURCE_SYSTEM_RAM is defined as IORESOURCE_MEM | IORESOURCE_SYSRAM and
+just a special type of IORESOURCE_MEM.
 
-If DEBUG_LOCKDEP is selected, lockdep_hardirqs_off() will check that
-interrupts are masked, before we set GIC_PRIO_PSR_I_SET in any of the
-exception entry paths, and hence lockdep_hardirqs_off() will WARN() that
-something is amiss.
+The function walk_mem_res() only considers the first level and is used in
+arch/x86/mm/ioremap.c:__ioremap_check_mem() only.  We currently fail to
+identify System RAM added by dax/kmem and virtio-mem as
+"IORES_MAP_SYSTEM_RAM", for example, allowing for remapping of such
+"normal RAM" in __ioremap_caller().
 
-We can avoid this by consistently setting GIC_PRIO_PSR_I_SET during
-exception entry so that kernel code sees a consistent environment. We
-must also update local_daif_inherit() to undo this, as currently only
-touches DAIF. For other paths, local_daif_restore() will update both
-DAIF and the PMR. With this done, we can remove the existing special
-cases which set this later in the entry code.
+Let's find all IORESOURCE_MEM | IORESOURCE_BUSY resources, making the
+function behave similar to walk_system_ram_res().
 
-We always use (GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET) for consistency with
-local_daif_save(), as this will warn if it ever encounters
-(GIC_PRIO_IRQOFF | GIC_PRIO_PSR_I_SET), and never sets this itself. This
-matches the gic_prio_kentry_setup that we have to retain for
-ret_to_user.
-
-The original splat from Zenghui's report was:
-
-| DEBUG_LOCKS_WARN_ON(!irqs_disabled())
-| WARNING: CPU: 3 PID: 125 at kernel/locking/lockdep.c:4258 lockdep_hardirqs_off+0xd4/0xe8
-| Modules linked in:
-| CPU: 3 PID: 125 Comm: modprobe Tainted: G        W         5.12.0-rc8+ #463
-| Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
-| pstate: 604003c5 (nZCv DAIF +PAN -UAO -TCO BTYPE=--)
-| pc : lockdep_hardirqs_off+0xd4/0xe8
-| lr : lockdep_hardirqs_off+0xd4/0xe8
-| sp : ffff80002a39bad0
-| pmr_save: 000000e0
-| x29: ffff80002a39bad0 x28: ffff0000de214bc0
-| x27: ffff0000de1c0400 x26: 000000000049b328
-| x25: 0000000000406f30 x24: ffff0000de1c00a0
-| x23: 0000000020400005 x22: ffff8000105f747c
-| x21: 0000000096000044 x20: 0000000000498ef9
-| x19: ffff80002a39bc88 x18: ffffffffffffffff
-| x17: 0000000000000000 x16: ffff800011c61eb0
-| x15: ffff800011700a88 x14: 0720072007200720
-| x13: 0720072007200720 x12: 0720072007200720
-| x11: 0720072007200720 x10: 0720072007200720
-| x9 : ffff80002a39bad0 x8 : ffff80002a39bad0
-| x7 : ffff8000119f0800 x6 : c0000000ffff7fff
-| x5 : ffff8000119f07a8 x4 : 0000000000000001
-| x3 : 9bcdab23f2432800 x2 : ffff800011730538
-| x1 : 9bcdab23f2432800 x0 : 0000000000000000
-| Call trace:
-|  lockdep_hardirqs_off+0xd4/0xe8
-|  enter_from_kernel_mode.isra.5+0x7c/0xa8
-|  el1_abort+0x24/0x100
-|  el1_sync_handler+0x80/0xd0
-|  el1_sync+0x6c/0x100
-|  __arch_clear_user+0xc/0x90
-|  load_elf_binary+0x9fc/0x1450
-|  bprm_execve+0x404/0x880
-|  kernel_execve+0x180/0x188
-|  call_usermodehelper_exec_async+0xdc/0x158
-|  ret_from_fork+0x10/0x18
-
-Fixes: 23529049c684 ("arm64: entry: fix non-NMI user<->kernel transitions")
-Fixes: 7cd1ea1010ac ("arm64: entry: fix non-NMI kernel<->kernel transitions")
-Fixes: f0cd5ac1e4c5 ("arm64: entry: fix NMI {user, kernel}->kernel transitions")
-Fixes: 2a9b3e6ac69a ("arm64: entry: fix EL1 debug transitions")
-Link: https://lore.kernel.org/r/f4012761-026f-4e51-3a0c-7524e434e8b3@huawei.com
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reported-by: Zenghui Yu <yuzenghui@huawei.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210428111555.50880-1-mark.rutland@arm.com
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://lkml.kernel.org/r/20210325115326.7826-3-david@redhat.com
+Fixes: ebf71552bb0e ("virtio-mem: Add parent resource for all added "System RAM"")
+Fixes: c221c0b0308f ("device-dax: "Hotplug" persistent memory for use like normal RAM")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Keith Busch <keith.busch@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/daifflags.h |  3 +++
- arch/arm64/kernel/entry-common.c   | 17 -----------------
- arch/arm64/kernel/entry.S          | 15 ++-------------
- 3 files changed, 5 insertions(+), 30 deletions(-)
+ kernel/resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/daifflags.h b/arch/arm64/include/asm/daifflags.h
-index 1c26d7baa67f..cfdde3a56805 100644
---- a/arch/arm64/include/asm/daifflags.h
-+++ b/arch/arm64/include/asm/daifflags.h
-@@ -131,6 +131,9 @@ static inline void local_daif_inherit(struct pt_regs *regs)
- 	if (interrupts_enabled(regs))
- 		trace_hardirqs_on();
- 
-+	if (system_uses_irq_prio_masking())
-+		gic_write_pmr(regs->pmr_save);
-+
- 	/*
- 	 * We can't use local_daif_restore(regs->pstate) here as
- 	 * system_has_prio_mask_debugging() won't restore the I bit if it can
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 5346953e4382..ead1ecffe054 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -177,14 +177,6 @@ static void noinstr el1_dbg(struct pt_regs *regs, unsigned long esr)
+diff --git a/kernel/resource.c b/kernel/resource.c
+index 88a0ed866777..817545ff80b9 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -463,7 +463,7 @@ int walk_mem_res(u64 start, u64 end, void *arg,
  {
- 	unsigned long far = read_sysreg(far_el1);
+ 	unsigned long flags = IORESOURCE_MEM | IORESOURCE_BUSY;
  
--	/*
--	 * The CPU masked interrupts, and we are leaving them masked during
--	 * do_debug_exception(). Update PMR as if we had called
--	 * local_daif_mask().
--	 */
--	if (system_uses_irq_prio_masking())
--		gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
--
- 	arm64_enter_el1_dbg(regs);
- 	do_debug_exception(far, esr, regs);
- 	arm64_exit_el1_dbg(regs);
-@@ -348,9 +340,6 @@ static void noinstr el0_dbg(struct pt_regs *regs, unsigned long esr)
- 	/* Only watchpoints write FAR_EL1, otherwise its UNKNOWN */
- 	unsigned long far = read_sysreg(far_el1);
- 
--	if (system_uses_irq_prio_masking())
--		gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
--
- 	enter_from_user_mode();
- 	do_debug_exception(far, esr, regs);
- 	local_daif_restore(DAIF_PROCCTX_NOIRQ);
-@@ -358,9 +347,6 @@ static void noinstr el0_dbg(struct pt_regs *regs, unsigned long esr)
- 
- static void noinstr el0_svc(struct pt_regs *regs)
- {
--	if (system_uses_irq_prio_masking())
--		gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
--
- 	enter_from_user_mode();
- 	do_el0_svc(regs);
+-	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, true,
++	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
+ 				     arg, func);
  }
-@@ -435,9 +421,6 @@ static void noinstr el0_cp15(struct pt_regs *regs, unsigned long esr)
  
- static void noinstr el0_svc_compat(struct pt_regs *regs)
- {
--	if (system_uses_irq_prio_masking())
--		gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
--
- 	enter_from_user_mode();
- 	do_el0_svc_compat(regs);
- }
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index 9ce041e1078a..0deb0194fcd2 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -292,6 +292,8 @@ alternative_else_nop_endif
- alternative_if ARM64_HAS_IRQ_PRIO_MASKING
- 	mrs_s	x20, SYS_ICC_PMR_EL1
- 	str	x20, [sp, #S_PMR_SAVE]
-+	mov	x20, #GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET
-+	msr_s	SYS_ICC_PMR_EL1, x20
- alternative_else_nop_endif
- 
- 	/* Re-enable tag checking (TCO set on exception entry) */
-@@ -524,17 +526,7 @@ alternative_endif
- #endif
- 	.endm
- 
--	.macro	gic_prio_irq_setup, pmr:req, tmp:req
--#ifdef CONFIG_ARM64_PSEUDO_NMI
--	alternative_if ARM64_HAS_IRQ_PRIO_MASKING
--	orr	\tmp, \pmr, #GIC_PRIO_PSR_I_SET
--	msr_s	SYS_ICC_PMR_EL1, \tmp
--	alternative_else_nop_endif
--#endif
--	.endm
--
- 	.macro el1_interrupt_handler, handler:req
--	gic_prio_irq_setup pmr=x20, tmp=x1
- 	enable_da_f
- 
- 	mov	x0, sp
-@@ -562,7 +554,6 @@ alternative_else_nop_endif
- 	.endm
- 
- 	.macro el0_interrupt_handler, handler:req
--	gic_prio_irq_setup pmr=x20, tmp=x0
- 	user_exit_irqoff
- 	enable_da_f
- 
-@@ -748,7 +739,6 @@ SYM_CODE_END(el0_irq)
- SYM_CODE_START_LOCAL(el1_error)
- 	kernel_entry 1
- 	mrs	x1, esr_el1
--	gic_prio_kentry_setup tmp=x2
- 	enable_dbg
- 	mov	x0, sp
- 	bl	do_serror
-@@ -759,7 +749,6 @@ SYM_CODE_START_LOCAL(el0_error)
- 	kernel_entry 0
- el0_error_naked:
- 	mrs	x25, esr_el1
--	gic_prio_kentry_setup tmp=x2
- 	user_exit_irqoff
- 	enable_dbg
- 	mov	x0, sp
 -- 
 2.30.2
 
