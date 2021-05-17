@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC0A383A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B58383AAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241595AbhEQQ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236000AbhEQQ7c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:59:32 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3918FC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 09:58:15 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id l70so5080107pga.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 09:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LnIhHy3o+INmhoR9lM+wDxWHFzbc4Yd/gOiGaQXOvgY=;
-        b=M2f2xxjLJ1/DKzKFaQc/xGGVWDDw5G368pcqcKyd3B6hIgx4eOPanb47sRPjPa/d/F
-         LtXTJ2/qZKlWQxj5AL5qEXTF52flhpiW4gAnoZScT6yPXeZ69A0kqfPv+VNIbqNH0Fi6
-         SE9dAPthqfIbrSsugfLbwC/KyYSXrzHmqpoRbu10zUBQLQ9QMJQzWqHRzGO6FnfdFeCp
-         60fvWxL2NvtXxjbeYUE9EK4BHUUo5uysOc5gvaBrIkXvu/UKiR1gmUBkeNUcWRceuiFI
-         yNgaosLDu7Fdp3TBiZJBOIIzrlOgEPSud9craPgu5L/exIh7HcxECtrkZkzvuyb0B+2n
-         4Eig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LnIhHy3o+INmhoR9lM+wDxWHFzbc4Yd/gOiGaQXOvgY=;
-        b=tGEShSxcKu5jbiYUQhmO7jaLqxP3BbCk3G2jsb9badmseCmMYoWLVuJa2K/cSaDeJ+
-         MPwGTUBlm56/Brm2BbgLOA9FurIY1DOi4+mNXKC0wwGA3O7TiQIjUnUzpJPtp6Vyu3dK
-         qjhSvVFp9GYa/N6/psEYpVzENri3sOpOajIRy6gJnFo4R5cPQUFDAH6JpzTkTU6ulKPj
-         ka+t27NnUrKEdk0gN9SwibmsO8Ov+foxd64zL1HIqpeOnFmOW4+316/ZaYDuWQmZPL7a
-         UdOCuLfv6MAwdDyBIMDu8HEhxFPVFS1tpz77jyRBBpCb9zgqNOPrpOm2PQUijsanBj95
-         80HA==
-X-Gm-Message-State: AOAM531ytdegVhnohNoV4VT2jffok1vPIQ/uk7pfYlJdO1uI94h/AiNK
-        zaZ8V9ZfxeW0QVzAXFZu64MxPSzz7T7XYHARJyYv6w==
-X-Google-Smtp-Source: ABdhPJzwjlWNXq6OExL/GpLMOrSlpqXgbFT2NYwFwrsUyHwGh/RqTFRIYzusOqf6adEqhUpMIXE1AZd3fBChTs2DOJQ=
-X-Received: by 2002:aa7:8c59:0:b029:28e:9093:cd4d with SMTP id
- e25-20020aa78c590000b029028e9093cd4dmr550064pfd.25.1621270694586; Mon, 17 May
- 2021 09:58:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-7-seanjc@google.com>
-In-Reply-To: <20210424004645.3950558-7-seanjc@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 17 May 2021 09:57:58 -0700
-Message-ID: <CAAeT=FzS0bP_7_wz6G6cL8-7pudTD7fhavLCVsOE0KnPXf99dQ@mail.gmail.com>
-Subject: Re: [PATCH 06/43] KVM: x86: Properly reset MMU context at vCPU RESET/INIT
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        id S239927AbhEQRFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 13:05:14 -0400
+Received: from mga02.intel.com ([134.134.136.20]:8432 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235813AbhEQRFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 13:05:12 -0400
+IronPort-SDR: /oJOvQ9XCriDmNMLEVFfeRxf1ti3kT8zrJ8iSoK4pew8kW12/PS6bC5bv15AtbYa2CT4ee7J1D
+ NNFFLOpGzrNw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="187635255"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="187635255"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 10:03:54 -0700
+IronPort-SDR: WOgV2X3XYklRo+6PFaegK7WvezVNrOV2fcMOrKVLIRKwYQ2uwaNhlVfa05faVvCFxGA2htG4ZJ
+ nXGMbkjLzxUA==
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="472491460"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.243.177]) ([10.212.243.177])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 10:03:54 -0700
+Subject: Re: [PATCH v5 2/2] selftests/sgx: Migrate to kselftest harness
+To:     Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <20210512215323.420639-1-jarkko@kernel.org>
+ <20210512215323.420639-2-jarkko@kernel.org>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <3b920525-694c-a8e4-93f5-7b1a3f9ad009@intel.com>
+Date:   Mon, 17 May 2021 10:03:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <20210512215323.420639-2-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->  {
-> +       unsigned long old_cr0 = kvm_read_cr0(vcpu);
-> +       unsigned long old_cr4 = kvm_read_cr4(vcpu);
-> +
->         kvm_lapic_reset(vcpu, init_event);
->
->         vcpu->arch.hflags = 0;
-> @@ -10483,6 +10485,10 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->         vcpu->arch.ia32_xss = 0;
->
->         static_call(kvm_x86_vcpu_reset)(vcpu, init_event);
-> +
-> +       if (kvm_cr0_mmu_role_changed(old_cr0, kvm_read_cr0(vcpu)) ||
-> +           kvm_cr4_mmu_role_changed(old_cr4, kvm_read_cr4(vcpu)))
-> +               kvm_mmu_reset_context(vcpu);
->  }
+Hi Jarkko,
 
-I'm wondering if kvm_vcpu_reset() should call kvm_mmu_reset_context()
-for a change in EFER.NX as well.
+On 5/12/2021 2:53 PM, Jarkko Sakkinen wrote:
+> Migrate to kselftest harness. Use a fixture test with enclave initialized
+> and de-initialized for each of the existing three tests, in other words:
+> 
+> 1. One FIXTURE() for managing the enclave life-cycle.
+> 2. Three TEST_F()'s, one for each test case.
+> 
+> This gives a leaps better reporting than before. Here's an example
+> transcript:
+> 
+> TAP version 13
+> 1..3
+> 
+> ok 1 enclave.unclobbered_vdso
+> 
+> ok 2 enclave.clobbered_vdso
+> 
+> ok 3 enclave.clobbered_vdso_and_user_function
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> 
+> v5:
+> * Use TH_LOG() for printing enclave address ranges instead of printf(),
+>    based on Reinette's remark.
 
-Thanks,
-Reiji
+Thank you for considering my feedback. The motivation for my comment was 
+to consider how this test output will be parsed. If these tests will 
+have their output parsed by automated systems then it needs to conform 
+to the TAP13 format as supported by kselftest.
+
+In your latest version the output printed during a successful test has 
+been changed, using TH_LOG() as you noted. From what I can tell this is 
+the only output addressed - failing tests continue to print error 
+messages (perror, fprintf) without consideration of how they will be 
+parsed. My apologies, I am not a kselftest expert to know what the best 
+way for this integration is.
+
+Reinette
