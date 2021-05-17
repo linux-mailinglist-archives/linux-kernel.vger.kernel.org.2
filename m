@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB2A383892
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A544838366F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345663AbhEQP5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43488 "EHLO mail.kernel.org"
+        id S244733AbhEQPcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243793AbhEQPiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:38:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 554B161CEE;
-        Mon, 17 May 2021 14:40:35 +0000 (UTC)
+        id S243584AbhEQPRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:17:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B07836191A;
+        Mon, 17 May 2021 14:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262435;
-        bh=Q4MzO2J3OVUgylaWji04GR+R3TW3yOldnFTHRqVCQ0o=;
+        s=korg; t=1621261996;
+        bh=9tedimjvqebY2/nQf8qfexNUQRBqICQvIL6lPheRT3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nh1pxxYDqyKOTQMyagvfLVo4VeP17BF/byRW3eaaqJfgiM1GHIYV3vGeczACtQ86v
-         z6uc+rjuJLMM1C7bjNeQHDlikWAi76MmM7hMP3TOuoLeUANpnmlhuTzFFwR5b0jsQH
-         rVftwrXniGfNA37eQdko0OU3uOaAYbSpRthHvrsQ=
+        b=kyV8DLMwuVt7BrmaXjO3FkMyyqsgQ7Uy2MZHDrSijWORk41fZyOptfDrNhb6In5s+
+         RZNzLmP/aE3HDPC1RnfM2iKEqVSL7MtKFOkLQESTkt+U96rwxQbzysuC2LPVYEvWTe
+         x3j9cEu3Lvq/uCG0qxSs4+vyiPPN1GQdre4DZgEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Ebru Akagunduz <ebru.akagunduz@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Rik van Riel <riel@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 187/289] netfilter: nftables: avoid overflows in nft_hash_buckets()
+Subject: [PATCH 5.11 201/329] khugepaged: fix wrong result value for trace_mm_collapse_huge_page_isolate()
 Date:   Mon, 17 May 2021 16:01:52 +0200
-Message-Id: <20210517140311.407051875@linuxfoundation.org>
+Message-Id: <20210517140308.918899020@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,74 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit a54754ec9891830ba548e2010c889e3c8146e449 ]
+[ Upstream commit 74e579bf231a337ab3786d59e64bc94f45ca7b3f ]
 
-Number of buckets being stored in 32bit variables, we have to
-ensure that no overflows occur in nft_hash_buckets()
+In writable and !referenced case, the result value should be
+SCAN_LACK_REFERENCED_PAGE for trace_mm_collapse_huge_page_isolate()
+instead of default 0 (SCAN_FAIL) here.
 
-syzbot injected a size == 0x40000000 and reported:
-
-UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-shift exponent 64 is too large for 64-bit type 'long unsigned int'
-CPU: 1 PID: 29539 Comm: syz-executor.4 Not tainted 5.12.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
- __roundup_pow_of_two include/linux/log2.h:57 [inline]
- nft_hash_buckets net/netfilter/nft_set_hash.c:411 [inline]
- nft_hash_estimate.cold+0x19/0x1e net/netfilter/nft_set_hash.c:652
- nft_select_set_ops net/netfilter/nf_tables_api.c:3586 [inline]
- nf_tables_newset+0xe62/0x3110 net/netfilter/nf_tables_api.c:4322
- nfnetlink_rcv_batch+0xa09/0x24b0 net/netfilter/nfnetlink.c:488
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:612 [inline]
- nfnetlink_rcv+0x3af/0x420 net/netfilter/nfnetlink.c:630
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-
-Fixes: 0ed6389c483d ("netfilter: nf_tables: rename set implementations")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Link: https://lkml.kernel.org/r/20210306032947.35921-5-linmiaohe@huawei.com
+Fixes: 7d2eba0557c1 ("mm: add tracepoint for scanning pages")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Ebru Akagunduz <ebru.akagunduz@gmail.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Rik van Riel <riel@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_set_hash.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ mm/khugepaged.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/net/netfilter/nft_set_hash.c b/net/netfilter/nft_set_hash.c
-index 4d3f147e8d8d..d7083bcb20e8 100644
---- a/net/netfilter/nft_set_hash.c
-+++ b/net/netfilter/nft_set_hash.c
-@@ -393,9 +393,17 @@ static void nft_rhash_destroy(const struct nft_set *set)
- 				    (void *)set);
- }
- 
-+/* Number of buckets is stored in u32, so cap our result to 1U<<31 */
-+#define NFT_MAX_BUCKETS (1U << 31)
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 494d3cb0b58a..897b91c5f1d2 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -716,17 +716,17 @@ next:
+ 		if (pte_write(pteval))
+ 			writable = true;
+ 	}
+-	if (likely(writable)) {
+-		if (likely(referenced)) {
+-			result = SCAN_SUCCEED;
+-			trace_mm_collapse_huge_page_isolate(page, none_or_zero,
+-							    referenced, writable, result);
+-			return 1;
+-		}
+-	} else {
 +
- static u32 nft_hash_buckets(u32 size)
- {
--	return roundup_pow_of_two(size * 4 / 3);
-+	u64 val = div_u64((u64)size * 4, 3);
-+
-+	if (val >= NFT_MAX_BUCKETS)
-+		return NFT_MAX_BUCKETS;
-+
-+	return roundup_pow_of_two(val);
- }
- 
- static bool nft_rhash_estimate(const struct nft_set_desc *desc, u32 features,
++	if (unlikely(!writable)) {
+ 		result = SCAN_PAGE_RO;
++	} else if (unlikely(!referenced)) {
++		result = SCAN_LACK_REFERENCED_PAGE;
++	} else {
++		result = SCAN_SUCCEED;
++		trace_mm_collapse_huge_page_isolate(page, none_or_zero,
++						    referenced, writable, result);
++		return 1;
+ 	}
+-
+ out:
+ 	release_pte_pages(pte, _pte, compound_pagelist);
+ 	trace_mm_collapse_huge_page_isolate(page, none_or_zero,
 -- 
 2.30.2
 
