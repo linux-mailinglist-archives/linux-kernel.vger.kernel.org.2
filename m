@@ -2,197 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F813828A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F093828A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236117AbhEQJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:45:54 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52480 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236032AbhEQJpv (ORCPT
+        id S236147AbhEQJqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:46:09 -0400
+Received: from smtp123.ord1d.emailsrvr.com ([184.106.54.123]:46483 "EHLO
+        smtp123.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236048AbhEQJqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:45:51 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14H9P4hp139981;
-        Mon, 17 May 2021 09:44:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=lebhyDJwQ+Nghj4G/C13xVeGWekb205WSx6Qsh1yg6Y=;
- b=IXpEeMinWzibB5zmWE9mk+6z7u8KJMSas4aaYlYNR+tJ5m5Q7WdHnGw9cny7krIQsKoy
- WFOWPm05Ndzm9ObBG6d1OEiYN7vPiZgSuFdCDkuKQ0qUHkZ7qEMqyaKcXGKCXQfDUMB9
- i4EcLWQn9pl8U8K/Abb8/oZJaejKYd7bejwu8NOnNLjJwzMpat2WVI8COBZaSgscY4pO
- eEWfwkd128NjzE4Nns3UDJQcEaGij2UC/Ng5joaX7ua0mwfu7or0UanY1nKCA3kgsXt2
- eD1qmUQupyhAa+ONuIwQk5aM80KrX47fZnpLRyWScVgtsm+MWvdHQ5CjS0QzL4CgkHf6 QQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 38j6xnam2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 09:44:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14H9P490030271;
-        Mon, 17 May 2021 09:44:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38j644x06g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 09:44:13 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14H9iD0b180390;
-        Mon, 17 May 2021 09:44:13 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 38j644x05q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 09:44:13 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14H9iBlh020956;
-        Mon, 17 May 2021 09:44:11 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 May 2021 02:44:11 -0700
-Date:   Mon, 17 May 2021 12:44:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Pavel Machek <pavel@ucw.cz>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 07/17] staging: nuc-wmi: add basic support for NUC6 WMI
-Message-ID: <20210517094403.GE1955@kadam>
-References: <cover.1621161037.git.mchehab+huawei@kernel.org>
- <ad868addca76f436d32cfbb3d8516d7d0dab83a2.1621161037.git.mchehab+huawei@kernel.org>
+        Mon, 17 May 2021 05:46:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1621244691;
+        bh=Ky0k15pYrXoRi4n022IA3FwHLKrMjFRnfsmjESInMSM=;
+        h=Subject:To:From:Date:From;
+        b=Bwz+7USREJQJzWim2tQXLi+po423nGzNip45a2sY8IdaN7vqmcGeh1yemDPw2BZ3A
+         cG8b1HG4Q3ls73TpHhkmNItaS314D8b/wHq2j7HCM2X25ZeLBZbsZ5e5/AISmic8hO
+         +yQ3cD05u5HR74OEwY5zAYX+3Ex1F2HD8vls1kf4=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp8.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 22EE6C013E;
+        Mon, 17 May 2021 05:44:51 -0400 (EDT)
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH_-next_v2=5d_staging=3a_comedi=3a_Remove_un?=
+ =?UTF-8?Q?used_variable_=e2=80=98min=5ffull=5fscale=e2=80=99_and_function_?=
+ =?UTF-8?B?J2dldF9taW5fZnVsbF9zY2FsZXMn?=
+To:     Bixuan Cui <cuibixuan@huawei.com>, linux-kernel@vger.kernel.org
+Cc:     hsweeten@visionengravers.com, gregkh@linuxfoundation.org,
+        grandmaster@al2klimov.de
+References: <20210514085214.53941-1-cuibixuan@huawei.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <517e8f75-3faa-b564-5252-d5a3812f15f9@mev.co.uk>
+Date:   Mon, 17 May 2021 10:44:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad868addca76f436d32cfbb3d8516d7d0dab83a2.1621161037.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: LKOdp5zMpMDzdJUD16sOQH5LSXI3JLdT
-X-Proofpoint-ORIG-GUID: LKOdp5zMpMDzdJUD16sOQH5LSXI3JLdT
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9986 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105170066
+In-Reply-To: <20210514085214.53941-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: 01367736-6624-42f6-9047-a85a2febd174-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 12:53:35PM +0200, Mauro Carvalho Chehab wrote:
-> +static int nuc_wmi_query_leds_nuc6(struct device *dev)
-> +{
-> +	// FIXME: add a check for the specific models that are known to work
-> +	struct nuc_wmi *priv = dev_get_drvdata(dev);
-> +	u8 cmd, input[NUM_INPUT_ARGS] = { 0 };
-> +	u8 output[NUM_OUTPUT_ARGS];
-> +	struct nuc_nmi_led *led;
-> +	int ret;
-> +
-> +	cmd = LED_OLD_GET_STATUS;
-> +	input[0] = LED_OLD_GET_S0_POWER;
-> +	ret = nuc_nmi_cmd(dev, cmd, input, output);
-> +	if (ret) {
-> +		dev_warn(dev, "Get S0 Power: error %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	led = &priv->led[priv->num_leds];
-> +	led->id = POWER_LED;
-> +	led->color_type = LED_BLUE_AMBER;
-> +	led->avail_indicators = LED_IND_POWER_STATE;
-> +	led->indicator = fls(led->avail_indicators);
-> +	priv->num_leds++;
-> +
-> +	cmd = LED_OLD_GET_STATUS;
-> +	input[0] = LED_OLD_GET_S0_RING;
-> +	ret = nuc_nmi_cmd(dev, cmd, input, output);
-> +	if (ret) {
-> +		dev_warn(dev, "Get S0 Ring: error %d\n", ret);
-> +		return ret;
-> +	}
-> +	led = &priv->led[priv->num_leds];
-> +	led->id = RING_LED;
-> +	led->color_type = LED_BLUE_AMBER;
-> +	led->avail_indicators = LED_IND_SOFTWARE;
-> +	led->indicator = fls(led->avail_indicators);
-> +	priv->num_leds++;
-> +
-> +	return ret;
+On 14/05/2021 09:52, Bixuan Cui wrote:
+> The variable ‘min_full_scale’ and function 'get_min_full_scales' are
+> not used, So delete them.
+> 
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> ---
+> Changes from v2:
+> * Delete function 'get_min_full_scales'
+> 
+>   drivers/comedi/drivers/jr3_pci.c | 15 ---------------
+>   1 file changed, 15 deletions(-)
+> 
+> diff --git a/drivers/comedi/drivers/jr3_pci.c b/drivers/comedi/drivers/jr3_pci.c
+> index 7a02c4fa3cda..f963080dd61f 100644
+> --- a/drivers/comedi/drivers/jr3_pci.c
+> +++ b/drivers/comedi/drivers/jr3_pci.c
+> @@ -186,19 +186,6 @@ static void set_full_scales(struct jr3_sensor __iomem *sensor,
+>   	set_s16(&sensor->command_word0, 0x0a00);
+>   }
+>   
+> -static struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
+> -{
+> -	struct six_axis_t result;
+> -
+> -	result.fx = get_s16(&sensor->min_full_scale.fx);
+> -	result.fy = get_s16(&sensor->min_full_scale.fy);
+> -	result.fz = get_s16(&sensor->min_full_scale.fz);
+> -	result.mx = get_s16(&sensor->min_full_scale.mx);
+> -	result.my = get_s16(&sensor->min_full_scale.my);
+> -	result.mz = get_s16(&sensor->min_full_scale.mz);
+> -	return result;
+> -}
+> -
+>   static struct six_axis_t get_max_full_scales(struct jr3_sensor __iomem *sensor)
+>   {
+>   	struct six_axis_t result;
+> @@ -504,10 +491,8 @@ jr3_pci_poll_subdevice(struct comedi_subdevice *s)
+>   			result = poll_delay_min_max(20, 100);
+>   		} else {
+>   			/* Set full scale */
+> -			struct six_axis_t min_full_scale;
+>   			struct six_axis_t max_full_scale;
+>   
+> -			min_full_scale = get_min_full_scales(sensor);
+>   			max_full_scale = get_max_full_scales(sensor);
+>   			set_full_scales(sensor, max_full_scale);
+>   
+> 
 
-return 0;
+I'm pretty sure this is OK.  The min_full_scale registers are just 
+informational.  The driver used to print the values, but not since 
+commit a1d16659538a ("staging: comedi: jr3_pci: remove noisy printk") so 
+this code is now redundant.
 
-> +}
-> +
->  static int nuc_wmi_query_leds(struct device *dev, enum led_api_rev *api_rev)
->  {
->  	struct nuc_wmi *priv = dev_get_drvdata(dev);
->  	u8 input[NUM_INPUT_ARGS] = { 0 };
->  	u8 output[NUM_OUTPUT_ARGS];
-> -	int id, ret, ver = LED_API_UNKNOWN;
-> +	int id, ret, ver = LED_API_UNKNOWN, nuc_ver = 0;
->  	u8 leds;
-> +	const char *dmi_name;
-> +
-> +	dmi_name = dmi_get_system_info(DMI_PRODUCT_NAME);
-> +	if (!dmi_name || !*dmi_name)
-> +		dmi_name = dmi_get_system_info(DMI_BOARD_NAME);
-> +
-> +	if (strncmp(dmi_name, "NUC", 3))
-> +		return -ENODEV;
-> +
-> +	dmi_name +=3;
-> +	while (*dmi_name) {
-> +		if (*dmi_name < '0' || *dmi_name > '9')
-> +			break;
-> +		nuc_ver = (*dmi_name - '0') + nuc_ver * 10;
-> +		dmi_name++;
-> +	}
-> +
-> +	if (nuc_ver < 6)
-> +		return -ENODEV;
-> +
-> +	if (nuc_ver < 8) {
-> +		*api_rev = LED_API_NUC6;
-> +		return nuc_wmi_query_leds_nuc6(dev);
-> +	}
->  
-> -	/*
-> -	 * List all LED types support in the platform
-> -	 *
-> -	 * Should work with both NUC8iXXX and NUC10iXXX
-> -	 *
-> -	 * FIXME: Should add a fallback code for it to work with older NUCs,
-> -	 * as LED_QUERY returns an error on older devices like Skull Canyon.
-> -	 */
->  	input[0] = LED_QUERY_LIST_ALL;
->  	ret = nuc_nmi_cmd(dev, LED_QUERY, input, output);
-> -	if (ret == -ENOENT) {
-> -		ver = LED_API_NUC6;
-> -	} else if (ret) {
-> +	if (ret) {
->  		dev_warn(dev, "error %d while listing all LEDs\n", ret);
->  		return ret;
->  	} else {
->  		leds = output[0];
->  	}
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
 
-Delete the else and pull the assignment in a tab.
-
->  
-> -	if (ver != LED_API_NUC6) {
-> -		ret = nuc_nmi_cmd(dev, LED_VERSION_CONTROL, input, output);
-> -		ver = output[0] | output[1] << 16;
-> -		if (!ver)
-> -			ver = LED_API_REV_0_64;
-> -		else if (ver == 0x0126)
-> -			ver = LED_API_REV_1_0;
-> -	}
-> +	ret = nuc_nmi_cmd(dev, LED_VERSION_CONTROL, input, output);
-> +	ver = output[0] | output[1] << 16;
-> +	if (!ver)
-> +		*api_rev = LED_API_REV_0_64;
-> +	else if (ver == 0x0126)
-> +		*api_rev = LED_API_REV_1_0;
->  
-
-regards,
-dan carpenter
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
