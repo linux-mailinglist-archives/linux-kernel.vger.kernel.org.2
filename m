@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAC9387CF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D84E387CF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350508AbhERP6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:58:53 -0400
-Received: from mga12.intel.com ([192.55.52.136]:59187 "EHLO mga12.intel.com"
+        id S1350499AbhERP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:58:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350480AbhERP6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:58:51 -0400
-IronPort-SDR: GvKliayCrsKSygqPg55lDbUbeUxabKMuz5/1EiA75JS+Azcr7I2ebYihEyrKdztxva1nYcVJ89
- gAMLtYx+VBDQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="180349931"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="180349931"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:56:35 -0700
-IronPort-SDR: z0g/9luv2LW0Bv8ya4CBBWhVf/O0tqqr6okTgFhwzmWzVguUBYB2Ep7t7ZLaMTP1i933egEkiU
- Q4Px3ZljA5Xw==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="439500398"
-Received: from msaber-mobl.amr.corp.intel.com (HELO [10.209.65.183]) ([10.209.65.183])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:56:34 -0700
-Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
- <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <43e583a3-ee2b-52d8-5275-e26a6609c126@linux.intel.com>
-Date:   Tue, 18 May 2021 08:56:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1350480AbhERP6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:58:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 618AC60725;
+        Tue, 18 May 2021 15:56:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621353415;
+        bh=OokC8+bnxFyFbf/GDIqIQeRgogXRic6z9luyu193nn8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NSzQ7FoPd5T2GA0WI1QgC6PGR821TZrlCFmpayA/Yw4D9x5gwjLsS65qR+YQNyZIz
+         lHerHfR7bORG8hCk460VKYPtMp0KEThg+Sw7k3mPUvgcnW4usRWYtAKWpVZRpUzae9
+         tsbEknOqrvaFpMTySh6GVpxFdIsRZoL0K2CvXzbbIV4LcNzRnpvz7kMiUAPz6nDGiZ
+         TctYxrYlv3eMg5JMgHHQbFbE6b3V59X8zj5yRrel/EjzFFHau6S1ba/5MaA3qkgbr8
+         /qv4x7aTu5YGLET9x4p9O0ziUAPLObjFJMI85RtCf+k+QNFCNIU8RGVYSJguGtecsA
+         wO4icOtwsSpMw==
+Date:   Tue, 18 May 2021 21:26:50 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, robert.foss@linaro.org,
+        andrey.konovalov@linaro.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] clk: qcom: clk-alpha-pll: add support for zonda pll
+Message-ID: <YKPjwvMh3sj56sOG@vkoul-mobl.Dlink>
+References: <20210513175258.5842-1-jonathan@marek.ca>
+ <20210513175258.5842-2-jonathan@marek.ca>
+ <YKOltGEDEY1WXQN6@vkoul-mobl.Dlink>
+ <abc662f3-8c36-862d-4d50-3628d3a02ee2@marek.ca>
 MIME-Version: 1.0
-In-Reply-To: <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <abc662f3-8c36-862d-4d50-3628d3a02ee2@marek.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18-05-21, 09:06, Jonathan Marek wrote:
+> On 5/18/21 7:32 AM, Vinod Koul wrote:
 
-On 5/18/2021 8:00 AM, Dave Hansen wrote:
-> On 5/17/21 5:48 PM, Kuppuswamy Sathyanarayanan wrote:
->> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
->>
->> In traditional VMs, MMIO tends to be implemented by giving a
->> guest access to a mapping which will cause a VMEXIT on access.
->> That's not possible in TDX guest.
-> Why is it not possible?
+> > > +static unsigned long
+> > > +clk_zonda_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+> > > +{
+> > > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > > +	u32 l, frac;
+> > > +
+> > > +	regmap_read(pll->clkr.regmap, PLL_L_VAL(pll), &l);
+> > > +	regmap_read(pll->clkr.regmap, PLL_ALPHA_VAL(pll), &frac);
+> > > +
+> > > +	return alpha_pll_calc_rate(parent_rate, l, frac, ALPHA_BITWIDTH);
+> > > +}
+> > 
+> > sounds like you could use clk_trion_pll_recalc_rate() instead
+> > 
+> 
+> I had this thought as well, but alpha_width in clk_trion_pll_recalc()_rate
+> is 16, here ALPHA_BITWIDTH is 32, so I just copied this from downstream.
+> 
+> I think changing pll_alpha_width() to return the right value for zonda will
+> work and allow sharing the function, if you think that's a good idea?
 
-For once the TDX module doesn't support uncached mappings (IgnorePAT is 
-always 1)
+Yes I thinking pll_alpha_width() should do the trick here
 
-
-
-
->
->> For now we only handle a subset of instructions that the kernel
->> uses for MMIO operations. User-space access triggers SIGBUS.
-> How do you know which instructions the kernel uses?
-
-They're all in MMIO macros.
-
-
->   How do you know
-> that the compiler won't change them?
-
-The macros try hard to prevent that because it would likely break real 
-MMIO too.
-
-Besides it works for others, like AMD-SEV today and of course all the 
-hypervisors that do the same.
-
-
-
-
-> That sounds like something objective we can measure.  Does this cost 1
-> byte of extra text per readl/writel?  10?  100?
-
-Alternatives are at least a pointer, but also the extra alternative 
-code. It's definitely more than 10, I would guess 40+
-
-
-
->
-> I thought there were more than a few ways that userspace could get
-> access to MMIO mappings.
-
-Yes and they will all fault in TDX guests.
-
-
->> +	if (user_mode(regs)) {
->> +		pr_err("Unexpected user-mode MMIO access.\n");
->> +		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *) ve->gla);
-> 						       extra space ^
->
-> Is a non-ratelimited pr_err() appropriate here?  I guess there shouldn't
-> be any MMIO passthrough to userspace on these systems.
-Yes rate limiting makes sense.
-
+Thanks
+-- 
+~Vinod
