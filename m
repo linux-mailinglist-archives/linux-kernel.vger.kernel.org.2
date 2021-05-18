@@ -2,74 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1310F3876BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA5E38768C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347986AbhERKlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:41:44 -0400
-Received: from siwi.pair.com ([209.68.5.199]:30292 "EHLO siwi.pair.com"
+        id S1348522AbhERKcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:32:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40952 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242604AbhERKll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:41:41 -0400
-X-Greylist: delayed 566 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 06:41:41 EDT
-Received: from siwi.pair.com (localhost [127.0.0.1])
-        by siwi.pair.com (Postfix) with ESMTP id 707D33F4139;
-        Tue, 18 May 2021 06:30:51 -0400 (EDT)
-Received: from MININT-RVM6V2G.redmond.corp.microsoft.com (162-238-212-202.lightspeed.rlghnc.sbcglobal.net [162.238.212.202])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by siwi.pair.com (Postfix) with ESMTPSA id 37D503F40E6;
-        Tue, 18 May 2021 06:30:51 -0400 (EDT)
-Subject: Re: [Broken] RE: [ANNOUNCE] Git v2.32.0-rc0
-To:     "Randall S. Becker" <rsbecker@nexbridge.com>,
-        'Junio C Hamano' <gitster@pobox.com>, git@vger.kernel.org
-Cc:     'Linux Kernel' <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-References: <007201d74b25$de5f2710$9b1d7530$@nexbridge.com>
-From:   Jeff Hostetler <git@jeffhostetler.com>
-Message-ID: <461ca908-b88f-9e09-572d-ed49131b84fd@jeffhostetler.com>
-Date:   Tue, 18 May 2021 06:30:50 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1347898AbhERKca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:32:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621333869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=11zOMNPLAXlfQ0IrA6mDqgUqLx9G4ocdGPmWlci12vs=;
+        b=bCoq0/YrkDVfJ7aWUPtL/xVkLxy11Ug+HfDnAxDrJFs7J6MgrDlXYRSDS7vwtswRGIHJJl
+        uObdMarvUwYFhAdiJHuWUmf5YEujX5yzqduBIhu8Ofk+r5f5M4cJzTltdLBU5nTztdSQFT
+        kY0Rtk5Y/SQujsAoM5OCY/XuAUnk3fA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99DFCAFEC;
+        Tue, 18 May 2021 10:31:09 +0000 (UTC)
+Date:   Tue, 18 May 2021 12:31:08 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v19 5/8] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <YKOXbNWvUsqM4uxb@dhcp22.suse.cz>
+References: <20210513184734.29317-1-rppt@kernel.org>
+ <20210513184734.29317-6-rppt@kernel.org>
+ <b625c5d7-bfcc-9e95-1f79-fc8b61498049@redhat.com>
+ <YKDJ1L7XpJRQgSch@kernel.org>
+ <YKOP5x8PPbqzcsdK@dhcp22.suse.cz>
+ <8e114f09-60e4-2343-1c42-1beaf540c150@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <007201d74b25$de5f2710$9b1d7530$@nexbridge.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e114f09-60e4-2343-1c42-1beaf540c150@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 18-05-21 12:06:42, David Hildenbrand wrote:
+> On 18.05.21 11:59, Michal Hocko wrote:
+> > On Sun 16-05-21 10:29:24, Mike Rapoport wrote:
+> > > On Fri, May 14, 2021 at 11:25:43AM +0200, David Hildenbrand wrote:
+> > [...]
+> > > > > +		if (!page)
+> > > > > +			return VM_FAULT_OOM;
+> > > > > +
+> > > > > +		err = set_direct_map_invalid_noflush(page, 1);
+> > > > > +		if (err) {
+> > > > > +			put_page(page);
+> > > > > +			return vmf_error(err);
+> > > > 
+> > > > Would we want to translate that to a proper VM_FAULT_..., which would most
+> > > > probably be VM_FAULT_OOM when we fail to allocate a pagetable?
+> > > 
+> > > That's what vmf_error does, it translates -ESOMETHING to VM_FAULT_XYZ.
+> > 
+> > I haven't read through the rest but this has just caught my attention.
+> > Is it really reasonable to trigger the oom killer when you cannot
+> > invalidate the direct mapping. From a quick look at the code it is quite
+> > unlikely to se ENOMEM from that path (it allocates small pages) but this
+> > can become quite sublte over time. Shouldn't this simply SIGBUS if it
+> > cannot manipulate the direct mapping regardless of the underlying reason
+> > for that?
+> > 
+> 
+> OTOH, it means our kernel zones are depleted, so we'd better reclaim somehow
+> ...
 
+Killing a userspace seems to be just a bad way around that.
 
-On 5/17/21 10:06 AM, Randall S. Becker wrote:
-> On May 17, 2021 3:06 AM, Junio C Hamano wrote:
->> To: git@vger.kernel.org
->> Cc: Linux Kernel <linux-kernel@vger.kernel.org>; git-
->> packagers@googlegroups.com
->> Subject: [ANNOUNCE] Git v2.32.0-rc0
->>
->> An early preview release Git v2.32.0-rc0 is now available for
->> testing at the usual places.  It is comprised of 545 non-merge
->> commits since v2.31.0, contributed by 76 people, 29 of which are
->> new faces [*].
-> 
-> Git 2.23.0 no longer builds on NonStop x86. Reference to pthreads is not permitted in s non-pthread build.
-> 
-> **** ERROR **** [1210]:
->     libgit.a(ipc-unix-socket.o): In function `thread_block_sigpipe':
->     ipc-unix-socket.o(.text+0xb87): unresolved reference to pthread_sigmask.
-> 
-> We are not building with pthreads. This is net-new for 2.32.0-rc0, not seen in 2.31.0.
-> 
-> I'm unsure as to why this file is even being included in a non-thread build.
-> 
-> Randall
-> 
-> 
-
-I should have ifdef'd that code with NO_PTHREADS it seems.
-Let me take a look.
-
-Jeff
+Although I have to say openly that I am not a great fan of VM_FAULT_OOM
+in general. It is usually a a wrong way to tell the handle the failure
+because it happens outside of the allocation context so you lose all the
+details (e.g. allocation constrains, numa policy etc.). Also whenever
+there is ENOMEM then the allocation itself has already made sure that
+all the reclaim attempts have been already depleted. Just consider an
+allocation with GFP_NOWAIT/NO_RETRY or similar to fail and propagate
+ENOMEM up the call stack. Turning that into the OOM killer sounds like a
+bad idea to me.  But that is a more general topic. I have tried to bring
+this up in the past but there was not much of an interest to fix it as
+it was not a pressing problem...
+-- 
+Michal Hocko
+SUSE Labs
