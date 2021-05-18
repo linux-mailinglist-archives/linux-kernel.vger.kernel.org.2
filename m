@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247D4386E5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC10386E5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345031AbhERAdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345021AbhERAdC (ORCPT
+        id S1345078AbhERAeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:34:11 -0400
+Received: from gateway24.websitewelcome.com ([192.185.50.66]:37529 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345119AbhERAeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:33:02 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE5C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:31:45 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id e11so9379751ljn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dtl5qW5ngyrCxRtU2FQ2/K9MskvmJ8cOWL2EWopDeQ0=;
-        b=zevlSmEyAgZw0Dl3SUDt8OftbZM0k008Vgi07bfY+kwE7mFX51r6s1DPcpuH/Cpu/s
-         tWhphMX7YqNthYOymSaH4fzZTpQYqqrx02LX5SOstqOWY0E2UaVUQug89GW3WM5tbZYZ
-         5WEw0gowzHqGFr+/04jVhpvzoeO4RXcBOpx8E2VUCGdWeoV+la5h9842jEdanXxYuZBL
-         czCYcUsHbGfyQCm4AdIzBs2ZqWl7yEM92rFc4srwWyonO6WfkNS2UHsW+M2G2lTUQLQm
-         5apjcaiJPi8THjO5lyyRtzWviZ/QcYKMqh/oW4SPn7UGCFwd1udiwW06fZWGgkK+2LZ6
-         j5+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dtl5qW5ngyrCxRtU2FQ2/K9MskvmJ8cOWL2EWopDeQ0=;
-        b=rOptp5GdMBRItf6pJbzUaUOqryja/DWKi9/ZUqeK/tvjQr6ocpBaqbzyp10GuuwU62
-         BWAjXd+olVfkkSAdldVpRTFqtzTjL/rL01yMTbw8GN35xnp7hzO0oYq4XQFpi/4sNxvA
-         nmlzzTFNGs7sJ3eUw4bC/o3dT5g6bRP6yGeum/gI+HphCw4tSiU5kjzt9gZVNFdaY0mV
-         Sx5ZNWo7uLzUzTHPbrtY4w3NDBjuMuBQVKJAkYnnUf+wgKHPf4lm79WkFltXBwsRM8yG
-         PKTVxJRjjgJxXfmWggNBbtY/fVDtUwifEOPyNDzgzKaXgYxjl/L3JoSNCm36ZsOIyM1G
-         da3Q==
-X-Gm-Message-State: AOAM531ttTGcacKh8XSMfxTusSiqM4ImaqYxS7E0KR3VTb25C85VSAxI
-        oUojsizxo/3scu8Jh2xDqgi7tAMBSVrt0OHQa0Tfl9U19u4=
-X-Google-Smtp-Source: ABdhPJwvbHPkqdIqYxErmiViZeFTg8U61Ma14ffPQ6RCRW3Fmd5pOxxjDCM1f4rUjgRfKf+VGK7L02ebIy/X5EwfWJg=
-X-Received: by 2002:a2e:22c3:: with SMTP id i186mr1755612lji.273.1621297903739;
- Mon, 17 May 2021 17:31:43 -0700 (PDT)
+        Mon, 17 May 2021 20:34:09 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 42676326B
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:32:52 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id infIl1qyA8ElSinfIlVzrA; Mon, 17 May 2021 19:32:52 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=J+ny7KcWHWHIUXMG+TJWF0K4cp8fIowxW6oz98D64vk=; b=bPygefkyDCsddqWESNal7ncvij
+        Py7cIK8xzcH4srnyTyKrfDM7BAILvAr/HigRw/vBJXsrs6yBplxeri0Pb5zixbjmi+CV4tb9e7jgK
+        ZJb5FetDXddNW9uFdtVbmBE0wTlgecjGSOXLEIQxZdeLwyn+cfubMdhfEm5uA63TfJWtQ5RLdI/D3
+        j/rrmMiWVjZEavJbn2u72lcqtXFRXeMynaosFgwxxQE/EIxBOmMZN5wGH9a9JASq/sFMw9zOThsYe
+        NZlRrtKnwQosyGrTLil640ttd2aTqQHhpcZKDtkHU5ZjdxnNm+dd0StfHulOhKJZH71UPGLxiLxCy
+        5sM+l8Vw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53472 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1linfF-002a7c-T7; Mon, 17 May 2021 19:32:49 -0500
+Subject: Re: [PATCH v2][next] afs: Fix fall-through warnings for Clang
+To:     Jeffrey E Altman <jaltman@auristor.com>,
+        "Gustavo A. R. Silva (gustavoars@kernel.org)" <gustavoars@kernel.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210420211615.GA51432@embeddedor>
+ <45926d81-cfae-8465-84e6-af76d668c1ef@auristor.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <c143cfde-c761-a19f-deef-2dc61a8b8947@embeddedor.com>
+Date:   Mon, 17 May 2021 19:33:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210503144350.7496-1-aardelean@deviqon.com> <20210508161643.5990ec15@jic23-huawei>
- <CACRpkdaK6AMVUC+B7JW3y28nNeAYHAS9UjC40KfShZNrHLD7rQ@mail.gmail.com>
- <20210509111925.52f3f4e3@jic23-huawei> <CACRpkdZ2mC5V6PdphmtmtQKHZwPfc7mVgZ-FH3io2ihB8foA4g@mail.gmail.com>
- <YJjXU/mBKnmknItg@kroah.com>
-In-Reply-To: <YJjXU/mBKnmknItg@kroah.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 18 May 2021 02:31:32 +0200
-Message-ID: <CACRpkdaNuGB+qpW-hjsGs5rC0k3nKwKDT0jUU6Jpon1JRf3MoQ@mail.gmail.com>
-Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Nuno Sa <nuno.sa@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <45926d81-cfae-8465-84e6-af76d668c1ef@auristor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1linfF-002a7c-T7
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53472
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 53
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 8:48 AM Greg KH <gregkh@linuxfoundation.org> wrote:
 
-> I can take IIO changes in my char/misc tree like many other driver
-> subsystems go, if the staging portions are not involved.  Otherwise, I
-> really don't see the problem with it as-is, what problems is this
-> causing at the moment?
 
-It's in the thread: pipeline stalls, haha :)
+On 4/21/21 18:03, Jeffrey E Altman wrote:
+> On 4/20/2021 5:16 PM, Gustavo A. R. Silva (gustavoars@kernel.org) wrote:
+>> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+>> warnings by explicitly adding multiple fallthrough pseudo-keywords
+>> in places where the code is intended to fall through to the next
+>> case.
+>>
+>> Link: https://github.com/KSPP/linux/issues/115
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>> Changes in v2:
+>>   - Place blank line after the fallthrough markings, not before.
+>>     Link: https://lore.kernel.org/linux-hardening/748935.1606147853@warthog.procyon.org.uk/
+> 
+> This change looks good to me.
+> 
+> Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
 
-It has happened more than once that Jonathan needs to wait for
-things to percolate upstream before he can base new stuff on it.
+Thanks, Jeffrey.
 
-Personally I've encountered fixes that are waiting in your tree
-so that new fixes on fixes, or next development cannot be applied
-because the fixes need to land in a tag upstream so that can be
-merged in first as base for the new development. Essentially
-any time patches with dependencies end up on two branches.
+Could someone take this, please?
 
-Also it takes a while after the merge window for you to move
-branches to -rc1 or similar (whether through merge or rebase),
-as is natural. Which will delay everything using those. It's just
-a natural side-effect of hierarchy.
+Thanks
+--
+Gustavo
 
-Nothing disastrous but it makes things congest. Maybe it can
-be processed around, I don't exactly know the routine around
-your trees and branches.
-
-Yours,
-Linus Walleij
