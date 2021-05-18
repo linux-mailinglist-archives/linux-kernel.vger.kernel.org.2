@@ -2,103 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9EC387F70
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED753387F73
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351142AbhERSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
+        id S1351477AbhERSTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240163AbhERSS2 (ORCPT
+        with ESMTP id S1351470AbhERSTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:18:28 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9ACC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:17:09 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id p6so5560534plr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:17:09 -0700 (PDT)
+        Tue, 18 May 2021 14:19:03 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B56C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:17:43 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id d11so10380557iod.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kLurRiFyhtczUeXHLNIB4esFHRT3cHm8pgOkVCHundQ=;
-        b=Wvj2Sqm8Ytx2wC43ED+AU1CDqk/+5VvwOusfZRTFz62poKCXIdUKTb7ZSDtdoU6sLB
-         PGQkTLaHMdUtsKySgoaBVfYwePy4Ar7h+Xwt3Lp9utM1FTMQ3qnPLeHTHWwXNo5n1LR1
-         eVWtBAE9nvK3Fcquxy8AU4EddtTy0EjOuyxU/5smyuVp2grBcFKJkg8zeJDzjXn6HjYq
-         iHiCqVXuLEzGNhNVYIXgV63Bmv9VPB1kXiC0IE3ulSqQJcEZoXTM37Y1TaNaqQmyY83A
-         A53UNbn35mnM8HiVEY0BgREv19AI9r2jCvcL8PUZA0uGwtVeH6bH9xpoIX2o8tJZioVh
-         Hr3g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x+J0ixhp0JNdhZIww6rv3fDSfjGLlgmpCQ0ghRou038=;
+        b=vurfjtiP/ho4EDvQOx3cIEpF3tcWzthkA884n/+ZS/eut2z6s+VKUXa1cJP5gTfdxL
+         LjzpqkCzkleFNaHs91yr+nu0emUczhRVxuNnTYHx6RrsyJSemWrqLBd06Z6nsCFK31mS
+         +zikA5Oj3AlNHAqr0WZbP8fboVq2/b7jvw8T4nLKYnMDTAyMJrw7dGhcSk03FbAHVFNa
+         /rxxavJFcieTMANAy+cjHL4xbpb9hX487LBRb6l9lWm1PYJqUg95rvan5meTdKqtmzLy
+         D+fpIxTt6fWzN4hy+06O7Mz4uL3iKCAHcz1ylXEfu/Arm08+ifiZsZze8gbYzy14gPNV
+         7lmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kLurRiFyhtczUeXHLNIB4esFHRT3cHm8pgOkVCHundQ=;
-        b=QRFyGejsLZnTf0iBg5ROdOcwxCYa/H59sgoh3cWcaVT2Ka8+YH6RoNqh8FHt6QC3PC
-         SXrsYOCQROI+uWtNReTKfeyfGk9EhAElf0CtoYvXYENY+Afh78Y2yGqWJFr+etSQp8KY
-         JxLRMiIUApq8GAX6jx1u788vFOVrgy6ntNKCXYhrojuxXKhltjo7J8qaR4UDUEeL6rCi
-         iQ8YgZOdSgNUAQ5ejNn2BM8cXv6tPZcOL+nRcKUNX7srBIX5owTVzUvI/IaHeYven7jz
-         unYTNmdXuP6yuzJesAJASlbGpepWTv+pV64DHA3yArODVmX3GHc6Doycu+ysEw5MPjNo
-         apBA==
-X-Gm-Message-State: AOAM532Kj/l0+QuJsTovKvZisZ+qUvjSdF5tWDPBg5v9kYgXecEydGRf
-        8gSiEeyjC1LS6alkYW+vxmDVOg==
-X-Google-Smtp-Source: ABdhPJxL0BrDRoa0uLwNdNM3XEn5ivbY6ikPpUina0K46OQLQ94Z9pbXH2Ig5ygxNGyk7H9ncf9+MA==
-X-Received: by 2002:a17:902:7b82:b029:ee:f548:2a18 with SMTP id w2-20020a1709027b82b02900eef5482a18mr6012254pll.75.1621361828613;
-        Tue, 18 May 2021 11:17:08 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id d10sm9516765pfo.65.2021.05.18.11.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 11:17:07 -0700 (PDT)
-Date:   Tue, 18 May 2021 18:17:04 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
-Message-ID: <YKQEoMau3ovCzJ1W@google.com>
-References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
- <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
- <YKPo2Zde5b0QxIPJ@google.com>
- <d8c87904-d994-8a5a-c0e8-be861fcac6df@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x+J0ixhp0JNdhZIww6rv3fDSfjGLlgmpCQ0ghRou038=;
+        b=Vx2QdNsQ0WflBGpELc14QueCz2xi80hZNh6bOGnWug5upE+w2O4raHX1+oQDzhU59m
+         X8IMQHba3QqDehjpTaSDUbgZLDbowUQhnwFoXB3yCgLrstb5lEMqynklGpWHJJw3NLji
+         PNLvIQOda9F/HgHl3p5BVxB2IZFTeiKDcPQZDUiHvqSJoICYQonxKyhTChjNSxr8Rjw4
+         Gle4EKYzf+y3Oh4h4Mq+nfuT8xzUogrvbZvHC6LTN0vOrlZjwT5ZyDgXS+iMsDdKIDTy
+         IZZmuBwRVU7rkFk7qq7RMHj0blp+GojiyLwTBGvpa+wsAl0CV9CejLFCly1HD5ex33nY
+         VYEQ==
+X-Gm-Message-State: AOAM533wv5WIzlLTQnP/JReCJ/F5OrJoTKSoCUeJ2hfBguLr981mH3Yu
+        YhfjN4CeBsopKrPf6rYWIgumtyJpQNaCl9GqIbqGHw==
+X-Google-Smtp-Source: ABdhPJz2vn0n4EwSUDaWmDmF0Uwjo7w0stx9/RrOUxkDz1NN0tze6EyeuvKOb4L8FhcBB0S2/UDU0wFSp9Ydw/E/7DE=
+X-Received: by 2002:a05:6638:a2c:: with SMTP id 12mr7028107jao.99.1621361862876;
+ Tue, 18 May 2021 11:17:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8c87904-d994-8a5a-c0e8-be861fcac6df@linux.intel.com>
+References: <20210512214502.2047008-1-axelrasmussen@google.com>
+ <20210512214502.2047008-5-axelrasmussen@google.com> <CANgfPd8Z0coniYhVNr1WR0Odob+aT10rqJWYKkzAqeP78Rczag@mail.gmail.com>
+In-Reply-To: <CANgfPd8Z0coniYhVNr1WR0Odob+aT10rqJWYKkzAqeP78Rczag@mail.gmail.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 18 May 2021 11:17:05 -0700
+Message-ID: <CAJHvVcjNet7nGVJWgK0Z+1=nyoanPyU8DqWu22xR7e-VsWjwWQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] KVM: selftests: allow using UFFD minor faults for
+ demand paging
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021, Andi Kleen wrote:
-> > Why does this code exist at all?  TDX and SEV-ES absolutely must share code for
-> > handling MMIO reflection.  It will require a fair amount of refactoring to move
-> > the guts of vc_handle_mmio() to common code, but there is zero reason to maintain
-> > two separate versions of the opcode cracking.
-> 
-> While that's true on the high level, all the low level details are
-> different. We looked at unifying at some point, but it would have been a
-> callback hell. I don't think unifying would make anything cleaner.
+On Mon, May 17, 2021 at 4:51 PM Ben Gardon <bgardon@google.com> wrote:
+>
+> On Wed, May 12, 2021 at 2:45 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+> >
+> > UFFD handling of MINOR faults is a new feature whose use case is to
+> > speed up demand paging (compared to MISSING faults). So, it's
+> > interesting to let this selftest exercise this new mode.
+> >
+> > Modify the demand paging test to have the option of using UFFD minor
+> > faults, as opposed to missing faults. Now, when turning on userfaultfd
+> > with '-u', the desired mode has to be specified ("MISSING" or "MINOR").
+> >
+> > If we're in minor mode, before registering, prefault via the *alias*.
+> > This way, the guest will trigger minor faults, instead of missing
+> > faults, and we can UFFDIO_CONTINUE to resolve them.
+> >
+> > Modify the page fault handler function to use the right ioctl depending
+> > on the mode we're running in. In MINOR mode, use UFFDIO_CONTINUE.
+> >
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > ---
+> >  .../selftests/kvm/demand_paging_test.c        | 124 ++++++++++++------
+> >  1 file changed, 87 insertions(+), 37 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> > index 10c7ba76a9c6..ff29aaea3120 100644
+> > --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> > +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> > @@ -72,33 +72,57 @@ static void *vcpu_worker(void *data)
+> >         return NULL;
+> >  }
+> >
+> > -static int handle_uffd_page_request(int uffd, uint64_t addr)
+> > +static int handle_uffd_page_request(int uffd_mode, int uffd, uint64_t addr)
+> >  {
+> > -       pid_t tid;
+> > +       const char *ioctl_name;
+> > +       pid_t tid = syscall(__NR_gettid);
+> >         struct timespec start;
+> >         struct timespec ts_diff;
+> > -       struct uffdio_copy copy;
+> >         int r;
+> >
+> > -       tid = syscall(__NR_gettid);
+> > +       if (uffd_mode == UFFDIO_REGISTER_MODE_MISSING) {
+> > +               struct uffdio_copy copy;
+> >
+> > -       copy.src = (uint64_t)guest_data_prototype;
+> > -       copy.dst = addr;
+> > -       copy.len = demand_paging_size;
+> > -       copy.mode = 0;
+> > +               ioctl_name = "UFFDIO_COPY";
+> >
+> > -       clock_gettime(CLOCK_MONOTONIC, &start);
+> > +               copy.src = (uint64_t)guest_data_prototype;
+> > +               copy.dst = addr;
+> > +               copy.len = demand_paging_size;
+> > +               copy.mode = 0;
+> >
+> > -       r = ioctl(uffd, UFFDIO_COPY, &copy);
+> > -       if (r == -1) {
+> > -               pr_info("Failed Paged in 0x%lx from thread %d with errno: %d\n",
+> > -                       addr, tid, errno);
+> > -               return r;
+> > -       }
+> > +               clock_gettime(CLOCK_MONOTONIC, &start);
+>
+> Nit: It'd probably be fine to factor the timing calls out of the if
+> statement to deduplicate.
+>
+> >
+> > -       ts_diff = timespec_elapsed(start);
+> > +               r = ioctl(uffd, UFFDIO_COPY, &copy);
+> > +               if (r == -1) {
+> > +                       pr_info("Failed UFFDIO_COPY in 0x%lx from thread %d with errno: %d\n",
+> > +                               addr, tid, errno);
+> > +                       return r;
+> > +               }
+> > +
+> > +               ts_diff = timespec_elapsed(start);
+> > +       } else if (uffd_mode == UFFDIO_REGISTER_MODE_MINOR) {
+> > +               struct uffdio_continue cont = {0};
+> > +
+> > +               ioctl_name = "UFFDIO_CONTINUE";
+> > +
+> > +               cont.range.start = addr;
+> > +               cont.range.len = demand_paging_size;
+> > +
+> > +               clock_gettime(CLOCK_MONOTONIC, &start);
+> > +
+> > +               r = ioctl(uffd, UFFDIO_CONTINUE, &cont);
+> > +               if (r == -1) {
+> > +                       pr_info("Failed UFFDIO_CONTINUE in 0x%lx from thread %d with errno: %d\n",
+> > +                               addr, tid, errno);
+> > +                       return r;
+> > +               }
+> >
+> > -       PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
+> > +               ts_diff = timespec_elapsed(start);
+> > +       } else {
+> > +               TEST_FAIL("Invalid uffd mode %d", uffd_mode);
+> > +       }
+> > +
+> > +       PER_PAGE_DEBUG("%s %d \t%ld ns\n", ioctl_name, tid,
+> >                        timespec_to_ns(ts_diff));
+>
+> As far as I can see this is the only use of ioctl_name and it's not
+> going to change in a test run, so it might make sense to not print the
+> ioctl name here and just do it once somewhere else.
+>
+> >         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
+> >                        demand_paging_size, addr, tid);
+> > @@ -109,6 +133,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+> >  bool quit_uffd_thread;
+> >
+> >  struct uffd_handler_args {
+> > +       int uffd_mode;
+> >         int uffd;
+> >         int pipefd;
+> >         useconds_t delay;
+> > @@ -170,7 +195,7 @@ static void *uffd_handler_thread_fn(void *arg)
+> >                 if (r == -1) {
+> >                         if (errno == EAGAIN)
+> >                                 continue;
+> > -                       pr_info("Read of uffd gor errno %d", errno);
+> > +                       pr_info("Read of uffd got errno %d\n", errno);
+>
+> If you end up doing some kind of cleanups patch, it might be worth
+> moving this in there.
+>
+> >                         return NULL;
+> >                 }
+> >
+> > @@ -185,7 +210,7 @@ static void *uffd_handler_thread_fn(void *arg)
+> >                 if (delay)
+> >                         usleep(delay);
+> >                 addr =  msg.arg.pagefault.address;
+> > -               r = handle_uffd_page_request(uffd, addr);
+> > +               r = handle_uffd_page_request(uffd_args->uffd_mode, uffd, addr);
+> >                 if (r < 0)
+> >                         return NULL;
+> >                 pages++;
+> > @@ -201,17 +226,32 @@ static void *uffd_handler_thread_fn(void *arg)
+> >
+> >  static int setup_demand_paging(struct kvm_vm *vm,
+> >                                pthread_t *uffd_handler_thread, int pipefd,
+> > +                              int uffd_mode,
+> >                                useconds_t uffd_delay,
+> >                                struct uffd_handler_args *uffd_args,
+> > -                              void *hva, uint64_t len)
+> > +                              void *hva, void *alias, uint64_t len)
+> >  {
+> >         int uffd;
+> >         struct uffdio_api uffdio_api;
+> >         struct uffdio_register uffdio_register;
+> > +       uint64_t expected_ioctls = ((uint64_t) 1) << _UFFDIO_COPY;
+> > +
+> > +       /* In order to get minor faults, prefault via the alias. */
+> > +       if (uffd_mode == UFFDIO_REGISTER_MODE_MINOR) {
+> > +               size_t p;
+> > +
+> > +               expected_ioctls = ((uint64_t) 1) << _UFFDIO_CONTINUE;
+> > +
+> > +               TEST_ASSERT(alias != NULL, "Alias required for minor faults");
+> > +               for (p = 0; p < (len / demand_paging_size); ++p) {
+> > +                       memcpy(alias + (p * demand_paging_size),
+> > +                              guest_data_prototype, demand_paging_size);
+> > +               }
+> > +       }
+> >
+> >         uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
+> >         if (uffd == -1) {
+> > -               pr_info("uffd creation failed\n");
+> > +               pr_info("uffd creation failed, errno: %d\n", errno);
+> >                 return -1;
+> >         }
+>
+> Huh, I wonder why I put all these return -1 statements in here. The
+> caller just does exit(-r) if r < 0. Seems like these could all just be
+> converted to TEST_ASSERTs.
 
-How hard did you look?  The only part that _must_ be different between SEV and
-TDX is the hypercall itself, which is wholly contained at the very end of
-vc_do_mmio().
+I agree that change makes sense, but it seems better to do it in a
+separate commit as it's maybe a 10-20 line change.
 
-Despite vc_slow_virt_to_phys() taking a pointer to the ghcb, it's unused and
-thus the function is 100% generic.
+Would you prefer I add that into this series, or just keep the status quo?
 
-The ghcb->shared_buffer usage throughout the upper levels can be eliminated by
-refactoring the stack to take a "u64 *val", since MMIO accesses are currently
-bounded to 8 bytes.
-
-> Besides the bulk of the decoding work is already unified in the common x86
-> instruction decoder. The actual actions are different, and the code fetching
-> is also different 
-
-Huh?  What do you mean by "actual actions"?  Why is the code fetch different?
+>
+> >
+> > @@ -224,18 +264,18 @@ static int setup_demand_paging(struct kvm_vm *vm,
+> >
+> >         uffdio_register.range.start = (uint64_t)hva;
+> >         uffdio_register.range.len = len;
+> > -       uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
+> > +       uffdio_register.mode = uffd_mode;
+> >         if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) == -1) {
+> >                 pr_info("ioctl uffdio_register failed\n");
+> >                 return -1;
+> >         }
+> >
+> > -       if ((uffdio_register.ioctls & UFFD_API_RANGE_IOCTLS) !=
+> > -                       UFFD_API_RANGE_IOCTLS) {
+> > -               pr_info("unexpected userfaultfd ioctl set\n");
+> > +       if ((uffdio_register.ioctls & expected_ioctls) != expected_ioctls) {
+> > +               pr_info("missing userfaultfd ioctls\n");
+> >                 return -1;
+> >         }
+> >
+> > +       uffd_args->uffd_mode = uffd_mode;
+> >         uffd_args->uffd = uffd;
+> >         uffd_args->pipefd = pipefd;
+> >         uffd_args->delay = uffd_delay;
+> > @@ -249,7 +289,7 @@ static int setup_demand_paging(struct kvm_vm *vm,
+> >  }
+> >
+> >  struct test_params {
+> > -       bool use_uffd;
+> > +       int uffd_mode;
+> >         useconds_t uffd_delay;
+> >         enum vm_mem_backing_src_type src_type;
+> >         bool partition_vcpu_memory_access;
+> > @@ -286,7 +326,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >         perf_test_setup_vcpus(vm, nr_vcpus, guest_percpu_mem_size,
+> >                               p->partition_vcpu_memory_access);
+> >
+> > -       if (p->use_uffd) {
+> > +       if (p->uffd_mode) {
+> >                 uffd_handler_threads =
+> >                         malloc(nr_vcpus * sizeof(*uffd_handler_threads));
+> >                 TEST_ASSERT(uffd_handler_threads, "Memory allocation failed");
+> > @@ -300,6 +340,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >                 for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> >                         vm_paddr_t vcpu_gpa;
+> >                         void *vcpu_hva;
+> > +                       void *vcpu_alias;
+> >                         uint64_t vcpu_mem_size;
+> >
+> >
+> > @@ -314,8 +355,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >                         PER_VCPU_DEBUG("Added VCPU %d with test mem gpa [%lx, %lx)\n",
+> >                                        vcpu_id, vcpu_gpa, vcpu_gpa + vcpu_mem_size);
+> >
+> > -                       /* Cache the HVA pointer of the region */
+> > +                       /* Cache the host addresses of the region */
+> >                         vcpu_hva = addr_gpa2hva(vm, vcpu_gpa);
+> > +                       vcpu_alias = addr_gpa2alias(vm, vcpu_gpa);
+> >
+> >                         /*
+> >                          * Set up user fault fd to handle demand paging
+> > @@ -327,9 +369,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >
+> >                         r = setup_demand_paging(vm,
+> >                                                 &uffd_handler_threads[vcpu_id],
+> > -                                               pipefds[vcpu_id * 2],
+> > +                                               pipefds[vcpu_id * 2], p->uffd_mode,
+> >                                                 p->uffd_delay, &uffd_args[vcpu_id],
+> > -                                               vcpu_hva, vcpu_mem_size);
+> > +                                               vcpu_hva, vcpu_alias,
+> > +                                               vcpu_mem_size);
+> >                         if (r < 0)
+> >                                 exit(-r);
+> >                 }
+> > @@ -359,7 +402,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >
+> >         pr_info("All vCPU threads joined\n");
+> >
+> > -       if (p->use_uffd) {
+> > +       if (p->uffd_mode) {
+> >                 char c;
+> >
+> >                 /* Tell the user fault fd handler threads to quit */
+> > @@ -381,7 +424,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >
+> >         free(guest_data_prototype);
+> >         free(vcpu_threads);
+> > -       if (p->use_uffd) {
+> > +       if (p->uffd_mode) {
+> >                 free(uffd_handler_threads);
+> >                 free(uffd_args);
+> >                 free(pipefds);
+> > @@ -391,11 +434,11 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >  static void help(char *name)
+> >  {
+> >         puts("");
+> > -       printf("usage: %s [-h] [-m mode] [-u] [-d uffd_delay_usec]\n"
+> > +       printf("usage: %s [-h] [-m mode] [-u mode] [-d uffd_delay_usec]\n"
+> >                "          [-b memory] [-t type] [-v vcpus] [-o]\n", name);
+> >         guest_modes_help();
+> > -       printf(" -u: use User Fault FD to handle vCPU page\n"
+> > -              "     faults.\n");
+> > +       printf(" -u: use userfaultfd to handle vCPU page faults. Mode is a\n"
+> > +              "     UFFD registration mode: 'MISSING' or 'MINOR'.\n");
+> >         printf(" -d: add a delay in usec to the User Fault\n"
+> >                "     FD handler to simulate demand paging\n"
+> >                "     overheads. Ignored without -u.\n");
+> > @@ -422,13 +465,17 @@ int main(int argc, char *argv[])
+> >
+> >         guest_modes_append_default();
+> >
+> > -       while ((opt = getopt(argc, argv, "hm:ud:b:t:v:o")) != -1) {
+> > +       while ((opt = getopt(argc, argv, "hm:u:d:b:t:v:o")) != -1) {
+> >                 switch (opt) {
+> >                 case 'm':
+> >                         guest_modes_cmdline(optarg);
+> >                         break;
+> >                 case 'u':
+> > -                       p.use_uffd = true;
+> > +                       if (!strcmp("MISSING", optarg))
+> > +                               p.uffd_mode = UFFDIO_REGISTER_MODE_MISSING;
+> > +                       else if (!strcmp("MINOR", optarg))
+> > +                               p.uffd_mode = UFFDIO_REGISTER_MODE_MINOR;
+> > +                       TEST_ASSERT(p.uffd_mode, "UFFD mode must be 'MISSING' or 'MINOR'.");
+> >                         break;
+> >                 case 'd':
+> >                         p.uffd_delay = strtoul(optarg, NULL, 0);
+> > @@ -455,6 +502,9 @@ int main(int argc, char *argv[])
+> >                 }
+> >         }
+> >
+> > +       TEST_ASSERT(p.uffd_mode != UFFDIO_REGISTER_MODE_MINOR || p.src_type == VM_MEM_SRC_SHMEM,
+> > +                   "userfaultfd MINOR mode requires shared memory; pick a different -t");
+> > +
+> >         for_each_guest_mode(run_test, &p);
+> >
+> >         return 0;
+> > --
+> > 2.31.1.607.g51e8a6a459-goog
+> >
