@@ -2,241 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A8F387C59
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBD6387C6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350156AbhERPW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:22:59 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50873 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241047AbhERPW6 (ORCPT
+        id S1350189AbhERP1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:27:19 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53619 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350165AbhERP1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:22:58 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 11C4F60002;
-        Tue, 18 May 2021 15:21:35 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH RFC] riscv: Map the kernel with correct permissions the first time
-Date:   Tue, 18 May 2021 17:21:34 +0200
-Message-Id: <20210518152134.1772653-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.30.2
+        Tue, 18 May 2021 11:27:17 -0400
+Received: from mail-qv1-f70.google.com ([209.85.219.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lj1ba-0008Cz-WD
+        for linux-kernel@vger.kernel.org; Tue, 18 May 2021 15:25:59 +0000
+Received: by mail-qv1-f70.google.com with SMTP id e2-20020ad442a20000b02901f3586a14easo82772qvr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:25:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QFV1CgFry6db6OpdS2HnSeaH64FcPIlgQKjVPjfh0tM=;
+        b=oUSh2K400RSIBrqZnlRmDYDV1Tfc9bEbRZ6kTHNVoPSwz/uMhZ+YlbwrCHDL7By59A
+         PP10AqRxj/74HfuWcL6KmU20VW+Q7PZ94ZeXfosm53SO5ZInk1cJi2Q475LG3xu9TQX/
+         DbxiQWGjvEyRn57FBKqXHhVB+xKqR55WH+yrQy1bCnZzb/7SUDovr8CIi41/NQg0xohh
+         U/kHUcBRGa7KIdJbHlimfg8P4HQKiOwTrWPaO87pyn8vrd6Rg5x5+kuU9Th5xppt2l5I
+         ptu+eU7vk6tIEKNBg8Reh6UngoOdC2uQc7Rx/HuPgBzfKclyWoGlNfsMGc+JYSLm+0/+
+         VHqQ==
+X-Gm-Message-State: AOAM532v81IgvdWBXFnnqZF17wbewiKCKmKQpu+0wHvTJ7yRvoJFeeLs
+        5Zfqegt9d2NhDEP0QOpNxotAohV3aYws9WNhzzVfyOBbSe/sUR9XaadnWSfyMHpRdUlTtQMTNiX
+        cV/sDtP+IKvoP3iRQ4agZ15hHAYsPG9RZGB31pIVUkA==
+X-Received: by 2002:a37:6410:: with SMTP id y16mr5916793qkb.463.1621351558048;
+        Tue, 18 May 2021 08:25:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoChMjPCGN+C66udK0IuPehIMZ37NnIZl3M1GC49UMXTNzStjojRPo+sTWNOcCR27vxKLKwA==
+X-Received: by 2002:a37:6410:: with SMTP id y16mr5916775qkb.463.1621351557811;
+        Tue, 18 May 2021 08:25:57 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.48.2])
+        by smtp.gmail.com with ESMTPSA id q192sm13214584qke.89.2021.05.18.08.25.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 08:25:57 -0700 (PDT)
+Subject: Re: [linux-nfc] Re: [PATCH 2/2] nfc: s3fwrn5: i2c: Enable optional
+ clock from device tree
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20210518133935.571298-1-stephan@gerhold.net>
+ <20210518133935.571298-2-stephan@gerhold.net>
+ <ac04821e-359d-aaaa-7e07-280156f64036@canonical.com>
+ <YKPWgSnz7STV4u+c@gerhold.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <8b14159f-dca9-a213-031f-83ab2b3840a4@canonical.com>
+Date:   Tue, 18 May 2021 11:25:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YKPWgSnz7STV4u+c@gerhold.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For 64b kernels, we map all the kernel with write and execute permissions
-and afterwards remove writability from text and executability from data.
+On 18/05/2021 11:00, Stephan Gerhold wrote:
+> Hi,
+> 
+> On Tue, May 18, 2021 at 10:30:43AM -0400, Krzysztof Kozlowski wrote:
+>> On 18/05/2021 09:39, Stephan Gerhold wrote:
+>>> s3fwrn5 has a NFC_CLK_REQ output GPIO, which is asserted whenever
+>>> the clock is needed for the current operation. This GPIO can be either
+>>> connected directly to the clock provider, or must be monitored by
+>>> this driver.
+>>>
+>>> As an example for the first case, on many Qualcomm devices the
+>>> NFC clock is provided by the main PMIC. The clock can be either
+>>> permanently enabled (clocks = <&rpmcc RPM_SMD_BB_CLK2>) or enabled
+>>> only when requested through a special input pin on the PMIC
+>>> (clocks = <&rpmcc RPM_SMD_BB_CLK2_PIN>).
+>>>
+>>> On the Samsung Galaxy A3/A5 (2015, Qualcomm MSM8916) this mechanism
+>>> is used with S3FWRN5's NFC_CLK_REQ output GPIO to enable the clock
+>>> only when necessary. However, to make that work the s3fwrn5 driver
+>>> must keep the RPM_SMD_BB_CLK2_PIN clock enabled.
+>>
+>> This contradicts the code. You wrote that pin should be kept enabled
+>> (somehow... by driver? by it's firmware?) but your code requests the
+>> clock from provider.
+>>
+> 
+> Yeah, I see how that's a bit confusing. Let me try to explain it a bit
+> better. So the Samsung Galaxy A5 (2015) has a "S3FWRN5XS1-YF30", some
+> variant of S3FWRN5 I guess. That S3FWRN5 has a "XI" and "XO" pin in the
+> schematics. "XO" seems to be floating, but "XI" goes to "BB_CLK2"
+> on PM8916 (the main PMIC).
+> 
+> Then, there is "GPIO2/NFC_CLK_REQ" on the S3FWRN5. This goes to
+> GPIO_2_NFC_CLK_REQ on PM8916. (Note: I'm talking about two different
+> GPIO2 here, one on S3FWRN5 and one on PM8916, they just happen to have
+> the same number...)
+> 
+> So in other words, S3FWRN5 gets some clock from BB_CLK2 on PM8916,
+> and can tell PM8916 that it needs the clock via GPIO2/NFC_CLK_REQ.
+> 
+> Now the confusing part is that the rpmcc/clk-smd-rpm driver has two
+> clocks that represent BB_CLK2 (see include/dt-bindings/clock/qcom,rpmcc.h):
+> 
+>   - RPM_SMD_BB_CLK2
+>   - RPM_SMD_BB_CLK2_PIN
+> 
+> (There are also *_CLK2_A variants but they are even more confusing
+>  and not needed here...)
+> 
+> Those end up in different register settings in PM8916. There is one bit
+> to permanently enable BB_CLK2 (= RPM_SMD_BB_CLK2), and one bit to enable
+> BB_CLK2 based on the status of GPIO_2_NFC_CLK_REQ on PM8916
+> (= RPM_SMD_BB_CLK2_PIN).
+> 
+> So there is indeed some kind of "AND" inside PM8916 (the register bit
+> and "NFC_CLK_REQ" input pin). To make that "AND" work I need to make
+> some driver (here: the s3fwrn5 driver) enable the clock so the register
+> bit in PM8916 gets set.
 
-For 32b kernels, the kernel mapping resides in the linear mapping, so we
-map all the linear mapping as writable and executable and afterwards we
-remove those properties for unused memory and kernel mapping as
-described above.
+Thanks for the explanation, it sounds good. The GPIO2 (or how you call
+it NFC_CLK_REQ) on S3FWRN5 looks like non-configurable from Linux point
+of view. Probably the device firmware plays with it always or at least
+handles it in an unknown way for us.
 
-Change this behavior to directly map the kernel with correct permissions
-and avoid going through the whole mapping to fix the permissions.
+In such case there is no point to do anything more with the provided
+clock than what you are doing - enable it when device is on, disable
+when off.
 
-At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
-("riscv: Move kernel mapping outside of linear mapping") as reported
-here https://github.com/starfive-tech/linux/issues/17.
+I think it is enough to rephrase the msg:
+1. Add at beginning that device has one clock input (XI pin). The clock
+input was so far ignored (assumed to be routed to some always-on
+oscillator).
+2. The device should enable the clock when running.
+3. Add all of your paragraph about detailed logic on GPIO.
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
+Since the GPIO is non-controllable, it actually does not matter that
+much for the driver, so you can add it for relevance, but not as main
+point of the patch.
 
-This patchset was tested on:
+> 
+>>>
+>>> This commit adds support for this by requesting an optional clock
+>>
+>> Don't write "This commit".
+>> https://elixir.bootlin.com/linux/latest/source/Documentation/process/submitting-patches.rst#L89
+>>
+> 
+> OK, will fix this in v2 (I guess there will be a v2 to clarify things
+> at least...)
+> 
+>>> and keeping it permanently enabled. Note that the actual (physical)
+>>> clock won't be permanently enabled since this will depend on the
+>>> output of NFC_CLK_REQ from S3FWRN5.
+>>
+>> What pin is that "NFC_CLK_REQ"? I cannot find such name. Is it GPIO2?
+>> What clock are you talking here? The one going to the modem part?
+>>
+> 
+> It's indeed GPIO2 on S3FWRN5, but that's pretty much all I can say since
+> I can't seem to find any datasheet for S3FWRN5. :( I don't know what it
+> is used for. As I mentioned above, BB_CLK2 goes to "XI" on S3FWRN5.
+> 
+>> I also don't see here how this clock is going to be automatically
+>> on-off... driver does not perform such. Unless you speak about your
+>> particular HW configuration where the GPIO is somehow connected with AND
+>> (but then it is not relevant to the code).
+>>
+> 
+> I hope I covered this above already and it's a bit clearer now.
+> Sorry for the confusion!
 
-* kernel:
-- rv32 with CONFIG_STRICT_KERNEL_RWX: OK
-- rv32 without CONFIG_STRICT_KERNEL_RWX: OK
-- rv64 with CONFIG_STRICT_KERNEL_RWX: OK
-- rv64 without CONFIG_STRICT_KERNEL_RWX: OK
+Yes, thanks!
 
-* xipkernel:
-- rv32: build only
-- rv64: OK
 
- arch/riscv/include/asm/set_memory.h |  2 -
- arch/riscv/kernel/setup.c           |  1 -
- arch/riscv/mm/init.c                | 80 ++++++++++++++---------------
- 3 files changed, 38 insertions(+), 45 deletions(-)
-
-diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-index 086f757e8ba3..70154f012791 100644
---- a/arch/riscv/include/asm/set_memory.h
-+++ b/arch/riscv/include/asm/set_memory.h
-@@ -16,13 +16,11 @@ int set_memory_rw(unsigned long addr, int numpages);
- int set_memory_x(unsigned long addr, int numpages);
- int set_memory_nx(unsigned long addr, int numpages);
- int set_memory_rw_nx(unsigned long addr, int numpages);
--void protect_kernel_text_data(void);
- #else
- static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
--static inline void protect_kernel_text_data(void) {}
- static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
- #endif
- 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 03901d3a8b02..1eb50e512056 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -292,7 +292,6 @@ void __init setup_arch(char **cmdline_p)
- 	sbi_init();
- 
- 	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
--		protect_kernel_text_data();
- 		protect_kernel_linear_mapping_text_rodata();
- 	}
- 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 4faf8bd157ea..92b3184420a2 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -436,6 +436,36 @@ asmlinkage void __init __copy_data(void)
- }
- #endif
- 
-+#ifdef CONFIG_STRICT_KERNEL_RWX
-+#define is_text_va(va)		({								\
-+		unsigned long _va = va;								\
-+		(_va < (unsigned long)__init_data_begin && _va >= (unsigned long)_start);	\
-+	})
-+
-+static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
-+{
-+	return is_text_va(va) ? PAGE_KERNEL_READ_EXEC : PAGE_KERNEL;
-+}
-+
-+void mark_rodata_ro(void)
-+{
-+	unsigned long rodata_start = (unsigned long)__start_rodata;
-+	unsigned long data_start = (unsigned long)_data;
-+
-+	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-+
-+	debug_checkwx();
-+}
-+#else
-+static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
-+{
-+	if (IS_ENABLED(CONFIG_32BIT))
-+		return PAGE_KERNEL_EXEC;
-+
-+	return (va < kernel_virt_addr) ? PAGE_KERNEL : PAGE_KERNEL_EXEC;
-+}
-+#endif
-+
- /*
-  * setup_vm() is called from head.S with MMU-off.
-  *
-@@ -465,7 +495,8 @@ uintptr_t xiprom, xiprom_sz;
- #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
- #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
- 
--static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-+static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
-+					    __always_unused bool early)
- {
- 	uintptr_t va, end_va;
- 
-@@ -484,7 +515,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
- 				   map_size, PAGE_KERNEL);
- }
- #else
--static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-+static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
- {
- 	uintptr_t va, end_va;
- 
-@@ -492,7 +523,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
- 	for (va = kernel_virt_addr; va < end_va; va += map_size)
- 		create_pgd_mapping(pgdir, va,
- 				   load_pa + (va - kernel_virt_addr),
--				   map_size, PAGE_KERNEL_EXEC);
-+				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_kernel_va(va));
- }
- #endif
- 
-@@ -569,7 +600,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	 * us to reach paging_init(). We map all memory banks later
- 	 * in setup_vm_final() below.
- 	 */
--	create_kernel_page_table(early_pg_dir, map_size);
-+	create_kernel_page_table(early_pg_dir, map_size, true);
- 
- #ifndef __PAGETABLE_PMD_FOLDED
- 	/* Setup early PMD for DTB */
-@@ -693,21 +724,15 @@ static void __init setup_vm_final(void)
- 		map_size = best_map_size(start, end - start);
- 		for (pa = start; pa < end; pa += map_size) {
- 			va = (uintptr_t)__va(pa);
--			create_pgd_mapping(swapper_pg_dir, va, pa,
--					   map_size,
--#ifdef CONFIG_64BIT
--					   PAGE_KERNEL
--#else
--					   PAGE_KERNEL_EXEC
--#endif
--					);
- 
-+			create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
-+					   pgprot_from_kernel_va(va));
- 		}
- 	}
- 
- #ifdef CONFIG_64BIT
- 	/* Map the kernel */
--	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
-+	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
- #endif
- 
- 	/* Clear fixmap PTE and PMD mappings */
-@@ -738,35 +763,6 @@ static inline void setup_vm_final(void)
- }
- #endif /* CONFIG_MMU */
- 
--#ifdef CONFIG_STRICT_KERNEL_RWX
--void __init protect_kernel_text_data(void)
--{
--	unsigned long text_start = (unsigned long)_start;
--	unsigned long init_text_start = (unsigned long)__init_text_begin;
--	unsigned long init_data_start = (unsigned long)__init_data_begin;
--	unsigned long rodata_start = (unsigned long)__start_rodata;
--	unsigned long data_start = (unsigned long)_data;
--	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
--
--	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
--	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
--	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
--	/* rodata section is marked readonly in mark_rodata_ro */
--	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
--}
--
--void mark_rodata_ro(void)
--{
--	unsigned long rodata_start = (unsigned long)__start_rodata;
--	unsigned long data_start = (unsigned long)_data;
--
--	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--
--	debug_checkwx();
--}
--#endif
--
- #ifdef CONFIG_KEXEC_CORE
- /*
-  * reserve_crashkernel() - reserves memory for crash kernel
--- 
-2.30.2
-
+Best regards,
+Krzysztof
