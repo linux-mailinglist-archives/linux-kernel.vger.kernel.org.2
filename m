@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F6B387942
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7525E387945
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349393AbhERM4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S1349406AbhERM4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233502AbhERM4N (ORCPT
+        with ESMTP id S1349394AbhERM4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:56:13 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EBAC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:54:55 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id y9so11416078ljn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:54:55 -0700 (PDT)
+        Tue, 18 May 2021 08:56:17 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EA9C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:54:57 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id p20so11415220ljj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:54:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=uged.al; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QWNAW7pOe42b2/HBFIs7w7csNMJPX/6XPOTUoBjwouU=;
-        b=QDilPCD/cVptq4KmogSHUQ5GMusPqfS56a4HkXUVkSEl8SQByMJhXjjN4VJECdaOG3
-         /9q8YAaCVNcXxf+1oJAYyc2jtHBjhktP5p8lhXlB6qQIZRQ4joYmg0S0co1HnQ9GmNtQ
-         YxfksByEM3IjeNGhw/HPubiN+tfy7eXzDQz1uqmVf9dmYrNyuMmrmEKGSIy5fqzBqu22
-         fe1KuI5NRhs+0bWgs001L18V8ODzbXUQ2WgpqukbGLm3PMfi08jkBMbysLdNMsWbVdIh
-         gfIAKOPFhZHMeWQXswDlRuZLwnTKVCN5RyaW8uBa0aA+3Ma5xzWz51pFLl/Anx0cYy43
-         m6cg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=K2m3StdkgN8j9sX0OOQRA/hs3X95klSzDGXdeM8HTJY=;
+        b=vtTYi9jfJ+11Q8gjuzRabIbIUKKJyqDw2pUtj9GyYq0ftsy8WpejQqwF/PaksTkvyc
+         E67MK7KCFtAD9K0Vzv1M8Bxsab4LMuvS1BFcFPicbl5vVl3wbbg36Rvy4C+mDBjmJWnU
+         i1RHd6XsD+eheHVLbo1owEAmQdFFLNNmdDC/E3b4o9TVqEUdUGNmZBciHKjvhzGYXx2U
+         AIsi+38lT8vu7gcHLdsPM8FJgXs+ZwIwAZFzksPlw5AudK7uFdgkTsCL23j3PHM4mR4r
+         xVgDiSS6Vw4y+5jBPhFcNKOUwUSB3g6F23BHUHqi8eSvL4iStYz5xcleD5fjYA5zces/
+         KggA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QWNAW7pOe42b2/HBFIs7w7csNMJPX/6XPOTUoBjwouU=;
-        b=aFXO4Ib8sK7U3i8U1LVD8KpzoSGJLuvtMi99cjxwlkhsw/ZAshb8avrUaaRFT0KMY9
-         vLHpy/noXFI50+HyU5iDou9Nw+cFSJrc3UfI/7OcOT0uQx8fvH3Vi0EXGpPRam7/9j92
-         RHdcaXh3fyZeRAH/vMEoW7fvwwVXxazniVZnFx8Ot/qh4kXiFWCcTz2oE107DEvk+fPb
-         EQTUukgl0YJf74l+TqsyBJrAsoFi2CjfR3bFQ86Pg8+GBRPy1Hbph1viFifJOc5EI4kP
-         ahhIWc8m1rbl2gBTkF8epkGGAOBTHLF7lUK4NmWzNR2x0iXGjFy7I9dZtUhT01tayzg9
-         6q4w==
-X-Gm-Message-State: AOAM532b/zvzQknBwCP7gSmb3nNCEMH+cnraoIjpZGx0YE2NI2g8hUZ6
-        mbVq3vWyeN2yaFxrWA6GUvvqoQ==
-X-Google-Smtp-Source: ABdhPJxD+4fBSWW+WvQ/XYkiWHK39ivDywBxM1bf9PcRsVVl6bS6Qg3wspwPekjMUQrPBKDXsXT4mA==
-X-Received: by 2002:a2e:2e12:: with SMTP id u18mr3951946lju.200.1621342493980;
-        Tue, 18 May 2021 05:54:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=K2m3StdkgN8j9sX0OOQRA/hs3X95klSzDGXdeM8HTJY=;
+        b=C2pccaZr+JWiXxG4JLsTFwl5QTjbHXoGY658T4JAhm4Q2ao9EtAwUtscbgg3ENu8kA
+         lssClDEH2io0ZcNZ/aNogsSGFjVeF7M00LkJSCIcfYpo/zR8N6/dHy0EU5CC4ZvubkRD
+         +lwK65B91U0BKWORZoK6ujv7xG88dMh9KR7RIr+2MMGLnwwBt7XDnYB+xDdiuOZvzUTj
+         6AKXYljvrUHl1acPyzlbeLd4pHzmqb7NkNLLD29wm9Kn0fcrQ003PBYvW+uki/1Tl+Vd
+         6VtOKQu1l6cA42to03rHYY4eXD5h4WNc4DDT5kp4VZ/YpCuilRBh4fJ7dxVNlx9vele+
+         chEg==
+X-Gm-Message-State: AOAM530aY8PXHqWm+bze7TxbVUvS190HtzDOlixVs4Tw2iySIGQZoIqz
+        1bKLq8CusydqAF54W0aSeAr0ag==
+X-Google-Smtp-Source: ABdhPJwLowVg+qfPEP4m4gwcjwf2Q+qfSPQ4MZHPbdrFt8a6uEUt7DfWGWjaXSLKdG33muGkuGRptQ==
+X-Received: by 2002:a2e:86cc:: with SMTP id n12mr3761996ljj.457.1621342496269;
+        Tue, 18 May 2021 05:54:56 -0700 (PDT)
 Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
-        by smtp.gmail.com with ESMTPSA id v14sm2265898lfb.201.2021.05.18.05.54.52
+        by smtp.gmail.com with ESMTPSA id v14sm2265898lfb.201.2021.05.18.05.54.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 05:54:53 -0700 (PDT)
+        Tue, 18 May 2021 05:54:55 -0700 (PDT)
 From:   Odin Ugedal <odin@uged.al>
 To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -59,193 +59,54 @@ To:     Ingo Molnar <mingo@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         Odin Ugedal <odin@uged.al>
-Subject: [PATCH 0/3] sched/fair: Fix load decay issues related to throttling
-Date:   Tue, 18 May 2021 14:51:59 +0200
-Message-Id: <20210518125202.78658-1-odin@uged.al>
+Subject: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+Date:   Tue, 18 May 2021 14:52:00 +0200
+Message-Id: <20210518125202.78658-2-odin@uged.al>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210518125202.78658-1-odin@uged.al>
+References: <20210518125202.78658-1-odin@uged.al>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is a follow up with some fairness fixes related to throttling, PELT and
-load decay in general.
+Make sure cfs_rq does not contribute to task group load avg when
+checking if it is decayed. Due to how the pelt tracking works,
+the divider can result in a situation where:
 
-It is related to the discussion in:
+cfs_rq->avg.load_sum = 0
+cfs_rq->avg.load_avg = 4
+cfs_rq->avg.tg_load_avg_contrib = 4
 
-https://lore.kernel.org/lkml/20210425080902.11854-1-odin@uged.al and
-https://lkml.kernel.org/r/20210501141950.23622-2-odin@uged.al
+If pelt tracking in this case does not cross a period, there is no
+"change" in load_sum, and therefore load_avg is not recalculated, and
+keeps its value.
 
-Tested on v5.13-rc2 (since that contain the fix from above^).
+If this cfs_rq is then removed from the leaf list, it results in a
+situation where the load is never removed from the tg. If that happen,
+the fiarness is permanently skewed.
 
-The patch descriptions should make sense in its own, and I have attached some
-simple reproduction scripts at the end of this mail. I also appended a patch
-fixing some ascii art that I have been looking at several times without
-understanding, when it turns out it breaks if tabs is not 8 spaces. I can
-submit that as a separate patch if necessary.
+Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
+Signed-off-by: Odin Ugedal <odin@uged.al>
+---
+ kernel/sched/fair.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Also, I have no idea what to call the "insert_on_unthrottle" var, so feel
-free to come with suggestions.
-
-
-There are probably "better" and more reliable ways to reproduce this, but
-these works for me "most of the time", and gives an ok context imo. Throttling
-is not deterministic, so keep that in mind. I have been testing with
-CONFIG_HZ=250, so if you use =1000 (or anything else), you might get other
-results/harder to reproduce.
-
-Reprod script for "Add tg_load_contrib cfs_rq decay checking":
---- bash start
-CGROUP=/sys/fs/cgroup/slice
-
-function run_sandbox {
-  local CG="$1"
-  local LCPU="$2"
-  local SHARES="$3"
-  local CMD="$4"
-
-  local PIPE="$(mktemp -u)"
-  mkfifo "$PIPE"
-  sh -c "read < $PIPE ; exec $CMD" &
-  local TASK="$!"
-  mkdir -p "$CG/sub"
-  tee "$CG"/cgroup.subtree_control <<< "+cpuset +cpu" 
-  tee "$CG"/sub/cgroup.procs <<< "$TASK"
-  tee "$CG"/sub/cpuset.cpus <<< "$LCPU"
-  tee "$CG"/sub/cpu.weight <<< "$SHARES"
-  tee "$CG"/cpu.max <<< "10000 100000"
-
-  sleep .1
-  tee "$PIPE" <<< sandox_done
-  rm "$PIPE"
-}
-
-mkdir -p "$CGROUP"
-tee "$CGROUP"/cgroup.subtree_control <<< "+cpuset +cpu" 
-
-run_sandbox "$CGROUP/cg-1" "0" 100 "stress --cpu 1"
-run_sandbox "$CGROUP/cg-2" "3" 100 "stress --cpu 1"
-sleep 1.02
-tee "$CGROUP"/cg-1/sub/cpuset.cpus <<< "1"
-sleep 1.05
-tee "$CGROUP"/cg-1/sub/cpuset.cpus <<< "2"
-sleep 1.07
-tee "$CGROUP"/cg-1/sub/cpuset.cpus <<< "3"
-
-sleep 2
-
-tee "$CGROUP"/cg-1/cpu.max <<< "max"
-tee "$CGROUP"/cg-2/cpu.max <<< "max"
-
-read
-killall stress
-sleep .2
-rmdir /sys/fs/cgroup/slice/{cg-{1,2}{/sub,},}
-
-# Often gives:
-# cat /sys/kernel/debug/sched/debug | grep ":/slice" -A 28 | egrep "(:/slice)|tg_load_avg"                                                                                                           odin@4670k
-# 
-# cfs_rq[3]:/slice/cg-2/sub
-#   .tg_load_avg_contrib           : 1024
-#   .tg_load_avg                   : 1024
-# cfs_rq[3]:/slice/cg-1/sub
-#   .tg_load_avg_contrib           : 1023
-#   .tg_load_avg                   : 1023
-# cfs_rq[3]:/slice/cg-1
-#   .tg_load_avg_contrib           : 1040
-#   .tg_load_avg                   : 2062
-# cfs_rq[3]:/slice/cg-2
-#   .tg_load_avg_contrib           : 1013
-#   .tg_load_avg                   : 1013
-# cfs_rq[3]:/slice
-#   .tg_load_avg_contrib           : 1540
-#   .tg_load_avg                   : 1540
---- bash end
-
-
-Reprod for "sched/fair: Correctly insert cfs_rqs to list on unthrottle":
---- bash start
-CGROUP=/sys/fs/cgroup/slice
-TMP_CG=/sys/fs/cgroup/tmp
-OLD_CG=/sys/fs/cgroup"$(cat /proc/self/cgroup | cut -c4-)"
-function run_sandbox {
-  local CG="$1"
-  local LCPU="$2"
-  local SHARES="$3"
-  local CMD="$4"
-
-  local PIPE="$(mktemp -u)"
-  mkfifo "$PIPE"
-  sh -c "read < $PIPE ; exec $CMD" &
-  local TASK="$!"
-  mkdir -p "$CG/sub"
-  tee "$CG"/cgroup.subtree_control <<< "+cpuset +cpu" 
-  tee "$CG"/sub/cpuset.cpus <<< "$LCPU"
-  tee "$CG"/sub/cgroup.procs <<< "$TASK"
-  tee "$CG"/sub/cpu.weight <<< "$SHARES"
-
-  sleep .01
-  tee "$PIPE" <<< sandox_done
-  rm "$PIPE"
-}
-
-mkdir -p "$CGROUP"
-mkdir -p "$TMP_CG"
-tee "$CGROUP"/cgroup.subtree_control <<< "+cpuset +cpu" 
-
-echo $$ | tee "$TMP_CG"/cgroup.procs
-tee "$TMP_CG"/cpuset.cpus <<< "0"
-sleep .1
-
-tee "$CGROUP"/cpu.max <<< "1000 4000"
-
-run_sandbox "$CGROUP/cg-0" "0" 10000 "stress --cpu 1"
-run_sandbox "$CGROUP/cg-3" "3" 1 "stress --cpu 1"
-
-sleep 2
-tee "$CGROUP"/cg-0/sub/cpuset.cpus <<< "3"
-
-tee "$CGROUP"/cpu.max <<< "max"
-
-read
-killall stress
-sleep .2
-echo $$ | tee "$OLD_CG"/cgroup.procs
-rmdir "$TMP_CG" /sys/fs/cgroup/slice/{cg-{0,3}{/sub,},}
-
-# Often gives:
-# cat /sys/kernel/debug/sched/debug | grep ":/slice" -A 28 | egrep "(:/slice)|tg_load_avg"                                                                                                           odin@4670k
-#
-# cfs_rq[3]:/slice/cg-3/sub
-#   .tg_load_avg_contrib           : 1039
-#   .tg_load_avg                   : 2036
-# cfs_rq[3]:/slice/cg-0/sub
-#   .tg_load_avg_contrib           : 1023
-#   .tg_load_avg                   : 1023
-# cfs_rq[3]:/slice/cg-0
-#   .tg_load_avg_contrib           : 102225
-#   .tg_load_avg                   : 102225
-# cfs_rq[3]:/slice/cg-3
-#   .tg_load_avg_contrib           : 4
-#   .tg_load_avg                   : 1001
-# cfs_rq[3]:/slice
-#   .tg_load_avg_contrib           : 1038
-#   .tg_load_avg                   : 1038
---- bash end
-
-Thanks
-Odin
-
-Odin Ugedal (3):
-  sched/fair: Add tg_load_contrib cfs_rq decay checking
-  sched/fair: Correctly insert cfs_rq's to list on unthrottle
-  sched/fair: Fix ascii art by relpacing tabs
-
- kernel/sched/fair.c  | 22 +++++++++++++---------
- kernel/sched/sched.h |  1 +
- 2 files changed, 14 insertions(+), 9 deletions(-)
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 3248e24a90b0..ceda53c2a87a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8004,6 +8004,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (cfs_rq->avg.runnable_sum)
+ 		return false;
+ 
++	if (cfs_rq->tg_load_avg_contrib)
++		return false;
++
+ 	return true;
+ }
+ 
 -- 
 2.31.1
 
