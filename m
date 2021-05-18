@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28010387B55
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A037387B43
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234436AbhEROjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
+        id S233556AbhEROib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233765AbhEROj3 (ORCPT
+        with ESMTP id S233018AbhEROia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:39:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAFC4C061761
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:38:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CcpTl6ahcoWKTT9zvVzM5pO89ICfycVf67IsEN9gVHg=; b=cWObSjC1R2ayoD9cjWuik10Ftw
-        JSaHdd4jdcbwIz7NG7TGRbBUhZzKfCSZGloSjbOkEKpwTsdW81UYLr1mno73udaCCu40bPsaQZMmw
-        zB26D1D4BSh6BhqCHMNfAVZrpyazuhMrtvzSNr2yXGPT7Gfl1tovFNOeaSlCKDLnprc8dGPQ03JZh
-        B4phq1acfQalXJ9KMyLbhIjZgvLUbAEZXQrVtDh6fiyMXVmCz9MAk9MBwXBFeL86mYEBOHfb+koLt
-        Tzo0BZvzDzryE0j3ZQ65mmAv+CnFXiBQs9+HFvLovpB5hSrpLuzH5onLtEAQYtoV1jJzJxeUVjJZb
-        eFgmfWmQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lj0qI-00E3xA-KH; Tue, 18 May 2021 14:37:17 +0000
-Date:   Tue, 18 May 2021 15:37:06 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/5] mm/swap: remove unused local variable nr_shadows
-Message-ID: <YKPREjo49dP8mW2J@casper.infradead.org>
-References: <20210518135352.3705306-1-linmiaohe@huawei.com>
- <20210518135352.3705306-3-linmiaohe@huawei.com>
+        Tue, 18 May 2021 10:38:30 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17104C061573;
+        Tue, 18 May 2021 07:37:12 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8815F1F42F11;
+        Tue, 18 May 2021 15:37:10 +0100 (BST)
+Date:   Tue, 18 May 2021 16:37:07 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     <patrice.chotard@foss.st.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH v4 3/3] spi: stm32-qspi: add automatic poll status
+ feature
+Message-ID: <20210518163707.0e6bd120@collabora.com>
+In-Reply-To: <20210518134332.17826-4-patrice.chotard@foss.st.com>
+References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
+        <20210518134332.17826-4-patrice.chotard@foss.st.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518135352.3705306-3-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 09:53:49PM +0800, Miaohe Lin wrote:
-> Since commit 55c653b71e8c ("mm: stop accounting shadow entries"),
-> nr_shadows is not used anymore.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+On Tue, 18 May 2021 15:43:32 +0200
+<patrice.chotard@foss.st.com> wrote:
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> +static int stm32_qspi_poll_status(struct spi_mem *mem, const struct spi_mem_op *op,
+> +				  u16 mask, u16 match,
+> +				  unsigned long initial_delay_us,
+> +				  unsigned long polling_rate_us,
+> +				  unsigned long timeout_ms)
+> +{
+> +	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
+> +	int ret;
+> +
 
-> +++ b/mm/swap_state.c
-> @@ -114,7 +114,6 @@ int add_to_swap_cache(struct page *page, swp_entry_t entry,
->  	SetPageSwapCache(page);
->  
->  	do {
-> -		unsigned long nr_shadows = 0;
->  
+The spi_mem_supports_op() call is still missing.
 
-Perhaps delete the blank line as well?
-
+> +	ret = pm_runtime_get_sync(qspi->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(qspi->dev);
+> +		return ret;
+> +	}
+> +
+> +	mutex_lock(&qspi->lock);
+> +
+> +	writel_relaxed(mask, qspi->io_base + QSPI_PSMKR);
+> +	writel_relaxed(match, qspi->io_base + QSPI_PSMAR);
+> +	qspi->fmode = CCR_FMODE_APM;
+> +	qspi->status_timeout = timeout_ms;
+> +
+> +	ret = stm32_qspi_send(mem, op);
+> +	mutex_unlock(&qspi->lock);
+> +
+> +	pm_runtime_mark_last_busy(qspi->dev);
+> +	pm_runtime_put_autosuspend(qspi->dev);
+> +
+> +	return ret;
+> +}
