@@ -2,127 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8175C387433
+	by mail.lfdr.de (Postfix) with ESMTP id 37C7A387432
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347572AbhERIlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S1347563AbhERIkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347546AbhERIkq (ORCPT
+        with ESMTP id S242786AbhERIkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:40:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB43C061756;
-        Tue, 18 May 2021 01:39:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=oLX06SvNo3MjZQD/51KQtJ1+KOvlvX5HnF5jVxIhJ2s=; b=EJKwgrdBNoAJQBcM1a+qXcU58X
-        ufdldCqyZtZg7taAcR3bY73VKd/RcTNJFJINv+Hz7D658IyYipL1mFfdDuXfOE2R5ynjs9DRHYqPJ
-        apDPlxzzKnYjUoVifboA42DEF9yaIPBXnQNEHgzgx5fUitm70X2GYSD6BIc/fEXHfPDfRsNg2DCnM
-        ZnY7Wc8YErU/szLvDoGrjr1AcD3juaMUWujsd75m3/dFpJr6Zl3MnOUwwKmXwqhH3NTEtWr9INEv9
-        eyxNqT4Hm65/XF3QXVXvwWi150mH+gh4x1WS46aDjCAUHVDju7OsbmwNv29WxCYWJb91rzECGE4Ik
-        N7BkBtIg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1livEZ-00DoCb-1W; Tue, 18 May 2021 08:37:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99BC530022A;
-        Tue, 18 May 2021 10:37:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8366D2BE6E843; Tue, 18 May 2021 10:37:46 +0200 (CEST)
-Date:   Tue, 18 May 2021 10:37:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Xu, Like" <like.xu@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-Subject: Re: [PATCH v6 02/16] perf/x86/intel: Handle guest PEBS overflow PMI
- for KVM guest
-Message-ID: <YKN82utjfLEX9ZJh@hirez.programming.kicks-ass.net>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-3-like.xu@linux.intel.com>
- <YKImQ2/DilGIkrfe@hirez.programming.kicks-ass.net>
- <bd684011-b83d-5c83-bdfb-926d6bc4595a@intel.com>
+        Tue, 18 May 2021 04:40:43 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3632C061573;
+        Tue, 18 May 2021 01:39:23 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 295CA2224B;
+        Tue, 18 May 2021 10:39:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621327161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wN0B4yaF1WgJIn6AazhTXeaQAJgd9QwuhScgIP3JPig=;
+        b=W7b3wCMRCC72RnHy19toWuAE0OyvC1yLqiBEuGMw1sko1O8bL+Y9dPLdMp1tOLShcNbhRh
+        ouSdgYVJewMtatpzPXd3OBAhJdWrUa/sdhY9+zjXbCcd6s6dCXG8xXrBGYMzRzky8y2cdo
+        ffr7ke+rRR4ESpybksIKM3BR72SUytI=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bd684011-b83d-5c83-bdfb-926d6bc4595a@intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 May 2021 10:39:20 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] gpio: regmap: Add configurable dir/value order
+In-Reply-To: <d5f294489d31a80b69169f358da89bb7f70d1328.1621279162.git.sander@svanheule.net>
+References: <cover.1621279162.git.sander@svanheule.net>
+ <d5f294489d31a80b69169f358da89bb7f70d1328.1621279162.git.sander@svanheule.net>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <675e36df5aaa1e1be3a1a77289a0a952@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 03:38:52PM +0800, Xu, Like wrote:
+Hi,
 
-> > I'm thinking you have your conditions in the wrong order; would it not
-> > be much cheaper to first check: '!x86_pmu.pebs_active || !guest_pebs_idx'
-> > than to do that horrible indirect ->is_in_guest() call?
-> > 
-> > After all, if the guest doesn't have PEBS enabled, who cares if we're
-> > currently in a guest or not.
+Am 2021-05-17 21:28, schrieb Sander Vanheule:
+> GPIO chips may not support setting the output value when a pin is
+> configured as an input, although the current implementation assumes 
+> this
+> is always possible.
 > 
-> Yes, it makes sense. How about:
+> Add support for setting pin direction before value. The order defaults
+> to setting the value first, but this can be reversed by setting the
+> regmap_config.no_set_on_input flag, similar to the corresponding flag 
+> in
+> the gpio-mmio driver.
 > 
-> @@ -2833,6 +2867,10 @@ static int handle_pmi_common(struct pt_regs *regs,
-> u64 status)
->                 u64 pebs_enabled = cpuc->pebs_enabled;
+> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> ---
+>  drivers/gpio/gpio-regmap.c  | 20 +++++++++++++++++---
+>  include/linux/gpio/regmap.h |  3 +++
+>  2 files changed, 20 insertions(+), 3 deletions(-)
 > 
->                 handled++;
-> +               if (x86_pmu.pebs_vmx && x86_pmu.pebs_active &&
-> +                   (cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask) &&
-> +                   (static_call(x86_guest_state)() & PERF_GUEST_ACTIVE))
-> +                       x86_pmu_handle_guest_pebs(regs, &data);
+> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+> index 134cedf151a7..1cdb20f8f8b4 100644
+> --- a/drivers/gpio/gpio-regmap.c
+> +++ b/drivers/gpio/gpio-regmap.c
+> @@ -170,14 +170,25 @@ static int gpio_regmap_direction_input(struct
+> gpio_chip *chip,
+>  	return gpio_regmap_set_direction(chip, offset, false);
+>  }
+> 
+> -static int gpio_regmap_direction_output(struct gpio_chip *chip,
+> -					unsigned int offset, int value)
+> +static int gpio_regmap_dir_out_val_first(struct gpio_chip *chip,
+> +					 unsigned int offset, int value)
 
-This is terruble, just call x86_pmu_handle_guest_pebs() unconditionally
-and put all the ugly inside it.
+Can we leave the name as is? TBH I find these two similar names
+super confusing. Maybe its just me, though.
 
->                 x86_pmu.drain_pebs(regs, &data);
->                 status &= intel_ctrl | GLOBAL_STATUS_TRACE_TOPAPMI;
+>  {
+>  	gpio_regmap_set(chip, offset, value);
 > 
-> > 
-> > Also, something like the below perhaps (arm64 and xen need fixing up at
-> > the very least) could make all that perf_guest_cbs stuff suck less.
+>  	return gpio_regmap_set_direction(chip, offset, true);
+>  }
 > 
-> How about the commit message for your below patch:
-> 
-> From: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> 
-> x86/core: Use static_call to rewrite perf_guest_info_callbacks
-> 
-> The two fields named "is_in_guest" and "is_user_mode" in
-> perf_guest_info_callbacks are replaced with a new multiplexed member
-> named "state", and the "get_guest_ip" field will be renamed to "get_ip".
-> 
-> The application of DEFINE_STATIC_CALL_RET0 (arm64 and xen need fixing
-> up at the very least) could make all that perf_guest_cbs stuff suck less.
-> For KVM, these callbacks will be updated in the kvm_arch_init().
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> +static int gpio_regmap_dir_out_dir_first(struct gpio_chip *chip,
+> +					 unsigned int offset, int value)
+> +{
+> +	int err;
 
-Well, you *do* need to fix up arm64 and xen, we can't very well break
-their builds can we now.
+use ret for consistency here
 
-> ----
-> 
-> I'm not sue if you have a strong reason to violate the check-patch rule:
-> 
-> ERROR: Using weak declarations can have unintended link defects
-> #238: FILE: include/linux/perf_event.h:1242:
-> +extern void __weak arch_perf_update_guest_cbs(void);
+> +
+> +	err = gpio_regmap_set_direction(chip, offset, true);
+> +	gpio_regmap_set(chip, offset, value);
+> +
+> +	return err;
+> +}
+> +
 
-Copy/paste fail I think. I didn't really put much effort into the patch,
-only made sure defconfig+kvm_guest.config compiled.
+Instead of adding a new one, we can also just check no_set_on_input
+in gpio_regmap_direction_output(), which I'd prefer.
+
+static int gpio_regmap_direction_output(struct gpio_chip *chip,
+					unsigned int offset, int value)
+{
+	struct gpio_regmap *gpio = gpiochip_get_data(chip);
+	int ret;
+
+	if (gpio->no_set_on_input) {
+		/* some smart comment here, also mention gliches */
+		ret = gpio_regmap_set_direction(chip, offset, true);
+		gpio_regmap_set(chip, offset, value);
+	} else {
+		gpio_regmap_set(chip, offset, value);
+		ret = gpio_regmap_set_direction(chip, offset, true);
+	}
+
+	return ret;
+}
+
+>  void gpio_regmap_set_drvdata(struct gpio_regmap *gpio, void *data)
+>  {
+>  	gpio->driver_data = data;
+> @@ -277,7 +288,10 @@ struct gpio_regmap *gpio_regmap_register(const
+> struct gpio_regmap_config *config
+>  	if (gpio->reg_dir_in_base || gpio->reg_dir_out_base) {
+>  		chip->get_direction = gio_regmap_get_direction;
+>  		chip->direction_input = gpio_regmap_direction_input;
+> -		chip->direction_output = gpio_regmap_direction_output;
+> +		if (config->no_set_on_input)
+> +			chip->direction_output = gpio_regmap_dir_out_dir_first;
+> +		else
+> +			chip->direction_output = gpio_regmap_dir_out_val_first;
+>  	}
+> 
+>  	ret = gpiochip_add_data(chip, gpio);
+> diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
+> index 334dd928042b..2a732f8f23be 100644
+> --- a/include/linux/gpio/regmap.h
+> +++ b/include/linux/gpio/regmap.h
+> @@ -30,6 +30,8 @@ struct regmap;
+>   * @reg_dir_out_base:	(Optional) out setting register base address
+>   * @reg_stride:		(Optional) May be set if the registers (of the
+>   *			same type, dat, set, etc) are not consecutive.
+> + * @no_set_on_input:	Set if output value can only be set when the 
+> direction
+> + *			is configured as output.
+
+set_direction_first ?
+
+>   * @ngpio_per_reg:	Number of GPIOs per register
+>   * @irq_domain:		(Optional) IRQ domain if the controller is
+>   *			interrupt-capable
+> @@ -73,6 +75,7 @@ struct gpio_regmap_config {
+>  	unsigned int reg_dir_out_base;
+>  	int reg_stride;
+>  	int ngpio_per_reg;
+> +	bool no_set_on_input;
+>  	struct irq_domain *irq_domain;
+> 
+>  	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
+
+-michael
