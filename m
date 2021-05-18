@@ -2,244 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2219387347
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EC338734C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347197AbhERHZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:25:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2967 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241311AbhERHZP (ORCPT
+        id S1347195AbhERH0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240235AbhERH0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 03:25:15 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FknVF4KSqzCtm3;
-        Tue, 18 May 2021 15:21:09 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 15:23:55 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 18 May 2021 15:23:54 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <will@kernel.org>, <mark.rutland@arm.com>, <john.garry@huawei.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangshaokun@hisilicon.com>
-Subject: [PATCH 9/9] arm64: perf: Remove redundant macro and functions in perf_event.c
-Date:   Tue, 18 May 2021 15:23:48 +0800
-Message-ID: <1621322628-9945-10-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621322628-9945-1-git-send-email-liuqi115@huawei.com>
-References: <1621322628-9945-1-git-send-email-liuqi115@huawei.com>
+        Tue, 18 May 2021 03:26:25 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC20C061573;
+        Tue, 18 May 2021 00:25:07 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id r4so7729175iol.6;
+        Tue, 18 May 2021 00:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wTVSPalbEEWdezESLHW099twl6KWlq48rnfB06zKRdM=;
+        b=n6ULUxnfvbTXeWAyingnjKAIHXRfdKwWJyDkmVh8iblgGFJyFt59qOeplmSp9BI73i
+         ip2JHaS89161O3L6ATtnBNySVtYwoXLAgBdz+NRRd/KjGsELyD2l8aQYEFxWYNfhWHcB
+         Ki7nLK5LwfCJ5/6hsSeF9QYxwp/FgVqIbz2hjbXQV+HaKlzONEAmgehLradJvI1U1SKw
+         Pq6purSCcEmuB6jRawFz5Edeug7YCio5ziArhLbccc5S9SAis7FHp7AfMqhKLo9GsdCA
+         3a/kco8sAWrUDqRgJJVy7mSN7Pqwfl+4JsJh31g2n0lGckUtmDyOBhOdwJhHu07uhTcE
+         KiAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wTVSPalbEEWdezESLHW099twl6KWlq48rnfB06zKRdM=;
+        b=TmVi5idMDeXIvFIWQlAOwASCVlusSd88pOT6fnxSGvcVF2BChPZrmOMKW4+/4zR2FN
+         I+A7o5Iud30Yqs8TCcWU2K2jIt4ISLCPQGykCzOMKgbG27yJWS0YkPk7fhEUoDnBuug7
+         d5ugl99W2GI5Pon/KAcBsTNbkXU5cGSlbkzuS1ZMRCzqk6U0xEV/B8LmVtBlhyhwZ6RZ
+         OqrRA+e5dLrjs3KdqoeMHHHe7+3bGpvduvKqatyvVAH9H1OVm+Qd6ucxjd4nCAsNRXJ4
+         r0aNdqBB8xKP3R3DTFBGT97Va51ZKHo9NXAtbrTT/bfuTLIPnrwdIgDBH/AJUM7nDtA7
+         +VeQ==
+X-Gm-Message-State: AOAM531PgHvCyzi0zhgOYOI4ukptQwATEuRXzmxIOGJZ81d6Yvfj/s93
+        U6SjhRQ6lseZHTgHOgItAtScZLTpewla2IBfzQtVvJe1ACw=
+X-Google-Smtp-Source: ABdhPJwELT8I15JAFmpqeSZ8n41s70v5oxp/UFTtQmGT399V29iN9f2vVILDJp0y0YeEKVSjTnVrHw+Z3BObk3yE6NQ=
+X-Received: by 2002:a05:6638:1a9:: with SMTP id b9mr3919148jaq.97.1621322706315;
+ Tue, 18 May 2021 00:25:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+References: <20210508064925.8045-1-heiko.thiery@gmail.com> <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
+ <YKKprl2ukkR7Djv+@pevik> <800a8d8d-e3f0-d052-ece4-f49188ceb6c6@gmail.com>
+In-Reply-To: <800a8d8d-e3f0-d052-ece4-f49188ceb6c6@gmail.com>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Tue, 18 May 2021 09:24:53 +0200
+Message-ID: <CAEyMn7a7NT_waZ3RuaPTpCCuhO9M7rv7A3TUwa7J2gYBmZR03g@mail.gmail.com>
+Subject: Re: [PATCH iproute2-next v3] lib/fs: fix issue when
+ {name,open}_to_handle_at() is not implemented
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Petr Vorel <petr.vorel@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stephen@networkplumber.org,
+        Dmitry Yakunin <zeil@yandex-team.ru>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove ARMV8_EVENT_ATTR and armv8pmu_events_sysfs_show(), as there is
-a general function for this.
+Hi all,
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
- arch/arm64/kernel/perf_event.c | 175 +++++++++++++++++++----------------------
- 1 file changed, 79 insertions(+), 96 deletions(-)
+Am Di., 18. Mai 2021 um 03:51 Uhr schrieb David Ahern <dsahern@gmail.com>:
+>
+> On 5/17/21 11:36 AM, Petr Vorel wrote:
+> > I guess, it'll be merged to regular iproute2 in next merge window (for 5.14).
+> >
+>
+> Let's see how things go over the 5.13 dev cycle. If no problems, maybe
+> Stephen can merge this one and the config change to main before the release.
 
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index f594957..ee9e723 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -153,104 +153,87 @@ static const unsigned armv8_vulcan_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
- 	[C(NODE)][C(OP_WRITE)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_WR,
- };
- 
--static ssize_t
--armv8pmu_events_sysfs_show(struct device *dev,
--			   struct device_attribute *attr, char *page)
--{
--	struct perf_pmu_events_attr *pmu_attr;
--
--	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
--
--	return sprintf(page, "event=0x%04llx\n", pmu_attr->id);
--}
--
--#define ARMV8_EVENT_ATTR(name, config)						\
--	(&((struct perf_pmu_events_attr) {					\
--		.attr = __ATTR(name, 0444, armv8pmu_events_sysfs_show, NULL),	\
--		.id = config,							\
--	}).attr.attr)
--
- static struct attribute *armv8_pmuv3_event_attrs[] = {
--	ARMV8_EVENT_ATTR(sw_incr, ARMV8_PMUV3_PERFCTR_SW_INCR),
--	ARMV8_EVENT_ATTR(l1i_cache_refill, ARMV8_PMUV3_PERFCTR_L1I_CACHE_REFILL),
--	ARMV8_EVENT_ATTR(l1i_tlb_refill, ARMV8_PMUV3_PERFCTR_L1I_TLB_REFILL),
--	ARMV8_EVENT_ATTR(l1d_cache_refill, ARMV8_PMUV3_PERFCTR_L1D_CACHE_REFILL),
--	ARMV8_EVENT_ATTR(l1d_cache, ARMV8_PMUV3_PERFCTR_L1D_CACHE),
--	ARMV8_EVENT_ATTR(l1d_tlb_refill, ARMV8_PMUV3_PERFCTR_L1D_TLB_REFILL),
--	ARMV8_EVENT_ATTR(ld_retired, ARMV8_PMUV3_PERFCTR_LD_RETIRED),
--	ARMV8_EVENT_ATTR(st_retired, ARMV8_PMUV3_PERFCTR_ST_RETIRED),
--	ARMV8_EVENT_ATTR(inst_retired, ARMV8_PMUV3_PERFCTR_INST_RETIRED),
--	ARMV8_EVENT_ATTR(exc_taken, ARMV8_PMUV3_PERFCTR_EXC_TAKEN),
--	ARMV8_EVENT_ATTR(exc_return, ARMV8_PMUV3_PERFCTR_EXC_RETURN),
--	ARMV8_EVENT_ATTR(cid_write_retired, ARMV8_PMUV3_PERFCTR_CID_WRITE_RETIRED),
--	ARMV8_EVENT_ATTR(pc_write_retired, ARMV8_PMUV3_PERFCTR_PC_WRITE_RETIRED),
--	ARMV8_EVENT_ATTR(br_immed_retired, ARMV8_PMUV3_PERFCTR_BR_IMMED_RETIRED),
--	ARMV8_EVENT_ATTR(br_return_retired, ARMV8_PMUV3_PERFCTR_BR_RETURN_RETIRED),
--	ARMV8_EVENT_ATTR(unaligned_ldst_retired, ARMV8_PMUV3_PERFCTR_UNALIGNED_LDST_RETIRED),
--	ARMV8_EVENT_ATTR(br_mis_pred, ARMV8_PMUV3_PERFCTR_BR_MIS_PRED),
--	ARMV8_EVENT_ATTR(cpu_cycles, ARMV8_PMUV3_PERFCTR_CPU_CYCLES),
--	ARMV8_EVENT_ATTR(br_pred, ARMV8_PMUV3_PERFCTR_BR_PRED),
--	ARMV8_EVENT_ATTR(mem_access, ARMV8_PMUV3_PERFCTR_MEM_ACCESS),
--	ARMV8_EVENT_ATTR(l1i_cache, ARMV8_PMUV3_PERFCTR_L1I_CACHE),
--	ARMV8_EVENT_ATTR(l1d_cache_wb, ARMV8_PMUV3_PERFCTR_L1D_CACHE_WB),
--	ARMV8_EVENT_ATTR(l2d_cache, ARMV8_PMUV3_PERFCTR_L2D_CACHE),
--	ARMV8_EVENT_ATTR(l2d_cache_refill, ARMV8_PMUV3_PERFCTR_L2D_CACHE_REFILL),
--	ARMV8_EVENT_ATTR(l2d_cache_wb, ARMV8_PMUV3_PERFCTR_L2D_CACHE_WB),
--	ARMV8_EVENT_ATTR(bus_access, ARMV8_PMUV3_PERFCTR_BUS_ACCESS),
--	ARMV8_EVENT_ATTR(memory_error, ARMV8_PMUV3_PERFCTR_MEMORY_ERROR),
--	ARMV8_EVENT_ATTR(inst_spec, ARMV8_PMUV3_PERFCTR_INST_SPEC),
--	ARMV8_EVENT_ATTR(ttbr_write_retired, ARMV8_PMUV3_PERFCTR_TTBR_WRITE_RETIRED),
--	ARMV8_EVENT_ATTR(bus_cycles, ARMV8_PMUV3_PERFCTR_BUS_CYCLES),
-+	PMU_EVENT_ATTR_ID(sw_incr, ARMV8_PMUV3_PERFCTR_SW_INCR),
-+	PMU_EVENT_ATTR_ID(l1i_cache_refill, ARMV8_PMUV3_PERFCTR_L1I_CACHE_REFILL),
-+	PMU_EVENT_ATTR_ID(l1i_tlb_refill, ARMV8_PMUV3_PERFCTR_L1I_TLB_REFILL),
-+	PMU_EVENT_ATTR_ID(l1d_cache_refill, ARMV8_PMUV3_PERFCTR_L1D_CACHE_REFILL),
-+	PMU_EVENT_ATTR_ID(l1d_cache, ARMV8_PMUV3_PERFCTR_L1D_CACHE),
-+	PMU_EVENT_ATTR_ID(l1d_tlb_refill, ARMV8_PMUV3_PERFCTR_L1D_TLB_REFILL),
-+	PMU_EVENT_ATTR_ID(ld_retired, ARMV8_PMUV3_PERFCTR_LD_RETIRED),
-+	PMU_EVENT_ATTR_ID(st_retired, ARMV8_PMUV3_PERFCTR_ST_RETIRED),
-+	PMU_EVENT_ATTR_ID(inst_retired, ARMV8_PMUV3_PERFCTR_INST_RETIRED),
-+	PMU_EVENT_ATTR_ID(exc_taken, ARMV8_PMUV3_PERFCTR_EXC_TAKEN),
-+	PMU_EVENT_ATTR_ID(exc_return, ARMV8_PMUV3_PERFCTR_EXC_RETURN),
-+	PMU_EVENT_ATTR_ID(cid_write_retired, ARMV8_PMUV3_PERFCTR_CID_WRITE_RETIRED),
-+	PMU_EVENT_ATTR_ID(pc_write_retired, ARMV8_PMUV3_PERFCTR_PC_WRITE_RETIRED),
-+	PMU_EVENT_ATTR_ID(br_immed_retired, ARMV8_PMUV3_PERFCTR_BR_IMMED_RETIRED),
-+	PMU_EVENT_ATTR_ID(br_return_retired, ARMV8_PMUV3_PERFCTR_BR_RETURN_RETIRED),
-+	PMU_EVENT_ATTR_ID(unaligned_ldst_retired, ARMV8_PMUV3_PERFCTR_UNALIGNED_LDST_RETIRED),
-+	PMU_EVENT_ATTR_ID(br_mis_pred, ARMV8_PMUV3_PERFCTR_BR_MIS_PRED),
-+	PMU_EVENT_ATTR_ID(cpu_cycles, ARMV8_PMUV3_PERFCTR_CPU_CYCLES),
-+	PMU_EVENT_ATTR_ID(br_pred, ARMV8_PMUV3_PERFCTR_BR_PRED),
-+	PMU_EVENT_ATTR_ID(mem_access, ARMV8_PMUV3_PERFCTR_MEM_ACCESS),
-+	PMU_EVENT_ATTR_ID(l1i_cache, ARMV8_PMUV3_PERFCTR_L1I_CACHE),
-+	PMU_EVENT_ATTR_ID(l1d_cache_wb, ARMV8_PMUV3_PERFCTR_L1D_CACHE_WB),
-+	PMU_EVENT_ATTR_ID(l2d_cache, ARMV8_PMUV3_PERFCTR_L2D_CACHE),
-+	PMU_EVENT_ATTR_ID(l2d_cache_refill, ARMV8_PMUV3_PERFCTR_L2D_CACHE_REFILL),
-+	PMU_EVENT_ATTR_ID(l2d_cache_wb, ARMV8_PMUV3_PERFCTR_L2D_CACHE_WB),
-+	PMU_EVENT_ATTR_ID(bus_access, ARMV8_PMUV3_PERFCTR_BUS_ACCESS),
-+	PMU_EVENT_ATTR_ID(memory_error, ARMV8_PMUV3_PERFCTR_MEMORY_ERROR),
-+	PMU_EVENT_ATTR_ID(inst_spec, ARMV8_PMUV3_PERFCTR_INST_SPEC),
-+	PMU_EVENT_ATTR_ID(ttbr_write_retired, ARMV8_PMUV3_PERFCTR_TTBR_WRITE_RETIRED),
-+	PMU_EVENT_ATTR_ID(bus_cycles, ARMV8_PMUV3_PERFCTR_BUS_CYCLES),
- 	/* Don't expose the chain event in /sys, since it's useless in isolation */
--	ARMV8_EVENT_ATTR(l1d_cache_allocate, ARMV8_PMUV3_PERFCTR_L1D_CACHE_ALLOCATE),
--	ARMV8_EVENT_ATTR(l2d_cache_allocate, ARMV8_PMUV3_PERFCTR_L2D_CACHE_ALLOCATE),
--	ARMV8_EVENT_ATTR(br_retired, ARMV8_PMUV3_PERFCTR_BR_RETIRED),
--	ARMV8_EVENT_ATTR(br_mis_pred_retired, ARMV8_PMUV3_PERFCTR_BR_MIS_PRED_RETIRED),
--	ARMV8_EVENT_ATTR(stall_frontend, ARMV8_PMUV3_PERFCTR_STALL_FRONTEND),
--	ARMV8_EVENT_ATTR(stall_backend, ARMV8_PMUV3_PERFCTR_STALL_BACKEND),
--	ARMV8_EVENT_ATTR(l1d_tlb, ARMV8_PMUV3_PERFCTR_L1D_TLB),
--	ARMV8_EVENT_ATTR(l1i_tlb, ARMV8_PMUV3_PERFCTR_L1I_TLB),
--	ARMV8_EVENT_ATTR(l2i_cache, ARMV8_PMUV3_PERFCTR_L2I_CACHE),
--	ARMV8_EVENT_ATTR(l2i_cache_refill, ARMV8_PMUV3_PERFCTR_L2I_CACHE_REFILL),
--	ARMV8_EVENT_ATTR(l3d_cache_allocate, ARMV8_PMUV3_PERFCTR_L3D_CACHE_ALLOCATE),
--	ARMV8_EVENT_ATTR(l3d_cache_refill, ARMV8_PMUV3_PERFCTR_L3D_CACHE_REFILL),
--	ARMV8_EVENT_ATTR(l3d_cache, ARMV8_PMUV3_PERFCTR_L3D_CACHE),
--	ARMV8_EVENT_ATTR(l3d_cache_wb, ARMV8_PMUV3_PERFCTR_L3D_CACHE_WB),
--	ARMV8_EVENT_ATTR(l2d_tlb_refill, ARMV8_PMUV3_PERFCTR_L2D_TLB_REFILL),
--	ARMV8_EVENT_ATTR(l2i_tlb_refill, ARMV8_PMUV3_PERFCTR_L2I_TLB_REFILL),
--	ARMV8_EVENT_ATTR(l2d_tlb, ARMV8_PMUV3_PERFCTR_L2D_TLB),
--	ARMV8_EVENT_ATTR(l2i_tlb, ARMV8_PMUV3_PERFCTR_L2I_TLB),
--	ARMV8_EVENT_ATTR(remote_access, ARMV8_PMUV3_PERFCTR_REMOTE_ACCESS),
--	ARMV8_EVENT_ATTR(ll_cache, ARMV8_PMUV3_PERFCTR_LL_CACHE),
--	ARMV8_EVENT_ATTR(ll_cache_miss, ARMV8_PMUV3_PERFCTR_LL_CACHE_MISS),
--	ARMV8_EVENT_ATTR(dtlb_walk, ARMV8_PMUV3_PERFCTR_DTLB_WALK),
--	ARMV8_EVENT_ATTR(itlb_walk, ARMV8_PMUV3_PERFCTR_ITLB_WALK),
--	ARMV8_EVENT_ATTR(ll_cache_rd, ARMV8_PMUV3_PERFCTR_LL_CACHE_RD),
--	ARMV8_EVENT_ATTR(ll_cache_miss_rd, ARMV8_PMUV3_PERFCTR_LL_CACHE_MISS_RD),
--	ARMV8_EVENT_ATTR(remote_access_rd, ARMV8_PMUV3_PERFCTR_REMOTE_ACCESS_RD),
--	ARMV8_EVENT_ATTR(l1d_cache_lmiss_rd, ARMV8_PMUV3_PERFCTR_L1D_CACHE_LMISS_RD),
--	ARMV8_EVENT_ATTR(op_retired, ARMV8_PMUV3_PERFCTR_OP_RETIRED),
--	ARMV8_EVENT_ATTR(op_spec, ARMV8_PMUV3_PERFCTR_OP_SPEC),
--	ARMV8_EVENT_ATTR(stall, ARMV8_PMUV3_PERFCTR_STALL),
--	ARMV8_EVENT_ATTR(stall_slot_backend, ARMV8_PMUV3_PERFCTR_STALL_SLOT_BACKEND),
--	ARMV8_EVENT_ATTR(stall_slot_frontend, ARMV8_PMUV3_PERFCTR_STALL_SLOT_FRONTEND),
--	ARMV8_EVENT_ATTR(stall_slot, ARMV8_PMUV3_PERFCTR_STALL_SLOT),
--	ARMV8_EVENT_ATTR(sample_pop, ARMV8_SPE_PERFCTR_SAMPLE_POP),
--	ARMV8_EVENT_ATTR(sample_feed, ARMV8_SPE_PERFCTR_SAMPLE_FEED),
--	ARMV8_EVENT_ATTR(sample_filtrate, ARMV8_SPE_PERFCTR_SAMPLE_FILTRATE),
--	ARMV8_EVENT_ATTR(sample_collision, ARMV8_SPE_PERFCTR_SAMPLE_COLLISION),
--	ARMV8_EVENT_ATTR(cnt_cycles, ARMV8_AMU_PERFCTR_CNT_CYCLES),
--	ARMV8_EVENT_ATTR(stall_backend_mem, ARMV8_AMU_PERFCTR_STALL_BACKEND_MEM),
--	ARMV8_EVENT_ATTR(l1i_cache_lmiss, ARMV8_PMUV3_PERFCTR_L1I_CACHE_LMISS),
--	ARMV8_EVENT_ATTR(l2d_cache_lmiss_rd, ARMV8_PMUV3_PERFCTR_L2D_CACHE_LMISS_RD),
--	ARMV8_EVENT_ATTR(l2i_cache_lmiss, ARMV8_PMUV3_PERFCTR_L2I_CACHE_LMISS),
--	ARMV8_EVENT_ATTR(l3d_cache_lmiss_rd, ARMV8_PMUV3_PERFCTR_L3D_CACHE_LMISS_RD),
--	ARMV8_EVENT_ATTR(ldst_align_lat, ARMV8_PMUV3_PERFCTR_LDST_ALIGN_LAT),
--	ARMV8_EVENT_ATTR(ld_align_lat, ARMV8_PMUV3_PERFCTR_LD_ALIGN_LAT),
--	ARMV8_EVENT_ATTR(st_align_lat, ARMV8_PMUV3_PERFCTR_ST_ALIGN_LAT),
--	ARMV8_EVENT_ATTR(mem_access_checked, ARMV8_MTE_PERFCTR_MEM_ACCESS_CHECKED),
--	ARMV8_EVENT_ATTR(mem_access_checked_rd, ARMV8_MTE_PERFCTR_MEM_ACCESS_CHECKED_RD),
--	ARMV8_EVENT_ATTR(mem_access_checked_wr, ARMV8_MTE_PERFCTR_MEM_ACCESS_CHECKED_WR),
-+	PMU_EVENT_ATTR_ID(l1d_cache_allocate, ARMV8_PMUV3_PERFCTR_L1D_CACHE_ALLOCATE),
-+	PMU_EVENT_ATTR_ID(l2d_cache_allocate, ARMV8_PMUV3_PERFCTR_L2D_CACHE_ALLOCATE),
-+	PMU_EVENT_ATTR_ID(br_retired, ARMV8_PMUV3_PERFCTR_BR_RETIRED),
-+	PMU_EVENT_ATTR_ID(br_mis_pred_retired, ARMV8_PMUV3_PERFCTR_BR_MIS_PRED_RETIRED),
-+	PMU_EVENT_ATTR_ID(stall_frontend, ARMV8_PMUV3_PERFCTR_STALL_FRONTEND),
-+	PMU_EVENT_ATTR_ID(stall_backend, ARMV8_PMUV3_PERFCTR_STALL_BACKEND),
-+	PMU_EVENT_ATTR_ID(l1d_tlb, ARMV8_PMUV3_PERFCTR_L1D_TLB),
-+	PMU_EVENT_ATTR_ID(l1i_tlb, ARMV8_PMUV3_PERFCTR_L1I_TLB),
-+	PMU_EVENT_ATTR_ID(l2i_cache, ARMV8_PMUV3_PERFCTR_L2I_CACHE),
-+	PMU_EVENT_ATTR_ID(l2i_cache_refill, ARMV8_PMUV3_PERFCTR_L2I_CACHE_REFILL),
-+	PMU_EVENT_ATTR_ID(l3d_cache_allocate, ARMV8_PMUV3_PERFCTR_L3D_CACHE_ALLOCATE),
-+	PMU_EVENT_ATTR_ID(l3d_cache_refill, ARMV8_PMUV3_PERFCTR_L3D_CACHE_REFILL),
-+	PMU_EVENT_ATTR_ID(l3d_cache, ARMV8_PMUV3_PERFCTR_L3D_CACHE),
-+	PMU_EVENT_ATTR_ID(l3d_cache_wb, ARMV8_PMUV3_PERFCTR_L3D_CACHE_WB),
-+	PMU_EVENT_ATTR_ID(l2d_tlb_refill, ARMV8_PMUV3_PERFCTR_L2D_TLB_REFILL),
-+	PMU_EVENT_ATTR_ID(l2i_tlb_refill, ARMV8_PMUV3_PERFCTR_L2I_TLB_REFILL),
-+	PMU_EVENT_ATTR_ID(l2d_tlb, ARMV8_PMUV3_PERFCTR_L2D_TLB),
-+	PMU_EVENT_ATTR_ID(l2i_tlb, ARMV8_PMUV3_PERFCTR_L2I_TLB),
-+	PMU_EVENT_ATTR_ID(remote_access, ARMV8_PMUV3_PERFCTR_REMOTE_ACCESS),
-+	PMU_EVENT_ATTR_ID(ll_cache, ARMV8_PMUV3_PERFCTR_LL_CACHE),
-+	PMU_EVENT_ATTR_ID(ll_cache_miss, ARMV8_PMUV3_PERFCTR_LL_CACHE_MISS),
-+	PMU_EVENT_ATTR_ID(dtlb_walk, ARMV8_PMUV3_PERFCTR_DTLB_WALK),
-+	PMU_EVENT_ATTR_ID(itlb_walk, ARMV8_PMUV3_PERFCTR_ITLB_WALK),
-+	PMU_EVENT_ATTR_ID(ll_cache_rd, ARMV8_PMUV3_PERFCTR_LL_CACHE_RD),
-+	PMU_EVENT_ATTR_ID(ll_cache_miss_rd, ARMV8_PMUV3_PERFCTR_LL_CACHE_MISS_RD),
-+	PMU_EVENT_ATTR_ID(remote_access_rd, ARMV8_PMUV3_PERFCTR_REMOTE_ACCESS_RD),
-+	PMU_EVENT_ATTR_ID(l1d_cache_lmiss_rd, ARMV8_PMUV3_PERFCTR_L1D_CACHE_LMISS_RD),
-+	PMU_EVENT_ATTR_ID(op_retired, ARMV8_PMUV3_PERFCTR_OP_RETIRED),
-+	PMU_EVENT_ATTR_ID(op_spec, ARMV8_PMUV3_PERFCTR_OP_SPEC),
-+	PMU_EVENT_ATTR_ID(stall, ARMV8_PMUV3_PERFCTR_STALL),
-+	PMU_EVENT_ATTR_ID(stall_slot_backend, ARMV8_PMUV3_PERFCTR_STALL_SLOT_BACKEND),
-+	PMU_EVENT_ATTR_ID(stall_slot_frontend, ARMV8_PMUV3_PERFCTR_STALL_SLOT_FRONTEND),
-+	PMU_EVENT_ATTR_ID(stall_slot, ARMV8_PMUV3_PERFCTR_STALL_SLOT),
-+	PMU_EVENT_ATTR_ID(sample_pop, ARMV8_SPE_PERFCTR_SAMPLE_POP),
-+	PMU_EVENT_ATTR_ID(sample_feed, ARMV8_SPE_PERFCTR_SAMPLE_FEED),
-+	PMU_EVENT_ATTR_ID(sample_filtrate, ARMV8_SPE_PERFCTR_SAMPLE_FILTRATE),
-+	PMU_EVENT_ATTR_ID(sample_collision, ARMV8_SPE_PERFCTR_SAMPLE_COLLISION),
-+	PMU_EVENT_ATTR_ID(cnt_cycles, ARMV8_AMU_PERFCTR_CNT_CYCLES),
-+	PMU_EVENT_ATTR_ID(stall_backend_mem, ARMV8_AMU_PERFCTR_STALL_BACKEND_MEM),
-+	PMU_EVENT_ATTR_ID(l1i_cache_lmiss, ARMV8_PMUV3_PERFCTR_L1I_CACHE_LMISS),
-+	PMU_EVENT_ATTR_ID(l2d_cache_lmiss_rd, ARMV8_PMUV3_PERFCTR_L2D_CACHE_LMISS_RD),
-+	PMU_EVENT_ATTR_ID(l2i_cache_lmiss, ARMV8_PMUV3_PERFCTR_L2I_CACHE_LMISS),
-+	PMU_EVENT_ATTR_ID(l3d_cache_lmiss_rd, ARMV8_PMUV3_PERFCTR_L3D_CACHE_LMISS_RD),
-+	PMU_EVENT_ATTR_ID(ldst_align_lat, ARMV8_PMUV3_PERFCTR_LDST_ALIGN_LAT),
-+	PMU_EVENT_ATTR_ID(ld_align_lat, ARMV8_PMUV3_PERFCTR_LD_ALIGN_LAT),
-+	PMU_EVENT_ATTR_ID(st_align_lat, ARMV8_PMUV3_PERFCTR_ST_ALIGN_LAT),
-+	PMU_EVENT_ATTR_ID(mem_access_checked, ARMV8_MTE_PERFCTR_MEM_ACCESS_CHECKED),
-+	PMU_EVENT_ATTR_ID(mem_access_checked_rd, ARMV8_MTE_PERFCTR_MEM_ACCESS_CHECKED_RD),
-+	PMU_EVENT_ATTR_ID(mem_access_checked_wr, ARMV8_MTE_PERFCTR_MEM_ACCESS_CHECKED_WR),
- 	NULL,
- };
- 
+Thanks
+
 -- 
-2.7.4
-
+Heiko
