@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB3F387FA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF6E387FAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351593AbhERSdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:33:31 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58911 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234536AbhERSdb (ORCPT
+        id S1344682AbhERSg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238176AbhERSgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:33:31 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lj4Vo-0006zx-1L; Tue, 18 May 2021 18:32:12 +0000
-To:     Tong Zhang <ztong0001@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
-Date:   Tue, 18 May 2021 19:32:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 18 May 2021 14:36:24 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B13C061573;
+        Tue, 18 May 2021 11:35:05 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id 69so5599640plc.5;
+        Tue, 18 May 2021 11:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=0pCWCxkW1MMIQdUudHsoJuhPPHXRdzzJG0c8w1tSeR8=;
+        b=DHCTvpnRHFzDo6XLOCLXRpjbdKxJDtobPp/gG1DSW+bd5JGzPqzrwnQLtwaCS0OYOX
+         FMokn8fNxWWVGF3B/Ys1IST+fUl7tmOXv4j6Jq571gVQdpPkfc8KCdMn3FDgHt2aEOdi
+         i4YO2+CKHv2gjodBspCage4Ne3xIk3BzXRM9dzj9MgILfJgibNDqwdqB+en3y41SXE6m
+         phSgAu9lnvJ9mByvcRKh5HKxenhpOW5x8xGKFwMHN7CrxE3sH/w1fJe3tiLd2jVBNy9l
+         rEtokD2XBH31JspFeZnJn52WanjrAMPyPq6BJyNS8PVihR/3NnW0mD/gYiMuTbAf9jM6
+         Z3JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0pCWCxkW1MMIQdUudHsoJuhPPHXRdzzJG0c8w1tSeR8=;
+        b=TJB8ZI3aofTMwt7vska9rYYJTAo9pq/qUyBB7bAWToF5m+GkIMJPsQ6whLWQoCnzQD
+         6/tridjrB88IC4pCxsOGriN781SabTOisdIzttmbyTUlhY793C+0C8GVDl5F3yE8RoaW
+         n9JaEXBRcbc8s2KiG17IRBDKJcVx+kVmFyzx9aShEoKu3uK/P9GFUq2kjjHjrezhGOkf
+         RrVhLC/g3Rf7atVGeYUwXtehIM0KhE+TUKV1gsS5eN0tf4TrOQ8sfkR2MarlKHh9QWP0
+         0qyJ4gOlHnOtD44G6V8i8k6uQyBJ5CsA2PZd8p4/ySZeQJREbjFaYhBTkCoq9x74YMjV
+         CkvA==
+X-Gm-Message-State: AOAM532EkjHTWm9m22+Mjaaifpurlanc5+3GqyH3G3/mIn4pkGQWru8v
+        gsJvmu+8SeFcJL435yAOIeCbXlxbO9vIsQ==
+X-Google-Smtp-Source: ABdhPJxHN3lWgTNEvcx/VMEkuYOz7LIOeUXbyu5dHUFxytplk6xsY6N/J6jQsW8nL55plSd+ZpQawQ==
+X-Received: by 2002:a17:90a:1641:: with SMTP id x1mr6383343pje.114.1621362904275;
+        Tue, 18 May 2021 11:35:04 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a93f:e998:b72d:dcc8:8823])
+        by smtp.googlemail.com with ESMTPSA id q24sm13371626pjp.6.2021.05.18.11.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 11:35:03 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, akpm@linux-foundation.org,
+        grandmaster@al2klimov.de, keescook@chromium.org
+Subject: [PATCH] ASoC: omap-twl4030: fix kernel-doc syntax in file header
+Date:   Wed, 19 May 2021 00:04:51 +0530
+Message-Id: <20210518183451.15097-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+The header for include/linux/platform_data/omap-twl4030.h follows this
+syntax, but the content inside does not comply with kernel-doc.
 
-Static analysis on linux-next with Coverity has detected an issue in
-drivers/misc/cardreader/alcor_pci.c in function
-alcor_pci_init_check_aspm  with the following commit:
+This line was probably not meant for kernel-doc parsing, but is parsed
+due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+causes unexpected warning from kernel-doc:
+warning: expecting prototype for omap(). Prototype was for _OMAP_TWL4030_H_() instead
 
-commit 3ce3e45cc333da707d4d6eb433574b990bcc26f5
-Author: Tong Zhang <ztong0001@gmail.com>
-Date:   Thu May 13 00:07:33 2021 -0400
+Provide a simple fix by replacing this occurrence with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
 
-    misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+ include/linux/platform_data/omap-twl4030.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The analysis is as follows:
-
-135 static void alcor_pci_init_check_aspm(struct alcor_pci_priv *priv)
-136 {
-137        struct pci_dev *pci;
-138        int where;
-139        u32 val32;
-140
-141        priv->pdev_cap_off    = alcor_pci_find_cap_offset(priv,
-priv->pdev);
-142        /*
-143         * A device might be attached to root complex directly and
-144         * priv->parent_pdev will be NULL. In this case we don't
-check its
-145         * capability and disable ASPM completely.
-146         */
-
-   1. Condition !priv->parent_pdev, taking true branch.
-   2. var_compare_op: Comparing priv->parent_pdev to null implies that
-priv->parent_pdev might be null.
-
-147        if (!priv->parent_pdev)
-
-   Dereference after null check (FORWARD_NULL)
-   3. var_deref_model: Passing null pointer priv->parent_pdev to
-alcor_pci_find_cap_offset, which dereferences it.
-
-148                priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
-149
-priv->parent_pdev);
-
-When !priv->parent_pdev is true, then priv->parent_pdev is NULL and
-hence the call to alcor_pci_find_cap_offset() is dereferencing a null
-pointer in the priv->parent_pdev argument.
-
-I suspect the logic in the if statement is inverted, the ! should be
-removed. This seems too trivial to be wrong. Maybe I'm missing something
-deeper.
-
-Colin
+diff --git a/include/linux/platform_data/omap-twl4030.h b/include/linux/platform_data/omap-twl4030.h
+index 0dd851ea1c72..68e903807dfe 100644
+--- a/include/linux/platform_data/omap-twl4030.h
++++ b/include/linux/platform_data/omap-twl4030.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/**
++/*
+  * omap-twl4030.h - ASoC machine driver for TI SoC based boards with twl4030
+  *		    codec, header.
+  *
+-- 
+2.17.1
 
