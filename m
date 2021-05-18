@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71D1387618
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4C438760D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348368AbhERKIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348341AbhERKIf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:08:35 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78DEC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:07:15 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id y9so10846766ljn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=zuwdeAPUpN79x5GuaLRBL3CmBAv3cElVGO0nQDT8pgg=;
-        b=dOddR+RZh8FPgN0Hy3+Tbb5TGSLunQQ9yYAD4rNn19MBDdv5GyWH8FzcAriBMxmcjL
-         XlJkuPyqR7eEpzZjK4Ujn7CvOL86843Zjcky20VYxqotRYfICScleBQpqgQlLLepGwqD
-         pqAe29fwO7AKOGE/3UG7pGRJq7j8zUDwVbBAdkkneqcrltmLA3TrEqVaCkD4wFUWcZ9f
-         VV7Z1ejE6rfELszkkTiGVsUfp+vdPJfb4mWuF+rRg4cDC256RncTvbzHiWs3iA7YOT8b
-         iagqYVgxitcc1BTKOfDD7FjWonv28yhznXveoTDu7MCOZlkuclFHt2lBlAe+pZ2yLXo2
-         UagQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=zuwdeAPUpN79x5GuaLRBL3CmBAv3cElVGO0nQDT8pgg=;
-        b=KTBcOqhr1fIzy2ZZ6QXu1Bg0fDRk0J4J0/36SukH4AAKNVhegOJNefuiJcfzJaB4fS
-         tg2r4DuE/9vQ61CoX3wbdibbBl0H6V/c9SOB3xLdxjS33UZLwzVC8cWHgjNEGJE5VGXB
-         91AEYuPL68wkguPn/caHh5ntUDaGbgIRa3qo9ou2beF2ePUpZ8bVl+F92dtNg3dc262F
-         NHzAXN7oQ8y76h0o8Vk/2QIEQnnQKv0Vv1kr+HCPz4d/0beyJbkRnfS3q8/vAutEe3e8
-         4upSHvbP6hSRdj9vmocaV9rZRz4a6tZmOkknIhZy1gIhAfn080J7g5kHsE9zlCevUQuF
-         1gJA==
-X-Gm-Message-State: AOAM530OByCMDJz18oe1l89D1jwbl8W5BBdf6h14GtyTI5VW0S02H3e2
-        sf1nZOYl7JA8dk+TJMWON/8gKwX8lrXAyQ==
-X-Google-Smtp-Source: ABdhPJwgYeWUM1gLeYEBPloQMQfy3RcflzWXk1IBzIfC7kzQfQ2g6NQCJJURbpi1AuwyPdq8lZFmXQ==
-X-Received: by 2002:a2e:a547:: with SMTP id e7mr3507237ljn.408.1621332434186;
-        Tue, 18 May 2021 03:07:14 -0700 (PDT)
-Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id u23sm1586531lfq.287.2021.05.18.03.07.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 03:07:13 -0700 (PDT)
-Date:   Tue, 18 May 2021 12:07:12 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [GIT PULL] OP-TEE fix for v5.13
-Message-ID: <20210518100712.GA449561@jade>
+        id S1348353AbhERKIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:08:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:47466 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348324AbhERKIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:08:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5D7A1FB;
+        Tue, 18 May 2021 03:06:44 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8F3C3F719;
+        Tue, 18 May 2021 03:06:42 -0700 (PDT)
+Subject: Re: [PATCH] mm/debug_vm_pgtable: Ensure THP availability via
+ has_transparent_hugepage()
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+References: <1621325590-18199-1-git-send-email-anshuman.khandual@arm.com>
+ <8b9cb771-8fa1-4fc2-bb45-20673240edd8@csgroup.eu>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <4f1e1a56-2820-cbf4-d5a6-0ed7715afd9b@arm.com>
+Date:   Tue, 18 May 2021 15:37:27 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <8b9cb771-8fa1-4fc2-bb45-20673240edd8@csgroup.eu>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
 
-Please pull this small OP-TEE driver fix which uses export_uuid() to copy
-the client UUID instead of making asumptions about the internal format of
-uuid_t.
 
-Thanks,
-Jens
+On 5/18/21 2:20 PM, Christophe Leroy wrote:
+> 
+> 
+> Le 18/05/2021 à 10:13, Anshuman Khandual a écrit :
+>> On certain platforms, THP support could not just be validated via the build
+>> option CONFIG_TRANSPARENT_HUGEPAGE. Instead has_transparent_hugepage() also
+>> needs to be called upon to verify THP runtime support. Otherwise the debug
+>> test might just run into unusable THP helpers like in the case of a 4K hash
+> 
+> s/might/will/
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Sure, will replace.
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+> 
+>> config on powerpc platform [1]. This just moves all pfn_pmd() and pfn_pud()
+>> after THP runtime validation with has_transparent_hugepage() which prevents
+>> the mentioned problem.
+>>
+>> [1] https://bugzilla.kernel.org/show_bug.cgi?id=213069
+>>
+>> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+>> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> 
+> There should be a Fixes:  tag
 
-are available in the Git repository at:
+Considering pmd_basic_tests() as the earliest test which is being
+impacted here, this actually fixes an earlier fix which tried the
+very same thing but was probably not complete. But it also applies
+to portions of advanced tests which came later on as well, which
+should have taken this problem into account.
 
-  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-fix-for-v5.13
+Fixes: 787d563b8642 ("mm/debug_vm_pgtable: fix kernel crash by checking for THP support")
 
-for you to fetch changes up to 673c7aa2436bfc857b92417f3e590a297c586dde:
+> 
+>> ---
+>> This applies on v5.13-rc2 after the following patches.
+>>
+>> [1] https://lore.kernel.org/linux-mm/20210419071820.750217-1-liushixin2@huawei.com/
+>> [2] https://lore.kernel.org/linux-mm/20210419071820.750217-2-liushixin2@huawei.com/
+> 
+> I can't see any fixes: tag in those patches, and their subject line even targets them to -next. Are they meant to go to 5.13 and stable ?
+> 
+> If not, how do you coordinate between your patch that must go in 5.13 and in stable, and those two patches ? Shouldn't your patch go first and those other patches be rebased on top ?
 
-  optee: use export_uuid() to copy client UUID (2021-05-18 07:59:27 +0200)
-
-----------------------------------------------------------------
-OP-TEE use export_uuid() to copy UUID
-
-----------------------------------------------------------------
-Jens Wiklander (1):
-      optee: use export_uuid() to copy client UUID
-
- drivers/tee/optee/call.c      | 6 ++++--
- drivers/tee/optee/optee_msg.h | 6 ++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+Right, will rebase this patch on v5.13-rc2 directly without those two
+patches. Hence this can be merged in v5.13 and backported to stable
+if required.
