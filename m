@@ -2,121 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B17B386F50
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C21D386F3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345873AbhERBfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:35:10 -0400
-Received: from gateway36.websitewelcome.com ([192.185.200.11]:27321 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345874AbhERBe4 (ORCPT
+        id S1345821AbhERBc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:32:29 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:39780 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345806AbhERBcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:34:56 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id 459A3400C2EF0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:10:59 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id ioGBly4uCMGeEioGBl0VSQ; Mon, 17 May 2021 20:10:59 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SHU+3vvN64BDQu7qZYD0FXs6TjeRwBgIv9Xx2RD6kic=; b=I10VJN4wv1oMd7EwHRtVWpEL86
-        ZCAz6TOfWkfFcMq3oeUvIhR2PdziCAsXFOdWAH+uW3dj/AraVnlyg0wb6tw2JL+ruy/FqwKNpZT8e
-        m+XAfBjWqe7rYDCZZD60hJXo9jmHAds0yEMxDqFqugcRGEvYqCRgQv3FfwA6H08j8t6MonvlDJB1R
-        L9VWx4qRqwCkDmUnWDxl4Joe03PHvQbanjhxje1XvGEzZpeAJTwaIQDg/bGc8jJwZElsE8T/N3JCk
-        37ChBdq36F0u8JexojxfmEYIadymoIEjMX9A7MaypC4/OgreakfQLmxzi72o4DVyTWFBv2+uvns40
-        3CSEe7tw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53628 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lioG7-003E5c-PS; Mon, 17 May 2021 20:10:55 -0500
-Subject: Re: [PATCH RESEND][next] xfrm: Fix fall-through warnings for Clang
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210305092319.GA139967@embeddedor>
- <fbe896ed-860d-4a92-f92b-bce83ba413ee@embeddedor.com>
-Message-ID: <12e41d98-5cab-d4af-424d-228c664d5be7@embeddedor.com>
-Date:   Mon, 17 May 2021 20:11:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 21:32:25 -0400
+Received: by mail-ot1-f49.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so7263923otc.6;
+        Mon, 17 May 2021 18:31:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/RSOoqhuiqo17cNHJeQnsn2BsYZzfIuhfVaZtk7HlAI=;
+        b=Ly7t5tSgsWtYratthNhsSvj4DQjFnwHFSGOEpFe1r+YyuerVWSpLq0OG66p0YySHmp
+         mIK11E/2Ypwfy7+80m7MQly2KXPIw7fDPD+zWwGsKk8MgaMDMOADQKKi8ZJ3WXzT2UfE
+         7RJ3le+b0gb86IJsPfnuqcDvq8dK7Mp/G0uMmgjLODMjWEJaK1mYJLwLbtAQgEXWS2QJ
+         MtIqWB5tNWOXCNWjPMEWEH/CEcyv7ptdWn318yO9G/akGN4jcNrabaBy//MNy1p7kCnP
+         nSS5vBJ/wGJXq/xmLwrW/PWaju7ExxnaWnfA42Kk8/fhFzftgzDXI0kHOdn1Ok7MtVlJ
+         30BA==
+X-Gm-Message-State: AOAM532yIE7caM6IJul3ZEBQm8mYy0wmmgLrwxXoBlUXFyYbUFAA+AYv
+        WgB+Gr7pWuMqBt1GDM/PvA==
+X-Google-Smtp-Source: ABdhPJwacfhvQJoqC0TpKWr/JSpwLyySu3mZTYOCZ9M87EWupKbWKx9ECYY2CON9rXMQe0TUkOrFeQ==
+X-Received: by 2002:a05:6830:903:: with SMTP id v3mr2046583ott.192.1621301467081;
+        Mon, 17 May 2021 18:31:07 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o15sm3432988ota.61.2021.05.17.18.31.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 18:31:06 -0700 (PDT)
+Received: (nullmailer pid 3606358 invoked by uid 1000);
+        Tue, 18 May 2021 01:31:04 -0000
+Date:   Mon, 17 May 2021 20:31:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        linux-clk@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-serial@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 01/16] dt-bindings: arm: renesas: Document Renesas
+ RZ/G2UL SoC
+Message-ID: <20210518013104.GA3606329@robh.at.kernel.org>
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210514192218.13022-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <fbe896ed-860d-4a92-f92b-bce83ba413ee@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lioG7-003E5c-PS
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53628
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 36
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514192218.13022-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-If you don't mind, I'm taking this in my -next[1] branch for v5.14.
-
-Thanks
---
-Gustavo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
-
-On 4/20/21 15:08, Gustavo A. R. Silva wrote:
-> Hi all,
+On Fri, 14 May 2021 20:22:03 +0100, Lad Prabhakar wrote:
+> Add device tree bindings documentation for Renesas RZ/G2UL SoC.
 > 
-> Friendly ping: who can take this, please?
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> ---
+>  Documentation/devicetree/bindings/arm/renesas.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> Thanks
-> --
-> Gustavo
-> 
-> On 3/5/21 03:23, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->> by explicitly adding a break statement instead of letting the code fall
->> through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>  net/xfrm/xfrm_interface.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
->> index 8831f5a9e992..41de46b5ffa9 100644
->> --- a/net/xfrm/xfrm_interface.c
->> +++ b/net/xfrm/xfrm_interface.c
->> @@ -432,6 +432,7 @@ static int xfrmi4_err(struct sk_buff *skb, u32 info)
->>  	case ICMP_DEST_UNREACH:
->>  		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
->>  			return 0;
->> +		break;
->>  	case ICMP_REDIRECT:
->>  		break;
->>  	default:
->>
+
+Acked-by: Rob Herring <robh@kernel.org>
