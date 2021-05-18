@@ -2,57 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127F53882B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1A83882B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352740AbhERWWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 18:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236910AbhERWWo (ORCPT
+        id S242589AbhERW2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 18:28:16 -0400
+Received: from pb-smtp1.pobox.com ([64.147.108.70]:61547 "EHLO
+        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232020AbhERW2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 18:22:44 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E76C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:21:25 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id e11so13229001ljn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6wvxlnMACzl5Vgyrn4bxRllNgosr37fqx5aWg2Pc570=;
-        b=uimXX1kMk7Yd1tMNua5/EW3Dr0eu10uzFXDOL6LNd1bgX0TH2xjaIu/RImU4snFEBE
-         jJ5x8BDkyRY22nVbRAwfkSkv3dq/e+P6EKZKLA65OH95Li335DtCzXXBEv/m/NF6f8m7
-         Zvx0d5XkofbSuRhx8CUOG8f4F8w92ZeCrLAKZ1kZzVIuHE+ASUG4aCHpVhcONpYFvaZa
-         zgv5uxd+BeEyxlX0a/thQev7DZ0Vi93CC9L/ap9flZ2tM2N+IyammDpuAjrGLvLiMnw5
-         RkHMjKFgALjIC4jrucVLN7UmnnkQCFd3rE6AXImJZ5aXalsrR5NbaUjzayIFlHtmmq7E
-         LfYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6wvxlnMACzl5Vgyrn4bxRllNgosr37fqx5aWg2Pc570=;
-        b=nwDOERVdoeQFhTath9BbEQudkNTjhl6cmBq+xL1HBdxUBGmuQi2riDf81T7+L2I7cw
-         DfXgvvR3PhjYbcx8Paduku5LTGQFv1TkxiebsRoSoVHu8DwryyRUiDmBW8I4zY7hyUaV
-         HIo9tbSibftFJXUYI6XjLajT99GACuoJob4fd795gzDFHKJp5uYpZC0fcUTgEv0qPq5f
-         zXTmskcclHQ6yBrd2PA1hcRU9+49qjBAGIOByog5MmOupHSr0cfBDAJkZuMnaTEayxVU
-         /x5GXhrrS5htERd8ObbvqAy8IhmfB7qKsOsNwcSYYaHW574IU3+XFYJmdCbBo+8AmAEL
-         HwKw==
-X-Gm-Message-State: AOAM533/+VtyxxCJKujp8gULbz5VuMRa5M8gLh29lGWoKz2XW4mtZcJ7
-        OUe8Zgqv/DlBp+JykrMUhiy4GvQCg9QwwKMOVOkR8w==
-X-Google-Smtp-Source: ABdhPJwlnW3ly6Ny6e9IIz9/CA7MNOePxxOU0BqKeMkRRi+b2Ljau2EQiV/khaJy56dbImbe7rM07lY5GpAgcnCGeSA=
-X-Received: by 2002:a2e:889a:: with SMTP id k26mr5694835lji.438.1621376484445;
- Tue, 18 May 2021 15:21:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210518120633.GW12395@shell.armlinux.org.uk> <E1liydf-0005BQ-PY@rmk-PC.armlinux.org.uk>
-In-Reply-To: <E1liydf-0005BQ-PY@rmk-PC.armlinux.org.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 19 May 2021 00:21:13 +0200
-Message-ID: <CACRpkdZyGPp6oJWPMdYEEddugj4Amt4+5Hw_YVtkQuxETw5g=w@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ARM: change vmalloc_start to vmalloc_size
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
+        Tue, 18 May 2021 18:28:15 -0400
+Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 4E889C94B9;
+        Tue, 18 May 2021 18:26:56 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+        :to:cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=uyX7ogXS6ttXtxFCbmbVJP7Uy1ThRGIHklbWlj
+        5/1VM=; b=SBb6K/wMjBJmXenq7GziC3+EM1gJaPRLnIzjFL0SSUqdeFGYWAWEsk
+        z5Ngawvv2Mrfvwsisgkw3fk5nD0Fi4nughxecFDIEniVhqMKLI3ibuaOhljzhqiL
+        X5hAV/UUOR3XV7j/mb9zkODMBiJv5Pm1jjIIoI71N1YGkNIL9oNmg=
+Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 44F70C94B8;
+        Tue, 18 May 2021 18:26:56 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=uyX7ogXS6ttXtxFCbmbVJP7Uy1ThRGIHklbWlj5/1VM=; b=Kvi1UQ8jAmauFX24SwSRCxgrbHf6aHWfv34aYkbuN1wT/6gUjqZUeUxsqqSXETW4XwN7gCPjkUn1MJ2YqlOJKkDDRfqi/eqO4rlfY8CTza9Bsk/xvnm1l77h5dkuwpz4en9er302gBJZg2cLKrYoraznZ4C2tN+ALRtoxZnYHzw=
+Received: from yoda.home (unknown [96.21.170.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id BD810C94B7;
+        Tue, 18 May 2021 18:26:55 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id C6DEE2DA0092;
+        Tue, 18 May 2021 18:26:54 -0400 (EDT)
+Date:   Tue, 18 May 2021 18:26:54 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Linus Walleij <linus.walleij@linaro.org>
+cc:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Yanfei Xu <yanfei.xu@windriver.com>,
         Mike Rapoport <rppt@kernel.org>,
         Ard Biesheuvel <ardb@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -60,22 +49,40 @@ Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
         Tian Tao <tiantao6@hisilicon.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 3/4] ARM: change vmalloc_min to vmalloc_start
+In-Reply-To: <CACRpkdbZObW2SXdTUkPrsezjjVU19emts420EN-uhkHWb+4vrA@mail.gmail.com>
+Message-ID: <sons6q6-2630-rr8s-18ns-221454n9472@syhkavp.arg>
+References: <20210518120633.GW12395@shell.armlinux.org.uk> <E1liyda-0005B4-Kk@rmk-PC.armlinux.org.uk> <CACRpkdbZObW2SXdTUkPrsezjjVU19emts420EN-uhkHWb+4vrA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 270766AC-B828-11EB-80B9-D152C8D8090B-78420484!pb-smtp1.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 2:15 PM Russell King (Oracle)
-<rmk+kernel@armlinux.org.uk> wrote:
+On Wed, 19 May 2021, Linus Walleij wrote:
 
-> Rather than storing the start of vmalloc space, store the size, and
-> move the calculation into adjust_lowmem_limit(). We now have one single
-> place where this calculation takes place.
->
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> On Tue, May 18, 2021 at 2:15 PM Russell King (Oracle)
+> <rmk+kernel@armlinux.org.uk> wrote:
+> 
+> > Change the current vmalloc_min, which is supposed to be the lowest
+> > address of vmalloc space including the VMALLOC_OFFSET, to vmalloc_start
+> > which does not include VMALLOC_OFFSET.
+> >
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> > +static unsigned long __initdata vmalloc_start = VMALLOC_END - (240 << 20);
+> 
+> When I first read this it took me some time to figure out what was
+> going on here, so if you have time, please fold in a comment
+> with some explanation of that (240 << 20) thing, in some blog
+> post I described it as "an interesting way to write 0x0f000000"
+> but I suppose commit 0536bdf33faf chose this way for a
+> specific reason? (Paging Nico if he can explain it.)
 
-This is really nice.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+That's an alternative (and deprecated) way to write MB(240).
 
-Yours,
-Linus Walleij
+
+Nicolas
