@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58396388225
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49639388257
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352262AbhERVce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236729AbhERVcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:32:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90A876124C;
-        Tue, 18 May 2021 21:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621373474;
-        bh=d0+hSpHTltY5juyqwHwyL+G+xHCIlY0BOiHIqPiFSTM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K3IkDYf5WzG84qZdrk493mElmsqetEgx7UtrgyRD92P25kMU/2NnsR1jUS/IdYBj1
-         KpHfDimRF4fXrFQ75vN7kAoaJxW4DtlpllTLXKjN74Jpdfzywy0nuBMQU4uNjPLvzq
-         YcCKMH0JQ/3Yj+KZUonoDZ7j2+U6eZbzWHXYcHSkRoTnTwDSQ7iepxk8u6YzIuknPW
-         nBT2zx6uFojpxjdgasR5X+VLrmXSALrJceUxQ1Qi8sZNBiFNgek49YbyWhFHhYoGLM
-         Sr6kLztyMyuHVPK+zmrSMFT6aM6wrdbq9TagKSMB9QL/nSAfL+JlINx3IkVwMWq/xO
-         KG87Ke2bRZjyQ==
-Date:   Tue, 18 May 2021 14:31:12 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Nobuhiro Iwamatsu <iwamatsu@debian.org>
-Subject: Re: [PATCH v2 07/13] asm-generic: unaligned always use struct helpers
-Message-ID: <YKQyICQuyJZsl+/j@gmail.com>
-References: <20210514100106.3404011-1-arnd@kernel.org>
- <20210514100106.3404011-8-arnd@kernel.org>
- <YKLlyQnR+3uW4ETD@gmail.com>
- <CAK8P3a0iqe5V6uvaW+Eo0qiwzvyUVavVEfZGwXh4s8ad+0RdCg@mail.gmail.com>
- <CAHk-=wjjo+F8HVkq3eLg+=7hjZPF5mkA4JbgAU8FGE_oAw2MEg@mail.gmail.com>
- <CAK8P3a3hbts4k+rrfnE8Z78ezCaME0UVgwqkdLW5NOps2YHUQQ@mail.gmail.com>
- <CAHk-=wjuoGyxDhAF8SsrTkN0-YfCx7E6jUN3ikC_tn2AKWTTsA@mail.gmail.com>
- <CAK8P3a0QMjP-i7aw_CBRHPu7ffzX0p_vYF_SRtpd_iB8HW5TqQ@mail.gmail.com>
+        id S1352589AbhERVqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:46:15 -0400
+Received: from mailfilter05-out40.webhostingserver.nl ([195.211.74.36]:47116
+        "EHLO mailfilter05-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352580AbhERVqN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 17:46:13 -0400
+X-Greylist: delayed 964 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 17:46:12 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=exalondelft.nl; s=whs1;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+         from;
+        bh=r1V16Y5GIRXwUTK+1TLre5uwbLOjG0Lm/wFKIhXVtXY=;
+        b=miTktNcY7YTq2u9lPqkSuJ6v2iSkoBIuafLAk/cz2/D9XxKL0ctaKmnse0v1D4zAJfQP/C9wo4Y3l
+         UDPuCxEYRL0Dz5L5HWBxbsJvbnU4S6dT3gA4muXx+MscedtBzFDcQ6RlyxJocGmwhau/m0GEDXkBG+
+         9iTT5L6Fe6p/KoOuDhWRvUqGYuOt/kFV8U9JbK4zyceLO6y1TDZZXkZZNZY47ZB8LMvUvrv8NmSi/g
+         j5qSGtpbRUb/mYOzwTyuYN4Fdcu2y3aSm93vS8SRp+Qw0m95qEcw3eK2ktDU10NuhWj2vnBTmvbCua
+         csoDRyTGjXozu6iHmP2B0/eIZkSHM3w==
+X-Halon-ID: 086bd20a-b820-11eb-b080-001a4a4cb933
+Received: from s198.webhostingserver.nl (s198.webhostingserver.nl [141.138.168.154])
+        by mailfilter05.webhostingserver.nl (Halon) with ESMTPSA
+        id 086bd20a-b820-11eb-b080-001a4a4cb933;
+        Tue, 18 May 2021 23:28:48 +0200 (CEST)
+Received: from [2001:981:6fec:1:dae6:899:1e05:8781] (helo=delfion.fritz.box)
+        by s198.webhostingserver.nl with esmtpa (Exim 4.94.2)
+        (envelope-from <ftoth@exalondelft.nl>)
+        id 1lj7Gi-004E57-8x; Tue, 18 May 2021 23:28:48 +0200
+From:   Ferry Toth <ftoth@exalondelft.nl>
+To:     linux-kernel@vger.kernel.org
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2 1/1] extcon: intel-mrfld: Sync hardware and software state on init
+Date:   Tue, 18 May 2021 23:27:09 +0200
+Message-Id: <20210518212708.301112-1-ftoth@exalondelft.nl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0QMjP-i7aw_CBRHPu7ffzX0p_vYF_SRtpd_iB8HW5TqQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 10:51:23PM +0200, Arnd Bergmann wrote:
-> 
-> > zstd looks very similar to lz4.
-> 
-> > End result: at a minimum, I'd suggest using
-> > "-fno-tree-loop-vectorize", although somebody should check that NEON
-> > case.
-> 
-> > And I still think that using O3 for anything halfway complicated
-> > should be considered odd and need some strong numbers to enable.
-> 
-> Agreed. I think there is a fairly strong case for just using -O2 on lz4
-> and backport that to stable.
-> Searching for lz4 bugs with -O3 also finds several reports including
-> one that I sent myself:
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65709
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69702
-> 
-> I see that user space zstd is built with -O3 in Debian, but it the changelog
-> also lists "Improved : better speed on clang and gcc -O2, thanks to Eric
-> Biggers", so maybe Eric has some useful ideas on whether we should
-> just use -O2 for the in-kernel version.
-> 
+extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
+DRD to detect a change in the switch position. This change initializes the
+status at probe time.
 
-In my opinion, -O2 is a good default even for compression code.  I generally
-don't see any benefit from -O3 in compression code I've written.
+Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: stable@vger.kernel.org
+---
 
-That being said, -O2 is what I usually use during development.  Other people
-could write code that relies on -O3 to be optimized well.
+v2:
+ - Clarified patch title (Chanwoo)
+---
+ drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-The Makefiles for lz4 and zstd use -O3 by default, which is a little concerning.
-I do expect that they're still well-written enough to do well with -O2 too, but
-it would require doing benchmarks to tell for sure.  (As Arnd noted, it happens
-that I did do such benchmarks on zstd about 5 years ago, and I found an issue
-where some functions weren't marked inline when they should be, causing them to
-be inlined at -O3 but not at -O2.  That got fixed.)
+diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
+index f47016fb28a8..cd1a5f230077 100644
+--- a/drivers/extcon/extcon-intel-mrfld.c
++++ b/drivers/extcon/extcon-intel-mrfld.c
+@@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+ 	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
+ 	struct regmap *regmap = pmic->regmap;
+ 	struct mrfld_extcon_data *data;
++	unsigned int status;
+ 	unsigned int id;
+ 	int irq, ret;
+ 
+@@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+ 	/* Get initial state */
+ 	mrfld_extcon_role_detect(data);
+ 
++	/*
++	 * Cached status value is used for cable detection, see comments
++	 * in mrfld_extcon_cable_detect(), we need to sync cached value
++	 * with a real state of the hardware.
++	 */
++	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
++	data->status = status;
++
+ 	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
+ 	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
+ 
+-- 
+2.30.2
 
-- Eric
