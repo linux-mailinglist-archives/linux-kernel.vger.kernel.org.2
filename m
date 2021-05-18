@@ -2,227 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C94B387FBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1633387FC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351608AbhERSjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344691AbhERSja (ORCPT
+        id S1351618AbhERSmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:42:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5846 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1343747AbhERSmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:39:30 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78390C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:38:10 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id j14so9590039wrq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:38:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Huc21UOdwPm7LAcMF6IDLuI3qr/CzsjN0hTgKyze11c=;
-        b=pbeTfT/zAWAbrjMc3KD6Gzn44cNIr2HWhd/h4jEOEDiAKnA1jNwbNxzq3c+yPkuqiO
-         EV+UhtlP7sMyOQLLG+DDeVOypX6sqKdQMyERYUwEX8oOpAfv4rULeWo2Zz/ZwylS6h+7
-         zJj2PK9IuFIyJqGMGehkGvvL/ZVyDOY4OYpI8IdibzlIkSRxBgGrNRw9nDeO5ZUEI/Zu
-         UjWWnDebmzljIs+V154G0HncayJW78gM5BMlO4TJWBkf5yCrs/zVkHiXeHW09z8Rhu7+
-         ljgHDRtTChGqOXB0dGbidywt8MXbfSIuN1BnoB7Ojfv3YkgtsMLACcWN99FsEc/f2lGR
-         zNwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Huc21UOdwPm7LAcMF6IDLuI3qr/CzsjN0hTgKyze11c=;
-        b=jXoHEV6fcK08MZYj41naY0ZZROo9npl6xMmoQZ/WgoZ/99TOesS8+T7+v8Ban++RYK
-         JCiVDrgBFK69wCUv5bEyhMuPDbwLDePRWPM5yO9ZOnaF1xBi4y9C4gX5Ms3JmiPwelBA
-         lj0tYa59/0NYvKTP6hoJ/i5tnyfqn9qoyV/DaY57+yac2w9zF97oe67DPzQzPYsGQRC2
-         0ETmPPv9w+eWSlmkbUB7PJdNGJ7aKUUYTI1I6WookbojVo/OEm6snj3u3YdRy/EnqAVl
-         4LlaDFSNBYS0a1MM0uocqRvT8o6ztKXXIz5EHtAJMv6tDHfUyXylGy8XJGe8yEM4QWI/
-         mO3Q==
-X-Gm-Message-State: AOAM531akxO9j5CmKlU0hlapsX491wJ6S+f94xCD7HwngCEjxfDxm807
-        QBwilzPreNoCmMSKwboBMR9CiCgb2SGFew==
-X-Google-Smtp-Source: ABdhPJxEzSm2dA9aDTl991lTkKDfsxON+bT2vLdlUOLnICU65XUyaEVNHQyr+Z2Bn2OQ+ltXRjcWHg==
-X-Received: by 2002:adf:9c8e:: with SMTP id d14mr9057975wre.140.1621363089108;
-        Tue, 18 May 2021 11:38:09 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id b12sm23051343wro.28.2021.05.18.11.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 11:38:08 -0700 (PDT)
-Date:   Tue, 18 May 2021 20:38:06 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Rob Herring <robh@kernel.org>, linus.walleij@linaro.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: display: convert faraday,tve200 to YAML
-Message-ID: <YKQJjrlTB0RZYNOK@Red>
-References: <20210511165448.422987-1-clabbe@baylibre.com>
- <20210518002624.GA3346846@robh.at.kernel.org>
+        Tue, 18 May 2021 14:42:13 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IIX1oq108596;
+        Tue, 18 May 2021 14:40:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mpWbosnb8VVA/+zebGzaWvCztpF3Pmo6b6Ffz3h8D6M=;
+ b=GF1/CQ0tO7HVUVmSFIWDhZWNZWdEV0xZ4a8E7W7KXNCMZ5YLE0BE6OGhsSSiw20gHdfH
+ PI5uZ7r4deC86VMPHTe5cIN4iyVMuRvajJtFwo3jFYBBdxOCfo9/zOaz/dUrF8w+H2Eq
+ HIJNbDDkIqCCxSnyzsyiQTUFlgPjt23KQW0hyobg7/ZE/XXjzEmYaILXHCQ5FxceVtJk
+ d8Wt3msGRApKaPmKBJp/Nk1KkvOHnTbh+fxRYU9xmvSmCbS1TSd0jz2HErDNpTEnr7LD
+ xc1Bivj/843L+OBwmhh3IwZzhKkJwVH6N3DoSfTN2PQQXqgaVEvrXZhC0wtp8WF/zGKK aQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38mjp0gnht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 14:40:53 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IIWx49108491;
+        Tue, 18 May 2021 14:40:52 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38mjp0gnhk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 14:40:52 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IIR09h009449;
+        Tue, 18 May 2021 18:40:52 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02wdc.us.ibm.com with ESMTP id 38jyu21u94-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 18:40:52 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IIepXV16908594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 18:40:51 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B9A0BAC067;
+        Tue, 18 May 2021 18:40:51 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4E057AC064;
+        Tue, 18 May 2021 18:40:51 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 18 May 2021 18:40:51 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+ <20210512203536.4209c29c.pasic@linux.ibm.com>
+ <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
+ <20210513194541.58d1628a.pasic@linux.ibm.com>
+ <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
+ <20210514021500.60ad2a22.pasic@linux.ibm.com>
+ <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
+ <20210517211030.368ca64b.pasic@linux.ibm.com>
+ <966a60ad-bdde-68d0-ae2f-06121c6ad970@de.ibm.com>
+ <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
+ <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
+ <00c86767-ce8b-7050-f665-75f33fabe118@linux.ibm.com>
+ <d426bb7e-39d8-6eaf-047e-05eb70cdaeb7@de.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <d413938b-3fcf-836d-adab-92340ff63eff@linux.ibm.com>
+Date:   Tue, 18 May 2021 14:40:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210518002624.GA3346846@robh.at.kernel.org>
+In-Reply-To: <d426bb7e-39d8-6eaf-047e-05eb70cdaeb7@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ZfqPp2KACaBZ4PrxRs_5pB4luxdWLoU9
+X-Proofpoint-ORIG-GUID: EOeZv6PZOHf2JNy4zPOU4sbQIDdZkMty
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_09:2021-05-18,2021-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ malwarescore=0 impostorscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105180128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Mon, May 17, 2021 at 07:26:24PM -0500, Rob Herring a écrit :
-> On Tue, May 11, 2021 at 04:54:48PM +0000, Corentin Labbe wrote:
-> > Converts display/faraday,tve200.txt to yaml.
-> > 
-> > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> > ---
-> >  .../bindings/display/faraday,tve200.txt       | 54 -----------
-> >  .../bindings/display/faraday,tve200.yaml      | 92 +++++++++++++++++++
-> >  2 files changed, 92 insertions(+), 54 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/display/faraday,tve200.txt
-> >  create mode 100644 Documentation/devicetree/bindings/display/faraday,tve200.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/faraday,tve200.txt b/Documentation/devicetree/bindings/display/faraday,tve200.txt
-> > deleted file mode 100644
-> > index 82e3bc0b7485..000000000000
-> > --- a/Documentation/devicetree/bindings/display/faraday,tve200.txt
-> > +++ /dev/null
-> > @@ -1,54 +0,0 @@
-> > -* Faraday TV Encoder TVE200
-> > -
-> > -Required properties:
-> > -
-> > -- compatible: must be one of:
-> > -	"faraday,tve200"
-> > -	"cortina,gemini-tvc", "faraday,tve200"
-> > -
-> > -- reg: base address and size of the control registers block
-> > -
-> > -- interrupts: contains an interrupt specifier for the interrupt
-> > -	line from the TVE200
-> > -
-> > -- clock-names: should contain "PCLK" for the clock line clocking the
-> > -	silicon and "TVE" for the 27MHz clock to the video driver
-> > -
-> > -- clocks: contains phandle and clock specifier pairs for the entries
-> > -	in the clock-names property. See
-> > -	Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > -
-> > -Optional properties:
-> > -
-> > -- resets: contains the reset line phandle for the block
-> > -
-> > -Required sub-nodes:
-> > -
-> > -- port: describes LCD panel signals, following the common binding
-> > -	for video transmitter interfaces; see
-> > -	Documentation/devicetree/bindings/media/video-interfaces.txt
-> > -	This port should have the properties:
-> > -	reg = <0>;
-> > -	It should have one endpoint connected to a remote endpoint where
-> > -	the display is connected.
-> > -
-> > -Example:
-> > -
-> > -display-controller@6a000000 {
-> > -	#address-cells = <1>;
-> > -	#size-cells = <0>;
-> > -	compatible = "faraday,tve200";
-> > -	reg = <0x6a000000 0x1000>;
-> > -	interrupts = <13 IRQ_TYPE_EDGE_RISING>;
-> > -	resets = <&syscon GEMINI_RESET_TVC>;
-> > -	clocks = <&syscon GEMINI_CLK_GATE_TVC>,
-> > -		 <&syscon GEMINI_CLK_TVC>;
-> > -	clock-names = "PCLK", "TVE";
-> > -
-> > -	port@0 {
-> > -		reg = <0>;
-> > -		display_out: endpoint {
-> > -			remote-endpoint = <&panel_in>;
-> > -		};
-> > -	};
-> > -};
-> > diff --git a/Documentation/devicetree/bindings/display/faraday,tve200.yaml b/Documentation/devicetree/bindings/display/faraday,tve200.yaml
-> > new file mode 100644
-> > index 000000000000..3ab51e7e72af
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/display/faraday,tve200.yaml
-> > @@ -0,0 +1,92 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/display/faraday,tve200.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Faraday TV Encoder TVE200
-> > +
-> > +maintainers:
-> > +  - Linus Walleij <linus.walleij@linaro.org>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - const: faraday,tve200
-> > +      - items:
-> > +          - const: cortina,gemini-tvc
-> > +          - const: faraday,tve200
-> > +
-> > +  reg:
-> > +    minItems: 1
-> 
-> maxItems: 1
-> 
-> They evaluate the same, but maxItems seems a bit more logical. 
-> 
-> > +
-> > +  interrupts:
-> > +    minItems: 1
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: PCLK
-> > +      - const: TVE
-> > +
-> > +  clocks:
-> > +    minItems: 2
-> > +
-> > +  resets:
-> > +    minItems: 1
-> > +
-> > +  "#address-cells":
-> > +    const: 1
-> > +
-> > +  "#size-cells":
-> > +    const: 0
-> > +
-> > +patternProperties:
-> > +  "^port@[0-9]+$":
-> 
-> Should be just 'port' or 'port@0', but really the former is preferred 
-> when only 1. 
-> 
-> Use the graph binding:
-> 
-> $ref: /schemas/graph.yaml#/properties/port
-> 
 
-I have a problem:
 
-I get the following warning:
-/usr/src/linux-next/arch/arm/boot/dts/gemini.dtsi:410.31-423.5: Warning (graph_child_address): /soc/display-controller@6a000000: graph node has single child node 'port@0', #address-cells/#size-cells are not necessary
-  also defined at /usr/src/linux-next/arch/arm/boot/dts/gemini-dlink-dir-685.dts:492.31-501.5
+On 5/18/21 2:22 PM, Christian Borntraeger wrote:
+>
+>
+> On 18.05.21 20:14, Tony Krowiak wrote:
+>>
+>>
+>> On 5/18/21 9:59 AM, Christian Borntraeger wrote:
+>>>
+>>>
+>>> On 18.05.21 15:42, Tony Krowiak wrote:
+>>>>
+>>>>
+>>>> On 5/18/21 5:30 AM, Christian Borntraeger wrote:
+>>>>>
+>>>>>
+>>>>> On 17.05.21 21:10, Halil Pasic wrote:
+>>>>>> On Mon, 17 May 2021 09:37:42 -0400
+>>>>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>>>>>
+>>>>>>>>
+>>>>>>>> Because of this, I don't think the rest of your argument is valid.
+>>>>>>>
+>>>>>>> Okay, so your concern is that between the point in time the
+>>>>>>> vcpu->kvm->arch.crypto.pqap_hook pointer is checked in
+>>>>>>> priv.c and the point in time the handle_pqap() function
+>>>>>>> in vfio_ap_ops.c is called, the memory allocated for the
+>>>>>>> matrix_mdev containing the struct kvm_s390_module_hook
+>>>>>>> may get freed, thus rendering the function pointer invalid.
+>>>>>>> While not impossible, that seems extremely unlikely to
+>>>>>>> happen. Can you articulate a scenario where that could
+>>>>>>> even occur?
+>>>>>>
+>>>>>> Malicious userspace. We tend to do the pqap aqic just once
+>>>>>> in the guest right after the queue is detected. I do agree
+>>>>>> it ain't very likely to happen during normal operation. But why are
+>>>>>> you asking?
+>>>>>
+>>>>> Would it help, if the code in priv.c would read the hook once
+>>>>> and then only work on the copy? We could protect that with rcu
+>>>>> and do a synchronize rcu in vfio_ap_mdev_unset_kvm after
+>>>>> unsetting the pointer?
+>>>>
+>>>> I'll look into this.
+>>>
+>>> I think it could work. in priv.c use rcu_readlock, save the
+>>> pointer, do the check and call, call rcu_read_unlock.
+>>> In vfio_ap use rcu_assign_pointer to set the pointer and
+>>> after setting it to zero call sychronize_rcu.
+>>>
+>>> Halil, I think we can do this as an addon patch as it makes
+>>> sense to have this callback pointer protected independent of
+>>> this patch. Agree?
+>>
+>> I agree that this is a viable option; however, this does not
+>> guarantee that the matrix_mdev is not freed thus rendering
+>> the function pointer to the interception handler invalid unless
+>> that is also included within the rcu_readlock/rcu_read_unlock.
+>
+> The trick should be the sychronize_rcu. This will put the deleting
+> code (vfio_ap_mdev_unset_kvm) to sleep until the rcu read section
+> has finished. So if you first set the pointer to zero, then call
+> synchronize_rcu the code will only progress until all users of
+> the old poiner have finished.
 
-But if I remove them!
-/usr/src/linux-next/arch/arm/boot/dts/gemini-dlink-dir-685.dts:496.5-15: Warning (reg_format): /soc/display-controller@6a000000/port@0:reg: property has invalid length (4 bytes) (#address-cells == 2, #size-cells == 1)
-arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-/usr/src/linux-next/arch/arm/boot/dts/gemini-dlink-dir-685.dts:495.11-500.6: Warning (avoid_default_addr_size): /soc/display-controller@6a000000/port@0: Relying on default #address-cells value
-/usr/src/linux-next/arch/arm/boot/dts/gemini-dlink-dir-685.dts:495.11-500.6: Warning (avoid_default_addr_size): /soc/display-controller@6a000000/port@0: Relying on default #size-cells value
-arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml: Warning (avoid_unnecessary_addr_size): Failed prerequisite 'avoid_default_addr_size'
-arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml: Warning (unique_unit_address): Failed prerequisite 'avoid_default_addr_size'
-/usr/src/linux-next/arch/arm/boot/dts/gemini-dlink-dir-685.dts:495.11-500.6: Warning (graph_port): /soc/display-controller@6a000000/port@0: graph node '#address-cells' is -1, must be 1
-/usr/src/linux-next/arch/arm/boot/dts/gemini-dlink-dir-685.dts:495.11-500.6: Warning (graph_port): /soc/display-controller@6a000000/port@0: graph node '#size-cells' is -1, must be 0
+Yes, that is my understanding too.
 
-The only solution is to remove "reg = <0>;" and calling the node "port".
-Does it is acceptable ?
+>
+>> That is not possible given the matrix_mdev is freed within
+>> the remove callback and the pointer to the structure that
+>> contains the interception handler function pointer is cleared
+>> in the vfio_ap_mdev_unset_kvm() function. I am working on
+>> a patch and should be able to post it before EOD or first thing
+>> tomorrow.
+>>
 
