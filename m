@@ -2,254 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DAF387959
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B5038795F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhERM7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhERM7O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:59:14 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D9AC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:57:56 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lizIE-0002tn-Dc; Tue, 18 May 2021 14:57:50 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lizID-00079P-TA; Tue, 18 May 2021 14:57:49 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org
-Subject: [PATCH v2 4/4] Input: resistive-adc-touch: add support for z1 and z2 channels
-Date:   Tue, 18 May 2021 14:57:48 +0200
-Message-Id: <20210518125748.26823-5-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210518125748.26823-1-o.rempel@pengutronix.de>
-References: <20210518125748.26823-1-o.rempel@pengutronix.de>
+        id S232454AbhERM7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:59:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231321AbhERM7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:59:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E1C161209;
+        Tue, 18 May 2021 12:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621342707;
+        bh=LQFd09DPHFoiTAJ6RyTPtmww1669WUG99d7WakSDwvE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VrL9blY5J0hugASdnBFG7pupWqUqDZQr/bKsLCSVbmKwlyCBosRVUWAiX90DAnN2O
+         RQZgonP0vJcbyG0L/iugU+J+QsgKFwwHRHwv+x4POv7WP50clcUX4Q/gOmV1voxDcY
+         ipjhsCeXM5Io4YuOzRi02EzTDLO9H2QXUNMpI3lNcT+7CZNO4qZmFOkcqaqQYEPygF
+         +T8sYJqPGu/ukJ8Fe8el2UbM6LUyqG9UitdaA8aLTATlOEsZJ+HuHFcbXvm+GVlYW5
+         4Ci9ACD0sESdR7modiucrDNo+OcBEMPrkQK+fu879Z1jSrxk2R+vvnWV3egy/CLOrR
+         vcXaz2s8BSucQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-rc v1] RDMA/core: Sanitize WQ state received from the userspace
+Date:   Tue, 18 May 2021 15:58:21 +0300
+Message-Id: <0433d8013ed3a2ffdd145244651a5edb2afbd75b.1621342527.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for the z1 and z2 channels. These are used to
-calculate the applied pressure. As there is no common order of the
-individual channels of a resistive touch ADC, support for
-io-channel-names is added (although the DT bindings stated the
-driver already supports these).
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+The mlx4 and mlx5 implemented differently the WQ input checks.
+Instead of duplicating mlx4 logic in the mlx5, let's prepare
+the input in the central place.
+
+Fixes: f213c0527210 ("IB/uverbs: Add WQ support")
+Reported-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- .../input/touchscreen/resistive-adc-touch.c   | 141 ++++++++++++++++--
- 1 file changed, 128 insertions(+), 13 deletions(-)
+Changelog:
+v1:
+ * Removed IB_WQS_RESET state checks because it is zero and wq states
+   declared as u32, so can't be less than IB_WQS_RESET.
+v0: https://lore.kernel.org/lkml/932f87b48c07278730c3c760b3a707d6a984b524.1621332736.git.leonro@nvidia.com
+---
+ drivers/infiniband/core/uverbs_cmd.c | 21 +++++++++++++++++++--
+ drivers/infiniband/hw/mlx4/qp.c      |  9 ++-------
+ drivers/infiniband/hw/mlx5/qp.c      |  6 ++----
+ 3 files changed, 23 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/input/touchscreen/resistive-adc-touch.c b/drivers/input/touchscreen/resistive-adc-touch.c
-index e50af30183f4..470b95ed3569 100644
---- a/drivers/input/touchscreen/resistive-adc-touch.c
-+++ b/drivers/input/touchscreen/resistive-adc-touch.c
-@@ -20,7 +20,18 @@
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 4f890bff80f8..c6f53d894411 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -3084,12 +3084,29 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
+ 	if (!wq)
+ 		return -EINVAL;
  
- #define DRIVER_NAME					"resistive-adc-touch"
- #define GRTS_DEFAULT_PRESSURE_MIN			50000
-+#define GRTS_DEFAULT_PRESSURE_MAX			65535
- #define GRTS_MAX_POS_MASK				GENMASK(11, 0)
-+#define GRTS_MAX_CHANNELS				4
-+
-+enum grts_ch_type {
-+	GRTS_CH_NONE = 0,
-+	GRTS_CH_X,
-+	GRTS_CH_Y,
-+	GRTS_CH_PRESSURE,
-+	GRTS_CH_Z1,
-+	GRTS_CH_Z2,
-+};
- 
- /**
-  * struct grts_state - generic resistive touch screen information struct
-@@ -33,24 +44,61 @@
-  */
- struct grts_state {
- 	u32				pressure_min;
-+	u32				x_plate_ohms;
- 	bool				pressure;
- 	struct iio_channel		*iio_chans;
- 	struct iio_cb_buffer		*iio_cb;
- 	struct input_dev		*input;
- 	struct touchscreen_properties	prop;
-+	u8				ch[GRTS_MAX_CHANNELS];
- };
- 
- static int grts_cb(const void *data, void *private)
- {
- 	const u16 *touch_info = data;
- 	struct grts_state *st = private;
--	unsigned int x, y, press = 0x0;
-+	unsigned int x, y, press = 0, z1 = 0, z2;
-+	unsigned int Rt, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(st->ch) && st->ch[i] != GRTS_CH_NONE; i++) {
-+		switch (st->ch[i]) {
-+		case GRTS_CH_X:
-+			x = touch_info[i];
-+			break;
-+		case GRTS_CH_Y:
-+			y = touch_info[i];
-+			break;
-+		case GRTS_CH_PRESSURE:
-+			press = touch_info[i];
-+			break;
-+		case GRTS_CH_Z1:
-+			z1 = touch_info[i];
-+			break;
-+		case GRTS_CH_Z2:
-+			z2 = touch_info[i];
-+			break;
-+		case GRTS_CH_NONE:
-+			break;
-+		}
-+	}
- 
--	/* channel data coming in buffer in the order below */
--	x = touch_info[0];
--	y = touch_info[1];
--	if (st->pressure)
--		press = touch_info[2];
-+	if (z1) {
-+		Rt = z2;
-+		Rt -= z1;
-+		Rt *= st->x_plate_ohms;
-+		Rt = DIV_ROUND_CLOSEST(Rt, 16);
-+		Rt *= x;
-+		Rt /= z1;
-+		Rt = DIV_ROUND_CLOSEST(Rt, 256);
-+		/*
-+		 * On increased pressure the resistance (Rt) is decreasing
-+		 * so, convert values to make it looks as real pressure.
-+		 */
-+		if (Rt < GRTS_DEFAULT_PRESSURE_MAX)
-+			press = GRTS_DEFAULT_PRESSURE_MAX - Rt;
-+		else
-+			press = 0;
-+	}
- 
- 	if ((!x && !y) || (st->pressure && (press < st->pressure_min))) {
- 		/* report end of touch */
-@@ -94,6 +142,72 @@ static void grts_disable(void *data)
- 	iio_channel_release_all_cb(data);
- }
- 
-+static int grts_get_properties(struct grts_state *st, struct device *dev)
-+{
-+	int idx, error;
-+
-+	idx = device_property_match_string(dev, "io-channel-names", "x");
-+	if (idx < 0)
-+		return idx;
-+
-+	if (idx >= ARRAY_SIZE(st->ch))
-+		return -EOVERFLOW;
-+
-+	st->ch[idx] = GRTS_CH_X;
-+
-+	idx = device_property_match_string(dev, "io-channel-names", "y");
-+	if (idx < 0)
-+		return idx;
-+
-+	if (idx >= ARRAY_SIZE(st->ch))
-+		return -EOVERFLOW;
-+
-+	st->ch[idx] = GRTS_CH_Y;
-+
-+	/* pressure is optional */
-+	idx = device_property_match_string(dev, "io-channel-names", "pressure");
-+	if (idx >= 0) {
-+		if (idx >= ARRAY_SIZE(st->ch))
-+			return -EOVERFLOW;
-+
-+		st->ch[idx] = GRTS_CH_PRESSURE;
-+		st->pressure = true;
-+
-+		return 0;
-+	}
-+
-+	/* if no pressure is defined, try optional z1 + z2 */
-+	idx = device_property_match_string(dev, "io-channel-names", "z1");
-+	if (idx < 0)
-+		return 0;
-+
-+	if (idx >= ARRAY_SIZE(st->ch))
-+		return -EOVERFLOW;
-+
-+	st->ch[idx] = GRTS_CH_Z1;
-+
-+	/* if z1 is provided z2 is not optional */
-+	idx = device_property_match_string(dev, "io-channel-names", "z2");
-+	if (idx < 0)
-+		return idx;
-+
-+	if (idx >= ARRAY_SIZE(st->ch))
-+		return -EOVERFLOW;
-+
-+	st->ch[idx] = GRTS_CH_Z2;
-+	st->pressure = true;
-+
-+	error = device_property_read_u32(dev,
-+					 "touchscreen-x-plate-ohms",
-+					 &st->x_plate_ohms);
-+	if (error) {
-+		dev_err(dev, "can't get touchscreen-x-plate-ohms property\n");
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
- static int grts_probe(struct platform_device *pdev)
- {
- 	struct grts_state *st;
-@@ -115,12 +229,13 @@ static int grts_probe(struct platform_device *pdev)
- 		return error;
+-	wq_attr.curr_wq_state = cmd.curr_wq_state;
+-	wq_attr.wq_state = cmd.wq_state;
+ 	if (cmd.attr_mask & IB_WQ_FLAGS) {
+ 		wq_attr.flags = cmd.flags;
+ 		wq_attr.flags_mask = cmd.flags_mask;
  	}
- 
--	chan = &st->iio_chans[0];
--	st->pressure = false;
--	while (chan && chan->indio_dev) {
--		if (!strcmp(chan->channel->datasheet_name, "pressure"))
--			st->pressure = true;
--		chan++;
-+	if (!device_property_present(dev, "io-channel-names"))
-+		return -ENODEV;
 +
-+	error = grts_get_properties(st, dev);
-+	if (error) {
-+		dev_err(dev, "Failed to parse properties\n");
-+		return error;
- 	}
++	if (cmd.attr_mask & IB_WQ_CUR_STATE) {
++		if (cmd.curr_wq_state > IB_WQS_ERR)
++			return -EINVAL;
++
++		wq_attr.curr_wq_state = cmd.curr_wq_state;
++	} else {
++		wq_attr.curr_wq_state = wq->state;
++	}
++
++	if (cmd.attr_mask & IB_WQ_STATE) {
++		if (cmd.wq_state > IB_WQS_ERR)
++			return -EINVAL;
++
++		wq_attr.wq_state = cmd.wq_state;
++	} else {
++		wq_attr.wq_state = wq_attr.curr_wq_state;
++	}
++
+ 	ret = wq->device->ops.modify_wq(wq, &wq_attr, cmd.attr_mask,
+ 					&attrs->driver_udata);
+ 	rdma_lookup_put_uobject(&wq->uobject->uevent.uobject,
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 92ddbcc00eb2..2ae22bf50016 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -4251,13 +4251,8 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
+ 	if (wq_attr_mask & IB_WQ_FLAGS)
+ 		return -EOPNOTSUPP;
  
- 	if (st->pressure) {
-@@ -148,7 +263,7 @@ static int grts_probe(struct platform_device *pdev)
- 	input_set_abs_params(input, ABS_Y, 0, GRTS_MAX_POS_MASK - 1, 0, 0);
- 	if (st->pressure)
- 		input_set_abs_params(input, ABS_PRESSURE, st->pressure_min,
--				     0xffff, 0, 0);
-+				     GRTS_DEFAULT_PRESSURE_MAX, 0, 0);
+-	cur_state = wq_attr_mask & IB_WQ_CUR_STATE ? wq_attr->curr_wq_state :
+-						     ibwq->state;
+-	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
+-
+-	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
+-	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
+-		return -EINVAL;
++	cur_state = wq_attr->curr_wq_state;
++	new_state = wq_attr->wq_state;
  
- 	input_set_capability(input, EV_KEY, BTN_TOUCH);
+ 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
+ 		return -EINVAL;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index d984b451c379..becd250388af 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -5483,10 +5483,8 @@ int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
  
+ 	rqc = MLX5_ADDR_OF(modify_rq_in, in, ctx);
+ 
+-	curr_wq_state = (wq_attr_mask & IB_WQ_CUR_STATE) ?
+-		wq_attr->curr_wq_state : wq->state;
+-	wq_state = (wq_attr_mask & IB_WQ_STATE) ?
+-		wq_attr->wq_state : curr_wq_state;
++	curr_wq_state = wq_attr->curr_wq_state;
++	wq_state = wq_attr->wq_state;
+ 	if (curr_wq_state == IB_WQS_ERR)
+ 		curr_wq_state = MLX5_RQC_STATE_ERR;
+ 	if (wq_state == IB_WQS_ERR)
 -- 
-2.29.2
+2.31.1
 
