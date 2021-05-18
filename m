@@ -2,124 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0713875D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1996C3875D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348153AbhERJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:56:32 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3009 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348136AbhERJ4W (ORCPT
+        id S1348183AbhERJ5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:57:48 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:36511 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240585AbhERJ5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:56:22 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fkrqp1SkczQpgd;
-        Tue, 18 May 2021 17:51:34 +0800 (CST)
-Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 17:55:03 +0800
-Received: from szvp000207684.huawei.com (10.120.216.130) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 18 May 2021 17:55:02 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 2/2] f2fs: compress: fix to disallow temp extension
-Date:   Tue, 18 May 2021 17:54:58 +0800
-Message-ID: <20210518095458.99728-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210518095458.99728-1-yuchao0@huawei.com>
-References: <20210518095458.99728-1-yuchao0@huawei.com>
+        Tue, 18 May 2021 05:57:46 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee760a38f23f8f-8cff1; Tue, 18 May 2021 17:55:49 +0800 (CST)
+X-RM-TRANSID: 2ee760a38f23f8f-8cff1
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee760a38f213bf-b6a34;
+        Tue, 18 May 2021 17:55:49 +0800 (CST)
+X-RM-TRANSID: 2ee760a38f213bf-b6a34
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        knaack.h@gmx.de, pmeerw@pmeerw.net, gregkh@linuxfoundation.org
+Cc:     linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] staging: iio: cdc: ad7746: Remove unnecessary assignment in ad7746_probe()
+Date:   Tue, 18 May 2021 17:56:47 +0800
+Message-Id: <20210518095647.3008-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch restricts to configure compress extension as format of:
+In the function ad7746_probe(), the initialized value of 'ret' is unused,
+because it will be assigned by the function i2c_smbus_write_byte_data(),
+thus remove it.
 
- [filename + '.' + extension]
-
-rather than:
-
- [filename + '.' + extension + (optional: '.' + temp extension)]
-
-in order to avoid to enable compression incorrectly:
-
-1. compress_extension=so
-2. touch file.soa
-3. touch file.so.tmp
-
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- fs/f2fs/namei.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/staging/iio/cdc/ad7746.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 8d78b96a8b3b..36e04148e8f8 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -158,7 +158,8 @@ bool f2fs_is_wildcard_char(const char *ext)
- 	return *ext == '*' && strlen(ext) == 1;
- }
+diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
+index dfd71e99e..be4ef454d 100644
+--- a/drivers/staging/iio/cdc/ad7746.c
++++ b/drivers/staging/iio/cdc/ad7746.c
+@@ -680,7 +680,7 @@ static int ad7746_probe(struct i2c_client *client,
+ 	struct ad7746_chip_info *chip;
+ 	struct iio_dev *indio_dev;
+ 	unsigned char regval = 0;
+-	int ret = 0;
++	int ret;
  
--static inline int is_extension_exist(const unsigned char *s, const char *sub)
-+static inline int is_extension_exist(const unsigned char *s, const char *sub,
-+						bool tmp_ext)
- {
- 	size_t slen = strlen(s);
- 	size_t sublen = strlen(sub);
-@@ -171,6 +172,13 @@ static inline int is_extension_exist(const unsigned char *s, const char *sub)
- 	if (slen < sublen + 2)
- 		return 0;
- 
-+	if (!tmp_ext) {
-+		/* file has no temp extension */
-+		if (s[slen - sublen - 1] != '.')
-+			return 0;
-+		return !strncasecmp(s + slen - sublen, sub, sublen);
-+	}
-+
- 	for (i = 1; i < slen - sublen; i++) {
- 		if (s[i] != '.')
- 			continue;
-@@ -196,7 +204,7 @@ static inline void set_file_temperature(struct f2fs_sb_info *sbi, struct inode *
- 	hot_count = sbi->raw_super->hot_ext_count;
- 
- 	for (i = 0; i < cold_count + hot_count; i++) {
--		if (is_extension_exist(name, extlist[i]))
-+		if (is_extension_exist(name, extlist[i], true))
- 			break;
- 	}
- 
-@@ -297,7 +305,7 @@ static void set_compress_inode(struct f2fs_sb_info *sbi, struct inode *inode,
- 	hot_count = sbi->raw_super->hot_ext_count;
- 
- 	for (i = cold_count; i < cold_count + hot_count; i++) {
--		if (is_extension_exist(name, extlist[i])) {
-+		if (is_extension_exist(name, extlist[i], false)) {
- 			up_read(&sbi->sb_lock);
- 			return;
- 		}
-@@ -310,7 +318,7 @@ static void set_compress_inode(struct f2fs_sb_info *sbi, struct inode *inode,
- 	for (i = 0; i < ext_cnt; i++) {
- 		if (f2fs_is_wildcard_char(ext[i]))
- 			goto set_compress;
--		if (!is_extension_exist(name, ext[i]))
-+		if (!is_extension_exist(name, ext[i], false))
- 			continue;
- set_compress:
- 		set_compress_context(inode);
+ 	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
+ 	if (!indio_dev)
 -- 
-2.29.2
+2.20.1.windows.1
+
+
 
