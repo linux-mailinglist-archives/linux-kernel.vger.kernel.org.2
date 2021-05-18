@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A513881CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD243881D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352333AbhERVGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:06:42 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34921 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240342AbhERVGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:06:40 -0400
-IronPort-SDR: K2atSkCMswWLjBTsGtSns9QnpqET8+MFh9o+vjlGcve8f8QUqoi6mfZRFlpqLig1Gta7MvMN7S
- JrYHd5+WagMQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="262046929"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="262046929"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 14:05:21 -0700
-IronPort-SDR: kdkQNPVnSxUhXsXwBunT2zS3NZXjEXl9j1tN8HdDYiJlGJM7MNl73uqESiww5XNxso7RSBC3lO
- lndX7VYR2t1Q==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="439635187"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.65.183]) ([10.209.65.183])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 14:05:21 -0700
-Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
- <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
- <43e583a3-ee2b-52d8-5275-e26a6609c126@linux.intel.com>
- <YKP1Xty7EEzHkZ6Y@google.com>
- <8fb0e52c-ed0a-2185-585a-27007c27ed56@linux.intel.com>
- <d711ca30-ff84-2efa-4b9e-d9b46f53c0a5@intel.com>
- <a46544ba-e995-1e95-4e62-e9f48eec0db1@linux.intel.com>
- <8dd9b9c8-0bf5-3ce5-119c-b52f8518e473@intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <26518d17-cc9e-ac0d-aac0-b65dbe22af68@linux.intel.com>
-Date:   Tue, 18 May 2021 14:05:20 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1352345AbhERVHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240342AbhERVHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 17:07:21 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622B1C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:06:02 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id k15so7882627pgb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C4q8U+G71BGWewWidR79hthoGxSDsJQHYPmB+z8bH0k=;
+        b=shUs5CXlyzZPJ1uFMvk6P8+4/zeWAeoTAjrVTScZYjYaHYLisIdEW/u0bVWOvZpTKw
+         FPeojwgYychUv31bK4X5+Fx53RZYASRZnsNMsJBhNuliI+v4nft6y301AgbdiLXWNs9A
+         dsBYNbRK5yRGE4+o3/1LjarPmReFqF3sRMhe2lFUvT8Sv6oMG2NKE+DUso7y3VFNRi1X
+         XPjvm7SLFFl/I9N2cmj96sAt/tQ48p1+1wNN0uFYV5h60WYpaFxSteN9OyZVVpFMrD1p
+         a3+NCN9HxsxoN7wAwDodezj8V4o/PoT/iKJ1w2sxSuwOYMWmE3mi37ExZdmyG9pVTHD9
+         uuBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C4q8U+G71BGWewWidR79hthoGxSDsJQHYPmB+z8bH0k=;
+        b=XNOOVx9nuHHXvkWA154j/p3IPtwGRm8S788JKLe9qVLGu7b22/x9GjPJgHWWhVtict
+         jx74NFKZwLoohRMOtYsk9YZBILjLn7+HQMbod2cqrZtLXQ2hYTc+FnY1dmv3eRWFQj0E
+         9Q8YG9DhMWPil/MYFBq3klGob0ZJcCsAAZ/RBYPI9W6nx23k2QW4BmiE8D+Fjv1StYyO
+         ux4H1ef43fEuwrhg9xmr3W7ZXyCsgOPm3jYePKcMnHZip8viIy7OgTeW/gtH7FL2yHwK
+         U4PhI1iJqniGakJ/xDRjdz5PLl8BqbJq3J3rV/qTYKRFwokWzo3j1DRVCEKDVXF5Mi+p
+         7IMQ==
+X-Gm-Message-State: AOAM530OZf5L3F0Hdc9RQiAZ/9yWRbBKOvgPDif+Bt0Q9DCEsCRqxSz2
+        7FKj+HB5THYc5A4s+bBU2jsQVg==
+X-Google-Smtp-Source: ABdhPJyGun4MMDb32J/F0DG1O6VqMPVAo66ylxeliHDy68zArWjFVZjeeyz7VVbQpySd9W4N08lW7w==
+X-Received: by 2002:a05:6a00:bcf:b029:2d5:d695:d52f with SMTP id x15-20020a056a000bcfb02902d5d695d52fmr2422696pfu.38.1621371961701;
+        Tue, 18 May 2021 14:06:01 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id q23sm13836189pgt.42.2021.05.18.14.06.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 14:06:01 -0700 (PDT)
+Date:   Tue, 18 May 2021 21:05:57 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] KVM: x86: Invert APICv/AVIC enablement check
+Message-ID: <YKQsNb7VXpFqAltt@google.com>
+References: <20210518144339.1987982-1-vkuznets@redhat.com>
+ <20210518144339.1987982-5-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <8dd9b9c8-0bf5-3ce5-119c-b52f8518e473@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518144339.1987982-5-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 18, 2021, Vitaly Kuznetsov wrote:
+> Now that APICv/AVIC enablement is kept in common 'enable_apicv' variable,
+> there's no need to call kvm_apicv_init() from vendor specific code.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
 
-> I'm not actually trying to propose things.  I'm really just trying to
-> get an idea why the implementation ended up how it did.  I actually
-> entirely respect the position that the KVM code is a monster and
-> shouldn't get reused.  That seems totally reasonable.
-
-Mainly because it's relatively simple and straight forward to do it this 
-way, Yes I know, that's a shocking concept, but sometimes it works even 
-in Linux code.
-
->
-> What isn't reasonable is the lack of documentation of these design
-> decisions in the changelogs.  My goal here is to raise the quality of
-> the changelogs so that other reviewers and maintainers don't have to ask
-> these questions when they perform their reviews.
->
-> This is honestly the best way I know to help get this code merged as
-> soon as possible.  If I'm not helping, please let me know.  I'm happy to
-> spend my time elsewhere.
-
-I'm sure the commit logs can be improved and I appreciate your feedback.
-
-
-I don't think every commit log needs to be an extended essay meandering 
-all over the possible design space, talking about everything that could 
-have been and wasn't. The way code is normally written is that we don't 
-do an exhaustive search of possible options, but instead we pick a 
-reasonable path and as long as that works and doesn't have too many 
-problems we just stick to it. The commit log reflects that single path 
-chosen, with only rare exceptions to talk about dead alleys.
-
-In this case you can even see that multiple independent efforts (AMD and 
-Intel) came mostly to fairly similar implementations, so the path chosen 
-wasn't really that strange or non obvious.
-
-Also overall I would appreciate if people would focus more on the code 
-than the commit logs. Commit logs are important, but in the end what 
-really matters is that the code is correct.
-
--Andi
-
-
+Reviewed-by: Sean Christopherson <seanjc@google.com>
