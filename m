@@ -2,140 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244C138832D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFAD38832E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238853AbhERXaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:30:52 -0400
-Received: from mga02.intel.com ([134.134.136.20]:32403 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238884AbhERXau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:30:50 -0400
-IronPort-SDR: sYLNGjH8vBG+Aex6/9w/xu70IjbAzzQKZQIVLWwDYmFy1fis0oPAYTqsyrWU/jU+LEojs7H+bI
- KXtFHUijPg6A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="187974714"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="187974714"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 16:29:30 -0700
-IronPort-SDR: /+e+s9tSYNxtLIFcO43SvAGYdrC/2c0XG7MuFApcWnjObitK+etYirQYkZ+TSKaAHJpU0RHGxC
- 4xiyzmf9gZZA==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="542177421"
-Received: from craigsmi-mobl.amr.corp.intel.com (HELO [10.212.132.228]) ([10.212.132.228])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 16:29:28 -0700
-Subject: Re: [RFC v2-fix-v2 1/1] x86/tdx: Wire up KVM hypercalls
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <36760dae-2f61-2072-460a-f8359224fcf1@intel.com>
- <20210518211938.635092-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <97588756-5c12-2913-05a7-938eb7a510c8@intel.com>
-Date:   Tue, 18 May 2021 16:29:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237095AbhERXcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231521AbhERXcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 19:32:07 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8402C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:30:48 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id i17so11958981wrq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dB5AZpFDnjZnCDVY6EBk4qG0EF9TZ3zY3Xl36EaiD58=;
+        b=HCWyWnipiDG/MI4w05WoFcFXiK7TIRM2s5AZySf50hADftHFa0C/YxNZaWNiaOAA1J
+         JVhoVrPYXBcsFY7WdYrvk2OAPdAVH1xLCL+tGJUapuvoZU7VndDnN5Yk2rCQeIyT2juE
+         rCCwG7rhS80YJPTck2ZqjiAIombL9CbzlCeLfUjfkRRm19seREKYo81nFyZUxw1JQfnI
+         Z8Fk2Ne6BGjA8d77z77jJDuFce9/aZ1yg0FlfV2NIGOapd9TOc14KCwDpEMbXEhMIspl
+         gnuXsUalIS0pusuucuNUwOrlumA8xSAolX64pSAY0SSjTIhBQkBK8ZR+D0HEm2KC+Q82
+         PG+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dB5AZpFDnjZnCDVY6EBk4qG0EF9TZ3zY3Xl36EaiD58=;
+        b=b5M15peI8GtZ/KpSFUofB3EdKjbVCUh2kSloVVJg6HraB/uWPt2g0v44TqJgpJlKCT
+         zNxxuKt1Tz12Qd3Cut0jT89HQFwBKwHy36ymKWnZl4A8g9SY9Ttq20nrH5S/ZzxLr4fP
+         zO9mgeExlhYhJMszdec434g9sBQSQTzzRIsADzFaAoAuLxIqXq3ZxBpK3HDZ0mU38zYm
+         IkylQXKPCSNPhlDQrRpr/4Mx4oqSu07iresVul+0zrQynaa/PxSsUIJECCEWZj9mngUr
+         1E4AWdktIhbx/5YAVS/3nM0n/bc0GS0IXdHkLUJzjSBf88aFhKiOAI6Lh9WHZDW54MIf
+         0B0Q==
+X-Gm-Message-State: AOAM532zSRvyJnfRmk0X3k3WDkH976LLF96R44bKF/nSIzBiPC5ushB5
+        dSbWK9I82EM+w0r3gDMTbtOAz2pSPymRuK2ipLcBzw==
+X-Google-Smtp-Source: ABdhPJx6bJ2EFj7N+dPui1zEDY+zKdFTuhhzcDCr/EqObzNnsBgSk40eMo3yUSBij1/nip8g/rwlREGGjnWHfePpOuo=
+X-Received: by 2002:adf:f54b:: with SMTP id j11mr5158668wrp.376.1621380647471;
+ Tue, 18 May 2021 16:30:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210518211938.635092-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210517140931.2559364-1-tmricht@linux.ibm.com>
+In-Reply-To: <20210517140931.2559364-1-tmricht@linux.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 18 May 2021 16:30:35 -0700
+Message-ID: <CAP-5=fV-2J1rxHAaGv_GwFzY-mAKKogEvQf1A87PUvZxT7wzUQ@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Test libpfm4 support (63) reports error
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Stephane Eranian <eranian@google.com>, svens@linux.ibm.com,
+        Vasily Gorbik <gor@linux.ibm.com>, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 2:19 PM, Kuppuswamy Sathyanarayanan wrote:
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> 
-> KVM hypercalls use the "vmcall" or "vmmcall" instructions.
-> Although the ABI is similar, those instructions no longer
-> function for TDX guests. Make vendor-specific TDVMCALLs
-> instead of VMCALL. This enables TDX guests to run with KVM
-> acting as the hypervisor. TDX guests running under other
-> hypervisors will continue to use those hypervisor's
-> hypercalls.
+On Mon, May 17, 2021 at 7:12 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
+>
+> Compiling perf with make LIBPFM4=1 includes libpfm support and
+> enables test case 63 'Test libpfm4 support'. This test reports an error
+> on all platforms for subtest 63.2 'test groups of --pfm-events'.
+> The reported error message is 'nested event groups not supported'
 
-Well, I screwed this up when I typed it too, but it is:
+The parsing test checks broken and working strings and so errors are
+always going to be reported, but agreed this error is wrong.
 
-	TDX guests running under other hypervisors will continue
-	to use those hypervisors' hypercalls.
+>  # ./perf test -F 63
+>  63: Test libpfm4 support                                            :
+>  63.1: test of individual --pfm-events                               :
+>  Error:
+>  failed to parse event stereolab : event not found
+>  Error:
+>  failed to parse event stereolab,instructions : event not found
+>  Error:
+>  failed to parse event instructions,stereolab : event not found
+>   Ok
+>  63.2: test groups of --pfm-events                                   :
+>  Error:
+>  nested event groups not supported    <------ Error message here
+>  Error:
+>  failed to parse event {stereolab} : event not found
+>  Error:
+>  failed to parse event {instructions,cycles},{instructions,stereolab} :\
+>          event not found
+>  Ok
+>  #
+>
+> This patch addresses the error message 'nested event groups not supported'.
+> The root cause is function parse_libpfm_events_option() which parses the
+> event string '{},{instructions}' and can not handle a leading empty
+> group notation '{},...'.
+>
+> The code detects the first (empty) group indicator '{' but does not
+> terminate group processing on the following group closing character '}'.
+> So when the second group indicator '{' is detected, the code assumes
+> a nested group and returns an error.
+>
+> With the error message fixed, also change the expected event number to
+> one for the test case to succeed.
+>
+> While at it also fix a memory leak. In good case the function does not
+> free the duplicated string given as first parameter.
+>
+> Output after:
+>  # ./perf test -F 63
+>  63: Test libpfm4 support                                            :
+>  63.1: test of individual --pfm-events                               :
+>  Error:
+>  failed to parse event stereolab : event not found
+>  Error:
+>  failed to parse event stereolab,instructions : event not found
+>  Error:
+>  failed to parse event instructions,stereolab : event not found
+>   Ok
+>  63.2: test groups of --pfm-events                                   :
+>  Error:
+>  failed to parse event {stereolab} : event not found
+>  Error:
+>  failed to parse event {instructions,cycles},{instructions,stereolab} : \
+>          event not found
+>   Ok
+>  #
+> Error message 'nested event groups not supported' is gone.
 
-I hate how that reads, but oh well.
+Acked-By: Ian Rogers <irogers@google.com>
 
-> Since KVM hypercall functions can be included and called
-> from kernel modules, export tdx_kvm_hypercall*() functions
-> to avoid symbol errors
+I wonder if we should add some coverage for the error cases to the pfm
+test with something like the following.
 
-No, you're not avoiding errors, you're exporting the symbol so it can be
-*USED*.  The error comes from it not being exported.
+Thanks,
+Ian
 
-It also helps to be specific here:  Export tdx_kvm_hypercall*() to make
-the symbols visible to kvm.ko.
+--- a/tools/perf/tests/pfm.c
++++ b/tools/perf/tests/pfm.c
+@@ -155,6 +155,16 @@ static int test__pfm_group(void)
+                        .nr_events = 3,
+                        .nr_groups = 1,
+                },
++               {
++                       .events = "instructions}",
++                       .nr_events = 1,
++                       .nr_groups = 0,
++               },
++               {
++                       .events = "{{instructions}}",
++                       .nr_events = 0,
++                       .nr_groups = 0,
++               },
+        };
 
-> [Isaku Yamahata: proposed KVM VENDOR string]
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+        for (i = 0; i < ARRAY_SIZE(table); i++) {
 
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-
-Also, FWIW, if you did this in the header:
-
-+static inline long tdx_kvm_hypercall0(unsigned int nr)
-+{
-+	return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
-+}
-
-You could get away with just exporting tdx_kvm_hypercall() instead of 4
-symbols.  The rest of the code would look the same.
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Acked-By: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> ---
+>  tools/perf/tests/pfm.c |  4 ++--
+>  tools/perf/util/pfm.c  | 11 ++++++++++-
+>  2 files changed, 12 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
+> index 76a53126efdf..d4b0ef74defc 100644
+> --- a/tools/perf/tests/pfm.c
+> +++ b/tools/perf/tests/pfm.c
+> @@ -131,8 +131,8 @@ static int test__pfm_group(void)
+>                 },
+>                 {
+>                         .events = "{},{instructions}",
+> -                       .nr_events = 0,
+> -                       .nr_groups = 0,
+> +                       .nr_events = 1,
+> +                       .nr_groups = 1,
+>                 },
+>                 {
+>                         .events = "{instructions},{instructions}",
+> diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
+> index d735acb6c29c..6eef6dfeaa57 100644
+> --- a/tools/perf/util/pfm.c
+> +++ b/tools/perf/util/pfm.c
+> @@ -62,8 +62,16 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+>                 }
+>
+>                 /* no event */
+> -               if (*q == '\0')
+> +               if (*q == '\0') {
+> +                       if (*sep == '}') {
+> +                               if (grp_evt < 0) {
+> +                                       ui__error("cannot close a non-existing event group\n");
+> +                                       goto error;
+> +                               }
+> +                               grp_evt--;
+> +                       }
+>                         continue;
+> +               }
+>
+>                 memset(&attr, 0, sizeof(attr));
+>                 event_attr_init(&attr);
+> @@ -107,6 +115,7 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+>                         grp_evt = -1;
+>                 }
+>         }
+> +       free(p_orig);
+>         return 0;
+>  error:
+>         free(p_orig);
+> --
+> 2.31.1
+>
