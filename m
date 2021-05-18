@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E91338741E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340343873D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347531AbhERIcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:32:02 -0400
-Received: from mga01.intel.com ([192.55.52.88]:41124 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241148AbhERIbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:31:49 -0400
-IronPort-SDR: aDagRpaple8beuHbxUGZIyvY5I7oSaMcpZOZbs5Cy+S2D5+Sqa9zMlWFusnNn/ssCEmhOF2BFB
- VZ9x6X8eDOLQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="221708585"
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="221708585"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:30:31 -0700
-IronPort-SDR: 6piu/YjU7f6RxMGkdWgWGtS/1nxLfhC/g2b6815UPDFp8rqeihhtLRZZxe5LJlMCh68l8xMaKC
- rwcrnNBpu8RA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="541658168"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 18 May 2021 01:30:29 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] driver core: platform: Remove platform_device_add_properties()
-Date:   Tue, 18 May 2021 11:30:46 +0300
-Message-Id: <20210518083046.23302-3-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210518083046.23302-1-heikki.krogerus@linux.intel.com>
-References: <20210518083046.23302-1-heikki.krogerus@linux.intel.com>
+        id S1347423AbhERIWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:22:21 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3015 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346279AbhERIWU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 04:22:20 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fkpmj6lyPzlg3D;
+        Tue, 18 May 2021 16:18:45 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 16:20:49 +0800
+Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
+ (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
+ 2021 16:20:48 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <hch@lst.de>, <sagi@grimberg.me>, <chaitanya.kulkarni@wdc.com>,
+        <kbusch@kernel.org>, <amit.engel@dell.com>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <linfeilong@huawei.com>, <wubo40@huawei.com>
+Subject: [PATCH] nvmet: fix memory leak on nvmet_alloc_ctrl()
+Date:   Tue, 18 May 2021 16:46:38 +0800
+Message-ID: <1621327598-542045-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no more users for it. The last place where it's
-called is in platform_device_register_full(). Replacing that
-call with device_create_managed_software_node() and
-removing the function.
+From: Wu Bo <wubo40@huawei.com>
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+When cntlid_min is greater than cntlid_max,
+goto wrong label, should be goto out_free_sqs
+label. Otherwise there is a memory leak problem
+on the nvmet_alloc_ctrl function().
+
+Fixes: 94a39d61f80f ("nvmet: make ctrl-id configurable")
+Fixes: 6d65aeab7bf6e ("nvmet: remove unused ctrl->cqs")
+Signed-off-by: Wu Bo <wubo40@huawei.com>
 ---
- drivers/base/platform.c         | 20 ++------------------
- include/linux/platform_device.h |  2 --
- 2 files changed, 2 insertions(+), 20 deletions(-)
+ drivers/nvme/target/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 9cd34def2237b..0299b03e64d40 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -661,22 +661,6 @@ int platform_device_add_data(struct platform_device *pdev, const void *data,
- }
- EXPORT_SYMBOL_GPL(platform_device_add_data);
+diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
+index 25cc2ee8de3f..1853db38b682 100644
+--- a/drivers/nvme/target/core.c
++++ b/drivers/nvme/target/core.c
+@@ -1372,7 +1372,7 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
+ 		goto out_free_changed_ns_list;
  
--/**
-- * platform_device_add_properties - add built-in properties to a platform device
-- * @pdev: platform device to add properties to
-- * @properties: null terminated array of properties to add
-- *
-- * The function will take deep copy of @properties and attach the copy to the
-- * platform device. The memory associated with properties will be freed when the
-- * platform device is released.
-- */
--int platform_device_add_properties(struct platform_device *pdev,
--				   const struct property_entry *properties)
--{
--	return device_add_properties(&pdev->dev, properties);
--}
--EXPORT_SYMBOL_GPL(platform_device_add_properties);
--
- /**
-  * platform_device_add - add a platform device to device hierarchy
-  * @pdev: platform device we're adding
-@@ -862,8 +846,8 @@ struct platform_device *platform_device_register_full(
- 		goto err;
+ 	if (subsys->cntlid_min > subsys->cntlid_max)
+-		goto out_free_changed_ns_list;
++		goto out_free_sqs;
  
- 	if (pdevinfo->properties) {
--		ret = platform_device_add_properties(pdev,
--						     pdevinfo->properties);
-+		ret = device_create_managed_software_node(&pdev->dev,
-+							  pdevinfo->properties, NULL);
- 		if (ret)
- 			goto err;
- 	}
-diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-index cd81e060863c9..a05eb819f306a 100644
---- a/include/linux/platform_device.h
-+++ b/include/linux/platform_device.h
-@@ -200,8 +200,6 @@ extern int platform_device_add_resources(struct platform_device *pdev,
- 					 unsigned int num);
- extern int platform_device_add_data(struct platform_device *pdev,
- 				    const void *data, size_t size);
--extern int platform_device_add_properties(struct platform_device *pdev,
--				const struct property_entry *properties);
- extern int platform_device_add(struct platform_device *pdev);
- extern void platform_device_del(struct platform_device *pdev);
- extern void platform_device_put(struct platform_device *pdev);
+ 	ret = ida_simple_get(&cntlid_ida,
+ 			     subsys->cntlid_min, subsys->cntlid_max,
 -- 
-2.30.2
+2.30.0
 
