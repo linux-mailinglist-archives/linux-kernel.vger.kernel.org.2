@@ -2,129 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36821386F89
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48CB386F97
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346112AbhERBpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
+        id S1346095AbhERBt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238761AbhERBpA (ORCPT
+        with ESMTP id S233295AbhERBt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:45:00 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18039C061573;
-        Mon, 17 May 2021 18:43:42 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id f8so6383001qth.6;
-        Mon, 17 May 2021 18:43:42 -0700 (PDT)
+        Mon, 17 May 2021 21:49:27 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA26C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:48:08 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id c14so11127757ybr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:48:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VDEfHlmjhOJt3nhxPPEyRnbv69jWXQnDs7QGgGPn30I=;
-        b=HxLWjbf4YnmukKbdgbNfuTL3hy2jd5drR5Nix7BP7A/0n6ypJ1Yh4Id38fpB4Ub9Hs
-         VbUd5Ala73cfnGBHmsoPFuI+W3hlcOcSOQ56VvA6wPCtGB9aF6lD2n8k0idrzcDUMi7y
-         tikxgNZMTNE9L2q/oJq70aib3HtrKmdnP2jytIHm/L0o+ebdkcj9kTF1Yr+hf9mCJLQL
-         vg3fKdhYGkGNrhME5YzVvLW9QcohT21zGcE9g6dB6C3If/Va4Nt1b1B87KQYbKOuRCAi
-         OJDPhWxUEAU2cJtsG+inZMvgsr6Z0IReFOCl7I7Ua16+5UBEyYVG8/SdUW5Xs3r8RlGy
-         vGig==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i+caL8ShiQkdtMoHXmzKLEMm3uWefe7QerqBVwe/RcU=;
+        b=aL9hDx4hO8PCt/1n6zXbQpuLzERaeSDJebpTk7lHuydwk3RZJM1cj/0zk+cfom+Pe8
+         QjkK3gT9IrtfKJ5rbLcvRRPqLEaIY7+8ozxADMH7sdms4o2Se9NreNt8P3l/zK9rr7T1
+         QqwbIIEq+xnsupl9bY3OKYcFWq1m6Jrk6S6NdM7FSkgLN5go7nrXbtFjzbvZpxlujhlC
+         W77OECIZVvGOSf9t8Z0qGao0pRLW9swmluAq95NJB7+0LSKDRa2zoEGXzBcUydhSCtPj
+         FCaqoFowZhBwraNmWLgtQMRDO8p7RRgK2ncUTcRAVtc4JyfLuuKfKC8n2fW1Iu0OoWP2
+         4FmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VDEfHlmjhOJt3nhxPPEyRnbv69jWXQnDs7QGgGPn30I=;
-        b=orbnU+1L8atpwKC/VjoltVLE4MhbfSFzr8nocanOqBt2TDuiUyNqjd+KHqqidfL3/R
-         uRzdg0y+kItXBfIeOBgrwVK7Gmny7nGkb+9yPo/oqNEVSk5RO/01qJj8dAXtTjrOzEAV
-         fvqMKpqxxCHZaRcuoiZMuFyM9nsdsYppSC3WZElc8uwsM2CBYZTTDZ+P/8a0RgNht16F
-         TUiSduHLGdriM0k+WOFGWDjSxCyrGwu6z9MDGme4Su+8yL51bqfVBaxfhVe4xEIUdID5
-         BLe8SbGShHnfa6nXLX6l/n97icRR4XJw/T7zkH8AtVVFaJHijj5s6pMlm4Axx0iHwvys
-         67kw==
-X-Gm-Message-State: AOAM533WdDRF3BhsmqzTCBmGBjn0OfSOvzSZ+XMXXTXk5B3K+cc892bb
-        wAHwCX5G03RL98ZK9VLOHrA32PAOaew=
-X-Google-Smtp-Source: ABdhPJzeA021cDl4Llgxn5JSeqjsknucA9KObWeuK3ZsLLaJaQruUsiV4EeF8e+SWn0FUowV/Tet9A==
-X-Received: by 2002:ac8:5a4c:: with SMTP id o12mr2376485qta.121.1621302221018;
-        Mon, 17 May 2021 18:43:41 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m4sm12539041qtg.21.2021.05.17.18.43.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 18:43:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH RESEND][next] hwmon: (max6621) Fix fall-through warnings
- for Clang
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210305095258.GA141583@embeddedor>
- <20210306031847.GA192807@roeck-us.net>
- <1bd99c46-730e-ee56-96e4-c87f69488f49@embeddedor.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <563d33b6-981b-8297-fb70-97de738d1688@roeck-us.net>
-Date:   Mon, 17 May 2021 18:43:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i+caL8ShiQkdtMoHXmzKLEMm3uWefe7QerqBVwe/RcU=;
+        b=TtJjivup9eVpcoDYfOBl4nbkp4HoU2PSzTO+dbIB47lBR5zf1jwQIvPq1RlAO5iadS
+         PqlKQ8ckuww0A3EzTu+2OEXStF2o34yAiuiseUHz1psObJbtDfg2WwGfWobSNptVJhLp
+         7UPZn18IJMJf4gPnpZccbBGcI9FcM97XzG3elc4SkaJKIWiwFssF6WjApbok4iiW6xFl
+         Vo8TiSIZTuevLwMNcaeNZFhOVYLljncZ7SNT5u5fGbFP878wuxmJ/s6/gK1V5dIok4vw
+         rN2KKcQ5bS3sGzjeZOs76a3MQJSBXj3ZYxKBK+NtrLfRIsat46PGfDygqH5drncegQKu
+         6Naw==
+X-Gm-Message-State: AOAM532fzVC3HiBu2EE8tMRCgN2fBMbwUsc7aUpm2rE2cD4dMOqiFFzr
+        Vz6tn4vr3yGXdADtvCRBZsBWbNnSl1qpPswwcUC3Wg==
+X-Google-Smtp-Source: ABdhPJxHaa7tB8IsGTVxyI+SdCENH2DCgi9zKryDO6TiA5/edpgd4vvEBD+xsnLh/Sz+E2ICn/XqUl04CrSMWnewfHY=
+X-Received: by 2002:a25:8e0e:: with SMTP id p14mr4222528ybl.84.1621302487891;
+ Mon, 17 May 2021 18:48:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1bd99c46-730e-ee56-96e4-c87f69488f49@embeddedor.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1621242249-8314-1-git-send-email-huangzhaoyang@gmail.com>
+ <YKK3wgrhqzaiE7rQ@cmpxchg.org> <CAJuCfpGLTkvH6CzQXz4oD39_xtArBt3upk-F=gf4-LPoswagGg@mail.gmail.com>
+ <CAJuCfpE+Z3O_5PfDg8rEB7Cj+nMbsGPp_eWF6rRz8h2YJhy+PA@mail.gmail.com> <CAGWkznEMxa7BL3hih+adOEhOg5p5qiSgNaERdLjDqk_JNMv1Hg@mail.gmail.com>
+In-Reply-To: <CAGWkznEMxa7BL3hih+adOEhOg5p5qiSgNaERdLjDqk_JNMv1Hg@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 17 May 2021 18:47:56 -0700
+Message-ID: <CAJuCfpEZvDt-xO1fGTDJqt9RW87S7yQZ0P1=Yz-ySko_qxeX0A@mail.gmail.com>
+Subject: Re: [[RFC]PATCH] psi: fix race between psi_trigger_create and psimon
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 5:45 PM, Gustavo A. R. Silva wrote:
-> Hi Guenter,
-> 
-> On 3/5/21 21:18, Guenter Roeck wrote:
->> On Fri, Mar 05, 2021 at 03:52:58AM -0600, Gustavo A. R. Silva wrote:
->>> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->>> by explicitly adding a break statement instead of letting the code fall
->>> through to the next case.
->>>
->>> Link: https://github.com/KSPP/linux/issues/115
->>> Acked-by: Guenter Roeck <linux@roeck-us.net>
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> ---
->>
->> I Acked those, thus assuming that they would be applied through some
->> other tree. If that is not the case, you'll need to let me know. The
->> resend only means to me that whatever tree was supposed to pick it up
->> did not do it, but it doesn't result in any action from my side.
-> 
-> If you don't mind, I'm taking this in my -next[1] branch for v5.14.
-> 
+On Mon, May 17, 2021 at 5:41 PM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
+>
+> On Tue, May 18, 2021 at 5:30 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Mon, May 17, 2021 at 12:33 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Mon, May 17, 2021 at 11:36 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > >
+> > > > CC Suren
+> > >
+> > > Thanks!
+> > >
+> > > >
+> > > > On Mon, May 17, 2021 at 05:04:09PM +0800, Huangzhaoyang wrote:
+> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > >
+> > > > > Race detected between psimon_new and psimon_old as shown below, which
+> > > > > cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
+> > > > > and psi_system->poll_timer->entry->next. It is not necessary to reinit
+> > > > > resource of psi_system when psi_trigger_create.
+> > >
+> > > resource of psi_system will not be reinitialized because
+> > > init_waitqueue_head(&group->poll_wait) and friends are initialized
+> > > only during the creation of the first trigger for that group (see this
+> > > condition: https://elixir.bootlin.com/linux/latest/source/kernel/sched/psi.c#L1119).
+> > >
+> > > > >
+> > > > > psi_trigger_create      psimon_new     psimon_old
+> > > > >  init_waitqueue_head                    finish_wait
+> > > > >                                           spin_lock(lock_old)
+> > > > >       spin_lock_init(lock_new)
+> > > > >  wake_up_process(psimon_new)
+> > > > >
+> > > > >                         finish_wait
+> > > > >                           spin_lock(lock_new)
+> > > > >                             list_del       list_del
+> > >
+> > > Could you please clarify this race a bit? I'm having trouble
+> > > deciphering this diagram. I'm guessing psimon_new/psimon_old refer to
+> > > a new trigger being created while an old one is being deleted, so it
+> > > seems like a race between psi_trigger_create/psi_trigger_destroy. The
+> > > combination of trigger_lock and RCU should be protecting us from that
+> > > but maybe I missed something?
+> > > I'm excluding a possibility of a race between psi_trigger_create with
+> > > another existing trigger on the same group because the codepath
+> > > calling init_waitqueue_head(&group->poll_wait) happens only when the
+> > > first trigger for that group is created. Therefore if there is an
+> > > existing trigger in that group that codepath will not be taken.
+> >
+> > Ok, looking at the current code I think you can hit the following race
+> > when psi_trigger_destroy is destroying the last trigger in a psi group
+> > while racing with psi_trigger_create:
+> >
+> > psi_trigger_destroy                      psi_trigger_create
+> > mutex_lock(trigger_lock);
+> > rcu_assign_pointer(poll_task, NULL);
+> > mutex_unlock(trigger_lock);
+> >                                                     mutex_lock(trigger_lock);
+> >                                                     if
+> > (!rcu_access_pointer(group->poll_task)) {
+> >
+> > timer_setup(poll_timer, poll_timer_fn, 0);
+> >
+> > rcu_assign_pointer(poll_task, task);
+> >                                                     }
+> >                                                     mutex_unlock(trigger_lock);
+> >
+> > synchronize_rcu();
+> > del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
+> > psi_trigger_create
+> >
+> > So, trigger_lock/RCU correctly protects destruction of
+> > group->poll_task but misses this race affecting poll_timer and
+> > poll_wait.
+> > Let me think if we can handle this without moving initialization into
+> > group_init().
+> Right, this is exactly what we met during a monkey test on an android
+> system, where the psimon will be destroyed/recreated by unref/recreate
+> the psi_trigger. IMHO,  poll_timer and poll_wait should exist during
+> whole period
 
-Ok with me for all.
+Ok, understood. I think it should be ok to initialize poll_wait and
+poll_timer at the group creation time. Looks like
+init_waitqueue_head() and timer_setup() initialize the fields but I
+don't think they allocate some additional resources. Johannes pointed
+to some issues in your original patch, so I've made some small
+modifications (see below). del_timer_sync() was important back when we
+used kthread_worker, now even if timer fires unnecessarily it should
+be harmless after we reset group->poll_task. So I think a del_timer()
+in psi_trigger_destroy() should be enough:
 
-Guenter
+@@ -181,6 +181,7 @@ struct psi_group psi_system = {
+ };
 
-> Thanks
-> --
-> Gustavo
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
-> 
->>
->> Guenter
->>
->>>   drivers/hwmon/max6621.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/hwmon/max6621.c b/drivers/hwmon/max6621.c
->>> index 367855d5edae..7821132e17fa 100644
->>> --- a/drivers/hwmon/max6621.c
->>> +++ b/drivers/hwmon/max6621.c
->>> @@ -156,7 +156,7 @@ max6621_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
->>>   		default:
->>>   			break;
->>>   		}
->>> -
->>> +		break;
->>>   	default:
->>>   		break;
->>>   	}
->>> -- 
->>> 2.27.0
->>>
+ static void psi_avgs_work(struct work_struct *work);
++static void poll_timer_fn(struct timer_list *t);
 
+ static void group_init(struct psi_group *group)
+ {
+@@ -202,6 +203,8 @@ static void group_init(struct psi_group *group)
+         group->polling_next_update = ULLONG_MAX;
+         group->polling_until = 0;
+         rcu_assign_pointer(group->poll_task, NULL);
++        init_waitqueue_head(&group->poll_wait);
++        timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ }
+
+ void __init psi_init(void)
+@@ -1157,9 +1160,7 @@ struct psi_trigger *psi_trigger_create(struct
+psi_group *group,
+                         return ERR_CAST(task);
+                 }
+                 atomic_set(&group->poll_wakeup, 0);
+-                init_waitqueue_head(&group->poll_wait);
+                 wake_up_process(task);
+-                timer_setup(&group->poll_timer, poll_timer_fn, 0);
+                 rcu_assign_pointer(group->poll_task, task);
+         }
+
+@@ -1211,6 +1212,7 @@ static void psi_trigger_destroy(struct kref *ref)
+                                         group->poll_task,
+                                         lockdep_is_held(&group->trigger_lock));
+                         rcu_assign_pointer(group->poll_task, NULL);
++                        del_timer(&group->poll_timer);
+                 }
+         }
+
+@@ -1230,10 +1232,7 @@ static void psi_trigger_destroy(struct kref *ref)
+                 /*
+                  * After the RCU grace period has expired, the worker
+                  * can no longer be found through group->poll_task.
+-                 * But it might have been already scheduled before
+-                 * that - deschedule it cleanly before destroying it.
+                  */
+-                del_timer_sync(&group->poll_timer);
+                 kthread_stop(task_to_destroy);
+         }
+         kfree(t);
+
+> >
+> > >
+> > > > >
+> > > > > Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
+> > > > > Signed-off-by: ke.wang <ke.wang@unisoc.com>
+> > > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > ---
+> > > > >  kernel/sched/psi.c | 6 ++++--
+> > > > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> > > > > index cc25a3c..d00e585 100644
+> > > > > --- a/kernel/sched/psi.c
+> > > > > +++ b/kernel/sched/psi.c
+> > > > > @@ -182,6 +182,8 @@ struct psi_group psi_system = {
+> > > > >
+> > > > >  static void psi_avgs_work(struct work_struct *work);
+> > > > >
+> > > > > +static void poll_timer_fn(struct timer_list *t);
+> > > > > +
+> > > > >  static void group_init(struct psi_group *group)
+> > > > >  {
+> > > > >       int cpu;
+> > > > > @@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
+> > > > >       memset(group->polling_total, 0, sizeof(group->polling_total));
+> > > > >       group->polling_next_update = ULLONG_MAX;
+> > > > >       group->polling_until = 0;
+> > > > > +     init_waitqueue_head(&group->poll_wait);
+> > > > > +     timer_setup(&group->poll_timer, poll_timer_fn, 0);
+> > > >
+> > > > This makes sense.
+> > >
+> > > Well, this means we initialize resources for triggers in each psi
+> > > group even if the user never creates any triggers. Current logic
+> > > initializes them when the first trigger in the group gets created.
+> > >
+> > > >
+> > > > >       rcu_assign_pointer(group->poll_task, NULL);
+> > > > >  }
+> > > > >
+> > > > > @@ -1157,7 +1161,6 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+> > > > >                       return ERR_CAST(task);
+> > > > >               }
+> > > > >               atomic_set(&group->poll_wakeup, 0);
+> > > > > -             init_waitqueue_head(&group->poll_wait);
+> > > > >               wake_up_process(task);
+> > > > >               timer_setup(&group->poll_timer, poll_timer_fn, 0);
+> > > >
+> > > > This looks now unncessary?
+> > > >
+> > > > >               rcu_assign_pointer(group->poll_task, task);
+> > > > > @@ -1233,7 +1236,6 @@ static void psi_trigger_destroy(struct kref *ref)
+> > > > >                * But it might have been already scheduled before
+> > > > >                * that - deschedule it cleanly before destroying it.
+> > > > >                */
+> > > > > -             del_timer_sync(&group->poll_timer);
+> > > >
+> > > > And this looks wrong. Did you mean to delete the timer_setup() line
+> > > > instead?
+> > >
+> > > I would like to get more details about this race before trying to fix
+> > > it. Please clarify.
+> > > Thanks!
