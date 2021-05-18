@@ -2,161 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DC5387D08
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E81387D10
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350232AbhERQDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:03:39 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:41974 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344303AbhERQDe (ORCPT
+        id S1350342AbhERQFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:05:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48208 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344604AbhERQFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:03:34 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lj2Ac-00AUYJ-9D; Tue, 18 May 2021 10:02:10 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lj2AZ-0004Ye-GI; Tue, 18 May 2021 10:02:10 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
-References: <20210517203343.3941777-1-arnd@kernel.org>
-        <20210517203343.3941777-2-arnd@kernel.org>
-        <m1bl982m8c.fsf@fess.ebiederm.org>
-        <CAK8P3a27_z8zk6j5W4n+u3g2e90v-h+3AbaTZ6YjCQ0B7AbJaA@mail.gmail.com>
-        <CAK8P3a277VggQbBnXUzpwP7TKMj-S_z6rDMYYxfjyQmzGJdpCA@mail.gmail.com>
-Date:   Tue, 18 May 2021 11:01:57 -0500
-In-Reply-To: <CAK8P3a277VggQbBnXUzpwP7TKMj-S_z6rDMYYxfjyQmzGJdpCA@mail.gmail.com>
-        (Arnd Bergmann's message of "Tue, 18 May 2021 16:17:53 +0200")
-Message-ID: <m18s4c1156.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 18 May 2021 12:05:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621353863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kvhpwM9B7CK7kJ1xdIZJIHz3ygVOfl53rrG0Yt4bYqA=;
+        b=F0YNzu99BkiK7ADZJivTo1cW6iEs6oeL5V8gHbPAV2wAkTvP+05HnUclvS2ejfOSIoTFmp
+        phOXMqAKuqXClBa3CLUDLNSw4u59EjfpTDYwe0+GxSEcUV6XQF0S9NOoIh2MeK90U7pXpt
+        +sOOrF2CuE5bsFZKBz4Apuaz8d4al1s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-IwQiSyPUM-SHNa54cz5-nA-1; Tue, 18 May 2021 12:04:20 -0400
+X-MC-Unique: IwQiSyPUM-SHNa54cz5-nA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26CE6800D55;
+        Tue, 18 May 2021 16:04:19 +0000 (UTC)
+Received: from gondolin.fritz.box (ovpn-113-74.ams2.redhat.com [10.36.113.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F00385DEAD;
+        Tue, 18 May 2021 16:04:13 +0000 (UTC)
+Date:   Tue, 18 May 2021 18:04:11 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 00/11] KVM: s390: pv: implement lazy destroy
+Message-ID: <20210518180411.4abf837d.cohuck@redhat.com>
+In-Reply-To: <20210518173624.13d043e3@ibm-vm>
+References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
+        <20210518170537.58b32ffe.cohuck@redhat.com>
+        <20210518173624.13d043e3@ibm-vm>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lj2AZ-0004Ye-GI;;;mid=<m18s4c1156.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/3KUt9n9NsCywLTywTeK8LOKWYroFccQo=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Arnd Bergmann <arnd@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 2158 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 10 (0.5%), b_tie_ro: 9 (0.4%), parse: 0.96 (0.0%),
-         extract_message_metadata: 16 (0.7%), get_uri_detail_list: 2.1 (0.1%),
-        tests_pri_-1000: 21 (1.0%), tests_pri_-950: 1.24 (0.1%),
-        tests_pri_-900: 1.05 (0.0%), tests_pri_-90: 258 (11.9%), check_bayes:
-        253 (11.7%), b_tokenize: 9 (0.4%), b_tok_get_all: 8 (0.4%),
-        b_comp_prob: 2.5 (0.1%), b_tok_touch_all: 217 (10.1%), b_finish: 13
-        (0.6%), tests_pri_0: 1766 (81.8%), check_dkim_signature: 0.95 (0.0%),
-        check_dkim_adsp: 10 (0.4%), poll_dns_idle: 7 (0.3%), tests_pri_10: 28
-        (1.3%), tests_pri_500: 53 (2.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3 1/4] kexec: simplify compat_sys_kexec_load
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+On Tue, 18 May 2021 17:36:24 +0200
+Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
 
-> On Tue, May 18, 2021 at 4:05 PM Arnd Bergmann <arnd@kernel.org> wrote:
->>
->> On Tue, May 18, 2021 at 3:41 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->> >
->> > Arnd Bergmann <arnd@kernel.org> writes:
->> >
->> > > From: Arnd Bergmann <arnd@arndb.de>KEXEC_ARCH_DEFAULT
->> > >
->> > > The compat version of sys_kexec_load() uses compat_alloc_user_space to
->> > > convert the user-provided arguments into the native format.
->> > >
->> > > Move the conversion into the regular implementation with
->> > > an in_compat_syscall() check to simplify it and avoid the
->> > > compat_alloc_user_space() call.
->> > >
->> > > compat_sys_kexec_load() now behaves the same as sys_kexec_load().
->> >
->> > Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> >KEXEC_ARCH_DEFAULT
->> > The patch is wrong.
->> >
->> > The logic between the compat entry point and the ordinary entry point
->> > are by necessity different.   This unifies the logic and breaks the compat
->> > entry point.
->> >
->> > The fundamentally necessity is that the code being loaded needs to know
->> > which mode the kernel is running in so it can safely transition to the
->> > new kernel.
->> >
->> > Given that the two entry points fundamentally need different logic,
->> > and that difference was not preserved and the goal of this patchset
->> > was to unify that which fundamentally needs to be different.  I don't
->> > think this patch series makes any sense for kexec.
->>
->> Sorry, I'm not following that explanation. Can you clarify what different
->> modes of the kernel you are referring to here, and how my patch
->> changes this?
->
-> I think I figured it out now myself after comparing the two functions:
->
-> --- a/kernel/kexec.c
-> +++ b/kernel/kexec.c
-> @@ -269,7 +269,8 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry,
-> unsigned long, nr_segments,
->
->         /* Verify we are on the appropriate architecture */
->         if (((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH) &&
-> -               ((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH_DEFAULT))
-> +               (in_compat_syscall() ||
-> +               ((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH_DEFAULT)))
->                 return -EINVAL;
->
->         /* Because we write directly to the reserved memory
->
-> Not sure if that's the best way of doing it, but it looks like folding this
-> in restores the current behavior.
+> On Tue, 18 May 2021 17:05:37 +0200
+> Cornelia Huck <cohuck@redhat.com> wrote:
+> 
+> > On Mon, 17 May 2021 22:07:47 +0200
+> > Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
 
-Yes.  That is pretty much all there is.
+> > > This means that the same address space can have memory belonging to
+> > > more than one protected guest, although only one will be running,
+> > > the others will in fact not even have any CPUs.    
+> > 
+> > Are those set-aside-but-not-yet-cleaned-up pages still possibly
+> > accessible in any way? I would assume that they only belong to the  
+> 
+> in case of reboot: yes, they are still in the address space of the
+> guest, and can be swapped if needed
+> 
+> > 'zombie' guests, and any new or rebooted guest is a new entity that
+> > needs to get new pages?  
+> 
+> the rebooted guest (normal or secure) will re-use the same pages of the
+> old guest (before or after cleanup, which is the reason of patches 3
+> and 4)
 
-I personally can't stand the sight of in_compat_syscall() doubly so when
-you have to lie to the type system with casts.  The cognitive dissonance
-I experience is extreme.
+Took a look at those patches, makes sense.
 
-I will be happy to help you find another way to get rid of
-compat_alloc_user, but not that way.
+> 
+> the KVM guest is not affected in case of reboot, so the userspace
+> address space is not touched.
 
+'guest' is a bit ambiguous here -- do you mean the vm here, and the
+actual guest above?
 
-There is a whole mess in there that was introduced when someone added
-do_kexec_load while I was napping in 2017 that makes the system calls an
-absolute mess.  It all needs to be cleaned up.
-
-Eric
