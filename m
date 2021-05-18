@@ -2,238 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C453878C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DAA3878C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349124AbhERMck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243225AbhERMci (ORCPT
+        id S1349132AbhERMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:33:11 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:45851 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243225AbhERMdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:32:38 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DFEC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:31:19 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id o27so8990225qkj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:31:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8KpdGODC+6W+h70Bn52fBpiD5+xoT0ToV/SJ11FYfsQ=;
-        b=KlHz40SEuolT6VvDspFQTkqixDDoA6ln3CVymJ54y1JkIuYxbETd6WNfiDHYzWuovm
-         C/hmIb3Cr4v3cmgh6yAC+9KtatDrBb+Qz9f6Hced0no8wfSOPzjTMCIeJW8hraDNxmMM
-         4qsuZ46iaqu5R0g6DkXXHYRFDHBXCB6y9FUZ6RrZfJ+kygG1GuZZYoVRHyZ06iC9XUlo
-         Fi6e3rLstz4U9Pj1Os2m4M0YCmfZH66EiIQ0hElTamaKlHvOfIgUPjT6zZpmBMo4hZVJ
-         HmjfeqvDqdrKqT1Q4DpmIc7reUpix1CYEDC2Xy37xcClOAax8hIHcOSP00WtFQbFLymn
-         IqyQ==
+        Tue, 18 May 2021 08:33:03 -0400
+Received: by mail-lj1-f181.google.com with SMTP id v5so11313502ljg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:31:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8KpdGODC+6W+h70Bn52fBpiD5+xoT0ToV/SJ11FYfsQ=;
-        b=unGK6cYi/UbJDPOLa7QQTnh6CGF8uWXTRJDqTqMasju2JwsEnwL3vxDKriANq25C2i
-         6iHviS6KW1PPNTXlT1ORB/PPt1d2pU1eQ/GWREsjhSP9E7CDVSzAhoXB2tR17J44y/OE
-         ltotc0dOfkfe6nMMUom9kVmG+2wnApFZaLEzbkbshTSWifS+NW9Ijb3c8WhiozSoPGYQ
-         CHlGjNtNunTczZZJI0fabscbmpKnJKHgc4ktWhbemIFj0gopJAa30HE3kuneIq8ssnJY
-         ZgPOUUwdfnDCxXv5SZI6usxB1osMbR7++q8HrRJtFtfJHaNNqatDhAzRG2crQdmYhhWc
-         Sa8A==
-X-Gm-Message-State: AOAM531oZ3wvRpUtyJlPNjLXLnAb2q2+5w/OqxVtenorLoBAD88Ko7Fy
-        sqjDNudENcbCuh4sOjGFrea7oJNl29zHZCs5
-X-Google-Smtp-Source: ABdhPJynYD8djQWbOagq875GAONhhPs1vKmOsGsm77iRv9lnz9Jiq8PKbhK5O+m/w6WyIDWZvW2Pqw==
-X-Received: by 2002:a05:620a:14b5:: with SMTP id x21mr5090074qkj.336.1621341077879;
-        Tue, 18 May 2021 05:31:17 -0700 (PDT)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id p17sm11684712qtq.87.2021.05.18.05.31.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 05:31:17 -0700 (PDT)
-Subject: Re: [PATCH 1/2] clk: qcom: add support for SM8350 DISPCC
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210513195617.15068-1-jonathan@marek.ca>
- <CAG3jFyvn8Jn2hCgWYunB_=_jKYJ9GpDZyP+Pqjdxx_0n32rJtw@mail.gmail.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <1ab8d444-97b1-d14d-0088-80a027e1ec1a@marek.ca>
-Date:   Tue, 18 May 2021 08:30:14 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=U6gXrrpSi89wtHqkw9KgypBTUR8uSSzHumrX4PYBgUY=;
+        b=U4tQqN1TKEi2r9zn3wCUleKSVoHdEfJZE0YImPb4aLGjeRq6uw+/cZqg5zujm6aUuE
+         wCn0la/eNXdZgxnLSPpJtJNbjhkEBUtVg4RhKn2kQwy6SYRAcnUjt+FXW9m3hYSIPB+/
+         f14l3U8Fb9tkVeh+LOH4UrAFAOgrDKqNmkeXx6KpgcPmL7kXn7/cgFGYpGdphVqUJrnR
+         M4psx5MjVK32W90jY78UZFdX45X3Geww/2Ljws93cUzW4fl5oACHCBd/6hwu3nZHh8WB
+         cB0tN9SZMeYElR1W0kteklLbgMiPiBBUuLNYeCUFMCY/uKiOuO70Ro1uTBKvks12YmSb
+         OOeg==
+X-Gm-Message-State: AOAM530Syswu0UCIaiuGKPwprmoph2JWzC85aTZYQK4MvIz7EskxKRat
+        8TKXlV8TI0CB8WVRVrfDHNM=
+X-Google-Smtp-Source: ABdhPJyHyXFqzfU32asVYpf0HUMJnGSSf61ZZ2+BdzH9P/d+esdFiC7ajqG8Qk/07W3cpuMOI6Hwjg==
+X-Received: by 2002:a2e:7a03:: with SMTP id v3mr3950221ljc.12.1621341104972;
+        Tue, 18 May 2021 05:31:44 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::1])
+        by smtp.gmail.com with ESMTPSA id f22sm2272967lfc.102.2021.05.18.05.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 05:31:44 -0700 (PDT)
+Date:   Tue, 18 May 2021 15:31:37 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     hanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] Add devm helper for work-queue initialization
+Message-ID: <cover.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFyvn8Jn2hCgWYunB_=_jKYJ9GpDZyP+Pqjdxx_0n32rJtw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fUYQa+Pmc3FrFX/N"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 7:53 AM, Robert Foss wrote:
-> Hey Jonathan,
-> 
-> Thanks for submitting this.
-> 
-> On Thu, 13 May 2021 at 21:56, Jonathan Marek <jonathan@marek.ca> wrote:
->>
->> Add support to the SM8350 display clock controller by extending the SM8250
->> display clock controller, which is almost identical but has some minor
->> differences.
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   drivers/clk/qcom/Kconfig         |  4 +-
->>   drivers/clk/qcom/dispcc-sm8250.c | 84 +++++++++++++++++++++++++++-----
->>   2 files changed, 75 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
->> index 45646b867cdb..cc60e6ee1654 100644
->> --- a/drivers/clk/qcom/Kconfig
->> +++ b/drivers/clk/qcom/Kconfig
->> @@ -484,11 +484,11 @@ config SDX_GCC_55
->>            SPI, I2C, USB, SD/UFS, PCIe etc.
->>
->>   config SM_DISPCC_8250
->> -       tristate "SM8150 and SM8250 Display Clock Controller"
->> +       tristate "SM8150/SM8250/SM8350 Display Clock Controller"
->>          depends on SM_GCC_8150 || SM_GCC_8250
->>          help
->>            Support for the display clock controller on Qualcomm Technologies, Inc
->> -         SM8150 and SM8250 devices.
->> +         SM8150/SM8250/SM8350 devices.
->>            Say Y if you want to support display devices and functionality such as
->>            splash screen.
->>
->> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
->> index de09cd5c209f..1fcf8085a109 100644
->> --- a/drivers/clk/qcom/dispcc-sm8250.c
->> +++ b/drivers/clk/qcom/dispcc-sm8250.c
->> @@ -36,6 +36,10 @@ static struct pll_vco vco_table[] = {
->>          { 249600000, 2000000000, 0 },
->>   };
->>
->> +static struct pll_vco lucid_5lpe_vco[] = {
->> +       { 249600000, 1750000000, 0 },
->> +};
->> +
->>   static struct alpha_pll_config disp_cc_pll0_config = {
->>          .l = 0x47,
->>          .alpha = 0xE000,
->> @@ -1039,6 +1043,7 @@ static const struct qcom_cc_desc disp_cc_sm8250_desc = {
->>   static const struct of_device_id disp_cc_sm8250_match_table[] = {
->>          { .compatible = "qcom,sm8150-dispcc" },
->>          { .compatible = "qcom,sm8250-dispcc" },
->> +       { .compatible = "qcom,sm8350-dispcc" },
->>          { }
->>   };
->>   MODULE_DEVICE_TABLE(of, disp_cc_sm8250_match_table);
->> @@ -1051,19 +1056,76 @@ static int disp_cc_sm8250_probe(struct platform_device *pdev)
->>          if (IS_ERR(regmap))
->>                  return PTR_ERR(regmap);
->>
->> -       /* note: trion == lucid, except for the prepare() op */
->> -       BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
->> -       if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8150-dispcc")) {
-> 
-> I'm having a quick look at this patch, and of_device_is_compatible had
-> 2 cases previously, sm8150 & sm8250. Now three cases (sm8150, sm8250 &
-> sm8350) are possible, but sm8150 & sm8250 have been lumped together.
-> Is this correct?
-> 
 
-This patch doesn't change the behavior for sm8150/sm8250, which are 
-nearly identical. The check for qcom,sm8150-dispcc is just moved below.
+--fUYQa+Pmc3FrFX/N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(looking over it, I should've left it first and kept the diff smaller. I 
-had "lumped" sm8150/sm8250 because initially I had separate 
-"pll_configure" calls for sm8350 vs sm8150/sm8250).
+This series adds new devm_work_autocancel() helper.
 
->> -               disp_cc_pll0_config.config_ctl_hi_val = 0x00002267;
->> -               disp_cc_pll0_config.config_ctl_hi1_val = 0x00000024;
->> -               disp_cc_pll0_config.user_ctl_hi1_val = 0x000000D0;
->> -               disp_cc_pll0_init.ops = &clk_alpha_pll_trion_ops;
->> -               disp_cc_pll1_config.config_ctl_hi_val = 0x00002267;
->> -               disp_cc_pll1_config.config_ctl_hi1_val = 0x00000024;
->> -               disp_cc_pll1_config.user_ctl_hi1_val = 0x000000D0;
->> -               disp_cc_pll1_init.ops = &clk_alpha_pll_trion_ops;
->> +       /* SM8350 has _SRC clocks offset by 4, and some other differences */
->> +       if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8350-dispcc")) {
->> +               static struct clk_rcg2* const rcgs[] = {
->> +                       &disp_cc_mdss_byte0_clk_src,
->> +                       &disp_cc_mdss_byte1_clk_src,
->> +                       &disp_cc_mdss_dp_aux1_clk_src,
->> +                       &disp_cc_mdss_dp_aux_clk_src,
->> +                       &disp_cc_mdss_dp_link1_clk_src,
->> +                       &disp_cc_mdss_dp_link_clk_src,
->> +                       &disp_cc_mdss_dp_pixel1_clk_src,
->> +                       &disp_cc_mdss_dp_pixel2_clk_src,
->> +                       &disp_cc_mdss_dp_pixel_clk_src,
->> +                       &disp_cc_mdss_esc0_clk_src,
->> +                       &disp_cc_mdss_mdp_clk_src,
->> +                       &disp_cc_mdss_pclk0_clk_src,
->> +                       &disp_cc_mdss_pclk1_clk_src,
->> +                       &disp_cc_mdss_rot_clk_src,
->> +                       &disp_cc_mdss_vsync_clk_src,
->> +               };
->> +               static struct clk_regmap_div* const divs[] = {
->> +                       &disp_cc_mdss_byte0_div_clk_src,
->> +                       &disp_cc_mdss_byte1_div_clk_src,
->> +                       &disp_cc_mdss_dp_link1_div_clk_src,
->> +                       &disp_cc_mdss_dp_link_div_clk_src,
->> +               };
->> +               unsigned i;
->> +               static bool offset_applied = false;
->> +
->> +               /* only apply the offsets once (in case of deferred probe) */
->> +               if (!offset_applied) {
->> +                       for (i = 0; i < ARRAY_SIZE(rcgs); i++)
->> +                               rcgs[i]->cmd_rcgr -= 4;
->> +
->> +                       for (i = 0; i < ARRAY_SIZE(divs); i++) {
->> +                               divs[i]->reg -= 4;
->> +                               divs[i]->width = 4;
->> +                       }
->> +
->> +                       disp_cc_mdss_ahb_clk.halt_reg -= 4;
->> +                       disp_cc_mdss_ahb_clk.clkr.enable_reg -= 4;
->> +
->> +                       offset_applied = true;
->> +               }
->> +
->> +               disp_cc_mdss_ahb_clk_src.cmd_rcgr = 0x22a0;
->> +
->> +               disp_cc_pll0_config.config_ctl_hi1_val = 0x2A9A699C;
->> +               disp_cc_pll0_config.test_ctl_hi1_val = 0x01800000;
->> +               disp_cc_pll0_init.ops = &clk_alpha_pll_lucid_5lpe_ops;
->> +               disp_cc_pll0.vco_table = lucid_5lpe_vco;
->> +               disp_cc_pll1_config.config_ctl_hi1_val = 0x2A9A699C;
->> +               disp_cc_pll1_config.test_ctl_hi1_val = 0x01800000;
->> +               disp_cc_pll1_init.ops = &clk_alpha_pll_lucid_5lpe_ops;
->> +               disp_cc_pll1.vco_table = lucid_5lpe_vco;
->> +       } else {
->> +               /* note: trion == lucid, except for the prepare() op */
->> +               BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
->> +               if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8150-dispcc")) {
->> +                       disp_cc_pll0_config.config_ctl_hi_val = 0x00002267;
->> +                       disp_cc_pll0_config.config_ctl_hi1_val = 0x00000024;
->> +                       disp_cc_pll0_config.user_ctl_hi1_val = 0x000000D0;
->> +                       disp_cc_pll0_init.ops = &clk_alpha_pll_trion_ops;
->> +                       disp_cc_pll1_config.config_ctl_hi_val = 0x00002267;
->> +                       disp_cc_pll1_config.config_ctl_hi1_val = 0x00000024;
->> +                       disp_cc_pll1_config.user_ctl_hi1_val = 0x000000D0;
->> +                       disp_cc_pll1_init.ops = &clk_alpha_pll_trion_ops;
->> +               }
->>          }
->>
->> +       /* note for SM8350: downstream lucid_5lpe configure differs slightly */
->>          clk_lucid_pll_configure(&disp_cc_pll0, regmap, &disp_cc_pll0_config);
->>          clk_lucid_pll_configure(&disp_cc_pll1, regmap, &disp_cc_pll1_config);
->>
->> --
->> 2.26.1
->>
+Many drivers which use work-queues must ensure the work is not queued when
+driver is detached. Often this is done by ensuring new work is not added and
+then calling cancel_work_sync() at remove(). In many cases this also requir=
+es
+cleanup at probe error path - which is easy to forget (or get wrong).
+
+Also the "by ensuring new work is not added" has a gotcha.
+
+It is not strange to see devm managed IRQs scheduling work.
+Mixing this with manual wq clean-up is hard to do correctly because the
+devm is likely to free the IRQ only after the remove() is ran. So manual
+wq cancellation and devm-based IRQ management do not mix well - there is
+a short(?) time-window after the wq clean-up when IRQs are still not
+freed and may schedule new work.
+
+When both WQs and IRQs are managed by devm things are likely to just
+work. WQs should be initialized before IRQs (when IRQs need to schedule
+work) and devm unwinds things in "FILO" order.
+
+This series implements wq cancellation on top of devm and replaces
+the obvious cases where only thing remove call-back in a driver does is
+cancelling the work. There might be other cases where we could switch
+more than just work cancellation to use managed version and thus get rid
+of remove or mixed (manual and devm) resource management.
+
+Changelog v2:
+  - rebased on v5.13-rc2
+  - split the extcon-max8997 change into two. First a simple,
+    back-portable fix for omitting IRQ freeing at error path, second
+    being the devm-simpification which does not need backporting.
+
+---
+
+Matti Vaittinen (5):
+  devm-helpers: Add resource managed version of work init
+  extcon: extcon-max14577: Fix potential work-queue cancellation race
+  extcon: extcon-max77693.c: Fix potential work-queue cancellation race
+  extcon: extcon-max8997: Fix IRQ freeing at error path
+  extcon: extcon-max8997: Simplify driver using devm
+
+ drivers/extcon/extcon-max14577.c | 16 ++++--------
+ drivers/extcon/extcon-max77693.c | 17 ++++--------
+ drivers/extcon/extcon-max8997.c  | 45 +++++++++++---------------------
+ include/linux/devm-helpers.h     | 25 ++++++++++++++++++
+ 4 files changed, 50 insertions(+), 53 deletions(-)
+
+
+base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+--=20
+2.25.4
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--fUYQa+Pmc3FrFX/N
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCjs5wACgkQeFA3/03a
+ocXp+Af9FUnvsT6iYZeynsTba1l9IMbQN64AaS84eJGdGYtaWW6XaVgVyaZ2Tlqo
+9Mnudjq54zvg35Ht2cCuM67S8pQ25C2uU4pIBu1YIOtNKssEldbN2U4DX3QJoHtH
+qhCeYqUIf5pfxBPOcAKl+DwGb+hMnYGbRQHumV/wt6kVavWIqvqHASnhLuXkZjLt
+2lxYwOJ7KoLe07psHf9y3Nz5flJCRxElRLsYB0AplG+abq8vH9V36AHf3qIaWmsE
+JU6KxgXtAJVsrln6b3OVracnYUv8PttnEH153t7E/k/5qsj/QqXShwL5hD6pIqQJ
+7SBDj8lt6ArzFiVre11eIA8TB8SBYw==
+=aJZx
+-----END PGP SIGNATURE-----
+
+--fUYQa+Pmc3FrFX/N--
