@@ -2,119 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF76387386
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D23387387
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347274AbhERHvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:51:05 -0400
-Received: from mga06.intel.com ([134.134.136.31]:7423 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234891AbhERHvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 03:51:03 -0400
-IronPort-SDR: bPjabTHKD/R9+mVEohmbnhTDNm4avEdaPOsPjrGyZUU6ETNpUx2sVPG26qz6pjUt09Bath4gfp
- oJT/DRPmXakQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="261881759"
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="261881759"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 00:49:45 -0700
-IronPort-SDR: iZBfAYSz0/rhPIaAMe0nLTLjrd5hleZBq/AmLOrh78fZzK4LydMV6YNn0A6x2Ff+dE4TAlzuT7
- RDc0qU1rCKtA==
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="472828356"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 00:49:40 -0700
-Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
- when vPMU is enabled
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Venkatesh Srinivas <venkateshs@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1347279AbhERHvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:51:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22368 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234891AbhERHvu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 03:51:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621324232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NW4UL0U5sPtzfc4lmGw05bHMRbyTb+TE8EPYexCTqqU=;
+        b=VSREbdcO6qM7L034L+lHNFgh6pd/PhtiE0xHMRJF3rrYN3jxz7n6woBdx4tbHGED8e8qy9
+        PWY4biFoTsdikJfQbnrG2VMKppttfCK5irAP3A8Dz1G6lPhFNBD2tCIukrRSp0riSZgbNk
+        rG/+pKhTI4cH5W1knPvEHo380MqLfqk=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-6ddMeOR1Py26oBgc02-tAg-1; Tue, 18 May 2021 03:50:31 -0400
+X-MC-Unique: 6ddMeOR1Py26oBgc02-tAg-1
+Received: by mail-ej1-f69.google.com with SMTP id m18-20020a1709062352b02903d2d831f9baso2022680eja.20
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 00:50:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NW4UL0U5sPtzfc4lmGw05bHMRbyTb+TE8EPYexCTqqU=;
+        b=suW2s9QHvvYkbvDkPf+XpEYZ7ZOGx/h9+CmIuSmP0XDeJtnEoqS3uKs6LSydrkdvjX
+         BLPKP5vSAIeEWGgnPj4xaDy/2jh6gP6yWGUh4v6kdP+8kRtLFwqmYRztej8kkBJn70t1
+         Z0N4hHgzUZcXFJiwsnpS++NHG0Wl62bYypdj2Imc8LOIbz7e0MVu9mQgXvSnp8WzoVnL
+         pp+SOgpjglekwXc9NvvHWFusWYxpGmFvjEd0YjviDQtHhN8yfP1LBO2xi3U5DeYjQwZm
+         pdcAWxNpYKRjXVn0w3NgamupA0sEAx9QDGwf3GrxcrtO2aAS5Wbq/wyl5JyXzGDeMhj4
+         cRYg==
+X-Gm-Message-State: AOAM5317/CoL5Al49Y2kNw62erERr7NE+Bi+0BvRuSaEuRvkFR1HZYVU
+        qBWPPBRwqQqMufHew4Mqdntv7OrprlcMirXf1JPcVPwmvdPfr7rMyB2A0ciWfut1vtT4IMPrDWI
+        yQ0j1vb5QY7Q5vK88/39u9m6a
+X-Received: by 2002:a05:6402:2044:: with SMTP id bc4mr5610905edb.282.1621324230210;
+        Tue, 18 May 2021 00:50:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFzMI5v4PnOH/SXzTHlKC/E2yBgzwUMmMGoQmrcpTZlsyGOhJk/7yGYBlnGzMGqecpBbtZew==
+X-Received: by 2002:a05:6402:2044:: with SMTP id bc4mr5610896edb.282.1621324230081;
+        Tue, 18 May 2021 00:50:30 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id d15sm8128909eds.68.2021.05.18.00.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 00:50:29 -0700 (PDT)
+Date:   Tue, 18 May 2021 09:50:27 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Salil Mehta <salil.mehta@huawei.com>
+Cc:     "wangyanan (Y)" <wangyanan55@huawei.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Shannon Zhao <shannon.zhaosl@gmail.com>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "qemu-arm@nongnu.org" <qemu-arm@nongnu.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Yao Yuan <yuan.yao@intel.com>,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-5-like.xu@linux.intel.com>
- <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
- <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
- <YJvx4tr2iXo4bQ/d@google.com>
- <5ef2215b-1c43-fc8a-42ef-46c22e093f40@intel.com>
- <YKLdETM7NgjKEa6z@google.com> <YKMBZ5cs2siTorf1@google.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <59aaa290-1c44-f7f5-36b7-cdc42a2f6631@intel.com>
-Date:   Tue, 18 May 2021 15:49:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@redhat.com>,
+        yangyicong <yangyicong@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
+        zhukeqian <zhukeqian1@huawei.com>,
+        yuzenghui <yuzenghui@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [RFC PATCH v3 4/9] hw/arm/virt: Initialize the present cpu
+ members
+Message-ID: <20210518075027.wjpdjvoam7dlzign@gator.home>
+References: <20210516102900.28036-1-wangyanan55@huawei.com>
+ <20210516102900.28036-5-wangyanan55@huawei.com>
+ <6c8f9c3502384f648f30c7381e87dda9@huawei.com>
+ <68883a1b-5303-da13-a051-e909e1d1f71b@huawei.com>
+ <6d8b9142e8a34d1390f2f0b4bfb53a00@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YKMBZ5cs2siTorf1@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6d8b9142e8a34d1390f2f0b4bfb53a00@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/18 7:51, Sean Christopherson wrote:
-> On Mon, May 17, 2021, Sean Christopherson wrote:
->> On Thu, May 13, 2021, Xu, Like wrote:
->>> On 2021/5/12 23:18, Sean Christopherson wrote:
->>>> On Wed, May 12, 2021, Xu, Like wrote:
->>>>> Hi Venkatesh Srinivas,
->>>>>
->>>>> On 2021/5/12 9:58, Venkatesh Srinivas wrote:
->>>>>> On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
->>>>>>> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
->>>>>>> detect whether the processor supports performance monitoring facility.
->>>>>>>
->>>>>>> It depends on the PMU is enabled for the guest, and a software write
->>>>>>> operation to this available bit will be ignored.
->>>>>> Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
->>>>>> documented someplace?
->>>>> The bit[7] behavior of the real hardware on the native host is quite
->>>>> suspicious.
->>>> Ugh.  Can you file an SDM bug to get the wording and accessibility updated?  The
->>>> current phrasing is a mess:
->>>>
->>>>     Performance Monitoring Available (R)
->>>>     1 = Performance monitoring enabled.
->>>>     0 = Performance monitoring disabled.
->>>>
->>>> The (R) is ambiguous because most other entries that are read-only use (RO), and
->>>> the "enabled vs. disabled" implies the bit is writable and really does control
->>>> the PMU.  But on my Haswell system, it's read-only.
->>> On your Haswell system, does it cause #GP or just silent if you change this
->>> bit ?
->> Attempting to clear the bit generates a #GP.
-> *sigh*
+On Tue, May 18, 2021 at 07:04:51AM +0000, Salil Mehta wrote:
+> > From: wangyanan (Y)
+> > Sent: Tuesday, May 18, 2021 5:43 AM
+> > 
+> > Hi Salil,
+> > 
+> > On 2021/5/18 4:48, Salil Mehta wrote:
+> > >> From: Qemu-arm
+> > [mailto:qemu-arm-bounces+salil.mehta=huawei.com@nongnu.org]
+> > >> On Behalf Of Yanan Wang
+> > >> Sent: Sunday, May 16, 2021 11:29 AM
+> > >> To: Peter Maydell <peter.maydell@linaro.org>; Andrew Jones
+> > >> <drjones@redhat.com>; Michael S . Tsirkin <mst@redhat.com>; Igor Mammedov
+> > >> <imammedo@redhat.com>; Shannon Zhao <shannon.zhaosl@gmail.com>; Alistair
+> > >> Francis <alistair.francis@wdc.com>; David Gibson
+> > >> <david@gibson.dropbear.id.au>; qemu-devel@nongnu.org; qemu-arm@nongnu.org
+> > >> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>; zhukeqian
+> > >> <zhukeqian1@huawei.com>; yangyicong <yangyicong@huawei.com>; Zengtao (B)
+> > >> <prime.zeng@hisilicon.com>; Wanghaibin (D) <wanghaibin.wang@huawei.com>;
+> > >> yuzenghui <yuzenghui@huawei.com>; Paolo Bonzini <pbonzini@redhat.com>;
+> > >> Philippe Mathieu-Daudé <philmd@redhat.com>
+> > >> Subject: [RFC PATCH v3 4/9] hw/arm/virt: Initialize the present cpu members
+> > >>
+> > >> We create and initialize a cpuobj for each present cpu in
+> > >> machvirt_init(). Now we also initialize the cpu member of
+> > >> structure CPUArchId for each present cpu in the function.
+> > > [...]
+> > >
+> > >>           qdev_realize(DEVICE(cpuobj), NULL, &error_fatal);
+> > >> +
+> > >> +        /*
+> > >> +         * As ARM cpu hotplug is not supported yet, we initialize
+> > >> +         * the present cpu members here.
+> > >> +         */
+> > >> +        machine->possible_cpus->cpus[n].cpu = cpuobj;
+> > >
+> > > when vcpu Hotplug is not supported yet, what necessitates this change now?
+> > >
+> > The initialization will gives a way to determine whether a CPU is
+> > present or not.
+> > At least, for now it will be used when generating ACPI tables, e.g.
+> > DSDT, MADT.
+> > See patch 5 and 6.
+> 
+> yes,  but why do you require it now as part of the vcpu topology change?
+> 
+> As-far-as-i-can-see, PPTT table changes(part of patch 5/9) do not require
+> this change. Change in Patch 5/9 has also been done in anticipation of
+> some future requirement(vcpu Hotplug?).
+> 
+> Please correct me here if I am wrong?
 >
-> Venkatesh and I are exhausting our brown paper bag supply.
->
-> Attempting to clear bit 7 is ignored on both Haswell and Goldmont.  This _no_ #GP,
-> the toggle is simply ignored.  I forgot to specify hex format (multiple times),
-> and Venkatesh accessed the wrong MSR (0x10a instead of 0x1a0).
 
-*sigh*
+Hi Salil,
 
->
-> So your proposal to ignore the toggle in KVM is the way to go, but please
-> document in the changelog that that behavior matches bare metal.
+The problem is that we've never required smp.cpus == smp.maxcpus, so
+a user could have smp.cpus < smp.maxcpus. We want the topology to match
+maxcpus, but only enable cpus. However, if you think we should just not
+allow cpus < maxcpus until hot plug is sorted out, then we could discuss
+a way of trying to enforce cpus == maxcpus, but I'm not sure how we can
+without breaking existing command lines.
 
-Thank you, I will clearly state it in the commit message.
-
->
-> It would be nice to get the SDM cleaned up to use "supported/unsupported", and to
-> pick one of (R), (RO), and (R/O) for all MSRs entries for consistency, but that
-> may be a pipe dream.
-
-Glad you could review my code. I have reported this issue internally.
-
->
-> Sorry for the run-around :-/
+Thanks,
+drew
 
