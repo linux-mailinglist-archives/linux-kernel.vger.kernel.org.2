@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4C53880CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153E23880D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351968AbhERTyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:54:38 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:48880 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240654AbhERTyh (ORCPT
+        id S1351984AbhERTzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351976AbhERTzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:54:37 -0400
-Received: by mail-il1-f197.google.com with SMTP id z11-20020a92d6cb0000b02901bb992c83cbso3636027ilp.15
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:53:17 -0700 (PDT)
+        Tue, 18 May 2021 15:55:40 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079B5C061573;
+        Tue, 18 May 2021 12:54:22 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id l1so16460447ejb.6;
+        Tue, 18 May 2021 12:54:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NIbWp7tup4eVOlx3Pu4l4njVP4uN2qbWLCiCWarrYCE=;
+        b=HNSW85axgCU+zrmo9twXR0r0XwE9BPovx+g1TTiC4PJGaOmGv73DrM2Ldht2i7h1up
+         HLuPg+LbH89LIVsSLGrVrVJSJTN5tws64xNj3s25GyRupAAGwWocdYv5/lx38Lq/2DVx
+         wi9TuSa+kGG4bUVbxkJcGvc1BnnYLthm2t5Lhg+PqOIKdITFj6UvvIcOf8RPLEr3TgVb
+         qx+jTnNmXrnO9QSIdZfLSOd9tApK+NCvSTK+fGl0XY7y23mggWyuWJx3NvERPvLVn9pt
+         NBjj4fo+DupkQy/1AvuuX/n/F9t7BpMG/yxtN9NJWrK6lU0w4cWVQGOhEeQyzowQgZpb
+         PRgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=aaDl7ZbSnxqEBT8DwnM37+j8F2fz8t9QTBf+BxiEuNI=;
-        b=HugwvcUp6TTBVKuKpIXsoA7L3mKkxogzL+YxbNhP8+KRvgfiOQt/rTrcj1IzC9frCl
-         RWoPRKkjUZcpQC5PmXJGZV+1MFIzxPlK3OSyALBbknCA7zitXdujkzTjETRrqaU8D0Rv
-         h6ml3ej6y5tHZpdGc7vhz/XwLWiOqk3/2whV6PZmt0OTERc42KQMSHcpHKcQtaPPjibc
-         IfCLd7khhJgZUjSg0D1hVrfgar00CyK7oBPgSRuK9R1rl8xyhFB4Kteq+8EWNz4CJnU1
-         LnuAOOF80DXjtEB4eyp0qOGoXIJDsdjnqzSdCUVeZvuzae57T1p/Qz/95xpe7q745FyJ
-         nhuQ==
-X-Gm-Message-State: AOAM533t/xnkxKw/pTaNLfxtF2ZGh+s6MVIzNFEimQbE/D7Bi6Evm6rQ
-        SGJ+P+nK073ncUYytpSxbXLN9CaF6Rz00D0ayTuMnlfsTJOX
-X-Google-Smtp-Source: ABdhPJxETxnuivD7MMYBDaid1+rPUtG22VcoNttlhnusQpVn9sp/TE+iCKWc6ver8lttvD0k3EZ34F7+fg3RoO9VcEEkd0cWscVC
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NIbWp7tup4eVOlx3Pu4l4njVP4uN2qbWLCiCWarrYCE=;
+        b=c6oF7cKs89a4M6tSx9dsGZU08Pg1ZHhPs8o28L/6naU/7WbjSueAbX3+KJ21Rot8pU
+         uHs7u6U0xNdN8SV6oyP2ryctDPo2xtWk+9RhscV3ksJgP79pdmuQR1t8spR4ycBF9wPE
+         RFX1JUNYCLnVT7bppls6UHPImeEAOF/1aPFo1QNpKQeP0O1+b2g5/PUxc6bY/0KLWiOd
+         GX4OcSnmsU8cZL2jlddK8fZQI6/E9FGQX4bOfGY6kKKcUOnv6bhCY4EW/UuKZ1onG5ZJ
+         1tRVr1j8Yey0Pph/+uQCP6vgbF0eycFCmB6s/RgboaBjVlesqZxpxBx1JXeYc7g2zLW3
+         UvTA==
+X-Gm-Message-State: AOAM533sB2OjAH8usp+LWihXQ6YbBuwxF5XkfckTMqVkkI3YKOOiU/4X
+        UzlrCM9tpFrwgsMCN40KzmDVDcKVc53saoXJfhZuJ3OKNx8=
+X-Google-Smtp-Source: ABdhPJy+HtN7I/jK6DTjSYMsEOzQLCouCtpz5xS2c64SmeocEOaoXcobQO3C1WD41ZRzTxcNtyuBbhRAZilumOxVedE=
+X-Received: by 2002:a17:906:b7d6:: with SMTP id fy22mr7551361ejb.383.1621367660756;
+ Tue, 18 May 2021 12:54:20 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:8787:: with SMTP id t7mr7660502jai.53.1621367597493;
- Tue, 18 May 2021 12:53:17 -0700 (PDT)
-Date:   Tue, 18 May 2021 12:53:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b2f48705c2a00f67@google.com>
-Subject: [syzbot] BUG: soft lockup in handle_mm_fault
-From:   syzbot <syzbot+44b5132ce1d2d712a574@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+References: <20210512201946.2949351-1-shakeelb@google.com> <CALvZod5a_W8P0v7xg0jdh-TLvy4OUYaQkyjBx-1RSTUBo+YQmg@mail.gmail.com>
+In-Reply-To: <CALvZod5a_W8P0v7xg0jdh-TLvy4OUYaQkyjBx-1RSTUBo+YQmg@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 18 May 2021 12:54:09 -0700
+Message-ID: <CAHbLzkqziUEUz-4nxBs4H5z4pZS3y+ceKciKYt8KVN34Gw8egw@mail.gmail.com>
+Subject: Re: [PATCH] cgroup: disable controllers at parse time
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        =?UTF-8?B?Tk9NVVJBIEpVTklDSEko6YeO5p2RIOa3s+S4gCk=?= 
+        <junichi.nomura@nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, May 18, 2021 at 11:13 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Wed, May 12, 2021 at 1:19 PM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
+> > too early usage of static_branch_disable()"). The commit 6041186a3258
+> > ("init: initialize jump labels before command line option parsing") has
+> > moved the jump_label_init() before parse_args() which has made the
+> > commit a3e72739b7a7 unnecessary. On the other hand there are
+> > consequences of disabling the controllers later as there are subsystems
+> > doing the controller checks for different decisions. One such incident
+> > is reported [1] regarding the memory controller and its impact on memor=
+y
+> > reclaim code.
+> >
+> > [1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371=
+e4@nec.com
+> >
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > Reported-by: NOMURA JUNICHI(=E9=87=8E=E6=9D=91=E3=80=80=E6=B7=B3=E4=B8=
+=80) <junichi.nomura@nec.com>
+>
+> Nomura, I think you have already tested this patch, so, can you please
+> add your tested-by tag?
+>
+> Tejun, any comments or concerns?
+>
+> Yang, do you think we should add Fixes tag to make sure this patch
+> lands in 5.13 where your shrinker patches landed?
 
-syzbot found the following issue on:
+Yes, I think we should, please do that.
 
-HEAD commit:    d07f6ca9 Linux 5.13-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1772d265d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d2302c3f03979672
-dashboard link: https://syzkaller.appspot.com/bug?extid=44b5132ce1d2d712a574
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+44b5132ce1d2d712a574@syzkaller.appspotmail.com
-
-watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [syz-executor.1:13795]
-Modules linked in:
-irq event stamp: 2262
-hardirqs last  enabled at (2261): [<ffff8000144b1da8>] exit_to_kernel_mode+0x38/0x230 arch/arm64/kernel/entry-common.c:63
-hardirqs last disabled at (2262): [<ffff8000144b2470>] enter_el1_irq_or_nmi+0x10/0x20 arch/arm64/kernel/entry-common.c:105
-softirqs last  enabled at (2200): [<ffff8000100109e0>] _stext+0x9e0/0x1084
-softirqs last disabled at (2117): [<ffff80001015e8d4>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
-softirqs last disabled at (2117): [<ffff80001015e8d4>] invoke_softirq kernel/softirq.c:440 [inline]
-softirqs last disabled at (2117): [<ffff80001015e8d4>] __irq_exit_rcu+0x494/0x550 kernel/softirq.c:637
-CPU: 0 PID: 13795 Comm: syz-executor.1 Not tainted 5.13.0-rc2-syzkaller #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
-pc : clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:23
-lr : clear_highpage include/linux/highmem.h:203 [inline]
-lr : kernel_init_free_pages+0x74/0x180 mm/page_alloc.c:1238
-sp : ffff8000199874c0
-x29: ffff8000199874c0 x28: ffff00007fc13ec0 x27: 0000000000000000
-x26: ffff00000b47af00 x25: ffff60000168f5e0 x24: 00000000000014c0
-x23: ffff00000b479a40 x22: fffffc0000185bc0 x21: ffff80001560e558
-x20: dfff800000000000 x19: fffffc0000185b80 x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-x14: 1ffff00003330e62 x13: 0000000000000001 x12: ffff7f8000030b77
-x11: 1fffff8000030b76 x10: ffff7f8000030b76 x9 : 0000000000000000
-x8 : ffff600000c2de00 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 1ffff000030ec350 x3 : 1fffe0000168f349
-x2 : 0000000000000004 x1 : 0000000000000040 x0 : ffff00000616ef40
-Call trace:
- clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:21
- post_alloc_hook+0x108/0x21c mm/page_alloc.c:2350
- prep_new_page mm/page_alloc.c:2358 [inline]
- get_page_from_freelist+0x1998/0x235c mm/page_alloc.c:3994
- __alloc_pages+0x1a8/0x21e0 mm/page_alloc.c:5200
- alloc_pages_vma+0xb4/0x510 mm/mempolicy.c:2236
- wp_page_copy+0x198/0x1720 mm/memory.c:2896
- do_wp_page+0x1d8/0xbbc mm/memory.c:3203
- handle_pte_fault mm/memory.c:4385 [inline]
- __handle_mm_fault+0x10c8/0x26f0 mm/memory.c:4502
- handle_mm_fault+0x1cc/0x4e0 mm/memory.c:4600
- __do_page_fault arch/arm64/mm/fault.c:507 [inline]
- do_page_fault+0x230/0x8c0 arch/arm64/mm/fault.c:607
- do_mem_abort+0x64/0x1c0 arch/arm64/mm/fault.c:821
- el0_da+0x3c/0x50 arch/arm64/kernel/entry-common.c:306
- el0_sync_handler+0x168/0x1b0 arch/arm64/kernel/entry-common.c:427
- el0_sync+0x198/0x1c0 arch/arm64/kernel/entry.S:734
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> > ---
+> >  kernel/cgroup/cgroup.c | 13 +++++--------
+> >  1 file changed, 5 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> > index e049edd66776..e7a9a2998245 100644
+> > --- a/kernel/cgroup/cgroup.c
+> > +++ b/kernel/cgroup/cgroup.c
+> > @@ -5634,8 +5634,6 @@ int __init cgroup_init_early(void)
+> >         return 0;
+> >  }
+> >
+> > -static u16 cgroup_disable_mask __initdata;
+> > -
+> >  /**
+> >   * cgroup_init - cgroup initialization
+> >   *
+> > @@ -5694,12 +5692,8 @@ int __init cgroup_init(void)
+> >                  * disabled flag and cftype registration needs kmalloc,
+> >                  * both of which aren't available during early_init.
+> >                  */
+> > -               if (cgroup_disable_mask & (1 << ssid)) {
+> > -                       static_branch_disable(cgroup_subsys_enabled_key=
+[ssid]);
+> > -                       printk(KERN_INFO "Disabling %s control group su=
+bsystem\n",
+> > -                              ss->name);
+> > +               if (!cgroup_ssid_enabled(ssid))
+> >                         continue;
+> > -               }
+> >
+> >                 if (cgroup1_ssid_disabled(ssid))
+> >                         printk(KERN_INFO "Disabling %s control group su=
+bsystem in v1 mounts\n",
+> > @@ -6214,7 +6208,10 @@ static int __init cgroup_disable(char *str)
+> >                         if (strcmp(token, ss->name) &&
+> >                             strcmp(token, ss->legacy_name))
+> >                                 continue;
+> > -                       cgroup_disable_mask |=3D 1 << i;
+> > +
+> > +                       static_branch_disable(cgroup_subsys_enabled_key=
+[i]);
+> > +                       pr_info("Disabling %s control group subsystem\n=
+",
+> > +                               ss->name);
+> >                 }
+> >         }
+> >         return 1;
+> > --
+> > 2.31.1.607.g51e8a6a459-goog
+> >
