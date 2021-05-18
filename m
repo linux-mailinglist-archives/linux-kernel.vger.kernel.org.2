@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC410388277
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C6F388287
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352651AbhERV4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233561AbhERV4h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:56:37 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5278AC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:55:18 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id a2so16010732lfc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pkrHwFXuonxLm5iDdJ3GtAunCIVS4uNey/s/gmA9qII=;
-        b=AU1FYN+YPLrrcpqdk93hUps142FI9u50Upipl/5vJqomzUF0z2WNfqfHR37Zp7iebh
-         feqtivkL/u2Wafb4kQ/YzUqSKgGNdrKaIZJBN3en5R+jCNfro1DuQby8XvHgMbMXhQF6
-         OhqnhYqxohXqln7+PRuUMZY4V+QHiSL30NCZojyMjkT/eJCfGmqImDQg8SgpShUmKMsf
-         bTXsHFuZFsGhWo8QGdRryEVMuuGTMhrAIQYobnp6UQyx9CgrebwdEp02k2qoHre477KG
-         0rmJrsggg4sirK3RhtOdRNPnbhSW6I2Rpua/JBUnFz5gIwraJHX3N4m/HSnojveMLYea
-         uPlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pkrHwFXuonxLm5iDdJ3GtAunCIVS4uNey/s/gmA9qII=;
-        b=Z2WcCI9ytSABaN9958j+G5V00wS2ivXGyvvSn02A6ed5QwynQQijgTTtQwVvuMq3Es
-         fFaDImJmSXyMULaj9xCL+dRMKKNpwZ7K62jMNHE2JLALMNQiLn9BnvBV1nCj6wUjtJmQ
-         B+tINxguKmgpgi3OlsCx1C0c916e/tnoB+6dE3rGMd4exUAQslfk8IcGguQzWu9OgMjt
-         1jDVJ2ufY+XWXoEKQlLqRd7siFW+/lwctm5usnB+X4xqHTpj3jwwvd0IksiPXp0N5dl/
-         +0zIlHgtiRGxcwnn/FddOKhLDtQi+CW6k69TIY7hpx/7uktfFG0xU92DOTReASRxv18H
-         5o5A==
-X-Gm-Message-State: AOAM530whqbL6sI7tDgt17QPcnyXZPOLfSjIc8QTq4XcHRmOQ5zUQp7V
-        ISVrwRkFxmIGVgCbcYrgAGth5AeqYwCXtM3vhz1d0g==
-X-Google-Smtp-Source: ABdhPJz9MA53JA954IbUUfEyxfpo4uPR8Ul7Uig4rJHfmQ7MaPqfNQ6SM8JW041MR4qdzpgyVUbRq0S/NwMESjwAGs0=
-X-Received: by 2002:a05:6512:1050:: with SMTP id c16mr5611408lfb.586.1621374916871;
- Tue, 18 May 2021 14:55:16 -0700 (PDT)
+        id S1352673AbhERWCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 18:02:17 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28373 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236677AbhERWCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 18:02:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621375257; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=OcOBQoPHRZwUqgAv23Az6sbpsFYYr9MWtPojMc2GtPo=;
+ b=IIsmxq3E8fvTebWmAMcKiMuYMH/RBu45Dt8awhU5Om2q2QrCx1LuNJgvfXoOpibNLbgsmjHs
+ N/YXT5hLoyLz/94R4c7KUDIthTFerV3hpw1FmfMqt4Bc59JR3u/+rUJ3hxbB5WTxtzkcF3Oy
+ zN+MT4z4dLaObzb3R9183zPoRI8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60a4390d8dd30e785f852f6c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 May 2021 22:00:45
+ GMT
+Sender: jjohnson=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E7AFEC4338A; Tue, 18 May 2021 22:00:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jjohnson)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FB86C433D3;
+        Tue, 18 May 2021 22:00:44 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210511165448.422987-1-clabbe@baylibre.com> <20210518002624.GA3346846@robh.at.kernel.org>
- <YKQJjrlTB0RZYNOK@Red>
-In-Reply-To: <YKQJjrlTB0RZYNOK@Red>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 18 May 2021 23:55:05 +0200
-Message-ID: <CACRpkdYncNhe=iuqk7tAu=XeBSOcbbG=ArvxYYRmOGbHY7gyJg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: display: convert faraday,tve200 to YAML
-To:     LABBE Corentin <clabbe@baylibre.com>
-Cc:     Rob Herring <robh@kernel.org>, Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 May 2021 15:00:44 -0700
+From:   Jeff Johnson <jjohnson@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jjohnson=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v2] b43: don't save dentries for debugfs
+In-Reply-To: <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
+References: <20210518163304.3702015-1-gregkh@linuxfoundation.org>
+ <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
+Message-ID: <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
+X-Sender: jjohnson@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 8:38 PM LABBE Corentin <clabbe@baylibre.com> wrote:
+On 2021-05-18 12:29, Jeff Johnson wrote:
+> On 2021-05-18 09:33, Greg Kroah-Hartman wrote:
+>> There is no need to keep around the dentry pointers for the debugfs
+>> files as they will all be automatically removed when the subdir is
+>> removed.  So save the space and logic involved in keeping them around 
+>> by
+>> just getting rid of them entirely.
+>> 
+>> By doing this change, we remove one of the last in-kernel user that 
+>> was
+>> storing the result of debugfs_create_bool(), so that api can be 
+>> cleaned
+>> up.
+> 
+> Question not about this specific change, but the general concept
+> of keeping (or not keeping) dentry pointers. In the ath drivers,
+> as well as in an out-of-tree driver for Android, we keep a
+> debugfs dentry pointer to use as a param to relay_open().
+> 
+> Will we still be able to have a dentry pointer for this purpose?
+> Or better, is there a recommended way to get a dentry pointer
+> NOT associated with debugfs at all (which would be ideal for
+> Android where debugfs is disabled).
 
-> The only solution is to remove "reg = <0>;" and calling the node "port".
-> Does it is acceptable ?
+Answering one of my questions: The dentry passed to relay_open() comes
+from debugfs_create_dir() which is expected to return a dentry.
 
-It's what I've done in the past at least so looks like the right thing to me.
-It is only used in this device tree:
-arch/arm/boot/dts/gemini-dlink-dir-685.dts
-if you send me a patch to change port@0
-to just port then I'll merge it pronto. (I can apply this patch to the DRM
-misc tree as well when Rob thing it's fine.)
+Would still like guidance on if there is a recommended way to get a
+dentry not associated with debugfs.
 
-Yours,
-Linus Walleij
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
