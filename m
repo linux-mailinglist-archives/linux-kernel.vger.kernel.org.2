@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E88387D5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CFE387D72
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350605AbhERQ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350604AbhERQ2z (ORCPT
+        id S1350669AbhERQ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:29:40 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:53908 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1350635AbhERQ33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:28:55 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632BFC0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:27:35 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so1859497pjt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:27:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f1d/gi6dWIkxeOVPavTj9FbVcjVV1QNQTHRoa065Axw=;
-        b=ltK2Iy7UdPjTLSC30wGMvTDqSuz9Tgdw5TPVjMsfHwcsICjhevbCzkqvnNmYfn4OGw
-         ME3LAkIlii0f3cb+FMfATTKVje3qgqtyyLv7HbeqRlZsaUkGCLFATvjez4IZ96DDla5m
-         PxBhkAB9GQL67fnkmX2ZLFmzmtcJyR6PF0uag=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f1d/gi6dWIkxeOVPavTj9FbVcjVV1QNQTHRoa065Axw=;
-        b=gz2RKOOv+osWt8MJbXmksPhVDy+lVo4TIwLjyYNe1iPb4mGhVCz+Db9ZkzX0LQcbqJ
-         OVsZ9HurZSc3/zaU40fJ4bj7t7RsJnfwhYaoIsWIKC0XAR4SSF2uOewfEj4DTJus4Hkq
-         xIYgZSlqGbnBI5oufktI1ClFqS0kwKwflaYg2mrg8V06xYM3I8OZZduznPOzjnpJtSs6
-         IhOpfEH9LZmSod+QIMwAkL5Zbsek4Cph0oPBu3o8D2rdLrmV5t3ojzN6NmAbT9to8qZD
-         yI5I7PtIHHZRCrkjIPoPbWs4Jj520fBvncbHUwT45uOWDUK0YI4IBSgoY/lko/uwJIk7
-         gvGg==
-X-Gm-Message-State: AOAM5323WuZYgRAY7agRuZk2F4dNcWGIo3JQBflRVJuYOK+N9PYqlQNy
-        LW4al47lKcaEUaC1tmNVB9IPKg==
-X-Google-Smtp-Source: ABdhPJzWDMbUyShJOIx/gvCaFmMVofj6AaRHabNDQzzxjDYAOK3p+QoSxAXMzeVSyXoUi8wW/IS3YA==
-X-Received: by 2002:a17:902:44:b029:ee:9107:4242 with SMTP id 62-20020a1709020044b02900ee91074242mr5541000pla.18.1621355254874;
-        Tue, 18 May 2021 09:27:34 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:5b64:c814:4f8b:838e])
-        by smtp.gmail.com with UTF8SMTPSA id l67sm13529552pgl.18.2021.05.18.09.27.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 09:27:34 -0700 (PDT)
-Date:   Tue, 18 May 2021 09:27:31 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     satya priya <skakit@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [RESEND PATCH V4 2/8] arm64: dts: qcom: sc7280: Add
- thermal-zones node
-Message-ID: <YKPq84r7soE0yjMA@google.com>
-References: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
- <1621318822-29332-3-git-send-email-skakit@codeaurora.org>
- <YKOog43JZghth3Np@vkoul-mobl.Dlink>
+        Tue, 18 May 2021 12:29:29 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IGMtps002613;
+        Tue, 18 May 2021 18:27:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=sgPrn+dv5C3RW2L9vxdmCmRAQwJu/ZKqZnIIu2yaFGY=;
+ b=jJy45taJD4xgZZXDH2k84gu+xiRVFCgJrO7XynPCeGiOvbMu7tnMHRTlBfTIXAog0CLb
+ EeIt3t49dwtu7HOOQ9jKUYjT4WXmgCiZm/fs3CigKyPaemdhJJ1IF4UQgVt9gB+1kQbt
+ ib5gaGOxl3/MM7jaHwPmZym+ZveXhklglLZGimJLBvSLWoJAGvAgaXid81xznP1Cw6rd
+ boT+YikaocEkrcAd4kh3Flqyg0TKcWNwUiIJwFX2j2Z1NEcodVP79KGhyiGZJgOkvovd
+ Z4laKO8ao27ZUeLgsUrR9qC7AJe0izLY8n2t2/ujs8h1o6Pj14yZlGfgZafsG8G6whMt 3g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38mda9hctx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 18:27:57 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 81FED10002A;
+        Tue, 18 May 2021 18:27:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 69E7623FE73;
+        Tue, 18 May 2021 18:27:56 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 18:27:56
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: [PATCH v5 0/3] MTD: spinand: Add spi_mem_poll_status() support 
+Date:   Tue, 18 May 2021 18:27:51 +0200
+Message-ID: <20210518162754.15940-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YKOog43JZghth3Np@vkoul-mobl.Dlink>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_08:2021-05-18,2021-05-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 05:14:03PM +0530, Vinod Koul wrote:
-> On 18-05-21, 11:50, satya priya wrote:
-> > Add thermal-zones node for SC7280 SoC.
-> > 
-> > Signed-off-by: satya priya <skakit@codeaurora.org>
-> > Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> > ---
-> > Changes in RESEND V4:
-> >  - No Changes.
-> > 
-> >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > index 2cc4785..2a7d488 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > @@ -1125,4 +1125,7 @@
-> >  			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-> >  			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-> >  	};
-> > +
-> > +	thermal_zones: thermal-zones {
-> > +	};
-> 
-> Empty node..? what am i missing here...
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-The 'thermal-zones' node with the SoC thermal zones is usually created
-in the <soc>.dtsi, however it doesn't exist yet. The 'Add DT bindings
-and device tree nodes for TSENS in SC7280' series
-(https://patchwork.kernel.org/project/linux-arm-msm/list/?series=478225)
-is creating it, but the series hasn't landed yet.
+This series adds support for the spi_mem_poll_status() spinand
+interface.
+Some QSPI controllers allows to poll automatically memory 
+status during operations (erase, read or write). This allows to 
+offload the CPU for this task.
+STM32 QSPI is supporting this feature, driver update are also
+part of this series.
 
-The node is needed by other patches in this series that add non-SoC
-thermal zones. Hence either an empty node needs to be added (for now)
-or this series should 'officially' depend on the TSENS series mentioned
-above.
+Changes in v5:
+  - Update spi_mem_read_status() description.
+  - Update poll_status() description API by indicating that data buffer is
+    filled with last status value.
+  - Update timeout parameter by timeout_ms in spi_mem_poll_status() prototype.
+  - Remove parenthesys arount -EINVAL in spi_mem_poll_status().
+  - Add missing spi_mem_supports_op() call in stm32_qspi_poll_status().
+  - Add Boris Reviewed-by for patch 1 and 2.
+
+Changes in v4:
+  - Remove init_completion() from spi_mem_probe() added in v2.
+  - Add missing static for spi_mem_read_status().
+  - Check if operation in spi_mem_poll_status() is a READ.
+  - Update patch 2 commit message.
+  - Add comment which explains how delays has been calculated.
+  - Rename SPINAND_STATUS_TIMEOUT_MS to SPINAND_WAITRDY_TIMEOUT_MS.
+
+Chnages in v3:
+  - Add spi_mem_read_status() which allows to read 8 or 16 bits status.
+  - Add initial_delay_us and polling_delay_us parameters to spi_mem_poll_status().
+    and also to poll_status() callback.
+  - Move spi_mem_supports_op() in SW-based polling case.
+  - Add delay before invoquing read_poll_timeout().
+  - Remove the reinit/wait_for_completion() added in v2.
+  - Add initial_delay_us and polling_delay_us parameters to spinand_wait().
+  - Add SPINAND_READ/WRITE/ERASE/RESET_INITIAL_DELAY_US and
+    SPINAND_READ/WRITE/ERASE/RESET_POLL_DELAY_US defines.
+  - Remove spi_mem_finalize_op() API added in v2.
+
+Changes in v2:
+  - Indicates the spi_mem_poll_status() timeout unit
+  - Use 2-byte wide status register
+  - Add spi_mem_supports_op() call in spi_mem_poll_status()
+  - Add completion management in spi_mem_poll_status()
+  - Add offload/non-offload case management in spi_mem_poll_status()
+  - Optimize the non-offload case by using read_poll_timeout()
+  - mask and match stm32_qspi_poll_status()'s parameters are 2-byte wide
+  - Make usage of new spi_mem_finalize_op() API in
+    stm32_qspi_wait_poll_status()
+
+Patrice Chotard (3):
+  spi: spi-mem: add automatic poll status functions
+  mtd: spinand: use the spi-mem poll status APIs
+  spi: stm32-qspi: add automatic poll status feature
+
+ drivers/mtd/nand/spi/core.c  | 45 +++++++++++++------
+ drivers/spi/spi-mem.c        | 86 ++++++++++++++++++++++++++++++++++++
+ drivers/spi/spi-stm32-qspi.c | 86 ++++++++++++++++++++++++++++++++----
+ include/linux/mtd/spinand.h  | 22 +++++++++
+ include/linux/spi/spi-mem.h  | 16 +++++++
+ 5 files changed, 234 insertions(+), 21 deletions(-)
+
+-- 
+2.17.1
+
