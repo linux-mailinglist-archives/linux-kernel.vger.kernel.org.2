@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126283879C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC663879CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349538AbhERNXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:23:05 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:47981 "EHLO todd.t-8ch.de"
+        id S1349546AbhERNYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:24:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239145AbhERNXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:23:04 -0400
-Date:   Tue, 18 May 2021 15:21:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1621344101;
-        bh=c73kIoBsDpAy+yCZg+mOnr7VdjTq2wMsaBIYMScY8l4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RY7sbvsayItCmTcrOiNlGHGPirtg8zTW33X5Y9wQXaiUs5BbrPlC0OgWz9M8DA033
-         VSq/JVpFhGUHh8xLDX0XT9Mp/s67wtCAf9cPgFksTYcdS0eHXRUPJgny3YLOrCCflA
-         L0qWMUXLH2Mp2nXyjYQYhuqN61ZpcC0GIqZRDZ0Y=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     linux-input@vger.kernel.org, linux-usb@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Handling of USB "Programmable button" controls as KEY_MACRO# events
-Message-ID: <6ebbb200-1f2c-450b-8fae-e5e2dd9b6be9@t-8ch.de>
+        id S239145AbhERNYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:24:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0E946008E;
+        Tue, 18 May 2021 13:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621344169;
+        bh=WQdgNlO00HhjMFdrkbm64uxHBJSPAptuMCxpaqsX5Ak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eobGBP/zR+zFAlh4OHSckEZCrGAD8rw8f5LybnkJhkGJEYW9y2Mhl3iq9P4fP4//1
+         J/f20J4SV4ufuJlIrcUcUEkHL4lWvmrP9qd1yYdbrTdhdISsRHe5NX/Q6S6ah3fwUW
+         EJRB4LkdoLZB2FnhoW4u6iSKc9ZIPgYf3FHUkDJjv2NA1aYLL3/sWwgci3jp8jq3ZM
+         78/udASoxg//AJfKwNx4XRFrP2dNLcp41DHdaBlSHGUpo0u1WY5KMiAJK7EEnYXnVo
+         XkzNemx1O7/i6UPIqakAu6Mxf0PqC5gV4FqVMCstAkon1oeqFLcMokjiXTMwT0+fYM
+         BoY5YZu5Sl9EQ==
+Date:   Tue, 18 May 2021 09:22:48 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.12 5/5] tty: vt: always invoke
+ vc->vc_sw->con_resize callback
+Message-ID: <YKO/qKRwPYJF7ols@sashalap>
+References: <20210518010940.1485417-1-sashal@kernel.org>
+ <20210518010940.1485417-5-sashal@kernel.org>
+ <CAHk-=whw9_rp0NYTsCqcGnUkcV5Qgv7FTxADtPrdq4KFmsj+Lg@mail.gmail.com>
+ <YKNUl/f/c8HfF6dS@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
+In-Reply-To: <YKNUl/f/c8HfF6dS@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everybody,
+On Tue, May 18, 2021 at 07:45:59AM +0200, Greg KH wrote:
+>On Mon, May 17, 2021 at 06:35:24PM -0700, Linus Torvalds wrote:
+>> On Mon, May 17, 2021 at 6:09 PM Sasha Levin <sashal@kernel.org> wrote:
+>> >
+>> > From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>> >
+>> > [ Upstream commit ffb324e6f874121f7dce5bdae5e05d02baae7269 ]
+>>
+>> So I think the commit is fine, and yes, it should be applied to
+>> stable, but it's one of those "there were three different patches in
+>> as many days to fix the problem, and this is the right one, but maybe
+>> stable should hold off for a while to see that there aren't any
+>> problem reports".
+>>
+>> I don't think there will be any problems from this, but while the
+>> patch is tiny, it's conceptually quite a big change to something that
+>> people haven't really touched for a long time.
+>>
+>> So use your own judgement, but it might be a good idea to wait a week
+>> before backporting this to see if anything screams.
+>
+>I was going to wait a few weeks for this, and the other vt patches that
+>were marked with cc: stable@ before queueing them up.
 
-Would it make sense to map the "Programmable Buttons" control from the
-USB HID Consumer page [0] to the linux event codes KEY_MACRO1 ... KEY_MACRO# ?
+I'll drop it from my queue then.
 
-Those controls are documented in the USB spec as:
-
-"The user defines the function of these
-buttons to control software applications or GUI objects."
-
-The KEY_MACRO event codes are documented with:
-
-"Some keyboards have keys which do not have a defined meaning, these keys
-are intended to be programmed / bound to macros by the user."
-
-My usecase is the passing of custom keycodes from a programmable keypad
-(via QMK[1]) to Linux.
-(This would also need new functionality in QMK itself)
-
-Alternatives:
-
-* Send Raw HID from QMK
-  * Con: needs a dedicated, nonstandard driver on the host
-* Use F-Keys
-  * Con: only F13-F19 are usable (F1-F12 are used by normal keyboards, F20-F23
-    are repurposed with other keys for X11 compat)
-
-Possible problems:
-
-* There are 65k programmable keys defined by USB but only 30 macro keys are
-  supported by Linux.
-
+-- 
 Thanks,
-Thomas
-
-[0] https://www.usb.org/sites/default/files/hut1_22.pdf#section.15.14
-[1] https://qmk.fm/
+Sasha
