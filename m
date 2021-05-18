@@ -2,235 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A146B387ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294C5387AC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349824AbhEROLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:11:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:52878 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349703AbhEROL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:11:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E0B4D6E;
-        Tue, 18 May 2021 07:10:08 -0700 (PDT)
-Received: from [10.57.66.179] (unknown [10.57.66.179])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F007C3F73B;
-        Tue, 18 May 2021 07:10:06 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>, devicetree@vger.kernel.org
-Cc:     maz@kernel.org, arnd@arndb.de,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Hector Martin <marcan@marcan.st>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210516211851.74921-1-mark.kettenis@xs4all.nl>
- <20210516211851.74921-2-mark.kettenis@xs4all.nl>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <be890747-5f6d-8a7d-3e20-db58463028b1@arm.com>
-Date:   Tue, 18 May 2021 15:10:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1349834AbhEROMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243415AbhEROLz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 10:11:55 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAD3C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:10:37 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so1619785wmk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uciGMhDNE+3AdHOBR36VygtN6g1olwQ+V1Q/JfTf6uE=;
+        b=up5JGa14TDHNjghPLD3cDOUMtcauCcSHlehpYRnTZ89uND/nGiCDU2u0MiXTn7HWyZ
+         2E611xcSilvVolRaZpR0tvRjMLzoSmp4stY/P4twVsskipTIFvgHqygmQkOLzF76G353
+         p16L5kDmdDvMEwbZ1gCJvhoC8aTMaj48iS/KI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uciGMhDNE+3AdHOBR36VygtN6g1olwQ+V1Q/JfTf6uE=;
+        b=NJym4UnuECd60/VRTE3P/pSow/YA5m70P1TUPOxYIdonFX+UD/8oTJ8yIncZh4dRAc
+         gVydo6UuWL/GRnzqT1t0elvBMhrjj9mUJkBvoluf1vdLC3O6If0SSbr7FWnjV0RqXasG
+         WXyN7Rtw7QT2Dlw4+LDjp3CyfJ+QVsTXcHRdGHsOtyt56Wpx/esTI7FgFYre1V6bzGQ2
+         Q6AvEuFecIiWA9sF7nzT6wn/MamI1pxP1I81YyZRbgK/JPpVfJLnDYp2Wmr/DLOJiSPK
+         k20FHY9IFhyNapUdzbz67FHPAYqMFBQLKhegFimeNMpcX/kbywfJJlGQxNH/T9+RKPNE
+         9f3Q==
+X-Gm-Message-State: AOAM533lBd9tOX5AieSDeicqm+Pn+d8Nlo02abpBl6Mwi7q7gt9AH6lE
+        2E6NhfLqGFD1PfTSBQMg5tNEGg==
+X-Google-Smtp-Source: ABdhPJzNELWhZrTYWiEk4O7ExPc7KZlRivlxPc+bOu95Ti4f5eX0ueUZidbj/RINeRQUbHJoeql/aA==
+X-Received: by 2002:a1c:ddc5:: with SMTP id u188mr5914527wmg.12.1621347035938;
+        Tue, 18 May 2021 07:10:35 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:5c4a])
+        by smtp.gmail.com with ESMTPSA id d3sm22160306wri.75.2021.05.18.07.10.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 07:10:35 -0700 (PDT)
+Date:   Tue, 18 May 2021 15:10:34 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
+Subject: Re: [PATCH v6 1/4] string_helpers: Escape double quotes in
+ escape_special
+Message-ID: <YKPK2gT+W8Eu04ND@chrisdown.name>
+References: <cover.1621338324.git.chris@chrisdown.name>
+ <56771f7dafd884d8d2ffcf104104a0c2522391d4.1621338324.git.chris@chrisdown.name>
+ <YKO8xeR8q5Wdv8ZT@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210516211851.74921-2-mark.kettenis@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YKO8xeR8q5Wdv8ZT@smile.fi.intel.com>
+User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-16 22:18, Mark Kettenis wrote:
-> From: Mark Kettenis <kettenis@openbsd.org>
-> 
-> The Apple PCIe host controller is a PCIe host controller with
-> multiple root ports present in Apple ARM SoC platforms, including
-> various iPhone and iPad devices and the "Apple Silicon" Macs.
-> 
-> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> ---
->   .../devicetree/bindings/pci/apple,pcie.yaml   | 150 ++++++++++++++++++
->   MAINTAINERS                                   |   1 +
->   2 files changed, 151 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> new file mode 100644
-> index 000000000000..af3c9f64e380
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> @@ -0,0 +1,150 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Apple PCIe host controller
-> +
-> +maintainers:
-> +  - Mark Kettenis <kettenis@openbsd.org>
-> +
-> +description: |
-> +  The Apple PCIe host controller is a PCIe host controller with
-> +  multiple root ports present in Apple ARM SoC platforms, including
-> +  various iPhone and iPad devices and the "Apple Silicon" Macs.
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: apple,t8103-pcie
-> +      - const: apple,pcie
-> +
-> +  reg:
-> +    minItems: 4
-> +    maxItems: 6
-> +
-> +  reg-names:
-> +    minItems: 4
-> +    maxItems: 7
-> +    items:
-> +      - const: ecam
-> +      - const: rc
-> +      - const: phy
-> +      - const: port0
-> +      - const: port1
-> +      - const: port2
-> +
-> +  ranges:
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  interrupts:
-> +    minItems: 3
-> +    maxItems: 3
-> +
-> +  msi-ranges:
-> +    description:
-> +      A list of pairs <intid span>, where "intid" is the first
-> +      interrupt number that can be used as an MSI, and "span" the size
-> +      of that range.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +    items:
-> +      minItems: 2
-> +      maxItems: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - bus-range
-> +  - interrupts
-> +  - msi-controller
-> +  - msi-parent
-> +  - msi-ranges
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/apple-aic.h>
-> +    #include <dt-bindings/pinctrl/apple.h>
-> +
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      pcie0: pcie@690000000 {
-> +        compatible = "apple,t8103-pcie", "apple,pcie";
-> +        device_type = "pci";
-> +
-> +        reg = <0x6 0x90000000 0x0 0x1000000>,
-> +              <0x6 0x80000000 0x0 0x4000>,
-> +              <0x6 0x8c000000 0x0 0x4000>,
-> +              <0x6 0x81000000 0x0 0x8000>,
-> +              <0x6 0x82000000 0x0 0x8000>,
-> +              <0x6 0x83000000 0x0 0x8000>;
-> +        reg-names = "ecam", "rc", "phy", "port0", "port1", "port2";
-> +
-> +        interrupt-parent = <&aic>;
-> +        interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +        msi-controller;
-> +        msi-parent = <&pcie0>;
-> +        msi-ranges = <704 32>;
-> +
-> +        iommu-map = <0x0 &dart0 0x8000 0x100>,
-> +                    <0x100 &dart0 0x100 0x100>,
-> +                    <0x200 &dart1 0x200 0x100>,
-> +                    <0x300 &dart2 0x300 0x100>;
-> +        iommu-map-mask = <0xff00>;
+Andy Shevchenko writes:
+>We have only one direct user of ESCAPE_SPECIAL and there " is not used.
+>
+>Indirect ones are %pE, but IIRC most of them are either debug messages or some
+>kind of (non-ABI) messages.
+>
+>It would be nice if you can confirm this and put a note into commit message.
+>
+>If the above is confirmed, feel free to add mine
+>Reviewed-by; Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-This doesn't quite add up - if the mask is ignoring the bottom 8 bits, 
-then each of those map entries is describing one single ID mapping, not 256.
-
-> +        bus-range = <0 7>;
-
-Given that the iommu-map only covers buses 0-3, what happens to traffic 
-from buses 4-7?
-
-Robin.
-
-> +        #address-cells = <3>;
-> +        #size-cells = <2>;
-> +        ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-> +                 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
-> +
-> +        clocks = <&pcie_core_clk>, <&pcie_aux_clk>, <&pcie_ref_clk>;
-> +        pinctrl-0 = <&pcie_pins>;
-> +        pinctrl-names = "default";
-> +
-> +        pci@0,0 {
-> +          device_type = "pci";
-> +          reg = <0x0 0x0 0x0 0x0 0x0>;
-> +          reset-gpios = <&pinctrl_ap 152 0>;
-> +          max-link-speed = <2>;
-> +
-> +          #address-cells = <3>;
-> +          #size-cells = <2>;
-> +          ranges;
-> +        };
-> +
-> +        pci@1,0 {
-> +          device_type = "pci";
-> +          reg = <0x800 0x0 0x0 0x0 0x0>;
-> +          reset-gpios = <&pinctrl_ap 153 0>;
-> +          max-link-speed = <2>;
-> +
-> +          #address-cells = <3>;
-> +          #size-cells = <2>;
-> +          ranges;
-> +        };
-> +
-> +        pci@2,0 {
-> +          device_type = "pci";
-> +          reg = <0x1000 0x0 0x0 0x0 0x0>;
-> +          reset-gpios = <&pinctrl_ap 33 0>;
-> +          max-link-speed = <1>;
-> +
-> +          #address-cells = <3>;
-> +          #size-cells = <2>;
-> +          ranges;
-> +        };
-> +      };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7327c9b778f1..789d79315485 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1654,6 +1654,7 @@ C:	irc://chat.freenode.net/asahi-dev
->   T:	git https://github.com/AsahiLinux/linux.git
->   F:	Documentation/devicetree/bindings/arm/apple.yaml
->   F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
-> +F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
->   F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
->   F:	arch/arm64/boot/dts/apple/
->   F:	drivers/irqchip/irq-apple-aic.c
-> 
+Thanks for reviewing! :-) I will triple check that and add for v7.
