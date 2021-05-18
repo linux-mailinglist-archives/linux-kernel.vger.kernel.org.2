@@ -2,147 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F76387BB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D3C387BC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244053AbhEROyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
+        id S244704AbhERO6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235888AbhEROyk (ORCPT
+        with ESMTP id S243818AbhERO6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:54:40 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AB5C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:53:21 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id p20so11925576ljj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:53:21 -0700 (PDT)
+        Tue, 18 May 2021 10:58:41 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AFFC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:57:22 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so1715895wmk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fjg3qZs5k6I/97/2j2zryLOYba1okHDNwQ2ngYD7gmk=;
-        b=LwA0jhocjIDkDCwgZ0OZcCFjqpnw2V0xSzfMAlQdZAOQGIrV9GBnO70USBBEv9zO2k
-         p1YwV1+5v/q5SkZCI7X0f7Qct9ZwFynXefhV7wgMQuGN8uPVmMcaKpj1ogQXCnEZSX2p
-         umL8I2s1e72TiY9IHZhKiTpEqqmQ8sxRi9sp2qe05EiVa83+bYm7iYP26wYlPG3LT30H
-         gPGcyAjAlD1WbZHZCMH7be0HJ1XvnFbh2+Y2INQgyy4h1Ur4FZWqqNhJ5aMBH6Sf4aaw
-         OFyLgxcZNOia6IxyxagPfQ5pETOqRZXv0u16+7bssu4KpYF0GvOX5GQRYAqwICq3TZx7
-         IYfA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nnvJ8osbkowWmqtn9NFdggrDzHVnx44WWHnS4UTIDOM=;
+        b=dqKKErEgkRlR/pYnicFKmswieuRIFj7bEca/bsTnapwvj2d7DrbFobFVAB/igJPDPH
+         UfbaKjLSc4YwuLqpfz4YuA8+JSRGcf6B2IAiFPw803FOmrM5P1DKzXCEH90/QzwSx2dT
+         BL2cO/+aNcxil+n6LKy4wjvEWD5eqlxSnlGqOAmk2QRQkcKq8hyalmI1x5F0CwW6to79
+         xVjjpqTzopTJhSXfjNkSN0zuA9/0QS4+l4yZBudznhcwL+7GhrGE2E7819lc+BM5w8Ca
+         GUBBgTjXeKrdBzX7XAwZOedzp0eRVerGZgUWpjwQeV3nBLYoIRyhklIZ6pb9fO1Vhz0q
+         /0dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fjg3qZs5k6I/97/2j2zryLOYba1okHDNwQ2ngYD7gmk=;
-        b=BZpLDYcWXgp2J1nMZ+U3Z7Xh2SgpwawCXqSrn2g6aJbXjmzpkfJJ/k8F1qEVRs38PC
-         8W5v3ft/BkUdEoVQ6/+1lMk5Mx+NN+Zh0BcugdgeLC36KGgAboITI1mrEa7mzCLPkkOK
-         xlRzzkCXXXyytzy29jbkTz677V3Ip+AHYDClmwRu4e1uDfF/pKphONSL/Fn69o43XTpu
-         Y1hcbT7zJ9yoGK72vP8ayMZ84XBLksc0fqVPUT9CCs05gnnSg9Ta5DbzL58jIpRBwUJP
-         IXMNaLQAttATs7M8xb0BtlKAP4MOADmGUcErmFnipSQOgQbURlQWCpFjZ+Q8wRdvGeOS
-         Q+AQ==
-X-Gm-Message-State: AOAM532qGeYyOd5u5/fQfus4VjUPUFl+L7xMv9WJr4EvxWq1iGNDWXal
-        c5YGbslacy3Cs82YR2HPowZ7nG8LfDl4Gqp8Z2vJxg==
-X-Google-Smtp-Source: ABdhPJzhydDaPkWDHaSpy2SL65NK6UM4/v57GFX517EaIpLAtdVeYSjHYQ1qhXwE039MUtgV59sTM9MdqCr3KqMiCyQ=
-X-Received: by 2002:a2e:8557:: with SMTP id u23mr4357444ljj.221.1621349600234;
- Tue, 18 May 2021 07:53:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nnvJ8osbkowWmqtn9NFdggrDzHVnx44WWHnS4UTIDOM=;
+        b=IqcnnOyKPiup/TN/KFluFn6FCLOCIv+dx17Y34CvbdjwSjoA9p5Quwipx5xPqcPor2
+         t55wY9VBGjzlYkEfATfhakUNQ/6ug5wFOnpwI9NbFBt4HEFEcDnTcOSGXLjniFHTPB3/
+         3Nkvv9AGPlM26Iuh7ZlT5BsxpHG/BQZglUDpe81Sc2yLYp3vpqCujGEEKZITJviDwGPx
+         p9TYMs6+1ONSq25omSABOhrBq4kPGYjThnyoqJ3nPKgjf9pKiQ9wB0cekjl/EjCgTMEe
+         Cxrz38J/nDNM5XMWd3LxBxbR/GT31qxNAjJsM7e4Mj3z9bCmBnbLvdT1hx9CDHinm/Ko
+         Wnxg==
+X-Gm-Message-State: AOAM531BwBhABh0SXdbWO2SiCQhq/DqE8k9QOhKDP4hqpQmVU98UV5KK
+        vf3bd82XxCHgY078qCLkcfr4sA==
+X-Google-Smtp-Source: ABdhPJykHbrqVuGSot4jl0mtKbOsvhBcfbVcGuhfK+eptPr3NLTg0KErO+dWYOEgB6dOfCldaFg29g==
+X-Received: by 2002:a1c:2507:: with SMTP id l7mr5969715wml.188.1621349841534;
+        Tue, 18 May 2021 07:57:21 -0700 (PDT)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id a18sm2928386wmb.13.2021.05.18.07.57.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 07:57:20 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Qii Wang <qii.wang@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] dt-bindings: i2c: i2c-mt65xx: convert doc to yaml schema format
+Date:   Tue, 18 May 2021 16:55:20 +0200
+Message-Id: <20210518145522.2420135-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
- <1621239831-5870-2-git-send-email-beata.michalska@arm.com>
- <CAKfTPtAPcayjhedNWaL20rsaUQbxXFdEXAF8aqwd9YX5gLVbOQ@mail.gmail.com> <20210518142746.GA3993@e120325.cambridge.arm.com>
-In-Reply-To: <20210518142746.GA3993@e120325.cambridge.arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 18 May 2021 16:53:09 +0200
-Message-ID: <CAKfTPtAk8pQfpN7FrBqdOiSz2Ncby4ozXOgQvT_QZMX67-FRKA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL
- sched_domain flag
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 at 16:27, Beata Michalska <beata.michalska@arm.com> wrote:
->
-> On Tue, May 18, 2021 at 03:39:27PM +0200, Vincent Guittot wrote:
-> > On Mon, 17 May 2021 at 10:24, Beata Michalska <beata.michalska@arm.com> wrote:
-> > >
-> > > Introducing new, complementary to SD_ASYM_CPUCAPACITY, sched_domain
-> > > topology flag, to distinguish between shed_domains where any CPU
-> > > capacity asymmetry is detected (SD_ASYM_CPUCAPACITY) and ones where
-> > > a full range of CPU capacities is visible to all domain members
-> > > (SD_ASYM_CPUCAPACITY_FULL).
-> >
-> > I'm not sure about what you want to detect:
-> >
-> > Is it a sched_domain level with a full range of cpu capacity, i.e.
-> > with at least 1 min capacity and 1 max capacity ?
-> > or do you want to get at least 1 cpu of each capacity ?
-> That would be at least one CPU of each available capacity within given domain,
-> so full -set- of available capacities within a domain.
+Convert the binding documentation for i2c-mt65xx driver to the
+YAML schema format.
 
-Would be good to add the precision.
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    | 49 ----------
+ .../devicetree/bindings/i2c/i2c-mt65xx.yaml   | 97 +++++++++++++++++++
+ 2 files changed, 97 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
 
-Although I'm not sure if that's the best policy compared to only
-getting the range which would be far simpler to implement.
-Do you have some topology example ?
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+deleted file mode 100644
+index 7f0194fdd0cc..000000000000
+--- a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-* MediaTek's I2C controller
+-
+-The MediaTek's I2C controller is used to interface with I2C devices.
+-
+-Required properties:
+-  - compatible: value should be either of the following.
+-      "mediatek,mt2701-i2c", "mediatek,mt6577-i2c": for MediaTek MT2701
+-      "mediatek,mt2712-i2c": for MediaTek MT2712
+-      "mediatek,mt6577-i2c": for MediaTek MT6577
+-      "mediatek,mt6589-i2c": for MediaTek MT6589
+-      "mediatek,mt6797-i2c", "mediatek,mt6577-i2c": for MediaTek MT6797
+-      "mediatek,mt7622-i2c": for MediaTek MT7622
+-      "mediatek,mt7623-i2c", "mediatek,mt6577-i2c": for MediaTek MT7623
+-      "mediatek,mt7629-i2c", "mediatek,mt2712-i2c": for MediaTek MT7629
+-      "mediatek,mt8173-i2c": for MediaTek MT8173
+-      "mediatek,mt8183-i2c": for MediaTek MT8183
+-      "mediatek,mt8192-i2c": for MediaTek MT8192
+-      "mediatek,mt8516-i2c", "mediatek,mt2712-i2c": for MediaTek MT8516
+-  - reg: physical base address of the controller and dma base, length of memory
+-    mapped region.
+-  - interrupts: interrupt number to the cpu.
+-  - clock-div: the fixed value for frequency divider of clock source in i2c
+-    module. Each IC may be different.
+-  - clocks: clock name from clock manager
+-  - clock-names: Must include "main" and "dma", "arb" is for multi-master that
+-    one bus has more than two i2c controllers, if enable have-pmic need include
+-    "pmic" extra.
+-
+-Optional properties:
+-  - clock-frequency: Frequency in Hz of the bus when transfer, the default value
+-    is 100000.
+-  - mediatek,have-pmic: platform can control i2c form special pmic side.
+-    Only mt6589 and mt8135 support this feature.
+-  - mediatek,use-push-pull: IO config use push-pull mode.
+-
+-Example:
+-
+-	i2c0: i2c@1100d000 {
+-			compatible = "mediatek,mt6577-i2c";
+-			reg = <0x1100d000 0x70>,
+-			      <0x11000300 0x80>;
+-			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_LOW>;
+-			clock-frequency = <400000>;
+-			mediatek,have-pmic;
+-			clock-div = <16>;
+-			clocks = <&i2c0_ck>, <&ap_dma_ck>;
+-			clock-names = "main", "dma";
+-	};
+-
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
+new file mode 100644
+index 000000000000..0f445d2ab727
+--- /dev/null
++++ b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
+@@ -0,0 +1,97 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/i2c/i2c-mt65xx.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: MediaTek I2C Controller
++
++maintainers:
++  - Qii Wang <qii.wang@mediatek.com>
++  - Matthias Brugger <matthias.bgg@gmail.com>
++
++allOf:
++  - $ref: /schemas/i2c/i2c-controller.yaml#
++
++properties:
++  $nodename:
++    pattern: "^i2c[0-9]*@[0-9a-f]+$"
++
++  compatible:
++    oneOf:
++      - enum:
++          - mediatek,mt2712-i2c
++          - mediatek,mt6577-i2c
++          - mediatek,mt6589-i2c
++          - mediatek,mt7622-i2c
++          - mediatek,mt8173-i2c
++          - mediatek,mt8183-i2c
++          - mediatek,mt8192-i2c
++      - items:
++          - const: mediatek,mt2701-i2c
++          - const: mediatek,mt6577-i2c
++      - items:
++          - const: mediatek,mt6797-i2c
++          - const: mediatek,mt6577-i2c
++      - items:
++          - const: mediatek,mt7623-i2c
++          - const: mediatek,mt6577-i2c
++      - items:
++          - const: mediatek,mt7629-i2c
++          - const: mediatek,mt2712-i2c
++      - items:
++          - const: mediatek,mt8516-i2c
++          - const: mediatek,mt2712-i2c
++
++  clocks:
++    minItems: 2
++    maxItems: 4
++    items:
++      - description: Controller clock
++      - description: DMA clock
++      - description: ARB clock for multi-master when a bus has more than
++          one i2c controllers
++      - description: PMIC clock. Only when mediatek,have-pmic is set.
++
++  clock-names:
++    minItems: 2
++    maxItems: 4
++    items:
++      - const: main
++      - const: dma
++      - const: arb
++      - const: pmic
++
++  mediatek,have-pmic:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: Platform can control I2C from the PMIC
++
++  mediatek,use-push-pull:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: IO config use push-pull mode.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - clock-div
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    i2c0: i2c@1100d000 {
++            compatible = "mediatek,mt6577-i2c";
++            reg = <0x1100d000 0x70>,
++                  <0x11000300 0x80>;
++            interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_LOW>;
++            clock-frequency = <400000>;
++            mediatek,have-pmic;
++            clock-div = <16>;
++            clocks = <&i2c0_ck>, <&ap_dma_ck>;
++            clock-names = "main", "dma";
++    };
+-- 
+2.31.1
 
-
-
-
-
-
->
-> ---
-> BR
-> B.
-> >
-> >
-> > >
-> > > With the distinction between full and partial CPU capacity asymmetry,
-> > > brought in by the newly introduced flag, the scope of the original
-> > > SD_ASYM_CPUCAPACITY flag gets shifted, still maintaining the existing
-> > > behaviour when one is detected on a given sched domain, allowing
-> > > misfit migrations within sched domains that do not observe full range
-> > > of CPU capacities but still do have members with different capacity
-> > > values. It loses though it's meaning when it comes to the lowest CPU
-> > > asymmetry sched_domain level per-cpu pointer, which is to be now
-> > > denoted by SD_ASYM_CPUCAPACITY_FULL flag.
-> > >
-> > > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> > > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> > > ---
-> > >  include/linux/sched/sd_flags.h | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > >
-> > > diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-> > > index 34b21e9..57bde66 100644
-> > > --- a/include/linux/sched/sd_flags.h
-> > > +++ b/include/linux/sched/sd_flags.h
-> > > @@ -91,6 +91,16 @@ SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
-> > >  SD_FLAG(SD_ASYM_CPUCAPACITY, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > >
-> > >  /*
-> > > + * Domain members have different CPU capacities spanning all unique CPU
-> > > + * capacity values.
-> > > + *
-> > > + * SHARED_PARENT: Set from the topmost domain down to the first domain where
-> > > + *               all available CPU capacities are visible
-> > > + * NEEDS_GROUPS: Per-CPU capacity is asymmetric between groups.
-> > > + */
-> > > +SD_FLAG(SD_ASYM_CPUCAPACITY_FULL, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > > +
-> > > +/*
-> > >   * Domain members share CPU capacity (i.e. SMT)
-> > >   *
-> > >   * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-> > > --
-> > > 2.7.4
-> > >
