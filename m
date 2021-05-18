@@ -2,143 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6773876DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B923876DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348643AbhERKrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348650AbhERKra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:47:30 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C90C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:46:11 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so8219862oth.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DLn0qmv+qeKnpI5hPApwAC1v8Q18RNOwfCBH1vF3cnI=;
-        b=hE+Os49HBcsVKkzno2MpD5l9huV9cOpZZVO6fSr8j2C2n+ty9XE5CcrM5HzKzk47s+
-         l/WV3cqoKXfKCccTq7O/SS38K8ikxrJrJF0abeUNLZOrOiQLc66Zy5rkqO18R7OTShSd
-         Mo3b87/vBM0iAW9/DXk1gQPPbKhC2HddEtjNd3JJy+ki15W/rEuGhZ31k/xYOc40FNlq
-         136hISg8mak8RG0AQ0cro9uTJTCzKZpk93FdOSdP6gwY0Dy5+IkcF9+a/NXsKjpGHQR5
-         tWoLJtnB3omKizBHU6D8ZWyNoMcqcdHnwyI1MQEzpjnUs8JkKlZL5eno8fDinstr+Mqb
-         oqdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DLn0qmv+qeKnpI5hPApwAC1v8Q18RNOwfCBH1vF3cnI=;
-        b=qP/UqZttMJARUtqEDnA0PRx4yYROFCCpcZOA1CCBtQRO60HAy+b0dFW3MT0AiLwFKO
-         csAt5WmyqCK9v3XXieJhjDdQR2dyj4M1+B7DVbnA+2mzPoO/DgoTj3vWxJPShkMXhVc/
-         AzOmV2h87/ueF/NOLZyjR98WhppNiKNv3iJGOgWqvoxShprvpJuKJwhCnxsLWpZz23HR
-         TmV+TR8BdG9Dp3YKD4sl4JLAoYucqmCKNz9TWzwdxgnv9ul7CKwHiNUONAcuu0b+fMSr
-         7xHuaC3p12SLk3tdL5OzKaB8ldPOKxuCuuV59xotkG99vA04sLQv8O2AwviiMm6bIJ3Q
-         NRbw==
-X-Gm-Message-State: AOAM530IjtpWF9BvMYR94eUqcUs6mKaVtdbeg67M/iViOqHZFIJY8vVE
-        ryHQoVJDB+HOwsGOVBN768GAmKXpXFlj5t81uQA=
-X-Google-Smtp-Source: ABdhPJy618grM6clriKmwdc2E1GMWXwbHncO5uOQG90ApB0CP6RlS0ZfGJ6bpAloJD0tFyM5WMl7c5TNNbZoEyQneAE=
-X-Received: by 2002:a9d:4115:: with SMTP id o21mr3740851ote.52.1621334771169;
- Tue, 18 May 2021 03:46:11 -0700 (PDT)
+        id S1348635AbhERKq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:46:57 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:56200 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348624AbhERKqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:46:49 -0400
+Received: from zn.tnic (p200300ec2f0ae20067192df7af4aebb0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e200:6719:2df7:af4a:ebb0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 624A51EC01A8;
+        Tue, 18 May 2021 12:45:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621334724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rdxWhvramxY856CMW4AScLuyJ9Po7Sk21r5YjR+qMxQ=;
+        b=eceG3+gGdIIDxssqhT97mwkGW+VZpYrBShWX4iKkX/kBpt+2B/wylevpzAZ0LKyqMwk9In
+        P0CLgp2r+7B4PkEf5Gmc9aWXjzXf0tX+dlgn9XrjKgHf78KOA5ylXlTWKg7XFq1NtsDvX2
+        K06zbBXDp7VOJPhHNlJXKA2cnVD9Lgs=
+Date:   Tue, 18 May 2021 12:45:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part1 RFC v2 06/20] x86/sev: Define SNP guest request NAE
+ events
+Message-ID: <YKOaxBBAB/BJZmbY@zn.tnic>
+References: <20210430121616.2295-1-brijesh.singh@amd.com>
+ <20210430121616.2295-7-brijesh.singh@amd.com>
 MIME-Version: 1.0
-References: <20210517112044.233138-1-aisheng.dong@nxp.com> <20210517112044.233138-4-aisheng.dong@nxp.com>
- <YKOTDumqMIFfqc+f@kernel.org>
-In-Reply-To: <YKOTDumqMIFfqc+f@kernel.org>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Tue, 18 May 2021 18:45:08 +0800
-Message-ID: <CAA+hA=TZyVcSfbBzJvzwULhbvfC00JP=_xam3JoirdnTiDd_KQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mm/sparse: move mem_sections allocation out of memory_present()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210430121616.2295-7-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 6:12 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Mon, May 17, 2021 at 07:20:42PM +0800, Dong Aisheng wrote:
-> > The only path to call memory_present() is from memblocks_present().
-> > The struct mem_section **mem_section only needs to be initialized once,
-> > so no need put the initialization/allocation code in memory_present()
-> > which will be called multiple times for each section.
-> >
-> > After moving, the 'unlikely' condition statement becomes to be
-> > meaningless as it's only initialized one time, so dropped as well.
-> >
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> > ---
-> >  mm/sparse.c | 23 ++++++++++-------------
-> >  1 file changed, 10 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/mm/sparse.c b/mm/sparse.c
-> > index 98bfacc763da..df4418c12f04 100644
-> > --- a/mm/sparse.c
-> > +++ b/mm/sparse.c
-> > @@ -254,19 +254,6 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
-> >  {
-> >       unsigned long pfn;
-> >
-> > -#ifdef CONFIG_SPARSEMEM_EXTREME
-> > -     if (unlikely(!mem_section)) {
-> > -             unsigned long size, align;
-> > -
-> > -             size = sizeof(struct mem_section *) * NR_SECTION_ROOTS;
-> > -             align = 1 << (INTERNODE_CACHE_SHIFT);
-> > -             mem_section = memblock_alloc(size, align);
-> > -             if (!mem_section)
-> > -                     panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-> > -                           __func__, size, align);
-> > -     }
-> > -#endif
->
-> Maybe split this into a helper function and call it directly from
-> sparse_init()?
->
+On Fri, Apr 30, 2021 at 07:16:02AM -0500, Brijesh Singh wrote:
+> Version 2 of the GHCB specification added the support for SNP guest
+> request NAE events. The SEV-SNP guests will use this event to request
+> the attestation report. See the GHCB specification for more details.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/uapi/asm/svm.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
+> index f7bf12cad58c..7a45aa284530 100644
+> --- a/arch/x86/include/uapi/asm/svm.h
+> +++ b/arch/x86/include/uapi/asm/svm.h
+> @@ -109,6 +109,8 @@
+>  #define SVM_VMGEXIT_SET_AP_JUMP_TABLE		0
+>  #define SVM_VMGEXIT_GET_AP_JUMP_TABLE		1
+>  #define SVM_VMGEXIT_SNP_PAGE_STATE_CHANGE	0x80000010
+> +#define SVM_VMGEXIT_SNP_GUEST_REQUEST		0x80000011
+> +#define SVM_VMGEXIT_SNP_EXT_GUEST_REQUEST	0x80000012
 
-Sounds good to me
-e.g. sparse_alloc_section_root() called directly from sparse_init().
-Thanks for the suggestion
+Why does this need the "VMGEXIT" *and* "SNP" prefixes?
 
-Regards
-Aisheng
+Why not simply:
 
-> > -
-> >       start &= PAGE_SECTION_MASK;
-> >       mminit_validate_memmodel_limits(&start, &end);
-> >       for (pfn = start; pfn < end; pfn += PAGES_PER_SECTION) {
-> > @@ -292,9 +279,19 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
-> >   */
-> >  static void __init memblocks_present(void)
-> >  {
-> > +     unsigned long __maybe_unused size, align;
-> >       unsigned long start, end;
-> >       int i, nid;
-> >
-> > +#ifdef CONFIG_SPARSEMEM_EXTREME
-> > +     size = sizeof(struct mem_section *) * NR_SECTION_ROOTS;
-> > +     align = 1 << (INTERNODE_CACHE_SHIFT);
-> > +     mem_section = memblock_alloc(size, align);
-> > +     if (!mem_section)
-> > +             panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-> > +                   __func__, size, align);
-> > +#endif
-> > +
-> >       for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, &nid)
-> >               memory_present(nid, start, end);
-> >  }
-> > --
-> > 2.25.1
-> >
-> >
->
-> --
-> Sincerely yours,
-> Mike.
+SVM_VMGEXIT_GUEST_REQ
+SVM_VMGEXIT_EXT_GUEST_REQ
+
+like the rest of the VMGEXIT defines in there?
+
+
+>  #define SVM_VMGEXIT_HYPERVISOR_FEATURES		0x8000fffd
+>  #define SVM_VMGEXIT_UNSUPPORTED_EVENT		0x8000ffff
+>  
+> @@ -218,6 +220,8 @@
+>  	{ SVM_VMGEXIT_AP_HLT_LOOP,	"vmgexit_ap_hlt_loop" }, \
+>  	{ SVM_VMGEXIT_AP_JUMP_TABLE,	"vmgexit_ap_jump_table" }, \
+>  	{ SVM_VMGEXIT_SNP_PAGE_STATE_CHANGE,	"vmgexit_page_state_change" }, \
+> +	{ SVM_VMGEXIT_SNP_GUEST_REQUEST,	"vmgexit_snp_guest_request" }, \
+> +	{ SVM_VMGEXIT_SNP_EXT_GUEST_REQUEST,	"vmgexit_snp_extended_guest_request" }, \
+>  	{ SVM_VMGEXIT_HYPERVISOR_FEATURES,	"vmgexit_hypervisor_feature" }, \
+>  	{ SVM_EXIT_ERR,         "invalid_guest_state" }
+
+Ditto.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
