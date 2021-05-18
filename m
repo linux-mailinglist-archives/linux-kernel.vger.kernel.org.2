@@ -2,206 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA88387545
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4580387546
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240859AbhERJiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:38:15 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:40656 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232614AbhERJiN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:38:13 -0400
-Received: by mail-ot1-f47.google.com with SMTP id s5-20020a05683004c5b029032307304915so824739otd.7;
-        Tue, 18 May 2021 02:36:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wiSdxiIHc/KDsEYwF5pXotRSQUfD4ZGdNaPicsgTKMU=;
-        b=hxWdH+7iEHi1IGysDBv1d7hVWsml/KpWAHuwTsc3syJM73jE0Vg94VYq03ywJCdMvp
-         g7Q/8ZpgBnVWY39S+aTVyBHR7prbRRaxylfKw+3iKaOiiuNPXmS2ekkG8nxXul19wfIQ
-         abxXf0AHjT0B5uxbzcgoMN/GVTmM0xMNIUmCBVJgx49Ui5ejnwev/0MKJstmnwXjMmXF
-         6b+mUtUxtN0AkA1b5dYwCdvw8lbLhlw3sm4wXjdtyI8o8RZ2cvR11gOVH6mGvxak5ZMi
-         VPb0Rul/ysFpKmNQYHNgrvDvTRazyY8vX0HimUFxoeRtD4VJvGERffIwG3ip6Aqkf8CK
-         m/Vg==
-X-Gm-Message-State: AOAM531uV95H0n+BBKz4ql5bq+YaL3tR0HLwmih99tX5v7xjGmL4cbtd
-        HPxSkOROt4+XIrFDgBoypP2V04yPgHQeeG+qVcs=
-X-Google-Smtp-Source: ABdhPJwsaI+dWDUzbN7bYVAavvxBEqOU3b77j27rmXFBZTLX2a2oEespYLMhLV+qYSB8IfI1MAGjtApa7v4X4StQAec=
-X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr3655017otc.206.1621330614331;
- Tue, 18 May 2021 02:36:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210518034119.2116555-1-srinivas.pandruvada@linux.intel.com>
-In-Reply-To: <20210518034119.2116555-1-srinivas.pandruvada@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 18 May 2021 11:36:42 +0200
-Message-ID: <CAJZ5v0ivv9ouf065aYyLqN_JtjR5vomUumAQtGHPunze0BdUmQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI: DPTF: Add new PCH FIVR methods
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
+        id S241478AbhERJii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:38:38 -0400
+Received: from mout.gmx.net ([212.227.17.22]:45199 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241065AbhERJih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:38:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621330625;
+        bh=AD1ds06VVPVYGYLP8IB2Xh0Qsqb8Ho9cPxzhed8QWaw=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=XVhbMhvJbTuxiTl+ii0FgbH6Ib0+xf7jtpRrjVMaCPWpO1jFqWss4fPVG0bjMKBi1
+         8+CHh9xsyLVtEfHSWJE8+dFXuFaH7Nbtw4zLNZr0Rye0uuoBsoyN+oFHjtpzvS4amx
+         +gUuKTzkdPDL6N7Fi8wCXV/EwA0i/gWnG6pUNXTo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MTzfG-1lrHsY3rNK-00R2p9; Tue, 18
+ May 2021 11:37:05 +0200
+Date:   Tue, 18 May 2021 11:37:00 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Benjamin Fair <benjaminfair@google.com>
+Subject: Re: [PATCH] ARM: npcm: wpcm450: select interrupt controller driver
+Message-ID: <YKOKvAyu6/9Kw9DP@latitude>
+References: <20210513165627.1767093-1-j.neuschaefer@gmx.net>
+ <CACPK8XdVNfjbs+KmhT8g899d74t7M8b6iBuGC_3=DEBy+A_VHg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BYjp4V8dNL0PBJME"
+Content-Disposition: inline
+In-Reply-To: <CACPK8XdVNfjbs+KmhT8g899d74t7M8b6iBuGC_3=DEBy+A_VHg@mail.gmail.com>
+X-Provags-ID: V03:K1:2COAoMhLWQVx8aCRC/QXgo9P1rGf9+93jz4L87EPcEABP2qGG5Y
+ V0PG61LnPavihULoCj0j9DvVtmkZ1xoQ7x8+XtCkWu4AjoW1L8Xdd375v2H9pjK/vRbmVzW
+ ElgFP2Em3awvT5UvjFis4sXVyeq4vb6YdWWvKWszxo6WoK7LBavX5Sr5QvY5+yN3nvg2mKr
+ TxTbwBbOoFhf58DMwwUhw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ilwcagYyRqU=:S1mS64YVhO7cKuHY6rwEUa
+ NJLxhf2q1BnBZKnX8SwDaISBnxsMwcXgwxlQejP4oEQSZuplbKKGyH6Gv6eXj4hY9mgQu+pkW
+ TC4/Q96abW4BiKItbunY7SOyUG+SF4u8KBIK9qYomijy75E6c+2O2JO3aGpy4V8KW/OfEBmrx
+ /uqB+z/TGb08bTMQFlulAttIo8wSTcKMAMOSUastW4i14e4TkX+Fnmd8aIPb3H9jKYspWuopR
+ DPj2fzvkibeKcaX2kzI3d67ZrenowFsQPfR1IVoYo1gmgcIbxxXI2WeI6xKso9+2rvnSYWfo8
+ +SknaPDoOofd9WxW8S40nZ80KU+1rC5jqCRzapV3kT5oRbRElNqaUJv9YqILE9YcoOJzzPBP5
+ A+k6Xr/5+TTjimPMD16VXJDhsWOPdfiggRP+Mdf5//Ul3yEi7eNIGUA+SKF6ox1QVOIVqK/nu
+ 6TbDk4IOPDTN3ipveOzO7GyyQX5G2s3YLB/+AP3y4/AxKX8ZNY+yB3FVe/P2MpdbfZd5rFtIB
+ lUjlItlhEUc4kPNPlxrgFitUQwfKXlBd55BA3uXJ9NppeMfWR9bvo5wEEmgVbA94wdrz4NAFS
+ 6eHKCnIwRrc+3oXSyF4sUWLDKRuK7/ZOYmy+p8qOiV7D/FX/shsb/VAOYQiJguMtcVz0MB+1v
+ zCXSccDysq1eBlquf+VH+yUyaxnpBmYuOs7s4ZSbqvuX+rh0LyqAMBVBbicKuVAFsK3keVpg7
+ 2LTX52odu72pV1u4xnUX45mSv888uu1QsmO1eIfN7EEyqoJlyuhD+Y4EyY+gqKZuUgRyEdVSq
+ /Wb4X86reKLXHqNSTiHp+tb5plcRyrE5uvRpMgVLf7HvbVzpH9bieA9kmgFNw0ajyIo8qoZji
+ d1Sxhc4fs+c4uKcjwLkAklzlw4u8Zxu4FmhRvD1diTFC5C3p3pZhQvgeUSvNp/pCrpxhs3nFX
+ 35DdnatGQyWVkmkV2WQVrvJpaO8DWa/Dx/vdZpv0u0eRpbv5m/vnMxmG1zBL8ohNY/yPQuxMc
+ zaVAmW7FjKry2r5eQpMuoivmzx3w9SPuwmqV4R3XGA3DbrbLWsmYTpidilqRuS1cZK9abnlVY
+ mZjCLShVekLlQlT0AOrBE6Mh6ljRRwBAHBPG9jSUF5+9lkfX7bXnvv1cCVcfqZUqN9NmVLD3F
+ 8o6XEPLGtM2iBHF+qWIKXr0cvRISGRZn7d6bOf7dq+JXByRt0bPdyeJPOdKOGg8eG+0OGsS/7
+ n9B2NNXECHm8IoMSj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 5:42 AM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> Some additional information is required for updating PCH FIVR values
-> upon WiFi channel changes.
->
-> New attributes added to the existing sysfs:
-> fivr_switching_freq_mhz : Get the FIVR switching control frequency
->                           using ACPI method GFCS. Refer to the
->                           documentation for the equation.
-> fivr_switching_fault_status: Read the FIVR switching frequency control
->                         fault status. Uses ACPI method GFFS
->
-> ssc_clock_info : Presents SSC (spread spectrum clock) information for EMI
-> (Electro magnetic interference) control. Use ACPI method GEMI. Refer
-> to the description of GEMI method below.
->
-> GFFS
-> This ACPI method is used to read the FIVR switching frequency control
-> fault status.
-> Bits    Description
-> [0:0]   Fault status when set to 1
-> [31:1]  Reserved
->
-> GFCS
-> This ACPI method is used to read the FIVR switching control
-> frequency.
-> Bits    Description
-> [11:0]  Actual Frequency = value * XTAL_FREQ / 128
-> [31:12] Reserved
->
-> GEMI
-> This ACPI method is used to read the programmed register value for EMI
-> (Electro magnetic interference) control.
->
-> Bits    Description
-> [7:0]   Sets clock spectrum spread percentage:
->         0x00=0.2% , 0x3F=10%
->         1 LSB = 0.1% increase in spread (for
->         settings 0x01 thru 0x1C)
->         1 LSB = 0.2% increase in spread (for
->         settings 0x1E thru 0x3F)
-> [8]     When set to 1, enables spread
->         spectrum clock
-> [9]     0: Triangle mode. FFC frequency
->         walks around the Fcenter in a linear
->         fashion
->         1: Random walk mode. FFC frequency
->         changes randomly within the SSC
->         (Spread spectrum clock) range
-> [10]    0: No white noise. 1: Add white noise
->         to spread waveform
-> [11]    When 1, future writes are ignored.
->
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
-> v2
->         Update documentation for fivr_switching_freq_mhz
->
->  Documentation/ABI/testing/sysfs-platform-dptf | 42 +++++++++++++++++++
->  drivers/acpi/dptf/dptf_pch_fivr.c             |  9 ++++
->  2 files changed, 51 insertions(+)
->
-> diff --git a/Documentation/ABI/testing/sysfs-platform-dptf b/Documentation/ABI/testing/sysfs-platform-dptf
-> index 141834342a4d..fe62f024eb93 100644
-> --- a/Documentation/ABI/testing/sysfs-platform-dptf
-> +++ b/Documentation/ABI/testing/sysfs-platform-dptf
-> @@ -111,3 +111,45 @@ Contact:   linux-acpi@vger.kernel.org
->  Description:
->                 (RW) The PCH FIVR (Fully Integrated Voltage Regulator) switching frequency in MHz,
->                 when FIVR clock is 38.4MHz.
-> +
-> +What:          /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_freq_mhz
-> +Date:          June, 2021
-> +KernelVersion: v5.14
-> +Contact:       linux-acpi@vger.kernel.org
-> +Description:
-> +               (RO) Get the FIVR switching control frequency in MHz after applying equation
-> +               "fivr_switching_freq_mhz * XTAL_FREQ / 128". Here XTAL_FREQ is Crystal Oscillator frequency
-> +               in MHz, which is product specific.
 
-IMO it would be sufficient to say the following here:
+--BYjp4V8dNL0PBJME
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-+               (RO) PCH FIVR switching control frequency in the units
-of XTAL_FREQ / 128,
-+               where XTAL_FREQ is the Crystal Oscillator frequency
-(product specific).
+On Tue, May 18, 2021 at 07:12:40AM +0000, Joel Stanley wrote:
+> On Thu, 13 May 2021 at 16:57, Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx=
+=2Enet> wrote:
+> >
+> > The interrupt controller driver is necessary in order to have a
+> > functioning Linux system on WPCM450. Select it in mach-npcm/Kconfig.
+> >
+> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+>=20
+> Fixes: ece3fe93e8f4 ("ARM: npcm: Introduce Nuvoton WPCM450 SoC")
 
-This means that it needs to be multiplied by XTAL_FREQ / 128 to get
-the frequency in the whatever units XTAL_FREQ is expressed.
+Ah, right, the fixes tag makes sense.
 
-I can make this change when applying the patch.
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+>=20
+> I will send this to the soc maintainers to apply as a fix.
 
-> +
-> +What:          /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_fault_status
-> +Date:          June, 2021
-> +KernelVersion: v5.14
-> +Contact:       linux-acpi@vger.kernel.org
-> +Description:
-> +               (RO) Read the FIVR switching frequency control fault status.
-> +
-> +What:          /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/ssc_clock_info
-> +Date:          June, 2021
-> +KernelVersion: v5.14
-> +Contact:       linux-acpi@vger.kernel.org
-> +Description:
-> +               (RO) Presents SSC (spread spectrum clock) information for EMI
-> +               (Electro magnetic interference) control. This is a bit mask.
-> +               Bits    Description
-> +               [7:0]   Sets clock spectrum spread percentage:
-> +                       0x00=0.2% , 0x3F=10%
-> +                       1 LSB = 0.1% increase in spread (for
-> +                       settings 0x01 thru 0x1C)
-> +                       1 LSB = 0.2% increase in spread (for
-> +                       settings 0x1E thru 0x3F)
-> +               [8]     When set to 1, enables spread
-> +                       spectrum clock
-> +               [9]     0: Triangle mode. FFC frequency
-> +                       walks around the Fcenter in a linear
-> +                       fashion
-> +                       1: Random walk mode. FFC frequency
-> +                       changes randomly within the SSC
-> +                       (Spread spectrum clock) range
-> +               [10]    0: No white noise. 1: Add white noise
-> +                       to spread waveform
-> +               [11]    When 1, future writes are ignored.
-> diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_pch_fivr.c
-> index 5fca18296bf6..22c4ae0401ef 100644
-> --- a/drivers/acpi/dptf/dptf_pch_fivr.c
-> +++ b/drivers/acpi/dptf/dptf_pch_fivr.c
-> @@ -55,15 +55,24 @@ static ssize_t name##_store(struct device *dev,\
->
->  PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
->  PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
-> +PCH_FIVR_SHOW(ssc_clock_info, GEMI)
-> +PCH_FIVR_SHOW(fivr_switching_freq_mhz, GFCS)
-> +PCH_FIVR_SHOW(fivr_switching_fault_status, GFFS)
->  PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
->  PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
->
->  static DEVICE_ATTR_RW(freq_mhz_low_clock);
->  static DEVICE_ATTR_RW(freq_mhz_high_clock);
-> +static DEVICE_ATTR_RO(ssc_clock_info);
-> +static DEVICE_ATTR_RO(fivr_switching_freq_mhz);
-> +static DEVICE_ATTR_RO(fivr_switching_fault_status);
->
->  static struct attribute *fivr_attrs[] = {
->         &dev_attr_freq_mhz_low_clock.attr,
->         &dev_attr_freq_mhz_high_clock.attr,
-> +       &dev_attr_ssc_clock_info.attr,
-> +       &dev_attr_fivr_switching_freq_mhz.attr,
-> +       &dev_attr_fivr_switching_fault_status.attr,
->         NULL
->  };
->
-> --
-> 2.27.0
->
+Thanks!
+
+Jonathan
+
+--BYjp4V8dNL0PBJME
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmCjirUACgkQCDBEmo7z
+X9uheQ/+J3rREcfk+0H0mbBCp1zvU5TMJRzZ6PCxdyW305R8pjn5hHZGso/9daS3
+sXgfoBGwX1YtJAZ8arQbk8O1b+e1E+M95OajLkdLGQA6orRiN1JeWozCGteIqWG6
+lHQ2dz9LtTnDXznfUJBzWihu+XMrjhJ6ahTnxAbaQeHz0AL9OVeFPqbr29mpc15X
+oS4tB2yZvT7JTwlSgwqjJ66dLCCmmSevyfZrOpErjtYvyVmR/P8YtHDMFJJ5tfpL
+afYdwWwEmzz+lyVmciFUxdUdXoK5HBH6beJn9jtpI3Qn022oI7oI0ihBQZRehsuC
+QdcIBN+Ce7lbHONpzyuWIIA/kRwM2u86FFIW0rcnum9QlyhPd2cHikyYFWcnMSAE
+muphmdLQAAavDlDs+fGwM8mxMMMfVjlG6F4M7umoYp0J2OFdtnW8mQPPzoIy/SDz
+UmfbV2jnzn6Wn3nc6qNSl19J3QRR34hF3kzqkd7/UxBVLhI8i724TQxIuG+n92Ue
+mC+4KJERdA91NjNUC6CnUqMI+V20mWYfHbvEF9MB4OJBwTG26hCFuNX5FIuhIFp5
+9LAQn7ajK7tDXruOtrI0yFVi0DauQQMZqgw7w1xfkEf/rRcyEWOH3cLQW4g7aXMX
+D+A+lE91kIJJpuMr3amDSRlSI5fdKe5mNt5bMRyZR7vPgb6Rurk=
+=XJwn
+-----END PGP SIGNATURE-----
+
+--BYjp4V8dNL0PBJME--
