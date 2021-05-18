@@ -2,78 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EC338734C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A824387350
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347195AbhERH0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240235AbhERH0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 03:26:25 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC20C061573;
-        Tue, 18 May 2021 00:25:07 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id r4so7729175iol.6;
-        Tue, 18 May 2021 00:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wTVSPalbEEWdezESLHW099twl6KWlq48rnfB06zKRdM=;
-        b=n6ULUxnfvbTXeWAyingnjKAIHXRfdKwWJyDkmVh8iblgGFJyFt59qOeplmSp9BI73i
-         ip2JHaS89161O3L6ATtnBNySVtYwoXLAgBdz+NRRd/KjGsELyD2l8aQYEFxWYNfhWHcB
-         Ki7nLK5LwfCJ5/6hsSeF9QYxwp/FgVqIbz2hjbXQV+HaKlzONEAmgehLradJvI1U1SKw
-         Pq6purSCcEmuB6jRawFz5Edeug7YCio5ziArhLbccc5S9SAis7FHp7AfMqhKLo9GsdCA
-         3a/kco8sAWrUDqRgJJVy7mSN7Pqwfl+4JsJh31g2n0lGckUtmDyOBhOdwJhHu07uhTcE
-         KiAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wTVSPalbEEWdezESLHW099twl6KWlq48rnfB06zKRdM=;
-        b=TmVi5idMDeXIvFIWQlAOwASCVlusSd88pOT6fnxSGvcVF2BChPZrmOMKW4+/4zR2FN
-         I+A7o5Iud30Yqs8TCcWU2K2jIt4ISLCPQGykCzOMKgbG27yJWS0YkPk7fhEUoDnBuug7
-         d5ugl99W2GI5Pon/KAcBsTNbkXU5cGSlbkzuS1ZMRCzqk6U0xEV/B8LmVtBlhyhwZ6RZ
-         OqrRA+e5dLrjs3KdqoeMHHHe7+3bGpvduvKqatyvVAH9H1OVm+Qd6ucxjd4nCAsNRXJ4
-         r0aNdqBB8xKP3R3DTFBGT97Va51ZKHo9NXAtbrTT/bfuTLIPnrwdIgDBH/AJUM7nDtA7
-         +VeQ==
-X-Gm-Message-State: AOAM531PgHvCyzi0zhgOYOI4ukptQwATEuRXzmxIOGJZ81d6Yvfj/s93
-        U6SjhRQ6lseZHTgHOgItAtScZLTpewla2IBfzQtVvJe1ACw=
-X-Google-Smtp-Source: ABdhPJwELT8I15JAFmpqeSZ8n41s70v5oxp/UFTtQmGT399V29iN9f2vVILDJp0y0YeEKVSjTnVrHw+Z3BObk3yE6NQ=
-X-Received: by 2002:a05:6638:1a9:: with SMTP id b9mr3919148jaq.97.1621322706315;
- Tue, 18 May 2021 00:25:06 -0700 (PDT)
+        id S241937AbhERH21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:28:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240235AbhERH2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 03:28:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE75161353;
+        Tue, 18 May 2021 07:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621322826;
+        bh=tr42CgFCvzDLTaED1GLg2sfLJpu7z95Hx0uB17IraIA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vFuTpSZlyekcp66+1xXP7UZO1BN2bgkvFtUPcj1zJCS149c+Zvi5hPquocBVIojB2
+         Z7exeBYrhumkzjJUSvEpKFGW4FaqBqZSq7xU7M8ZbBXk0ZQ5jVfmLPFTh3D4RbZM9j
+         lrUhs82y4HlTvmFkV/mBBanL9tIfDdHW4GCSJAjCwx8xBjvD/9MzWbWnE1oIuT7iX5
+         gYhCI1yVOzSCg5K38ilmDg450rgYNeNMsjsLC6gOgw0amIXTpygFFnPllY+Yc4M1UR
+         B2od90rmhi/bP2cvywv26nLYI1niEqFU+sMFU1it04NiboiejydzFTKGEQcZqqBYpS
+         U/cWQ9vRIoLtg==
+Received: by mail-wr1-f49.google.com with SMTP id a4so9011174wrr.2;
+        Tue, 18 May 2021 00:27:05 -0700 (PDT)
+X-Gm-Message-State: AOAM533uYGieda+TwW6tF4wz8TdYChzHQDjVJR2354nb6NmMyl4ketaJ
+        8Bg2PHoUUjerVtW3qhap3NailXosaBVZsQYTYjQ=
+X-Google-Smtp-Source: ABdhPJw7JTt4IAZe/TChTanjbi1ijbilhjNGsF3uk1EUqanoDrTYb4AVMmBaFkHaFRFYOWXro9yDE/Lwgvl9R0Actyg=
+X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr5094533wrz.105.1621322824578;
+ Tue, 18 May 2021 00:27:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508064925.8045-1-heiko.thiery@gmail.com> <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
- <YKKprl2ukkR7Djv+@pevik> <800a8d8d-e3f0-d052-ece4-f49188ceb6c6@gmail.com>
-In-Reply-To: <800a8d8d-e3f0-d052-ece4-f49188ceb6c6@gmail.com>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Tue, 18 May 2021 09:24:53 +0200
-Message-ID: <CAEyMn7a7NT_waZ3RuaPTpCCuhO9M7rv7A3TUwa7J2gYBmZR03g@mail.gmail.com>
-Subject: Re: [PATCH iproute2-next v3] lib/fs: fix issue when
- {name,open}_to_handle_at() is not implemented
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Petr Vorel <petr.vorel@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stephen@networkplumber.org,
-        Dmitry Yakunin <zeil@yandex-team.ru>
+References: <20210514100106.3404011-1-arnd@kernel.org> <20210514100106.3404011-8-arnd@kernel.org>
+ <YKLlyQnR+3uW4ETD@gmail.com>
+In-Reply-To: <YKLlyQnR+3uW4ETD@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 18 May 2021 09:25:54 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0iqe5V6uvaW+Eo0qiwzvyUVavVEfZGwXh4s8ad+0RdCg@mail.gmail.com>
+Message-ID: <CAK8P3a0iqe5V6uvaW+Eo0qiwzvyUVavVEfZGwXh4s8ad+0RdCg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/13] asm-generic: unaligned always use struct helpers
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-Am Di., 18. Mai 2021 um 03:51 Uhr schrieb David Ahern <dsahern@gmail.com>:
->
-> On 5/17/21 11:36 AM, Petr Vorel wrote:
-> > I guess, it'll be merged to regular iproute2 in next merge window (for 5.14).
+On Mon, May 17, 2021 at 11:53 PM Eric Biggers <ebiggers@kernel.org> wrote:
+> On Fri, May 14, 2021 at 12:00:55PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
+> > As found by Vineet Gupta and Linus Torvalds, gcc has somewhat unexpected
+> > behavior when faced with overlapping unaligned pointers. The kernel's
+> > unaligned/access-ok.h header technically invokes undefined behavior
+> > that happens to usually work on the architectures using it, but if the
+> > compiler optimizes code based on the assumption that undefined behavior
+> > doesn't happen, it can create output that actually causes data corruption.
+> >
+> > A related problem was previously found on 32-bit ARMv7, where most
+> > instructions can be used on unaligned data, but 64-bit ldrd/strd causes
+> > an exception. The workaround was to always use the unaligned/le_struct.h
+> > helper instead of unaligned/access-ok.h, in commit 1cce91dfc8f7 ("ARM:
+> > 8715/1: add a private asm/unaligned.h").
+> >
+> > The same solution should work on all other architectures as well, so
+> > remove the access-ok.h variant and use the other one unconditionally on
+> > all architectures, picking either the big-endian or little-endian version.
 >
-> Let's see how things go over the 5.13 dev cycle. If no problems, maybe
-> Stephen can merge this one and the config change to main before the release.
+> FYI, gcc 10 had a bug where it miscompiled code that uses "packed structs" to
+> copy between overlapping unaligned pointers
+> (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94994).
 
-Thanks
+Thank you for pointing this out
 
--- 
-Heiko
+> I'm not sure whether the kernel will run into that or not, and gcc has since
+> fixed it.  But it's worth mentioning, especially since the issue mentioned in
+> this commit sounds very similar (overlapping unaligned pointers), and both
+> involved implementations of DEFLATE decompression.
+
+I tried reproducing this on the kernel deflate code with the kernel.org gcc-10.1
+and gcc-10.3 crosstool versions but couldn't quite get there with Vineet's
+preprocessed source https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100363
+
+Trying with both the original get_unaligned() version in there and the
+packed-struct
+variant, I get the same output from gcc-10.1 and gcc-10.3 when I compile those
+myself for arc hs4x , but it's rather different from the output that Vineet got
+and I don't know how to spot whether the problem exists in any of those
+versions.
+
+> Anyway, partly due to the above, in userspace I now only use memcpy() to
+> implement {get,put}_unaligned_*, since these days it seems to be compiled
+> optimally and have the least amount of problems.
+>
+> I wonder if the kernel should do the same, or whether there are still cases
+> where memcpy() isn't compiled optimally.  armv6/7 used to be one such case, but
+> it was fixed in gcc 6.
+
+It would have to be memmove(), not memcpy() in this case, right?
+My feeling is that if gcc-4.9 and gcc-5 produce correct but slightly slower
+code, we can live with that, unlike the possibility of gcc-10.{1,2} producing
+incorrect code.
+
+Since the new asm/unaligned.h has a single implementation across all
+architectures, we could probably fall back to a memmove based version for
+the compilers affected by the 94994 bug,  but I'd first need to have a better
+way to test regarding whether given combination of asm/unaligned.h and
+compiler version runs into this bug.
+
+I have checked your reproducer and confirmed that it does affect x86_64
+gcc-10.1 -O3 with my proposed version of asm-generic/unaligned.h, but
+does not trigger on any other version (4.9 though 9.3, 10.3 or 11.1), and not
+on -O2 or "-O3 -mno-sse" builds or on arm64, but that doesn't necessarily
+mean it's safe on these.
+
+        Arnd
