@@ -2,163 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA763877E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843133877E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348821AbhERLmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348769AbhERLmA (ORCPT
+        id S1348828AbhERLmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:42:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38794 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348798AbhERLmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 May 2021 07:42:00 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D02FC061573;
-        Tue, 18 May 2021 04:40:41 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id a8so945287ioa.12;
-        Tue, 18 May 2021 04:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TREpcWQl6SkXU344K7y82w1x4KaFiK36OPUcoY0ELPg=;
-        b=VfHpvStNnG5inCIfLjjrmo+8EZGNTzmkohwTK8+hVZ8t/ctcBWxXy6W1Dw+oRQEwrV
-         WNpgNfsJkWFc2MPnhAE1BZztieRJ2EK1RgkiouZnc2ppBHBLeKjY84gfsOao0Bt/h2mj
-         FlXoXUwweIzctX2TKayk5l9e69uxX/tim+qu3M+VGaPs6D2cafjdgdREOe0GZBQiB8VR
-         KnvCleevnYeJy2we8H9ERbSV2QQdHyMRQjtyabnzwgGE++U27CtqE1LLBKwVJEayLIdW
-         7skNVldOBGWXStoN2khHkXrFKe7WnCmSMXLAJM6DUpzih3TZwsukBRujZbFuCK/nEDck
-         3B+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TREpcWQl6SkXU344K7y82w1x4KaFiK36OPUcoY0ELPg=;
-        b=pWpNwek43dc9pmEHKC5qjAUqacbq3Zjp1+XGWo/zbKIkoDC5K4weNSs64+/7BZqAb2
-         /0vBT8pM8z9++1sp/4pAbIqXOFbtqKCx7VC+liv73EKYM+QhDa/Xy+eH6F/EFKBiEOIQ
-         vtC6yaemKM0uRi93lWHyrkzAripu2aFu1CwIhWze3SKE41zOe7yOhC1VX7AP9L9xQ+vJ
-         +TDfZNwF4fDDXyULIgMavXCCG6CZ6h0eTSia1Rt0QBeFjqBaikgn6zc0IuNKNWidVmHc
-         kN/AiM1YT8ZN039FuEa0SJFGehZSIjEYGYQAd1nY0rKfbWqCWVZw9EuaUKQH1KFS3aVE
-         ggNQ==
-X-Gm-Message-State: AOAM531ap9DEPLvr13YwtnD+BTvMdZocc2gHy2EOMl5dVB7v4Evt/cYi
-        e5m+rtaVtSxpS4eISdp95nMhHuDAtfKYD/BlAD4=
-X-Google-Smtp-Source: ABdhPJw1SUMFO66CimuyVB0EtqFRidGuV+Fqnab54rg4xiAZWOAUFblUzRGkyVeQcBs7DG21kMGROebLwkGCdJP82Dc=
-X-Received: by 2002:a6b:f311:: with SMTP id m17mr3795220ioh.162.1621338040706;
- Tue, 18 May 2021 04:40:40 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9B4561F42F6C;
+        Tue, 18 May 2021 12:40:41 +0100 (BST)
+Date:   Tue, 18 May 2021 13:40:37 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     <patrice.chotard@foss.st.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH v3 1/3] spi: spi-mem: add automatic poll status
+ functions
+Message-ID: <20210518134037.0e5839b0@collabora.com>
+In-Reply-To: <20210518093951.23136-2-patrice.chotard@foss.st.com>
+References: <20210518093951.23136-1-patrice.chotard@foss.st.com>
+        <20210518093951.23136-2-patrice.chotard@foss.st.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <1620828254-25545-1-git-send-email-herbert.tencent@gmail.com>
- <1620828254-25545-2-git-send-email-herbert.tencent@gmail.com> <246ad441-76c9-0934-d132-42d263d63195@linux.alibaba.com>
-In-Reply-To: <246ad441-76c9-0934-d132-42d263d63195@linux.alibaba.com>
-From:   hongbo li <herbert.tencent@gmail.com>
-Date:   Tue, 18 May 2021 19:40:30 +0800
-Message-ID: <CABpmuwJ1-cMWikSz4g41B6CDSPvUrbg8X=No-1EFuawMB5K2aQ@mail.gmail.com>
-Subject: Re: [PATCH 1/7] crypto: fix a memory leak in sm2
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Howells <dhowells@redhat.com>, jarkko@kernel.org,
-        herberthbli@tencent.com, stable@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tianjia Zhang <tianjia.zhang@linux.alibaba.com> =E4=BA=8E2021=E5=B9=B45=E6=
-=9C=8814=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=8812:52=E5=86=99=E9=81=
-=93=EF=BC=9A
->
-> Hi Hongbo,
->
-> On 5/12/21 10:04 PM, Hongbo Li wrote:
-> > From: Hongbo Li <herberthbli@tencent.com>
-> >
-> > SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
-> > test_akcipher_one(), it will set public key for every test vector,
-> > and don't free ec->Q. This will cause a memory leak.
-> >
-> > This patch alloc ec->Q in sm2_ec_ctx_init().
-> >
-> > Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-> > ---
-> >   crypto/sm2.c | 24 ++++++++++--------------
-> >   1 file changed, 10 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/crypto/sm2.c b/crypto/sm2.c
-> > index b21addc..db8a4a2 100644
-> > --- a/crypto/sm2.c
-> > +++ b/crypto/sm2.c
-> > @@ -79,10 +79,17 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
-> >               goto free;
-> >
-> >       rc =3D -ENOMEM;
-> > +
-> > +     ec->Q =3D mpi_point_new(0);
-> > +     if (!ec->Q)
-> > +             goto free;
-> > +
-> >       /* mpi_ec_setup_elliptic_curve */
-> >       ec->G =3D mpi_point_new(0);
-> > -     if (!ec->G)
-> > +     if (!ec->G) {
-> > +             mpi_point_release(ec->Q);
-> >               goto free;
-> > +     }
-> >
-> >       mpi_set(ec->G->x, x);
-> >       mpi_set(ec->G->y, y);
-> > @@ -91,6 +98,7 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
-> >       rc =3D -EINVAL;
-> >       ec->n =3D mpi_scanval(ecp->n);
-> >       if (!ec->n) {
-> > +             mpi_point_release(ec->Q);
-> >               mpi_point_release(ec->G);
-> >               goto free;
-> >       }
-> > @@ -386,27 +394,15 @@ static int sm2_set_pub_key(struct crypto_akcipher=
- *tfm,
-> >       MPI a;
-> >       int rc;
-> >
-> > -     ec->Q =3D mpi_point_new(0);
-> > -     if (!ec->Q)
-> > -             return -ENOMEM;
-> > -
-> >       /* include the uncompressed flag '0x04' */
-> > -     rc =3D -ENOMEM;
-> >       a =3D mpi_read_raw_data(key, keylen);
-> >       if (!a)
-> > -             goto error;
-> > +             return -ENOMEM;
-> >
-> >       mpi_normalize(a);
-> >       rc =3D sm2_ecc_os2ec(ec->Q, a);
-> >       mpi_free(a);
-> > -     if (rc)
-> > -             goto error;
-> > -
-> > -     return 0;
-> >
-> > -error:
-> > -     mpi_point_release(ec->Q);
-> > -     ec->Q =3D NULL;
-> >       return rc;
-> >   }
-> >
-> >
->
-> Thanks a lot for fixing this issue.
->
-> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->
-> Also added:
->
-> Cc: stable@vger.kernel.org # v5.10+
->
-> Best regards,
-> Tianjia
+On Tue, 18 May 2021 11:39:49 +0200
+<patrice.chotard@foss.st.com> wrote:
 
-Thank you for your review=EF=BC=81
-Regards=EF=BC=8C
-Hongbo
+> +/**
+> + * spi_mem_poll_status() - Poll memory device status
+> + * @mem: SPI memory device
+> + * @op: the memory operation to execute
+> + * @mask: status bitmask to ckeck
+> + * @match: (status & mask) expected value
+> + * @initial_delay_us: delay in us before starting to poll
+> + * @polling_delay_us: time to sleep between reads in us
+> + * @timeout_ms: timeout in milliseconds
+> + *
+> + * This function send a polling status request to the controller driver
+> + *
+> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+> + *         -EOPNOTSUPP if not supported.
+> + */
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u16 mask, u16 match,
+> +			unsigned long initial_delay_us,
+> +			unsigned long polling_delay_us,
+> +			u16 timeout_ms)
+> +{
+> +	struct spi_controller *ctlr = mem->spi->controller;
+> +	int ret = -EOPNOTSUPP;
+> +	int read_status_ret;
+> +	u16 status;
+> +
+> +	if (op->data.nbytes < 1 || op->data.nbytes > 2)
+> +		return -EINVAL;
+
+We should also make sure this is a read operation.
+
+> +
+> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> +		ret = spi_mem_access_start(mem);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
+> +						 initial_delay_us, polling_delay_us,
+> +						 timeout_ms);
+> +
+> +		spi_mem_access_end(mem);
+> +	}
+> +
+> +	if (ret == -EOPNOTSUPP) {
+> +		if (!spi_mem_supports_op(mem, op))
+> +			return ret;
+> +
+> +		if (initial_delay_us < 10)
+> +			udelay(initial_delay_us);
+> +		else
+> +			usleep_range((initial_delay_us >> 2) + 1,
+> +				     initial_delay_us);
+> +
+> +		ret = read_poll_timeout(spi_mem_read_status, read_status_ret,
+> +					(read_status_ret || ((status) & mask) == match),
+> +					polling_delay_us, timeout_ms * 1000, false, mem,
+> +					op, &status);
+> +		if (read_status_ret)
+> +			return read_status_ret;
+> +	}
+> +
+> +	return ret;
+> +}
