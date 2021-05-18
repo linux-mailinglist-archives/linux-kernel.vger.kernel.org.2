@@ -2,249 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94A93875AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716113875B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348151AbhERJvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348147AbhERJu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:50:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8011561404;
-        Tue, 18 May 2021 09:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621331332;
-        bh=cLV1ruPvNZQWbLhrPTW5PTi59kS93zO0HxNZ8xc2n5I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PpUmRDuQPotlvWn6Zdm8S/5OhittrHyEVMvHp0uVcz4ZQfZit07yzmo/gvmt5fJsE
-         cANOh+AlooAZYy7DCWLxMZulfgk9zCvL47X8Tn92OpSXCSPJeD3/tzsPsoTZXrUQkC
-         vqHcsROicuUlVI0xVzlbqTLW7e+1kAKB8hVDeVnGS1ZX22G1ESF0XRx9ExjyuyR1OM
-         gvoxgDN/VeMMK2hlyigf3JRWaHnKV60msIvhPv6RakToZXn5bVmQZpnB46ht3jbu8Z
-         5C6SSpXjuLXDH9n7Hwurn7z7rPVcR4gNK9M0rCfL/1BZha1gy5IxmVW1IvUiZCR5YY
-         CpM3nGLV19GbQ==
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: [PATCH v6 21/21] Documentation: arm64: describe asymmetric 32-bit support
-Date:   Tue, 18 May 2021 10:47:25 +0100
-Message-Id: <20210518094725.7701-22-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210518094725.7701-1-will@kernel.org>
-References: <20210518094725.7701-1-will@kernel.org>
+        id S1348141AbhERJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:51:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34180 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348065AbhERJvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:51:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621331393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xw/goXPvFheZsSlM5qbIIld4E4qboTY4W+fWzoyFrhk=;
+        b=B9qtUB3pAB0Oq3CarKZ3h+1Ltl3tg2XuAjI9Pg8o3hJNpv41eGvAV3WmSONG7pLaR1RIZE
+        dJE3gDKc/KfiCAOsaKEZvkeq99w4HXJ7lucWyMcVQ+dtnjJ5iuJInZMDhIksVn3gjmvsxp
+        BqZLfpnD4pFNMzv+idgWFb16Cn31JEY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-_L_cl34YP_6TlkvfeNpqSw-1; Tue, 18 May 2021 05:49:50 -0400
+X-MC-Unique: _L_cl34YP_6TlkvfeNpqSw-1
+Received: by mail-wr1-f72.google.com with SMTP id 67-20020adf81490000b029010756d109e6so5286494wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:49:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xw/goXPvFheZsSlM5qbIIld4E4qboTY4W+fWzoyFrhk=;
+        b=PHotfLUkryIgChSCfkRzGnt01DgsDTqvVGacQv1BlgID6QE2SM1OFjCMc3cflnSNgK
+         incKdvRhynO/2Nwre/7u1hp3MvebMKb2Nkc6BfJ5T8Z6frrAthA9CnOsGoL3qxJFX+/m
+         /iT1cL83fsALQu+fcTExbWb0+kl4IfuzDYrYf2VDtQ9Hr5jd3yuKCzk/QIygnpikh3g3
+         6EFn6n7UY+oV+s8+Z2WUAJVE8aeEhTKMRwEzD/uWsHEbaDToHgWLQe2Ur35BDJfJRkGS
+         OT+oP6KxS/4tehZqLWBLuJ/PX9CY9Tselaaqru2u0MOses+UFlWjCIPJ9GZw4/Trts9Z
+         urxw==
+X-Gm-Message-State: AOAM53251oDDDG8W/nhhFt3YedV8cg5AghJXMnaZ+DMWE8OGq7pqI4Fn
+        TopkrwZpoXtuNLflZMxQfcmHiBYRlRdal8bQbODxwdbpHv6E2WCyBOvGDrdcZtJiznC6xKWsA48
+        HAE4xisZ+/hNYe4jRW8OZPZDJvXuL5z9GD2QWFgZ8
+X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr4416374wmq.38.1621331389142;
+        Tue, 18 May 2021 02:49:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/0NPHA/2ZKm4TmhuLWzfEfI5L1uvCr50nQ90+pknjx8xcmDRTg8BLv6cZjQXUG7h1jeTne2Rj7DXrfSxZdek=
+X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr4416347wmq.38.1621331388777;
+ Tue, 18 May 2021 02:49:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210429102828.31248-1-prasanna.kalever@redhat.com>
+ <YKMKdHPFCNhR1SXx@T590> <CANwsLLH0HyZ-VGPMc+VmuLivG1fiZHnSqUyLx3UWb76ZMCgYSg@mail.gmail.com>
+ <YKOHuNd0Kp+lcQHY@T590>
+In-Reply-To: <YKOHuNd0Kp+lcQHY@T590>
+From:   Prasanna Kalever <pkalever@redhat.com>
+Date:   Tue, 18 May 2021 15:19:37 +0530
+Message-ID: <CANwsLLE6FK3eCmDwQ+7ghwFx0Hi1KDr6TaiKX1VW2Yt+5xe+WA@mail.gmail.com>
+Subject: Re: [PATCH] nbd: provide a way for userspace processes to identify
+ device backends
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Prasanna Kumar Kalever <prasanna.kalever@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        nbd@other.debian.org, Josef Bacik <josef@toxicpanda.com>,
+        axboe@kernel.dk, Ilya Dryomov <idryomov@redhat.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document support for running 32-bit tasks on asymmetric 32-bit systems
-and its impact on the user ABI when enabled.
+On Tue, May 18, 2021 at 2:54 PM Ming Lei <ming.lei@redhat.com> wrote:
+>
+> On Tue, May 18, 2021 at 01:22:19PM +0530, Prasanna Kalever wrote:
+> > On Tue, May 18, 2021 at 6:00 AM Ming Lei <ming.lei@redhat.com> wrote:
+> > >
+> > > Hello Prasanna,
+> > >
+> > > On Thu, Apr 29, 2021 at 03:58:28PM +0530, Prasanna Kumar Kalever wrote:
+> > > > Problem:
+> > > > On reconfigure of device, there is no way to defend if the backend
+> > > > storage is matching with the initial backend storage.
+> > > >
+> > > > Say, if an initial connect request for backend "pool1/image1" got
+> > > > mapped to /dev/nbd0 and the userspace process is terminated. A next
+> > > > reconfigure request within NBD_ATTR_DEAD_CONN_TIMEOUT is allowed to
+> > > > use /dev/nbd0 for a different backend "pool1/image2"
+> > > >
+> > > > For example, an operation like below could be dangerous:
+> > >
+> >
+> > Hello Ming,
+> >
+> > > Can you explain a bit why it is dangerous?
+> >
+> > Yes, sure. Please check the below comments inline,
+> >
+> > >
+> > > >
+> > > > $ sudo rbd-nbd map --try-netlink rbd-pool/ext4-image
+> > > > /dev/nbd0
+> > > > $ sudo blkid /dev/nbd0
+> > > > /dev/nbd0: UUID="bfc444b4-64b1-418f-8b36-6e0d170cfc04" TYPE="ext4"
+> >
+> > On Map the rbd-nbd attempting to send NBD_CMD_CONNECT, for backend
+> > 'rbd-pool/ext4-image'. Post which kernel will allocate a new device
+> > say /dev/nbd0 for backend file rbd-pool/ext4-image (format:
+> > <pool>/<backendfile>)
+> >
+> > > > $ sudo pkill -9 rbd-nbd
+> >
+> > Assume normally or abnormally the userspace process (rbd-nbd here) is
+> > terminated, but then as per the settings the device /dev/nbd0 is not
+> > returned immediately, the kernel will wait for the
+> > NBD_ATTR_DEAD_CONN_TIMEOUT to expire.
+> >
+> > At this point two things could be possible:
+> > 1. if there is a reconfigure request from userspace within the timeout
+> > then the kernel might reassign the same device /dev/nbd0.
+> > 2. if the timeout has expired, then the device will be relieved.
+> >
+> > > > $ sudo rbd-nbd attach --try-netlink --device /dev/nbd0 rbd-pool/xfs-image
+> > > > /dev/nbd0
+> > > > $ sudo blkid /dev/nbd0
+> > > > /dev/nbd0: UUID="d29bf343-6570-4069-a9ea-2fa156ced908" TYPE="xfs"
+> >
+> > On attach the rbd-nbd attempt to send NBD_CMD_RECONFIGURE, after which
+> > the kernel will assign '--device /dev/nbd0' to specified backend.
+> >
+> > But there is a chance that userspace processes might accidentally send
+> > NBD_CMD_RECONFIGURE claiming for /dev/nbd0 for a different backend
+> > (rbd-pool/xfs-image instead of original rbd-pool/ext4-image).
+> > Currently, there is no mechanism to verify if the backend provided
+> > later with attach(NBD_CMD_RECONFIGURE) is matching with the one
+> > provided originally with map(NBD_CMD_CONNECT) before granting for a
+> > attach or reconfigure.
+> >
+> > For example in the above-explained scenario:
+> > Assume EXT4 on rbd-pool/ext4-image was mounted, after attach (Note:
+> > device /dev/nbd0 is reconfigured to a different backend file) XFS on
+> > rbd-pool/xfs-image would get corrupted. If there was an application
+> > using /dev/nbd0 directly (as a raw block volume), it wouldn't be happy
+> > either.
+>
+> OK, got it. If I understand correctly, what you need is to not allow
+> reconfigure if the nbd disk is mounted, right?
 
-Signed-off-by: Will Deacon <will@kernel.org>
----
- .../admin-guide/kernel-parameters.txt         |   3 +
- Documentation/arm64/asymmetric-32bit.rst      | 149 ++++++++++++++++++
- Documentation/arm64/index.rst                 |   1 +
- 3 files changed, 153 insertions(+)
- create mode 100644 Documentation/arm64/asymmetric-32bit.rst
+Excuse me, not exactly. Mount was one example scenario to showcase why
+allowing attaching without any validation could be dangerous.
+Basically, we want a way to check and verify if the backend specified
+at map time and backend specified at attach(reconfigure) time are
+matching for a given device, only if they are matching proceed to
+attach else fail.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a2e453919bb6..5a1dc7e628a5 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -295,6 +295,9 @@
- 			EL0 is indicated by /sys/devices/system/cpu/aarch32_el0
- 			and hot-unplug operations may be restricted.
- 
-+			See Documentation/arm64/asymmetric-32bit.rst for more
-+			information.
-+
- 	amd_iommu=	[HW,X86-64]
- 			Pass parameters to the AMD IOMMU driver in the system.
- 			Possible values are:
-diff --git a/Documentation/arm64/asymmetric-32bit.rst b/Documentation/arm64/asymmetric-32bit.rst
-new file mode 100644
-index 000000000000..baf02c143363
---- /dev/null
-+++ b/Documentation/arm64/asymmetric-32bit.rst
-@@ -0,0 +1,149 @@
-+======================
-+Asymmetric 32-bit SoCs
-+======================
-+
-+Author: Will Deacon <will@kernel.org>
-+
-+This document describes the impact of asymmetric 32-bit SoCs on the
-+execution of 32-bit (``AArch32``) applications.
-+
-+Date: 2021-05-17
-+
-+Introduction
-+============
-+
-+Some Armv9 SoCs suffer from a big.LITTLE misfeature where only a subset
-+of the CPUs are capable of executing 32-bit user applications. On such
-+a system, Linux by default treats the asymmetry as a "mismatch" and
-+disables support for both the ``PER_LINUX32`` personality and
-+``execve(2)`` of 32-bit ELF binaries, with the latter returning
-+``-ENOEXEC``. If the mismatch is detected during late onlining of a
-+64-bit-only CPU, then the onlining operation fails and the new CPU is
-+unavailable for scheduling.
-+
-+Surprisingly, these SoCs have been produced with the intention of
-+running legacy 32-bit binaries. Unsurprisingly, that doesn't work very
-+well with the default behaviour of Linux.
-+
-+It seems inevitable that future SoCs will drop 32-bit support
-+altogether, so if you're stuck in the unenviable position of needing to
-+run 32-bit code on one of these transitionary platforms then you would
-+be wise to consider alternatives such as recompilation, emulation or
-+retirement. If neither of those options are practical, then read on.
-+
-+Enabling kernel support
-+=======================
-+
-+Since the kernel support is not completely transparent to userspace,
-+allowing 32-bit tasks to run on an asymmetric 32-bit system requires an
-+explicit "opt-in" and can be enabled by passing the
-+``allow_mismatched_32bit_el0`` parameter on the kernel command-line.
-+
-+For the remainder of this document we will refer to an *asymmetric
-+system* to mean an SoC running Linux with this kernel command-line
-+option enabled.
-+
-+Userspace impact
-+================
-+
-+32-bit tasks running on an asymmetric system behave in mostly the same
-+way as on a homogeneous system, with a few key differences relating to
-+CPU affinity.
-+
-+sysfs
-+-----
-+
-+The subset of CPUs capable of running 32-bit tasks is described in
-+``/sys/devices/system/cpu/aarch32_el0`` and is documented further in
-+``Documentation/ABI/testing/sysfs-devices-system-cpu``.
-+
-+**Note:** CPUs are advertised by this file as they are detected and so
-+late-onlining of 32-bit-capable CPUs can result in the file contents
-+being modified by the kernel at runtime. Once advertised, CPUs are never
-+removed from the file.
-+
-+``execve(2)``
-+-------------
-+
-+On a homogeneous system, the CPU affinity of a task is preserved across
-+``execve(2)``. This is not always possible on an asymmetric system,
-+specifically when the new program being executed is 32-bit yet the
-+affinity mask contains 64-bit-only CPUs. In this situation, the kernel
-+determines the new affinity mask as follows:
-+
-+  1. If the 32-bit-capable subset of the affinity mask is not empty,
-+     then the affinity is restricted to that subset and the old affinity
-+     mask is saved. This saved mask is inherited over ``fork(2)`` and
-+     preserved across ``execve(2)`` of 32-bit programs.
-+
-+     **Note:** This step does not apply to ``SCHED_DEADLINE`` tasks.
-+     See `SCHED_DEADLINE`_.
-+
-+  2. Otherwise, the cpuset hierarchy of the task is walked until an
-+     ancestor is found containing at least one 32-bit-capable CPU. The
-+     affinity of the task is then changed to match the 32-bit-capable
-+     subset of the cpuset determined by the walk.
-+
-+  3. On failure (i.e. out of memory), the affinity is changed to the set
-+     of all 32-bit-capable CPUs of which the kernel is aware.
-+
-+A subsequent ``execve(2)`` of a 64-bit program by the 32-bit task will
-+invalidate the affinity mask saved in (1) and attempt to restore the CPU
-+affinity of the task using the saved mask if it was previously valid.
-+This restoration may fail due to intervening changes to the deadline
-+policy or cpuset hierarchy, in which case the ``execve(2)`` continues
-+with the affinity unchanged.
-+
-+Calls to ``sched_setaffinity(2)`` for a 32-bit task will consider only
-+the 32-bit-capable CPUs of the requested affinity mask. On success, the
-+affinity for the task is updated and any saved mask from a prior
-+``execve(2)`` is invalidated.
-+
-+``SCHED_DEADLINE``
-+------------------
-+
-+Admitting a 32-bit task to the deadline scheduler (e.g. by calling
-+``sched_setattr(2)``) will, if valid, consider the affinity mask saved
-+by a previous call to ``execve(2)`` for the purposes of input validation
-+in preference to the running affinity of the task. 64-bit deadline tasks
-+will skip step (1) of the process described in `execve(2)`_ when
-+executed a 32-bit program.
-+
-+**Note:** It is recommended that the 32-bit-capable CPUs are placed into
-+a separate root domain if ``SCHED_DEADLINE`` is to be used with 32-bit
-+tasks on an asymmetric system. Failure to do so is likely to result in
-+missed deadlines.
-+
-+Cpusets
-+-------
-+
-+The affinity of a 32-bit task may include CPUs that are not explicitly
-+allowed by the cpuset to which it is attached. This can occur as a
-+result of the following two situations:
-+
-+  - A 64-bit task attached to a cpuset which allows only 64-bit CPUs
-+    executes a 32-bit program.
-+
-+  - All of the 32-bit-capable CPUs allowed by a cpuset containing a
-+    32-bit task are offlined.
-+
-+In both of these cases, the new affinity is calculated according to step
-+(2) of the process described in `execve(2)`_ and the cpuset hierarchy is
-+unchanged irrespective of the cgroup version.
-+
-+CPU hotplug
-+-----------
-+
-+When the kernel detects asymmetric 32-bit hardware, the first detected
-+32-bit-capable CPU is prevented from being offlined by userspace and any
-+such attempt will return ``-EPERM``. Note that suspend is still
-+permitted even if the primary CPU (i.e. CPU 0) is 64-bit-only.
-+
-+KVM
-+---
-+
-+Although KVM will not advertise 32-bit EL0 support to any vCPUs on an
-+asymmetric system, a broken guest at EL1 could still attempt to execute
-+32-bit code at EL0. In this case, an exit from a vCPU thread in 32-bit
-+mode will return to host userspace with an ``exit_reason`` of
-+``KVM_EXIT_FAIL_ENTRY``.
-diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
-index 97d65ba12a35..4f840bac083e 100644
---- a/Documentation/arm64/index.rst
-+++ b/Documentation/arm64/index.rst
-@@ -10,6 +10,7 @@ ARM64 Architecture
-     acpi_object_usage
-     amu
-     arm-acpi
-+    asymmetric-32bit
-     booting
-     cpu-feature-registers
-     elf_hwcaps
--- 
-2.31.1.751.gd2f1c929bd-goog
+>
+> >
+> > > >
+> > > > Solution:
+> > > > Provide a way for userspace processes to keep some metadata to identify
+> > > > between the device and the backend, so that when a reconfigure request is
+> > > > made, we can compare and avoid such dangerous operations.
+> > > >
+> > > > With this solution, as part of the initial connect request, backend
+> > > > path can be stored in the sysfs per device config, so that on a reconfigure
+> > > > request it's easy to check if the backend path matches with the initial
+> > > > connect backend path.
+> > > >
+> > > > Please note, ioctl interface to nbd will not have these changes, as there
+> > > > won't be any reconfigure.
+> > >
+> > > BTW, loop has similar issue, and patch of 'block: add a sequence number to disks'
+> > > is added for addressing this issue, what do you think of that generic
+> > > approach wrt. this nbd's issue? such as used the exposed sysfs sequence number
+> > > for addressing this issue?
+> > >
+> > > https://lore.kernel.org/linux-block/YH81n34d2G3C4Re+@gardel-login/#r
+> >
+> > If I understand the changes and the background of the fix correctly, I
+> > think with that fix author is trying to monotonically increase the seq
+> > number and add it to the disk on every single device map/attach and
+> > expose it through the sysfs, which will help the userspace processes
+> > further to correlate events for particular and specific devices that
+> > reuse the same loop device.
+> >
+> > Coming back to my changes:
+> > I think here with this fix, we are trying to solve a different
+> > problem. The fix with this patch accepts a cookie or a backend string
+> > (could be file-path or whatever id userspace choose to provide) from
+> > userspace at the time of map and stores it in the sysfs
+> > /sys/block/nbdX/backend path and persists it until unmap is issued on
+> > the device (meaning that identity stays throughout the life cycle of
+> > that device, no matter how many detach and attaches happen).
+>
+> Your solution needs change from userspace side, so it isn't flexible.
+>
+> > If there
+> > is a detach request in between (not unmap) then on the next attach
+> > (reconfigure request to reuse the same device) the stored
+> > cookie/UUID/backend-string will stand as a reference to verify if the
+> > newly passed backend is matching with the actual backend passed at map
+> > time to avoid any misconfigurations by accident and to safely proceed
+> > with attach.
+>
+> We can avoid reconfigure if the nbd disk is opened exclusively, such as
+> mount, please see if the following patch can solve your problem:
+
+IMHO, we should almost never allow reconfigure/reattaching a given
+device with a different backend (except in cases like live migration,
+which the application should take care of), and not just when nbd disk
+is opened exclusively.
+
+When an attach (reconfigure) is issued, Its application's logic to
+provide the same matching cookie (or device-string or a uuid) so that
+kernel can validate it with /sys/block/nbdX/backend and continue
+safely to attach and reassign the device back.
+
+This is how it is supposed to be used:
+https://github.com/ceph/ceph/pull/41323#issuecomment-842148450
+
+Thanks!
+--
+Prasanna
+
+
+>
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 4ff71b579cfc..045532a68d1e 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -2063,6 +2063,11 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
+>                 return -EINVAL;
+>         }
+>
+> +       /* avoid changing device under exclusive owner */
+> +       ret = bd_prepare_to_claim(nbd->disk->part0, nbd_genl_reconfigure);
+> +       if (ret)
+> +               goto out_no_abort_claim;
+> +
+>         mutex_lock(&nbd->config_lock);
+>         config = nbd->config;
+>         if (!test_bit(NBD_RT_BOUND, &config->runtime_flags) ||
+> @@ -2141,6 +2146,8 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
+>                 }
+>         }
+>  out:
+> +       bd_abort_claiming(nbd->disk->part0, nbd_genl_reconfigure);
+> +out_no_abort_claim:
+>         mutex_unlock(&nbd->config_lock);
+>         nbd_config_put(nbd);
+>         nbd_put(nbd);
+>
+>
+> Thanks,
+> Ming
+>
 
