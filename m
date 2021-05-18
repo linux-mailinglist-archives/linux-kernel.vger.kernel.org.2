@@ -2,162 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D628387B3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AB0387B3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhEROgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:36:47 -0400
-Received: from mail-ua1-f47.google.com ([209.85.222.47]:39794 "EHLO
-        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbhEROgp (ORCPT
+        id S233504AbhEROhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233396AbhEROhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:36:45 -0400
-Received: by mail-ua1-f47.google.com with SMTP id a12so3301727uak.6;
-        Tue, 18 May 2021 07:35:27 -0700 (PDT)
+        Tue, 18 May 2021 10:37:00 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E20C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:35:42 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id cu11-20020a17090afa8bb029015d5d5d2175so1647554pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=heitbaum.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8T6TCtXF+SK0PS+gwIPLfEM0HYo27wFg/cd2j5g3ixY=;
+        b=ItCs2tgepznBKkOSEZhOls5C3FFwvm4PPun/t5iCs7FG9IQ7R5OlfHEtI3UBB9owRP
+         B8v6WsehnUxWW90IkxYHAaZXBmS1qkG/V93jtmnJ3tGyvxZZlxAJqXqk0EwuA7unc/QT
+         zm2SaBl3sOsdax34jVdeLxlZdhmCQf6kU8pxY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zebz9Gz8Zw8lQG2LiaFvqSG6xwA9z2xU/a+9st7RAd4=;
-        b=QX5XhXPgXZXKx+b6wLRpuQjUKP5WvNh3V6YWnWL432vHixlzaOrnACFcVgMg2PaoHS
-         KIafGF2j35uUqwjL/7/ypWz30iikkN8M8d0yqiLEmW4BKa9l0qSytViZRYRNeP29MSCu
-         R5pSaTs6+m18MioQwsUE69u/Os6MNuJ+EAww/mVLpsIHSAalJuMjh5EAlJXonA+x+AGS
-         LpZSbH2Mmx/pE3XkGqpPDvU0d9aCGJZOhln5TJaBIaEUZqirpG53bN0KwDSEA6NERwrg
-         e/20rDjxFe+fRXOOUyZB4m2tsxsP9iBI4aTbcO3W+f/1nfnF6Fp4NeFT1Kounffe2bgT
-         1YPg==
-X-Gm-Message-State: AOAM530dorFPjcpfccUm4a/PE0DIiCd/HDKI29Z9x/6rL6rr25VGWOZ5
-        FTJUexx7EJVmMg2ZyfXRH/d6DKG4yRSMZLCIksPxh0QmvEg=
-X-Google-Smtp-Source: ABdhPJzasGlFQRXLxNTx9IOFZHu2tN4P8gFB4eopIGDQ9iVTdObR7fr+c/2eBhcaOmDqqiI3Ejua84TD9jYUXq1w3e0=
-X-Received: by 2002:ab0:7705:: with SMTP id z5mr6782625uaq.2.1621348527338;
- Tue, 18 May 2021 07:35:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8T6TCtXF+SK0PS+gwIPLfEM0HYo27wFg/cd2j5g3ixY=;
+        b=Nhd2oHivqS6Kg4vjrKLN+bs5eRx8KdLTacZRChQWUUey7IIhWkKbzSE+hVbEzoRgls
+         BAjyxTYrZzOjKACrBlhbRawRwxed/+2JFXG26/LIKIwSGd03q2W7MKbSh04PRSrEOpSj
+         DQwvRLOxUqSmwmG8A3rCyfyUY25P+P+CXa5H3eLoAFSh1i8ulIUbRDtEw9XYfsFSKKmL
+         9qwknv1OihtwnVnf6bMbQYFpaWQvQ1bApFUz5YppdILDMQm2g+RGmkT1l+DzkF41NBoa
+         2Q5AzJnd9z6Qhnu3xgY0blei9IIOMoVIiI4P0l9ioDnYbLlXUy1uzBS3Gj+2UKqC9EFS
+         HOpQ==
+X-Gm-Message-State: AOAM531v6elLuZeK2WCTE8R2BfOBPopdf3r/l6PtQzdEusORCNBEISEc
+        4PfYyrsG6nbqL3X2rV4mfVB9Tg==
+X-Google-Smtp-Source: ABdhPJyDVvFPhrw7UgBjsTg2Du7+vlW8aDxqxzLao1QFauorpGFbgFdIa+S7m/Dkdl9Yg2Kk4nkVCg==
+X-Received: by 2002:a17:90a:ab0c:: with SMTP id m12mr5740624pjq.179.1621348541965;
+        Tue, 18 May 2021 07:35:41 -0700 (PDT)
+Received: from e07e318d3c06 (110-175-118-133.tpgi.com.au. [110.175.118.133])
+        by smtp.gmail.com with ESMTPSA id h8sm6969026pfv.60.2021.05.18.07.35.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 May 2021 07:35:41 -0700 (PDT)
+Date:   Tue, 18 May 2021 14:35:35 +0000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.12 081/363] net: bridge: propagate error code and
+ extack from br_mc_disabled_update
+Message-ID: <20210518143531.GA20@e07e318d3c06>
+References: <20210517140302.508966430@linuxfoundation.org>
+ <20210517140305.339768334@linuxfoundation.org>
+ <20210518122449.GA65@ec3d6f83b95b>
+ <YKO1jx78HibCUDkD@kroah.com>
+ <20210518141238.GA20@416f1e4b4f0c>
+ <YKPPDufNZwowyIyb@kroah.com>
 MIME-Version: 1.0
-References: <20210322144848.1065067-1-geert@linux-m68k.org>
- <20210322144848.1065067-3-geert@linux-m68k.org> <fb42abb0e79a57e2aab123468d95ff7e@protonic.nl>
-In-Reply-To: <fb42abb0e79a57e2aab123468d95ff7e@protonic.nl>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 18 May 2021 16:35:16 +0200
-Message-ID: <CAMuHMdXN9bPnEjXJUWszS5iwuVLBHJV7c+jhBU1t1EXnAnFYig@mail.gmail.com>
-Subject: Re: [PATCH 02/17] dt-bindings: auxdisplay: ht16k33: Document Adafruit
- segment displays
-To:     Robin van der Gracht <robin@protonic.nl>
-Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKPPDufNZwowyIyb@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hoi Robin,
+On Tue, May 18, 2021 at 04:28:30PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, May 18, 2021 at 02:12:42PM +0000, Rudi Heitbaum wrote:
+> > On Tue, May 18, 2021 at 02:39:43PM +0200, Greg Kroah-Hartman wrote:
+> > > On Tue, May 18, 2021 at 12:24:57PM +0000, Rudi Heitbaum wrote:
+> > > > On Mon, May 17, 2021 at 03:59:07PM +0200, Greg Kroah-Hartman wrote:
+> > > > > From: Florian Fainelli <f.fainelli@gmail.com>
+> > > > > 
+> > > > > [ Upstream commit ae1ea84b33dab45c7b6c1754231ebda5959b504c ]
+> > > > > 
+> > > > > Some Ethernet switches might only be able to support disabling multicast
+> > > > > snooping globally, which is an issue for example when several bridges
+> > > > > span the same physical device and request contradictory settings.
+> > > > > 
+> > > > > Propagate the return value of br_mc_disabled_update() such that this
+> > > > > limitation is transmitted correctly to user-space.
+> > > > > 
+> > > > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> > > > > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> > > > > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > > ---
+> > > > >  net/bridge/br_multicast.c | 28 +++++++++++++++++++++-------
+> > > > >  net/bridge/br_netlink.c   |  4 +++-
+> > > > >  net/bridge/br_private.h   |  3 ++-
+> > > > >  net/bridge/br_sysfs_br.c  |  8 +-------
+> > > > >  4 files changed, 27 insertions(+), 16 deletions(-)
+> > > > 
+> > > > This patch results in docker failing to start, and a regression between
+> > > > 5.12.4 and 5.12.5-rc1
+> > > > 
+> > > > A working dmesg output is like:
+> > > > 
+> > > > [   11.545255] device eth0 entered promiscuous mode
+> > > > [   11.693848] process 'docker/tmp/qemu-check643160757/check' started with executable stack
+> > > > [   17.233059] br-92020c7e3aea: port 1(veth17a0552) entered blocking state
+> > > > [   17.233065] br-92020c7e3aea: port 1(veth17a0552) entered disabled state
+> > > > [   17.233098] device veth17a0552 entered promiscuous mode
+> > > > [   17.292839] docker0: port 2(veth9d227f5) entered blocking state
+> > > > [   17.292848] docker0: port 2(veth9d227f5) entered disabled state
+> > > > [   17.292946] device veth9d227f5 entered promiscuous mode
+> > > > [   17.293070] docker0: port 2(veth9d227f5) entered blocking state
+> > > > [   17.293075] docker0: port 2(veth9d227f5) entered forwarding state
+> > > > 
+> > > > with this patch "device veth17a0552 entered promiscuous mode" never
+> > > > shows up.
+> > > > 
+> > > > the docker error itself is:
+> > > > 
+> > > > docker: Error response from daemon: failed to create endpoint
+> > > > sleepy_dijkstra on network bridge: adding interface veth8cbd8f9 to
+> > > > bridge docker0 failed: operation not supported.
+> > > 
+> > > Ick.
+> > > 
+> > > Does 5.13-rc1 also show this same problem?
+> > > 
+> > > And thanks for testing!
+> > > 
+> > > greg k-h
+> > 
+> > Hi Greg,
+> > 
+> > I can confirm that docker starts correctly with 5.13-rc1
+> > 
+> > # dmesg | head
+> > [    0.000000] Linux version 5.13.0-rc1 (rudi@0e5f93d4a8a2) (x86_64-libreelec-linux-gnu-gcc-10.3.0 (GCC) 10.3.0, GNU ld (GNU Binutils) 2.36.1) #1 SMP Tue May 18 14:00:41 UTC 2021
+> > [    0.000000] Command line: BOOT_IMAGE=/KERNEL boot=LABEL=LIBREELEC disk=LABEL=STORAGE i915.enable_guc=2 quiet
+> > ...
+> > [   11.214582] docker0: port 1(veth2b37ac4) entered blocking state
+> > [   11.214589] docker0: port 1(veth2b37ac4) entered disabled state
+> > [   11.214649] device veth2b37ac4 entered promiscuous mode
+> > [   11.214752] docker0: port 1(veth2b37ac4) entered blocking state
+> > [   11.214755] docker0: port 1(veth2b37ac4) entered forwarding state
+> 
+> Great, can you try 5.12.5-rc2 now?
+> 
+> thanks,
+> 
+> greg k-h
 
-On Tue, Mar 23, 2021 at 10:12 AM robin <robin@protonic.nl> wrote:
-> On 2021-03-22 15:48, Geert Uytterhoeven wrote:
-> > The Holtek HT16K33 LED controller is not only used for driving
-> > dot-matrix displays, but also for driving segment displays.
-> >
-> > Document compatible values for the Adafruit 7-segment[1] and
-> > 14-segment[2] FeatherWing expansion boards with red displays.
-> > According
-> > to the schematics, all other Adafruit 7-segment and 14-segment display
-> > backpack and FeatherWing expansion boards (including bare boards and
-> > boards fitted with displays) are compatible with these two boards.
-> > Add a "color" property to support the different color variants.
-> >
-> > [1] https://www.adafruit.com/product/3108
-> > [2] https://www.adafruit.com/product/3130
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+confirmed working now.
 
-> > --- a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
-> > +++ b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
-> > @@ -14,14 +14,23 @@ allOf:
-> >
-> >  properties:
-> >    compatible:
-> > -    const: holtek,ht16k33
-> > +    oneOf:
-> > +      - items:
-> > +          - const: adafruit,3108  # 0.56" 4-Digit 7-Segment
-> > FeatherWing Display (Red)
-> > +          - const: holtek,ht16k33
-> > +
-> > +      - items:
-> > +          - const: adafruit,3130  # 0.54" Quad Alphanumeric
-> > FeatherWing Display (Red)
-> > +          - const: holtek,ht16k33
-> > +
-> > +      - const: holtek,ht16k33     # Generic 16*8 LED controller with
-> > dot-matrix display
-> >
-> >    reg:
-> >      maxItems: 1
-> >
-> >    refresh-rate-hz:
-> >      maxItems: 1
-> > -    description: Display update interval in Hertz
-> > +    description: Display update interval in Hertz for dot-matrix
-> > displays
->
-> The above should be included in patch 16
-
-I disagree: bindings are independent from the driver implementation.
-
-> >    interrupts:
-> >      maxItems: 1
-> > @@ -41,10 +50,17 @@ properties:
-> >      default: 16
-> >      description: Initial brightness level
-> >
-> > +  color: true
-> > +    description:
-> > +      Color of the display.  Use one of the LED_COLOR_ID_* prefixed
-> > definitions
-> > +      from the header include/dt-bindings/leds/common.h.  The default
-> > is red.
-> > +    minimum: 0
-> > +    maximum: 9
-> > +    default: 1
-> > +
->
-> The above should be included in patch 17
-
-Same here.
-
-> >  required:
-> >    - compatible
-> >    - reg
-> > -  - refresh-rate-hz
->
-> 'refresh-rate-hz' is still a required property for the dot-matrix /
-> fbdev setup.
-
-True.
-
-> If it can no longer be listed here than maybe its nice to mention that
-> it's required
-> somewhere else (in it's description?).
-
-    if:
-      properties:
-        compatible:
-          const: holtek,ht16k33
-    then:
-      required:
-        - refresh-rate-hz
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks
+Rudi
