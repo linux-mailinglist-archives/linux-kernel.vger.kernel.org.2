@@ -2,190 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4775A387F50
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6735387F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239271AbhERSNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        id S1351510AbhERSOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhERSNX (ORCPT
+        with ESMTP id S1351490AbhERSON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:13:23 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31138C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:12:04 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e14so9914602ils.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:12:04 -0700 (PDT)
+        Tue, 18 May 2021 14:14:13 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3054AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:12:55 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id q15so7573768pgg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dQ9zaCOp8oqQrD+fHP3Fdg+K1ve8YEQcFRk+aoot2Bg=;
-        b=SPI3jgv83ug1FmZ2aXaus4J1ngxCW/Qdg+BDJNh6AbsZYCzKPerHAuTN41H2Q3qKDc
-         kjPDFeptOrDy5Lj8bCo4o6twWBW/ySImxntllArFWSFqc3F9m9dM+MvKIgqAqYD7yL+h
-         yd8IRO1EMbUHPDMY49hBumV9b4jdYmaks4ttC5Sn9/+/gRqHZWrg8hUwMTEO8HXJ6iI2
-         9sR2bO25iqiRH0ffvBBu6PjJmsivbqX3eoPYjo4LUPOhcw536qF68yN3Z3rtFi2l/zT/
-         vKiPGDOV60WNiOX6lzomJV4UOav5k6VS8uRd84fX5/5fXSxYItatnv6Bo/D/8nd3taeV
-         OzEw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=9UF6JPc9kDNTRCs7ffieF/jBad0EDQKUws2Yd0IxgKo=;
+        b=mF2+K3rbAZ0Yt5/HqP3OFrc/Xx54XHooQYogRvZoEYAimzTp2eOmKQ3T5njQWNfslm
+         SIJvM9kv40LnTXqBoEg4OnbhyxlzQOZEHXyqyZ3kt9RpvMX3tMxgwpanZrsuczEI+s/m
+         7mHCnVs+2eOPFnA43kYZsY5dbADtuu8NXTcpd1JJkTOC0QsqpuU0nCIaPJv0M/eWJySf
+         rL/wNW2G6JnQmlN1zIdfZZZ+2ZHa4FuZeLFlOuPY5s2zxCpxTimFfuUF14PYILkRgZA7
+         JUUEZgTeJWWZjZaLo+ESU/ec2+W07oX7+9Wytj++jA9y6t6QRmD0EU7wF/iYnmCXQvGh
+         qLqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dQ9zaCOp8oqQrD+fHP3Fdg+K1ve8YEQcFRk+aoot2Bg=;
-        b=X1DV+2U59F6d8OpDldHs4/omgF5ORVnFw7cksuhdBbbAFh7ntvCPE8/nFcqn95nele
-         w/+iVr0kmmp6N72a85ImEc89DBRTbBPuN/Vi+p5GoWan9+fA1j7mKi6ESD8axCsBTgrl
-         5mE3nKEb2YNt2ZH0L5ilcurwrD9hUMHgmYmQrr+E/QbgrjVyOtd9kYpg6xC+JLGF4rRX
-         HNEuUGb/WGAKGit2QIDiJbjudQ2fwzLPf28Q3iOGu0UrKh1KQMhVln2dH82QLJWkn2od
-         Dq2d3VN9xQ56HaQCyIYuOebCVpQ681Mpaj9tyjemvAPEE1Ye6fWxFQ1b47OQN+7mkp+E
-         6lDg==
-X-Gm-Message-State: AOAM532OfUhV1lXAwXu0+HtAa0ErNzdhdc171H8OzM1huM6IU8zFwoD0
-        c1gIVk/5mTJPHZyjYa1/2Tw4AWBwjFRPTVG8kc8EXYJg4lo=
-X-Google-Smtp-Source: ABdhPJzLcze5XSY9bYNTxbp0vKNnrQDKlgs9ajlVAuyfdPNR01Tzfh3iI7JYxqyeCB9/BL39hpyo7sUJWzH0aenxpr4=
-X-Received: by 2002:a05:6e02:f50:: with SMTP id y16mr5297315ilj.61.1621361523434;
- Tue, 18 May 2021 11:12:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=9UF6JPc9kDNTRCs7ffieF/jBad0EDQKUws2Yd0IxgKo=;
+        b=FzjnQTCBnu+hq1L4YHqGsMh3u4lcUaf1pcvww25FCCypnmcRsVJzZAwmgStiFcgt1X
+         aIDEYpdSQmJx/+tpvrWV3Yz9kksxxsH6ji43q+PwkytV17iF0Jw2i5ATQQS6cVLx+Vy1
+         ZHWrFl3Ax8P/I3ygcmCZ98ZiickyslYl+0fav7hHZzcnhWV+84bX01UOOAC/FP7060Js
+         oWd/Uv+HsdV2s2hMa/met+n7pth+Br+Q7lZJFAq9kmz0M+eWqNTGh19h6yYKIwB3fHWN
+         1WsAcDQH4UMPTp6vlzZ27R/tNAuAAdRXzpWr78zT3xcx1/XQX/g62yrOmdmZTnl825tg
+         mXQQ==
+X-Gm-Message-State: AOAM533VPnRdawI342tyClJ3RULJjsLFF6I/UR7dmZ7Cv1ypr0Ecmb0H
+        CozSNVqVK7S5nZlWU02MFcg=
+X-Google-Smtp-Source: ABdhPJxlIMg35Y34lyvIH7pG1V8clcjDW70mvdmqgCHA/6d/t4M75yoaEILr9aNOKOIYkc6qb8B5Zg==
+X-Received: by 2002:a63:4145:: with SMTP id o66mr6395237pga.4.1621361574683;
+        Tue, 18 May 2021 11:12:54 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id gz18sm2463721pjb.19.2021.05.18.11.12.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 11:12:54 -0700 (PDT)
+Date:   Wed, 19 May 2021 03:12:47 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [PATCH] mm, slub: Fix support for clang 10
+Message-ID: <20210518181247.GA10062@hyeyoo>
 MIME-Version: 1.0
-References: <20210517235546.3038875-1-eugenis@google.com> <20210518174439.GA28491@arm.com>
-In-Reply-To: <20210518174439.GA28491@arm.com>
-From:   Peter Collingbourne <pcc@google.com>
-Date:   Tue, 18 May 2021 11:11:52 -0700
-Message-ID: <CAMn1gO5TmJZ4M4EyQ60VMc2-acUZSYkaB9M0C9kOv_dXQe54Ug@mail.gmail.com>
-Subject: Re: [PATCH v3] kasan: speed up mte_set_mem_tag_range
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 10:44 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Mon, May 17, 2021 at 04:55:46PM -0700, Evgenii Stepanov wrote:
-> > Use DC GVA / DC GZVA to speed up KASan memory tagging in HW tags mode.
-> >
-> > The first cacheline is always tagged using STG/STZG even if the address is
-> > cacheline-aligned, as benchmarks show it is faster than a conditional
-> > branch.
-> [...]
-> > diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
-> > index ddd4d17cf9a0..e29a0e2ab35c 100644
-> > --- a/arch/arm64/include/asm/mte-kasan.h
-> > +++ b/arch/arm64/include/asm/mte-kasan.h
-> > @@ -48,45 +48,7 @@ static inline u8 mte_get_random_tag(void)
-> >       return mte_get_ptr_tag(addr);
-> >  }
-> >
-> > -/*
-> > - * Assign allocation tags for a region of memory based on the pointer tag.
-> > - * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-> > - * size must be non-zero and MTE_GRANULE_SIZE aligned.
-> > - */
-> > -static inline void mte_set_mem_tag_range(void *addr, size_t size,
-> > -                                             u8 tag, bool init)
->
-> With commit 2cb34276427a ("arm64: kasan: simplify and inline MTE
-> functions") you wanted this inlined for performance. Does this not
-> matter much that it's now out of line?
->
-> > diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
-> > index d31e1169d9b8..c06ada79a437 100644
-> > --- a/arch/arm64/lib/Makefile
-> > +++ b/arch/arm64/lib/Makefile
-> > @@ -18,3 +18,5 @@ obj-$(CONFIG_CRC32) += crc32.o
-> >  obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-> >
-> >  obj-$(CONFIG_ARM64_MTE) += mte.o
-> > +
-> > +obj-$(CONFIG_KASAN_HW_TAGS) += mte-kasan.o
-> > diff --git a/arch/arm64/lib/mte-kasan.S b/arch/arm64/lib/mte-kasan.S
-> > new file mode 100644
-> > index 000000000000..9f6975e2af60
-> > --- /dev/null
-> > +++ b/arch/arm64/lib/mte-kasan.S
-> > @@ -0,0 +1,63 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/*
-> > + * Copyright (C) 2021 Google Inc.
-> > + */
-> > +#include <linux/const.h>
-> > +#include <linux/linkage.h>
-> > +
-> > +#include <asm/mte-def.h>
-> > +
-> > +     .arch   armv8.5-a+memtag
-> > +
-> > +     .macro  __set_mem_tag_range, stg, gva, start, size, linesize, tmp1, tmp2, tmp3
-> > +     add     \tmp3, \start, \size
-> > +     cmp     \size, \linesize, lsl #1
-> > +     b.lt    .Lsmtr3_\@
->
-> We could do with some comments here. Why the lsl #1? I think I get it
-> but it would be good to make this more readable.
->
-> It may be easier if you placed it in a file on its own (as it is now but
-> with a less generic file name) and use a few .req instead of the tmpX.
-> You can use the macro args only for the stg/gva.
+Previously in 'commit ff3daafe3fd3 ("mm, slub: change run-time assertion
+in kmalloc_index() to compile-time")', changed kmalloc_index's run-time
+assertion to compile-time assertion.
 
-Yes, I think we could use more comments and .req here, like the
-userspace version of this function that we use in Scudo:
-https://cs.android.com/android/platform/superproject/+/master:external/scudo/standalone/memtag.h;l=150;drc=34c8857fef28eab205c22cbfb4bfda2f848e5a80
+But clang 10 has a bug misevaluating __builtin_constant_p() as true,
+making it unable to compile. This bug was fixed in clang 11.
 
-> > +
-> > +     sub     \tmp1, \linesize, #1
-> > +     bic     \tmp2, \tmp3, \tmp1
-> > +     orr     \tmp1, \start, \tmp1
-> > +
-> > +.Lsmtr1_\@:
-> > +     \stg    \start, [\start], #MTE_GRANULE_SIZE
-> > +     cmp     \start, \tmp1
-> > +     b.lt    .Lsmtr1_\@
-> > +
-> > +.Lsmtr2_\@:
-> > +     dc      \gva, \start
-> > +     add     \start, \start, \linesize
-> > +     cmp     \start, \tmp2
-> > +     b.lt    .Lsmtr2_\@
-> > +
-> > +.Lsmtr3_\@:
-> > +     cmp     \start, \tmp3
-> > +     b.ge    .Lsmtr4_\@
-> > +     \stg    \start, [\start], #MTE_GRANULE_SIZE
-> > +     b       .Lsmtr3_\@
-> > +.Lsmtr4_\@:
-> > +     .endm
->
-> If we want to get the best performance out of this, we should look at
-> the memset implementation and do something similar. In principle it's
-> not that far from a memzero, though depending on the microarchitecture
-> it may behave slightly differently.
+To support clang 10, introduce a macro to do run-time assertion if clang
+version is less than 11, even if the size is constant. Might revert this
+commit later if we choose not to support clang 10.
 
-For Scudo I compared our storeTags implementation linked above against
-__mtag_tag_zero_region from the arm-optimized-routines repository
-(which I think is basically an improved version of that memset
-implementation rewritten to use STG and DC GZVA), and our
-implementation performed better on the hardware that we have access
-to.
+Fixes: ff3daafe3fd3 ("mm, slub: change run-time assertion in kmalloc_index() to compile-time")
+Link: https://lore.kernel.org/r/CA+G9fYvYxqVhUTkertjZjcrUq8LWPnO7qC==Wum3gYCwWF9D6Q@mail.gmail.com/
+Link: https://lkml.org/lkml/2021/5/11/872
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ include/linux/slab.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Anyway, before that I wonder if we wrote all this in C + inline asm
-> (three while loops or maybe two and some goto), what's the performance
-> difference? It has the advantage of being easier to maintain even if we
-> used some C macros to generate gva/gzva variants.
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 9d316aac0aba..8d8dd8571261 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -413,7 +413,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
+ 	if (size <=  16 * 1024 * 1024) return 24;
+ 	if (size <=  32 * 1024 * 1024) return 25;
+ 
+-	if (size_is_constant)
++	if ((IS_ENABLED(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION >= 110000) && size_is_constant)
+ 		BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+ 	else
+ 		BUG();
+-- 
+2.25.1
 
-I'm not sure I agree that it will be easier to maintain. Due to the
-number of "unusual" instructions required here it seems more readable
-to have the code in pure assembly than to require readers to switch
-contexts between C and asm. If we did move it to inline asm then I
-think it should basically be a large blob of asm like the Scudo code
-that I linked.
-
-Peter
