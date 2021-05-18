@@ -2,135 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DB6387FA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5429387FA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346582AbhERScx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345768AbhERScs (ORCPT
+        id S1351590AbhERSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:33:06 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:13930 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351586AbhERSdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:32:48 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC94C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:31:26 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id 105so3554007uak.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wlRGZjJj/DKd/6vvvywZgHdNgo8vhcAzP5bk7gbmXl0=;
-        b=AuvCRx3Na55hsRvVQ7Qk8LH6h99ctF/osTMPFdCw7akw3Ac2ptsnHStAt+bSDdXmG8
-         T/XBdXL3HqF43XXB2OKKIbBKPLE3lH4W6ZcGO84HdRgortMEE9FQ3EuXX6qrRTGQQcxo
-         qo674H23wgrtKpCwBVTtpBMPcplJIdNLm+PZA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wlRGZjJj/DKd/6vvvywZgHdNgo8vhcAzP5bk7gbmXl0=;
-        b=aLD/v5JqCEvoB1Qs0waJP9q75kKVgvHBsUW3/Ee+V/sO1Fdjvye3lYTHSaoB1V41Ae
-         CtDmHnnffaRgg5Ie0yb4E63BVRPLSSMOVc8fuvYT4HjqhzJIgi6rLszou3lTohZ+XgGQ
-         p1nPXN6moPtrfYcuZrBZy13U6hHf2preHKYpwYEXE/NYVh3vdLr0JnqVE75b2MaSW/jo
-         13hjZTVus2bVd3VOCPMIbVH/teYrXwi3gMpZ1gdoHtElSAsYfLC1DMLV6x0d09ilNhex
-         205v3kDSw7CbQOFakZfWcp7kfTDXPrDncAp4J3VTPrztHEMmceVv+Q2DNHqrBOVHY2fY
-         KchA==
-X-Gm-Message-State: AOAM532RXMpyGhbSKvIfHvs7TBk8IO1k2k/wjbZiPXnh8dPh0zQsxc1m
-        c3pXEDBcilrYfwgXyG+EPhRydBcxBm31aXL2
-X-Google-Smtp-Source: ABdhPJwyS4/QdtqOE6lH+e4CtvRRMp6PiFB1Ov3DIpPrP3w/E7APydrt0bqyXQpn0gLAW4qiXNnMUQ==
-X-Received: by 2002:ab0:20d0:: with SMTP id z16mr8134014ual.33.1621362684752;
-        Tue, 18 May 2021 11:31:24 -0700 (PDT)
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
-        by smtp.gmail.com with ESMTPSA id d12sm2905791vsc.8.2021.05.18.11.31.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 11:31:24 -0700 (PDT)
-Received: by mail-vs1-f51.google.com with SMTP id f15so4131747vsq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:31:23 -0700 (PDT)
-X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr5179662vss.29.1621362682979;
- Tue, 18 May 2021 11:31:22 -0700 (PDT)
+        Tue, 18 May 2021 14:33:05 -0400
+Date:   Tue, 18 May 2021 18:31:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1621362705;
+        bh=tJtrdutIXVTolG178z7GLoOZStEY+n4l5NmOe6sRTQU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=UlFuSpdxrkXBed7B0mnqxEyrLaVa0nXpqf/KaBCXldqfCH4r2CDrvPyfh0S6+Ibik
+         Xlbqs7VipEiHC9C3a3Gb465DXHjeiso7jL7whaLgkmyv9QyTjSfHm119p6ktiYquir
+         cUnDoA0W6mgw4tpJLZUXXUU+9aCbY3bEGHrVsx9lvSahfU+hj1OLF4qMPLpgPYsNJJ
+         a0+wXwZ5fgKQPFkjytL86CMrC7mzqeANp0/zLCQyA4GmAfnIR1uj6qm6kLziYNVVBl
+         9oBg5NDqFqNiFplalwBZ7933E6jfJuVJEk/mHaQeudXtvkip024UAwRAh8J8UyO7dB
+         tNclUl2p+kIOQ==
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH 6/8] staging: rtl8723bs: remove duplicate names for _rtw_write32()
+Message-ID: <43917aee34e85139e613578cf6f14938211c8835.1621361919.git-series.hello@bryanbrattlof.com>
+In-Reply-To: <cover.7975aa58aadc20eae4102c8c0fe0e0d0ecb0a9fa.1621361919.git-series.hello@bryanbrattlof.com>
+References: <cover.7975aa58aadc20eae4102c8c0fe0e0d0ecb0a9fa.1621361919.git-series.hello@bryanbrattlof.com>
 MIME-Version: 1.0
-References: <1621301832-25479-1-git-send-email-johnny.chuang.emc@gmail.com>
-In-Reply-To: <1621301832-25479-1-git-send-email-johnny.chuang.emc@gmail.com>
-From:   Harry Cutts <hcutts@chromium.org>
-Date:   Tue, 18 May 2021 11:31:12 -0700
-X-Gmail-Original-Message-ID: <CA+jURcvXr7UpQjKMCmNJwkiaxB6eACxDs4Rq8G+zEsrqO2UM3A@mail.gmail.com>
-Message-ID: <CA+jURcvXr7UpQjKMCmNJwkiaxB6eACxDs4Rq8G+zEsrqO2UM3A@mail.gmail.com>
-Subject: Re: [PATCH v2] HID: i2c-hid: Add I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON
- to optimize timing
-To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        James Chen <james.chen@emc.com.tw>,
-        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
-        Paul Liang <paul.liang@emc.com.tw>,
-        Jeff Chuang <jeff.chuang@emc.com.tw>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jingle <jingle.wu@emc.com.tw>, Paris Yeh <pyeh@google.com>,
-        "sukumar . ghorai" <sukumar.ghorai@intel.corp-partner.google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 18:37, Johnny Chuang <johnny.chuang.emc@gmail.com> wrote:
->
-> There is a hard coding 60ms delay after I2C_HID_PWR_ON commadn.
-> Elan didn't need the delay, so we add a quirk to reduce boot time and resume time.
->
-> Fixed: eef4016243e9("HID: i2c-hid: Always sleep 60ms after I2C_HID_PWR_ON commands")
->
-> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+_rtw_write32() is redefined as rtw_write32() and
+PlatformEFIOWrite4Byte(). Because rtw_write32() is the only name used in
+the driver, remove the duplicate definitions and rename the function
+from _rtw_write32() to rtw_write32()
 
-Reviewed-by: Harry Cutts <hcutts@chromium.org>
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_io.c    | 2 +-
+ drivers/staging/rtl8723bs/include/rtw_io.h | 7 +------
+ 2 files changed, 2 insertions(+), 7 deletions(-)
 
-> ---
-> Change in v2:
->     - Modify Optimized tag to Fixed tag
->     - Modify comment for i2c_hid_quirks
-> ---
->  drivers/hid/i2c-hid/i2c-hid-core.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-> index 9993133..f4ee690 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> @@ -45,6 +45,7 @@
->  #define I2C_HID_QUIRK_BOGUS_IRQ                        BIT(4)
->  #define I2C_HID_QUIRK_RESET_ON_RESUME          BIT(5)
->  #define I2C_HID_QUIRK_BAD_INPUT_SIZE           BIT(6)
-> +#define I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON    BIT(8)
->
->
->  /* flags */
-> @@ -178,6 +179,11 @@ static const struct i2c_hid_quirks {
->                  I2C_HID_QUIRK_RESET_ON_RESUME },
->         { USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
->                 I2C_HID_QUIRK_BAD_INPUT_SIZE },
-> +       /*
-> +        * Elan devices don't need delay after I2C_HID_PWR_ON
-> +        */
-> +       { USB_VENDOR_ID_ELAN, HID_ANY_ID,
-> +                I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON },
->         { 0, 0 }
->  };
->
-> @@ -427,7 +433,8 @@ static int i2c_hid_set_power(struct i2c_client *client, int power_state)
->          * PWR_ON requests. Testing has confirmed that several devices
->          * will not work properly without a delay after a PWR_ON request.
->          */
-> -       if (!ret && power_state == I2C_HID_PWR_ON)
-> +       if (!ret && power_state == I2C_HID_PWR_ON &&
-> +           !(ihid->quirks & I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON))
->                 msleep(60);
->
->         return ret;
-> --
-> 2.7.4
->
+diff --git a/drivers/staging/rtl8723bs/core/rtw_io.c b/drivers/staging/rtl8=
+723bs/core/rtw_io.c
+index cdd42e992d6e..4f66b961ef61 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_io.c
++++ b/drivers/staging/rtl8723bs/core/rtw_io.c
+@@ -101,7 +101,7 @@ int rtw_write16(struct adapter *adapter, u32 addr, u16 =
+val)
+ =09ret =3D _write16(pintfhdl, addr, val);
+ =09return RTW_STATUS_CODE(ret);
+ }
+-int _rtw_write32(struct adapter *adapter, u32 addr, u32 val)
++int rtw_write32(struct adapter *adapter, u32 addr, u32 val)
+ {
+ =09/* struct=09io_queue=09*pio_queue =3D (struct io_queue *)adapter->pio_q=
+ueue; */
+ =09struct io_priv *pio_priv =3D &adapter->iopriv;
+diff --git a/drivers/staging/rtl8723bs/include/rtw_io.h b/drivers/staging/r=
+tl8723bs/include/rtw_io.h
+index 88518293839e..3ba413ed3098 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_io.h
++++ b/drivers/staging/rtl8723bs/include/rtw_io.h
+@@ -176,14 +176,12 @@ extern u32 rtw_read32(struct adapter *adapter, u32 ad=
+dr);
+
+ extern int rtw_write8(struct adapter *adapter, u32 addr, u8 val);
+ extern int rtw_write16(struct adapter *adapter, u32 addr, u16 val);
+-extern int _rtw_write32(struct adapter *adapter, u32 addr, u32 val);
++extern int rtw_write32(struct adapter *adapter, u32 addr, u32 val);
+
+ extern u8 _rtw_sd_f0_read8(struct adapter *adapter, u32 addr);
+
+ extern u32 _rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 =
+*pmem);
+
+-#define  rtw_write32(adapter, addr, val) _rtw_write32((adapter), (addr), (=
+val))
+-
+ #define rtw_write_port(adapter, addr, cnt, mem) _rtw_write_port((adapter),=
+ (addr), (cnt), (mem))
+
+ #define rtw_sd_f0_read8(adapter, addr) _rtw_sd_f0_read8((adapter), (addr))
+@@ -230,7 +228,4 @@ extern void bus_sync_io(struct io_queue *pio_q);
+ extern u32 _ioreq2rwmem(struct io_queue *pio_q);
+ extern void dev_power_down(struct adapter *Adapter, u8 bpwrup);
+
+-#define PlatformEFIOWrite4Byte(_a, _b, _c)=09=09\
+-=09rtw_write32(_a, _b, _c)
+-
+ #endif=09/* _RTL8711_IO_H_ */
+--
+git-series 0.9.1
+
