@@ -2,64 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1996C3875D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD733875DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348183AbhERJ5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:57:48 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:36511 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240585AbhERJ5q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:57:46 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee760a38f23f8f-8cff1; Tue, 18 May 2021 17:55:49 +0800 (CST)
-X-RM-TRANSID: 2ee760a38f23f8f-8cff1
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee760a38f213bf-b6a34;
-        Tue, 18 May 2021 17:55:49 +0800 (CST)
-X-RM-TRANSID: 2ee760a38f213bf-b6a34
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        knaack.h@gmx.de, pmeerw@pmeerw.net, gregkh@linuxfoundation.org
-Cc:     linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] staging: iio: cdc: ad7746: Remove unnecessary assignment in ad7746_probe()
-Date:   Tue, 18 May 2021 17:56:47 +0800
-Message-Id: <20210518095647.3008-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1348195AbhERJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:59:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53910 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347639AbhERJ67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:58:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D25F3AE92;
+        Tue, 18 May 2021 09:57:40 +0000 (UTC)
+Subject: Re: [PATCH v10 17/33] mm/memcg: Add folio wrappers for various
+ functions
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-18-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <1a5611e0-dd6a-84e1-41cb-33db416e8fd4@suse.cz>
+Date:   Tue, 18 May 2021 11:57:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210511214735.1836149-18-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function ad7746_probe(), the initialized value of 'ret' is unused,
-because it will be assigned by the function i2c_smbus_write_byte_data(),
-thus remove it.
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> Add new wrapper functions folio_memcg(), lock_folio_memcg(),
+> unlock_folio_memcg(), mem_cgroup_folio_lruvec() and
+> count_memcg_folio_event()
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/staging/iio/cdc/ad7746.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-index dfd71e99e..be4ef454d 100644
---- a/drivers/staging/iio/cdc/ad7746.c
-+++ b/drivers/staging/iio/cdc/ad7746.c
-@@ -680,7 +680,7 @@ static int ad7746_probe(struct i2c_client *client,
- 	struct ad7746_chip_info *chip;
- 	struct iio_dev *indio_dev;
- 	unsigned char regval = 0;
--	int ret = 0;
-+	int ret;
- 
- 	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
- 	if (!indio_dev)
--- 
-2.20.1.windows.1
-
-
-
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
