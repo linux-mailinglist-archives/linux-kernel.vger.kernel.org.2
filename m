@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4033880E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B554388101
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244858AbhERUDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:03:49 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:35137 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239208AbhERUDs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:03:48 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id D145222239;
-        Tue, 18 May 2021 22:02:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1621368148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h0LHPW/w4IwpfoUIXaU9BCUDkKX5JEPEZ2uj7QpdpKw=;
-        b=oO4XsO814zzxDvKliFmFSX1r0OtStVP6JrmFmpcEoyroQcR4EUyXi90OuBxJ6bV67QPGgn
-        impBl6M+4Qh+QN9EV7VJg4R2tUuvo2pWk6xJB+8kI7wh8h9Mp1hWCGwjn8yF5PwH2AFsnG
-        Xh538qco49irr8Qd/oXPiuSIPdpBdDo=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 18 May 2021 22:02:27 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] mtd: core: Fix freeing of otp_info buffer
-In-Reply-To: <20210518185503.162787-1-jonathanh@nvidia.com>
-References: <20210424110608.15748-6-michael@walle.cc>
- <20210518185503.162787-1-jonathanh@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <016ead00625f91d1247190e7c68c2086@walle.cc>
-X-Sender: michael@walle.cc
+        id S1352053AbhERUKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:10:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:15748 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352111AbhERUKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 16:10:10 -0400
+IronPort-SDR: qBQFatRgtbHFVcDDESup0WkH/xMIlqL00vVXXhMWjCG/SPsh1GqMR7hJEBgqi0Na+/dmNTQeOz
+ CRgLqvNWM4LQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="180411909"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="180411909"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 13:08:51 -0700
+IronPort-SDR: xdafT4k75f/m/sgHfmd/sdLJeuLxtLzTmmj1h1cbssZCNEi53P2vzGzrL5aFDykBgsLKrZ4BsR
+ ZXt4G8f3u50A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="394993611"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by orsmga006.jf.intel.com with ESMTP; 18 May 2021 13:08:51 -0700
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
+        x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
+        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
+        carlos@redhat.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
+        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: [PATCH v9 0/6] Improve Minimum Alternate Stack Size
+Date:   Tue, 18 May 2021 13:03:14 -0700
+Message-Id: <20210518200320.17239-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-18 20:55, schrieb Jon Hunter:
-> Commit 4b361cfa8624 ("mtd: core: add OTP nvmem provider support") is
-> causing the following panic ...
-> 
->  ------------[ cut here ]------------
->  kernel BUG at /local/workdir/tegra/linux_next/kernel/mm/slab.c:2730!
->  Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
->  Modules linked in:
->  CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc2-next-20210518 #1
->  Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
->  PC is at ___cache_free+0x3f8/0x51c
->  ...
->  [<c029bb1c>] (___cache_free) from [<c029c658>] (kfree+0xac/0x1bc)
->  [<c029c658>] (kfree) from [<c06da094>] (mtd_otp_size+0xc4/0x108)
->  [<c06da094>] (mtd_otp_size) from [<c06dc864>]
-> (mtd_device_parse_register+0xe4/0x2b4)
->  [<c06dc864>] (mtd_device_parse_register) from [<c06e3ccc>]
-> (spi_nor_probe+0x210/0x2c0)
->  [<c06e3ccc>] (spi_nor_probe) from [<c06e9578>] (spi_probe+0x88/0xac)
->  [<c06e9578>] (spi_probe) from [<c066891c>] (really_probe+0x214/0x3a4)
->  [<c066891c>] (really_probe) from [<c0668b14>] 
-> (driver_probe_device+0x68/0xc0)
->  [<c0668b14>] (driver_probe_device) from [<c0666cf8>]
-> (bus_for_each_drv+0x5c/0xbc)
->  [<c0666cf8>] (bus_for_each_drv) from [<c0668694>] 
-> (__device_attach+0xe4/0x150)
->  [<c0668694>] (__device_attach) from [<c06679e0>] 
-> (bus_probe_device+0x84/0x8c)
->  [<c06679e0>] (bus_probe_device) from [<c06657f8>] 
-> (device_add+0x48c/0x868)
->  [<c06657f8>] (device_add) from [<c06eb784>] 
-> (spi_add_device+0xa0/0x168)
->  [<c06eb784>] (spi_add_device) from [<c06ec9a8>]
-> (spi_register_controller+0x8b8/0xb38)
->  [<c06ec9a8>] (spi_register_controller) from [<c06ecc3c>]
-> (devm_spi_register_controller+0x14/0x50)
->  [<c06ecc3c>] (devm_spi_register_controller) from [<c06f0510>]
-> (tegra_spi_probe+0x33c/0x450)
->  [<c06f0510>] (tegra_spi_probe) from [<c066abec>] 
-> (platform_probe+0x5c/0xb8)
->  [<c066abec>] (platform_probe) from [<c066891c>] 
-> (really_probe+0x214/0x3a4)
->  [<c066891c>] (really_probe) from [<c0668b14>] 
-> (driver_probe_device+0x68/0xc0)
->  [<c0668b14>] (driver_probe_device) from [<c0668e30>]
-> (device_driver_attach+0x58/0x60)
->  [<c0668e30>] (device_driver_attach) from [<c0668eb8>]
-> (__driver_attach+0x80/0xc8)
->  [<c0668eb8>] (__driver_attach) from [<c0666c48>] 
-> (bus_for_each_dev+0x78/0xb8)
->  [<c0666c48>] (bus_for_each_dev) from [<c0667c44>] 
-> (bus_add_driver+0x164/0x1e8)
->  [<c0667c44>] (bus_add_driver) from [<c066997c>] 
-> (driver_register+0x7c/0x114)
->  [<c066997c>] (driver_register) from [<c010223c>] 
-> (do_one_initcall+0x50/0x2b0)
->  [<c010223c>] (do_one_initcall) from [<c11011f0>]
-> (kernel_init_freeable+0x1a8/0x1fc)
->  [<c11011f0>] (kernel_init_freeable) from [<c0c09190>] 
-> (kernel_init+0x8/0x118)
->  [<c0c09190>] (kernel_init) from [<c01001b0>] (ret_from_fork+0x14/0x24)
->  ...
->  ---[ end trace 0f652dd222de75d7 ]---
-> 
-> In the function mtd_otp_size() a buffer is allocated by calling
-> kmalloc() and a pointer to the buffer is stored in a variable 'info'.
-> The pointer 'info' may then be incremented depending on the length
-> returned from mtd_get_user/fact_prot_info(). If 'info' is incremented,
-> when kfree() is called to free the buffer the above panic occurs 
-> because
-> we are no longer passing the original address of the buffer allocated.
-> Fix this by indexing through the buffer allocated to avoid incrementing
-> the pointer.
-> 
-> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+During signal entry, the kernel pushes data onto the normal userspace
+stack. On x86, the data pushed onto the user stack includes XSAVE state,
+which has grown over time as new features and larger registers have been
+added to the architecture.
 
-uhm.. yes of course. Two fixes for this function. Not my best day :/
+MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+constant indicates to userspace how much data the kernel expects to push on
+the user stack, [2][3].
 
-I'm wondering why CONFIG_SLUB_DEBUG_ON doesn't catch this, whereas
-slub_debug=f (or fzpu) as commandline parameter works as expected.
+However, this constant is much too small and does not reflect recent
+additions to the architecture. For instance, when AVX-512 states are in
+use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+cause user stack overflow when delivering a signal.
 
-Thanks,
--michael
+In this series, we suggest a couple of things:
+1. Provide a variable minimum stack size to userspace, as a similar
+   approach to [5].
+2. Avoid using a too-small alternate stack.
+
+Changes from v8 [13]:
+* Added and revised some kernel messages. (Borislav Petkov)
+
+Changes from v7 [12]:
+* Improved the overflow check code. (Andy Lutomirski and Borislav Petkov)
+* Moved the "Fixes:" tag and the bugzilla link (patch 5 -> patch 3).
+
+Changes from v6 [11]:
+* Updated and fixed the documentation. (Borislav Petkov)
+* Revised the AT_MINSIGSTKSZ comment. (Borislav Petkov)
+
+Changes form v5 [10]:
+* Fixed the overflow detection. (Andy Lutomirski)
+* Reverted the AT_MINSIGSTKSZ removal on arm64. (Dave Martin)
+* Added a documentation about the x86 AT_MINSIGSTKSZ.
+* Supported the existing sigaltstack test to use the new aux vector.
+
+Changes from v4 [9]:
+* Moved the aux vector define to the generic header. (Carlos O'Donell)
+
+Changes from v3 [8]:
+* Updated the changelog. (Borislav Petkov)
+* Revised the test messages again. (Borislav Petkov)
+
+Changes from v2 [7]:
+* Simplified the sigaltstack overflow prevention. (Jann Horn)
+* Renamed fpstate size helper with cleanup. (Borislav Petkov)
+* Cleaned up the signframe struct size defines. (Borislav Petkov)
+* Revised the selftest messages. (Borislav Petkov)
+* Revised a changelog. (Borislav Petkov)
+
+Changes from v1 [6]:
+* Took stack alignment into account for sigframe size. (Dave Martin)
+
+[1]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/bits/sigstack.h;h=b9dca794da093dc4d41d39db9851d444e1b54d9b;hb=HEAD
+[2]: https://www.gnu.org/software/libc/manual/html_node/Signal-Stack.html
+[3]: https://man7.org/linux/man-pages/man2/sigaltstack.2.html
+[4]: https://bugzilla.kernel.org/show_bug.cgi?id=153531
+[5]: https://blog.linuxplumbersconf.org/2017/ocw/system/presentations/4671/original/plumbers-dm-2017.pdf
+[6]: https://lore.kernel.org/lkml/20200929205746.6763-1-chang.seok.bae@intel.com/
+[7]: https://lore.kernel.org/lkml/20201119190237.626-1-chang.seok.bae@intel.com/
+[8]: https://lore.kernel.org/lkml/20201223015312.4882-1-chang.seok.bae@intel.com/
+[9]: https://lore.kernel.org/lkml/20210115211038.2072-1-chang.seok.bae@intel.com/
+[10]: https://lore.kernel.org/lkml/20210203172242.29644-1-chang.seok.bae@intel.com/
+[11]: https://lore.kernel.org/lkml/20210227165911.32757-1-chang.seok.bae@intel.com/
+[12]: https://lore.kernel.org/lkml/20210316065215.23768-1-chang.seok.bae@intel.com/
+[13]: https://lore.kernel.org/lkml/20210422044856.27250-1-chang.seok.bae@intel.com/
+
+Chang S. Bae (6):
+  uapi: Define the aux vector AT_MINSIGSTKSZ
+  x86/signal: Introduce helpers to get the maximum signal frame size
+  x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+  selftest/sigaltstack: Use the AT_MINSIGSTKSZ aux vector if available
+  x86/signal: Detect and prevent an alternate signal stack overflow
+  selftest/x86/signal: Include test cases for validating sigaltstack
+
+ Documentation/x86/elf_auxvec.rst          |  53 +++++++++
+ Documentation/x86/index.rst               |   1 +
+ arch/x86/include/asm/elf.h                |   4 +
+ arch/x86/include/asm/fpu/signal.h         |   2 +
+ arch/x86/include/asm/sigframe.h           |   2 +
+ arch/x86/include/uapi/asm/auxvec.h        |   4 +-
+ arch/x86/kernel/cpu/common.c              |   3 +
+ arch/x86/kernel/fpu/signal.c              |  19 ++++
+ arch/x86/kernel/signal.c                  |  88 ++++++++++++++-
+ include/linux/sched/signal.h              |  19 ++--
+ include/uapi/linux/auxvec.h               |   3 +
+ tools/testing/selftests/sigaltstack/sas.c |  20 +++-
+ tools/testing/selftests/x86/Makefile      |   2 +-
+ tools/testing/selftests/x86/sigaltstack.c | 128 ++++++++++++++++++++++
+ 14 files changed, 327 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/x86/elf_auxvec.rst
+ create mode 100644 tools/testing/selftests/x86/sigaltstack.c
+
+
+base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+--
+2.17.1
+
