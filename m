@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C789387536
+	by mail.lfdr.de (Postfix) with ESMTP id 98CA8387537
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347985AbhERJej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:34:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58948 "EHLO
+        id S1347951AbhERJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:34:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58958 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347949AbhERJee (ORCPT
+        with ESMTP id S1347957AbhERJef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:34:34 -0400
-Message-Id: <20210518093118.395086573@linutronix.de>
+        Tue, 18 May 2021 05:34:35 -0400
+Message-Id: <20210518093118.505110632@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621330395;
+        s=2020; t=1621330396;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=V/bDG9qNgIKyZrOc6/zeyVIGnDKc6AhtxpbL8tdrgEg=;
-        b=nTMhrM2cWjxRO31M1UWVX24nzEnK2DOZaPrMex1tUmUEEtWVHbqHAeKl2m3kNE4TZdls7m
-        ObFZanUcSWItBDDWqYjAIbw8VxCi4GLRs7BgljMgc1rYKWbgXXvw9WCH4br8XfYSswCvfh
-        AqMYqWbQ4CXK2SGYh9LshwR3sFOvUcbsc2ePaFM7pKrwbt7lqXZBtaF/dww+iIydCYoyOQ
-        qDXBMtx0SYQ7ISf41e+ck5mKeF6NVsrNZByCichqSepZjmAQH3X0sOG/r5NScjFaOKSWGI
-        gEjx5k3oVtlU5851Z/cwT0P/3zBPz5y38fTZd90EvxVsOGg602WZGMRTLEzE7A==
+        bh=b90nAbK3k34HRbQdysTkS+rhjrqZti7oDbJBBGxuaqQ=;
+        b=yr6O4dW4S4G3cbaz5ArdzyFx8YFFGxQwLHqbkXHEudPgeKL/9b6rhieARNz8hD/1Kt+ctE
+        3InNUuinKLGd8H8uFdB8b8P1JnUpuum513+NGCXn0jAlRJ6K8ebKrfjbUaq0A+rQZh3OLh
+        99uBASD3/oOZhdhq/LYSASRZhLzXPBhdQNyTUSgT7ZnoPbmw94jLozCkN4QoV+owwACAXW
+        xVqGfEuZmvTygx5Vpt06GUryDeT0tnJLI+w/jcfhSOKrsGceGhn90Hn/KX9pIZoXQ64ekN
+        Ix+AJ6ybkvmyG3lCx7B0+VXSxdPJWo/6qrEp07Zf+yueW1BNkPftwXczlP93qQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621330395;
+        s=2020e; t=1621330396;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=V/bDG9qNgIKyZrOc6/zeyVIGnDKc6AhtxpbL8tdrgEg=;
-        b=cup5q3qN59BJFgsZj64XE9K5e0LBYILUgKCeyX0o6J8VORqCPT8vfavNXt4QZxdcW89soH
-        G8M2ZIME4scHuzDg==
-Date:   Tue, 18 May 2021 11:17:29 +0200
+        bh=b90nAbK3k34HRbQdysTkS+rhjrqZti7oDbJBBGxuaqQ=;
+        b=0EEEwQglpRuWfTVVpNXrIb7wKLg6twfA8+Umf09EkeIwowpCOd332t/fHLCSXhKcz0mKBZ
+        6oRPVquysbQmDqBQ==
+Date:   Tue, 18 May 2021 11:17:30 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [patch 4/8] perf/arm-dmc620: Use irq_set_affinity()
+Subject: [patch 5/8] perf/arm-dsu: Use irq_set_affinity()
 References: <20210518091725.046774792@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -78,35 +78,46 @@ Cc: Will Deacon <will@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: linux-arm-kernel@lists.infradead.org
 ---
- drivers/perf/arm_dmc620_pmu.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/perf/arm_dsu_pmu.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/perf/arm_dmc620_pmu.c
-+++ b/drivers/perf/arm_dmc620_pmu.c
-@@ -421,7 +421,7 @@ static struct dmc620_pmu_irq *__dmc620_p
- 	if (ret)
- 		goto out_free_aff;
+--- a/drivers/perf/arm_dsu_pmu.c
++++ b/drivers/perf/arm_dsu_pmu.c
+@@ -687,7 +687,7 @@ static void dsu_pmu_probe_pmu(struct dsu
+ static void dsu_pmu_set_active_cpu(int cpu, struct dsu_pmu *dsu_pmu)
+ {
+ 	cpumask_set_cpu(cpu, &dsu_pmu->active_cpu);
+-	if (irq_set_affinity_hint(dsu_pmu->irq, &dsu_pmu->active_cpu))
++	if (irq_set_affinity(dsu_pmu->irq, &dsu_pmu->active_cpu))
+ 		pr_warn("Failed to set irq affinity to %d\n", cpu);
+ }
  
--	ret = irq_set_affinity_hint(irq_num, cpumask_of(irq->cpu));
-+	ret = irq_set_affinity(irq_num, cpumask_of(irq->cpu));
- 	if (ret)
- 		goto out_free_irq;
+@@ -769,7 +769,6 @@ static int dsu_pmu_device_probe(struct p
+ 	if (rc) {
+ 		cpuhp_state_remove_instance(dsu_pmu_cpuhp_state,
+ 						 &dsu_pmu->cpuhp_node);
+-		irq_set_affinity_hint(dsu_pmu->irq, NULL);
+ 	}
  
-@@ -475,7 +475,6 @@ static void dmc620_pmu_put_irq(struct dm
- 	list_del(&irq->irqs_node);
- 	mutex_unlock(&dmc620_pmu_irqs_lock);
+ 	return rc;
+@@ -781,7 +780,6 @@ static int dsu_pmu_device_remove(struct
  
--	WARN_ON(irq_set_affinity_hint(irq->irq_num, NULL));
- 	free_irq(irq->irq_num, irq);
- 	cpuhp_state_remove_instance_nocalls(cpuhp_state_num, &irq->node);
- 	kfree(irq);
-@@ -622,7 +621,7 @@ static int dmc620_pmu_cpu_teardown(unsig
- 		perf_pmu_migrate_context(&dmc620_pmu->pmu, irq->cpu, target);
- 	mutex_unlock(&dmc620_pmu_irqs_lock);
- 
--	WARN_ON(irq_set_affinity_hint(irq->irq_num, cpumask_of(target)));
-+	WARN_ON(irq_set_affinity(irq->irq_num, cpumask_of(target)));
- 	irq->cpu = target;
+ 	perf_pmu_unregister(&dsu_pmu->pmu);
+ 	cpuhp_state_remove_instance(dsu_pmu_cpuhp_state, &dsu_pmu->cpuhp_node);
+-	irq_set_affinity_hint(dsu_pmu->irq, NULL);
  
  	return 0;
+ }
+@@ -840,10 +838,8 @@ static int dsu_pmu_cpu_teardown(unsigned
+ 
+ 	dst = dsu_pmu_get_online_cpu_any_but(dsu_pmu, cpu);
+ 	/* If there are no active CPUs in the DSU, leave IRQ disabled */
+-	if (dst >= nr_cpu_ids) {
+-		irq_set_affinity_hint(dsu_pmu->irq, NULL);
++	if (dst >= nr_cpu_ids)
+ 		return 0;
+-	}
+ 
+ 	perf_pmu_migrate_context(&dsu_pmu->pmu, cpu, dst);
+ 	dsu_pmu_set_active_cpu(dst, dsu_pmu);
 
