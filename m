@@ -2,171 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9656387008
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA069386FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242147AbhERCtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 22:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345610AbhERCtc (ORCPT
+        id S1343494AbhERCfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 22:35:55 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:40257 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhERCfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 22:49:32 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE16C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:48:14 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e14so7804218ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BRkks4605+UoXCWgr/rS+r0/gbRif4B+Nb12472cPkM=;
-        b=EGRnf/dWcD1J6D90hSQhTZm534z305G6fSOkRQZ8l26m0liP6MYzsfNDeo14gZTSek
-         zJHQez0UC3O9rhfxyECwXkN8s8uWmvuJnXSNyNpewsvHnz9dC5Hrg7gFg/rk2Ga9rYOi
-         bXK0By4kDgHUgde+t0LdIIsQMIt04SxCfklwcIN6h+8AcbT8MF6VeaSJXyVIQZqC72jv
-         Vz56n13fYWNLukTwkEYEpo87b2J983tPXuzxMpseNw7EtWIoDEZGlHdC8mlCdNEnT8Aw
-         FjqkVjcL+WmayRZUDKop/tjh/e+a5noeJKbtcN7/neJMFhY12vpuKfNzafv2iApJzlvc
-         c+GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BRkks4605+UoXCWgr/rS+r0/gbRif4B+Nb12472cPkM=;
-        b=h3bGFE9MKQcqdV9ow5rS60EduehC7lP4vdgJQvgzQXfuivit1UeH5RseN3Di8lYvGu
-         JWDfTSog1s8EZ2P0P6tjcKc8pEUYA2S5vwrpOHFPzCGpfWN+0gkluhaoViEzox6IHqIn
-         kC/CXyah3B9RVaK7HIuwvgBDyGSffQXNllKuoVMD7lOX8XYv0xg8HcqU4P5FCXnwAV7f
-         66U+RZ2h5ygXNYcC4q5xP1MyNYm5xaLP5vnaj7frkdhQ07dYOkXRiRaYwe7ekGRvh28T
-         w3Zz/7K3Tb0NfFrZuIOQKe8ZK+TWAkmDV9Nxi1n30Pw+Rp4wjzAMG7kzsgOP6fgrjau+
-         3+tw==
-X-Gm-Message-State: AOAM533n8vQy7XXgc/XrMxicoFC85+hx4hyY55KvGroiEBdgGvK2Dq+D
-        nB7910VzJ/4vHUtmHYOzI3z18dyuPkw6fA==
-X-Google-Smtp-Source: ABdhPJw22/zkz1/TgVaG03mlPKr3hKpRnSstCMcOSyXOdi3X74PyPQdlQSvj2N3vahCgY/SRT/Pqcg==
-X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr2267775ilj.263.1621306093533;
-        Mon, 17 May 2021 19:48:13 -0700 (PDT)
-Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id q5sm9580889ilv.19.2021.05.17.19.48.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 19:48:13 -0700 (PDT)
-Date:   Mon, 17 May 2021 19:48:09 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Dave Taht <dave.taht@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        bloat <bloat@lists.bufferbloat.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [Bloat] virtio_net: BQL?
-Message-ID: <20210517194809.071fc896@hermes.local>
-In-Reply-To: <CAA93jw4bSx=0gnJtNJLeS00ELMgo2Na+t7hYTNL3G3juDFvcNg@mail.gmail.com>
-References: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
-        <CAA93jw6LUAnWZj0b5FvefpDKUyd6cajCNLoJ6OKrwbu-V_ffrA@mail.gmail.com>
-        <CA+FuTSf0Af2RXEG=rCthNNEb5mwKTG37gpEBBZU16qKkvmF=qw@mail.gmail.com>
-        <CAA93jw7Vr_pFMsPCrPadqaLGu0BdC-wtCmW2iyHFkHERkaiyWQ@mail.gmail.com>
-        <20210517160036.4093d3f2@hermes.local>
-        <CAA93jw4bSx=0gnJtNJLeS00ELMgo2Na+t7hYTNL3G3juDFvcNg@mail.gmail.com>
+        Mon, 17 May 2021 22:35:53 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210518023434epoutp0215582af665a63ae877565cac6e987d64~ACI6anNG_1985819858epoutp02-
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:34:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210518023434epoutp0215582af665a63ae877565cac6e987d64~ACI6anNG_1985819858epoutp02-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1621305274;
+        bh=kwVY0w5ghYheMv4Tcly+CPmTc9SqQ00Ru/Vb1zkcDOk=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=W/o3c282+B8+ZxM3Ci3QZYLcwfw88R+jkG6QNLFla7YE9CbClM2V42LoOOTJEeSY4
+         5bllmIKfqaBWb7Gw4OEGS+k1hcOyn5VTsXAvaY7GbwnYRMtDajK2o8E/T852M9cudU
+         dM60ePKEtO9A6Af70uQOcDNFMeJLAIw2oZ/F5mNE=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210518023433epcas1p4b32a9b0fc0c8b24bc30ec3b9723b3705~ACI5spLpQ0673106731epcas1p4-;
+        Tue, 18 May 2021 02:34:33 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Fkg7V0H25z4x9Px; Tue, 18 May
+        2021 02:34:30 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        68.14.09578.3B723A06; Tue, 18 May 2021 11:34:27 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210518023427epcas1p335882bac2e663dbd8ffbf077b64dd316~ACIzxHxET1385313853epcas1p3c;
+        Tue, 18 May 2021 02:34:27 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210518023427epsmtrp19c4ff6305aca1e2a303745f5e95ef315~ACIzwg6fj0315903159epsmtrp1x;
+        Tue, 18 May 2021 02:34:27 +0000 (GMT)
+X-AuditID: b6c32a35-fb9ff7000000256a-1b-60a327b3594c
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A6.9C.08637.3B723A06; Tue, 18 May 2021 11:34:27 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210518023427epsmtip1484ca1087b07e7de829a1f9597ee281e~ACIzk6cSt2029120291epsmtip1d;
+        Tue, 18 May 2021 02:34:27 +0000 (GMT)
+Subject: Re: [PATCH v1 1/1] extcon-intel-mrfld: initialize mrfld_extcon
+ status
+To:     Ferry Toth <ftoth@exalondelft.nl>, linux-kernel@vger.kernel.org
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <d83c8a54-5db8-e1e5-2aa3-6d3065fbeef4@samsung.com>
+Date:   Tue, 18 May 2021 11:52:57 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210424174138.175889-1-ftoth@exalondelft.nl>
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkk+LIzCtJLcpLzFFi42LZdlhTT3ez+uIEg1kfTCx6m6YzWXy+JWZx
+        edccNovbjSvYHFg8ejbfZ/SYdzLQo2/LKkaPz5vkAliism0yUhNTUosUUvOS81My89JtlbyD
+        453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgBYqKZQl5pQChQISi4uV9O1sivJLS1IVMvKL
+        S2yVUgtScgosC/SKE3OLS/PS9ZLzc60MDQyMTIEKE7Iz9tydw1jwW6Dif1MzUwPjW94uRg4O
+        CQETiY+7E7oYuTiEBHYwSvxo3M0K4XxilNiz5QYbhPONUeJDy3/GLkZOsI77u09BJfYySix6
+        95gJwnnPKHHsDkSVsECAxIMdW8BsEQFniV1H97GB2MwCSRKn918Gs9kEtCT2v7gBZvMLKEpc
+        /fEYrJ5XwE7i486PYDaLgKrEs7NtzCC2qECYxMltLVA1ghInZz5hAbE5Bawl7j6/wwoxX1zi
+        1pP5TBC2vMT2t3OYIa7+yS5xa6kihO0isW7ZK1YIW1ji1fEt7BC2lMTL/jYou1pi5ckjYF9K
+        CHQwSmzZfwGqwVhi/9LJTKDAYxbQlFi/Sx8irCix8/dcRoi9fBLvvvawQsKXV6KjTQiiRFni
+        8oO7TBC2pMTi9k62CYxKs5B8MwvJB7OQfDALYdkCRpZVjGKpBcW56anFhgWGyJG9iRGcFrVM
+        dzBOfPtB7xAjEwfjIUYJDmYlEd5PYfMThHhTEiurUovy44tKc1KLDzGaAsN3IrOUaHI+MDHn
+        lcQbmhoZGxtbmBiamRoaKonzpjtXJwgJpCeWpGanphakFsH0MXFwSjUwHa2qrFu1oU5eeImJ
+        qhzTveJ1PaqXA82lrd+EzOhoN5h3O+5hQmtS1QyO7OOxP8r+Zn66xFlZeJfzlV7pF8FAuRc+
+        03Wmb+y5NeNV957d732TjBxvTu2e/mRr1WOfY+wngzYznglv//hH/ueSabUzmFIuSW9Tt2ZS
+        Sv0nKFjyRzT15tRJZkqWPY/Odl5U8siQ+X3W46qOE3vT6pinT+ZUnd1jtuNeo3Lz0RjDUO6K
+        h4oc/AvszJtYL0+dl5HD/an7fxfriXsSQjL2W/kmq31jlhAJl2O8OleH4+Gz1YkXmCTklBb8
+        ET7gHHGSRf5+kUJv05Hwv0VuVg+4AxLW8SVx/Jbbev67ybRyBsUdn8WVWIozEg21mIuKEwFz
+        cTU0FAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLLMWRmVeSWpSXmKPExsWy7bCSnO5m9cUJBlvfc1n0Nk1nsvh8S8zi
+        8q45bBa3G1ewObB49Gy+z+gx72SgR9+WVYwenzfJBbBEcdmkpOZklqUW6dslcGXsuTuHseC3
+        QMX/pmamBsa3vF2MnBwSAiYS93efYuti5OIQEtjNKDFpzX0miISkxLSLR5m7GDmAbGGJw4eL
+        IWreMkpM33eIDaRGWMBP4s2EZawgtoiAs8Suo/vA4swCSRKPmhZBDe1jlNi6fA5Ygk1AS2L/
+        ixtgNr+AosTVH48ZQWxeATuJjzs/gtksAqoSz862MYPYogJhEjuXPGaCqBGUODnzCQuIzSlg
+        LXH3+R1WiGXqEn/mXWKGsMUlbj2ZzwRhy0tsfzuHeQKj8Cwk7bOQtMxC0jILScsCRpZVjJKp
+        BcW56bnFhgWGeanlesWJucWleel6yfm5mxjBMaKluYNx+6oPeocYmTgYDzFKcDArifB+Cpuf
+        IMSbklhZlVqUH19UmpNafIhRmoNFSZz3QtfJeCGB9MSS1OzU1ILUIpgsEwenVAOT/KGpcSuc
+        A62WbLY2vHbmEeM1g55Ssd6vR16FSGy6EnLiQ9EkkdMx4eZ5P8zKs9sLQz0b1LQ2y/27orPb
+        fLPDlVIr7f2C/Se1VjHvSzwUeLmUedOGeKOPJaqPuq/lJfaYTDFrCedkC1kdOk1tw+ab2p1R
+        7m73jG9uVX+c28e+Qu/i9ETp88zHcl83OHCuEygP81wp777noVCtTLin3K2uVN0NH15PNdzA
+        pukafIQ784+Cus+8CF6mL2dfRtRVy5pJmhX/Oa7cG/b+q+J/9X/lCRe9j9zxO337Thd3teP5
+        acdLl+RkLdL2PvDAPSY542h62juuaclrj+nN8wqOfl29cPeyU29/vN6hvTGrNUOJpTgj0VCL
+        uag4EQDHfJ/ZAAMAAA==
+X-CMS-MailID: 20210518023427epcas1p335882bac2e663dbd8ffbf077b64dd316
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210424174208epcas1p2aa4ad71d4450b9995a79e2d378c78865
+References: <CGME20210424174208epcas1p2aa4ad71d4450b9995a79e2d378c78865@epcas1p2.samsung.com>
+        <20210424174138.175889-1-ftoth@exalondelft.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 16:32:21 -0700
-Dave Taht <dave.taht@gmail.com> wrote:
-
-> On Mon, May 17, 2021 at 4:00 PM Stephen Hemminger
-> <stephen@networkplumber.org> wrote:
-> >
-> > On Mon, 17 May 2021 14:48:46 -0700
-> > Dave Taht <dave.taht@gmail.com> wrote:
-> >  
-> > > On Mon, May 17, 2021 at 1:23 PM Willem de Bruijn
-> > > <willemdebruijn.kernel@gmail.com> wrote:  
-> > > >
-> > > > On Mon, May 17, 2021 at 2:44 PM Dave Taht <dave.taht@gmail.com> wrote:  
-> > > > >
-> > > > > Not really related to this patch, but is there some reason why virtio
-> > > > > has no support for BQL?  
-> > > >
-> > > > There have been a few attempts to add it over the years.
-> > > >
-> > > > Most recently, https://lore.kernel.org/lkml/20181205225323.12555-2-mst@redhat.com/
-> > > >
-> > > > That thread has a long discussion. I think the key open issue remains
-> > > >
-> > > > "The tricky part is the mode switching between napi and no napi."  
-> > >
-> > > Oy, vey.
-> > >
-> > > I didn't pay any attention to that discussion, sadly enough.
-> > >
-> > > It's been about that long (2018) since I paid any attention to
-> > > bufferbloat in the cloud and my cloudy provider (linode) switched to
-> > > using virtio when I wasn't looking. For over a year now, I'd been
-> > > getting reports saying that comcast's pie rollout wasn't working as
-> > > well as expected, that evenroute's implementation of sch_cake and sqm
-> > > on inbound wasn't working right, nor pf_sense's and numerous other
-> > > issues at Internet scale.
-> > >
-> > > Last week I ran a string of benchmarks against starlink's new services
-> > > and was really aghast at what I found there, too. but the problem
-> > > seemed deeper than in just the dishy...
-> > >
-> > > Without BQL, there's no backpressure for fq_codel to do its thing.
-> > > None. My measurement servers aren't FQ-codeling
-> > > no matter how much load I put on them. Since that qdisc is the default
-> > > now in most linux distributions, I imagine that the bulk of the cloud
-> > > is now behaving as erratically as linux was in 2011 with enormous
-> > > swings in throughput and latency from GSO/TSO hitting overlarge rx/tx
-> > > rings, [1], breaking various rate estimators in codel, pie and the tcp
-> > > stack itself.
-> > >
-> > > See:
-> > >
-> > > http://fremont.starlink.taht.net/~d/virtio_nobql/rrul_-_evenroute_v3_server_fq_codel.png
-> > >
-> > > See the swings in latency there? that's symptomatic of tx/rx rings
-> > > filling and emptying.
-> > >
-> > > it wasn't until I switched my measurement server temporarily over to
-> > > sch_fq that I got a rrul result that was close to the results we used
-> > > to get from the virtualized e1000e drivers we were using in 2014.
-> > >
-> > > http://fremont.starlink.taht.net/~d/virtio_nobql/rrul_-_evenroute_v3_server_fq.png
-> > >
-> > > While I have long supported the use of sch_fq for tcp-heavy workloads,
-> > > it still behaves better with bql in place, and fq_codel is better for
-> > > generic workloads... but needs bql based backpressure to kick in.
-> > >
-> > > [1] I really hope I'm overreacting but, um, er, could someone(s) spin
-> > > up a new patch that does bql in some way even half right for this
-> > > driver and help test it? I haven't built a kernel in a while.
-> > >  
-> >
-> > The Azure network driver (netvsc) also does not have BQL. Several years ago
-> > I tried adding it but it benchmarked worse and there is the added complexity
-> > of handling the accelerated networking VF path.  
+On 4/25/21 2:41 AM, Ferry Toth wrote:
+> extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
+> DRD to detect a change in the switch position. This change initializes the
+> status at probe time.
 > 
-> I certainly agree it adds complexity, but the question is what sort of
-> network behavior resulted without backpressure inside the
-> vm?
+> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
+> ---
+>  drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> What sorts of benchmarks did you do?
+> diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
+> index f47016fb28a8..cd1a5f230077 100644
+> --- a/drivers/extcon/extcon-intel-mrfld.c
+> +++ b/drivers/extcon/extcon-intel-mrfld.c
+> @@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+>  	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
+>  	struct regmap *regmap = pmic->regmap;
+>  	struct mrfld_extcon_data *data;
+> +	unsigned int status;
+>  	unsigned int id;
+>  	int irq, ret;
+>  
+> @@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+>  	/* Get initial state */
+>  	mrfld_extcon_role_detect(data);
+>  
+> +	/*
+> +	 * Cached status value is used for cable detection, see comments
+> +	 * in mrfld_extcon_cable_detect(), we need to sync cached value
+> +	 * with a real state of the hardware.
+> +	 */
+> +	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
+> +	data->status = status;
+> +
+>  	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
+>  	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
+>  
 > 
-> I will get setup to do some testing of this that is less adhoc.
 
-Less of an issue than it seems for must users.
+Looks good. But need to change the patch title as following:
+I can change the patch title before merge. But, this fixes patch
+should be applied to both extcon tree and stable tree.
+So that the author better to change the patch title to keep
+the consistent patch title naming as following:
 
-For the most common case, all transmits are passed through to the underlying
-VF network device (Mellanox). So since Mellanox supports BQL, that works.
-The special case is if accelerated networking is disabled or host is being
-serviced and the slow path is used. Optimizing the slow path is not that
-interesting.
+If possible, need to specify what to fix on title for the readability.
+IMO, this patch title doesn't seems the fix patch.
 
-I wonder if the use of SRIOV with virtio (which requires another layer
-with the failover device) behaves the same way?
+- before : extcon-intel-mrfld: initialize mrfld_extcon status
+- after : extcon: intel-mrfld: Initialize mrfld_extcon status
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
