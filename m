@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D3E388077
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1862C38807A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351837AbhERTYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        id S1351845AbhERTZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351817AbhERTY1 (ORCPT
+        with ESMTP id S245320AbhERTZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:24:27 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D6FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:23:09 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id j30so10121403ila.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:23:09 -0700 (PDT)
+        Tue, 18 May 2021 15:25:43 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2EDC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:24:25 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id p6so5658894plr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CXi9ZJTQ7L7FSHgEGdvSYj+oXb2IqANDPyavbrcuBn4=;
-        b=E3AGjHlTYVk7+nTSuYrNsectzZCPRKmUEnWS96aPpztrVrJlWneXFE+XFLJ1VNLUfC
-         aMfrnR7HCcW33p6XEaTVTZhd5cSLZL96EdwyIF/9tTmKrywDDNL46dzlUwl0mk5CsX7E
-         DcErxGTiPwnpLdOTcZdFpOoMJ6M6o2QWdvSGZeW3qeSg6vUJYcCsGN3N+41wj/CS9V1Q
-         JadECSjVTJli/NAxJz2H67r2Y39ygVHZSijyjghCz9DYFJ+QnhFNLq/teYKQMvFFmEWW
-         WNK7ywVnwY3UuSao5HRkSQeU8VrQKG4CWf/hRzuuFWOWqEXlocJBdo4l1e6y2FWhB3A8
-         KU+g==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r5Jk+9Ja+kn0VHFuLnbq34Qrw9ShVEHa6rhQvetZyQY=;
+        b=W2or1ahYnIFqgo0AiCmxrnFPCtu43CiGXJ6jy7l9dWtdlzjQ1+AxotfO+umlsoOdWW
+         2vse/gU6FAjBWawxyMBSuI+wZ93MVdfknmitBW1A1XIoqE6iQ9/FjqgvN5m15EOWvW59
+         PnX9x/0BI+A/1LZ0HyApBzpjfhStcel35joRAOJ642HSOwPe48wHvuIfdcV1NDaNUDbG
+         5h1N36k4zHIV+DYydxjsAFlEhkgdGuhvK40NJliLNyvT3CLN/qNRoJs5i8KOb2F7wH06
+         8E1IUoED+G5IWd5XdtGhQ0wq9YBMacdQW+5qpEAkGdhrNr6GTucqTQjFQCFENdoyg77p
+         nUTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CXi9ZJTQ7L7FSHgEGdvSYj+oXb2IqANDPyavbrcuBn4=;
-        b=Wk4BjtAW+aCvJ+lujXfAC1EHWPnYAYBuQZNMT0a/MfgKAnp6WYiI+89USopKFwPNeY
-         A1zHcgMv1Jf2I3FgtV3T7CnkhOtBD/ZwzkWesJwch4GRwn5Ld5sDWWkJa0z/QPAbWnRT
-         O/r7tFeGMiyVdEUi/o25JdNj+Hb52JNVdSLwKhXKUjeBpHw0MzMtRwjfHULk43AspRnX
-         pzYTfipZRHbfKpiIcluhSawGzzGemKSVSEjUhgqHAaADRQpi4AyxJoL5WKODMHwBBoqU
-         eFdYYimkwAEhJiaTrpp8OsGJ5BlqgCxJo3pXqgzTBl7vcKw3qbii2A9y9Fp5LO+DJFrN
-         Fk2g==
-X-Gm-Message-State: AOAM532QY7g2FK+wDklvdlAe+h1toxEn38HI7QGdJlrLcPmiBTloXvV9
-        5BKWv5XQXxLd3w1H60zh0dlXPMsq6OCbQeh8mbnjhiwMnRteefJU
-X-Google-Smtp-Source: ABdhPJxDRkz/qvYqPjNf13OqweXH5naZq3dR8WAuBzqxGMF0MCERef4c4fo4ta4aVrcHwj4MgRizjmQVHKYs+LX1Opg=
-X-Received: by 2002:a92:4446:: with SMTP id a6mr6088757ilm.9.1621365788410;
- Tue, 18 May 2021 12:23:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r5Jk+9Ja+kn0VHFuLnbq34Qrw9ShVEHa6rhQvetZyQY=;
+        b=jCTW1p1/4wfNPfaYNbh+k5m5eaweLxN7z/nbubPNcgK/21igp1EQIAmMRT0yol1ZsC
+         9Ot5SO0ZOzBVA5hq57kgoEBtKUFVigvyuQbp/pB/ZuQOeeAQXF4N0soxFYMXGjL7dTQS
+         fiagYeEZ094PQMDandTF6Sl3prtuAwnmd0IV1OA3EF5jrzsOWTy8xLMJbLp9SP/DzpQA
+         dJCSAxXKmhWhrI4FyVbjok93IUq2wof7hSsKIWed7sc5602hjDiIxA8ItBItGyHIjR0u
+         4Lq4iXkBi9IiH+yYR+kiydmc5S9DML7XNwQf6hvEyzJd5sr1GgRUOkSiPd+pMsDaDu2w
+         3R6A==
+X-Gm-Message-State: AOAM530M5QYHfQPp+JaSronDhh/+7hh6S95TwUUl+wyDlzR7D0retzoD
+        RubOHXaO3D3fKLYYQ1U+T6lFdQ==
+X-Google-Smtp-Source: ABdhPJxc3ZNUABU74g4MkROq1xAEn6f0RnT3SGzwbKXOjV5nZA5lW+lo8QCbwlhpEDeLu0oG/tWc7A==
+X-Received: by 2002:a17:902:dac9:b029:f2:bda7:a4b8 with SMTP id q9-20020a170902dac9b02900f2bda7a4b8mr6229831plx.15.1621365864386;
+        Tue, 18 May 2021 12:24:24 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id o9sm13652828pfh.217.2021.05.18.12.24.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 12:24:23 -0700 (PDT)
+Date:   Tue, 18 May 2021 19:24:20 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
+ disabled in the guest
+Message-ID: <YKQUZF8Ejxh7Eytg@google.com>
+References: <20210504171734.1434054-1-seanjc@google.com>
+ <20210504171734.1434054-4-seanjc@google.com>
+ <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
+ <YJHCadSIQ/cK/RAw@google.com>
+ <1b50b090-2d6d-e13d-9532-e7195ebffe14@redhat.com>
+ <CALMp9eSSiPVWDf43Zed3+ukUc+NwMP8z7feoxX0eMmimvrznzA@mail.gmail.com>
+ <4a4b9fea4937da7b0b42e6f3179566d73bf022e2.camel@redhat.com>
+ <YJlluzMze2IfUM6S@google.com>
+ <1245ad2f-78b2-a334-e36a-524579274183@redhat.com>
 MIME-Version: 1.0
-References: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
-In-Reply-To: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Tue, 18 May 2021 12:22:57 -0700
-Message-ID: <CAA5qM4BWkSTwSz4PCcn4WOKFFjVaFuZ+Jz-EqTAGdVV_42Y0BA@mail.gmail.com>
-Subject: Re: misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1245ad2f-78b2-a334-e36a-524579274183@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:32 AM Colin Ian King
-<colin.king@canonical.com> wrote:
->
-> Hi,
->
-> Static analysis on linux-next with Coverity has detected an issue in
-> drivers/misc/cardreader/alcor_pci.c in function
-> alcor_pci_init_check_aspm  with the following commit:
->
-> commit 3ce3e45cc333da707d4d6eb433574b990bcc26f5
-> Author: Tong Zhang <ztong0001@gmail.com>
-> Date:   Thu May 13 00:07:33 2021 -0400
->
->     misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
->
-> The analysis is as follows:
->
-> 135 static void alcor_pci_init_check_aspm(struct alcor_pci_priv *priv)
-> 136 {
-> 137        struct pci_dev *pci;
-> 138        int where;
-> 139        u32 val32;
-> 140
-> 141        priv->pdev_cap_off    = alcor_pci_find_cap_offset(priv,
-> priv->pdev);
-> 142        /*
-> 143         * A device might be attached to root complex directly and
-> 144         * priv->parent_pdev will be NULL. In this case we don't
-> check its
-> 145         * capability and disable ASPM completely.
-> 146         */
->
->    1. Condition !priv->parent_pdev, taking true branch.
->    2. var_compare_op: Comparing priv->parent_pdev to null implies that
-> priv->parent_pdev might be null.
->
-> 147        if (!priv->parent_pdev)
->
->    Dereference after null check (FORWARD_NULL)
->    3. var_deref_model: Passing null pointer priv->parent_pdev to
-> alcor_pci_find_cap_offset, which dereferences it.
->
-> 148                priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
-> 149
-> priv->parent_pdev);
->
-> When !priv->parent_pdev is true, then priv->parent_pdev is NULL and
-> hence the call to alcor_pci_find_cap_offset() is dereferencing a null
-> pointer in the priv->parent_pdev argument.
->
-> I suspect the logic in the if statement is inverted, the ! should be
-> removed. This seems too trivial to be wrong. Maybe I'm missing something
-> deeper.
+On Tue, May 18, 2021, Paolo Bonzini wrote:
+> On 10/05/21 18:56, Sean Christopherson wrote:
+> > On Mon, May 10, 2021, Maxim Levitsky wrote:
+> > > On Tue, 2021-05-04 at 14:58 -0700, Jim Mattson wrote:
+> > > > On Tue, May 4, 2021 at 2:57 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > > > > On 04/05/21 23:53, Sean Christopherson wrote:
+> > > > > > > Does the right thing happen here if the vCPU is in guest mode when
+> > > > > > > userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
+> > > > > > > off?
+> > > > > > I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
+> > > > > > you specifically mean running in L2?
+> > > > > > 
+> > > > > 
+> > > > > Guest mode should mean L2.
+> > > > > 
+> > > > > (I wonder if we should have a capability that says "KVM_SET_CPUID2 can
+> > > > > only be called prior to KVM_RUN").
+> > > > 
+> > > > It would certainly make it easier to reason about potential security issues.
+> > > > 
+> > > I vote too for this.
+> > 
+> > Alternatively, what about adding KVM_VCPU_RESET to let userspace explicitly
+> > pull RESET#, and defining that ioctl() to freeze the vCPU model?  I.e. after
+> > userspace resets the vCPU, KVM_SET_CPUID (and any other relevant ioctls() is
+> > disallowed.
+> > 
+> > Lack of proper RESET emulation is annoying, e.g. userspace has to manually stuff
+> > EDX after vCPU creation to get the right value at RESET.  A dedicated ioctl()
+> > would kill two birds with one stone, without having to add yet another "2"
+> > ioctl().
+> 
+> That has a disadvantage of opting into the more secure behavior, but we can
+> do both (forbidding KVM_SET_CPUID2 after both KVM_RUN and KVM_RESET).
 
-Hi Colin,
-Thanks for pointing that out.
-You are right. I made a terrible mistake here while refactoring the patch. :'(
-I think I need to get away from this thing for a while and have some rest.
-- Tong
-
-
->
-> Colin
->
+Doesn't changing KVM_SET_CPUID2 need to be opt-in as well, e.g. if the strict
+behavior is activated via a capability?
