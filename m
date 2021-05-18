@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4733879F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253103879F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349589AbhERNaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:30:19 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:35483 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349499AbhERNaR (ORCPT
+        id S1349597AbhERNag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349590AbhERNaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:30:17 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 112361363;
-        Tue, 18 May 2021 09:28:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 18 May 2021 09:28:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=ga/TZj/5vAgtR0dCH9rcrEvjoBQ
-        +Qmj6N01DxKSJ5Hg=; b=j4U/88rHJ4axiebD9NMyOxDn7M+yhUnvt/EmDkwSyBa
-        esQ4fFKuE08eF7T+C34PKg3xxwe5uSklju7N5xhg1hmTpYYQKwgtvLPnWnFIALfL
-        shW44ftnfabTj9n6b/fI40tc8pRWzJEHD8s5YuZ36RuUGRIsheFKE+uO45lXKTul
-        /PE1dqbnb6mRbLsaYKsPdosXL4CbuadpovqMhFefdzmxJsA1l3dxZxFG9vVUtQU6
-        95A8cyvQ8KAXO3uZwSOdEb8on1m1IoDLBc0Oa8KJpB1Qdfz6dNd9DHGSHGm/Rby7
-        MBhsN/DHx+hwI+z59SNHzN1BtgFNHiHlKVGxcSYRXRg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ga/TZj
-        /5vAgtR0dCH9rcrEvjoBQ+Qmj6N01DxKSJ5Hg=; b=jvNPXILWdiAiOeWhZ+ZG+E
-        gKUTpQteePibi7OTTwubqTzpzJ69i7xoHwDXvwwxsbCHYEqDrC5WX0zvmp2FyO1+
-        gkOdAawhDCb4Ukqln1c7us1YoHpLGws00fUFoEpFhdRgb28lXbfp5BVzUsDDnwCh
-        28t6mvwLdpEEo6gvqrYGyIRF5sZjYofOsvsJPpZy/tAdFsZonGrFw6ls2WdkxasC
-        dPtxInNry9fHE2RWnpQ9X0pExERdBh7K0pL8x49Z6Nf38OTkZJBYOIY7mfuNKzIu
-        +GPOp2/Nr23cNBASQ1pOOCTMUBabxfXShV1RU9B4sF1T4d5EB5vmT7xlQIu2XIVQ
-        ==
-X-ME-Sender: <xms:GMGjYK0AZm8YXmKNxEpqrbkh2QgwZlf9V9W-xZRuqPsuCLJTMwQzrw>
-    <xme:GMGjYNHTewBE0VFSvMvCY2TtHBGE_4ut4Q0dWbZUubEappvr3_8_ls1GIlKBaonQh
-    gUcf35Ly2mzJA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:GMGjYC5OE-_cJE9y5q1B4jmww8PDf4IxbW3To-fYGIrErxGCS5jfBA>
-    <xmx:GMGjYL0JwV4Wgsj8YmNiWNuT6F1W5sooRFxGKy6mfsACQltEsNkTSg>
-    <xmx:GMGjYNG3cONNLLc1qjIki9gtGv-KfSSS_m7ghUhS_wQlL8QDiqIz6w>
-    <xmx:GcGjYBKnBlv8sjEjjIllqK7bSLavDFBR8_TGvLxxp7iX9xa416Mo_SHEW_I>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 18 May 2021 09:28:56 -0400 (EDT)
-Date:   Tue, 18 May 2021 15:28:54 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        glittao@gmail.com, vinmenon@codeaurora.org
-Subject: Re: [PATCH v6] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <YKPBFn26BlPJZn0t@kroah.com>
-References: <1621341949-26762-1-git-send-email-faiyazm@codeaurora.org>
+        Tue, 18 May 2021 09:30:35 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C87C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:29:17 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id s4so3523274plg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+9uUXCGM1WRSLZSKiMJRcVlxa7yFZ11QeqDeoqK0ih0=;
+        b=VkJlo6aDzmgedwuPJlD6/sR6xRtHX9hlA6a/sT70kxM2CZtzJyB8E/1f/uuQQL72jM
+         RgSd6CTnJ2B8mkWBWA7T0biB/qWptdVWJ9CR01MoM8wSemX4pQcuioxOoGD8iMwxSqVl
+         XQ+vV6CHG6cLAKBc+U65HZA+xTQ50ElmVQg9XEpUUFRoAx/RBNP8hb8+iQcsNgRNVq+O
+         1C3RmUqfsqY3k3SB4L/KTblMT6dkmnA3dGlpLD0OyZ9iqFadqbftsKmdSguz3nBHpHTP
+         1xWuNf7DlOd8Pt6G6kasTA8SpWbuGGeOJpGdag8TzGjNPizBOaQxbraSgTAundfiJsDM
+         4Wbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+9uUXCGM1WRSLZSKiMJRcVlxa7yFZ11QeqDeoqK0ih0=;
+        b=ru5WPdJh/v9oXSiZN6YN8GMi+QT9FMYww64CF0JSiWGktTxf3v4P39z4THjvZd5DHb
+         CEAYruIbN3R/Ylm0u3u6PclURhv/ENLhssPlZvFemOv4SjNPZu2qkVKGNIPLldHwSJ5h
+         Xg3s40IVWeTSsenRSxf+x0czSuqOEjm5ChTP6whpGCLlb3bUjo+J1aaTBfdpUaeTvt2Q
+         KLzWn+HXr+2X6BjQ4Bn3AqXWyqhIBml/e4F7Z00NryMwL0HSD9h4mwKG9lH4Ry4KP6++
+         wU9fejzIVFPCTsCahTCJYhpB5VBnC5YZTgdZGSuRqoZV4QhKP7TpmXugHwHDUfC0dcR0
+         bLGg==
+X-Gm-Message-State: AOAM532tg1QmVQGmzMBh9/dyeXzZwB+6qjOZ+aUbag846m8Ozjk0grxb
+        FBX1RHMwH/VOAeu4BuSqKcJQhrGSdeIyBbuT9sVWNA==
+X-Google-Smtp-Source: ABdhPJyiRloyNEJhG1wQmfsOk1IFKsu7S1Qi/FL145KCqHGpn79hzewNqDX8wpkVthQLJYRuP/xASf05ED/bn9leiOU=
+X-Received: by 2002:a17:902:4:b029:ee:8f40:ecbf with SMTP id
+ 4-20020a1709020004b02900ee8f40ecbfmr4596509pla.28.1621344556939; Tue, 18 May
+ 2021 06:29:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621341949-26762-1-git-send-email-faiyazm@codeaurora.org>
+References: <YKOGogHasIyvF8nj@mwanda> <CAG3jFytpOb8KeNCjCJ7gq20LQK3UGA9PgGne+cR2kZdADS-Oxg@mail.gmail.com>
+In-Reply-To: <CAG3jFytpOb8KeNCjCJ7gq20LQK3UGA9PgGne+cR2kZdADS-Oxg@mail.gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 18 May 2021 15:29:06 +0200
+Message-ID: <CAG3jFytF9KToiQcNZpiVz7T-uAx6gHDcxSnc6MH7d3bqpWWz8Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: fix a ternary type promotion bug
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 06:15:49PM +0530, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
-> 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
-> 
-> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-> to be inline with what it does.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
-> ---
->  include/linux/slub_def.h |   8 ++
->  mm/slab_common.c         |   9 ++
->  mm/slub.c                | 359 ++++++++++++++++++++++++++++++++++++-----------
->  3 files changed, 294 insertions(+), 82 deletions(-)
+Since it fixes drm-misc-next, applied it there instead.
 
-If this is v6, what happened in v1-5?  That should always be below the
---- line, right?
-
+On Tue, 18 May 2021 at 15:20, Robert Foss <robert.foss@linaro.org> wrote:
+>
+> Hey Dan,
+>
+> Thanks for submitting this.
+>
+> On Tue, 18 May 2021 at 11:20, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > The ti_sn_aux_transfer() function returns ssize_t (signed long).  It's
+> > supposed to return negative error codes or the number of bytes
+> > transferred.  The "ret" variable is int and the "len" variable is
+> > unsigned int.
+> >
+> > The problem is that with a ternary like this, the negative int is first
+> > type promoted to unsigned int to match "len" at this point it is a high
+> > positive value.  Then when it is type promoted to ssize_t (s64) it
+> > remains a high positive value instead of sign extending and becoming a
+> > negative again.
+> >
+> > Fix this by removing the ternary.
+> >
+> > Fixes: b137406d9679 ("drm/bridge: ti-sn65dsi86: If refclk, DP AUX can happen w/out pre-enable")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > index bb0a0e1c6341..45a2969afb2b 100644
+> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > @@ -1042,7 +1042,9 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+> >         pm_runtime_mark_last_busy(pdata->dev);
+> >         pm_runtime_put_autosuspend(pdata->dev);
+> >
+> > -       return ret ? ret : len;
+> > +       if (ret)
+> > +               return ret;
+> > +       return len;
+> >  }
+> >
+>
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+>
+> Applying to drm-misc-fixes.
