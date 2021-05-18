@@ -2,86 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60B0388202
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA6E388206
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352436AbhERVUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        id S1352460AbhERVUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235250AbhERVUW (ORCPT
+        with ESMTP id S1352440AbhERVUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:20:22 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DC9C061573;
-        Tue, 18 May 2021 14:19:03 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id q6so5743160qvb.2;
-        Tue, 18 May 2021 14:19:03 -0700 (PDT)
+        Tue, 18 May 2021 17:20:46 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35F5C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:19:27 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id k19so8387378pfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NE7MehZ3cnf48W0y5DyNbLG5th3aneIv/zQnI0Su8/8=;
-        b=HG3dfUvL30ZKhTEyiY/xo47XeUq+622wqmOd2tmUjG79cl3jGfyCgrIY0VoNKDUDH8
-         CA8wp/L6hmcTO6cae5A0Eg5+zPN+RH8qSjSbar0lXuCNoS9M+UgeGeY14cI0fX3U3yPm
-         mRwrHCQOeDwc1CTl9LMJD7thJn0U3of1i9qoaRfoZ4Vu2zw7QB1W0AVq704VHZEVVeox
-         +VC09JzOEJxNMEF9kN90VFiR4Z7QZhWw7GYxjDoqcWxj3PEMID/WkBWCs/vlGXZDFUX9
-         aU7CQ/Ef0goO8d3xpKBxjETghVHmGIKuOOSe+/8m75D+aQNg3UpnSGxNstV0BpJLARnm
-         JxCA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0WkbtRSug5KygkEOcSY00slsWucZ8pGUhHWfcZvJLw=;
+        b=XoJTI+h6COw5nb4jNXCTBjTFUxOWTdZPBsDhW1Vf5td+5titolSU5hwv0P5QyvJ36G
+         +86v7ei0+4gD2Gm6e36pye7sr3DWPDnoF+3e57cxlVxRb/ij4tTdNGoGQcoHR0VmQmFB
+         tTRcMD7Qxn4jPS6/sUFRfoDJc2iYEUEGZboioaT5lVKyiMrACIGwlYDlCzlynSbEEvMc
+         bGKqmeGo/ICR02ASBae5INu4+FrYCZ4tw1xSz2W8DZtry+lL/4gCZBAqb8CAaRD+feb7
+         /asuJN5NVOjHTir3u8XDI0jW0ewNgV8zxqTKWm+RCha+SxkufsoiuCeD9LIfeLnDMaEE
+         YjQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=NE7MehZ3cnf48W0y5DyNbLG5th3aneIv/zQnI0Su8/8=;
-        b=mztwVfV1grE5s3yV2pe/IlNUNel4XU/Ab7GDJPT5cCNHOD10oKehPy8FO1Y481a77/
-         UK4IoWy3vlDypRYl1RaAjTjol9/ObVSeORZjNOwhAgiZau0PdJYDdMpKxflJ2nw9bgR0
-         iFbsCX+WVsXkjeeMl+p2Fs3+JEC8IX31LFrWirPxfTI4HiFTadgoTm+XPw91sWFrK12r
-         hs+4MzSF72LXJlm+4WvwvcZPfdnrzJVK1df7+CGI0Sr5c9/0Sytqff3GuTAfHrIBxPH/
-         fNxDJY8qresjtQg0VyQ+TVjW9DMOypgh6cQxi0Y2gbTaiUImZg6u9ooXqXkfVPhlYd9d
-         BjdQ==
-X-Gm-Message-State: AOAM533R0cX8CpOO0SCpqrvKg9NyPStZ6bX+aR4Qb7KqyWAOu5V/kbjA
-        C2zNqqE8UndNxDXJ/2OnZvo=
-X-Google-Smtp-Source: ABdhPJwXp9Tijg0g1GrpN7FBxp0NHUymEa/dvuklf5/x0Sq5AkKNgOrFcWrLZWxbmL3Hhn2Kyk6vcw==
-X-Received: by 2002:a0c:e1d1:: with SMTP id v17mr8563818qvl.52.1621372742816;
-        Tue, 18 May 2021 14:19:02 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m21sm2391882qtu.11.2021.05.18.14.19.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0WkbtRSug5KygkEOcSY00slsWucZ8pGUhHWfcZvJLw=;
+        b=OTxz3PHTk2H3I4lti7gI+hQlizkuT53dJBOGQUbheXOWDUTxtW+a4VVxmoN+qqIZLK
+         R/khaqCKWnkMFPYwGUXU8QIDbMtDOzvRq8X9KR+zG6FGz0LOFJa9m9wL9Wye8YJpMhq+
+         nFlIOq1BzH0SY+5/mRZNhBiWWG4p+ui6wzdTOUVTUJQ7fVKxoPVtTfF3mhYxsRpB5Lpk
+         SICTbP4j4zOxDGvuWsQrBybuECqmAWNuG+h2jHgDbjpebRwvwHGv2PD2VOSRanUGkHWO
+         bLyByes5i9frQ1OD5VXlKYaYugTV00PK9RhSOAs76hKQ8x9TZRXqjGLVXA2NS8hWgYw3
+         PUuw==
+X-Gm-Message-State: AOAM532SdSDnltY6T4jae+NeBxDy7Qhyy9Poc4hd/ehEwUnZrYRf4IiU
+        lHKExm5Z8Kv9WO5GeOZoefWobkxywkiumg==
+X-Google-Smtp-Source: ABdhPJxHzgg/sDP+AXuLGVUb+sszrOlNtS/1ESyTlJlqL+kEGm+M9oruAN8GSnqVJZjl79LXwnDIqg==
+X-Received: by 2002:a63:f40e:: with SMTP id g14mr7070371pgi.402.1621372766908;
+        Tue, 18 May 2021 14:19:26 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id g89sm2587199pjg.30.2021.05.18.14.19.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 14:19:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 18 May 2021 14:19:01 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/141] 5.4.120-rc1 review
-Message-ID: <20210518211901.GA3533378@roeck-us.net>
-References: <20210517140242.729269392@linuxfoundation.org>
+        Tue, 18 May 2021 14:19:26 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>, Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-gpio@vger.kernel.org, John Stultz <john.stultz@linaro.org>
+Subject: [PATCH 1/2] irqchip/qcom-pdc: Switch to IRQCHIP_PLATFORM_DRIVER and allow as a module
+Date:   Tue, 18 May 2021 21:19:21 +0000
+Message-Id: <20210518211922.3474368-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 04:00:52PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.120 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 19 May 2021 14:02:20 +0000.
-> Anything received after that time might be too late.
-> 
+From: Saravana Kannan <saravanak@google.com>
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 428 pass: 428 fail: 0
+This patch revives changes from Saravana Kannan to switch the
+qcom-pdc driver to use IRQCHIP_PLATFORM_DRIVER helper macros,
+and allows qcom-pdc driver to be loaded as a permanent module.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Earlier attempts at this ran into trouble with loading
+dependencies, but with Saravana's fw_devlink=on set by default
+now we should avoid those.
 
-Guenter
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Maulik Shah <mkshah@codeaurora.org>
+Cc: Lina Iyer <ilina@codeaurora.org>
+Cc: Saravana Kannan <saravanak@google.com>
+Cc: Todd Kjos <tkjos@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: iommu@lists.linux-foundation.org
+Cc: linux-gpio@vger.kernel.org
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+[jstultz: Folded in with my changes to allow the driver to be
+ loadable as a permenent module]
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/irqchip/Kconfig    | 2 +-
+ drivers/irqchip/qcom-pdc.c | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index b90e825df7e14..d4a0b4964ccc5 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -415,7 +415,7 @@ config GOLDFISH_PIC
+          for Goldfish based virtual platforms.
+ 
+ config QCOM_PDC
+-	bool "QCOM PDC"
++	tristate "QCOM PDC"
+ 	depends on ARCH_QCOM
+ 	select IRQ_DOMAIN_HIERARCHY
+ 	help
+diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+index 5dc63c20b67ea..32d59202d408d 100644
+--- a/drivers/irqchip/qcom-pdc.c
++++ b/drivers/irqchip/qcom-pdc.c
+@@ -11,9 +11,11 @@
+ #include <linux/irqdomain.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_device.h>
++#include <linux/of_irq.h>
+ #include <linux/soc/qcom/irq.h>
+ #include <linux/spinlock.h>
+ #include <linux/slab.h>
+@@ -459,4 +461,8 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
+ 	return ret;
+ }
+ 
+-IRQCHIP_DECLARE(qcom_pdc, "qcom,pdc", qcom_pdc_init);
++IRQCHIP_PLATFORM_DRIVER_BEGIN(qcom_pdc)
++IRQCHIP_MATCH("qcom,pdc", qcom_pdc_init)
++IRQCHIP_PLATFORM_DRIVER_END(qcom_pdc)
++MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
++MODULE_LICENSE("GPL v2");
+-- 
+2.25.1
+
