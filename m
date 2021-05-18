@@ -2,161 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57153873CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE813873D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347420AbhERIPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:15:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:11498 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242198AbhERIPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:15:00 -0400
-IronPort-SDR: +rXcNqY2VF07+JHK/bldMdVcq6MjVzvGYWagfi3PLz+A6yIqr3oNy1jFQXNVk7MePI5NUpcYl+
- 6n+ZcWX7X4qQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200350191"
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="200350191"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:13:42 -0700
-IronPort-SDR: DDc3bdMAKnR4RyF+G1GbXBza8dsSJItYN8ny3BQx+KVhdkw14oSIKHv6AHZFsyDBHka+ZPoHrS
- 6it0w3hbZzCg==
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="472841391"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:13:36 -0700
-Subject: Re: [PATCH v6 06/16] KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation
- for extended PEBS
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-7-like.xu@linux.intel.com>
- <YKIqbph62oclxjnt@hirez.programming.kicks-ass.net>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <69c3b712-0e6b-65d9-a0f9-40d939cd9d54@intel.com>
-Date:   Tue, 18 May 2021 16:13:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1346059AbhERIUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239422AbhERIUM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 04:20:12 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1D5C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 01:18:53 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id e14so8363506ils.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 01:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=KhBDYN36mMdDZMChy3oSo4Q7igi1mbz6A7Ub9Golb6tnDaeHj82e383w9q+2ykym+7
+         MuZSrn1cIYE3+26AobLk3LSpTvn13czAanUS70vGMGzMQrd0gw64mfe4WecKeuOzMXj/
+         noL/YdXPb/FqdnOIRA3i3bogxLAb//RnUYiUtQ9fNIpFC6Z+V2Wf/m2yhSmdYbIG62+e
+         IqWif4xK2RhoxlSSA3cIesR8nRat6LIsN/+HPQqb/fWlDFW5X8GzfeyIP6LO+5M0A0QS
+         1rYEwezhr+iAbTpN4BF9xbbXR2B6tcUirrHrweUb74lO6hu8eE7VLn6k1GNmWUGWvUhk
+         S5kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=ksULTzJlIWImIvLpoZT0JhKqouSvqP7C3INv5tSEdr0YXLs1hlmltjdD/MEDDf4geA
+         r+Xukhqs2yXnF0MpTIQR7FlhExRGd+k8btma68eXRB6PXIrBRy7mFNq20YtR2pXnfulo
+         pGVwAOXfPQFsLe6QyDof789vDYoByi1tDmVbznV1svzudr7pRWvQjykX5CteRZhWwcbH
+         wP9R2yOg2fgRIWKRrBRJIfPv2xTAsRZm3AA3NmVXSOy2Fc6qlsmuDbNuKIAM3XdFdYia
+         RaX8XH2+N8+AFRLqrDTytuqwcNUpwQ0Zn4XfEH2qK8SkcBt583yIzyZ8+XaH9tgLVNFV
+         AFGA==
+X-Gm-Message-State: AOAM533DGKvwBSgWrY5jONE2+FpCo34YmALOpseVB4HcihuRLQbmQJlJ
+        xZyPj8+d+NnjMjCwXS1w+S80JHp1I3bZqBkb1rY=
+X-Google-Smtp-Source: ABdhPJyWrHHQmRJbU82Id4gcPq7dbny4Qq+g3nhPPh/URpj5HTt0Gr+HFIrtQPsuzHx2ewxgUYMrWnlA0x70t6eUxAM=
+X-Received: by 2002:a05:6e02:e82:: with SMTP id t2mr3279240ilj.18.1621325932537;
+ Tue, 18 May 2021 01:18:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YKIqbph62oclxjnt@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Reply-To: zahirikeen@gmail.com
+Sender: igaidam913@gmail.com
+Received: by 2002:a05:6622:2881:0:0:0:0 with HTTP; Tue, 18 May 2021 01:18:52
+ -0700 (PDT)
+From:   Zahiri Keen <zahirikeen2@gmail.com>
+Date:   Tue, 18 May 2021 08:18:52 +0000
+X-Google-Sender-Auth: UyLhT34tyvcR9eAzyIOOCLmL_Vs
+Message-ID: <CAEfhoOZ-=YLP8viZnuBwQDQ+Cx-G8+dxHp38sX+oUDUYZqAcmA@mail.gmail.com>
+Subject: URGENT.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/17 16:33, Peter Zijlstra wrote:
-> On Tue, May 11, 2021 at 10:42:04AM +0800, Like Xu wrote:
->> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
->> index 2f89fd599842..c791765f4761 100644
->> --- a/arch/x86/events/intel/core.c
->> +++ b/arch/x86/events/intel/core.c
->> @@ -3898,31 +3898,49 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
->>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->>   	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
->>   	u64 intel_ctrl = hybrid(cpuc->pmu, intel_ctrl);
->> +	u64 pebs_mask = (x86_pmu.flags & PMU_FL_PEBS_ALL) ?
->> +		cpuc->pebs_enabled : (cpuc->pebs_enabled & PEBS_COUNTER_MASK);
->> -	if (x86_pmu.flags & PMU_FL_PEBS_ALL)
->> -		arr[0].guest &= ~cpuc->pebs_enabled;
->> -	else
->> -		arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
->> -	*nr = 1;
-> Instead of endlessly mucking about with branches, do we want something
-> like this instead?
+Greetings,
 
-Fine to me. How about the commit message for your below patch:
+            I have a Mutual/Beneficial Business Project that would be
+beneficial to you. I only have two questions to ask of you, if you are
+interested.
 
-x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK value
+1. Can you handle this project?
+2. Can I give you this trust?
 
-The value of pebs_counter_mask will be accessed frequently
-for repeated use in the intel_guest_get_msrs(). So it can be
-optimized instead of endlessly mucking about with branches.
+Please note that the deal requires high level of maturity, honesty and
+secrecy. This will involve moving some money from my office, on trust
+to your hands or bank account. Also note that i will do everything to
+make sure that the money is moved as a purely legitimate fund, so you
+will not be exposed to any risk.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+I request for your full co-operation. I will give you details and
+procedure when I receive your reply, to commence this transaction, I
+require you to immediately indicate your interest by a return reply. I
+will be waiting for your response in a timely manner.
 
->
-> ---
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 2521d03de5e0..bcfba11196c8 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -2819,10 +2819,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
->   	 * counters from the GLOBAL_STATUS mask and we always process PEBS
->   	 * events via drain_pebs().
->   	 */
-> -	if (x86_pmu.flags & PMU_FL_PEBS_ALL)
-> -		status &= ~cpuc->pebs_enabled;
-> -	else
-> -		status &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
-> +	status &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
->   
->   	/*
->   	 * PEBS overflow sets bit 62 in the global status register
-> @@ -3862,10 +3859,7 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
->   	arr[0].msr = MSR_CORE_PERF_GLOBAL_CTRL;
->   	arr[0].host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
->   	arr[0].guest = intel_ctrl & ~cpuc->intel_ctrl_host_mask;
-> -	if (x86_pmu.flags & PMU_FL_PEBS_ALL)
-> -		arr[0].guest &= ~cpuc->pebs_enabled;
-> -	else
-> -		arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
-> +	arr[0].guest &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
->   	*nr = 1;
->   
->   	if (x86_pmu.pebs && x86_pmu.pebs_no_isolation) {
-> @@ -5546,6 +5540,7 @@ __init int intel_pmu_init(void)
->   	x86_pmu.events_mask_len		= eax.split.mask_length;
->   
->   	x86_pmu.max_pebs_events		= min_t(unsigned, MAX_PEBS_EVENTS, x86_pmu.num_counters);
-> +	x86_pmu.pebs_capable		= PEBS_COUNTER_MASK;
->   
->   	/*
->   	 * Quirk: v2 perfmon does not report fixed-purpose events, so
-> @@ -5730,6 +5725,7 @@ __init int intel_pmu_init(void)
->   		x86_pmu.pebs_aliases = NULL;
->   		x86_pmu.pebs_prec_dist = true;
->   		x86_pmu.lbr_pt_coexist = true;
-> +		x86_pmu.pebs_capable = ~0ULL;
->   		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
->   		x86_pmu.flags |= PMU_FL_PEBS_ALL;
->   		x86_pmu.get_event_constraints = glp_get_event_constraints;
-> @@ -6080,6 +6076,7 @@ __init int intel_pmu_init(void)
->   		x86_pmu.pebs_aliases = NULL;
->   		x86_pmu.pebs_prec_dist = true;
->   		x86_pmu.pebs_block = true;
-> +		x86_pmu.pebs_capable = ~0ULL;
->   		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
->   		x86_pmu.flags |= PMU_FL_NO_HT_SHARING;
->   		x86_pmu.flags |= PMU_FL_PEBS_ALL;
-> @@ -6123,6 +6120,7 @@ __init int intel_pmu_init(void)
->   		x86_pmu.pebs_aliases = NULL;
->   		x86_pmu.pebs_prec_dist = true;
->   		x86_pmu.pebs_block = true;
-> +		x86_pmu.pebs_capable = ~0ULL;
->   		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
->   		x86_pmu.flags |= PMU_FL_NO_HT_SHARING;
->   		x86_pmu.flags |= PMU_FL_PEBS_ALL;
-> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-> index 27fa85e7d4fd..6f3cf81ccb1b 100644
-> --- a/arch/x86/events/perf_event.h
-> +++ b/arch/x86/events/perf_event.h
-> @@ -805,6 +805,7 @@ struct x86_pmu {
->   	void		(*pebs_aliases)(struct perf_event *event);
->   	unsigned long	large_pebs_flags;
->   	u64		rtm_abort_event;
-> +	u64		pebs_capable;
->   
->   	/*
->   	 * Intel LBR
-
+Contact  Email: zahirikeen@gmail.com
+Best Regard,
+Mr Zahiri Keen.
