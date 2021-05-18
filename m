@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6735387F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336F7387F53
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351510AbhERSOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
+        id S244960AbhERSPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351490AbhERSON (ORCPT
+        with ESMTP id S229652AbhERSPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:14:13 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3054AC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:12:55 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id q15so7573768pgg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:12:55 -0700 (PDT)
+        Tue, 18 May 2021 14:15:07 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3C3C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:13:48 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id y9so12638780ljn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=9UF6JPc9kDNTRCs7ffieF/jBad0EDQKUws2Yd0IxgKo=;
-        b=mF2+K3rbAZ0Yt5/HqP3OFrc/Xx54XHooQYogRvZoEYAimzTp2eOmKQ3T5njQWNfslm
-         SIJvM9kv40LnTXqBoEg4OnbhyxlzQOZEHXyqyZ3kt9RpvMX3tMxgwpanZrsuczEI+s/m
-         7mHCnVs+2eOPFnA43kYZsY5dbADtuu8NXTcpd1JJkTOC0QsqpuU0nCIaPJv0M/eWJySf
-         rL/wNW2G6JnQmlN1zIdfZZZ+2ZHa4FuZeLFlOuPY5s2zxCpxTimFfuUF14PYILkRgZA7
-         JUUEZgTeJWWZjZaLo+ESU/ec2+W07oX7+9Wytj++jA9y6t6QRmD0EU7wF/iYnmCXQvGh
-         qLqw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vqLRBSZv4n1qN8CK68CKn7uIQh+/RHF4C0Kn3tSrbLM=;
+        b=cUwfZWQ3N2oGqSxRG4Zk+0FLxyRGb3BH3JGAIJGGdvKbFdldusb70X1OzIj1+JY4PS
+         tWk5/WS9/G747hwzLXTxwoaUYRQtjjHupQBS0I8gzAtlSb46UJzer91sVJ5M95m6AnUt
+         +Sw4xdBQaA2gC8YAWVqzAPSaptw1e8UHUbBUj/pw7Ec3UV5UszaCoVjv5UH+92+RtPub
+         JavUZzvi9ftJhEODeWsU9TKtEoKDaDA2eYoK/uClrjrxlfasRY2WaD2Msve93D1llfn8
+         m5zRdWmJAcBKyxpp+5jTn/yg7PDR7ngueuPoUY92ROTJQEyxjfTzfow0O+7v9OWpWb0k
+         GvCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=9UF6JPc9kDNTRCs7ffieF/jBad0EDQKUws2Yd0IxgKo=;
-        b=FzjnQTCBnu+hq1L4YHqGsMh3u4lcUaf1pcvww25FCCypnmcRsVJzZAwmgStiFcgt1X
-         aIDEYpdSQmJx/+tpvrWV3Yz9kksxxsH6ji43q+PwkytV17iF0Jw2i5ATQQS6cVLx+Vy1
-         ZHWrFl3Ax8P/I3ygcmCZ98ZiickyslYl+0fav7hHZzcnhWV+84bX01UOOAC/FP7060Js
-         oWd/Uv+HsdV2s2hMa/met+n7pth+Br+Q7lZJFAq9kmz0M+eWqNTGh19h6yYKIwB3fHWN
-         1WsAcDQH4UMPTp6vlzZ27R/tNAuAAdRXzpWr78zT3xcx1/XQX/g62yrOmdmZTnl825tg
-         mXQQ==
-X-Gm-Message-State: AOAM533VPnRdawI342tyClJ3RULJjsLFF6I/UR7dmZ7Cv1ypr0Ecmb0H
-        CozSNVqVK7S5nZlWU02MFcg=
-X-Google-Smtp-Source: ABdhPJxlIMg35Y34lyvIH7pG1V8clcjDW70mvdmqgCHA/6d/t4M75yoaEILr9aNOKOIYkc6qb8B5Zg==
-X-Received: by 2002:a63:4145:: with SMTP id o66mr6395237pga.4.1621361574683;
-        Tue, 18 May 2021 11:12:54 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id gz18sm2463721pjb.19.2021.05.18.11.12.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 11:12:54 -0700 (PDT)
-Date:   Wed, 19 May 2021 03:12:47 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [PATCH] mm, slub: Fix support for clang 10
-Message-ID: <20210518181247.GA10062@hyeyoo>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vqLRBSZv4n1qN8CK68CKn7uIQh+/RHF4C0Kn3tSrbLM=;
+        b=HROEakai9kDHYATe5Bm5v6LJBj8ygn+q8tw8MmsdjvlbG9XPnMv2Wgj2k0qENz7XzQ
+         6WO/kV8GBAS3bl11Y0DNNGH49rILDSDsbVk2KLXvs3AozqQuVAQLXdIk/SL8EAakMjTQ
+         ppbu4n6mjy+3lTpNSruyxwRE9r6FhqCpwxY0jiawYQ52qQ0AnOFm0RVFjdFMg2PKB150
+         eXYDi+AS13GfHkGF3jec+vZApkRm4Izd4u9MwT0kFEyO2qnuOgIj2BrO2Xy1TD+5HBol
+         69tFB5G1oq2rQ80pZN5W0436c3v5i9BfUGhupoQlmfY0xyjPZmMqlCqzG1PVzXtJRaMx
+         9erQ==
+X-Gm-Message-State: AOAM532YeJkyJmN9HSUyy2vwXRtIL2ujQ6wpNAqA/jCX/LyCBydpMl57
+        4JDqu7obSxcNINuPYuGlBzugUeqNeOd3j2UCFfwqZQ==
+X-Google-Smtp-Source: ABdhPJyZ2kd8dQDWvr9IUBHem55/OtvywOE/wSfCkkHzselkoAgAPXngLT7Syuy1sRpVS9CLnl2fHkiJ5jL6ktPpHZw=
+X-Received: by 2002:a2e:a491:: with SMTP id h17mr5087176lji.34.1621361626704;
+ Tue, 18 May 2021 11:13:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210512201946.2949351-1-shakeelb@google.com>
+In-Reply-To: <20210512201946.2949351-1-shakeelb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 18 May 2021 11:13:35 -0700
+Message-ID: <CALvZod5a_W8P0v7xg0jdh-TLvy4OUYaQkyjBx-1RSTUBo+YQmg@mail.gmail.com>
+Subject: Re: [PATCH] cgroup: disable controllers at parse time
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <shy828301@gmail.com>,
+        =?UTF-8?B?Tk9NVVJBIEpVTklDSEko6YeO5p2RIOa3s+S4gCk=?= 
+        <junichi.nomura@nec.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously in 'commit ff3daafe3fd3 ("mm, slub: change run-time assertion
-in kmalloc_index() to compile-time")', changed kmalloc_index's run-time
-assertion to compile-time assertion.
+On Wed, May 12, 2021 at 1:19 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
+> too early usage of static_branch_disable()"). The commit 6041186a3258
+> ("init: initialize jump labels before command line option parsing") has
+> moved the jump_label_init() before parse_args() which has made the
+> commit a3e72739b7a7 unnecessary. On the other hand there are
+> consequences of disabling the controllers later as there are subsystems
+> doing the controller checks for different decisions. One such incident
+> is reported [1] regarding the memory controller and its impact on memory
+> reclaim code.
+>
+> [1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4=
+@nec.com
+>
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Reported-by: NOMURA JUNICHI(=E9=87=8E=E6=9D=91=E3=80=80=E6=B7=B3=E4=B8=80=
+) <junichi.nomura@nec.com>
 
-But clang 10 has a bug misevaluating __builtin_constant_p() as true,
-making it unable to compile. This bug was fixed in clang 11.
+Nomura, I think you have already tested this patch, so, can you please
+add your tested-by tag?
 
-To support clang 10, introduce a macro to do run-time assertion if clang
-version is less than 11, even if the size is constant. Might revert this
-commit later if we choose not to support clang 10.
+Tejun, any comments or concerns?
 
-Fixes: ff3daafe3fd3 ("mm, slub: change run-time assertion in kmalloc_index() to compile-time")
-Link: https://lore.kernel.org/r/CA+G9fYvYxqVhUTkertjZjcrUq8LWPnO7qC==Wum3gYCwWF9D6Q@mail.gmail.com/
-Link: https://lkml.org/lkml/2021/5/11/872
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
----
- include/linux/slab.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yang, do you think we should add Fixes tag to make sure this patch
+lands in 5.13 where your shrinker patches landed?
 
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 9d316aac0aba..8d8dd8571261 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -413,7 +413,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
- 	if (size <=  16 * 1024 * 1024) return 24;
- 	if (size <=  32 * 1024 * 1024) return 25;
- 
--	if (size_is_constant)
-+	if ((IS_ENABLED(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION >= 110000) && size_is_constant)
- 		BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
- 	else
- 		BUG();
--- 
-2.25.1
-
+> ---
+>  kernel/cgroup/cgroup.c | 13 +++++--------
+>  1 file changed, 5 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index e049edd66776..e7a9a2998245 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -5634,8 +5634,6 @@ int __init cgroup_init_early(void)
+>         return 0;
+>  }
+>
+> -static u16 cgroup_disable_mask __initdata;
+> -
+>  /**
+>   * cgroup_init - cgroup initialization
+>   *
+> @@ -5694,12 +5692,8 @@ int __init cgroup_init(void)
+>                  * disabled flag and cftype registration needs kmalloc,
+>                  * both of which aren't available during early_init.
+>                  */
+> -               if (cgroup_disable_mask & (1 << ssid)) {
+> -                       static_branch_disable(cgroup_subsys_enabled_key[s=
+sid]);
+> -                       printk(KERN_INFO "Disabling %s control group subs=
+ystem\n",
+> -                              ss->name);
+> +               if (!cgroup_ssid_enabled(ssid))
+>                         continue;
+> -               }
+>
+>                 if (cgroup1_ssid_disabled(ssid))
+>                         printk(KERN_INFO "Disabling %s control group subs=
+ystem in v1 mounts\n",
+> @@ -6214,7 +6208,10 @@ static int __init cgroup_disable(char *str)
+>                         if (strcmp(token, ss->name) &&
+>                             strcmp(token, ss->legacy_name))
+>                                 continue;
+> -                       cgroup_disable_mask |=3D 1 << i;
+> +
+> +                       static_branch_disable(cgroup_subsys_enabled_key[i=
+]);
+> +                       pr_info("Disabling %s control group subsystem\n",
+> +                               ss->name);
+>                 }
+>         }
+>         return 1;
+> --
+> 2.31.1.607.g51e8a6a459-goog
+>
