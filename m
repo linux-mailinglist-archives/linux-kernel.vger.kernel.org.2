@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EA6387426
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE90838742A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241781AbhERIfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:35:19 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9262 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234924AbhERIek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:34:40 -0400
-IronPort-SDR: 9jFl1JtgnHFAiUu67JThXd5miCSDh6hiaOWg+aTIO13mNz5d+YuVPZ7FH0oTsxjE/sI4vuxPnJ
- VbZTvIyUaCJg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="197573452"
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="197573452"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:33:23 -0700
-IronPort-SDR: iEwDzqkc500Zg8Xg92IhY+yDsGunU1ZLCx6sOEJQ83AwG4Z8O/rnjnhclMCbvJlV0FE6jvSS/P
- rNPHtUfpoyEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="404753698"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 18 May 2021 01:33:21 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id AFB7612F; Tue, 18 May 2021 11:33:42 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
-Date:   Tue, 18 May 2021 11:33:39 +0300
-Message-Id: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S1347542AbhERIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242786AbhERIij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 04:38:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56A7C061756;
+        Tue, 18 May 2021 01:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rE0H/Q8Q6VqgkakFnqfCmtWgnwAxCYwxpU5NtXrvg74=; b=uoKTY8wJ0J2QhESQcCp1nc+dx0
+        nBG2Usoew0Pen9rl9x6RfuuHFM/NY/cgXAVlZy5qpOjopGDmEoKyxJDaer4p6Jp/9NA5X2v0YHQLw
+        eqBHcA6z+YGN2YS/bToxNQl6b2wtls11XdoHyuKIVm0gLn0QaFQRsCnK+uylwo7EOWtP9C0/rG2+N
+        ZJRNlihnCbbu7HgedvF+CLAdde7UxiEQGdjqWY6ZAEnOQR2wp6BkJJRUtiQK/CKqVFbCyfYOa2f/1
+        ztmhLgrUQdPhfYXeQhkP0B6vDU5qdWdVPgRLiG+jkOiCBp8wh84i4sWQlthUkzvX+puNAe9stUGUs
+        1or3bmGQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1livC5-00Do8E-Cq; Tue, 18 May 2021 08:35:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C107300233;
+        Tue, 18 May 2021 10:35:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5AEAB2BE6E843; Tue, 18 May 2021 10:35:09 +0200 (CEST)
+Date:   Tue, 18 May 2021 10:35:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH v6 05/16] KVM: x86/pmu: Introduce the ctrl_mask value for
+ fixed counter
+Message-ID: <YKN8PQMs3x7Rpa4a@hirez.programming.kicks-ass.net>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-6-like.xu@linux.intel.com>
+ <YKImwdg7LO/OPvVJ@hirez.programming.kicks-ass.net>
+ <1fb87ea1-d7e6-0ca3-f3ed-4007a7e5a7d7@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1fb87ea1-d7e6-0ca3-f3ed-4007a7e5a7d7@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a few places we are using a loop against all GPIO descriptors
-with a given flag for a given device. Replace it with a consolidated
-for_each type of macro.
+On Tue, May 18, 2021 at 03:55:13PM +0800, Xu, Like wrote:
+> On 2021/5/17 16:18, Peter Zijlstra wrote:
+> > On Tue, May 11, 2021 at 10:42:03AM +0800, Like Xu wrote:
+> > > The mask value of fixed counter control register should be dynamic
+> > > adjusted with the number of fixed counters. This patch introduces a
+> > > variable that includes the reserved bits of fixed counter control
+> > > registers. This is needed for later Ice Lake fixed counter changes.
+> > > 
+> > > Co-developed-by: Luwei Kang <luwei.kang@intel.com>
+> > > Signed-off-by: Luwei Kang <luwei.kang@intel.com>
+> > > Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> > > ---
+> > >   arch/x86/include/asm/kvm_host.h | 1 +
+> > >   arch/x86/kvm/vmx/pmu_intel.c    | 6 +++++-
+> > >   2 files changed, 6 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > > index 55efbacfc244..49b421bd3dd8 100644
+> > > --- a/arch/x86/include/asm/kvm_host.h
+> > > +++ b/arch/x86/include/asm/kvm_host.h
+> > > @@ -457,6 +457,7 @@ struct kvm_pmu {
+> > >   	unsigned nr_arch_fixed_counters;
+> > >   	unsigned available_event_types;
+> > >   	u64 fixed_ctr_ctrl;
+> > > +	u64 fixed_ctr_ctrl_mask;
+> > >   	u64 global_ctrl;
+> > >   	u64 global_status;
+> > >   	u64 global_ovf_ctrl;
+> > > diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> > > index d9dbebe03cae..ac7fe714e6c1 100644
+> > > --- a/arch/x86/kvm/vmx/pmu_intel.c
+> > > +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> > > @@ -400,7 +400,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> > >   	case MSR_CORE_PERF_FIXED_CTR_CTRL:
+> > >   		if (pmu->fixed_ctr_ctrl == data)
+> > >   			return 0;
+> > > -		if (!(data & 0xfffffffffffff444ull)) {
+> > > +		if (!(data & pmu->fixed_ctr_ctrl_mask)) {
+> > Don't we already have hardware with more than 3 fixed counters?
+> 
+> Yes, so we update this mask based on the value of pmu->nr_arch_fixed_counters:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed compilation issue (LKP), injected if (test_bit) into the loop
- drivers/gpio/gpiolib-of.c    | 10 ++++------
- drivers/gpio/gpiolib-sysfs.c |  7 ++-----
- drivers/gpio/gpiolib.c       |  7 +++----
- drivers/gpio/gpiolib.h       |  7 +++++++
- 4 files changed, 16 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
-index bbcc7c073f63..2f8f3f0c8373 100644
---- a/drivers/gpio/gpiolib-of.c
-+++ b/drivers/gpio/gpiolib-of.c
-@@ -711,14 +711,12 @@ static int of_gpiochip_scan_gpios(struct gpio_chip *chip)
- static void of_gpiochip_remove_hog(struct gpio_chip *chip,
- 				   struct device_node *hog)
- {
--	struct gpio_desc *descs = chip->gpiodev->descs;
-+	struct gpio_desc *desc;
- 	unsigned int i;
- 
--	for (i = 0; i < chip->ngpio; i++) {
--		if (test_bit(FLAG_IS_HOGGED, &descs[i].flags) &&
--		    descs[i].hog == hog)
--			gpiochip_free_own_desc(&descs[i]);
--	}
-+	for_each_gpio_desc_if(i, chip, desc, FLAG_IS_HOGGED)
-+		if (desc->hog == hog)
-+			gpiochip_free_own_desc(desc);
- }
- 
- static int of_gpiochip_match_node(struct gpio_chip *chip, void *data)
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index ae49bb23c6ed..41b3b782bf3f 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -801,11 +801,8 @@ void gpiochip_sysfs_unregister(struct gpio_device *gdev)
- 	mutex_unlock(&sysfs_lock);
- 
- 	/* unregister gpiod class devices owned by sysfs */
--	for (i = 0; i < chip->ngpio; i++) {
--		desc = &gdev->descs[i];
--		if (test_and_clear_bit(FLAG_SYSFS, &desc->flags))
--			gpiod_free(desc);
--	}
-+	for_each_gpio_desc_if(i, chip, desc, FLAG_SYSFS)
-+		gpiod_free(desc);
- }
- 
- static int __init gpiolib_sysfs_init(void)
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 220a9d8dd4e3..97a69362a584 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -4012,12 +4012,11 @@ int gpiod_hog(struct gpio_desc *desc, const char *name,
-  */
- static void gpiochip_free_hogs(struct gpio_chip *gc)
- {
-+	struct gpio_desc *desc;
- 	int id;
- 
--	for (id = 0; id < gc->ngpio; id++) {
--		if (test_bit(FLAG_IS_HOGGED, &gc->gpiodev->descs[id].flags))
--			gpiochip_free_own_desc(&gc->gpiodev->descs[id]);
--	}
-+	for_each_gpio_desc_if(id, gc, desc, FLAG_IS_HOGGED)
-+		gpiochip_free_own_desc(desc);
- }
- 
- /**
-diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
-index 30bc3f80f83e..69c96a4276de 100644
---- a/drivers/gpio/gpiolib.h
-+++ b/drivers/gpio/gpiolib.h
-@@ -82,6 +82,13 @@ struct gpio_array {
- };
- 
- struct gpio_desc *gpiochip_get_desc(struct gpio_chip *gc, unsigned int hwnum);
-+
-+#define for_each_gpio_desc_if(i, gc, desc, flag)		\
-+	for (i = 0, desc = gpiochip_get_desc(gc, i);		\
-+	     i < gc->ngpio;					\
-+	     i++, desc = gpiochip_get_desc(gc, i))		\
-+		if (!test_bit(flag, &desc->flags)) {} else
-+
- int gpiod_get_array_value_complex(bool raw, bool can_sleep,
- 				  unsigned int array_size,
- 				  struct gpio_desc **desc_array,
--- 
-2.30.2
-
+Yes, I saw that, but the Changelog makes it appear this is only relevant
+to ice lake, which I think is not fully correct.
