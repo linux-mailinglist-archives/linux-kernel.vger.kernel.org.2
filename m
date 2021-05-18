@@ -2,105 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E91138712B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D97638712D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239901AbhERFWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 01:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
+        id S239576AbhERFWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 01:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240102AbhERFWE (ORCPT
+        with ESMTP id S235248AbhERFWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 01:22:04 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D861C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 22:20:46 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id q6so4378653qvb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 22:20:46 -0700 (PDT)
+        Tue, 18 May 2021 01:22:50 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA6AC061573;
+        Mon, 17 May 2021 22:21:33 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id l4so12518722ejc.10;
+        Mon, 17 May 2021 22:21:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gwmail.gwu.edu; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=zuo1N8XV6TdRGkjocXxo/YpuVD4EcncgHjz+dnX06QM=;
-        b=USmkD/2ylWqoxaCBZVF9o0XfVYOWy7CTtJduVaEzyEjD6aGjJ23hWe2cDHegonD1rv
-         1aP/8DJIOQHSWwQaTTE4vBeFEjamJBd4xHzYvNwVojFfPzPTGt5zRegaL+ByRrrtJ+fi
-         eDYvdfIb95Xkj/A5i0a4Q/18wf5jWXlQyHad1OUcd/XkQmiVa5ePA6C8x9IAfYupH0F+
-         dg1+OwOZFfYVyNsH5t1MX56VEGq8uWlNBXJOLNDHcR6X6ALXREMelaWABxd15h37zfvV
-         WOvd03ZPpH6p3MM6yhOqtIzb9izf/YGDYpEDC4Xy/mhpvjzxg/QjXUkb1wTi2/VT/IWS
-         p0uw==
+        bh=pFiqMZJlaX/Bz8XfAz/1acvvJaIlIKoYenynJIsVpYg=;
+        b=pWFD6aKjXGka+IDfLinyMbuOCrPazm71mcAX5Z13URw9fijjqI9HIshAGQ7HDFkHuh
+         8J6K0eWO7aCg/sBQiNDAuJ3MLOb0mGVScyOBvcuW17F3hnJOPTTkQbjLgmRnRxlbWw4Z
+         r3tWfGlAdQqJSAxgACFuLRwrAl3ZhrAOTFAoSd3x/7YFcZA8A5yUh/0mwTKmAbBbiSgy
+         Gd94DIK2cW8o6Uh4YpD3oeDnlkV17rAPyBlMMiOJ+bfzttjtj+ZSdJC+mEgX4wxvAFy1
+         +I/8MLb7aZrEovPmaUtc+XcY+MdWCy/FYg0fnZDpxg6FXel+UkmB3KREQebGUMrMsHAN
+         wBdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=zuo1N8XV6TdRGkjocXxo/YpuVD4EcncgHjz+dnX06QM=;
-        b=CJE06dfRjzAUEJlpzhqwUv0Fh8FxCKvIJKcV4+1CTtwCvL+AwEGGRRi3k2cjySBWSB
-         L8rutBYQR6ZWkTdEyHAewBi/YlUE8cfG4MsGuQvuD1CgL9isz7xE6EOCEVHGG7aYBB76
-         1ooHD70UQF6Pry+T6JoeTdJ5hRbJGQFqYzw+Cv55YBez5ph/NuUmdVcXodjjXkvhkYcl
-         6aN5zL6dHKUt7J64RTPqWhmHWhyhaKVHWPEmdF3r/ymUBF+1GcD5RXk4ReNeWWgUDIrk
-         wDNBP3PPMFV1h+9HCvHPKFudb5kzx1Cn3WhN1t2Kr+LeiST0W4Nbdt3pbmp9J4NG4l3A
-         xaQQ==
-X-Gm-Message-State: AOAM531U8DfG0HyhHqeN5ODneTiFY23vzt023gCYQCPo9LPztrGY3+IY
-        tdIufroU/3KN5RJi+c7Xp29d9g==
-X-Google-Smtp-Source: ABdhPJyOr+9Z8TFB0MpAeVdIe0ZN0W5ysHO6sg2jDOnApdqud5lwUmvia0lleB+VjVUDTKzUJB8Hkw==
-X-Received: by 2002:a0c:99e2:: with SMTP id y34mr3807826qve.29.1621315245655;
-        Mon, 17 May 2021 22:20:45 -0700 (PDT)
-Received: from bunsen3.telenet.unc.edu (bunsen3.telenet.unc.edu. [204.85.191.47])
-        by smtp.googlemail.com with ESMTPSA id d16sm12087772qtw.23.2021.05.17.22.20.44
+        bh=pFiqMZJlaX/Bz8XfAz/1acvvJaIlIKoYenynJIsVpYg=;
+        b=P2hqwhggzAq8HahRFSssb/9EXm2NUpaExhW7cthNdXap7DWHR2QaLvD+AyKFFDfMcT
+         IVgALEKBzaPxS+eVHSkIc84efPXkpgNZkLLLD2SNbz2iD1L8rRnUkRZCVexHcHtwbvvY
+         /MN8yI8WdOQ4vaGGkVny45eJY5D2nUYzZz7EqnfvOEq2nqng80oSP4PjQXgbcF8hjurg
+         Azvv1JC2cYEVK79ahoUQundH7KF1ZA2Q8Y4l2+MAsKHbM6KB8riTLOa+kM+ZDzKb8dHT
+         9Owrz8yxUQYrAovrt/98uQjUMdYCAbeybnTPiO5+hEBSqJF9WXZACl8Q46arUHKbcHOq
+         fZ4w==
+X-Gm-Message-State: AOAM530g9vkXeDYKruSgdUIh2bKW+SucxFNIETP7ScZxHepiFdqw2WMk
+        6CUXNqRlrXWzMO8JafRfDO0=
+X-Google-Smtp-Source: ABdhPJy4K1K21/QwX54PrULsub866WZnIzTF94ShTuczWsNwbnxKx+MSERRD4XwAQG2zHinmS3Yt7Q==
+X-Received: by 2002:a17:906:cc9:: with SMTP id l9mr4155748ejh.454.1621315291050;
+        Mon, 17 May 2021 22:21:31 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2db8:6100:84b8:37fd:659f:be17])
+        by smtp.gmail.com with ESMTPSA id n17sm12117083eds.72.2021.05.17.22.21.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 22:20:45 -0700 (PDT)
-From:   wenhuizhang <wenhui@gwmail.gwu.edu>
-Cc:     wenhui@gwmail.gwu.edu, Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] memcontrol: use flexible-array member 
-Date:   Tue, 18 May 2021 01:20:36 -0400
-Message-Id: <20210518052038.491-1-wenhui@gwmail.gwu.edu>
+        Mon, 17 May 2021 22:21:30 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [RFC PATCH 0/1] Mining maintainers for kernel headers
+Date:   Tue, 18 May 2021 07:21:16 +0200
+Message-Id: <20210518052117.14819-1-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Greg, Jiri,
 
-Change depracated zero-length-and-one-element-arrays into flexible 
-array member.
-Zero-length and one-element arrays detected by Lukas's CodeChecker.
-Zero/one element arrays causes undefined behaviours if sizeof() used.
+Some basic data mining on the kernel development process [1, 2, 3] showed that
+various files in ./include currently do not have a maintainer formally assigned
+with a section in the MAINTAINERS file.
 
-https://www.kernel.org/doc/html/latest/processd/deprecated.html
+This is a first semi-automatic attempt of mining a mapping of header files to
+MAINTAINERS section.
+
+Currently, the automated code analysis basically does the following steps:
+
+  1. Heuristically map header files to the related source files.
+
+    The heuristics basically uses ctags to obtain the prototypes within a
+    header file and then elixir to identify in which these prototypes are
+    defined. The header file is then mapped to the source file with the highest
+    number of definitions for prototypes referred to. More fine-tuning may
+    still be required here.
+
+  2. Deterministically map these source files to its MAINTAINERS section.
+
+    Simply, using get_maintainer.pl, we obtain all relevant MAINTAINERS sections
+    for each source file linked to a header file above.
+
+  3. Combine those two mappings to identify which header files should be best
+     added to which section in the existing MAINTAINERS file.
+
+    As of now, we simply take the one most relevant source file identified and
+    map it to a maintainer section. However, as the mapping from step 1 does not
+    map every header file to a source file, the overall suggestions for
+    additions is still pretty incomplete.
+
+  4. Manually review the suggestions and manually create the patch for some
+     example sections.
+
+    At this early stage, we look at some selective sections, review the
+    suggestions made by this tool for a section, filter out suggestions that
+    seem rather wrong and then manually create the patch to add files and
+    patterns from ./include/linux to the appropriate section.
+
+Hence, the provided additions in this patch should be correct, but are not
+necessarily complete wrt. all header files in ./include/linux/ that actually
+belong to the TTY LAYER.
+
+As all of this work is still pretty early and experimental, please provide
+feedback on its correctness or simply pick such change for your tree if it is
+all okay to take for now (although not yet complete).
+
+Also, criticism on the approach and the way providing such patches for
+MAINTAINERS is welcome, e.g.:
+
+Your suggestions need to have this specific quality before reaching out to me
+or other kernel maintainers with patches of such kind.
+
+Or: Please do not take up the maintainers' review time for such clean-up and
+just keep MAINTAINERS in the state as it is. (I would hope that this MAINTAINERS
+clean-up is worth my time to attempt it, and given some good heuristics and own
+manual review, worth the time to pick up by the individual maintainers.)
+
+Or: Please first work on this other clean-up topic in MAINTAINERS and then
+afterwards clean up this aspect here.
 
 
-Signed-off-by: wenhuizhang<wenhui@gwmail.gwu.edu>
----
- include/linux/memcontrol.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[1] https://lore.kernel.org/lkml/alpine.DEB.2.21.2003090702440.3325@felia/#r
+[2] https://lwn.net/Articles/842415/
+[3] https://lists.elisa.tech/g/devel/message/1269
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0ce97eff79e2..f879efb1bc6e 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -190,7 +190,7 @@ enum memcg_kmem_state {
- 
- #if defined(CONFIG_SMP)
- struct memcg_padding {
--	char x[0];
-+	char x[];
- } ____cacheline_internodealigned_in_smp;
- #define MEMCG_PADDING(name)      struct memcg_padding name;
- #else
-@@ -349,7 +349,7 @@ struct mem_cgroup {
- 	struct deferred_split deferred_split_queue;
- #endif
- 
--	struct mem_cgroup_per_node *nodeinfo[0];
-+	struct mem_cgroup_per_node *nodeinfo[];
- 	/* WARNING: nodeinfo must be the last member here */
- };
- 
+
+Thanks and best regards,
+
+Lukas
+
+
+Lukas Bulwahn (1):
+  MAINTAINERS: TTY LAYER: add some ./include/linux/ header files
+
+ MAINTAINERS | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
 -- 
 2.17.1
 
