@@ -2,170 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D877E387695
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD4F38769A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348536AbhERKdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:33:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348515AbhERKdf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:33:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621333937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I3GoBhYUm/DKIxdTnLjldHt3dau0GNiE51gCpNBcSM0=;
-        b=eZwJ2NSd4PKIV/GqNXVaAA9B6D37QU/rOKWCYfsfils4iqUdXQoe3uG+4LGR9gbmYSLZ9o
-        SVxyd2Si86fMcQGqLi7qVRSIK2ytmldw6QwtbHXgeo5aRR5nSI0qPH0GwHFCbCb9GMPttP
-        2t2cFjMMpjG3zB34iLW3p1CWs+yKJDc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-x6iRejHKPyei5XU3BZW-UQ-1; Tue, 18 May 2021 06:32:15 -0400
-X-MC-Unique: x6iRejHKPyei5XU3BZW-UQ-1
-Received: by mail-wm1-f71.google.com with SMTP id j128-20020a1c55860000b02901384b712094so399705wmb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:32:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=I3GoBhYUm/DKIxdTnLjldHt3dau0GNiE51gCpNBcSM0=;
-        b=kPLhlMRRyUPBaX8jQ2djrjGSp5qzV76npfX93uzrxJPFfRfJ2A+vn4nfOfYOz5ZA8f
-         IQQU//CfYfGbqBPKcul20yI4eiDeQcw6TvfN0ZgbJ20Fhvhsdd87B9yajZFtT/MRx6ON
-         7x4vCa91q1cQdp+RvTPxfIIuJtHYBPaH+mS6uxHQgxNvEeQAu03Kh+m3018NixgtBK3U
-         AGn0f3XK3bCT9u3i5n+37fMQUWfPDeTCwgw4+yVagkV8KtAnm1IvNevnh/M5eJOUMQNk
-         9Nbryokb1jPvkEp0iXX1b2e0gCiEBw1JOb/4T94Dieind8ZzH8OnTFvvUX4n64NptMbf
-         FX8A==
-X-Gm-Message-State: AOAM530ZqGPeEf20ERdUxzTHNIHVq4LgPP/uyUCUdPFlWUH9dtOv2ULN
-        Iv4o1L/81dbs1lrgB/zQkPV/lymIAIrj4hz0oEBgvxmXx7dC+VX0mbsI3goTsnaL0OVyrZix1jn
-        7se+GO+KckrfCIEgTGXj/aMVQ
-X-Received: by 2002:a1c:730b:: with SMTP id d11mr4111558wmb.20.1621333934508;
-        Tue, 18 May 2021 03:32:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNi/tkWCoG0NuBlaiGe8ooTg64rxLuGj3IhddCSk72nVE1RVc10kp/QPhwhI1TNBxYXIrVfw==
-X-Received: by 2002:a1c:730b:: with SMTP id d11mr4111530wmb.20.1621333934226;
-        Tue, 18 May 2021 03:32:14 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64fd.dip0.t-ipconnect.de. [91.12.100.253])
-        by smtp.gmail.com with ESMTPSA id f26sm2241521wmj.30.2021.05.18.03.32.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 03:32:13 -0700 (PDT)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>
-References: <20210511081534.3507-1-david@redhat.com>
- <20210511081534.3507-3-david@redhat.com> <YKOR/8LzEaOgCvio@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH resend v2 2/5] mm/madvise: introduce
- MADV_POPULATE_(READ|WRITE) to prefault page tables
-Message-ID: <bb0e2ebb-e66d-176c-b20a-fbadd95cde98@redhat.com>
-Date:   Tue, 18 May 2021 12:32:12 +0200
+        id S1348533AbhERKfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:35:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44980 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242597AbhERKft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:35:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DAE9BAF19;
+        Tue, 18 May 2021 10:34:30 +0000 (UTC)
+Subject: Re: [PATCH v10 21/33] mm/filemap: Add __folio_lock_async
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-22-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <7fb7b8a3-b559-88d6-b46e-d822fc689500@suse.cz>
+Date:   Tue, 18 May 2021 12:34:30 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <YKOR/8LzEaOgCvio@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210511214735.1836149-22-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.05.21 12:07, Michal Hocko wrote:
-> [sorry for a long silence on this]
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> There aren't any actual callers of lock_page_async(), so remove it.
+> Convert filemap_update_page() to call __folio_lock_async().
 > 
-> On Tue 11-05-21 10:15:31, David Hildenbrand wrote:
-> [...]
+> __folio_lock_async() is 21 bytes smaller than __lock_page_async(),
+> but the real savings come from using a folio in filemap_update_page(),
+> shrinking it from 514 bytes to 403 bytes, saving 111 bytes.  The text
+> shrinks by 132 bytes in total.
 > 
-> Thanks for the extensive usecase description. That is certainly useful
-> background. I am sorry to bring this up again but I am still not
-> convinced that READ/WRITE variant are the best interface.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
 
-Thanks for having time to look into this.
 
->   
->> While the use case for MADV_POPULATE_WRITE is fairly obvious (i.e.,
->> preallocate memory and prefault page tables for VMs), one issue is that
->> whenever we prefault pages writable, the pages have to be marked dirty,
->> because the CPU could dirty them any time. while not a real problem for
->> hugetlbfs or dax/pmem, it can be a problem for shared file mappings: each
->> page will be marked dirty and has to be written back later when evicting.
->>
->> MADV_POPULATE_READ allows for optimizing this scenario: Pre-read a whole
->> mapping from backend storage without marking it dirty, such that eviction
->> won't have to write it back. As discussed above, shared file mappings
->> might require an explciit fallocate() upfront to achieve
->> preallcoation+prepopulation.
-> 
-> This means that you want to have two different uses depending on the
-> underlying mapping type. MADV_POPULATE_READ seems rather weak for
-> anonymous/private mappings. Memory backed by zero pages seems rather
-> unhelpful as the PF would need to do all the heavy lifting anyway.
-> Or is there any actual usecase when this is desirable?
-
-Currently, userfaultfd-wp, which requires "some mapping" to be able to 
-arm successfully. In QEMU, we currently have to prefault the shared 
-zeropage for userfaultfd-wp to work as expected. I expect that use case 
-might vanish over time (eventually with new kernels and updated user 
-space), but it might stick for a bit.
-
-Apart from that, populating the shared zeropage might be relevant in 
-some corner cases: I remember there are sparse matrix algorithms that 
-operate heavily on the shared zeropage.
-
-> 
-> So the split into these two modes seems more like gup interface
-> shortcomings bubbling up to the interface. I do expect userspace only
-> cares about pre-faulting the address range. No matter what the backing
-> storage is.
-> 
-> Or do I still misunderstand all the usecases?
-
-Let me give you an example where we really cannot tell what would be 
-best from a kernel perspective.
-
-a) Mapping a file into a VM to be used as RAM. We might expect the guest 
-writing all memory immediately (e.g., booting Windows). We would want 
-MADV_POPULATE_WRITE as we expect a write access immediately.
-
-b) Mapping a file into a VM to be used as fake-NVDIMM, for example, 
-ROOTFS or just data storage. We expect mostly reading from this memory, 
-thus, we would want MADV_POPULATE_READ.
-
-Instead of trying to be smart in the kernel, I think for this case it 
-makes much more sense to provide user space the options. IMHO it doesn't 
-really hurt to let user space decide on what it thinks is best.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
