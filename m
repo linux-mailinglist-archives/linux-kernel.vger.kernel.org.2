@@ -2,73 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340343873D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C97387427
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347423AbhERIWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:22:21 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3015 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346279AbhERIWU (ORCPT
+        id S242581AbhERIf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:35:27 -0400
+Received: from sci-ig2.spreadtrum.com ([222.66.158.135]:30680 "EHLO
+        SHSQR01.unisoc.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234924AbhERIf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:22:20 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fkpmj6lyPzlg3D;
-        Tue, 18 May 2021 16:18:45 +0800 (CST)
-Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 16:20:49 +0800
-Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
- (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
- 2021 16:20:48 +0800
-From:   Wu Bo <wubo40@huawei.com>
-To:     <hch@lst.de>, <sagi@grimberg.me>, <chaitanya.kulkarni@wdc.com>,
-        <kbusch@kernel.org>, <amit.engel@dell.com>,
-        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <linfeilong@huawei.com>, <wubo40@huawei.com>
-Subject: [PATCH] nvmet: fix memory leak on nvmet_alloc_ctrl()
-Date:   Tue, 18 May 2021 16:46:38 +0800
-Message-ID: <1621327598-542045-1-git-send-email-wubo40@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 18 May 2021 04:35:27 -0400
+X-Greylist: delayed 4349 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 04:35:26 EDT
+Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
+        by SHSQR01.unisoc.com with ESMTP id 14I7LeTP065558
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:21:40 +0800 (CST)
+        (envelope-from nianfu.bai@unisoc.com)
+Received: from ig2.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+        by SHSQR01.spreadtrum.com with ESMTPS id 14I7JBos053764
+        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
+        Tue, 18 May 2021 15:19:11 +0800 (CST)
+        (envelope-from nianfu.bai@unisoc.com)
+Received: from BJMBX01.spreadtrum.com (10.0.64.7) by BJMBX01.spreadtrum.com
+ (10.0.64.7) with Microsoft SMTP Server (TLS) id 15.0.847.32; Tue, 18 May 2021
+ 15:18:32 +0800
+Received: from BJMBX01.spreadtrum.com ([fe80::54e:9a:129d:fac7]) by
+ BJMBX01.spreadtrum.com ([fe80::54e:9a:129d:fac7%16]) with mapi id
+ 15.00.0847.030; Tue, 18 May 2021 15:18:31 +0800
+From:   =?gb2312?B?sNjE6rijIChOaWFuZnUgQmFpKQ==?= <nianfu.bai@unisoc.com>
+To:     Nianfu Bai <bnf20061983@gmail.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?gb2312?B?1cXI8LflIChSdWlmZW5nIFpoYW5nLzEwMDQwKQ==?= 
+        <Ruifeng.Zhang1@unisoc.com>,
+        =?gb2312?B?tdS+qSAoT3Jzb24gWmhhaSk=?= <Orson.Zhai@unisoc.com>,
+        =?gb2312?B?1cW0utHeIChDaHVueWFuIFpoYW5nKQ==?= 
+        <Chunyan.Zhang@unisoc.com>, "gregkh@google.com" <gregkh@google.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBjbG9ja3NvdXJjZS9kcml2ZXJzL3NwcmQ6IFJlbW92?=
+ =?gb2312?B?ZSB0aGUgZGVwZW5kZW5jeSBiZXR3ZWVuIHNwcmQgdGltZXIgYW5kIFNQUkQg?=
+ =?gb2312?Q?arch?=
+Thread-Topic: [PATCH] clocksource/drivers/sprd: Remove the dependency
+ between sprd timer and SPRD arch
+Thread-Index: AQHXRjScSYlT3oAfGkyqurgtH5RD26ro3Aky
+Date:   Tue, 18 May 2021 07:18:31 +0000
+Message-ID: <48327b8bb2dc4006bb943a3bbb7d99ad@BJMBX01.spreadtrum.com>
+References: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
+In-Reply-To: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.0.93.65]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500019.china.huawei.com (7.185.36.137)
-X-CFilter-Loop: Reflected
+X-MAIL: SHSQR01.spreadtrum.com 14I7JBos053764
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
-
-When cntlid_min is greater than cntlid_max,
-goto wrong label, should be goto out_free_sqs
-label. Otherwise there is a memory leak problem
-on the nvmet_alloc_ctrl function().
-
-Fixes: 94a39d61f80f ("nvmet: make ctrl-id configurable")
-Fixes: 6d65aeab7bf6e ("nvmet: remove unused ctrl->cqs")
-Signed-off-by: Wu Bo <wubo40@huawei.com>
----
- drivers/nvme/target/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index 25cc2ee8de3f..1853db38b682 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -1372,7 +1372,7 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
- 		goto out_free_changed_ns_list;
- 
- 	if (subsys->cntlid_min > subsys->cntlid_max)
--		goto out_free_changed_ns_list;
-+		goto out_free_sqs;
- 
- 	ret = ida_simple_get(&cntlid_ida,
- 			     subsys->cntlid_min, subsys->cntlid_max,
--- 
-2.30.0
-
+RGVhciBHcmVna2gsDQoNClBscyBoZWxwIHRvIHJldmlldyB0aGlzIHBhdGNoIGFzIEFuZHJvaWQg
+MTIgazUuNCBHS0kgcmVxdWlyZW1lbnQuDQoNClRoYW5rcy4NCg0KDQoNCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18NCreivP7IyzogTmlhbmZ1IEJhaSA8Ym5mMjAwNjE5
+ODNAZ21haWwuY29tPg0Kt6LLzcqxvOQ6IDIwMjHE6jXUwjExyNUgMTU6MDgNCsrVvP7IyzogZGFu
+aWVsLmxlemNhbm9AbGluYXJvLm9yZzsgdGdseEBsaW51dHJvbml4LmRlDQqzrcvNOiBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyCw2MTquKMgKE5pYW5mdSBCYWkpOyDVxcjwt+UgKFJ1aWZl
+bmcgWmhhbmcvMTAwNDApDQrW98ziOiBbUEFUQ0hdIGNsb2Nrc291cmNlL2RyaXZlcnMvc3ByZDog
+UmVtb3ZlIHRoZSBkZXBlbmRlbmN5IGJldHdlZW4gc3ByZCB0aW1lciBhbmQgU1BSRCBhcmNoDQoN
+CkZyb206IE5pYW5mdSBCYWkgPG5pYW5mdS5iYWlAdW5pc29jLmNvbT4NCg0KVGljayBicm9hZGNh
+c3QgaW5zdGFsbGVkIGJ5IGluc21vZCBjYW5ub3Qgc3dpdGNoIHRvIG9uZXNob3QgbW9kZSBjb3Jy
+ZWN0bHkNCmNhdXNlZCBieSBsaW51eCB0aW1lciBmcmFtZXdvcmssIG5lZWQgdG8gYnVpbGQgaW4g
+a2VybmVsIGltYWdlLiBTUFJEX1RJTUVSDQpoYXMgYmVlbiBzZWxlY3RlZCBieSBTUFJEIGFyY2gs
+IHdlIGhhdmUgdG8gZW5hYmxlIFNQUkQgYXJjaCB3aGVuIHdlIGJ1aWxkDQpzcHJkIHRpbWVyIGlu
+IGtlcm5lbCBpbWFnZSwgdGhpcyBhY3Rpb24gY29uZmxpY3RzIHdpdGggZ2VuZXJhbCBrZXJuZWwg
+aW1hZ2UsDQpzbyB3ZSBuZWVkIHRvIHJlbW92ZSB0aGUgZGVwZW5kZW5jeSBiZXR3ZWVuIHNwcmQg
+dGltZXIgYW5kIFNQUkQgYXJjaC4NCg0KU2lnbmVkLW9mZi1ieTogTmlhbmZ1IEJhaSA8bmlhbmZ1
+LmJhaUB1bmlzb2MuY29tPg0KU2lnbmVkLW9mZi1ieTogUnVpZmVuZyBaaGFuZyA8cnVpZmVuZy56
+aGFuZzFAdW5pc29jLmNvbT4NCi0tLQ0KIGRyaXZlcnMvY2xvY2tzb3VyY2UvS2NvbmZpZyB8IDQg
+Ky0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkNCg0K
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xvY2tzb3VyY2UvS2NvbmZpZyBiL2RyaXZlcnMvY2xvY2tz
+b3VyY2UvS2NvbmZpZw0KaW5kZXggMzlhYTIxZC4uMDRiMzMzYyAxMDA2NDQNCi0tLSBhL2RyaXZl
+cnMvY2xvY2tzb3VyY2UvS2NvbmZpZw0KKysrIGIvZHJpdmVycy9jbG9ja3NvdXJjZS9LY29uZmln
+DQpAQCAtNDQ3LDEwICs0NDcsOCBAQCBjb25maWcgTVRLX1RJTUVSDQogICAgICAgICAgU3VwcG9y
+dCBmb3IgTWVkaWF0ZWsgdGltZXIgZHJpdmVyLg0KDQogY29uZmlnIFNQUkRfVElNRVINCi0gICAg
+ICAgYm9vbCAiU3ByZWFkdHJ1bSB0aW1lciBkcml2ZXIiIGlmIEVYUEVSVA0KKyAgICAgICBib29s
+ICJTcHJlYWR0cnVtIHRpbWVyIGRyaXZlciIgaWYgQ09NUElMRV9URVNUDQogICAgICAgIGRlcGVu
+ZHMgb24gSEFTX0lPTUVNDQotICAgICAgIGRlcGVuZHMgb24gKEFSQ0hfU1BSRCB8fCBDT01QSUxF
+X1RFU1QpDQotICAgICAgIGRlZmF1bHQgQVJDSF9TUFJEDQogICAgICAgIHNlbGVjdCBUSU1FUl9P
+Rg0KICAgICAgICBoZWxwDQogICAgICAgICAgRW5hYmxlcyBzdXBwb3J0IGZvciB0aGUgU3ByZWFk
+dHJ1bSB0aW1lciBkcml2ZXIuDQotLQ0KMS45LjENCg0KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18NCiBUaGlzIGVtYWlsIChpbmNsdWRpbmcgaXRzIGF0dGFjaG1lbnRzKSBpcyBpbnRl
+bmRlZCBvbmx5IGZvciB0aGUgcGVyc29uIG9yIGVudGl0eSB0byB3aGljaCBpdCBpcyBhZGRyZXNz
+ZWQgYW5kIG1heSBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZCwgY29uZmlk
+ZW50aWFsIG9yIG90aGVyd2lzZSBwcm90ZWN0ZWQgZnJvbSBkaXNjbG9zdXJlLiBVbmF1dGhvcml6
+ZWQgdXNlLCBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBvZiB0aGlzIGVt
+YWlsIG9yIHRoZSBpbmZvcm1hdGlvbiBoZXJlaW4gb3IgdGFraW5nIGFueSBhY3Rpb24gaW4gcmVs
+aWFuY2Ugb24gdGhlIGNvbnRlbnRzIG9mIHRoaXMgZW1haWwgb3IgdGhlIGluZm9ybWF0aW9uIGhl
+cmVpbiwgYnkgYW55b25lIG90aGVyIHRoYW4gdGhlIGludGVuZGVkIHJlY2lwaWVudCwgb3IgYW4g
+ZW1wbG95ZWUgb3IgYWdlbnQgcmVzcG9uc2libGUgZm9yIGRlbGl2ZXJpbmcgdGhlIG1lc3NhZ2Ug
+dG8gdGhlIGludGVuZGVkIHJlY2lwaWVudCwgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYgeW91
+IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNlIGRvIG5vdCByZWFkLCBjb3B5
+LCB1c2Ugb3IgZGlzY2xvc2UgYW55IHBhcnQgb2YgdGhpcyBlLW1haWwgdG8gb3RoZXJzLiBQbGVh
+c2Ugbm90aWZ5IHRoZSBzZW5kZXIgaW1tZWRpYXRlbHkgYW5kIHBlcm1hbmVudGx5IGRlbGV0ZSB0
+aGlzIGUtbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIGlmIHlvdSByZWNlaXZlZCBpdCBpbiBlcnJv
+ci4gSW50ZXJuZXQgY29tbXVuaWNhdGlvbnMgY2Fubm90IGJlIGd1YXJhbnRlZWQgdG8gYmUgdGlt
+ZWx5LCBzZWN1cmUsIGVycm9yLWZyZWUgb3IgdmlydXMtZnJlZS4gVGhlIHNlbmRlciBkb2VzIG5v
+dCBhY2NlcHQgbGlhYmlsaXR5IGZvciBhbnkgZXJyb3JzIG9yIG9taXNzaW9ucy4NCrG+08q8/ryw
+xuS4vbz+vt/T0LGjw9zQ1NbKo6zK3Leowsmxo7uksru1w9C5wrajrL32t6LLzbj4sb7Tyrz+y/nW
+uMzYtqjK1bz+yMuho9HPvfu3x76tytrIqMq508OhotD7tKuhoreisry78ri01saxvtPKvP678sbk
+xNrI3aGjyPS3x7jDzNi2qMrVvP7Iy6Osx+vO8NTEtsGhori01sahoiDKudPDu/LF+8K2sb7Tyrz+
+tcTIzrrOxNrI3aGjyPTO88rVsb7Tyrz+o6zH67TTz7XNs9bQ08C+w9DUyb6z/bG+08q8/rywy/nT
+0Li9vP6jrLKi0tS72Li008q8/rXEt73Kvby0v8y45taqt6K8/sjLoaPO3reosaPWpLulwarN+M2o
+0MW8sMqxoaKwssiroaLO3s7zu/K3wLa+oaO3orz+yMu21MjOus607cKpvvmyu7PQtaPU8MjOoaMN
+Cg==
