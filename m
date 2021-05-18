@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F39387E38
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E789387E3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351083AbhERRHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:07:43 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:38453 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239478AbhERRHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:07:42 -0400
-Received: from [77.244.183.192] (port=62022 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lj3Aj-000CdH-Ny; Tue, 18 May 2021 19:06:21 +0200
-Subject: Re: [PATCH 0/5] PCI: dwc: pci-dra7xx: miscellaneous improvements
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-References: <20210517163623.GA21579@bjorn-Precision-5520>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <3e61b95e-f3e4-b5f2-d87f-eec42bcd630f@lucaceresoli.net>
-Date:   Tue, 18 May 2021 19:06:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1351089AbhERRLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:11:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:57380 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239478AbhERRLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:11:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0F9F101E;
+        Tue, 18 May 2021 10:10:28 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38BCE3F73B;
+        Tue, 18 May 2021 10:10:27 -0700 (PDT)
+Date:   Tue, 18 May 2021 18:10:24 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210518171024.GF3993@e120325.cambridge.arm.com>
+References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
+ <1621239831-5870-3-git-send-email-beata.michalska@arm.com>
+ <87mtst1s8m.mognet@arm.com>
+ <20210517131816.GA13965@e120325.cambridge.arm.com>
+ <87k0nx1jtu.mognet@arm.com>
+ <20210518144033.GB3993@e120325.cambridge.arm.com>
+ <87bl9811il.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210517163623.GA21579@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bl9811il.mognet@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn,
+On Tue, May 18, 2021 at 04:53:54PM +0100, Valentin Schneider wrote:
+> On 18/05/21 15:40, Beata Michalska wrote:
+> > On Mon, May 17, 2021 at 04:06:05PM +0100, Valentin Schneider wrote:
+> >> On 17/05/21 14:18, Beata Michalska wrote:
+> >> > On Mon, May 17, 2021 at 01:04:25PM +0100, Valentin Schneider wrote:
+> >> >> On 17/05/21 09:23, Beata Michalska wrote:
+> >> >> > +static void asym_cpu_capacity_scan(const struct cpumask *cpu_map)
+> >> >> > +{
+> >> >> > +	struct asym_cap_data *entry, *next;
+> >> >> > +	int cpu;
+> >> >> >
+> >> >> > -		for_each_sd_topology(tl) {
+> >> >> > -			if (tl_id < asym_level)
+> >> >> > -				goto next_level;
+> >> >> > +	if (!list_empty(&asym_cap_list))
+> >> >> > +		list_for_each_entry(entry, &asym_cap_list, link)
+> >> >> > +			cpumask_clear(entry->cpu_mask);
+> >> >> >
+> >> >>
+> >> >> The topology isn't going to change between domain rebuilds, so why
+> >> >> recompute the masks? The sched_domain spans are already masked by cpu_map,
+> >> >> so no need to do this masking twice. I'm thinking this scan should be done
+> >> >> once against the cpu_possible_mask - kinda like sched_init_numa() done once
+> >> >> against the possible nodes.
+> >> >>
+> >> > This is currently done, as what you have mentioned earlier, the tl->mask
+> >> > may contain CPUs that are not 'available'. So it makes sure that the masks
+> >> > kept on  the list are representing only those CPUs that are online.
+> >> > And it is also needed case all CPUs of given capacity go offline - not to to
+> >> > lose the full asymmetry that might change because of that ( empty masks are
+> >> > being removed from the list).
+> >> >
+> >> > I could change that and use the CPU mask that represents the online CPUs as
+> >> > a checkpoint but then it also means additional tracking which items on the
+> >> > list are actually available at a given point of time.
+> >> > So if the CPUs masks on the list are to be set once (as you are suggesting)
+> >> > than it needs additional logic to count the number of available capacities
+> >> > to decide whether there is a full asymmetry or not.
+> >> >
+> >>
+> >> That should be doable by counting non-empty intersections between each
+> >> entry->cpumask and the cpu_online_mask in _classify().
+> >>
+> >> That said I'm afraid cpufreq module loading forces us to dynamically update
+> >> those masks, as you've done. The first domain build could see asymmetry
+> >> without cpufreq loaded, and a later one with cpufreq loaded would need an
+> >> update. Conversely, as much of a fringe case as it is, we'd have to cope
+> >> with the cpufreq module being unloaded later on...
+> >>
+> >> :(
+> > So it got me thinking that maybe we could actually make it more
+> > 'update-on-demand' and use the cpufreq policy notifier to trigger the update.
+> > I could try to draft smth generic enough to make it ... relatively easy to adapt
+> > to different archs case needed.
+> > Any thoughts ?
+> >
+> 
+> The cpufreq policy notifier rebuild is currently an arch_topology.c
+> specificity, and perhaps we can consider this as our standing policy: if an
+> arch needs a topology rebuild upon X event (which isn't hotplug), it is
+> responsible for triggering it itself.
+> 
+> There's those sched_energy_update / arch_update_cpu_topology() bools that
+> are used to tweak the rebuild behaviour, perhaps you could gate the
+> capacity maps rebuild behind arch_update_cpu_topology()?
+> 
+> That way you could build those maps based on a cpu_possible_mask iterator,
+> and only rebuild them when the arch requests it (arch_topology already does
+> that with the cpufreq notifier). How does it sound?
+>
+That sounds reasonable/doable. Will see how that plays out.
+Thanks.
 
-On 17/05/21 18:36, Bjorn Helgaas wrote:
-> On Mon, May 17, 2021 at 05:41:17PM +0200, Luca Ceresoli wrote:
->> This is an series of mixed improvements to the DRA7 PCI controller driver:
->> allow building as a loadabel module, allow to get and enable a clock and a
->> small cleanup.
->>
->> Luca
->>
->> Luca Ceresoli (5):
->>   PCI: dwc: export more symbols to allow modular drivers
->>   PCI: dwc: pci-dra7xx: make it a kernel module
->>   PCI: dwc: pci-dra7xx: allow to build as a loadable module
->>   PCI: dwc: pci-dra7xx: remove unused include
->>   PCI: dwc: pci-dra7xx: get an optional clock
-> 
-> This driver has a poor record of subject lines:
-> 
->   PCI: pci-dra7xx: Prepare for deferred probe with module_platform_driver
->   PCI: dwc: Move dw_pcie_setup_rc() to DWC common code
->   PCI: dwc/dra7xx: Use the common MSI irq_chip
->   PCI: dwc: pci-dra7xx: Fix runtime PM imbalance on error
-> 
-> The "PCI: dwc:" ones are fine -- they apply to the shared dwc core,
-> not specifically to dra7xx.
-> 
-> The driver-specific ones:
-> 
->   PCI: pci-dra7xx:
->   PCI: dwc/dra7xx:
->   PCI: dwc: pci-dra7xx:
-> 
-> are redundant and waste space.  There's no need to mention "dwc" for
-> dra7xx-specific things, and no need to mention "PCI" twice.
-> 
-> We should use the "PCI: dra7xx:" prefix for things specific to this
-> driver.
-> 
-> The rest of the subject line should start with a capital letter.  The
-> subject line should contain specific information when practical.  For
-> example,
-> 
->   PCI: dwc: Export dw_pcie_link_up(), dw_pcie_ep_reset_bar() for modular drivers
->   PCI: dra7xx: Allow building as module
->   PCI: dra7xx: Remove unused linux/init.h include
->   PCI: dra7xx: Get optional external clock
-> 
-> I would squash 2/5 and 3/5, similar to a98d2187efd9 ("PCI: meson:
-> Build as module by default") and 526a76991b7b ("PCI: aardvark:
-> Implement driver 'remove' function and allow to build it as module").
-
-Thanks for the prompt review. I'll wait a few days for any more comments
-and then resend.
-
-
--- 
-Luca
+---
+BR
+B.
+> > ---
+> > BR
+> > B.
