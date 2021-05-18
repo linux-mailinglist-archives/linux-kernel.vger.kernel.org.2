@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFF4387FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DE9387FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351665AbhERSwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:52:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:59300 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234553AbhERSwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:52:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BAB5101E;
-        Tue, 18 May 2021 11:51:15 -0700 (PDT)
-Received: from [10.57.66.179] (unknown [10.57.66.179])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96D703F719;
-        Tue, 18 May 2021 11:51:14 -0700 (PDT)
-Subject: Re: [PATCH 1/1] dma-contiguous: return early for dt case in
- dma_contiguous_reserve
-To:     Dong Aisheng <aisheng.dong@nxp.com>,
-        iommu@lists.linux-foundation.org
-Cc:     dongas86@gmail.com, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210518112857.1198415-1-aisheng.dong@nxp.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <fe37a3d0-1360-77e8-f594-c9f32cc39cf2@arm.com>
-Date:   Tue, 18 May 2021 19:51:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1351673AbhERSyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:54:07 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59376 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234553AbhERSyG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 14:54:06 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lj4pj-00005U-AM; Tue, 18 May 2021 18:52:47 +0000
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: net: dsa: qca8k: handle error with qca8k_read operation
+Message-ID: <41e1a058-4c13-479d-68aa-2b017fda95fe@canonical.com>
+Date:   Tue, 18 May 2021 19:52:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210518112857.1198415-1-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-18 12:28, Dong Aisheng wrote:
-> dma_contiguous_reserve() aims to support cmdline case for CMA memory
-> reserve. But if users define reserved memory in DT,
-> 'dma_contiguous_default_area' will not be 0, then it's meaningless
-> to continue to run dma_contiguous_reserve(). So we return early
-> if detect 'dma_contiguous_default_area' is unzero.
+Hi,
 
-But dma_contiguous_default_area *shouldn't* be set if the command-line 
-argument is present - see the "if (size_cmdline != -1 && default_cma)" 
-part of rmem_cma_setup(). Are you seeing something different in practice?
+Static analysis of linux-next with Coverity has found several repeated
+issues in the following commit:
 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->   kernel/dma/contiguous.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-> index 3d63d91cba5c..ebade9f43eff 100644
-> --- a/kernel/dma/contiguous.c
-> +++ b/kernel/dma/contiguous.c
-> @@ -171,6 +171,9 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
->   	phys_addr_t selected_limit = limit;
->   	bool fixed = false;
->   
-> +	if (dma_contiguous_default_area)
-> +		return;
-> +
->   	pr_debug("%s(limit %08lx)\n", __func__, (unsigned long)limit);
->   
->   	if (size_cmdline != -1) {
-> @@ -191,7 +194,7 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
->   #endif
->   	}
->   
-> -	if (selected_size && !dma_contiguous_default_area) {
-> +	if (selected_size) {
+commit 028f5f8ef44fcf87a456772cbb9f0d90a0a22884
+Author: Ansuel Smith <ansuelsmth@gmail.com>
+Date:   Fri May 14 22:59:55 2021 +0200
 
-Either way, does skipping a handful of trivial calculations and a 
-debugging message really matter even when it is redundant? I can't 
-imagine it has any measurable effect on boot times...
+    net: dsa: qca8k: handle error with qca8k_read operation
 
-Robin.
 
->   		pr_debug("%s: reserving %ld MiB for global area\n", __func__,
->   			 (unsigned long)selected_size / SZ_1M);
->   
-> 
+The issues are as following:
+
+322        for (i = 0; i < 4; i++) {
+323                val = qca8k_read(priv, QCA8K_REG_ATU_DATA0 + (i * 4));
+
+Unsigned compared against 0 (NO_EFFECT)
+unsigned_compare: This less-than-zero comparison of an unsigned value is
+never true. val < 0U.
+
+324                if (val < 0)
+325                        return val;
+326
+327                reg[i] = val;
+328        }
+
+...
+
+
+397        /* Check for table full violation when adding an entry */
+398        if (cmd == QCA8K_FDB_LOAD) {
+399                reg = qca8k_read(priv, QCA8K_REG_ATU_FUNC);
+
+Unsigned compared against 0 (NO_EFFECT)
+unsigned_compare: This less-than-zero comparison of an unsigned value is
+never true. reg < 0U.
+
+400                if (reg < 0)
+401                        return reg;
+402                if (reg & QCA8K_ATU_FUNC_FULL)
+403                        return -1;
+404        }
+
+478        /* Check for table full violation when adding an entry */
+479        if (cmd == QCA8K_VLAN_LOAD) {
+480                reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC1);
+
+Unsigned compared against 0 (NO_EFFECT)
+unsigned_compare: This less-than-zero comparison of an unsigned value is
+never true. reg < 0U.
+
+481                if (reg < 0)
+482                        return reg;
+483                if (reg & QCA8K_VTU_FUNC1_FULL)
+484                        return -ENOMEM;
+485        }
+
+508        reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC0);
+
+Unsigned compared against 0 (NO_EFFECT)
+unsigned_compare: This less-than-zero comparison of an unsigned value is
+never true. reg < 0U.
+
+509        if (reg < 0)
+510                return reg;
+
+and many others too.
+
+There similar issues with commit:
+
+commit ba5707ec58cfb6853dff41c2aae72deb6a03d389
+Author: Ansuel Smith <ansuelsmth@gmail.com>
+Date:   Fri May 14 22:59:54 2021 +0200
+
+    net: dsa: qca8k: handle qca8k_set_page errors
+
+for example:
+
+162        val = qca8k_set_page(bus, page);
+
+Unsigned compared against 0 (NO_EFFECT)
+unsigned_compare: This less-than-zero comparison of an unsigned value is
+never true. val < 0U.
+
+163        if (val < 0)
+164                goto exit;
+
+I suspect there are many others. So perhaps a review of recent patches
+on this driver would address this unsigned less than zero compare issues.
+
+Colin
