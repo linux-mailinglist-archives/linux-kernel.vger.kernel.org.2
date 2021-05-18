@@ -2,236 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB10387B37
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D628387B3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhEROgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:36:23 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34739 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232245AbhEROgV (ORCPT
+        id S233353AbhEROgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:36:47 -0400
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:39794 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232245AbhEROgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:36:21 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IEWv7u024660;
-        Tue, 18 May 2021 16:34:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=IoZWo4g6WYmn4ZvcOIUxvySqtfs8j1f0MrKnheiGUHs=;
- b=DWsG2/8/3Qz8EOE6fD0Ev8WmmPUOpuL+EpzqNukA0oUpU0lEULgvEElHjsHFOFbVcvhP
- tUn4l/mQqYuLQW6Z8PCRcj7hVjryeaBDNhMwJbBX/kan5rFoVnTs98/c99WLsOMac4rl
- WLIDONkX7FU5nrtYQw+Kp7ZLtjfF87D1GFq6yf1OQuNACqDWJgsxkX1w5aiQTrFUiMOu
- n1GpjTi8F1S/XK4ROkVDUOFukZk4W3TjAbkWiRKY6OgbbVP1cMRnpIM/c1rcsXjkIZWa
- O60Pz0hxQ06k1DLcaITk8ZtZsrYW2BEMy4nKOoSVP1oUFOFfPXgsILqRPuwLVJCK89kj qw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38maunsss0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 16:34:54 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DEBA310002A;
-        Tue, 18 May 2021 16:34:53 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C3E0822AED2;
-        Tue, 18 May 2021 16:34:53 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May
- 2021 16:34:52 +0200
-Subject: Re: [PATCH v4 2/3] mtd: spinand: use the spi-mem poll status APIs
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
- <20210518134332.17826-3-patrice.chotard@foss.st.com>
- <20210518161834.6860c310@collabora.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <028d3c29-effe-1604-8e38-b7fb0783c4a2@foss.st.com>
-Date:   Tue, 18 May 2021 16:34:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 18 May 2021 10:36:45 -0400
+Received: by mail-ua1-f47.google.com with SMTP id a12so3301727uak.6;
+        Tue, 18 May 2021 07:35:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zebz9Gz8Zw8lQG2LiaFvqSG6xwA9z2xU/a+9st7RAd4=;
+        b=QX5XhXPgXZXKx+b6wLRpuQjUKP5WvNh3V6YWnWL432vHixlzaOrnACFcVgMg2PaoHS
+         KIafGF2j35uUqwjL/7/ypWz30iikkN8M8d0yqiLEmW4BKa9l0qSytViZRYRNeP29MSCu
+         R5pSaTs6+m18MioQwsUE69u/Os6MNuJ+EAww/mVLpsIHSAalJuMjh5EAlJXonA+x+AGS
+         LpZSbH2Mmx/pE3XkGqpPDvU0d9aCGJZOhln5TJaBIaEUZqirpG53bN0KwDSEA6NERwrg
+         e/20rDjxFe+fRXOOUyZB4m2tsxsP9iBI4aTbcO3W+f/1nfnF6Fp4NeFT1Kounffe2bgT
+         1YPg==
+X-Gm-Message-State: AOAM530dorFPjcpfccUm4a/PE0DIiCd/HDKI29Z9x/6rL6rr25VGWOZ5
+        FTJUexx7EJVmMg2ZyfXRH/d6DKG4yRSMZLCIksPxh0QmvEg=
+X-Google-Smtp-Source: ABdhPJzasGlFQRXLxNTx9IOFZHu2tN4P8gFB4eopIGDQ9iVTdObR7fr+c/2eBhcaOmDqqiI3Ejua84TD9jYUXq1w3e0=
+X-Received: by 2002:ab0:7705:: with SMTP id z5mr6782625uaq.2.1621348527338;
+ Tue, 18 May 2021 07:35:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210518161834.6860c310@collabora.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_07:2021-05-18,2021-05-18 signatures=0
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-3-geert@linux-m68k.org> <fb42abb0e79a57e2aab123468d95ff7e@protonic.nl>
+In-Reply-To: <fb42abb0e79a57e2aab123468d95ff7e@protonic.nl>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 18 May 2021 16:35:16 +0200
+Message-ID: <CAMuHMdXN9bPnEjXJUWszS5iwuVLBHJV7c+jhBU1t1EXnAnFYig@mail.gmail.com>
+Subject: Re: [PATCH 02/17] dt-bindings: auxdisplay: ht16k33: Document Adafruit
+ segment displays
+To:     Robin van der Gracht <robin@protonic.nl>
+Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hoi Robin,
 
+On Tue, Mar 23, 2021 at 10:12 AM robin <robin@protonic.nl> wrote:
+> On 2021-03-22 15:48, Geert Uytterhoeven wrote:
+> > The Holtek HT16K33 LED controller is not only used for driving
+> > dot-matrix displays, but also for driving segment displays.
+> >
+> > Document compatible values for the Adafruit 7-segment[1] and
+> > 14-segment[2] FeatherWing expansion boards with red displays.
+> > According
+> > to the schematics, all other Adafruit 7-segment and 14-segment display
+> > backpack and FeatherWing expansion boards (including bare boards and
+> > boards fitted with displays) are compatible with these two boards.
+> > Add a "color" property to support the different color variants.
+> >
+> > [1] https://www.adafruit.com/product/3108
+> > [2] https://www.adafruit.com/product/3130
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-On 5/18/21 4:18 PM, Boris Brezillon wrote:
-> On Tue, 18 May 2021 15:43:31 +0200
-> <patrice.chotard@foss.st.com> wrote:
-> 
->> From: Patrice Chotard <patrice.chotard@foss.st.com>
->>
->> Make use of spi-mem poll status APIs to let advanced controllers
->> optimize wait operations.
->> This should also fix the high CPU usage for system that don't have
->> a dedicated STATUS poll block logic.
->>
->> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
->> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->> ---
->> Changes in v4:
->>   - Update commit message.
->>   - Add comment which explains how delays has been calculated.
->>   - Rename SPINAND_STATUS_TIMEOUT_MS to SPINAND_WAITRDY_TIMEOUT_MS.
->>
->> Changes in v3:
->>   - Add initial_delay_us and polling_delay_us parameters to spinand_wait()
->>   - Add SPINAND_READ/WRITE/ERASE/RESET_INITIAL_DELAY_US and
->>     SPINAND_READ/WRITE/ERASE/RESET_POLL_DELAY_US defines.
->>
->> Changes in v2:
->>   - non-offload case is now managed by spi_mem_poll_status()
->>
->>  drivers/mtd/nand/spi/core.c | 45 ++++++++++++++++++++++++++-----------
->>  include/linux/mtd/spinand.h | 22 ++++++++++++++++++
->>  2 files changed, 54 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
->> index 17f63f95f4a2..3131fae0c715 100644
->> --- a/drivers/mtd/nand/spi/core.c
->> +++ b/drivers/mtd/nand/spi/core.c
->> @@ -473,20 +473,26 @@ static int spinand_erase_op(struct spinand_device *spinand,
->>  	return spi_mem_exec_op(spinand->spimem, &op);
->>  }
->>  
->> -static int spinand_wait(struct spinand_device *spinand, u8 *s)
->> +static int spinand_wait(struct spinand_device *spinand,
->> +			unsigned long initial_delay_us,
->> +			unsigned long poll_delay_us,
->> +			u8 *s)
->>  {
->> -	unsigned long timeo =  jiffies + msecs_to_jiffies(400);
->> +	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
->> +						      spinand->scratchbuf);
->>  	u8 status;
->>  	int ret;
->>  
->> -	do {
->> -		ret = spinand_read_status(spinand, &status);
->> -		if (ret)
->> -			return ret;
->> +	ret = spi_mem_poll_status(spinand->spimem, &op, STATUS_BUSY, 0,
->> +				  initial_delay_us,
->> +				  poll_delay_us,
->> +				  SPINAND_WAITRDY_TIMEOUT_MS);
->> +	if (ret)
->> +		return ret;
->>  
->> -		if (!(status & STATUS_BUSY))
->> -			goto out;
->> -	} while (time_before(jiffies, timeo));
->> +	status = *spinand->scratchbuf;
->> +	if (!(status & STATUS_BUSY))
->> +		goto out;
-> 
-> Looks like you expect the driver to not only wait for a status change
-> but also fill the data buffer with the last status value. I think that
-> should be documented in the SPI mem API.
+> > --- a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+> > +++ b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+> > @@ -14,14 +14,23 @@ allOf:
+> >
+> >  properties:
+> >    compatible:
+> > -    const: holtek,ht16k33
+> > +    oneOf:
+> > +      - items:
+> > +          - const: adafruit,3108  # 0.56" 4-Digit 7-Segment
+> > FeatherWing Display (Red)
+> > +          - const: holtek,ht16k33
+> > +
+> > +      - items:
+> > +          - const: adafruit,3130  # 0.54" Quad Alphanumeric
+> > FeatherWing Display (Red)
+> > +          - const: holtek,ht16k33
+> > +
+> > +      - const: holtek,ht16k33     # Generic 16*8 LED controller with
+> > dot-matrix display
+> >
+> >    reg:
+> >      maxItems: 1
+> >
+> >    refresh-rate-hz:
+> >      maxItems: 1
+> > -    description: Display update interval in Hertz
+> > +    description: Display update interval in Hertz for dot-matrix
+> > displays
+>
+> The above should be included in patch 16
 
-Right, i will update the API.
+I disagree: bindings are independent from the driver implementation.
 
-Thanks
-Patrice
-> 
->>  	/*
->>  	 * Extra read, just in case the STATUS_READY bit has changed
->> @@ -526,7 +532,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
->>  	if (ret)
->>  		return ret;
->>  
->> -	return spinand_wait(spinand, NULL);
->> +	return spinand_wait(spinand,
->> +			    SPINAND_RESET_INITIAL_DELAY_US,
->> +			    SPINAND_RESET_POLL_DELAY_US,
->> +			    NULL);
->>  }
->>  
->>  static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
->> @@ -549,7 +558,10 @@ static int spinand_read_page(struct spinand_device *spinand,
->>  	if (ret)
->>  		return ret;
->>  
->> -	ret = spinand_wait(spinand, &status);
->> +	ret = spinand_wait(spinand,
->> +			   SPINAND_READ_INITIAL_DELAY_US,
->> +			   SPINAND_READ_POLL_DELAY_US,
->> +			   &status);
->>  	if (ret < 0)
->>  		return ret;
->>  
->> @@ -585,7 +597,10 @@ static int spinand_write_page(struct spinand_device *spinand,
->>  	if (ret)
->>  		return ret;
->>  
->> -	ret = spinand_wait(spinand, &status);
->> +	ret = spinand_wait(spinand,
->> +			   SPINAND_WRITE_INITIAL_DELAY_US,
->> +			   SPINAND_WRITE_POLL_DELAY_US,
->> +			   &status);
->>  	if (!ret && (status & STATUS_PROG_FAILED))
->>  		return -EIO;
->>  
->> @@ -768,7 +783,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
->>  	if (ret)
->>  		return ret;
->>  
->> -	ret = spinand_wait(spinand, &status);
->> +	ret = spinand_wait(spinand,
->> +			   SPINAND_ERASE_INITIAL_DELAY_US,
->> +			   SPINAND_ERASE_POLL_DELAY_US,
->> +			   &status);
->> +
->>  	if (!ret && (status & STATUS_ERASE_FAILED))
->>  		ret = -EIO;
->>  
->> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
->> index 6bb92f26833e..6988956b8492 100644
->> --- a/include/linux/mtd/spinand.h
->> +++ b/include/linux/mtd/spinand.h
->> @@ -170,6 +170,28 @@ struct spinand_op;
->>  struct spinand_device;
->>  
->>  #define SPINAND_MAX_ID_LEN	4
->> +/*
->> + * For erase, write and read operation, we got the following timings :
->> + * tBERS (erase) 1ms to 4ms
->> + * tPROG 300us to 400us
->> + * tREAD 25us to 100us
->> + * In order to minimize latency, the min value is divided by 4 for the
->> + * initial delay, and dividing by 20 for the poll delay.
->> + * For reset, 5us/10us/500us if the device is respectively
->> + * reading/programming/erasing when the RESET occurs. Since we always
->> + * issue a RESET when the device is IDLE, 5us is selected for both initial
->> + * and poll delay.
->> + */
->> +#define SPINAND_READ_INITIAL_DELAY_US	6
->> +#define SPINAND_READ_POLL_DELAY_US	5
->> +#define SPINAND_RESET_INITIAL_DELAY_US	5
->> +#define SPINAND_RESET_POLL_DELAY_US	5
->> +#define SPINAND_WRITE_INITIAL_DELAY_US	75
->> +#define SPINAND_WRITE_POLL_DELAY_US	15
->> +#define SPINAND_ERASE_INITIAL_DELAY_US	250
->> +#define SPINAND_ERASE_POLL_DELAY_US	50
->> +
->> +#define SPINAND_WAITRDY_TIMEOUT_MS	400
->>  
->>  /**
->>   * struct spinand_id - SPI NAND id structure
-> 
+> >    interrupts:
+> >      maxItems: 1
+> > @@ -41,10 +50,17 @@ properties:
+> >      default: 16
+> >      description: Initial brightness level
+> >
+> > +  color: true
+> > +    description:
+> > +      Color of the display.  Use one of the LED_COLOR_ID_* prefixed
+> > definitions
+> > +      from the header include/dt-bindings/leds/common.h.  The default
+> > is red.
+> > +    minimum: 0
+> > +    maximum: 9
+> > +    default: 1
+> > +
+>
+> The above should be included in patch 17
+
+Same here.
+
+> >  required:
+> >    - compatible
+> >    - reg
+> > -  - refresh-rate-hz
+>
+> 'refresh-rate-hz' is still a required property for the dot-matrix /
+> fbdev setup.
+
+True.
+
+> If it can no longer be listed here than maybe its nice to mention that
+> it's required
+> somewhere else (in it's description?).
+
+    if:
+      properties:
+        compatible:
+          const: holtek,ht16k33
+    then:
+      required:
+        - refresh-rate-hz
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
