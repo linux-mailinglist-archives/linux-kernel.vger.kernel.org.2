@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1349238715B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C878A387168
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241585AbhERFjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 01:39:04 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:40668 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234640AbhERFjD (ORCPT
+        id S241633AbhERFr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 01:47:26 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:53211 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234640AbhERFrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 01:39:03 -0400
-Received: by mail-wr1-f47.google.com with SMTP id z17so8676838wrq.7;
-        Mon, 17 May 2021 22:37:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qYgTEcI0p8vm+Wd+KuORzC7sfMU5u1tAKUxc2TJ7yQ4=;
-        b=Hnk5e9H6PNAYhMsG08p4GBWKvbIz/9EPRrvDQYVdcGNP+EySMo7dOAbZWITh273s0J
-         pmzzaPhPNq4iA7I/ovoJKeZu1QCxqN1xVsDpxhE5jCe32ojLir07Pa9JIoX696t67qAi
-         QG89/tI6aAfYaOsgvJ9Z9fg0srNIOESeyrNsSpigs53+WlbYjDdXlsu8p04KRg1jAJVN
-         vsquPYPHPuC0d2UFgPw2B2wIRwE7W+b6Qn4hH8/Egq8LPce4HTQqfE7VWtH62j6+q8Xi
-         sWsN2aubjYyF+eatex6kkUa/pswuIO0ULgV5OjlZkaCnAyav6ywy2dsbzh0taApg3vDM
-         ZpDw==
-X-Gm-Message-State: AOAM5328MN90y0Mdda4rHHOQvY1y3Gl7EA7wlRsx68z2eZ+r3HHUyzyG
-        AQOwE2DW8oySsT0bhsFnFueZPxaNkL0=
-X-Google-Smtp-Source: ABdhPJz4X5qxJaw/KOSOFlmrtqcdtaLfeSjtFY267oOOeU1PJnTB2CHuAd5qxLAM+8jUON2HU02e4w==
-X-Received: by 2002:a5d:5688:: with SMTP id f8mr4403312wrv.237.1621316263409;
-        Mon, 17 May 2021 22:37:43 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id x13sm9887722wro.31.2021.05.17.22.37.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 22:37:42 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/1] MAINTAINERS: TTY LAYER: add some ./include/linux/
- header files
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210518052117.14819-1-lukas.bulwahn@gmail.com>
- <20210518052117.14819-2-lukas.bulwahn@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <69da627e-91c5-66f0-c0c9-75fbaaba6782@kernel.org>
-Date:   Tue, 18 May 2021 07:37:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 18 May 2021 01:47:24 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 80CC758123F;
+        Tue, 18 May 2021 01:46:06 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 18 May 2021 01:46:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=Jbmf4WRhsfHsu1LE7NMnVkzakBi
+        NS33xX0ldvnGydxc=; b=m5XlY1eLYX5EHnTiBxtOk4EshiYNVV3/JPAOwinAIwa
+        Pc+bAQCoQtepYB796CC/fqOlyQOoh6RVY4sfO8iMzDSxZ+B4Hbclnh2GLi3s0+gO
+        WRk1R+YxsNdmGADB1QsaRxUk+H9M7HXcVkFav54WBhPsT1PShI5TEgVLgh3x6bFJ
+        XPsy5a5VUWHVah2NyrIdB6Jh3iMxhdY8H6pj6SyPNCYLAH7lr+5J2uE8YicjRWfb
+        CpFGn2sx9lqNyJF2J9ocQxH1MgUzJb1Odm4bsPR+414gBKqr3UN7YxwJpBcX5RpU
+        4Y5B02nDdGgp3XrJRBZpxf2ZDkLEt4UQAUifDmoyB7g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Jbmf4W
+        RhsfHsu1LE7NMnVkzakBiNS33xX0ldvnGydxc=; b=U3ykAomG81+5MrN9HJXlfm
+        Muv1aJdWzVZ1O9GppD6WDRH9LNKMcLpSDSup24DRIxsmAJ+4qPWy81Kut8VErFtP
+        DPLteZbxv/Vn9DcAs5zJyR/NSU6HaOWMTLMBTr/HIRbWdHBEK7IvhMPjWNx5LM3W
+        OyKb1kSiYsH37IWAGCdt3MjAh270GR+SusI/U6LdJf5adKXYmfyeuRVE0bb3LXzz
+        NplM5kt7wJVAC3BY8gCrwClfNks8r26aTPUpfbz6CBDcGYyKZKPAdxNol+/1lLdP
+        o+MNWONlm4JqyzyR5iXOIJ6MVE5Tf6e0WdpZhrqa00POdryO4lYPNOHvaanF2M2g
+        ==
+X-ME-Sender: <xms:nVSjYGYH_rNflfC5QpS_SWitCwRtBl2Lv02cxI40ujktJfgJ6otVHg>
+    <xme:nVSjYJbmzGtQIu-3MyWuNuwuHCZ4m5z4EFqAYJqOF0CNZ0MyApgxyUCrP7WBatb1J
+    LO9EHKugizdXw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeiiedgleegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:nVSjYA9KEZtikOS7goNVrTzwaGgoOP7eCXVRS34eJqQCCOEfP93Pog>
+    <xmx:nVSjYIpunRuXAGI1vhnfuaUDogPsrtr0o8Wg-fCxEOTBwJbRSWih0g>
+    <xmx:nVSjYBrR0wIKVHBPWxFSqDMdT_iQtEvubgXAOonvKzePxi7qGcwI3A>
+    <xmx:nlSjYC5roDjwitsOwJ4iCXjBv_cfJkbbL20F62TFs5OMo2_3B1sYqg>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 18 May 2021 01:46:05 -0400 (EDT)
+Date:   Tue, 18 May 2021 07:45:59 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.12 5/5] tty: vt: always invoke
+ vc->vc_sw->con_resize callback
+Message-ID: <YKNUl/f/c8HfF6dS@kroah.com>
+References: <20210518010940.1485417-1-sashal@kernel.org>
+ <20210518010940.1485417-5-sashal@kernel.org>
+ <CAHk-=whw9_rp0NYTsCqcGnUkcV5Qgv7FTxADtPrdq4KFmsj+Lg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210518052117.14819-2-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whw9_rp0NYTsCqcGnUkcV5Qgv7FTxADtPrdq4KFmsj+Lg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18. 05. 21, 7:21, Lukas Bulwahn wrote:
-> An early prototypical automated code analysis of headers and the
-> existing MAINTAINERS sections identified some header files in
-> ./include/linux/ to be probably included into the TTY LAYER section.
+On Mon, May 17, 2021 at 06:35:24PM -0700, Linus Torvalds wrote:
+> On Mon, May 17, 2021 at 6:09 PM Sasha Levin <sashal@kernel.org> wrote:
+> >
+> > From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> >
+> > [ Upstream commit ffb324e6f874121f7dce5bdae5e05d02baae7269 ]
 > 
-> I further checked those suggestions by this analysis and identified a
-> subset of files that I am rather certain to belong to the TTY LAYER.
+> So I think the commit is fine, and yes, it should be applied to
+> stable, but it's one of those "there were three different patches in
+> as many days to fix the problem, and this is the right one, but maybe
+> stable should hold off for a while to see that there aren't any
+> problem reports".
 > 
-> Add these ./include/linux/ header files to TTY LAYER in MAINTAINERS.
+> I don't think there will be any problems from this, but while the
+> patch is tiny, it's conceptually quite a big change to something that
+> people haven't really touched for a long time.
 > 
-> The patterns include/linux/tty*.h and include/linux/vt_*.h currently cover:
-> 
->    include/linux/tty.h
->    include/linux/tty_driver.h
->    include/linux/tty_flip.h
->    include/linux/tty_ldisc.h
-> 
->    include/linux/vt_buffer.h
->    include/linux/vt_kern.h
+> So use your own judgement, but it might be a good idea to wait a week
+> before backporting this to see if anything screams.
 
-Yes, that looks good.
-
-Can you extend the tool to include/uapi too?
-
-For example this is missing too:
-include/uapi/linux/tty*.h
-
-It expands to:
-include/uapi/linux/tty_flags.h
-include/uapi/linux/tty.h
-
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20210507
-> 
->   MAINTAINERS | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8923f0064784..d056f777c1a5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18563,9 +18563,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git
->   F:	Documentation/driver-api/serial/
->   F:	drivers/tty/
->   F:	drivers/tty/serial/serial_core.c
-> +F:	include/linux/selection.h
->   F:	include/linux/serial.h
->   F:	include/linux/serial_core.h
-> -F:	include/linux/tty.h
-> +F:	include/linux/sysrq.h
-> +F:	include/linux/tty*.h
-> +F:	include/linux/vt.h
-> +F:	include/linux/vt_*.h
->   F:	include/uapi/linux/serial.h
->   F:	include/uapi/linux/serial_core.h
->   F:	include/uapi/linux/tty.h
-> 
+I was going to wait a few weeks for this, and the other vt patches that
+were marked with cc: stable@ before queueing them up.
 
 thanks,
--- 
-js
-suse labs
+
+greg k-h
