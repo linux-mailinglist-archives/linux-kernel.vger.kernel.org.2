@@ -2,228 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0C938806B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C176338805D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351793AbhERTVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:21:36 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:60847 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351776AbhERTVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:21:24 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14IJDDRs4008171
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Tue, 18 May 2021 12:19:47 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14IJDDRs4008171
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621365599;
-        bh=aZN0ATCPGdNxz3c4p7s/Y7tkLQGd59xFZeraRg2D2s0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HYVfh7L+aeXdkpqI+xuEmIua4i7UBWQ9cQBSXR+4L1Y8GO2mDzzwufnbZ0b32XMlE
-         hUQP6gFF3WSiXG34Sny3cUBoQn58dyNFITCNICAnnQb8xiI6AzZ/96adHRUYomo0Og
-         2z57zJhdET0/ABm5bDUA/cfUSrPTu6NIlMgqegmS2QS6KuOqlj0dTVWg2nwgfwv2t7
-         /gAUvqwg2SuFFON2mF7i2dEj5GFllBiBpCiTsSsGgbZCryFzk7cpoYWnUd7wnEUQvQ
-         g2z55UvS+Qw/9wcsGtSa4M8UphBFcOPbwpb1i0vPRL8MIKgz0cmZI6kpcHOCrfu/WA
-         bMNuPaqm+zuNQ==
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 6/6] x86/syscall: use int everywhere for system call numbers
-Date:   Tue, 18 May 2021 12:13:03 -0700
-Message-Id: <20210518191303.4135296-7-hpa@zytor.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210518191303.4135296-1-hpa@zytor.com>
-References: <20210518191303.4135296-1-hpa@zytor.com>
+        id S1351745AbhERTPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243096AbhERTPV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 15:15:21 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3075C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:14:02 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id s20so5643336plr.13
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WnK4uajSuBCF+iu/8FjWrAQzpSy036uu06aeXXfdggs=;
+        b=Fj+N4PhfIl7jv6LOEmmuwwPamlR3Z2YzG/LLmlR0QybVOTTn2vyDdSUMTTagMgBNV+
+         Zm30YA60fRu72DnMhpG6DVO6vbcxSzXEKSqFTSCPWR7hHWEyjiY15OtF153VplUIesO6
+         4Fy4Qz7mrNf0qBDERWZUVjI78VZXfShNl3AAM5g0mnwkbSYtSLOPwyxwkC9PEkw8OA2P
+         r5e7R56Yvpg8VN6/VlNGT+jeCxaFQy5h0jr6jrIc0KL8+9iUmn3Cypq2hgfbc+lGxRxH
+         hgfzqm08H00oNE9YvPk0mP/SnPNZJbzWFSrCpIAt3L+C3BV2PVVi8Xm2tHbFZMadNSN1
+         cGdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WnK4uajSuBCF+iu/8FjWrAQzpSy036uu06aeXXfdggs=;
+        b=Aj5z/d27HC10pug3s+dH+bD/LRDycEzsj97nRhwuU5jD7z+/G28VUk1GkBnwOzWIfL
+         1myjxltQNsb7ZjF0M8dvP0JV2GAMHbwKpr8YVNWiAWItwqCwsM4GrVUWHK5QLzPeqaah
+         E7Gedu//Uyy2miTN4WZDH2UvSgplzdp/HhG68ddQv2eqGbjdBPLmKXoYFUZN2nz+wnnx
+         hMNnl/1KqyCVv7SfYkCgBSs0yvx13LXr02qbnHUxH9S8gV1ucuRuMld6XuFKhfFtesyY
+         3v/FIAmdWiVZgvcwGRvYiy/Z3mPs63efo7wP4r5tbmZHqLfuBj9+5chSmRqy3U+jgU7c
+         T3dQ==
+X-Gm-Message-State: AOAM530q5rzykhzm0i+99uWjHU+MbBbwAMZ2B3/mB0TmsDOazFdTUfTi
+        ua3ZmMEABrYKBCAapsPwbAGgMZrPRDOUKg==
+X-Google-Smtp-Source: ABdhPJzlwjf30kWQb8nqUSwMKzmhMqzQ9xOMZbWixVKBohtjcV94vQCRIoWVsR2MNR3qYrJlDw4b1Q==
+X-Received: by 2002:a17:902:34f:b029:ef:3d14:1c27 with SMTP id 73-20020a170902034fb02900ef3d141c27mr6296909pld.65.1621365242262;
+        Tue, 18 May 2021 12:14:02 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id u23sm2943943pfn.106.2021.05.18.12.14.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 12:14:01 -0700 (PDT)
+Date:   Tue, 18 May 2021 19:13:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v4 5/5] KVM: LAPIC: Narrow the timer latency between
+ wait_lapic_expire and world switch
+Message-ID: <YKQR9rq9WNT6dauh@google.com>
+References: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
+ <1621339235-11131-5-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621339235-11131-5-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
+On Tue, May 18, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
+> 
+> Let's treat lapic_timer_advance_ns automatic tuning logic as hypervisor
+> overhead, move it before wait_lapic_expire instead of between wait_lapic_expire 
+> and the world switch, the wait duration should be calculated by the 
+> up-to-date guest_tsc after the overhead of automatic tuning logic. This 
+> patch reduces ~30+ cycles for kvm-unit-tests/tscdeadline-latency when testing 
+> busy waits.
+> 
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
 
-System call numbers are defined as int, so use int everywhere for
-system call numbers. This patch is strictly a cleanup; it should not
-change anything user visible; all ABI changes have been done in the
-preceeding patches.
-
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
----
- arch/x86/entry/common.c        | 93 ++++++++++++++++++++++++----------
- arch/x86/include/asm/syscall.h |  2 +-
- 2 files changed, 66 insertions(+), 29 deletions(-)
-
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index f51bc17262db..714804f0970c 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -36,49 +36,87 @@
- #include <asm/irq_stack.h>
- 
- #ifdef CONFIG_X86_64
--__visible noinstr void do_syscall_64(struct pt_regs *regs, unsigned long nr)
-+
-+static __always_inline bool do_syscall_x64(struct pt_regs *regs, int nr)
-+{
-+	/*
-+	 * Convert negative numbers to very high and thus out of range
-+	 * numbers for comparisons. Use unsigned long to slightly
-+	 * improve the array_index_nospec() generated code.
-+	 */
-+	unsigned long unr = nr;
-+
-+	if (likely(unr < NR_syscalls)) {
-+		unr = array_index_nospec(unr, NR_syscalls);
-+		regs->ax = sys_call_table[unr](regs);
-+		return true;
-+	}
-+	return false;
-+}
-+
-+static __always_inline bool do_syscall_x32(struct pt_regs *regs, int nr)
-+{
-+	/*
-+	 * Adjust the starting offset of the table, and convert numbers
-+	 * < __X32_SYSCALL_BIT to very high and thus out of range
-+	 * numbers for comparisons. Use unsigned long to slightly
-+	 * improve the array_index_nospec() generated code.
-+	 */
-+	unsigned long xnr = nr - __X32_SYSCALL_BIT;
-+
-+	if (IS_ENABLED(CONFIG_X86_X32_ABI) &&
-+	    likely(xnr < X32_NR_syscalls)) {
-+		xnr = array_index_nospec(xnr, X32_NR_syscalls);
-+		regs->ax = x32_sys_call_table[xnr](regs);
-+		return true;
-+	}
-+	return false;
-+}
-+
-+__visible noinstr void do_syscall_64(struct pt_regs *regs, int nr)
- {
- 	add_random_kstack_offset();
- 	nr = syscall_enter_from_user_mode(regs, nr);
- 
- 	instrumentation_begin();
--	if (likely(nr < NR_syscalls)) {
--		nr = array_index_nospec(nr, NR_syscalls);
--		regs->ax = sys_call_table[nr](regs);
--#ifdef CONFIG_X86_X32_ABI
--	} else if (likely((nr & __X32_SYSCALL_BIT) &&
--			  (nr & ~__X32_SYSCALL_BIT) < X32_NR_syscalls)) {
--		nr = array_index_nospec(nr & ~__X32_SYSCALL_BIT,
--					X32_NR_syscalls);
--		regs->ax = x32_sys_call_table[nr](regs);
--#endif
--	} else if (unlikely((int)nr != -1)) {
-+
-+	if (!do_syscall_x64(regs, nr) &&
-+	    !do_syscall_x32(regs, nr) &&
-+	    unlikely(nr != -1)) {
-+		/* Invalid system call, but still a system call? */
- 		regs->ax = __x64_sys_ni_syscall(regs);
- 	}
-+
- 	instrumentation_end();
- 	syscall_exit_to_user_mode(regs);
- }
- #endif
- 
- #if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
--static __always_inline unsigned int syscall_32_enter(struct pt_regs *regs)
-+static __always_inline int syscall_32_enter(struct pt_regs *regs)
- {
- 	if (IS_ENABLED(CONFIG_IA32_EMULATION))
- 		current_thread_info()->status |= TS_COMPAT;
- 
--	return (unsigned int)regs->orig_ax;
-+	return (int)regs->orig_ax;
- }
- 
- /*
-  * Invoke a 32-bit syscall.  Called with IRQs on in CONTEXT_KERNEL.
-  */
--static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs,
--						  unsigned int nr)
-+static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs, int nr)
- {
--	if (likely(nr < IA32_NR_syscalls)) {
--		nr = array_index_nospec(nr, IA32_NR_syscalls);
--		regs->ax = ia32_sys_call_table[nr](regs);
--	} else if (unlikely((int)nr != -1)) {
-+	/*
-+	 * Convert negative numbers to very high and thus out of range
-+	 * numbers for comparisons. Use unsigned long to slightly
-+	 * improve the array_index_nospec() generated code.
-+	 */
-+	unsigned long unr = nr;
-+
-+	if (likely(unr < IA32_NR_syscalls)) {
-+		unr = array_index_nospec(unr, IA32_NR_syscalls);
-+		regs->ax = ia32_sys_call_table[unr](regs);
-+	} else if (unlikely(nr != -1)) {
- 		regs->ax = __ia32_sys_ni_syscall(regs);
- 	}
- }
-@@ -86,15 +124,15 @@ static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs,
- /* Handles int $0x80 */
- __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
- {
--	unsigned int nr = syscall_32_enter(regs);
-+	int nr = syscall_32_enter(regs);
- 
- 	add_random_kstack_offset();
- 	/*
--	 * Subtlety here: if ptrace pokes something larger than 2^32-1 into
--	 * orig_ax, the unsigned int return value truncates it.  This may
--	 * or may not be necessary, but it matches the old asm behavior.
-+	 * Subtlety here: if ptrace pokes something larger than 2^31-1 into
-+	 * orig_ax, the int return value truncates it. This matches
-+	 * the semantics of syscall_get_nr().
- 	 */
--	nr = (unsigned int)syscall_enter_from_user_mode(regs, nr);
-+	nr = syscall_enter_from_user_mode(regs, nr);
- 	instrumentation_begin();
- 
- 	do_syscall_32_irqs_on(regs, nr);
-@@ -105,7 +143,7 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
- 
- static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
- {
--	unsigned int nr = syscall_32_enter(regs);
-+	int nr = syscall_32_enter(regs);
- 	int res;
- 
- 	add_random_kstack_offset();
-@@ -140,8 +178,7 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
- 		return false;
- 	}
- 
--	/* The case truncates any ptrace induced syscall nr > 2^32 -1 */
--	nr = (unsigned int)syscall_enter_from_user_mode_work(regs, nr);
-+	nr = syscall_enter_from_user_mode_work(regs, nr);
- 
- 	/* Now this is just like a normal syscall. */
- 	do_syscall_32_irqs_on(regs, nr);
-diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
-index f6593cafdbd9..f7e2d82d24fb 100644
---- a/arch/x86/include/asm/syscall.h
-+++ b/arch/x86/include/asm/syscall.h
-@@ -159,7 +159,7 @@ static inline int syscall_get_arch(struct task_struct *task)
- 		? AUDIT_ARCH_I386 : AUDIT_ARCH_X86_64;
- }
- 
--void do_syscall_64(struct pt_regs *regs, unsigned long nr);
-+void do_syscall_64(struct pt_regs *regs, int nr);
- void do_int80_syscall_32(struct pt_regs *regs);
- long do_fast_syscall_32(struct pt_regs *regs);
- 
--- 
-2.31.1
-
+Reviewed-by: Sean Christopherson <seanjc@google.com>
