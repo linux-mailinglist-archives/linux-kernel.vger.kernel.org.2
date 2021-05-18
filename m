@@ -2,487 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87374387333
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1C8387314
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347122AbhERHXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347129AbhERHXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 03:23:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98C0861261;
-        Tue, 18 May 2021 07:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621322535;
-        bh=/sX/jGQ3JN6/XKQ1NDaJYJw4pzJL70dwO5FMw+G72PY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f+YjTzqP+9dSYI70RU4DThrizsxctxLZRMu/q8ty2IWe8Nc17NbquHWFyKjmU2vc9
-         m8RagSp2RC0Zc5xEwMWxUj3Gzi/5pxqgdYGEikeskllS6D9DJgYG8e5JGb2DYRqHG7
-         d0EmNU6cGWLKjDHS9oy9W3PeK0P3g1z7w9zmCg4QimU6dtqvhHSzUd26wH9ViqHEEM
-         dvPmXVQmKGBO/XhNVqX/8wpcPK9Ksnv3x7AsX4CJ76j849EeYlbh5BNyS+xI9GW6xP
-         Wv2kjJL30YV1Ld6SakA9TbIOpihvIoB09ylE42UkxBumMXtRF7U2iQB8q4R9BvCJdS
-         HYBQHXzveFGLg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: [PATCH v20 7/7] secretmem: test: add basic selftest for memfd_secret(2)
-Date:   Tue, 18 May 2021 10:20:34 +0300
-Message-Id: <20210518072034.31572-8-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210518072034.31572-1-rppt@kernel.org>
-References: <20210518072034.31572-1-rppt@kernel.org>
+        id S1347092AbhERHWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:22:39 -0400
+Received: from mail-eopbgr80080.outbound.protection.outlook.com ([40.107.8.80]:34727
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1347049AbhERHWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 03:22:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nsQarlOiZcnudMZ23fyQiqRIyPFpuQ1kT4wQsrLjtXGDISIhvNXAjMRtK2BKRWTZDwUgobkpW7C3O8SDjYVk/XG5xOEoKyDuGQFuOUjJfgewv/Sx0esyj6ZLH1KLZoHGOxX3BEm/gYfiI/H8cL2C5xapxud5O/P7z5WPrOyWKZneFl/przI1RNC+uPrMckoco0FmhK4yhcybSPrNqEy7ubR8Ztf6aftWezK8KaaGXkaLYvf1QDVkzaxukKEHaXBWIYNET5qaAkM64SzRAvQ5TWuVHXoLT0FbdfM+8DqNGBBqixXl53A7P0HAbJTFip6LoqU+MOyRJNxMYnIAGbdorw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WGvjDxDnLeuRQTKwA+iNpa5YhyG54fjt/ZIfJffU/k0=;
+ b=NmkZlSM3RiO3ZKWT//V4BXEDlg3u8C/+mMUC8+p8UoqDGwWzyFwnIt/IWptCy5eL4fCf8O6KEfguYNFcIqgk1hb16mgs3ZJslntsbh4MCed8CyZzGqPcPIdkO5211okOzQwob9UJFOPmC9TzRBI43I+3Eo8I5CIz3iITo+quYL8QnxtKHMcgTurEWrlV2EgBPyQlfTfG+C9AJLb3EPJ0w9YBGCRQ0trm4zWC5HnAJQRyy8gUkbkVpmaBaJ+IsIzCjRqTzPcGulhzqDAofXDLXPlFz6EJX4MkT35Y5JVfT3A0Q3Gr9KjjhlRVD6S+aTrM9McOHqxR8cKnDwBb4ftsfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WGvjDxDnLeuRQTKwA+iNpa5YhyG54fjt/ZIfJffU/k0=;
+ b=jKa4TaOOrCnKZvbzOTG/ywGkP+R9z9Em4WooEPitW01qUlj+DQMkmR6iQUCOzEpiLb053R5BPRhI8a9Lnq/DkgWfSgpGwvzm7cNcJJkL8YiYje+qjcf1YyFskZARncXdBJIZihGqxU4VJ9IFEfusPJqgpoZm9Xi70iq0yFs/ZMc=
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
+ by AS8PR04MB7879.eurprd04.prod.outlook.com (2603:10a6:20b:2a4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Tue, 18 May
+ 2021 07:21:10 +0000
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::b10a:ad0:a6f5:db9b]) by AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::b10a:ad0:a6f5:db9b%2]) with mapi id 15.20.4129.031; Tue, 18 May 2021
+ 07:21:10 +0000
+From:   Aisheng Dong <aisheng.dong@nxp.com>
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "G.n. Zhou" <guoniu.zhou@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Peng Fan <peng.fan@nxp.com>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.kocialkowski@bootlin.com" <paul.kocialkowski@bootlin.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "ezequiel@collabora.com" <ezequiel@collabora.com>,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+Subject: RE: [PATCH v11] arm64: dts: imx8qxp: Add jpeg encoder/decoder nodes
+Thread-Topic: [PATCH v11] arm64: dts: imx8qxp: Add jpeg encoder/decoder nodes
+Thread-Index: AQHXOClx/EGs7P4PmkKRDSOc1GkfSqro+uOQ
+Date:   Tue, 18 May 2021 07:21:10 +0000
+Message-ID: <AM6PR04MB4966477B30674145C9DD2E02802C9@AM6PR04MB4966.eurprd04.prod.outlook.com>
+References: <20210423101414.20068-1-mirela.rabulea@oss.nxp.com>
+In-Reply-To: <20210423101414.20068-1-mirela.rabulea@oss.nxp.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oss.nxp.com; dkim=none (message not signed)
+ header.d=none;oss.nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f3badbe2-88a0-4f60-da9f-08d919cd82ed
+x-ms-traffictypediagnostic: AS8PR04MB7879:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AS8PR04MB78794BD3BDBB58DC5EF8F85A802C9@AS8PR04MB7879.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Vu0rU0ZMtuQACW4m6yj+Id49airn4FZd5ACFfMkeeT+VSF5PLE7xCn7r2ABJtBslrm+HK04s2s8hd5/ApkGKPWqMJmuvUvhay0ZB/xx//ul3zziNMyx+mtf5bJBm/ADaCyS+81Q11cAnP3+nZ4auPUKoiIu5H0+irikhEeZKEdjkc9VA/LpNV8f/I6zQZCujkOrq9oefvC3vJanByPZerjd435brLuOVgMpxhhwPst06AXoKzj/fMfesLy3C+imZfclcSIPriIChJFun2OOBUrAsw5gE5kOeTlEiET+Ur/+/g1Fc+P/dlkWao9Zes74AKZTc68lbH5gcBKRnG5dpPeJEIVU9DyVBDvWzrZB328kIFNXogwwkDRxwdC2CwN763OcXn/LnlhaeJyuqgF1GlLX6P04yUfP3Ic/EF2IMH/IDNNQhilyuuo8m39pJIN0Mg8rslw26dBoPj88ryA51u7ecmARyR3h06y7/kmit2bzn6M6TEl7X3QWSwDDF7vVhZzkbL/QLC5sbYmj5NXRdaqxoWjia2m1AxwQfZ8DmH09nCqqy4SZz/4t07IvvbmAaqmo1sI8mer/x5vhkmbjHpz6YVvxXxDdTtfCzynwroyjLjXmiAlZ9r6mbX+XVQ1dfIhrRyu7pyFqe9DhS6prMyA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(83380400001)(5660300002)(26005)(478600001)(44832011)(9686003)(33656002)(76116006)(4326008)(86362001)(66446008)(64756008)(66556008)(2906002)(52536014)(66946007)(66476007)(38100700002)(55016002)(6506007)(71200400001)(122000001)(186003)(7696005)(54906003)(110136005)(8676002)(316002)(7416002)(8936002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?UnRRL3RXWGJyZkp5WHFFREw4UHdweEZXeWJabGo4Z0NMY0Z4djlNZlg1TWIy?=
+ =?utf-8?B?bHcyZWdUYkY3cTkvMm0veEVKU3dHU0tuS01tTjNaNWxXWXY0YmkzQnhkRExP?=
+ =?utf-8?B?N1puK1pyWGtuSVJZYi9od1lEUzFzS0xKbVJmd0ZoZkQ3V29IazJZUEFyNy92?=
+ =?utf-8?B?NDdoOUlqM0MzRzNvUnRTWkxaZEwzbkY4bS9PQVVnQmYzRXpJSU9QcGl5eTFK?=
+ =?utf-8?B?Q1NtT2pTcmN1cS96QTljT0VQL3JNTjJ5ZVgzY2hYYWRxNmZPZ1hzZ2hxaG51?=
+ =?utf-8?B?MUxETW5QU0xWVzNRZ3lhQ3E3ampobURjNW05VTZYWDZBcnBwckhCVVB2OEpM?=
+ =?utf-8?B?RSs1SUFaSDdxdFpQb2pTY092Y1B1NmpXS3daeTFQTS94NWc1UEx5MWZtL3pr?=
+ =?utf-8?B?RXdXZGZrQXM2Sk1sRjVKNzd6NHhBakNxd0JkVEpMNTZQa2UwZmpqbkhPeCtK?=
+ =?utf-8?B?R0taNVZkOWZja3RuQk5YRXo3bnJJYzkxaStaR05zM0VHQWdzQVpsTTY3T3Fo?=
+ =?utf-8?B?Z2p1L1BzaWhOUGVmOHFQYnZJWUt0WjdYKzVFR1dlbDVkODFvdnU5UDdCVDhX?=
+ =?utf-8?B?VkxZNVNLeStrb2RaaWJyYzZXTDREaEk0anQ3YTBNVzB0TWVybHhjUkVNMUVN?=
+ =?utf-8?B?RXhQbFpUUkIweFdidWtUYWs0QXlJb1k1M09qaFpSSWRmZ2lzNTNkZDU4cXl5?=
+ =?utf-8?B?SktwdzlRRkFFa05heVp6UGhuTjlXalRnOUNFZDMxeDl6bkM1RVhhV0kvUjhZ?=
+ =?utf-8?B?VjB4bEZXVTh3R2cyekxYaWxvVmk3amYwaFdoaWR0cC9TQTgrT1VDSktrREZR?=
+ =?utf-8?B?dmFpbnJuNFpmNGMrV214MDRFQ2JMaERVOW5xT1VrNnNEWnNQVi85SlhONUlY?=
+ =?utf-8?B?WnFJODQ3YmdJZUg5K2UzMWwwUFk2NEZQa0tWWStwczkvcTZRcCs4d0JCU0pt?=
+ =?utf-8?B?Tm9ZQXhSemRZVkdwVy9zWk1UV2JQTFhjNHVLeEtDWFRFWWU1TDd6TVY5Sm1S?=
+ =?utf-8?B?U1QyRUhKZWsvVnB0Rk85TllLSDhoRzdPRGpwRm0yVUtPRXZQckRCeW1oejVh?=
+ =?utf-8?B?M0tNUnJLSjgvaktCYTJQK3FWU3I4TDJoeERUSDFGWUhmamlNNllYV0dwQjZZ?=
+ =?utf-8?B?MGwzcVI1RXp1c2tuT3lhM09LOHJyeGF5Zk1kajZiS3VvTU9OMFdWeTYwbER6?=
+ =?utf-8?B?RmM3dFlxSUoxTXZlK1ZlTDFlSVIzWHVlQWl0NG50QjdRSUpCUktvUWxQMWtL?=
+ =?utf-8?B?Uk1FczZpMnpnM1hRWGVZanA4T3g5blI1UFdCZG9hWWZuL1d6bjVtUUh2Um03?=
+ =?utf-8?B?N3hTS1NCUHhORkUzWDgvY3BnVFArZFRXck5WbDE0Q2p5cC9BdGxRbTBzYjls?=
+ =?utf-8?B?eHg4UmFxRjJ2YUVqLzd5djA0eHRKRTdTN1BSSGpMa1BaU3o3dE5GdjErUkFC?=
+ =?utf-8?B?NVRtaElscnMxbExsUEVCQm1yYmM1bnAySTBFZTM4cGtRc3cxVGF0MVk3TDA2?=
+ =?utf-8?B?dGNJMmFjMEtQSUp1aFZmN28zWDZpNDV6UmtubTljWHRvN0l5RHdpeUhmSzlW?=
+ =?utf-8?B?RU8zR3BTZkQ3dUtDUnZxZHF0Y20vMWREaG5UYjhtRjhHVXczN2tHVzlJVjRh?=
+ =?utf-8?B?dHhGR0xLc3c5NEc5SWtnTkErY3h4d1JvVlNrZ1M0UStSWjJ4VHVSUkNJclMx?=
+ =?utf-8?B?aEFoS3Z4d2lpU01PRTAzdnJ4VUtWckhWZDJaYmFsRWJuZ291SDdGbEJUcE9q?=
+ =?utf-8?Q?ydBHf7bgTbw2ziHRvCmP3nOPElGRhkLGrTnE+pJ?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3badbe2-88a0-4f60-da9f-08d919cd82ed
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2021 07:21:10.4252
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HkUGO00jGh9AbQ9dHwqwQnTHGKtdB/WNcfOrmyDlOwy9n9jocxiZXkRO2BbEniPkxa0fhEWi69qw5vDN4kYvpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7879
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
-
-The test verifies that file descriptor created with memfd_secret does not
-allow read/write operations, that secret memory mappings respect
-RLIMIT_MEMLOCK and that remote accesses with process_vm_read() and
-ptrace() to the secret memory fail.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Elena Reshetova <elena.reshetova@intel.com>
-Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James Bottomley <jejb@linux.ibm.com>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tycho Andersen <tycho@tycho.ws>
-Cc: Will Deacon <will@kernel.org>
----
- tools/testing/selftests/vm/.gitignore     |   1 +
- tools/testing/selftests/vm/Makefile       |   3 +-
- tools/testing/selftests/vm/memfd_secret.c | 296 ++++++++++++++++++++++
- tools/testing/selftests/vm/run_vmtests.sh |  17 ++
- 4 files changed, 316 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/vm/memfd_secret.c
-
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index 1f651e85ed60..da92ded5a27c 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -21,5 +21,6 @@ va_128TBswitch
- map_fixed_noreplace
- write_to_hugetlbfs
- hmm-tests
-+memfd_secret
- local_config.*
- split_huge_page_test
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 73e1cc96d7c2..266580ea938c 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -34,6 +34,7 @@ TEST_GEN_FILES += khugepaged
- TEST_GEN_FILES += map_fixed_noreplace
- TEST_GEN_FILES += map_hugetlb
- TEST_GEN_FILES += map_populate
-+TEST_GEN_FILES += memfd_secret
- TEST_GEN_FILES += mlock-random-test
- TEST_GEN_FILES += mlock2-tests
- TEST_GEN_FILES += mremap_dontunmap
-@@ -134,7 +135,7 @@ warn_32bit_failure:
- endif
- endif
- 
--$(OUTPUT)/mlock-random-test: LDLIBS += -lcap
-+$(OUTPUT)/mlock-random-test $(OUTPUT)/memfd_secret: LDLIBS += -lcap
- 
- $(OUTPUT)/gup_test: ../../../../mm/gup_test.h
- 
-diff --git a/tools/testing/selftests/vm/memfd_secret.c b/tools/testing/selftests/vm/memfd_secret.c
-new file mode 100644
-index 000000000000..93e7e7ffed33
---- /dev/null
-+++ b/tools/testing/selftests/vm/memfd_secret.c
-@@ -0,0 +1,296 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright IBM Corporation, 2021
-+ *
-+ * Author: Mike Rapoport <rppt@linux.ibm.com>
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/uio.h>
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/ptrace.h>
-+#include <sys/syscall.h>
-+#include <sys/resource.h>
-+#include <sys/capability.h>
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdio.h>
-+
-+#include "../kselftest.h"
-+
-+#define fail(fmt, ...) ksft_test_result_fail(fmt, ##__VA_ARGS__)
-+#define pass(fmt, ...) ksft_test_result_pass(fmt, ##__VA_ARGS__)
-+#define skip(fmt, ...) ksft_test_result_skip(fmt, ##__VA_ARGS__)
-+
-+#ifdef __NR_memfd_secret
-+
-+#define PATTERN	0x55
-+
-+static const int prot = PROT_READ | PROT_WRITE;
-+static const int mode = MAP_SHARED;
-+
-+static unsigned long page_size;
-+static unsigned long mlock_limit_cur;
-+static unsigned long mlock_limit_max;
-+
-+static int memfd_secret(unsigned int flags)
-+{
-+	return syscall(__NR_memfd_secret, flags);
-+}
-+
-+static void test_file_apis(int fd)
-+{
-+	char buf[64];
-+
-+	if ((read(fd, buf, sizeof(buf)) >= 0) ||
-+	    (write(fd, buf, sizeof(buf)) >= 0) ||
-+	    (pread(fd, buf, sizeof(buf), 0) >= 0) ||
-+	    (pwrite(fd, buf, sizeof(buf), 0) >= 0))
-+		fail("unexpected file IO\n");
-+	else
-+		pass("file IO is blocked as expected\n");
-+}
-+
-+static void test_mlock_limit(int fd)
-+{
-+	size_t len;
-+	char *mem;
-+
-+	len = mlock_limit_cur;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("unable to mmap secret memory\n");
-+		return;
-+	}
-+	munmap(mem, len);
-+
-+	len = mlock_limit_max * 2;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem != MAP_FAILED) {
-+		fail("unexpected mlock limit violation\n");
-+		munmap(mem, len);
-+		return;
-+	}
-+
-+	pass("mlock limit is respected\n");
-+}
-+
-+static void try_process_vm_read(int fd, int pipefd[2])
-+{
-+	struct iovec liov, riov;
-+	char buf[64];
-+	char *mem;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		exit(KSFT_FAIL);
-+	}
-+
-+	liov.iov_len = riov.iov_len = sizeof(buf);
-+	liov.iov_base = buf;
-+	riov.iov_base = mem;
-+
-+	if (process_vm_readv(getppid(), &liov, 1, &riov, 1, 0) < 0) {
-+		if (errno == ENOSYS)
-+			exit(KSFT_SKIP);
-+		exit(KSFT_PASS);
-+	}
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void try_ptrace(int fd, int pipefd[2])
-+{
-+	pid_t ppid = getppid();
-+	int status;
-+	char *mem;
-+	long ret;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		perror("pipe write");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = ptrace(PTRACE_ATTACH, ppid, 0, 0);
-+	if (ret) {
-+		perror("ptrace_attach");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = waitpid(ppid, &status, WUNTRACED);
-+	if ((ret != ppid) || !(WIFSTOPPED(status))) {
-+		fprintf(stderr, "weird waitppid result %ld stat %x\n",
-+			ret, status);
-+		exit(KSFT_FAIL);
-+	}
-+
-+	if (ptrace(PTRACE_PEEKDATA, ppid, mem, 0))
-+		exit(KSFT_PASS);
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void check_child_status(pid_t pid, const char *name)
-+{
-+	int status;
-+
-+	waitpid(pid, &status, 0);
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == KSFT_SKIP) {
-+		skip("%s is not supported\n", name);
-+		return;
-+	}
-+
-+	if ((WIFEXITED(status) && WEXITSTATUS(status) == KSFT_PASS) ||
-+	    WIFSIGNALED(status)) {
-+		pass("%s is blocked as expected\n", name);
-+		return;
-+	}
-+
-+	fail("%s: unexpected memory access\n", name);
-+}
-+
-+static void test_remote_access(int fd, const char *name,
-+			       void (*func)(int fd, int pipefd[2]))
-+{
-+	int pipefd[2];
-+	pid_t pid;
-+	char *mem;
-+
-+	if (pipe(pipefd)) {
-+		fail("pipe failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	pid = fork();
-+	if (pid < 0) {
-+		fail("fork failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	if (pid == 0) {
-+		func(fd, pipefd);
-+		return;
-+	}
-+
-+	mem = mmap(NULL, page_size, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("Unable to mmap secret memory\n");
-+		return;
-+	}
-+
-+	ftruncate(fd, page_size);
-+	memset(mem, PATTERN, page_size);
-+
-+	if (write(pipefd[1], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	check_child_status(pid, name);
-+}
-+
-+static void test_process_vm_read(int fd)
-+{
-+	test_remote_access(fd, "process_vm_read", try_process_vm_read);
-+}
-+
-+static void test_ptrace(int fd)
-+{
-+	test_remote_access(fd, "ptrace", try_ptrace);
-+}
-+
-+static int set_cap_limits(rlim_t max)
-+{
-+	struct rlimit new;
-+	cap_t cap = cap_init();
-+
-+	new.rlim_cur = max;
-+	new.rlim_max = max;
-+	if (setrlimit(RLIMIT_MEMLOCK, &new)) {
-+		perror("setrlimit() returns error");
-+		return -1;
-+	}
-+
-+	/* drop capabilities including CAP_IPC_LOCK */
-+	if (cap_set_proc(cap)) {
-+		perror("cap_set_proc() returns error");
-+		return -2;
-+	}
-+
-+	return 0;
-+}
-+
-+static void prepare(void)
-+{
-+	struct rlimit rlim;
-+
-+	page_size = sysconf(_SC_PAGE_SIZE);
-+	if (!page_size)
-+		ksft_exit_fail_msg("Failed to get page size %s\n",
-+				   strerror(errno));
-+
-+	if (getrlimit(RLIMIT_MEMLOCK, &rlim))
-+		ksft_exit_fail_msg("Unable to detect mlock limit: %s\n",
-+				   strerror(errno));
-+
-+	mlock_limit_cur = rlim.rlim_cur;
-+	mlock_limit_max = rlim.rlim_max;
-+
-+	printf("page_size: %ld, mlock.soft: %ld, mlock.hard: %ld\n",
-+	       page_size, mlock_limit_cur, mlock_limit_max);
-+
-+	if (page_size > mlock_limit_cur)
-+		mlock_limit_cur = page_size;
-+	if (page_size > mlock_limit_max)
-+		mlock_limit_max = page_size;
-+
-+	if (set_cap_limits(mlock_limit_max))
-+		ksft_exit_fail_msg("Unable to set mlock limit: %s\n",
-+				   strerror(errno));
-+}
-+
-+#define NUM_TESTS 4
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd;
-+
-+	prepare();
-+
-+	ksft_print_header();
-+	ksft_set_plan(NUM_TESTS);
-+
-+	fd = memfd_secret(0);
-+	if (fd < 0) {
-+		if (errno == ENOSYS)
-+			ksft_exit_skip("memfd_secret is not supported\n");
-+		else
-+			ksft_exit_fail_msg("memfd_secret failed: %s\n",
-+					   strerror(errno));
-+	}
-+
-+	test_mlock_limit(fd);
-+	test_file_apis(fd);
-+	test_process_vm_read(fd);
-+	test_ptrace(fd);
-+
-+	close(fd);
-+
-+	ksft_exit(!ksft_get_fail_cnt());
-+}
-+
-+#else /* __NR_memfd_secret */
-+
-+int main(int argc, char *argv[])
-+{
-+	printf("skip: skipping memfd_secret test (missing __NR_memfd_secret)\n");
-+	return KSFT_SKIP;
-+}
-+
-+#endif /* __NR_memfd_secret */
-diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/vm/run_vmtests.sh
-index e953f3cd9664..95a67382f132 100755
---- a/tools/testing/selftests/vm/run_vmtests.sh
-+++ b/tools/testing/selftests/vm/run_vmtests.sh
-@@ -346,4 +346,21 @@ else
- 	exitcode=1
- fi
- 
-+echo "running memfd_secret test"
-+echo "------------------------------------"
-+./memfd_secret
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	echo "[SKIP]"
-+	exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
-+exit $exitcode
-+
- exit $exitcode
--- 
-2.28.0
-
+PiBGcm9tOiBNaXJlbGEgUmFidWxlYSAoT1NTKSA8bWlyZWxhLnJhYnVsZWFAb3NzLm54cC5jb20+
+DQo+IFNlbnQ6IEZyaWRheSwgQXByaWwgMjMsIDIwMjEgNjoxNCBQTQ0KPiANCj4gQWRkIGR0cyBm
+b3IgaW1hZ2luZyBzdWJzeXRlbSwgaW5jbHVkZSBqcGVnIG5vZGVzIGhlcmUuDQo+IFRlc3RlZCBv
+biBpbXg4cXhwIG9ubHksIHNob3VsZCB3b3JrIG9uIGlteDhxbSwgYnV0IGl0IHdhcyBub3QgdGVz
+dGVkLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTWlyZWxhIFJhYnVsZWEgPG1pcmVsYS5yYWJ1bGVh
+QG54cC5jb20+DQo+IC0tLQ0KPiBDaGFuZ2VzIGluIHYxMToNCj4gICBBZHJlc3MgZmVlZGJhY2sg
+ZnJvbSBBaXNoZW5nIERvbmc6DQo+ICAgLSBSZW5hbWUgaW1nX2pwZWdfZGVjX2Nsay9pbWdfanBl
+Z19lbmNfY2xrIHRvDQo+IGpwZWdfZGVjX2xwY2cvanBlZ19lbmNfbHBjZyB0byBtYWtlIGl0IHZp
+c2libGUgaXQncyBscGNnIG5vdCBvdGhlciB0eXBlIG9mIGNsaw0KPiAgIC0gRHJvcCB0aGUgY2Ft
+ZXJhZGV2IG5vZGUsIG5vdCBuZWVkZWQgZm9yIGpwZWcNCj4gICAtIE1hdGNoIGFzc2lnbmVkLWNs
+b2NrcyAmIGFzc2lnbmVkLWNsb2NrLXJhdGVzDQo+IA0KPiAgLi4uL2FybTY0L2Jvb3QvZHRzL2Zy
+ZWVzY2FsZS9pbXg4LXNzLWltZy5kdHNpIHwgODIgKysrKysrKysrKysrKysrKysrKw0KPiAgYXJj
+aC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OHF4cC5kdHNpICAgIHwgIDEgKw0KPiAgMiBm
+aWxlcyBjaGFuZ2VkLCA4MyBpbnNlcnRpb25zKCspDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgYXJj
+aC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OC1zcy1pbWcuZHRzaQ0KPiANCj4gZGlmZiAt
+LWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvZnJlZXNjYWxlL2lteDgtc3MtaW1nLmR0c2kNCj4g
+Yi9hcmNoL2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4LXNzLWltZy5kdHNpDQo+IG5ldyBm
+aWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAwMDAwMC4uYzUwOGU1ZDBjOTJiDQo+IC0t
+LSAvZGV2L251bGwNCj4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OC1z
+cy1pbWcuZHRzaQ0KPiBAQCAtMCwwICsxLDgyIEBADQo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRp
+ZmllcjogR1BMLTIuMCsNCj4gKy8qDQo+ICsgKiBDb3B5cmlnaHQgMjAxOS0yMDIxIE5YUA0KPiAr
+ICogWmhvdSBHdW9uaXUgPGd1b25pdS56aG91QG54cC5jb20+DQo+ICsgKi8NCj4gK2ltZ19zdWJz
+eXM6IGJ1c0A1ODAwMDAwMCB7DQo+ICsJY29tcGF0aWJsZSA9ICJzaW1wbGUtYnVzIjsNCj4gKwkj
+YWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gKwkjc2l6ZS1jZWxscyA9IDwxPjsNCj4gKwlyYW5nZXMg
+PSA8MHg1ODAwMDAwMCAweDAgMHg1ODAwMDAwMCAweDEwMDAwMDA+Ow0KPiArDQo+ICsJaW1nX2lw
+Z19jbGs6IGNsb2NrLWltZy1pcGcgew0KPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsN
+Cj4gKwkJI2Nsb2NrLWNlbGxzID0gPDA+Ow0KPiArCQljbG9jay1mcmVxdWVuY3kgPSA8MjAwMDAw
+MDAwPjsNCj4gKwkJY2xvY2stb3V0cHV0LW5hbWVzID0gImltZ19pcGdfY2xrIjsNCj4gKwl9Ow0K
+PiArDQo+ICsJaW1nX2pwZWdfZGVjX2xwY2c6IGNsb2NrLWNvbnRyb2xsZXJANTg1ZDAwMDAgew0K
+PiArCQljb21wYXRpYmxlID0gImZzbCxpbXg4cXhwLWxwY2ciOw0KPiArCQlyZWcgPSA8MHg1ODVk
+MDAwMCAweDEwMDAwPjsNCj4gKwkJI2Nsb2NrLWNlbGxzID0gPDE+Ow0KPiArCQljbG9ja3MgPSA8
+JmltZ19pcGdfY2xrPiwgPCZpbWdfaXBnX2Nsaz47DQo+ICsJCWNsb2NrLWluZGljZXMgPSA8SU1Y
+X0xQQ0dfQ0xLXzA+LA0KPiArCQkJCTxJTVhfTFBDR19DTEtfND47DQo+ICsJCWNsb2NrLW91dHB1
+dC1uYW1lcyA9ICJpbWdfanBlZ19kZWNfbHBjZ19jbGsiLA0KPiArCQkJCSAgICAgImltZ19qcGVn
+X2RlY19scGNnX2lwZ19jbGsiOw0KPiArCQlwb3dlci1kb21haW5zID0gPCZwZCBJTVhfU0NfUl9N
+SlBFR19ERUNfTVA+Ow0KPiArCX07DQo+ICsNCj4gKwlpbWdfanBlZ19lbmNfbHBjZzogY2xvY2st
+Y29udHJvbGxlckA1ODVmMDAwMCB7DQo+ICsJCWNvbXBhdGlibGUgPSAiZnNsLGlteDhxeHAtbHBj
+ZyI7DQo+ICsJCXJlZyA9IDwweDU4NWYwMDAwIDB4MTAwMDA+Ow0KPiArCQkjY2xvY2stY2VsbHMg
+PSA8MT47DQo+ICsJCWNsb2NrcyA9IDwmaW1nX2lwZ19jbGs+LCA8JmltZ19pcGdfY2xrPjsNCj4g
+KwkJY2xvY2staW5kaWNlcyA9IDxJTVhfTFBDR19DTEtfMD4sDQo+ICsJCQkJPElNWF9MUENHX0NM
+S180PjsNCj4gKwkJY2xvY2stb3V0cHV0LW5hbWVzID0gImltZ19qcGVnX2VuY19scGNnX2NsayIs
+DQo+ICsJCQkJICAgICAiaW1nX2pwZWdfZW5jX2xwY2dfaXBnX2NsayI7DQo+ICsJCXBvd2VyLWRv
+bWFpbnMgPSA8JnBkIElNWF9TQ19SX01KUEVHX0VOQ19NUD47DQo+ICsJfTsNCj4gKw0KPiArCWpw
+ZWdkZWM6IGpwZWdkZWNANTg0MDAwMDAgew0KPiArCQljb21wYXRpYmxlID0gIm54cCxpbXg4cXhw
+LWpwZ2RlYyI7DQo+ICsJCXJlZyA9IDwweDU4NDAwMDAwIDB4MDAwNTAwMDAgPjsNCj4gKwkJaW50
+ZXJydXB0cyA9IDxHSUNfU1BJIDMwOSBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCj4gKwkJCSAgICAg
+PEdJQ19TUEkgMzEwIElSUV9UWVBFX0xFVkVMX0hJR0g+LA0KPiArCQkJICAgICA8R0lDX1NQSSAz
+MTEgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQo+ICsJCQkgICAgIDxHSUNfU1BJIDMxMiBJUlFfVFlQ
+RV9MRVZFTF9ISUdIPjsNCj4gKwkJY2xvY2tzID0gPCZpbWdfanBlZ19kZWNfbHBjZyAwPiwNCj4g
+KwkJCSA8JmltZ19qcGVnX2RlY19scGNnIDE+Ow0KDQpQbHMgZml4IExQQ0cgaW5kZXggYnkgdXNp
+bmcgY2xvY2sgaW5kaWNlDQoNCj4gKwkJY2xvY2stbmFtZXMgPSAicGVyIiwgImlwZyI7DQo+ICsJ
+CWFzc2lnbmVkLWNsb2NrcyA9IDwmaW1nX2pwZWdfZGVjX2xwY2cgMD4sDQo+ICsJCQkJICA8Jmlt
+Z19qcGVnX2RlY19scGNnIDE+Ow0KDQpEaXR0bw0KDQo+ICsJCWFzc2lnbmVkLWNsb2NrLXJhdGVz
+ID0gPDIwMDAwMDAwMD4sIDwyMDAwMDAwMDA+Ow0KPiArCQlwb3dlci1kb21haW5zID0gPCZwZCBJ
+TVhfU0NfUl9NSlBFR19ERUNfTVA+LA0KPiArCQkJCTwmcGQgSU1YX1NDX1JfTUpQRUdfREVDX1Mw
+PiwNCj4gKwkJCQk8JnBkIElNWF9TQ19SX01KUEVHX0RFQ19TMT4sDQo+ICsJCQkJPCZwZCBJTVhf
+U0NfUl9NSlBFR19ERUNfUzI+LA0KPiArCQkJCTwmcGQgSU1YX1NDX1JfTUpQRUdfREVDX1MzPjsN
+Cj4gKwl9Ow0KPiArDQo+ICsJanBlZ2VuYzoganBlZ2VuY0A1ODQ1MDAwMCB7DQo+ICsJCWNvbXBh
+dGlibGUgPSAibnhwLGlteDhxeHAtanBnZW5jIjsNCj4gKwkJcmVnID0gPDB4NTg0NTAwMDAgMHgw
+MDA1MDAwMCA+Ow0KPiArCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMzA1IElSUV9UWVBFX0xFVkVM
+X0hJR0g+LA0KPiArCQkJICAgICA8R0lDX1NQSSAzMDYgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQo+
+ICsJCQkgICAgIDxHSUNfU1BJIDMwNyBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCj4gKwkJCSAgICAg
+PEdJQ19TUEkgMzA4IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiArCQljbG9ja3MgPSA8JmltZ19q
+cGVnX2VuY19scGNnIDA+LA0KPiArCQkJIDwmaW1nX2pwZWdfZW5jX2xwY2cgMT47DQoNCkRpdHRv
+DQoNCj4gKwkJY2xvY2stbmFtZXMgPSAicGVyIiwgImlwZyI7DQo+ICsJCWFzc2lnbmVkLWNsb2Nr
+cyA9IDwmaW1nX2pwZWdfZW5jX2xwY2cgMD4sDQo+ICsJCQkJICA8JmltZ19qcGVnX2VuY19scGNn
+IDE+Ow0KDQpEaXR0bw0KDQpSZWdhcmRzDQpBaXNoZW5nDQoNCj4gKwkJYXNzaWduZWQtY2xvY2st
+cmF0ZXMgPSA8MjAwMDAwMDAwPiwgPDIwMDAwMDAwMD47DQo+ICsJCXBvd2VyLWRvbWFpbnMgPSA8
+JnBkIElNWF9TQ19SX01KUEVHX0VOQ19NUD4sDQo+ICsJCQkJPCZwZCBJTVhfU0NfUl9NSlBFR19F
+TkNfUzA+LA0KPiArCQkJCTwmcGQgSU1YX1NDX1JfTUpQRUdfRU5DX1MxPiwNCj4gKwkJCQk8JnBk
+IElNWF9TQ19SX01KUEVHX0VOQ19TMj4sDQo+ICsJCQkJPCZwZCBJTVhfU0NfUl9NSlBFR19FTkNf
+UzM+Ow0KPiArCX07DQo+ICt9Ow0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9m
+cmVlc2NhbGUvaW14OHF4cC5kdHNpDQo+IGIvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUv
+aW14OHF4cC5kdHNpDQo+IGluZGV4IDFlNmI0OTk1MDkxZS4uMmQ5NTg5MzA5YmQwIDEwMDY0NA0K
+PiAtLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4cXhwLmR0c2kNCj4gKysr
+IGIvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OHF4cC5kdHNpDQo+IEBAIC0yNTgs
+NiArMjU4LDcgQEANCj4gIAl9Ow0KPiANCj4gIAkvKiBzb3J0ZWQgaW4gcmVnaXN0ZXIgYWRkcmVz
+cyAqLw0KPiArCSNpbmNsdWRlICJpbXg4LXNzLWltZy5kdHNpIg0KPiAgCSNpbmNsdWRlICJpbXg4
+LXNzLWFkbWEuZHRzaSINCj4gIAkjaW5jbHVkZSAiaW14OC1zcy1jb25uLmR0c2kiDQo+ICAJI2lu
+Y2x1ZGUgImlteDgtc3MtZGRyLmR0c2kiDQo+IC0tDQo+IDIuMTcuMQ0KDQo=
