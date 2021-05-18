@@ -2,161 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7083876B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0913876BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243279AbhERKkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:40:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49820 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242136AbhERKkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:40:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 48F38AF37;
-        Tue, 18 May 2021 10:38:47 +0000 (UTC)
-Subject: Re: [PATCH v10 22/33] mm/filemap: Add __folio_lock_or_retry
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-23-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <76184de4-4ab9-0f04-ab37-8637f4b22566@suse.cz>
-Date:   Tue, 18 May 2021 12:38:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1348578AbhERKlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348567AbhERKk6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:40:58 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0B9C061573;
+        Tue, 18 May 2021 03:39:38 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so1315386pjv.1;
+        Tue, 18 May 2021 03:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=93ZCo4gwS7aFEVcH8ZnCKUdH+XCaNbCPSJVocK9d0RU=;
+        b=k4Nuh+EFxvlhaQCW21jHO5N0NEDQIR0P1BplDxOrcuF7IQwhtUYhGd54/5tldabvu3
+         3wIFtA8SGS2N1nbacetJ2HFgbqMBcRrER4npynFF15uBVyfw97KZ7u6oyzLznJXua9/y
+         C9eI6R2PVqq/m45Pc8adMTsxcZfo/lpWHAhYzahW/bTkrhDWHQ3Vbj1oZcRy2N+jCFhw
+         oKdkJM3rz3J5BAtjFtlT7cajO4ENBwPP39sXl6jgXC7ZnBU5sfHao4oC00Jk3eM7UCH+
+         vDo1F5Mtz0MGKbDQndMKEFa84cRwM4Wx9cNptUqB5iI6JGYgdfmiNS68uJTgDGTjGbqw
+         3YeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=93ZCo4gwS7aFEVcH8ZnCKUdH+XCaNbCPSJVocK9d0RU=;
+        b=F1kwCd7pgiO4wN95nJkEXP0cxnFwx1lVKRaFQbB9J/dmrfXuSi5+XAfplPOop5yyIF
+         hCXlKkLbltonmjP+yfmvALGTCSfj5xmMlfTr+H5DVrQRKO3Yq945NgiGukTsNzutwVMO
+         pOeyWuT7qszZE+OrlNE9E6+cm+jDkmeqQSv907GkA6DIpNsch6rE9ZMDPvcv/af3F0Kc
+         65u3H6KvO7LbHXhuk81emgecehVWs55BamAXI5fYiJMAPAT6eeZteoeFCCmV5rY4/+Om
+         op/n0tPoHYFvMn0gtZ0Pp6jEwuRRgY03rWMnXrhjynEl7eCZ0KwBhQ2+ICdQvp0+exR5
+         eP4g==
+X-Gm-Message-State: AOAM530leG6SYra0crdSdgEasNArXjh5IFCa3jkiGyDoVU/l3waTfuzZ
+        OugIhJw8gCvdwtsGGWjeTJXzttkRMdzAU+Q3MPA=
+X-Google-Smtp-Source: ABdhPJxXvj6vZtvTRQW71XBT8gOzShwnMHxAZ8bDXL11j7BINt/O0dAvUBxWn2wDW/ikyh8Wa4lt256txDncrvxHIZc=
+X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr740563pjq.228.1621334378382;
+ Tue, 18 May 2021 03:39:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-23-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1621279162.git.sander@svanheule.net> <d5f294489d31a80b69169f358da89bb7f70d1328.1621279162.git.sander@svanheule.net>
+ <675e36df5aaa1e1be3a1a77289a0a952@walle.cc>
+In-Reply-To: <675e36df5aaa1e1be3a1a77289a0a952@walle.cc>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 18 May 2021 13:39:22 +0300
+Message-ID: <CAHp75VdLwSoPpmDm1j=d9kLWzzfGsHCVvMSX-9wD+sgRzHC9oA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] gpio: regmap: Add configurable dir/value order
+To:     Michael Walle <michael@walle.cc>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Sander Vanheule <sander@svanheule.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> Convert __lock_page_or_retry() to __folio_lock_or_retry().  This actually
-> saves 4 bytes in the only caller of lock_page_or_retry() (due to better
-> register allocation) and saves the 20 byte cost of calling page_folio()
-> in __folio_lock_or_retry() for a total saving of 24 bytes.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  include/linux/pagemap.h |  9 ++++++---
->  mm/filemap.c            | 10 ++++------
->  mm/memory.c             |  8 ++++----
->  3 files changed, 14 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 41224e4ca8cc..21e394964288 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -640,7 +640,7 @@ static inline bool wake_page_match(struct wait_page_queue *wait_page,
->  
->  void __folio_lock(struct folio *folio);
->  int __folio_lock_killable(struct folio *folio);
-> -extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
-> +int __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
->  				unsigned int flags);
->  void unlock_page(struct page *page);
->  void folio_unlock(struct folio *folio);
-> @@ -701,13 +701,16 @@ static inline int lock_page_killable(struct page *page)
->   * caller indicated that it can handle a retry.
->   *
->   * Return value and mmap_lock implications depend on flags; see
-> - * __lock_page_or_retry().
-> + * __folio_lock_or_retry().
->   */
->  static inline int lock_page_or_retry(struct page *page, struct mm_struct *mm,
->  				     unsigned int flags)
->  {
-> +	struct folio *folio;
->  	might_sleep();
-> -	return trylock_page(page) || __lock_page_or_retry(page, mm, flags);
-> +
-> +	folio = page_folio(page);
-> +	return folio_trylock(folio) || __folio_lock_or_retry(folio, mm, flags);
->  }
->  
->  /*
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 67334eb3fd94..28bf50041671 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -1623,20 +1623,18 @@ static int __folio_lock_async(struct folio *folio, struct wait_page_queue *wait)
->  
->  /*
->   * Return values:
-> - * 1 - page is locked; mmap_lock is still held.
-> - * 0 - page is not locked.
-> + * 1 - folio is locked; mmap_lock is still held.
-> + * 0 - folio is not locked.
->   *     mmap_lock has been released (mmap_read_unlock(), unless flags had both
->   *     FAULT_FLAG_ALLOW_RETRY and FAULT_FLAG_RETRY_NOWAIT set, in
->   *     which case mmap_lock is still held.
->   *
->   * If neither ALLOW_RETRY nor KILLABLE are set, will always return 1
-> - * with the page locked and the mmap_lock unperturbed.
-> + * with the folio locked and the mmap_lock unperturbed.
->   */
-> -int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
-> +int __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
->  			 unsigned int flags)
->  {
-> -	struct folio *folio = page_folio(page);
-> -
->  	if (fault_flag_allow_retry_first(flags)) {
->  		/*
->  		 * CAUTION! In this case, mmap_lock is not released
++Matti
 
-A bit later in this branch, 'page' is accessed, but it no longer exists. And
-thus as expected, it doesn't compile. Assuming it's fixed later, but
-bisectability etc...
+On Tue, May 18, 2021 at 11:39 AM Michael Walle <michael@walle.cc> wrote:
+> Am 2021-05-17 21:28, schrieb Sander Vanheule:
 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 86ba6c1f6821..fc3f50d0702c 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4065,7 +4065,7 @@ static vm_fault_t do_shared_fault(struct vm_fault *vmf)
->   * We enter with non-exclusive mmap_lock (to exclude vma changes,
->   * but allow concurrent faults).
->   * The mmap_lock may have been released depending on flags and our
-> - * return value.  See filemap_fault() and __lock_page_or_retry().
-> + * return value.  See filemap_fault() and __folio_lock_or_retry().
->   * If mmap_lock is released, vma may become invalid (for example
->   * by other thread calling munmap()).
->   */
-> @@ -4307,7 +4307,7 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
->   * concurrent faults).
->   *
->   * The mmap_lock may have been released depending on flags and our return value.
-> - * See filemap_fault() and __lock_page_or_retry().
-> + * See filemap_fault() and __folio_lock_or_retry().
->   */
->  static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
->  {
-> @@ -4411,7 +4411,7 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
->   * By the time we get here, we already hold the mm semaphore
->   *
->   * The mmap_lock may have been released depending on flags and our
-> - * return value.  See filemap_fault() and __lock_page_or_retry().
-> + * return value.  See filemap_fault() and __folio_lock_or_retry().
->   */
->  static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
->  		unsigned long address, unsigned int flags)
-> @@ -4567,7 +4567,7 @@ static inline void mm_account_fault(struct pt_regs *regs,
->   * By the time we get here, we already hold the mm semaphore
->   *
->   * The mmap_lock may have been released depending on flags and our
-> - * return value.  See filemap_fault() and __lock_page_or_retry().
-> + * return value.  See filemap_fault() and __folio_lock_or_retry().
->   */
->  vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
->  			   unsigned int flags, struct pt_regs *regs)
-> 
+...
 
+> Instead of adding a new one, we can also just check no_set_on_input
+> in gpio_regmap_direction_output(), which I'd prefer.
+
++! here.
+
+> static int gpio_regmap_direction_output(struct gpio_chip *chip,
+>                                         unsigned int offset, int value)
+> {
+>         struct gpio_regmap *gpio = gpiochip_get_data(chip);
+>         int ret;
+>
+>         if (gpio->no_set_on_input) {
+>                 /* some smart comment here, also mention gliches */
+>                 ret = gpio_regmap_set_direction(chip, offset, true);
+>                 gpio_regmap_set(chip, offset, value);
+>         } else {
+>                 gpio_regmap_set(chip, offset, value);
+>                 ret = gpio_regmap_set_direction(chip, offset, true);
+>         }
+>
+>         return ret;
+> }
+
+...
+
+> > + * @no_set_on_input: Set if output value can only be set when the
+> > direction
+> > + *                   is configured as output.
+>
+> set_direction_first ?
+
+Perhaps we need to establish rather something like
+
+/* Broken hardware can't set value on input pin, we have to set it to
+output first */
+#define GPIO_REGMAP_QUIRK_...  BIT(0)
+
+unsigned int quirks;
+
+?
+
+-- 
+With Best Regards,
+Andy Shevchenko
