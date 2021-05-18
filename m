@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFC338798D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA70387998
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349447AbhERNKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:10:32 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3021 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343741AbhERNKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:10:31 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fkx9D2CGLzlg38;
-        Tue, 18 May 2021 21:06:56 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 21:09:11 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
- 2021 21:09:10 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-i3c@lists.infradead.org>
-CC:     <alexandre.belloni@bootlin.com>
-Subject: [PATCH -next] i3c: master: svc: drop free_irq of devm_request_irq allocated irq
-Date:   Tue, 18 May 2021 21:11:27 +0800
-Message-ID: <20210518131127.1308550-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1349465AbhERNNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:13:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:51732 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231490AbhERNN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:13:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31A93D6E;
+        Tue, 18 May 2021 06:12:11 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B68D83F73B;
+        Tue, 18 May 2021 06:12:09 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/3] arch_topology, ACPI: populate cpu capacity from CPPC
+In-Reply-To: <20210514095339.12979-1-ionela.voinescu@arm.com>
+References: <20210514095339.12979-1-ionela.voinescu@arm.com>
+Date:   Tue, 18 May 2021 14:12:03 +0100
+Message-ID: <87fsyk190c.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq allocated with devm_request_irq should not be freed using
-free_irq, because doing so causes a dangling pointer, and a
-subsequent double free.
+Hi,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/i3c/master/svc-i3c-master.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 14/05/21 10:53, Ionela Voinescu wrote:
+> Hi all,
+>
+> These are a few trivial patches to populate cpu capacity information
+> using performance information from ACPI's CPPC.
+>
+> I've tied this functionality to the existing function
+> init_freq_invariance_cppc() called in acpi_cppc_processor_probe().
+> This function is renamed to a more generic arch_init_invariance_cppc().
+>
+> The patches have been build tested on x86 and more thoroughly tested on
+> Juno R2 (arm64), which uses the new functionality, with the following
+> results:
+>
+>
+> root@ubuntu:~# dmesg | grep cpu_capacity
+> [    2.157494] init_cpu_capacity_cppc: CPU0 cpu_capacity=38300 (raw).
+> [    2.163699] init_cpu_capacity_cppc: CPU1 cpu_capacity=38300 (raw).
+> [    2.169899] init_cpu_capacity_cppc: CPU2 cpu_capacity=38300 (raw).
+> [    2.176098] init_cpu_capacity_cppc: CPU3 cpu_capacity=38300 (raw).
+> [    2.182296] init_cpu_capacity_cppc: CPU4 cpu_capacity=102400 (raw).
+> [    2.188581] init_cpu_capacity_cppc: CPU5 cpu_capacity=102400 (raw).
+> [    2.194867] cpu_capacity: capacity_scale=102400
+> [    2.199409] cpu_capacity: CPU0 cpu_capacity=383
+> [    2.203952] cpu_capacity: CPU1 cpu_capacity=383
+> [    2.208495] cpu_capacity: CPU2 cpu_capacity=383
+> [    2.213037] cpu_capacity: CPU3 cpu_capacity=383
+> [    2.217580] cpu_capacity: CPU4 cpu_capacity=1024
+> [    2.222209] cpu_capacity: CPU5 cpu_capacity=1024
+> [    2.226886] init_cpu_capacity_cppc: cpu_capacity initialization done
+>
+> root@ubuntu:~# tail -n +1 /sys/devices/system/cpu/cpu*/cpu_capacity
+> ==> /sys/devices/system/cpu/cpu0/cpu_capacity <==
+> 383
+> ==> /sys/devices/system/cpu/cpu1/cpu_capacity <==
+> 383
+> ==> /sys/devices/system/cpu/cpu2/cpu_capacity <==
+> 383
+> ==> /sys/devices/system/cpu/cpu3/cpu_capacity <==
+> 383
+> ==> /sys/devices/system/cpu/cpu4/cpu_capacity <==
+> 1024
+> ==> /sys/devices/system/cpu/cpu5/cpu_capacity <==
+> 1024
+>
+> All works as expected even if ACPI processor support is built as a
+> module.
+>
 
-diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
-index 1f6ba4221817..761c9c468357 100644
---- a/drivers/i3c/master/svc-i3c-master.c
-+++ b/drivers/i3c/master/svc-i3c-master.c
-@@ -1448,7 +1448,7 @@ static int svc_i3c_master_remove(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	free_irq(master->irq, master);
-+	devm_free_irq(&pdev->dev, master->irq, master);
- 	clk_disable_unprepare(master->pclk);
- 	clk_disable_unprepare(master->fclk);
- 	clk_disable_unprepare(master->sclk);
--- 
-2.25.1
+Tested on my Ampere eMAG; this all seems to work fine except for some
+scheduler debug stuff that gets confused; see
 
+  http://lore.kernel.org/r/20210518130725.3563132-1-valentin.schneider@arm.com
+
+With that in mind:
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
