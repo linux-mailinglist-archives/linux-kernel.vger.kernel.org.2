@@ -2,115 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29DE3876E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB343876E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243223AbhERKti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241590AbhERKtc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:49:32 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A479C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:48:12 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so1223565wmq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:48:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lw//WQHU1n8Lr/SxhTfcfyc8tvk7S4lAFPEm1TkdCHc=;
-        b=jX9kX3Vod+I5rJUyU3cakHfzGdz5a5bQTSWVHWoUF68aLrBioufVUMrdLrwYA7KVgN
-         eKLuTdcWsE8cCeK881ntTFN7BxBmqSs8GrQ/4HsJs4QkmOMvCgz57xB8py6JNHZ4q55u
-         Syqwk3o+fLHz7otqXclL6PhUe3qxkOwcm1ATA400g++22qFMB7cbUis1J8LekpDIOc2R
-         dfbFFYZgyi3zDX4ERYVsMsF2OIDcKpVMwV2LRogtiLE/CZxdfD+0uLOzGk5EfdJeji//
-         k8PWHbpBHjh8fgP//HMPG5rhN5IUcWeHyw6BUcgC4gLyrIOuwXBTuUUZwfVBxsmVaVIQ
-         Te1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lw//WQHU1n8Lr/SxhTfcfyc8tvk7S4lAFPEm1TkdCHc=;
-        b=PNFYgfY5ulIIzcNmHMcyE7w6OCTT+s+U50q9RZJkpzXOrUrvTAoOGDx/5GbVstDg29
-         pZDYYgS34qxXcIRvQASnp1sk1xRKuiUJNc7JqcUjiR8XjdwQUBrcEsHR+uXVlZfCM5/r
-         3A4nm7KsxXkd9i0w0xgkWIdXuhQu4dCEx6X2V/9nkyBVn6mUVcdwXJI2Zhgx174KOeN1
-         XUPf4+XPsQltGiIi9O6sDBVkjd1vWMowFi5u/3DoXvp5AhTLrGiYPj6amji7opphCbQF
-         P28oMOCg4bjjIKMhM+rFJO0XLguRv4e2EF5zZ4Ssab/yOMAE/3d7SsxJJkOQPHSjMLI7
-         jACw==
-X-Gm-Message-State: AOAM5311bcPBCv0XUjtZtnodLdIzenDL9VhOM72OI1ehycRfpH38elBJ
-        J0X0uZCEakwWWjHeAH+9WvkBPXifQeZxWQ==
-X-Google-Smtp-Source: ABdhPJzRiT7qtOCBDsKWLZ6LPMj4QiYCEg9Nduj8NBMDuCXcB7+XAdn7gCxXdilFj6ofUcHz4C743g==
-X-Received: by 2002:a1c:b646:: with SMTP id g67mr207192wmf.117.1621334890798;
-        Tue, 18 May 2021 03:48:10 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id h14sm2930154wmb.1.2021.05.18.03.48.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 03:48:10 -0700 (PDT)
-Date:   Tue, 18 May 2021 10:48:07 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-Message-ID: <YKObZ1GcfVIVWRWt@google.com>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-14-will@kernel.org>
- <YKOU9onXUxVLPGaB@google.com>
- <20210518102833.GA7770@willie-the-truck>
+        id S1347643AbhERKuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:50:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60360 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241590AbhERKuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:50:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8D72FAFBD;
+        Tue, 18 May 2021 10:48:49 +0000 (UTC)
+Subject: Re: [PATCH v10 24/33] mm/swap: Add folio_rotate_reclaimable
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-25-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <86fb536c-2ffc-a3e4-9c7b-5b2708c444b0@suse.cz>
+Date:   Tue, 18 May 2021 12:48:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518102833.GA7770@willie-the-truck>
+In-Reply-To: <20210511214735.1836149-25-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 18 May 2021 at 11:28:34 (+0100), Will Deacon wrote:
-> I don't have strong opinions on this, but I _do_ want the admission via
-> sched_setattr() to be consistent with execve(). What you're suggesting
-> ticks that box, but how many applications are prepared to handle a failed
-> execve()? I suspect it will be fatal.
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> Move the declaration into mm/internal.h and rename
+> rotate_reclaimable_page() to folio_rotate_reclaimable().  This eliminates
+> all five of the calls to compound_head() in this function, saving 75 bytes
+> at the cost of adding 14 bytes to its one caller, end_page_writeback().
+> Net 61 bytes savings.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Yep, probably.
-
-> Probably also worth pointing out that the approach here will at least
-> warn in the execve() case when the affinity is overridden for a deadline
-> task.
-
-Right so I think either way will be imperfect, so I agree with the
-above.
-
-Maybe one thing though is that, IIRC, userspace _can_ disable admission
-control if it wants to. In this case I'd have no problem with allowing
-this weird behaviour when admission control is off -- the kernel won't
-provide any guarantees. But if it's left on, then it's a different
-story.
-
-So what about we say, if admission control is off, we allow execve() and
-sched_setattr() with appropriate warnings as you suggest, but if
-admission control is on then we fail both?
-
-We might still see random failures in the wild if admission control is
-left enabled on those devices but then I think these could qualify as
-a device misconfiguration, not as a kernel bug.
-
-Thoughts?
-
-Thanks,
-Quentin
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
