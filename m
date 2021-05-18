@@ -2,146 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A733E387821
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174D1387822
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238178AbhERL4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:56:10 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:56380 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S244692AbhERLz5 (ORCPT
+        id S1348617AbhERL43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240337AbhERL40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:55:57 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IBqpAw008916;
-        Tue, 18 May 2021 13:54:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Id8V+VmnM7brmaxa/q+zvAhp1/pxcDklhF17NerD2JM=;
- b=Nwrg7d5vLZCdXsjz20CwSGR6VLC2plCOGIBh6S0w/WLLEU7vNCWO9Xm0MqAyi2xyb5PJ
- MsP6qQkm83/yzX9iA2OD67IgGa5CMTiWRSqT1M7VBrybMAi/50ibv2b/UrV+JmXbwlvN
- teDVB13vW46GVsm7WjLkFxp9lGVa320IzyMVKzj/Z65xLx3RE2lBLNNR1cjIqKUvmJbJ
- UHLVZE0g9gUhbr1gSk3kIh6hxf5SHDWnF3/m4Lpm9H1RRMxo4gR5UaXWnymbxr6MlHCM
- lHnMaqeXm11tQOIRpNYolIYCdBHSq8PbxTISm8sc4wDHutcUKal1STtjk+ow+qEuwqvu oQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38km7pqct9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 13:54:28 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E0FAD100034;
-        Tue, 18 May 2021 13:54:27 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CD0002237BB;
-        Tue, 18 May 2021 13:54:27 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May
- 2021 13:54:26 +0200
-Subject: Re: [PATCH v3 1/3] spi: spi-mem: add automatic poll status functions
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-References: <20210518093951.23136-1-patrice.chotard@foss.st.com>
- <20210518093951.23136-2-patrice.chotard@foss.st.com>
- <20210518134037.0e5839b0@collabora.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <865b01c8-12ff-cce6-557f-178effbc39a4@foss.st.com>
-Date:   Tue, 18 May 2021 13:54:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 18 May 2021 07:56:26 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C90C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:55:08 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id c3so9491533oic.8
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:55:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=VNVqMHP4+IHqO3t8YKUSu2vc/PzoK4aKDYZY2IQaddA=;
+        b=ZKvXN8AwPIBt36HUCaeVt4qChn53XjQOZJ80tyGsNGNPKR2kcxAWyXveiNRYkChBFA
+         yU2Kys8oSk+ChMZZQcIe/nTGi/hgjNLme0Txn4UQ211gUB+VVsT+FUM6kDS66G9soTEW
+         IdFooAZPLP618jCgv0ClHOPX9WnNxSbJINYzVCRJGz7pKC2ZPCU+Tk9EiWP9qI38Uxoi
+         fCeVW42Tgox1sS5cTPYS74d6ZcFKOXaj+Ze+SbcURY5fkFN/7uGYUhc4Ejv+KvnkpnMc
+         xOyoPazWgz4pdFQjJu0I3XxJVs2hA53Gxidi0Xf8JMyJ65jeC93/iIolWD1nOW2ao3wz
+         QyPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=VNVqMHP4+IHqO3t8YKUSu2vc/PzoK4aKDYZY2IQaddA=;
+        b=WJPoIQctBAbafq/dYthkGcEo0kwZI/IVBlQE/itJcrv54ecoTFdiJWMqqVB5xHPQt4
+         KBj+8HuXkKmFdhHtkXnLvL/keO8gyHWSXGRFS+t6rdTpOq6/RSZ2fotR5Kt03yBlrv+l
+         kXzzhWi7s/hsouijGPRh66OE7BfyBd0qMuKYWlozFDVKNUab8cIIq7b24NQVtpSmbTwJ
+         lBy+82gl6aMzZUxRAzdd1xE++vwOYeBnNRf9eZhSNVl2UZ4Y3Txs1rq4Goo/VT12CEy4
+         52qxIcva/WrSJ49fEXcZO/wDoT6hZVAvRwfd8sIUeIqUt2iTCHlWSmtOisoUJqX4T37u
+         t02A==
+X-Gm-Message-State: AOAM533HHi6BTkKXmQIpUYMG92KBrlSsfdqhcoh6oUfE2w0ZK5CT5b+g
+        N1Rmok4s8vLLY0lVGSWA4COdTgZymLBy40SicgI=
+X-Google-Smtp-Source: ABdhPJwnIHCisW/a1AogmBvtlgStgcjpVxpr9MRpJ7x2xHQCTyWapBWWDROm5uF0baCjhb6ZIF1P6w7QboG451hlltg=
+X-Received: by 2002:aca:d88a:: with SMTP id p132mr1261492oig.144.1621338908095;
+ Tue, 18 May 2021 04:55:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210518134037.0e5839b0@collabora.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
+Received: by 2002:a05:6838:60cc:0:0:0:0 with HTTP; Tue, 18 May 2021 04:55:07
+ -0700 (PDT)
+Reply-To: info.aheyford@gmail.com
+From:   "Hayford A. Settor" <gggeorgemiller@gmail.com>
+Date:   Tue, 18 May 2021 19:55:07 +0800
+Message-ID: <CAFzaz94NxqVQbtrqXSukTVsWNxYYzZAHbJWWwfqKiiAvY4XH3A@mail.gmail.com>
+Subject: Kindly indicate your interest immediately.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sir
 
+I am interested in An investment partnership with you or to any other
+profitable business under your guidelines, With the total sum of USD
+4.5 MILLION US Dollars Deposit. I discovered this fund through my bank
+as a staff which I have already secured and placed in our (BANK CRYPTO
+PLATFORM) for instant transfer.
 
-On 5/18/21 1:40 PM, Boris Brezillon wrote:
-> On Tue, 18 May 2021 11:39:49 +0200
-> <patrice.chotard@foss.st.com> wrote:
-> 
->> +/**
->> + * spi_mem_poll_status() - Poll memory device status
->> + * @mem: SPI memory device
->> + * @op: the memory operation to execute
->> + * @mask: status bitmask to ckeck
->> + * @match: (status & mask) expected value
->> + * @initial_delay_us: delay in us before starting to poll
->> + * @polling_delay_us: time to sleep between reads in us
->> + * @timeout_ms: timeout in milliseconds
->> + *
->> + * This function send a polling status request to the controller driver
->> + *
->> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
->> + *         -EOPNOTSUPP if not supported.
->> + */
->> +int spi_mem_poll_status(struct spi_mem *mem,
->> +			const struct spi_mem_op *op,
->> +			u16 mask, u16 match,
->> +			unsigned long initial_delay_us,
->> +			unsigned long polling_delay_us,
->> +			u16 timeout_ms)
->> +{
->> +	struct spi_controller *ctlr = mem->spi->controller;
->> +	int ret = -EOPNOTSUPP;
->> +	int read_status_ret;
->> +	u16 status;
->> +
->> +	if (op->data.nbytes < 1 || op->data.nbytes > 2)
->> +		return -EINVAL;
-> 
-> We should also make sure this is a read operation.
+In case this may interest you to work with me for an investment in
+your country. Kindly indicate your interest by responding to me with
+relevant details pertaining to this project.
 
-Ok , i will add a check here
+I await your immediate response.
 
-Thanks
-Patrice
-> 
->> +
->> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
->> +		ret = spi_mem_access_start(mem);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
->> +						 initial_delay_us, polling_delay_us,
->> +						 timeout_ms);
->> +
->> +		spi_mem_access_end(mem);
->> +	}
->> +
->> +	if (ret == -EOPNOTSUPP) {
->> +		if (!spi_mem_supports_op(mem, op))
->> +			return ret;
->> +
->> +		if (initial_delay_us < 10)
->> +			udelay(initial_delay_us);
->> +		else
->> +			usleep_range((initial_delay_us >> 2) + 1,
->> +				     initial_delay_us);
->> +
->> +		ret = read_poll_timeout(spi_mem_read_status, read_status_ret,
->> +					(read_status_ret || ((status) & mask) == match),
->> +					polling_delay_us, timeout_ms * 1000, false, mem,
->> +					op, &status);
->> +		if (read_status_ret)
->> +			return read_status_ret;
->> +	}
->> +
->> +	return ret;
->> +}
+Sincerely Yours,
+
+Mr. Hayford A. Settor
