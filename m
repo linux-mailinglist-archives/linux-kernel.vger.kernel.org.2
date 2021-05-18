@@ -2,134 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2233878F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C74B38791F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343721AbhERMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243168AbhERMiJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:38:09 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9883AC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:36:51 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id f18so9028629qko.7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:36:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MciVfqUQe33gFBLlS3xGeCPUEnGof0Y0yeUe4CWBaJg=;
-        b=ASxT6lIrla63MdtFtRlyS0J4qgFpJzrB/mP29DY2AtGGRqyisoj1TkJ9wKfRe328lU
-         OwQaEIshhanFyx8ZtVkBRgPhSK6gKrWlcXwZK/BxsqCVBSXtProg10kGoix+EZ1wDoll
-         J4SiDUGWe73NRlhyjdETjBgLsPzS9gy3m1j3nKkW+N8uepG85AUQ/mLZwESXgMIIj3q0
-         HPncjAWjGuK1+THk9Sr+ZmIp+a7b+lo4o2R82ZcLGQK390WvM9oozmeLVlnWBg59B3iK
-         5t3sppyYImUGroL/Rfly1dkdnSgqLJcsSXEbFt26xjOEXVRJ5FWckDU/Y6uvqMYuc2tB
-         4lXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MciVfqUQe33gFBLlS3xGeCPUEnGof0Y0yeUe4CWBaJg=;
-        b=iKfthWIFRlgVLmloTSKjKBDRP1sjhZyANZCiiRZHLmw1n+TXn26CJvKrmg8LPzp9mP
-         pkU9CiCMhINMAapd/w0N8fkyHqTn08oENUNMJgibTnZgh3zoR8iP6HHXJXQyx+5wg3tf
-         8Yj+X7JuJ8RJyYCRk+jGvEHaLyXvZNDTU8/nAYB0Yb5WT5LRi3WZuPjYzgMEsJm1J1jJ
-         1NRzZ1YBMN7oFT4VGtn2pjDD5/w6DaXGFmg0bRRWpyrEr7gWIi+HRQMqjo00zrJHj7dJ
-         b4nwoOQSNCcJRbtazAPfG+JJmnQmNf5uQrVRKQrzJ+WRddRupCSFshmHWJubRINE6/CE
-         2kFg==
-X-Gm-Message-State: AOAM533adPnUqKMcsK0WIvKxCszhd+aunqTOW5RbRpDJDeMfDt/EE+jL
-        /PYAuIPnmK1yBI3WxjQncVaxRg==
-X-Google-Smtp-Source: ABdhPJxCMNPi66WuCrXRDD3GF45m9k/zmmv/rQUtDoJzKpADwWVKzap6FWV7A+nxLuCXXL1yr2XKVg==
-X-Received: by 2002:a37:5f41:: with SMTP id t62mr5193696qkb.458.1621341410908;
-        Tue, 18 May 2021 05:36:50 -0700 (PDT)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id z187sm12691813qkb.129.2021.05.18.05.36.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 05:36:50 -0700 (PDT)
-Subject: Re: [PATCH 3/3] clk: qcom: Add camera clock controller driver for
- SM8250
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>
-References: <20210513175258.5842-1-jonathan@marek.ca>
- <20210513175258.5842-4-jonathan@marek.ca>
- <CAG3jFys=aCJOnP11EC_PK-KBJxMksT78McKb6pLTHuBxhU2qdg@mail.gmail.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <aea11d40-a5df-d3b5-195b-d790c5df400e@marek.ca>
-Date:   Tue, 18 May 2021 08:35:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S244837AbhERMro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:47:44 -0400
+Received: from first.geanix.com ([116.203.34.67]:33738 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244400AbhERMrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:47:42 -0400
+X-Greylist: delayed 476 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 08:47:42 EDT
+Received: from [192.168.64.199] (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id 98D21464055;
+        Tue, 18 May 2021 12:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1621341506; bh=N8dF9lNhoA62MtvBLfiXHYsJEDkxAjPBIVcvZZB2w84=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=hEbAO8ZmeNTFvzKOciKV7IiVmLhi32RQZ9aMpYS+O8mg4jB8lLEuTPdN1s8Wo4sTf
+         FU/5q/SAkbM17psfqdhxBb9Egwd6o0TiLZlqrliN+OTMEM7JlQFhU90ReWqb5v0hI1
+         zNR0k9Dxapjmc9TDbhI6EJdAjGFCZ7+xL/COOVQUgfH9QWVwsRVMR0cCGqL5WGCJRf
+         QgMpQuGMHlWM9GRHdUgCjNUkOZeM2qunIMAC02bOm7dSJfL3LigxqbW3Sej4dziZfs
+         OcNe4mQZQkvCXbBEQ60Bs37YNDZBzlpecEKOptYoyyXuTikpz/SO/jLhbpNJIiuKv5
+         hpZ5p9RcfcE2A==
+Subject: Re: [PATCH v1 1/1] iio: Drop Duplicated "mount-matrix" parameter
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Dan Robertson <dan@dlrobertson.com>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+References: <20210518112546.44592-1-andriy.shevchenko@linux.intel.com>
+From:   Sean Nyekjaer <sean@geanix.com>
+Message-ID: <66a1a5e2-181d-bcc6-b453-357fcfd5e5f1@geanix.com>
+Date:   Tue, 18 May 2021 14:38:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFys=aCJOnP11EC_PK-KBJxMksT78McKb6pLTHuBxhU2qdg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210518112546.44592-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        URIBL_BLOCKED autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 7:42 AM, Robert Foss wrote:
-> Hey Jonathan,
+On 18/05/2021 13.25, Andy Shevchenko wrote:
+> All of the users of iio_read_mount_matrix() are using the very same
+> property name. Moreover, the property name is hard coded in the API
+> documentation.
 > 
+> Make this clear and avoid duplication now and in the future.
 > 
->> +static int cam_cc_sm8250_probe(struct platform_device *pdev)
->> +{
->> +       struct regmap *regmap;
->> +
->> +       regmap = qcom_cc_map(pdev, &cam_cc_sm8250_desc);
->> +       if (IS_ERR(regmap))
->> +               return PTR_ERR(regmap);
->> +
->> +       clk_lucid_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config);
->> +       clk_lucid_pll_configure(&cam_cc_pll1, regmap, &cam_cc_pll1_config);
->> +       clk_lucid_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config);
->> +       clk_lucid_pll_configure(&cam_cc_pll4, regmap, &cam_cc_pll4_config);
->> +
->> +       return qcom_cc_really_probe(pdev, &cam_cc_sm8250_desc, regmap);;
-> 
-> Remove a semicolon.
-> 
->> +}
->> +
->> +static struct platform_driver cam_cc_sm8250_driver = {
->> +       .probe = cam_cc_sm8250_probe,
->> +       .driver = {
->> +               .name = "cam_cc-sm8250",
-> 
-> Maybe conforming with the naming scheme of "sdm845-camcc" is the
-> better way to go.
-> 
-
-On the other hand there is cam_cc-sc7180. But it doesn't matter either 
-way, I will change it.
-
->> +               .of_match_table = cam_cc_sm8250_match_table,
->> +       },
->> +};
->> +
->> +static int __init cam_cc_sm8250_init(void)
->> +{
->> +       return platform_driver_register(&cam_cc_sm8250_driver);
->> +}
->> +subsys_initcall(cam_cc_sm8250_init);
->> +
->> +static void __exit cam_cc_sm8250_exit(void)
->> +{
->> +       platform_driver_unregister(&cam_cc_sm8250_driver);
->> +}
->> +module_exit(cam_cc_sm8250_exit);
->> +
->> +MODULE_DESCRIPTION("QTI CAMCC SM8250 Driver");
->> +MODULE_LICENSE("GPL v2");
->> --
->> 2.26.1
->>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+> ---Good idea :)
