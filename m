@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144EA38739C
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5FE38739D
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347337AbhERH4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240926AbhERH4p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347348AbhERH4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:56:49 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6291 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240382AbhERH4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 May 2021 03:56:45 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00636C061573;
-        Tue, 18 May 2021 00:55:27 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so7895813otc.6;
-        Tue, 18 May 2021 00:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Ku+2qffcgpQdd0AjY56gzrAJrKY2KJcMohJ2tJvXf4=;
-        b=Na0zHLilOIyO08nKHQ9Rk7cEScz+Er3m/qzB/L01gvI3zl19eiI1nmCTiIFcqS1Pvm
-         V7MurMFawVuQDx7L/e5tNc03CXvfaIerVbi85B5I3S/UjyJSRE3RC3ESDMzIfqhtdxxh
-         5Zz8FUME2fZh4YcNXs7N2zL1sB0/OlaLlAQpX6/OznJroWFEOLulIDmqOLQnuiiYT/xu
-         KQDioiGZKc6ANZQIONcJftfy1bcbQDDBVToeGW7q5OWo8NCcMuxAvZO6U9vQAApFyl7n
-         KpKNOThP0UYI1o+PFIDkkoQ1h1h6GgLIa2NpMK2zVV0PeQ1wwa9HsKLEAGFx/zaNiZeJ
-         /fbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Ku+2qffcgpQdd0AjY56gzrAJrKY2KJcMohJ2tJvXf4=;
-        b=rKhupbVfLaOLXyAZ+CUy1qPg5unXN65crEIjdl7qRpBIqXE8qAbUSd9/pdYEyKBR75
-         ONTkh3LC9DdDPrlyTEqSie9oS5Q35P4pOe+jJUaQ6Vnr+5CBPBpyPZdRfwOsoJOlawVq
-         792PVH1gkU9dXioYxyi6tIEA5a53kKa8Tc/30DZEP0SE4+hO4Amw9oAbesxYgzV00/BT
-         5RbPeeR04zAzm6rhJsR4TaedrDO+kFLhXOXIdctG4PWXDBCt8MCd8CiUlC5pel2nvb07
-         gSPjWrnXfg9ChR/SHM0fRyu9jLkwLx+no0lyO+VePl2FoRY2E+vUjyCEHvmhPvpPsOvk
-         e30Q==
-X-Gm-Message-State: AOAM532tHUp0ONLJptyLLocDfYw808Jl+SudTbIMx1/ZeUlWa2RUjf0K
-        lzPr70SlqxsuAQZ9y69PZmDEEOaHh8H6pCpXBE4=
-X-Google-Smtp-Source: ABdhPJz2bDQvDTNVzRCoGcczOCh+FXQKGpbraKCSNpVie7voi/8Wq+IKI3U4tO+fUQ4PrTwb/YLSJS64jOKrYbWc1ko=
-X-Received: by 2002:a9d:4115:: with SMTP id o21mr3240707ote.52.1621324527407;
- Tue, 18 May 2021 00:55:27 -0700 (PDT)
+IronPort-SDR: +eEq+CNmZg2mxrVjHuEGKSAPritqby+sEJxal9wB5E9RNhhKirkMXKV+JBI8KR9jHeaEN9LuUb
+ VEaCpjp0vocw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="197567722"
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="197567722"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 00:55:20 -0700
+IronPort-SDR: /3B3uMeIMrkmVOQIwdCVW1cvukL66BLkMbptcCsQwVGKmkQKzhUzHtQNgGSy6T0w+DcFjRl1Bn
+ KgbXL8rshUBA==
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="472830856"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 00:55:15 -0700
+Subject: Re: [PATCH v6 05/16] KVM: x86/pmu: Introduce the ctrl_mask value for
+ fixed counter
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-6-like.xu@linux.intel.com>
+ <YKImwdg7LO/OPvVJ@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <1fb87ea1-d7e6-0ca3-f3ed-4007a7e5a7d7@intel.com>
+Date:   Tue, 18 May 2021 15:55:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210517171205.1581938-1-abelvesa@kernel.org> <20210517171205.1581938-6-abelvesa@kernel.org>
-In-Reply-To: <20210517171205.1581938-6-abelvesa@kernel.org>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Tue, 18 May 2021 15:54:25 +0800
-Message-ID: <CAA+hA=RNfWYaE81yYv5Dyt8QSXd_NTGcwjWwitiRNe4ZOtRWvw@mail.gmail.com>
-Subject: Re: [PATCH 5/7] arm64: dts: freescale: Add ddr subsys dtsi for imx8dxl
-To:     Abel Vesa <abelvesa@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Abel Vesa <abel.vesa@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKImwdg7LO/OPvVJ@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 1:16 AM <abelvesa@kernel.org> wrote:
->
-> From: Jacky Bai <ping.bai@nxp.com>
->
-> Add the ddr subsys dtsi for i.MX8DXL. Additional db pmu is added
-> compared to i.MX8QXP.
->
-> Signed-off-by: Jacky Bai <ping.bai@nxp.com>
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  .../boot/dts/freescale/imx8dxl-ss-ddr.dtsi    | 34 +++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-ddr.dtsi
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8dxl-ss-ddr.dtsi b/arch/arm64/boot/dts/freescale/imx8dxl-ss-ddr.dtsi
-> new file mode 100644
-> index 000000000000..640b43f5ae97
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8dxl-ss-ddr.dtsi
-> @@ -0,0 +1,34 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright 2021 NXP
-> + */
-> +
-> +&ddr_subsys {
-> +       db_ipg_clk: clock-db-ipg {
-> +               compatible = "fixed-clock";
-> +               #clock-cells = <0>;
-> +               clock-frequency = <456000000>;
-> +               clock-output-names = "db_ipg_clk";
-> +       };
-> +
-> +       db_pmu0: db-pmu@5ca40000 {
-> +               compatible = "fsl,imx8dxl-db-pmu";
-> +               reg = <0x5ca40000 0x10000>;
-> +               interrupt-parent = <&gic>;
-> +               interrupts = <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>;
-> +               clocks = <&db_pmu0_lpcg 1>, <&db_pmu0_lpcg 0>;
+On 2021/5/17 16:18, Peter Zijlstra wrote:
+> On Tue, May 11, 2021 at 10:42:03AM +0800, Like Xu wrote:
+>> The mask value of fixed counter control register should be dynamic
+>> adjusted with the number of fixed counters. This patch introduces a
+>> variable that includes the reserved bits of fixed counter control
+>> registers. This is needed for later Ice Lake fixed counter changes.
+>>
+>> Co-developed-by: Luwei Kang <luwei.kang@intel.com>
+>> Signed-off-by: Luwei Kang <luwei.kang@intel.com>
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> ---
+>>   arch/x86/include/asm/kvm_host.h | 1 +
+>>   arch/x86/kvm/vmx/pmu_intel.c    | 6 +++++-
+>>   2 files changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index 55efbacfc244..49b421bd3dd8 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -457,6 +457,7 @@ struct kvm_pmu {
+>>   	unsigned nr_arch_fixed_counters;
+>>   	unsigned available_event_types;
+>>   	u64 fixed_ctr_ctrl;
+>> +	u64 fixed_ctr_ctrl_mask;
+>>   	u64 global_ctrl;
+>>   	u64 global_status;
+>>   	u64 global_ovf_ctrl;
+>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>> index d9dbebe03cae..ac7fe714e6c1 100644
+>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>> @@ -400,7 +400,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>   	case MSR_CORE_PERF_FIXED_CTR_CTRL:
+>>   		if (pmu->fixed_ctr_ctrl == data)
+>>   			return 0;
+>> -		if (!(data & 0xfffffffffffff444ull)) {
+>> +		if (!(data & pmu->fixed_ctr_ctrl_mask)) {
+> Don't we already have hardware with more than 3 fixed counters?
 
-fix lpcg index
+Yes, so we update this mask based on the value of pmu->nr_arch_fixed_counters:
 
-> +               clock-names = "ipg", "cnt";
-> +               power-domains = <&pd IMX_SC_R_PERF>;
-> +       };
-> +
-> +       db_pmu0_lpcg: clock-controller@5cae0000 {
-> +               compatible = "fsl,imx8qxp-lpcg";
-> +               reg = <0x5cae0000 0x10000>;
-> +               #clock-cells = <1>;
-> +               clocks = <&db_ipg_clk>, <&db_ipg_clk>;
-> +               bit-offset = <0 16>;
++    for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
++        pmu->fixed_ctr_ctrl_mask &= ~(0xbull << (i * 4));
 
-fix lpcg index by using macro
-
-> +               clock-output-names = "perf_lpcg_cnt_clk",
-> +                                    "perf_lpcg_ipg_clk";
-> +               power-domains = <&pd IMX_SC_R_PERF>;
-> +       };
-> +};
-> --
-> 2.31.1
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+I assume this comment will not result in any code changes for this patch.
