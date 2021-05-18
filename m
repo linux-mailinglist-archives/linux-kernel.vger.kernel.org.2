@@ -2,264 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74DF387E9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEBE387EA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346735AbhERRoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:44:32 -0400
-Received: from mga05.intel.com ([192.55.52.43]:50088 "EHLO mga05.intel.com"
+        id S1346868AbhERRqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:46:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237923AbhERRob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:44:31 -0400
-IronPort-SDR: Qmu6mU4t5SrYdPx66kCZdt9+PXhY+7JxpllJG9f8fggAnitoD4H4KUlfjJWvOaJ5vYGG+KYqT8
- nrZ4tmaOHtDA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="286305617"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="286305617"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 10:43:13 -0700
-IronPort-SDR: UwY/ueovT3tJPP9ZW0f7Qu+dVS0HmZxT/uV4I9+pf31ftQpc5Md/fHIt2/L2SO4JheXsFdMJFv
- Bp0TkKTLqNYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="411370253"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 18 May 2021 10:43:11 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lj3kM-0002Hj-Sv; Tue, 18 May 2021 17:43:10 +0000
-Date:   Wed, 19 May 2021 01:42:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- a50c5bebc99c525e7fbc059988c6a5ab8680cb76
-Message-ID: <60a3fc76.59+NGSvl+9HPCpVC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S237923AbhERRqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:46:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4302A611AC;
+        Tue, 18 May 2021 17:44:44 +0000 (UTC)
+Date:   Tue, 18 May 2021 18:44:41 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Evgenii Stepanov <eugenis@google.com>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] kasan: speed up mte_set_mem_tag_range
+Message-ID: <20210518174439.GA28491@arm.com>
+References: <20210517235546.3038875-1-eugenis@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210517235546.3038875-1-eugenis@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: a50c5bebc99c525e7fbc059988c6a5ab8680cb76  x86/sev-es: Invalidate the GHCB after completing VMGEXIT
+On Mon, May 17, 2021 at 04:55:46PM -0700, Evgenii Stepanov wrote:
+> Use DC GVA / DC GZVA to speed up KASan memory tagging in HW tags mode.
+> 
+> The first cacheline is always tagged using STG/STZG even if the address is
+> cacheline-aligned, as benchmarks show it is faster than a conditional
+> branch.
+[...]
+> diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+> index ddd4d17cf9a0..e29a0e2ab35c 100644
+> --- a/arch/arm64/include/asm/mte-kasan.h
+> +++ b/arch/arm64/include/asm/mte-kasan.h
+> @@ -48,45 +48,7 @@ static inline u8 mte_get_random_tag(void)
+>  	return mte_get_ptr_tag(addr);
+>  }
+>  
+> -/*
+> - * Assign allocation tags for a region of memory based on the pointer tag.
+> - * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
+> - * size must be non-zero and MTE_GRANULE_SIZE aligned.
+> - */
+> -static inline void mte_set_mem_tag_range(void *addr, size_t size,
+> -						u8 tag, bool init)
 
-elapsed time: 724m
+With commit 2cb34276427a ("arm64: kasan: simplify and inline MTE
+functions") you wanted this inlined for performance. Does this not
+matter much that it's now out of line?
 
-configs tested: 202
-configs skipped: 70
+> diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
+> index d31e1169d9b8..c06ada79a437 100644
+> --- a/arch/arm64/lib/Makefile
+> +++ b/arch/arm64/lib/Makefile
+> @@ -18,3 +18,5 @@ obj-$(CONFIG_CRC32) += crc32.o
+>  obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+>  
+>  obj-$(CONFIG_ARM64_MTE) += mte.o
+> +
+> +obj-$(CONFIG_KASAN_HW_TAGS) += mte-kasan.o
+> diff --git a/arch/arm64/lib/mte-kasan.S b/arch/arm64/lib/mte-kasan.S
+> new file mode 100644
+> index 000000000000..9f6975e2af60
+> --- /dev/null
+> +++ b/arch/arm64/lib/mte-kasan.S
+> @@ -0,0 +1,63 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (C) 2021 Google Inc.
+> + */
+> +#include <linux/const.h>
+> +#include <linux/linkage.h>
+> +
+> +#include <asm/mte-def.h>
+> +
+> +	.arch	armv8.5-a+memtag
+> +
+> +	.macro  __set_mem_tag_range, stg, gva, start, size, linesize, tmp1, tmp2, tmp3
+> +	add	\tmp3, \start, \size
+> +	cmp	\size, \linesize, lsl #1
+> +	b.lt	.Lsmtr3_\@
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+We could do with some comments here. Why the lsl #1? I think I get it
+but it would be good to make this more readable.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0219_defconfig
-arm                          moxart_defconfig
-parisc                              defconfig
-openrisc                            defconfig
-m68k                          multi_defconfig
-powerpc64                           defconfig
-m68k                          atari_defconfig
-powerpc                     ep8248e_defconfig
-arm                          lpd270_defconfig
-alpha                               defconfig
-xtensa                         virt_defconfig
-powerpc                     powernv_defconfig
-arm                           omap1_defconfig
-sh                           se7619_defconfig
-powerpc                      ppc44x_defconfig
-sh                     magicpanelr2_defconfig
-sh                          landisk_defconfig
-arc                      axs103_smp_defconfig
-mips                           xway_defconfig
-csky                             alldefconfig
-powerpc                     tqm8555_defconfig
-sh                           se7722_defconfig
-mips                         mpc30x_defconfig
-um                            kunit_defconfig
-powerpc                      makalu_defconfig
-powerpc                 mpc8315_rdb_defconfig
-m68k                          hp300_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                    socrates_defconfig
-arm                       imx_v6_v7_defconfig
-arm64                            alldefconfig
-arm                          gemini_defconfig
-sh                             espt_defconfig
-sh                        apsh4ad0a_defconfig
-sparc                       sparc32_defconfig
-sh                              ul2_defconfig
-powerpc                       maple_defconfig
-arm                        shmobile_defconfig
-sh                ecovec24-romimage_defconfig
-m68k                          sun3x_defconfig
-arm                       netwinder_defconfig
-alpha                            allyesconfig
-mips                           ip28_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                      cm5200_defconfig
-mips                           rs90_defconfig
-arm                           viper_defconfig
-arc                        nsimosci_defconfig
-i386                             alldefconfig
-openrisc                  or1klitex_defconfig
-sh                          kfr2r09_defconfig
-mips                      malta_kvm_defconfig
-arm                             rpc_defconfig
-powerpc                     akebono_defconfig
-nios2                         3c120_defconfig
-powerpc                       ppc64_defconfig
-microblaze                          defconfig
-powerpc                   lite5200b_defconfig
-arm                          iop32x_defconfig
-ia64                            zx1_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                   sb1250_swarm_defconfig
-mips                     decstation_defconfig
-arc                            hsdk_defconfig
-arm                             ezx_defconfig
-mips                        nlm_xlr_defconfig
-mips                            gpr_defconfig
-mips                        vocore2_defconfig
-ia64                                defconfig
-m68k                       m5249evb_defconfig
-sparc                            alldefconfig
-x86_64                            allnoconfig
-powerpc                     kmeter1_defconfig
-arm                       imx_v4_v5_defconfig
-sh                          r7780mp_defconfig
-sh                            titan_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arm                           tegra_defconfig
-m68k                         apollo_defconfig
-arm                           h3600_defconfig
-arm                      footbridge_defconfig
-arm                            hisi_defconfig
-arm                          exynos_defconfig
-arm                         axm55xx_defconfig
-arc                         haps_hs_defconfig
-arm                           u8500_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                         wii_defconfig
-arm                          simpad_defconfig
-powerpc                     tqm8541_defconfig
-xtensa                    smp_lx200_defconfig
-mips                        qi_lb60_defconfig
-m68k                           sun3_defconfig
-arm                        clps711x_defconfig
-mips                           mtx1_defconfig
-arm                          ixp4xx_defconfig
-arm                          pxa168_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                        cell_defconfig
-sh                     sh7710voipgw_defconfig
-sh                        sh7785lcr_defconfig
-arm                         nhk8815_defconfig
-parisc                generic-64bit_defconfig
-x86_64                              defconfig
-arm                       multi_v4t_defconfig
-arm                      integrator_defconfig
-mips                     loongson2k_defconfig
-sparc                               defconfig
-arm                          ep93xx_defconfig
-arm                           h5000_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                           se7206_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                       eiger_defconfig
-powerpc                        icon_defconfig
-x86_64                           allyesconfig
-mips                        workpad_defconfig
-sh                          rsk7269_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                      bamboo_defconfig
-powerpc                     mpc83xx_defconfig
-riscv                             allnoconfig
-xtensa                    xip_kc705_defconfig
-m68k                        mvme16x_defconfig
-powerpc                    klondike_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                 mpc834x_itx_defconfig
-nds32                               defconfig
-s390                             allyesconfig
-arm                         assabet_defconfig
-sh                          r7785rp_defconfig
-powerpc                 mpc837x_rdb_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-csky                                defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210518
-x86_64               randconfig-a004-20210518
-x86_64               randconfig-a005-20210518
-x86_64               randconfig-a001-20210518
-x86_64               randconfig-a002-20210518
-x86_64               randconfig-a006-20210518
-i386                 randconfig-a003-20210518
-i386                 randconfig-a001-20210518
-i386                 randconfig-a005-20210518
-i386                 randconfig-a004-20210518
-i386                 randconfig-a002-20210518
-i386                 randconfig-a006-20210518
-i386                 randconfig-a014-20210518
-i386                 randconfig-a016-20210518
-i386                 randconfig-a011-20210518
-i386                 randconfig-a015-20210518
-i386                 randconfig-a012-20210518
-i386                 randconfig-a013-20210518
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+It may be easier if you placed it in a file on its own (as it is now but
+with a less generic file name) and use a few .req instead of the tmpX.
+You can use the macro args only for the stg/gva.
 
-clang tested configs:
-x86_64               randconfig-b001-20210518
-x86_64               randconfig-b001-20210519
-x86_64               randconfig-a015-20210518
-x86_64               randconfig-a012-20210518
-x86_64               randconfig-a013-20210518
-x86_64               randconfig-a011-20210518
-x86_64               randconfig-a016-20210518
-x86_64               randconfig-a014-20210518
+> +
+> +	sub	\tmp1, \linesize, #1
+> +	bic	\tmp2, \tmp3, \tmp1
+> +	orr	\tmp1, \start, \tmp1
+> +
+> +.Lsmtr1_\@:
+> +	\stg	\start, [\start], #MTE_GRANULE_SIZE
+> +	cmp	\start, \tmp1
+> +	b.lt	.Lsmtr1_\@
+> +
+> +.Lsmtr2_\@:
+> +	dc	\gva, \start
+> +	add	\start, \start, \linesize
+> +	cmp	\start, \tmp2
+> +	b.lt	.Lsmtr2_\@
+> +
+> +.Lsmtr3_\@:
+> +	cmp	\start, \tmp3
+> +	b.ge	.Lsmtr4_\@
+> +	\stg	\start, [\start], #MTE_GRANULE_SIZE
+> +	b	.Lsmtr3_\@
+> +.Lsmtr4_\@:
+> +	.endm
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+If we want to get the best performance out of this, we should look at
+the memset implementation and do something similar. In principle it's
+not that far from a memzero, though depending on the microarchitecture
+it may behave slightly differently.
+
+Anyway, before that I wonder if we wrote all this in C + inline asm
+(three while loops or maybe two and some goto), what's the performance
+difference? It has the advantage of being easier to maintain even if we
+used some C macros to generate gva/gzva variants.
+
+-- 
+Catalin
