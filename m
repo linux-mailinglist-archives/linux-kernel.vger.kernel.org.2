@@ -2,259 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C59D3871A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBC43871A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241755AbhERGOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 02:14:37 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:34587 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhERGOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 02:14:35 -0400
-Received: by mail-io1-f70.google.com with SMTP id e84-20020a6bb5570000b029043a9371b108so5159463iof.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 23:13:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iuG9xsJBc1DSH481JvU1HnPnQu2CQDr3Q8HD1KDKv1g=;
-        b=pQWkiz1WAFDsOH2P13ZVCPqV/AwJ+rH1HJ9VfYiXwQSJibpwpXEOGblRfkn/r13dV7
-         mV8aIr0Su335AIWfkdo9oDuy5/1wduodK5IDv6ggWeEfzIBnscBQIc6eYOOSpw1hoL71
-         14RuvoDZXKkYwuuVjI2knFI97u+oYUbMnsRQ/mTvjekrDCA+B8gpLV9x7F1CjFxQAMjs
-         8AlHOarFToooYFKfZrwBcln47yL9fdj3FEUApYWnFse3T5Mc+lCw4hJn8DEtPJ/K8hy8
-         jzpyf8G5gbWmT50B8Va91g9Du3uO5fvFrBeKrnOt3EqZLj6TbQYXZf/FwV+si1OE8SrY
-         ajjQ==
-X-Gm-Message-State: AOAM530OZ4h1kl+qONvs99ENSuJVZBq7L2QKYpiqIVp+HsUiHgf8NtAp
-        62bZUkRBDMkU4M5ncA+Brc6BqtbzaFj8gANNWtuL/jFJIV7h
-X-Google-Smtp-Source: ABdhPJz5dGK0aCBtrNHMHyjmovNuyu4PfqxiOKBeCHfqrxcx0Fauy0B3/JPPKggjeHg1EqUvtci3rxFt10IEe98oKXTn+7Ugb3r7
+        id S245740AbhERGPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 02:15:15 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33849 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229531AbhERGPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 02:15:13 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fkm0c37mNz9sW1;
+        Tue, 18 May 2021 16:13:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1621318434;
+        bh=IV7+QbI4uh3lLtagt784pHwtdDzEOKkcFGpA1YF+BnY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=pNt1eTIi54r2BF6idmSaqa/SVJwyaW7MWUkYiczrrtrYa/pzo0YwDLue+ox+Wu8ar
+         hMwQL2oW2PQr0nTvd0aq0Aii/hA8Snaq89FwtqQfbfI6tMw38q2fU957w5DG5mkc19
+         TobmiRLm9ADLRSt+t9ZI1stEezRzfmr/2IaILzAhZT3mn9Gx/jme6PjKxGh5f/hXz2
+         V0QwGeA9cHXd5lAPL7M+Jc1hnz5qo7ELbARY9Iz1AwHu8oz3mMUv06O1IsIE5lxf26
+         23av0QMe703eZ/UGUz5MD+KJpPfel73/THzo3BNQGSqQhDul2f/kAMm/p2Q9s40L9L
+         aXJ8Siv0f1Jzw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Daniel Axtens <dja@axtens.net>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] powerpc/powernv/pci: remove dead code from !CONFIG_EEH
+In-Reply-To: <CAKwvOdmMugQkTRwC3HOEt2-em2zSfAoi7gpvJRkqfdzSDRMeEg@mail.gmail.com>
+References: <20210422195405.4053917-1-ndesaulniers@google.com>
+ <87lf99zzl3.fsf@dja-thinkpad.axtens.net>
+ <CAOSf1CGoN5R0LUrU=Y=UWho1Z_9SLgCX8s3SbFJXwJXc5BYz4A@mail.gmail.com>
+ <CAKwvOdmMugQkTRwC3HOEt2-em2zSfAoi7gpvJRkqfdzSDRMeEg@mail.gmail.com>
+Date:   Tue, 18 May 2021 16:13:50 +1000
+Message-ID: <87cztok1r5.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-Received: by 2002:a02:7354:: with SMTP id a20mr114708jae.94.1621318396595;
- Mon, 17 May 2021 23:13:16 -0700 (PDT)
-Date:   Mon, 17 May 2021 23:13:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000018cf5d05c2949b75@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in gfs2_glock_shrink_scan
-From:   syzbot <syzbot+34ba7ddbf3021981a228@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Nick Desaulniers <ndesaulniers@google.com> writes:
+> On Thu, Apr 22, 2021 at 6:13 PM Oliver O'Halloran <oohall@gmail.com> wrote:
+>>
+>> On Fri, Apr 23, 2021 at 9:09 AM Daniel Axtens <dja@axtens.net> wrote:
+>> >
+>> > Hi Nick,
+>> >
+>> > > While looking at -Wundef warnings, the #if CONFIG_EEH stood out as a
+>> > > possible candidate to convert to #ifdef CONFIG_EEH, but it seems that
+>> > > based on Kconfig dependencies it's not possible to build this file
+>> > > without CONFIG_EEH enabled.
+>> >
+>> > This seemed odd to me, but I think you're right:
+>> >
+>> > arch/powerpc/platforms/Kconfig contains:
+>> >
+>> > config EEH
+>> >         bool
+>> >         depends on (PPC_POWERNV || PPC_PSERIES) && PCI
+>> >         default y
+>> >
+>> > It's not configurable from e.g. make menuconfig because there's no prompt.
+>> > You can attempt to explicitly disable it with e.g. `scripts/config -d EEH`
+>> > but then something like `make oldconfig` will silently re-enable it for
+>> > you.
+>> >
+>> > It's been forced on since commit e49f7a9997c6 ("powerpc/pseries: Rivet
+>> > CONFIG_EEH for pSeries platform") in 2012 which fixed it for
+>> > pseries. That moved out from pseries to pseries + powernv later on.
+>> >
+>> > There are other cleanups in the same vein that could be made, from the
+>> > Makefile (which has files only built with CONFIG_EEH) through to other
+>> > source files. It looks like there's one `#ifdef CONFIG_EEH` in
+>> > arch/powerpc/platforms/powernv/pci-ioda.c that could be pulled out, for
+>> > example.
+>> >
+>> > I think it's probably worth trying to rip out all of those in one patch?
+>>
+>> The change in commit e49f7a9997c6 ("powerpc/pseries: Rivet CONFIG_EEH
+>> for pSeries platform") never should have been made.
+>
+> I'll change my patch to keep the conditionals, but use #ifdef instead
+> of #if then?
 
-syzbot found the following issue on:
+Yeah, please.
 
-HEAD commit:    315d9931 Merge tag 'pm-5.13-rc2' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=126d17b3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4e950b1ffed48778
-dashboard link: https://syzkaller.appspot.com/bug?extid=34ba7ddbf3021981a228
-userspace arch: i386
+I'm not sure I agree with oohal that untangling pseries/powernv from
+EEH is something we should do, but let's kick that can down the road by
+just fixing up the ifdef.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+34ba7ddbf3021981a228@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in __list_del_entry_valid+0xcc/0xf0 lib/list_debug.c:42
-Read of size 8 at addr ffff888074ee8f20 by task khugepaged/1669
-
-CPU: 0 PID: 1669 Comm: khugepaged Not tainted 5.13.0-rc1-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
- __list_del_entry_valid+0xcc/0xf0 lib/list_debug.c:42
- __list_del_entry include/linux/list.h:132 [inline]
- list_del_init include/linux/list.h:204 [inline]
- gfs2_dispose_glock_lru fs/gfs2/glock.c:1777 [inline]
- gfs2_scan_glock_lru fs/gfs2/glock.c:1832 [inline]
- gfs2_glock_shrink_scan fs/gfs2/glock.c:1843 [inline]
- gfs2_glock_shrink_scan+0x69f/0xa80 fs/gfs2/glock.c:1838
- do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:709
- shrink_slab+0x17f/0x6f0 mm/vmscan.c:869
- shrink_node_memcgs mm/vmscan.c:2852 [inline]
- shrink_node+0x8d1/0x1de0 mm/vmscan.c:2967
- shrink_zones mm/vmscan.c:3170 [inline]
- do_try_to_free_pages+0x388/0x14b0 mm/vmscan.c:3225
- try_to_free_pages+0x29f/0x750 mm/vmscan.c:3464
- __perform_reclaim mm/page_alloc.c:4430 [inline]
- __alloc_pages_direct_reclaim mm/page_alloc.c:4451 [inline]
- __alloc_pages_slowpath.constprop.0+0x84e/0x2140 mm/page_alloc.c:4855
- __alloc_pages+0x422/0x500 mm/page_alloc.c:5213
- __alloc_pages_node include/linux/gfp.h:549 [inline]
- khugepaged_alloc_page+0xa0/0x170 mm/khugepaged.c:882
- collapse_huge_page mm/khugepaged.c:1085 [inline]
- khugepaged_scan_pmd mm/khugepaged.c:1368 [inline]
- khugepaged_scan_mm_slot mm/khugepaged.c:2137 [inline]
- khugepaged_do_scan mm/khugepaged.c:2218 [inline]
- khugepaged+0x312b/0x5530 mm/khugepaged.c:2263
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Allocated by task 10231:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:428 [inline]
- __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
- kasan_slab_alloc include/linux/kasan.h:236 [inline]
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:2912 [inline]
- slab_alloc mm/slub.c:2920 [inline]
- kmem_cache_alloc+0x152/0x3a0 mm/slub.c:2925
- gfs2_glock_get+0x20e/0x1100 fs/gfs2/glock.c:1027
- gfs2_inode_lookup+0x2c9/0xb10 fs/gfs2/inode.c:149
- gfs2_dir_search+0x20f/0x2c0 fs/gfs2/dir.c:1665
- gfs2_lookupi+0x475/0x640 fs/gfs2/inode.c:332
- gfs2_lookup_simple+0x99/0xe0 fs/gfs2/inode.c:273
- init_inodes+0x1c79/0x2610 fs/gfs2/ops_fstype.c:880
- gfs2_fill_super+0x1b4a/0x2680 fs/gfs2/ops_fstype.c:1204
- get_tree_bdev+0x440/0x760 fs/super.c:1293
- gfs2_get_tree+0x4a/0x270 fs/gfs2/ops_fstype.c:1273
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2905 [inline]
- path_mount+0x132a/0x1fa0 fs/namespace.c:3235
- do_mount fs/namespace.c:3248 [inline]
- __do_sys_mount fs/namespace.c:3456 [inline]
- __se_sys_mount fs/namespace.c:3433 [inline]
- __ia32_sys_mount+0x27e/0x300 fs/namespace.c:3433
- do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
- __do_fast_syscall_32+0x67/0xe0 arch/x86/entry/common.c:143
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:168
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-Freed by task 8886:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
- kasan_slab_free include/linux/kasan.h:212 [inline]
- slab_free_hook mm/slub.c:1581 [inline]
- slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
- slab_free mm/slub.c:3166 [inline]
- kmem_cache_free+0x8a/0x740 mm/slub.c:3182
- gfs2_glock_dealloc+0xcc/0x150 fs/gfs2/glock.c:130
- rcu_do_batch kernel/rcu/tree.c:2558 [inline]
- rcu_core+0x7ab/0x13b0 kernel/rcu/tree.c:2793
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:559
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3038 [inline]
- call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
- gfs2_glock_free+0x7cf/0x1080 fs/gfs2/glock.c:170
- glock_work_func+0x2bb/0x3f0 fs/gfs2/glock.c:949
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- insert_work+0x48/0x370 kernel/workqueue.c:1331
- __queue_work+0x5c1/0xed0 kernel/workqueue.c:1497
- __queue_delayed_work+0x1c8/0x270 kernel/workqueue.c:1644
- queue_delayed_work_on+0x105/0x120 kernel/workqueue.c:1680
- queue_delayed_work include/linux/workqueue.h:522 [inline]
- __gfs2_glock_queue_work+0x2a/0xb0 fs/gfs2/glock.c:245
- gfs2_glock_queue_work fs/gfs2/glock.c:259 [inline]
- do_xmote+0x833/0xbc0 fs/gfs2/glock.c:702
- run_queue+0x323/0x680 fs/gfs2/glock.c:766
- glock_work_func+0xff/0x3f0 fs/gfs2/glock.c:933
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the object at ffff888074ee8e10
- which belongs to the cache gfs2_glock(aspace) of size 1072
-The buggy address is located 272 bytes inside of
- 1072-byte region [ffff888074ee8e10, ffff888074ee9240)
-The buggy address belongs to the page:
-page:ffffea0001d3ba00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x74ee8
-head:ffffea0001d3ba00 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x4fff00000010200(slab|head|node=1|zone=1|lastcpupid=0x7ff)
-raw: 04fff00000010200 dead000000000100 dead000000000122 ffff888043ead180
-raw: 0000000000000000 00000000801b001b 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 10231, ts 369366273371, free_ts 369360520013
- prep_new_page mm/page_alloc.c:2358 [inline]
- get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
- __alloc_pages_slowpath.constprop.0+0x2ef/0x2140 mm/page_alloc.c:4762
- __alloc_pages+0x422/0x500 mm/page_alloc.c:5213
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- alloc_slab_page mm/slub.c:1644 [inline]
- allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
- new_slab mm/slub.c:1847 [inline]
- new_slab_objects mm/slub.c:2593 [inline]
- ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
- __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
- slab_alloc_node mm/slub.c:2878 [inline]
- slab_alloc mm/slub.c:2920 [inline]
- kmem_cache_alloc+0x34b/0x3a0 mm/slub.c:2925
- gfs2_glock_get+0x20e/0x1100 fs/gfs2/glock.c:1027
- gfs2_inode_lookup+0x2c9/0xb10 fs/gfs2/inode.c:149
- gfs2_dir_search+0x20f/0x2c0 fs/gfs2/dir.c:1665
- gfs2_lookupi+0x475/0x640 fs/gfs2/inode.c:332
- gfs2_lookup_simple+0x99/0xe0 fs/gfs2/inode.c:273
- init_statfs fs/gfs2/ops_fstype.c:649 [inline]
- init_journal fs/gfs2/ops_fstype.c:805 [inline]
- init_inodes+0xd8f/0x2610 fs/gfs2/ops_fstype.c:874
- gfs2_fill_super+0x1b4a/0x2680 fs/gfs2/ops_fstype.c:1204
- get_tree_bdev+0x440/0x760 fs/super.c:1293
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1298 [inline]
- __free_pages_ok+0x476/0xce0 mm/page_alloc.c:1572
- qlink_free mm/kasan/quarantine.c:146 [inline]
- qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
- kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
- __kasan_slab_alloc+0x8e/0xa0 mm/kasan/common.c:438
- kasan_slab_alloc include/linux/kasan.h:236 [inline]
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:2912 [inline]
- slab_alloc mm/slub.c:2920 [inline]
- __kmalloc+0x1f7/0x330 mm/slub.c:4063
- kmalloc include/linux/slab.h:561 [inline]
- tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_number_perm+0x1d5/0x590 security/tomoyo/file.c:723
- security_path_chmod+0xe0/0x150 security/security.c:1205
- chmod_common+0x156/0x440 fs/open.c:580
- vfs_fchmod fs/open.c:601 [inline]
- __do_sys_fchmod fs/open.c:610 [inline]
- __se_sys_fchmod fs/open.c:604 [inline]
- __x64_sys_fchmod+0x10e/0x190 fs/open.c:604
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff888074ee8e00: fc fc fa fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888074ee8e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888074ee8f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                               ^
- ffff888074ee8f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888074ee9000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+cheers
