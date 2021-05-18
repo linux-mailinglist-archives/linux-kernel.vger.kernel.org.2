@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F6D38825E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E5D388261
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352615AbhERVra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352596AbhERVrR (ORCPT
+        id S1352608AbhERVsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:48:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54660 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236298AbhERVsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:47:17 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE79BC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:45:58 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id r5so16008603lfr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B97xKjhQ53Gl8Z8TApI8lRn046/G6g2A8NA0fZn8t+w=;
-        b=gRb0hTzgC0OL1MiHCnOt1xOtZYUZ3QLk9y9JbAoVDb7uC1KybmqWPzdhZFIHx8mjr1
-         ipNrmV8sPw9nouZGe4tcS0dcN/KMmdoCA/wKo+XAJDmp6pzNG8cDDIdUQO8RSHwDY8e4
-         +hPIB8MK5cQUFHVFwDqWCNhz6RBaVkdAO/64LW8wulrlVYbaSryD+7I5Yf+61xmAQkv8
-         xEb5EDgug1Fe3RjfwC9Y9DctJUf2qApYvFmUH4XC81w+YwPxxtB9WPss9oVbgbs7olwK
-         yMOMfC7P0v+sBrnDrVAdl9a9sC/nVidjzAekZC6Ih+kkYEK0BDhPgvuOtFuzXA2Z7Ekb
-         DroA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B97xKjhQ53Gl8Z8TApI8lRn046/G6g2A8NA0fZn8t+w=;
-        b=FQDG0fpY+ETjsW+al9HM0zRXZm02Lk9C32/DOnk6ImpwMPrQSYDOIdBifY7kdG3Lw1
-         J0nFBKWqE9CJlfVggtfm5iO7HcT+fyFfuU/UuyIoaEVuo3c2kstLi4SLyhx8RgniyEYq
-         hR9arp/fCzSk0jcCDVCq73cjVbaJLx1mZJPj4ShTret9h0kSJlgF1JHIUZ2U+IVVBohe
-         gTX6x/LcOOkTvrERMlX4pVeBZN5eatS6K/uYaBeex0yWp94AnslVZ/gJvzLTxrgzRXsw
-         SJ9MDiEL957uH20lwi5JuSsMkP9oEg2GWCQwpAKf46QEGgX2mfI21ZM+ZDLYAMVRCBhY
-         mngQ==
-X-Gm-Message-State: AOAM531Q7uzdTkucmotcxgw3EccNe3GfeDzrvtiSl327UYG+diVXSW8z
-        Vye/0Nrg3EfaY1mwIxytAxRnHzl9Rmk2eTNcj8NQWA==
-X-Google-Smtp-Source: ABdhPJwawJZRAVzoDj+tZLYIiqlDskIlRSmtkXGxkxxxuliOaAVIz0FBDFMTgicKnWF2n/XKgfKoRIgALFP8qVIn/b8=
-X-Received: by 2002:a19:b0b:: with SMTP id 11mr5489148lfl.291.1621374357316;
- Tue, 18 May 2021 14:45:57 -0700 (PDT)
+        Tue, 18 May 2021 17:48:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621374417;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FuWvlQIHVtiLs5PcrSK5tHyRzGUj0cP2/B1i7ADxOx4=;
+        b=brydax1kmvY9U9u9aJPf5KQJ4vNHLzkdzKqZr7EAznMTOx5WybeQ3/mjmkJPEPer3B8WFB
+        oJnpMeEamxXGKtH1fRuTWC/DVuERK/3vliql+ezDdSymk4yrIiuKGbxYzPOoSnniyWYk8w
+        A7LNza704PswBBDvwIS6aliydIVvqyg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-7fhLPdPRPAaQAtUZ5nyfNA-1; Tue, 18 May 2021 17:46:55 -0400
+X-MC-Unique: 7fhLPdPRPAaQAtUZ5nyfNA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 466A88186E1;
+        Tue, 18 May 2021 21:46:54 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4FF2960877;
+        Tue, 18 May 2021 21:46:47 +0000 (UTC)
+Date:   Tue, 18 May 2021 15:46:47 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <eric.auger@redhat.com>
+Subject: Re: [PATCH -next] vfio: platform: reset: add missing iounmap() on
+ error in vfio_platform_amdxgbe_reset()
+Message-ID: <20210518154647.6541bac2.alex.williamson@redhat.com>
+In-Reply-To: <20210513050924.627625-1-yangyingliang@huawei.com>
+References: <20210513050924.627625-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-References: <20210518151655.125153-1-clabbe@baylibre.com> <20210518151655.125153-6-clabbe@baylibre.com>
-In-Reply-To: <20210518151655.125153-6-clabbe@baylibre.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 18 May 2021 23:45:46 +0200
-Message-ID: <CACRpkdZNLD9qf2xQrN2zi1ju4L9oexCgjVLsrtv8yZqFtZT_YQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] MAINTAINERS: add gemini crypto sl3516-ce
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Russell King <linux@armlinux.org.uk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 5:17 PM Corentin Labbe <clabbe@baylibre.com> wrote:
+On Thu, 13 May 2021 13:09:24 +0800
+Yang Yingliang <yangyingliang@huawei.com> wrote:
 
-> Add myself as maintainer of gemini sl3516-ce crypto driver.
-> Add also the driver to the list of files for gemini SoC.
->
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> Add the missing iounmap() before return from vfio_platform_amdxgbe_reset()
+> in the error handling case.
+> 
+> Fixes: 0990822c9866 ("VFIO: platform: reset: AMD xgbe reset module")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/vfio/platform/reset/vfio_platform_amdxgbe.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vfio/platform/reset/vfio_platform_amdxgbe.c b/drivers/vfio/platform/reset/vfio_platform_amdxgbe.c
+> index abdca900802d..c6d823a27bd6 100644
+> --- a/drivers/vfio/platform/reset/vfio_platform_amdxgbe.c
+> +++ b/drivers/vfio/platform/reset/vfio_platform_amdxgbe.c
+> @@ -61,8 +61,10 @@ static int vfio_platform_amdxgbe_reset(struct vfio_platform_device *vdev)
+>  	if (!xpcs_regs->ioaddr) {
+>  		xpcs_regs->ioaddr =
+>  			ioremap(xpcs_regs->addr, xpcs_regs->size);
+> -		if (!xpcs_regs->ioaddr)
+> +		if (!xpcs_regs->ioaddr) {
+> +			iounmap(xgmac_regs->ioaddr);
+>  			return -ENOMEM;
+> +		}
+>  	}
+>  
+>  	/* reset the PHY through MDIO*/
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+This actually introduces multiple bugs.  vfio-platform has common code
+for calling iounmap when the device is released and the struct
+vfio_platform_region ioaddr member is re-used throughout the code.
+Performing an iounmap() without setting the value to NULL essentially
+introduces use-after-free and double free bugs.  There's no bug in the
+original afaict, the iounmap occurs lazily on release.  Thanks,
 
-I expect this to be applied to the crypto tree with the
-bindings and the driver.
+Alex
 
-Yours,
-Linus Walleij
