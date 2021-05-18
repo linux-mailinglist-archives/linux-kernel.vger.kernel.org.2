@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A60387BC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC5E387BCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244488AbhERO6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:58:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244348AbhERO6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:58:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F218B6100C;
-        Tue, 18 May 2021 14:57:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621349834;
-        bh=4fxx2HXwNHAVpzBwpFGc6wXm+lY7t6XPE2Zp5JNLarY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m+x+O/pY7hvgXQfBpu51drURwMI3kYrKxbn5alADGEN1S631Halzs5a8YYNQpCaGS
-         drSivyLvEr6b2hc51AoRBigdddPYIPk1HYxvVfvBfSDC2NUMPNyo70FwdXGHt02v4r
-         8gOb+bOj8/O2sZYw+is3uBn4/uDNFSuBAKnazTeI=
-Date:   Tue, 18 May 2021 16:57:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rudi Heitbaum <rudi@heitbaum.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc2 review
-Message-ID: <YKPVyMlb60qYL9O3@kroah.com>
-References: <20210518135831.445321364@linuxfoundation.org>
- <20210518144257.GA41@e07e318d3c06>
+        id S1343786AbhERO7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:59:17 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46697 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1344163AbhERO7K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 10:59:10 -0400
+Received: from callcc.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14IEvinR005090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 10:57:46 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 2C8E6420119; Tue, 18 May 2021 10:57:44 -0400 (EDT)
+Date:   Tue, 18 May 2021 10:57:44 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
+Message-ID: <YKPV6FZWfoUD3bgL@mit.edu>
+References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+ <YKLXev4cjeRuGRqd@mit.edu>
+ <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518144257.GA41@e07e318d3c06>
+In-Reply-To: <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 02:43:02PM +0000, Rudi Heitbaum wrote:
-> On Tue, May 18, 2021 at 03:59:03PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.12.5 release.
-> > There are 363 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 20 May 2021 13:57:42 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc2.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
+On Tue, May 18, 2021 at 09:19:13AM +0800, Wang Jianchao wrote:
+> > That way we don't need to move all of this to a kworker context.
 > 
-> On Tiger Lake x86_64 kernel:
-> - tested ok.
-> 
-> Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
-> -- 
-> Rudi
+> The submit_bio also needs to be out of jbd2 commit kthread as it may be
+> blocked due to blk-wbt or no enough request tag. ;)
 
-Wonderful, thanks for testing and letting me know.
+Actually, there's a bigger deal that I hadn't realized, about why we
+is why are currently using submit_bio_wait().  We *must* wait until
+discard has completed before we call ext4_free_data_in_buddy(), which
+is what allows those blocks to be reused by the block allocator.
 
-greg k-h
+If the discard happens after we reallocate the block, there is a good
+chance that we will end up corrupting a data or metadata block,
+leading to user data loss.
+
+There's another corollary to this; if you use blk-wbt, and you are
+doing lots of deletes, and we move this all to a writeback thread,
+this *significantly* increases the chance that the user will see
+ENOSPC errors in the case where they are with a very full (close to
+100% used) file system.
+
+I'd argue that this is a *really* good reason why using mount -o
+discard is Just A Bad Idea if you are running with blk-wbt.  If
+discards are slow, using fstrim is a much better choice.  It's also
+the case that for most SSD's and workloads, doing frequent discards
+doesn't actually help that much.  The write endurance of the device is
+not compromised that much if you only run fs-trim and discard unused
+blocks once a day, or even once a week --- I only recommend use of
+mount -o discard in cases where the discard operation is effectively
+free.  (e.g., in cases where the FTL is implemented on the Host OS, or
+you are running with super-fast flash which is PCIe or NVMe attached.)
+
+Cheers,
+
+					- Ted
