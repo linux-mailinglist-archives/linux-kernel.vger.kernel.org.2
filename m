@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1B33876EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079D03876F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348677AbhERKvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:51:09 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:36630 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348669AbhERKvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:51:05 -0400
-Received: by mail-wr1-f52.google.com with SMTP id c14so7885020wrx.3;
-        Tue, 18 May 2021 03:49:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZSwYihIZGpbb45n4wypWBPVOrCv+O4B/E07Xsw1csmA=;
-        b=MS2ImmnLz9CkW6gdNmQ0/Hp4Je4jGO5q4mEORVQFwBtRpPNfuX3xbtjDJTTPoYcaWk
-         j0BQwjB9ER+7NRt2dpPgMrpX0eTQQGmxZIQ5ywLdJpzCqsrZttyx/CsMyNIDKjX2aUZM
-         JUsKtJvyhVqTDsKuxnWnJX5jmgKXRWKOtwL24fzjlFKVH55PmjMEsD4Cz35a3nPd3jDS
-         E3+roUV12MqLyAFVEvy3tnt7XG0icSRHAckOfhVxTnE0kWmREjfsYTOFPLfORAozElvD
-         Azx6VpySWVtTHfC42tTJ0EakeO2KFsUCv5F5GAny1N5K4RMA3dgYd85iB+XfAXmbnakF
-         VINA==
-X-Gm-Message-State: AOAM532p5M93kKhzNb2klCSFXxGNeywJV5mSNtS+vlxfwtktMQJdq4wK
-        +5D/1zCPMceqmoeZ1XJ+9cs=
-X-Google-Smtp-Source: ABdhPJxudnR2AVzoDLYV+oR7mHwqvlDcMddWZHzcZmA3dsiPJoNl+SJPpPmh5z3YQ09Tz/mqgPNxcA==
-X-Received: by 2002:adf:ee0c:: with SMTP id y12mr6123486wrn.335.1621334985907;
-        Tue, 18 May 2021 03:49:45 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id x16sm20835526wrp.6.2021.05.18.03.49.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 03:49:45 -0700 (PDT)
-Date:   Tue, 18 May 2021 10:49:44 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wei Liu <wei.liu@kernel.org>, YueHaibing <yuehaibing@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the hyperv tree
-Message-ID: <20210518104944.itnusipj755gsr5m@liuwe-devbox-debian-v2>
-References: <20210518170421.584dc0ec@canb.auug.org.au>
+        id S1348669AbhERKzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231917AbhERKzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:55:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 530AE61209;
+        Tue, 18 May 2021 10:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621335233;
+        bh=1albl1iFT7lO5QgNDVJ5jG4lfAFdGkvbnRzuLTqjPyM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EXYY4DqSW4QsbgaQL6QXi6ZdeHaDW0T9FE0beaOSIKCYCn9kq/YT0pBgfFKzJadpq
+         mg5IKthMepa5IUsNYEkt7XZupKPjSMoT0FDUPkt/n06x5N3wRKbnBLI5QuiHOGA38I
+         v1sopQyLLuJ1Jp+PeDm/2Aqv9H1VE4+nLlqnIzu3lZf0JKdAHh7vB87BSwcu0W2QF1
+         Mm0tUX9k4jU+m5LuGtr3Zz+n2x7YGZwmWnytR53m/Pu+EUpYAZJs3J3k34MB3DHx9H
+         UJBMJJgMhHbV2RIBzRl/BPZAL+O9wT3vpsNgHQDWU+EwzBjPXmV7Ije2PISjlP3VXM
+         sSXb3k9WsydOg==
+Date:   Tue, 18 May 2021 13:53:46 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 3/3] arm: extend pfn_valid to take into accound freed
+ memory map alignment
+Message-ID: <YKOcunzormJuuuie@kernel.org>
+References: <20210518090613.21519-1-rppt@kernel.org>
+ <20210518090613.21519-4-rppt@kernel.org>
+ <20210518094427.GR12395@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518170421.584dc0ec@canb.auug.org.au>
+In-Reply-To: <20210518094427.GR12395@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 05:04:21PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Tue, May 18, 2021 at 10:44:27AM +0100, Russell King (Oracle) wrote:
+> On Tue, May 18, 2021 at 12:06:13PM +0300, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > When unused memory map is freed the preserved part of the memory map is
+> > extended to match pageblock boundaries because lots of core mm
+> > functionality relies on homogeneity of the memory map within pageblock
+> > boundaries.
+> > 
+> > Since pfn_valid() is used to check whether there is a valid memory map
+> > entry for a PFN, make it return true also for PFNs that have memory map
+> > entries even if there is no actual memory populated there.
 > 
-> After merging the hyperv tree, today's linux-next build (x86_64
-> allmodconfig) produced this warning:
-> 
-> In file included from include/linux/printk.h:7,
->                  from include/linux/kernel.h:17,
->                  from drivers/hv/hv_util.c:11:
-> drivers/hv/hv_util.c: In function 'hv_timesync_init':
-> include/linux/kern_levels.h:5:18: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'int' [-Wformat=]
->     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
->       |                  ^~~~~~
-> include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
->    11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
->       |                  ^~~~~~~~
-> include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
->   343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
->       |         ^~~~~~~~
-> drivers/hv/hv_util.c:753:3: note: in expansion of macro 'pr_err'
->   753 |   pr_err("cannot register PTP clock: %ld\n",
->       |   ^~~~~~
-> 
-> Introduced by commit
-> 
->   32c0ff83550e ("hv_utils: Fix passing zero to 'PTR_ERR' warning")
-> 
+> I thought pfn_valid() was a particularly hot path... do we really want
+> to be doing multiple lookups here? Is there no better solution?
 
-Thanks Stephen.
+It is hot, but for more, hmm, straightforward memory layouts it'll take 
 
-PTR_ERR_OR_ZERO returns int while PTR_ERR returns long. That's why this
-warning is triggered.
+	if (memblock_is_map_memory(addr))
+		return 1;
 
-I will fix it in hyperv-next.
+branch, I think.
 
-Wei.
+Most of mm operations are on pages that are fed into buddy allocator, and
+if there are no holes with weird alignment  pfn_valid() will return 1 right
+away.
 
-> -- 
-> Cheers,
-> Stephen Rothwell
+Now thinking about it, with the patch that marks NOMAP areas reserved in
+the memory map [1], we could also use
+	
+	memblock_overlaps_region(&memblock.memory,
+				 ALIGN_DOWN(addr, pageblock_size),
+				 ALIGN(addr + 1, pageblock_size))
+to have only one lookup.
 
+Completely another approach would be to simply stop freeing memory map with
+SPARSEMEM. For systems like the one Kefen is using, it would waste less
+than 2M out of 1.5G.
+It is worse of course for old systems with small memories. The worst case
+being mach-ep93xx with sections size of 256M and I presume 16M per section
+would be normal for such machines.
 
+[1] https://lore.kernel.org/lkml/20210511100550.28178-3-rppt@kernel.org
+
+-- 
+Sincerely yours,
+Mike.
