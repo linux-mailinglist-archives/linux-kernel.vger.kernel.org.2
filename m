@@ -2,178 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95A1387DFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325BD387E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350940AbhERQ5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:57:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44676 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350921AbhERQ5V (ORCPT
+        id S1350972AbhERQ62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244114AbhERQ61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:57:21 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IGYIlL148595;
-        Tue, 18 May 2021 12:56:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ZGikWVfUtpfOAAvPiUkgUShkYVgHpqL4NX8lGw8AWXY=;
- b=OnWXVWvZ18PeIzclYiC/AbiDCUIvE0u5oFtNMJor1z/DS47e41mpiCApCEtK0x0etuAl
- x45IgH9Ac6Y44me0DZt5NUUZgfJQxSizajmlhcAV1/yoQOkuP90HsFzo7YS5hEOi0Q5F
- O/am/fjf8D7chHeWzFMCraLtPlb64ahrkjlcX6i3Vu9gScASq2LDDHnSLgKKLDKywmyZ
- Tv55xaDoik3D9NbaTClCMHajzItldNd5FDDS5AF5pETNFLnlhPYHdlmQ+hZxAowOUykE
- dAFuzTb6aoMw6TBG/Vh725l6wqBdqLCN6ohLEcqkKrMGSm5dTdSxUpRYuQi31hsNyuin 4Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mgjjsk0d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 12:56:02 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IGYK9b148778;
-        Tue, 18 May 2021 12:56:02 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mgjjsjys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 12:56:02 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IGrTYm006341;
-        Tue, 18 May 2021 16:56:00 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 38j5jgsm1b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 16:56:00 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IGtvOE57934224
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 16:55:57 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3AB5142045;
-        Tue, 18 May 2021 16:55:57 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDE934203F;
-        Tue, 18 May 2021 16:55:56 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.73.129])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 18 May 2021 16:55:56 +0000 (GMT)
-Subject: Re: [PATCH v1 00/11] KVM: s390: pv: implement lazy destroy
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
- <20210518170537.58b32ffe.cohuck@redhat.com> <20210518173624.13d043e3@ibm-vm>
- <20210518180411.4abf837d.cohuck@redhat.com> <20210518181922.52d04c61@ibm-vm>
- <a38192d5-0868-8e07-0a34-c1615e1997fc@redhat.com>
- <20210518183131.1e0cf801@ibm-vm>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <e66400c5-a1b6-c5fe-d715-c08b166a7b54@de.ibm.com>
-Date:   Tue, 18 May 2021 18:55:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210518183131.1e0cf801@ibm-vm>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oChby2Y3pxZXMkMI0VF1MdVhXBawnRBp
-X-Proofpoint-ORIG-GUID: eBOfXgdcVIvCt0P55KCsQDdUk892_jJM
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_08:2021-05-18,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 adultscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 clxscore=1015 mlxscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105180113
+        Tue, 18 May 2021 12:58:27 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAF9C061573;
+        Tue, 18 May 2021 09:57:08 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id et19so8601730ejc.4;
+        Tue, 18 May 2021 09:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7c6MsJBvMXq+ljj949Wf1mhFZUaYPm8nW/9/WPX5d+Q=;
+        b=DQeYJxmdnvtw99Mx2oS/EkzthC1fuk3XuorE6cDYm92HzfuV6KW1yPZfRXj5l5C4pT
+         DqStW5wfTtxbh6rdnFto+lzfIoC0HhR98XrFr9UrKvO5Dt5H3LlSlKmswPpOm/3zcNHC
+         3qQh5W9xmkYB5Nav4ldRdJC2EdFXJhYLwXRZUp57cQbXgXhO76wFxCzqBBwcBniGQDzW
+         MiuZebInPy+cJcRCz3xcQYVnold1QOTbkVzSFh58SUVno+CZ/dHbN6ILpBVHFjj18i9y
+         oEsTLEbW1npAwr2cwRiRSMiTDUxrGPjn8dDo+W9U0i5MW2HTTVam0JKQn1+A0xmdZbIH
+         HFew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7c6MsJBvMXq+ljj949Wf1mhFZUaYPm8nW/9/WPX5d+Q=;
+        b=sDic+U9hrkNXsPaDOmG+FiMaVeGfZp8SmMSxfQ1C4yfpiI9n7gAOuBuSOn0017EoXH
+         Uz1LTNhUlzlCox3sh8/zNCHvr65o2Kr0As/38bWbaCHpNr/oAUD0TRV3h5KuQbI5kTCT
+         qJbblgWgcDb5mHF66sgTSuXXScsNjW3N1gJw2X5ccBrFuUxltQQuE4MXijcjW26F/CMP
+         A5oCJjijDsj5+Uba8MSwQuqsRDA7007PUneoMQRf5HEuvOtAdpQxHhqVu2Lawd4L+3GD
+         8SIbuoRcShqYe01rIM6b0xVQ5pDbb1d7WysX/y4bXVeM7I1qYoo3LboIZpah4C9py3Hu
+         5Q3Q==
+X-Gm-Message-State: AOAM533GUO2XVwxr6Y6q/X5hwnUcJIZxpCzWGO874Cxyl2hjoY3Otnze
+        MjdHSTxrKFJpV4ppo0DyBQ1IItV/G34=
+X-Google-Smtp-Source: ABdhPJx826f98Egi0fzl54irC3mn/wDtedMWJGLyctK1eNcZdfToPVVZ+Z8YOx4D3QGT/VtfQveRMw==
+X-Received: by 2002:a17:906:e0d5:: with SMTP id gl21mr7042755ejb.93.1621357026749;
+        Tue, 18 May 2021 09:57:06 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id n2sm13525676edi.32.2021.05.18.09.57.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 May 2021 09:57:06 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, kishon@ti.com, vkoul@kernel.org,
+        linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/4] convert grf.txt to YAML
+Date:   Tue, 18 May 2021 18:56:54 +0200
+Message-Id: <20210518165658.12764-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changed V6
+  remove some #phy-cells in rockchip-usb-phy.yaml
+  rename nodename for phy-rockchip-inno-usb2
+  remove applied patches
 
+Changed V5:
+  changed compatibles for rk3066/rk3188
+  add rockchip-usb-phy.yaml
+  move and restyle grf nodes rk3066/rk3188
+  remove applied patches
 
-On 18.05.21 18:31, Claudio Imbrenda wrote:
-> On Tue, 18 May 2021 18:22:42 +0200
-> David Hildenbrand <david@redhat.com> wrote:
-> 
->> On 18.05.21 18:19, Claudio Imbrenda wrote:
->>> On Tue, 18 May 2021 18:04:11 +0200
->>> Cornelia Huck <cohuck@redhat.com> wrote:
->>>    
->>>> On Tue, 18 May 2021 17:36:24 +0200
->>>> Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
->>>>   
->>>>> On Tue, 18 May 2021 17:05:37 +0200
->>>>> Cornelia Huck <cohuck@redhat.com> wrote:
->>>>>       
->>>>>> On Mon, 17 May 2021 22:07:47 +0200
->>>>>> Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
->>>>   
->>>>>>> This means that the same address space can have memory
->>>>>>> belonging to more than one protected guest, although only one
->>>>>>> will be running, the others will in fact not even have any
->>>>>>> CPUs.
->>>>>>
->>>>>> Are those set-aside-but-not-yet-cleaned-up pages still possibly
->>>>>> accessible in any way? I would assume that they only belong to
->>>>>> the
->>>>>
->>>>> in case of reboot: yes, they are still in the address space of the
->>>>> guest, and can be swapped if needed
->>>>>       
->>>>>> 'zombie' guests, and any new or rebooted guest is a new entity
->>>>>> that needs to get new pages?
->>>>>
->>>>> the rebooted guest (normal or secure) will re-use the same pages
->>>>> of the old guest (before or after cleanup, which is the reason of
->>>>> patches 3 and 4)
->>>>
->>>> Took a look at those patches, makes sense.
->>>>   
->>>>>
->>>>> the KVM guest is not affected in case of reboot, so the userspace
->>>>> address space is not touched.
->>>>
->>>> 'guest' is a bit ambiguous here -- do you mean the vm here, and the
->>>> actual guest above?
->>>>   
->>>
->>> yes this is tricky, because there is the guest OS, which terminates
->>> or reboots, then there is the "secure configuration" entity,
->>> handled by the Ultravisor, and then the KVM VM
->>>
->>> when a secure guest reboots, the "secure configuration" is
->>> dismantled (in this case, in a deferred way), and the KVM VM (and
->>> its memory) is not directly affected
->>>
->>> what happened before was that the secure configuration was
->>> dismantled synchronously, and then re-created.
->>>
->>> now instead, a new secure configuration is created using the same
->>> KVM VM (and thus the same mm), before the old secure configuration
->>> has been completely dismantled. hence the same KVM VM can have
->>> multiple secure configurations associated, sharing the same address
->>> space.
->>>
->>> of course, only the newest one is actually running, the other ones
->>> are "zombies", without CPUs.
->>>    
->>
->> Can a guest trigger a DoS?
-> 
-> I don't see how
-> 
-> a guest can fill its memory and then reboot, and then fill its memory
-> again and then reboot... but that will take time, filling the memory
-> will itself clean up leftover pages from previous boots.
+Changed V4:
+  revert separate schemas for each 'if' subset
+  add additionalProperties
+  move properties to top level
 
-In essence this guest will then synchronously wait for the page to be
-exported and reimported, correct?
-> 
-> "normal" reboot loops will be fast, because there won't be much memory
-> to process
-> 
-> I have actually tested mixed reboot/shutdown loops, and the system
-> behaved as you would expect when under load.
+Changed V3:
+  remove select
+  change unevaluatedProperties
+  add separate schemas for each 'if' subset
 
-I guess the memory will continue to be accounted to the memcg? Correct?
+Changed V2:
+  add rockchip,rk3328-grf-gpio.yaml
+  rename grf-gpio nodename
+
+Johan Jonker (4):
+  dt-bindings: phy: convert rockchip-usb-phy.txt to YAML
+  dt-bindings: phy: rename phy nodename in phy-rockchip-inno-usb2.yaml
+  ARM: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
+  arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
+
+ .../bindings/phy/phy-rockchip-inno-usb2.yaml       | 11 +--
+ .../devicetree/bindings/phy/rockchip-usb-phy.txt   | 52 --------------
+ .../devicetree/bindings/phy/rockchip-usb-phy.yaml  | 81 ++++++++++++++++++++++
+ .../devicetree/bindings/soc/rockchip/grf.yaml      |  4 +-
+ arch/arm/boot/dts/rk322x.dtsi                      |  4 +-
+ arch/arm/boot/dts/rv1108.dtsi                      |  2 +-
+ arch/arm64/boot/dts/rockchip/px30.dtsi             |  2 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |  2 +-
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           |  4 +-
+ 9 files changed, 93 insertions(+), 69 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.yaml
+
+-- 
+2.11.0
+
