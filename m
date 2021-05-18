@@ -2,408 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE8738804B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E38B388050
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239864AbhERTHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238542AbhERTG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:06:59 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20E9C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:05:40 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id z1so10150988ils.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ij0FGMmCn13pPNUjBvisG7YYEIm5lwM4665HcfENJos=;
-        b=vSYbT6ScZxHm/chpE+9rgWOsyylB0sQztXdYL2xDx72ym8tyMWatQxLxxnlbmKOlLC
-         OvqVvAtgPGeZxgziBILfua4+SQbahF/ysHTiGS2wqQ194BMZBplbAcb0bEQpFX1Xuxc/
-         nti5O5i9oHXBIS68u9m3WHZj4ApuUCL/OnNrCD09jTZaRqkp0SBq4y3HxvclOck12yZk
-         d/oYrS5ad8d8VDsvgxy3PpDP07oDtyVPXlqugbD6zk/HM9S/qf1jMO678HafS4VL9mKM
-         cRHWEUs8MX/yaHhch6A0pzQH4q43T9GiLhdBljTM9d7nwku+oCrook/jullvgWM0UCvf
-         WTNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ij0FGMmCn13pPNUjBvisG7YYEIm5lwM4665HcfENJos=;
-        b=s/JlKuWm4wGQvRwM4Y0lXmWy1sxGkXUGppeMVcphd0XjE+E23Aku3UCO1/BRxRkF4a
-         3EPpHfnaqdHxQiLV/H5bmbz2SIwHLzuAFL3UEHla2QGqqiILW2WI2hSQ6NPv54Zgt7oS
-         AUf7PZcPxv/IWo4LkhbS6cfwHXkMczTLaNrxNMKHJ9hgRrYHIAf5fT923uS81VeYuvVh
-         tLTPvKiZRSl+y6z3rVZpBdCGV3281AqijpGlfKanxZ3iVu3r4JQEK4VXv8CI9IMyJVK2
-         r14mvV9wc3fdChuJARVtVJa6Fj7LlHb2AVqMO+OlHGhGxEro029DSp2YsU3NJCeKM10j
-         oqdQ==
-X-Gm-Message-State: AOAM531moyVu0yUzYKwU28w4oX7n8F9RYzKTBlWEcxPtMWnMFNeWZcVY
-        547nq8VbCA95V6W70APNph/uhirx6zahhmFD6rGgXQ==
-X-Google-Smtp-Source: ABdhPJz5dDC3qWl+EojRVQ9+BMJE36oU3101dR43A1RWiIefcCVnejLisJrw7X9kcTgPwVsh22lEJDoAJI0H+fE0OYk=
-X-Received: by 2002:a92:502:: with SMTP id q2mr5810333ile.203.1621364740117;
- Tue, 18 May 2021 12:05:40 -0700 (PDT)
+        id S239942AbhERTJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:09:50 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11296 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237963AbhERTJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 15:09:48 -0400
+IronPort-SDR: Q0DIsj5QO3JA7SPoWZ5Enk4/AaSP0Y2fzb1CFie8l8MRG/lpPXUCsVVCysmUSsa97ADzDiWBXa
+ VjOhotf/+sSw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="187920921"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="187920921"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 12:08:30 -0700
+IronPort-SDR: E9Mhi/pl5lPivUHwoIgo5A4nYo3UxNeOuVe0huT6qSCD08qMTcTy6yf8yJHvOwqghRRIABzQJU
+ Jp3GfO/6WoRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="439244218"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga008.fm.intel.com with ESMTP; 18 May 2021 12:08:29 -0700
+Date:   Tue, 18 May 2021 12:07:40 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3 5/6] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <20210518190740.GA15251@ranerica-svr.sc.intel.com>
+References: <20210513154909.6385-1-ricardo.neri-calderon@linux.intel.com>
+ <20210513154909.6385-6-ricardo.neri-calderon@linux.intel.com>
+ <YJ5HQR943rSFsLxw@hirez.programming.kicks-ass.net>
+ <20210515021415.GB14212@ranerica-svr.sc.intel.com>
 MIME-Version: 1.0
-References: <20210512214502.2047008-1-axelrasmussen@google.com>
- <20210512214502.2047008-5-axelrasmussen@google.com> <CANgfPd8Z0coniYhVNr1WR0Odob+aT10rqJWYKkzAqeP78Rczag@mail.gmail.com>
- <CAJHvVcjNet7nGVJWgK0Z+1=nyoanPyU8DqWu22xR7e-VsWjwWQ@mail.gmail.com>
-In-Reply-To: <CAJHvVcjNet7nGVJWgK0Z+1=nyoanPyU8DqWu22xR7e-VsWjwWQ@mail.gmail.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 18 May 2021 12:05:29 -0700
-Message-ID: <CANgfPd9LpH2z2b5J1n59GXMLM1vfDzfsdgydcAHOfw3j61+grw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] KVM: selftests: allow using UFFD minor faults for
- demand paging
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210515021415.GB14212@ranerica-svr.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:17 AM Axel Rasmussen
-<axelrasmussen@google.com> wrote:
->
-> On Mon, May 17, 2021 at 4:51 PM Ben Gardon <bgardon@google.com> wrote:
-> >
-> > On Wed, May 12, 2021 at 2:45 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > >
-> > > UFFD handling of MINOR faults is a new feature whose use case is to
-> > > speed up demand paging (compared to MISSING faults). So, it's
-> > > interesting to let this selftest exercise this new mode.
-> > >
-> > > Modify the demand paging test to have the option of using UFFD minor
-> > > faults, as opposed to missing faults. Now, when turning on userfaultfd
-> > > with '-u', the desired mode has to be specified ("MISSING" or "MINOR").
-> > >
-> > > If we're in minor mode, before registering, prefault via the *alias*.
-> > > This way, the guest will trigger minor faults, instead of missing
-> > > faults, and we can UFFDIO_CONTINUE to resolve them.
-> > >
-> > > Modify the page fault handler function to use the right ioctl depending
-> > > on the mode we're running in. In MINOR mode, use UFFDIO_CONTINUE.
-> > >
-> > > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > > ---
-> > >  .../selftests/kvm/demand_paging_test.c        | 124 ++++++++++++------
-> > >  1 file changed, 87 insertions(+), 37 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
-> > > index 10c7ba76a9c6..ff29aaea3120 100644
-> > > --- a/tools/testing/selftests/kvm/demand_paging_test.c
-> > > +++ b/tools/testing/selftests/kvm/demand_paging_test.c
-> > > @@ -72,33 +72,57 @@ static void *vcpu_worker(void *data)
-> > >         return NULL;
+On Fri, May 14, 2021 at 07:14:15PM -0700, Ricardo Neri wrote:
+> On Fri, May 14, 2021 at 11:47:45AM +0200, Peter Zijlstra wrote:
+> > On Thu, May 13, 2021 at 08:49:08AM -0700, Ricardo Neri wrote:
+> > >  include/linux/sched/topology.h |   1 +
+> > >  kernel/sched/fair.c            | 101 +++++++++++++++++++++++++++++++++
+> > >  2 files changed, 102 insertions(+)
+> > > 
+> > > diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> > > index 8f0f778b7c91..43bdb8b1e1df 100644
+> > > --- a/include/linux/sched/topology.h
+> > > +++ b/include/linux/sched/topology.h
+> > > @@ -57,6 +57,7 @@ static inline int cpu_numa_flags(void)
+> > >  #endif
+> > >  
+> > >  extern int arch_asym_cpu_priority(int cpu);
+> > > +extern bool arch_asym_check_smt_siblings(void);
+> > >  
+> > >  struct sched_domain_attr {
+> > >  	int relax_domain_level;
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index c8b66a5d593e..3d6cc027e6e6 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -106,6 +106,15 @@ int __weak arch_asym_cpu_priority(int cpu)
+> > >  	return -cpu;
 > > >  }
-> > >
-> > > -static int handle_uffd_page_request(int uffd, uint64_t addr)
-> > > +static int handle_uffd_page_request(int uffd_mode, int uffd, uint64_t addr)
-> > >  {
-> > > -       pid_t tid;
-> > > +       const char *ioctl_name;
-> > > +       pid_t tid = syscall(__NR_gettid);
-> > >         struct timespec start;
-> > >         struct timespec ts_diff;
-> > > -       struct uffdio_copy copy;
-> > >         int r;
-> > >
-> > > -       tid = syscall(__NR_gettid);
-> > > +       if (uffd_mode == UFFDIO_REGISTER_MODE_MISSING) {
-> > > +               struct uffdio_copy copy;
-> > >
-> > > -       copy.src = (uint64_t)guest_data_prototype;
-> > > -       copy.dst = addr;
-> > > -       copy.len = demand_paging_size;
-> > > -       copy.mode = 0;
-> > > +               ioctl_name = "UFFDIO_COPY";
-> > >
-> > > -       clock_gettime(CLOCK_MONOTONIC, &start);
-> > > +               copy.src = (uint64_t)guest_data_prototype;
-> > > +               copy.dst = addr;
-> > > +               copy.len = demand_paging_size;
-> > > +               copy.mode = 0;
-> > >
-> > > -       r = ioctl(uffd, UFFDIO_COPY, &copy);
-> > > -       if (r == -1) {
-> > > -               pr_info("Failed Paged in 0x%lx from thread %d with errno: %d\n",
-> > > -                       addr, tid, errno);
-> > > -               return r;
-> > > -       }
-> > > +               clock_gettime(CLOCK_MONOTONIC, &start);
-> >
-> > Nit: It'd probably be fine to factor the timing calls out of the if
-> > statement to deduplicate.
-> >
-> > >
-> > > -       ts_diff = timespec_elapsed(start);
-> > > +               r = ioctl(uffd, UFFDIO_COPY, &copy);
-> > > +               if (r == -1) {
-> > > +                       pr_info("Failed UFFDIO_COPY in 0x%lx from thread %d with errno: %d\n",
-> > > +                               addr, tid, errno);
-> > > +                       return r;
-> > > +               }
+> > >  
+> > > +/*
+> > > + * For asym packing, first check the state of SMT siblings before deciding to
+> > > + * pull tasks.
+> > > + */
+> > > +bool __weak arch_asym_check_smt_siblings(void)
+> > > +{
+> > > +	return false;
+> > > +}
 > > > +
-> > > +               ts_diff = timespec_elapsed(start);
-> > > +       } else if (uffd_mode == UFFDIO_REGISTER_MODE_MINOR) {
-> > > +               struct uffdio_continue cont = {0};
+> > >  /*
+> > >   * The margin used when comparing utilization with CPU capacity.
+> > >   *
+> > 
+> > > @@ -8458,6 +8550,9 @@ sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs
+> > >  	if (group == sds->local)
+> > >  		return false;
+> > >  
+> > > +	if (arch_asym_check_smt_siblings())
+> > > +		return asym_can_pull_tasks(env->dst_cpu, sds, sgs, group);
 > > > +
-> > > +               ioctl_name = "UFFDIO_CONTINUE";
-> > > +
-> > > +               cont.range.start = addr;
-> > > +               cont.range.len = demand_paging_size;
-> > > +
-> > > +               clock_gettime(CLOCK_MONOTONIC, &start);
-> > > +
-> > > +               r = ioctl(uffd, UFFDIO_CONTINUE, &cont);
-> > > +               if (r == -1) {
-> > > +                       pr_info("Failed UFFDIO_CONTINUE in 0x%lx from thread %d with errno: %d\n",
-> > > +                               addr, tid, errno);
-> > > +                       return r;
-> > > +               }
-> > >
-> > > -       PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
-> > > +               ts_diff = timespec_elapsed(start);
-> > > +       } else {
-> > > +               TEST_FAIL("Invalid uffd mode %d", uffd_mode);
-> > > +       }
-> > > +
-> > > +       PER_PAGE_DEBUG("%s %d \t%ld ns\n", ioctl_name, tid,
-> > >                        timespec_to_ns(ts_diff));
-> >
-> > As far as I can see this is the only use of ioctl_name and it's not
-> > going to change in a test run, so it might make sense to not print the
-> > ioctl name here and just do it once somewhere else.
-> >
-> > >         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
-> > >                        demand_paging_size, addr, tid);
-> > > @@ -109,6 +133,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
-> > >  bool quit_uffd_thread;
-> > >
-> > >  struct uffd_handler_args {
-> > > +       int uffd_mode;
-> > >         int uffd;
-> > >         int pipefd;
-> > >         useconds_t delay;
-> > > @@ -170,7 +195,7 @@ static void *uffd_handler_thread_fn(void *arg)
-> > >                 if (r == -1) {
-> > >                         if (errno == EAGAIN)
-> > >                                 continue;
-> > > -                       pr_info("Read of uffd gor errno %d", errno);
-> > > +                       pr_info("Read of uffd got errno %d\n", errno);
-> >
-> > If you end up doing some kind of cleanups patch, it might be worth
-> > moving this in there.
-> >
-> > >                         return NULL;
-> > >                 }
-> > >
-> > > @@ -185,7 +210,7 @@ static void *uffd_handler_thread_fn(void *arg)
-> > >                 if (delay)
-> > >                         usleep(delay);
-> > >                 addr =  msg.arg.pagefault.address;
-> > > -               r = handle_uffd_page_request(uffd, addr);
-> > > +               r = handle_uffd_page_request(uffd_args->uffd_mode, uffd, addr);
-> > >                 if (r < 0)
-> > >                         return NULL;
-> > >                 pages++;
-> > > @@ -201,17 +226,32 @@ static void *uffd_handler_thread_fn(void *arg)
-> > >
-> > >  static int setup_demand_paging(struct kvm_vm *vm,
-> > >                                pthread_t *uffd_handler_thread, int pipefd,
-> > > +                              int uffd_mode,
-> > >                                useconds_t uffd_delay,
-> > >                                struct uffd_handler_args *uffd_args,
-> > > -                              void *hva, uint64_t len)
-> > > +                              void *hva, void *alias, uint64_t len)
-> > >  {
-> > >         int uffd;
-> > >         struct uffdio_api uffdio_api;
-> > >         struct uffdio_register uffdio_register;
-> > > +       uint64_t expected_ioctls = ((uint64_t) 1) << _UFFDIO_COPY;
-> > > +
-> > > +       /* In order to get minor faults, prefault via the alias. */
-> > > +       if (uffd_mode == UFFDIO_REGISTER_MODE_MINOR) {
-> > > +               size_t p;
-> > > +
-> > > +               expected_ioctls = ((uint64_t) 1) << _UFFDIO_CONTINUE;
-> > > +
-> > > +               TEST_ASSERT(alias != NULL, "Alias required for minor faults");
-> > > +               for (p = 0; p < (len / demand_paging_size); ++p) {
-> > > +                       memcpy(alias + (p * demand_paging_size),
-> > > +                              guest_data_prototype, demand_paging_size);
-> > > +               }
-> > > +       }
-> > >
-> > >         uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
-> > >         if (uffd == -1) {
-> > > -               pr_info("uffd creation failed\n");
-> > > +               pr_info("uffd creation failed, errno: %d\n", errno);
-> > >                 return -1;
-> > >         }
-> >
-> > Huh, I wonder why I put all these return -1 statements in here. The
-> > caller just does exit(-r) if r < 0. Seems like these could all just be
-> > converted to TEST_ASSERTs.
->
-> I agree that change makes sense, but it seems better to do it in a
-> separate commit as it's maybe a 10-20 line change.
->
-> Would you prefer I add that into this series, or just keep the status quo?
-
-If you don't mind adding it to this series, that would be awesome.
-
->
-> >
-> > >
-> > > @@ -224,18 +264,18 @@ static int setup_demand_paging(struct kvm_vm *vm,
-> > >
-> > >         uffdio_register.range.start = (uint64_t)hva;
-> > >         uffdio_register.range.len = len;
-> > > -       uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-> > > +       uffdio_register.mode = uffd_mode;
-> > >         if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) == -1) {
-> > >                 pr_info("ioctl uffdio_register failed\n");
-> > >                 return -1;
-> > >         }
-> > >
-> > > -       if ((uffdio_register.ioctls & UFFD_API_RANGE_IOCTLS) !=
-> > > -                       UFFD_API_RANGE_IOCTLS) {
-> > > -               pr_info("unexpected userfaultfd ioctl set\n");
-> > > +       if ((uffdio_register.ioctls & expected_ioctls) != expected_ioctls) {
-> > > +               pr_info("missing userfaultfd ioctls\n");
-> > >                 return -1;
-> > >         }
-> > >
-> > > +       uffd_args->uffd_mode = uffd_mode;
-> > >         uffd_args->uffd = uffd;
-> > >         uffd_args->pipefd = pipefd;
-> > >         uffd_args->delay = uffd_delay;
-> > > @@ -249,7 +289,7 @@ static int setup_demand_paging(struct kvm_vm *vm,
+> > >  	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
 > > >  }
-> > >
-> > >  struct test_params {
-> > > -       bool use_uffd;
-> > > +       int uffd_mode;
-> > >         useconds_t uffd_delay;
-> > >         enum vm_mem_backing_src_type src_type;
-> > >         bool partition_vcpu_memory_access;
-> > > @@ -286,7 +326,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >         perf_test_setup_vcpus(vm, nr_vcpus, guest_percpu_mem_size,
-> > >                               p->partition_vcpu_memory_access);
-> > >
-> > > -       if (p->use_uffd) {
-> > > +       if (p->uffd_mode) {
-> > >                 uffd_handler_threads =
-> > >                         malloc(nr_vcpus * sizeof(*uffd_handler_threads));
-> > >                 TEST_ASSERT(uffd_handler_threads, "Memory allocation failed");
-> > > @@ -300,6 +340,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >                 for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
-> > >                         vm_paddr_t vcpu_gpa;
-> > >                         void *vcpu_hva;
-> > > +                       void *vcpu_alias;
-> > >                         uint64_t vcpu_mem_size;
-> > >
-> > >
-> > > @@ -314,8 +355,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >                         PER_VCPU_DEBUG("Added VCPU %d with test mem gpa [%lx, %lx)\n",
-> > >                                        vcpu_id, vcpu_gpa, vcpu_gpa + vcpu_mem_size);
-> > >
-> > > -                       /* Cache the HVA pointer of the region */
-> > > +                       /* Cache the host addresses of the region */
-> > >                         vcpu_hva = addr_gpa2hva(vm, vcpu_gpa);
-> > > +                       vcpu_alias = addr_gpa2alias(vm, vcpu_gpa);
-> > >
-> > >                         /*
-> > >                          * Set up user fault fd to handle demand paging
-> > > @@ -327,9 +369,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >
-> > >                         r = setup_demand_paging(vm,
-> > >                                                 &uffd_handler_threads[vcpu_id],
-> > > -                                               pipefds[vcpu_id * 2],
-> > > +                                               pipefds[vcpu_id * 2], p->uffd_mode,
-> > >                                                 p->uffd_delay, &uffd_args[vcpu_id],
-> > > -                                               vcpu_hva, vcpu_mem_size);
-> > > +                                               vcpu_hva, vcpu_alias,
-> > > +                                               vcpu_mem_size);
-> > >                         if (r < 0)
-> > >                                 exit(-r);
-> > >                 }
-> > > @@ -359,7 +402,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >
-> > >         pr_info("All vCPU threads joined\n");
-> > >
-> > > -       if (p->use_uffd) {
-> > > +       if (p->uffd_mode) {
-> > >                 char c;
-> > >
-> > >                 /* Tell the user fault fd handler threads to quit */
-> > > @@ -381,7 +424,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >
-> > >         free(guest_data_prototype);
-> > >         free(vcpu_threads);
-> > > -       if (p->use_uffd) {
-> > > +       if (p->uffd_mode) {
-> > >                 free(uffd_handler_threads);
-> > >                 free(uffd_args);
-> > >                 free(pipefds);
-> > > @@ -391,11 +434,11 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >  static void help(char *name)
-> > >  {
-> > >         puts("");
-> > > -       printf("usage: %s [-h] [-m mode] [-u] [-d uffd_delay_usec]\n"
-> > > +       printf("usage: %s [-h] [-m mode] [-u mode] [-d uffd_delay_usec]\n"
-> > >                "          [-b memory] [-t type] [-v vcpus] [-o]\n", name);
-> > >         guest_modes_help();
-> > > -       printf(" -u: use User Fault FD to handle vCPU page\n"
-> > > -              "     faults.\n");
-> > > +       printf(" -u: use userfaultfd to handle vCPU page faults. Mode is a\n"
-> > > +              "     UFFD registration mode: 'MISSING' or 'MINOR'.\n");
-> > >         printf(" -d: add a delay in usec to the User Fault\n"
-> > >                "     FD handler to simulate demand paging\n"
-> > >                "     overheads. Ignored without -u.\n");
-> > > @@ -422,13 +465,17 @@ int main(int argc, char *argv[])
-> > >
-> > >         guest_modes_append_default();
-> > >
-> > > -       while ((opt = getopt(argc, argv, "hm:ud:b:t:v:o")) != -1) {
-> > > +       while ((opt = getopt(argc, argv, "hm:u:d:b:t:v:o")) != -1) {
-> > >                 switch (opt) {
-> > >                 case 'm':
-> > >                         guest_modes_cmdline(optarg);
-> > >                         break;
-> > >                 case 'u':
-> > > -                       p.use_uffd = true;
-> > > +                       if (!strcmp("MISSING", optarg))
-> > > +                               p.uffd_mode = UFFDIO_REGISTER_MODE_MISSING;
-> > > +                       else if (!strcmp("MINOR", optarg))
-> > > +                               p.uffd_mode = UFFDIO_REGISTER_MODE_MINOR;
-> > > +                       TEST_ASSERT(p.uffd_mode, "UFFD mode must be 'MISSING' or 'MINOR'.");
-> > >                         break;
-> > >                 case 'd':
-> > >                         p.uffd_delay = strtoul(optarg, NULL, 0);
-> > > @@ -455,6 +502,9 @@ int main(int argc, char *argv[])
-> > >                 }
-> > >         }
-> > >
-> > > +       TEST_ASSERT(p.uffd_mode != UFFDIO_REGISTER_MODE_MINOR || p.src_type == VM_MEM_SRC_SHMEM,
-> > > +                   "userfaultfd MINOR mode requires shared memory; pick a different -t");
-> > > +
-> > >         for_each_guest_mode(run_test, &p);
-> > >
-> > >         return 0;
-> > > --
-> > > 2.31.1.607.g51e8a6a459-goog
-> > >
+> > 
+> > So I'm thinking that this is a property of having ASYM_PACKING at a core
+> > level, rather than some arch special. Wouldn't something like this be
+> > more appropriate?
+> > 
+> > ---
+> > --- a/include/linux/sched/topology.h
+> > +++ b/include/linux/sched/topology.h
+> > @@ -57,7 +57,6 @@ static inline int cpu_numa_flags(void)
+> >  #endif
+> >  
+> >  extern int arch_asym_cpu_priority(int cpu);
+> > -extern bool arch_asym_check_smt_siblings(void);
+> >  
+> >  struct sched_domain_attr {
+> >  	int relax_domain_level;
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -107,15 +107,6 @@ int __weak arch_asym_cpu_priority(int cp
+> >  }
+> >  
+> >  /*
+> > - * For asym packing, first check the state of SMT siblings before deciding to
+> > - * pull tasks.
+> > - */
+> > -bool __weak arch_asym_check_smt_siblings(void)
+> > -{
+> > -	return false;
+> > -}
+> > -
+> > -/*
+> >   * The margin used when comparing utilization with CPU capacity.
+> >   *
+> >   * (default: ~20%)
+> > @@ -8550,7 +8541,8 @@ sched_asym(struct lb_env *env, struct sd
+> >  	if (group == sds->local)
+> >  		return false;
+> >  
+> > -	if (arch_asym_check_smt_siblings())
+> > +	if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
+> > +	    (group->flags & SD_SHARE_CPUCAPACITY))
+> >  		return asym_can_pull_tasks(env->dst_cpu, sds, sgs, group);
+> 
+> Thanks Peter for the quick review! This makes sense to me. The only
+> reason we proposed arch_asym_check_smt_siblings() is because we were
+> about breaking powerpc (I need to study how they set priorities for SMT,
+> if applicable). If you think this is not an issue I can post a
+> v4 with this update.
+
+As far as I can see, priorities in powerpc are set by the CPU number.
+However, I am not sure how CPUs are enumerated? If CPUs in brackets are
+SMT sibling, Does an enumeration looks like A) [0, 1], [2, 3] or B) [0, 2],
+[1, 3]? I guess B is the right answer. Otherwise, both SMT siblings of a
+core would need to be busy before a new core is used.
+
+Still, I think the issue described in the cover letter may be
+reproducible in powerpc as well. If CPU3 is offlined, and [0, 2] pulled
+tasks from [1, -] so that both CPU0 and CPU2 become busy, CPU1 would not be
+able to help since CPU0 has the highest priority.
+
+I am cc'ing the linuxppc list to get some feedback.
+
+Thanks and BR,
+Ricardo
