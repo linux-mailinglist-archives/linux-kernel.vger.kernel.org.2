@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BCE38814E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42F1388153
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236379AbhERUZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S240990AbhERUZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236196AbhERUZF (ORCPT
+        with ESMTP id S236356AbhERUZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:25:05 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11C4C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:23:46 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id b7so1600884plg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:23:46 -0700 (PDT)
+        Tue, 18 May 2021 16:25:43 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F50FC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:24:23 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id v8so10809819lft.8
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yfdC9MEFNEaHgaQGSz7w95epIWVLZWnSDFN+a7r21Fc=;
-        b=G624B0FUpxD2VDJtkGQ6d5UsyqFf+SBfNBxc1MwrEdRGX0Vn+uRdHMutZTSFZY+eSw
-         wpbXB8g0u0hQRR6wVHn7OMK8fuEIM9e8XR+uVxDbWLnjK6VDApDXj34aKfFOdE3qRbzP
-         rR0ieRntsugS3as9T1zXf4lMSCZNwYGcDA1AQNupZhaBplXwtEpdE8nQlSvSBPIU6t5U
-         4d0Wcf4NYCkaXC2lQePwIQilMuFlylYi7As4oCKqDAG2QiaB6sWH9KZ/QoL6SKEyw1c4
-         oXx23p2ECBSYar69X+iu+lbtWdp3IVHZ6qsVtORrxGLbMqHpyn/bF35eVkBnmSZNKwNi
-         zbKQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pTzibwfqe/I3SK7JBMJocK8xyPaFvCw7pMyszzKLlIs=;
+        b=YO8cHWoDO4vPBgYmUp+0dBju6mZhv2DRYh+Lqs7cIq978egcft0xPAZimzWH+BNmKK
+         oLcJC/iuwgC67k1xitJAgBGe2CY1V3G/+GX5dy+AXyfasDWU9QSqH7hSs0boBTOicCwv
+         2KvsQ4joXs26HtfjkJFwClRqdWJv89XIva7ORN/9TyN1MN1EDgNA2oxXagOgRsaTPv2k
+         J56wCJiCUSAT+0zENHHZZgyk6eVS9TcWt01cgDkwtroyidfXqZO0cxtwRqCRq+++YaXk
+         rym0d7gG1hIDoomlm3d3Bhml4vFjL/7uPonl8sZI8TASgofgdZsFHsFm4Dp6tok4jMHE
+         lMQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yfdC9MEFNEaHgaQGSz7w95epIWVLZWnSDFN+a7r21Fc=;
-        b=cuSqbeT2MVir2rS4BbD2/9/3VuVtm78jNT7mgWXJoN3dsg7cWKWVAff6ry/81hMg8F
-         OY3wPAt3npmtWiDlgyI1fQnNQW+/mXMnkTZoIkbh+otIWXOkahBUz9Iq6Z3RbfONub3+
-         FT2mig/MWV/hRwEavgujabgTwR4ukKX6SdBS3AYEjUNK5036CFKfrxXN/AVKwqGRXZ9u
-         Yr1fFJvi4QTqQxTCgO+NPuevcyKALUI0s0xsC0eO8Wim/mbB+1trcM7WyKSEChZMa0Yq
-         neInF6XmX6N+7MJZipZslYheygxourgFXGjqZ7azJcHoh4VV5CaWct1UREvjCSOtxiyC
-         qZlA==
-X-Gm-Message-State: AOAM5306eYMR79T4tuIMgkwuCvQ9xToaQi9KnP+B1uJ7idcQulQPAIC6
-        qeTxsi0k78BB33SsaJlGtkC+Xg==
-X-Google-Smtp-Source: ABdhPJxL5bZ2lIk+WLm4cKEqzVy/igHjT7SLviPr/5B6ZKoHBnQgNC5bFWEXQ+ivIObSuOGN5grV+g==
-X-Received: by 2002:a17:90a:5d93:: with SMTP id t19mr7294307pji.116.1621369426302;
-        Tue, 18 May 2021 13:23:46 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id y13sm8198630pgp.16.2021.05.18.13.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 13:23:45 -0700 (PDT)
-Date:   Tue, 18 May 2021 20:23:42 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Reiji Watanabe <reijiw@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/43] KVM: x86: Properly reset MMU context at vCPU
- RESET/INIT
-Message-ID: <YKQiTlDG1sZ4Zd2E@google.com>
-References: <20210424004645.3950558-1-seanjc@google.com>
- <20210424004645.3950558-7-seanjc@google.com>
- <CAAeT=FzS0bP_7_wz6G6cL8-7pudTD7fhavLCVsOE0KnPXf99dQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pTzibwfqe/I3SK7JBMJocK8xyPaFvCw7pMyszzKLlIs=;
+        b=P7L/p22r5APnMri5CZ9lHf9lpQLbWL2FfyP4AUnduCkYLBYT9mzx0ffSD8+EULXBiM
+         WyK4oBYQ5cyVv0kvPWINC44kOyxgwdmnk9LdBIersgQLG/y6ohghX3hwZIFy1Q0G9HEf
+         z3tyRZFW/toNczuz2hm659QwS5hXSluZ83MXkiqwBFbk15L06w7+BAAiBo571FugyeyK
+         EpvzjWz952XCGbXe/pWG5uTLwyP8fkbO+s8K7LifAS0AKzSti5BFUsiqd9oi2BmR49ud
+         OHA23nA9JoIenM5Zkg/CLm3NgcX8NpqTOYxEh0aK0R7PTbMe1k+Ygnh3sdA4hgPfwZDd
+         Yr5Q==
+X-Gm-Message-State: AOAM530qx0nbINjw6qBuJaXv4VG4581cdwUaGjYxG6ZhfmwZL15nPSWJ
+        mz5vHrCnKHtdP9wpiFOPqVHkv7G3PwXgOvZN5uVnWU0FDburbg==
+X-Google-Smtp-Source: ABdhPJxa6Df4Z4UCpzKgvBDDgpa83C5L+ysBEOU+84l1MvBkl7Fc5kOhYYX1eOZKuqXIgcVn8Xr8zvtiu+OIUq1++ik=
+X-Received: by 2002:ac2:5334:: with SMTP id f20mr5342424lfh.543.1621369461815;
+ Tue, 18 May 2021 13:24:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeT=FzS0bP_7_wz6G6cL8-7pudTD7fhavLCVsOE0KnPXf99dQ@mail.gmail.com>
+References: <20210518190106.60935-1-nathan@kernel.org>
+In-Reply-To: <20210518190106.60935-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 18 May 2021 13:24:10 -0700
+Message-ID: <CAKwvOd=fJ-E04ixP0k1ehHdhikF4Zqr2FXa0+AQnWn1fL=tG5g@mail.gmail.com>
+Subject: Re: [PATCH] x86: Fix location of '-plugin-opt=' flags
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Anthony Ruhier <aruhier@mailbox.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021, Reiji Watanabe wrote:
-> >  void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> >  {
-> > +       unsigned long old_cr0 = kvm_read_cr0(vcpu);
-> > +       unsigned long old_cr4 = kvm_read_cr4(vcpu);
-> > +
-> >         kvm_lapic_reset(vcpu, init_event);
-> >
-> >         vcpu->arch.hflags = 0;
-> > @@ -10483,6 +10485,10 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> >         vcpu->arch.ia32_xss = 0;
-> >
-> >         static_call(kvm_x86_vcpu_reset)(vcpu, init_event);
-> > +
-> > +       if (kvm_cr0_mmu_role_changed(old_cr0, kvm_read_cr0(vcpu)) ||
-> > +           kvm_cr4_mmu_role_changed(old_cr4, kvm_read_cr4(vcpu)))
-> > +               kvm_mmu_reset_context(vcpu);
-> >  }
-> 
-> I'm wondering if kvm_vcpu_reset() should call kvm_mmu_reset_context()
-> for a change in EFER.NX as well.
+On Tue, May 18, 2021 at 12:01 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Commit b33fff07e3e3 ("x86, build: allow LTO to be selected") added a
+> couple of '-plugin-opt=' flags to KBUILD_LDFLAGS because the code model
+> and stack alignment are not stored in LLVM bitcode. However, these flags
+> were added to KBUILD_LDFLAGS prior to the emulation flag assignment,
+> which uses ':=', so they were overwritten and never added to $(LD)
+> invocations. The absence of these flags caused misalignment issues in
+> the AMDGPU driver when compiling with CONFIG_LTO_CLANG, resulting in
+> general protection faults.
+>
+> Shuffle the assignment below the initial one so that the flags are
+> properly passed along and all of the linker flags stay together.
+>
+> At the same time, avoid any future issues with clobbering flags by
+> changing the emulation flag assignment to '+=' since KBUILD_LDFLAGS is
+> already defined with ':=' in the main Makefile before being exported for
+> modification here as a result of commit ce99d0bf312d ("kbuild: clear
+> LDFLAGS in the top Makefile").
 
-Oooh.  So there _should_ be no need.   Paging has to be enabled for EFER.NX to
-be relevant, and INIT toggles CR0.PG 1=>0 if paging was enabled and so is
-guaranteed to trigger a context reset.  And we do want to skip the context reset,
-e.g. INIT-SIPI-SIPI when the vCPU has paging disabled should continue using the
-same MMU.
+Thanks for the patch file.  I will need to be more wary of `:=`
+operator in kbuild changes in the future.
 
-But, kvm_calc_mmu_role_common() neglects to ignore NX if CR0.PG=0, and so the
-MMU role will be stale if INIT clears EFER.NX without forcing a context reset.
-However, that's benign from a functionality perspective because the context
-itself correctly incorporates CR0.PG, it's only the role that's borked.  I.e.
-KVM will fail to reuse a page/context due to the spurious role.nxe, but the
-permission checks are always be correct.
+Ideally, we should encode these two flags in LLVM's IR so that we
+don't need to respecify them when restarting optimizations from the
+linker during LTO. I've filed
+https://github.com/ClangBuiltLinux/linux/issues/1377 to follow up on
+that idea.
 
-I'll add a comment here and send a patch to fix the role calculation.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+>
+> Cc: stable@vger.kernel.org
+> Fixes: b33fff07e3e3 ("x86, build: allow LTO to be selected")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1374
+> Reported-by: Anthony Ruhier <aruhier@mailbox.org>
+> Tested-by: Anthony Ruhier <aruhier@mailbox.org>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  arch/x86/Makefile | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> index c77c5d8a7b3e..307529417021 100644
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -178,11 +178,6 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
+>         KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args,)
+>  endif
+>
+> -ifdef CONFIG_LTO_CLANG
+> -KBUILD_LDFLAGS += -plugin-opt=-code-model=kernel \
+> -                  -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
+> -endif
+> -
+>  # Workaround for a gcc prelease that unfortunately was shipped in a suse release
+>  KBUILD_CFLAGS += -Wno-sign-compare
+>  #
+> @@ -202,7 +197,12 @@ ifdef CONFIG_RETPOLINE
+>    endif
+>  endif
+>
+> -KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
+> +KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
+> +
+> +ifdef CONFIG_LTO_CLANG
+> +KBUILD_LDFLAGS += -plugin-opt=-code-model=kernel \
+> +                  -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
+> +endif
+>
+>  ifdef CONFIG_X86_NEED_RELOCS
+>  LDFLAGS_vmlinux := --emit-relocs --discard-none
+>
+> base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+> --
+> 2.32.0.rc0
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
