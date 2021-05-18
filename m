@@ -2,104 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587AF386E55
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A57386E59
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344993AbhERAbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:31:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36628 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233718AbhERAbR (ORCPT
+        id S1345017AbhERAb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:31:58 -0400
+Received: from gateway23.websitewelcome.com ([192.185.50.107]:22629 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345002AbhERAb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:31:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621297799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xCtpJl5wAKagxb9hM9Z4VWmYK67Am2vQEsG/WsS00BA=;
-        b=IKbqof1Aj/Gb4VJBGKA5WeWGiL4XTJ0YE4iDcIKwHjtB3Sr1pdwYjPX3ZSylLLf2ThpJVH
-        z0qM2kcc/+EflkVU6VtBDmMckv/i0q9f7u2DeV9AHwFyisaU7WWz2YFenYgaSEJxjypkZo
-        zUBSXf56+c5NnFIOXI9jfxWJVxiLXkY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-Kv5nR3XBNRWIwn1qWCLM3g-1; Mon, 17 May 2021 20:29:58 -0400
-X-MC-Unique: Kv5nR3XBNRWIwn1qWCLM3g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A92601A8A61;
-        Tue, 18 May 2021 00:29:56 +0000 (UTC)
-Received: from T590 (ovpn-12-90.pek2.redhat.com [10.72.12.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F99860C25;
-        Tue, 18 May 2021 00:29:45 +0000 (UTC)
-Date:   Tue, 18 May 2021 08:29:40 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        nbd@other.debian.org, josef@toxicpanda.com, axboe@kernel.dk,
-        idryomov@redhat.com, xiubli@redhat.com,
-        Matteo Croce <mcroce@linux.microsoft.com>
-Subject: Re: [PATCH] nbd: provide a way for userspace processes to identify
- device backends
-Message-ID: <YKMKdHPFCNhR1SXx@T590>
-References: <20210429102828.31248-1-prasanna.kalever@redhat.com>
+        Mon, 17 May 2021 20:31:57 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id F06ABB1A7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:30:38 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id ind8l3mM0vAWvind8lDkix; Mon, 17 May 2021 19:30:38 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=y+dJQwD7ZPxeqvrbUYA69rPRxhCVNX6+w4TXAMOsoKY=; b=pqYqeoYmEP3lEXqsqncA1uHj7I
+        d+MNdVMuz9S7wR4M/4H96NfPi9qIvb5AexKAdziUNTRHV6ylAoR5UDaSqnIllgx6D1/9/CoLSfOtY
+        3P4cc4IoeRVS4cI1nPvgzsI9HQMfmJmc5xy5/nxhD+sYBhz4lDKnIb/hIkNSqD/WMyxy1qwo3aHlZ
+        I3CDoPWfu7DVpxdiOrBLh5kAfqlwez6/xdZQLMm5kCB0STeD5rjSmk7QQqsCU3tA9Xm+c99yIpjGZ
+        G364md8hIeviEihm0XEWCOB50WlkCH+MYM/yA+Wz+Nwu8PoZ/7IkRjYwXMHZa4bHXvqA3Q4CUV7Ce
+        IHuZFVsg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53468 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lind5-002YD8-Bm; Mon, 17 May 2021 19:30:35 -0500
+Subject: Re: [PATCH RESEND][next] ipv4: Fix fall-through warnings for Clang
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210305090205.GA139036@embeddedor>
+ <ef931d13-896f-0b9c-bb8c-1b710b0164af@embeddedor.com>
+Message-ID: <3739dced-578f-92ae-9444-fc4fa9744b54@embeddedor.com>
+Date:   Mon, 17 May 2021 19:31:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429102828.31248-1-prasanna.kalever@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <ef931d13-896f-0b9c-bb8c-1b710b0164af@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lind5-002YD8-Bm
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53468
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 47
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Prasanna,
+Hi,
 
-On Thu, Apr 29, 2021 at 03:58:28PM +0530, Prasanna Kumar Kalever wrote:
-> Problem:
-> On reconfigure of device, there is no way to defend if the backend
-> storage is matching with the initial backend storage.
+I'm taking this in my -next[1] branch for v5.14.
+
+Thanks
+--
+Gustavo
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+
+On 4/20/21 15:05, Gustavo A. R. Silva wrote:
+> Hi all,
 > 
-> Say, if an initial connect request for backend "pool1/image1" got
-> mapped to /dev/nbd0 and the userspace process is terminated. A next
-> reconfigure request within NBD_ATTR_DEAD_CONN_TIMEOUT is allowed to
-> use /dev/nbd0 for a different backend "pool1/image2"
+> Friendly ping: who can take this, please?
 > 
-> For example, an operation like below could be dangerous:
-
-Can you explain a bit why it is dangerous?
-
+> Thanks
+> --
+> Gustavo
 > 
-> $ sudo rbd-nbd map --try-netlink rbd-pool/ext4-image
-> /dev/nbd0
-> $ sudo blkid /dev/nbd0
-> /dev/nbd0: UUID="bfc444b4-64b1-418f-8b36-6e0d170cfc04" TYPE="ext4"
-> $ sudo pkill -9 rbd-nbd
-> $ sudo rbd-nbd attach --try-netlink --device /dev/nbd0 rbd-pool/xfs-image
-> /dev/nbd0
-> $ sudo blkid /dev/nbd0
-> /dev/nbd0: UUID="d29bf343-6570-4069-a9ea-2fa156ced908" TYPE="xfs"
-> 
-> Solution:
-> Provide a way for userspace processes to keep some metadata to identify
-> between the device and the backend, so that when a reconfigure request is
-> made, we can compare and avoid such dangerous operations.
-> 
-> With this solution, as part of the initial connect request, backend
-> path can be stored in the sysfs per device config, so that on a reconfigure
-> request it's easy to check if the backend path matches with the initial
-> connect backend path.
-> 
-> Please note, ioctl interface to nbd will not have these changes, as there
-> won't be any reconfigure.
-
-BTW, loop has similar issue, and patch of 'block: add a sequence number to disks'
-is added for addressing this issue, what do you think of that generic
-approach wrt. this nbd's issue? such as used the exposed sysfs sequence number
-for addressing this issue?
-
-https://lore.kernel.org/linux-block/YH81n34d2G3C4Re+@gardel-login/#r
-
-Thanks,
-Ming
-
+> On 3/5/21 03:02, Gustavo A. R. Silva wrote:
+>> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+>> warnings by explicitly adding multiple break statements instead of just
+>> letting the code fall through to the next case.
+>>
+>> Link: https://github.com/KSPP/linux/issues/115
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  net/ipv4/ah4.c           | 1 +
+>>  net/ipv4/esp4.c          | 1 +
+>>  net/ipv4/fib_semantics.c | 1 +
+>>  net/ipv4/ip_vti.c        | 1 +
+>>  net/ipv4/ipcomp.c        | 1 +
+>>  5 files changed, 5 insertions(+)
+>>
+>> diff --git a/net/ipv4/ah4.c b/net/ipv4/ah4.c
+>> index 36ed85bf2ad5..fab0958c41be 100644
+>> --- a/net/ipv4/ah4.c
+>> +++ b/net/ipv4/ah4.c
+>> @@ -450,6 +450,7 @@ static int ah4_err(struct sk_buff *skb, u32 info)
+>>  	case ICMP_DEST_UNREACH:
+>>  		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+>>  			return 0;
+>> +		break;
+>>  	case ICMP_REDIRECT:
+>>  		break;
+>>  	default:
+>> diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+>> index 4b834bbf95e0..6cb3ecad04b8 100644
+>> --- a/net/ipv4/esp4.c
+>> +++ b/net/ipv4/esp4.c
+>> @@ -982,6 +982,7 @@ static int esp4_err(struct sk_buff *skb, u32 info)
+>>  	case ICMP_DEST_UNREACH:
+>>  		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+>>  			return 0;
+>> +		break;
+>>  	case ICMP_REDIRECT:
+>>  		break;
+>>  	default:
+>> diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
+>> index a632b66bc13a..4c0c33e4710d 100644
+>> --- a/net/ipv4/fib_semantics.c
+>> +++ b/net/ipv4/fib_semantics.c
+>> @@ -1874,6 +1874,7 @@ static int call_fib_nh_notifiers(struct fib_nh *nh,
+>>  		    (nh->fib_nh_flags & RTNH_F_DEAD))
+>>  			return call_fib4_notifiers(dev_net(nh->fib_nh_dev),
+>>  						   event_type, &info.info);
+>> +		break;
+>>  	default:
+>>  		break;
+>>  	}
+>> diff --git a/net/ipv4/ip_vti.c b/net/ipv4/ip_vti.c
+>> index 31c6c6d99d5e..eb560eecee08 100644
+>> --- a/net/ipv4/ip_vti.c
+>> +++ b/net/ipv4/ip_vti.c
+>> @@ -351,6 +351,7 @@ static int vti4_err(struct sk_buff *skb, u32 info)
+>>  	case ICMP_DEST_UNREACH:
+>>  		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+>>  			return 0;
+>> +		break;
+>>  	case ICMP_REDIRECT:
+>>  		break;
+>>  	default:
+>> diff --git a/net/ipv4/ipcomp.c b/net/ipv4/ipcomp.c
+>> index b42683212c65..bbb56f5e06dd 100644
+>> --- a/net/ipv4/ipcomp.c
+>> +++ b/net/ipv4/ipcomp.c
+>> @@ -31,6 +31,7 @@ static int ipcomp4_err(struct sk_buff *skb, u32 info)
+>>  	case ICMP_DEST_UNREACH:
+>>  		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+>>  			return 0;
+>> +		break;
+>>  	case ICMP_REDIRECT:
+>>  		break;
+>>  	default:
+>>
