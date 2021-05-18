@@ -2,209 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631AB387900
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F73F387904
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349268AbhERMl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:41:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59928 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242555AbhERMly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:41:54 -0400
-Date:   Tue, 18 May 2021 12:40:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621341635;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X01DzKErpVi6HcXJTmbDDUSBWacNrK16jsBjNHYoLK0=;
-        b=UJXZrhtSnYNlAfoykEdXfkAv5FCZqgAP4fiUS+aXClCbORiVeh32YrCVro0ayoQAXHQjfV
-        pwNjK5SY12PFjt/g81Pa0Xk0nEqS+rRcKbn3bnYgkB/ovb9HrhSpFYzA2JKWewpCmkYfs5
-        g0LHxM++5Rl0Ej+880ItuBa9692oXgNJUEIjbM9r+oHLK5i8iWiAkLXfwLIsO5zLzHicTA
-        S9aMrSDHgi6nlQvFUXD0egsEa3sTavNG7o0zipqxOcjMWeBbVWDgTnLraayqmMwkfOJrp+
-        BYnmoqjdeTyMnkDjBv8Sqt1zD1lVmZSgwvsMBNXu7UJXbckHwbkX6WJVjimPzg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621341635;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X01DzKErpVi6HcXJTmbDDUSBWacNrK16jsBjNHYoLK0=;
-        b=OYSZ0nU7qCx/o2vlpBsKPbJDn4MW/CVm0EouBIMcPltFN2phj/g4KSYLVx73gPb4fZUgCF
-        p9NEomgUWCqGqwBQ==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86_cpu_Init_AP_exception_handling_from_cpu_init_secondary_
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
-References: <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
+        id S1343862AbhERMmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:42:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:57939 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349284AbhERMmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:42:08 -0400
+IronPort-SDR: v16exUBZhBDwpB0GgdhKq6SKhgkPt0dJgx/Ky4P0U2diZBf0tfBkPKY5m1BTt+5yL5IVBGxyD0
+ sFjaSg/ftMmw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200753814"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="200753814"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:40:49 -0700
+IronPort-SDR: f1EHggIkxe+EbxF7DCWqC8JNCxPz7fjaOSzftIN32fcFvVJbc3Fb3wJi5OS0jLHG3GxUGr+QDX
+ q41qnX+ioSEg==
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="472932722"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.30.127]) ([10.255.30.127])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:40:44 -0700
+Subject: Re: [PATCH v6 00/16] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     Liuxiangdong <liuxiangdong5@huawei.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <609FA2B7.7030801@huawei.com>
+ <868a0ed9-d4a5-c135-811e-a3420b7913ac@linux.intel.com>
+ <60A3B1DC.7000002@huawei.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <a65c8556-4eac-b8db-8aa4-98229f47fc8d@intel.com>
+Date:   Tue, 18 May 2021 20:40:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Message-ID: <162134163419.29796.9958742586545024368.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <60A3B1DC.7000002@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+On 2021/5/18 20:23, Liuxiangdong wrote:
+>
+>
+> On 2021/5/17 14:38, Like Xu wrote:
+>> Hi xiangdong,
+>>
+>> On 2021/5/15 18:30, Liuxiangdong wrote:
+>>>
+>>>
+>>> On 2021/5/11 10:41, Like Xu wrote:
+>>>> A new kernel cycle has begun, and this version looks promising.
+>>>>
+>>>> The guest Precise Event Based Sampling (PEBS) feature can provide
+>>>> an architectural state of the instruction executed after the guest
+>>>> instruction that exactly caused the event. It needs new hardware
+>>>> facility only available on Intel Ice Lake Server platforms. This
+>>>> patch set enables the basic PEBS feature for KVM guests on ICX.
+>>>>
+>>>> We can use PEBS feature on the Linux guest like native:
+>>>>
+>>>>    # perf record -e instructions:ppp ./br_instr a
+>>>>    # perf record -c 100000 -e instructions:pp ./br_instr a
+>>>
+>>> Hi, Like.
+>>> Has the qemu patch been modified?
+>>>
+>>> https://lore.kernel.org/kvm/f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com/ 
+>>> ?
+>>
+>> I think the qemu part still works based on
+>> 609d7596524ab204ccd71ef42c9eee4c7c338ea4 (tag: v6.0.0).
+>>
+>
+> Yes. I applied these two qemu patches to qemu v6.0.0 and this kvm patches 
+> set to latest kvm tree.
+>
+> I can see pebs flags in Guest(linux 5.11) on the IceLake( Model: 106  
+> Model name: Intel(R) Xeon(R) Platinum 8378A CPU),
+> and i can use PEBS like this.
+>
+>     #perf record -e instructions:pp
+>
+> It can work normally.
+>
+> But  there is no sampling when i use "perf record -e events:pp" or just 
+> "perf record" in guest
+> unless i delete patch 09 and patch 13 from this kvm patches set.
+>
+>
 
-Commit-ID:     14508594acb7606c10f89e79f3f73e8203295f8b
-Gitweb:        https://git.kernel.org/tip/14508594acb7606c10f89e79f3f73e8203295f8b
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Mon, 10 May 2021 23:29:25 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 18 May 2021 14:33:19 +02:00
+With patch 9 and 13, does the basic counter sampling still work ?
+You may retry w/ "echo 0 > /proc/sys/kernel/watchdog" on the host and guest.
 
-x86_cpu_Init_AP_exception_handling_from_cpu_init_secondary_
+> Have you tried "perf record -e events:pp" in this patches set? Does it 
+> work normally?
 
-SEV-ES guests require properly setup task register with which the TSS
-descriptor in the GDT can be located so that the IST-type #VC exception
-handler which they need to function properly, can be executed.
+All my PEBS testcases passed. You may dump guest msr traces from your 
+testcase with me.
 
-This setup needs to happen before attempting to load microcode in
-ucode_cpu_init() on secondary CPUs which can cause such #VC exceptions.
+>
+>
+>
+> Thanks!
+> Xiangdong Liu
+>
+>
+>
+>> When the LBR qemu patch receives the ACK from the maintainer,
+>> I will submit PBES qemu support because their changes are very similar.
+>>
+>> Please help review this version and
+>> feel free to add your comments or "Reviewed-by".
+>>
+>> Thanks,
+>> Like Xu
+>>
+>>>
+>>>
+>>>> To emulate guest PEBS facility for the above perf usages,
+>>>> we need to implement 2 code paths:
+>>>>
+>>>> 1) Fast path
+>>>>
+>>>> This is when the host assigned physical PMC has an identical index as
+>>>> the virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+>>>> This path is used in most common use cases.
+>>>>
+>>>> 2) Slow path
+>>>>
+>>>> This is when the host assigned physical PMC has a different index
+>>>> from the virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0)
+>>>> In this case, KVM needs to rewrite the PEBS records to change the
+>>>> applicable counter indexes to the virtual PMC indexes, which would
+>>>> otherwise contain the physical counter index written by PEBS facility,
+>>>> and switch the counter reset values to the offset corresponding to
+>>>> the physical counter indexes in the DS data structure.
+>>>>
+>>>> The previous version [0] enables both fast path and slow path, which
+>>>> seems a bit more complex as the first step. In this patchset, we want
+>>>> to start with the fast path to get the basic guest PEBS enabled while
+>>>> keeping the slow path disabled. More focused discussion on the slow
+>>>> path [1] is planned to be put to another patchset in the next step.
+>>>>
+>>>> Compared to later versions in subsequent steps, the functionality
+>>>> to support host-guest PEBS both enabled and the functionality to
+>>>> emulate guest PEBS when the counter is cross-mapped are missing
+>>>> in this patch set (neither of these are typical scenarios).
+>>>>
+>>>> With the basic support, the guest can retrieve the correct PEBS
+>>>> information from its own PEBS records on the Ice Lake servers.
+>>>> And we expect it should work when migrating to another Ice Lake
+>>>> and no regression about host perf is expected.
+>>>>
+>>>> Here are the results of pebs test from guest/host for same workload:
+>>>>
+>>>> perf report on guest:
+>>>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
+>>>> 1473377250
+>>>> # Overhead  Command   Shared Object      Symbol
+>>>>    57.74%  br_instr  br_instr           [.] lfsr_cond
+>>>>    41.40%  br_instr  br_instr           [.] cmp_end
+>>>>     0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
+>>>>
+>>>> perf report on host:
+>>>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
+>>>> 1462721386
+>>>> # Overhead  Command   Shared Object     Symbol
+>>>>    57.90%  br_instr  br_instr          [.] lfsr_cond
+>>>>    41.95%  br_instr  br_instr          [.] cmp_end
+>>>>     0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
+>>>>     Conclusion: the profiling results on the guest are similar tothat 
+>>>> on the host.
+>>>>
+>>>> A minimum guest kernel version may be v5.4 or a backport version
+>>>> support Icelake server PEBS.
+>>>>
+>>>> Please check more details in each commit and feel free to comment.
+>>>>
+>>>> Previous:
+>>>> https://lore.kernel.org/kvm/20210415032016.166201-1-like.xu@linux.intel.com/ 
+>>>>
+>>>>
+>>>> [0] 
+>>>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
+>>>> [1] 
+>>>> https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/ 
+>>>>
+>>>>
+>>>> V5 -> V6 Changelog:
+>>>> - Rebased on the latest kvm/queue tree;
+>>>> - Fix a git rebase issue (Liuxiangdong);
+>>>> - Adjust the patch sequence 06/07 for bisection (Liuxiangdong);
+>>>>
+>>>> Like Xu (16):
+>>>>    perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
+>>>>    perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
+>>>>    perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
+>>>>    KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
+>>>>    KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
+>>>>    KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+>>>>    KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
+>>>>    KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
+>>>>    KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
+>>>>    KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
+>>>>    KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
+>>>>    KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
+>>>>    KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
+>>>>    KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
+>>>>    KVM: x86/cpuid: Refactor host/guest CPU model consistency check
+>>>>    KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+>>>>
+>>>>   arch/x86/events/core.c            |   5 +-
+>>>>   arch/x86/events/intel/core.c      | 129 ++++++++++++++++++++++++------
+>>>>   arch/x86/events/perf_event.h      |   5 +-
+>>>>   arch/x86/include/asm/kvm_host.h   |  16 ++++
+>>>>   arch/x86/include/asm/msr-index.h  |   6 ++
+>>>>   arch/x86/include/asm/perf_event.h |   5 +-
+>>>>   arch/x86/kvm/cpuid.c              |  24 ++----
+>>>>   arch/x86/kvm/cpuid.h              |   5 ++
+>>>>   arch/x86/kvm/pmu.c                |  50 +++++++++---
+>>>>   arch/x86/kvm/pmu.h                |  38 +++++++++
+>>>>   arch/x86/kvm/vmx/capabilities.h   |  26 ++++--
+>>>>   arch/x86/kvm/vmx/pmu_intel.c      | 115 +++++++++++++++++++++-----
+>>>>   arch/x86/kvm/vmx/vmx.c            |  24 +++++-
+>>>>   arch/x86/kvm/vmx/vmx.h            |   2 +-
+>>>>   arch/x86/kvm/x86.c                |  14 ++--
+>>>>   15 files changed, 368 insertions(+), 96 deletions(-)
+>>>>
+>>
+>
 
-Simplify the machinery by running that exception setup from a new function
-cpu_init_secondary() and explicitly call cpu_init_exception_handling() for
-the boot CPU before cpu_init(). The latter prepares for fixing and
-simplifying the exception/IST setup on the boot CPU.
-
-There should be no functional changes resulting from this patch.
-
-[ tglx: Reworked it so cpu_init_exception_handling() stays seperate ]
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Lai Jiangshan <laijs@linux.alibaba.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>                                                                                                                                                                                                                        
-Link: https://lore.kernel.org/r/87k0o6gtvu.ffs@nanos.tec.linutronix.de
-
----
- arch/x86/include/asm/processor.h |  1 +
- arch/x86/kernel/cpu/common.c     | 28 +++++++++++++++-------------
- arch/x86/kernel/smpboot.c        |  3 +--
- arch/x86/kernel/traps.c          |  4 +---
- 4 files changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 556b2b1..364d0e4 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -663,6 +663,7 @@ extern void load_direct_gdt(int);
- extern void load_fixmap_gdt(int);
- extern void load_percpu_segment(int);
- extern void cpu_init(void);
-+extern void cpu_init_secondary(void);
- extern void cpu_init_exception_handling(void);
- extern void cr4_init(void);
- 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index a1b756c..212e8bc 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1938,13 +1938,12 @@ void cpu_init_exception_handling(void)
- 
- /*
-  * cpu_init() initializes state that is per-CPU. Some data is already
-- * initialized (naturally) in the bootstrap process, such as the GDT
-- * and IDT. We reload them nevertheless, this function acts as a
-- * 'CPU state barrier', nothing should get across.
-+ * initialized (naturally) in the bootstrap process, such as the GDT.  We
-+ * reload it nevertheless, this function acts as a 'CPU state barrier',
-+ * nothing should get across.
-  */
- void cpu_init(void)
- {
--	struct tss_struct *tss = this_cpu_ptr(&cpu_tss_rw);
- 	struct task_struct *cur = current;
- 	int cpu = raw_smp_processor_id();
- 
-@@ -1957,8 +1956,6 @@ void cpu_init(void)
- 	    early_cpu_to_node(cpu) != NUMA_NO_NODE)
- 		set_numa_node(early_cpu_to_node(cpu));
- #endif
--	setup_getcpu(cpu);
--
- 	pr_debug("Initializing CPU#%d\n", cpu);
- 
- 	if (IS_ENABLED(CONFIG_X86_64) || cpu_feature_enabled(X86_FEATURE_VME) ||
-@@ -1970,7 +1967,6 @@ void cpu_init(void)
- 	 * and set up the GDT descriptor:
- 	 */
- 	switch_to_new_gdt(cpu);
--	load_current_idt();
- 
- 	if (IS_ENABLED(CONFIG_X86_64)) {
- 		loadsegment(fs, 0);
-@@ -1990,12 +1986,6 @@ void cpu_init(void)
- 	initialize_tlbstate_and_flush();
- 	enter_lazy_tlb(&init_mm, cur);
- 
--	/* Initialize the TSS. */
--	tss_setup_ist(tss);
--	tss_setup_io_bitmap(tss);
--	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
--
--	load_TR_desc();
- 	/*
- 	 * sp0 points to the entry trampoline stack regardless of what task
- 	 * is running.
-@@ -2017,6 +2007,18 @@ void cpu_init(void)
- 	load_fixmap_gdt(cpu);
- }
- 
-+#ifdef CONFIG_SMP
-+void cpu_init_secondary(void)
-+{
-+	/*
-+	 * Relies on the BP having set-up the IDT tables, which are loaded
-+	 * on this CPU in cpu_init_exception_handling().
-+	 */
-+	cpu_init_exception_handling();
-+	cpu_init();
-+}
-+#endif
-+
- /*
-  * The microcode loader calls this upon late microcode load to recheck features,
-  * only when microcode has been updated. Caller holds microcode_mutex and CPU
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 7770245..2ed45b0 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -232,8 +232,7 @@ static void notrace start_secondary(void *unused)
- 	load_cr3(swapper_pg_dir);
- 	__flush_tlb_all();
- #endif
--	cpu_init_exception_handling();
--	cpu_init();
-+	cpu_init_secondary();
- 	rcu_cpu_starting(raw_smp_processor_id());
- 	x86_cpuinit.early_percpu_clock_init();
- 	preempt_disable();
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 853ea7a..41f7dc4 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1162,9 +1162,7 @@ void __init trap_init(void)
- 
- 	idt_setup_traps();
- 
--	/*
--	 * Should be a barrier for any external CPU state:
--	 */
-+	cpu_init_exception_handling();
- 	cpu_init();
- 
- 	idt_setup_ist_traps();
