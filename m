@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672AA3874B3
+	by mail.lfdr.de (Postfix) with ESMTP id 008203874B2
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347784AbhERJHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S1347747AbhERJHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347722AbhERJHS (ORCPT
+        with ESMTP id S1347718AbhERJHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:07:18 -0400
+        Tue, 18 May 2021 05:07:15 -0400
 Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A47C06138E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1BCC06138D
         for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:05:56 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:c161:a89e:52bd:1787])
         by andre.telenet-ops.be with bizsmtp
-        id 695s2500d446CkP0195sSL; Tue, 18 May 2021 11:05:52 +0200
+        id 695s2500a446CkP0195sSK; Tue, 18 May 2021 11:05:52 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1livfk-006q2F-9r; Tue, 18 May 2021 11:05:52 +0200
+        id 1livfk-006q2F-7g; Tue, 18 May 2021 11:05:52 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1liv5J-0069nJ-NY; Tue, 18 May 2021 10:28:13 +0200
+        id 1liv5J-0069nl-OS; Tue, 18 May 2021 10:28:13 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Maxime Ripard <mripard@kernel.org>,
         David Airlie <airlied@linux.ie>,
@@ -33,9 +33,9 @@ To:     Maxime Ripard <mripard@kernel.org>,
 Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/5] video: fbdev: ssd1307fb: Extract ssd1307fb_set_address_range()
-Date:   Tue, 18 May 2021 10:28:07 +0200
-Message-Id: <20210518082809.1467549-4-geert@linux-m68k.org>
+Subject: [PATCH 4/5] video: fbdev: ssd1307fb: Optimize screen updates
+Date:   Tue, 18 May 2021 10:28:08 +0200
+Message-Id: <20210518082809.1467549-5-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210518082809.1467549-1-geert@linux-m68k.org>
 References: <20210518082809.1467549-1-geert@linux-m68k.org>
@@ -45,93 +45,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extract the code to set the column and page ranges into a helper
-function.
+Currently, each screen update triggers an I2C transfer of all screen
+data, up to 1 KiB of data for a 128x64 display, which takes at least 20
+ms in Fast mode.
+
+Reduce the amount of transferred data by only updating the rectangle
+that changed.  Remove the call to ssd1307fb_set_address_range() during
+initialization, as ssd1307fb_update_rect() now takes care of that.
+
+Note that for now the optimized operation is only used for fillrect,
+copyarea, and imageblit, which are used by fbcon.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/video/fbdev/ssd1307fb.c | 61 +++++++++++++++++++--------------
- 1 file changed, 36 insertions(+), 25 deletions(-)
+ drivers/video/fbdev/ssd1307fb.c | 43 ++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/video/fbdev/ssd1307fb.c b/drivers/video/fbdev/ssd1307fb.c
-index 6d7bd025bca1a175..cfa27ea0feab4f01 100644
+index cfa27ea0feab4f01..8e3d4be74723b9bf 100644
 --- a/drivers/video/fbdev/ssd1307fb.c
 +++ b/drivers/video/fbdev/ssd1307fb.c
-@@ -152,6 +152,38 @@ static inline int ssd1307fb_write_cmd(struct i2c_client *client, u8 cmd)
+@@ -184,16 +184,18 @@ static int ssd1307fb_set_address_range(struct ssd1307fb_par *par, u8 col_start,
+ 	return ssd1307fb_write_cmd(par->client, page_end);
+ }
+ 
+-static int ssd1307fb_update_display(struct ssd1307fb_par *par)
++static int ssd1307fb_update_rect(struct ssd1307fb_par *par, unsigned int x,
++				 unsigned int y, unsigned int width,
++				 unsigned int height)
+ {
+ 	struct ssd1307fb_array *array;
+ 	u8 *vmem = par->info->screen_buffer;
+ 	unsigned int line_length = par->info->fix.line_length;
+-	unsigned int pages = DIV_ROUND_UP(par->height, 8);
++	unsigned int pages = DIV_ROUND_UP(height + y % 8, 8);
+ 	u32 array_idx = 0;
+ 	int ret, i, j, k;
+ 
+-	array = ssd1307fb_alloc_array(par->width * pages, SSD1307FB_DATA);
++	array = ssd1307fb_alloc_array(width * pages, SSD1307FB_DATA);
+ 	if (!array)
+ 		return -ENOMEM;
+ 
+@@ -226,13 +228,18 @@ static int ssd1307fb_update_display(struct ssd1307fb_par *par)
+ 	 *  (5) A4 B4 C4 D4 E4 F4 G4 H4
+ 	 */
+ 
+-	for (i = 0; i < pages; i++) {
++	ret = ssd1307fb_set_address_range(par, par->col_offset + x, width,
++					  par->page_offset + y / 8, pages);
++	if (ret < 0)
++		goto out_free;
++
++	for (i = y / 8; i < y / 8 + pages; i++) {
+ 		int m = 8;
+ 
+ 		/* Last page may be partial */
+-		if (i + 1 == pages && par->height % 8)
++		if (8 * (i + 1) > par->height)
+ 			m = par->height % 8;
+-		for (j = 0; j < par->width; j++) {
++		for (j = x; j < x + width; j++) {
+ 			u8 data = 0;
+ 
+ 			for (k = 0; k < m; k++) {
+@@ -245,11 +252,17 @@ static int ssd1307fb_update_display(struct ssd1307fb_par *par)
+ 		}
+ 	}
+ 
+-	ret = ssd1307fb_write_array(par->client, array, par->width * pages);
++	ret = ssd1307fb_write_array(par->client, array, width * pages);
++
++out_free:
+ 	kfree(array);
  	return ret;
  }
  
-+static int ssd1307fb_set_address_range(struct ssd1307fb_par *par, u8 col_start,
-+				       u8 cols, u8 page_start, u8 pages)
++static int ssd1307fb_update_display(struct ssd1307fb_par *par)
 +{
-+	u8 col_end = col_start + cols - 1;
-+	u8 page_end = page_start + pages - 1;
-+	int ret;
-+
-+	/* Set column range */
-+	ret = ssd1307fb_write_cmd(par->client, SSD1307FB_SET_COL_RANGE);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = ssd1307fb_write_cmd(par->client, col_start);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = ssd1307fb_write_cmd(par->client, col_end);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set page range */
-+	ret = ssd1307fb_write_cmd(par->client, SSD1307FB_SET_PAGE_RANGE);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = ssd1307fb_write_cmd(par->client, page_start);
-+	if (ret < 0)
-+		return ret;
-+
-+	return ssd1307fb_write_cmd(par->client, page_end);
++	return ssd1307fb_update_rect(par, 0, 0, par->width, par->height);
 +}
-+
- static int ssd1307fb_update_display(struct ssd1307fb_par *par)
+ 
+ static ssize_t ssd1307fb_write(struct fb_info *info, const char __user *buf,
+ 		size_t count, loff_t *ppos)
+@@ -299,21 +312,24 @@ static void ssd1307fb_fillrect(struct fb_info *info, const struct fb_fillrect *r
  {
- 	struct ssd1307fb_array *array;
-@@ -461,31 +493,10 @@ static int ssd1307fb_init(struct ssd1307fb_par *par)
+ 	struct ssd1307fb_par *par = info->par;
+ 	sys_fillrect(info, rect);
+-	ssd1307fb_update_display(par);
++	ssd1307fb_update_rect(par, rect->dx, rect->dy, rect->width,
++			      rect->height);
+ }
+ 
+ static void ssd1307fb_copyarea(struct fb_info *info, const struct fb_copyarea *area)
+ {
+ 	struct ssd1307fb_par *par = info->par;
+ 	sys_copyarea(info, area);
+-	ssd1307fb_update_display(par);
++	ssd1307fb_update_rect(par, area->dx, area->dy, area->width,
++			      area->height);
+ }
+ 
+ static void ssd1307fb_imageblit(struct fb_info *info, const struct fb_image *image)
+ {
+ 	struct ssd1307fb_par *par = info->par;
+ 	sys_imageblit(info, image);
+-	ssd1307fb_update_display(par);
++	ssd1307fb_update_rect(par, image->dx, image->dy, image->width,
++			      image->height);
+ }
+ 
+ static const struct fb_ops ssd1307fb_ops = {
+@@ -493,13 +509,6 @@ static int ssd1307fb_init(struct ssd1307fb_par *par)
  	if (ret < 0)
  		return ret;
  
--	/* Set column range */
--	ret = ssd1307fb_write_cmd(par->client, SSD1307FB_SET_COL_RANGE);
+-	/* Set column and page range */
+-	ret = ssd1307fb_set_address_range(par, par->col_offset, par->width,
+-					  par->page_offset,
+-					  DIV_ROUND_UP(par->height, 8));
 -	if (ret < 0)
 -		return ret;
 -
--	ret = ssd1307fb_write_cmd(par->client, par->col_offset);
--	if (ret < 0)
--		return ret;
--
--	ret = ssd1307fb_write_cmd(par->client, par->col_offset + par->width - 1);
--	if (ret < 0)
--		return ret;
--
--	/* Set page range */
--	ret = ssd1307fb_write_cmd(par->client, SSD1307FB_SET_PAGE_RANGE);
--	if (ret < 0)
--		return ret;
--
--	ret = ssd1307fb_write_cmd(par->client, par->page_offset);
--	if (ret < 0)
--		return ret;
--
--	ret = ssd1307fb_write_cmd(par->client,
--				  par->page_offset +
--				  DIV_ROUND_UP(par->height, 8) - 1);
-+	/* Set column and page range */
-+	ret = ssd1307fb_set_address_range(par, par->col_offset, par->width,
-+					  par->page_offset,
-+					  DIV_ROUND_UP(par->height, 8));
+ 	/* Clear the screen */
+ 	ret = ssd1307fb_update_display(par);
  	if (ret < 0)
- 		return ret;
- 
 -- 
 2.25.1
 
