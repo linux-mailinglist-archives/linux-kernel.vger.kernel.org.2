@@ -2,61 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A93387B5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BC2387B68
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhEROlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:41:00 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60598 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234550AbhEROkY (ORCPT
+        id S233986AbhEROlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234972AbhEROlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:40:24 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621348745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOqq4RhmAB+qpv6uf+uXRfuAamb5bYXRuwIA5uBor6k=;
-        b=vJsFEMhcSBUNcZhuUZn06UyjkBH8HMC6wRmxpsx7dQs2IV9wPFyK7O4wVSJJMTOOB1xQhU
-        Xc+JqG/S8Clecbv5zGB0OB/IJo1tCN2Rns3Vi/71QbixQfIDs1qy5JeSi2sBuES0YEMwUf
-        sg3oK6sROAajdRM5O4C61pEF2mZWbmMYgSYjXH7QPW/Zr67H/bExecPt37RAG/WyIUjJgX
-        6TRuVMWN7WrphgtqOONH55oTpsZATafvg0rg/+7XwbSCPJpUUCmufHGYKWqBE2dIhTZAQs
-        TBlfy8nJ2FoNwQ32UEJdxAaLGgdUYTtPxNjI9R1TXaNRAdc4p8htBjuho92EEw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621348745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOqq4RhmAB+qpv6uf+uXRfuAamb5bYXRuwIA5uBor6k=;
-        b=ZeEZdE2qfoMfxGWtr2yUfR6Ks8DcTSCyrCN0U+DUgcU1n1eSKKtncmLYuZyZEaHuy+CRTW
-        gECkWcT10YJw/iAw==
-To:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Subject: Re: [PATCH 1/4] Documentation/x86: Add buslock.rst
-In-Reply-To: <20210419214958.4035512-2-fenghua.yu@intel.com>
-References: <20210419214958.4035512-1-fenghua.yu@intel.com> <20210419214958.4035512-2-fenghua.yu@intel.com>
-Date:   Tue, 18 May 2021 16:39:04 +0200
-Message-ID: <87cztods3b.ffs@nanos.tec.linutronix.de>
+        Tue, 18 May 2021 10:41:07 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12077C06138E
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:39:49 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id b25so10032567oic.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:39:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zp3it5Zu0KA9JHtt+jDEOh0cwWAwW8S1nVYQo9cUI6g=;
+        b=M+LBCcMHMPB69ojN8igqTaiE33ZRMpEcF1APy9OlgsLWEwTLhd++g9E5r/PdgPXEYk
+         Sf+oWKImVvjttXeuquw1tqKq5sDT5hjJaJrr+UNwmVU4yyHWnKmjWyMw/MlpRuRujG3f
+         OPz9XnatcZBy1chC6V/PUTr8885yi7PK0DlXuwh780MM5fxWeByS/rU5afx+k05h1jpm
+         6Fcu7iuPNq3rkO4cA5dE3C1+aLyOA0g1mfkf0PgTpooOLOhwOnpmJucMbwAHPEXBoGUI
+         M0YmbK1i3TawT2Kq/MdoI37cIF1l4xEwiO9riemaM2il88FrHe0Ly8xeiVsF219JVpb/
+         6zcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zp3it5Zu0KA9JHtt+jDEOh0cwWAwW8S1nVYQo9cUI6g=;
+        b=qDDyRMfHb+Pvrb6paFlbuVYY+AcPPBZPHQWt2eC9ACHD4m7cEL6v7EDOFRIKF43QeM
+         7ZdwzFJ/tPDTaz1n54LI3q0ML51U1WB9fE6Q5B3RjG0UvTasTnPeDvoWvS3vuak4QKDQ
+         wZ2/lo7LUnw7nVfIhycUlVkmKUuHdiRI904JzJFN3cARLPXvOC4oNP/h1n9YWZOdJX92
+         jyeX7Uluu7n4IPB6VIztubhY2mCLHgcTPbh/3x74xFvXYYXTof2hEBaJ7pG2MjI9UZV/
+         c6A81J0RbJ7kytsmXZZYi5w69W13y95M/ObovDthEJM7+TlsrUPO5r6bUTr8fgGdASLL
+         noWA==
+X-Gm-Message-State: AOAM532BprDVBeJO0f7oFAFQ+49yitGMelwvM0L+Lmo0A4vkg7kmNplw
+        GEPTrzOiu55UIGKzWbzi1ymZJvRoG11Ob3PiQ4+POQ==
+X-Google-Smtp-Source: ABdhPJztinWXNYTl+kiATtOdsiKD/CaM/e4dVlbDyWrHV5TSscaWHVYcyb9gQYVDavq46dJM3FBF4Qd71vU3cs+rKMU=
+X-Received: by 2002:a05:6808:f0b:: with SMTP id m11mr3641199oiw.12.1621348788489;
+ Tue, 18 May 2021 07:39:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+ <20210505213731.538612-17-bhupesh.sharma@linaro.org> <d809f290-ed94-7e35-bc4d-bd695965fa04@linaro.org>
+In-Reply-To: <d809f290-ed94-7e35-bc4d-bd695965fa04@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Tue, 18 May 2021 20:09:37 +0530
+Message-ID: <CAH=2NtwS+WBbwbp1tftyMjOCWo9ORZfiZFRr+UNxKQLc9aUNcA@mail.gmail.com>
+Subject: Re: [PATCH v2 16/17] crypto: qce: Defer probe in case interconnect is
+ not yet initialized
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19 2021 at 21:49, Fenghua Yu wrote:
-> Add buslock.rst to explain bus lock problem and how to detect and
-> handle it.
+Hi Thara,
 
-Documentation/x86/buslock.rst:7: WARNING: Undefined substitution referenced: "copy".
-Documentation/x86/buslock.rst: WARNING: document isn't included in any toctree
+On Mon, 10 May 2021 at 18:53, Thara Gopinath <thara.gopinath@linaro.org> wrote:
+>
+>
+>
+> On 5/5/21 5:37 PM, Bhupesh Sharma wrote:
+> > On some Qualcomm parts the qce crypto driver needs the interconnect between
+> > the crypto block and main memory to be initialized first before the crypto
+> > registers can be accessed. So it makes sense to defer the qce crypto driver
+> > probing in case the interconnect driver is not yet probed.
+> >
+> > This fixes the qce probe failure issues when both qce and
+> > interconnect drivers are compiled as static part of the kernel.
+> >
+> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: David S. Miller <davem@davemloft.net>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: Michael Turquette <mturquette@baylibre.com>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: dmaengine@vger.kernel.org
+> > Cc: linux-clk@vger.kernel.org
+> > Cc: linux-crypto@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: bhupesh.linux@gmail.com
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >   drivers/crypto/qce/core.c | 14 ++++++++++++++
+> >   1 file changed, 14 insertions(+)
+> >
+> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> > index 3e742e9911fa..9915b184f780 100644
+> > --- a/drivers/crypto/qce/core.c
+> > +++ b/drivers/crypto/qce/core.c
+> > @@ -222,6 +222,20 @@ static int qce_crypto_probe(struct platform_device *pdev)
+> >               return ret;
+> >
+> >       qce->mem_path = of_icc_get(qce->dev, "memory");
+> > +
+> > +     /* Check for NULL return path, which indicates
+> > +      * interconnect API is disabled or the "interconnects"
+> > +      * DT property is missing.
+> > +      */
+> > +     if (!qce->mem_path)
+> > +             /* On some qcom parts, the qce crypto block needs interconnect
+> > +              * paths to be configured before the registers can be accessed.
+> > +              * Check here for the same.
+> > +              */
+> > +             if (!strcmp(of_id->compatible, "qcom,ipq6018-qce") ||
+> > +                 !strcmp(of_id->compatible, "qcom,sdm845-qce"))
+> > +                     return -EPROBE_DEFER;
+> > +
+>
+> Hi Bhupesh,
+>
+> You don't need this here. of_icc_get returns -EPROBE_DEFER if the
+> interconnect provider is not initialized yet.
 
-Warnings are overrated...
+Thanks for the review.
+
+Yes, I finished testing all the possible combinations with qce, bam
+dma and interconnect drivers compiled as modules v/s as static parts
+of the kernel and we don't need this extra check for the interconnect
+here. We should be fine with checking just the qce_dma_request()
+return value and returning early in the qce probe() flow if no dma
+channels are yet available from the bam dma driver.
+
+I have made the changes in v3 and will post it for review shortly.
+
+Regards,
+Bhupesh
