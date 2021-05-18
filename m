@@ -2,259 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B291D386FA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F296386FAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239385AbhERByP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        id S1346127AbhERBzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241609AbhERByO (ORCPT
+        with ESMTP id S237984AbhERBzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:54:14 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2EAC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:52:56 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id ez19so4212092qvb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:52:56 -0700 (PDT)
+        Mon, 17 May 2021 21:55:06 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD80C061573;
+        Mon, 17 May 2021 18:53:49 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id k5so4670945pjj.1;
+        Mon, 17 May 2021 18:53:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2/VrKNqhhZirowEUmWTG0+Yt1OLebG3DQ7zFv+cp45A=;
-        b=p/pnrHVP9zSEalCdV9xIRECkUF05evcTAdtJqOFVerA2b68tShepCYs7SbRGXHCiWM
-         QcOBIq2LUgM9AhoFPRj2bgill+IuspRrHwu3OFTqjjiVwIJy0qabFARq90aMKn25Is2b
-         31T99POr4XZQR3IcmVaFySBgfPhDTvvCxv+DA=
+        bh=WMZUpa9Z0BMcmL5mgX90Fhx+k+V88TdK0ER3AFCI+UM=;
+        b=QHqj6UarJ5K4zPbsjdLabFCFPxC0LUTdUej6wmQmpvW3eOpiSG41nDwXrm4pDGlhAi
+         lm+r816X2wkL3rttt5zhmL1VMNSlC+g7tbufzcWQ3/HPGkOeynG8GCezBZ3NHnf1YXPT
+         DNVKSO8kgY3fV/NPfwyJ/7Bvx0sI++Q2Yk9Q4RBw/KZGtl7T3Pe+eKkRPjxigv4Hqtji
+         UplcFXf6mN+5gjySbfyFtmNoa5oqdgV5rn7d5p1jQB84qrFOllY8KwbHQFOqK2+A0l5g
+         3ta1sNKps6+uVfjq5giBNUmYu9f08S8svVc1Nv+3ayf8a1UQ36iD4fyDtMKREETQ+IYQ
+         fbJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2/VrKNqhhZirowEUmWTG0+Yt1OLebG3DQ7zFv+cp45A=;
-        b=U1siVlTGuhV+pONAY98VrvFZfLKUPJ8r6l5V+45qfJksV802iGVv+/8MVLRURpjxWT
-         M/lWlBCmaZ3hoeus+agnj1lP1pvtYEl8tVgK88fY2gdTMuu+7YjVVbfi3H2qxXA0ToBi
-         JXjKxTN4hdo88nmA2k7XwxYT1bALtLEZqY+FcVH/3R5EdXDNQ8Pm+bxnl6JUbEWgfWx3
-         0TmLwLkbLGTf7TWLHpMz1B/K910Psr9udnDfXjVJ/gf8aqggnCY6p5pazI82JpeJNtqI
-         KCvtqUESyGFFcr6kln0sfYRNCYeAQwJtoqhF8IKREElc9a0akO1kAqe4H0bdc088bjvh
-         8L9g==
-X-Gm-Message-State: AOAM530fAxHECH3MzrUF8WAkAdR7GLltMsGak4P+dWDjdQGA/GCNYBxv
-        3xG1rac3sRS2Anspa73Jlbhihw==
-X-Google-Smtp-Source: ABdhPJxVq5wGVY3UJAmkhATKOJm4MTibrJXnZVI+VmYdsiTkfTkHG8xZbiXsQTTPPa5TwwR/BW4lFg==
-X-Received: by 2002:a05:6214:212a:: with SMTP id r10mr63491qvc.11.1621302776099;
-        Mon, 17 May 2021 18:52:56 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:c3c8:cec9:b6f7:cccd])
-        by smtp.gmail.com with ESMTPSA id 7sm13374507qtu.38.2021.05.17.18.52.55
+        bh=WMZUpa9Z0BMcmL5mgX90Fhx+k+V88TdK0ER3AFCI+UM=;
+        b=sA5qYvSPiXT2Ry178Nt+Awncm+LjNkodlJkTMUTdAEHmflS22RwuoiYsaFUIOcHBtZ
+         LnOKLY6ij2r0lXQBZB9pAzdm5Sr0c/HxgfRb1EZqtS5c0UHudAK8VRglwZNkhiw/Czpk
+         FODhn+ftqZ3NkXFw5iKjSGTDAd2OBI8NvrpsWfBn8M2VYMNwDuc9IfU1F230JiPRnANz
+         KkkB8mLn7dwso+JTplK5lk9yiMGMsn2YyKsa7X7vLJi4CZEJOl/SlfOxbYxIP6b4oqg1
+         4jMkFP0+hZD5BIbLOKZVE3YIxUMgxVZhPfFGgefpm2NAntHdE49JcNwJLYKL5/y3vQj2
+         pv8w==
+X-Gm-Message-State: AOAM531oBHGDbCz27C7jYXDdsshjsT80poVB/Wpf6eKSQIndoeciHD1P
+        wgz95ioRmLS3Q430WWG9Hjk=
+X-Google-Smtp-Source: ABdhPJzkinv+447YJDcWy06M/L4qaHzK2r5pFhCP3z7cw7xUO9ibpVRqfJoQSYV5bOqn/RZFJAN7nw==
+X-Received: by 2002:a17:90b:4b0d:: with SMTP id lx13mr2623048pjb.152.1621302828982;
+        Mon, 17 May 2021 18:53:48 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id u22sm11245367pfl.118.2021.05.17.18.53.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 18:52:55 -0700 (PDT)
-Date:   Mon, 17 May 2021 21:52:55 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: Silencing false lockdep warning related to seq lock
-Message-ID: <YKMd99hE78xdUkQk@google.com>
-References: <CAJWu+orW9PA7m_s5LHhQv-bEO0xFq7n+9-fznd79boKkmQUR6g@mail.gmail.com>
- <YKHvUkxpytzSewEC@boqun-archlinux>
+        Mon, 17 May 2021 18:53:48 -0700 (PDT)
+Date:   Tue, 18 May 2021 10:53:41 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
+        linux-next@vger.kernel.org, ndesaulniers@google.com,
+        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <20210518015341.GB84628@hyeyoo>
+References: <20210511173448.GA54466@hyeyoo>
+ <20210515210950.GA52841@hyeyoo>
+ <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
+ <YKC9CeAfw3aBmHTU@archlinux-ax161>
+ <20210518003859.GC80297@hyeyoo>
+ <a1287a21-bcbb-77ed-c88d-f5890b785213@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKHvUkxpytzSewEC@boqun-archlinux>
+In-Reply-To: <a1287a21-bcbb-77ed-c88d-f5890b785213@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boqun,
-Thanks for the reply. See below:
+On Mon, May 17, 2021 at 05:43:22PM -0700, Nathan Chancellor wrote:
+> Ah sorry, that should definitely be >= :(
+>
+> That is what I get for writing an email that late... in reality, it probably
+> won't matter due to the availability of 11.0.1 and 11.1.0 but it should
+> absolutely be changed.
 
-On Mon, May 17, 2021 at 12:21:38PM +0800, Boqun Feng wrote:
-[...]
-> > After apply Laurent's SPF patchset [1] , we're facing a large number
-> > of (seemingly false positive) lockdep reports which are related to
-> > circular dependencies with seq locks.
-> > 
-> >  lock(A); write_seqcount(B)
-> >   vs.
-> > write_seqcount(B); lock(A)
-> > 
-> 
-> Two questions here:
-> 
-> *	Could you provide the lockdep splats you saw? I wonder whether
-> 	it's similar to the one mentioned in patch #9[1].
+> I have not given Nick's patch a go yet but would something like this be
+> acceptable? If so, did you want me to send a formal fixup patch or did you
+> want to send a v4? I have no personal preference.
 
-Sure I have appended them to this email. Here is the tree with Laurent's
-patches applied, in case you want to take a look:
-https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/heads/chromeos-5.4
+I think fixup patch patch will be better as we can undo it later.
+I don't think Nick's patch is needed because that code is not related with
+clang version, and we don't need that code even in clang 10.
 
-Yes, the splat is similar to the one mentioned in that patch #9, however the
-first splat I appended below shows an issue with lockdep false positive -
-there is clearly problem with lockdep where it thinks following sequence is
-bad, when in fact it is not:
+then is there something I can help for now?
 
-    init process (skipped some functions):
-    exec->
-     flush_old_exec->
-      exit_mmap ->
-        free_pgtables->
-          vm_write_begin(vma) // Y: acquires seq lock in write mode
-             unlink_anon_vmas // Z: acquires anon_vma->rwsem
-
-    exec->
-    load_elf_binary->
-      -> setup_arg_pages
-        -> expand_downwards (in the if (grow <=) block)
-           mm->page_table_lock // X
-           vm_write_begin(vma) // Y: acquires seq lock
-
-    exec->
-     do_execve_file->
-       ->get_user_pages
-         -> handle_pte_fault
-          -> anon_vma_prepare
-              -> acquire anon_vma->rwsem  // Z
-              -> acquire mm->page_table_lock // X
-
-    If vm_write_begin ever had to wait, then it could lockup like this if following happened concurrently:
-    Acquire->TryToAcquire
-    Y->Z
-    X->Y
-    Z->X
-
-    But Y can never result in a wait since it is a sequence lock. So this is
-    a lockdep false positive.
-
-> 
-> *	What keeps write_seqcount(vm_seqcount) serialized? If it's only
-> 	one lock that serializes the writers, we probably can make it
-> 	as the nest_lock argument for seqcount_acquire(), and that will
-> 	help prevent the false positives.
-
-I think the write seqcount is serialized by the mmap_sem in all the code
-paths I audited in Laurent's patchset.
-
-I am not sure how making it nest_lock argument will help though? The issue is
-that lockdep's understanding of seqcount needs to relate seqcount readers to
-seqcount writers when considering deadlocks. Unless there's a seqcount reader
-involved in the mix, lockdep should just shutup, no? And we don't want it to
-shutup incase there is a real locking issue.
-
-Appending splats:
-Here is the first splat (which I analuzed above as X, Y, Z):
-
-[    1.177766] ffff984c36357070 (&anon_vma->rwsem){+.+.}, at: unlink_anon_vmas+0x79/0x1a0
-[    1.179061]
-[    1.179061] but task is already holding lock:
-[    1.180024] ffff984c363520e0 (&vma->vm_sequence){+.+.}, at: exit_mmap+0x96/0x160
-[    1.181207]
-[    1.181207] which lock already depends on the new lock.
-[    1.181207]
-[    1.182543]
-[    1.182543] the existing dependency chain (in reverse order) is:
-[    1.183769]
-[    1.183769] -> #2 (&vma->vm_sequence){+.+.}:
-[    1.184731]        expand_downwards+0x21a/0x390
-[    1.185485]        setup_arg_pages+0x193/0x220
-[    1.186264]        load_elf_binary+0x3d8/0x1570
-[    1.187017]        search_binary_handler.part.0+0x56/0x220
-[    1.187942]        __do_execve_file+0x680/0xb60
-[    1.188695]        do_execve+0x22/0x30
-[    1.189318]        call_usermodehelper_exec_async+0x159/0x1b0
-[    1.190259]        ret_from_fork+0x3a/0x50
-[    1.190933]
-[    1.190933] -> #1 (&(&mm->page_table_lock)->rlock){+.+.}:
-[    1.192067]        _raw_spin_lock+0x27/0x40
-[    1.192763]        __anon_vma_prepare+0x5e/0x180
-[    1.193532]        handle_pte_fault+0x97c/0x9d0
-[    1.194284]        __handle_mm_fault+0x172/0x1f0
-[    1.195049]        __get_user_pages+0x322/0x840
-[    1.195804]        get_user_pages_remote+0x9f/0x290
-[    1.196609]        copy_strings.isra.0+0x1d3/0x360
-[    1.197401]        copy_strings_kernel+0x2f/0x40
-[    1.198160]        __do_execve_file+0x568/0xb60
-[    1.198915]        do_execve+0x22/0x30
-[    1.199547]        call_usermodehelper_exec_async+0x159/0x1b0
-[    1.200492]        ret_from_fork+0x3a/0x50
-[    1.201173]
-[    1.201173] -> #0 (&anon_vma->rwsem){+.+.}:
-[    1.202104]        __lock_acquire+0xe1a/0x1930
-[    1.202837]        lock_acquire+0x9a/0x180
-[    1.203520]        down_write+0x20/0x60
-[    1.204152]        unlink_anon_vmas+0x79/0x1a0
-[    1.204886]        free_pgtables+0x89/0x190
-[    1.205575]        exit_mmap+0x96/0x160
-[    1.206210]        mmput+0x23/0xd0
-[    1.206775]        do_exit+0x33b/0xb10
-[    1.207405]        do_group_exit+0x34/0xb0
-[    1.208081]        __x64_sys_exit_group+0xf/0x10
-[    1.208852]        do_syscall_64+0x47/0xb0
-[    1.209529]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[    1.210443]
-
-Here are some more splats that could be related:
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.4.109-lockdep-13764-g4f6fee83851c #1 Tainted: G     U  W
-------------------------------------------------------
-chrome/1627 is trying to acquire lock:
-ffff8881468c76d8 (&vma->vm_sequence#3){+.+.}, at: do_user_addr_fault+0x9c4/0xba1
-
-ffff8881468e2bd0 (&(&mm->page_table_lock)->rlock){+.+.}, at: expand_downwards+0x50f/0xaaa
+thanks,
+Hyeonggon
 
 
-
-       _raw_spin_lock+0x3c/0x70
-       sync_global_pgds_l4+0x127/0x2c3
-       register_die_notifier+0x17/0x2b
-       int3_selftest+0x4f/0xca
-       alternative_instructions+0xf/0x14f
-       check_bugs+0x155/0x1e5
-       start_kernel+0x648/0x706
-       secondary_startup_64+0xa5/0xb0
-
-       _raw_spin_lock+0x3c/0x70
-       pgd_free+0x71/0x1be
-       __mmdrop+0xbd/0x29d
-       finish_task_switch+0x527/0x6ad
-       __schedule+0x117e/0x397d
-       preempt_schedule_irq+0x94/0xf8
-       retint_kernel+0x1b/0x2b
-       __sanitizer_cov_trace_pc+0x0/0x4e
-       unmap_page_range+0x1427/0x1888
-       unmap_vmas+0x15f/0x2a0
-       exit_mmap+0x21b/0x395
-       __mmput+0xaf/0x2e6
-       flush_old_exec+0x463/0x640
-       load_elf_binary+0x5f7/0x1ef1
-       search_binary_handler+0x17d/0x4fb
-       load_script+0x759/0x840
-       search_binary_handler+0x17d/0x4fb
-       exec_binprm+0x15a/0x549
-       __do_execve_file+0x8da/0xeef
-       __x64_sys_execve+0x99/0xa8
-       do_syscall_64+0x111/0x260
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-       __lock_acquire+0x25a3/0x5cc0
-       lock_acquire+0x28a/0x34c
-       expand_downwards+0x6b0/0xaaa
-       do_user_addr_fault+0x9c4/0xba1
-       page_fault+0x34/0x40
-
-Chain exists of:
- Possible unsafe locking scenario:
-       CPU0                    CPU1
-       ----                    ----
-  lock(&(&mm->page_table_lock)->rlock);
-                               lock(pgd_lock);
-                               lock(&(&mm->page_table_lock)->rlock);
-  lock(&vma->vm_sequence#3);
-
-3 locks held by chrome/1627:
- #0: ffff8881468e2c78 (&mm->mmap_sem#2){++++}, at: do_user_addr_fault+0x318/0xba1
- #1: ffff888123d64ba0 (&anon_vma->rwsem){++++}, at: expand_downwards+0x1c1/0xaaa
- #2: ffff8881468e2bd0 (&(&mm->page_table_lock)->rlock){+.+.}, at: expand_downwards+0x50f/0xaaa
-
-CPU: 1 PID: 1627 Comm: chrome Tainted: G     U  W         5.4.109-lockdep-13764-g4f6fee83851c #1
