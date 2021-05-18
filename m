@@ -2,71 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD63386EED
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CE2386EEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345647AbhERBLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:11:51 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:43930 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345592AbhERBL0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:11:26 -0400
-Received: by mail-oi1-f170.google.com with SMTP id j75so8205574oih.10;
-        Mon, 17 May 2021 18:10:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7VRx1KOGTd/mlN9tivtVrwdAcsGI2VRzEg2JPb/ZPK4=;
-        b=mU3Dq29JGDKOMCkjlmPmkp5wm7QI329MKXp+DDQhFNXHMRqI1ys4+xRsAm+cX8EMjb
-         Qynu5rR4xDR6lBfyZDrlOwERPjL2Ou7hG+atW2LpcgO2oGzuIawv1z69Kp4yC959uoi4
-         ZvMDfAjV4eNIK4+vOBH6X8LBMJS1NB/OPDUfM2tlnjcyHgEhxjCxtYWIY4hMjb1mMZwg
-         qZ+TCnoB7kIlIh+Z5Yh3BkYH/FGzviJGWrkgbqYHQs7X8G+jNC2Ws4qnQPPCkGjjWdDR
-         JxofuQjVunr82spCHemvHb2xEtJGl7XwVAlSEn1iV7jiQxNOVBB6RoQGFtyC2DcPEFLo
-         86bQ==
-X-Gm-Message-State: AOAM531wGvdgUBe029vdpwJHgqj8yVipTno6Kj8u6tcXbgfYmZMGM3rI
-        iaHR1PwUooM++Eez8DUd4g==
-X-Google-Smtp-Source: ABdhPJxJwaQqKnuSbG53ylbD2hOPzHyziLLftz7JZWGc73yw7BNscf0h/pFLTwqkn/9oQux8MjpoLw==
-X-Received: by 2002:aca:da8b:: with SMTP id r133mr1949783oig.36.1621300208883;
-        Mon, 17 May 2021 18:10:08 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z4sm1046825oib.40.2021.05.17.18.10.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 18:10:08 -0700 (PDT)
-Received: (nullmailer pid 3571898 invoked by uid 1000);
-        Tue, 18 May 2021 01:10:07 -0000
-Date:   Mon, 17 May 2021 20:10:07 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-arm-msm@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 1/2] dt-bindings: arm: msm: Add SAW2 for APQ8026 and
- MSM8226
-Message-ID: <20210518011007.GA3571838@robh.at.kernel.org>
-References: <20210513150150.51464-1-bartosz.dudziak@snejp.pl>
+        id S1345727AbhERBL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345638AbhERBLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 21:11:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F610613AF;
+        Tue, 18 May 2021 01:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621300213;
+        bh=gzdMHHbF17uf/nPffsgfSUAqtUyd0PLnOBU967U7p74=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q4GzELtyDHKemiT+d+2gBHEd9zlCttbFXNjudMQro7HCt5Wqm2EKgD6aWyoym5VRZ
+         pm/t2iqok9SQ3w3KYridL4Bkg/YXAiOdlZReKjq0yU5N5L+jeI81KP8bOzdqK060Gs
+         r5N5vW+pPoQVNGNIhai/2nprg9oREm8oZG+DdkFI1f9e6Svyfu3WCrCZbsxi53YXRg
+         of9Qsoz+/T31N7qeviPbSOsfubbVEeqmTlhz9Vjlif7RfyHMpGBqH/smM22dN9PvRp
+         4ZHtKe9DWW0iPaR9UtPKf5/lPAoIYiaZLyi6sjJPNW1jqg1DoBTRBAm0nV15czgOYZ
+         p5emP/vPm67AA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Pedro Alves <palves@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14] ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
+Date:   Mon, 17 May 2021 21:10:10 -0400
+Message-Id: <20210518011011.1486227-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513150150.51464-1-bartosz.dudziak@snejp.pl>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 17:01:49 +0200, Bartosz Dudziak wrote:
-> Add the dt-binding compatible in the SPM AVS Wrapper 2 (SAW2) for the
-> APQ8026 and MSM8226 SoC platforms.
-> 
-> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-> ---
->  Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+From: Oleg Nesterov <oleg@redhat.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+[ Upstream commit dbb5afad100a828c97e012c6106566d99f041db6 ]
+
+Suppose we have 2 threads, the group-leader L and a sub-theread T,
+both parked in ptrace_stop(). Debugger tries to resume both threads
+and does
+
+	ptrace(PTRACE_CONT, T);
+	ptrace(PTRACE_CONT, L);
+
+If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
+resume the old leader L, it resumes the post-exec thread T which was
+actually now stopped in PTHREAD_EVENT_EXEC. In this case the
+PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
+tracee changed its pid.
+
+This patch makes ptrace() fail in this case until debugger does wait()
+and consumes PTHREAD_EVENT_EXEC which reports old_pid. This affects all
+ptrace requests except the "asynchronous" PTRACE_INTERRUPT/KILL.
+
+The patch doesn't add the new PTRACE_ option to not complicate the API,
+and I _hope_ this won't cause any noticeable regression:
+
+	- If debugger uses PTRACE_O_TRACEEXEC and the thread did an exec
+	  and the tracer does a ptrace request without having consumed
+	  the exec event, it's 100% sure that the thread the ptracer
+	  thinks it is targeting does not exist anymore, or isn't the
+	  same as the one it thinks it is targeting.
+
+	- To some degree this patch adds nothing new. In the scenario
+	  above ptrace(L) can fail with -ESRCH if it is called after the
+	  execing sub-thread wakes the leader up and before it "steals"
+	  the leader's pid.
+
+Test-case:
+
+	#include <stdio.h>
+	#include <unistd.h>
+	#include <signal.h>
+	#include <sys/ptrace.h>
+	#include <sys/wait.h>
+	#include <errno.h>
+	#include <pthread.h>
+	#include <assert.h>
+
+	void *tf(void *arg)
+	{
+		execve("/usr/bin/true", NULL, NULL);
+		assert(0);
+
+		return NULL;
+	}
+
+	int main(void)
+	{
+		int leader = fork();
+		if (!leader) {
+			kill(getpid(), SIGSTOP);
+
+			pthread_t th;
+			pthread_create(&th, NULL, tf, NULL);
+			for (;;)
+				pause();
+
+			return 0;
+		}
+
+		waitpid(leader, NULL, WSTOPPED);
+
+		ptrace(PTRACE_SEIZE, leader, 0,
+				PTRACE_O_TRACECLONE | PTRACE_O_TRACEEXEC);
+		waitpid(leader, NULL, 0);
+
+		ptrace(PTRACE_CONT, leader, 0,0);
+		waitpid(leader, NULL, 0);
+
+		int status, thread = waitpid(-1, &status, 0);
+		assert(thread > 0 && thread != leader);
+		assert(status == 0x80137f);
+
+		ptrace(PTRACE_CONT, thread, 0,0);
+		/*
+		 * waitid() because waitpid(leader, &status, WNOWAIT) does not
+		 * report status. Why ????
+		 *
+		 * Why WEXITED? because we have another kernel problem connected
+		 * to mt-exec.
+		 */
+		siginfo_t info;
+		assert(waitid(P_PID, leader, &info, WSTOPPED|WEXITED|WNOWAIT) == 0);
+		assert(info.si_pid == leader && info.si_status == 0x0405);
+
+		/* OK, it sleeps in ptrace(PTRACE_EVENT_EXEC == 0x04) */
+		assert(ptrace(PTRACE_CONT, leader, 0,0) == -1);
+		assert(errno == ESRCH);
+
+		assert(leader == waitpid(leader, &status, WNOHANG));
+		assert(status == 0x04057f);
+
+		assert(ptrace(PTRACE_CONT, leader, 0,0) == 0);
+
+		return 0;
+	}
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Reported-by: Simon Marchi <simon.marchi@efficios.com>
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Acked-by: Pedro Alves <palves@redhat.com>
+Acked-by: Simon Marchi <simon.marchi@efficios.com>
+Acked-by: Jan Kratochvil <jan.kratochvil@redhat.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/ptrace.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 43a283041296..b28f3c66c6fe 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -163,6 +163,21 @@ void __ptrace_unlink(struct task_struct *child)
+ 	spin_unlock(&child->sighand->siglock);
+ }
+ 
++static bool looks_like_a_spurious_pid(struct task_struct *task)
++{
++	if (task->exit_code != ((PTRACE_EVENT_EXEC << 8) | SIGTRAP))
++		return false;
++
++	if (task_pid_vnr(task) == task->ptrace_message)
++		return false;
++	/*
++	 * The tracee changed its pid but the PTRACE_EVENT_EXEC event
++	 * was not wait()'ed, most probably debugger targets the old
++	 * leader which was destroyed in de_thread().
++	 */
++	return true;
++}
++
+ /* Ensure that nothing can wake it up, even SIGKILL */
+ static bool ptrace_freeze_traced(struct task_struct *task)
+ {
+@@ -173,7 +188,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+ 		return ret;
+ 
+ 	spin_lock_irq(&task->sighand->siglock);
+-	if (task_is_traced(task) && !__fatal_signal_pending(task)) {
++	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
++	    !__fatal_signal_pending(task)) {
+ 		task->state = __TASK_TRACED;
+ 		ret = true;
+ 	}
+-- 
+2.30.2
+
