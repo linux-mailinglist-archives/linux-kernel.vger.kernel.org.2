@@ -2,318 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8806F386E38
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588F6386E3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344954AbhERARl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:17:41 -0400
-Received: from mga07.intel.com ([134.134.136.100]:15626 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239680AbhERARk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:17:40 -0400
-IronPort-SDR: fovHzXRuSn1JSS3xjM0vJz3QSTKTW4B7+ryiigY/eYe+acvau1dwWHNjisc+3e7+5rD0RN5zSG
- uAl2ewOwRuuw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="264507062"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="264507062"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:16:21 -0700
-IronPort-SDR: zdoLRS9HnSUEbMndQrgJj5wq1bH/qcvWvg1mQB4PioV5T5k150OGeKCCiNLZT43Y3lYr7ImPD5
- mzaVLWjL0doA==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="439170849"
-Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:16:20 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2-fix 1/1] x86/tdx: Wire up KVM hypercalls
-Date:   Mon, 17 May 2021 17:15:51 -0700
-Message-Id: <20210518001551.258126-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <2a4e9702-5407-aa95-be9b-864775bbaabd@intel.com>
-References: <2a4e9702-5407-aa95-be9b-864775bbaabd@intel.com>
+        id S239701AbhERAS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235539AbhERAS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 20:18:26 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26B4C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:17:08 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id m11so11387827lfg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9CEolhPmqveQdMHrQLZCdsiXhuzpxEikCHjkALj6N6s=;
+        b=TbTUPK4keNe56luPmgX6uCwhrSdQZ+sh3+tKsNtLQZ5Ccvjic26ktns90GazmBY0Au
+         lfjMKbGtNPTJCGovKTpXPhfF5vXDQRHiSN3jugeadftQxnhyO4CsHP1PZXqT6ppic5ZX
+         FMw1MZHH/2FiqBHm+7HR7wap2ExLuwRljdy89af3sxtrP0/8AoD7h8+3GLGgZgrPkXIh
+         ZLUVkkBFM4qNFqEDZRgavkH+wqy6Ex+/mEmSPqcDpRFiqVVSU5k4GviJMe0XgO84cJ8x
+         9AitHiYtJaCiFkZblooua5Oa3R1GMBPQ6UQywcEQ+bAVQH6QHdTTRddpHQh0re2qVWAY
+         Nz1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9CEolhPmqveQdMHrQLZCdsiXhuzpxEikCHjkALj6N6s=;
+        b=XNYYn0jjTAoBA2pL8mEsvROTn71qTXC5z9kTiK+6+2Aurd9g2DGVclNxWBSBMtlmp8
+         O+F8OD4MGb2y0lrAe+IaGrVZLCoqOZZ1cd0DvmxMC1iZYhDaC63wnQz1E/VOVq7zN0Tz
+         6ZyeZddnOlU3zTP5QqIVc7JGY+GkbtTbU121Axm15eF9WfFaJNTWpL67NbKkiAMSlNbo
+         4CSD+OlfqmJhDWmrYrYnf35rQAyBfpxTJ3czFAw0nFuPmcA+WZ+ZWV3HPDp7l2a9Xa9H
+         /CKVWi7KVB95PH+YbZ7MPudy1UVROAtoOK0fzDcwrwYbTinyRqobY/2GYIp/dZOKimUo
+         nT9w==
+X-Gm-Message-State: AOAM5330kRa/vEjGazp4r4TgwPzv0tLxLAl3Tu+NzG4egbd3wSlIPahc
+        80tAVGoxENZ7xMmg0Km0FOXbJFb/JEK6NZTHx1I+qg==
+X-Google-Smtp-Source: ABdhPJyoWr87UCAbWx72DAglWwjbyV1piF0F7vlhsJEOX3Y/PT9jj+qa3mIycS6Kldf5epigLhL7eAP1BbERn+gbD5Y=
+X-Received: by 2002:a05:6512:220c:: with SMTP id h12mr1945348lfu.374.1621297027203;
+ Mon, 17 May 2021 17:17:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210422195405.4053917-1-ndesaulniers@google.com>
+ <87lf99zzl3.fsf@dja-thinkpad.axtens.net> <CAOSf1CGoN5R0LUrU=Y=UWho1Z_9SLgCX8s3SbFJXwJXc5BYz4A@mail.gmail.com>
+In-Reply-To: <CAOSf1CGoN5R0LUrU=Y=UWho1Z_9SLgCX8s3SbFJXwJXc5BYz4A@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 17 May 2021 17:16:55 -0700
+Message-ID: <CAKwvOdmMugQkTRwC3HOEt2-em2zSfAoi7gpvJRkqfdzSDRMeEg@mail.gmail.com>
+Subject: Re: [PATCH] powerpc/powernv/pci: remove dead code from !CONFIG_EEH
+To:     "Oliver O'Halloran" <oohall@gmail.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+On Thu, Apr 22, 2021 at 6:13 PM Oliver O'Halloran <oohall@gmail.com> wrote:
+>
+> On Fri, Apr 23, 2021 at 9:09 AM Daniel Axtens <dja@axtens.net> wrote:
+> >
+> > Hi Nick,
+> >
+> > > While looking at -Wundef warnings, the #if CONFIG_EEH stood out as a
+> > > possible candidate to convert to #ifdef CONFIG_EEH, but it seems that
+> > > based on Kconfig dependencies it's not possible to build this file
+> > > without CONFIG_EEH enabled.
+> >
+> > This seemed odd to me, but I think you're right:
+> >
+> > arch/powerpc/platforms/Kconfig contains:
+> >
+> > config EEH
+> >         bool
+> >         depends on (PPC_POWERNV || PPC_PSERIES) && PCI
+> >         default y
+> >
+> > It's not configurable from e.g. make menuconfig because there's no prompt.
+> > You can attempt to explicitly disable it with e.g. `scripts/config -d EEH`
+> > but then something like `make oldconfig` will silently re-enable it for
+> > you.
+> >
+> > It's been forced on since commit e49f7a9997c6 ("powerpc/pseries: Rivet
+> > CONFIG_EEH for pSeries platform") in 2012 which fixed it for
+> > pseries. That moved out from pseries to pseries + powernv later on.
+> >
+> > There are other cleanups in the same vein that could be made, from the
+> > Makefile (which has files only built with CONFIG_EEH) through to other
+> > source files. It looks like there's one `#ifdef CONFIG_EEH` in
+> > arch/powerpc/platforms/powernv/pci-ioda.c that could be pulled out, for
+> > example.
+> >
+> > I think it's probably worth trying to rip out all of those in one patch?
+>
+> The change in commit e49f7a9997c6 ("powerpc/pseries: Rivet CONFIG_EEH
+> for pSeries platform") never should have been made.
 
-KVM hypercalls use the "vmcall" or "vmmcall" instructions.
-Although the ABI is similar, those instructions no longer
-function for TDX guests. Make vendor specififc TDVMCALLs
-instead of VMCALL.
+I'll change my patch to keep the conditionals, but use #ifdef instead
+of #if then?
 
-[Isaku: proposed KVM VENDOR string]
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-Changes since RFC v2:
- * Introduced INTEL_TDX_GUEST_KVM config for TDX+KVM related changes.
- * Removed "C" include file.
- * Fixed commit log as per Dave's comments.
+>
+> There's no inherent reason why EEH needs to be enabled and forcing it
+> on is (IMO) a large part of why EEH support is the byzantine
+> clusterfuck that it is. One of the things I was working towards was
+> allowing pseries and powernv to be built with !CONFIG_EEH since that
+> would help define a clearer boundary between what is "eeh support" and
+> what is required to support PCI on the platform. Pseries is
+> particularly bad for this since PAPR says the RTAS calls needed to do
+> a PCI bus reset are part of the EEH extension, but there's non-EEH
+> reasons why you might want to use those RTAS calls. The PHB reset that
+> we do when entering a kdump kernel is a good example since that uses
+> the same RTAS calls, but it has nothing to do with the EEH recovery
+> machinery enabled by CONFIG_EEH.
+>
+> I was looking into that largely because people were considering using
+> OPAL for microwatt platforms. Breaking the assumption that
+> powernv==EEH support is one of the few bits of work required to enable
+> that, but even if you don't go down that road I think everyone would
+> be better off if you kept a degree of separation between the two.
 
- arch/x86/Kconfig                |  6 +++++
- arch/x86/include/asm/kvm_para.h | 21 +++++++++++++++
- arch/x86/include/asm/tdx.h      | 41 ++++++++++++++++++++++++++++
- arch/x86/kernel/Makefile        |  1 +
- arch/x86/kernel/tdcall.S        | 20 ++++++++++++++
- arch/x86/kernel/tdx-kvm.c       | 48 +++++++++++++++++++++++++++++++++
- 6 files changed, 137 insertions(+)
- create mode 100644 arch/x86/kernel/tdx-kvm.c
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 9e0e0ff76bab..768df1b98487 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -886,6 +886,12 @@ config INTEL_TDX_GUEST
- 	  run in a CPU mode that protects the confidentiality of TD memory
- 	  contents and the TD’s CPU state from other software, including VMM.
- 
-+config INTEL_TDX_GUEST_KVM
-+	def_bool y
-+	depends on KVM_GUEST && INTEL_TDX_GUEST
-+	help
-+	 This option enables KVM specific hypercalls in TDX guest.
-+
- endif #HYPERVISOR_GUEST
- 
- source "arch/x86/Kconfig.cpu"
-diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-index 338119852512..2fa85481520b 100644
---- a/arch/x86/include/asm/kvm_para.h
-+++ b/arch/x86/include/asm/kvm_para.h
-@@ -6,6 +6,7 @@
- #include <asm/alternative.h>
- #include <linux/interrupt.h>
- #include <uapi/asm/kvm_para.h>
-+#include <asm/tdx.h>
- 
- extern void kvmclock_init(void);
- 
-@@ -34,6 +35,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
- static inline long kvm_hypercall0(unsigned int nr)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall0(nr);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr)
-@@ -44,6 +49,10 @@ static inline long kvm_hypercall0(unsigned int nr)
- static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall1(nr, p1);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1)
-@@ -55,6 +64,10 @@ static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
- 				  unsigned long p2)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall2(nr, p1, p2);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2)
-@@ -66,6 +79,10 @@ static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
- 				  unsigned long p2, unsigned long p3)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall3(nr, p1, p2, p3);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3)
-@@ -78,6 +95,10 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
- 				  unsigned long p4)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall4(nr, p1, p2, p3, p4);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3), "S"(p4)
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 8ab4067afefc..eb758b506dba 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -73,4 +73,45 @@ static inline void tdx_early_init(void) { };
- 
- #endif /* CONFIG_INTEL_TDX_GUEST */
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST_KVM
-+u64 __tdx_hypercall_vendor_kvm(u64 fn, u64 r12, u64 r13, u64 r14,
-+			       u64 r15, struct tdx_hypercall_output *out);
-+long tdx_kvm_hypercall0(unsigned int nr);
-+long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1);
-+long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1, unsigned long p2);
-+long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1, unsigned long p2,
-+		unsigned long p3);
-+long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1, unsigned long p2,
-+		unsigned long p3, unsigned long p4);
-+#else
-+static inline long tdx_kvm_hypercall0(unsigned int nr)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1,
-+				      unsigned long p2)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1,
-+				      unsigned long p2, unsigned long p3)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1,
-+				      unsigned long p2, unsigned long p3,
-+				      unsigned long p4)
-+{
-+	return -ENODEV;
-+}
-+#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
-+
- #endif /* _ASM_X86_TDX_H */
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 7966c10ea8d1..a90fec004844 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -128,6 +128,7 @@ obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
- 
- obj-$(CONFIG_JAILHOUSE_GUEST)	+= jailhouse.o
- obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdcall.o tdx.o
-+obj-$(CONFIG_INTEL_TDX_GUEST_KVM) += tdx-kvm.o
- 
- obj-$(CONFIG_EISA)		+= eisa.o
- obj-$(CONFIG_PCSPKR_PLATFORM)	+= pcspeaker.o
-diff --git a/arch/x86/kernel/tdcall.S b/arch/x86/kernel/tdcall.S
-index a484c4aef6e6..3c57a1d67b79 100644
---- a/arch/x86/kernel/tdcall.S
-+++ b/arch/x86/kernel/tdcall.S
-@@ -25,6 +25,8 @@
- 					  TDG_R12 | TDG_R13 | \
- 					  TDG_R14 | TDG_R15 )
- 
-+#define TDVMCALL_VENDOR_KVM		0x4d564b2e584454 /* "TDX.KVM" */
-+
- /*
-  * TDX guests use the TDCALL instruction to make requests to the
-  * TDX module and hypercalls to the VMM. It is supported in
-@@ -213,3 +215,21 @@ SYM_FUNC_START(__tdx_hypercall)
- 	call do_tdx_hypercall
- 	retq
- SYM_FUNC_END(__tdx_hypercall)
-+
-+#ifdef CONFIG_INTEL_TDX_GUEST_KVM
-+/*
-+ * Helper function for KVM vendor TDVMCALLs. This assembly wrapper
-+ * lets us reuse do_tdvmcall() for KVM-specific hypercalls (
-+ * TDVMCALL_VENDOR_KVM).
-+ */
-+SYM_FUNC_START(__tdx_hypercall_vendor_kvm)
-+	/*
-+	 * R10 is not part of the function call ABI, but it is a part
-+	 * of the TDVMCALL ABI. So set it before making call to the
-+	 * do_tdx_hypercall().
-+	 */
-+	movq $TDVMCALL_VENDOR_KVM, %r10
-+	call do_tdx_hypercall
-+	retq
-+SYM_FUNC_END(__tdx_hypercall_vendor_kvm)
-+#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
-diff --git a/arch/x86/kernel/tdx-kvm.c b/arch/x86/kernel/tdx-kvm.c
-new file mode 100644
-index 000000000000..b21453a81e38
---- /dev/null
-+++ b/arch/x86/kernel/tdx-kvm.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2020 Intel Corporation */
-+
-+#include <asm/tdx.h>
-+
-+static long tdx_kvm_hypercall(unsigned int fn, unsigned long r12,
-+			      unsigned long r13, unsigned long r14,
-+			      unsigned long r15)
-+{
-+	return __tdx_hypercall_vendor_kvm(fn, r12, r13, r14, r15, NULL);
-+}
-+
-+/* Used by kvm_hypercall0() to trigger hypercall in TDX guest */
-+long tdx_kvm_hypercall0(unsigned int nr)
-+{
-+	return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
-+}
-+EXPORT_SYMBOL_GPL(tdx_kvm_hypercall0);
-+
-+/* Used by kvm_hypercall1() to trigger hypercall in TDX guest */
-+long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1)
-+{
-+	return tdx_kvm_hypercall(nr, p1, 0, 0, 0);
-+}
-+EXPORT_SYMBOL_GPL(tdx_kvm_hypercall1);
-+
-+/* Used by kvm_hypercall2() to trigger hypercall in TDX guest */
-+long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1, unsigned long p2)
-+{
-+	return tdx_kvm_hypercall(nr, p1, p2, 0, 0);
-+}
-+EXPORT_SYMBOL_GPL(tdx_kvm_hypercall2);
-+
-+/* Used by kvm_hypercall3() to trigger hypercall in TDX guest */
-+long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1, unsigned long p2,
-+		unsigned long p3)
-+{
-+	return tdx_kvm_hypercall(nr, p1, p2, p3, 0);
-+}
-+EXPORT_SYMBOL_GPL(tdx_kvm_hypercall3);
-+
-+/* Used by kvm_hypercall4() to trigger hypercall in TDX guest */
-+long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1, unsigned long p2,
-+		unsigned long p3, unsigned long p4)
-+{
-+	return tdx_kvm_hypercall(nr, p1, p2, p3, p4);
-+}
-+EXPORT_SYMBOL_GPL(tdx_kvm_hypercall4);
+
 -- 
-2.25.1
-
+Thanks,
+~Nick Desaulniers
