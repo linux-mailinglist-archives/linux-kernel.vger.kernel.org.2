@@ -2,162 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DC0387101
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04920387104
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245211AbhERE65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 00:58:57 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:37589 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237133AbhERE6z (ORCPT
+        id S1346423AbhERFBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 01:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237133AbhERFBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 00:58:55 -0400
-Received: by mail-wm1-f54.google.com with SMTP id f19-20020a05600c1553b02901794fafcfefso57005wmg.2;
-        Mon, 17 May 2021 21:57:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8YPdF903pID1kt0ZCEYpZxpjPh8BR3iWLNlHhdqJx4Y=;
-        b=W3y0CyO0hTJ9kFu7SfmIHSLhu9g3mrYtUacYmiKk9aS86WQwv3U94tEg8TYsvzr3NB
-         3iUMUUy4lGetnU17y/AhlXgjP/htupMx4egtFlqLdzaSyt84SQMlHBy5v43+cOBOpjBt
-         1oEYHWkvZLlBFLU+jY2GdO96Fb/VHLZvMYhJOqs+KeKkSmejFavm2ZuPILxCxlF6Zcgt
-         gaGjdyzKfMuzFVUEgrRSauedwqiaVe6ToNmHflUpG0OUnp+3z4hXHuYPkeBMl4H4rjUY
-         8O3RSM22/eWZxG/yAeS0eXTZevq1Miv0KsxVtzPdZQBQaMYJQ5mu3glojyOLB88u4wNa
-         J1IA==
-X-Gm-Message-State: AOAM530tCFUr3mF9nyDloo/slFflivzirzVl4SD31bnZyJGDnYDEZv2S
-        NLwx6SiWVXKpsJ2TeUZyAaRYudXgwuEPaQ==
-X-Google-Smtp-Source: ABdhPJwLFO9Lpex8Hfqil95zpacCNSO+pQ02g82d0FluUzUrrBVDhvtP8qP0Xk5FStjUQ/gl+/cKrw==
-X-Received: by 2002:a1c:e90d:: with SMTP id q13mr3214017wmc.163.1621313855807;
-        Mon, 17 May 2021 21:57:35 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id c14sm19727784wrt.77.2021.05.17.21.57.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 21:57:35 -0700 (PDT)
-Subject: Re: [PATCH v2] serial: liteuart: Add support for earlycon
-To:     Stafford Horne <shorne@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Florent Kermarrec <florent@enjoy-digital.fr>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        "Gabriel L . Somlo" <gsomlo@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        Tue, 18 May 2021 01:01:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED8EC061573;
+        Mon, 17 May 2021 22:00:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=oSbqpt5D4K/W1amyexgttXZY/68G5PWLGU3dU5vVU9I=; b=QY4iRluRa834leZFNowWUTTJSI
+        hD3/+/ywzp+t2vyj2VP9Z+5kN2smsCFFACa0HplY4ju1ot2oQNwg+OEpeHbg3CREyAKlxkso7z45M
+        ZC3YLMwtukMJ2CNwDfWNTR2zTLVv7S3dbSiWjZzvEf0tTAz3Lkn1/cZwsL/c1wumxeyoEwtzndPSu
+        bUlTvjiXg7pNp2bgns5wo29owXcGJi6PNfKgOX9dxMkcFFvUNYKFfFalmfKJH4jnhud5Z2+bPvjM/
+        vBT2WsiGAyHGeqSBBFAAkjMi9QDKkzyCbcAkT3Nxubx7xWxlTx7zqDYbIW7xpqJ7F8JK1YXDGkVMk
+        4B6jw7Cg==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lirpk-00EJSG-7R; Tue, 18 May 2021 04:59:56 +0000
+Subject: Re: linux-next: Tree for May 13 (mm/page_alloc.c, <linux/mm.h>:
+ sizeof(struct page))
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20210517115453.24365-1-shorne@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <3810b979-e94e-24dc-9a6f-e9989800f7e7@kernel.org>
-Date:   Tue, 18 May 2021 06:57:34 +0200
+        Linux MM <linux-mm@kvack.org>
+References: <20210513154418.2946f422@canb.auug.org.au>
+ <b7ebb44d-5dd7-7941-234b-f727691ed1f4@infradead.org>
+ <YJ2ZvZaR9PTyPp8S@casper.infradead.org>
+ <06c8a6a6-9999-7f03-6bfb-34efb7ced637@arm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fce18700-9e98-b1fc-260d-60ebcfc9d150@infradead.org>
+Date:   Mon, 17 May 2021 21:59:54 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210517115453.24365-1-shorne@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
+In-Reply-To: <06c8a6a6-9999-7f03-6bfb-34efb7ced637@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17. 05. 21, 13:54, Stafford Horne wrote:
-> Most litex boards using RISC-V soft cores us the sbi earlycon, however
-> this is not available for non RISC-V litex SoC's.  This patch enables
-> earlycon for liteuart which is available on all Litex SoC's making
-> support for earycon debugging more widely available.
+On 5/17/21 9:03 PM, Anshuman Khandual wrote:
 > 
-> Signed-off-by: Stafford Horne <shorne@gmail.com>
-> Cc: Florent Kermarrec <florent@enjoy-digital.fr>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Joel Stanley <joel@jms.id.au>
-> Cc: Gabriel L. Somlo <gsomlo@gmail.com>
-> Reviewed-and-tested-by: Gabriel Somlo <gsomlo@gmail.com>
-
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-
-> ---
-> Changes since v1:
->   - Fixed subject
->   - Fixed ifdef and config issues pointed out by Jiri
->   - Use liteuart_putchar instead of early_liteuart_putc
 > 
->   .../admin-guide/kernel-parameters.txt         |  5 +++++
->   drivers/tty/serial/Kconfig                    |  1 +
->   drivers/tty/serial/liteuart.c                 | 21 +++++++++++++++++++
->   3 files changed, 27 insertions(+)
+> On 5/14/21 2:57 AM, Matthew Wilcox wrote:
+>> On Thu, May 13, 2021 at 10:29:49AM -0700, Randy Dunlap wrote:
+>>> On 5/12/21 10:44 PM, Stephen Rothwell wrote:
+>>>> Hi all,
+>>>>
+>>>> Changes since 20210512:
+>>>>
+>>>
+>>> on x86_64:
+>>>
+>>> In function ‘__mm_zero_struct_page.isra.75’,
+>>>     inlined from ‘__init_single_page.isra.76’ at ../mm/page_alloc.c:1494:2:
+>>> ./../include/linux/compiler_types.h:328:38: error: call to ‘__compiletime_assert_162’ declared with attribute error: BUILD_BUG_ON failed: sizeof(struct page) > 80
+>>
+>> Hmm.
+>>
+>>                 struct {
+>>                         long unsigned int _pt_pad_1;     /*     8     8 */
+>>                         pgtable_t  pmd_huge_pte;         /*    16     8 */
+>>                         long unsigned int _pt_pad_2;     /*    24     8 */
+>>                         union {
+>>                                 struct mm_struct * pt_mm; /*    32     8 */
+>>                                 atomic_t pt_frag_refcount; /*    32     4 */
+>>                         };                               /*    32     8 */
+>>                         spinlock_t ptl;                  /*    40    72 */
+>>                 };                                       /*     8   104 */
+>>
+>> #if ALLOC_SPLIT_PTLOCKS
+>>                         spinlock_t *ptl;
+>> #else
+>>                         spinlock_t ptl;
+>> #endif
+>>
+>> something has disabled ALLOC_SPLIT_PTLOCKS when it ought to be enabled.
+>>
+>> #if USE_SPLIT_PTE_PTLOCKS
+>> #define ALLOC_SPLIT_PTLOCKS     (SPINLOCK_SIZE > BITS_PER_LONG/8)
+>> #else
+>> #define ALLOC_SPLIT_PTLOCKS     0
+>> #endif
+>>
+>> Oh.  This is Anshuman's fault.
+>>
+>> commit 9b8a39056e2472592a5e5897987387f43038b8ba
+>> Author: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Date:   Tue May 11 15:06:01 2021 +1000
+>>
+>>     mm/thp: make ALLOC_SPLIT_PTLOCKS dependent on USE_SPLIT_PTE_PTLOCKS
+>>
+>>
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 04545725f187..2d4a43af8de2 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1084,6 +1084,11 @@
->   			the driver will use only 32-bit accessors to read/write
->   			the device registers.
->   
-> +		liteuart,<addr>
-> +			Start an early console on a litex serial port at the
-> +			specified address. The serial port must already be
-> +			setup and configured. Options are not yet supported.
-> +
->   		meson,<addr>
->   			Start an early, polled-mode console on a meson serial
->   			port at the specified address. The serial port must
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index 0c4cd4a348f4..af41e534483c 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -1550,6 +1550,7 @@ config SERIAL_LITEUART_CONSOLE
->   	bool "LiteUART serial port console support"
->   	depends on SERIAL_LITEUART=y
->   	select SERIAL_CORE_CONSOLE
-> +	select SERIAL_EARLYCON
->   	help
->   	  Say 'Y' or 'M' here if you wish to use the FPGA-based LiteUART serial
->   	  controller from LiteX SoC builder as the system console
-> diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
-> index 64842f3539e1..1b75a4bf7c56 100644
-> --- a/drivers/tty/serial/liteuart.c
-> +++ b/drivers/tty/serial/liteuart.c
-> @@ -370,6 +370,27 @@ static int __init liteuart_console_init(void)
->   	return 0;
->   }
->   console_initcall(liteuart_console_init);
-> +
-> +static void early_liteuart_write(struct console *console, const char *s,
-> +				    unsigned int count)
-> +{
-> +	struct earlycon_device *device = console->data;
-> +	struct uart_port *port = &device->port;
-> +
-> +	uart_console_write(port, s, count, liteuart_putchar);
-> +}
-> +
-> +static int __init early_liteuart_setup(struct earlycon_device *device,
-> +				       const char *options)
-> +{
-> +	if (!device->port.membase)
-> +		return -ENODEV;
-> +
-> +	device->con->write = early_liteuart_write;
-> +	return 0;
-> +}
-> +
-> +OF_EARLYCON_DECLARE(liteuart, "litex,liteuart", early_liteuart_setup);
->   #endif /* CONFIG_SERIAL_LITEUART_CONSOLE */
->   
->   static int __init liteuart_init(void)
+> Previously ALLOC_SPLIT_PTLOCKS was evaluated and the spin lock element
+> in struct page was getting created independent of whether split pte
+> locks are being used or not. AFAICS without USE_SPLIT_PTE_PTLOCKS, it
+> does not really matter whether struct page has spinlock_t *ptl or ptl
+> element because that is not going to be used. Should the BUILD_BUG_ON()
+> evaluation be changed when USE_SPLIT_PTE_PTLOCKS is not enabled or we
+> could something like this which drops the ptl element in such cases ?
+> 
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -152,11 +152,13 @@ struct page {
+>                                 struct mm_struct *pt_mm; /* x86 pgds only */
+>                                 atomic_t pt_frag_refcount; /* powerpc */
+>                         };
+> +#if USE_SPLIT_PTE_PTLOCKS
+>  #if ALLOC_SPLIT_PTLOCKS
+>                         spinlock_t *ptl;
+>  #else
+>                         spinlock_t ptl;
+>  #endif
+> +#endif
+>                 };
+>                 struct {        /* ZONE_DEVICE pages */
+>                         /** @pgmap: Points to the hosting device page map. */
 > 
 
-thanks,
+OK, that works.  Thanks.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+I guess you should send a proper patch to Andrew.  The code above
+is whitespace-damaged (cut'n'paste).
+
 -- 
-js
-suse labs
+~Randy
+
