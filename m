@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C897A387EEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EFB387EF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345469AbhERRuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:50:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:33765 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345233AbhERRuP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:50:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621360137; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=3YWst4AdCVXIc6w9Pje9d25FR37N7LqTf27SEUIDspw=; b=KRkcOGabloeR0mTai8wVPbqeJZXwO2V4gs3Ad0fxcY3XgC9olcc6q9QS1MS8nUZXtHRbKcfe
- FM5CY2sSaHjLvocE+xH3WQoLKHOGVe5C6zwyZUHf2ryITWJNtgnGgHwG5x54P4lcHrl8wuuR
- f06dSchGVDhHYM+XdnzJjNtAuEs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60a3fdfc1449805ea2aa92a3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 May 2021 17:48:44
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A49E7C4323A; Tue, 18 May 2021 17:48:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBD93C433F1;
-        Tue, 18 May 2021 17:48:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DBD93C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-wireless@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, b43-dev@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] b43legacy: don't save dentries for debugfs
-References: <20210518163309.3702100-1-gregkh@linuxfoundation.org>
-Date:   Tue, 18 May 2021 20:48:39 +0300
-In-Reply-To: <20210518163309.3702100-1-gregkh@linuxfoundation.org> (Greg
-        Kroah-Hartman's message of "Tue, 18 May 2021 18:33:09 +0200")
-Message-ID: <87zgwsgcg8.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1351387AbhERRuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:50:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345233AbhERRuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:50:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0A060FE3;
+        Tue, 18 May 2021 17:48:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621360140;
+        bh=V8V1ZGhyCm1f0bz+BCKOcnGPm27EYtaeoap0qCVRIYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UmO6CZdDIHbUSKeqHuEPdi1isApMgqr+3n/hnf5v5G+dnkFQo/+I3XivSP4HpGRPZ
+         pyYlZrEDB5uO+IPUE3++y0DAeske/18YDYyCzLWIjFksO1Fo7J+2rMrc9JgQZ7IwdX
+         1cNLAcdxkgzpca0aein0OVv70Ycy09rXudUscLougLBP9+5HNrh1alkIJGQDeijRMa
+         D1rok/twuPrbFWx+oh63DpTA87eFTy6bxL5a1SeKKGKxDdK/02wb68RSakrqDXCqRi
+         N1tTWWsucmQXXaUUP5bRiF4Di8a9rNs6RvOySQMiGXOdfwPtUy/UtBGIogGiEG9EnG
+         ADpOpvmE6Z5ig==
+Date:   Tue, 18 May 2021 20:48:57 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] selftests/sgx: Migrate to kselftest harness
+Message-ID: <YKP+CavM21klDHH8@kernel.org>
+References: <20210512215323.420639-1-jarkko@kernel.org>
+ <20210512215323.420639-2-jarkko@kernel.org>
+ <3b920525-694c-a8e4-93f5-7b1a3f9ad009@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3b920525-694c-a8e4-93f5-7b1a3f9ad009@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+On Mon, May 17, 2021 at 10:03:42AM -0700, Reinette Chatre wrote:
+> Hi Jarkko,
+> 
+> On 5/12/2021 2:53 PM, Jarkko Sakkinen wrote:
+> > Migrate to kselftest harness. Use a fixture test with enclave initialized
+> > and de-initialized for each of the existing three tests, in other words:
+> > 
+> > 1. One FIXTURE() for managing the enclave life-cycle.
+> > 2. Three TEST_F()'s, one for each test case.
+> > 
+> > This gives a leaps better reporting than before. Here's an example
+> > transcript:
+> > 
+> > TAP version 13
+> > 1..3
+> > 
+> > ok 1 enclave.unclobbered_vdso
+> > 
+> > ok 2 enclave.clobbered_vdso
+> > 
+> > ok 3 enclave.clobbered_vdso_and_user_function
+> > 
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> > 
+> > v5:
+> > * Use TH_LOG() for printing enclave address ranges instead of printf(),
+> >    based on Reinette's remark.
+> 
+> Thank you for considering my feedback. The motivation for my comment was to
+> consider how this test output will be parsed. If these tests will have their
+> output parsed by automated systems then it needs to conform to the TAP13
+> format as supported by kselftest.
+> 
+> In your latest version the output printed during a successful test has been
+> changed, using TH_LOG() as you noted. From what I can tell this is the only
+> output addressed - failing tests continue to print error messages (perror,
+> fprintf) without consideration of how they will be parsed. My apologies, I
+> am not a kselftest expert to know what the best way for this integration is.
+> 
+> Reinette
 
-> There is no need to keep around the dentry pointers for the debugfs
-> files as they will all be automatically removed when the subdir is
-> removed.  So save the space and logic involved in keeping them around by
-> just getting rid of them entirely.
->
-> By doing this change, we remove one of the last in-kernel user that was
-> storing the result of debugfs_create_bool(), so that api can be cleaned
-> up.
->
-> Cc: Larry Finger <Larry.Finger@lwfinger.net>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: b43-dev@lists.infradead.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  .../net/wireless/broadcom/b43legacy/debugfs.c | 29 ++++---------------
->  .../net/wireless/broadcom/b43legacy/debugfs.h |  3 --
->  2 files changed, 5 insertions(+), 27 deletions(-)
->
-> Note, I can take this through my debugfs tree if wanted, that way I can
-> clean up the debugfs_create_bool() api at the same time.  Otherwise it's
-> fine, I can wait until next -rc1 for that to happen.
+It's a valid question, yes.
 
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
+The problem is that only main.c can use kselftest macros because
+kselftest_harness.h pulls 
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+static int test_harness_run(int __attribute__((unused)) argc,
+			    char __attribute__((unused)) **argv)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+which will not end up having a call site (because there's no
+"TEST_HARNESS_MAIN").
+
+The whole logging thing in kselftest harness is a bit ambiguous.
+Namely:
+
+1. There's a macro TH_LOG() defined in kselftest_harness.h, which
+   "internally" uses fprintf().
+2. There's an inline function ksft_print_msg() in kselftest.h
+   using vsprintf().
+
+To add to that, kselftest_harness.h internally prints by using
+ksft_print_msg(), and provides TH_LOG(), which does not use
+ksft_print_msg().
+
+I don't really get the logic in all this.
+
+/Jarkko
