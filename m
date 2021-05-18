@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF45F387D9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A214387D9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236934AbhERQeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36362 "EHLO mail.kernel.org"
+        id S1350829AbhERQe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350746AbhERQeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:34:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8863A611CE;
-        Tue, 18 May 2021 16:32:42 +0000 (UTC)
+        id S1350782AbhERQeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 12:34:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C85B561209;
+        Tue, 18 May 2021 16:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621355563;
-        bh=0UcIEE3s827wTmWGADjhAl8/9TWOigYmf+X8WRZ5/2w=;
+        s=k20201202; t=1621355567;
+        bh=yYE3C83ZCcen1JqtN6SbUMBER9tKZM+sb+rFDEm69H0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ql9hyvdeG0VeCFDvOv7gyhjfvkFx0ofVYOT5B44QYA9+NJlQHOh+VifgqVaR9g0IQ
-         3zvg7kW0m97nxHzAXEqVffYBx6UFBha9F6NFcLUYIe9zbc3VqQ/j5kwjoUC0GCx2dB
-         D/ec9CpuI3H0qaZcmIJ05Q2mu3dCjDWomIlcZuvFkGRXkALtjTxa1+/7mxkE/8qI+y
-         CKVGNlIozp7y/R16YShoo9rlbTZN3KhBFZp5Qtv92JeIHPSyHHE7+yG7c1sXHPRmv2
-         qzM0/hM2Caj5AxRAz83NSGx3FRm77Jt9+feRwAPx3mwjRiONaYXu73o/mMofxh6KXk
-         S7//VGw+gcBUA==
+        b=mkVP+fRpjaBmmd34MdGpnv4vm3hnQRlibsdJCq6/jxAEqdFanLOI3Hi3rjjTgM8Ug
+         yeGvtT8EGjrX9GbS7T/7U1gVYnwP9ry9T8LFxH1CaOm6fMURT5tuC7/YkGbEhzdOEE
+         +wQY1AzmmIis8LFhHlTnLeYH7yF+trO81WnrdbPYxeQcx4XbTd/RgkmPVHmaYFyFub
+         8+zus0zqjNjstug/1Z0WLujmXwwAcaZRNC533TE3PmhGmk0/QETmaRq4+MW9UYE2dS
+         TGAYCYBhYJ3We+pqdL16dCsnYNnkeQ5+MHBqBaUg9/IY80592ZrF4Hb2YhPWeGPkzk
+         3Ko0FL8v3tDEg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Arnd Bergmann <arnd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: Re: [PATCH] ASoC: fsl: fix SND_SOC_IMX_RPMSG dependency
-Date:   Tue, 18 May 2021 17:31:33 +0100
-Message-Id: <162135531445.37831.11488423603905441605.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
+Date:   Tue, 18 May 2021 17:31:34 +0100
+Message-Id: <162135531446.37831.10556462554575862274.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210514213118.630427-1-arnd@kernel.org>
-References: <20210514213118.630427-1-arnd@kernel.org>
+In-Reply-To: <20210518044514.607010-1-yangyingliang@huawei.com>
+References: <20210518044514.607010-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,15 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 23:31:14 +0200, Arnd Bergmann wrote:
-> Kconfig produces a warning with SND_SOC_FSL_RPMSG=y and SND_IMX_SOC=m:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_IMX_RPMSG
->   Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m] && RPMSG [=y]
->   Selected by [y]:
->   - SND_SOC_FSL_RPMSG [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && COMMON_CLK [=y] && RPMSG [=y] && SND_IMX_SOC [=m]!=n
-> 
-> [...]
+On Tue, 18 May 2021 12:45:14 +0800, Yang Yingliang wrote:
+> After calling clk_prepare_enable(), clk_disable_unprepare() need
+> be called when calling clk_set_rate() failed.
 
 Applied to
 
@@ -63,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: fix SND_SOC_IMX_RPMSG dependency
-      commit: cdf112d4c65f83065793b73b49363123517fdb71
+[1/1] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
+      commit: 375904e3931955fcf0a847f029b2492a117efc43
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
