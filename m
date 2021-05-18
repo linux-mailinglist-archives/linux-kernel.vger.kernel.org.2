@@ -2,123 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B9E386EBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585B9386EC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345375AbhERBJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:09:49 -0400
-Received: from gateway23.websitewelcome.com ([192.185.50.107]:43865 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237832AbhERBJr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:09:47 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 6AE9598BF
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:08:28 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id ioDjl2OMN8ElSioDjlWWsK; Mon, 17 May 2021 20:08:27 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9W4PZScGBnM9PEHtZk3wkq4HEcWAcp1d4Av336J8J/o=; b=GrxwLzwbJaGYsZn+DODYhFGXL9
-        oCXyyaZxQRRAV29AJwx0SR03wTlu20HF7BywFY9hgQx09Xq99fL8IIm85f9DL96vVjIehVO/ZGe4f
-        iLyEGJxbyY9oL65EbrhYQdWkw543BYZBH2P6We5aNUgPnnUv9guSe6f7rd619/GbOwt0liE0u5elS
-        40fqY8SY+orZsdonQg1+BnpV3HGgiVFaoiNqRh/95abd0OFtkBMMIA0zpeMaKgEV9vTtdelScd76V
-        wPSbC6tJ0BdQQtUx15uBTTHdYAVDxREP2xHZxc6myk80YT4Joi0VeZKsSJDhUh38npUC993cgulyD
-        6WlYD69w==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53620 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lioDg-003AZd-EZ; Mon, 17 May 2021 20:08:24 -0500
-Subject: Re: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
-To:     "Xue, Ying" <Ying.Xue@windriver.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "tipc-discussion@lists.sourceforge.net" 
-        <tipc-discussion@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <20210305092504.GA140204@embeddedor>
- <DM6PR11MB3964D94D53B98CBA9A25892484479@DM6PR11MB3964.namprd11.prod.outlook.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <f56b0e54-35e9-dc42-88ac-878ee3c04a9d@embeddedor.com>
-Date:   Mon, 17 May 2021 20:09:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1345384AbhERBLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:11:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238090AbhERBLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 21:11:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7758561354;
+        Tue, 18 May 2021 01:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621300183;
+        bh=Q7N5BFJD1w+E3XQGJHFoJg4hWxx3QjNXlxWafl5zlYU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YMfEP7m6CIKFLPmKNgY9J6OvgmibnUgQn9tZifjmKMGGrh5+VyDG0SSVGiRoPpC8g
+         QcXrF6fkU3mqyPmPu+2eC+srUY9lAUmotDsXpQWlR03Zkl7cHx9EuXONG3xtjvjh4u
+         xz0KoQ2QoSfAhwYWOHBk88To1qgJiB15ATnpHPH/MD6bhlbxY5iCsWg3v5sQTUvugF
+         6e5WhGO3QE6HVjfH2awDp+ThDTiWga6HZSeE4bE8RcVcpZfWWH85q43TFLo+y/0qkz
+         aeXxYORL20F73gIdo5skQpZ0+K0oeJKS06/f9/Rn2UOxAGdKHlrIVuMeFbpICwrVEt
+         9ImMI7HktY79g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     xinhui pan <xinhui.pan@amd.com>, Guchun Chen <guchun.chen@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.12 1/5] drm/ttm: Do not add non-system domain BO into swap list
+Date:   Mon, 17 May 2021 21:09:36 -0400
+Message-Id: <20210518010940.1485417-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB3964D94D53B98CBA9A25892484479@DM6PR11MB3964.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lioDg-003AZd-EZ
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53620
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 28
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: xinhui pan <xinhui.pan@amd.com>
 
-If you don't mind, I'm taking this in my -next[1] branch for v5.14.
+[ Upstream commit ad2c28bd9a4083816fa45a7e90c2486cde8a9873 ]
 
-Thanks
---
-Gustavo
+BO would be added into swap list if it is validated into system domain.
+If BO is validated again into non-system domain, say, VRAM domain. It
+actually should not be in the swap list.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Acked-by: Guchun Chen <guchun.chen@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210224032808.150465-1-xinhui.pan@amd.com
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/ttm/ttm_bo.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On 4/21/21 09:51, Xue, Ying wrote:
-> This patch looks good to me.
-> 
-> -----Original Message-----
-> From: Gustavo A. R. Silva <gustavoars@kernel.org> 
-> Sent: Friday, March 5, 2021 5:25 PM
-> To: Jon Maloy <jmaloy@redhat.com>; Xue, Ying <Ying.Xue@windriver.com>; David S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org; tipc-discussion@lists.sourceforge.net; linux-kernel@vger.kernel.org; Gustavo A. R. Silva <gustavoars@kernel.org>; linux-hardening@vger.kernel.org
-> Subject: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
-> 
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning by explicitly adding a break statement instead of letting the code fall through to the next case.
-> 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  net/tipc/link.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/net/tipc/link.c b/net/tipc/link.c index 115109259430..bcc426e16725 100644
-> --- a/net/tipc/link.c
-> +++ b/net/tipc/link.c
-> @@ -649,6 +649,7 @@ int tipc_link_fsm_evt(struct tipc_link *l, int evt)
->  			break;
->  		case LINK_FAILOVER_BEGIN_EVT:
->  			l->state = LINK_FAILINGOVER;
-> +			break;
->  		case LINK_FAILURE_EVT:
->  		case LINK_RESET_EVT:
->  		case LINK_ESTABLISH_EVT:
-> --
-> 2.27.0
-> 
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index 101a68dc615b..799ec7a7caa4 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -153,6 +153,8 @@ void ttm_bo_move_to_lru_tail(struct ttm_buffer_object *bo,
+ 
+ 		swap = &ttm_bo_glob.swap_lru[bo->priority];
+ 		list_move_tail(&bo->swap, swap);
++	} else {
++		list_del_init(&bo->swap);
+ 	}
+ 
+ 	if (bdev->driver->del_from_lru_notify)
+-- 
+2.30.2
+
