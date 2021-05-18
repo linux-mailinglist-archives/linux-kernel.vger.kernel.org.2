@@ -2,162 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10904387E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7DD387E1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346458AbhERRBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:01:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:57134 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232496AbhERRBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:01:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09AB66D;
-        Tue, 18 May 2021 10:00:21 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.6.226])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C68D03F73B;
-        Tue, 18 May 2021 10:00:18 -0700 (PDT)
-Date:   Tue, 18 May 2021 18:00:16 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: Re: [PATCH v10 3/7] arm64: hyperv: Add Hyper-V
- clocksource/clockevent support
-Message-ID: <20210518170016.GP82842@C02TD0UTHF1T.local>
-References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
- <1620841067-46606-4-git-send-email-mikelley@microsoft.com>
- <20210514123711.GB30645@C02TD0UTHF1T.local>
- <MWHPR21MB15932B44EC1E55614B219F5ED7509@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210517130815.GC62656@C02TD0UTHF1T.local>
- <MWHPR21MB15930A4EE785984292B1D72BD72D9@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S1351002AbhERRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:02:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50494 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232496AbhERRCS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:02:18 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IGYIva111104;
+        Tue, 18 May 2021 13:01:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=PCoxcp5ibyVLV63FLBDq4lpfHqnNx8KVKs7wAk76jCA=;
+ b=s/cExPqdOlGdbG7UITyfRKOE+e83OWrU0kV5r148ArTdqNqkbB9eWQeOK90cpW3TuYlH
+ tOU4JhMCVr/tCSRnoPxowmG3VV7dAE0fbr8TbcVMQYFHCXf8crzv9P39hm5bJNBzZAtx
+ ezjRrubHPNZWIJmODnAVDMCTfR1w2Ymv2akBmBXnz62xnJkRGwcby4Ew9T8EInu9aazg
+ hsoHe/BxjVSrhbOzINuVbkNLPbnT/ymyrh4O2yn0od3Y4LCvpFIs520Xt6pYc7ACxknG
+ K4w4Czwt9lGmr0pOgQUEaASjVyLgLKzImVcKEhLHJx4YPEGVakV1UHMOLCt8o5hnT1Ol xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38mg7s2ppa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 13:01:00 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IGZSOD120686;
+        Tue, 18 May 2021 13:00:59 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38mg7s2pkm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 13:00:59 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IGtWk1026200;
+        Tue, 18 May 2021 17:00:56 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 38j5x89m0p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 17:00:56 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IH0rcB28967168
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 17:00:53 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 081F252079;
+        Tue, 18 May 2021 17:00:53 +0000 (GMT)
+Received: from ibm-vm (unknown [9.145.14.34])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A8AAF52065;
+        Tue, 18 May 2021 17:00:50 +0000 (GMT)
+Date:   Tue, 18 May 2021 19:00:49 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 00/11] KVM: s390: pv: implement lazy destroy
+Message-ID: <20210518190049.7e6e661f@ibm-vm>
+In-Reply-To: <e66400c5-a1b6-c5fe-d715-c08b166a7b54@de.ibm.com>
+References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
+        <20210518170537.58b32ffe.cohuck@redhat.com>
+        <20210518173624.13d043e3@ibm-vm>
+        <20210518180411.4abf837d.cohuck@redhat.com>
+        <20210518181922.52d04c61@ibm-vm>
+        <a38192d5-0868-8e07-0a34-c1615e1997fc@redhat.com>
+        <20210518183131.1e0cf801@ibm-vm>
+        <e66400c5-a1b6-c5fe-d715-c08b166a7b54@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15930A4EE785984292B1D72BD72D9@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: o7NNWV0vowzARXZ4UsRFtxBVc6NxOltp
+X-Proofpoint-ORIG-GUID: Cy_bc8bftKD4yt5A88wyc_o52gcH1XYS
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_08:2021-05-18,2021-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
+ mlxscore=0 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
+ impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105180113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 05:27:49PM +0000, Michael Kelley wrote:
-> From: Mark Rutland <mark.rutland@arm.com> Sent: Monday, May 17, 2021 6:08 AM
+On Tue, 18 May 2021 18:55:56 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+
+> On 18.05.21 18:31, Claudio Imbrenda wrote:
+> > On Tue, 18 May 2021 18:22:42 +0200
+> > David Hildenbrand <david@redhat.com> wrote:
+> >   
+> >> On 18.05.21 18:19, Claudio Imbrenda wrote:  
+> >>> On Tue, 18 May 2021 18:04:11 +0200
+> >>> Cornelia Huck <cohuck@redhat.com> wrote:
+> >>>      
+> >>>> On Tue, 18 May 2021 17:36:24 +0200
+> >>>> Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
+> >>>>     
+> >>>>> On Tue, 18 May 2021 17:05:37 +0200
+> >>>>> Cornelia Huck <cohuck@redhat.com> wrote:
+> >>>>>         
+> >>>>>> On Mon, 17 May 2021 22:07:47 +0200
+> >>>>>> Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:  
+> >>>>     
+> >>>>>>> This means that the same address space can have memory
+> >>>>>>> belonging to more than one protected guest, although only one
+> >>>>>>> will be running, the others will in fact not even have any
+> >>>>>>> CPUs.  
+> >>>>>>
+> >>>>>> Are those set-aside-but-not-yet-cleaned-up pages still possibly
+> >>>>>> accessible in any way? I would assume that they only belong to
+> >>>>>> the  
+> >>>>>
+> >>>>> in case of reboot: yes, they are still in the address space of
+> >>>>> the guest, and can be swapped if needed
+> >>>>>         
+> >>>>>> 'zombie' guests, and any new or rebooted guest is a new entity
+> >>>>>> that needs to get new pages?  
+> >>>>>
+> >>>>> the rebooted guest (normal or secure) will re-use the same pages
+> >>>>> of the old guest (before or after cleanup, which is the reason
+> >>>>> of patches 3 and 4)  
+> >>>>
+> >>>> Took a look at those patches, makes sense.
+> >>>>     
+> >>>>>
+> >>>>> the KVM guest is not affected in case of reboot, so the
+> >>>>> userspace address space is not touched.  
+> >>>>
+> >>>> 'guest' is a bit ambiguous here -- do you mean the vm here, and
+> >>>> the actual guest above?
+> >>>>     
+> >>>
+> >>> yes this is tricky, because there is the guest OS, which
+> >>> terminates or reboots, then there is the "secure configuration"
+> >>> entity, handled by the Ultravisor, and then the KVM VM
+> >>>
+> >>> when a secure guest reboots, the "secure configuration" is
+> >>> dismantled (in this case, in a deferred way), and the KVM VM (and
+> >>> its memory) is not directly affected
+> >>>
+> >>> what happened before was that the secure configuration was
+> >>> dismantled synchronously, and then re-created.
+> >>>
+> >>> now instead, a new secure configuration is created using the same
+> >>> KVM VM (and thus the same mm), before the old secure configuration
+> >>> has been completely dismantled. hence the same KVM VM can have
+> >>> multiple secure configurations associated, sharing the same
+> >>> address space.
+> >>>
+> >>> of course, only the newest one is actually running, the other ones
+> >>> are "zombies", without CPUs.
+> >>>      
+> >>
+> >> Can a guest trigger a DoS?  
 > > 
-> > On Fri, May 14, 2021 at 03:35:15PM +0000, Michael Kelley wrote:
-> > > From: Mark Rutland <mark.rutland@arm.com> Sent: Friday, May 14, 2021 5:37 AM
-> > > > On Wed, May 12, 2021 at 10:37:43AM -0700, Michael Kelley wrote:
-> > > > > Add architecture specific definitions and functions needed
-> > > > > by the architecture independent Hyper-V clocksource driver.
-> > > > > Update the Hyper-V clocksource driver to be initialized
-> > > > > on ARM64.
-> > > >
-> > > > Previously we've said that for a clocksource we must use the architected
-> > > > counter, since that's necessary for things like the VDSO to work
-> > > > correctly and efficiently.
-> > > >
-> > > > Given that, I'm a bit confused that we're registering a per-cpu
-> > > > clocksource that is in part based on the architected counter. Likewise,
-> > > > I don't entirely follow why it's necessary to PV the clock_event_device.
-> > > >
-> > > > Are the architected counter and timer reliable without this PV
-> > > > infrastructure? Why do we need to PV either of those?
-> > > >
-> > > > Thanks,
-> > > > Mark.
-> > >
-> > > For the clocksource, we have a requirement to live migrate VMs
-> > > between Hyper-V hosts running on hardware that may have different
-> > > arch counter frequencies (it's not conformant to the ARM v8.6 1 GHz
-> > > requirement).  The Hyper-V virtualization does scaling to handle the
-> > > frequency difference.  And yes, there's a tradeoff with vDSO not
-> > > working, though we have an out-of-tree vDSO implementation that
-> > > we can use when necessary.
+> > I don't see how
 > > 
-> > Just to be clear, the vDSO is *one example* of something that won't
-> > function correctly. More generally, because this undermines core
-> > architectural guarantees, it requires more invasive changes (e.g. we'd
-> > have to weaken the sanity checks, and not use the counter in things like
-> > kexec paths), impacts any architectural features tied to the generic
-> > timer/counter (e.g. the event stream, SPE and tracing, future features),
-> > and means that other SW (e.g. bootloaders and other EFI applications)
-> > are unlikley to function correctly in this environment.
-> > 
-> > I am very much not keen on trying to PV this.
-> > 
-> > What does the guest see when it reads CNTFRQ_EL0? Does this match the
-> > real HW value (and can this change over time)? Or is this entirely
-> > synthetic?
-> > 
-> > What do the ACPI tables look like in the guest? Is there a GTDT table at
-> > all?
-> > 
-> > How does the counter event stream behave?
-> > 
-> > Are there other architectural features which Hyper-V does not implement
-> > for a guest?
-> > 
-> > Is there anything else that may change across a migration? e.g. MIDR?
-> > MPIDR? Any of the ID registers?
+> > a guest can fill its memory and then reboot, and then fill its
+> > memory again and then reboot... but that will take time, filling
+> > the memory will itself clean up leftover pages from previous boots.
+> >  
 > 
-> The ARMv8 architectural system counter and associated registers are visible
-> and functional in a VM on Hyper-V.   The "arch_sys_counter" clocksource is
-> instantiated by the arm_arch_timer.c driver based on the GTDT in the guest,
-> and a Linux guest on Hyper-V runs fine with this clocksource.  Low level code
-> like bootloaders and EFI applications work normally.
+> In essence this guest will then synchronously wait for the page to be
+> exported and reimported, correct?
 
-That's good to hear!
+correct
 
-One potential issue worth noting is that as those pieces of software are
-unlikely to handle counter frequency changes reliably, and so may not
-behave correctly if live-migrated.
-
-> The Hyper-V virtualization provides another Linux clocksource that is an
-> overlay on the arch counter and that provides time consistency across a live
-> migration. Live migration of ARM64 VMs on Hyper-V is not functional today,
-> but the Hyper-V team believes they can make it functional.  I have not
-> explored with them the live migration implications of things beyond time
-> consistency, like event streams, CNTFRQ_EL0, MIDR/MPIDR, etc.
-> 
-> Would a summary of your point be that live migration across hardware
-> with different arch counter frequencies is likely to not be possible with
-> 100% fidelity because of these other dependencies on the arch counter
-> frequency?  (hence the fixed 1 GHz frequency in ARM v8.6)
-
-Yes.
-
-In addition, there are a larger set of things necessarily exposed to VMs
-that mean that live migration isn't all that practical except betweenm
-identical machines (where the counter frequency should be identical),
-and the timer frequency might just be the canary in the coalmine. For
-example, the cache properties enumerated in CTR_EL0 cannot necessarily
-be emulated on another machine.
-
-> > > For clockevents, the only timer interrupt that Hyper-V provides
-> > > in a guest VM is its virtualized "STIMER" interrupt.  There's no
-> > > virtualization of the ARM arch timer in the guest.
+> > "normal" reboot loops will be fast, because there won't be much
+> > memory to process
 > > 
-> > I think that is rather unfortunate, given it's a core architectural
-> > feature. Is it just the interrupt that's missing? i.e. does all the
-> > PE-local functionality behave as the architecture requires?
+> > I have actually tested mixed reboot/shutdown loops, and the system
+> > behaved as you would expect when under load.  
 > 
-> Right off the bat, I don't know about timer-related PE-local
-> functionality as it's not exercised in a Linux VM on Hyper-V that is
-> using STIMER-based clockevents.  I'll explore with the Hyper-V
-> team.  My impression is that enabling the ARM arch timer in a
-> guest VM is more work for Hyper-V than just wiring up an
-> interrupt.
+> I guess the memory will continue to be accounted to the memcg?
+> Correct?
 
-Thanks for chasing this up!
-
-Mark.
+for the reboot case, yes, since the mm is not directly affected.
+for the shutdown case, I'm not sure.
