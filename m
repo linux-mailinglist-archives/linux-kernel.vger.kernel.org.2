@@ -2,123 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753A1387D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB123387D7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350721AbhERQ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350664AbhERQ3c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:29:32 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FB9C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:28:13 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id a4so10949879wrr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f7Qfr88AMf42NCsAWwqvwb7EcfEtMGtA5TzoGX1tBmA=;
-        b=MobHpimkp2Rio9K1VOeuXDp07ZYkrr8AD3CfZHVG4d8dRCJVWc0e/3wkLqPz2tD0qP
-         +dhUrb4pJluk2pTgA9eZogkv2MO4ply/lgN9ChiNaGtiQoRC7Wh16t6Z16BvbCFIU5Uo
-         m8B8fsd8w+2RgzDXrphWHep4nr8gtyrRYaCn4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f7Qfr88AMf42NCsAWwqvwb7EcfEtMGtA5TzoGX1tBmA=;
-        b=lH8Vckuu3MYoO8rziSOGFevggdqFM6zHaWBBg2ex8NZmd68iznC+r5coU570xF1fOp
-         c55figCYtxtH6AaW6Jpl7jwSCyNlgg2tcypsIBbZp4oHoeqVcvBr8g9svf96igJ+RgrK
-         EYOpT2q+lP3KNIjoEONsTxtW+AtnITXWrWnsXSB6scS/XK5zP7a8GrWawcwqDejB2X1/
-         xAhugG1trae8LSJO62CPpIeAcevP71EzoHUU4jbmqlmYw3DaSRvpZB1HOQ/512wbC2pU
-         SvrUGjQcFGSs0+r7bzmqT3CckMD+XqyKDRwLzcTYYBDqB+wi3OaQ1z/YbdX9EuDu/Hv9
-         XM7g==
-X-Gm-Message-State: AOAM531iRFVCsBOPfoEjBarSrB43e46cTcXXgl3yDwxnVtxbmCaWCLwq
-        Vz79J3UF3SK1nb4x7ALjMxOeyw==
-X-Google-Smtp-Source: ABdhPJwi/NJISY9eBi7r/EvI2mXpVb3vdhe7UkVj5itf87/qZAsSQagOYSC9JTB2tS8lHIu341XE3w==
-X-Received: by 2002:adf:e291:: with SMTP id v17mr8133390wri.149.1621355291823;
-        Tue, 18 May 2021 09:28:11 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id p10sm20549015wrr.58.2021.05.18.09.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 09:28:11 -0700 (PDT)
-Date:   Tue, 18 May 2021 17:28:10 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S244956AbhERQbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:31:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237653AbhERQbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 12:31:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3413361209;
+        Tue, 18 May 2021 16:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621355417;
+        bh=YckrPGCMRi5xRHYk9b2uFa4S/R3nnuBOYtdce+YJpLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FhpRVkefRVsMaeMd0RsIQoRZpoxPFvVemAQsUtk4iyBkbrrKFuJNjERhnzsgP94/g
+         RjA1ob+YABMK9iXdCBaaEe9qwp9MJg4NuOwiYlVTnuFO1W+2+TFHL3kAh+3978LHQS
+         /nivFU8z+Le3XLGN7BKBYT1o+VilFiKXzEH2yqBM=
+Date:   Tue, 18 May 2021 18:30:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-wireless@vger.kernel.org
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: Re: [PATCH v6 3/4] printk: Userspace format indexing support
-Message-ID: <YKPrGr71Xp99oh0u@chrisdown.name>
-References: <cover.1621338324.git.chris@chrisdown.name>
- <05d25c65d3f5149c1e8537f74041a7a46bd489d6.1621338324.git.chris@chrisdown.name>
- <YKPBk+7lTzs8WFAk@smile.fi.intel.com>
- <YKPKMCNz2hccaXfR@chrisdown.name>
- <YKPkkiCX6gdSa/rI@smile.fi.intel.com>
+        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/9] b43: don't save dentries for debugfs
+Message-ID: <YKPrl2NXL6EP7uJx@kroah.com>
+References: <20210518162759.3700269-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKPkkiCX6gdSa/rI@smile.fi.intel.com>
-User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
+In-Reply-To: <20210518162759.3700269-1-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Shevchenko writes:
->> As for the literals, are you saying that you prefer that it's symbolised as
->> a macro or static char, or do you know of an API where this kind of name can
->> be canonically accessed?
->
->I have heard that modern GCC (at least) can utilize same constant literals in a
->single compilation unit, so it won't be duplicated.
->
->But more serious here is the guarantees of the name. Shouldn't it come from
->KBuild / Makefile into some header like version do?
+On Tue, May 18, 2021 at 06:27:59PM +0200, Greg Kroah-Hartman wrote:
+> There is no need to keep around the dentry pointers for the debugfs
+> files as they will all be automatically removed when the subdir is
+> removed.  So save the space and logic involved in keeping them around by
+> just getting rid of them entirely.
+> 
+> By doing this change, we remove one of the last in-kernel user that was
+> storing the result of debugfs_create_bool(), so that api can be cleaned
+> up.
+> 
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Chao Yu <chao@kernel.org>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: b43-dev@lists.infradead.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/net/wireless/broadcom/b43/debugfs.c | 34 +++------------------
+>  drivers/net/wireless/broadcom/b43/debugfs.h |  3 --
+>  2 files changed, 5 insertions(+), 32 deletions(-)
 
-I'm not against that, but it seems like something worth doing outside of this 
-patch series, unless you have strong feelings to the contrary?
-
-More than happy to put that on my TODO list for tree-wide cleanups.
-
->> > > +#define seq_escape_printf_format(s, src) \
->> > > +	seq_escape_str(s, src, ESCAPE_ANY | ESCAPE_NAP | ESCAPE_APPEND, "\"\\")
->> >
->> > Hmm... But after your ESCAPE_SPECIAL update why " is in @only?
->> > Not sure about back slash either.
->>
->> Good question! It's because ESCAPE_NAP (used to reduce scope of
->> ESCAPE_OCTAL) will cause double quote and backslash to be ignored for
->> quoting otherwise, even with ESCAPE_SPECIAL from ESCAPE_ANY.
->
->Ah, makes sense. Yep, it's a bit complicated, but okay, perhaps it needs a
->comment near to the macro.
-
-Sure thing, will do.
-
->> > > +static int __init pi_init(void)
->
->> > No __exit? (There is a corresponding call for exit)
->>
->> Hmm, can't printk only be built in to the kernel, so it can't be unloaded?
->> At least it looks that way from Kconfig. Maybe I'm missing something and
->> there's some other way that might be invoked?
->
->While it's true, it may help in these cases:
-> 1) getting things done in a clean way
-> 2) finding bugs during boot cycle
-> 3) (possibly) making better debugging in virtual environments
-> 4) (also possibly) clean up something which shouldn't be seen by the next
->    (unsecure) kernel, like kexec.
->
->I'm not sure about these, but it what comes to my mind.
-
-Hmm. Petr, what do you think? :-)
+Bah, got the subject wrong, will resend...
