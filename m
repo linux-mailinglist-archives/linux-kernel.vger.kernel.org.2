@@ -2,232 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F8A386E89
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50138386E88
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345175AbhERAzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:55:40 -0400
-Received: from mga03.intel.com ([134.134.136.65]:56725 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238174AbhERAzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:55:38 -0400
-IronPort-SDR: 3SDFGPWbKpD9hDzKUBqu5DE+4c9Gs1/voedqHy3V60Xoq5GXtACe2560Xt9mj7UtbUbX2l9tUj
- 8j3sXudZlqXA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200651283"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="200651283"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:54:19 -0700
-IronPort-SDR: 872PZ1cj35YPwXN/VAwgEi4AhwPc/8VSBnf1DnCFU+ucsAGRdNz7Z9xqiYQEUfOsXM+XnMxUi8
- lVYHg/WOeSHw==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="541531271"
-Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:54:18 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2-fix 1/1] x86/boot: Add a trampoline for APs booting in 64-bit mode
-Date:   Mon, 17 May 2021 17:54:04 -0700
-Message-Id: <20210518005404.258660-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
-References: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
+        id S242658AbhERAzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:55:25 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.250]:30207 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238174AbhERAzY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 20:55:24 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id ACB82400C453E
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:54:06 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id inzql47eAvAWvinzqlE5mT; Mon, 17 May 2021 19:54:06 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MGyMIu9GQK22jkoAICUtVJrFSqP2zGDq8EEVOwKTVFM=; b=lDBimvrWO1VsltFvaCP7MVpO6I
+        h1ZQaFZdivF7q4G67nWKhxfzOldliwYv825wZDY+7KWgNk7zIcUmCQM0uCfoJvPGP7UN92oweVHDn
+        EowAsUNmE0wvQcHR5bhs5yA4dwXRivbjSZzn59/fc9tsU+OaHHrKGvrBgQ0mStjiuf6ZyVHYPGeXJ
+        8YxDlxbRjdM8paPHdczV63n1Q1n4WKlV/iUmzQRM2f9DZvVLy9MjgE8i+ibZb+lew5Cqis5npoXDB
+        tIQLoD6PMPcMaQzFxQJIAymVR9NPDnzCtb3PdJz++yCsQF8hM4+6tYn2ZBwTKQE+d14o/nUdgHF15
+        +PE4i8eQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53574 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1linzo-002sXK-78; Mon, 17 May 2021 19:54:04 -0500
+Subject: Re: [PATCH RESEND][next] ide: Fix fall-through warnings for Clang
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210305100012.GA142349@embeddedor>
+ <b09a2a2c-5a82-3c80-7f8a-868349a1efee@embeddedor.com>
+Message-ID: <f6dc7620-d43a-a889-946d-6bd31c6bf413@embeddedor.com>
+Date:   Mon, 17 May 2021 19:54:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b09a2a2c-5a82-3c80-7f8a-868349a1efee@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1linzo-002sXK-78
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53574
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 80
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+Hi all,
 
-Add a trampoline for booting APs in 64-bit mode via a software handoff
-with BIOS, and use the new trampoline for the ACPI MP wake protocol used
-by TDX. You can find MADT MP wake protocol details in ACPI specification
-r6.4, sec 5.2.12.19.
+If you don't mind, I'm taking this in my -next[1] branch for v5.14.
 
-Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
-mode.  For the GDT pointer, create a new entry as the existing storage
-for the pointer occupies the zero entry in the GDT itself.
+Thanks
+--
+Gustavo
 
-Reported-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
 
-Changes since RFC v2:
- * Removed X86_CR0_NE and EFER related changes from this changes
-   and moved it to patch titled "x86/boot: Avoid #VE during
-   boot for TDX platforms"
- * Fixed commit log as per Dan's suggestion.
- * Added inline get_trampoline_start_ip() to set start_ip.
-
- arch/x86/boot/compressed/pgtable.h       |  2 +-
- arch/x86/include/asm/realmode.h          | 10 +++++++
- arch/x86/kernel/smpboot.c                |  2 +-
- arch/x86/realmode/rm/header.S            |  1 +
- arch/x86/realmode/rm/trampoline_64.S     | 38 ++++++++++++++++++++++++
- arch/x86/realmode/rm/trampoline_common.S |  7 ++++-
- 6 files changed, 57 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
-index 6ff7e81b5628..cc9b2529a086 100644
---- a/arch/x86/boot/compressed/pgtable.h
-+++ b/arch/x86/boot/compressed/pgtable.h
-@@ -6,7 +6,7 @@
- #define TRAMPOLINE_32BIT_PGTABLE_OFFSET	0
- 
- #define TRAMPOLINE_32BIT_CODE_OFFSET	PAGE_SIZE
--#define TRAMPOLINE_32BIT_CODE_SIZE	0x70
-+#define TRAMPOLINE_32BIT_CODE_SIZE	0x80
- 
- #define TRAMPOLINE_32BIT_STACK_END	TRAMPOLINE_32BIT_SIZE
- 
-diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-index 5db5d083c873..3328c8edb200 100644
---- a/arch/x86/include/asm/realmode.h
-+++ b/arch/x86/include/asm/realmode.h
-@@ -25,6 +25,7 @@ struct real_mode_header {
- 	u32	sev_es_trampoline_start;
- #endif
- #ifdef CONFIG_X86_64
-+	u32	trampoline_start64;
- 	u32	trampoline_pgd;
- #endif
- 	/* ACPI S3 wakeup */
-@@ -88,6 +89,15 @@ static inline void set_real_mode_mem(phys_addr_t mem)
- 	real_mode_header = (struct real_mode_header *) __va(mem);
- }
- 
-+static inline unsigned long get_trampoline_start_ip(void)
-+{
-+#ifdef CONFIG_X86_64
-+        if (is_tdx_guest())
-+                return real_mode_header->trampoline_start64;
-+#endif
-+	return real_mode_header->trampoline_start;
-+}
-+
- void reserve_real_mode(void);
- 
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 16703c35a944..0b4dff5e67a9 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1031,7 +1031,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 		       int *cpu0_nmi_registered)
- {
- 	/* start_ip had better be page-aligned! */
--	unsigned long start_ip = real_mode_header->trampoline_start;
-+	unsigned long start_ip = get_trampoline_start_ip();
- 
- 	unsigned long boot_error = 0;
- 	unsigned long timeout;
-diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
-index 8c1db5bf5d78..2eb62be6d256 100644
---- a/arch/x86/realmode/rm/header.S
-+++ b/arch/x86/realmode/rm/header.S
-@@ -24,6 +24,7 @@ SYM_DATA_START(real_mode_header)
- 	.long	pa_sev_es_trampoline_start
- #endif
- #ifdef CONFIG_X86_64
-+	.long	pa_trampoline_start64
- 	.long	pa_trampoline_pgd;
- #endif
- 	/* ACPI S3 wakeup */
-diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index 84c5d1b33d10..754f8d2ac9e8 100644
---- a/arch/x86/realmode/rm/trampoline_64.S
-+++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -161,6 +161,19 @@ SYM_CODE_START(startup_32)
- 	ljmpl	$__KERNEL_CS, $pa_startup_64
- SYM_CODE_END(startup_32)
- 
-+SYM_CODE_START(pa_trampoline_compat)
-+	/*
-+	 * In compatibility mode.  Prep ESP and DX for startup_32, then disable
-+	 * paging and complete the switch to legacy 32-bit mode.
-+	 */
-+	movl	$rm_stack_end, %esp
-+	movw	$__KERNEL_DS, %dx
-+
-+	movl	$(X86_CR0_NE | X86_CR0_PE), %eax
-+	movl	%eax, %cr0
-+	ljmpl   $__KERNEL32_CS, $pa_startup_32
-+SYM_CODE_END(pa_trampoline_compat)
-+
- 	.section ".text64","ax"
- 	.code64
- 	.balign 4
-@@ -169,6 +182,20 @@ SYM_CODE_START(startup_64)
- 	jmpq	*tr_start(%rip)
- SYM_CODE_END(startup_64)
- 
-+SYM_CODE_START(trampoline_start64)
-+	/*
-+	 * APs start here on a direct transfer from 64-bit BIOS with identity
-+	 * mapped page tables.  Load the kernel's GDT in order to gear down to
-+	 * 32-bit mode (to handle 4-level vs. 5-level paging), and to (re)load
-+	 * segment registers.  Load the zero IDT so any fault triggers a
-+	 * shutdown instead of jumping back into BIOS.
-+	 */
-+	lidt	tr_idt(%rip)
-+	lgdt	tr_gdt64(%rip)
-+
-+	ljmpl	*tr_compat(%rip)
-+SYM_CODE_END(trampoline_start64)
-+
- 	.section ".rodata","a"
- 	# Duplicate the global descriptor table
- 	# so the kernel can live anywhere
-@@ -182,6 +209,17 @@ SYM_DATA_START(tr_gdt)
- 	.quad	0x00cf93000000ffff	# __KERNEL_DS
- SYM_DATA_END_LABEL(tr_gdt, SYM_L_LOCAL, tr_gdt_end)
- 
-+SYM_DATA_START(tr_gdt64)
-+	.short	tr_gdt_end - tr_gdt - 1	# gdt limit
-+	.long	pa_tr_gdt
-+	.long	0
-+SYM_DATA_END(tr_gdt64)
-+
-+SYM_DATA_START(tr_compat)
-+	.long	pa_trampoline_compat
-+	.short	__KERNEL32_CS
-+SYM_DATA_END(tr_compat)
-+
- 	.bss
- 	.balign	PAGE_SIZE
- SYM_DATA(trampoline_pgd, .space PAGE_SIZE)
-diff --git a/arch/x86/realmode/rm/trampoline_common.S b/arch/x86/realmode/rm/trampoline_common.S
-index 5033e640f957..ade7db208e4e 100644
---- a/arch/x86/realmode/rm/trampoline_common.S
-+++ b/arch/x86/realmode/rm/trampoline_common.S
-@@ -1,4 +1,9 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 	.section ".rodata","a"
- 	.balign	16
--SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
-+
-+/* .fill cannot be used for size > 8. So use short and quad */
-+SYM_DATA_START_LOCAL(tr_idt)
-+	.short  0
-+	.quad   0
-+SYM_DATA_END(tr_idt)
--- 
-2.25.1
-
+On 4/20/21 15:11, Gustavo A. R. Silva wrote:
+> Hi all,
+> 
+> Friendly ping: who can take this, please?
+> 
+> Thanks
+> --
+> Gustavo
+> 
+> On 3/5/21 04:00, Gustavo A. R. Silva wrote:
+>> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+>> by explicitly adding a break statement instead of letting the code fall
+>> through to the next case.
+>>
+>> Link: https://github.com/KSPP/linux/issues/115
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  drivers/ide/siimage.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/ide/siimage.c b/drivers/ide/siimage.c
+>> index 198847488cc6..c190dc6dfb50 100644
+>> --- a/drivers/ide/siimage.c
+>> +++ b/drivers/ide/siimage.c
+>> @@ -493,6 +493,7 @@ static int init_chipset_siimage(struct pci_dev *dev)
+>>  	case 0x30:
+>>  		/* Clocking is disabled, attempt to force 133MHz clocking. */
+>>  		sil_iowrite8(dev, tmp & ~0x20, scsc_addr);
+>> +		break;
+>>  	case 0x10:
+>>  		/* On 133Mhz clocking. */
+>>  		break;
+>>
