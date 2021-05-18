@@ -2,254 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716113875B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BF03875BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348141AbhERJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:51:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34180 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348065AbhERJvM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:51:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621331393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xw/goXPvFheZsSlM5qbIIld4E4qboTY4W+fWzoyFrhk=;
-        b=B9qtUB3pAB0Oq3CarKZ3h+1Ltl3tg2XuAjI9Pg8o3hJNpv41eGvAV3WmSONG7pLaR1RIZE
-        dJE3gDKc/KfiCAOsaKEZvkeq99w4HXJ7lucWyMcVQ+dtnjJ5iuJInZMDhIksVn3gjmvsxp
-        BqZLfpnD4pFNMzv+idgWFb16Cn31JEY=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-_L_cl34YP_6TlkvfeNpqSw-1; Tue, 18 May 2021 05:49:50 -0400
-X-MC-Unique: _L_cl34YP_6TlkvfeNpqSw-1
-Received: by mail-wr1-f72.google.com with SMTP id 67-20020adf81490000b029010756d109e6so5286494wrm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:49:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xw/goXPvFheZsSlM5qbIIld4E4qboTY4W+fWzoyFrhk=;
-        b=PHotfLUkryIgChSCfkRzGnt01DgsDTqvVGacQv1BlgID6QE2SM1OFjCMc3cflnSNgK
-         incKdvRhynO/2Nwre/7u1hp3MvebMKb2Nkc6BfJ5T8Z6frrAthA9CnOsGoL3qxJFX+/m
-         /iT1cL83fsALQu+fcTExbWb0+kl4IfuzDYrYf2VDtQ9Hr5jd3yuKCzk/QIygnpikh3g3
-         6EFn6n7UY+oV+s8+Z2WUAJVE8aeEhTKMRwEzD/uWsHEbaDToHgWLQe2Ur35BDJfJRkGS
-         OT+oP6KxS/4tehZqLWBLuJ/PX9CY9Tselaaqru2u0MOses+UFlWjCIPJ9GZw4/Trts9Z
-         urxw==
-X-Gm-Message-State: AOAM53251oDDDG8W/nhhFt3YedV8cg5AghJXMnaZ+DMWE8OGq7pqI4Fn
-        TopkrwZpoXtuNLflZMxQfcmHiBYRlRdal8bQbODxwdbpHv6E2WCyBOvGDrdcZtJiznC6xKWsA48
-        HAE4xisZ+/hNYe4jRW8OZPZDJvXuL5z9GD2QWFgZ8
-X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr4416374wmq.38.1621331389142;
-        Tue, 18 May 2021 02:49:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/0NPHA/2ZKm4TmhuLWzfEfI5L1uvCr50nQ90+pknjx8xcmDRTg8BLv6cZjQXUG7h1jeTne2Rj7DXrfSxZdek=
-X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr4416347wmq.38.1621331388777;
- Tue, 18 May 2021 02:49:48 -0700 (PDT)
+        id S241884AbhERJxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:53:30 -0400
+Received: from mail-dm6nam11on2055.outbound.protection.outlook.com ([40.107.223.55]:12992
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239702AbhERJx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:53:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KjTo/ZV84yjfSfeUPkOsFI7/JO5ZUt5sjkzn8DBJ8SpmRnT0Z+3a6uY/ZPrWgOQfpZYTDIJ66BNNFTZtYCfogxFY8gCj6plEG8z+fBv+bE6OZLO319IYGnjpSCTRgG3Tr4z+5ydW0ojOvrrE4KbAZo7sQogKRmcam7ig6wrpNN3me6dDPaPR/++M453d0+EMjrKbK+J+d/gBD/S8MrZzu/BkaPSF6iCzFULV0Bnbn5r0YDmsEVmRi5nLODjJ5PQ63ooOeBRacCrjCjWdYop/s0AIh1N5nYzdCz1kx314Ja+sz4Zp1/PhCFSmvdoaM7rXvls2irHHRgDHwrBUVHDUVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jpNdpYEuzkEvzwoRt0y6OblPM4gIQfLEnd0HB/+bB88=;
+ b=GU3NADtLVdF3P8EaIcpzczh01LOgw6OcEXNB10MxBw1FHMacaG1BEwQ+z8i+5RHj1UO1T28OW4UI5KYxJE730hMvOAUfAZL/5jwGAkvvDCM6YAw67bQgtOguohZxqaBgPLLNrvdbUBDtdGCaL6kB8UtQ0T73KCmxlFQMuwfODbFnA5tcq5/USD7vrWoettGHETeQlZIo9WJnmGBeXU57ZHdO5Owr6GaV95/Izrc6pk5NA6ZJqxKXSAUr2puOaSHFHOkP8nG8kqqbRdfb+zvZl1DV9LvW7RX1QKnVuy8aWfyCiEMhXtbnz2Mv3VirK46ltiD3baDlQMl0oGHZ3SYmuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jpNdpYEuzkEvzwoRt0y6OblPM4gIQfLEnd0HB/+bB88=;
+ b=FNC07IBUtzpV546kEZkqymiovHpy5kn7aCdXfjv36O7n3xyS4uPRilZ+VVOQiboxu6Mjcpx5EDyKanBbA6DP3GDX5Ok5vILoMsRe0wbRl5jhG1etYX4HjFI93fE/3mYdnchZ4+JvUmq946c93f6+i89pd1LRJPbMraAnat/Jo0Q=
+Authentication-Results: crapouillou.net; dkim=none (message not signed)
+ header.d=none;crapouillou.net; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM5PR11MB0075.namprd11.prod.outlook.com (2603:10b6:4:6c::16) by
+ DM6PR11MB3082.namprd11.prod.outlook.com (2603:10b6:5:6b::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.26; Tue, 18 May 2021 09:52:10 +0000
+Received: from DM5PR11MB0075.namprd11.prod.outlook.com
+ ([fe80::7cf5:4b57:4804:20bf]) by DM5PR11MB0075.namprd11.prod.outlook.com
+ ([fe80::7cf5:4b57:4804:20bf%5]) with mapi id 15.20.4129.031; Tue, 18 May 2021
+ 09:52:10 +0000
+From:   quanyang.wang@windriver.com
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>
+Subject: [V2][PATCH 0/2] drm: xlnx: add some functions
+Date:   Tue, 18 May 2021 17:50:17 +0800
+Message-Id: <20210518095019.3855369-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR04CA0090.apcprd04.prod.outlook.com
+ (2603:1096:202:15::34) To DM5PR11MB0075.namprd11.prod.outlook.com
+ (2603:10b6:4:6c::16)
 MIME-Version: 1.0
-References: <20210429102828.31248-1-prasanna.kalever@redhat.com>
- <YKMKdHPFCNhR1SXx@T590> <CANwsLLH0HyZ-VGPMc+VmuLivG1fiZHnSqUyLx3UWb76ZMCgYSg@mail.gmail.com>
- <YKOHuNd0Kp+lcQHY@T590>
-In-Reply-To: <YKOHuNd0Kp+lcQHY@T590>
-From:   Prasanna Kalever <pkalever@redhat.com>
-Date:   Tue, 18 May 2021 15:19:37 +0530
-Message-ID: <CANwsLLE6FK3eCmDwQ+7ghwFx0Hi1KDr6TaiKX1VW2Yt+5xe+WA@mail.gmail.com>
-Subject: Re: [PATCH] nbd: provide a way for userspace processes to identify
- device backends
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Prasanna Kumar Kalever <prasanna.kalever@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        nbd@other.debian.org, Josef Bacik <josef@toxicpanda.com>,
-        axboe@kernel.dk, Ilya Dryomov <idryomov@redhat.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2PR04CA0090.apcprd04.prod.outlook.com (2603:1096:202:15::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.35 via Frontend Transport; Tue, 18 May 2021 09:52:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9fb500af-3935-4996-a33d-08d919e29a9d
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3082:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR11MB308256E38D9CD215CE957B30F02C9@DM6PR11MB3082.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BUQZEyeZIkE3lGdy0mRV0K0sC1rwiLVbDw4rZJCdxmPdX9ZcmCj/Jqx1Xwj6cndv00JPVOLyxbKI3qrWVk7ARUiwdJCpnR95FoWJyhV2vE/FWW8hgvBrFYu1rf43mWEulohTxbl1vXU4yiIVM4XtXzoO/rui2+JWOX5P35jSYvXNf4wJ5VpLD9ewhg8PGT2N9v6ap0hGn5DvPWij32RSSIjVy+jjx72VkoYpTml9YQBsMUKSUZGyTcoSYuVqhuFxEFe0N81wt/tzw+k7oc2oaQJLIar4sx7QofL8t3wEByI6DevUh2RBTjwoo8L7Xu/W2er4ztQnXq+c7ws1x8qraI1Tcj8ElaAVC031FPjgSPgLfRyUqIoubhVptbc6+OZt56JVFRuocZzDH3v9POfHN0Sn2s/Dz5nx4UjIg5FGse9HDBQxTbW+7+jqOKX4Oi3O9bR7O4Cmdnw0v8mkAsyaic3aynaTGtK5ijP99xy/BKnGY8c40noJCHSoDeNZypb++UFY+5VJnHm7NLPqs2uSasIzOQBIrypOgbq+n4vZxL1u4GJSVy0JXD1VDUZFrqYlSs+iHZcEuwWl0bn1mt5PuLFAzfa7ueNan2Xk4mLVbATfQHnO5cA+PGDYd5tfz8hclFUJiMuK225kvl6lSIgVcLzCidbzQ1iQWEm3H+2eoA0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB0075.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(366004)(39850400004)(66556008)(52116002)(83380400001)(66946007)(66476007)(110136005)(38350700002)(478600001)(8936002)(6666004)(5660300002)(38100700002)(6486002)(316002)(2906002)(2616005)(6512007)(9686003)(186003)(956004)(4326008)(1076003)(16526019)(36756003)(107886003)(8676002)(26005)(86362001)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?gZmnEtFH2lA+heNZHOFhOmUtjO3rv7o1NIDc35xTpDW+PVOTQXMkDwPROTWH?=
+ =?us-ascii?Q?25jEh46L2VHS8qsvNq/BudOxqfYFCMJcRaZ9XiQLlWe7+7lIJ+ajcW57G1NY?=
+ =?us-ascii?Q?1+P0VqYDHsITxiCHJadQ+o3KiSNq2vJi6DM3+cTwwCWmVGlWQwCS0ubis7lO?=
+ =?us-ascii?Q?tOWUcyq5OdFnMAftuDJ6di7S0EQ12pYo07JLWsK+Y1ONHTzwqs/NntrSZrOM?=
+ =?us-ascii?Q?UZN3aRuamhUfd/g4Aj9ZJnlWxb/MlBXieoZXYcl5xIUcStb68No++bJR+WQf?=
+ =?us-ascii?Q?pNdyxiXdzrWTz0pr043BWCKUCbpmYzyhGuOLd2I7pDJNnomQ/NctcI++IbRY?=
+ =?us-ascii?Q?BJbtmIJtGgGlZN6Urv0R6prdw2AmJxOYuUs2h0ei4PVj0X691E9uthSVk6w7?=
+ =?us-ascii?Q?Ex0jaffnxYlNOpKXmdicXaf0bs25UECwscKvdsl4U7kvovHOVIWAXqMTTzBd?=
+ =?us-ascii?Q?KAizYfCc1kVkSH/MRbYQOP4X2hOPcl3peANVWLHEnP4plO91+SQAMQsoeaxc?=
+ =?us-ascii?Q?jD/sBx0KLt8uLcIzuQ29nKnkvTmyLj120mKiADEy/DLKCL3O7qPqegFEnCL5?=
+ =?us-ascii?Q?fbpuTLw/xeSvDZ1C8hIy8W1iiWzai5hCdjAQcy85mws/VnS3loROwzlEwdU+?=
+ =?us-ascii?Q?6sGixJc0Wjsdi9AwwYO4+umN8HNHZM82U7n1EKeEbHuK56PKqO05HQN688VV?=
+ =?us-ascii?Q?MY/gqJ3T+pt+UTSlESksh5ox7+jrB61/PDv2UqGw7fr1O4fqTxU8T5Q+Nytg?=
+ =?us-ascii?Q?VvNiw83uBIRn5cDY+h7pLgZW0Zfaatz+aTjxO237bX7d5Y/tkPdGdCQ8cIlL?=
+ =?us-ascii?Q?kVFlHXalgcAdGjVeXMXacKntMUgIEhn0rBar51kfjf/Pv3V+b8nvbCO9nyjm?=
+ =?us-ascii?Q?XUqQOpjcwb1Xroq2Mne+8E8Ol0wxym0tHd7REbaHchvVdjyPdAZVon6R3gHg?=
+ =?us-ascii?Q?1r1KxQOuMJJyDL5anLo+aJHwLpD8TajrFHetB1DYcgWXrt3lzXKxQIY09Pqg?=
+ =?us-ascii?Q?t50uieGYXHCn3l0qppPdsboMxAIN7J3OW3yPxNfKRawvRPTGm9GEW/0MmOam?=
+ =?us-ascii?Q?J7BCO6uxVASQlk1TPyiw+vrEKN2upqTIVYx0FUzrF58yAOeN87L9YNZczLJT?=
+ =?us-ascii?Q?5l/B4yvQ+mER0/GSr+3hRx7jyph+mJfKHP+Rnnix3Am/p3dRQyhkdWQMdG/p?=
+ =?us-ascii?Q?8gNtB8cVwM3k//mVGtSmyIjTdTPb+qV3z98KlmiIujB8GOggVUSwR//0B6e+?=
+ =?us-ascii?Q?YyxlCBv4rKnls/7ndYbg7ljsXt4NKZ612S1OF5uzlZPq21NsKMqOW6WDcMPu?=
+ =?us-ascii?Q?VzmAmoZ8sILsYzYJmZpori/k?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fb500af-3935-4996-a33d-08d919e29a9d
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB0075.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2021 09:52:10.1328
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PBMbvPJsGsTJAWA8WvfEv6oKsnAkLr94yTvbHvtapXd8ZQ08sxfYwBZ75QH16mQGScysdIC8h/ZII+EZEiK0vFsaLMj1t+f4K0A8sZRDrM8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 2:54 PM Ming Lei <ming.lei@redhat.com> wrote:
->
-> On Tue, May 18, 2021 at 01:22:19PM +0530, Prasanna Kalever wrote:
-> > On Tue, May 18, 2021 at 6:00 AM Ming Lei <ming.lei@redhat.com> wrote:
-> > >
-> > > Hello Prasanna,
-> > >
-> > > On Thu, Apr 29, 2021 at 03:58:28PM +0530, Prasanna Kumar Kalever wrote:
-> > > > Problem:
-> > > > On reconfigure of device, there is no way to defend if the backend
-> > > > storage is matching with the initial backend storage.
-> > > >
-> > > > Say, if an initial connect request for backend "pool1/image1" got
-> > > > mapped to /dev/nbd0 and the userspace process is terminated. A next
-> > > > reconfigure request within NBD_ATTR_DEAD_CONN_TIMEOUT is allowed to
-> > > > use /dev/nbd0 for a different backend "pool1/image2"
-> > > >
-> > > > For example, an operation like below could be dangerous:
-> > >
-> >
-> > Hello Ming,
-> >
-> > > Can you explain a bit why it is dangerous?
-> >
-> > Yes, sure. Please check the below comments inline,
-> >
-> > >
-> > > >
-> > > > $ sudo rbd-nbd map --try-netlink rbd-pool/ext4-image
-> > > > /dev/nbd0
-> > > > $ sudo blkid /dev/nbd0
-> > > > /dev/nbd0: UUID="bfc444b4-64b1-418f-8b36-6e0d170cfc04" TYPE="ext4"
-> >
-> > On Map the rbd-nbd attempting to send NBD_CMD_CONNECT, for backend
-> > 'rbd-pool/ext4-image'. Post which kernel will allocate a new device
-> > say /dev/nbd0 for backend file rbd-pool/ext4-image (format:
-> > <pool>/<backendfile>)
-> >
-> > > > $ sudo pkill -9 rbd-nbd
-> >
-> > Assume normally or abnormally the userspace process (rbd-nbd here) is
-> > terminated, but then as per the settings the device /dev/nbd0 is not
-> > returned immediately, the kernel will wait for the
-> > NBD_ATTR_DEAD_CONN_TIMEOUT to expire.
-> >
-> > At this point two things could be possible:
-> > 1. if there is a reconfigure request from userspace within the timeout
-> > then the kernel might reassign the same device /dev/nbd0.
-> > 2. if the timeout has expired, then the device will be relieved.
-> >
-> > > > $ sudo rbd-nbd attach --try-netlink --device /dev/nbd0 rbd-pool/xfs-image
-> > > > /dev/nbd0
-> > > > $ sudo blkid /dev/nbd0
-> > > > /dev/nbd0: UUID="d29bf343-6570-4069-a9ea-2fa156ced908" TYPE="xfs"
-> >
-> > On attach the rbd-nbd attempt to send NBD_CMD_RECONFIGURE, after which
-> > the kernel will assign '--device /dev/nbd0' to specified backend.
-> >
-> > But there is a chance that userspace processes might accidentally send
-> > NBD_CMD_RECONFIGURE claiming for /dev/nbd0 for a different backend
-> > (rbd-pool/xfs-image instead of original rbd-pool/ext4-image).
-> > Currently, there is no mechanism to verify if the backend provided
-> > later with attach(NBD_CMD_RECONFIGURE) is matching with the one
-> > provided originally with map(NBD_CMD_CONNECT) before granting for a
-> > attach or reconfigure.
-> >
-> > For example in the above-explained scenario:
-> > Assume EXT4 on rbd-pool/ext4-image was mounted, after attach (Note:
-> > device /dev/nbd0 is reconfigured to a different backend file) XFS on
-> > rbd-pool/xfs-image would get corrupted. If there was an application
-> > using /dev/nbd0 directly (as a raw block volume), it wouldn't be happy
-> > either.
->
-> OK, got it. If I understand correctly, what you need is to not allow
-> reconfigure if the nbd disk is mounted, right?
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-Excuse me, not exactly. Mount was one example scenario to showcase why
-allowing attaching without any validation could be dangerous.
-Basically, we want a way to check and verify if the backend specified
-at map time and backend specified at attach(reconfigure) time are
-matching for a given device, only if they are matching proceed to
-attach else fail.
+Hi all,
 
->
-> >
-> > > >
-> > > > Solution:
-> > > > Provide a way for userspace processes to keep some metadata to identify
-> > > > between the device and the backend, so that when a reconfigure request is
-> > > > made, we can compare and avoid such dangerous operations.
-> > > >
-> > > > With this solution, as part of the initial connect request, backend
-> > > > path can be stored in the sysfs per device config, so that on a reconfigure
-> > > > request it's easy to check if the backend path matches with the initial
-> > > > connect backend path.
-> > > >
-> > > > Please note, ioctl interface to nbd will not have these changes, as there
-> > > > won't be any reconfigure.
-> > >
-> > > BTW, loop has similar issue, and patch of 'block: add a sequence number to disks'
-> > > is added for addressing this issue, what do you think of that generic
-> > > approach wrt. this nbd's issue? such as used the exposed sysfs sequence number
-> > > for addressing this issue?
-> > >
-> > > https://lore.kernel.org/linux-block/YH81n34d2G3C4Re+@gardel-login/#r
-> >
-> > If I understand the changes and the background of the fix correctly, I
-> > think with that fix author is trying to monotonically increase the seq
-> > number and add it to the disk on every single device map/attach and
-> > expose it through the sysfs, which will help the userspace processes
-> > further to correlate events for particular and specific devices that
-> > reuse the same loop device.
-> >
-> > Coming back to my changes:
-> > I think here with this fix, we are trying to solve a different
-> > problem. The fix with this patch accepts a cookie or a backend string
-> > (could be file-path or whatever id userspace choose to provide) from
-> > userspace at the time of map and stores it in the sysfs
-> > /sys/block/nbdX/backend path and persists it until unmap is issued on
-> > the device (meaning that identity stays throughout the life cycle of
-> > that device, no matter how many detach and attaches happen).
->
-> Your solution needs change from userspace side, so it isn't flexible.
->
-> > If there
-> > is a detach request in between (not unmap) then on the next attach
-> > (reconfigure request to reuse the same device) the stored
-> > cookie/UUID/backend-string will stand as a reference to verify if the
-> > newly passed backend is matching with the actual backend passed at map
-> > time to avoid any misconfigurations by accident and to safely proceed
-> > with attach.
->
-> We can avoid reconfigure if the nbd disk is opened exclusively, such as
-> mount, please see if the following patch can solve your problem:
+The patch "drm: xlnx: add is_layer_vid() to simplify the code" is to
+simplify the code which judge the layer type.
 
-IMHO, we should almost never allow reconfigure/reattaching a given
-device with a different backend (except in cases like live migration,
-which the application should take care of), and not just when nbd disk
-is opened exclusively.
+The patch "drm: xlnx: consolidate the functions which programming AUDIO_VIDEO_SELECT register"
+is to consolidate the code that can configure vid/gfx/audio to output
+different mode (live/mem/disable/tpg) in one function "zynqmp_disp_avbuf_output_select".
 
-When an attach (reconfigure) is issued, Its application's logic to
-provide the same matching cookie (or device-string or a uuid) so that
-kernel can validate it with /sys/block/nbdX/backend and continue
-safely to attach and reassign the device back.
+Changelogs:
 
-This is how it is supposed to be used:
-https://github.com/ceph/ceph/pull/41323#issuecomment-842148450
+ V1 ---> V2:
+ - As per Paul's comments, add "const" to the argument "layer" of the
+ function is_layer_vid, and just return the result of "==" operator, and
+ add Acked-by from Paul. 
+ - As per Paul's comments, fix some pattern errors and use FIELD_PREP()
+ macro instead of *_SHIFT and use GENMASK/BIT to create *_MASK macros.
 
-Thanks!
---
-Prasanna
+Thanks,
+Quanyang
 
 
->
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 4ff71b579cfc..045532a68d1e 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -2063,6 +2063,11 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
->                 return -EINVAL;
->         }
->
-> +       /* avoid changing device under exclusive owner */
-> +       ret = bd_prepare_to_claim(nbd->disk->part0, nbd_genl_reconfigure);
-> +       if (ret)
-> +               goto out_no_abort_claim;
-> +
->         mutex_lock(&nbd->config_lock);
->         config = nbd->config;
->         if (!test_bit(NBD_RT_BOUND, &config->runtime_flags) ||
-> @@ -2141,6 +2146,8 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
->                 }
->         }
->  out:
-> +       bd_abort_claiming(nbd->disk->part0, nbd_genl_reconfigure);
-> +out_no_abort_claim:
->         mutex_unlock(&nbd->config_lock);
->         nbd_config_put(nbd);
->         nbd_put(nbd);
->
->
-> Thanks,
-> Ming
->
+Quanyang Wang (2):
+  drm: xlnx: add is_layer_vid() to simplify the code
+  drm: xlnx: consolidate the functions which programming
+    AUDIO_VIDEO_SELECT register
+
+ drivers/gpu/drm/xlnx/zynqmp_disp.c      | 193 ++++++++++++++----------
+ drivers/gpu/drm/xlnx/zynqmp_disp_regs.h |  23 +--
+ 2 files changed, 121 insertions(+), 95 deletions(-)
+
+-- 
+2.25.1
 
