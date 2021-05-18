@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F84B3881E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBB13881EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240695AbhERVPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236093AbhERVPN (ORCPT
+        id S242956AbhERVPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:15:39 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:57336 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242341AbhERVPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:15:13 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11BAC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:13:53 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id o8so13189179ljp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=user-agent:from:to:cc:subject:message-id:date:mime-version;
-        bh=zWKGOVNhjbxONyYQxFjkbgyC/wTgtXeC2wfef2aSMW4=;
-        b=WDElqSZ1gLaLCHrQf0JD8yg8hs80vh49emG7Ulqr2BvJ/ELlGhPc8cCUqxFcQfKdmy
-         5tOU5xefJppSPreHlboZoTVygmc3sdz92XpaRZAiaBjGAw2IHyG5bjGseuYcD6K0inso
-         oOXnIaTv7/6VYq/eYTefm4yQRhnn+BeqhiB9frIdfimGOHPvnBcHHaVFp1fTwykGOHV7
-         Zd0QrnYesXI9N8kfMceqvVR7HRy2tEaONQ2178tf0rnC5NpKE2GOUShJQDXUfCCwEhG0
-         xIAxO12bqPXqD73yNqAyp/Hbyif3oe4RwutD8wUhi1AeFoSumnvKiTBhw8AxeeEhSO8m
-         Eikg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:user-agent:from:to:cc:subject:message-id:date
-         :mime-version;
-        bh=zWKGOVNhjbxONyYQxFjkbgyC/wTgtXeC2wfef2aSMW4=;
-        b=ZFwHFdI8LdvcjBHEsH6QWuGX0JkN5zjjveKGuS7+TAOxqLPmh1uJOHymrAagGgs5sD
-         H+BbBNEq5qDtvYJfhCdSGhaZOFMpynrPTgnCDeR54REcmi+GHVHRpMlPMwB8yigD6UCM
-         4EyNxJpy49pTJFLo4byPzITTdXibC88Uhoox9yNBpCMLEeTq6evArD5QU9hqwVMcrHFV
-         +qWf7K4uH+mreeNjkGcU5+ABSZm7Epa5q5lLNUEdHQO5odpNnrO7spleAd8nGxQsWd6E
-         TEst8LVSLsEiEj+tBeHh3p9bKMCpqSMUEUkP5FEeM6AYVbCfpFYOLAL06D9N3baM0WpY
-         3VuA==
-X-Gm-Message-State: AOAM533ikTNUxE3PMthNUs0hHlvAJewCrFOCVHZasoZ/riBBSzkpb9gP
-        X/Ikr6+0BTXb9M+oGH8YzV0=
-X-Google-Smtp-Source: ABdhPJx5XM5KiDzzDdFa1rKs5QFdBUREdGrMcVeGKGKTOPI2NGez5ChpnURa9HW/HH85xSAP3HgRpw==
-X-Received: by 2002:a2e:8682:: with SMTP id l2mr5755054lji.298.1621372432398;
-        Tue, 18 May 2021 14:13:52 -0700 (PDT)
-Received: from wractal (c-9acce455.023-86-6d6c6d4.bbcust.telenor.se. [85.228.204.154])
-        by smtp.gmail.com with ESMTPSA id 81sm2404475lfc.300.2021.05.18.14.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 14:13:52 -0700 (PDT)
-User-agent: mu4e 1.4.15; emacs 27.2
-From:   Waqar Hameed <whame91@gmail.com>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: [PATCH] dma-buf: Fix minor typo in struct dma_buf_ops documentation
-Message-ID: <87k0nvn5ne.fsf@gmail.com>
-Date:   Tue, 18 May 2021 23:13:51 +0200
+        Tue, 18 May 2021 17:15:37 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-258-XZiFWQz-NZmRbfTBBekA3Q-1; Tue, 18 May 2021 22:14:06 +0100
+X-MC-Unique: XZiFWQz-NZmRbfTBBekA3Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 22:14:04 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 18 May 2021 22:14:04 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>
+CC:     Eric Biggers <ebiggers@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "Russell King" <linux@armlinux.org.uk>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+Subject: RE: [PATCH v2 07/13] asm-generic: unaligned always use struct helpers
+Thread-Topic: [PATCH v2 07/13] asm-generic: unaligned always use struct
+ helpers
+Thread-Index: AQHXS/YCMZkjEhef40atSxJR3LrT4Krpu4HQ
+Date:   Tue, 18 May 2021 21:14:04 +0000
+Message-ID: <2a31acad459d4e37b31da5b270dcf0ba@AcuMS.aculab.com>
+References: <20210514100106.3404011-1-arnd@kernel.org>
+ <20210514100106.3404011-8-arnd@kernel.org> <YKLlyQnR+3uW4ETD@gmail.com>
+ <CAK8P3a0iqe5V6uvaW+Eo0qiwzvyUVavVEfZGwXh4s8ad+0RdCg@mail.gmail.com>
+ <CAHk-=wjjo+F8HVkq3eLg+=7hjZPF5mkA4JbgAU8FGE_oAw2MEg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjjo+F8HVkq3eLg+=7hjZPF5mkA4JbgAU8FGE_oAw2MEg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a minor typo.
-
-Signed-off-by: Waqar Hameed <whame91@gmail.com>
----
- include/linux/dma-buf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index efdc56b9d95f..5ae51bab158b 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -50,7 +50,7 @@ struct dma_buf_ops {
- 	 * &dma_buf_attachment.dev can access the provided &dma_buf. Exporters
- 	 * which support buffer objects in special locations like VRAM or
- 	 * device-specific carveout areas should check whether the buffer could
--	 * be move to system memory (or directly accessed by the provided
-+	 * be moved to system memory (or directly accessed by the provided
- 	 * device), and otherwise need to fail the attach operation.
- 	 *
- 	 * The exporter should also in general check whether the current
--- 
-2.25.1
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTggTWF5IDIwMjEgMTU6NTYNCj4gDQo+IE9u
+IFR1ZSwgTWF5IDE4LCAyMDIxIGF0IDEyOjI3IEFNIEFybmQgQmVyZ21hbm4gPGFybmRAa2VybmVs
+Lm9yZz4gd3JvdGU6DQo+ID4gPg0KPiA+ID4gSSB3b25kZXIgaWYgdGhlIGtlcm5lbCBzaG91bGQg
+ZG8gdGhlIHNhbWUsIG9yIHdoZXRoZXIgdGhlcmUgYXJlIHN0aWxsIGNhc2VzDQo+ID4gPiB3aGVy
+ZSBtZW1jcHkoKSBpc24ndCBjb21waWxlZCBvcHRpbWFsbHkuICBhcm12Ni83IHVzZWQgdG8gYmUg
+b25lIHN1Y2ggY2FzZSwgYnV0DQo+ID4gPiBpdCB3YXMgZml4ZWQgaW4gZ2NjIDYuDQo+ID4NCj4g
+PiBJdCB3b3VsZCBoYXZlIHRvIGJlIG1lbW1vdmUoKSwgbm90IG1lbWNweSgpIGluIHRoaXMgY2Fz
+ZSwgcmlnaHQ/DQo+IA0KPiBObywgaXQgd291bGQgc2ltcGx5IGJlIHNvbWV0aGluZyBsaWtlDQo+
+IA0KPiAgICNkZWZpbmUgX19nZXRfdW5hbGlnbmVkX3QodHlwZSwgcHRyKSBcDQo+ICAgICAgICAg
+KHsgdHlwZSBfX3ZhbDsgbWVtY3B5KCZfX3ZhbCwgcHRyLCBzaXplb2YodHlwZSkpOyBfX3ZhbDsg
+fSkNCg0KWW91IHN0aWxsIG5lZWQgc29tZXRoaW5nIHRvIGVuc3VyZSB0aGF0IGdjYyBjYW4ndCBh
+c3N1bWUgdGhhdA0KJ3B0cicgaGFzIGFuIGFsaWduZWQgdHlwZS4NCklmIHRoZXJlIGlzIGFuICdp
+bnQgKnB0cicgdmlzaWJsZSBpbiB0aGUgY2FsbCBjaGFpbiBubyBhbW91bnQNCm9mICh2b2lkICop
+IGNhc3RzIHdpbGwgbWFrZSBnY2MgZm9yZ2V0IHRoZSBhbGlnbm1lbnQuDQpTbyB0aGUgbWVtY3B5
+KCkgd2lsbCBnZXQgY29udmVydGVkIHRvIGFuIGFsaWduZWQgbG9hZC1zdG9yZSBwYWlyLg0KKFRo
+aXMgaGFzIGFsd2F5cyBjYXVzZWQgZ3JpZWYgb24gc3BhcmMuKQ0KDQpBIGNhc3QgdGhvdWdoIChs
+b25nKSBtaWdodCBiZSBlbm91Z2gsIGFzIG1pZ2h0IGEgY2FzdCB0byBhIF9fcGFja2VkDQpzdHJ1
+Y3QgcG9pbnRlciB0eXBlLg0KVXNpbmcgYSB1bmlvbiBvZiB0aGUgdHdvIHBvaW50ZXIgdHlwZXMg
+bWlnaHQgYmUgb2sgLSBidXQgbWlnaHQNCmdlbmVyYXRlIGEgc3RvcmUvbG9hZCB0byBzdGFjay4N
+CkFuIGFsdGVybmF0aXZlIGlzIGFuIGFzbSBzdGF0ZW1lbnQgd2l0aCBpbnB1dCBhbmQgb3V0cHV0
+IG9mIGRpZmZlcmVudA0KcG9pbnRlciB0eXBlcyBidXQgdXNpbmcgdGhlIHNhbWUgcmVnaXN0ZXIg
+Zm9yIGJvdGguDQpUaGF0IG91Z2h0IHRvIGZvcmNlIHRoZSBjb21waWxlIHRvIGZvcmdldCBhbnkg
+dHJhY2tlZCB0eXBlDQphbmQgdmFsdWUuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
+c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
+IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
