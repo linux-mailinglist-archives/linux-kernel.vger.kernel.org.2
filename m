@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5971386E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247D4386E5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345048AbhERAeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:34:01 -0400
-Received: from gateway30.websitewelcome.com ([192.185.160.12]:43679 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245614AbhERAeB (ORCPT
+        id S1345031AbhERAdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345021AbhERAdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:34:01 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id BE341922B
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:08:21 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id inHZlx53hMGeEinHZlzWMT; Mon, 17 May 2021 19:08:21 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=WdyekvjUUs1pEaBFDAcSeN8/wgj+hgvCSZ8KDF9fgKQ=; b=QGiVLJIoIP2dNncV1y7/ndqv2q
-        3Fii5GAlykxh5JZQtr4Udy9XhV8ub4XyCi6glN6VoyAEC0G/UTI+1eVgUIFf9ZBQkmEKSVpkrGBmj
-        lzdo7z53e63NB73tFQKdt2KJEg9COOVrSQ3eUepQ20wzwM27VGX5NIeZWnqe2XnbENOHM5m8mawdo
-        JfRhGi48eTh1ZniMzncDV/k5SzDnepe+vC9JZW8ya3z6/4XxrGdvbyd3C/P3kO8N5lsTQmg4uzzRC
-        KRbI37HgNcaY0XLgkllH0p7bERfhdGiuP87d9opXrHoPvg6dveQKi9ItZPW6OIWQtw581ZuMEtSb6
-        U6sTxWjw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53398 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1linHW-002BXL-8X; Mon, 17 May 2021 19:08:18 -0500
-Subject: Re: [PATCH RESEND][next] netxen_nic: Fix fall-through warnings for
- Clang
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Manish Chopra <manishc@marvell.com>,
-        Rahul Verma <rahulv@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210305094529.GA140903@embeddedor>
- <7b648909-c16d-4f52-7524-896b7e2fdb52@embeddedor.com>
-Message-ID: <79286a03-5e7e-d019-2189-6811bd08c84b@embeddedor.com>
-Date:   Mon, 17 May 2021 19:08:59 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 20:33:02 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE5C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:31:45 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id e11so9379751ljn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dtl5qW5ngyrCxRtU2FQ2/K9MskvmJ8cOWL2EWopDeQ0=;
+        b=zevlSmEyAgZw0Dl3SUDt8OftbZM0k008Vgi07bfY+kwE7mFX51r6s1DPcpuH/Cpu/s
+         tWhphMX7YqNthYOymSaH4fzZTpQYqqrx02LX5SOstqOWY0E2UaVUQug89GW3WM5tbZYZ
+         5WEw0gowzHqGFr+/04jVhpvzoeO4RXcBOpx8E2VUCGdWeoV+la5h9842jEdanXxYuZBL
+         czCYcUsHbGfyQCm4AdIzBs2ZqWl7yEM92rFc4srwWyonO6WfkNS2UHsW+M2G2lTUQLQm
+         5apjcaiJPi8THjO5lyyRtzWviZ/QcYKMqh/oW4SPn7UGCFwd1udiwW06fZWGgkK+2LZ6
+         j5+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dtl5qW5ngyrCxRtU2FQ2/K9MskvmJ8cOWL2EWopDeQ0=;
+        b=rOptp5GdMBRItf6pJbzUaUOqryja/DWKi9/ZUqeK/tvjQr6ocpBaqbzyp10GuuwU62
+         BWAjXd+olVfkkSAdldVpRTFqtzTjL/rL01yMTbw8GN35xnp7hzO0oYq4XQFpi/4sNxvA
+         nmlzzTFNGs7sJ3eUw4bC/o3dT5g6bRP6yGeum/gI+HphCw4tSiU5kjzt9gZVNFdaY0mV
+         Sx5ZNWo7uLzUzTHPbrtY4w3NDBjuMuBQVKJAkYnnUf+wgKHPf4lm79WkFltXBwsRM8yG
+         PKTVxJRjjgJxXfmWggNBbtY/fVDtUwifEOPyNDzgzKaXgYxjl/L3JoSNCm36ZsOIyM1G
+         da3Q==
+X-Gm-Message-State: AOAM531ttTGcacKh8XSMfxTusSiqM4ImaqYxS7E0KR3VTb25C85VSAxI
+        oUojsizxo/3scu8Jh2xDqgi7tAMBSVrt0OHQa0Tfl9U19u4=
+X-Google-Smtp-Source: ABdhPJwvbHPkqdIqYxErmiViZeFTg8U61Ma14ffPQ6RCRW3Fmd5pOxxjDCM1f4rUjgRfKf+VGK7L02ebIy/X5EwfWJg=
+X-Received: by 2002:a2e:22c3:: with SMTP id i186mr1755612lji.273.1621297903739;
+ Mon, 17 May 2021 17:31:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7b648909-c16d-4f52-7524-896b7e2fdb52@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1linHW-002BXL-8X
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53398
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 21
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20210503144350.7496-1-aardelean@deviqon.com> <20210508161643.5990ec15@jic23-huawei>
+ <CACRpkdaK6AMVUC+B7JW3y28nNeAYHAS9UjC40KfShZNrHLD7rQ@mail.gmail.com>
+ <20210509111925.52f3f4e3@jic23-huawei> <CACRpkdZ2mC5V6PdphmtmtQKHZwPfc7mVgZ-FH3io2ihB8foA4g@mail.gmail.com>
+ <YJjXU/mBKnmknItg@kroah.com>
+In-Reply-To: <YJjXU/mBKnmknItg@kroah.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 18 May 2021 02:31:32 +0200
+Message-ID: <CACRpkdaNuGB+qpW-hjsGs5rC0k3nKwKDT0jUU6Jpon1JRf3MoQ@mail.gmail.com>
+Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Nuno Sa <nuno.sa@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, May 10, 2021 at 8:48 AM Greg KH <gregkh@linuxfoundation.org> wrote:
 
-I'm taking this in my -next[1] branch for v5.14.
+> I can take IIO changes in my char/misc tree like many other driver
+> subsystems go, if the staging portions are not involved.  Otherwise, I
+> really don't see the problem with it as-is, what problems is this
+> causing at the moment?
 
-Thanks
---
-Gustavo
+It's in the thread: pipeline stalls, haha :)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+It has happened more than once that Jonathan needs to wait for
+things to percolate upstream before he can base new stuff on it.
 
-On 4/20/21 15:23, Gustavo A. R. Silva wrote:
-> Hi all,
-> 
-> Friendly ping: who can take this, please?
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> On 3/5/21 03:45, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->> by explicitly adding a goto statement instead of just letting the code
->> fall through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>  drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
->> index 08f9477d2ee8..35ec9aab3dc7 100644
->> --- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
->> +++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
->> @@ -1685,6 +1685,7 @@ netxen_process_rcv_ring(struct nx_host_sds_ring *sds_ring, int max)
->>  			break;
->>  		case NETXEN_NIC_RESPONSE_DESC:
->>  			netxen_handle_fw_message(desc_cnt, consumer, sds_ring);
->> +			goto skip;
->>  		default:
->>  			goto skip;
->>  		}
->>
+Personally I've encountered fixes that are waiting in your tree
+so that new fixes on fixes, or next development cannot be applied
+because the fixes need to land in a tag upstream so that can be
+merged in first as base for the new development. Essentially
+any time patches with dependencies end up on two branches.
+
+Also it takes a while after the merge window for you to move
+branches to -rc1 or similar (whether through merge or rebase),
+as is natural. Which will delay everything using those. It's just
+a natural side-effect of hierarchy.
+
+Nothing disastrous but it makes things congest. Maybe it can
+be processed around, I don't exactly know the routine around
+your trees and branches.
+
+Yours,
+Linus Walleij
