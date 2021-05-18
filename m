@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA1A387885
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE11B387889
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244853AbhERMOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:14:53 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4661 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbhERMOw (ORCPT
+        id S245395AbhERMRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233638AbhERMRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:14:52 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FkvwQ5gZjz16QMh;
-        Tue, 18 May 2021 20:10:46 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 20:13:31 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 18 May 2021 20:13:31 +0800
-Subject: Re: [PATCH 5.4 000/141] 5.4.120-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210517140242.729269392@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <9dd7fe6a-568e-545c-a6b9-98ed4970f1f6@huawei.com>
-Date:   Tue, 18 May 2021 20:13:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 18 May 2021 08:17:05 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF75C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EVyVWL3Bw3em1SB7guIWDG8Dh2TRp8K8vFAoLmQuXg0=; b=dK1razk150t4Tfj9gcVwpAGT5B
+        AhGa2Peh9q7nPF9Z8/VTi/wqCEACgq7gerlbNloPcsbVqJemGywd5klfOMz8jwi/QuANCChnGD+Et
+        8yEYkc0SPRURXT0dCSqbBFKtHqp0mrP0ujlIB7Izx6ey8ZDH+EF36xuDq6v2Suc1dkSWL79Vy8V/r
+        2bzipjqOo+oHFCMuaO7mNNq8DVlhfhecerI4+7lcFaonA8rWIIqBVUDssssOgQzwH2sxeSG9tulCm
+        aaT2PMROkDNkxT2Uj8VTZH37APoa47Yox3tFOnD4PmYWJPSMU6gep9dM4nP42U6wq/cT2eJTKR1fX
+        ehUyzWBw==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:55062 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1liydQ-0004GM-Jo; Tue, 18 May 2021 13:15:40 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1liydQ-0004Po-2c; Tue, 18 May 2021 13:15:40 +0100
+In-Reply-To: <20210518120633.GW12395@shell.armlinux.org.uk>
+References: <20210518120633.GW12395@shell.armlinux.org.uk>
+From:   "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     rppt@kernel.org, ardb@kernel.org, linus.walleij@linaro.org,
+        akpm@linux-foundation.org, carver4lio@163.com,
+        tiantao6@hisilicon.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] ARM: change vmalloc_min to be unsigned long
 MIME-Version: 1.0
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1liydQ-0004Po-2c@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Tue, 18 May 2021 13:15:40 +0100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+vmalloc_min is currently a void pointer, but everywhere its used
+contains a cast - either to a void pointer when setting or back to
+an integer type when being used. Eliminate these casts by changing
+its type to unsigned long.
 
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+ arch/arm/mm/mmu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-On 2021/5/17 22:00, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.120 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 19 May 2021 14:02:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.120-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+index c06ebfbc48c4..206c345f063e 100644
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -1123,8 +1123,8 @@ void __init debug_ll_io_init(void)
+ }
+ #endif
+ 
+-static void * __initdata vmalloc_min =
+-	(void *)(VMALLOC_END - (240 << 20) - VMALLOC_OFFSET);
++static unsigned long __initdata vmalloc_min =
++	VMALLOC_END - (240 << 20) - VMALLOC_OFFSET;
+ 
+ /*
+  * vmalloc=size forces the vmalloc area to be exactly 'size'
+@@ -1147,7 +1147,7 @@ static int __init early_vmalloc(char *arg)
+ 			vmalloc_reserve >> 20);
+ 	}
+ 
+-	vmalloc_min = (void *)(VMALLOC_END - vmalloc_reserve);
++	vmalloc_min = VMALLOC_END - vmalloc_reserve;
+ 	return 0;
+ }
+ early_param("vmalloc", early_vmalloc);
+@@ -1167,7 +1167,7 @@ void __init adjust_lowmem_bounds(void)
+ 	 * and may itself be outside the valid range for which phys_addr_t
+ 	 * and therefore __pa() is defined.
+ 	 */
+-	vmalloc_limit = (u64)(uintptr_t)vmalloc_min - PAGE_OFFSET + PHYS_OFFSET;
++	vmalloc_limit = (u64)vmalloc_min - PAGE_OFFSET + PHYS_OFFSET;
+ 
+ 	/*
+ 	 * The first usable region must be PMD aligned. Mark its start
+-- 
+2.20.1
 
-Tested on arm64 and x86 for 5.4.120-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.120-rc1
-Commit: d406e11dbc1324e375ab1f7c4669abc3cbd994f4
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8895
-passed: 8895
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8895
-passed: 8895
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
