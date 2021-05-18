@@ -2,117 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE1B388072
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F979388076
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351813AbhERTXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351794AbhERTXG (ORCPT
+        id S242872AbhERTYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:24:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61813 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351822AbhERTYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:23:06 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CEFC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:21:48 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id c17so8156227pfn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9yb6X9WCq6ingF8cwtbx1O7/WjF/mpD5c/jdXsDaiW8=;
-        b=gFus+75BX7d39Z9zBEPrdYyp79FrQv1jUMPYm2ohAEJtCBHKTsJ1GqCIzPrKBl3QUz
-         Q1T0JWWgL3GlIbuGhpOcHFlaUuT6zzUtFwSFsYdUpiYcSV6+tQQpFs4KyH5vB+sw3i8v
-         RbYtaOy9+KQ3pQtOzXb8DvCMdQBnrQc5WOqaUd0fIsYYlyVBrySVf05ZA3awm5lS0gBh
-         rYb9Ia1yuY5szSvQddMu+sBq+JgxSlkM4vSmOyDe7PXVUjHUXncr7ynLwjCI44MdLIlM
-         Mln1juREPPPbXVkNHh5yuzLiF91QanUBhmnZWT6zz24VkOYci18iKrJbag3oG4wnGB1g
-         iTUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9yb6X9WCq6ingF8cwtbx1O7/WjF/mpD5c/jdXsDaiW8=;
-        b=H96GRcwyPeU7n+qT5FeD50xdoYyQo8JYFbbUjnRBN+RamET9hzS5gPaBTgGEtFCjNK
-         iF/+3eX99Cl304qf/BnD1cstGe4Xz6WDILnVu8zOxa94G1C1ZJYS1ItqsbSERrX3cuNT
-         vSlTMuT8BvXb9H6f4Ps3fpSfUG/P/kIOLN3SDjZIi/cDRBzoV5TS+1qvYEUMfoT8QACk
-         VCPQ/Q565XUJiQJHLElPaEkl8tjv4ngZhIBwwDt0EOorKiZJ23oP1qKHsg1HywpvGuhn
-         zDzFAKvOzUS5qXDt7aRj2482pLtRrBJKT6NzPFHdX/mXlGNTEpE631LBp++UFzM5UaRI
-         wGaA==
-X-Gm-Message-State: AOAM532L7eWu7kUwq7HzZjWzcMt3tWJOoncquejZXKxgiUED66KHhBWG
-        pm8eQnG8U8s9IwDe0LS48Vj0iQ==
-X-Google-Smtp-Source: ABdhPJzf8Ouo/hZUfYP5y0VJIHPSShivzx5pKHMPDqldN5TT7V69LbUHeGgsVLYRNabdRSSjVXbTtQ==
-X-Received: by 2002:a63:f245:: with SMTP id d5mr6584667pgk.416.1621365707487;
-        Tue, 18 May 2021 12:21:47 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id o4sm12990504pfk.15.2021.05.18.12.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 12:21:46 -0700 (PDT)
-Date:   Tue, 18 May 2021 19:21:43 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v4 2/5] KVM: X86: Bail out of direct yield in case of
- under-committed scenarios
-Message-ID: <YKQTx381CGPp7uZY@google.com>
-References: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
- <1621339235-11131-2-git-send-email-wanpengli@tencent.com>
+        Tue, 18 May 2021 15:24:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621365776; h=Message-ID: Subject: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=hLybCi/ygasfpNLeWHoitaWEbLPIEH/x3PtjDNAca8A=; b=LfCZtLi7cRKfaKvtDViiW7orxhQbXhGBm4UZkztpFvxuo7HznChrdmnd4mHBasUS+vLamo64
+ X1n7hvuYWl2oyDvQ77qLDvFX0sQzPkRM+doZFwSDlGV2YqD59UKDTKmLBEC/BThwhtJ6tGzw
+ cZHPbZ/PDGHOu3RoAHwacbAH4LQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60a413f68dd30e785f1a2c50 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 May 2021 19:22:30
+ GMT
+Sender: sharathv=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0B34FC4323A; Tue, 18 May 2021 19:22:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sharathv)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17EC9C43217;
+        Tue, 18 May 2021 19:22:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621339235-11131-2-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 19 May 2021 00:52:27 +0530
+From:   sharathv@codeaurora.org
+To:     tgraf@suug.ch, herbert@gondor.apana.org.au, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, edumazet@google.com
+Subject: Internal error: Oops  from inet_frag_find, when inserting a IP frag
+ into a rhashtable
+Message-ID: <997dfef63f2bd14acc2e478758bfc425@codeaurora.org>
+X-Sender: sharathv@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> In case of under-committed scenarios, vCPU can get scheduling easily,
-> kvm_vcpu_yield_to add extra overhead, we can observe a lot of race
-> between vcpu->ready is true and yield fails due to p->state is
-> TASK_RUNNING. Let's bail out in such scenarios by checking the length
-> of current cpu runqueue, it can be treated as a hint of under-committed
-> instead of guarantee of accuracy. The directed_yield_successful/attempted
-> ratio can be improved from 50+% to 80+% in the under-committed scenario.
+Hi,
 
-The "50+% to 80+%" comment will be a bit confusing for future readers now that
-the single_task_running() case counts as an attempt.  I think the new comment
-would be something like "30%+ of directed-yield attempts can avoid the expensive
-lookups in kvm_sched_yield() in an under-committed scenario."  That would also
-provide the real justification, as bumping the success ratio isn't the true goal
-of this path.
+We are observing BUG_ON from the __get_vm_area_node when processing the 
+IP fragments in the context of NET_RX.
 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v2 -> v3:
->  * update patch description
-> v1 -> v2:
->  * move the check after attempted counting
->  * update patch description
-> 
->  arch/x86/kvm/x86.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9b6bca616929..dfb7c320581f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8360,6 +8360,9 @@ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
->  
->  	vcpu->stat.directed_yield_attempted++;
->  
-> +	if (single_task_running())
-> +		goto no_yield;
-> +
->  	rcu_read_lock();
->  	map = rcu_dereference(vcpu->kvm->arch.apic_map);
->  
-> -- 
-> 2.25.1
-> 
+When the rehashing is in progress and an insertion is attempted, we may 
+end up doing a bucket_table_alloc, which results in BUG_ON if in 
+interrupt context.
+Is it the case that the slow path code has to be executed only in the 
+context of rht_deferred_worker and not in any other context? OR are 
+these scenario's not anticipated and is a missed handling?
+
+Please provide your suggestions on proceeding further with this issue.
+
+  static struct vm_struct *__get_vm_area_node(unsigned long size,
+            unsigned long align, unsigned long flags, unsigned long 
+start,
+            unsigned long end, int node, gfp_t gfp_mask, const void 
+*caller)
+  {
+     struct vmap_area *va;
+     struct vm_struct *area;
+
+       BUG_ON(in_interrupt()); --> Point of panic.
+
+Panic stack:
+
+784.185010:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754253]@2 
+Workqueue: events rht_deferred_worker
+    784.185020:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754262]@2 
+pstate: 00c00005 (nzcv daif +PAN +UAO)
+    784.185032:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754274]@2 pc 
+: __get_vm_area_node.llvm.17374696036975823682+0x1ac/0x1c8
+    784.185041:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754283]@2 lr 
+: __vmalloc_node_flags_caller+0xb4/0x170
+    784.185046:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754289]@2 sp 
+: ffffffc0104135a0
+    784.185052:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754295]@2 
+x29: ffffffc0104135a0 x28: ffffff82ccbcae50
+    784.185060:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754303]@2 
+x27: ffffff82eea8d3c0 x26: ffffff800ad044b0
+    784.185067:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754311]@2 
+x25: fffffffffffffffe x24: fffffffffffffff5
+    784.185075:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754318]@2 
+x23: 0000000000001000 x22: 0068000000000f13
+    784.185082:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754326]@2 
+x21: 00000000ffffffff x20: 0000000000008040
+    784.185090:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754333]@2 
+x19: 0000000000002b20 x18: ffffffc0103ad0c0
+    784.185097:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754340]@2 
+x17: 00000000e1ba4003 x16: d101500000cf012a
+    784.185104:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754347]@2 
+x15: 52d39bfeffbfebd0 x14: 3130393837363534
+    784.185111:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754355]@2 
+x13: 000000003b1ad624 x12: 0000000000000000
+    784.185118:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754362]@2 
+x11: 000000000000002e x10: 0000000000000600
+    784.185126:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754369]@2 x9 
+: 00000000002c022a x8 : 0000000000000101
+    784.185133:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754376]@2 x7 
+: f6da030000000000 x6 : ffffffe14adb3990
+    784.185140:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754384]@2 x5 
+: 0000000000002b20 x4 : fffffffebfff0000
+    784.185148:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754391]@2 x3 
+: ffffffc010000000 x2 : 0000000000000022
+    784.185155:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754398]@2 x1 
+: 0000000000000001 x0 : 0000000000009000
+    784.185164:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754406]@2 
+Call trace:
+   784.185172:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754415]@2  
+__get_vm_area_node.llvm.17374696036975823682+0x1ac/0x1c8
+    784.185179:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754422]@2  
+__vmalloc_node_flags_caller+0xb4/0x170
+    784.185189:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754432]@2  
+kvmalloc_node+0x40/0xa8
+    784.185199:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754442]@2  
+rhashtable_insert_rehash+0x84/0x264
+    784.185206:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754449]@2  
+rhashtable_try_insert+0x3fc/0x478
+    784.185213:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754455]@2  
+rhashtable_insert_slow+0x34/0x5c
+    784.185223:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754466]@2  
+__rhashtable_insert_fast+0x368/0x4f0
+    784.185234:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754476]@2  
+inet_frag_find+0x21c/0x2a8
+    784.185244:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754486]@2  
+nf_ct_frag6_gather+0x1f4/0x2a0
+    784.185252:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754494]@2  
+ipv6_defrag+0x58/0x7c
+    784.185262:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754504]@2  
+nf_hook_slow+0xa8/0x148
+    784.185272:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754514]@2  
+ipv6_rcv+0x80/0xe4
+    784.185282:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754524]@2  
+__netif_receive_skb+0x84/0x17c
+    784.185290:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754532]@2  
+process_backlog+0x15c/0x1b8
+    784.185297:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754539]@2  
+napi_poll+0x88/0x284
+    784.185304:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754547]@2  
+net_rx_action+0xbc/0x23c
+    784.185314:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754557]@2  
+__do_softirq+0x1e8/0x44c
+    784.185325:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754567]@2  
+__local_bh_enable_ip+0xb8/0xc8
+    784.185333:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754576]@2  
+local_bh_enable+0x1c/0x28
+    784.185340:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754583]@2  
+rhashtable_rehash_chain+0x12c/0x1ec
+    784.185347:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754590]@2  
+rht_deferred_worker+0x13c/0x200
+    784.185357:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754600]@2  
+process_one_work+0x2cc/0x568
+    784.185365:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754607]@2  
+worker_thread+0x28c/0x524
+    784.185373:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754616]@2  
+kthread+0x184/0x194
+    784.185381:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754623]@2  
+ret_from_fork+0x10/0x18
+
+
