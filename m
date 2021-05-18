@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030F4387517
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C442038751D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347872AbhERJ3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:29:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44376 "EHLO mx2.suse.de"
+        id S1347891AbhERJaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:30:15 -0400
+Received: from mga03.intel.com ([134.134.136.65]:41388 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240100AbhERJ3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:29:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 60CE4AE8D;
-        Tue, 18 May 2021 09:28:19 +0000 (UTC)
-Subject: Re: [PATCH v3] mm, slub: change run-time assertion in kmalloc_index()
- to compile-time
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        rientjes@google.com, penberg@kernel.org, cl@linux.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
-        linux-next@vger.kernel.org, ndesaulniers@google.com,
-        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
-        Marco Elver <elver@google.com>
-References: <20210511173448.GA54466@hyeyoo> <20210515210950.GA52841@hyeyoo>
- <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
- <YKC9CeAfw3aBmHTU@archlinux-ax161> <20210518003859.GC80297@hyeyoo>
- <a1287a21-bcbb-77ed-c88d-f5890b785213@kernel.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <71416382-2e4c-5e03-df9c-265fda41c2de@suse.cz>
-Date:   Tue, 18 May 2021 11:28:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S240100AbhERJaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:30:14 -0400
+IronPort-SDR: smUdeMnoUi1ZZQRUB7/Un8sNZze/VRR4OJjLXLtZ9V9Tx0vjwKFZMzRH0L26V6b+1FH8+7pD5a
+ BlGWGvgU/2oA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200721317"
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="200721317"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 02:28:42 -0700
+IronPort-SDR: s4/YpV65u7qXWBbIU0VNgF7/SmPU4nIjltm3nEUBtyCU5H9hSAdzXPavgQQUxBqQq5K+xZfc0+
+ jGB0mWSRMF5w==
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="472869205"
+Received: from lmrad-mobl.ger.corp.intel.com (HELO localhost) ([10.252.52.115])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 02:28:39 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     intel-gfx@lists.freedesktop.org, x86@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        hch@lst.de
+Subject: Re: [Intel-gfx] 5.13 i915/PAT regression on Brasswell, adding nopat to the kernel commandline worksaround this
+In-Reply-To: <20210512115736.GA10444@lst.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <b6b61cf0-5874-f4c0-1fcc-4b3848451c31@redhat.com> <YJu4tzXmCJbKp7Fm@hirez.programming.kicks-ass.net> <20210512115736.GA10444@lst.de>
+Date:   Tue, 18 May 2021 12:28:36 +0300
+Message-ID: <87eee4fl17.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <a1287a21-bcbb-77ed-c88d-f5890b785213@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 2:43 AM, Nathan Chancellor wrote:
-> On 5/17/2021 5:38 PM, Hyeonggon Yoo wrote:
->> On Sat, May 15, 2021 at 11:34:49PM -0700, Nathan Chancellor wrote:
->>> This should work I think:
->>
->> compiled well with clang-10.0.1, clang-11.0.0,
->> and gcc-10.2.0 with x86_64 default config.
->>
->> is the condition CONFIG_CLANG_VERSION > 110000,
->> not including 110000 it self?
+On Wed, 12 May 2021, Christoph Hellwig <hch@lst.de> wrote:
+> On Wed, May 12, 2021 at 01:15:03PM +0200, Peter Zijlstra wrote:
+>> IIRC it's because of 74ffa5a3e685 ("mm: add remap_pfn_range_notrack"),
+>> which added a sanity check to make sure expectations were met. It turns
+>> out they were not.
+>> 
+>> The bug is not new, the warning is. AFAIK the i915 team is aware, but
+>> other than that I've not followed.
+>
+>
+> The actual culprit is b12d691ea5e0 ("i915: fix remap_io_sg to verify the
+> pgprot"), but otherwise agreed.  Someone the i915 maintainers all seem
+> to be on vacation as the previous report did not manage to trigger any
+> kind of reply.
 
-Good spot.
+We are aware. I've been rattling the cages to get more attention.
 
-> Ah sorry, that should definitely be >= :(
-> 
-> That is what I get for writing an email that late... in reality, it probably
-> won't matter due to the availability of 11.0.1 and 11.1.0 but it should
-> absolutely be changed.
-> 
-> I have not given Nick's patch a go yet but would something like this be
-> acceptable?
 
-Yes.
+BR,
+Jani.
 
-> If so, did you want me to send a formal fixup patch or did you want
-> to send a v4? I have no personal preference.
 
-At this point a fixup is the usual way. Andrew might squash it to the original
-patch (also with Marco's fixup) before sending to Linus.
-
->>> diff --git a/include/linux/slab.h b/include/linux/slab.h
->>> index 9d316aac0aba..1b653266f2aa 100644
->>> --- a/include/linux/slab.h
->>> +++ b/include/linux/slab.h
->>> @@ -413,7 +413,7 @@ static __always_inline unsigned int
->>> __kmalloc_index(size_t size,
->>>       if (size <=  16 * 1024 * 1024) return 24;
->>>       if (size <=  32 * 1024 * 1024) return 25;
->>>   -    if (size_is_constant)
->>> +    if ((IS_ENABLED(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION > 110000) &&
->>> size_is_constant)
->>>           BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
->>>       else
->>>           BUG();
-> 
-
+-- 
+Jani Nikula, Intel Open Source Graphics Center
