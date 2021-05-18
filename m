@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471D03875CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4821B3875D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243182AbhERJ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:56:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48231 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241006AbhERJ4S (ORCPT
+        id S1348147AbhERJ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:56:26 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3017 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348124AbhERJ4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:56:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621331700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+VCDqtzyoP1/MzTBF9IVeYAYQ0ccxPfD6Ur9tV2oQ+o=;
-        b=QxslfdtDobxarcH53NHc1d5Yvhmg2VC8nDhk3/a3yfeAJ6Yy1BRYx2S3ylP5cgriCo741d
-        IE5LpTQobzL57pZfBfuJEeJhkqis5vvd9Qa22d5ux1eyTSC6KMKyukgKff7k8/jXV7F83g
-        pkTgw6sRJZ6KC/iPjhZu6yC8c4DNJkw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-aLXZg9jzNeuW7yahtncapQ-1; Tue, 18 May 2021 05:54:58 -0400
-X-MC-Unique: aLXZg9jzNeuW7yahtncapQ-1
-Received: by mail-wr1-f69.google.com with SMTP id x10-20020adfc18a0000b029010d83c83f2aso5334100wre.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:54:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+VCDqtzyoP1/MzTBF9IVeYAYQ0ccxPfD6Ur9tV2oQ+o=;
-        b=sMN/U2lYdMUGC4UgfHmy5VGs9Pe4syAOd+EcFsAMcEjzzxtIASpHKPgBEk9U6kKURL
-         rILNdxG/4sTFpTya/K5WGVFroc7w73dFhO4P+qVhirYM/I8sf2kNCv5ciqgFnTNXDl8W
-         lHC92LYOfZfGg8vE8Sm+mhd4krUsMZPz1U+dnKt1WDjtNKGsjeM3RY71cosK3HrtcaVs
-         dMinO4MIrZ5H8H14Vphpr+E0D+bkx3P9+hWMXcD3drJP+aSS+vb0Xx3nilFGdX9CTQEH
-         9NXnsTrjQ08uq9Ar7SeOqxPGrokuFVHaT+/8T02sXwNByjMYRn5aG71+6FQc+3BVaCLH
-         /2gQ==
-X-Gm-Message-State: AOAM530DRZjjO6Agas/85rOKq6f6p04u0rXnMegPkYlBdtWcVUsfsaek
-        qa6KZ9/8k355XgA2orReq+Z7dZAYzm0mDTpj1P0F8/erzdwEmvUuCJEqRrgNZdSsOCNU9MyeG2/
-        kOgohN2Z9kGSj7h7WBuyo0zTv
-X-Received: by 2002:a1c:ed0a:: with SMTP id l10mr4484502wmh.151.1621331697559;
-        Tue, 18 May 2021 02:54:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtNhcvWHDo9BYsG3WxxnHpLZNjEaHmYXrXsXLGKZi1sCaVICC9ZVl/Fur/33Pf1AoORsMwvA==
-X-Received: by 2002:a1c:ed0a:: with SMTP id l10mr4484493wmh.151.1621331697424;
-        Tue, 18 May 2021 02:54:57 -0700 (PDT)
-Received: from redhat.com ([2a10:800c:1fa6:0:3809:fe0c:bb87:250e])
-        by smtp.gmail.com with ESMTPSA id f6sm24076804wru.72.2021.05.18.02.54.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 02:54:56 -0700 (PDT)
-Date:   Tue, 18 May 2021 05:54:54 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>
-Cc:     jasowang@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virtio_net: Remove BUG() to aviod machine dead
-Message-ID: <20210518055336-mutt-send-email-mst@kernel.org>
-References: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
+        Tue, 18 May 2021 05:56:22 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FkrsC3qG4zlg9R;
+        Tue, 18 May 2021 17:52:47 +0800 (CST)
+Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 17:55:02 +0800
+Received: from szvp000207684.huawei.com (10.120.216.130) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 18 May 2021 17:55:02 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH 1/2] f2fs: compress: fix to disallow wildcard extension for hot/cold file
+Date:   Tue, 18 May 2021 17:54:57 +0800
+Message-ID: <20210518095458.99728-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-typo in subject
+If all files are hot or cold, hot/cold separation is not needed anymore,
+so let's disallow configure wildcard extension.
 
-On Tue, May 18, 2021 at 05:46:56PM +0800, Xianting Tian wrote:
-> When met error, we output a print to avoid a BUG().
-> 
-> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index c921ebf3ae82..a66174d13e81 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1647,9 +1647,8 @@ static int xmit_skb(struct send_queue *sq, struct
-> sk_buff *skb)
->  		hdr = skb_vnet_hdr(skb);
-> 
->  	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
-> -				    virtio_is_little_endian(vi->vdev), false,
-> -				    0))
-> -		BUG();
-> +				virtio_is_little_endian(vi->vdev), false, 0))
-> +		return -EPROTO;
-> 
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/f2fs.h  |  1 +
+ fs/f2fs/namei.c | 12 ++++++++----
+ fs/f2fs/sysfs.c |  3 +++
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
-why EPROTO? can you add some comments to explain what is going on pls?
-
-is this related to a malicious hypervisor thing?
-
-don't we want at least a WARN_ON? Or _ONCE?
-
->  	if (vi->mergeable_rx_bufs)
->  		hdr->num_buffers = 0;
-> -- 
-> 2.17.1
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index b753cc88c77e..ecb13c3b458d 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3322,6 +3322,7 @@ void f2fs_handle_failed_inode(struct inode *inode);
+ /*
+  * namei.c
+  */
++bool f2fs_is_wildcard_char(const char *ext);
+ int f2fs_update_extension_list(struct f2fs_sb_info *sbi, const char *name,
+ 							bool hot, bool set);
+ struct dentry *f2fs_get_parent(struct dentry *child);
+diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+index a9cd9cf97229..8d78b96a8b3b 100644
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -153,15 +153,17 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+ 	return ERR_PTR(err);
+ }
+ 
++bool f2fs_is_wildcard_char(const char *ext)
++{
++	return *ext == '*' && strlen(ext) == 1;
++}
++
+ static inline int is_extension_exist(const unsigned char *s, const char *sub)
+ {
+ 	size_t slen = strlen(s);
+ 	size_t sublen = strlen(sub);
+ 	int i;
+ 
+-	if (sublen == 1 && *sub == '*')
+-		return 1;
+-
+ 	/*
+ 	 * filename format of multimedia file should be defined as:
+ 	 * "filename + '.' + extension + (optional: '.' + temp extension)".
+@@ -306,9 +308,11 @@ static void set_compress_inode(struct f2fs_sb_info *sbi, struct inode *inode,
+ 	ext = F2FS_OPTION(sbi).extensions;
+ 
+ 	for (i = 0; i < ext_cnt; i++) {
++		if (f2fs_is_wildcard_char(ext[i]))
++			goto set_compress;
+ 		if (!is_extension_exist(name, ext[i]))
+ 			continue;
+-
++set_compress:
+ 		set_compress_context(inode);
+ 		return;
+ 	}
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index dc71bc968c72..ff5acb4de1b6 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -343,6 +343,9 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		if (strlen(name) >= F2FS_EXTENSION_LEN)
+ 			return -EINVAL;
+ 
++		if (f2fs_is_wildcard_char(name))
++			return -EINVAL;
++
+ 		down_write(&sbi->sb_lock);
+ 
+ 		ret = f2fs_update_extension_list(sbi, name, hot, set);
+-- 
+2.29.2
 
