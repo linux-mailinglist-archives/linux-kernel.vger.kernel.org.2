@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B966F388148
+	by mail.lfdr.de (Postfix) with ESMTP id 70BCB388147
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240786AbhERUWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:22:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:16598 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236196AbhERUW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240324AbhERUW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 18 May 2021 16:22:29 -0400
-IronPort-SDR: L7L+9drAfoa2hq8CVm9MEteJnHEedOcnLGJpSGYLdlKdb0Gk6sbeHB/M7N8tJtiXkF0qm/991l
- dhSmmaIifQNA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="180413889"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="180413889"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 13:20:51 -0700
-IronPort-SDR: 1s+fv5Q7+YbZ5bkbCM73lxZjqaM9gP9ICHbVeEH2kjoelySdebsULAN4dv8/hprsFScixOL1Ob
- xCZHXkM0H6XA==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="439616846"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.65.183]) ([10.209.65.183])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 13:20:50 -0700
-Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
- <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
- <43e583a3-ee2b-52d8-5275-e26a6609c126@linux.intel.com>
- <YKP1Xty7EEzHkZ6Y@google.com>
- <8fb0e52c-ed0a-2185-585a-27007c27ed56@linux.intel.com>
- <d711ca30-ff84-2efa-4b9e-d9b46f53c0a5@intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <a46544ba-e995-1e95-4e62-e9f48eec0db1@linux.intel.com>
-Date:   Tue, 18 May 2021 13:20:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236196AbhERUW2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 16:22:28 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779B9C061573;
+        Tue, 18 May 2021 13:21:09 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id n2so16558548ejy.7;
+        Tue, 18 May 2021 13:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DVNv5/TDmW8eM40E1W+6CajDOqer3LA7KeZK68HD9Zs=;
+        b=JwZWuXuCe98MYT7W12V96e3b9dep79J9PWj4LM1kbhWhl2+dQdFvEBqO7vVCgH/zmd
+         bbBdLLKAFhxgtHYT0wU+RUdWvDlnARir3FUtsdIVLStHZFtDq7nCJVWfSfB86APhvu1O
+         ONx6f1F1ToiX5fNUpJhuI8CwPzYd0OXMuvEOwxDGBBA+t22b+bprk8Es+Eub55S1f5lE
+         dok3qBiZS8sDbmSgswdCGxq6L+rJKZC5pjI1+brMAbg8nToe+TQYOn4RdEJ/kD561E4K
+         n2qZj++K1Z7WclksBofNU5+jcFYzzIqO6rhBFSZWtv3rypEDac6vbBw+X4QelFjWBZ5Q
+         XMrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DVNv5/TDmW8eM40E1W+6CajDOqer3LA7KeZK68HD9Zs=;
+        b=GL/O6oBCT80gURAk3F5GdQ73vesDIATgl7/jYs/MfsfXgJtb2FKCbnIRn/Q1GLmGiJ
+         jMYJFcTIkZupu8+FUZDxYAD2QlPpzl36/ewdThrgJpdoVnHF51vntUnjuM3hnA6T/er5
+         ONaGzkPdTrXPQzluvChZlrsiBJ4DcW/6sZnZcnbVJEEHsHmUZWskdutslC1OF41w434c
+         MiH2VfCB5roz2bJMiN3E+0aNA6fRjcWmHyHpm+LhM8N1vl2NMFUke4x8EwL5jZu+ZJ/i
+         obz1ePF1R2wMqeQDAJw40BgQu5yryrr1LJ28CDH9+DHbEQI2vWO0s15VQ8Cv1LxjvzV3
+         0diA==
+X-Gm-Message-State: AOAM530zywoxgQNvljqkAAesyAx25vvCy5uTkhwiRmstaczKDXQqG/Lq
+        LisAMEFp2CWA+0ogYUulK5iddAd4fJeNWkj0RiE=
+X-Google-Smtp-Source: ABdhPJy2AsTEVS+ozAIFEFGVHQL0XNARwMZwotEQDopeDSzuLKKsBAyTLvSfx6+POAaeZiVm0mr8VeVo42xbAy/nVAw=
+X-Received: by 2002:a17:906:fcb4:: with SMTP id qw20mr7996726ejb.216.1621369268217;
+ Tue, 18 May 2021 13:21:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d711ca30-ff84-2efa-4b9e-d9b46f53c0a5@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210517203724.1006254-1-martin.blumenstingl@googlemail.com> <1jwnrw1ohh.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1jwnrw1ohh.fsf@starbuckisacylon.baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 18 May 2021 22:20:57 +0200
+Message-ID: <CAFBinCCnEXNLL0rvi1XNYKb0xY1+3KMwB=xz24kPgN2H97yzOg@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 0/3] clk: meson: rounding for fast clocks on 32-bit SoCs
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-clk@vger.kernel.org, khilman@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jerome,
 
-On 5/18/2021 10:46 AM, Dave Hansen wrote:
-> On 5/18/21 10:21 AM, Andi Kleen wrote:
->> Besides instruction decoding works fine for all the existing
->> hypervisors. All we really want to do is to do the same thing as KVM
->> would do.
-> Dumb question of the day: If you want to do the same thing that KVM
-> does, why don't you share more code with KVM?  Wouldn't you, for
-> instance, need to crack the same instruction opcodes?
-
-We're talking about ~60 lines of codes that calls an established 
-standard library.
-
-https://github.com/intel/tdx/blob/8c20c364d1f52e432181d142054b1c2efa0ae6d3/arch/x86/kernel/tdx.c#L490
-
-You're proposing a gigantic refactoring to avoid 60 lines of straight 
-forward code.
-
-That's not a practical proposal.
-
+On Tue, May 18, 2021 at 9:37 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
 >
-> I'd feel a lot better about this if you said:
 >
-> 	Listen, this doesn't work for everything.  But, it will run
-> 	every single driver as a TDX guest that KVM can handle as a
-> 	host.  So, if the TDX code is broken, so is the KVM host code.
+> On Mon 17 May 2021 at 22:37, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+>
+> > On the 32-bit Amlogic Meson8/8b/8m2 SoCs we run into a problem with the
+> > fast HDMI PLL and it's OD (post-dividers). This clock tree can run at
+> > up to approx. 3GHz.
+> > This however causes a problem, because these rates require BIT(31) to
+> > be usable. Unfortunately this is not the case with clk_ops.round_rate
+> > on 32-bit systems. BIT(31) is reserved for the sign (+ or -).
+> >
+> > clk_ops.determine_rate does not suffer from this limitation. It uses
+> > an int to signal any errors and can then take all availble 32 bits for
+> > the clock rate.
+> >
+> > I am sending this as RFC to start a discussion whether:
+> > - this is a good way to solve it?
+>
+> .determine_rate() was meant to replace .round_rate() so I guess it is
+> good to do it :)
+ah, now things make more sense.
+thanks for the background info
 
-I don't really know what problem you're trying to solve here. We only 
-have a small number of drivers and we tested them and they work fine. 
-There are special macros that limit the number of instructions. If there 
-are ever more instructions and the macros break somehow we'll add them. 
-There will be a clean error if it ever happens. We're not trying to 
-solve hypothetical problems here.
+> > - what are the alternatives?
+>
+> I don't see any ATM. Even with determine_rate(), 4.29GHz limitation
+> seems a bit low nowadays. In AML SoC, most PLLs should be able to reach
+> 6GHz ... hopefully we won't need that on the 32bits variant ;)
+according to the public datasheet the maximum PLL frequency is at around 3GHz
+so I also hope that we're safe with this
 
--Andi
 
-
+Martin
