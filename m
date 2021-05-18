@@ -2,131 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2D23877AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99013877AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244091AbhERLad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:30:33 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:33452 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238801AbhERLaa (ORCPT
+        id S244881AbhERLbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348223AbhERLbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:30:30 -0400
-Received: by mail-lf1-f54.google.com with SMTP id h4so13661093lfv.0;
-        Tue, 18 May 2021 04:29:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dcJhZHI2dMBnsGGuAZxTwh/jDPWWPYy1O0c7zJIFI2Q=;
-        b=DikOqRPFItvq/zDpraDr0Oevx3V9Pn4UsG7FPWl71h70ekQ+lyVUmMHCjt7W6ikHC0
-         ffjO/eLWxQeEKgu6TKxW/BlTuT3UOApKn4d1S+AVm5Q+mIXJet8aXCO3JTTmUUypgKes
-         VHdJ2cv/O5FH5oKKluD4Xx9eCOYRf4Lh5m8v4gTWaOu/BGXuOmB6X3akfC5ZVsEzVctH
-         7e805evd3O3OSSFVUzbCDJP7THhzWSmQpEkI5czE0qB15knRuqFeBQGGB0Bi+XoyhiJj
-         lyS8PZoymJXmOAoVSKjjxsZxRFcsnbBRTQamC9NJMysGYxV+nZbt5NkAhCHutrpl7YzV
-         l83A==
-X-Gm-Message-State: AOAM5324meWRcnBQnmoNTrYA8Gc0ZzmqHCOMC7Ru0d4UySOC5XeA7PIl
-        zAOKCIP3l4hdZ+6bTl+ojVk=
-X-Google-Smtp-Source: ABdhPJwe5wZdkDxZsmNXpGcgrdpRaYMah8nwFziwesxZzIh4oRkc/xlzCVi0bxg5aMoJRBIZe8fnJA==
-X-Received: by 2002:a05:6512:510:: with SMTP id o16mr1673142lfb.488.1621337350977;
-        Tue, 18 May 2021 04:29:10 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::1])
-        by smtp.gmail.com with ESMTPSA id t22sm2258555lfe.309.2021.05.18.04.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 04:29:10 -0700 (PDT)
-Date:   Tue, 18 May 2021 14:29:04 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: [PATCH v10 11/11] MAINTAINERS: Add reviewer for regulator irq_helpers
-Message-ID: <15105258ec870240c7e05ea01236986b379bf7f8.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 18 May 2021 07:31:10 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13B5C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=RVUhSCgd6iQAK0YSfHil0g0540QhJdzDOaZHYw4efBo=; b=tl66YL0JYskY6r9w4wyuz1msm
+        2nN5acglOY9mroY2uRDEigtHcNw/lxmbReo/GR0Wt8VyC5ni7zKmpRaOJLOCpfgK/dxHXOUIL5tCq
+        aGcRVwrUs7lIyjwTfFnao1fs88QDm9YEdiHycchb9PR+GFUC1YH2UDApAY2ZT8SvG/z9PncAvC6Zp
+        kZIL+XLsXuZroU2QD/0o93SjzghJ1ilf3PGOjpTy4b7OIhJYnRvzicYZQqZMJcjfL32lzzLH9ul/p
+        otEiCDS+/fseB8D12RJcshFcL8vwUt2lQD8UdU5aY2WC3ZoQ7Ebs/yDoK5aYREWJ3OA6nFBvVCdEq
+        QYEjvkmBw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44130)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lixuq-0004B6-8m; Tue, 18 May 2021 12:29:36 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lixum-0007r3-6a; Tue, 18 May 2021 12:29:32 +0100
+Date:   Tue, 18 May 2021 12:29:32 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     rppt@kernel.org, ardb@kernel.org, linus.walleij@linaro.org,
+        akpm@linux-foundation.org, carver4lio@163.com,
+        tiantao6@hisilicon.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: make the size of vmalloc in cmdline and meminfo
+ uniform
+Message-ID: <20210518112932.GV12395@shell.armlinux.org.uk>
+References: <20210518111254.3820480-1-yanfei.xu@windriver.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210518111254.3820480-1-yanfei.xu@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 18, 2021 at 07:12:54PM +0800, Yanfei Xu wrote:
+> The value of "vmalloc=" set in cmdline is always 8M more than the value
+> of "VmallocTotal" in meminfo. When use the "vmalloc=" parameter, user
+> expect to get the size what they input, and no need to consider the 8M
+> "hole" hided in codes. This commit make real vmalloc size equal to value
+> of "vmalloc=" in cmdline.
+> 
+> Also, the commit will reduce the size of vmalloc printed in boot message
+> by 8M when the size set in cmdline is irrational.
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Add a reviewer entry for the regulator irq_helpers.
+I think I'd like to do several cleanups with this:
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changelog:
- v7 - onwards
-  - no changes
- v6:
-  - New patch
----
- MAINTAINERS | 4 ++++
- 1 file changed, 4 insertions(+)
+1. change vmalloc_min to be an unsigned long.
+2. exclude VMALLOC_OFFSET from vmalloc_min, moving it into
+   adjust_lowmem_bounds where vmalloc_min is used.
+3. rename vmalloc_min to be vmalloc_start
+4. enforce vmalloc_start to be a multiple of 2MiB
+5. in early_vmalloc(), calculate vmalloc_max as:
+	VMALLOC_END - (PAGE_OFFSET + SZ_32M + VMALLOC_OFFSET)
+   and use that to set the upper bound of vmalloc_reserve (which is
+   something your patch doesn't do, which I think is a bug.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 008fcad7ac00..48fd36e93b66 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19551,6 +19551,10 @@ F:	include/dt-bindings/regulator/
- F:	include/linux/regulator/
- K:	regulator_get_optional
-=20
-+VOLTAGE AND CURRENT REGULATOR IRQ HELPERS
-+R:	Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-+F:	drivers/regulator/irq_helpers.c
-+
- VRF
- M:	David Ahern <dsahern@kernel.org>
- L:	netdev@vger.kernel.org
---=20
-2.25.4
+Thoughts?
 
+> 
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> ---
+>  arch/arm/mm/mmu.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+> index c1e12aab67b8..287c5115af4d 100644
+> --- a/arch/arm/mm/mmu.c
+> +++ b/arch/arm/mm/mmu.c
+> @@ -1133,19 +1133,20 @@ static int __init early_vmalloc(char *arg)
+>  {
+>  	unsigned long vmalloc_reserve = memparse(arg, NULL);
+>  
+> -	if (vmalloc_reserve < SZ_16M) {
+> -		vmalloc_reserve = SZ_16M;
+> +	vmalloc_reserve = ALIGN_DOWN(vmalloc_reserve, SZ_8M);
+> +	if (vmalloc_reserve < SZ_8M) {
+> +		vmalloc_reserve = SZ_8M;
+>  		pr_warn("vmalloc area too small, limiting to %luMB\n",
+>  			vmalloc_reserve >> 20);
+>  	}
+>  
+>  	if (vmalloc_reserve > VMALLOC_END - (PAGE_OFFSET + SZ_32M)) {
+> -		vmalloc_reserve = VMALLOC_END - (PAGE_OFFSET + SZ_32M);
+> +		vmalloc_reserve = VMALLOC_END - (PAGE_OFFSET + SZ_32M + VMALLOC_OFFSET);
+>  		pr_warn("vmalloc area is too big, limiting to %luMB\n",
+>  			vmalloc_reserve >> 20);
+>  	}
+>  
+> -	vmalloc_min = (void *)(VMALLOC_END - vmalloc_reserve);
+> +	vmalloc_min = (void *)(VMALLOC_END - vmalloc_reserve - VMALLOC_OFFSET);
+>  	return 0;
+>  }
+>  early_param("vmalloc", early_vmalloc);
+> -- 
+> 2.27.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCjpQAACgkQeFA3/03a
-ocV2mwgArv5FNsn4yKrQE5FJBeqzxxCob1kdon3S3j1oL2yP8GfvDcSgOnAX7vFp
-xK8XjQy/XF8bOuST+igrlI1oL6oPMLuv2MDotPYFzdybWAvIzGsnLp1jULOL967I
-f9+4cvk65RmFeAji4Bukzaotgl6KWpoPW2mNCZ2YIM8QxQWqOA9iZ8RTkUXd76GB
-u4l5OReAqrh9ip9hFvboDpro0YRU0IwznJfJ0SyMsYOMsfLhAne4ku7Aopz1ugyj
-oF5EpC0rGg/b5czPBtieW9uGhR4WX4bDp18DPQLE0ph1duNw8NGxF4pn1cd5IAwJ
-tPS9mf7/0ZJgYWAiSNntSQN2wy4hjw==
-=oKGl
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
