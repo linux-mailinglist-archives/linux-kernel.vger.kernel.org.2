@@ -2,201 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9BD387AEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE56387AF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349945AbhEROUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:20:50 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40890 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243610AbhEROUp (ORCPT
+        id S1349958AbhEROVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349941AbhEROU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:20:45 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 18 May 2021 10:20:59 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AF9C061573;
+        Tue, 18 May 2021 07:19:41 -0700 (PDT)
+Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:8085:99d1:d3e8:47cc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 57F1B1F42B04;
-        Tue, 18 May 2021 15:19:26 +0100 (BST)
-Date:   Tue, 18 May 2021 16:19:23 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v4 2/3] mtd: spinand: use the spi-mem poll status APIs
-Message-ID: <20210518161923.3bf75a25@collabora.com>
-In-Reply-To: <20210518134332.17826-3-patrice.chotard@foss.st.com>
-References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
-        <20210518134332.17826-3-patrice.chotard@foss.st.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 93F001F42B04;
+        Tue, 18 May 2021 15:19:39 +0100 (BST)
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+To:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     megous@megous.com, linux-usb@vger.kernel.org, a.hajda@samsung.com,
+        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
+        daniel@ffwll.ch, chunkuang.hu@kernel.org, p.zabel@pengutronix.de,
+        enric.balletbo@collabora.com, drinkcat@chromium.org,
+        hsinyi@chromium.org, kernel@collabora.com, dafna3@gmail.com,
+        dafna.hirschfeld@collabora.com, robh+dt@kernel.org
+Subject: [PATCH v6 RESEND 0/2] Add support for ANX7688
+Date:   Tue, 18 May 2021 16:19:25 +0200
+Message-Id: <20210518141927.24795-1-dafna.hirschfeld@collabora.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 15:43:31 +0200
-<patrice.chotard@foss.st.com> wrote:
+(resending patchset with Rb tags)
+ANX7688 is a typec port controller that also converts HDMI to DP.
+It is found on Acer Chromebook R13 (elm) and on Pine64 PinePhone.
 
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
-> 
-> Make use of spi-mem poll status APIs to let advanced controllers
-> optimize wait operations.
-> This should also fix the high CPU usage for system that don't have
-> a dedicated STATUS poll block logic.
-> 
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+On Acer Chromebook R13 (elm), the device is powered-up and controller by the
+Embedded Controller. Therefore its operation is transparent
+to the SoC. It is used in elm only as a display bridge driver.
+The bridge driver only reads some values using i2c and use them to
+implement the mode_fixup cb.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+On v5 we added the full dt-binding of the generic Analogix anx7688 device.
+The problem is that for elm, most of the fields are not needed since
+the anx7688 sits behind the EC. After a discussion on v5 (see [1])
+we decided to go back to the original approach and send the dt binding
+as specific to the elm. So in this version we rename the device to cros_ec_anx7688
+and use the compatible 'google,cros-ec-anx7688'.
 
-> ---
-> Changes in v4:
->   - Update commit message.
->   - Add comment which explains how delays has been calculated.
->   - Rename SPINAND_STATUS_TIMEOUT_MS to SPINAND_WAITRDY_TIMEOUT_MS.
-> 
-> Changes in v3:
->   - Add initial_delay_us and polling_delay_us parameters to spinand_wait()
->   - Add SPINAND_READ/WRITE/ERASE/RESET_INITIAL_DELAY_US and
->     SPINAND_READ/WRITE/ERASE/RESET_POLL_DELAY_US defines.
-> 
-> Changes in v2:
->   - non-offload case is now managed by spi_mem_poll_status()
-> 
->  drivers/mtd/nand/spi/core.c | 45 ++++++++++++++++++++++++++-----------
->  include/linux/mtd/spinand.h | 22 ++++++++++++++++++
->  2 files changed, 54 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 17f63f95f4a2..3131fae0c715 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -473,20 +473,26 @@ static int spinand_erase_op(struct spinand_device *spinand,
->  	return spi_mem_exec_op(spinand->spimem, &op);
->  }
->  
-> -static int spinand_wait(struct spinand_device *spinand, u8 *s)
-> +static int spinand_wait(struct spinand_device *spinand,
-> +			unsigned long initial_delay_us,
-> +			unsigned long poll_delay_us,
-> +			u8 *s)
->  {
-> -	unsigned long timeo =  jiffies + msecs_to_jiffies(400);
-> +	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
-> +						      spinand->scratchbuf);
->  	u8 status;
->  	int ret;
->  
-> -	do {
-> -		ret = spinand_read_status(spinand, &status);
-> -		if (ret)
-> -			return ret;
-> +	ret = spi_mem_poll_status(spinand->spimem, &op, STATUS_BUSY, 0,
-> +				  initial_delay_us,
-> +				  poll_delay_us,
-> +				  SPINAND_WAITRDY_TIMEOUT_MS);
-> +	if (ret)
-> +		return ret;
->  
-> -		if (!(status & STATUS_BUSY))
-> -			goto out;
-> -	} while (time_before(jiffies, timeo));
-> +	status = *spinand->scratchbuf;
-> +	if (!(status & STATUS_BUSY))
-> +		goto out;
->  
->  	/*
->  	 * Extra read, just in case the STATUS_READY bit has changed
-> @@ -526,7 +532,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
->  	if (ret)
->  		return ret;
->  
-> -	return spinand_wait(spinand, NULL);
-> +	return spinand_wait(spinand,
-> +			    SPINAND_RESET_INITIAL_DELAY_US,
-> +			    SPINAND_RESET_POLL_DELAY_US,
-> +			    NULL);
->  }
->  
->  static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
-> @@ -549,7 +558,10 @@ static int spinand_read_page(struct spinand_device *spinand,
->  	if (ret)
->  		return ret;
->  
-> -	ret = spinand_wait(spinand, &status);
-> +	ret = spinand_wait(spinand,
-> +			   SPINAND_READ_INITIAL_DELAY_US,
-> +			   SPINAND_READ_POLL_DELAY_US,
-> +			   &status);
->  	if (ret < 0)
->  		return ret;
->  
-> @@ -585,7 +597,10 @@ static int spinand_write_page(struct spinand_device *spinand,
->  	if (ret)
->  		return ret;
->  
-> -	ret = spinand_wait(spinand, &status);
-> +	ret = spinand_wait(spinand,
-> +			   SPINAND_WRITE_INITIAL_DELAY_US,
-> +			   SPINAND_WRITE_POLL_DELAY_US,
-> +			   &status);
->  	if (!ret && (status & STATUS_PROG_FAILED))
->  		return -EIO;
->  
-> @@ -768,7 +783,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
->  	if (ret)
->  		return ret;
->  
-> -	ret = spinand_wait(spinand, &status);
-> +	ret = spinand_wait(spinand,
-> +			   SPINAND_ERASE_INITIAL_DELAY_US,
-> +			   SPINAND_ERASE_POLL_DELAY_US,
-> +			   &status);
-> +
->  	if (!ret && (status & STATUS_ERASE_FAILED))
->  		ret = -EIO;
->  
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index 6bb92f26833e..6988956b8492 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -170,6 +170,28 @@ struct spinand_op;
->  struct spinand_device;
->  
->  #define SPINAND_MAX_ID_LEN	4
-> +/*
-> + * For erase, write and read operation, we got the following timings :
-> + * tBERS (erase) 1ms to 4ms
-> + * tPROG 300us to 400us
-> + * tREAD 25us to 100us
-> + * In order to minimize latency, the min value is divided by 4 for the
-> + * initial delay, and dividing by 20 for the poll delay.
-> + * For reset, 5us/10us/500us if the device is respectively
-> + * reading/programming/erasing when the RESET occurs. Since we always
-> + * issue a RESET when the device is IDLE, 5us is selected for both initial
-> + * and poll delay.
-> + */
-> +#define SPINAND_READ_INITIAL_DELAY_US	6
-> +#define SPINAND_READ_POLL_DELAY_US	5
-> +#define SPINAND_RESET_INITIAL_DELAY_US	5
-> +#define SPINAND_RESET_POLL_DELAY_US	5
-> +#define SPINAND_WRITE_INITIAL_DELAY_US	75
-> +#define SPINAND_WRITE_POLL_DELAY_US	15
-> +#define SPINAND_ERASE_INITIAL_DELAY_US	250
-> +#define SPINAND_ERASE_POLL_DELAY_US	50
-> +
-> +#define SPINAND_WAITRDY_TIMEOUT_MS	400
->  
->  /**
->   * struct spinand_id - SPI NAND id structure
+[1] https://patchwork.kernel.org/project/dri-devel/patch/20210305124351.15079-3-dafna.hirschfeld@collabora.com/
+
+Changes since v5:
+* treat the device as a specific combination of an ANX7688 behind the EC and
+call it 'cros-ec-anx7688'
+
+Changes since v4:
+In v4 of this set, the device was added as an 'mfd' device
+and an additional 'bridge' device for the HDMI-DP conversion, see [2].
+
+[2] https://lkml.org/lkml/2020/3/18/64
+
+Dafna Hirschfeld (1):
+  dt-bindings: display: add google,cros-ec-anx7688.yaml
+
+Enric Balletbo i Serra (1):
+  drm/bridge: Add ChromeOS EC ANX7688 bridge driver support
+
+ .../bridge/google,cros-ec-anx7688.yaml        |  82 ++++++++
+ drivers/gpu/drm/bridge/Kconfig                |  12 ++
+ drivers/gpu/drm/bridge/Makefile               |   1 +
+ drivers/gpu/drm/bridge/cros-ec-anx7688.c      | 191 ++++++++++++++++++
+ 4 files changed, 286 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/google,cros-ec-anx7688.yaml
+ create mode 100644 drivers/gpu/drm/bridge/cros-ec-anx7688.c
+
+-- 
+2.17.1
 
