@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD7C387CA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2201387CAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350286AbhERPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:43:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350273AbhERPna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:43:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6CCB6117A;
-        Tue, 18 May 2021 15:42:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621352532;
-        bh=6/AZpMiQsWIzehSS0pf9F1Zsz6DBuPBxPZHPFBj/4IQ=;
+        id S1350301AbhERPqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:46:18 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54446 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350273AbhERPqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:46:15 -0400
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6016C20B7188;
+        Tue, 18 May 2021 08:44:57 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6016C20B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1621352697;
+        bh=3HQYFgD4lxpqADotbbiCx33GTkFHpxK08+XG1XtrjPI=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dBATrxKUo+9lJRDkt+z44QyPpRbXGotCZKr7AmmONwoFikB5osIBfIBVRceLC+s/H
-         SnW6BZd5EWBLhwSeaBwmfz9S9R8szJaAPokYGPoP0Sg3PvdU8nUbhobryrwFPpHPjj
-         WDSdsEjeVms2eWWsQhljQoKhKdJJHTNo+d+VuzQHT+eYfpnRA63htHOOF6C8X3qOXW
-         zYp59xGkk5LpZ3cB4qalJMDfXTkHjIURbL0mO/WL4hQJ8zQ21Mp4TI1PG9RaxcLTJQ
-         88Vbl26D+hVKhJoZAT00KFXyQSCrnezmlZH8yEIZbeUgB+85RWqyMFt+TuDRB0nYHE
-         FLRjzLcNwCCEg==
-Received: by mail-wr1-f44.google.com with SMTP id z17so10720406wrq.7;
-        Tue, 18 May 2021 08:42:12 -0700 (PDT)
-X-Gm-Message-State: AOAM533T1vQOgqjSit4dvrHcbMwWDUiMrpxij7qU0lIMnorKE9t+uj7d
-        bEpjVjtl9TYFCjCMjvPBiTTuOHmP24v8205+YRw=
-X-Google-Smtp-Source: ABdhPJyqM7bHu1qcSQI74/RObeZl1HWDfzmYNgspCaVb1ZNRDA2D4kfkWRWH7fq0f6j61Y5yW03ZTIhOATwfLihnHPY=
-X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr7805910wrx.99.1621352531347;
- Tue, 18 May 2021 08:42:11 -0700 (PDT)
+        b=aAkJCclcikW+/0HQ2xhJWDmuSo5v7++8kyppG7KPOk4FYls1Zr4KkH7FOig1KrT0x
+         ntrA36/umwOyfuecwNuHVZ6ntToWOuTNJ0pu0kn1/nZnuU2sMxEQYFplD9v8InxJ4P
+         aQ39IUDGyxvZV8dxu0tCsJ9FJ0BqtoIMKvM4COxg=
+Received: by mail-pl1-f178.google.com with SMTP id s4so3753280plg.12;
+        Tue, 18 May 2021 08:44:57 -0700 (PDT)
+X-Gm-Message-State: AOAM531qjQTQ8yutVE4m2F6w1hajF6tHAx7wLhTefLKPyxAu3OV76w2D
+        B+fJ2jhlSgJSLxkQYv4iQ5jaMafjtot5ku8Z4fs=
+X-Google-Smtp-Source: ABdhPJyH71DOHHf5vAHuwNoiGYshpXvPej6HckHw0XokpfXTIkipE9bPqtisiMcZNB0rqtLKF6U49DPWaygEV8C2+PI=
+X-Received: by 2002:a17:902:bc88:b029:ee:7ef1:e770 with SMTP id
+ bb8-20020a170902bc88b02900ee7ef1e770mr5296175plb.19.1621352697022; Tue, 18
+ May 2021 08:44:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210514100106.3404011-1-arnd@kernel.org> <20210514100106.3404011-8-arnd@kernel.org>
- <YKLlyQnR+3uW4ETD@gmail.com> <CAK8P3a0iqe5V6uvaW+Eo0qiwzvyUVavVEfZGwXh4s8ad+0RdCg@mail.gmail.com>
- <CAHk-=wjjo+F8HVkq3eLg+=7hjZPF5mkA4JbgAU8FGE_oAw2MEg@mail.gmail.com>
-In-Reply-To: <CAHk-=wjjo+F8HVkq3eLg+=7hjZPF5mkA4JbgAU8FGE_oAw2MEg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 18 May 2021 17:41:00 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3hbts4k+rrfnE8Z78ezCaME0UVgwqkdLW5NOps2YHUQQ@mail.gmail.com>
-Message-ID: <CAK8P3a3hbts4k+rrfnE8Z78ezCaME0UVgwqkdLW5NOps2YHUQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 07/13] asm-generic: unaligned always use struct helpers
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-2-mcroce@linux.microsoft.com> <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
+In-Reply-To: <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Tue, 18 May 2021 17:44:21 +0200
+X-Gmail-Original-Message-ID: <CAFnufp0jwSMx_-CeFguNnec0pC0WNcPnhobiVE0sH9Jo9tjK+g@mail.gmail.com>
+Message-ID: <CAFnufp0jwSMx_-CeFguNnec0pC0WNcPnhobiVE0sH9Jo9tjK+g@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 1/5] mm: add a signature in struct page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 4:56 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Fri, May 14, 2021 at 3:01 AM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> On Tue, May 18, 2021 at 12:27 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > I wonder if the kernel should do the same, or whether there are still cases
-> > > where memcpy() isn't compiled optimally.  armv6/7 used to be one such case, but
-> > > it was fixed in gcc 6.
-> >
-> > It would have to be memmove(), not memcpy() in this case, right?
+> I feel like I want to document the pfmemalloc bit in mm_types.h,
+> but I don't have a concrete suggestion yet.
 >
-> No, it would simply be something like
->
->   #define __get_unaligned_t(type, ptr) \
->         ({ type __val; memcpy(&__val, ptr, sizeof(type)); __val; })
->
->   #define get_unaligned(ptr) \
->         __get_unaligned_t(typeof(*(ptr)), ptr)
->
-> but honestly, the likelihood that the compiler generates something
-> horrible (possibly because of KASAN etc) is uncomfortably high.
->
-> I'd prefer the __packed thing. We don't actually use -O3, and it's
-> considered a bad idea, and the gcc bug is as such less likely than
-> just  the above generating unacceptable code (we have several cases
-> where "bad code generation" ends up being an actual bug, since we
-> depend on inlining and depend on some code sequences not generating
-> calls etc).
 
-I think the important question is whether we know that the bug that Eric
-pointed to can only happen with -O3, or whether it is something in
-gcc-10.1 that got triggered by -O3 -msse on x86-64 but could equally
-well get triggered on some other architecture without -O3 or
-vector instructions enabled.
+Maybe simply:
 
-From the gcc fix at
-https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=9fa5b473b5b8e289b
-it looks like this code path is entered when compiling with
--ftree-loop-vectorize, which is documented as
+/* Bit zero is set
+ * Bit one if pfmemalloc page
+ */
+ unsigned long compound_head;
 
-'-ftree-loop-vectorize'
-     Perform loop vectorization on trees.  This flag is enabled by
-     default at '-O3' and by '-ftree-vectorize', '-fprofile-use', and
-     '-fauto-profile'.
-
--ftree-vectorize is set in arch/arm/lib/xor-neon.c
--O3 is set for the lz4 and zstd compression helpers and for wireguard.
-
-To be on the safe side, we could pass -fno-tree-loop-vectorize along
-with -O3 on the affected gcc versions, or use a bigger hammer
-(not use -O3 at all, always set -fno-tree-loop-vectorize, ...).
-
-        Arnd
+Regards,
+-- 
+per aspera ad upstream
