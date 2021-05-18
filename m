@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431403877B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA8E3877B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238512AbhERLcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:32:21 -0400
-Received: from mga06.intel.com ([134.134.136.31]:48987 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237487AbhERLcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:32:19 -0400
-IronPort-SDR: ALUQwuMvC9FgIfaobm1zfXc/QWkY2AbQHiedslOjmIJxVgZsABJXiU/rtOpb6rAJKVUdQlLBnt
- MN/pDbMmli8w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="261916647"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="261916647"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 04:31:01 -0700
-IronPort-SDR: koxQTwtp9qhujy9SV5XThf26GKNpYVVMWXRxH8c68EeaArq7g5LAmlqC5n9rzOLAcFh33AfUiy
- j9Hb+oiJmG3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="541708200"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 18 May 2021 04:30:58 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 18 May 2021 14:30:57 +0300
-Date:   Tue, 18 May 2021 14:30:57 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] driver core: platform: Remove
- platform_device_add_properties()
-Message-ID: <YKOlcQqLarSIxE37@kuha.fi.intel.com>
-References: <20210518083046.23302-1-heikki.krogerus@linux.intel.com>
- <YKOB6lRqc5DKo2GS@smile.fi.intel.com>
- <YKOjRyGlx6bHtgZc@kuha.fi.intel.com>
+        id S238827AbhERLdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237487AbhERLc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 07:32:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00627C061573;
+        Tue, 18 May 2021 04:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bcVit+6mgvFx6heftajsrfaGxDkJsK5oc1JEKMXcvbk=; b=t8b781qfNVrmqOk36u2HkQAnOx
+        3W8zk/6U2ayPe7nlMCdyQKDq5sK6zToIkich1QZsLvVi4Ef40iM1NQf/c3DO2Bw5VrEd12V5SzHb+
+        1cOUCYljpa9RqEfXAJRGJSCEloeSVRUtjxY3I5Zy4v61LDPhLryztZfyIO+zqSUOkZNQTZaUnvKos
+        h1HVt1hJZP9IapTE2fnBHe/L/qbbxFtY7Ms4cork7z+pdoSjGbQGNRW1dMn5uMqcasMHRm/GyMKti
+        vUYpR/zArMKUU2BLUwaJiCEz1z3/DGSEA+G7R31dwlBynnjx2qNl9FJxQY+ISkqeBIX+63q9u4h+B
+        geD92rLw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lixvF-00DvfV-Dm; Tue, 18 May 2021 11:30:53 +0000
+Date:   Tue, 18 May 2021 12:30:01 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v10 18/33] mm/filemap: Add folio_unlock
+Message-ID: <YKOlOfFBrVu36g1q@casper.infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-19-willy@infradead.org>
+ <e3869efd-b4a3-93a2-b510-21142db91603@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKOjRyGlx6bHtgZc@kuha.fi.intel.com>
+In-Reply-To: <e3869efd-b4a3-93a2-b510-21142db91603@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 02:21:46PM +0300, Heikki Krogerus wrote:
-> On Tue, May 18, 2021 at 11:59:22AM +0300, Andy Shevchenko wrote:
-> > On Tue, May 18, 2021 at 11:30:44AM +0300, Heikki Krogerus wrote:
-> > > Hi,
-> > > 
-> > > It looks like there is only one place left that still uses the
-> > > function. Converting that last user and removing the thing.
-> > > 
-> > > Note, I'm actually resending the patch for board-paz00.c. I'm assuming
-> > > the original patch slipped through the cracks because it did not end
-> > > up anywhere.
-> > 
-> > Cool!
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> > Btw, which base have you used for this series?
+On Tue, May 18, 2021 at 12:06:42PM +0200, Vlastimil Babka wrote:
+> >  /**
+> > - * unlock_page - unlock a locked page
+> > - * @page: the page
+> > + * folio_unlock - Unlock a locked folio.
+> > + * @folio: The folio.
+> >   *
+> > - * Unlocks the page and wakes up sleepers in wait_on_page_locked().
+> > - * Also wakes sleepers in wait_on_page_writeback() because the wakeup
+> > - * mechanism between PageLocked pages and PageWriteback pages is shared.
+> > - * But that's OK - sleepers in wait_on_page_writeback() just go back to sleep.
+> > + * Unlocks the folio and wakes up any thread sleeping on the page lock.
+> >   *
+> > - * Note that this depends on PG_waiters being the sign bit in the byte
+> > - * that contains PG_locked - thus the BUILD_BUG_ON(). That allows us to
+> > - * clear the PG_locked bit and test PG_waiters at the same time fairly
+> > - * portably (architectures that do LL/SC can test any bit, while x86 can
+> > - * test the sign bit).
 > 
-> intel-next for this one.
+> Was it necessary to remove the comments about wait_on_page_writeback() and
+> PG_waiters etc?
 
-I mean linux-next :-)
+I think so.  This kernel-doc is for the person who wants to understand
+how to use the function, not for the person who wants to understand why
+the function is written the way it is.  For that person, we have git log
+messages and other comments dotted throughout, eg the comment on
+clear_bit_unlock_is_negative_byte() in mm/filemap.c and the comment
+on PG_waiters in include/linux/page-flags.h.
 
--- 
-heikki
+> > + * Context: May be called from interrupt or process context.  May not be
+> > + * called from NMI context.
+> 
+> Where did the NMI part come from?
+
+If you're in NMI context and call unlock_page() and the page has a
+waiter on it, we call folio_wake_bit(), which calls spin_lock_irqsave()
+on the wait_queue_head_t lock, which I believe cannot be done safely 
+from NMI context (as the NMI may have interrupted us while holding
+that lock).
+
