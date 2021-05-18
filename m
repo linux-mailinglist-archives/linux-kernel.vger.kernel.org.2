@@ -2,111 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1725D3880A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A86388090
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351922AbhERTod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:44:33 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:39160 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239361AbhERToc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:44:32 -0400
-X-Greylist: delayed 1440 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 15:44:32 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1621365538; bh=SOKZhfbRC9Pxh+E+B9Jim/4njEcIPdr7MCczTSyxEvg=;
-        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
-        b=by1P4bDlrjWbhW8Zu6f1zmqEEAW2AIsAtju8cFtQ0yMmfz4lqcYzKDIRq/UB19TtQ
-         ObpsViLzdB+yijna/wSaTMMxHdYevLbCHIJ/DdxJ/PfjKnIRFj3Ndzl/wUBenkRvgu
-         vj6bnnq7/MtDFaJMfIDu7eZy41GF8rCStSAZN20Y=
-Received: by 192.168.90.13 [192.168.90.13] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Tue, 18 May 2021 21:18:58 +0200 (CEST)
-X-EA-Auth: azT5fbq4qyjbROh0nktYyillwM9rizpi0s6FGCPrEKSu3cj8CFFiRFl1g9iZf8wMgQSQZ+25ygsivZKugyUJYcgam4kawsWHA62WxPNCb8M=
-Message-ID: <f4ad7e8ebf520e0057ce912ea37b7d0a63112253.camel@mailoo.org>
-Subject: Re: Testing wanted for Linux NFC subsystem
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Mark Greer <mgreer@animalcreek.com>,
-        Stephan Gerhold <stephan@gerhold.net>
-Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
-        Alex Blasche <alexander.blasche@qt.io>,
-        phone-devel@vger.kernel.org
-Date:   Tue, 18 May 2021 21:18:56 +0200
-In-Reply-To: <20210514152350.GA301895@animalcreek.com>
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
-         <14e78a9a-ed1a-9d7d-b854-db6d811f4622@kontron.de>
-         <20210512170135.GB222094@animalcreek.com> <YJ0SYWJjq3ZmXMy3@gerhold.net>
-         <20210513144855.GA266838@animalcreek.com> <YJ1Hr/hov9I42GK1@gerhold.net>
-         <20210514152350.GA301895@animalcreek.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S1351884AbhERTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhERTg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 15:36:57 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BECC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:35:39 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id n83so3981878ybg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:35:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zuttx+ccp2WJpeVo41ApR4QzlKZXH0hmSVWBq1ylj1s=;
+        b=r01H/LXoxE+CT6mAOiH2s+UHWFMDnVq1591tvNy96n2aTtUTSY3h/VaXnqcxl/iLGD
+         OwLEiDdAFdMyB2IoSx470QJd9JbJlJQlhcb83zioeUI6+1X1MbEN7p1QyH53aQul3fnM
+         RtE4CAAi3aiTCGFrqdhkyb3b16kTduuxExSy2Tj3hx+as9nD/9AnYnsPtgGKHjzhgFEp
+         IjpWVi124kLu0c3v1bYtx4u/DoGXAM/MElIJaKaNgPzr0yHVFNydcw/WRC2aw59RW52Y
+         TcQWBe3uFU9byEVB6foASvYYAuD0lKmOeNxb7gfPcAFU4CkOELZHQOJXkPmUIiGK9QeD
+         2WUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zuttx+ccp2WJpeVo41ApR4QzlKZXH0hmSVWBq1ylj1s=;
+        b=PXqfHUqogDDzT3tFgZAJSyz6gx+4rmP65BjFlerv9ht/i4yJTjsmFfMsfNHoAREWpJ
+         q6/yqmNCPo0nRdrxrk9UrIvL3imjFb71BPR8qwgebGOEXU9hPXihrvRkCOnBDhTzp6HP
+         Bg0R0bzuuo858aRjxkbrzVJ/B+JptuCrx0i3LhGGjL2L0nALWbVCAVVDf5oEMN3oMSjs
+         ILbmPYHPUdRW5m5F4DWTeBr/KYvNfWQUoLs/PxoTi5qR3EiE4wNxkV3MlBR+vbUOUdjw
+         fhSUcVIh75xstuVJntF5JnJqRqwSvJCosFp1SNeFEB/GMSUvjI/9gZRBl5j9JDbYng5w
+         +GYg==
+X-Gm-Message-State: AOAM5336gYxBzPtbeCO4thKCp9xZw5PpWjrLKlMUm/Qe0bc7Z6Yrb74q
+        GhW0YRpUukBqbzTqv2c1RevL4v88a8F3WCX0eS/X6Ja4Zgw=
+X-Google-Smtp-Source: ABdhPJwd6LPFInfHlB0MoYTGJBNYl6tOWlIcXNtchel3ebgFsJbwFmOPhHEI/49CuTvKdTxtoX37odJCBnGzIQH81F0=
+X-Received: by 2002:a5b:711:: with SMTP id g17mr550659ybq.446.1621366537876;
+ Tue, 18 May 2021 12:35:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20210412084004.200986670@linuxfoundation.org> <20210412084005.653952525@linuxfoundation.org>
+ <20210412051230-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210412051230-mutt-send-email-mst@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 18 May 2021 21:35:26 +0200
+Message-ID: <CANn89iJ+5qFw+sPmxBqzxd6rp=3fnc8xkbup7SWWa_LxyhUUrg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 042/111] virtio_net: Do not pull payload in skb->head
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 14 mai 2021 =C3=A0 08:23 -0700, Mark Greer a =C3=A9crit=C2=A0:
-> On Thu, May 13, 2021 at 05:37:19PM +0200, Stephan Gerhold wrote:
-> > On Thu, May 13, 2021 at 07:48:55AM -0700, Mark Greer wrote:
-> > > On Thu, May 13, 2021 at 01:49:53PM +0200, Stephan Gerhold wrote:
-> > > > I have a couple of "recycled" smartphones running mainline Linux
-> > > > and some of them do have NFC chips. I have two with NXP PN547
-> > > > (supported by nxp,nxp-nci-i2c), one with Samsung S3FWRN5
-> > > > (samsung,s3fwrn5-i2c) and even one with Broadcom BCM2079x I think
-> > > > (this one does not have a driver for the Linux NFC subsystem sadly)=
-.
-> > > >=20
-> > > > +Cc phone-devel@vger.kernel.org, in case other people there are
-> > > > interested in NFC :)
-> > > >=20
-> > > > The NXP/Samsung ones seems to work just fine. However, since there =
-are
-> > > > barely any userspace tools making use of Linux NFC all my testing s=
-o far
-> > > > was limited to polling for devices with "nfctool" and being happy e=
-nough
-> > > > when it realizes that I hold some NFC tag close to the device. :S
-> > >=20
-> > > There is a user-level daemon that is the counterpart for the in-kerne=
-l
-> > > NFC subsystem.=C2=A0 It is called neard and is available here:
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0git://git.kernel.org/=
-pub/scm/network/nfc/neard.git
-> > >=20
-> > > There are a few test script in it that will let you read and write NF=
-C
-> > > tags, and do some other things.=C2=A0 We can add some more tests to t=
-hat set
-> > > as we go.
-> > >=20
-> >=20
-> > Yeah, I packaged that for Alpine Linux / postmarketOS.
-> > "nfctool" also comes from "neard" as far as I can tell :)
-> >=20
-> > I think I also played with the Neard test scripts a bit at some point,
-> > and managed to read some NFC tag thing inside an old Yubikey NEO
-> > that I found, but didn't really know what else to do.
->=20
-> Yeah, there isn't a whole lot you can do but beyond reading/writing
-> tags and peer-to-peer, there are things like Bluetooth and Wifi
-> handover, Android Application Record support, and at least some
-> support for Secure Engine.
+On Mon, Apr 12, 2021 at 11:12 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Apr 12, 2021 at 10:40:20AM +0200, Greg Kroah-Hartman wrote:
+> > From: Eric Dumazet <edumazet@google.com>
+> >
+> > [ Upstream commit 0f6925b3e8da0dbbb52447ca8a8b42b371aac7db ]
+> >
+> > Xuan Zhuo reported that commit 3226b158e67c ("net: avoid 32 x truesize
+> > under-estimation for tiny skbs") brought  a ~10% performance drop.
+> >
+> > The reason for the performance drop was that GRO was forced
+> > to chain sk_buff (using skb_shinfo(skb)->frag_list), which
+> > uses more memory but also cause packet consumers to go over
+> > a lot of overhead handling all the tiny skbs.
+> >
+> > It turns out that virtio_net page_to_skb() has a wrong strategy :
+> > It allocates skbs with GOOD_COPY_LEN (128) bytes in skb->head, then
+> > copies 128 bytes from the page, before feeding the packet to GRO stack.
+> >
+> > This was suboptimal before commit 3226b158e67c ("net: avoid 32 x truesize
+> > under-estimation for tiny skbs") because GRO was using 2 frags per MSS,
+> > meaning we were not packing MSS with 100% efficiency.
+> >
+> > Fix is to pull only the ethernet header in page_to_skb()
+> >
+> > Then, we change virtio_net_hdr_to_skb() to pull the missing
+> > headers, instead of assuming they were already pulled by callers.
+> >
+> > This fixes the performance regression, but could also allow virtio_net
+> > to accept packets with more than 128bytes of headers.
+> >
+> > Many thanks to Xuan Zhuo for his report, and his tests/help.
+> >
+> > Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+> > Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Link: https://www.spinics.net/lists/netdev/msg731397.html
+> > Co-Developed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> > Cc: Jason Wang <jasowang@redhat.com>
+> > Cc: virtualization@lists.linux-foundation.org
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>
+> Note that an issue related to this patch was recently reported.
+> It's quite possible that the root cause is a bug elsewhere
+> in the kernel, but it probably makes sense to defer the backport
+> until we know more ...
 
-Could sniffing and injection work, like for wifi ?
-Guess that depends on specific chip drivers, and libpcap support for sniffi=
-ng ?
+I think the patch should be backported now, all issues have been sorted out ?
 
-https://wiki.wireshark.org/SampleCaptures#Radio_Frequency_Identification_.2=
-8RFID.29.2C_and_Near-Field_Communication_.28NFC.29
-
-https://code.google.com/archive/p/wireshark-nfc/
-
-
-
-
+>
+>
+> > ---
+> >  drivers/net/virtio_net.c   | 10 +++++++---
+> >  include/linux/virtio_net.h | 14 +++++++++-----
+> >  2 files changed, 16 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index b67460864b3c..d8ee001d8e8e 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -406,9 +406,13 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+> >       offset += hdr_padded_len;
+> >       p += hdr_padded_len;
+> >
+> > -     copy = len;
+> > -     if (copy > skb_tailroom(skb))
+> > -             copy = skb_tailroom(skb);
+> > +     /* Copy all frame if it fits skb->head, otherwise
+> > +      * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
+> > +      */
+> > +     if (len <= skb_tailroom(skb))
+> > +             copy = len;
+> > +     else
+> > +             copy = ETH_HLEN + metasize;
+> >       skb_put_data(skb, p, copy);
+> >
+> >       if (metasize) {
+> > diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+> > index 98775d7fa696..b465f8f3e554 100644
+> > --- a/include/linux/virtio_net.h
+> > +++ b/include/linux/virtio_net.h
+> > @@ -65,14 +65,18 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+> >       skb_reset_mac_header(skb);
+> >
+> >       if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
+> > -             u16 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
+> > -             u16 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
+> > +             u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
+> > +             u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
+> > +             u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
+> > +
+> > +             if (!pskb_may_pull(skb, needed))
+> > +                     return -EINVAL;
+> >
+> >               if (!skb_partial_csum_set(skb, start, off))
+> >                       return -EINVAL;
+> >
+> >               p_off = skb_transport_offset(skb) + thlen;
+> > -             if (p_off > skb_headlen(skb))
+> > +             if (!pskb_may_pull(skb, p_off))
+> >                       return -EINVAL;
+> >       } else {
+> >               /* gso packets without NEEDS_CSUM do not set transport_offset.
+> > @@ -102,14 +106,14 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+> >                       }
+> >
+> >                       p_off = keys.control.thoff + thlen;
+> > -                     if (p_off > skb_headlen(skb) ||
+> > +                     if (!pskb_may_pull(skb, p_off) ||
+> >                           keys.basic.ip_proto != ip_proto)
+> >                               return -EINVAL;
+> >
+> >                       skb_set_transport_header(skb, keys.control.thoff);
+> >               } else if (gso_type) {
+> >                       p_off = thlen;
+> > -                     if (p_off > skb_headlen(skb))
+> > +                     if (!pskb_may_pull(skb, p_off))
+> >                               return -EINVAL;
+> >               }
+> >       }
+> > --
+> > 2.30.2
+> >
+> >
+>
