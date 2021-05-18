@@ -2,142 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08990387A93
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE524387A96
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349740AbhEROBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:01:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13188 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239860AbhEROBE (ORCPT
+        id S1349742AbhERODH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243387AbhERODF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:01:04 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IDXH3U124602;
-        Tue, 18 May 2021 09:59:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fn49UZKCJaLFL+buVVdOvj/wTEW1p00qar2oua87Uq4=;
- b=eehALjAwsgwSs5tnKpQSJz+0tLnKq2wp9IdWFrGAXdtckYsT5S6NP0hNvCt1HzdNZFub
- hjNX5o0VI3LBTND8zvJ+bfow67JYEMCVRG3ynGC5srWZgE21Sbw1ljhbMZmvSBoLkad8
- 7caeBOaigEK2ondHaLBJBrcMbbtZkzPbgvRBkC0RSOirqmRmGdEGt9Gf2+N40Ahr7Z3Z
- u+YZsceDZYsyqem5842vaTlz/MIIB0Cx34Y59va4KZd9r6HG+6uCIGbQ8xXc0sWH+nbF
- owKXOoXxeYDN3bCWiJCK4/3cFNwiLEhCz48lYlOLel3vlFce8ga6s7qFPRvm6KISZIjj ZA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mb70qa6d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 09:59:43 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IDYJV7128453;
-        Tue, 18 May 2021 09:59:42 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mb70qa5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 09:59:42 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IDvYIW014201;
-        Tue, 18 May 2021 13:59:40 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 38j5x80tfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 13:59:40 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IDxbrh42205454
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 13:59:37 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7961CAE053;
-        Tue, 18 May 2021 13:59:37 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D6147AE045;
-        Tue, 18 May 2021 13:59:36 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.42.71])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 18 May 2021 13:59:36 +0000 (GMT)
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
-To:     Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
- <20210512203536.4209c29c.pasic@linux.ibm.com>
- <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
- <20210513194541.58d1628a.pasic@linux.ibm.com>
- <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
- <20210514021500.60ad2a22.pasic@linux.ibm.com>
- <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
- <20210517211030.368ca64b.pasic@linux.ibm.com>
- <966a60ad-bdde-68d0-ae2f-06121c6ad970@de.ibm.com>
- <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
-Date:   Tue, 18 May 2021 15:59:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 18 May 2021 10:03:05 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1D8C061573;
+        Tue, 18 May 2021 07:01:47 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id gm21so5552410pjb.5;
+        Tue, 18 May 2021 07:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y6NVOFby1UHC4AnYLCWY5Z1SIPedFltfvQWz5Izwnw8=;
+        b=A0FAuDD3zXOJzyw6Ng9JjXk/uZhSaCV9gYFyiBp5qNctYwGJJny1V3vx667mQ7fcGm
+         SaFt052nZ+CTQM78msCdwhTqop0zx3Vx5B3T1FVd6wrXWfU+zbomLnL2Y8YsUXGNhCt6
+         +TsusV0EJuo36jWG9mcXCzXO34lcUtdkX4kmHf2egY6wJt4sbB/Th88ABUpKMQ1zksQr
+         WYymV4/SkJgnc9s88NU+OlTan7EpW1/zfSTxSTIYTDfFgRyWMG+L5RUO9byYsY60AFNs
+         0WjQ4wK9ykVw+iAujp6rEWqw7lwRUsQrCUzrOZi/oRhkuURJilASGV02g5S8NP4tdhxT
+         lJUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y6NVOFby1UHC4AnYLCWY5Z1SIPedFltfvQWz5Izwnw8=;
+        b=uYGFy8P7nM4ms7xa1LVvvqnYfWM4fZcM08gbbxLrrSPJ2Edgq1+ALfHyCjmWSd6as1
+         8ajD5SaMCOJ0A7CRVduLYPxCpXnQhZx8LTaSXU0kqMxgGXe5zDf/HUx/KRpang/h3SvH
+         hsljkcLGfzn/EbuJmelHtzoF7L+PlIQ/ndnF7psuAUKwAaB9nIRdE49PeJ1GpvEn7UQU
+         RQKHwc7O0AXQTPFVYDJs7s+izwEGTledRmyVguRnF0W8Dvao3NvXTG80wg578J3Bei+9
+         50jTDtc1NSuqiaW15Z96TIuUYJDFCWA8TQ96eSljx2p8nElrVkrlRT2Yhn8BLvX15BbL
+         Id2w==
+X-Gm-Message-State: AOAM532DzuIo2Bfxlje9adxbKsaTnsmr33y5ZONq71HkBjozmRM9PMsX
+        3lwx9LrHn4bRK3EG7uU3v8weeEsdxMHxEnAPH6I=
+X-Google-Smtp-Source: ABdhPJytjdzE//r9BlnPHpINYKyDfBZsu/T4+0L9iaMLfPCaHhdTVpX8stQILUwWLMgHHGyktKK+JjiwAGIb0Gij2O4=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr5319182pja.181.1621346506810;
+ Tue, 18 May 2021 07:01:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VnPax_Mvs8Au0dod5q1YofVymtvZfDwK
-X-Proofpoint-ORIG-GUID: rBhOPXT8o0Gwmu4wxx2jFJo_dmcsiKQu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105180096
+References: <20210516135531.2203-1-dariobin@libero.it> <20210516135531.2203-2-dariobin@libero.it>
+ <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com> <1735504854.166374.1621346262270@mail1.libero.it>
+In-Reply-To: <1735504854.166374.1621346262270@mail1.libero.it>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 18 May 2021 17:01:30 +0300
+Message-ID: <CAHp75VeADiRKdfnsXQ=y3z1WAJBbtZ+P=8tdyYtVQpJrSrQ63Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug file
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 18, 2021 at 4:57 PM Dario Binacchi <dariobin@libero.it> wrote:
+> > Il 17/05/2021 22:02 Andy Shevchenko <andy.shevchenko@gmail.com> ha scritto:
+> > On Sun, May 16, 2021 at 7:43 PM Dario Binacchi <dariobin@libero.it> wrote:
 
+...
 
-On 18.05.21 15:42, Tony Krowiak wrote:
-> 
-> 
-> On 5/18/21 5:30 AM, Christian Borntraeger wrote:
->>
->>
->> On 17.05.21 21:10, Halil Pasic wrote:
->>> On Mon, 17 May 2021 09:37:42 -0400
->>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>>
->>>>>
->>>>> Because of this, I don't think the rest of your argument is valid.
->>>>
->>>> Okay, so your concern is that between the point in time the
->>>> vcpu->kvm->arch.crypto.pqap_hook pointer is checked in
->>>> priv.c and the point in time the handle_pqap() function
->>>> in vfio_ap_ops.c is called, the memory allocated for the
->>>> matrix_mdev containing the struct kvm_s390_module_hook
->>>> may get freed, thus rendering the function pointer invalid.
->>>> While not impossible, that seems extremely unlikely to
->>>> happen. Can you articulate a scenario where that could
->>>> even occur?
->>>
->>> Malicious userspace. We tend to do the pqap aqic just once
->>> in the guest right after the queue is detected. I do agree
->>> it ain't very likely to happen during normal operation. But why are
->>> you asking?
->>
->> Would it help, if the code in priv.c would read the hook once
->> and then only work on the copy? We could protect that with rcu
->> and do a synchronize rcu in vfio_ap_mdev_unset_kvm after
->> unsetting the pointer?
-> 
-> I'll look into this.
+> > Can't you use strncpy_from_user() ?
+>
+> Ok, I'll use strncpy_from_user() in the next version of the patch
 
-I think it could work. in priv.c use rcu_readlock, save the
-pointer, do the check and call, call rcu_read_unlock.
-In vfio_ap use rcu_assign_pointer to set the pointer and
-after setting it to zero call sychronize_rcu.
+Don't be in a hurry.
 
-Halil, I think we can do this as an addon patch as it makes
-sense to have this callback pointer protected independent of
-this patch. Agree?
+We need to settle down the interface first. We still haven't heard
+from the maintainer (Linus?) about it. Neither we have a clear view if
+we need to revert that patch that dropped pinconf-config (Drew, what
+do you think?).
+
+-- 
+With Best Regards,
+Andy Shevchenko
