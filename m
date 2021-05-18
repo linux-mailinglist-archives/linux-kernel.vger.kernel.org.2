@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09D9387CD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA36387CD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350332AbhERPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
+        id S1350370AbhERPuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240361AbhERPua (ORCPT
+        with ESMTP id S240361AbhERPud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:50:30 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA38C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:49:11 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id k14so11857294eji.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:49:11 -0700 (PDT)
+        Tue, 18 May 2021 11:50:33 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5676AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:49:15 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id w127so6364579oig.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8wobWCeO9TnSsNp7Gs4zzmLKeoIRn3xZJv1FCbDfq60=;
-        b=oW+DxoZfcvSH8LaRykrzTmc+KFKmiN+W881QfIJ+3wvCb2PclV+Ja5f2+YuzVzDvn/
-         ayseq80JMuj25ZniVCywFM0AX+uoPAZ8oho3RGOE27Eg2VXdmKeoi1WmTmtMQIPo/EyG
-         jNakzkGhU/ZV/Kf9GgEqAbPrfsygkXzU5C4HRUouVscXETCmuauBFDveTE7YRBVxo1KR
-         JyILTxFoA7xFJIq0P4F+5GPGBVgVg28Ujq5BLPr9vbuBGeJDipg3dq0L5Iv74/isn1R4
-         AwYlQwdPwnyj5oIwhh10sElqh9SBEal09w0XNIK62bwFgbOs2vSdTRnmkedTvQG17eHd
-         zYeA==
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ar+i+hKYQJKBrVVrwYFr2WXlLUhRfwyYOh3n4BNryGc=;
+        b=b5J5fxxYf2Pa3zywWtqYXQ1JR3fU/z9E/8Dfcw+RXKKCbcfRyzsrb3yU+4BJ3JHrUs
+         9fcLa8eoWbectK5MrgXNo/Tw0dHXFAXjVYKOUKj9mAfhX9WCb3BeGcGzUOLPS1e5Q/is
+         LjzoNJi1ud9tZRokeqBYYt3hwiVTuKJKYMr3E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8wobWCeO9TnSsNp7Gs4zzmLKeoIRn3xZJv1FCbDfq60=;
-        b=NvSLtu5/qPT+pt6hvE9x0HEVFE1o8h5lYJ9FxRLp6Fj3H3W81U/Ta7a0/ME5lm8GwK
-         HEPm+HK2xwHuWw1PIPm0bNIdAudGJuelV5q3kZN8Y1fHkV1Z7WlVwEahPhLCueSiIy0d
-         E7Be8q5NTsQyPHrlHIcFX5tQSY60R3nHuMBagKbMheETJatnvVbPGg8z0TMsm6c91B3N
-         KWmKq8xR4nuv8zA2iAXPYAkpVgrWGsEObnfq6N4T1ZWFIccWkm01ClKD82n871RozKji
-         7zqP2QMAbO4sTlWS7H+S8uTiKFWh5Km6lLpNv3qJz9grLZPinPGwICDCD0kl3zj3L+1f
-         xXEQ==
-X-Gm-Message-State: AOAM533lFerf4/vg/F2JM60DaIqMM+pJB6wR4h+C/3HG2vwPjO2tyX04
-        A4mhjZjVY49dlfxLy0JZuZv1Lw==
-X-Google-Smtp-Source: ABdhPJxg7/5WdMrCpZWoWIYBhCrSNmK+yH0GfICeh4qldNd0fp4m6LpEdfMGrLryK2Wtt3rQgMzMdA==
-X-Received: by 2002:a17:906:4e8c:: with SMTP id v12mr6733093eju.365.1621352950499;
-        Tue, 18 May 2021 08:49:10 -0700 (PDT)
-Received: from [192.168.1.14] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id i5sm6739287edt.11.2021.05.18.08.49.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 08:49:10 -0700 (PDT)
-Subject: Re: [PATCH v5 13/25] media: venus: core: use
- pm_runtime_resume_and_get()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-References: <cover.1620314616.git.mchehab+huawei@kernel.org>
- <492e148ae1c7b0a8858c1670037925d3e4adb719.1620314616.git.mchehab+huawei@kernel.org>
- <adb102ab-c197-fdc8-4858-5683bd97baf4@linaro.org>
- <3f41387e-a15f-1e45-6b63-bd6ef647a47f@linaro.org>
- <20210518172014.68f7a655@coco.lan>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <cae92b86-39f3-b00a-76bd-0c81b439b464@linaro.org>
-Date:   Tue, 18 May 2021 18:49:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ar+i+hKYQJKBrVVrwYFr2WXlLUhRfwyYOh3n4BNryGc=;
+        b=GJ3kgUZzmSJEv67qAQxsSZ1gNTzcgkmsEySE7Ved9xoEjrXFBA1B87c4ASWR5zYOVR
+         AjgOaxNBBP7aFtpTaE5VRMBBo1Qim5dYE4YInEjklK0mT551PEkE794Ghc04r2d4M7gG
+         v13LwoEu9dEMOR17G3M6zyIN0YnZAGqyIjhwLWw51pGlotrt8wXddRXnHpZCB9SSL41U
+         89NUVSfXSXRF26kMHHWcdKquM8m+2xD3TD3Hb998SVm/7NWFA2S+0mUktqPDa/Tw4eoK
+         oe8ioIf7HPBHIIDhOHVQWxXz6pLbUr6N5GfwTrciyJn2d6H96rkhBvjIwuDmCn7L6uzz
+         x2og==
+X-Gm-Message-State: AOAM532V3FFHTAXL05l+Z+iR4upguRqyPu1LZCCMJDSaigJOF4oL5aZ5
+        hNIwIvzYKIybN2I+GpIheBVN5g==
+X-Google-Smtp-Source: ABdhPJwxHCs9d9PowhXDP4QMkM3BAfPF3ZyEKd0VJFq9QknCtIt+cdJNJpFEgirtzpwjfwsM+lhH7Q==
+X-Received: by 2002:aca:2818:: with SMTP id 24mr4321292oix.67.1621352954645;
+        Tue, 18 May 2021 08:49:14 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id f21sm3751334oou.24.2021.05.18.08.49.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 08:49:14 -0700 (PDT)
+Date:   Tue, 18 May 2021 10:49:12 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.11 000/329] 5.11.22-rc1 review
+Message-ID: <YKPh+GejNxyYKTZ5@fedora64.linuxtx.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210518172014.68f7a655@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
-
-On 5/18/21 6:20 PM, Mauro Carvalho Chehab wrote:
-> Em Mon, 17 May 2021 18:26:14 +0300
-> Stanimir Varbanov <stanimir.varbanov@linaro.org> escreveu:
+On Mon, May 17, 2021 at 03:58:31PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.22 release.
+> There are 329 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->> Hi Mauro,
->>
->> On 5/10/21 4:54 PM, Stanimir Varbanov wrote:
->>>
->>>
->>> On 5/6/21 6:25 PM, Mauro Carvalho Chehab wrote:  
->>>> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
->>>> added pm_runtime_resume_and_get() in order to automatically handle
->>>> dev->power.usage_count decrement on errors.
->>>>
->>>> Use the new API, in order to cleanup the error check logic.
->>>>
->>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>>> ---
->>>>  drivers/media/platform/qcom/venus/pm_helpers.c | 3 +--
->>>>  1 file changed, 1 insertion(+), 2 deletions(-)  
->>>
->>> Tested-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->>> Acked-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->>>   
->>
->> What is the plan for these venus patches. Do I need to take them through
->> my Venus pull request for v5.14 or you will take them directly?
+> Responses should be made by Wed, 19 May 2021 14:02:16 +0000.
+> Anything received after that time might be too late.
 > 
-> Whatever works best for you. In principle, I should apply them on my
-> tree probably tomorrow, if ok for you.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.22-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
-It is perfectly fine, please apply them. Thank you!
+Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
 
--- 
-regards,
-Stan
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
