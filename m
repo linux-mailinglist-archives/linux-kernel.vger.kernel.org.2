@@ -2,161 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B373874C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AEA53874CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241287AbhERJKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:10:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:45948 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239301AbhERJKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:10:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E15C31B;
-        Tue, 18 May 2021 02:09:07 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62F9D3F719;
-        Tue, 18 May 2021 02:09:06 -0700 (PDT)
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Subject: [BUG] rockpro64: PCI BAR reassignment broken by commit 9d57e61bf723
- ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit memory
- addresses")
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        heiko.stuebner@theobroma-systems.com, leobras.c@gmail.com,
-        Rob Herring <robh@kernel.org>
-Message-ID: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
-Date:   Tue, 18 May 2021 10:09:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S242138AbhERJKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241405AbhERJKq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:10:46 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE99C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:09:28 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s25so10638738ljo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:09:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zDPLZY6n1fzjF1/PuV70TugjmL5LRz4hKWzApMGHl5U=;
+        b=DapZIgcrYoOpwcatlFni9M5PYI5eV4rQjFml2F2E9R3cMeH9boVnlDlOmzPzlLSqdV
+         gl3UUtFieKqosZKIWMjG5hC4OuC34Eu8PMJoe67JTqLaK/K0Xy/58gfmYNDAjdlnJ6XJ
+         xS9cEci4hfeayNCt8dyOyBGswnmphqjsOCyttaBsQtH6Z1igSfcW44GGrlWX1Qw2vI52
+         Z36IKwOs2x1TBR+QYlackh0+WglK/1uVkRS8DSC7VyZ0B6f6bZUZUbD4uoJuwPLGjkvR
+         hCT1dUwK8haFxJwPqI5RJiBfd+/sMrGXaeCAp9jo7Lv+LlhwJwvydUOEg19CC3WzZQM9
+         73LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zDPLZY6n1fzjF1/PuV70TugjmL5LRz4hKWzApMGHl5U=;
+        b=SPxhx3Jr/72HHwHGeiE2u2hskxgk/FDXj9m0BgnBHpcC7499DjsxNQo6Of6HCMFqWu
+         5j7An1TKq5Ybopsb0ByBiFRlvNABrhftuARyTX/YMwynvB+aIh64Gce4NAKV94ALKzQc
+         tzk9DSBsHBikIlOnK0VYreldKysN31219p2Lap2txyou5gRbqdkn3oBxnNF3hOv1qxux
+         QWch1gZB/CtkrmVGDI2+VmpvsOs2rBnWyi2q81wfFIU0Dj55QpFgMv6IulQA5hrsT9Ne
+         Qu40P7By4RohiylTCaubSNI8Rq/UGvv4RpsgAw19UwK0fO3glgKcsxsE8FO8bCdjEPs8
+         cWyQ==
+X-Gm-Message-State: AOAM53048Ru+47mHfmdFz8uQ0XJOcYwh/r9vWperHFDx8Abo5YsfrQs1
+        SMldUPe8n3ljsUoQ/3dxbBN79g==
+X-Google-Smtp-Source: ABdhPJwd36FdQw5OjeaJNExrYMnqgMrs9WA1iin+4PQZuKnVgjNayk86ub6DZ3d0pvz+Q6NUI7DdAA==
+X-Received: by 2002:a2e:9196:: with SMTP id f22mr3318140ljg.88.1621328966961;
+        Tue, 18 May 2021 02:09:26 -0700 (PDT)
+Received: from pdkmachine.localdomain (91-123-191-9.gigainternet.pl. [91.123.191.9])
+        by smtp.gmail.com with ESMTPSA id r1sm3215559ljj.21.2021.05.18.02.09.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 02:09:26 -0700 (PDT)
+From:   Patryk Duda <pdk@semihalf.com>
+To:     Benson Leung <bleung@chromium.org>
+Cc:     Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com, Patryk Duda <pdk@semihalf.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] platform/chrome: cros_ec_proto: Send command again when timeout occurs
+Date:   Tue, 18 May 2021 11:09:25 +0200
+Message-Id: <20210518090925.15480-1-pdk@semihalf.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After doing a git bisect I was able to trace the following error when booting my
-rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
+Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
+hasn't initialized SPI yet. This can happen because FPMCU is restarted
+during system boot and kernel can send message in short window
+eg. between sysjump to RW and SPI initialization.
 
-[..]
-[    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
-[    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
-0x00fa000000
-[    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
-0x00fbe00000
-[    0.306201] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
-regulator
-[    0.306334] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
-regulator
-[    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
-[    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
-[    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
-[    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
-address [0xfbe00000-0xfbefffff])
-[    0.373839] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
-[    0.373973] pci 0000:00:00.0: supports D1
-[    0.373992] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-[    0.378518] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
-reconfiguring
-[    0.378765] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
-[    0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
-[    0.379051] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
-[    0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
-2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
-x4 link)
-[    0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
-[    0.393311] pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
-[    0.393333] pci 0000:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
-[    0.393356] pci 0000:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
-[    0.393375] pci 0000:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
-[    0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
-[    0.393839] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
-[    0.394165] pcieport 0000:00:00.0: AER: enabled with IRQ 78
-[..]
+Cc: <stable@vger.kernel.org> # 4.4+
+Signed-off-by: Patryk Duda <pdk@semihalf.com>
+---
+Fingerprint MCU is rebooted during system startup by AP firmware (coreboot).
+During cold boot kernel can query FPMCU in a window just after jump to RW
+section of firmware but before SPI is initialized. The window was
+shortened to <1ms, but it can't be eliminated completly.
 
-to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for
-64-bit memory addresses"). For reference, here is the dmesg output when BAR
-reassignment works:
+Communication with FPMCU (and all devices based on EC) is bi-directional.
+When kernel sends message, EC will send EC_SPI* status codes. When EC is
+not able to process command one of bytes will be eg. EC_SPI_NOT_READY.
+This mechanism won't work when SPI is not initailized on EC side. In fact,
+buffer is filled with 0xFF bytes, so from kernel perspective device is not
+responding. To avoid this problem, we can query device once again. We are
+already waiting EC_MSG_DEADLINE_MS for response, so we can send command
+immediately.
 
-[..]
-[    0.307381] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
-[    0.307445] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
-0x00fa000000
-[    0.307481] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
-0x00fbe00000
-[    0.308406] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
-regulator
-[    0.308534] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
-regulator
-[    0.374676] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
-[    0.374701] pci_bus 0000:00: root bus resource [bus 00-1f]
-[    0.374723] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff]
-[    0.374746] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
-address [0xfbe00000-0xfbefffff])
-[    0.374808] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
-[    0.374943] pci 0000:00:00.0: supports D1
-[    0.374961] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-[    0.379473] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
-reconfiguring
-[    0.379712] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
-[    0.379815] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
-[    0.379997] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
-[    0.380607] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
-2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
-x4 link)
-[    0.394239] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
-[    0.394285] pci 0000:00:00.0: BAR 14: assigned [mem 0xfa000000-0xfa0fffff]
-[    0.394312] pci 0000:01:00.0: BAR 0: assigned [mem 0xfa000000-0xfa003fff 64bit]
-[    0.394374] pci 0000:00:00.0: PCI bridge to [bus 01]
-[    0.394395] pci 0000:00:00.0:   bridge window [mem 0xfa000000-0xfa0fffff]
-[    0.394569] pcieport 0000:00:00.0: enabling device (0000 -> 0002)
-[    0.394845] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
-[    0.395153] pcieport 0000:00:00.0: AER: enabled with IRQ 78
-[..]
+Best regards,
+Patryk
+ drivers/platform/chrome/cros_ec_proto.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-And here is the output of lspci when BAR reassignment works:
-
-# lspci -v
-00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd RK3399 PCI Express Root
-Port (prog-if 00 [Normal decode])
-    Flags: bus master, fast devsel, latency 0, IRQ 78
-    Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-    I/O behind bridge: 00000000-00000fff [size=4K]
-    Memory behind bridge: fa000000-fa0fffff [size=1M]
-    Prefetchable memory behind bridge: 00000000-000fffff [size=1M]
-    Capabilities: [80] Power Management version 3
-    Capabilities: [90] MSI: Enable+ Count=1/1 Maskable+ 64bit+
-    Capabilities: [b0] MSI-X: Enable- Count=1 Masked-
-    Capabilities: [c0] Express Root Port (Slot+), MSI 00
-    Capabilities: [100] Advanced Error Reporting
-    Capabilities: [274] Transaction Processing Hints
-    Kernel driver in use: pcieport
-lspci: Unable to load libkmod resources: error -2
-
-01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD
-Controller SM981/PM981/PM983 (prog-if 02 [NVM Express])
-    Subsystem: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
-    Flags: bus master, fast devsel, latency 0, IRQ 77, NUMA node 0
-    Memory at fa000000 (64-bit, non-prefetchable) [size=16K]
-    Capabilities: [40] Power Management version 3
-    Capabilities: [50] MSI: Enable- Count=1/1 Maskable- 64bit+
-    Capabilities: [70] Express Endpoint, MSI 00
-    Capabilities: [b0] MSI-X: Enable+ Count=33 Masked-
-    Capabilities: [100] Advanced Error Reporting
-    Capabilities: [148] Device Serial Number 00-00-00-00-00-00-00-00
-    Capabilities: [158] Power Budgeting <?>
-    Capabilities: [168] Secondary PCI Express
-    Capabilities: [188] Latency Tolerance Reporting
-    Capabilities: [190] L1 PM Substates
-    Kernel driver in use: nvme
-
-I can provide more information if needed (the board is sitting on my desk) and I
-can help with testing the fix.
-
-Thanks,
-
-Alex
+diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+index aa7f7aa77297..3384631d21e2 100644
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -279,6 +279,18 @@ static int cros_ec_host_command_proto_query(struct cros_ec_device *ec_dev,
+ 	msg->insize = sizeof(struct ec_response_get_protocol_info);
+ 
+ 	ret = send_command(ec_dev, msg);
++	/*
++	 * Send command once again when timeout occurred.
++	 * Fingerprint MCU (FPMCU) is restarted during system boot which
++	 * introduces small window in which FPMCU won't respond for any
++	 * messages sent by kernel. There is no need to wait before next
++	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
++	 */
++	if (ret == -ETIMEDOUT) {
++		dev_warn(ec_dev->dev,
++			 "Timeout to get response from EC. Retrying.\n");
++		ret = send_command(ec_dev, msg);
++	}
+ 
+ 	if (ret < 0) {
+ 		dev_dbg(ec_dev->dev,
+-- 
+2.31.1.751.gd2f1c929bd-goog
 
