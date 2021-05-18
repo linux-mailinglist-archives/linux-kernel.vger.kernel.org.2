@@ -2,164 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F1E3877D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6883877D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244226AbhERLkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:40:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41632 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241908AbhERLkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:40:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 05DADAD6C;
-        Tue, 18 May 2021 11:39:03 +0000 (UTC)
-Date:   Tue, 18 May 2021 13:39:01 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org
-Subject: [PATCH stable-5.10,5.11,5.12] x86/boot/compressed/64: Check SEV
- encryption in the 32-bit boot-path
-Message-ID: <YKOnVYLRxk9CUzTc@suse.de>
-References: <20210508032224.039CF613ED@mail.kernel.org>
- <YJZnYDty7Siyo68k@kroah.com>
+        id S244836AbhERLkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244606AbhERLkf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 07:40:35 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1C5C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:39:17 -0700 (PDT)
+Received: from [IPv6:2a02:a03f:eafb:ee01:6102:7bbd:c7da:85a4] (unknown [IPv6:2a02:a03f:eafb:ee01:6102:7bbd:c7da:85a4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 075CB200155;
+        Tue, 18 May 2021 13:39:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1621337955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uwmdW801vRB3PpGUwtnmy412PKt6fejTaQGhH97dxaI=;
+        b=imcG4dei6UyHr6SFf4F0c1hXxbKSIYueqDyCAEL6DmGi6QLXqliwyNb1JJNNfBl6mJSlfS
+        qVltN5tq7OFNwOi9jF4V1GE2FyHOldZzf+OzNxW8BWL1yOy2Hq4BOZjIVQ5j8k2BzFseRH
+        5aMb1AYhrH9qSJo2HGU+l/Pk3H4D7BMx23a2RnlfoOUGsiKEqahAQmLL7vGHZHPep59Ljs
+        43xZLHZwCK33fKKvAhVx5zRruPkqsGtbTMCtBKns6tk4Caahdb+z2OpElDa2b6V+qxp6Lk
+        Z7AWze8mtSLPjIyTCxnDiD7jvoTKovM20Dpz6RtFx8+/JISHB80d0LQBa6NBrg==
+Message-ID: <1fcbaf8029f3b9f79a138d423413f625886c8415.camel@svanheule.net>
+Subject: Re: [PATCH v2 2/7] gpio: regmap: Add configurable dir/value order
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Date:   Tue, 18 May 2021 13:39:12 +0200
+In-Reply-To: <YKMbF3Ow8IrBBlXW@lunn.ch>
+References: <cover.1621279162.git.sander@svanheule.net>
+         <d5f294489d31a80b69169f358da89bb7f70d1328.1621279162.git.sander@svanheule.net>
+         <YKMbF3Ow8IrBBlXW@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJZnYDty7Siyo68k@kroah.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit fef81c86262879d4b1176ef51a834c15b805ebb9 ]
+Hi Andrew,
 
-Check whether the hypervisor reported the correct C-bit when running
-as an SEV guest. Using a wrong C-bit position could be used to leak
-sensitive data from the guest to the hypervisor.
+On Tue, 2021-05-18 at 03:40 +0200, Andrew Lunn wrote:
+> On Mon, May 17, 2021 at 09:28:04PM +0200, Sander Vanheule wrote:
+> > GPIO chips may not support setting the output value when a pin is
+> > configured as an input
+> 
+> Could you describe what happens with the hardware you are playing
+> with. Not being able to do this means you will get glitches when
+> enabling the output so you should not use these GPIOs with bit banging
+> busses like i2c.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210312123824.306-8-joro@8bytes.org
----
- arch/x86/boot/compressed/head_64.S | 85 ++++++++++++++++++++++++++++++
- 1 file changed, 85 insertions(+)
+As I was testing this driver, I noticed that output settings for GPIO LEDs,
+connected to the RTL8231, weren't being properly set. The actual LED brightness
+didn't correspond to the one reported by sysfs. Changing the operation order
+fixed this.
 
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index e94874f4bbc1..ae1fe558a2d8 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -172,11 +172,21 @@ SYM_FUNC_START(startup_32)
- 	 */
- 	call	get_sev_encryption_bit
- 	xorl	%edx, %edx
-+#ifdef	CONFIG_AMD_MEM_ENCRYPT
- 	testl	%eax, %eax
- 	jz	1f
- 	subl	$32, %eax	/* Encryption bit is always above bit 31 */
- 	bts	%eax, %edx	/* Set encryption mask for page tables */
-+	/*
-+	 * Mark SEV as active in sev_status so that startup32_check_sev_cbit()
-+	 * will do a check. The sev_status memory will be fully initialized
-+	 * with the contents of MSR_AMD_SEV_STATUS later in
-+	 * set_sev_encryption_mask(). For now it is sufficient to know that SEV
-+	 * is active.
-+	 */
-+	movl	$1, rva(sev_status)(%ebp)
- 1:
-+#endif
- 
- 	/* Initialize Page tables to 0 */
- 	leal	rva(pgtable)(%ebx), %edi
-@@ -261,6 +271,9 @@ SYM_FUNC_START(startup_32)
- 	movl	%esi, %edx
- 1:
- #endif
-+	/* Check if the C-bit position is correct when SEV is active */
-+	call	startup32_check_sev_cbit
-+
- 	pushl	$__KERNEL_CS
- 	pushl	%eax
- 
-@@ -786,6 +799,78 @@ SYM_DATA_START_LOCAL(loaded_image_proto)
- SYM_DATA_END(loaded_image_proto)
- #endif
- 
-+/*
-+ * Check for the correct C-bit position when the startup_32 boot-path is used.
-+ *
-+ * The check makes use of the fact that all memory is encrypted when paging is
-+ * disabled. The function creates 64 bits of random data using the RDRAND
-+ * instruction. RDRAND is mandatory for SEV guests, so always available. If the
-+ * hypervisor violates that the kernel will crash right here.
-+ *
-+ * The 64 bits of random data are stored to a memory location and at the same
-+ * time kept in the %eax and %ebx registers. Since encryption is always active
-+ * when paging is off the random data will be stored encrypted in main memory.
-+ *
-+ * Then paging is enabled. When the C-bit position is correct all memory is
-+ * still mapped encrypted and comparing the register values with memory will
-+ * succeed. An incorrect C-bit position will map all memory unencrypted, so that
-+ * the compare will use the encrypted random data and fail.
-+ */
-+	__HEAD
-+	.code32
-+SYM_FUNC_START(startup32_check_sev_cbit)
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	pushl	%eax
-+	pushl	%ebx
-+	pushl	%ecx
-+	pushl	%edx
-+
-+	/* Check for non-zero sev_status */
-+	movl	rva(sev_status)(%ebp), %eax
-+	testl	%eax, %eax
-+	jz	4f
-+
-+	/*
-+	 * Get two 32-bit random values - Don't bail out if RDRAND fails
-+	 * because it is better to prevent forward progress if no random value
-+	 * can be gathered.
-+	 */
-+1:	rdrand	%eax
-+	jnc	1b
-+2:	rdrand	%ebx
-+	jnc	2b
-+
-+	/* Store to memory and keep it in the registers */
-+	movl	%eax, rva(sev_check_data)(%ebp)
-+	movl	%ebx, rva(sev_check_data+4)(%ebp)
-+
-+	/* Enable paging to see if encryption is active */
-+	movl	%cr0, %edx			 /* Backup %cr0 in %edx */
-+	movl	$(X86_CR0_PG | X86_CR0_PE), %ecx /* Enable Paging and Protected mode */
-+	movl	%ecx, %cr0
-+
-+	cmpl	%eax, rva(sev_check_data)(%ebp)
-+	jne	3f
-+	cmpl	%ebx, rva(sev_check_data+4)(%ebp)
-+	jne	3f
-+
-+	movl	%edx, %cr0	/* Restore previous %cr0 */
-+
-+	jmp	4f
-+
-+3:	/* Check failed - hlt the machine */
-+	hlt
-+	jmp	3b
-+
-+4:
-+	popl	%edx
-+	popl	%ecx
-+	popl	%ebx
-+	popl	%eax
-+#endif
-+	ret
-+SYM_FUNC_END(startup32_check_sev_cbit)
-+
- /*
-  * Stack and heap for uncompression
-  */
--- 
-2.31.1
+However, the vendor code uses I2C bitbanging quite extensively on these chips,
+so I decided to have another look.
+
+From u-boot on my device, I can manipulate the RTL8231 registeres relatively
+easily. I performed the following short tests:
+ * Set pin to input, pull pin high, write output low, change direction: pin
+   output changes to low value
+ * Set pin to input pull pin low, write output high, change direction: pin
+   output changes to high value
+
+Which seems to indicate that I _can_ set output values on input pins... I'll
+need to look into this in more detail when I have a bit more time, later this
+week.
+
+
+Best,
+Sander
 
