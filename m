@@ -2,132 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A85387826
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F37838782A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348928AbhERL4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240337AbhERL4o (ORCPT
+        id S240337AbhERL6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:58:08 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35700 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238520AbhERL6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:56:44 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AE1C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:55:26 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so1405509pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5VCBuWSs1txjae+kRHfQDLH1nWBEwnS0myzOsDirlD0=;
-        b=tem/B1XmXabqMr0kMhnjJlecucMrzogQ3R5lsMyeOcdqxveptMAfrSW2ZCgd/uxkyR
-         G+JlPP3nNiUYhRZBUnoimnEesrMZTHPdTGiGZkY7vp5ebbn+Nghz3Lumc+dgtd6aln1l
-         SE3r+JHo5lINBI4UtR/GVkhYuU4A6ERWQFsO9j1VP27V4Aq8ed2/8Nq4P96R8YJS30TR
-         Dz5t8FNke8jS34/1moByLlMCyq8NBs6b32vsv0Iul+hz5y8zXzhuBA0ATPvi/jktI38B
-         9yuwNdTGqVXamidXtpvyoTs7TqiHaOCW5kVqA5xtNrJYXGtaRnlhyJVh2CI+s3EI07LA
-         +vGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5VCBuWSs1txjae+kRHfQDLH1nWBEwnS0myzOsDirlD0=;
-        b=uK93b4mrsxek7FHxVlCuvsuXCGWA+w38t1BydGv2FA9t+elieXSsVOpWJpXizdfQ7j
-         6bAWl9tiUI9FJ7LmuMll6xf8kIPnJ8bK9FrD19MIxav5BEGjmEUpCFz5H75Qt77nAO6e
-         OpSZA+ZpFJPvH8D/9sxwkfv9tai24yI82zvyNQWHlHePN7M7u8zaW8jUnoO/yaGDKuQi
-         vWBCbn1kup+/NGXWqN3S7OsmtRaw367pTM9vfv8D8O57Y3sddWBFGpj+k/Kzqs6E5NMX
-         MxVdu/+DnaCYxn3Ay/Rh965KBRIeYGYulPGHc3Lk+YrQz8Pdeb5lsZMA7gz7/Xm7V0lG
-         1StQ==
-X-Gm-Message-State: AOAM532nnuxEBuKTvf7qqZ17yyfKDTm01aXwUBPhWt/dubbwQDzk0RSm
-        JD68OkV3QrDkaZUL8w8lXeHsRUu8a8ci0Xm1Nlo=
-X-Google-Smtp-Source: ABdhPJyLTIbqZGmalOKB/nTgjTRyPg8tqHHRXNcBBaSCCXf7yfX5tFGps+O8zsSi+wT28z6Y1iJWa0XLPytXohEJRHE=
-X-Received: by 2002:a17:902:c784:b029:ef:b14e:2b0b with SMTP id
- w4-20020a170902c784b02900efb14e2b0bmr4255508pla.64.1621338925678; Tue, 18 May
- 2021 04:55:25 -0700 (PDT)
+        Tue, 18 May 2021 07:58:03 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14IBuYGT020544;
+        Tue, 18 May 2021 06:56:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621338994;
+        bh=3a8XgCUkDM0gwvT+vx6EOynoKwpvMs8jnRG6dXTrM78=;
+        h=Date:From:To:CC:Subject;
+        b=jnRgrF+ULiqLFkIgLeqy8jl40GA5xMgiLBMxoKa5T7zYAxzIWMVWXsrIhbU4lY4an
+         hOeBMT3hp3zUBrIG+8c/IaTJqG/mKK/I0ny9L8wSBPmvWJXKH82dEOQCfJw4IXelOL
+         aH4dctKcqc9URMG2WjSOB1sJthSAylut0A0P6ik8=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14IBuYOq056851
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 18 May 2021 06:56:34 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 18
+ May 2021 06:56:34 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 18 May 2021 06:56:34 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14IBuYdG013864;
+        Tue, 18 May 2021 06:56:34 -0500
+Date:   Tue, 18 May 2021 06:56:34 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        <arm@kernel.org>, <soc@kernel.org>
+CC:     Tero Kristo <kristo@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] arm64: dts: TI K3 fixups for v5.13 rc
+Message-ID: <20210518115634.467vgpbzplal5kou@obituary>
 MIME-Version: 1.0
-References: <20210517155306.11113-1-wuchi.zero@gmail.com> <CA+tQmHAE6vK17Xghi9YT7+7r4oFJuQ86cU8m5MzMs6-D0G=DBQ@mail.gmail.com>
- <20210518085955.GB28667@quack2.suse.cz> <CA+tQmHBEvZTe9-7tReRHBw1tkTW7uGS5FhPZ41eZFOqtoyqkHQ@mail.gmail.com>
- <20210518103928.GC28667@quack2.suse.cz>
-In-Reply-To: <20210518103928.GC28667@quack2.suse.cz>
-From:   chi wu <wuchi.zero@gmail.com>
-Date:   Tue, 18 May 2021 19:55:13 +0800
-Message-ID: <CA+tQmHD2NSTG6m=RHdHQNDofn92Vm=QEP5GNmXhRzWoPJEjLmA@mail.gmail.com>
-Subject: Re: [PATCH] lib/flex_proportions.c: Use abs() when percpu_counter is negative.
-To:     Jan Kara <jack@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, tan.hu@zte.com.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yhtujcuvugprpbgc"
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jan Kara <jack@suse.cz> =E4=BA=8E2021=E5=B9=B45=E6=9C=8818=E6=97=A5=E5=91=
-=A8=E4=BA=8C =E4=B8=8B=E5=8D=886:39=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Tue 18-05-21 18:22:05, chi wu wrote:
-> > Jan Kara <jack@suse.cz> =E4=BA=8E2021=E5=B9=B45=E6=9C=8818=E6=97=A5=E5=
-=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:59=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Tue 18-05-21 11:42:53, chi wu wrote:
-> > > > Chi Wu <wuchi.zero@gmail.com> =E4=BA=8E2021=E5=B9=B45=E6=9C=8817=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=8811:53=E5=86=99=E9=81=93=EF=BC=9A
-> > > > >
-> > > > > The value of percpu_counter_read() may become negative after
-> > > > > running percpu_counter_sum() in fprop_reflect_period_percpu().
-> > > > > The value of variable 'num' will be zero in fprop_fraction_percpu=
-()
-> > > > > when using percpu_counter_read_positive(), but if using the abs o=
-f
-> > > > > percpu_counter_read() will be close to the correct value.
-> > > > >
-> > > >
-> > > > I realized that I was wrong as follow:
-> > > > (a) the decay rule is broken, the negative means the difference in
-> > > > decay here.
-> > > > (b) as the target event increasing, proportion of the event will
-> > > > decrease to 0 firstly and then it will increase. The logic is bad.
-> > > > 1. abs(-50) / abs(100) =3D 50%       //+50 to 2
-> > > > 2. abs(0) / abs(150) =3D 0 %           //+50 to 3
-> > > > 3. abs(50)/abs(200) =3D 25%
-> > > >
-> > > > Anyway, the percpu_counter_sum() had cost a lost performance,
-> > > > may be we could get a little benefits from that. So could we add a
-> > > > variable to stroe the decay value, we will get the value when
-> > > > percpu_counter_read() is negative?
-> > >
-> > > The result of percpu_counter_read() is inherently inexact (but fast! =
-;). It
-> > > can be upto number_of_cpus * counter_batch away from the real counter
-> > > value. But do you observe any practical problems with this inaccuracy=
- on
-> > > your system? Sure, cache memory won't be split among devices exactly
-> > > according to writeout proportion but that usually does not matter.
-> > >
-> > >                                                                 Honza
-> > >
-> >
-> > Thanks, Got it.
-> > Just try to optimize the fuse (with strictlimit feature)performance
-> > issue: The writing thread will be paused and runs slowly, when the
-> > proportion of fuse-bdi is 0.
-> > The issue is normal,and one of reasons is the characteristics of
-> > percpu_counter batch. Even the pages are writeout, we may be could not
-> > get the real proportion value due to side effects of counter
-> > performance. It's just a slight disappointment.
->
-> Well, you can tune 'min_ratio' of the fuse-bdi to avoid problems with the=
-se
-> near-zero states... To always give the bdi some breathing room for rampin=
-g
-> up.
->
+--yhtujcuvugprpbgc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, it is useful to me.
+Hi,
 
->                                                                 Honza
->
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+These are minor fixups for the 5.13-rc towards making the yaml
+conversion of various txt files in 5.14-rc1.
+
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git tags/ti-k3=
+-dt-fixes-for-v5.13
+
+for you to fetch changes up to cab12badfc99f93c1dccf192dd150f94b687a27c:
+
+  arm64: dts: ti: k3*: Introduce reg definition for interrupt routers (2021=
+-05-14 12:48:11 -0500)
+
+----------------------------------------------------------------
+Devicetree fixes for TI K3 platforms for v5.13 merge window:
+
+These minor fixes include:
+* Fixups for device tree discovered during yaml conversion
+* Fixups for missing dma-coherent property in j7200
+* Removal of camera sensor node from am65 evm dts to overlay
+  as camera sensor boards are variable.
+
+----------------------------------------------------------------
+Nishanth Menon (6):
+      arm64: dts: ti: k3-*: Rename the TI-SCI clocks node name
+      arm64: dts: ti: k3-am65-wakeup: Add debug region to TI-SCI node
+      arm64: dts: ti: k3-am65-wakeup: Drop un-necessary properties from dms=
+c node
+      arm64: dts: ti: k3-*: Rename the TI-SCI node
+      arm64: dts: ti: k3-am65|j721e|am64: Map the dma / navigator subsystem=
+ via explicit ranges
+      arm64: dts: ti: k3*: Introduce reg definition for interrupt routers
+
+Tomi Valkeinen (1):
+      arm64: dts: ti: k3-am654-base-board: remove ov5640
+
+Vignesh Raghavendra (1):
+      arm64: dts: ti: j7200-main: Mark Main NAVSS as dma-coherent
+
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi        | 11 +++++----
+ arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi         |  3 ++-
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi        | 10 ++++----
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi         |  4 ++--
+ arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi      | 13 ++++++-----
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts  | 31 ---------------------=
+----
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi       |  8 +++++--
+ arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi |  7 +++---
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi       | 10 ++++----
+ arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 11 +++++----
+ 10 files changed, 45 insertions(+), 63 deletions(-)
+
+--=20
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 8=
+49D 1736 249D
+
+--yhtujcuvugprpbgc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAmCjq2sACgkQ3bWEnRc2
+JJ26fBAAqDSOfEQwwvN8isory0jYTqqQ9Qi6P2Oq+LbP8U2XxuTA8K8eamBAzfOc
+4jpoplbyx0Fde3b0s6H7ChEbxE/GqaXlPLw6RrneAfUKAFaf1OBlupfzhJ1/4f+e
+FiqT4BJnQXAMmQsygfvnItIQKu4wbSW3OsMnUIZFWFbpIyGqc5OkcoL30AIGmnxR
+e6FdfwNCD+o8FZ8ggsbGPrsaa6M4TRnMeyTIp8JXPA/JQGyNnIlC+hgkxs5qrAG+
+2++EelRGKOGBgzSgo+zBqIfajGy58ra4Ts+aQo6c/iCX0HduQVQeuAOvLRR9bQov
+UBGgw02kq8hA35LslLOkooFFfizrcqhFFUJexbR4hDC4/1IKZ+Npgi+gy+9SeS0i
+/aTJbtZrF7P13EeShpe6GbgzlgNyibito0CuQT/HoMBTDV/b0HMHiJSxSxQKz/C/
+7NfYGBOi6wYqnGlrY1SVqq5nxZUN8+ehhklKKYvIlbKxTpRbyYSEXYTgaRTULdMW
++axRpOkNZUziKY/rHOlGqbMNGEysw3AH2eaWMStvhdOM5MT+c6GRuV0D6OxdvVyE
+artE0EYV9ZUaDenVwDfEwd3FCBq9SHgfenZkKUcQiIMZLD+C4UntxniFs15Gbqo0
+Vi2f6fYTjjZg8ri92Vrn8WSqQeoHVWXy6JJNZsK9N0AzLGaSTx8=
+=ud9O
+-----END PGP SIGNATURE-----
+
+--yhtujcuvugprpbgc--
