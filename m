@@ -2,169 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C65387CF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1423387CF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350473AbhERPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350468AbhERPz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:55:28 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40749C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:54:09 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z24so9896570ioi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sOPjeGVfoUdxyxMmaIKR534ol/sgRMD+2CApIb85FWI=;
-        b=uZ9ZrgULd90pJ20c60zlutZDxiYgz2KMRpQrFP+tc4KCMQMpd0PtyYsFoi0zZqY7ZL
-         rjpnuQdps9gVTl7c9Aqb55/rB3bt8TC+Ce0s1xjFd3IdFQ0awjoCjhCCbYc5j1/BSCzJ
-         BESztBItvfU8v+O0wIQo4l4cEm+Nvhx0nBLfc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sOPjeGVfoUdxyxMmaIKR534ol/sgRMD+2CApIb85FWI=;
-        b=G2E6WRF8ywUm5MohetgQSsMYjfqDN7guwwNUsQ2pw4ymHwLpNqVyCOb44Wk4mZ0TqA
-         SU7x/losh57f9fuJW6a/eR8J0En9GI6n7wlRwUgtGaGv9ziTA8j42pzHzC9ycABvRizn
-         X0ZnLlwKzCl3pvOdfUnTwqnFCkzWZZMfLzzBKQUfBpKbo3GyH0QV1gtGAEBKVqTwwB7+
-         kMtaQP4F/0knfw8VTgmj+juzgWEtdDb6zt6nwjR2bcXPBCaeDbEDXUKl8UE5a9afR23b
-         swQxfkGMEeSQ8E/h6ilyJfd4L+6E0L+D2hRc1tKpC65Ij+y1FJoCAbRtwNQGpxOSjnSo
-         L/pg==
-X-Gm-Message-State: AOAM530NflA9P/AZwOJo4N0NKM0kzL88d/Mw0IpS+p6wfQH1iaPw9PbW
-        PdkbimB9e2WC0Yw7Ums4itvUAw283dG6mxTGnxa6zQ==
-X-Google-Smtp-Source: ABdhPJzURMQ4kvYFWw7AgaAHsJSaRhXQyg1AetYl3k5dAaTEx26ENB19AxNZJIqbobJv00LtqNXnUeimts0DC3FkZbo=
-X-Received: by 2002:a6b:7306:: with SMTP id e6mr4814895ioh.75.1621353248649;
- Tue, 18 May 2021 08:54:08 -0700 (PDT)
+        id S1350489AbhERP6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:58:02 -0400
+Received: from mga06.intel.com ([134.134.136.31]:9116 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350480AbhERP6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:58:01 -0400
+IronPort-SDR: Wg7Xxm0+6SdiTfWvPYNC0a1D/taf9/9E8ZCsTcBxuc/diuwx2EcGQnmnsl2h4kfTp+gbv3jqnh
+ kpcZkywCniqA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="261974806"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="261974806"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:56:10 -0700
+IronPort-SDR: x6Ts4XVbUTkCy3GvhgsJgXVNM26SQLdG2T93Ot6Nsv0MPPL4XaopzM0neSXcYs1lzD2773UzfL
+ okreloKb4Anw==
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="542022224"
+Received: from craigsmi-mobl.amr.corp.intel.com (HELO [10.212.132.228]) ([10.212.132.228])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:56:09 -0700
+Subject: Re: [RFC v2-fix 1/1] x86/traps: Add #VE support for TDX guest
+To:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+ <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <4fc32900-412d-fa10-520e-afa6caade33e@intel.com>
+ <81c0f447-44b8-c2b6-ce41-a39ec0a1832b@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <f390e073-e867-e102-742b-1c79c9269f60@intel.com>
+Date:   Tue, 18 May 2021 08:56:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAJWu+orW9PA7m_s5LHhQv-bEO0xFq7n+9-fznd79boKkmQUR6g@mail.gmail.com>
- <YKHvUkxpytzSewEC@boqun-archlinux> <YKMd99hE78xdUkQk@google.com> <YKMlWIPMLFU0vzF6@boqun-archlinux>
-In-Reply-To: <YKMlWIPMLFU0vzF6@boqun-archlinux>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 18 May 2021 11:53:57 -0400
-Message-ID: <CAEXW_YTiL_hsqw9f0fiXWYen8i8R=Uj+eYM8tBaV-K6Hw1CRSQ@mail.gmail.com>
-Subject: Re: Silencing false lockdep warning related to seq lock
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <81c0f447-44b8-c2b6-ce41-a39ec0a1832b@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:24 PM Boqun Feng <boqun.feng@gmail.com> wrote:
-> > [...]
-> > > > After apply Laurent's SPF patchset [1] , we're facing a large number
-> > > > of (seemingly false positive) lockdep reports which are related to
-> > > > circular dependencies with seq locks.
-> > > >
-> > > >  lock(A); write_seqcount(B)
-> > > >   vs.
-> > > > write_seqcount(B); lock(A)
-> > > >
-> > >
-> > > Two questions here:
-> > >
-> > > *   Could you provide the lockdep splats you saw? I wonder whether
-> > >     it's similar to the one mentioned in patch #9[1].
-> >
-> > Sure I have appended them to this email. Here is the tree with Laurent's
-> > patches applied, in case you want to take a look:
-> > https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/heads/chromeos-5.4
-> >
-> > Yes, the splat is similar to the one mentioned in that patch #9, however the
-> > first splat I appended below shows an issue with lockdep false positive -
-> > there is clearly problem with lockdep where it thinks following sequence is
-> > bad, when in fact it is not:
-> >
-> >     init process (skipped some functions):
-> >     exec->
-> >      flush_old_exec->
-> >       exit_mmap ->
-> >         free_pgtables->
-> >           vm_write_begin(vma) // Y: acquires seq lock in write mode
-> >              unlink_anon_vmas // Z: acquires anon_vma->rwsem
-> >
-> >     exec->
-> >     load_elf_binary->
-> >       -> setup_arg_pages
-> >         -> expand_downwards (in the if (grow <=) block)
-> >            mm->page_table_lock // X
-> >            vm_write_begin(vma) // Y: acquires seq lock
-> >
-> >     exec->
-> >      do_execve_file->
-> >        ->get_user_pages
-> >          -> handle_pte_fault
-> >           -> anon_vma_prepare
-> >               -> acquire anon_vma->rwsem  // Z
-> >               -> acquire mm->page_table_lock // X
-> >
-> >     If vm_write_begin ever had to wait, then it could lockup like this if following happened concurrently:
-> >     Acquire->TryToAcquire
-> >     Y->Z
-> >     X->Y
-> >     Z->X
-> >
-> >     But Y can never result in a wait since it is a sequence lock. So this is
-> >     a lockdep false positive.
-> >
-> > >
-> > > *   What keeps write_seqcount(vm_seqcount) serialized? If it's only
-> > >     one lock that serializes the writers, we probably can make it
-> > >     as the nest_lock argument for seqcount_acquire(), and that will
-> > >     help prevent the false positives.
-> >
-> > I think the write seqcount is serialized by the mmap_sem in all the code
-> > paths I audited in Laurent's patchset.
-> >
-> > I am not sure how making it nest_lock argument will help though? The issue is
-> > that lockdep's understanding of seqcount needs to relate seqcount readers to
->
-> The thing lockdep will not report deadlock for the following sequences:
->
->         T1:
->         lock(A);
->         lock_nest(B, A);
->         lock(C);
->
->         T2:
->         lock(A);
->         lock(C);
->         lock_nest(B, A);
->
-> because with the nest_lock, lockdep would know A serializes B, so the
-> following case cannot happen:
->
->         CPU 0                   CPU 1
->         ============            ============
->         lock_nest(B,A);
->                                 lock(C);
->         lock(C);
->                                 lock_nest(B, A);
->
-> becaue either CPU 0 or CPU 1 will already hold A, so they are
-> serialized. So nest_lock can solve part of the problem if all the
-> writers of vm_seqcount are serialized somehow.
->
-> Yes, seqcount writers cannot block each other, however, they are
-> supposed to be seralized with each other, right? So if we have the
-> reason to believe the above two CPUs case can happen, though it's not
-> a deadlock, but it's a data race, right?
->
-> I think the proper fix here is to annotate vm_seqcount with the correct
-> locks serializing the writers.
->
+On 5/18/21 8:45 AM, Andi Kleen wrote:
+> 
+> On 5/18/2021 8:11 AM, Dave Hansen wrote:
+>> On 5/17/21 5:09 PM, Kuppuswamy Sathyanarayanan wrote:
+>>> After TDGETVEINFO #VE could happen in theory (e.g. through an NMI),
+>>> although we don't expect it to happen because we don't expect NMIs to
+>>> trigger #VEs. Another case where they could happen is if the #VE
+>>> exception panics, but in this case there are no guarantees on anything
+>>> anyways.
+>> This implies: "we do not expect any NMI to do MMIO".  Is that true?  Why?
+> 
+> Only drivers that are not supported in TDX anyways could do it (mainly
+> watchdog drivers)
 
-I agree with you now and that's the best way forward. I will work on
-something like this (unless you already did), thanks Boqun!
+No APIC access either?
 
--Joel
+Also, shouldn't we have at least a:
+
+	WARN_ON_ONCE(in_nmi());
+
+if we don't expect (or handle well) #VE in NMIs?
