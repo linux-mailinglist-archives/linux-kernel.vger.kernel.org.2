@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3DD38754C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345D6387564
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241830AbhERJj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:39:59 -0400
-Received: from smtp-36-i2.italiaonline.it ([213.209.12.36]:58308 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241065AbhERJj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:39:57 -0400
-Received: from oxapps-10-056.iol.local ([10.101.8.66])
-        by smtp-36.iol.local with ESMTPA
-        id iwBSlou6lQTiRiwBSluMWg; Tue, 18 May 2021 11:38:38 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1621330718; bh=RX3VysOeZND07OSeQShv9fUFNUFVbaB2i05WydIcxeo=;
-        h=From;
-        b=GlIteFyFXSPcd4cg7t8JjvlsMLzV9RQZgw+abU1zDCPqwxE113JpF3izpzcsyRLgq
-         4GxFNEuyw7HwYNkRAyXxDOH8BHN83dmYcHi3REgQK+9sc33KjvZxkgie0ur67eBwRZ
-         qd/rx5GPDyYwTN38HXyAAeJej2AxiG3UC5LpkJCF2ogZARoVojkBOhBwKhPKdDsbbh
-         DuyV+297mvEiVmn6+uiDgc7Oszjymb9YaWpi19Mticj0wjQLxTea3hFVYOgfm8uDHU
-         QK9uni0LdAYDI5q4UAORH5ddjjpo0ifLKWuO2xUQN4v36usBQQ7UVzml05/tX49/ZR
-         92LC4N7Struog==
-X-CNFS-Analysis: v=2.4 cv=TeVTCTch c=1 sm=1 tr=0 ts=60a38b1e cx=a_exe
- a=jBhkkplKmJJfLUdjeloIeA==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
- a=vesc6bHxzc4A:10 a=fGhLjsSNAAAA:8 a=VwQbUJbxAAAA:8 a=k0ZWKtjwVB-qIq3JdvgA:9
- a=QEXdDO2ut3YA:10 a=LYKFdyShAPKLkGq8p7WX:22 a=AjGcO6oz07-iQ99wixmX:22
-Date:   Tue, 18 May 2021 11:38:38 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Drew Fustini <drew@beagleboard.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Message-ID: <960608833.161310.1621330718253@mail1.libero.it>
-In-Reply-To: <20210517225713.GB2936462@x1>
-References: <20210516135531.2203-1-dariobin@libero.it>
- <20210516135531.2203-2-dariobin@libero.it>
- <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
- <20210517225713.GB2936462@x1>
-Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug
- file
+        id S1347461AbhERJnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:43:51 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:8064 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242571AbhERJnr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:43:47 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14I9MvPl010142;
+        Tue, 18 May 2021 11:42:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=NYkCFyg/J9YK0KU90WHGnXm9+RztNvxNW7BXV5KdyXw=;
+ b=pjiD3jJOvymNxQYw/Edc/CTtVfMDjIcZz4m1827GZIN8N+4UEXar3/yFLhN/CKtVor8T
+ +qjVpMcgaqfFvPMgLtP3lUwuRcOI+m9klihgOXZ6hD3WiUHGEd8zI7HF0wBFrl5lbwNy
+ hEGYbrA3gIQ1AgMu6+r7C8TXSuY/YH9VGL8k2vifSZmcDD8wLdveGcdLnA//+sNmmMgT
+ uX7bQ1GR9qDTRHCx7/IfmLd9LldYPAXZbz2DvpozKW3JvxJm/q3HsgihuZrAxsLSddmb
+ 569x5b9sjitsvxieJ1LVc5jRyLk6thZVOid6UUtBXrjJ+bSE0YH12xzBvtBCECC0/mft 4A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38maunr4mw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 11:42:14 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2228510002A;
+        Tue, 18 May 2021 11:42:12 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 09E1921CA62;
+        Tue, 18 May 2021 11:42:12 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 11:42:11
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: [PATCH v3 0/3] MTD: spinand: Add spi_mem_poll_status() support 
+Date:   Tue, 18 May 2021 11:39:48 +0200
+Message-ID: <20210518093951.23136-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 185.33.57.41
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: jugf+bqEB+2gl7i8I6Yt2LjItx5DHhHk
-x-libjamv: XzFQ/hJAbmQ=
-X-CMAE-Envelope: MS4xfNBgZt30XIYL3+/IEZzLHbj1AGZw0iBcP6+Gn2hxLutIfavg2IWrNnKxvNjEKa8Nj8XOQohvkFczm6ofGlSyh9jsKTqnSZuIAd+P/nI7ZSPgzpdRxUak
- r1Q9202e2Rkj/VgPkWjB+UrZgTWvclNqC9os7ZifDw8KdY48IkYJ0LlrFSYNYLU0v9kK2/piZmbEa+XkFP/IJ5A4PlpIcApAwhwFtU7okuoDwEVjpYDyWoMF
- tMRVRsxcKYue8xubNcvLLa67TnSJwLJYy1hIS1mcuShT0hpblvAylHxQBhkpA0bZ/LKhxiurDYmZQqhaDh9QKEY7JFTmBpVlyYTXc9a7Z6kkW5jgER/UnoXc
- EsdyMOaZ
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_04:2021-05-17,2021-05-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-> Il 18/05/2021 00:57 Drew Fustini <drew@beagleboard.org> ha scritto:
-> 
->  
-> On Mon, May 17, 2021 at 11:02:00PM +0300, Andy Shevchenko wrote:
-> > On Sun, May 16, 2021 at 7:43 PM Dario Binacchi <dariobin@libero.it> wrote:
-> > >
-> > > The MPUs of some architectures (e.g AM335x) must be in privileged
-> > > operating mode to write on the pinmux
-> > 
-> > pinmux is not pin configuration. You need to rethink the approach.
-> > 
-> > > registers. In such cases, where
-> > > writes will not work from user space, now it can be done from the pins
-> > > debug file if the platform driver exports the pin_dbg_set() helper among
-> > > the registered operations.
-> > 
-> > Drew, is it similar to what you are trying to achieve?
-> 
-> Yes, I would say this similar to what I was trying to accomplish: being
-> able to change contents of conf_<module>_<pin> register [table 9-60]
-> from userspace.
-> 
-> However, I was specifically looking to change bits 2:0 which is mux
-> mode. My motivation was to allow BeagleBone users to easily switch
-> between pin functions on the expansion headers during runtime to make
-> rapid prototyping with a breadboard easier (such as changing header pin
-> from GPIO to SPI mode). Most of the header pins have 7 different modes.
-> 
-> Ultimately, the solution I settled on with feedback from this list was
-> to create pinmux-select debugfs file that can activate desired fucntion:
-> 6199f6becc86 ("pinctrl: pinmux: Add pinmux-select debugfs file")
-> 
-> Bits 6:3 are related to what this subsystem would refer to as pin conf
-> such as slew, input enable and bias. Thus it might make sense to expose
-> something like a select-pinconf file to activate pin conf settings from
-> userspace. This would require using 'pinconf-single' compatible.
-> 
-> I fixed pinctrl-single bug regarding pinconf last year so it should be
-> possible to use 'pinconf-single' compatible for the am33xx_pinmux node:
-> f46fe79ff1b6 ("pinctrl-single: fix pcs_parse_pinconf() return value")
-> 
+This series adds support for the spi_mem_poll_status() spinand
+interface.
+Some QSPI controllers allows to poll automatically memory 
+status during operations (erase, read or write). This allows to 
+offload the CPU for this task.
+STM32 QSPI is supporting this feature, driver update are also
+part of this series.
 
-In the kernel version 4.1.6 that I am using on my custom board, I have fixed
-the commit f07512e615dd ("pinctrl/pinconfig: add debug interface"). However, 
-this feature was later removed (https://lore.kernel.org/patchwork/patch/1033755/). 
-Do you think it is better to bring that functionality back to life or the submitted
-patch could be fine too?
+Chnages in v3:
+  - Add spi_mem_read_status() which allows to read 8 or 16 bits status.
+  - Add initial_delay_us and polling_delay_us parameters to spi_mem_poll_status().
+    and also to poll_status() callback.
+  - Move spi_mem_supports_op() in SW-based polling case.
+  - Add delay before invoquing read_poll_timeout().
+  - Remove the reinit/wait_for_completion() added in v2.
+  - Add initial_delay_us and polling_delay_us parameters to spinand_wait().
+  - Add SPINAND_READ/WRITE/ERASE/RESET_INITIAL_DELAY_US and
+    SPINAND_READ/WRITE/ERASE/RESET_POLL_DELAY_US defines.
+  - Remove spi_mem_finalize_op() API added in v2.
 
-Thanks and regards,
-Dario
+Changes in v2:
+  - Indicates the spi_mem_poll_status() timeout unit
+  - Use 2-byte wide status register
+  - Add spi_mem_supports_op() call in spi_mem_poll_status()
+  - Add completion management in spi_mem_poll_status()
+  - Add offload/non-offload case management in spi_mem_poll_status()
+  - Optimize the non-offload case by using read_poll_timeout()
+  - mask and match stm32_qspi_poll_status()'s parameters are 2-byte wide
+  - Make usage of new spi_mem_finalize_op() API in
+    stm32_qspi_wait_poll_status()
 
-> Thanks,
-> Drew
+Patrice Chotard (3):
+  spi: spi-mem: add automatic poll status functions
+  mtd: spinand: use the spi-mem poll status APIs
+  spi: stm32-qspi: add automatic poll status feature
+
+ drivers/mtd/nand/spi/core.c  | 45 +++++++++++++------
+ drivers/spi/spi-mem.c        | 85 ++++++++++++++++++++++++++++++++++++
+ drivers/spi/spi-stm32-qspi.c | 83 +++++++++++++++++++++++++++++++----
+ include/linux/mtd/spinand.h  | 11 ++++-
+ include/linux/spi/spi-mem.h  | 14 ++++++
+ 5 files changed, 216 insertions(+), 22 deletions(-)
+
+-- 
+2.17.1
+
