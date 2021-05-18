@@ -2,165 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681AE387E43
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5B4387E45
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350795AbhERRMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:12:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239478AbhERRMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:12:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B686460FF2;
-        Tue, 18 May 2021 17:10:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621357856;
-        bh=zyu3M9789at9L5JkPqLyjf7RRXYDUAb83BZV6wHRdY8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pzekA2tYlJ+RlkC3VaIJZRZRjCB5UTWQI4L9U50cA5tw++oU2e0ygkWHcPbsADygc
-         Hlcq08q6OkwcAacZZ3D3RePb7GFVVIyi9w4Bx4u04GSgpxHm/gjnoYOKtxLEJWuJCv
-         YvFdddaXxVq6U1AVZJ/JONx974sq+VTUWtyfDocj+xkIB7iyekvJnMwStN73h0dKDK
-         zmtbhnPeqawmIoCaoa/tf72sH3RV7tIC97Tughg8KtpMgUa3SAPaP62QKgAbavZsJz
-         b5qJMJQG1EhkQow2vRbA4zptY+q5Sd9tigqOWjQwFd3RjoS8MpTFJcSOanVtmEY0tS
-         edGSyPIo53Crg==
-Subject: Re: [RFC PATCH v2 00/11] x86: Support Intel Key Locker
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        X86 ML <x86@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210514201508.27967-1-chang.seok.bae@intel.com>
- <9f556d3b-49d3-5b0b-0d92-126294ea082d@kernel.org>
- <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <247d9a25-f32f-d01b-61ff-b1966e382907@kernel.org>
-Date:   Tue, 18 May 2021 10:10:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1350918AbhERRNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350806AbhERRNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:13:21 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5471FC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 10:12:03 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 22so7498801pfv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 10:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GmdWHyHk91S0pxmIpKiVSz+mhYNKw0Rzm8xdvRl8ul8=;
+        b=Vb4JQWREA7p4JNnLt6WsllSrMDGJ5QAST5bQCJq0p9BHGdCv5ljhzKe4kh81pFTYyO
+         oYkZ0KarzNFScsv9I7HL7P6nlLbou7RxZQjVm/OWGfNfw2Ay2kK+xZt1/F2yQns66652
+         3wBdCbad+UszZeZz5HWXyRxO2qWvkJRmoDLos7E55mAYymEa+epLZdH5Fj8rI0pE0qQg
+         YfIBVio5JbuBPPQr77AuCuQ4PteGxGkQ3XAXMf4XsYCHfZIq6EwcfHNHivkT565ljUkR
+         9h6vH0WPc8wrB1J6pPeci5pZmaIY9Fp5kY3IxbnxoJrR1sg9CajAC3U9ivj23EnmikSN
+         M7Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GmdWHyHk91S0pxmIpKiVSz+mhYNKw0Rzm8xdvRl8ul8=;
+        b=R1hseicKp52NtCWcCnCyvnjnOEpe77SU8ObHonzsmIP9YG8gJLoXtI00Xlgz2jepzm
+         PGDOXFKTXHp3RQbugVBYYA72AB5uin7KMCo1iYvYZ8DLETVThymNoEFy3FLh//Cp9Dbc
+         5fEAaQUXpTRAzPoUOI1FXzlp7B5eI+shJ0zkmkqgDW7ptzSHvzS1XGDAdTvsjNLv5HMR
+         8Sdj57/JgwQ8zrnVLnyg/mQlyeHwACXN486z3SmPqQVyaExlKDMwLQpjj15LLgOB+NKh
+         NV95o3/wzbRPilKNr9II51MuivunsTTm6vgA28Ql43GxXE+P/C6JhDsYSMxf1T8Sv3fB
+         a5fA==
+X-Gm-Message-State: AOAM532XZW4W8pwXXh5HE/DDjvM4akgsNykMgvDB6tNpAKa/x0DqrTr+
+        nFoqp4IQLrlKuT467OIzfdl33Q==
+X-Google-Smtp-Source: ABdhPJy7u0V8AhizJiDfS0Ul2YFEMrcixkTQgmGIy4EWbW4wVZn0CEszJk1PLHXAwBPAii6/smRA5Q==
+X-Received: by 2002:a05:6a00:1a92:b029:2ca:4c19:e4c1 with SMTP id e18-20020a056a001a92b02902ca4c19e4c1mr6191833pfv.32.1621357922711;
+        Tue, 18 May 2021 10:12:02 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id oa15sm801386pjb.21.2021.05.18.10.12.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 10:12:02 -0700 (PDT)
+Date:   Tue, 18 May 2021 17:11:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
+Message-ID: <YKP1Xty7EEzHkZ6Y@google.com>
+References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
+ <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
+ <43e583a3-ee2b-52d8-5275-e26a6609c126@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43e583a3-ee2b-52d8-5275-e26a6609c126@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 11:21 AM, Bae, Chang Seok wrote:
-> On May 15, 2021, at 11:01, Andy Lutomirski <luto@kernel.org> wrote:
->> On 5/14/21 1:14 PM, Chang S. Bae wrote:
->>> Key Locker [1][2] is a new security feature available in new Intel CPUs to
->>> protect data encryption keys for the Advanced Encryption Standard
->>> algorithm. The protection limits the amount of time an AES key is exposed
->>> in memory by sealing a key and referencing it with new AES instructions.
->>>
->>> The new AES instruction set is a successor of Intel's AES-NI (AES New
->>> Instruction). Users may switch to the Key Locker version from crypto
->>> libraries.  This series includes a new AES implementation for the Crypto
->>> API, which was validated through the crypto unit tests. The performance in
->>> the test cases was measured and found comparable to the AES-NI version.
->>>
->>> Key Locker introduces a (CPU-)internal key to encode AES keys. The kernel
->>> needs to load it and ensure it unchanged as long as CPUs are operational.
->>
->> I have high-level questions:
->>
->> What is the expected use case?
+On Tue, May 18, 2021, Andi Kleen wrote:
+> On 5/18/2021 8:00 AM, Dave Hansen wrote:
+> > That sounds like something objective we can measure.  Does this cost 1
+> > byte of extra text per readl/writel?  10?  100?
 > 
-> The wrapping key here is only used for new AES instructions.
-> 
-> I’m aware of their potential use cases for encrypting file system or disks.
+> Alternatives are at least a pointer, but also the extra alternative code.
+> It's definitely more than 10, I would guess 40+
 
-I would like to understand what people are actually going to do with
-this.  Give me a user story or two, please.  If it turns out to be
-useless, I would rather not merge it.
+The extra bytes for .altinstructions is very different than the extra bytes for
+the code itself.  The .altinstructions section is freed after init, so yes it
+bloats the kernel size a bit, but the runtime footprint is unaffected by the
+patching metadata.
 
+IIRC, patching read/write{b,w,l,q}() can be done with 3 bytes of .text overhead.
 
-> 
->> I certainly understand how KL is valuable in a context where
->> a verified boot process installs some KL keys that are not subsequently
->> accessible outside the KL ISA, but Linux does not really work like this.
-> 
-> Do you mind elaborating on the concern?  I try to understand any issue with
-> PATCH3 [1], specifically.
-
-My concern has nothing to do with your patches per se.
-
-I want to understand the entire workflow that makes Key Locker safer
-than not using Key Locker.  Something like:
-
-Step 1: Computer is powered on.
-Step 2: Boot loader loads Linux
-Step 3: Linux does such-and-such
-Step 4: Attacker compromises the computer in the following way
-
-and an explanation of why this is realistic and how Key Locker helps
-would be nice.
-
->> What is the expected interaction between a KL-using VM guest and the
->> host VMM?  Will there be performance impacts (to context switching, for
->> example) if a guest enables KL, even if the guest does not subsequently
->> do anything with it?  Should Linux actually enable KL if it detects that
->> it's a VM guest?  Should Linux have use a specific keying method as a guest?
-> 
-> First of all, there is an RFC series for KVM [2].
-> 
-> Each CPU has one internal key state so it needs to reload it between guest and
-> host if both are enabled. The proposed approach enables it exclusively; expose
-> it to guests only when disabled in a host. Then, I guess a guest may enable it.
-
-I read that series.  This is not a good solution.
-
-I can think of at least a few reasonable ways that a host and a guest
-can cooperate to, potentially, make KL useful.
-
-a) Host knows that the guest will never migrate, and guest delegates
-IWKEY management to the host.  The host generates a random key and does
-not permit the guest to use LOADIWKEY.  The guest shares the random key
-with the host.  Of course, this means that a host key handle that leaks
-to a guest can be used within the guest.
-
-b) Host may migrate the guest.  Guest delegates IWKEY management to the
-host, and the host generates and remembers a key for the guest.  On
-migration, the host forwards the key to the new host.  The host can
-still internally any type of key, but context switches may be quite slow.
-
-c) Guest wants to manage its own non-random key.  Host lets it and
-context switches it.
-
-d) Guest does not need KL and leaves CR4.KL clear.  Host does whatever
-it wants with no overhead.
-
-All of these have tradeoffs.
-
-My current thought is that, if Linux is going to support Key Locker,
-then this all needs to be explicitly controlled.  On initial boot, Linux
-should not initialize Key Locker.  Upon explicit administrator request
-(via sysfs?), Linux will initialize Key Locker in the mode requested by
-the administrator.  Modes could include:
-
-native_random_key: Use a random key per the ISA.
-
-native_kernel_key_remember: Use a random key but load it as a non-random
-key.  Remember the key in kernel memory and use it for S3 resume, etc.
-
-native_kernel_key_backup: Use a random key, put it in the backup
-storage, and forget it.  Use the backup for resume, etc.
-
-native_kernel_key_norestore: Use a random key.  The key is lost on any
-power transition that forgets the key.  Backup is not used.
-
-paravirt_any: Ask the hypervisor to handle keying.  Any mechanism is
-acceptable.
-
-paravirt_random: Ask the hypervisor for a random key.  Only succeeds if
-we get an actual random key.
-
-
-
-Does this make sense?
+The other option to explore is to hook/patch IO_COND(), which can be done with
+neglible overhead because the helpers that use IO_COND() are not inlined.  In a
+TDX guest, redirecting IO_COND() to a paravirt helper would likely cover the
+majority of IO/MMIO since virtio-pci exclusively uses the IO_COND() wrappers.
+And if there are TDX VMMs that want to deploy virtio-mmio, hooking
+drivers/virtio/virtio_mmio.c directly would be a viable option.
