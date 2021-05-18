@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5415387480
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4869F387486
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347625AbhERJAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:00:46 -0400
-Received: from mga01.intel.com ([192.55.52.88]:43301 "EHLO mga01.intel.com"
+        id S1347651AbhERJB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241201AbhERJAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:00:44 -0400
-IronPort-SDR: 4qWFjUh3c39jPgYrgUVKPdmT8jJPewcQ3EmjqnovbhUJ2dhsCKP+16u7TSOi4ejMlHjdZr3NQN
- 5QEf9dB3hmqQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="221712549"
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="221712549"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:59:27 -0700
-IronPort-SDR: XCdarnEpSTThK2pbACDrC8TGBHOtwodR+hEEHVNmY0nuK2yV37pMmGg3jT7Gvb8SYoVKyO/Afi
- SQSH9RyoaMeQ==
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="541668909"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:59:25 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1livZS-00CuRz-Pn; Tue, 18 May 2021 11:59:22 +0300
-Date:   Tue, 18 May 2021 11:59:22 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] driver core: platform: Remove
- platform_device_add_properties()
-Message-ID: <YKOB6lRqc5DKo2GS@smile.fi.intel.com>
-References: <20210518083046.23302-1-heikki.krogerus@linux.intel.com>
+        id S1346873AbhERJBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:01:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A2061209;
+        Tue, 18 May 2021 08:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621328372;
+        bh=UgRUbJBBnzpQLR7EDO5qOM4DnpZGVxZ1RG6udzAgiSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cgIBNr/pGVp/2pKxnCVr3/1dfbYoIilVzSYhr8SiMXo35yUdwOvOqcGNOC6paBu5j
+         VUhb4VSaRcSiLLutDH0ZifW8KQyhfEQYIDVfdj+Rbu07DOd9irFFpLhe8Fr1J4H2SG
+         3RFRqbqyByyQw9Z49WATQFDdvf9vGS9m5RhYHfayhwyeKzJg/OTgmMLESJvzp4Y0LZ
+         ZGnCr632Km3OG02yjd4k5lW6MzXDTieI44HgoOff0oX/mApS5Fy22ADiV56qBD11dz
+         gZIOw33NJewTZLKIzlzlhpLLSpSYD0xs6aVfQQFt0FeCjM+4Uv0aO33sMGVP97gXEv
+         xeKXASFC/tZxw==
+Date:   Tue, 18 May 2021 11:59:27 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
+Message-ID: <YKOB7y/9IptUvo4k@unreal>
+References: <20210511214605.2937099-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518083046.23302-1-heikki.krogerus@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210511214605.2937099-1-pgwipeout@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:30:44AM +0300, Heikki Krogerus wrote:
-> Hi,
+On Tue, May 11, 2021 at 05:46:06PM -0400, Peter Geis wrote:
+> Add a driver for the Motorcomm yt8511 phy that will be used in the
+> production Pine64 rk3566-quartz64 development board.
+> It supports gigabit transfer speeds, rgmii, and 125mhz clk output.
 > 
-> It looks like there is only one place left that still uses the
-> function. Converting that last user and removing the thing.
-> 
-> Note, I'm actually resending the patch for board-paz00.c. I'm assuming
-> the original patch slipped through the cracks because it did not end
-> up anywhere.
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> ---
+>  MAINTAINERS                 |  6 +++
+>  drivers/net/phy/Kconfig     |  6 +++
+>  drivers/net/phy/Makefile    |  1 +
+>  drivers/net/phy/motorcomm.c | 85 +++++++++++++++++++++++++++++++++++++
+>  4 files changed, 98 insertions(+)
+>  create mode 100644 drivers/net/phy/motorcomm.c
 
-Cool!
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+<...>
 
-Btw, which base have you used for this series?
+> +static const struct mdio_device_id __maybe_unused motorcomm_tbl[] = {
+> +	{ PHY_ID_MATCH_EXACT(PHY_ID_YT8511) },
+> +	{ /* sentinal */ }
+> +}
 
-> I would imagine that it's OK to everybody if Greg takes these?
-> 
-> thanks,
-> 
-> Heikki Krogerus (2):
->   ARM: tegra: paz00: Handle device properties with software node API
->   driver core: platform: Remove platform_device_add_properties()
-> 
->  arch/arm/mach-tegra/board-paz00.c |  2 +-
->  drivers/base/platform.c           | 20 ++------------------
->  include/linux/platform_device.h   |  2 --
->  3 files changed, 3 insertions(+), 21 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
+Why is this "__maybe_unused"? This *.c file doesn't have any compilation option
+to compile part of it.
 
--- 
-With Best Regards,
-Andy Shevchenko
+The "__maybe_unused" is not needed in this case.
 
-
+Thanks
