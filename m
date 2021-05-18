@@ -2,75 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793B33876DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29DE3876E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348651AbhERKrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:47:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56856 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348114AbhERKqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:46:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6F7C6AFBD;
-        Tue, 18 May 2021 10:45:24 +0000 (UTC)
-Subject: Re: [PATCH v10 22/33] mm/filemap: Add __folio_lock_or_retry
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-23-willy@infradead.org>
- <76184de4-4ab9-0f04-ab37-8637f4b22566@suse.cz>
-Message-ID: <ccd527b4-de71-82a6-d86a-2d3abc75d2b9@suse.cz>
-Date:   Tue, 18 May 2021 12:45:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S243223AbhERKti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241590AbhERKtc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:49:32 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A479C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:48:12 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so1223565wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lw//WQHU1n8Lr/SxhTfcfyc8tvk7S4lAFPEm1TkdCHc=;
+        b=jX9kX3Vod+I5rJUyU3cakHfzGdz5a5bQTSWVHWoUF68aLrBioufVUMrdLrwYA7KVgN
+         eKLuTdcWsE8cCeK881ntTFN7BxBmqSs8GrQ/4HsJs4QkmOMvCgz57xB8py6JNHZ4q55u
+         Syqwk3o+fLHz7otqXclL6PhUe3qxkOwcm1ATA400g++22qFMB7cbUis1J8LekpDIOc2R
+         dfbFFYZgyi3zDX4ERYVsMsF2OIDcKpVMwV2LRogtiLE/CZxdfD+0uLOzGk5EfdJeji//
+         k8PWHbpBHjh8fgP//HMPG5rhN5IUcWeHyw6BUcgC4gLyrIOuwXBTuUUZwfVBxsmVaVIQ
+         Te1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lw//WQHU1n8Lr/SxhTfcfyc8tvk7S4lAFPEm1TkdCHc=;
+        b=PNFYgfY5ulIIzcNmHMcyE7w6OCTT+s+U50q9RZJkpzXOrUrvTAoOGDx/5GbVstDg29
+         pZDYYgS34qxXcIRvQASnp1sk1xRKuiUJNc7JqcUjiR8XjdwQUBrcEsHR+uXVlZfCM5/r
+         3A4nm7KsxXkd9i0w0xgkWIdXuhQu4dCEx6X2V/9nkyBVn6mUVcdwXJI2Zhgx174KOeN1
+         XUPf4+XPsQltGiIi9O6sDBVkjd1vWMowFi5u/3DoXvp5AhTLrGiYPj6amji7opphCbQF
+         P28oMOCg4bjjIKMhM+rFJO0XLguRv4e2EF5zZ4Ssab/yOMAE/3d7SsxJJkOQPHSjMLI7
+         jACw==
+X-Gm-Message-State: AOAM5311bcPBCv0XUjtZtnodLdIzenDL9VhOM72OI1ehycRfpH38elBJ
+        J0X0uZCEakwWWjHeAH+9WvkBPXifQeZxWQ==
+X-Google-Smtp-Source: ABdhPJzRiT7qtOCBDsKWLZ6LPMj4QiYCEg9Nduj8NBMDuCXcB7+XAdn7gCxXdilFj6ofUcHz4C743g==
+X-Received: by 2002:a1c:b646:: with SMTP id g67mr207192wmf.117.1621334890798;
+        Tue, 18 May 2021 03:48:10 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id h14sm2930154wmb.1.2021.05.18.03.48.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 03:48:10 -0700 (PDT)
+Date:   Tue, 18 May 2021 10:48:07 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
+ SCHED_DEADLINE
+Message-ID: <YKObZ1GcfVIVWRWt@google.com>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-14-will@kernel.org>
+ <YKOU9onXUxVLPGaB@google.com>
+ <20210518102833.GA7770@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <76184de4-4ab9-0f04-ab37-8637f4b22566@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518102833.GA7770@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 12:38 PM, Vlastimil Babka wrote:
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -1623,20 +1623,18 @@ static int __folio_lock_async(struct folio *folio, struct wait_page_queue *wait)
->>  
->>  /*
->>   * Return values:
->> - * 1 - page is locked; mmap_lock is still held.
->> - * 0 - page is not locked.
->> + * 1 - folio is locked; mmap_lock is still held.
->> + * 0 - folio is not locked.
->>   *     mmap_lock has been released (mmap_read_unlock(), unless flags had both
->>   *     FAULT_FLAG_ALLOW_RETRY and FAULT_FLAG_RETRY_NOWAIT set, in
->>   *     which case mmap_lock is still held.
->>   *
->>   * If neither ALLOW_RETRY nor KILLABLE are set, will always return 1
->> - * with the page locked and the mmap_lock unperturbed.
->> + * with the folio locked and the mmap_lock unperturbed.
->>   */
->> -int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
->> +int __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
->>  			 unsigned int flags)
->>  {
->> -	struct folio *folio = page_folio(page);
->> -
->>  	if (fault_flag_allow_retry_first(flags)) {
->>  		/*
->>  		 * CAUTION! In this case, mmap_lock is not released
-> 
-> A bit later in this branch, 'page' is accessed, but it no longer exists. And
-> thus as expected, it doesn't compile. Assuming it's fixed later, but
-> bisectability etc...
+On Tuesday 18 May 2021 at 11:28:34 (+0100), Will Deacon wrote:
+> I don't have strong opinions on this, but I _do_ want the admission via
+> sched_setattr() to be consistent with execve(). What you're suggesting
+> ticks that box, but how many applications are prepared to handle a failed
+> execve()? I suspect it will be fatal.
 
-Also, the switch from 'page' to &folio->page in there should probably have been
-done already in "[PATCH v10 20/33] mm/filemap: Add folio_lock_killable", not in
-this patch?
+Yep, probably.
+
+> Probably also worth pointing out that the approach here will at least
+> warn in the execve() case when the affinity is overridden for a deadline
+> task.
+
+Right so I think either way will be imperfect, so I agree with the
+above.
+
+Maybe one thing though is that, IIRC, userspace _can_ disable admission
+control if it wants to. In this case I'd have no problem with allowing
+this weird behaviour when admission control is off -- the kernel won't
+provide any guarantees. But if it's left on, then it's a different
+story.
+
+So what about we say, if admission control is off, we allow execve() and
+sched_setattr() with appropriate warnings as you suggest, but if
+admission control is on then we fail both?
+
+We might still see random failures in the wild if admission control is
+left enabled on those devices but then I think these could qualify as
+a device misconfiguration, not as a kernel bug.
+
+Thoughts?
+
+Thanks,
+Quentin
