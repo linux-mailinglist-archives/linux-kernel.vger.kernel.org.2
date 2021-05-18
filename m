@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1144A387538
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB26387539
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348018AbhERJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:34:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58948 "EHLO
+        id S1348025AbhERJew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:34:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59020 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347961AbhERJeg (ORCPT
+        with ESMTP id S1347967AbhERJeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:34:36 -0400
-Message-Id: <20210518093118.603636289@linutronix.de>
+        Tue, 18 May 2021 05:34:37 -0400
+Message-Id: <20210518093118.699566062@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621330397;
+        s=2020; t=1621330398;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=llqiZZOpujTFGvfM7I86v3/lISoIngOGifb8EaNbJmk=;
-        b=g4WPw7BFA2Un46jknT1BruVtJka+olrBbvzPETf4eW8E6VKHOPmlUg/NiVpImVk/xKpNcJ
-        S3eYYkCJOZ1G6DCw891G3BXApTZ6HnUyzgzSJWQ2wOcXYNbsUqXauU4vW2rpUI8uW2bBiu
-        YZSShOJtESAfokYWne7nWk93ue8YpQ7MvcmdZcEp+hX2WjVHnTLHgsT/4ykiBH6TA26nFN
-        PTwMDh3cWc6eIKo+8Ficiw5eQkOK6LrqPP/KuCxS2RwNu31xF1X9WkAk6cYby0Q5IHlzfg
-        TB2BpiA2c6DjcxI6nljybqaIiqotbX8j28vqNvnJG9wTvEobOl2P2VH6uzakuA==
+        bh=TxzviiHdKr5GcZxP2Hy06b5VhRlYn5Pd4CPUH0jcSHw=;
+        b=q1uMFjL8Pp+jo+EY1h1Yn7RO9uCKR6RGG2bmNfrqJX9zRjZnzxExgNfvmO54KtoODpHbPl
+        8efOcmDYQyxHBm6OAuwnsJVSoGZ86UXz3SYMRotLuFhPvd0sqc+y+15gUWUXheMYGywgEK
+        w3jukRi/Nf228gyLb1uKicWnsDqJrk/ctM2BrFGMXwNI0s1OQfuftRi9YVCK75dV5eRQwZ
+        H9Wey70e0l12Q9yVxTIgS71mx76v8E4nSu+6uhpL9EX2NJI1foaX339OKZd7/q43jeHbyJ
+        vmoLlouzMR2O5hNLmUbCFjzbIJRxWpDUim2vFGZSLZvUM/jBBH8s6rdMmiA8Nw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621330397;
+        s=2020e; t=1621330398;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=llqiZZOpujTFGvfM7I86v3/lISoIngOGifb8EaNbJmk=;
-        b=VIe+CsBTI0rLK2aPQMKFDPakGpP+dpkiWj/B0hUfnrWDhpAUeIr08pJ2oAItFhDg1G0bk6
-        tVCsrMnP62K2GaCg==
-Date:   Tue, 18 May 2021 11:17:31 +0200
+        bh=TxzviiHdKr5GcZxP2Hy06b5VhRlYn5Pd4CPUH0jcSHw=;
+        b=ZtwtvuZER4Wm1N0oYn1RTnBbDn9aB3aZp1G26MqOM90/mqw0gmH0fnM98R0tprPGMebwrA
+        Hm46mfRcuf5+zrAQ==
+Date:   Tue, 18 May 2021 11:17:32 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Robin Murphy <robin.murphy@arm.com>,
         Nitesh Lal <nilal@redhat.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Frank Li <Frank.li@nxp.com>,
+        Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, Frank Li <Frank.li@nxp.com>,
         Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
         Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [patch 6/8] perf/arm-smmuv3: Use irq_set_affinity()
+Subject: [patch 7/8] perf/imx_ddr: Use irq_set_affinity()
 References: <20210518091725.046774792@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,57 +75,45 @@ purpose because the hint can point to an offline CPU.
 Replace the mindless abuse with irq_set_affinity().
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Frank Li <Frank.li@nxp.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
 Cc: linux-arm-kernel@lists.infradead.org
 ---
- drivers/perf/arm_smmuv3_pmu.c |   10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/perf/fsl_imx8_ddr_perf.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -628,7 +628,7 @@ static int smmu_pmu_offline_cpu(unsigned
+--- a/drivers/perf/fsl_imx8_ddr_perf.c
++++ b/drivers/perf/fsl_imx8_ddr_perf.c
+@@ -674,7 +674,7 @@ static int ddr_perf_offline_cpu(unsigned
+ 	perf_pmu_migrate_context(&pmu->pmu, cpu, target);
+ 	pmu->cpu = target;
  
- 	perf_pmu_migrate_context(&smmu_pmu->pmu, cpu, target);
- 	smmu_pmu->on_cpu = target;
--	WARN_ON(irq_set_affinity_hint(smmu_pmu->irq, cpumask_of(target)));
-+	WARN_ON(irq_set_affinity(smmu_pmu->irq, cpumask_of(target)));
+-	WARN_ON(irq_set_affinity_hint(pmu->irq, cpumask_of(pmu->cpu)));
++	WARN_ON(irq_set_affinity(pmu->irq, cpumask_of(pmu->cpu)));
  
  	return 0;
  }
-@@ -839,15 +839,14 @@ static int smmu_pmu_probe(struct platfor
- 
- 	/* Pick one CPU to be the preferred one to use */
- 	smmu_pmu->on_cpu = raw_smp_processor_id();
--	WARN_ON(irq_set_affinity_hint(smmu_pmu->irq,
--				      cpumask_of(smmu_pmu->on_cpu)));
-+	WARN_ON(irq_set_affinity(smmu_pmu->irq, cpumask_of(smmu_pmu->on_cpu)));
- 
- 	err = cpuhp_state_add_instance_nocalls(cpuhp_state_num,
- 					       &smmu_pmu->node);
- 	if (err) {
- 		dev_err(dev, "Error %d registering hotplug, PMU @%pa\n",
- 			err, &res_0->start);
--		goto out_clear_affinity;
-+		return err;
+@@ -749,7 +749,7 @@ static int ddr_perf_probe(struct platfor
  	}
  
- 	err = perf_pmu_register(&smmu_pmu->pmu, name, -1);
-@@ -866,8 +865,6 @@ static int smmu_pmu_probe(struct platfor
+ 	pmu->irq = irq;
+-	ret = irq_set_affinity_hint(pmu->irq, cpumask_of(pmu->cpu));
++	ret = irq_set_affinity(pmu->irq, cpumask_of(pmu->cpu));
+ 	if (ret) {
+ 		dev_err(pmu->dev, "Failed to set interrupt affinity!\n");
+ 		goto ddr_perf_err;
+@@ -777,7 +777,6 @@ static int ddr_perf_remove(struct platfo
  
- out_unregister:
- 	cpuhp_state_remove_instance_nocalls(cpuhp_state_num, &smmu_pmu->node);
--out_clear_affinity:
--	irq_set_affinity_hint(smmu_pmu->irq, NULL);
- 	return err;
- }
+ 	cpuhp_state_remove_instance_nocalls(pmu->cpuhp_state, &pmu->node);
+ 	cpuhp_remove_multi_state(pmu->cpuhp_state);
+-	irq_set_affinity_hint(pmu->irq, NULL);
  
-@@ -877,7 +874,6 @@ static int smmu_pmu_remove(struct platfo
+ 	perf_pmu_unregister(&pmu->pmu);
  
- 	perf_pmu_unregister(&smmu_pmu->pmu);
- 	cpuhp_state_remove_instance_nocalls(cpuhp_state_num, &smmu_pmu->node);
--	irq_set_affinity_hint(smmu_pmu->irq, NULL);
- 
- 	return 0;
- }
 
