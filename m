@@ -2,179 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C56388301
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E7E388305
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhERXQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:16:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235802AbhERXQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:16:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91B1761244;
-        Tue, 18 May 2021 23:15:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621379714;
-        bh=zvqQUBzCZdDwgxkqtv0tRQcxHrEt6kHuN5grJUD1MKI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=X+PMDNp1jIahWu+jXe783dPbYVyQTxiEbUMYBbXoB4ogVYlo/RZJNV0fyAVLPlAYX
-         xC+ptSClo7zMWLJNHOxOABjqJr460N1KY00Tov4RB04p0nEgrVUIpci17LmTf4EYB0
-         QAKgG7a0JJQS8t4jRUgNa8AcSBErZeeYw6dCoYhvgIB+ChX71/sEXSONvmqBPlXkNF
-         IAAqrz4TZ8xiGPd5v0sxVePv+il0ezANa0w8yODD1jFEzChEhDHYygvrMY07CZAY6u
-         ah2rOpjzCEpsMCftvUxxTabA++tUlsz7nHti2MmCXriYOGTdy512A4ul9/PN6FdSKP
-         92ihFFf7mvufA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 602535C013C; Tue, 18 May 2021 16:15:14 -0700 (PDT)
-Date:   Tue, 18 May 2021 16:15:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210516102716.689596-1-senozhatsky@chromium.org>
- <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
- <YKMbQQ0qBAixXC5p@google.com>
+        id S237704AbhERXTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235802AbhERXTb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 19:19:31 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB302C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:18:11 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id q7so14899450lfr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:18:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=t1lUkNBuVC2UZABZ7mjXl1iS2OFEu1Ax24kG7Pa9v9o=;
+        b=oIb6bCshL727qAb4uQIy4tdqNvs4pKTGrZeO2A2o7UfVH/eztAfkfvbBEipSokq+59
+         FoJYB78uhQ4mijp8vZr0SP4cPRxTCgv+9YN3uSxCr2FnO74K7P78F1v6PtUE7f6iC8Pv
+         FPES6jgvgT3i/uSIj/QqFa76gtm49FrRaxPB30vHeUYSMgKZxTDA9R4MdmfdBPJPUrAk
+         PXjdR2Bdhpl2t8wkJ57L3l+BRB1V7Q+57X8geh0vCm1fe1G8J0cZ40q6tT3ssBW4SGXn
+         7chziYboyIHfa834KfPzy+3k9wESGMTH0oTvTN+o2L+36uT6tElzd3NtoyPiJe6LOZLv
+         Maww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t1lUkNBuVC2UZABZ7mjXl1iS2OFEu1Ax24kG7Pa9v9o=;
+        b=nGytIMyK0FG/ZrbO/VI3ykibL14xr+zP5Z49E2NMiPIALQX8eGQuoL8c2ReIokUugM
+         mcLmRXR5qDG60xbLIf9sLQkwKCsC2yM24FoSD/4mFCLdc+1gAK7F14CCjQ5L/xba9kD9
+         hLK5+PlGZ5WvYhMsr4AoAw1y7WMBESWeCp8p+Ic/gIB7uUdpp2G9osg29V3Ot47TAdpV
+         +qgYTGCrJq0xtwg4nsWQARm4UWyZcYWRYRsdeBMe2f0hrSSg+eHZ6g27EkozSSuy0vnT
+         nxOOgfypj/599VghW5uyGEpX6/aSv/bdso8mhD08uRolA4maeCm/z2loGDOn+4ZoPU7F
+         0/9A==
+X-Gm-Message-State: AOAM531X29j5hODTFjaBNe4viYvXqIygiOnrJjU3lbCi0JoqYzSRfVDF
+        UaBIBF2IM/gdnW37Xf7+jl3OkyFz56Smx75zlLLFfg==
+X-Google-Smtp-Source: ABdhPJwbX+FemxVEp4TpL+OaKW57UtYIhtlS+hTGYuSbNLuqKI0W4v/DXLByxnfuX+1snj0AfuXOkxd2UaRJJjUo3pw=
+X-Received: by 2002:ac2:5145:: with SMTP id q5mr3321479lfd.529.1621379890103;
+ Tue, 18 May 2021 16:18:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKMbQQ0qBAixXC5p@google.com>
+References: <20210517193205.691147-1-clabbe@baylibre.com> <20210517193205.691147-5-clabbe@baylibre.com>
+ <CACRpkdY3c4uvo1zbEgNW0meF-4P8be_nmoOEQAHP5V+GXgoG=A@mail.gmail.com> <YKOO8UxdmZBjYbt4@Red>
+In-Reply-To: <YKOO8UxdmZBjYbt4@Red>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 19 May 2021 01:17:59 +0200
+Message-ID: <CACRpkdYqaoggyBO9=fdi2iUh9O0Y_jT5jnc7+qbE9HzEWK57Sg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] ARM: gemini: add device tree for edimax NS2502
+To:     LABBE Corentin <clabbe@baylibre.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>, SoC Team <soc@kernel.org>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 10:41:21AM +0900, Sergey Senozhatsky wrote:
-> On (21/05/17 09:23), Paul E. McKenney wrote:
-> > On Sun, May 16, 2021 at 07:27:16PM +0900, Sergey Senozhatsky wrote:
-> > > Soft watchdog timer function checks if a virtual machine
-> > > was suspended and hence what looks like a lockup in fact
-> > > is a false positive.
-> > > 
-> > > This is what kvm_check_and_clear_guest_paused() does: it
-> > > tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
-> > > and if it's set then we need to touch all watchdogs and bail
-> > > out.
-> > > 
-> > > Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
-> > > check works fine.
-> > > 
-> > > There is, however, one more watchdog that runs from IRQ, so
-> > > watchdog timer fn races with it, and that watchdog is not aware
-> > > of PVCLOCK_GUEST_STOPPED - RCU stall detector.
-> > > 
-> > > apic_timer_interrupt()
-> > >  smp_apic_timer_interrupt()
-> > >   hrtimer_interrupt()
-> > >    __hrtimer_run_queues()
-> > >     tick_sched_timer()
-> > >      tick_sched_handle()
-> > >       update_process_times()
-> > >        rcu_sched_clock_irq()
-> > > 
-> > > This triggers RCU stalls on our devices during VM resume.
-> > > 
-> > > If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
-> > > before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
-> > > then there is nothing on this VCPU that touches watchdogs and
-> > > RCU reads stale gp stall timestamp and new jiffies value, which
-> > > makes it think that RCU has stalled.
-> > > 
-> > > Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
-> > > don't report RCU stalls when we resume the VM.
-> > 
-> > Good point!
-> > 
-> > But if I understand your patch correctly, if the virtual machine is
-> > stopped at any point during a grace period, even if only for a short time,
-> > stall warnings are suppressed for that grace period forever, courtesy of
-> > the call to rcu_cpu_stall_reset().  So, if something really is stalling,
-> > and the virtual machine just happens to stop for a few milliseconds, the
-> > stall warning is completely suppressed.  Which would make it difficult
-> > to debug the underlying stall condition.
-> > 
-> > Is it possible to provide RCU with information on the duration of the
-> > virtual-machine stoppage so that RCU could adjust the timing of the
-> > stall warning?  Maybe by having something like rcu_cpu_stall_reset()
-> > that takes the duration of the stoppage in jiffies?
-> 
-> Good questions!
-> 
-> And I think I've some bad news and some good news.
-> 
-> As far as I can tell, none of the PVCLOCK_GUEST_STOPPED handlers take
-> the stoppage duration into consideration. For instance, as soon as
-> watchdog timer IRQ detects a potential softlockup it checks
-> PVCLOCK_GUEST_STOPPED and touches all watchdogs, including RCU:
-> 
-> watchdog_timer_fn()
->  kvm_check_and_clear_guest_paused()
->   pvclock_touch_watchdogs()
->    rcu_cpu_stall_reset()                 // + the remaining watchdogs
-> 
-> But things get more complex.
-> 
-> pvclock_clocksource_read() also checks PVCLOCK_GUEST_STOPPED and calls
-> pvclock_touch_watchdogs(). And this path is executed rather often.
-> 
-> For instance,
-> 
-> apic_timer_interrupt()
->  smp_apic_timer_interrupt()
->   hrtimer_interrupt()
->    __hrtimer_run_queues()
->     hrtimer_wakeup()
->      try_to_wake_up()
->       update_rq_clock()
->        sched_clock_cpu()
->         sched_clock()
-> 	 kvm_sched_clock_read()
-> 	  kvm_clock_read()
-> 	   pvclock_clocksource_read()
-> 	    pvclock_touch_watchdogs()
-> 	     rcu_cpu_stall_reset()       // + the remaining watchdogs
-> 
-> Or
-> 
-> do_IRQ
->  irq_exit
->   sched_clock_cpu
->    sched_clock
->     kvm_sched_clock_read
->      kvm_clock_read
->       pvclock_clocksource_read
->        pvclock_touch_watchdogs
->         rcu_cpu_stall_reset()            // + the remaining watchdogs
-> 
-> And so on...
-> 
-> You may wonder what are the good news then.
-> 
-> Well. I'd say that my patch (is not beautiful but it) does not add
-> a lot of additional or new damage. And it still fixes the valid race
-> condition, as far as I'm concerned.
+On Tue, May 18, 2021 at 11:55 AM LABBE Corentin <clabbe@baylibre.com> wrote=
+:
+> Le Tue, May 18, 2021 at 01:46:20AM +0200, Linus Walleij a =C3=A9crit :
 
-I have tentatively pulled it in for review and testing.
+> > Is the FIS broken since you hardcode the partitions?
+> >
+> > Doesn't this work:
+> >
+> > partitions {
+> >     compatible =3D "redboot-fis";
+> >     /* Eraseblock at 0x7e0000 */
+> >     fis-index-block =3D <0xfc>;
+> > };
+> >
+> > (Needs CONFIG_MTD_REDBOOT_PARTS)
+>
+> No it does not.
+>
+> physmap-flash 30000000.flash: no enabled pin control state
+> physmap-flash 30000000.flash: no disabled pin control state
+> physmap-flash 30000000.flash: initialized Gemini-specific physmap control
+> physmap-flash 30000000.flash: physmap platform flash device: [mem 0x30000=
+000-0x331fffff]
+> 30000000.flash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer I=
+D 0x000001 Chip ID 0x002201
+> number of CFI chips: 1
+> Searching for RedBoot partition table in 30000000.flash at offset 0x1fe00=
+00
+> No RedBoot partition table detected in 30000000.flash
+> Searching for RedBoot partition table in 30000000.flash at offset 0x1fe00=
+00
+> No RedBoot partition table detected in 30000000.flash
 
-> I think we need to rework how pvclock_touch_watchdogs() does things
-> internally, basically what you suggested, and this can be a separate
-> effort.
+Hm since it searches at 0x1fe0000 that's where it thinks the last
+eraseblock is so the erase blocks are 0x20000 (128KB).
 
-In the shorter term...  PVCLOCK_GUEST_STOPPED is mostly for things like
-guest migration and debugger breakpoints, correct?  Either way, I am
-wondering if rcu_cpu_stall_reset() should take a lighter touch.  Right
-now, it effectively disables all stalls for the current grace period.
-Why not make it restart the stall timeout when the stoppage is detected?
+FIS at 0x7e0000 should be erase block
+0x7e0000/0x20000 =3D 0x3f
 
-The strange thing is that unless something is updating the jiffies counter
-to make it look like the system was up during the stoppage time interval,
-there should be no reason to tell RCU anything.  Is the jiffies counter
-updated in this manner?  (Not seeing it right offhand, but I don't claim
-to be familiar with this code.)
+Can you test fis-index-block =3D <0x3f> and see what happens?
 
-							Thanx, Paul
+Yours,
+Linus Walleij
