@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF5B387382
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF76387386
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241150AbhERHtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347263AbhERHtK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 03:49:10 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA31FC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 00:47:52 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id h3-20020a05600c3503b0290176f13c7715so904550wmq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 00:47:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=qbYhZ0j3U7IXcdLANW6Ri1lM6U26+3AlkXH54c6o33U=;
-        b=UNsPc7NxgufwBvAxSN+WYxjkS2wP7YKuiSTAO7fTBlrx/MXk+8EAEXbijP/ncLJppV
-         YKZwrNuPv7BHS+5JF9a2f2mrChqUm8Wm30714fyBi5RGDFFT/3u28/M6Dq/ytavc4/Cm
-         YFGoYw75AF05UHj8+dO72HXzxU4ztfGlP4CRpZLvb2z+qX7eTsPdDUQD4X3T2Td/8P5M
-         OTX6yFpjac7arJZg1O5HVRCtB9e4Yf+Pk2wDTqBTiywkFhLH/kdYr7ycSm0EYpgGFJGm
-         6dQ7lY47+udLjko7x7r0B3k6MLh04dYisbni7GEtbw4B+04zstbs5XCaAwH5k9Sowuzh
-         Tf6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=qbYhZ0j3U7IXcdLANW6Ri1lM6U26+3AlkXH54c6o33U=;
-        b=o1GYCnO7ER0qnh/+QFVNT1nrDN6gyc8TMg+WLH6MqxcLxr1Kpb270CiHFWhw/iM7FW
-         gbTXu/qBVD5yllnJqz2QcThmhHnaatbFEUHFBYasVuRlPR7b8VvtOtp2+M4U+kPX3hZZ
-         8wCaVdZQcBcxkoQBbZi7TMsYY3hqlOJp4T5a7QLLEATiqdvqXeOxmdxAU7ojD5CLFNh7
-         RO1DYySVwXpv1fjh9Mcwn7NDGWcGxLHPJGLvG1QjG/lie8eu6sryIvHkfOyYY3FFanCr
-         IIUEQOCxpUMNB9bjqnYVdzXuww7C66XEVvlRbTUKdmteWMA94+mvPf1Y4tE70xFkmD/u
-         tR7w==
-X-Gm-Message-State: AOAM530vyzKG0cVeLAE6jrKFYjR6G+6l1Bl1KIIkNric5WNstQb3bSuJ
-        mAgsU+tyw2mA8ZSzjEwidePgQQ==
-X-Google-Smtp-Source: ABdhPJynC+inihhIFx014wY+OTem05Sqe/Rnseyfe0Fwn2uGEqzQBo+xrnoV58p3lDVwgvyj1pRh0w==
-X-Received: by 2002:a1c:c91a:: with SMTP id f26mr3404815wmb.15.1621324071556;
-        Tue, 18 May 2021 00:47:51 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id x11sm20088700wrl.13.2021.05.18.00.47.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 00:47:51 -0700 (PDT)
-References: <20210517203724.1006254-1-martin.blumenstingl@googlemail.com>
- <20210517203724.1006254-3-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        mturquette@baylibre.com, sboyd@kernel.org, narmstrong@baylibre.com,
-        linux-clk@vger.kernel.org
-Cc:     khilman@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH RFC v1 2/3] clk: meson: regmap: switch to determine_rate
- for the dividers
-In-reply-to: <20210517203724.1006254-3-martin.blumenstingl@googlemail.com>
-Message-ID: <1jr1i41o0p.fsf@starbuckisacylon.baylibre.com>
-Date:   Tue, 18 May 2021 09:47:50 +0200
+        id S1347274AbhERHvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:51:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7423 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234891AbhERHvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 03:51:03 -0400
+IronPort-SDR: bPjabTHKD/R9+mVEohmbnhTDNm4avEdaPOsPjrGyZUU6ETNpUx2sVPG26qz6pjUt09Bath4gfp
+ oJT/DRPmXakQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="261881759"
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="261881759"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 00:49:45 -0700
+IronPort-SDR: iZBfAYSz0/rhPIaAMe0nLTLjrd5hleZBq/AmLOrh78fZzK4LydMV6YNn0A6x2Ff+dE4TAlzuT7
+ RDc0qU1rCKtA==
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="472828356"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 00:49:40 -0700
+Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Venkatesh Srinivas <venkateshs@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Yao Yuan <yuan.yao@intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-5-like.xu@linux.intel.com>
+ <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
+ <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
+ <YJvx4tr2iXo4bQ/d@google.com>
+ <5ef2215b-1c43-fc8a-42ef-46c22e093f40@intel.com>
+ <YKLdETM7NgjKEa6z@google.com> <YKMBZ5cs2siTorf1@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <59aaa290-1c44-f7f5-36b7-cdc42a2f6631@intel.com>
+Date:   Tue, 18 May 2021 15:49:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YKMBZ5cs2siTorf1@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon 17 May 2021 at 22:37, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
-
-> This increases the maxmium supported frequency on 32-bit systems from
-> 2^31 (signed long as used by clk_ops.round_rate, maximum value:
-> approx. 2.14GHz) to 2^32 (unsigned long as used by
-> clk_ops.determine_rate, maximum value: approx. 4.29GHz).
-> On Meson8/8b/8m2 the HDMI PLL and it's OD (post-dividers) are
-> capable of running at up to 2.97GHz. So switch the divider
-> implementation in clk-regmap to clk_ops.determine_rate to support these
-> higher frequencies on 32-bit systems.
+On 2021/5/18 7:51, Sean Christopherson wrote:
+> On Mon, May 17, 2021, Sean Christopherson wrote:
+>> On Thu, May 13, 2021, Xu, Like wrote:
+>>> On 2021/5/12 23:18, Sean Christopherson wrote:
+>>>> On Wed, May 12, 2021, Xu, Like wrote:
+>>>>> Hi Venkatesh Srinivas,
+>>>>>
+>>>>> On 2021/5/12 9:58, Venkatesh Srinivas wrote:
+>>>>>> On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
+>>>>>>> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
+>>>>>>> detect whether the processor supports performance monitoring facility.
+>>>>>>>
+>>>>>>> It depends on the PMU is enabled for the guest, and a software write
+>>>>>>> operation to this available bit will be ignored.
+>>>>>> Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
+>>>>>> documented someplace?
+>>>>> The bit[7] behavior of the real hardware on the native host is quite
+>>>>> suspicious.
+>>>> Ugh.  Can you file an SDM bug to get the wording and accessibility updated?  The
+>>>> current phrasing is a mess:
+>>>>
+>>>>     Performance Monitoring Available (R)
+>>>>     1 = Performance monitoring enabled.
+>>>>     0 = Performance monitoring disabled.
+>>>>
+>>>> The (R) is ambiguous because most other entries that are read-only use (RO), and
+>>>> the "enabled vs. disabled" implies the bit is writable and really does control
+>>>> the PMU.  But on my Haswell system, it's read-only.
+>>> On your Haswell system, does it cause #GP or just silent if you change this
+>>> bit ?
+>> Attempting to clear the bit generates a #GP.
+> *sigh*
 >
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-
-> ---
->  drivers/clk/meson/clk-regmap.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
+> Venkatesh and I are exhausting our brown paper bag supply.
 >
-> diff --git a/drivers/clk/meson/clk-regmap.c b/drivers/clk/meson/clk-regmap.c
-> index dcd1757cc5df..8ad8977cf1c2 100644
-> --- a/drivers/clk/meson/clk-regmap.c
-> +++ b/drivers/clk/meson/clk-regmap.c
-> @@ -75,8 +75,8 @@ static unsigned long clk_regmap_div_recalc_rate(struct clk_hw *hw,
->  				   div->width);
->  }
->  
-> -static long clk_regmap_div_round_rate(struct clk_hw *hw, unsigned long rate,
-> -				      unsigned long *prate)
-> +static int clk_regmap_div_determine_rate(struct clk_hw *hw,
-> +					 struct clk_rate_request *req)
->  {
->  	struct clk_regmap *clk = to_clk_regmap(hw);
->  	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
-> @@ -87,18 +87,17 @@ static long clk_regmap_div_round_rate(struct clk_hw *hw, unsigned long rate,
->  	if (div->flags & CLK_DIVIDER_READ_ONLY) {
->  		ret = regmap_read(clk->map, div->offset, &val);
->  		if (ret)
-> -			/* Gives a hint that something is wrong */
-> -			return 0;
-> +			return ret;
->  
->  		val >>= div->shift;
->  		val &= clk_div_mask(div->width);
->  
-> -		return divider_ro_round_rate(hw, rate, prate, div->table,
-> -					     div->width, div->flags, val);
-> +		return divider_ro_determine_rate(hw, req, div->table,
-> +						 div->width, div->flags, val);
->  	}
->  
-> -	return divider_round_rate(hw, rate, prate, div->table, div->width,
-> -				  div->flags);
-> +	return divider_determine_rate(hw, req, div->table, div->width,
-> +				      div->flags);
->  }
->  
->  static int clk_regmap_div_set_rate(struct clk_hw *hw, unsigned long rate,
-> @@ -123,14 +122,14 @@ static int clk_regmap_div_set_rate(struct clk_hw *hw, unsigned long rate,
->  
->  const struct clk_ops clk_regmap_divider_ops = {
->  	.recalc_rate = clk_regmap_div_recalc_rate,
-> -	.round_rate = clk_regmap_div_round_rate,
-> +	.determine_rate = clk_regmap_div_determine_rate,
->  	.set_rate = clk_regmap_div_set_rate,
->  };
->  EXPORT_SYMBOL_GPL(clk_regmap_divider_ops);
->  
->  const struct clk_ops clk_regmap_divider_ro_ops = {
->  	.recalc_rate = clk_regmap_div_recalc_rate,
-> -	.round_rate = clk_regmap_div_round_rate,
-> +	.determine_rate = clk_regmap_div_determine_rate,
->  };
->  EXPORT_SYMBOL_GPL(clk_regmap_divider_ro_ops);
+> Attempting to clear bit 7 is ignored on both Haswell and Goldmont.  This _no_ #GP,
+> the toggle is simply ignored.  I forgot to specify hex format (multiple times),
+> and Venkatesh accessed the wrong MSR (0x10a instead of 0x1a0).
+
+*sigh*
+
+>
+> So your proposal to ignore the toggle in KVM is the way to go, but please
+> document in the changelog that that behavior matches bare metal.
+
+Thank you, I will clearly state it in the commit message.
+
+>
+> It would be nice to get the SDM cleaned up to use "supported/unsupported", and to
+> pick one of (R), (RO), and (R/O) for all MSRs entries for consistency, but that
+> may be a pipe dream.
+
+Glad you could review my code. I have reported this issue internally.
+
+>
+> Sorry for the run-around :-/
+
