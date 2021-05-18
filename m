@@ -2,146 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD7D38787A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DF7387888
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244487AbhERMKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:10:18 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28990 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235289AbhERMKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:10:17 -0400
-IronPort-SDR: 1aqobQwW3kxrz8MoD2qQNCd8ZHYLUL2To0M48+ItFvf2TBT7Naq10D3Dy7NgdtcPtawd0SYI1e
- Lr7OVmZK6f6Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200389350"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="200389350"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:08:59 -0700
-IronPort-SDR: vLeCAHE20ijNg3k4AUW4yxNtE3HlvJXu7AvNQxCLO4sH/XRMKqKRwAEH93LODTDIe2+O0kW3eN
- bWGmQmo8HbCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="433047511"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 18 May 2021 05:08:57 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 2260D12F; Tue, 18 May 2021 15:09:19 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v1 1/1] gpiolib: Use sysfs_emit() in "show" functions
-Date:   Tue, 18 May 2021 15:09:17 +0300
-Message-Id: <20210518120917.30336-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S245061AbhERMQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:16:24 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:43909 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233638AbhERMQW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:16:22 -0400
+Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210518121502epoutp04772f6c7e837547d75e23c5207d50f42c~AKDu6L2dn0301903019epoutp04P
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:15:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210518121502epoutp04772f6c7e837547d75e23c5207d50f42c~AKDu6L2dn0301903019epoutp04P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1621340102;
+        bh=ftfW5RCRRu47HHcS4y6Q2kEbXts9hxGMQGCqRkXKY08=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=SF6w/nJPeoEZRdvM0Ec4ayadhZ7mWgr3boIcgrsqmDWw/Sev1gMrt10BXAchZRSby
+         g3DFmSfiOZT3I9Sc2ib3hof9go4D/k0+0c8b0KFcBXlkaKNqlir6yvRTGEU11GphSN
+         PuoIlsWHJaNGYc+6BXHnWyY1oQ+wrO431ys7kdhk=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
+        20210518121502epcas3p2ce8d6e01799a46f093f1133310c4fcfc~AKDucjODJ2120221202epcas3p2k;
+        Tue, 18 May 2021 12:15:02 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp3.localdomain
+        (Postfix) with ESMTP id 4Fkw1L2D5Jz4x9Pw; Tue, 18 May 2021 12:15:02 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: [PATCH] scsi: ufs: Clean up white space
+Reply-To: keosung.park@samsung.com
+Sender: Keoseong Park <keosung.park@samsung.com>
+From:   Keoseong Park <keosung.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "satyat@google.com" <satyat@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <2038148563.21621340102306.JavaMail.epsvc@epcpadp3>
+Date:   Tue, 18 May 2021 21:12:17 +0900
+X-CMS-MailID: 20210518121217epcms2p6b35173a078be7eb2cea2d80e2bbc1b00
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210518121217epcms2p6b35173a078be7eb2cea2d80e2bbc1b00
+References: <CGME20210518121217epcms2p6b35173a078be7eb2cea2d80e2bbc1b00@epcms2p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sysfs_emit() function was introduced to make it less ambiguous
-which function is preferred when writing to the output buffer in
-a "show" callback [1].
+checkpatch reports the followings:
 
-Convert the GPIO library sysfs interface from sprintf() to sysfs_emit()
-accordingly, as the latter is aware of the PAGE_SIZE buffer and correctly
-returns the number of bytes written into the buffer.
+	ERROR: space prohibited before that ',' (ctx:WxW)
+	#945: FILE: drivers/scsi/ufs/ufshcd.h:945:
+	+int ufshcd_init(struct ufs_hba * , void __iomem * , unsigned int);
+	                                  ^
 
-No functional change intended.
+	ERROR: space prohibited before that ',' (ctx:WxW)
+	#945: FILE: drivers/scsi/ufs/ufshcd.h:945:
+	+int ufshcd_init(struct ufs_hba * , void __iomem * , unsigned int);
+	                                                   ^
+remove unnecessary whitespace in ufshcd.h
 
-[1] Documentation/filesystems/sysfs.rst
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Keoseong Park <keosung.park@samsung.com>
 ---
- drivers/gpio/gpiolib-sysfs.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+ drivers/scsi/ufs/ufshcd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index 7c5afd999210..d836aba91d3c 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -66,9 +66,7 @@ static ssize_t direction_show(struct device *dev,
- 	mutex_lock(&data->mutex);
- 
- 	gpiod_get_direction(desc);
--	status = sprintf(buf, "%s\n",
--			test_bit(FLAG_IS_OUT, &desc->flags)
--				? "out" : "in");
-+	status = sysfs_emit(buf, "%s\n", test_bit(FLAG_IS_OUT, &desc->flags) ? "out" : "in");
- 
- 	mutex_unlock(&data->mutex);
- 
-@@ -109,13 +107,9 @@ static ssize_t value_show(struct device *dev,
- 	mutex_lock(&data->mutex);
- 
- 	status = gpiod_get_value_cansleep(desc);
--	if (status < 0)
--		goto err;
-+	if (status >= 0)
-+		status = sysfs_emit(buf, "%zd\n", status);
- 
--	buf[0] = '0' + status;
--	buf[1] = '\n';
--	status = 2;
--err:
- 	mutex_unlock(&data->mutex);
- 
- 	return status;
-@@ -249,11 +243,11 @@ static ssize_t edge_show(struct device *dev,
- 	mutex_lock(&data->mutex);
- 
- 	for (i = 0; i < ARRAY_SIZE(trigger_types); i++) {
--		if (data->irq_flags == trigger_types[i].flags) {
--			status = sprintf(buf, "%s\n", trigger_types[i].name);
-+		if (data->irq_flags == trigger_types[i].flags)
- 			break;
--		}
- 	}
-+	if (i < ARRAY_SIZE(trigger_types))
-+		status = sysfs_emit(buf, "%s\n", trigger_types[i].name);
- 
- 	mutex_unlock(&data->mutex);
- 
-@@ -333,8 +327,7 @@ static ssize_t active_low_show(struct device *dev,
- 
- 	mutex_lock(&data->mutex);
- 
--	status = sprintf(buf, "%d\n",
--				!!test_bit(FLAG_ACTIVE_LOW, &desc->flags));
-+	status = sysfs_emit(buf, "%d\n", !!test_bit(FLAG_ACTIVE_LOW, &desc->flags));
- 
- 	mutex_unlock(&data->mutex);
- 
-@@ -412,7 +405,7 @@ static ssize_t base_show(struct device *dev,
- {
- 	const struct gpio_chip	*chip = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%d\n", chip->base);
-+	return sysfs_emit(buf, "%d\n", chip->base);
- }
- static DEVICE_ATTR_RO(base);
- 
-@@ -421,7 +414,7 @@ static ssize_t label_show(struct device *dev,
- {
- 	const struct gpio_chip	*chip = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%s\n", chip->label ? : "");
-+	return sysfs_emit(buf, "%s\n", chip->label ?: "");
- }
- static DEVICE_ATTR_RO(label);
- 
-@@ -430,7 +423,7 @@ static ssize_t ngpio_show(struct device *dev,
- {
- 	const struct gpio_chip	*chip = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%u\n", chip->ngpio);
-+	return sysfs_emit(buf, "%u\n", chip->ngpio);
- }
- static DEVICE_ATTR_RO(ngpio);
- 
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index b8b4fe2b6bd5..791fb86409c2 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -942,7 +942,7 @@ static inline void ufshcd_rmwl(struct ufs_hba *hba, u32 mask, u32 val, u32 reg)
+ int ufshcd_alloc_host(struct device *, struct ufs_hba **);
+ void ufshcd_dealloc_host(struct ufs_hba *);
+ int ufshcd_hba_enable(struct ufs_hba *hba);
+-int ufshcd_init(struct ufs_hba * , void __iomem * , unsigned int);
++int ufshcd_init(struct ufs_hba *, void __iomem *, unsigned int);
+ int ufshcd_link_recovery(struct ufs_hba *hba);
+ int ufshcd_make_hba_operational(struct ufs_hba *hba);
+ void ufshcd_remove(struct ufs_hba *);
 -- 
-2.30.2
-
+2.17.1
