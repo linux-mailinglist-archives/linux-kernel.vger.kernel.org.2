@@ -2,75 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276C4387CC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE00D387CC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350397AbhERPsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:48:09 -0400
-Received: from mga05.intel.com ([192.55.52.43]:39725 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350318AbhERPq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:46:59 -0400
-IronPort-SDR: W+3ucHEq/3pSbifLHjail9pJ2xUNz9R3IlgAITLKVxxnZjP+hoVPhGsN+FAE6F8dJIfjDI9u/y
- 54UUwRX2JyeQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="286276347"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="286276347"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:45:11 -0700
-IronPort-SDR: J9dsPtbby4SXKSNBWfssLgT5WjxAbZ3aGBDqhM9LswFO5Fi103DeP9fWngToYkEB+1kjRSKFC0
- ARYWrU7NxepA==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="439495053"
-Received: from msaber-mobl.amr.corp.intel.com (HELO [10.209.65.183]) ([10.209.65.183])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:45:11 -0700
-Subject: Re: [RFC v2-fix 1/1] x86/traps: Add #VE support for TDX guest
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
- <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <4fc32900-412d-fa10-520e-afa6caade33e@intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <81c0f447-44b8-c2b6-ce41-a39ec0a1832b@linux.intel.com>
-Date:   Tue, 18 May 2021 08:45:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1350391AbhERPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350316AbhERPqv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:46:51 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EE1C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:45:27 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id lg14so15312822ejb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3eQT5w75rkSKr8V4Rzzvpp/1P0SvKsxN/0nHM1tgGJI=;
+        b=rRhgP9UZQiEtb6v8BAdYyzo30YdvcIFku8IRRd3mkNvNFcE+EWF6QZTLqsz9OdbMU7
+         GVvvDahRMVIt3nHGMgTIfO85NVc+TZIwj2mEvs4hJxiAv1cswxOu/w0dil0C5nAcDmJm
+         4QS3Jzp4KbQ/P2eQPLlwfADa15l/P9Sw4WZBfHhCd4fy1CoIkuAT/B+UlloP5rTVaGSR
+         WRv2YMGSOIQ20WwAiQ6yO2JKzb8ZCnBrjXq9XQ+f5yzKqZyaXadWauEQAL4FvBIzGUnL
+         YGjcdJZ4d28Pt+weEaWL2rLlQsjDUNPUycz3ThX+wPIud59ceeZ5wS6mQAR81WMakib/
+         E0GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3eQT5w75rkSKr8V4Rzzvpp/1P0SvKsxN/0nHM1tgGJI=;
+        b=ELZOk2e9OqOzXWvEND6lY6+bfouR2f1+nqVCHn0ara98rv2zsgpocO/bSB/BoWK8GC
+         uu6v5GD7S8Vq7Ano9CScZfxDnF1npSPi/Y9PfSnT1PNCIVaZP/L3mF/bSwdltX0pF2TL
+         nmFmfREBfzXi7IVcOWjww+8i2AG7t5MYB/uA8kSJiN1ktUXZ/LLzA3lVf7Mk7Lx+TyCO
+         81j4+sgfLJPGzXGXfrNwDLdotIJO0OLHwg2G9Bo5HW7PdDXhbnL3GrETgxD+0sCsBAGm
+         IIfeGjFAIQY8d1tkYlZrfHqoFT1AI6ZWAXmHwNaIK6pGbauPtZM3GQTUdx5nDOD9LF+q
+         Ii5w==
+X-Gm-Message-State: AOAM530r9APUd6XIT7OIOVDaiMO0/E+uc70+4cgX0J3xKRRouhRdEXx2
+        5u1So34RAio/85wyyI9RtJErjA==
+X-Google-Smtp-Source: ABdhPJw5mfRC4RqCLaY7aOa1qIS00rxJ82fYMuX6Y6HHeNpienr5acBlJGILnNqzE5dPmw4MZ9IZcg==
+X-Received: by 2002:a17:906:7c82:: with SMTP id w2mr6796433ejo.448.1621352725704;
+        Tue, 18 May 2021 08:45:25 -0700 (PDT)
+Received: from localhost.localdomain ([195.24.90.54])
+        by smtp.gmail.com with ESMTPSA id n17sm13016434eds.72.2021.05.18.08.45.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 08:45:25 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH 2/5] venus: Make sys_error flag an atomic bitops
+Date:   Tue, 18 May 2021 18:45:06 +0300
+Message-Id: <20210518154509.602137-3-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210518154509.602137-1-stanimir.varbanov@linaro.org>
+References: <20210518154509.602137-1-stanimir.varbanov@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <4fc32900-412d-fa10-520e-afa6caade33e@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Make the sys_error flag an atomic bitops in order to avoid
+locking in sys_error readers.
 
-On 5/18/2021 8:11 AM, Dave Hansen wrote:
-> On 5/17/21 5:09 PM, Kuppuswamy Sathyanarayanan wrote:
->> After TDGETVEINFO #VE could happen in theory (e.g. through an NMI),
->> although we don't expect it to happen because we don't expect NMIs to
->> trigger #VEs. Another case where they could happen is if the #VE
->> exception panics, but in this case there are no guarantees on anything
->> anyways.
-> This implies: "we do not expect any NMI to do MMIO".  Is that true?  Why?
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ drivers/media/platform/qcom/venus/core.c    | 4 ++--
+ drivers/media/platform/qcom/venus/core.h    | 3 ++-
+ drivers/media/platform/qcom/venus/helpers.c | 2 +-
+ drivers/media/platform/qcom/venus/hfi.c     | 2 +-
+ drivers/media/platform/qcom/venus/vdec.c    | 2 +-
+ 5 files changed, 7 insertions(+), 6 deletions(-)
 
-Only drivers that are not supported in TDX anyways could do it (mainly 
-watchdog drivers)
-
-panic is an exception, but that has been already covered.
-
--Andi
-
-
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 91b15842c555..cc6195f2409c 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -65,7 +65,7 @@ static void venus_event_notify(struct venus_core *core, u32 event)
+ 	}
+ 
+ 	mutex_lock(&core->lock);
+-	core->sys_error = true;
++	set_bit(0, &core->sys_error);
+ 	list_for_each_entry(inst, &core->instances, list)
+ 		inst->ops->event_notify(inst, EVT_SESSION_ERROR, NULL);
+ 	mutex_unlock(&core->lock);
+@@ -161,7 +161,7 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 	dev_warn(core->dev, "system error has occurred (recovered)\n");
+ 
+ 	mutex_lock(&core->lock);
+-	core->sys_error = false;
++	clear_bit(0, &core->sys_error);
+ 	mutex_unlock(&core->lock);
+ }
+ 
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 745f226a523f..15713209cc48 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -7,6 +7,7 @@
+ #ifndef __VENUS_CORE_H_
+ #define __VENUS_CORE_H_
+ 
++#include <linux/bitops.h>
+ #include <linux/list.h>
+ #include <media/videobuf2-v4l2.h>
+ #include <media/v4l2-ctrls.h>
+@@ -182,7 +183,7 @@ struct venus_core {
+ 	unsigned int state;
+ 	struct completion done;
+ 	unsigned int error;
+-	bool sys_error;
++	unsigned long sys_error;
+ 	const struct hfi_core_ops *core_ops;
+ 	const struct venus_pm_ops *pm_ops;
+ 	struct mutex pm_lock;
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index b813d6dba481..de87f4c81a1c 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -1478,7 +1478,7 @@ void venus_helper_vb2_stop_streaming(struct vb2_queue *q)
+ 		ret |= venus_helper_intbufs_free(inst);
+ 		ret |= hfi_session_deinit(inst);
+ 
+-		if (inst->session_error || core->sys_error)
++		if (inst->session_error || test_bit(0, &core->sys_error))
+ 			ret = -EIO;
+ 
+ 		if (ret)
+diff --git a/drivers/media/platform/qcom/venus/hfi.c b/drivers/media/platform/qcom/venus/hfi.c
+index 0f2482367e06..179b1f8b2650 100644
+--- a/drivers/media/platform/qcom/venus/hfi.c
++++ b/drivers/media/platform/qcom/venus/hfi.c
+@@ -214,7 +214,7 @@ int hfi_session_init(struct venus_inst *inst, u32 pixfmt)
+ 	 * session_init() can't pass successfully
+ 	 */
+ 	mutex_lock(&core->lock);
+-	if (!core->ops || core->sys_error) {
++	if (!core->ops || test_bit(0, &inst->core->sys_error)) {
+ 		mutex_unlock(&core->lock);
+ 		return -EIO;
+ 	}
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index ddb7cd39424e..132a2921902a 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1211,7 +1211,7 @@ static void vdec_session_release(struct venus_inst *inst)
+ 	ret = hfi_session_deinit(inst);
+ 	abort = (ret && ret != -EINVAL) ? 1 : 0;
+ 
+-	if (inst->session_error || core->sys_error)
++	if (inst->session_error || test_bit(0, &core->sys_error))
+ 		abort = 1;
+ 
+ 	if (abort)
+-- 
+2.25.1
 
