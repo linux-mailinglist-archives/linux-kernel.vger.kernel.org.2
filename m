@@ -2,182 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D28B387051
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 05:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE57387052
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 05:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345703AbhERDnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 23:43:52 -0400
-Received: from mga11.intel.com ([192.55.52.93]:44199 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346297AbhERDnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 23:43:01 -0400
-IronPort-SDR: 72j0DbcF5kV8ovqZSC5BSog3kQgAqoulMDFtzGihkzlKGaG6GlX+cTurYnVidsd2r+QnLKz4uK
- lLNHcGmyRROA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="197535485"
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="197535485"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 20:41:28 -0700
-IronPort-SDR: F4bch374bs5ASg4VRU8F+0ew/1K/h07FCOHF4obGMfUC+uAHtkc8OF9hrLK7s/GTMlwNa5Bqgj
- Gvlg1F6mZjHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="472724222"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by orsmga001.jf.intel.com with ESMTP; 17 May 2021 20:41:28 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v2] ACPI: DPTF: Add new PCH FIVR methods
-Date:   Mon, 17 May 2021 20:41:19 -0700
-Message-Id: <20210518034119.2116555-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S1346297AbhERDo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 23:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345652AbhERDoX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 23:44:23 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F367DC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:43:04 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id s19so4161599pfe.8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oyrSDnYQQKifS149R+OMO4QjNVTTu7WnPskAINWHJCg=;
+        b=mcAgZhoQM6+/P+HoPyZ1Vysugw+UzuyFqkhZUkEw2jN6AkMvxzB5jrP50LYnhwsgYd
+         apk+/FRwlBW5go143HpagMt5wdNrH7UfYxQ2NeneKYLZilhMbWywPrNg1B/QGMYI/ysW
+         mMomHjoMBtsW+P0foihilDnnNG8wbs5iBqKdFadBUfGnUJDfBiXEwwkehhwMss2vpGxD
+         6hthQyt11DrnRoIdbsLUtM9NRVKBLgZuNnkRl31JivxdWI+I3Hry1ScTriRLpUb5+U0E
+         EOsE1I9geRz5LHSS09f0/NdUDUfq2/AxDVFHSPA5KOzMjpnH+UEVUwW2bCkgtjWU86BO
+         l/sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oyrSDnYQQKifS149R+OMO4QjNVTTu7WnPskAINWHJCg=;
+        b=MFtxppRL5/9w9CU0Y5nKaqu20na5HC8UJHlTr99aQIPc+wN3jkiR/r14H9l21miqsr
+         p/2oNREh9bs7Og+ygtokAyUCDSpPhNML7CeO3hr1Oas9haTRMFOJ9z1ff4KGkTwdNEFf
+         YkBEPXOIh/kUx8ntevSwNonK91kFdiuUU+xN87nzuVYwCrAlqb3gXPRoxLD7vMo7ZL8a
+         rKN59Pv2oiGgE6jNXCcnV1ZwOmJCoBPN9JLyG+GCG+sRfxag0y/5RHJAIZ4UkZrjLRwb
+         PfLAdMfEBmxoNZGOt3yhkFqMxB2yp1cee+MSXDLJrAcpuQIywt2sposx6gtqlJqCA5Qe
+         QN9g==
+X-Gm-Message-State: AOAM530GePc5gmEv475VxCCaG57HzgL9SHDsYc46tCl6Ks1p+7Vwu2+2
+        UgOSdD50ym/DkNkkjd2nq+6vwA2ka64cne4VEwJ0gks87Qaj7rKQ
+X-Google-Smtp-Source: ABdhPJzH1fPqGI8ta62pDbgQXHtzwpTcMHsGW/Y9VY6ay/kODfq3aG0wqoNeS4xdYtpYIUKDtZKRcfbU7Uof3ZD4Y6o=
+X-Received: by 2002:a63:581c:: with SMTP id m28mr2846827pgb.353.1621309384516;
+ Mon, 17 May 2021 20:43:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210517155306.11113-1-wuchi.zero@gmail.com>
+In-Reply-To: <20210517155306.11113-1-wuchi.zero@gmail.com>
+From:   chi wu <wuchi.zero@gmail.com>
+Date:   Tue, 18 May 2021 11:42:53 +0800
+Message-ID: <CA+tQmHAE6vK17Xghi9YT7+7r4oFJuQ86cU8m5MzMs6-D0G=DBQ@mail.gmail.com>
+Subject: Re: [PATCH] lib/flex_proportions.c: Use abs() when percpu_counter is negative.
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        tan.hu@zte.com.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some additional information is required for updating PCH FIVR values
-upon WiFi channel changes.
+Chi Wu <wuchi.zero@gmail.com> =E4=BA=8E2021=E5=B9=B45=E6=9C=8817=E6=97=A5=
+=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=8811:53=E5=86=99=E9=81=93=EF=BC=9A
+>
+> The value of percpu_counter_read() may become negative after
+> running percpu_counter_sum() in fprop_reflect_period_percpu().
+> The value of variable 'num' will be zero in fprop_fraction_percpu()
+> when using percpu_counter_read_positive(), but if using the abs of
+> percpu_counter_read() will be close to the correct value.
+>
 
-New attributes added to the existing sysfs:
-fivr_switching_freq_mhz	: Get the FIVR switching control frequency
-			  using ACPI method GFCS. Refer to the
-			  documentation for the equation.
-fivr_switching_fault_status: Read the FIVR switching frequency control
-			fault status. Uses ACPI method GFFS
+I realized that I was wrong as follow:
+(a) the decay rule is broken, the negative means the difference in
+decay here.
+(b) as the target event increasing, proportion of the event will
+decrease to 0 firstly and then it will increase. The logic is bad.
+1. abs(-50) / abs(100) =3D 50%       //+50 to 2
+2. abs(0) / abs(150) =3D 0 %           //+50 to 3
+3. abs(50)/abs(200) =3D 25%
 
-ssc_clock_info : Presents SSC (spread spectrum clock) information for EMI
-(Electro magnetic interference) control. Use ACPI method GEMI. Refer
-to the description of GEMI method below.
+Anyway, the percpu_counter_sum() had cost a lost performance,
+may be we could get a little benefits from that. So could we add a
+variable to stroe the decay value, we will get the value when
+percpu_counter_read() is negative?
 
-GFFS
-This ACPI method is used to read the FIVR switching frequency control
-fault status.
-Bits	Description
-[0:0]	Fault status when set to 1
-[31:1]	Reserved
+Thanks.
 
-GFCS
-This ACPI method is used to read the FIVR switching control
-frequency.
-Bits	Description
-[11:0]	Actual Frequency = value * XTAL_FREQ / 128
-[31:12]	Reserved
-
-GEMI
-This ACPI method is used to read the programmed register value for EMI
-(Electro magnetic interference) control.
-
-Bits	Description
-[7:0]	Sets clock spectrum spread percentage:
-	0x00=0.2% , 0x3F=10%
-	1 LSB = 0.1% increase in spread (for
-	settings 0x01 thru 0x1C)
-	1 LSB = 0.2% increase in spread (for
-	settings 0x1E thru 0x3F)
-[8]	When set to 1, enables spread
-	spectrum clock
-[9]	0: Triangle mode. FFC frequency
-	walks around the Fcenter in a linear
-	fashion
-	1: Random walk mode. FFC frequency
-	changes randomly within the SSC
-	(Spread spectrum clock) range
-[10]	0: No white noise. 1: Add white noise
-	to spread waveform
-[11]	When 1, future writes are ignored.
-
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
-v2
-	Update documentation for fivr_switching_freq_mhz
-
- Documentation/ABI/testing/sysfs-platform-dptf | 42 +++++++++++++++++++
- drivers/acpi/dptf/dptf_pch_fivr.c             |  9 ++++
- 2 files changed, 51 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-platform-dptf b/Documentation/ABI/testing/sysfs-platform-dptf
-index 141834342a4d..fe62f024eb93 100644
---- a/Documentation/ABI/testing/sysfs-platform-dptf
-+++ b/Documentation/ABI/testing/sysfs-platform-dptf
-@@ -111,3 +111,45 @@ Contact:	linux-acpi@vger.kernel.org
- Description:
- 		(RW) The PCH FIVR (Fully Integrated Voltage Regulator) switching frequency in MHz,
- 		when FIVR clock is 38.4MHz.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_freq_mhz
-+Date:		June, 2021
-+KernelVersion:	v5.14
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RO) Get the FIVR switching control frequency in MHz after applying equation
-+		"fivr_switching_freq_mhz * XTAL_FREQ / 128". Here XTAL_FREQ is Crystal Oscillator frequency
-+		in MHz, which is product specific.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_fault_status
-+Date:		June, 2021
-+KernelVersion:	v5.14
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RO) Read the FIVR switching frequency control fault status.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/ssc_clock_info
-+Date:		June, 2021
-+KernelVersion:	v5.14
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RO) Presents SSC (spread spectrum clock) information for EMI
-+		(Electro magnetic interference) control. This is a bit mask.
-+		Bits	Description
-+		[7:0]	Sets clock spectrum spread percentage:
-+			0x00=0.2% , 0x3F=10%
-+			1 LSB = 0.1% increase in spread (for
-+			settings 0x01 thru 0x1C)
-+			1 LSB = 0.2% increase in spread (for
-+			settings 0x1E thru 0x3F)
-+		[8]	When set to 1, enables spread
-+			spectrum clock
-+		[9]	0: Triangle mode. FFC frequency
-+			walks around the Fcenter in a linear
-+			fashion
-+			1: Random walk mode. FFC frequency
-+			changes randomly within the SSC
-+			(Spread spectrum clock) range
-+		[10]	0: No white noise. 1: Add white noise
-+			to spread waveform
-+		[11]	When 1, future writes are ignored.
-diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_pch_fivr.c
-index 5fca18296bf6..22c4ae0401ef 100644
---- a/drivers/acpi/dptf/dptf_pch_fivr.c
-+++ b/drivers/acpi/dptf/dptf_pch_fivr.c
-@@ -55,15 +55,24 @@ static ssize_t name##_store(struct device *dev,\
- 
- PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
- PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
-+PCH_FIVR_SHOW(ssc_clock_info, GEMI)
-+PCH_FIVR_SHOW(fivr_switching_freq_mhz, GFCS)
-+PCH_FIVR_SHOW(fivr_switching_fault_status, GFFS)
- PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
- PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
- 
- static DEVICE_ATTR_RW(freq_mhz_low_clock);
- static DEVICE_ATTR_RW(freq_mhz_high_clock);
-+static DEVICE_ATTR_RO(ssc_clock_info);
-+static DEVICE_ATTR_RO(fivr_switching_freq_mhz);
-+static DEVICE_ATTR_RO(fivr_switching_fault_status);
- 
- static struct attribute *fivr_attrs[] = {
- 	&dev_attr_freq_mhz_low_clock.attr,
- 	&dev_attr_freq_mhz_high_clock.attr,
-+	&dev_attr_ssc_clock_info.attr,
-+	&dev_attr_fivr_switching_freq_mhz.attr,
-+	&dev_attr_fivr_switching_fault_status.attr,
- 	NULL
- };
- 
--- 
-2.27.0
-
+> Signed-off-by: Chi Wu <wuchi.zero@gmail.com>
+> ---
+>  lib/flex_proportions.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
+> index 451543937524..3ac79ca2c441 100644
+> --- a/lib/flex_proportions.c
+> +++ b/lib/flex_proportions.c
+> @@ -147,7 +147,7 @@ void fprop_fraction_single(struct fprop_global *p,
+>                 seq =3D read_seqcount_begin(&p->sequence);
+>                 fprop_reflect_period_single(p, pl);
+>                 num =3D pl->events;
+> -               den =3D percpu_counter_read_positive(&p->events);
+> +               den =3D abs(percpu_counter_read(&p->events));
+>         } while (read_seqcount_retry(&p->sequence, seq));
+>
+>         /*
+> @@ -209,7 +209,7 @@ static void fprop_reflect_period_percpu(struct fprop_=
+global *p,
+>                         val =3D percpu_counter_sum(&pl->events);
+>
+>                 percpu_counter_add_batch(&pl->events,
+> -                       -val + (val >> (period-pl->period)), PROP_BATCH);
+> +                       -val + (val >> (period - pl->period)), PROP_BATCH=
+);
+>         } else
+>                 percpu_counter_set(&pl->events, 0);
+>         pl->period =3D period;
+> @@ -234,8 +234,8 @@ void fprop_fraction_percpu(struct fprop_global *p,
+>         do {
+>                 seq =3D read_seqcount_begin(&p->sequence);
+>                 fprop_reflect_period_percpu(p, pl);
+> -               num =3D percpu_counter_read_positive(&pl->events);
+> -               den =3D percpu_counter_read_positive(&p->events);
+> +               num =3D abs(percpu_counter_read(&pl->events));
+> +               den =3D abs(percpu_counter_read(&p->events));
+>         } while (read_seqcount_retry(&p->sequence, seq));
+>
+>         /*
+> --
+> 2.17.1
+>
