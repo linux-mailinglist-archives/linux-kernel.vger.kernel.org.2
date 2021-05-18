@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC299386E65
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B16A386E61
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344317AbhERAk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235470AbhERAk0 (ORCPT
+        id S239593AbhERAjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:39:36 -0400
+Received: from gateway33.websitewelcome.com ([192.185.145.9]:34542 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235470AbhERAjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:40:26 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC158C061573;
-        Mon, 17 May 2021 17:39:07 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so581494pjb.2;
-        Mon, 17 May 2021 17:39:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XJERjlzz2JqpiW35y50+LdlSX0FgN6gm7UsIOMCxH9A=;
-        b=XeKcnEwIAG/jlT7UuXSkRXgKn/eA0UPk8FvIvNgMe99vO7rC2Jkful5ErQarQwJJnr
-         n4br+xjc2HCI6mIgAuKGsrWC4xbyUeT/0kqiDUIIKoO9x6JYTEWaXehEcP2cWX4BfC4L
-         HhMvKWnOqgo4a1v9rE9zhQ/6JLDz2+XZy6IgL2Thw3zIUx5t6+6gMp/Y41Turv6j/3LQ
-         o8x+s2ga//Ra3u2TPDpW6iK6YlIjc3+ebLP+YGn8ZSConOBK4rRUoZ6OVMDmxjo8K7lf
-         cy4KPcg8DU0DD251z8cogCRiq1e4QvM7lx0CJpqKqNKbqYCD71wNkPyxVbywL22Pr8nG
-         h3HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XJERjlzz2JqpiW35y50+LdlSX0FgN6gm7UsIOMCxH9A=;
-        b=aHlbbchx7EXvs0P6tVNrLNzfJ5oF4yU+L8rCAh8AOzGbhkZLimdBtrilneWzjoRzoB
-         jRF1Kfbq9OO8Zac3lec8ZDOwgCR303/Trpta+O+/eVJF84uhjuEjqZWVeDiRspu6Y2Ah
-         tIn/3NzYecfL8HP0p00MIkUlt/UuD0GvtYUMLCtTku6Tuj7nktVRNSj6m1eZhyZCQLE/
-         hIuzNBUxTN0X9jxTdp6fboR3XOc/TkMoVqYyrSM8f0pBqZc120EjVubna3VWshz0Pa/B
-         d0NYc7hMoxll81icV80h1ge7q6JGIq/zmExTLIkoCZb8W/R6S5ajxdNijghInT1NhNUj
-         WySA==
-X-Gm-Message-State: AOAM532RCcao97iJYsM6/R+KGZkxUFz2SCh+K2U9xoDvTgujntE5SLj9
-        IWG69CGgg7ztjF5vzT04O/U=
-X-Google-Smtp-Source: ABdhPJwBowksJGQuhUZRWk/iQ7EWmJQSyFcQA9q0auXwUBgVqteIlgHI5UsBOMw1P7h2E9Q5qnJs7A==
-X-Received: by 2002:a17:90a:fa5:: with SMTP id 34mr1938655pjz.113.1621298347440;
-        Mon, 17 May 2021 17:39:07 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id z65sm10940314pfb.13.2021.05.17.17.39.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 17:39:07 -0700 (PDT)
-Date:   Tue, 18 May 2021 09:38:59 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
-        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
-        linux-next@vger.kernel.org, ndesaulniers@google.com,
-        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
- kmalloc_index() to compile-time
-Message-ID: <20210518003859.GC80297@hyeyoo>
-References: <20210511173448.GA54466@hyeyoo>
- <20210515210950.GA52841@hyeyoo>
- <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
- <YKC9CeAfw3aBmHTU@archlinux-ax161>
+        Mon, 17 May 2021 20:39:35 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 1A048E59AF0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:38:18 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id inkYlxZqsMGeEinkYl00jn; Mon, 17 May 2021 19:38:18 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4RWxH2aMjPw2HSLpv4Ox8ZbpnFLLqLifGHgZKKmBLB8=; b=Zyx6BH8SuObchvVV+OQuUswGSy
+        +Xf6OFxssDkxxY0ZmmULPoazWY8n6c03pHquDa6AgAG+f1+WzpEnSmNXtzoyHa+VCoyVo9hNC9xaR
+        c6nErunCqKZ+K8BZ1iAN856s4glkosIR6SeuH970mh2KDs5bweVYSi4WtX60uAAQx1ndT1XMN6DHN
+        Je2JAqDWHi78UfTDWSlFlsOlBAGWRxmFOLSc+ydPZKvWINldb3bWL3ENklLvquzORl46VMzc2yhiJ
+        ze0Zu6xQr2o41t2OWPSfsMc+lXVdglmD0NBV4JtID8D3fKdzyq47JDhTHZZu6KG67RNIS62GPHqbo
+        pZXSflRw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53490 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1linkW-002fSu-Np; Mon, 17 May 2021 19:38:16 -0500
+Subject: Re: [PATCH 071/141] braille_console: Fix fall-through warnings for
+ Clang
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <a0be16871b77956d75ea2f877da2fa5fba3e64ac.1605896059.git.gustavoars@kernel.org>
+ <f7e58552-309f-ef96-7ac8-3cb692c979d1@embeddedor.com>
+Message-ID: <0e8e9cee-57c3-47ea-703c-b9ed3fa8b7f7@embeddedor.com>
+Date:   Mon, 17 May 2021 19:39:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKC9CeAfw3aBmHTU@archlinux-ax161>
+In-Reply-To: <f7e58552-309f-ef96-7ac8-3cb692c979d1@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1linkW-002fSu-Np
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53490
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 56
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 11:34:49PM -0700, Nathan Chancellor wrote:
-> This should work I think:
+Hi,
 
-compiled well with clang-10.0.1, clang-11.0.0,
-and gcc-10.2.0 with x86_64 default config.
+I'm taking this in my -next[1] branch for v5.14.
 
-is the condition CONFIG_CLANG_VERSION > 110000,
-not including 110000 it self?
+Thanks
+--
+Gustavo
 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 9d316aac0aba..1b653266f2aa 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -413,7 +413,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
->  	if (size <=  16 * 1024 * 1024) return 24;
->  	if (size <=  32 * 1024 * 1024) return 25;
->  
-> -	if (size_is_constant)
-> +	if ((IS_ENABLED(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION > 110000) && size_is_constant)
->  		BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
->  	else
->  		BUG();
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+
+On 4/20/21 15:16, Gustavo A. R. Silva wrote:
+> Hi all,
+> 
+> Friendly ping: who can take this, please?
+> 
+> Thanks
+> --
+> Gustavo
+> 
+> On 11/20/20 12:34, Gustavo A. R. Silva wrote:
+>> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+>> by explicitly adding a break statement instead of letting the code fall
+>> through to the next case.
+>>
+>> Link: https://github.com/KSPP/linux/issues/115
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  drivers/accessibility/braille/braille_console.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/accessibility/braille/braille_console.c b/drivers/accessibility/braille/braille_console.c
+>> index 9861302cc7db..359bead4b280 100644
+>> --- a/drivers/accessibility/braille/braille_console.c
+>> +++ b/drivers/accessibility/braille/braille_console.c
+>> @@ -246,6 +246,7 @@ static int keyboard_notifier_call(struct notifier_block *blk,
+>>  				beep(440);
+>>  		}
+>>  	}
+>> +		break;
+>>  	case KBD_UNBOUND_KEYCODE:
+>>  	case KBD_UNICODE:
+>>  	case KBD_KEYSYM:
+>>
