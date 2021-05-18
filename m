@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF58B38719B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F108D38719E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344360AbhERGIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 02:08:52 -0400
-Received: from m12-17.163.com ([220.181.12.17]:56790 "EHLO m12-17.163.com"
+        id S1345010AbhERGJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 02:09:40 -0400
+Received: from muru.com ([72.249.23.125]:56942 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343548AbhERGIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 02:08:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=oSCdD
-        cWXTFCTgOMARGDGNz+PLQ1W3cZ3WXZVxydYTQQ=; b=k+jSMH9RhW6KPA/fx1s8n
-        gKNFyUqTan7a7+axUab1J/Iqwoh9QG4PF1RnDopetH20CqoFTVgS2iD5AG7I80sM
-        vTwdTagEnM8XAcm2qf41zE3MrX3azTRBEOIDztKhU69CA162bg6ouWaxNzsmZ0YV
-        rWnUF4xnQjhVHTguEuwRhE=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp13 (Coremail) with SMTP id EcCowAD3H4SVWaNg+C+M1w--.3239S2;
-        Tue, 18 May 2021 14:07:20 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     robh+dt@kernel.org, frowand.list@gmail.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] scripts/dtc: Assign value when defining variables
-Date:   Tue, 18 May 2021 14:07:25 +0800
-Message-Id: <20210518060725.1984-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S1343548AbhERGJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 02:09:38 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id E2B6C80BA;
+        Tue, 18 May 2021 06:08:23 +0000 (UTC)
+Date:   Tue, 18 May 2021 09:08:16 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: single: config: enable the pin's input
+Message-ID: <YKNZ0A7umnk4LwKU@atomide.com>
+References: <20210514163818.12178-1-dariobin@libero.it>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAD3H4SVWaNg+C+M1w--.3239S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww1kuF48tr4kJF48CFW3Wrg_yoW8GrW5pr
-        Z8Cw12qrs5tFWjvrs0kryDWr4UC3yDXr15K3yUCwnxZFZxt3yxKFWak3WSvw17W3yDXr1a
-        vrsYqas5WF1xWw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jyZXOUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbipRiWiVUMeJnvugAAsP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514163818.12178-1-dariobin@libero.it>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+* Dario Binacchi <dariobin@libero.it> [210514 16:38]:
+> It enables / disables the input buffer. As explained in the description
+> of 'enum pin_config_param' this does not affect the pin's ability to
+> drive output.
+> 
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> ---
+> 
+>  drivers/pinctrl/pinctrl-single.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+> index 2c9c9835f375..4e7cdb9ee855 100644
+> --- a/drivers/pinctrl/pinctrl-single.c
+> +++ b/drivers/pinctrl/pinctrl-single.c
+> @@ -534,6 +534,7 @@ static int pcs_pinconf_get(struct pinctrl_dev *pctldev,
+>  		case PIN_CONFIG_DRIVE_STRENGTH:
+>  		case PIN_CONFIG_SLEW_RATE:
+>  		case PIN_CONFIG_MODE_LOW_POWER:
+> +		case PIN_CONFIG_INPUT_ENABLE:
+>  		default:
+>  			*config = data;
+>  			break;
+> @@ -572,6 +573,7 @@ static int pcs_pinconf_set(struct pinctrl_dev *pctldev,
+>  			case PIN_CONFIG_DRIVE_STRENGTH:
+>  			case PIN_CONFIG_SLEW_RATE:
+>  			case PIN_CONFIG_MODE_LOW_POWER:
+> +			case PIN_CONFIG_INPUT_ENABLE:
+>  				shift = ffs(func->conf[i].mask) - 1;
+>  				data &= ~func->conf[i].mask;
+>  				data |= (arg << shift) & func->conf[i].mask;
+> @@ -918,6 +920,7 @@ static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
+>  	static const struct pcs_conf_type prop2[] = {
+>  		{ "pinctrl-single,drive-strength", PIN_CONFIG_DRIVE_STRENGTH, },
+>  		{ "pinctrl-single,slew-rate", PIN_CONFIG_SLEW_RATE, },
+> +		{ "pinctrl-single,input-enable", PIN_CONFIG_INPUT_ENABLE, },
+>  		{ "pinctrl-single,input-schmitt", PIN_CONFIG_INPUT_SCHMITT, },
+>  		{ "pinctrl-single,low-power-mode", PIN_CONFIG_MODE_LOW_POWER, },
+>  	};
 
-When defining variables and assigning values can be done at the same time.
+Looks OK to me if this works for Linus W. You need another patch to
+update the binding though:
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- scripts/dtc/util.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
 
-diff --git a/scripts/dtc/util.c b/scripts/dtc/util.c
-index 40274fb..d1f7608 100644
---- a/scripts/dtc/util.c
-+++ b/scripts/dtc/util.c
-@@ -292,7 +292,7 @@ int utilfdt_write_err(const char *filename, const void *blob)
- {
- 	int fd = 1;	/* assume stdout */
- 	int totalsize;
--	int offset;
-+	int offset = 0;
- 	int ret = 0;
- 	const char *ptr = blob;
- 
-@@ -303,7 +303,6 @@ int utilfdt_write_err(const char *filename, const void *blob)
- 	}
- 
- 	totalsize = fdt_totalsize(blob);
--	offset = 0;
- 
- 	while (offset < totalsize) {
- 		ret = write(fd, ptr + offset, totalsize - offset);
-@@ -421,7 +420,7 @@ void NORETURN util_usage(const char *errmsg, const char *synopsis,
- 	const char a_arg[] = "<arg>";
- 	size_t a_arg_len = strlen(a_arg) + 1;
- 	size_t i;
--	int optlen;
-+	int optlen = 0;
- 
- 	fprintf(fp,
- 		"Usage: %s\n"
-@@ -429,7 +428,6 @@ void NORETURN util_usage(const char *errmsg, const char *synopsis,
- 		"Options: -[%s]\n", synopsis, short_opts);
- 
- 	/* prescan the --long opt length to auto-align */
--	optlen = 0;
- 	for (i = 0; long_opts[i].name; ++i) {
- 		/* +1 is for space between --opt and help text */
- 		int l = strlen(long_opts[i].name) + 1;
--- 
-1.9.1
+Or if there is such a patch floating around, I was not in Cc :)
 
+Regards,
 
+Tony
