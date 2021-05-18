@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66275387A20
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2A2387A23
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhERNk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhERNk6 (ORCPT
+        id S231144AbhERNlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:41:16 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:30239 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229575AbhERNlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:40:58 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56120C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:39:40 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x19so14234150lfa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nrf7kNqbVnAq1Hf1uDBaFlAV929R3QrjgqvJW3l17CY=;
-        b=DMufJIyGl+qNFpflK8tU5hLtyEQK9T7KiW3MEpqtY3+36Of1jx9dJuhnl+YfejEiLM
-         hPANf0IEpDtgAouU4WTLfVxIzrpDgnNkLM8E+N91lh0Fh1aq488EttAQrJrj1HMscFkz
-         +wqn4bWB1oOKviRzm0K7jp8TjQf0kurdf+i6UUos208vX+n0yPGMg5JCnZmWfP+bbxuP
-         luJYVWEAtucWfTN+0xCrWWFFCvUNvMZTO1LRA25gSk7j2Zk8SiLZJqwLQvMaf2TtPm8h
-         7mxwLAQ4r2y+5/oW5f9m6zeQv4kqNrG5hW54jVdCmgqxUDhRic5qJhAJb4+BzLxQH5+C
-         zAoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nrf7kNqbVnAq1Hf1uDBaFlAV929R3QrjgqvJW3l17CY=;
-        b=m/45ycOMh+ovAovAdDEQAGzxvqJLiP0iLtQ4LGHeVUO07LbuK4RjynLd4IMXydKpOe
-         XCVPnr5q0yLK0QA1joexS1iNd48nJ8f9myPQvcMJabacZv+Ah4+smnfVWv/zxTCzswde
-         pbqk4IN1/yXlA4QUqTeFJTtJNmQTnhx8DnTzj5GhDBF2OaBUGLX0Xm8U0gs1Gi7190QT
-         UNZvh0EmIWgk4hUVueJCRMXy9TXGOQJKtBqfQ6dTE8bQnAhcB26z5kPVV/866CNSdAxH
-         QdgCB39ro1qc69FUm4Djcz4huCeDzDu98mWY+fwnCcnOqvA0We2CMgjU/LvgX+bzLUna
-         WseA==
-X-Gm-Message-State: AOAM533TT0VZgW6AYlHXX6QqF5wug70t4SWoWcQiiV21Pt/1Sqw5PXMS
-        rQ1B7DCZ/5jTWKs4drnx0wGa/SM5oIBpjogkBwPidg==
-X-Google-Smtp-Source: ABdhPJx422ES6gfI9g9zWtdAm24lIHv7zsc/CM8d0RwvK3AgZCihGwzdt92BAiHNiWlB+C5wItRT3gYSF7KGJMHkGC0=
-X-Received: by 2002:a05:6512:22c2:: with SMTP id g2mr4601044lfu.305.1621345178822;
- Tue, 18 May 2021 06:39:38 -0700 (PDT)
+        Tue, 18 May 2021 09:41:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1621345192; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=LNo3e33Jwp/DUaMWUGF2+AqPjxexI2khm2MPog2GVv+qI7lHxv60ObBW1vpYY8GpoL
+    0TwXFCGMlc1GFmu9EC1lQ7gBvCu6ObRZsi256D0LXf3PAN53rLh7yVXlaV8xoEilvHAN
+    vp9uEcP2AugVOkFnD2cnYK0BsWibPaHGC2fvE1Yr31aPLA3wISVDEGVRikHvy9xRqL7Z
+    qSL4qlfRigN4v1F4ar7MkIyS3lo7O8h47g+A+hY5uYdmD7ssYn7q9bmVwnw9+xxG18Uh
+    nByL7H1RPmGmVyCohv1fzxIHQcrga2Bq0YZLFNCG0sGkJUOhKO0LkE0gXST7sNU/zI+G
+    cLpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1621345192;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Y1KRDbu5WN3XFPdHGE3A1QrQ6q/NLxWm/b5TELJkolY=;
+    b=rNG/seh7q8wSOqLsG87KzEkp180y5PqYra90vA3Gl8uXMhERDZPjakRKxV9Wo/GfnK
+    vs0zPJ6sXixX0+O9in8RFlXtNNLD8yD+k4oK/FEEOXrgcVv0H01IErN5ySLQaYEEk4SO
+    RXDp0d/xvnj714SrVp/3mHUVPQLeHCzSPYKAfnrwr996akE4q5UDhRi2OBx5DPGplHn7
+    4Ny+1asV+uqmxrv27Ub09pL8I+8qCwyqdUHlygKBLHZF8bk7UGZLF/l4yuMOaNBKB5L4
+    3GbJONprzX6w7cu8JJRPByHzZmZlf7EQRvPsd+HoEQTVgWzTr4BDOUmn70TD0BFAvOFL
+    /cFA==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1621345192;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Y1KRDbu5WN3XFPdHGE3A1QrQ6q/NLxWm/b5TELJkolY=;
+    b=iERjNiZS708Ahp81a9V91zZEQKq4ddOf32Bfg7NLiFzDVMBC6FgmfgllH05jiaDMz8
+    fo7thxQ0Z4RhiBj6RGC9+fEZMID2r8A7Wtd2RvO0e7wjRUrmJjzyGFgN1GIXsVCljnmF
+    x+hgMZ5LqeflrJjQrMnr+m9hN7LYDz8AAWlA24+YzZWxIZv9zq6WG8KFxr2WWni9whrz
+    OuD3fy+9TX/fwdXDJZoQayaQ56b/FQwMZoedvyipKBGzQu42lH5UjgQVLk6nw8iO2b72
+    2IqBaTz6wgqK3fR0XqLaTKQGg04i+3H0oiXV0Xr6wJ0RjF3C4Kj7S5b2gb0/v/faR1Gb
+    7VCg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4W6NZHoD"
+X-RZG-CLASS-ID: mo00
+Received: from droid..
+    by smtp.strato.de (RZmta 47.26.1 DYNA|AUTH)
+    with ESMTPSA id f01503x4IDdp2oJ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 18 May 2021 15:39:51 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH 1/2] dt-bindings: net: nfc: s3fwrn5: Add optional clock
+Date:   Tue, 18 May 2021 15:39:34 +0200
+Message-Id: <20210518133935.571298-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com> <1621239831-5870-2-git-send-email-beata.michalska@arm.com>
-In-Reply-To: <1621239831-5870-2-git-send-email-beata.michalska@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 18 May 2021 15:39:27 +0200
-Message-ID: <CAKfTPtAPcayjhedNWaL20rsaUQbxXFdEXAF8aqwd9YX5gLVbOQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL
- sched_domain flag
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 10:24, Beata Michalska <beata.michalska@arm.com> wrote:
->
-> Introducing new, complementary to SD_ASYM_CPUCAPACITY, sched_domain
-> topology flag, to distinguish between shed_domains where any CPU
-> capacity asymmetry is detected (SD_ASYM_CPUCAPACITY) and ones where
-> a full range of CPU capacities is visible to all domain members
-> (SD_ASYM_CPUCAPACITY_FULL).
+On some systems, S3FWRN5 depends on having an external clock enabled
+to function correctly. Allow declaring that clock (optionally) in the
+device tree.
 
-I'm not sure about what you want to detect:
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ .../devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml         | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Is it a sched_domain level with a full range of cpu capacity, i.e.
-with at least 1 min capacity and 1 max capacity ?
-or do you want to get at least 1 cpu of each capacity ?
+diff --git a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+index 477066e2b821..081742c2b726 100644
+--- a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
++++ b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+@@ -27,6 +27,9 @@ properties:
+   reg:
+     maxItems: 1
+ 
++  clocks:
++    maxItems: 1
++
+   wake-gpios:
+     maxItems: 1
+     description:
+@@ -80,6 +83,8 @@ examples:
+ 
+             en-gpios = <&gpf1 4 GPIO_ACTIVE_HIGH>;
+             wake-gpios = <&gpj0 2 GPIO_ACTIVE_HIGH>;
++
++            clocks = <&rpmcc 20>;
+         };
+     };
+   # UART example on Raspberry Pi
+-- 
+2.31.1
 
-
->
-> With the distinction between full and partial CPU capacity asymmetry,
-> brought in by the newly introduced flag, the scope of the original
-> SD_ASYM_CPUCAPACITY flag gets shifted, still maintaining the existing
-> behaviour when one is detected on a given sched domain, allowing
-> misfit migrations within sched domains that do not observe full range
-> of CPU capacities but still do have members with different capacity
-> values. It loses though it's meaning when it comes to the lowest CPU
-> asymmetry sched_domain level per-cpu pointer, which is to be now
-> denoted by SD_ASYM_CPUCAPACITY_FULL flag.
->
-> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  include/linux/sched/sd_flags.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-> index 34b21e9..57bde66 100644
-> --- a/include/linux/sched/sd_flags.h
-> +++ b/include/linux/sched/sd_flags.h
-> @@ -91,6 +91,16 @@ SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
->  SD_FLAG(SD_ASYM_CPUCAPACITY, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
->
->  /*
-> + * Domain members have different CPU capacities spanning all unique CPU
-> + * capacity values.
-> + *
-> + * SHARED_PARENT: Set from the topmost domain down to the first domain where
-> + *               all available CPU capacities are visible
-> + * NEEDS_GROUPS: Per-CPU capacity is asymmetric between groups.
-> + */
-> +SD_FLAG(SD_ASYM_CPUCAPACITY_FULL, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> +
-> +/*
->   * Domain members share CPU capacity (i.e. SMT)
->   *
->   * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-> --
-> 2.7.4
->
