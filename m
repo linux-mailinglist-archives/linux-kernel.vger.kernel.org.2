@@ -2,223 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7CB38783A
+	by mail.lfdr.de (Postfix) with ESMTP id AB4D538783B
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbhERMBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:01:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13248 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348925AbhERMBf (ORCPT
+        id S240526AbhERMBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233219AbhERMBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:01:35 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IBlY8m058093;
-        Tue, 18 May 2021 08:00:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fDqI/9Bf4nbAzLJhSZmnuMVCjOZ+SR/1c4d5fB4+Kgw=;
- b=L/3EKFH7Dd2mJQ4vxiQX/fJaE1NCtB/pby1J1B0tylVMrvjDCTwlNNSjJHC4dxnp3L3a
- 7cjNkOzLI2A7Luo1trHdnIMrnAmwfZLD3v/RVhVlqTv634S+KnCzQw9qBCxdnLqPPue7
- fzV1QPGeRQPkSKdHDnKXfgjHgKEuAnXHbRN6FTlLMGpMJjaxwuM+bAl6E0/GhI6JAWks
- FoHiMmj6of2Cf1X8RLhWXoJv/31fxFeXxz0gqzrhanLZJuAzxv1yF1VJ8hW660oxHt59
- q9uFDq7rN7m9x3qaTLE0aAGdoCMqSv9MVOIiW4LLYztFoAlOJZ8ZxaN9OyMhW/0kM8CF bA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38md14g8h2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 08:00:16 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IBr4Ws095044;
-        Tue, 18 May 2021 08:00:15 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38md14g8ej-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 08:00:15 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IBwH4J000902;
-        Tue, 18 May 2021 12:00:13 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 38mceh80f2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 12:00:13 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IC0Aew39518640
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 12:00:10 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20873A4040;
-        Tue, 18 May 2021 12:00:10 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9C98AA4081;
-        Tue, 18 May 2021 12:00:09 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.37.27])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 18 May 2021 12:00:09 +0000 (GMT)
-Subject: Re: [PATCH v1 01/11] KVM: s390: pv: leak the ASCE page when destroy
- fails
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
-        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
- <20210517200758.22593-2-imbrenda@linux.ibm.com>
- <13cb02d1-df3b-7994-8a31-99aacfd15566@linux.ibm.com>
- <20210518124027.48f36caa@ibm-vm>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Message-ID: <62e16545-d078-6d91-2370-e4e5677306c7@linux.ibm.com>
-Date:   Tue, 18 May 2021 14:00:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 18 May 2021 08:01:37 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12A5C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:19 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so1327583wmn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=+ggadvPF/wBhvvLjqD+tk3mIYZSXppcfW2r188p7A2Y=;
+        b=NJ+k8d7I5+RS9VOax/g12nzi/snsdbNv63dy8OB1RCUNltpv710MeXrKfvtOdTO4C3
+         Sxe5/14Hd0XZxG2484xtE9sBYlFBsA2jDKSZBJIj35aSf8hrdHX2Vhw3mplaRmITUfqp
+         s5AwPMBdsDFUhYfKaQX3fpEnwxGxtyE8Jv3bg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=+ggadvPF/wBhvvLjqD+tk3mIYZSXppcfW2r188p7A2Y=;
+        b=foNbFSvNLtmBrjQRroP2Pquf80xyfuppW6puJD1ExMDZ/fB4IGgZDOAHSpRUT56XMx
+         w1DLR02JSEvwa17liExltqmk/1AcPFJEAq9BO6doU00b5mIABbqwXTCh9k46pNZd0WiT
+         wPRgVDlI+WX0UqKogH9PqaJPrD6CLIqMXcsyP1HB+UnIW5Nbxd1WSndE/HyeNtoIUDzU
+         GY6cpO8tOsiHbQB1X+ku+v2in00p94mOIDm4Y4P/swaIlec5eDVMuaoW62xXm31tT+QW
+         fuDz3HlI6m707PcVA/JPYCE2EKBvy6VOmrG03KzdP5dAoIxVH9c9uZjW+CH9Y4uamcfB
+         Hx2Q==
+X-Gm-Message-State: AOAM533qBLyJZ41J8nWASXro6+BWfTf7rQJCPAspWX+Z83wsqsylqgHU
+        C1uWWYx1H9RpqiYcrR0VvGaktxAYmSfBankfKsA=
+X-Google-Smtp-Source: ABdhPJy0RDpEJO+5P1rXt7lo5l1c3kvrI0LfBCZ4CJEbsuOdb32UHltbvIqjBQoc4AbwwZJ4jZGPMA==
+X-Received: by 2002:a7b:c759:: with SMTP id w25mr4547426wmk.54.1621339217763;
+        Tue, 18 May 2021 05:00:17 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:5c4a])
+        by smtp.gmail.com with ESMTPSA id q3sm18815469wrr.43.2021.05.18.05.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 05:00:17 -0700 (PDT)
+Date:   Tue, 18 May 2021 13:00:16 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     Petr Mladek <pmladek@suse.com>, Jessica Yu <jeyu@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
+Subject: [PATCH v6 0/4] printk: Userspace format indexing support
+Message-ID: <cover.1621338324.git.chris@chrisdown.name>
 MIME-Version: 1.0
-In-Reply-To: <20210518124027.48f36caa@ibm-vm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VWvI3ObC1yZIO9X-rdR8eWOQirAD2PrH
-X-Proofpoint-ORIG-GUID: wD2Tqk0huFotGSIbvIukuAjMqMMKGU6f
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 clxscore=1015 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105180082
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 12:40 PM, Claudio Imbrenda wrote:
-> On Tue, 18 May 2021 12:26:51 +0200
-> Janosch Frank <frankja@linux.ibm.com> wrote:
-> 
->> On 5/17/21 10:07 PM, Claudio Imbrenda wrote:
->>> When the destroy configuration UVC fails, the page pointed to by the
->>> ASCE of the VM becomes poisoned, and, to avoid issues it must not be
->>> used again.
->>>
->>> Since the page becomes in practice unusable, we set it aside and
->>> leak it.  
->>
->> I think we need something a bit more specific.
->>
->> On creation of a protected guest the top most level of page tables are
->> marked by the Ultravisor and can only be used as top level page tables
->> for the protected guest that was created. If another protected guest
->> would re-use those pages for its top level page tables the UV would
->> throw errors.
->>
->> When a destroy fails the UV will not remove the markings so these
->> pages are basically unusable since we can't guarantee that they won't
->> be used for a guest ASCE in the future.
->>
->> Hence we choose to leak those pages in the very unlikely event that a
->> destroy fails.
-> 
-> it's more than that. the top level page, once marked, also cannot be
-> used as backing for the virtual and real memory areas donated with the
-> create secure configuration and create secure cpu UVCs.
-> 
-> and there might also other circumstances in which that page cannot be
-> used that I am not aware of
-> 
+We have a number of systems industry-wide that have a subset of their
+functionality that works as follows:
 
-Even more reason to document it :)
+1. Receive a message from local kmsg, serial console, or netconsole;
+2. Apply a set of rules to classify the message;
+3. Do something based on this classification (like scheduling a
+   remediation for the machine), rinse, and repeat.
 
->>
->> LGTM
->>
->>>
->>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
->>> ---
->>>  arch/s390/kvm/pv.c | 53
->>> +++++++++++++++++++++++++++++++++++++++++++++- 1 file changed, 52
->>> insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
->>> index 813b6e93dc83..e0532ab725bf 100644
->>> --- a/arch/s390/kvm/pv.c
->>> +++ b/arch/s390/kvm/pv.c
->>> @@ -150,6 +150,55 @@ static int kvm_s390_pv_alloc_vm(struct kvm
->>> *kvm) return -ENOMEM;
->>>  }
->>>  
->>> +/*
->>> + * Remove the topmost level of page tables from the list of page
->>> tables of
->>> + * the gmap.
->>> + * This means that it will not be freed when the VM is torn down,
->>> and needs
->>> + * to be handled separately by the caller, unless an intentional
->>> leak is
->>> + * intended.
->>> + */
->>> +static void kvm_s390_pv_remove_old_asce(struct kvm *kvm)
->>> +{
->>> +	struct page *old;
->>> +
->>> +	old = virt_to_page(kvm->arch.gmap->table);
->>> +	list_del(&old->lru);
->>> +	/* in case the ASCE needs to be "removed" multiple times */
->>> +	INIT_LIST_HEAD(&old->lru);  
->>
->> ?
->>
->>> +}
->>> +
->>> +/*
->>> + * Try to replace the current ASCE with another equivalent one.
->>> + * If the allocation of the new top level page table fails, the
->>> ASCE is not
->>> + * replaced.
->>> + * In any case, the old ASCE is removed from the list, therefore
->>> the caller
->>> + * has to make sure to save a pointer to it beforehands, unless an
->>> + * intentional leak is intended.
->>> + */
->>> +static int kvm_s390_pv_replace_asce(struct kvm *kvm)
->>> +{
->>> +	unsigned long asce;
->>> +	struct page *page;
->>> +	void *table;
->>> +
->>> +	kvm_s390_pv_remove_old_asce(kvm);
->>> +
->>> +	page = alloc_pages(GFP_KERNEL_ACCOUNT, CRST_ALLOC_ORDER);
->>> +	if (!page)
->>> +		return -ENOMEM;
->>> +	list_add(&page->lru, &kvm->arch.gmap->crst_list);
->>> +
->>> +	table = page_to_virt(page);
->>> +	memcpy(table, kvm->arch.gmap->table, 1UL <<
->>> (CRST_ALLOC_ORDER + PAGE_SHIFT)); +
->>> +	asce = (kvm->arch.gmap->asce & ~PAGE_MASK) | __pa(table);
->>> +	WRITE_ONCE(kvm->arch.gmap->asce, asce);
->>> +	WRITE_ONCE(kvm->mm->context.gmap_asce, asce);
->>> +	WRITE_ONCE(kvm->arch.gmap->table, table);
->>> +
->>> +	return 0;
->>> +}
->>> +
->>>  /* this should not fail, but if it does, we must not free the
->>> donated memory */ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16
->>> *rc, u16 *rrc) {
->>> @@ -164,9 +213,11 @@ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16
->>> *rc, u16 *rrc) atomic_set(&kvm->mm->context.is_protected, 0);
->>>  	KVM_UV_EVENT(kvm, 3, "PROTVIRT DESTROY VM: rc %x rrc %x",
->>> *rc, *rrc); WARN_ONCE(cc, "protvirt destroy vm failed rc %x rrc
->>> %x", *rc, *rrc);
->>> -	/* Inteded memory leak on "impossible" error */
->>> +	/* Intended memory leak on "impossible" error */
->>>  	if (!cc)
->>>  		kvm_s390_pv_dealloc_vm(kvm);
->>> +	else
->>> +		kvm_s390_pv_replace_asce(kvm);
->>>  	return cc ? -EIO : 0;
->>>  }
->>>  
->>>   
->>
-> 
+As a couple of examples of places we have this implemented just inside
+Facebook, although this isn't a Facebook-specific problem, we have this
+inside our netconsole processing (for alarm classification), and as part
+of our machine health checking. We use these messages to determine
+fairly important metrics around production health, and it's important
+that we get them right.
+
+While for some kinds of issues we have counters, tracepoints, or metrics
+with a stable interface which can reliably indicate the issue, in order
+to react to production issues quickly we need to work with the interface
+which most kernel developers naturally use when developing: printk.
+
+Most production issues come from unexpected phenomena, and as such
+usually the code in question doesn't have easily usable tracepoints or
+other counters available for the specific problem being mitigated. We
+have a number of lines of monitoring defence against problems in
+production (host metrics, process metrics, service metrics, etc), and
+where it's not feasible to reliably monitor at another level, this kind
+of pragmatic netconsole monitoring is essential.
+
+As one would expect, monitoring using printk is rather brittle for a
+number of reasons -- most notably that the message might disappear
+entirely in a new version of the kernel, or that the message may change
+in some way that the regex or other classification methods start to
+silently fail.
+
+One factor that makes this even harder is that, under normal operation,
+many of these messages are never expected to be hit. For example, there
+may be a rare hardware bug which one wants to detect if it was to ever
+happen again, but its recurrence is not likely or anticipated. This
+precludes using something like checking whether the printk in question
+was printed somewhere fleetwide recently to determine whether the
+message in question is still present or not, since we don't anticipate
+that it should be printed anywhere, but still need to monitor for its
+future presence in the long-term.
+
+This class of issue has happened on a number of occasions, causing
+unhealthy machines with hardware issues to remain in production for
+longer than ideal. As a recent example, some monitoring around
+blk_update_request fell out of date and caused semi-broken machines to
+remain in production for longer than would be desirable.
+
+Searching through the codebase to find the message is also extremely
+fragile, because many of the messages are further constructed beyond
+their callsite (eg. btrfs_printk and other module-specific wrappers,
+each with their own functionality). Even if they aren't, guessing the
+format and formulation of the underlying message based on the aesthetics
+of the message emitted is not a recipe for success at scale, and our
+previous issues with fleetwide machine health checking demonstrate as
+much.
+
+This provides a solution to the issue of silently changed or deleted
+printks: we record pointers to all printk format strings known at
+compile time into a new .printk_index section, both in vmlinux and
+modules. At runtime, this can then be iterated by looking at
+<debugfs>/printk/index/<module>, which emits the following format, both
+readable by humans and able to be parsed by machines:
+
+    $ head -1 vmlinux; shuf -n 5 vmlinux
+    # <level[,flags]> filename:line function "format"
+    <5> block/blk-settings.c:661 disk_stack_limits "%s: Warning: Device %s is misaligned\n"
+    <4> kernel/trace/trace.c:8296 trace_create_file "Could not create tracefs '%s' entry\n"
+    <6> arch/x86/kernel/hpet.c:144 _hpet_print_config "hpet: %s(%d):\n"
+    <6> init/do_mounts.c:605 prepare_namespace "Waiting for root device %s...\n"
+    <6> drivers/acpi/osl.c:1410 acpi_no_auto_serialize_setup "ACPI: auto-serialization disabled\n"
+
+This mitigates the majority of cases where we have a highly-specific
+printk which we want to match on, as we can now enumerate and check
+whether the format changed or the printk callsite disappeared entirely
+in userspace. This allows us to catch changes to printks we monitor
+earlier and decide what to do about it before it becomes problematic.
+
+There is no additional runtime cost for printk callers or printk itself,
+and the assembly generated is exactly the same.
+
+---
+
+v2:
+
+- Use seq_printf instead of step by step accumulation
+- Scope fptr closer to its use
+- Prevent seq_file from needing to alloc a new buffer
+- Always provide KERN_SOH + level, even if caller omitted it
+- Provide one file per module
+- Update changelog to show ease of parsing
+- Provide printk -> _printk for ARCH=um (thanks, LKP robot)
+- Move to debugfs (thanks, Steven)
+
+---
+
+v3:
+
+- Reduce locking during open by moving size lifetime to the inode
+- Don't explicitly check for debugfs errors (thanks, gregkh)
+
+---
+
+v4:
+
+- Fix a missed `extern int printk` fixup in ia64 (thanks, lkp)
+
+---
+
+v5:
+
+Thanks Petr for the extensive feedback.
+
+- Move all module handling from module notifier to module.[ch] directly
+- Change to readable output format
+  - Handled by new string_escape(ESCAPE_PRINTF)
+- Add file/line/function information
+- Mass rename everything to printk_index/CONFIG_PRINTK_INDEX/pi_*
+  - As a result, this version does away with the mutex/hashtable
+- Use seq_file iteration API instead of simple_open
+- Remove debugfs file first to avoid ENOENT
+- Tear down backing datastructure if debugfs file creation fails
+- Move code under ifdef guard to kernel/printk/index.c
+- Add pi_sec (formerly printk_fmt_sec) documentation
+- Handle coexisting LOG_CONT + level
+- Add header to debugfs output
+- ...and probably some other stuff I forgot. :-)
+
+---
+
+v6:
+
+- Rebase on next-20210518
+- Remove pi_sec, do on demand lookups instead
+- Lookup debugfs file on demand
+- pi_sec_{store,remove} now only changes debugfs, so renamed
+- Don't check for debugfs failure (again)
+- Extract lookup logic into pi_get_entry
+- Make the stored struct `const __used`
+- Use _p_func directly, which allows including void-returning functions
+- Move more stuff outside PRINTK_INDEX #ifdef using __printk_index_emit
+- Scope __{start,stop}_printk_index more tightly
+- Move parse_prefix to printk_parse_prefix in internal.h
+- Put PRINTK_INDEX definition below TRACEDATA
+- Use a module notifier again
+- pi_object -> pi_entry, with clearer vars
+- Reword Kconfig
+- Split out printk_info_flags/string_helpers stuff into patches
+- Use seq_escape_str directly now that ESCAPE_APPEND exists
+- Add dev_printk indexing support
+
+Chris Down (4):
+  string_helpers: Escape double quotes in escape_special
+  printk: Straighten out log_flags into printk_info_flags
+  printk: Userspace format indexing support
+  printk: index: Add indexing support to dev_printk
+
+ MAINTAINERS                          |   5 +
+ arch/arm/kernel/entry-v7m.S          |   2 +-
+ arch/arm/lib/backtrace-clang.S       |   2 +-
+ arch/arm/lib/backtrace.S             |   2 +-
+ arch/arm/mach-rpc/io-acorn.S         |   2 +-
+ arch/arm/vfp/vfphw.S                 |   6 +-
+ arch/ia64/include/uapi/asm/cmpxchg.h |   4 +-
+ arch/openrisc/kernel/entry.S         |   6 +-
+ arch/powerpc/kernel/head_fsl_booke.S |   2 +-
+ arch/um/include/shared/user.h        |   3 +-
+ arch/x86/kernel/head_32.S            |   2 +-
+ drivers/base/core.c                  |   6 +-
+ include/asm-generic/vmlinux.lds.h    |  13 ++
+ include/linux/dev_printk.h           |  63 ++++++---
+ include/linux/module.h               |   5 +
+ include/linux/printk.h               |  95 ++++++++++++-
+ init/Kconfig                         |  14 ++
+ kernel/module.c                      |   5 +
+ kernel/printk/Makefile               |   1 +
+ kernel/printk/index.c                | 198 +++++++++++++++++++++++++++
+ kernel/printk/internal.h             |   4 +
+ kernel/printk/printk.c               |  60 ++++----
+ kernel/printk/printk_ringbuffer.h    |   6 +
+ lib/string_helpers.c                 |   4 +
+ lib/test-string_helpers.c            |  14 +-
+ 25 files changed, 448 insertions(+), 76 deletions(-)
+ create mode 100644 kernel/printk/index.c
+
+-- 
+2.31.1
 
