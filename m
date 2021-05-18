@@ -2,91 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F847387859
+	by mail.lfdr.de (Postfix) with ESMTP id F403F38785B
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243284AbhERME3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        id S244290AbhERMEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240508AbhERME2 (ORCPT
+        with ESMTP id S243336AbhERMEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:04:28 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D29AC061573;
-        Tue, 18 May 2021 05:03:10 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id h21so7193962qtu.5;
-        Tue, 18 May 2021 05:03:10 -0700 (PDT)
+        Tue, 18 May 2021 08:04:46 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2547C061573;
+        Tue, 18 May 2021 05:03:27 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id x15so9491737oic.13;
+        Tue, 18 May 2021 05:03:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dgRjgMF0jpsraJsvUZJyoQ74gDZ410mdS1Ik8FUl2pc=;
-        b=Ov+dRmqVOvfiYBO+R0s8Tr2ERLhRBuYwIKSjFCVmnY/blbI7kWi7p4/RPYIkLyOQMb
-         U4fD4gnn8kT3TjEo4tc2x/0QHfA/3XhwDVmiAWlD5TR/FroWT5vQZa8fkw6lw90Ztkid
-         bqCEpNoe7ruFwuHyLzAvAVyPD+WFeqX5aXLtI=
+        bh=k79vW2u79tJXgve+aRH1VfwPBT0AnMHP2JIefQMqRAs=;
+        b=kR+59qVE9ePDScN4+7vEcEnxZwK12VuOtltQkkZMB7XoH5arDmZc9pE0b85wW2yOBp
+         TDCtb3xnJShxG6zUqEPlylwDq3PC89ou1/2MOxkW15s9v6I5wYcpcHcqcvSoNKXePMuB
+         u9l2eyYJFlK4fYpiZ9eBSpYUnfzGxBvkeG/XcPwfDgmXmaW4N4LGn2QgtEb/B0dBCSA1
+         L7PeAVR57iosmuMrjRVWbi92n0HEwjwvRDGftKkHOtS+Lw6jwzNtn1Gsrw3IDg4bW5wX
+         FfVpwQPEE5kDctmR2Hne5KfKuvN17ICHtdlOLmGcNQdQ50GxEWyUPDfxdx/YwvWoMQIs
+         udOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dgRjgMF0jpsraJsvUZJyoQ74gDZ410mdS1Ik8FUl2pc=;
-        b=iTTz2EtNyqyorIp/21sxCw6W38RO5skScmRv/I6VEGV40PnHK+8c0f/H21nwwZgqHa
-         NL/DNlNkmvR8NBUs2YLTDA76kqAnc34urBEX5GeTJbY1UEoukNvlpNKoLeQY7iJVx+1I
-         9sFqz8q3DjIbTo0l9e1Ba0hekyY0BzZ6aabnEg4vIvzDv2FttrgbH8wQqWzsVKfg/IIO
-         WZ5gk7IbDuF4wI2erCDo8PGezmtBoyZrzbGX5+yAv+B6v6Y8O6V770dmAkqKoTCOOtOp
-         tGGsEHDHjA8Luvz72RcP1q5Q7WOXMqQjWaGdEyS8jiET9hvtN7y3T/Y7fWgGiiWb6xiY
-         IwBA==
-X-Gm-Message-State: AOAM5325SXyrOJQX4a4smaRp16GJU9eErdRRg5aeXBsZMq22F+BKZqsM
-        I7abYZVuZPGGgzXyb0gnqbYS4yD61UGVafS6xSQ=
-X-Google-Smtp-Source: ABdhPJyobAJKZGC8ZGdMH4a907xXw5PK/xCf/KDb+klYPSUEqJ06d4loYKbP3ckdn3yy0TREmonQMnfo4BUD0e3dEKs=
-X-Received: by 2002:ac8:5e51:: with SMTP id i17mr4417331qtx.263.1621339389452;
- Tue, 18 May 2021 05:03:09 -0700 (PDT)
+        bh=k79vW2u79tJXgve+aRH1VfwPBT0AnMHP2JIefQMqRAs=;
+        b=G52ha7JhPxpR/QWYOZIjyCfw5vvzymiwaTQtaFJEY+tPm7lYFxEsvb7q+4/5b4i19t
+         Z+448sPgYatBDhZxc5xZpsiHIoZrIvvFiOuTfHcT3v3AZSvR8p0mWHicwDbhqgu4Vn3R
+         syhh4yQJFjpR3AvNcTtw6RMJ2y3Hu8yt2PiqrbaKf7Xp7vWnObmJ9pxKaarCkbTG0vcc
+         pOF+GmcXn+upWklYxI7mDa4QMW0A8VjH/z0sPk2BnGre6rVxOE3kCialYVG4opX9d260
+         /uVORLiC0R3h8/9bEvUcrepVg/PhjyyYGbIOklfkdxzp6NeP1F+ALq+/Fjyuan/ARz6Y
+         4V2A==
+X-Gm-Message-State: AOAM533qhngKZAhPuEG8mRS3sMv5DbmpvE2j9ahkXrbmUa1GNEth/nr8
+        ee+635TFKsf95Grvy+XHDMoTY6OSa5znSa0VdBg=
+X-Google-Smtp-Source: ABdhPJz51rEOQLD2+EEtqmQ0Y4xfu8YkQtTAXJcixmMGBJW8jVvrf3Wo9wjBGmW3HA30GXeOn9psScMHZiyQBfr7D/c=
+X-Received: by 2002:aca:4343:: with SMTP id q64mr3710079oia.33.1621339407416;
+ Tue, 18 May 2021 05:03:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517115453.24365-1-shorne@gmail.com>
-In-Reply-To: <20210517115453.24365-1-shorne@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 18 May 2021 12:02:57 +0000
-Message-ID: <CACPK8Xei8g4Bq5jGo0gHctFMny8U5dTLe9zHF_xBs_NFpRfejA@mail.gmail.com>
-Subject: Re: [PATCH v2] serial: liteuart: Add support for earlycon
-To:     Stafford Horne <shorne@gmail.com>
+References: <1621260028-6467-1-git-send-email-wanpengli@tencent.com> <CALzav=c+=Bi5HeuYfYKi3FRB6V88o7hCsGbgG+x3a4Mf3e9nVA@mail.gmail.com>
+In-Reply-To: <CALzav=c+=Bi5HeuYfYKi3FRB6V88o7hCsGbgG+x3a4Mf3e9nVA@mail.gmail.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Tue, 18 May 2021 20:03:16 +0800
+Message-ID: <CANRm+Cx0VuwZUdggze-fQOMbeYe8QuFpH-bGqbdEOM7OnfZcaQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] KVM: exit halt polling on need_resched() for both
+ book3s and generic halt-polling
+To:     David Matlack <dmatlack@google.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Florent Kermarrec <florent@enjoy-digital.fr>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        "Gabriel L . Somlo" <gsomlo@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 11:55, Stafford Horne <shorne@gmail.com> wrote:
+On Tue, 18 May 2021 at 00:35, David Matlack <dmatlack@google.com> wrote:
 >
-> Most litex boards using RISC-V soft cores us the sbi earlycon, however
-> this is not available for non RISC-V litex SoC's.  This patch enables
-> earlycon for liteuart which is available on all Litex SoC's making
-> support for earycon debugging more widely available.
+> On Mon, May 17, 2021 at 7:01 AM Wanpeng Li <kernellwp@gmail.com> wrote:
+> >
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+> > as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+> > one task to get the task to block. It was likely allowing VMs to overrun their
+> > quota when halt polling. Due to PPC implements an arch specific halt polling
+> > logic, we should add the need_resched() checking there as well. This
+> > patch adds a helper function that to be shared between book3s and generic
+> > halt-polling loop.
+> >
+> > Cc: Ben Segall <bsegall@google.com>
+> > Cc: Venkatesh Srinivas <venkateshs@chromium.org>
+> > Cc: Jim Mattson <jmattson@google.com>
+> > Cc: David Matlack <dmatlack@google.com>
+> > Cc: Paul Mackerras <paulus@ozlabs.org>
+> > Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 >
-> Signed-off-by: Stafford Horne <shorne@gmail.com>
-> Cc: Florent Kermarrec <florent@enjoy-digital.fr>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Joel Stanley <joel@jms.id.au>
-> Cc: Gabriel L. Somlo <gsomlo@gmail.com>
-> Reviewed-and-tested-by: Gabriel Somlo <gsomlo@gmail.com>
+> Reviewed-by: David Matlack <dmatlack@google.com>
+>
+> > ---
+> > v2 -> v3:
+> >  * add a helper function
+> > v1 -> v2:
+> >  * update patch description
+> >
+> >  arch/powerpc/kvm/book3s_hv.c | 2 +-
+> >  include/linux/kvm_host.h     | 2 ++
+> >  virt/kvm/kvm_main.c          | 9 +++++++--
+> >  3 files changed, 10 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> > index 28a80d240b76..360165df345b 100644
+> > --- a/arch/powerpc/kvm/book3s_hv.c
+> > +++ b/arch/powerpc/kvm/book3s_hv.c
+> > @@ -3936,7 +3936,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+> >                                 break;
+> >                         }
+> >                         cur = ktime_get();
+> > -               } while (single_task_running() && ktime_before(cur, stop));
+> > +               } while (kvm_vcpu_can_block(cur, stop));
+> >
+> >                 spin_lock(&vc->lock);
+> >                 vc->vcore_state = VCORE_INACTIVE;
+> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > index 2f34487e21f2..bf4fd60c4699 100644
+> > --- a/include/linux/kvm_host.h
+> > +++ b/include/linux/kvm_host.h
+> > @@ -1583,4 +1583,6 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
+> >  /* Max number of entries allowed for each kvm dirty ring */
+> >  #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
+> >
+> > +bool kvm_vcpu_can_block(ktime_t cur, ktime_t stop);
+> > +
+> >  #endif
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 6b4feb92dc79..c81080667fd1 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -2945,6 +2945,12 @@ update_halt_poll_stats(struct kvm_vcpu *vcpu, u64 poll_ns, bool waited)
+> >                 vcpu->stat.halt_poll_success_ns += poll_ns;
+> >  }
+> >
+> > +
+> > +bool kvm_vcpu_can_block(ktime_t cur, ktime_t stop)
+>
+> nit: kvm_vcpu_can_poll() would be a more accurate name for this function.
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Do it in v4. :)
 
-Cheers,
-
-Joel
+    Wanpeng
