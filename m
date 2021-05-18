@@ -2,130 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABABF38793E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2620B38794D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349384AbhERMzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233502AbhERMzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:55:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5DC8611CE;
-        Tue, 18 May 2021 12:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621342446;
-        bh=9lenmshXeiU9okb7x8EkrhziX5DvkNFHZglZh7iyXh0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=egpyDl4iUgrv2k9SFO6wiHiM/2OrxIisPsq+vXi7qXou6Y+v69xqzKI/01hNz9h8m
-         RzIDqHAjWtdIOzCj0CNZ+aoZhvxZrS5bYUC4e0ay8R+Oymjq41InC9yUU/g4ZsFupI
-         UIPaOLRXfaOWmR8FarVNHLvAas8SDJE2Xw8iOqdj33YyItotVb1W16DPzr1fxmYsCe
-         bToqkAWhyBYF1LJD88nLHvN/WFaasieqIN+W+lY8aVPUjyzz64m/TW7OMgisxA8pn6
-         7jZiE/pduJdUMvuaZdaIU1CjEx60nnqTjBRCUBUfOs5hKCpma7QEA9kmEHvpyCBIoY
-         aaUKHr3zM3Bnw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 84B864034C; Tue, 18 May 2021 09:54:02 -0300 (-03)
-Date:   Tue, 18 May 2021 09:54:02 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Grant <Al.Grant@arm.com>
-Subject: Re: [PATCH v1 2/3] perf arm-spe: Correct sample flags for dummy event
-Message-ID: <YKO46nX17/GjqJjV@kernel.org>
-References: <20210429150100.282180-1-leo.yan@linaro.org>
- <20210429150100.282180-3-leo.yan@linaro.org>
- <f4e483ae-acbb-7afa-c215-cb4244c2e820@arm.com>
- <20210512152330.GA121227@leoy-ThinkPad-X240s>
+        id S230090AbhERM47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:56:59 -0400
+Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:60773 "EHLO
+        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349416AbhERM4t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:56:49 -0400
+Received: from MTA-06-3.privateemail.com (mta-06.privateemail.com [68.65.122.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id A97B5800BD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:55:30 -0400 (EDT)
+Received: from MTA-06.privateemail.com (localhost [127.0.0.1])
+        by MTA-06.privateemail.com (Postfix) with ESMTP id 354876005B;
+        Tue, 18 May 2021 08:55:29 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.225])
+        by MTA-06.privateemail.com (Postfix) with ESMTPA id 6B7516005F;
+        Tue, 18 May 2021 08:55:28 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org,
+        Hamza Mahfooz <someguy@effective-light.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH] dma debug: report -EEXIST errors in add_dma_entry
+Date:   Tue, 18 May 2021 08:54:43 -0400
+Message-Id: <20210518125443.34148-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512152330.GA121227@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, May 12, 2021 at 11:23:30PM +0800, Leo Yan escreveu:
-> On Wed, May 12, 2021 at 05:39:56PM +0300, James Clark wrote:
-> > 
-> > 
-> > On 29/04/2021 18:00, Leo Yan wrote:
-> > > The dummy event is mainly used for mmap, the TIME sample is only needed
-> > > for per-cpu case so that the perf tool can rely on the correct timing
-> > > for parsing symbols.  And the CPU sample is useless for mmap.
-> > > 
-> > > This patch enables TIME sample for per-cpu mmap and doesn't enable CPU
-> > > sample.  For later extension (e.g. support multiple AUX events), it sets
-> > > the dummy event when the condition "opts->full_auxtrace" is true.
-> > > 
-> > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > > ---
-> > >  tools/perf/arch/arm64/util/arm-spe.c | 30 ++++++++++++++++------------
-> > >  1 file changed, 17 insertions(+), 13 deletions(-)
-> > > 
-> > > diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-> > > index 902e73a64184..f6eec0900604 100644
-> > > --- a/tools/perf/arch/arm64/util/arm-spe.c
-> > > +++ b/tools/perf/arch/arm64/util/arm-spe.c
-> > > @@ -70,7 +70,6 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
-> > >  	struct evsel *evsel, *arm_spe_evsel = NULL;
-> > >  	struct perf_cpu_map *cpus = evlist->core.cpus;
-> > >  	bool privileged = perf_event_paranoid_check(-1);
-> > > -	struct evsel *tracking_evsel;
-> > >  	int err;
-> > >  
-> > >  	sper->evlist = evlist;
-> > > @@ -126,18 +125,23 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
-> > >  		evsel__set_sample_bit(arm_spe_evsel, CPU);
-> > >  
-> > >  	/* Add dummy event to keep tracking */
-> > > -	err = parse_events(evlist, "dummy:u", NULL);
-> > > -	if (err)
-> > > -		return err;
-> > > -
-> > > -	tracking_evsel = evlist__last(evlist);
-> > > -	evlist__set_tracking_event(evlist, tracking_evsel);
-> > > -
-> > > -	tracking_evsel->core.attr.freq = 0;
-> > > -	tracking_evsel->core.attr.sample_period = 1;
-> > > -	evsel__set_sample_bit(tracking_evsel, TIME);
-> > > -	evsel__set_sample_bit(tracking_evsel, CPU);
-> > > -	evsel__reset_sample_bit(tracking_evsel, BRANCH_STACK);
-> > > +	if (opts->full_auxtrace) {
-> > > +		struct evsel *tracking_evsel;
-> > 
-> > Hi Leo,
-> > 
-> > I know the "if (opts->full_auxtrace)" pattern is copied from other auxtrace
-> > files, but I don't think it does anything because there is this at the top
-> > of the function:
-> > 
-> >    	if (!opts->full_auxtrace)
-> > 		return 0;
-> > 
-> > The same applies for other usages of "full_auxtrace" in the same function.
-> > They are all always true. I'm also not sure if it's ever defined what
-> > full_auxtrace means.
-> 
-> Good pointing.  TBH, I also stuggled for handling "opts->full_auxtrace"
-> when wrote the patch; IIUC, "opts->full_auxtrace" is also used in
-> builtin-record.c to indicate if the recording contains AUX tracing.
-> 
-> Will follow your suggestion to respin the patch (and refine the code)
-> to remove the redundant condition checking for "opts->full_auxtrace".
+Since, overlapping mappings are not supported by the DMA API we should
+report an error if active_cacheline_insert returns -EEXIST.
 
-Ok, so please collect his Tested-by and Reviewed-by and I'll wait for v2
-then,
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
+ kernel/dma/debug.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-- Arnaldo
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 14de1271463f..dadae6255d05 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -566,11 +566,9 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+ 	if (rc == -ENOMEM) {
+ 		pr_err("cacheline tracking ENOMEM, dma-debug disabled\n");
+ 		global_disable = true;
++	} else if (rc == -EEXIST) {
++		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported\n");
+ 	}
+-
+-	/* TODO: report -EEXIST errors here as overlapping mappings are
+-	 * not supported by the DMA API
+-	 */
+ }
+ 
+ static int dma_debug_create_entries(gfp_t gfp)
+-- 
+2.31.1
+
