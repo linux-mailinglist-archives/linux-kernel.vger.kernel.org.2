@@ -2,49 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A088B3878A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198233878AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349052AbhERM1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:27:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39652 "EHLO mx2.suse.de"
+        id S1349062AbhERM2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:28:43 -0400
+Received: from mga07.intel.com ([134.134.136.100]:50359 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234046AbhERM12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:27:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A6705B0B3;
-        Tue, 18 May 2021 12:26:09 +0000 (UTC)
-Subject: Re: [PATCH v10 31/33] mm/filemap: Add folio private_2 functions
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-32-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <6b57b706-ebaf-e15d-d121-1ac048a0d3f7@suse.cz>
-Date:   Tue, 18 May 2021 14:26:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234046AbhERM2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:28:42 -0400
+IronPort-SDR: MeeiMj8NAYDCbD+Qfwz/P6h4KdaNdPwFBLfsIwq6dbyRw44Q/pBil6ankwR73JxmjOcPPWSorn
+ p7/udPGD03RA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="264612138"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="264612138"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:27:23 -0700
+IronPort-SDR: pDdH19FKllWnrGnaztzgLwXBlWUo4VHxEZYVEc7MJE2vTEp49Q8DuHbiPXS++me59mnDWBUpBO
+ LjviaGqTYGCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="541947605"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 18 May 2021 05:27:21 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 18 May 2021 15:27:20 +0300
+Date:   Tue, 18 May 2021 15:27:20 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] usb: typec: tcpm: Fix up PR_SWAP when vsafe0v is
+ signalled
+Message-ID: <YKOyqD08lqu/du+8@kuha.fi.intel.com>
+References: <20210517192112.40934-1-badhri@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-32-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517192112.40934-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> end_page_private_2() becomes folio_end_private_2(),
-> wait_on_page_private_2() becomes folio_wait_private_2() and
-> wait_on_page_private_2_killable() becomes folio_wait_private_2_killable().
+On Mon, May 17, 2021 at 12:21:09PM -0700, Badhri Jagan Sridharan wrote:
+> During PR_SWAP, When TCPM is in PR_SWAP_SNK_SRC_SINK_OFF, vbus is
+> expected to reach VSAFE0V when source turns off vbus. Do not move
+> to SNK_UNATTACHED state when this happens.
 > 
-> Adjust the fscache equivalents to call page_folio() before calling these
-> functions to avoid adding wrappers.
+> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+> Changes since V1:
+> - Fixed type s/of/off in commit message.
+> - Added Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index c4fdc00a3bc8..b93c4c8d7b15 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5114,6 +5114,9 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
+>  				tcpm_set_state(port, SNK_UNATTACHED, 0);
+>  		}
+>  		break;
+> +	case PR_SWAP_SNK_SRC_SINK_OFF:
+> +		/* Do nothing, vsafe0v is expected during transition */
+> +		break;
+>  	default:
+>  		if (port->pwr_role == TYPEC_SINK && port->auto_vbus_discharge_enabled)
+>  			tcpm_set_state(port, SNK_UNATTACHED, 0);
+> -- 
+> 2.31.1.751.gd2f1c929bd-goog
 
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+-- 
+heikki
