@@ -2,89 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B4A387914
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B26838790F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349350AbhERMmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S1349341AbhERMmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349319AbhERMmn (ORCPT
+        with ESMTP id S1349312AbhERMmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:42:43 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50640C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:41:25 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id r12so10081603wrp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:41:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ldAI2BEKXxmJwnRzX0pdIQjXTGeWN2MbcUVMx3/xOUs=;
-        b=O5FmbtkdFv+oxMelevJi0tWdjn++hJ44o/jcC2ZARwh5sLYFn/lBlDfzF0XNMlknGC
-         4oengB49L5SsD1PCzBRJUNCWqKKGU7W8K5jmQ0+jZ8Je+iEByHJnSUzoKFoBAqCZ7jJQ
-         JheLx6ziP873975yjnVewJo7F9qgF2qp/5Tf7VyddT2ZVykln/d6yMPEJezmBC5KoRMJ
-         FDFMHzr1T23wTcwGR7T3lIXTVw2NsqSnAD2GXe8b0dblFIFQhoA1tlmccGF5nZ7NPQUm
-         7oxaAWpvnYIEX1aMh+9JO9Lofgt3Nx/w/ELjJyMhDtPOXS7lYpscDGScCov/uX+Kgcji
-         ZmXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ldAI2BEKXxmJwnRzX0pdIQjXTGeWN2MbcUVMx3/xOUs=;
-        b=oJ0PARpat121vcIjWWGZ8TtmoRbVu313+KN5n1/TuMkOi//yuRdcR2R4ni4vrv0NwL
-         M3Jy1bkDHmfDkI9fiQeH2mdzaQ7lIL9h1HIUYwkAswTP1T+61onEHDnruVECt/xu5OjZ
-         e7SCPdn3QDwjEwlmookxEO4VX89v4wiQgjdzHdMBJFurDl5hHimSdE0U8P605dAT11sK
-         nQE2i/TeorH6wPr0pT1XJBZaLFtDOw/9aK3nd0YyIvF0EnTw7vJl4nqpGA6/q0DIYTH8
-         4wZvOFlF+ANExC4BFGn/iRcdS8GIdB5Ga93WlKRlmKz3NyTKDPvkTBWU56C3434BrGU0
-         gsBA==
-X-Gm-Message-State: AOAM530t4wW6mzwtv9cmbQGNsLRKTx1d99+R5+XN7wHPLIdLvkLcPBBh
-        IslyEevp8D7qYbqb7vsYUUG4aw==
-X-Google-Smtp-Source: ABdhPJwfe0oVtQR6+PwolxvP1DrBzzzVAuvX50itJs00RINjQWwDB1/8Aby8FoFAtrGLlYghJslkrQ==
-X-Received: by 2002:adf:e484:: with SMTP id i4mr6694239wrm.117.1621341684097;
-        Tue, 18 May 2021 05:41:24 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id z3sm1677239wrq.42.2021.05.18.05.41.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 05:41:23 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     gregkh@linuxfoundation.org, mchehab@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 5/5] staging: media: zoran: change asm header
-Date:   Tue, 18 May 2021 12:41:13 +0000
-Message-Id: <20210518124113.1823055-5-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210518124113.1823055-1-clabbe@baylibre.com>
-References: <20210518124113.1823055-1-clabbe@baylibre.com>
+        Tue, 18 May 2021 08:42:42 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A70C061761
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:41:24 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1liz2D-00013o-CT; Tue, 18 May 2021 14:41:17 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1liz2C-0003m6-EV; Tue, 18 May 2021 14:41:16 +0200
+Date:   Tue, 18 May 2021 14:41:16 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: touchscreen: Convert resistive-adc-touch
+ binding to json schema
+Message-ID: <20210518124116.lam6jht2uhqfjbg4@pengutronix.de>
+References: <20210517071825.20316-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210517071825.20316-1-o.rempel@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:40:30 up 167 days,  2:46, 48 users,  load average: 0.10, 0.07,
+ 0.07
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As asked by checkpatch, convert a asm/xxx header to a linux one.
+I'll resend this patch with all followup patches depending on this
+change.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/staging/media/zoran/zr36050.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, May 17, 2021 at 09:18:24AM +0200, Oleksij Rempel wrote:
+> Convert the resistive-adc-touch binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../input/touchscreen/resistive-adc-touch.txt | 33 ----------
+>  .../touchscreen/resistive-adc-touch.yaml      | 61 +++++++++++++++++++
+>  2 files changed, 61 insertions(+), 33 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+> deleted file mode 100644
+> index af5223bb5bdd..000000000000
+> --- a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+> +++ /dev/null
+> @@ -1,33 +0,0 @@
+> -Generic resistive touchscreen ADC
+> -
+> -Required properties:
+> -
+> - - compatible: must be "resistive-adc-touch"
+> -The device must be connected to an ADC device that provides channels for
+> -position measurement and optional pressure.
+> -Refer to
+> -https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
+> -for details
+> -
+> - - iio-channels: must have at least two channels connected to an ADC device.
+> -These should correspond to the channels exposed by the ADC device and should
+> -have the right index as the ADC device registers them. These channels
+> -represent the relative position on the "x" and "y" axes.
+> - - iio-channel-names: must have all the channels' names. Mandatory channels
+> -are "x" and "y".
+> -
+> -Optional properties:
+> - - iio-channels: The third channel named "pressure" is optional and can be
+> -used if the ADC device also measures pressure besides position.
+> -If this channel is missing, pressure will be ignored and the touchscreen
+> -will only report position.
+> - - iio-channel-names: optional channel named "pressure".
+> -
+> -Example:
+> -
+> -	resistive_touch: resistive_touch {
+> -		compatible = "resistive-adc-touch";
+> -		touchscreen-min-pressure = <50000>;
+> -		io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
+> -		io-channel-names = "x", "y", "pressure";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+> new file mode 100644
+> index 000000000000..53df21a6589e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/resistive-adc-touch.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic resistive touchscreen ADC
+> +
+> +maintainers:
+> +  - Oleksij Rempel <o.rempel@pengutronix.de>
+> +
+> +description: |
+> +  Generic ADC based resistive touchscreen controller
+> +  The device must be connected to an ADC device that provides channels for
+> +  position measurement and optional pressure.
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: resistive-adc-touch
+> +
+> +  io-channels:
+> +    minItems: 2
+> +    maxItems: 3
+> +    items:
+> +      - description: x
+> +      - description: y
+> +      - description: pressure (optional)
+> +
+> +  io-channel-names:
+> +    items:
+> +      - const: x
+> +      - const: y
+> +      - const: pressure
+> +
+> +  touchscreen-size-x: true
+> +  touchscreen-size-y: true
+> +  touchscreen-fuzz-x: true
+> +  touchscreen-fuzz-y: true
+> +  touchscreen-inverted-x: true
+> +  touchscreen-inverted-y: true
+> +  touchscreen-swapped-x-y: true
+> +  touchscreen-min-pressure: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - io-channels
+> +  - io-channel-names
+> +
+> +examples:
+> +  - |
+> +    resistive_touch {
+> +      compatible = "resistive-adc-touch";
+> +      touchscreen-min-pressure = <50000>;
+> +      io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
+> +      io-channel-names = "x", "y", "pressure";
+> +    };
+> -- 
+> 2.29.2
+> 
+> 
 
-diff --git a/drivers/staging/media/zoran/zr36050.c b/drivers/staging/media/zoran/zr36050.c
-index 8bb101fa18bc..c62af27f2683 100644
---- a/drivers/staging/media/zoran/zr36050.c
-+++ b/drivers/staging/media/zoran/zr36050.c
-@@ -16,7 +16,7 @@
- #include <linux/wait.h>
- 
- /* I/O commands, error codes */
--#include <asm/io.h>
-+#include <linux/io.h>
- 
- /* headerfile of this module */
- #include "zr36050.h"
 -- 
-2.26.3
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
