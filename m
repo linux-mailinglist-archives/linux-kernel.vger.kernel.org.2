@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0222387637
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D91D38763D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348397AbhERKOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:14:24 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:39045 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348431AbhERKOS (ORCPT
+        id S1348424AbhERKP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:15:29 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:45839 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242072AbhERKP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:14:18 -0400
+        Tue, 18 May 2021 06:15:28 -0400
 Received: (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 4FD341C0002;
-        Tue, 18 May 2021 10:12:55 +0000 (UTC)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 504C0E0003;
+        Tue, 18 May 2021 10:14:01 +0000 (UTC)
 From:   Alexandre Ghiti <alex@ghiti.fr>
 To:     Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -25,91 +25,193 @@ To:     Michael Ellerman <mpe@ellerman.id.au>,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
 Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v6 0/3] Introduce 64b relocatable kernel
-Date:   Tue, 18 May 2021 12:12:49 +0200
-Message-Id: <20210518101252.1484465-1-alex@ghiti.fr>
+Subject: [PATCH v6 1/3] riscv: Introduce CONFIG_RELOCATABLE
+Date:   Tue, 18 May 2021 12:12:50 +0200
+Message-Id: <20210518101252.1484465-2-alex@ghiti.fr>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210518101252.1484465-1-alex@ghiti.fr>
+References: <20210518101252.1484465-1-alex@ghiti.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After multiple attempts, this patchset is now based on the fact that the
-64b kernel mapping was moved outside the linear mapping.
+This config allows to compile 64b kernel as PIE and to relocate it at
+any virtual address at runtime: this paves the way to KASLR.
+Runtime relocation is possible since relocation metadata are embedded into
+the kernel.
 
-The first patch allows to build relocatable kernels but is not selected         
-by default. That patch should ease KASLR implementation a lot.                                                            
-The second and third patches take advantage of an already existing powerpc       
-script that checks relocations at compile-time, and uses it for riscv.           
+Note that relocating at runtime introduces an overhead even if the
+kernel is loaded at the same address it was linked at and that the compiler
+options are those used in arm64 which uses the same RELA relocation
+format.
 
-This patchset was tested on:
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/Kconfig              | 12 ++++++++
+ arch/riscv/Makefile             |  5 +++-
+ arch/riscv/kernel/vmlinux.lds.S |  6 ++++
+ arch/riscv/mm/Makefile          |  4 +++
+ arch/riscv/mm/init.c            | 53 ++++++++++++++++++++++++++++++++-
+ 5 files changed, 78 insertions(+), 2 deletions(-)
 
-* kernel:                                                                        
-- rv32: OK                                                                       
-- rv64 with RELOCATABLE: OK and checked that "suspicious" relocations are caught.
-- rv64 without RELOCATABLE: OK                                                   
-- powerpc: build only and checked that "suspicious" relocations are caught.      
-                                                                                 
-* xipkernel:                                                                     
-- rv32: build only                                                               
-- rv64: OK                                                                       
-
-* nommukernel:                                                                   
-- rv64: build only
-
-Changes in v6:
-  * Remove the kernel move to vmalloc zone
-  * Rebased on top of for-next
-  * Remove relocatable property from 32b kernel as the kernel is mapped in
-    the linear mapping and would then need to be copied physically too
-  * CONFIG_RELOCATABLE depends on !XIP_KERNEL
-  * Remove Reviewed-by from first patch as it changed a bit
-
-Changes in v5:
-  * Add "static __init" to create_kernel_page_table function as reported by
-    Kbuild test robot
-  * Add reviewed-by from Zong
-  * Rebase onto v5.7
-
-Changes in v4:                                                                   
-  * Fix BPF region that overlapped with kernel's as suggested by Zong            
-  * Fix end of module region that could be larger than 2GB as suggested by Zong  
-  * Fix the size of the vm area reserved for the kernel as we could lose         
-    PMD_SIZE if the size was already aligned on PMD_SIZE                         
-  * Split compile time relocations check patch into 2 patches as suggested by Anup
-  * Applied Reviewed-by from Zong and Anup                                       
-
-Changes in v3:                                                                   
-  * Move kernel mapping to vmalloc                                               
-
-Changes in v2:                                                                   
-  * Make RELOCATABLE depend on MMU as suggested by Anup                          
-  * Rename kernel_load_addr into kernel_virt_addr as suggested by Anup           
-  * Use __pa_symbol instead of __pa, as suggested by Zong                        
-  * Rebased on top of v5.6-rc3                                                   
-  * Tested with sv48 patchset                                                    
-  * Add Reviewed/Tested-by from Zong and Anup
-
-Alexandre Ghiti (3):
-  riscv: Introduce CONFIG_RELOCATABLE
-  powerpc: Move script to check relocations at compile time in scripts/
-  riscv: Check relocations at compile time
-
- arch/powerpc/tools/relocs_check.sh | 18 ++--------
- arch/riscv/Kconfig                 | 12 +++++++
- arch/riscv/Makefile                |  5 ++-
- arch/riscv/Makefile.postlink       | 36 ++++++++++++++++++++
- arch/riscv/kernel/vmlinux.lds.S    |  6 ++++
- arch/riscv/mm/Makefile             |  4 +++
- arch/riscv/mm/init.c               | 53 +++++++++++++++++++++++++++++-
- arch/riscv/tools/relocs_check.sh   | 26 +++++++++++++++
- scripts/relocs_check.sh            | 20 +++++++++++
- 9 files changed, 162 insertions(+), 18 deletions(-)
- create mode 100644 arch/riscv/Makefile.postlink
- create mode 100755 arch/riscv/tools/relocs_check.sh
- create mode 100755 scripts/relocs_check.sh
-
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index a8ad8eb76120..7d49c9fa9a91 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -205,6 +205,18 @@ config PGTABLE_LEVELS
+ config LOCKDEP_SUPPORT
+ 	def_bool y
+ 
++config RELOCATABLE
++	bool
++	depends on MMU && 64BIT && !XIP_KERNEL
++	help
++          This builds a kernel as a Position Independent Executable (PIE),
++          which retains all relocation metadata required to relocate the
++          kernel binary at runtime to a different virtual address than the
++          address it was linked at.
++          Since RISCV uses the RELA relocation format, this requires a
++          relocation pass at runtime even if the kernel is loaded at the
++          same address it was linked at.
++
+ source "arch/riscv/Kconfig.socs"
+ source "arch/riscv/Kconfig.erratas"
+ 
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 3eb9590a0775..2d217ecb6e6b 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -9,7 +9,10 @@
+ #
+ 
+ OBJCOPYFLAGS    := -O binary
+-LDFLAGS_vmlinux :=
++ifeq ($(CONFIG_RELOCATABLE),y)
++LDFLAGS_vmlinux := -shared -Bsymbolic -z notext -z norelro
++KBUILD_CFLAGS += -fPIE
++endif
+ ifeq ($(CONFIG_DYNAMIC_FTRACE),y)
+ 	LDFLAGS_vmlinux := --no-relax
+ 	KBUILD_CPPFLAGS += -DCC_USING_PATCHABLE_FUNCTION_ENTRY
+diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+index 891742ff75a7..1517fd1c7246 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -133,6 +133,12 @@ SECTIONS
+ 
+ 	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
+ 
++	.rela.dyn : ALIGN(8) {
++		__rela_dyn_start = .;
++		*(.rela .rela*)
++		__rela_dyn_end = .;
++	}
++
+ #ifdef CONFIG_EFI
+ 	. = ALIGN(PECOFF_SECTION_ALIGNMENT);
+ 	__pecoff_data_virt_size = ABSOLUTE(. - __pecoff_text_end);
+diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+index 7ebaef10ea1b..2d33ec574bbb 100644
+--- a/arch/riscv/mm/Makefile
++++ b/arch/riscv/mm/Makefile
+@@ -1,6 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+ CFLAGS_init.o := -mcmodel=medany
++ifdef CONFIG_RELOCATABLE
++CFLAGS_init.o += -fno-pie
++endif
++
+ ifdef CONFIG_FTRACE
+ CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_cacheflush.o = $(CC_FLAGS_FTRACE)
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 4faf8bd157ea..5e0a19d9d8fa 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -18,6 +18,9 @@
+ #include <linux/set_memory.h>
+ #include <linux/dma-map-ops.h>
+ #include <linux/crash_dump.h>
++#ifdef CONFIG_RELOCATABLE
++#include <linux/elf.h>
++#endif
+ 
+ #include <asm/fixmap.h>
+ #include <asm/tlbflush.h>
+@@ -99,7 +102,7 @@ static void __init print_vm_layout(void)
+ 	print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
+ 		  (unsigned long)high_memory);
+ #ifdef CONFIG_64BIT
+-	print_mlm("kernel", (unsigned long)KERNEL_LINK_ADDR,
++	print_mlm("kernel", (unsigned long)kernel_virt_addr,
+ 		  (unsigned long)ADDRESS_SPACE_END);
+ #endif
+ }
+@@ -454,6 +457,44 @@ asmlinkage void __init __copy_data(void)
+ #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
+ #endif
+ 
++#ifdef CONFIG_RELOCATABLE
++extern unsigned long __rela_dyn_start, __rela_dyn_end;
++
++void __init relocate_kernel(uintptr_t load_pa)
++{
++	Elf64_Rela *rela = (Elf64_Rela *)&__rela_dyn_start;
++	/*
++	 * This holds the offset between the linked virtual address and the
++	 * relocated virtual address.
++	 */
++	uintptr_t reloc_offset = kernel_virt_addr - KERNEL_LINK_ADDR;
++	/*
++	 * This holds the offset between kernel linked virtual address and
++	 * physical address.
++	 */
++	uintptr_t va_kernel_link_pa_offset = KERNEL_LINK_ADDR - load_pa;
++
++	for ( ; rela < (Elf64_Rela *)&__rela_dyn_end; rela++) {
++		Elf64_Addr addr = (rela->r_offset - va_kernel_link_pa_offset);
++		Elf64_Addr relocated_addr = rela->r_addend;
++
++		if (rela->r_info != R_RISCV_RELATIVE)
++			continue;
++
++		/*
++		 * Make sure to not relocate vdso symbols like rt_sigreturn
++		 * which are linked from the address 0 in vmlinux since
++		 * vdso symbol addresses are actually used as an offset from
++		 * mm->context.vdso in VDSO_OFFSET macro.
++		 */
++		if (relocated_addr >= KERNEL_LINK_ADDR)
++			relocated_addr += reloc_offset;
++
++		*(Elf64_Addr *)addr = relocated_addr;
++	}
++}
++#endif
++
+ uintptr_t load_pa, load_sz;
+ #ifdef CONFIG_XIP_KERNEL
+ #define load_pa        (*((uintptr_t *)XIP_FIXUP(&load_pa)))
+@@ -524,6 +565,16 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ 
+ 	pfn_base = PFN_DOWN(load_pa);
+ 
++#ifdef CONFIG_RELOCATABLE
++	/*
++	 * Early page table uses only one PGDIR, which makes it possible
++	 * to map PGDIR_SIZE aligned on PGDIR_SIZE: if the relocation offset
++	 * makes the kernel cross over a PGDIR_SIZE boundary, raise a bug
++	 * since a part of the kernel would not get mapped.
++	 */
++	BUG_ON(PGDIR_SIZE - (kernel_virt_addr & (PGDIR_SIZE - 1)) < load_sz);
++	relocate_kernel(load_pa);
++#endif
+ 	/*
+ 	 * Enforce boot alignment requirements of RV32 and
+ 	 * RV64 by only allowing PMD or PGD mappings.
 -- 
 2.30.2
 
