@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02922387533
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3076387532
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347953AbhERJed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347938AbhERJeb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347945AbhERJeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 18 May 2021 05:34:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E60C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:33:13 -0700 (PDT)
-Message-Id: <20210518091725.046774792@linutronix.de>
+Received: from Galois.linutronix.de ([193.142.43.55]:58860 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241318AbhERJea (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:34:30 -0400
+Message-Id: <20210518093117.968251441@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621330390;
+        s=2020; t=1621330391;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=F013rQx8kVLjRBvwLGIM4eJIUfTukYcnmJFI+pPxhiU=;
-        b=KKS33fP51PiCM0ZWRaBthTlweJYoNIK74Ag8UBpwnasKoXcxPdjBcc3icHdx9n6KVuedcT
-        Cwf14Jz2/pg7LrnEj52fCw7IaDzh0D6o5koDHSCevZ2gp6+yA48t0+SVHlZim97mezoePm
-        gATXhu7dUYr+ZHJPmPjm7w1cwVSrUr2qZ5Ru7TmLtV0gL7NgITcltiQQDdqMwY4YpcOLBM
-        Du4CFb59I8GLOulRAWLmb2ZL1IHBmnc3cbEVsMcQY5I2808dRL6E0/GGELZ/VlMj7uOfJi
-        1N+m8259GSVS+JNs3ZfDi65poz8cdsdVPBcv7p1SrOJjU7/xPnwVH2yl3Qtbqw==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=Nj6vVjQqhP20P/gc7ktwvGxf5OKwxxGe/sIC+rIcp3c=;
+        b=0Ww2cxu0KQvgdejUDgHRbCQMZQYzGAtqLgK6A28Z72YRAbk4EKwcBv/R/52PCF9D90iXXT
+        nFgMzZsAqnHNJc244WQJ+9AZc2CUdEuwwvR5QUIH3M2nF50sQcJJVWW8HACf1f6yC9b2Ug
+        XE6D0euzEv+fp697UWUPxrg9HUWnDPHQwBYjnkmzl07xQagOem79yzA74arMylSfwl9ogM
+        aK2k8W3Xqo/zNIhzJMBzYOITPSExUL81XoL9Qo24sACoBLbunNNWDyg7zF5t0W8sEdCJEE
+        fxy2qmwE+imZ4lg6y1IsL885oyDA6fhLnChDEiJCDOVS01KvNuseOzjdWphHzw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621330390;
+        s=2020e; t=1621330391;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=F013rQx8kVLjRBvwLGIM4eJIUfTukYcnmJFI+pPxhiU=;
-        b=h3XWcxkcbxu9AOw2VMn4X0OLpSWaX3z1eSGqXmLdGFNiO0wmMabVeT7m18LMT3TyoNMv+s
-        XiZvhg863JY/oLCg==
-Date:   Tue, 18 May 2021 11:17:25 +0200
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=Nj6vVjQqhP20P/gc7ktwvGxf5OKwxxGe/sIC+rIcp3c=;
+        b=+qUMQh1JPwTjvi/Cti9zbqXNRf1StZxGS8wUmeYzDtKJRV+6Fv9ew9u9mNWL55PT77/YaH
+        +VAow57A0OtDeRDw==
+Date:   Tue, 18 May 2021 11:17:26 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -51,43 +48,121 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [patch 0/8] genirq, perf: Cleanup the abuse of irq_set_affinity_hint()
+Subject: [patch 1/8] genirq: Export affinity setter for modules
+References: <20210518091725.046774792@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlIG1vZHVsYXIgUE1VIGRyaXZlcnMgdXNlIGlycV9zZXRfYWZmaW5pdHlfaGludCgpIHRvIHNl
-dCB0aGUgYWZmaW5pdHkKZm9yIHRoZSBQTVUgaW50ZXJydXB0cywgd2hpY2ggcmVsaWVzIG9uIHRo
-ZSB1bmRvY3VtZW50ZWQgc2lkZSBlZmZlY3QgdGhhdAp0aGlzIGZ1bmN0aW9uIGFjdHVhbGx5IHNl
-dHMgdGhlIGFmZmluaXR5IHVuZGVyIHRoZSBob29kLgoKU2V0dGluZyBhbiBoaW50IGlzIGNsZWFy
-bHkgbm90IGEgZ3VhcmFudGVlIGFuZCBmb3IgdGhlc2UgUE1VIGludGVycnVwdHMgYW4KYWZmaW5p
-dHkgaGludCwgd2hpY2ggaXMgc3VwcG9zZWQgdG8gZ3VpZGUgdXNlcnNwYWNlIGZvciBzZXR0aW5n
-IGFmZmluaXR5LAppcyBiZXlvbmQgcG9pbnRsZXNzLCBiZWNhdXNlIHRoZSBhZmZpbml0eSBvZiB0
-aGVzZSBpbnRlcnJ1cHRzIGNhbm5vdCBiZQptb2RpZmllZCBmcm9tIHVzZXIgc3BhY2UuCgpBc2lk
-ZSBvZiB0aGF0IHRoZSBlcnJvciBjaGVja3MgYXJlIGJvZ3VzIGJlY2F1c2UgdGhlIG9ubHkgZXJy
-b3Igd2hpY2ggaXMKcmV0dXJuZWQgZnJvbSBpcnFfc2V0X2FmZmluaXR5X2hpbnQoKSBpcyB3aGVu
-IHRoZXJlIGlzIG5vIGlycSBkZXNjcmlwdG9yCmZvciB0aGUgaW50ZXJydXB0IG51bWJlciwgYnV0
-IG5vdCB3aGVuIHRoZSBhZmZpbml0eSBzZXQgZmFpbHMuIFRoYXQncyBvbgpwdXJwb3NlIGJlY2F1
-c2UgdGhlIGhpbnQgY2FuIHBvaW50IHRvIGFuIG9mZmxpbmUgQ1BVLgoKU2lnaCwgaWYgcGVvcGxl
-IHdvdWxkIGF0IGxlYXN0IHRhbGsgaWYgc29tZXRoaW5nIGlzIG1pc3NpbmcuLi4KCkNsZWFuIHVw
-IHRoZSBtZXNzIGJ5IGV4cG9zaW5nIGlycV9zZXRfYWZmaW5pdHkoKSBhbmQgY29udmVydGluZyB0
-aGUgZHJpdmVycwpvdmVyIHRvIHRoYXQuCgpUaGFua3MsCgoJdGdseAotLS0KIGRyaXZlcnMvcGVy
-Zi9hcm0tY2NuLmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgKy0tLQogZHJpdmVycy9w
-ZXJmL2FybS1jbW4uYyAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgOSArLS0tLS0KIGRyaXZl
-cnMvcGVyZi9hcm1fZG1jNjIwX3BtdS5jICAgICAgICAgICAgICAgICB8ICAgIDUgKy0tCiBkcml2
-ZXJzL3BlcmYvYXJtX2RzdV9wbXUuYyAgICAgICAgICAgICAgICAgICAgfCAgICA4ICstLS0tCiBk
-cml2ZXJzL3BlcmYvYXJtX3NtbXV2M19wbXUuYyAgICAgICAgICAgICAgICAgfCAgIDEwICsrLS0t
-LS0KIGRyaXZlcnMvcGVyZi9mc2xfaW14OF9kZHJfcGVyZi5jICAgICAgICAgICAgICB8ICAgIDUg
-Ky0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX2RkcmNfcG11LmMgfCAgICAz
-IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX2hoYV9wbXUuYyAgfCAgICAz
-IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX2wzY19wbXUuYyAgfCAgICAz
-IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX3BhX3BtdS5jICAgfCAgICAz
-IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX3BtdS5jICAgICAgfCAgICA0
-ICstCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX3NsbGNfcG11LmMgfCAgICAz
-IC0tCiBpbmNsdWRlL2xpbnV4L2ludGVycnVwdC5oICAgICAgICAgICAgICAgICAgICAgfCAgIDM1
-ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiBrZXJuZWwvaXJxL21hbmFnZS5jICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgfCAgIDMzICsrKysrKysrKysrKysrKysrKysrKysrLQogMTQgZmls
-ZXMgY2hhbmdlZCwgNDkgaW5zZXJ0aW9ucygrKSwgODEgZGVsZXRpb25zKC0pCgoK
+Perf modules abuse irq_set_affinity_hint() to set the affinity of system
+PMU interrupts just because irq_set_affinity() was not exported.
+
+The fact that irq_set_affinity_hint() actually sets the affinity is a
+non-documented side effect and the name is clearly saying it's a hint.
+
+To clean this up, export the real affinity setter.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/interrupt.h |   35 ++---------------------------------
+ kernel/irq/manage.c       |   33 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 34 insertions(+), 34 deletions(-)
+
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -322,39 +322,8 @@ struct irq_affinity_desc {
+ 
+ extern cpumask_var_t irq_default_affinity;
+ 
+-/* Internal implementation. Use the helpers below */
+-extern int __irq_set_affinity(unsigned int irq, const struct cpumask *cpumask,
+-			      bool force);
+-
+-/**
+- * irq_set_affinity - Set the irq affinity of a given irq
+- * @irq:	Interrupt to set affinity
+- * @cpumask:	cpumask
+- *
+- * Fails if cpumask does not contain an online CPU
+- */
+-static inline int
+-irq_set_affinity(unsigned int irq, const struct cpumask *cpumask)
+-{
+-	return __irq_set_affinity(irq, cpumask, false);
+-}
+-
+-/**
+- * irq_force_affinity - Force the irq affinity of a given irq
+- * @irq:	Interrupt to set affinity
+- * @cpumask:	cpumask
+- *
+- * Same as irq_set_affinity, but without checking the mask against
+- * online cpus.
+- *
+- * Solely for low level cpu hotplug code, where we need to make per
+- * cpu interrupts affine before the cpu becomes online.
+- */
+-static inline int
+-irq_force_affinity(unsigned int irq, const struct cpumask *cpumask)
+-{
+-	return __irq_set_affinity(irq, cpumask, true);
+-}
++extern int irq_set_affinity(unsigned int irq, const struct cpumask *cpumask);
++extern int irq_force_affinity(unsigned int irq, const struct cpumask *cpumask);
+ 
+ extern int irq_can_set_affinity(unsigned int irq);
+ extern int irq_select_affinity(unsigned int irq);
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -441,7 +441,8 @@ int irq_update_affinity_desc(unsigned in
+ 	return ret;
+ }
+ 
+-int __irq_set_affinity(unsigned int irq, const struct cpumask *mask, bool force)
++static int __irq_set_affinity(unsigned int irq, const struct cpumask *mask,
++			      bool force)
+ {
+ 	struct irq_desc *desc = irq_to_desc(irq);
+ 	unsigned long flags;
+@@ -456,6 +457,36 @@ int __irq_set_affinity(unsigned int irq,
+ 	return ret;
+ }
+ 
++/**
++ * irq_set_affinity - Set the irq affinity of a given irq
++ * @irq:	Interrupt to set affinity
++ * @cpumask:	cpumask
++ *
++ * Fails if cpumask does not contain an online CPU
++ */
++int irq_set_affinity(unsigned int irq, const struct cpumask *cpumask)
++{
++	return __irq_set_affinity(irq, cpumask, false);
++}
++EXPORT_SYMBOL_GPL(irq_set_affinity);
++
++/**
++ * irq_force_affinity - Force the irq affinity of a given irq
++ * @irq:	Interrupt to set affinity
++ * @cpumask:	cpumask
++ *
++ * Same as irq_set_affinity, but without checking the mask against
++ * online cpus.
++ *
++ * Solely for low level cpu hotplug code, where we need to make per
++ * cpu interrupts affine before the cpu becomes online.
++ */
++int irq_force_affinity(unsigned int irq, const struct cpumask *cpumask)
++{
++	return __irq_set_affinity(irq, cpumask, true);
++}
++EXPORT_SYMBOL_GPL(irq_force_affinity);
++
+ int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+ {
+ 	unsigned long flags;
+
