@@ -2,88 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1497D3877C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F1E3877D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241278AbhERLf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:35:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60304 "EHLO mx2.suse.de"
+        id S244226AbhERLkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:40:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41632 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240092AbhERLf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:35:28 -0400
+        id S241908AbhERLkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 07:40:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8D915ABC2;
-        Tue, 18 May 2021 11:34:09 +0000 (UTC)
-Subject: Re: [PATCH v3] mm, slub: change run-time assertion in kmalloc_index()
- to compile-time
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>, akpm@linux-foundation.org,
-        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
-        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
-        linux-next@vger.kernel.org, ndesaulniers@google.com,
-        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
-        Marco Elver <elver@google.com>
-References: <20210511173448.GA54466@hyeyoo> <20210515210950.GA52841@hyeyoo>
- <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
- <YKC9CeAfw3aBmHTU@archlinux-ax161> <20210518003859.GC80297@hyeyoo>
- <a1287a21-bcbb-77ed-c88d-f5890b785213@kernel.org>
- <71416382-2e4c-5e03-df9c-265fda41c2de@suse.cz>
- <20210518111814.GA114501@hyeyoo>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <aa74a894-8b39-b1c9-cfe8-2fcf879b7624@suse.cz>
-Date:   Tue, 18 May 2021 13:34:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        by mx2.suse.de (Postfix) with ESMTP id 05DADAD6C;
+        Tue, 18 May 2021 11:39:03 +0000 (UTC)
+Date:   Tue, 18 May 2021 13:39:01 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org
+Subject: [PATCH stable-5.10,5.11,5.12] x86/boot/compressed/64: Check SEV
+ encryption in the 32-bit boot-path
+Message-ID: <YKOnVYLRxk9CUzTc@suse.de>
+References: <20210508032224.039CF613ED@mail.kernel.org>
+ <YJZnYDty7Siyo68k@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210518111814.GA114501@hyeyoo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJZnYDty7Siyo68k@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 1:18 PM, Hyeonggon Yoo wrote:
-> On Tue, May 18, 2021 at 11:28:17AM +0200, Vlastimil Babka wrote:
->> On 5/18/21 2:43 AM, Nathan Chancellor wrote:
->> > On 5/17/2021 5:38 PM, Hyeonggon Yoo wrote:
->> >> On Sat, May 15, 2021 at 11:34:49PM -0700, Nathan Chancellor wrote:
->> >>> This should work I think:
->> >>
->> >> compiled well with clang-10.0.1, clang-11.0.0,
->> >> and gcc-10.2.0 with x86_64 default config.
->> >>
->> >> is the condition CONFIG_CLANG_VERSION > 110000,
->> >> not including 110000 it self?
->> 
->> Good spot.
-> 
-> Thanks!
-> 
->> > Ah sorry, that should definitely be >= :(
->> > 
->> > That is what I get for writing an email that late... in reality, it probably
->> > won't matter due to the availability of 11.0.1 and 11.1.0 but it should
->> > absolutely be changed.
->> > 
->> > I have not given Nick's patch a go yet but would something like this be
->> > acceptable?
->> 
->> Yes.
-> 
-> You mean Nick's patch to added with Nathan's code?
+[ Upstream commit fef81c86262879d4b1176ef51a834c15b805ebb9 ]
 
-No, I thought Nathan was asking about his own proposal. I don't think Nick's
-patch that adds 26 index solves the issue. Nathan's proposal fixed with '>=' is OK.
+Check whether the hypervisor reported the correct C-bit when running
+as an SEV guest. Using a wrong C-bit position could be used to leak
+sensitive data from the guest to the hypervisor.
 
-> I'm not sure we need this, but will add it if you can accept it.
-> 
-> I'll send fixup patch soon. tell me if I can improve
-> anything on it.
-> 
-> Thanks,
-> Hyeonggon
-> 
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210312123824.306-8-joro@8bytes.org
+---
+ arch/x86/boot/compressed/head_64.S | 85 ++++++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index e94874f4bbc1..ae1fe558a2d8 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -172,11 +172,21 @@ SYM_FUNC_START(startup_32)
+ 	 */
+ 	call	get_sev_encryption_bit
+ 	xorl	%edx, %edx
++#ifdef	CONFIG_AMD_MEM_ENCRYPT
+ 	testl	%eax, %eax
+ 	jz	1f
+ 	subl	$32, %eax	/* Encryption bit is always above bit 31 */
+ 	bts	%eax, %edx	/* Set encryption mask for page tables */
++	/*
++	 * Mark SEV as active in sev_status so that startup32_check_sev_cbit()
++	 * will do a check. The sev_status memory will be fully initialized
++	 * with the contents of MSR_AMD_SEV_STATUS later in
++	 * set_sev_encryption_mask(). For now it is sufficient to know that SEV
++	 * is active.
++	 */
++	movl	$1, rva(sev_status)(%ebp)
+ 1:
++#endif
+ 
+ 	/* Initialize Page tables to 0 */
+ 	leal	rva(pgtable)(%ebx), %edi
+@@ -261,6 +271,9 @@ SYM_FUNC_START(startup_32)
+ 	movl	%esi, %edx
+ 1:
+ #endif
++	/* Check if the C-bit position is correct when SEV is active */
++	call	startup32_check_sev_cbit
++
+ 	pushl	$__KERNEL_CS
+ 	pushl	%eax
+ 
+@@ -786,6 +799,78 @@ SYM_DATA_START_LOCAL(loaded_image_proto)
+ SYM_DATA_END(loaded_image_proto)
+ #endif
+ 
++/*
++ * Check for the correct C-bit position when the startup_32 boot-path is used.
++ *
++ * The check makes use of the fact that all memory is encrypted when paging is
++ * disabled. The function creates 64 bits of random data using the RDRAND
++ * instruction. RDRAND is mandatory for SEV guests, so always available. If the
++ * hypervisor violates that the kernel will crash right here.
++ *
++ * The 64 bits of random data are stored to a memory location and at the same
++ * time kept in the %eax and %ebx registers. Since encryption is always active
++ * when paging is off the random data will be stored encrypted in main memory.
++ *
++ * Then paging is enabled. When the C-bit position is correct all memory is
++ * still mapped encrypted and comparing the register values with memory will
++ * succeed. An incorrect C-bit position will map all memory unencrypted, so that
++ * the compare will use the encrypted random data and fail.
++ */
++	__HEAD
++	.code32
++SYM_FUNC_START(startup32_check_sev_cbit)
++#ifdef CONFIG_AMD_MEM_ENCRYPT
++	pushl	%eax
++	pushl	%ebx
++	pushl	%ecx
++	pushl	%edx
++
++	/* Check for non-zero sev_status */
++	movl	rva(sev_status)(%ebp), %eax
++	testl	%eax, %eax
++	jz	4f
++
++	/*
++	 * Get two 32-bit random values - Don't bail out if RDRAND fails
++	 * because it is better to prevent forward progress if no random value
++	 * can be gathered.
++	 */
++1:	rdrand	%eax
++	jnc	1b
++2:	rdrand	%ebx
++	jnc	2b
++
++	/* Store to memory and keep it in the registers */
++	movl	%eax, rva(sev_check_data)(%ebp)
++	movl	%ebx, rva(sev_check_data+4)(%ebp)
++
++	/* Enable paging to see if encryption is active */
++	movl	%cr0, %edx			 /* Backup %cr0 in %edx */
++	movl	$(X86_CR0_PG | X86_CR0_PE), %ecx /* Enable Paging and Protected mode */
++	movl	%ecx, %cr0
++
++	cmpl	%eax, rva(sev_check_data)(%ebp)
++	jne	3f
++	cmpl	%ebx, rva(sev_check_data+4)(%ebp)
++	jne	3f
++
++	movl	%edx, %cr0	/* Restore previous %cr0 */
++
++	jmp	4f
++
++3:	/* Check failed - hlt the machine */
++	hlt
++	jmp	3b
++
++4:
++	popl	%edx
++	popl	%ecx
++	popl	%ebx
++	popl	%eax
++#endif
++	ret
++SYM_FUNC_END(startup32_check_sev_cbit)
++
+ /*
+  * Stack and heap for uncompression
+  */
+-- 
+2.31.1
 
