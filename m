@@ -2,228 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985753882F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6F83882FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352841AbhERXFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
+        id S234128AbhERXO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233477AbhERXFi (ORCPT
+        with ESMTP id S229660AbhERXO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:05:38 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2157C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:04:19 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id k19so8552222pfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:04:19 -0700 (PDT)
+        Tue, 18 May 2021 19:14:28 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3EAC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:13:10 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id 22so8172591pfv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:13:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mSnep0E6p740HwmxCoTsibVSy/5YhYtyFAmCVDEAaLA=;
-        b=Akkz5CURmoJcRlEXLzqx1M5h7Hp2+Ve7uVqZaCwDi9WcE2h/XN4698GPVVGax7o+dB
-         W3kEhApCTEEMW8g0u6pSYHI4SCP8sMBdTo3+RUKx8Q/DxqDuhi6RAr8Vj2HbMmscllXZ
-         U3wgtYLjloxYJzgWz/FWbGyDFd0m7J1RgIhUbCkix/9b3sCNXRY8PdLa7+j/F423XEKa
-         9oO6JsspTSOKgBVsG7NhZ5rqkx7k9ydyVYZ+tsu1/2c5fUl76sLP5vChWa2yD6i5+y9s
-         jKNVXhlqbDVbiJqcueJ2PTPuKJIliWYjUM0E+j00NKk2wsfcjXtSfIRdfAJgP2s8ZwzL
-         0XSw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wmux7zEIvTlZ3g8qBTFUSGjR1GHleMmeGKxZ7tsT3bE=;
+        b=pwupZ+G81nZwIn0zo+G/TlYE6h/qDMi1EBng+geK5dYMIq4x5U2wa0nf0U344ZI1bF
+         VFJXNJjfO6eOPVyIRyKEmDHmQ4fcc1Z2RzMDw1pX/n0SL+qCKZhUtMC59hfOrDxAnmHH
+         yyKnvMVFDMshHrMNdIkImBN6a/9vW+lu/SNV70tiZdRwctCZzYD1YJszXAeweq2yqES5
+         mEeJUHBKpYmOWuhzj7kQtimO5dTL+bYKVlqtoUaQ0Yv6hUAVnUrr4i+kvmk0+5kfJUhA
+         cKANbfMwB+qQQroRwq+BO+WglfV6SSbUx8SNQPqzj6XkfNOimu6/1qVL5nj1i9luGKoI
+         FKrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mSnep0E6p740HwmxCoTsibVSy/5YhYtyFAmCVDEAaLA=;
-        b=VseIoydS2Uv9Jqcw42WBvNL6hdsoJwzDnNOQf5/VBDnQllFL0+mBgAEMuj/0r1T0RU
-         g6Rl7lNXhu4C6+kMLskiUO+3bkEKSh8rYIITuYKbmJDyNJhXTG1t3+cEoBbkX4gFaKBW
-         RSWyCn4RWCmOHYGfh6vfzFN71bUsHofVlHU/oq9EkIDfG8QbueJRBXE8FCwO2jMCfzqJ
-         e51ZF0yA7atnWNavqnigggHkijKeBU+LdHJp9cYMlMZQp+mC9DjWh/LeMTNhc2Vo8V3v
-         Do1eDn/r8Kio1pH3TermxtPhA4Z2mfdsKlC0jEBDUxc62fQPshv2Q3BaOb111+bagvdh
-         nEpg==
-X-Gm-Message-State: AOAM532KaGPJeW/aWtWSXDo8f8D0P3mObMY2RN9PVrir/3VBhbbodnsV
-        73MBBTCV8UH9bH0sdPepsQCjKQ==
-X-Google-Smtp-Source: ABdhPJwmhbK3o/picrfTp8QXUtTamx591kpVEksxVbdNg7OCnAY3fgc79GACPhEtTlN2lePA+3zroQ==
-X-Received: by 2002:a63:2542:: with SMTP id l63mr7622151pgl.128.1621379059000;
-        Tue, 18 May 2021 16:04:19 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id g19sm8007685pfj.138.2021.05.18.16.04.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wmux7zEIvTlZ3g8qBTFUSGjR1GHleMmeGKxZ7tsT3bE=;
+        b=BLvU0od1mDiJmfE/TNRyQpK9lA/+mXWyDz5wsFxE9rAtpPXexYoa5TSeEPf72iZtTL
+         oLDvh3qBDN+Kjw6DYEOADzkJ8Y2zTRPqyEI+kdXNCkFSz+Jdd91dlZ2mGqbl0DI5KHNw
+         11LxjVwLade9t2m6RFvEiaDFfb49mOLI6tfR96tiCOGhh2mAMJnKft6/O/ijaJPjivIV
+         Sa6bBkWgqpsY8Q9OfLtwKTCLgltxIy7PwZxt2ONPwNW33Hot1HcGtGY4K96ZNXigo8wr
+         YCHQrAwsOh1tEWuhHhZb2wmqT9Iz+MwZTvUwS0kVRDeOeBFozy9+quV9Xze5dDVjZZu0
+         IIVQ==
+X-Gm-Message-State: AOAM532fH0QINTYao/7QB12cwUoJ3C34mU010dB5OiwF4iwPyE2BSBt3
+        dAfbRVoxO7L+fe0Qmzqeqg==
+X-Google-Smtp-Source: ABdhPJxkOgiuEJV76QXhK82iKkj+e2gMzcVaqQFYfXdKpaze7uwFzqV6RuKF29hlxkgC6haD7fiHrw==
+X-Received: by 2002:aa7:90d5:0:b029:28e:df57:47ff with SMTP id k21-20020aa790d50000b029028edf5747ffmr7546916pfk.74.1621379589702;
+        Tue, 18 May 2021 16:13:09 -0700 (PDT)
+Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
+        by smtp.gmail.com with ESMTPSA id f14sm14437473pjq.50.2021.05.18.16.13.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 16:04:18 -0700 (PDT)
-Date:   Tue, 18 May 2021 23:04:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ilias Stamatis <ilstam@amazon.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, mlevitsk@redhat.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        zamsden@gmail.com, mtosatti@redhat.com, dwmw@amazon.co.uk
-Subject: Re: [PATCH v2 03/10] KVM: X86: Add kvm_scale_tsc_l1() and
- kvm_compute_tsc_offset_l1()
-Message-ID: <YKRH7qVHpow6kwi5@google.com>
-References: <20210512150945.4591-1-ilstam@amazon.com>
- <20210512150945.4591-4-ilstam@amazon.com>
+        Tue, 18 May 2021 16:13:09 -0700 (PDT)
+From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
+To:     Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/2] hwpoison: fix race with hugetlb page allocation
+Date:   Wed, 19 May 2021 08:12:57 +0900
+Message-Id: <20210518231259.2553203-1-nao.horiguchi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512150945.4591-4-ilstam@amazon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021, Ilias Stamatis wrote:
-> The existing kvm_scale_tsc() scales the TSC using the current TSC
-> scaling ratio. That used to be the same as L1's scaling ratio but now
-> with nested TSC scaling support it is no longer the case.
-> 
-> This patch adds a new kvm_scale_tsc_l1() function that scales the TSC
-> using L1's scaling ratio. The existing kvm_scale_tsc() can still be used
-> for scaling L2 TSC values.
-> 
-> Additionally, this patch renames the kvm_compute_tsc_offset() function
-> to kvm_compute_tsc_offset_l1() and has the function treat its TSC
-> argument as an L1 TSC value. All existing code uses this function
-> passing L1 values to it.
-> 
-> Signed-off-by: Ilias Stamatis <ilstam@amazon.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/x86.c              | 41 ++++++++++++++++++++++-----------
->  2 files changed, 29 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 7dfc609eacd6..be59197e5eb7 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1789,6 +1789,7 @@ static inline bool kvm_is_supported_user_return_msr(u32 msr)
->  }
->  
->  u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc);
-> +u64 kvm_scale_tsc_l1(struct kvm_vcpu *vcpu, u64 tsc);
->  u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc);
+Hi,
 
-I don't really care which version is used, but we should be consistent, i.e. choose
-kvm_<action>_tsc_l1 or kvm_<action>_tsc_l1, not both.  The easy choice is the
-former since it's already there.
+I updated the patchset again based on discussion over v4 [1],
+I rebased onto v5.13-rc2 with suggested fixes and code adjustment.
 
->  unsigned long kvm_get_linear_rip(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 07cf5d7ece38..84af1af7a2cc 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2319,18 +2319,30 @@ u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc)
->  }
->  EXPORT_SYMBOL_GPL(kvm_scale_tsc);
->  
-> -static u64 kvm_compute_tsc_offset(struct kvm_vcpu *vcpu, u64 target_tsc)
-> +u64 kvm_scale_tsc_l1(struct kvm_vcpu *vcpu, u64 tsc)
-> +{
-> +	u64 _tsc = tsc;
-> +	u64 ratio = vcpu->arch.l1_tsc_scaling_ratio;
-> +
-> +	if (ratio != kvm_default_tsc_scaling_ratio)
-> +		_tsc = __scale_tsc(ratio, tsc);
-> +
-> +	return _tsc;
-> +}
+Thanks,
+Naoya Horiguchi
 
-Just make the ratio a param.  This is complete copy+paste of kvm_scale_tsc(),
-with 3 characters added.  And all of the callers are already in an L1-specific
-function or have L1 vs. L2 awareness.  IMO, that makes the code less magical, too,
-as I don't have to dive into a helper to see that it reads l1_tsc_scaling_ratio
-versus tsc_scaling_ratio.
+[1] https://lore.kernel.org/linux-mm/20210517045401.2506032-1-nao.horiguchi@gmail.com/T/#u
+---
+Summary:
 
-> +EXPORT_SYMBOL_GPL(kvm_scale_tsc_l1);
-> +
-> +static u64 kvm_compute_tsc_offset_l1(struct kvm_vcpu *vcpu, u64 target_tsc)
->  {
->  	u64 tsc;
->  
-> -	tsc = kvm_scale_tsc(vcpu, rdtsc());
-> +	tsc = kvm_scale_tsc_l1(vcpu, rdtsc());
->  
->  	return target_tsc - tsc;
->  }
->  
->  u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
->  {
-> -	return vcpu->arch.l1_tsc_offset + kvm_scale_tsc(vcpu, host_tsc);
-> +	return vcpu->arch.l1_tsc_offset + kvm_scale_tsc_l1(vcpu, host_tsc);
->  }
->  EXPORT_SYMBOL_GPL(kvm_read_l1_tsc);
->  
-> @@ -2363,7 +2375,7 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
->  	bool synchronizing = false;
->  
->  	raw_spin_lock_irqsave(&kvm->arch.tsc_write_lock, flags);
-> -	offset = kvm_compute_tsc_offset(vcpu, data);
-> +	offset = kvm_compute_tsc_offset_l1(vcpu, data);
->  	ns = get_kvmclock_base_ns();
->  	elapsed = ns - kvm->arch.last_tsc_nsec;
->  
-> @@ -2402,7 +2414,7 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
->  		} else {
->  			u64 delta = nsec_to_cycles(vcpu, elapsed);
->  			data += delta;
-> -			offset = kvm_compute_tsc_offset(vcpu, data);
-> +			offset = kvm_compute_tsc_offset_l1(vcpu, data);
->  		}
->  		matched = true;
->  		already_matched = (vcpu->arch.this_tsc_generation == kvm->arch.cur_tsc_generation);
-> @@ -2463,7 +2475,7 @@ static inline void adjust_tsc_offset_host(struct kvm_vcpu *vcpu, s64 adjustment)
->  {
->  	if (vcpu->arch.l1_tsc_scaling_ratio != kvm_default_tsc_scaling_ratio)
->  		WARN_ON(adjustment < 0);
-> -	adjustment = kvm_scale_tsc(vcpu, (u64) adjustment);
-> +	adjustment = kvm_scale_tsc_l1(vcpu, (u64) adjustment);
->  	adjust_tsc_offset_guest(vcpu, adjustment);
->  }
->  
-> @@ -2846,7 +2858,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
->  	/* With all the info we got, fill in the values */
->  
->  	if (kvm_has_tsc_control)
-> -		tgt_tsc_khz = kvm_scale_tsc(v, tgt_tsc_khz);
-> +		tgt_tsc_khz = kvm_scale_tsc_l1(v, tgt_tsc_khz);
->  
->  	if (unlikely(vcpu->hw_tsc_khz != tgt_tsc_khz)) {
->  		kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000LL,
-> @@ -3235,7 +3247,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		if (msr_info->host_initiated) {
->  			kvm_synchronize_tsc(vcpu, data);
->  		} else {
-> -			u64 adj = kvm_compute_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
-> +			u64 adj = kvm_compute_tsc_offset_l1(vcpu, data) - vcpu->arch.l1_tsc_offset;
->  			adjust_tsc_offset_guest(vcpu, adj);
->  			vcpu->arch.ia32_tsc_adjust_msr += adj;
->  		}
-> @@ -3537,10 +3549,13 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		 * return L1's TSC value to ensure backwards-compatible
->  		 * behavior for migration.
->  		 */
-> -		u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
-> -							    vcpu->arch.tsc_offset;
-> -
-> -		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
-> +		if (msr_info->host_initiated) {
+Naoya Horiguchi (2):
+      mm,hwpoison: fix race with hugetlb page allocation
+      mm,hwpoison: make get_hwpoison_page call get_any_page()
 
-Unnecessary curly braces.
-
-> +			msr_info->data = kvm_scale_tsc_l1(vcpu, rdtsc()) +
-> +					 vcpu->arch.l1_tsc_offset;
-> +		} else {
-> +			msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) +
-> +					 vcpu->arch.tsc_offset;
-> +		}
->  		break;
->  	}
->  	case MSR_MTRRcap:
-> @@ -4123,7 +4138,7 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
->  			mark_tsc_unstable("KVM discovered backwards TSC");
->  
->  		if (kvm_check_tsc_unstable()) {
-> -			u64 offset = kvm_compute_tsc_offset(vcpu,
-> +			u64 offset = kvm_compute_tsc_offset_l1(vcpu,
->  						vcpu->arch.last_guest_tsc);
->  			kvm_vcpu_write_tsc_offset(vcpu, offset);
->  			vcpu->arch.tsc_catchup = 1;
-> -- 
-> 2.17.1
-> 
+ include/linux/hugetlb.h |   6 +++
+ mm/hugetlb.c            |  17 +++++++
+ mm/memory-failure.c     | 118 +++++++++++++++++++++++++++---------------------
+ 3 files changed, 90 insertions(+), 51 deletions(-)
