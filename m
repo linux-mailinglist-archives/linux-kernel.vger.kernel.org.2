@@ -2,95 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF723872CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139903872CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245159AbhERHFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:05:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:47995 "EHLO ozlabs.org"
+        id S1346924AbhERHF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:05:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237944AbhERHFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 03:05:49 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fkn6x3DjWz9sW1;
-        Tue, 18 May 2021 17:04:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621321465;
-        bh=g3wDgr6MQQD9WBp9vNtKc0Ko1CkkmDiMlXocU+4rTQU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UHq3RZgWCZbWo2VydlSBxcA3ejCk8PVrDtQGtsYaed1oi3yNcofHBV+3F9kDM1nS+
-         b9NuwnK9SykBrgWTuI08dq/2yDEi4BO22z87ZNl9Gx1PZm9MuWnLTutBHlOdS2B67h
-         YNBCbmDMWRAZbEHuggXGi/cZQSnbWQ/9c7AXKpZqiammij1BMY0FFACXz4H6/Ch9PN
-         ptV6mtt1T++LVbmZSMBSydiLmSi4DT0R3jEjL46hee20IH1sYKfFls5gfl3L4+8aLo
-         bZHWUcei5wB8fdvn+VgJ+Zm7lw7G19qLU3QpjZzt1xAmtpV+xMbF3tx6LhDFQ/phFl
-         MCQia2pdSLLVg==
-Date:   Tue, 18 May 2021 17:04:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     YueHaibing <yuehaibing@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the hyperv tree
-Message-ID: <20210518170421.584dc0ec@canb.auug.org.au>
+        id S1346910AbhERHF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 03:05:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9421C611BD;
+        Tue, 18 May 2021 07:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621321479;
+        bh=/85N896sPWs3Fav4FWV2ONkGxpYFdYbrWJDrsPbsIjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rLGLHFuEcdOy7w2Wd/XB2zT2wwLC6szRWxMCr1x60/ToT3QpkRhACcC0Yv9dm6MGL
+         o1qwTsWCAg1172YBPdyP0MrXBN9kJAoSm9sK99VE0iwCgnASLBx0+CYrU5QHPfHACi
+         6vvR02vQzKYgWzKymTB7r1MJ+z5bCajBTvA4RJ1Jk6K/VjKKuz74Db47bMwlu0lDPi
+         w/7hEu4OrF/1vED/jphC5PMrUYgMqfMrNk/v7deWTTpESICqmOBUHujDyoj4FOZced
+         Op70sw7sTyf76i6lEO3/hvobT8xciu8MNM3+YaEr1BYztwfaXR2RKBheyE/5vN1koZ
+         xzImpyi2HszDQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1litmP-0005jB-Lj; Tue, 18 May 2021 09:04:37 +0200
+Date:   Tue, 18 May 2021 09:04:37 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Tung Pham <Tung.Pham@silabs.com>
+Cc:     Pho Tran <photranvan0712@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hung Nguyen <Hung.Nguyen@silabs.com>,
+        Pho Tran <Pho.Tran@silabs.com>
+Subject: Re: [PATCH v12] USB: serial: cp210x: Add support for GPIOs on CP2108
+Message-ID: <YKNnBckiw4fLIuQL@hovoldconsulting.com>
+References: <CO1PR11MB488255D1B04D3B90886A59BE812C9@CO1PR11MB4882.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LXdNxqsqA+Wo.ao9XCHST7.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO1PR11MB488255D1B04D3B90886A59BE812C9@CO1PR11MB4882.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LXdNxqsqA+Wo.ao9XCHST7.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 18, 2021 at 03:18:06AM +0000, Tung Pham wrote:
+> Dear Johan Hovold.
+> Do you agree and approve with this path?.
 
-Hi all,
+I'm still waiting for you to confirm that you have tested the patch with
+different pin configurations in eeprom. The first few iterations clearly
+weren't tested and I don't want to waste more time reviewing it before
+it's tested as I believe I mentioned in my last mail.
 
-After merging the hyperv tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
-
-In file included from include/linux/printk.h:7,
-                 from include/linux/kernel.h:17,
-                 from drivers/hv/hv_util.c:11:
-drivers/hv/hv_util.c: In function 'hv_timesync_init':
-include/linux/kern_levels.h:5:18: warning: format '%ld' expects argument of=
- type 'long int', but argument 2 has type 'int' [-Wformat=3D]
-    5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-      |                  ^~~~~~
-include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
-   11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
-      |                  ^~~~~~~~
-include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
-  343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-      |         ^~~~~~~~
-drivers/hv/hv_util.c:753:3: note: in expansion of macro 'pr_err'
-  753 |   pr_err("cannot register PTP clock: %ld\n",
-      |   ^~~~~~
-
-Introduced by commit
-
-  32c0ff83550e ("hv_utils: Fix passing zero to 'PTR_ERR' warning")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LXdNxqsqA+Wo.ao9XCHST7.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCjZvUACgkQAVBC80lX
-0GyqdQf/d0keGIj+k8R5AmaHhQ7f6BjAAu3Tn9QDjxDargxGIFlHcGKbjoMtivzt
-mZjkRDCHGmKrMSh6tGsDY8MIkQbbBBVYI1OEWF+bz85A7KqdPxuETCgtHL+FZ2tv
-XcDMrZcOUpp/jmwH78XDYeTcwleuT7atPQ5z6RtfTTM+Du09IrTFJdLJaMeEQIkW
-pzXSnfgPrp60dYxC21Q0c12AdK1WEZzioZzUw2maccZWN9SyOn6ftx7xd3TbnubP
-59RLWzgHQeKZpExpBCuGvx44niwItRzzorw+UonMa5UEgMGuF413uFosne1PvKjW
-IoGzwBGkJqxneQamtsd6Q+Pz6T4mFg==
-=3Ni1
------END PGP SIGNATURE-----
-
---Sig_/LXdNxqsqA+Wo.ao9XCHST7.--
+Johan
