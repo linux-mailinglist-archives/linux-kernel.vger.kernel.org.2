@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF753870E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381C93870F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbhEREcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 00:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239763AbhEREcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 00:32:01 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5155C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:30:43 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id v22so8594860oic.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=edTAC+VberfNzmpERBE9GVjs5mtrV8JaHhvqsq7uIFU=;
-        b=dLuJJej8/uEvpBeGhA1/Y5GsGsMFYUb/0EpYi6VrxMEsPJDrwau71hC9S9lRuH1IOk
-         dFhwzmE9tIkNpO72l4uL612FG4Zug54KwbTPgz1iX5iwvzU0aaPwt8xo8yuvf8IlA+pi
-         tk1mxusnY/enJDT9/0PutctBU475awvAap+Q8hW6ondtgnBnBc/mVEwnGersCBtZUol7
-         Bo9od8yNmsNzVmQka6iDvM8tXqB+RdmSMgiUBloAzxZyj3ccCXO7tLny+Hxb07+7Cjuc
-         iH8rOphOk6OhoEoeRCXqHtiQndHa9BEtelnN/ZUinVzuJZ7P3hF9mEY7zXteIQ6OqUnu
-         RnLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=edTAC+VberfNzmpERBE9GVjs5mtrV8JaHhvqsq7uIFU=;
-        b=o4XXOZukmRsUHBykFJhnNcKKmlIWRPqKzP7/fcxRXW5sZHIAbq113qG9ThBrzhXifC
-         neI0x0dZ04a9990aAiUQrBbEQd6+34R4LvEIy2i2AlVvSOvHMoFP2JGpWKSo6Z7w0V/d
-         inY16aBPsQhuCHgUnZpaJ16V0YxE9Erwc4dcLUND3bS4wQ0+hSozzZMHWyBYdQs+icb1
-         yzu68ZUdDaoDDPZaF/vDbtkYuf9NzTtoWGS4b+csmu2dQOfQpLBjgCfjBpxq0diYORvM
-         YPWW44YqyxDE2kqjjQJEiqvvwMLwmjurrDg7hHgplQ68cNZ2ELsStCO6YcBv1k8OkWPQ
-         8i0w==
-X-Gm-Message-State: AOAM530jpss+pLiONv42dSXdv68HdF32i2fV4XJunJtMA2QWRtyACOeO
-        K+B895ykwaOcBkuCn5ZuVLmA+BmdXxigdso4
-X-Google-Smtp-Source: ABdhPJw3rg34jdvRBg7UfZMvjZh9ZVnoXPaRDW7+ClvXOuEC35VQdlhboR/aOy6EX77F75BWPpCMWw==
-X-Received: by 2002:aca:c685:: with SMTP id w127mr1961677oif.89.1621312242855;
-        Mon, 17 May 2021 21:30:42 -0700 (PDT)
-Received: from [192.168.86.127] ([136.62.4.88])
-        by smtp.gmail.com with ESMTPSA id w66sm3492578ooa.37.2021.05.17.21.30.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 21:30:42 -0700 (PDT)
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Philipp Rudo <prudo@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Rob Landley <rob@landley.net>
-Subject: [PATCH] Replace use of perl with sed and tr in s390x build.
-Message-ID: <a48c51f8-5fe4-87e7-284e-c96e2381801a@landley.net>
-Date:   Mon, 17 May 2021 23:46:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1346390AbhEREtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 00:49:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:41000 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241545AbhEREtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 00:49:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD9E231B;
+        Mon, 17 May 2021 21:47:44 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.79.24])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C52503F73D;
+        Mon, 17 May 2021 21:47:42 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Zi Yan <ziy@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/thp: Update mm_struct's MM_ANONPAGES stat for huge zero pages
+Date:   Tue, 18 May 2021 10:18:20 +0530
+Message-Id: <1621313300-1118-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Landley <rob@landley.net>
+Although the zero huge page is being shared across various processes, each
+mapping needs to update its mm_struct's MM_ANONPAGES stat by HPAGE_PMD_NR
+to be consistent. This just updates the stats in set_huge_zero_page() after
+the mapping gets created and in zap_huge_pmd() when mapping gets destroyed.
 
-Commit 246218962e21 in November added a perl dependency to the s390x vmlinux
-build, complicating the "countering trusting trust" build approach ala
-http://lists.landley.net/pipermail/toybox-landley.net/2020-July/011898.html
-
-Signed-off-by: Rob Landley <rob@landley.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
+This applies on v5.13-rc2.
 
- arch/s390/boot/compressed/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in V1:
 
-diff --git a/arch/s390/boot/compressed/Makefile b/arch/s390/boot/compressed/Makefile
-index de18dab518bb..e941b165bd4f 100644
---- a/arch/s390/boot/compressed/Makefile
-+++ b/arch/s390/boot/compressed/Makefile
-@@ -33,7 +33,7 @@ $(obj)/vmlinux.syms: $(obj)/vmlinux.lds $(objtree)/arch/s390/boot/startup.a $(OB
+- Updated MM_ANONPAGES stat in zap_huge_pmd()
+- Updated the commit message
+
+Changes in RFC:
+
+https://lore.kernel.org/linux-mm/1620890438-9127-1-git-send-email-anshuman.khandual@arm.com/
+
+ mm/huge_memory.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 63ed6b25deaa..306d0a41bf75 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -706,6 +706,7 @@ static void set_huge_zero_page(pgtable_t pgtable, struct mm_struct *mm,
+ 	if (pgtable)
+ 		pgtable_trans_huge_deposit(mm, pmd, pgtable);
+ 	set_pmd_at(mm, haddr, pmd, entry);
++	add_mm_counter(mm, MM_ANONPAGES, HPAGE_PMD_NR);
+ 	mm_inc_nr_ptes(mm);
+ }
  
- quiet_cmd_dumpsyms = DUMPSYMS $<
- define cmd_dumpsyms
--	$(NM) -n -S --format=bsd "$<" | $(PERL) -ne '/(\w+)\s+(\w+)\s+[tT]\s+(\w+)/ and printf "%x %x %s\0",hex $$1,hex $$2,$$3' > "$@"
-+	$(NM) -n -S --format=bsd "$<" | sed -nE 's/^0*([0-9a-fA-F]+) 0*([0-9a-fA-F]+) [tT] ([^ ]*)$$/\1 \2 \3/p' | tr '\n' '\0' > "$@"
- endef
- 
- $(obj)/syms.bin: $(obj)/vmlinux.syms FORCE
+@@ -1678,6 +1679,7 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 			tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
+ 	} else if (is_huge_zero_pmd(orig_pmd)) {
+ 		zap_deposited_table(tlb->mm, pmd);
++		add_mm_counter(tlb->mm, MM_ANONPAGES, -HPAGE_PMD_NR);
+ 		spin_unlock(ptl);
+ 		tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
+ 	} else {
+-- 
+2.20.1
+
