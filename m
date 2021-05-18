@@ -2,197 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC1B387670
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C387387675
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348486AbhERK2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:28:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52650 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239674AbhERK2P (ORCPT
+        id S1348496AbhERK2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:28:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348485AbhERK2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:28:15 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IAEmMh110725;
-        Tue, 18 May 2021 06:26:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : references :
- from : subject : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qY5y1kHPfulxWu6c9IDNGYbebGY3HDV6suyR9v66QCY=;
- b=nBj8Ae+f+BpTFy+g1RdLAxE2e0y6qZg8Q7TgZEqdGyj0Ni22RMqJFCtD3xD2MfalQ7rW
- e1F0z48cka2/t7Co+dvvqblFhP6Kj1hHju2J3k8MBGPOWkp1gDSJ8S3MJtWNlON5f+BG
- wOWE5qK7K5bpTW8j/RSBPwpUHQjGk2/RMGQ9YI0DKMqbx5ANjG+JE04qpeUNyZgPaEXN
- ykOQN7/cMUSDa1jV/lDShrAYMqIAGt4driZZokpHnZZwaL82WTSlaUQIbBN/XdgUs4AN
- UVUiXXdk8pUX1YbEygw4kfo1nIYpxHb82VnTG/4Yt6KTneLLQQAQoCg671Icd4A055/r zQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mbnhg8nf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 06:26:57 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IAFEZk115471;
-        Tue, 18 May 2021 06:26:57 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mbnhg8mu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 06:26:57 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IAME7F012044;
-        Tue, 18 May 2021 10:26:55 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 38j5x7sbr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 10:26:54 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IAQO3p24904076
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 10:26:24 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E113AA4053;
-        Tue, 18 May 2021 10:26:51 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BBC5A4040;
-        Tue, 18 May 2021 10:26:51 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.37.27])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 18 May 2021 10:26:51 +0000 (GMT)
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
- <20210517200758.22593-2-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: [PATCH v1 01/11] KVM: s390: pv: leak the ASCE page when destroy
- fails
-Message-ID: <13cb02d1-df3b-7994-8a31-99aacfd15566@linux.ibm.com>
-Date:   Tue, 18 May 2021 12:26:51 +0200
+        Tue, 18 May 2021 06:28:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621333638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Th9b0uelp+zuS5Dolk9edCcQodErGvwWmi6QbbSzCQ8=;
+        b=hu4cwNlgqIF9y6apOx12S2Ln9ed/WSIc5qETK3CNvMU7q+r+gTr9soTYGttRGNOEuNjaSM
+        pif+hPFuDmB8R2mJotHO4CzpzJhMpNxX4EHGbSKhfFIAr+uY9x3aA88hXNFEMEcnWGVn3z
+        Gw01N0VUayxiTcznVWu9omKv/9drT/I=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-152-0-_bdxyuNfaFJZDaH82B8g-1; Tue, 18 May 2021 06:27:16 -0400
+X-MC-Unique: 0-_bdxyuNfaFJZDaH82B8g-1
+Received: by mail-wm1-f72.google.com with SMTP id n127-20020a1c27850000b02901717a27c785so391790wmn.9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:27:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Th9b0uelp+zuS5Dolk9edCcQodErGvwWmi6QbbSzCQ8=;
+        b=BSk2wjesizRln7LKmXKka5d2yq1iWd2eaaHaA9VYbK5AtwKZ9bRPbaVV8XLJ+nk9Yh
+         PcjR4b05oBBSz8yG04saoVcxDK3GCyCQ56+v3SpBJ+Z2DAb5LLvWODU7hVxw/oCjafDY
+         oMPexKxQZBYJFFfFxdEkqhbR8lkKGeej/BYjJMm/P4UK2CzLHBy4q6bdWpCw3S7QJxcm
+         px6tuKGMySyl6GVJKbTs6ZNU3oginGo8mC3/cphBIB3qbo7mGYNxV7hhmCWP9tS67cMw
+         L3tUKBZIJAuvjza3eUkoZFpc+WbBuS6d2O7kOjm0OQFrz3vy5btILSc4IcyXl27ZTnZg
+         KeKQ==
+X-Gm-Message-State: AOAM530KJ85TIYYXdNJTvahvDCBBwUya1d07lJaNCFVCGFsdo8OlV3GX
+        u4VJVW4JauUK32KQYPmurIZx646HdxyoYB2vF31oePP03TdONGOSBd1iKbUtJglCQl8mVmDv8nu
+        qikJ+Q2RP+W4w/ZtzZmDsM35d
+X-Received: by 2002:a05:600c:35cc:: with SMTP id r12mr4525760wmq.157.1621333635631;
+        Tue, 18 May 2021 03:27:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzL+bP4BGJ/+tDiLE4ZHcq1wv671RbTKwVIAcgFztdQnfjanbuq/Gm2r3B/QzaKSEduy6Y9Cg==
+X-Received: by 2002:a05:600c:35cc:: with SMTP id r12mr4525739wmq.157.1621333635433;
+        Tue, 18 May 2021 03:27:15 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64fd.dip0.t-ipconnect.de. [91.12.100.253])
+        by smtp.gmail.com with ESMTPSA id z3sm1173826wrq.42.2021.05.18.03.27.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 03:27:15 -0700 (PDT)
+Subject: Re: [PATCH v19 6/8] PM: hibernate: disable when there are active
+ secretmem users
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20210513184734.29317-1-rppt@kernel.org>
+ <20210513184734.29317-7-rppt@kernel.org>
+ <20210518102424.GD82842@C02TD0UTHF1T.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <47d0e5b1-ffee-d694-4865-8718619c1be0@redhat.com>
+Date:   Tue, 18 May 2021 12:27:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210517200758.22593-2-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210518102424.GD82842@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rgefjfgrS9OUV_7ZyNMAunab-f5YyX0s
-X-Proofpoint-ORIG-GUID: Hkmf-O1V5pvpzpH5O4B0lZ2JLpM1MQpV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
- phishscore=0 adultscore=0 clxscore=1015 mlxscore=0 malwarescore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105180068
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 10:07 PM, Claudio Imbrenda wrote:
-> When the destroy configuration UVC fails, the page pointed to by the
-> ASCE of the VM becomes poisoned, and, to avoid issues it must not be
-> used again.
+On 18.05.21 12:24, Mark Rutland wrote:
+> On Thu, May 13, 2021 at 09:47:32PM +0300, Mike Rapoport wrote:
+>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>
+>> It is unsafe to allow saving of secretmem areas to the hibernation
+>> snapshot as they would be visible after the resume and this essentially
+>> will defeat the purpose of secret memory mappings.
+>>
+>> Prevent hibernation whenever there are active secret memory users.
 > 
-> Since the page becomes in practice unusable, we set it aside and leak it.
-
-I think we need something a bit more specific.
-
-On creation of a protected guest the top most level of page tables are
-marked by the Ultravisor and can only be used as top level page tables
-for the protected guest that was created. If another protected guest
-would re-use those pages for its top level page tables the UV would
-throw errors.
-
-When a destroy fails the UV will not remove the markings so these pages
-are basically unusable since we can't guarantee that they won't be used
-for a guest ASCE in the future.
-
-Hence we choose to leak those pages in the very unlikely event that a
-destroy fails.
-
-
-LGTM
-
+> Have we thought about how this is going to work in practice, e.g. on
+> mobile systems? It seems to me that there are a variety of common
+> applications which might want to use this which people don't expect to
+> inhibit hibernate (e.g. authentication agents, web browsers).
 > 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->  arch/s390/kvm/pv.c | 53 +++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 52 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-> index 813b6e93dc83..e0532ab725bf 100644
-> --- a/arch/s390/kvm/pv.c
-> +++ b/arch/s390/kvm/pv.c
-> @@ -150,6 +150,55 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
->  	return -ENOMEM;
->  }
->  
-> +/*
-> + * Remove the topmost level of page tables from the list of page tables of
-> + * the gmap.
-> + * This means that it will not be freed when the VM is torn down, and needs
-> + * to be handled separately by the caller, unless an intentional leak is
-> + * intended.
-> + */
-> +static void kvm_s390_pv_remove_old_asce(struct kvm *kvm)
-> +{
-> +	struct page *old;
-> +
-> +	old = virt_to_page(kvm->arch.gmap->table);
-> +	list_del(&old->lru);
-> +	/* in case the ASCE needs to be "removed" multiple times */
-> +	INIT_LIST_HEAD(&old->lru);
+> Are we happy to say that any userspace application can incidentally
+> inhibit hibernate?
 
-?
+It's worth noting that secretmem has to be explicitly enabled by the 
+admin to even work.
 
-> +}
-> +
-> +/*
-> + * Try to replace the current ASCE with another equivalent one.
-> + * If the allocation of the new top level page table fails, the ASCE is not
-> + * replaced.
-> + * In any case, the old ASCE is removed from the list, therefore the caller
-> + * has to make sure to save a pointer to it beforehands, unless an
-> + * intentional leak is intended.
-> + */
-> +static int kvm_s390_pv_replace_asce(struct kvm *kvm)
-> +{
-> +	unsigned long asce;
-> +	struct page *page;
-> +	void *table;
-> +
-> +	kvm_s390_pv_remove_old_asce(kvm);
-> +
-> +	page = alloc_pages(GFP_KERNEL_ACCOUNT, CRST_ALLOC_ORDER);
-> +	if (!page)
-> +		return -ENOMEM;
-> +	list_add(&page->lru, &kvm->arch.gmap->crst_list);
-> +
-> +	table = page_to_virt(page);
-> +	memcpy(table, kvm->arch.gmap->table, 1UL << (CRST_ALLOC_ORDER + PAGE_SHIFT));
-> +
-> +	asce = (kvm->arch.gmap->asce & ~PAGE_MASK) | __pa(table);
-> +	WRITE_ONCE(kvm->arch.gmap->asce, asce);
-> +	WRITE_ONCE(kvm->mm->context.gmap_asce, asce);
-> +	WRITE_ONCE(kvm->arch.gmap->table, table);
-> +
-> +	return 0;
-> +}
-> +
->  /* this should not fail, but if it does, we must not free the donated memory */
->  int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
->  {
-> @@ -164,9 +213,11 @@ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
->  	atomic_set(&kvm->mm->context.is_protected, 0);
->  	KVM_UV_EVENT(kvm, 3, "PROTVIRT DESTROY VM: rc %x rrc %x", *rc, *rrc);
->  	WARN_ONCE(cc, "protvirt destroy vm failed rc %x rrc %x", *rc, *rrc);
-> -	/* Inteded memory leak on "impossible" error */
-> +	/* Intended memory leak on "impossible" error */
->  	if (!cc)
->  		kvm_s390_pv_dealloc_vm(kvm);
-> +	else
-> +		kvm_s390_pv_replace_asce(kvm);
->  	return cc ? -EIO : 0;
->  }
->  
-> 
+-- 
+Thanks,
+
+David / dhildenb
 
