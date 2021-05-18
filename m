@@ -2,131 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DBD3877A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2383B3877A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243176AbhERLaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:30:14 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:37454 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241164AbhERLaL (ORCPT
+        id S243446AbhERLaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:30:18 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38570 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243727AbhERLaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:30:11 -0400
-Received: by mail-lf1-f41.google.com with SMTP id v9so12245412lfa.4;
-        Tue, 18 May 2021 04:28:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p8oGWI2VUTJgGXTQB+7ihhjBGrLVzwUpEAq7z7P8Edo=;
-        b=n5RcaJNvpNGTsRRBfhvJvkH8y3ZrtaMaGnmV31BCtFiNOie87awxnf5DeYQO7KaYMp
-         uDEe93mX665kteT3mXBx+dlLQAetoFcUy1vBjc6x1rFRbO7Maedlmv8kv+O2+dKETsln
-         RLVRC1eSJxqkmOX6dvKxRGur7OKzrkNfYXy/cWeDu6cfaNW9TtbL/xRr9fRVhw4vJhLh
-         RbVgYPSfmpdIBsVAX58Te912+5x5/PJGIughSSE93K+mPF8LSTP1Muycg50UutemINiJ
-         O2glgzWILNx3T14UHzn0JrztzcnODHuH1PwTynVw6QkFf2ZbS+FY452uVwXh2j14wL5J
-         RbHw==
-X-Gm-Message-State: AOAM532TXMOm6QVdL+UcS7Q1qmcV4+KoPPL0ux8MY6bce+AcYxCjp0jk
-        na3W9tPpejaVVbp6N5RS0Oot9jeSzq6ZDQ==
-X-Google-Smtp-Source: ABdhPJy9J++R2t9q5F5o7MNLjaH+0AQwV64QiC9hjm6tvi66rf8cEXmsYLNvEVW133Ok0e9vuFH50A==
-X-Received: by 2002:ac2:4a7c:: with SMTP id q28mr3881544lfp.94.1621337331670;
-        Tue, 18 May 2021 04:28:51 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::1])
-        by smtp.gmail.com with ESMTPSA id b11sm2252729lfi.292.2021.05.18.04.28.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 04:28:50 -0700 (PDT)
-Date:   Tue, 18 May 2021 14:28:45 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: [PATCH v10 10/11] regulator: bd9576: Fix the driver name in id table
-Message-ID: <fedc49458c819da23fa60f19db7bd8ac39257d73.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 18 May 2021 07:30:15 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 801F61F42F40;
+        Tue, 18 May 2021 12:28:55 +0100 (BST)
+Date:   Tue, 18 May 2021 13:28:50 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     <patrice.chotard@foss.st.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH v3 2/3] mtd: spinand: use the spi-mem poll status APIs
+Message-ID: <20210518132850.1558e46b@collabora.com>
+In-Reply-To: <20210518093951.23136-3-patrice.chotard@foss.st.com>
+References: <20210518093951.23136-1-patrice.chotard@foss.st.com>
+        <20210518093951.23136-3-patrice.chotard@foss.st.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
-Content-Disposition: inline
-In-Reply-To: <cover.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 18 May 2021 11:39:50 +0200
+<patrice.chotard@foss.st.com> wrote:
 
---IJpNTDwzlM2Ie8A6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: Patrice Chotard <patrice.chotard@foss.st.com>
+> 
+> Make use of spi-mem poll status APIs to let advanced controllers
+> optimize wait operations.
 
-Driver name was changed in MFD cell:
-https://lore.kernel.org/lkml/560b9748094392493ebf7af11b6cc558776c4fd5.16130=
-31055.git.matti.vaittinen@fi.rohmeurope.com/
-Fix the ID table to match this.
+This should also fix the high CPU usage you were reporting for those
+that don't have a dedicated STATUS poll block logic, which is great!
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-No changes since RFC-v2
----
- drivers/regulator/bd9576-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> ---
+> Changes in v3:
+>   - Add initial_delay_us and polling_delay_us parameters to spinand_wait()
+>   - Add SPINAND_READ/WRITE/ERASE/RESET_INITIAL_DELAY_US and
+>     SPINAND_READ/WRITE/ERASE/RESET_POLL_DELAY_US defines.
+> 
+> Changes in v2:
+>   - non-offload case is now managed by spi_mem_poll_status()
+> 
+>  drivers/mtd/nand/spi/core.c | 45 ++++++++++++++++++++++++++-----------
+>  include/linux/mtd/spinand.h | 11 ++++++++-
+>  2 files changed, 42 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 17f63f95f4a2..ef2a692ab5b6 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -473,20 +473,26 @@ static int spinand_erase_op(struct spinand_device *spinand,
+>  	return spi_mem_exec_op(spinand->spimem, &op);
+>  }
+>  
+> -static int spinand_wait(struct spinand_device *spinand, u8 *s)
+> +static int spinand_wait(struct spinand_device *spinand,
+> +			unsigned long initial_delay_us,
+> +			unsigned long poll_delay_us,
+> +			u8 *s)
+>  {
+> -	unsigned long timeo =  jiffies + msecs_to_jiffies(400);
+> +	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
+> +						      spinand->scratchbuf);
+>  	u8 status;
+>  	int ret;
+>  
+> -	do {
+> -		ret = spinand_read_status(spinand, &status);
+> -		if (ret)
+> -			return ret;
+> +	ret = spi_mem_poll_status(spinand->spimem, &op, STATUS_BUSY, 0,
+> +				  initial_delay_us,
+> +				  poll_delay_us,
+> +				  SPINAND_STATUS_TIMEOUT_MS);
+> +	if (ret)
+> +		return ret;
+>  
+> -		if (!(status & STATUS_BUSY))
+> -			goto out;
+> -	} while (time_before(jiffies, timeo));
+> +	status = *spinand->scratchbuf;
+> +	if (!(status & STATUS_BUSY))
+> +		goto out;
+>  
+>  	/*
+>  	 * Extra read, just in case the STATUS_READY bit has changed
+> @@ -526,7 +532,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
+>  	if (ret)
+>  		return ret;
+>  
+> -	return spinand_wait(spinand, NULL);
+> +	return spinand_wait(spinand,
+> +			    SPINAND_RESET_INITIAL_DELAY_US,
+> +			    SPINAND_RESET_POLL_DELAY_US,
+> +			    NULL);
+>  }
+>  
+>  static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+> @@ -549,7 +558,10 @@ static int spinand_read_page(struct spinand_device *spinand,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spinand_wait(spinand, &status);
+> +	ret = spinand_wait(spinand,
+> +			   SPINAND_READ_INITIAL_DELAY_US,
+> +			   SPINAND_READ_POLL_DELAY_US,
+> +			   &status);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> @@ -585,7 +597,10 @@ static int spinand_write_page(struct spinand_device *spinand,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spinand_wait(spinand, &status);
+> +	ret = spinand_wait(spinand,
+> +			   SPINAND_WRITE_INITIAL_DELAY_US,
+> +			   SPINAND_WRITE_POLL_DELAY_US,
+> +			   &status);
+>  	if (!ret && (status & STATUS_PROG_FAILED))
+>  		return -EIO;
+>  
+> @@ -768,7 +783,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spinand_wait(spinand, &status);
+> +	ret = spinand_wait(spinand,
+> +			   SPINAND_ERASE_INITIAL_DELAY_US,
+> +			   SPINAND_ERASE_POLL_DELAY_US,
+> +			   &status);
+> +
+>  	if (!ret && (status & STATUS_ERASE_FAILED))
+>  		ret = -EIO;
+>  
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 6bb92f26833e..180c1fa64e62 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -169,7 +169,16 @@
+>  struct spinand_op;
+>  struct spinand_device;
+>  
+> -#define SPINAND_MAX_ID_LEN	4
+> +#define SPINAND_MAX_ID_LEN		4
+> +#define SPINAND_READ_INITIAL_DELAY_US	6
+> +#define SPINAND_READ_POLL_DELAY_US	5
+> +#define SPINAND_RESET_INITIAL_DELAY_US	5
+> +#define SPINAND_RESET_POLL_DELAY_US	5
+> +#define SPINAND_WRITE_INITIAL_DELAY_US	75
+> +#define SPINAND_WRITE_POLL_DELAY_US	15
+> +#define SPINAND_ERASE_INITIAL_DELAY_US	250
+> +#define SPINAND_ERASE_POLL_DELAY_US	50
 
-diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd957=
-6-regulator.c
-index 6ba12af4c632..d78d6127c573 100644
---- a/drivers/regulator/bd9576-regulator.c
-+++ b/drivers/regulator/bd9576-regulator.c
-@@ -1114,8 +1114,8 @@ static int bd957x_probe(struct platform_device *pdev)
- }
-=20
- static const struct platform_device_id bd957x_pmic_id[] =3D {
--	{ "bd9573-pmic", ROHM_CHIP_TYPE_BD9573 },
--	{ "bd9576-pmic", ROHM_CHIP_TYPE_BD9576 },
-+	{ "bd9573-regulator", ROHM_CHIP_TYPE_BD9573 },
-+	{ "bd9576-regulator", ROHM_CHIP_TYPE_BD9576 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(platform, bd957x_pmic_id);
---=20
-2.25.4
+Could you add a comment explaining where those numbers come from?
 
+> +#define SPINAND_STATUS_TIMEOUT_MS	400
 
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+I would name that one SPINAND_WAITRDY_TIMEOUT_MS.
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
+>  
+>  /**
+>   * struct spinand_id - SPI NAND id structure
 
---IJpNTDwzlM2Ie8A6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCjpOwACgkQeFA3/03a
-ocVHvAgAk5TYVroNGjB3VeUtXkxOXaJtptkxVhol7fhNBjIdky+a8aTKSN+K/jGK
-hXfAbF9OwsKluT+uC/RcYGgK91UQnbcMjulpPneUdAyJbc2W65FdB2UyZMunUn6Q
-r+4pSHwEauU7rBghQkYPj0PQbpSMlUYB13LiaAxmNzxdyQsDeXMWB2Lc9BtZ1KqL
-LaKdocnmNtW0V2j+PV7Ij2NBvwaUMk4yls3zCf8VWWYvQrksR5CpiwemUnFWUo5k
-ODsINwQ15zThOag7laZPi2viRt9+QbpuDP/EvjdpEgiX1jclLEFAeB8mtBq2J2Dx
-Y1rdSGrcchEdpTAoSFptGAjnrAX5pA==
-=VR7K
------END PGP SIGNATURE-----
-
---IJpNTDwzlM2Ie8A6--
