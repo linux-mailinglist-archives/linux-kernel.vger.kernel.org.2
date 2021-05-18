@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F157438729C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A78387297
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbhERGuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 02:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242314AbhERGuT (ORCPT
+        id S242262AbhERGuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 02:50:07 -0400
+Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84]:30904 "EHLO
+        fgw23-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239746AbhERGuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 02:50:19 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC2CC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 23:49:01 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id a7so131426qvf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 23:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3HopsH6N9F8FpkG4FSoTMtRMwuiSWSuF3ZB9X+VJCjU=;
-        b=LETfA+HNnfbbscLemZLHMHTU1ucDVUTbar59Z+Ip1n1aOSxU2vCiyi6AnzZ7ISe1Ci
-         d5+6nDZp7u09C4wccj2HMQoLbhxVgGmyilxSsMMqy6XnJ9Gh0XN/+XAYDZzV88am1gOT
-         FB7ehF0SoAEZFAQ80iPByl3CmJPeIGWiXIdbM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3HopsH6N9F8FpkG4FSoTMtRMwuiSWSuF3ZB9X+VJCjU=;
-        b=lsEhaG1g8S0jLWNFCm1cUYMM2UK4T1PPj5QSymnFj9OKDG0vaXlXAVHd8TxDDsWs9g
-         6JT1UUjfVca/qACMB2pdJfY1vwfEc4l8MNn5zC/rO3u1lvd9FdCG6h8bThigt5LdAK8q
-         /nbDF4B1wMjBK6llFZMW/GewOA4RaEjNb3EXoEa71P+1wRymVezHs7Esc1siaDTEkIiH
-         Wb9/Xju83/QMETWSM7NUc8sFLOeozLJCKsmoioY1RH40nfTJqdIGTtCap6M8Z63EtRsT
-         U/oejdKqz8ETmklvCV6v6d73o2vevFMaT9B2maTQQzTxlzEhiKPIUVQiQDGCmE8NkKfD
-         OHUg==
-X-Gm-Message-State: AOAM533e+sWm9u3t7SRBlK4B0Tfz7UYLPZv1zgNRgdfmUbib/Tacrwkp
-        rhniPJlanxltSjj/WOKlA3HRrOl+DY+rLA==
-X-Google-Smtp-Source: ABdhPJzuZKSS3Ikmi+aFjmjmedMGiO5jzKxWYCy9Q0gQnEimE3SzWwb7+bKLCO2ZgaTMhvPcWcSdwQ==
-X-Received: by 2002:ad4:4c45:: with SMTP id cs5mr4065686qvb.6.1621320539946;
-        Mon, 17 May 2021 23:48:59 -0700 (PDT)
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com. [209.85.222.175])
-        by smtp.gmail.com with ESMTPSA id s5sm12381512qkg.88.2021.05.17.23.48.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 23:48:59 -0700 (PDT)
-Received: by mail-qk1-f175.google.com with SMTP id x8so8349477qkl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 23:48:58 -0700 (PDT)
-X-Received: by 2002:a05:6638:32a8:: with SMTP id f40mr3969029jav.84.1621320526895;
- Mon, 17 May 2021 23:48:46 -0700 (PDT)
+        Tue, 18 May 2021 02:50:05 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
+        id 16f4ce59-b7a5-11eb-8ccd-005056bdfda7;
+        Tue, 18 May 2021 09:48:44 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v2 1/1] device property: Don't check for NULL twice in the loops
+Date:   Tue, 18 May 2021 09:48:43 +0300
+Message-Id: <20210518064843.3524015-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210518064215.2856977-1-tientzu@chromium.org> <20210518064215.2856977-5-tientzu@chromium.org>
-In-Reply-To: <20210518064215.2856977-5-tientzu@chromium.org>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Tue, 18 May 2021 14:48:35 +0800
-X-Gmail-Original-Message-ID: <CALiNf2_AWsnGqCnh02ZAGt+B-Ypzs1=-iOG2owm4GZHz2JAc4A@mail.gmail.com>
-Message-ID: <CALiNf2_AWsnGqCnh02ZAGt+B-Ypzs1=-iOG2owm4GZHz2JAc4A@mail.gmail.com>
-Subject: Re: [PATCH v7 04/15] swiotlb: Add restricted DMA pool initialization
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I didn't move this to a separate file because I feel it might be
-confusing for swiotlb_alloc/free (and need more functions to be
-non-static).
-Maybe instead of moving to a separate file, we can try to come up with
-a better naming?
+In fwnode_get_next_available_child_node() we check next_child for NULL
+twice. All the same in fwnode_get_next_parent_dev() we may avoid checking
+fwnode for NULL twice.
+
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+v2: returned NULLs directly (Rafael)
+ drivers/base/property.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index dd98759d688b..c26370aacdc6 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -627,14 +627,15 @@ EXPORT_SYMBOL_GPL(fwnode_get_next_parent);
+  */
+ struct device *fwnode_get_next_parent_dev(struct fwnode_handle *fwnode)
+ {
+-	struct device *dev = NULL;
++	struct device *dev;
+ 
+ 	fwnode_handle_get(fwnode);
+ 	do {
+ 		fwnode = fwnode_get_next_parent(fwnode);
+-		if (fwnode)
+-			dev = get_dev_from_fwnode(fwnode);
+-	} while (fwnode && !dev);
++		if (!fwnode)
++			return NULL;
++		dev = get_dev_from_fwnode(fwnode);
++	} while (!dev);
+ 	fwnode_handle_put(fwnode);
+ 	return dev;
+ }
+@@ -742,10 +743,9 @@ fwnode_get_next_available_child_node(const struct fwnode_handle *fwnode,
+ 
+ 	do {
+ 		next_child = fwnode_get_next_child_node(fwnode, next_child);
+-
+-		if (!next_child || fwnode_device_is_available(next_child))
+-			break;
+-	} while (next_child);
++		if (!next_child)
++			return NULL;
++	} while (!fwnode_device_is_available(next_child));
+ 
+ 	return next_child;
+ }
+-- 
+2.31.1
+
