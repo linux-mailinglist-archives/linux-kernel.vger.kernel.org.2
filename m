@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CF93882A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7833882B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352701AbhERWUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 18:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        id S1352728AbhERWVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 18:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236372AbhERWUS (ORCPT
+        with ESMTP id S1352722AbhERWVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 18:20:18 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBE2C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:18:58 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id h9so11315114oih.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:18:58 -0700 (PDT)
+        Tue, 18 May 2021 18:21:30 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1934C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:20:10 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 131so13262520ljj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Yazsg80d5R8pUukq3uU44JSO6L/ec0vuHN2nnYiZnDw=;
-        b=eNHA+60Y70M5AFCs5uRynQCs5aRQ+8RuK/nuh09ecH15Heuxs+6AbybFWwB9+e6D4L
-         r30NcwBr3FK1CHmVd1MBIVJBmrI8YQNxIwTG9TKaADff3Rj4p4cvI46t5MbkT0M3sMAW
-         /IrRaQC3lHCvS1G0jhfZ8oZHqdBX/uSKJpuxk=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PUf9XT5CCu/J0Hg+9JaJkiWdRUNebcIzPzoiO7Euexs=;
+        b=cojriOorSV9jnlpm7gCjTmIpC1epvLKbDT76cfaCHIptdXb9gsx9TdmRTwg5hj89iP
+         dARDZ9H2Tivs976nEnFnp9wSBdutmcunp0dqJryoPWeLeuvpnB7225Nmrf3GrzNE8JAC
+         f2nnC2vXS1s2P2N78ymYCl8kqGuh/HgAbVaj2ziqXbw4kQEVLFaSLX2xjdXq4svKLy4O
+         wUJdyKti/FOxbOYt/um2BrCJHKZ2sFJYX9n1RAPalWem3r9tSlrfDsFWoMeRnjQ6kk7l
+         HvqKu7lOJHIXEqIg0l+xWSQHmWqgzxRhm16oWfA+n/gy5axoeeff2hUs1pHKWg4NVWm6
+         RLXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Yazsg80d5R8pUukq3uU44JSO6L/ec0vuHN2nnYiZnDw=;
-        b=uPTqiZ4ZJgxIWxOlzIo+4ZV0sRjW4Kc5TvRSKUB8fOh+lvFLr/218TxjGR9cTnGXR4
-         hKokyeKuJXXrUeMxiGVl1qXsvU5kkqxBjgrLOemXQML1/3cjjb2iWU3+gIjB6MRdteLj
-         kTg0DeKYKBHICU5X50onhh7WxTMEudH9AgpfDB8I02RvTOn9F/uFNcyCg8Aehz1CKjzO
-         XzTw975ZRzbaIULfoAYTUXEfUv2MQp+vHpUXHiMBy6dzKq3p5qg7ZkT1hWXPuf0slB2L
-         k9Ixb1eersyIzJj0vMXKRKz9M3+oucYLQmo1wrEMlqHslyu4U4ZyBs/KrVD8the5GyAW
-         ItnA==
-X-Gm-Message-State: AOAM530FLrVOB6uw7xp2R1fmvtdr1UmJ3Fa2TmKxR3FQd+QRXpX9HveK
-        S5sZTB/bMUsS4PGLPnbGVSBsKA==
-X-Google-Smtp-Source: ABdhPJy89URKoTpM78+NFQ1y4H8rpy5QjDbTENsxB3lAViQQ7zii9kuf3/Fvcr17DQbdi8c7ycmQkw==
-X-Received: by 2002:a05:6808:1142:: with SMTP id u2mr5021288oiu.101.1621376338105;
-        Tue, 18 May 2021 15:18:58 -0700 (PDT)
-Received: from rrangel920.bld.corp.google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
-        by smtp.gmail.com with ESMTPSA id j18sm4069667ota.7.2021.05.18.15.18.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 15:18:57 -0700 (PDT)
-From:   Raul E Rangel <rrangel@chromium.org>
-To:     linux-pm@vger.kernel.org
-Cc:     kim.phillips@amd.com, peterz@infradead.org,
-        Raul E Rangel <rrangel@chromium.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] powercap/intel_rapl: Add AMD Fam19h RAPL support
-Date:   Tue, 18 May 2021 16:18:53 -0600
-Message-Id: <20210518161842.1.Ifec9c629767197bbd80312ebea93ec8bbfafbf06@changeid>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PUf9XT5CCu/J0Hg+9JaJkiWdRUNebcIzPzoiO7Euexs=;
+        b=aag7kXHUw8W2B6ZEMUwmdcwZpfgEruAeY1UjwQtHCCPAxWSEAIzLJHtsth079+rXA6
+         Rb8gN28YbR4mBVoDIzj51rzAXVHL3RbOH3PyJUwVg4ds/MhgJL1NmdBMPvpFXg6GDIW+
+         esu92wr/DyxLW4y/hhD4Dqr9Vx/0e3IQgDdD4FeQY9/97fwUbJC1OimTkelK+t6pxwwa
+         nRuFVgBQrfwjLXSl5qMp8wQBh9/RDk18d8eJ8DeKCdK0vn8EjByXDdKEw+FnoO/D0ATx
+         F1D9/VcWYoT2zfRcUDofZRzkWksqQB5TmOp1PIUwR6b9CpQxk/OVZ8J93UkSCKx4N5+u
+         1GlQ==
+X-Gm-Message-State: AOAM5309zQVgUW1wzHRC9e/N990O314pWjQqpz30rTTl1i7vEfypKG4d
+        MBW6sDvcleX/QLV6fuut7/mAB3jA4ibVDasQnFDuhw==
+X-Google-Smtp-Source: ABdhPJyUn5IvLW+2QdnUKt21vKpBlHrbIQXWm+UgcLTWVmVgXLbnfPFmV9LTAa+69jzgp/D6W+NNGCMLk2wfD2GFsNs=
+X-Received: by 2002:a2e:90c7:: with SMTP id o7mr5791882ljg.368.1621376409523;
+ Tue, 18 May 2021 15:20:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210518120633.GW12395@shell.armlinux.org.uk> <E1liyda-0005B4-Kk@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1liyda-0005B4-Kk@rmk-PC.armlinux.org.uk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 19 May 2021 00:19:58 +0200
+Message-ID: <CACRpkdbZObW2SXdTUkPrsezjjVU19emts420EN-uhkHWb+4vrA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] ARM: change vmalloc_min to vmalloc_start
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>
+Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hailong liu <carver4lio@163.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a77259bdcb62 ("perf/x86/rapl: Add AMD Fam19h RAPL support") added
-RAPL support for Fam 19h. This CL adds the missing powercap support.
+On Tue, May 18, 2021 at 2:15 PM Russell King (Oracle)
+<rmk+kernel@armlinux.org.uk> wrote:
 
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
----
+> Change the current vmalloc_min, which is supposed to be the lowest
+> address of vmalloc space including the VMALLOC_OFFSET, to vmalloc_start
+> which does not include VMALLOC_OFFSET.
+>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
- drivers/powercap/intel_rapl_common.c | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
-index b9d9eadadbb0..f0799837c2dd 100644
---- a/drivers/powercap/intel_rapl_common.c
-+++ b/drivers/powercap/intel_rapl_common.c
-@@ -1068,6 +1068,7 @@ static const struct x86_cpu_id rapl_ids[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,	&rapl_defaults_hsw_server),
- 
- 	X86_MATCH_VENDOR_FAM(AMD, 0x17, &rapl_defaults_amd),
-+	X86_MATCH_VENDOR_FAM(AMD, 0x19, &rapl_defaults_amd),
- 	{}
- };
- MODULE_DEVICE_TABLE(x86cpu, rapl_ids);
--- 
-2.31.1.751.gd2f1c929bd-goog
+> +static unsigned long __initdata vmalloc_start = VMALLOC_END - (240 << 20);
 
+When I first read this it took me some time to figure out what was
+going on here, so if you have time, please fold in a comment
+with some explanation of that (240 << 20) thing, in some blog
+post I described it as "an interesting way to write 0x0f000000"
+but I suppose commit 0536bdf33faf chose this way for a
+specific reason? (Paging Nico if he can explain it.)
+
+Yours,
+Linus Walleij
