@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6054538772C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3ED38772D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348295AbhERLMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:12:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58458 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241330AbhERLMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:12:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9E575AF19;
-        Tue, 18 May 2021 11:11:03 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 17e25bfa;
-        Tue, 18 May 2021 11:10:57 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        0day robot <lkp@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Luis Henriques <lhenriques@suse.de>
-Subject: [PATCH] vfs: fix early copy_file_range return when len is zero
-Date:   Tue, 18 May 2021 12:10:55 +0100
-Message-Id: <20210518111055.16079-1-lhenriques@suse.de>
-In-Reply-To: <877dk1zibo.fsf@suse.de>
-References: <877dk1zibo.fsf@suse.de>
+        id S1348737AbhERLNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:13:18 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:41544 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241330AbhERLNR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 07:13:17 -0400
+Received: from Wanjb.localdomain (unknown [36.152.145.182])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id 8DBC5AC0516;
+        Tue, 18 May 2021 19:11:57 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiabing Wan <kael_w@yeah.net>,
+        Wan Jiabing <wanjiabing@vivo.com>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: media: atomisp: Align block comments
+Date:   Tue, 18 May 2021 19:11:12 +0800
+Message-Id: <20210518111125.87304-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ0MZS1ZITU4eSktITkpDS09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oj46HQw5Kj8VLysUTA0sHBxN
+        EzhPCT5VSlVKTUlKSEhNSEpDSUpCVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJS0xONwY+
+X-HM-Tid: 0a797f2cdf88b039kuuu8dbc5ac0516
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The early return from copy_file_range when len is zero should check if the
-filesystem really implements this syscall, returning -EOPNOTSUPP if it doesn't,
-and 0 otherwise.
+From: Jiabing Wan<kael_w@yeah.net>
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Fixing the following checkpatch warning:
+WARNING: Block comments should align the * on each line
+
+Signed-off-by: Jiabing Wan<kael_w@yeah.net>
 ---
-Hi!
+ .../atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Since I got not feedback, I'm sending a patch that should fix this issue
-reported by 0day.  Probably this should simply be squashed into v9, I can
-send v10 if you prefer that.
-
-Cheers,
---
-Luis
-
- fs/read_write.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 9db7adf160d2..24b4bf704765 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1498,7 +1498,7 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
- 		return ret;
+diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h b/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h
+index be3534e46c15..9b22f2da45d5 100644
+--- a/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h
++++ b/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h
+@@ -17,8 +17,8 @@
+ #define __IA_CSS_ANR_TYPES_H
  
- 	if (len == 0)
--		return 0;
-+		return file_out->f_op->copy_file_range ? 0 : -EOPNOTSUPP;
+ /* @file
+-* CSS-API header file for Advanced Noise Reduction kernel v1
+-*/
++ * CSS-API header file for Advanced Noise Reduction kernel v1
++ */
  
- 	file_start_write(file_out);
- 
+ /* Application specific DMA settings  */
+ #define ANR_BPP                 10
+-- 
+2.20.1
+
