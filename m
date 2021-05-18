@@ -2,123 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E789387E3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681AE387E43
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351089AbhERRLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:11:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:57380 "EHLO foss.arm.com"
+        id S1350795AbhERRMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:12:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239478AbhERRLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:11:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0F9F101E;
-        Tue, 18 May 2021 10:10:28 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38BCE3F73B;
-        Tue, 18 May 2021 10:10:27 -0700 (PDT)
-Date:   Tue, 18 May 2021 18:10:24 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210518171024.GF3993@e120325.cambridge.arm.com>
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
- <1621239831-5870-3-git-send-email-beata.michalska@arm.com>
- <87mtst1s8m.mognet@arm.com>
- <20210517131816.GA13965@e120325.cambridge.arm.com>
- <87k0nx1jtu.mognet@arm.com>
- <20210518144033.GB3993@e120325.cambridge.arm.com>
- <87bl9811il.mognet@arm.com>
+        id S239478AbhERRMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:12:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B686460FF2;
+        Tue, 18 May 2021 17:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621357856;
+        bh=zyu3M9789at9L5JkPqLyjf7RRXYDUAb83BZV6wHRdY8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pzekA2tYlJ+RlkC3VaIJZRZRjCB5UTWQI4L9U50cA5tw++oU2e0ygkWHcPbsADygc
+         Hlcq08q6OkwcAacZZ3D3RePb7GFVVIyi9w4Bx4u04GSgpxHm/gjnoYOKtxLEJWuJCv
+         YvFdddaXxVq6U1AVZJ/JONx974sq+VTUWtyfDocj+xkIB7iyekvJnMwStN73h0dKDK
+         zmtbhnPeqawmIoCaoa/tf72sH3RV7tIC97Tughg8KtpMgUa3SAPaP62QKgAbavZsJz
+         b5qJMJQG1EhkQow2vRbA4zptY+q5Sd9tigqOWjQwFd3RjoS8MpTFJcSOanVtmEY0tS
+         edGSyPIo53Crg==
+Subject: Re: [RFC PATCH v2 00/11] x86: Support Intel Key Locker
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        X86 ML <x86@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210514201508.27967-1-chang.seok.bae@intel.com>
+ <9f556d3b-49d3-5b0b-0d92-126294ea082d@kernel.org>
+ <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <247d9a25-f32f-d01b-61ff-b1966e382907@kernel.org>
+Date:   Tue, 18 May 2021 10:10:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bl9811il.mognet@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 04:53:54PM +0100, Valentin Schneider wrote:
-> On 18/05/21 15:40, Beata Michalska wrote:
-> > On Mon, May 17, 2021 at 04:06:05PM +0100, Valentin Schneider wrote:
-> >> On 17/05/21 14:18, Beata Michalska wrote:
-> >> > On Mon, May 17, 2021 at 01:04:25PM +0100, Valentin Schneider wrote:
-> >> >> On 17/05/21 09:23, Beata Michalska wrote:
-> >> >> > +static void asym_cpu_capacity_scan(const struct cpumask *cpu_map)
-> >> >> > +{
-> >> >> > +	struct asym_cap_data *entry, *next;
-> >> >> > +	int cpu;
-> >> >> >
-> >> >> > -		for_each_sd_topology(tl) {
-> >> >> > -			if (tl_id < asym_level)
-> >> >> > -				goto next_level;
-> >> >> > +	if (!list_empty(&asym_cap_list))
-> >> >> > +		list_for_each_entry(entry, &asym_cap_list, link)
-> >> >> > +			cpumask_clear(entry->cpu_mask);
-> >> >> >
-> >> >>
-> >> >> The topology isn't going to change between domain rebuilds, so why
-> >> >> recompute the masks? The sched_domain spans are already masked by cpu_map,
-> >> >> so no need to do this masking twice. I'm thinking this scan should be done
-> >> >> once against the cpu_possible_mask - kinda like sched_init_numa() done once
-> >> >> against the possible nodes.
-> >> >>
-> >> > This is currently done, as what you have mentioned earlier, the tl->mask
-> >> > may contain CPUs that are not 'available'. So it makes sure that the masks
-> >> > kept on  the list are representing only those CPUs that are online.
-> >> > And it is also needed case all CPUs of given capacity go offline - not to to
-> >> > lose the full asymmetry that might change because of that ( empty masks are
-> >> > being removed from the list).
-> >> >
-> >> > I could change that and use the CPU mask that represents the online CPUs as
-> >> > a checkpoint but then it also means additional tracking which items on the
-> >> > list are actually available at a given point of time.
-> >> > So if the CPUs masks on the list are to be set once (as you are suggesting)
-> >> > than it needs additional logic to count the number of available capacities
-> >> > to decide whether there is a full asymmetry or not.
-> >> >
-> >>
-> >> That should be doable by counting non-empty intersections between each
-> >> entry->cpumask and the cpu_online_mask in _classify().
-> >>
-> >> That said I'm afraid cpufreq module loading forces us to dynamically update
-> >> those masks, as you've done. The first domain build could see asymmetry
-> >> without cpufreq loaded, and a later one with cpufreq loaded would need an
-> >> update. Conversely, as much of a fringe case as it is, we'd have to cope
-> >> with the cpufreq module being unloaded later on...
-> >>
-> >> :(
-> > So it got me thinking that maybe we could actually make it more
-> > 'update-on-demand' and use the cpufreq policy notifier to trigger the update.
-> > I could try to draft smth generic enough to make it ... relatively easy to adapt
-> > to different archs case needed.
-> > Any thoughts ?
-> >
+On 5/17/21 11:21 AM, Bae, Chang Seok wrote:
+> On May 15, 2021, at 11:01, Andy Lutomirski <luto@kernel.org> wrote:
+>> On 5/14/21 1:14 PM, Chang S. Bae wrote:
+>>> Key Locker [1][2] is a new security feature available in new Intel CPUs to
+>>> protect data encryption keys for the Advanced Encryption Standard
+>>> algorithm. The protection limits the amount of time an AES key is exposed
+>>> in memory by sealing a key and referencing it with new AES instructions.
+>>>
+>>> The new AES instruction set is a successor of Intel's AES-NI (AES New
+>>> Instruction). Users may switch to the Key Locker version from crypto
+>>> libraries.  This series includes a new AES implementation for the Crypto
+>>> API, which was validated through the crypto unit tests. The performance in
+>>> the test cases was measured and found comparable to the AES-NI version.
+>>>
+>>> Key Locker introduces a (CPU-)internal key to encode AES keys. The kernel
+>>> needs to load it and ensure it unchanged as long as CPUs are operational.
+>>
+>> I have high-level questions:
+>>
+>> What is the expected use case?
 > 
-> The cpufreq policy notifier rebuild is currently an arch_topology.c
-> specificity, and perhaps we can consider this as our standing policy: if an
-> arch needs a topology rebuild upon X event (which isn't hotplug), it is
-> responsible for triggering it itself.
+> The wrapping key here is only used for new AES instructions.
 > 
-> There's those sched_energy_update / arch_update_cpu_topology() bools that
-> are used to tweak the rebuild behaviour, perhaps you could gate the
-> capacity maps rebuild behind arch_update_cpu_topology()?
-> 
-> That way you could build those maps based on a cpu_possible_mask iterator,
-> and only rebuild them when the arch requests it (arch_topology already does
-> that with the cpufreq notifier). How does it sound?
->
-That sounds reasonable/doable. Will see how that plays out.
-Thanks.
+> I’m aware of their potential use cases for encrypting file system or disks.
 
----
-BR
-B.
-> > ---
-> > BR
-> > B.
+I would like to understand what people are actually going to do with
+this.  Give me a user story or two, please.  If it turns out to be
+useless, I would rather not merge it.
+
+
+> 
+>> I certainly understand how KL is valuable in a context where
+>> a verified boot process installs some KL keys that are not subsequently
+>> accessible outside the KL ISA, but Linux does not really work like this.
+> 
+> Do you mind elaborating on the concern?  I try to understand any issue with
+> PATCH3 [1], specifically.
+
+My concern has nothing to do with your patches per se.
+
+I want to understand the entire workflow that makes Key Locker safer
+than not using Key Locker.  Something like:
+
+Step 1: Computer is powered on.
+Step 2: Boot loader loads Linux
+Step 3: Linux does such-and-such
+Step 4: Attacker compromises the computer in the following way
+
+and an explanation of why this is realistic and how Key Locker helps
+would be nice.
+
+>> What is the expected interaction between a KL-using VM guest and the
+>> host VMM?  Will there be performance impacts (to context switching, for
+>> example) if a guest enables KL, even if the guest does not subsequently
+>> do anything with it?  Should Linux actually enable KL if it detects that
+>> it's a VM guest?  Should Linux have use a specific keying method as a guest?
+> 
+> First of all, there is an RFC series for KVM [2].
+> 
+> Each CPU has one internal key state so it needs to reload it between guest and
+> host if both are enabled. The proposed approach enables it exclusively; expose
+> it to guests only when disabled in a host. Then, I guess a guest may enable it.
+
+I read that series.  This is not a good solution.
+
+I can think of at least a few reasonable ways that a host and a guest
+can cooperate to, potentially, make KL useful.
+
+a) Host knows that the guest will never migrate, and guest delegates
+IWKEY management to the host.  The host generates a random key and does
+not permit the guest to use LOADIWKEY.  The guest shares the random key
+with the host.  Of course, this means that a host key handle that leaks
+to a guest can be used within the guest.
+
+b) Host may migrate the guest.  Guest delegates IWKEY management to the
+host, and the host generates and remembers a key for the guest.  On
+migration, the host forwards the key to the new host.  The host can
+still internally any type of key, but context switches may be quite slow.
+
+c) Guest wants to manage its own non-random key.  Host lets it and
+context switches it.
+
+d) Guest does not need KL and leaves CR4.KL clear.  Host does whatever
+it wants with no overhead.
+
+All of these have tradeoffs.
+
+My current thought is that, if Linux is going to support Key Locker,
+then this all needs to be explicitly controlled.  On initial boot, Linux
+should not initialize Key Locker.  Upon explicit administrator request
+(via sysfs?), Linux will initialize Key Locker in the mode requested by
+the administrator.  Modes could include:
+
+native_random_key: Use a random key per the ISA.
+
+native_kernel_key_remember: Use a random key but load it as a non-random
+key.  Remember the key in kernel memory and use it for S3 resume, etc.
+
+native_kernel_key_backup: Use a random key, put it in the backup
+storage, and forget it.  Use the backup for resume, etc.
+
+native_kernel_key_norestore: Use a random key.  The key is lost on any
+power transition that forgets the key.  Backup is not used.
+
+paravirt_any: Ask the hypervisor to handle keying.  Any mechanism is
+acceptable.
+
+paravirt_random: Ask the hypervisor for a random key.  Only succeeds if
+we get an actual random key.
+
+
+
+Does this make sense?
