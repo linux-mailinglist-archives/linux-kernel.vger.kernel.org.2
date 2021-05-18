@@ -2,282 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CB4387A4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB52387A55
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbhERNpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:45:11 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:47557 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231651AbhERNpF (ORCPT
+        id S234878AbhERNp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:45:27 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:46723 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233678AbhERNpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:45:05 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IDX09T023585;
-        Tue, 18 May 2021 15:43:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=8AZAm1rYFrqjMmL5OBgAh2MTm/hfUkeF/tjHlI61Kos=;
- b=o1ZubXZi7VKHk/Fol20A/gol7sffrS+aOlUR7u5I+ZHe4GV99lwSoWbxyLJIxvPbOI3j
- JvHj2QJodUJ9yhOoXG6lIQSAfIfK0oXW28yDidw9bHGgeLakYVC+AgMG9eQfuR0URLnB
- lEwpDIc9btZ+7sLZJ+0k7plqWl2WsBC0Yz3n+xL1hLU0NvVLjuieJcB2pUJx9QJpzrGY
- Mphj9DOFpem38aEd0/UGzb1pO+HoU3SNxlPgYhT/sAXdssweNlNgTOi1z7LPAOaGXGHp
- lt8g5wNsvLt7xY+D2tyoR+uEKbaBR8GN4ji9kOQ0u0OUVP4CAxyZw7QBdRMVcmh7u3Jn gw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38maunsgw8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 15:43:36 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 559CD100034;
-        Tue, 18 May 2021 15:43:36 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 44EA9227D8B;
-        Tue, 18 May 2021 15:43:36 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 15:43:35
- +0200
-From:   <patrice.chotard@foss.st.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
-Subject: [PATCH v4 3/3] spi: stm32-qspi: add automatic poll status feature
-Date:   Tue, 18 May 2021 15:43:32 +0200
-Message-ID: <20210518134332.17826-4-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210518134332.17826-1-patrice.chotard@foss.st.com>
-References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
+        Tue, 18 May 2021 09:45:17 -0400
+Received: by mail-ot1-f48.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso8609558otb.13;
+        Tue, 18 May 2021 06:43:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4jm0S8ddMwt/uhSM0T7FAx+DzX2TUerJKHM1uev3sJo=;
+        b=riw202ukrBM78UBj9hYe4zJU9NOD65jD87FO6+IYAdI8bz3xAK+MoRmtvZazxeQFfh
+         mLg+fnbE588xucUhCL95oso0d9rKZM7T7ddxFSAPoW48O7Rjbn263Ak/TkRUTJ8KIiGQ
+         lFFgSlL6gAuJxX1axS7LcZz5Z/ZHo5jTC+rc+Gxnjj8xkxhFzy4AAeyyVjSWM5yIWfgd
+         JPnse6YJa+yM0uh8IYd00Oi4ETZ3HPQGri5L9tj37mPJMF0I/zJ4k32PR3vSr1lMrR1a
+         61wCamM0YbeIdQiC1ZTMs0QA/Q0YScM7ipqKPK0IxfsZTjrjeUNQt7b9zN5Qgb6vGB7J
+         3ipA==
+X-Gm-Message-State: AOAM5331dWyXRBUxiWUrkvhyJ/vbFFfE0gXvc72poT1H2qTyFF0ZBtMo
+        AbMkRu3huQ0kDUPAcG/DeJnYPZPHSg==
+X-Google-Smtp-Source: ABdhPJwqRh21mnQ7HNrbhfem5wZW2JCmKm+iiEQPID+joQ5Q/8Y/FKtUHNCGH2kOT/YhySo/mrnZzQ==
+X-Received: by 2002:a9d:4617:: with SMTP id y23mr4197255ote.71.1621345438482;
+        Tue, 18 May 2021 06:43:58 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e20sm3610817oot.11.2021.05.18.06.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 06:43:57 -0700 (PDT)
+Received: (nullmailer pid 561495 invoked by uid 1000);
+        Tue, 18 May 2021 13:43:56 -0000
+Date:   Tue, 18 May 2021 08:43:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mark Kettenis <mark.kettenis@xs4all.nl>
+Cc:     devicetree@vger.kernel.org, Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: Add DT bindings for
+ apple,pinctrl
+Message-ID: <20210518134356.GA553438@robh.at.kernel.org>
+References: <20210516183221.93686-1-mark.kettenis@xs4all.nl>
+ <20210516183221.93686-2-mark.kettenis@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210516183221.93686-2-mark.kettenis@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Sun, May 16, 2021 at 08:32:17PM +0200, Mark Kettenis wrote:
+> From: Mark Kettenis <kettenis@openbsd.org>
+> 
+> The Apple GPIO controller is a simple combined pin and GPIO conroller
+> present on Apple ARM SoC platforms, including various iPhone and iPad
+> devices and the "Apple Silicon" Macs.
+> 
+> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> ---
+>  .../bindings/pinctrl/apple,pinctrl.yaml       | 103 ++++++++++++++++++
+>  MAINTAINERS                                   |   2 +
+>  include/dt-bindings/pinctrl/apple.h           |  13 +++
+>  3 files changed, 118 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+>  create mode 100644 include/dt-bindings/pinctrl/apple.h
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> new file mode 100644
+> index 000000000000..fae23e1d845e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> @@ -0,0 +1,103 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/apple,pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple GPIO controller
+> +
+> +maintainers:
+> +  - Mark Kettenis <kettenis@openbsd.org>
+> +
+> +description: |
+> +  The Apple GPIO controller is a simple combined pin and GPIO
+> +  controller present on Apple ARM SoC platforms, including various
+> +  iPhone and iPad devices and the "Apple Silicon" Macs.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: apple,t8103-pinctrl
+> +      - const: apple,pinctrl
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 7
 
-STM32 QSPI is able to automatically poll a specified register inside the
-memory and relieve the CPU from this task.
+Add some description about what each interrupt is.
 
-As example, when erasing a large memory area, we got cpu load
-equal to 50%. This patch allows to perform the same operation
-with a cpu load around 2%.
+Is this really 1-7 or either 1 or 7?
 
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
-Changes in v4:
-  - None
-
-Changes in v3:
-  - Remove spi_mem_finalize_op() API added in v2.
-
-Changes in v2:
-  - mask and match stm32_qspi_poll_status() parameters are 2-byte wide
-  - Make usage of new spi_mem_finalize_op() API in stm32_qspi_wait_poll_status() 
-
- drivers/spi/spi-stm32-qspi.c | 83 ++++++++++++++++++++++++++++++++----
- 1 file changed, 75 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 7e640ccc7e77..01168a859005 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -36,6 +36,7 @@
- #define CR_FTIE			BIT(18)
- #define CR_SMIE			BIT(19)
- #define CR_TOIE			BIT(20)
-+#define CR_APMS			BIT(22)
- #define CR_PRESC_MASK		GENMASK(31, 24)
- 
- #define QSPI_DCR		0x04
-@@ -53,6 +54,7 @@
- #define QSPI_FCR		0x0c
- #define FCR_CTEF		BIT(0)
- #define FCR_CTCF		BIT(1)
-+#define FCR_CSMF		BIT(3)
- 
- #define QSPI_DLR		0x10
- 
-@@ -107,6 +109,7 @@ struct stm32_qspi {
- 	u32 clk_rate;
- 	struct stm32_qspi_flash flash[STM32_QSPI_MAX_NORCHIP];
- 	struct completion data_completion;
-+	struct completion match_completion;
- 	u32 fmode;
- 
- 	struct dma_chan *dma_chtx;
-@@ -115,6 +118,7 @@ struct stm32_qspi {
- 
- 	u32 cr_reg;
- 	u32 dcr_reg;
-+	unsigned long status_timeout;
- 
- 	/*
- 	 * to protect device configuration, could be different between
-@@ -128,11 +132,20 @@ static irqreturn_t stm32_qspi_irq(int irq, void *dev_id)
- 	struct stm32_qspi *qspi = (struct stm32_qspi *)dev_id;
- 	u32 cr, sr;
- 
-+	cr = readl_relaxed(qspi->io_base + QSPI_CR);
- 	sr = readl_relaxed(qspi->io_base + QSPI_SR);
- 
-+	if (cr & CR_SMIE && sr & SR_SMF) {
-+		/* disable irq */
-+		cr &= ~CR_SMIE;
-+		writel_relaxed(cr, qspi->io_base + QSPI_CR);
-+		complete(&qspi->match_completion);
-+
-+		return IRQ_HANDLED;
-+	}
-+
- 	if (sr & (SR_TEF | SR_TCF)) {
- 		/* disable irq */
--		cr = readl_relaxed(qspi->io_base + QSPI_CR);
- 		cr &= ~CR_TCIE & ~CR_TEIE;
- 		writel_relaxed(cr, qspi->io_base + QSPI_CR);
- 		complete(&qspi->data_completion);
-@@ -319,6 +332,24 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
- 	return err;
- }
- 
-+static int stm32_qspi_wait_poll_status(struct stm32_qspi *qspi,
-+				       const struct spi_mem_op *op)
-+{
-+	u32 cr;
-+
-+	reinit_completion(&qspi->match_completion);
-+	cr = readl_relaxed(qspi->io_base + QSPI_CR);
-+	writel_relaxed(cr | CR_SMIE, qspi->io_base + QSPI_CR);
-+
-+	if (!wait_for_completion_timeout(&qspi->match_completion,
-+				msecs_to_jiffies(qspi->status_timeout)))
-+		return -ETIMEDOUT;
-+
-+	writel_relaxed(FCR_CSMF, qspi->io_base + QSPI_FCR);
-+
-+	return 0;
-+}
-+
- static int stm32_qspi_get_mode(struct stm32_qspi *qspi, u8 buswidth)
- {
- 	if (buswidth == 4)
-@@ -332,7 +363,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
- 	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
- 	struct stm32_qspi_flash *flash = &qspi->flash[mem->spi->chip_select];
- 	u32 ccr, cr;
--	int timeout, err = 0;
-+	int timeout, err = 0, err_poll_status = 0;
- 
- 	dev_dbg(qspi->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
- 		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
-@@ -378,6 +409,9 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
- 	if (op->addr.nbytes && qspi->fmode != CCR_FMODE_MM)
- 		writel_relaxed(op->addr.val, qspi->io_base + QSPI_AR);
- 
-+	if (qspi->fmode == CCR_FMODE_APM)
-+		err_poll_status = stm32_qspi_wait_poll_status(qspi, op);
-+
- 	err = stm32_qspi_tx(qspi, op);
- 
- 	/*
-@@ -387,7 +421,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
- 	 *  byte of device (device size - fifo size). like device size is not
- 	 *  knows, the prefetching is always stop.
- 	 */
--	if (err || qspi->fmode == CCR_FMODE_MM)
-+	if (err || err_poll_status || qspi->fmode == CCR_FMODE_MM)
- 		goto abort;
- 
- 	/* wait end of tx in indirect mode */
-@@ -406,15 +440,46 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
- 						    cr, !(cr & CR_ABORT), 1,
- 						    STM32_ABT_TIMEOUT_US);
- 
--	writel_relaxed(FCR_CTCF, qspi->io_base + QSPI_FCR);
-+	writel_relaxed(FCR_CTCF | FCR_CSMF, qspi->io_base + QSPI_FCR);
- 
--	if (err || timeout)
--		dev_err(qspi->dev, "%s err:%d abort timeout:%d\n",
--			__func__, err, timeout);
-+	if (err || err_poll_status || timeout)
-+		dev_err(qspi->dev, "%s err:%d err_poll_status:%d abort timeout:%d\n",
-+			__func__, err, err_poll_status, timeout);
- 
- 	return err;
- }
- 
-+static int stm32_qspi_poll_status(struct spi_mem *mem, const struct spi_mem_op *op,
-+				  u16 mask, u16 match,
-+				  unsigned long initial_delay_us,
-+				  unsigned long polling_rate_us,
-+				  unsigned long timeout_ms)
-+{
-+	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
-+	int ret;
-+
-+	ret = pm_runtime_get_sync(qspi->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(qspi->dev);
-+		return ret;
-+	}
-+
-+	mutex_lock(&qspi->lock);
-+
-+	writel_relaxed(mask, qspi->io_base + QSPI_PSMKR);
-+	writel_relaxed(match, qspi->io_base + QSPI_PSMAR);
-+	qspi->fmode = CCR_FMODE_APM;
-+	qspi->status_timeout = timeout_ms;
-+
-+	ret = stm32_qspi_send(mem, op);
-+	mutex_unlock(&qspi->lock);
-+
-+	pm_runtime_mark_last_busy(qspi->dev);
-+	pm_runtime_put_autosuspend(qspi->dev);
-+
-+	return ret;
-+}
-+
- static int stm32_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- {
- 	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
-@@ -527,7 +592,7 @@ static int stm32_qspi_setup(struct spi_device *spi)
- 	flash->presc = presc;
- 
- 	mutex_lock(&qspi->lock);
--	qspi->cr_reg = 3 << CR_FTHRES_SHIFT | CR_SSHIFT | CR_EN;
-+	qspi->cr_reg = CR_APMS | 3 << CR_FTHRES_SHIFT | CR_SSHIFT | CR_EN;
- 	writel_relaxed(qspi->cr_reg, qspi->io_base + QSPI_CR);
- 
- 	/* set dcr fsize to max address */
-@@ -607,6 +672,7 @@ static const struct spi_controller_mem_ops stm32_qspi_mem_ops = {
- 	.exec_op	= stm32_qspi_exec_op,
- 	.dirmap_create	= stm32_qspi_dirmap_create,
- 	.dirmap_read	= stm32_qspi_dirmap_read,
-+	.poll_status	= stm32_qspi_poll_status,
- };
- 
- static int stm32_qspi_probe(struct platform_device *pdev)
-@@ -661,6 +727,7 @@ static int stm32_qspi_probe(struct platform_device *pdev)
- 	}
- 
- 	init_completion(&qspi->data_completion);
-+	init_completion(&qspi->match_completion);
- 
- 	qspi->clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(qspi->clk)) {
--- 
-2.17.1
-
+> +
+> +  interrupt-controller: true
+> +
+> +patternProperties:
+> +  '-pins$':
+> +    type: object
+> +    $ref: pinmux-node.yaml#
+> +
+> +    properties:
+> +      pinmux:
+> +        description:
+> +          Values are constructed from pin number and alternate function
+> +          configuration number using the APPLE_PINMUX() helper macro
+> +          defined in include/dt-bindings/pinctrl/apple.h.
+> +
+> +    required:
+> +      - pinmux
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/apple-aic.h>
+> +    #include <dt-bindings/pinctrl/apple.h>
+> +
+> +    soc {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      pinctrl: pinctrl@23c100000 {
+> +        compatible = "apple,t8103-pinctrl", "apple,pinctrl";
+> +        reg = <0x2 0x3c100000 0x0 0x100000>;
+> +        clocks = <&gpio_clk>;
+> +
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        gpio-ranges = <&pinctrl 0 0 212>;
+> +
+> +        interrupt-controller;
+> +        interrupt-parent = <&aic>;
+> +        interrupts = <AIC_IRQ 16 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 17 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 18 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 19 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 20 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 21 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 22 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +        pcie_pins: pcie-pins {
+> +          pinmux = <APPLE_PINMUX(150, 1)>,
+> +                   <APPLE_PINMUX(151, 1)>,
+> +                   <APPLE_PINMUX(32, 1)>;
+> +        };
+> +      };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ad0e9be66885..7327c9b778f1 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1654,9 +1654,11 @@ C:	irc://chat.freenode.net/asahi-dev
+>  T:	git https://github.com/AsahiLinux/linux.git
+>  F:	Documentation/devicetree/bindings/arm/apple.yaml
+>  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+> +F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+>  F:	arch/arm64/boot/dts/apple/
+>  F:	drivers/irqchip/irq-apple-aic.c
+>  F:	include/dt-bindings/interrupt-controller/apple-aic.h
+> +F:	include/dt-bindings/pinctrl/apple.h
+>  
+>  ARM/ARTPEC MACHINE SUPPORT
+>  M:	Jesper Nilsson <jesper.nilsson@axis.com>
+> diff --git a/include/dt-bindings/pinctrl/apple.h b/include/dt-bindings/pinctrl/apple.h
+> new file mode 100644
+> index 000000000000..ea0a6f466592
+> --- /dev/null
+> +++ b/include/dt-bindings/pinctrl/apple.h
+> @@ -0,0 +1,13 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ OR MIT */
+> +/*
+> + * This header provides constants for Apple pinctrl bindings.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_PINCTRL_APPLE_H
+> +#define _DT_BINDINGS_PINCTRL_APPLE_H
+> +
+> +#define APPLE_PINMUX(pin, func) ((pin) | ((func) << 16))
+> +#define APPLE_PIN(pinmux) ((pinmux) & 0xffff)
+> +#define APPLE_FUNC(pinmux) ((pinmux) >> 16)
+> +
+> +#endif /* _DT_BINDINGS_PINCTRL_APPLE_H */
+> -- 
+> 2.31.1
+> 
