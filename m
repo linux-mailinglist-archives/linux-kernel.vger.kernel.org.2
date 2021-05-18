@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D2A387988
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5C438798A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349314AbhERNIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234624AbhERNIp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:08:45 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA08C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:07:27 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id x8so9154303qkl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:07:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kK7zU0MuVwUNky+tAuT/EbQK9GNOBzJsw7o2A7V1ieE=;
-        b=ItCEjJEtY3vK4wnQz5FO9YQa38LyQZnhI1Qb2TVwWBUHRd8lvhiGiQmXqIDvovfvwq
-         7M9ACH5kpT6f2tuxQLflujx1P9bfkNI19YWH6Cl5xeAjQwahGWQg8yxoTQflXKJERBrz
-         RT+KcpoGrudqOpMeDFHjK/PIHJ0ir572jG0/TYqFKpMRi4e4OwkLAI4vGZiwZRLHJ4+Q
-         Hl2NKulwr2CXN0XSllyylby3KnyuDhsqVQ8BomeNa6u299T1C2o68xqomQT40BBuMnH3
-         vgMnFPwLF+3FSoBafMdZs+Gug88NX4y7XS4VmgQBBZSyZni3aAKjsl2w4su0/wuHOU0l
-         G5FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kK7zU0MuVwUNky+tAuT/EbQK9GNOBzJsw7o2A7V1ieE=;
-        b=OQQQmenuobNT6fZxmaHlcE2AUfgazEdKqyPDz2rYDCmvwL0kxhe1KemIgjprPeTRMW
-         IIE2m6DH3sgx3wGPt1fIOWJLLVNCtm+ayRuS+RidPwlIeCLNi6KvJW2uVBJwyjr6KxO4
-         ZaVOJh+bxZVPn75rBDoSmzRECpB/BZDfow+z3Nk9j6mRmwiTr38Sx4B+4Lk+6RMFj3tn
-         GajVJmbSbUp6chYnebL25vsBIPm5k1C2t3d6xGeKOOPDm2BW5TMmKWFwBomUrC/XsBkP
-         QPhywL6uIqPzL+wbI+jLmpx7LgXRk4zWdXXZ6fcED/wt/euYt6t60E+aqk18yU/tijHa
-         uGMA==
-X-Gm-Message-State: AOAM532vh76cXC8v74/Cqu2YJblrFbRKQmflZ7LgcU14XpAYxn0xRf0N
-        DA9JLzcszj5+jjYxPrwGUHgYT0LQ+w6CjuEo
-X-Google-Smtp-Source: ABdhPJwApcF5a0aa+3VfsA3Xqbbaadymn7VcM3CgV9JFtjgMps/fSevqkf8x8V828WSWXTmhtbW6DQ==
-X-Received: by 2002:a05:620a:e8a:: with SMTP id w10mr5334852qkm.248.1621343246919;
-        Tue, 18 May 2021 06:07:26 -0700 (PDT)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id m67sm12648132qkd.108.2021.05.18.06.07.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 06:07:26 -0700 (PDT)
-Subject: Re: [PATCH 1/3] clk: qcom: clk-alpha-pll: add support for zonda pll
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, robert.foss@linaro.org,
-        andrey.konovalov@linaro.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210513175258.5842-1-jonathan@marek.ca>
- <20210513175258.5842-2-jonathan@marek.ca> <YKOltGEDEY1WXQN6@vkoul-mobl.Dlink>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <abc662f3-8c36-862d-4d50-3628d3a02ee2@marek.ca>
-Date:   Tue, 18 May 2021 09:06:23 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1349432AbhERNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:09:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:51652 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349431AbhERNJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:09:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD1EBD6E;
+        Tue, 18 May 2021 06:07:52 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DAD533F73B;
+        Tue, 18 May 2021 06:07:51 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>
+Subject: [PATCH] sched/debug: Don't update sched_domain debug directories before sched_debug_init()
+Date:   Tue, 18 May 2021 14:07:25 +0100
+Message-Id: <20210518130725.3563132-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YKOltGEDEY1WXQN6@vkoul-mobl.Dlink>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 7:32 AM, Vinod Koul wrote:
-> On 13-05-21, 13:52, Jonathan Marek wrote:
+Since CPU capacity asymmetry can stem purely from maximum frequency
+differences (e.g. Pixel 1), a rebuild of the scheduler topology can be
+issued upon loading cpufreq, see:
 
-...
+  arch_topology.c::init_cpu_capacity_callback()
 
->> +/* ZONDA PLL specific */
->> +#define ZONDA_PLL_OUT_MASK	0xf
->> +#define ZONDA_STAY_IN_CFA	BIT(16)
->> +#define ZONDA_PLL_FREQ_LOCK_DET	BIT(29)
-> 
-> This seems similar to ALPHA_PLL_ACK_LATCH..?
-> 
+Turns out that if this rebuild happens *before* sched_debug_init() is
+run (which is a late initcall), we end up messing up the sched_domain debug
+directory: passing a NULL parent to debugfs_create_dir() ends up creating
+the directory at the debugfs root, which in this case creates
+/sys/kernel/debug/domains (instead of /sys/kernel/debug/sched/domains).
 
-The bit is the same, and it is also used with wait_for_pll(), but the 
-meaning seems different (the usage pattern is different).
+This currently doesn't happen on asymmetric systems which use cpufreq-scpi
+or cpufreq-dt drivers, as those are loaded via
+deferred_probe_initcall() (it is also a late initcall, but appears to be
+ordered *after* sched_debug_init()).
 
->> +const struct clk_ops clk_alpha_pll_postdiv_zonda_ops = {
->> +	.recalc_rate = clk_alpha_pll_postdiv_fabia_recalc_rate,
->> +	.round_rate = clk_alpha_pll_postdiv_fabia_round_rate,
->> +	.set_rate = clk_alpha_pll_postdiv_fabia_set_rate,
->> +};
->> +EXPORT_SYMBOL(clk_alpha_pll_postdiv_zonda_ops);
-> 
-> Why add one more ops when we can reuse clk_alpha_pll_postdiv_fabia_ops
-> for this?
-> 
+Ionela has been working on detecting maximum frequency asymmetry via ACPI,
+and that actually happens via a *device* initcall, thus before
+sched_debug_init(), and causes the aforementionned debugfs mayhem.
 
-No reason (copied from downstream), will fix.
+One option would be to punt sched_debug_init() down to
+fs_initcall_sync(). Preventing update_sched_domain_debugfs() from running
+before sched_debug_init() appears to be the safer option.
 
->> +
->> +	/* Set operation mode to OFF */
->> +	regmap_write(regmap, PLL_OPMODE(pll), PLL_STANDBY);
->> +
->> +	/* PLL should be in OFF mode before continuing */
->> +	wmb();
-> 
-> Why a barrier?
-> 
+Link: http://lore.kernel.org/r/20210514095339.12979-1-ionela.voinescu@arm.com
+Fixes: 3b87f136f8fc ("sched,debug: Convert sysctl sched_domains to debugfs")
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ kernel/sched/debug.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Again no reason (copied from downstream, but it doesn't make sense to 
-have this barrier).
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 3bdee5fd7d29..6b5d6c7612fd 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -388,6 +388,13 @@ void update_sched_domain_debugfs(void)
+ {
+ 	int cpu, i;
+ 
++	/*
++	 * This can unfortunately be invoked before sched_debug_init() creates
++	 * the debug directory. Don't touch sd_sysctl_cpus until then.
++	 */
++	if (!debugfs_sched)
++		return;
++
+ 	if (!cpumask_available(sd_sysctl_cpus)) {
+ 		if (!alloc_cpumask_var(&sd_sysctl_cpus, GFP_KERNEL))
+ 			return;
+-- 
+2.25.1
 
->> +static unsigned long
->> +clk_zonda_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
->> +{
->> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
->> +	u32 l, frac;
->> +
->> +	regmap_read(pll->clkr.regmap, PLL_L_VAL(pll), &l);
->> +	regmap_read(pll->clkr.regmap, PLL_ALPHA_VAL(pll), &frac);
->> +
->> +	return alpha_pll_calc_rate(parent_rate, l, frac, ALPHA_BITWIDTH);
->> +}
-> 
-> sounds like you could use clk_trion_pll_recalc_rate() instead
-> 
-
-I had this thought as well, but alpha_width in 
-clk_trion_pll_recalc()_rate is 16, here ALPHA_BITWIDTH is 32, so I just 
-copied this from downstream.
-
-I think changing pll_alpha_width() to return the right value for zonda 
-will work and allow sharing the function, if you think that's a good idea?
