@@ -2,117 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA85387A16
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29343387A1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349691AbhERNhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349681AbhERNhu (ORCPT
+        id S239112AbhERNkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:40:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56914 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349560AbhERNkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:37:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC325C061573;
-        Tue, 18 May 2021 06:36:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=yuqCWcIqul/1lj3NsVLBchoLnyRiKeIyOOoNOlV42Hs=; b=bQH0fgbqI9bCAw2E4kTrPyruHo
-        Sdf8ZX08AyYdMekNB+R0Nlp/yhM9U2IuZ1SDaLoKzA+t8GbV4IItx2DuRb/HyEx0EjjcZlhTs7aTK
-        zJ62HS1rYEuYpzendAp6+dMkOmjKGZC6vtjQQfXoMwm8aYb5jNRMzQc+kHQRm1UkHlngPyvZHdwWD
-        cWPKa0Sra1qGZcFNAVklSi5LJRvds+V9ky6yJG9sCQMI44Goue5p1x2U0vU9xaXXUXFJmz6JUPjTL
-        Pvu89thupqInO5dfCrWu2pd6APq8YAJz4+2KtOHzF5DhLD2NzfOjwgh0q6DTWI8FMtB6JKKhEyX5c
-        aP8R+ndQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liztH-000tHR-N2; Tue, 18 May 2021 13:36:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 54DFC30022C;
-        Tue, 18 May 2021 15:36:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3DB893011B374; Tue, 18 May 2021 15:36:06 +0200 (CEST)
-Date:   Tue, 18 May 2021 15:36:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Xu, Like" <like.xu@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-Subject: Re: [PATCH v6 07/16] KVM: x86/pmu: Reprogram PEBS event to emulate
- guest PEBS counter
-Message-ID: <YKPCxnKc1MGqXsJ4@hirez.programming.kicks-ass.net>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-8-like.xu@linux.intel.com>
- <YKIz/J1HoOvbmR42@hirez.programming.kicks-ass.net>
- <2d874bce-2823-13b4-0714-3de5b7c475f0@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2d874bce-2823-13b4-0714-3de5b7c475f0@intel.com>
+        Tue, 18 May 2021 09:40:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621345126; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=FBUT57+IqbqFX+drWKs01cPuieWBXB3IuBAVyAh25vY=; b=nuiiwTTOc2Q6AOj4JgE6+0jeMQzPw47KyZ23cu217CWih90dJVELAFTKsAuJHs4bYQGXROqr
+ Q8QqSl0eNNMpWo2a8SSTMdLCNFumomjSq8OK9gSryU91PTCn35cUhdYCGXO22yfwjyzlNF3u
+ wK1+UeSlw0wwR6rB9Y4Se0+5nSs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60a3c3561449805ea2b6ff76 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 May 2021 13:38:30
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1925CC4360C; Tue, 18 May 2021 13:38:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2ADE7C433D3;
+        Tue, 18 May 2021 13:38:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2ADE7C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     akpm@linux-foundation.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com, vbabka@suse.cz,
+        nigupta@nvidia.com, bhe@redhat.com, mateusznosek0@gmail.com,
+        sh_def@163.com, iamjoonsoo.kim@lge.com, vinmenon@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH V2] mm: compaction: support triggering of proactive compaction by user
+Date:   Tue, 18 May 2021 19:07:38 +0530
+Message-Id: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 09:28:52PM +0800, Xu, Like wrote:
+The proactive compaction[1] gets triggered for every 500msec and run
+compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
+pages based on the value set to sysctl.compaction_proactiveness.
+Triggering the compaction for every 500msec in search of
+COMPACTION_HPAGE_ORDER pages is not needed for all applications,
+especially on the embedded system usecases which may have few MB's of
+RAM. Enabling the proactive compaction in its state will endup in
+running almost always on such systems.
 
-> > How would pebs && !intr be possible?
-> 
-> I don't think it's possible.
+Other side, proactive compaction can still be very much useful for
+getting a set of higher order pages in some controllable
+manner(controlled by using the sysctl.compaction_proactiveness). Thus on
+systems where enabling the proactive compaction always may proove not
+required, can trigger the same from user space on write to its sysctl
+interface. As an example, say app launcher decide to launch the memory
+heavy application which can be launched fast if it gets more higher
+order pages thus launcher can prepare the system in advance by
+triggering the proactive compaction from userspace.
 
-And yet you keep that 'intr||pebs' weirdness :/
+This triggering of proactive compaction is done on a write to
+sysctl.compaction_proactiveness by user.
 
-> > Also; wouldn't this be more legible
-> > when written like:
-> > 
-> > 	perf_overflow_handler_t ovf = kvm_perf_overflow;
-> > 
-> > 	...
-> > 
-> > 	if (intr)
-> > 		ovf = kvm_perf_overflow_intr;
-> > 
-> > 	...
-> > 
-> > 	event = perf_event_create_kernel_counter(&attr, -1, current, ovf, pmc);
-> > 
-> 
-> Please yell if you don't like this:
-> 
-> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> index 711294babb97..a607f5a1b9cd 100644
-> --- a/arch/x86/kvm/pmu.c
-> +++ b/arch/x86/kvm/pmu.c
-> @@ -122,6 +122,8 @@ static void pmc_reprogram_counter(struct kvm_pmc *pmc,
-> u32 type,
->                 .config = config,
->         };
->         bool pebs = test_bit(pmc->idx, (unsigned long *)&pmu->pebs_enable);
-> +       perf_overflow_handler_t ovf = (intr || pebs) ?
-> +               kvm_perf_overflow_intr : kvm_perf_overflow;
+[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
 
-This, that's exactly the kind of code I wanted to get rid of. ?: has
-it's place I suppose, but you're creating dense ugly code for no reason.
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
+changes in V2: 
+    - remove /proc interface trigger for proactive compaction
+    - Intention is same that add a way to trigger proactive compaction by user.
 
-	perf_overflow_handle_t ovf = kvm_perf_overflow;
+changes in V1:
+    -  https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
 
-	if (intr)
-		ovf = kvm_perf_overflow_intr;
+ include/linux/compaction.h |  2 ++
+ include/linux/mmzone.h     |  1 +
+ kernel/sysctl.c            |  2 +-
+ mm/compaction.c            | 35 ++++++++++++++++++++++++++++++++---
+ 4 files changed, 36 insertions(+), 4 deletions(-)
 
-Is so much easier to read. And if you really worry about that pebs
-thing; you can add:
-
-	WARN_ON_ONCE(pebs && !intr);
+diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+index 4221888..04d5d9f 100644
+--- a/include/linux/compaction.h
++++ b/include/linux/compaction.h
+@@ -84,6 +84,8 @@ static inline unsigned long compact_gap(unsigned int order)
+ extern unsigned int sysctl_compaction_proactiveness;
+ extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+ 			void *buffer, size_t *length, loff_t *ppos);
++extern int compaction_proactiveness_sysctl_handler(struct ctl_table *table,
++		int write, void *buffer, size_t *length, loff_t *ppos);
+ extern int sysctl_extfrag_threshold;
+ extern int sysctl_compact_unevictable_allowed;
+ 
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 0d53eba..9455809 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -815,6 +815,7 @@ typedef struct pglist_data {
+ 	enum zone_type kcompactd_highest_zoneidx;
+ 	wait_queue_head_t kcompactd_wait;
+ 	struct task_struct *kcompactd;
++	bool proactive_compact_trigger;
+ #endif
+ 	/*
+ 	 * This is a per-node reserve of pages that are not available
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 14edf84..bed2fad 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2840,7 +2840,7 @@ static struct ctl_table vm_table[] = {
+ 		.data		= &sysctl_compaction_proactiveness,
+ 		.maxlen		= sizeof(sysctl_compaction_proactiveness),
+ 		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
++		.proc_handler	= compaction_proactiveness_sysctl_handler,
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= &one_hundred,
+ 	},
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 84fde27..9056693 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2708,6 +2708,30 @@ static void compact_nodes(void)
+  */
+ unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+ 
++int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
++		void *buffer, size_t *length, loff_t *ppos)
++{
++	int rc, nid;
++
++	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
++	if (rc)
++		return rc;
++
++	if (write && sysctl_compaction_proactiveness) {
++		for_each_online_node(nid) {
++			pg_data_t *pgdat = NODE_DATA(nid);
++
++			if (pgdat->proactive_compact_trigger)
++				continue;
++
++			pgdat->proactive_compact_trigger = true;
++			wake_up_interruptible(&pgdat->kcompactd_wait);
++		}
++	}
++
++	return 0;
++}
++
+ /*
+  * This is the entry point for compacting all nodes via
+  * /proc/sys/vm/compact_memory
+@@ -2752,7 +2776,8 @@ void compaction_unregister_node(struct node *node)
+ 
+ static inline bool kcompactd_work_requested(pg_data_t *pgdat)
+ {
+-	return pgdat->kcompactd_max_order > 0 || kthread_should_stop();
++	return pgdat->kcompactd_max_order > 0 || kthread_should_stop() ||
++		pgdat->proactive_compact_trigger;
+ }
+ 
+ static bool kcompactd_node_suitable(pg_data_t *pgdat)
+@@ -2905,7 +2930,8 @@ static int kcompactd(void *p)
+ 		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
+ 		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
+ 			kcompactd_work_requested(pgdat),
+-			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC))) {
++			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC)) &&
++			!pgdat->proactive_compact_trigger) {
+ 
+ 			psi_memstall_enter(&pflags);
+ 			kcompactd_do_work(pgdat);
+@@ -2919,7 +2945,7 @@ static int kcompactd(void *p)
+ 
+ 			if (proactive_defer) {
+ 				proactive_defer--;
+-				continue;
++				goto loop;
+ 			}
+ 			prev_score = fragmentation_score_node(pgdat);
+ 			proactive_compact_node(pgdat);
+@@ -2931,6 +2957,9 @@ static int kcompactd(void *p)
+ 			proactive_defer = score < prev_score ?
+ 					0 : 1 << COMPACT_MAX_DEFER_SHIFT;
+ 		}
++loop:
++		if (pgdat->proactive_compact_trigger)
++			pgdat->proactive_compact_trigger = false;
+ 	}
+ 
+ 	return 0;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
