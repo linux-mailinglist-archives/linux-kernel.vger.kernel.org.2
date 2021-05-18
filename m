@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C25B386F4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21264386F5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345875AbhERBfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:35:07 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:33659 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345873AbhERBes (ORCPT
+        id S1345914AbhERBhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345904AbhERBhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:34:48 -0400
-Received: by mail-ot1-f46.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so7317722oto.0;
-        Mon, 17 May 2021 18:33:30 -0700 (PDT)
+        Mon, 17 May 2021 21:37:04 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37095C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:35:47 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id v8so6614788lft.8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3Y4UC937pcRi6mdp2HazCoUPjtNxk9PJkqRxwraum1Y=;
+        b=gqVqIx8Ym2P95cU1nEwsXDnOMInJKjvLvl6PdHm+m4USuWxwS7QapJ/4AnjrYoQgjp
+         Ul+p1xz0jsBYnf7HxkvT5KEQQnHy9T/2McLKcqfpIWocA0q+0ATrVtMzn0XcOX6uS6dk
+         /MUMbUdum0s43SXkfV0oQ3/kVHBjAyHYj0f2I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D65EnJmxTcUCbvl2GSwUBmhh4Xjfak4IzC5C4H2tkAg=;
-        b=tLcIPw0bUXm7yhfWvldJP45Dy2d0zkfXFakz5a1cwTM6zzxuuwaZjo47e5SZUGZ5VO
-         zgjHNKhsLAtQfS5lDn69NGe8H+9+bjQM4ooQr+5ZWA8nxbLcj+1FZw9MlGAjAPqyOK2s
-         +hoI1omuFp/jpgIcoGtXmLlLmObFEgcVpZjmiIBjDDyrtdJiDvyzCIDLILpubkW9T024
-         WHfyfWse3mLcyke888cZYM+6048TBcattvGO2Z067X4gcSx01hQXbnCdVApb4ZBMf5i8
-         lVuOYE87BgsPmwN/XsB4Jg1a9onrs+ibqZAhDSPaU9tlETyt5K/kLMV0KaDCFE/5yAb7
-         1A/w==
-X-Gm-Message-State: AOAM533SXmWlRteh5sL1iaA6za9D3508uZxPc457wZtzaXf4YmHdaD5V
-        332VggMtJ26eO9atwRmsUw==
-X-Google-Smtp-Source: ABdhPJzOEVJqvk206Cs0D6qq0nFZ9XTKW5K75Uw7/ZzsZnxtrzHjpvHglknoArWTLhweKcajO0REDg==
-X-Received: by 2002:a05:6830:2141:: with SMTP id r1mr2065553otd.13.1621301609890;
-        Mon, 17 May 2021 18:33:29 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v79sm3094468oia.14.2021.05.17.18.33.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 18:33:29 -0700 (PDT)
-Received: (nullmailer pid 3610458 invoked by uid 1000);
-        Tue, 18 May 2021 01:33:28 -0000
-Date:   Mon, 17 May 2021 20:33:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-clk@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-renesas-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH 09/16] dt-bindings: serial: renesas, scif: Document
- r9a07g044 bindings
-Message-ID: <20210518013328.GA3610408@robh.at.kernel.org>
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210514192218.13022-10-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3Y4UC937pcRi6mdp2HazCoUPjtNxk9PJkqRxwraum1Y=;
+        b=cQrPLUtL9f95TdoygjUBoEKqonYOoyxitDEH9FQmQCNP6H162WF27BWKzrOQK39+nJ
+         7TCdtSqxBD7TTbkY4XS2t95sjTkPEMU02EW+AH7u6QNlh5cjEd7WaOUC35GiWPT3N0E7
+         mJH1NoHquZPC+wLOrGnk7kYlF/v8xyfgN3ViYzW9TfJ8VB9mBLpS7pU+maXJi8tdbxpt
+         uPQ9WoZgZbcp5U6rzTlFG2V2a7+jqUQOTLqXYwkizCREo153RYVMC3nC643y0MqNiDbu
+         K3bUk0gZCpvaRo3xrvA7OJecxP51QhTwBjOg8nEY/qphJZufLYTAn2DHWBy7WJHTDrnQ
+         J5dA==
+X-Gm-Message-State: AOAM530Fxu9NMTe7ceBmJWBs9Zv9fgys4sv9huZHtPeruxBIPjAyUxiE
+        5DxJtVhvQdEQxJKKJbRXYRt7O9PxU62tzcCg
+X-Google-Smtp-Source: ABdhPJyl133unQm+lGBXXNkqCXhTw3ILe95MZyihWUcdMtSEkOYgzjq0M0Gy+4wkDvPpSiN6zv6Hag==
+X-Received: by 2002:ac2:418f:: with SMTP id z15mr2132927lfh.2.1621301745518;
+        Mon, 17 May 2021 18:35:45 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id m17sm2114060lfh.146.2021.05.17.18.35.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 18:35:44 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id w33so3631621lfu.7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:35:44 -0700 (PDT)
+X-Received: by 2002:a05:6512:36c5:: with SMTP id e5mr2066552lfs.41.1621301740633;
+ Mon, 17 May 2021 18:35:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514192218.13022-10-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210518010940.1485417-1-sashal@kernel.org> <20210518010940.1485417-5-sashal@kernel.org>
+In-Reply-To: <20210518010940.1485417-5-sashal@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 17 May 2021 18:35:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whw9_rp0NYTsCqcGnUkcV5Qgv7FTxADtPrdq4KFmsj+Lg@mail.gmail.com>
+Message-ID: <CAHk-=whw9_rp0NYTsCqcGnUkcV5Qgv7FTxADtPrdq4KFmsj+Lg@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.12 5/5] tty: vt: always invoke
+ vc->vc_sw->con_resize callback
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 20:22:11 +0100, Lad Prabhakar wrote:
-> Document R9A07G044 SoC variants, common compatiable string
-> "renesas,scif-r9a07g044" is added for RZ/G2L and RZ/G2LC SoC.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->  Documentation/devicetree/bindings/serial/renesas,scif.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+On Mon, May 17, 2021 at 6:09 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>
+> [ Upstream commit ffb324e6f874121f7dce5bdae5e05d02baae7269 ]
 
-Acked-by: Rob Herring <robh@kernel.org>
+So I think the commit is fine, and yes, it should be applied to
+stable, but it's one of those "there were three different patches in
+as many days to fix the problem, and this is the right one, but maybe
+stable should hold off for a while to see that there aren't any
+problem reports".
+
+I don't think there will be any problems from this, but while the
+patch is tiny, it's conceptually quite a big change to something that
+people haven't really touched for a long time.
+
+So use your own judgement, but it might be a good idea to wait a week
+before backporting this to see if anything screams.
+
+          Linus
