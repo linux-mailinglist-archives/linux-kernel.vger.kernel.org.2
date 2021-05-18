@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD521387034
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 05:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEC938703A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 05:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244140AbhERDUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 23:20:53 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:18400 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237929AbhERDUr (ORCPT
+        id S1345156AbhERD15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 23:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236765AbhERD14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 23:20:47 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee960a33235e2b-83e46; Tue, 18 May 2021 11:19:17 +0800 (CST)
-X-RM-TRANSID: 2ee960a33235e2b-83e46
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.21.77] (unknown[10.42.68.12])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee360a3322856b-9c9e4;
-        Tue, 18 May 2021 11:19:17 +0800 (CST)
-X-RM-TRANSID: 2ee360a3322856b-9c9e4
-Subject: Re: [PATCH] staging: iio: cdc: ad7746: Fix unnecessary check
- andassignment in ad7746_probe()
-To:     Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        knaack.h@gmx.de, pmeerw@pmeerw.net, gregkh@linuxfoundation.org,
-        linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, lucas.p.stankus@gmail.com
-References: <20210517150006.8436-1-tangbin@cmss.chinamobile.com>
- <YKLqtc8cowOxUTid@smtp.gmail.com>
-From:   tangbin <tangbin@cmss.chinamobile.com>
-Message-ID: <5dc07171-f2ce-0a73-205f-603a520306f1@cmss.chinamobile.com>
-Date:   Tue, 18 May 2021 11:19:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 17 May 2021 23:27:56 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DF7C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:26:38 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id b13so2645874pfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=gSlfi5pe5PLCHs4qxj0x9tC+/q+cC9GpxiU+FFOaO+g=;
+        b=bld/DE/aCUjkHorAIcIjHBRGK52T4rWdfsVwouPKK9lFRPpWijXKaLQNzmkBBQmXUr
+         24umuVkuoMfd3gmrkEKP6N01vhFryU3VvlGwagUttTUNnAbVgcmO4edjbFV3VH1FYZwo
+         ESom++KoeRROQAdzHNURhA0HMOX2y56Vqi4lAL6wghJmbddSK8wPIZI54Qu549EpYFft
+         YNxjux4Xv9EaG7VNC/XH2qhDzrcpkxReCRJzCd1+wC5SwAIzskjzNIt7McL75b+malaf
+         fFBqSzXNYKB5OeQE0sMsNZLue19H2qUFTsteaZGFrehjm7p7Tx8fASH9yFbEjsyZAsCB
+         87iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=gSlfi5pe5PLCHs4qxj0x9tC+/q+cC9GpxiU+FFOaO+g=;
+        b=JTIozxnyzgRQEb5B8etknUcYZU/HTsSvCaF7GgiySgwphqdbVAZsQ7TjGxQooRqs1k
+         9vqxD6YAmIwJy2QNz38nsVj1lfL2C3r1zhmAXShBS38/Jg0MoRev24yN5ry8CrAhqPvt
+         lU1SaEcoK9fbcCR3sVSx2T8MWjyZiw9ffXCbUWgseI1u7B+PsevKdr464uhlq/dBvpRw
+         nODXcglJS946vrm7l18640jbYpMtVRIC87t6my+7uFKzuma7WvVEmFAE1QVhLeTOmvA0
+         9EttX/bcG5sHDwIsPbIPt9I3RfXzCs2LcSQdmQXd2XZWK+P/RSTEZ1RDzGR8qDgUePoT
+         nI2A==
+X-Gm-Message-State: AOAM533BL1WfRysWw8/18sf/IPSGqD2phHMJRR/pQgrEEuZrUsOpjZXk
+        cSk0g4n19MBpEuujzKgziEpLIQ==
+X-Google-Smtp-Source: ABdhPJwOxE6Hs/7clpwDkT7FyMw+sNuZdJa9knB4waVyQ9YA0DkxstZI98z4775x+3n467psyHuNvg==
+X-Received: by 2002:aa7:8a18:0:b029:2dd:42f3:d42f with SMTP id m24-20020aa78a180000b02902dd42f3d42fmr2801847pfa.70.1621308397503;
+        Mon, 17 May 2021 20:26:37 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id q196sm3312681pfc.208.2021.05.17.20.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 20:26:36 -0700 (PDT)
+Date:   Tue, 18 May 2021 08:56:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] soc/tegra: Add
+ devm_tegra_core_dev_init_opp_table()
+Message-ID: <20210518032634.4ek6gpjjagtxptpv@vireshk-i7>
+References: <20210516205138.22501-1-digetx@gmail.com>
+ <20210516205138.22501-2-digetx@gmail.com>
+ <20210517033705.uw5kfj46k6w6ptcl@vireshk-i7>
+ <d43f5c65-eacc-e953-f2ef-3151d9229729@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YKLqtc8cowOxUTid@smtp.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d43f5c65-eacc-e953-f2ef-3151d9229729@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcelo:
+On 17-05-21, 17:09, Dmitry Osipenko wrote:
+> 17.05.2021 06:37, Viresh Kumar пишет:
+> > I am not sure why you divided this into three different patchsets,
+> > while it should really have been one. Like this one just adds the API
+> > but doesn't use it.
+> 
+> Previously Krzysztof Kozlowski asked to split the large series into smaller sets which could be reviewed and applied separately by maintainers. He suggested that the immutable branch is a better option, I decided to implement this suggestion. So far I only sent out the memory patches which make use of the new helper, there will be more patches. The memory patches are intended to show that this helper can be utilized right now. My plan was to finalize this patch first, then Thierry will apply it and I will be able to sent the rest of the patches telling that they depend on the immutable branch.
+> 
+> I'll merge this helper patch and the memory patches into a single series in v2. 
 
-On 2021/5/18 6:14, Marcelo Schmitt wrote:
-> Hi Tang,
->
-> The patch looks overall good, though I think it could be split into two
-> pieces: one for simplifying ret declaration and another for removing the
-> check after device register.
-> Despite that, I guess Lucas might already be working on similar changes.
-> https://lore.kernel.org/linux-iio/cover.1620766020.git.lucas.p.stankus@gmail.com/
+Diving the series is fine, but an API and its users should always be
+in the same series. You can still apply them differently anyway.
 
-Thanks for your reply, I really don't know someone has send the similar one.
+> The previous versions of this patch had this comment:
+> 
+> /*
+>  * dev_pm_opp_set_rate() doesn't search for a floor clock rate and it
+>  * will error out if default clock rate is too high, i.e. unsupported
+>  * by a SoC hardware version.  Hence find floor rate by ourselves.
+>  */
+> 
+> I removed it because it appeared to me that it should be obvious why this is needed.
 
-I forget this patch.
+It can never be obvious to anyone without looking at the API in
+detail. So if it is indeed required, please keep the comment as is.
 
-
-> As general advice, I would recommend avoiding using generic words such
-> as fix in the subject line. It's often better to say something about the
-> nature of what is being done.
-
-OK, got it!
-
-Thanks
-
-Tang Bin
-
->
-> Cc: lucas.p.stankus@gmail.com
->
->
-> Best regards,
->
-> Marcelo
->
-> On 05/17, Tang Bin wrote:
->> In the function ad7746_probe(), the return value of
->> devm_iio_device_register() can be zero or ret, thus it is
->> unnecessary to repeated check here. And delete unused
->> initialized value of 'ret', because it will be assigned by
->> the function i2c_smbus_write_byte_data().
->>
->> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->> ---
->>   drivers/staging/iio/cdc/ad7746.c | 8 ++------
->>   1 file changed, 2 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
->> index dfd71e99e..d3b6e68df 100644
->> --- a/drivers/staging/iio/cdc/ad7746.c
->> +++ b/drivers/staging/iio/cdc/ad7746.c
->> @@ -680,7 +680,7 @@ static int ad7746_probe(struct i2c_client *client,
->>   	struct ad7746_chip_info *chip;
->>   	struct iio_dev *indio_dev;
->>   	unsigned char regval = 0;
->> -	int ret = 0;
->> +	int ret;
->>   
->>   	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
->>   	if (!indio_dev)
->> @@ -730,11 +730,7 @@ static int ad7746_probe(struct i2c_client *client,
->>   	if (ret < 0)
->>   		return ret;
->>   
->> -	ret = devm_iio_device_register(indio_dev->dev.parent, indio_dev);
->> -	if (ret)
->> -		return ret;
->> -
->> -	return 0;
->> +	return devm_iio_device_register(indio_dev->dev.parent, indio_dev);
->>   }
->>   
->>   static const struct i2c_device_id ad7746_id[] = {
->> -- 
->> 2.20.1.windows.1
->>
->>
->>
-
-
+-- 
+viresh
