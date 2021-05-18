@@ -2,167 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A763387AA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FC8387AAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349782AbhEROH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:07:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2698 "EHLO mga04.intel.com"
+        id S1349788AbhEROIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:08:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244785AbhEROH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:07:28 -0400
-IronPort-SDR: 558/4rrIXlwN4s2NzFreMK3wFCQAuxtdWDUwQHQ3aUBpqKa/eVUe6h/2e35huTDxZGksrr76Yx
- cNsvOTjL+LHA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="198767614"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="198767614"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 07:06:09 -0700
-IronPort-SDR: Vt+sJki3Auh60l00axS5+f7TEP8al1RhJnPDsxY8NUd0I6ODtTtZBz+KjdG3MbBYwV+SalX464
- 6wwmH++crwUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="541984121"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 18 May 2021 07:06:08 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lj0MK-0002D8-4Y; Tue, 18 May 2021 14:06:08 +0000
-Date:   Tue, 18 May 2021 22:05:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/kspp] BUILD SUCCESS
- 135436a7d2cdd505aacc142f7f57e388b23ba73e
-Message-ID: <60a3c995.W2GbyIOuSX8iZNJ9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S244785AbhEROIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 10:08:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F83760BD3;
+        Tue, 18 May 2021 14:06:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621346816;
+        bh=EBdubQ1sGe/Bbb8YFCgOGYR3HaooPs65ywrzHVDre7k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RbV02EcJhjnPpoAgtlUffPYAFOIPf2Zfq2gUt1oVyTEiAYhzQx98Z7sJ0sTGbAXaS
+         NlBJEs1szZ4F2EEkvUJ6IACrfC7cTICSOF5VcXMYLtKj6JaDd6gz1SfFGF7u8GExsK
+         uzoJ/uR9JOLdzl8ubsB5wcrxikl5CIBETIRLr3nNKcFnYshed5fk6DIELvnt5Eu1t9
+         0A7NljYACgUoCSxWmsc/iOaQtu+4wuvo8m6LHULmb3/fbpofv7qPg1TafF9e3/MrHK
+         yVasf0WeCo6NhlMmCSCsqPhsxLkc6y1uwYZycTnNEQ8sQXnTtplHuVzt+Fk8BgyEGp
+         sZIbwqrUxDA4w==
+Received: by mail-wm1-f41.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso1592333wmm.3;
+        Tue, 18 May 2021 07:06:56 -0700 (PDT)
+X-Gm-Message-State: AOAM531JYeMrEeq0rZhAawyDNIomsaMl4otcFqx8cepu/iysyGqgbM5/
+        GrkrLMeAgHlf1a04WP3JU1+Pv/QVfOm5IWKxNyo=
+X-Google-Smtp-Source: ABdhPJx+yeQS6ZDHm5FRpgmqd8Rk2r80K5a8CnDcKJIH0RKrLCYMj6CuRTSlOrPLbmKbp1JI5kZJwEAnlPfvw/suG58=
+X-Received: by 2002:a1c:9895:: with SMTP id a143mr5564837wme.43.1621346814762;
+ Tue, 18 May 2021 07:06:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210517203343.3941777-1-arnd@kernel.org> <20210517203343.3941777-2-arnd@kernel.org>
+ <m1bl982m8c.fsf@fess.ebiederm.org>
+In-Reply-To: <m1bl982m8c.fsf@fess.ebiederm.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 18 May 2021 16:05:44 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a27_z8zk6j5W4n+u3g2e90v-h+3AbaTZ6YjCQ0B7AbJaA@mail.gmail.com>
+Message-ID: <CAK8P3a27_z8zk6j5W4n+u3g2e90v-h+3AbaTZ6YjCQ0B7AbJaA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] kexec: simplify compat_sys_kexec_load
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
-branch HEAD: 135436a7d2cdd505aacc142f7f57e388b23ba73e  xfrm: Fix fall-through warnings for Clang
+On Tue, May 18, 2021 at 3:41 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Arnd Bergmann <arnd@kernel.org> writes:
+>
+> > From: Arnd Bergmann <arnd@arndb.de>KEXEC_ARCH_DEFAULT
+> >
+> > The compat version of sys_kexec_load() uses compat_alloc_user_space to
+> > convert the user-provided arguments into the native format.
+> >
+> > Move the conversion into the regular implementation with
+> > an in_compat_syscall() check to simplify it and avoid the
+> > compat_alloc_user_space() call.
+> >
+> > compat_sys_kexec_load() now behaves the same as sys_kexec_load().
+>
+> Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>KEXEC_ARCH_DEFAULT
+> The patch is wrong.
+>
+> The logic between the compat entry point and the ordinary entry point
+> are by necessity different.   This unifies the logic and breaks the compat
+> entry point.
+>
+> The fundamentally necessity is that the code being loaded needs to know
+> which mode the kernel is running in so it can safely transition to the
+> new kernel.
+>
+> Given that the two entry points fundamentally need different logic,
+> and that difference was not preserved and the goal of this patchset
+> was to unify that which fundamentally needs to be different.  I don't
+> think this patch series makes any sense for kexec.
 
-elapsed time: 720m
+Sorry, I'm not following that explanation. Can you clarify what different
+modes of the kernel you are referring to here, and how my patch
+changes this?
 
-configs tested: 105
-configs skipped: 2
+The only difference I can see between the native and compat entry
+points is the layout of the kexec_segment structure, and that is
+obviously preserved by my patch.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-xtensa                         virt_defconfig
-powerpc                     powernv_defconfig
-arm                           omap1_defconfig
-sh                           se7619_defconfig
-powerpc                      ppc44x_defconfig
-sh                     magicpanelr2_defconfig
-um                           x86_64_defconfig
-powerpc                     pseries_defconfig
-powerpc                     taishan_defconfig
-arm                          pxa910_defconfig
-arm                          ixp4xx_defconfig
-m68k                        stmark2_defconfig
-sh                          urquell_defconfig
-powerpc                      arches_defconfig
-mips                    maltaup_xpa_defconfig
-sh                             shx3_defconfig
-powerpc                        cell_defconfig
-mips                     decstation_defconfig
-mips                       lemote2f_defconfig
-sh                          rsk7201_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                      fuloong2e_defconfig
-powerpc                     tqm5200_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                          simpad_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210518
-i386                 randconfig-a001-20210518
-i386                 randconfig-a005-20210518
-i386                 randconfig-a004-20210518
-i386                 randconfig-a002-20210518
-i386                 randconfig-a006-20210518
-i386                 randconfig-a014-20210518
-i386                 randconfig-a016-20210518
-i386                 randconfig-a011-20210518
-i386                 randconfig-a015-20210518
-i386                 randconfig-a012-20210518
-i386                 randconfig-a013-20210518
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210518
-x86_64               randconfig-a004-20210517
-x86_64               randconfig-a003-20210517
-x86_64               randconfig-a001-20210517
-x86_64               randconfig-a005-20210517
-x86_64               randconfig-a002-20210517
-x86_64               randconfig-a006-20210517
-x86_64               randconfig-a015-20210518
-x86_64               randconfig-a012-20210518
-x86_64               randconfig-a013-20210518
-x86_64               randconfig-a011-20210518
-x86_64               randconfig-a016-20210518
-x86_64               randconfig-a014-20210518
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+         Arnd
