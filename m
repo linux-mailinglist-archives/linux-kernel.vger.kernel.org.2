@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9E6387B7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D430387B83
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbhEROo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235547AbhEROo2 (ORCPT
+        id S236509AbhEROpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:45:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41464 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235547AbhEROpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:44:28 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450EFC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:43:10 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g24so5621168pji.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PDDjAQxR5YHDKeoXEoU6CBD/UdRBnwhueJQ+IO7Oa+c=;
-        b=BeagsnSWZ3B+AFYGz0mTpWBDbs5hk1PNAI5gKYREw9w4Uv0kSnfsG/PXa2YLJi7YKm
-         C2PD+R5KeVMeBXAuuatnXPfghphlcGR/vf5IKUkcE32iH8qZ/PvHCQjfQVgRwkpg2ShG
-         RMgnuXKLKy7JZ60Kn4zNwnSTSPMnf19YqPheU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PDDjAQxR5YHDKeoXEoU6CBD/UdRBnwhueJQ+IO7Oa+c=;
-        b=Zj8km8rBwk0uhDq+EVR3IyPHoBw+eYYhF3PpTZ/wOl0nB6BkGiRx43r6IDioMVjz1h
-         JKQpyfVdMLCRnGn06/CB5lw6K0YxqRr1JXWo3CTKCdixTHLerQeB+ZGODefNVrw2+SM+
-         r8zo60xY/PBETUZ04DT7bSIwNeYclUMOogywzsj6OoiZpZQciTafMd4vQgEqeV22Rlqr
-         AuR/mvypVVieeV4OBRMNEGX+S9dLyxc3do+opAHrJARf1OD+alkmP7ht+EXlruLxNrjk
-         nw3CFCupoDIn3F0dl2pJwxsdv7CqwgiQiVAm+GLyiyQgTdQI+lUmz2Sy5huDmMgAf3I8
-         r2gw==
-X-Gm-Message-State: AOAM530HAUKNL++nKvkAP3Vuh4ESiuMK/+O9utIFRU8F5awaTUDu5Dpx
-        nwIYDbprRCkGZNbwfegSOFD78pwDxrDNd0wP4Zo=
-X-Google-Smtp-Source: ABdhPJyjsCiUrz25zqnCbsfCy6jzEVS99dsbelq4TUGjGEr+RAB7ZdHcFrzUSNMQHUnDYCc7lQAoxw==
-X-Received: by 2002:a17:90a:6446:: with SMTP id y6mr4229405pjm.135.1621348989821;
-        Tue, 18 May 2021 07:43:09 -0700 (PDT)
-Received: from e07e318d3c06 (110-175-118-133.tpgi.com.au. [110.175.118.133])
-        by smtp.gmail.com with ESMTPSA id y190sm13610030pgd.24.2021.05.18.07.43.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 18 May 2021 07:43:09 -0700 (PDT)
-Date:   Tue, 18 May 2021 14:43:02 +0000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc2 review
-Message-ID: <20210518144257.GA41@e07e318d3c06>
-References: <20210518135831.445321364@linuxfoundation.org>
+        Tue, 18 May 2021 10:45:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621349027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SnOgIuG0QI+D7+cp//iQj6D3t7PXPlfIr3EDmLUD8cw=;
+        b=WNsxYLOrvagJF5/1NSYAbRwqFEKmLT4o6qT4fAKFEQo6Qa5/SyPcmG7CEtzPNT9XMNOATW
+        DpSEaTAfXScUxAwYNj27LqEpfFdVwbvvnMZ00Hc2mV6jrMAZAGe5DNw/I7AlbSGbyK5dm7
+        g6n4IBNQBUxgJrIm9hx2dNKNZD3jKs4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-WW7pL-ltMkez6h8FlYudqw-1; Tue, 18 May 2021 10:43:44 -0400
+X-MC-Unique: WW7pL-ltMkez6h8FlYudqw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 327C9188E3C1;
+        Tue, 18 May 2021 14:43:43 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.193.194])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B22671349A;
+        Tue, 18 May 2021 14:43:40 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] KVM: x86: hyper-v: Conditionally allow SynIC with APICv/AVIC
+Date:   Tue, 18 May 2021 16:43:34 +0200
+Message-Id: <20210518144339.1987982-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518135831.445321364@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 03:59:03PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.5 release.
-> There are 363 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 20 May 2021 13:57:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Changes since v1 (Sean):
+- Use common 'enable_apicv' variable for both APICv and AVIC instead of 
+ adding a new hook to 'struct kvm_x86_ops'.
+- Drop unneded CONFIG_X86_LOCAL_APIC checks from VMX/SVM code along the
+ way.
 
-On Tiger Lake x86_64 kernel:
-- tested ok.
+Original description:
 
-Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
+APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
+SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
+however, possible to track whether the feature was actually used by the
+guest and only inhibit APICv/AVIC when needed.
+
+The feature can be tested with QEMU's 'hv-passthrough' debug mode.
+
+Note, 'avic' kvm-amd module parameter is '0' by default and thus needs to
+be explicitly enabled.
+
+Vitaly Kuznetsov (5):
+  KVM: SVM: Drop unneeded CONFIG_X86_LOCAL_APIC check for AVIC
+  KVM: VMX: Drop unneeded CONFIG_X86_LOCAL_APIC check from
+    cpu_has_vmx_posted_intr()
+  KVM: x86: Use common 'enable_apicv' variable for both APICv and AVIC
+  KVM: x86: Invert APICv/AVIC enablement check
+  KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in
+    use
+
+ arch/x86/include/asm/kvm_host.h |  5 ++++-
+ arch/x86/kvm/hyperv.c           | 27 +++++++++++++++++++++------
+ arch/x86/kvm/svm/avic.c         | 16 +++++-----------
+ arch/x86/kvm/svm/svm.c          | 24 +++++++++++++-----------
+ arch/x86/kvm/svm/svm.h          |  2 --
+ arch/x86/kvm/vmx/capabilities.h |  4 +---
+ arch/x86/kvm/vmx/vmx.c          |  2 --
+ arch/x86/kvm/x86.c              |  9 ++++++---
+ 8 files changed, 50 insertions(+), 39 deletions(-)
+
 -- 
-Rudi
+2.31.1
+
