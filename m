@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F52387535
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C789387536
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347971AbhERJei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347951AbhERJed (ORCPT
+        id S1347985AbhERJej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:34:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58948 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347949AbhERJee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:34:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D1EC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:33:15 -0700 (PDT)
-Message-Id: <20210518093118.277228577@linutronix.de>
+        Tue, 18 May 2021 05:34:34 -0400
+Message-Id: <20210518093118.395086573@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621330394;
+        s=2020; t=1621330395;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=0u7O17lOlO7a60AQ00/ZHxfxJ4t1mHRtYZeKj7baKX0=;
-        b=RXK/Bhnu0T+YSoFk6r2VQA+DFKrq23LtpsAd10sMCLHsMUkLPdkFC2UnwFuslnIljlix12
-        q+ZkMkCBGdvsOgvWdHhFXpHzixACkKYxvXBvjhtCpuIkO2gu6/AtyilmDS0Fc6A1alRvPg
-        K81PV8fDvuTU1Urd4J7NZSfyvi53nXB4YTGjBwYBX7/BdBvTNvwIU522pdoDVsIegGbRT+
-        TmNFC9gqHIJeaDKtdNGODLNN8faiGyEPz5k+cvbpHR+mnJooBPUkUwtJxk3IhDYHZzrx0R
-        pDfHr0aIktY4tgiJ95g7MZg47Pclv/GsNui6gYn8pOXZm5eKOkg20FPOKh4IEA==
+        bh=V/bDG9qNgIKyZrOc6/zeyVIGnDKc6AhtxpbL8tdrgEg=;
+        b=nTMhrM2cWjxRO31M1UWVX24nzEnK2DOZaPrMex1tUmUEEtWVHbqHAeKl2m3kNE4TZdls7m
+        ObFZanUcSWItBDDWqYjAIbw8VxCi4GLRs7BgljMgc1rYKWbgXXvw9WCH4br8XfYSswCvfh
+        AqMYqWbQ4CXK2SGYh9LshwR3sFOvUcbsc2ePaFM7pKrwbt7lqXZBtaF/dww+iIydCYoyOQ
+        qDXBMtx0SYQ7ISf41e+ck5mKeF6NVsrNZByCichqSepZjmAQH3X0sOG/r5NScjFaOKSWGI
+        gEjx5k3oVtlU5851Z/cwT0P/3zBPz5y38fTZd90EvxVsOGg602WZGMRTLEzE7A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621330394;
+        s=2020e; t=1621330395;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=0u7O17lOlO7a60AQ00/ZHxfxJ4t1mHRtYZeKj7baKX0=;
-        b=iWvw/RKda4AV095lztmg4ZYtY46kua4IG2iJNaPQF35qaFiKjzPP9qdJKbrTf/W5m0ZDhL
-        wduuumExnovrInCQ==
-Date:   Tue, 18 May 2021 11:17:28 +0200
+        bh=V/bDG9qNgIKyZrOc6/zeyVIGnDKc6AhtxpbL8tdrgEg=;
+        b=cup5q3qN59BJFgsZj64XE9K5e0LBYILUgKCeyX0o6J8VORqCPT8vfavNXt4QZxdcW89soH
+        G8M2ZIME4scHuzDg==
+Date:   Tue, 18 May 2021 11:17:29 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -51,7 +48,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [patch 3/8] perf/arm-cmn: Use irq_set_affinity()
+Subject: [patch 4/8] perf/arm-dmc620: Use irq_set_affinity()
 References: <20210518091725.046774792@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -81,44 +78,35 @@ Cc: Will Deacon <will@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: linux-arm-kernel@lists.infradead.org
 ---
- drivers/perf/arm-cmn.c |    9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/perf/arm_dmc620_pmu.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/perf/arm-cmn.c
-+++ b/drivers/perf/arm-cmn.c
-@@ -1162,7 +1162,7 @@ static int arm_cmn_pmu_offline_cpu(unsig
+--- a/drivers/perf/arm_dmc620_pmu.c
++++ b/drivers/perf/arm_dmc620_pmu.c
+@@ -421,7 +421,7 @@ static struct dmc620_pmu_irq *__dmc620_p
+ 	if (ret)
+ 		goto out_free_aff;
  
- 	perf_pmu_migrate_context(&cmn->pmu, cpu, target);
- 	for (i = 0; i < cmn->num_dtcs; i++)
--		irq_set_affinity_hint(cmn->dtc[i].irq, cpumask_of(target));
-+		irq_set_affinity(cmn->dtc[i].irq, cpumask_of(target));
- 	cmn->cpu = target;
+-	ret = irq_set_affinity_hint(irq_num, cpumask_of(irq->cpu));
++	ret = irq_set_affinity(irq_num, cpumask_of(irq->cpu));
+ 	if (ret)
+ 		goto out_free_irq;
+ 
+@@ -475,7 +475,6 @@ static void dmc620_pmu_put_irq(struct dm
+ 	list_del(&irq->irqs_node);
+ 	mutex_unlock(&dmc620_pmu_irqs_lock);
+ 
+-	WARN_ON(irq_set_affinity_hint(irq->irq_num, NULL));
+ 	free_irq(irq->irq_num, irq);
+ 	cpuhp_state_remove_instance_nocalls(cpuhp_state_num, &irq->node);
+ 	kfree(irq);
+@@ -622,7 +621,7 @@ static int dmc620_pmu_cpu_teardown(unsig
+ 		perf_pmu_migrate_context(&dmc620_pmu->pmu, irq->cpu, target);
+ 	mutex_unlock(&dmc620_pmu_irqs_lock);
+ 
+-	WARN_ON(irq_set_affinity_hint(irq->irq_num, cpumask_of(target)));
++	WARN_ON(irq_set_affinity(irq->irq_num, cpumask_of(target)));
+ 	irq->cpu = target;
+ 
  	return 0;
- }
-@@ -1222,7 +1222,7 @@ static int arm_cmn_init_irqs(struct arm_
- 		if (err)
- 			return err;
- 
--		err = irq_set_affinity_hint(irq, cpumask_of(cmn->cpu));
-+		err = irq_set_affinity(irq, cpumask_of(cmn->cpu));
- 		if (err)
- 			return err;
- 	next:
-@@ -1568,16 +1568,11 @@ static int arm_cmn_probe(struct platform
- static int arm_cmn_remove(struct platform_device *pdev)
- {
- 	struct arm_cmn *cmn = platform_get_drvdata(pdev);
--	int i;
- 
- 	writel_relaxed(0, cmn->dtc[0].base + CMN_DT_DTC_CTL);
- 
- 	perf_pmu_unregister(&cmn->pmu);
- 	cpuhp_state_remove_instance(arm_cmn_hp_state, &cmn->cpuhp_node);
--
--	for (i = 0; i < cmn->num_dtcs; i++)
--		irq_set_affinity_hint(cmn->dtc[i].irq, NULL);
--
- 	return 0;
- }
- 
 
