@@ -2,79 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A26C3880E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4033880E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352016AbhERT7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352003AbhERT7S (ORCPT
+        id S244858AbhERUDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:03:49 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:35137 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239208AbhERUDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:59:18 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689ECC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:58:00 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id b13so4482078pfv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nC+H8cCNxnda/BpZpKO5FV3ScjJYc3oc78+AAfuoy6w=;
-        b=mOew9EHjY+srvL7oxZsnsh8B4D1WQaAyvJiwi2H/KZJhveqG0Fpaa1p7ufH8ELegwp
-         ofpdkGQlpYP4OPDpxYUNQpWuni9E5644sbDux478eupwFvHyFONxotIx0mIJio6mOiYf
-         HBEIAeZcI9xrQgngZxv+jMJs1zSecDPcPU4U80BM4nAaMSaposjYfQ7OqpcGdpdQagCc
-         dTo2UI18GTR3wdPOUhu0ans5S/oKQbIoB4Y3RfNeTPWXSBpMzcV+z01UopXp4XJ4irxb
-         iE6MB3XFI23wdHimTcC6t/d7QikNtLRxZ84/FGgJU2zRkXpjqC4GSHXwbKNl0yJOyRGd
-         A9nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nC+H8cCNxnda/BpZpKO5FV3ScjJYc3oc78+AAfuoy6w=;
-        b=eGxdsiRauziVYd3SykH+q79vMy5kzoNp/4zLr+zYcXCi83e9xdxMMh7cfGd6D6BCep
-         gvAliyCeLcdvFqHUsb+vx9bSxAPZiKucxKdHooJdnnmNCtTDkgrkfSAQ9FjzUdeW0OuI
-         HwkZBsSDouWWKKR0uaKeRChLM6X/eZ2KFIUOCN1MvwKaNhAUlP8RCFpUUCtQ+Q+2bR9E
-         CoX/opCgBL7VMPjZtYefH+lTpCchHwcBrr/jAqLeGrsY3QLobP7VhH26YSpG6SjaOfbV
-         TCtopxIuNFGXB+iOPBYayGUVgl/NfsZo7NnFNCFnQgJ58huXBs8yEhbS3JmFwt3EwEx6
-         faWA==
-X-Gm-Message-State: AOAM5309cdGDwuiUqfAzi9h16/RyBrvn0fUTnVFJdupBFeIP640hIwC1
-        BPtC/5Qy2M2KAPX3epNET6d7MA==
-X-Google-Smtp-Source: ABdhPJxHxRmPXj809ZQ+TFn8XrFu5p7EQuiB2/g9jTrbf9aIdrL9Zpleqin73/tjbbV7IElxTxfotA==
-X-Received: by 2002:a65:550e:: with SMTP id f14mr6812349pgr.160.1621367879851;
-        Tue, 18 May 2021 12:57:59 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id w197sm9187865pfc.5.2021.05.18.12.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 12:57:59 -0700 (PDT)
-Date:   Tue, 18 May 2021 19:57:55 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] KVM: VMX: Drop unneeded CONFIG_X86_LOCAL_APIC
- check from cpu_has_vmx_posted_intr()
-Message-ID: <YKQcQy6SEvYB+lMS@google.com>
-References: <20210518144339.1987982-1-vkuznets@redhat.com>
- <20210518144339.1987982-3-vkuznets@redhat.com>
+        Tue, 18 May 2021 16:03:48 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D145222239;
+        Tue, 18 May 2021 22:02:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621368148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h0LHPW/w4IwpfoUIXaU9BCUDkKX5JEPEZ2uj7QpdpKw=;
+        b=oO4XsO814zzxDvKliFmFSX1r0OtStVP6JrmFmpcEoyroQcR4EUyXi90OuBxJ6bV67QPGgn
+        impBl6M+4Qh+QN9EV7VJg4R2tUuvo2pWk6xJB+8kI7wh8h9Mp1hWCGwjn8yF5PwH2AFsnG
+        Xh538qco49irr8Qd/oXPiuSIPdpBdDo=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518144339.1987982-3-vkuznets@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 May 2021 22:02:27 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] mtd: core: Fix freeing of otp_info buffer
+In-Reply-To: <20210518185503.162787-1-jonathanh@nvidia.com>
+References: <20210424110608.15748-6-michael@walle.cc>
+ <20210518185503.162787-1-jonathanh@nvidia.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <016ead00625f91d1247190e7c68c2086@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021, Vitaly Kuznetsov wrote:
-> CONFIG_X86_LOCAL_APIC is always on when CONFIG_KVM (on x86) since
-> commit e42eef4ba388 ("KVM: add X86_LOCAL_APIC dependency").
+Am 2021-05-18 20:55, schrieb Jon Hunter:
+> Commit 4b361cfa8624 ("mtd: core: add OTP nvmem provider support") is
+> causing the following panic ...
 > 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
+>  ------------[ cut here ]------------
+>  kernel BUG at /local/workdir/tegra/linux_next/kernel/mm/slab.c:2730!
+>  Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+>  Modules linked in:
+>  CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc2-next-20210518 #1
+>  Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+>  PC is at ___cache_free+0x3f8/0x51c
+>  ...
+>  [<c029bb1c>] (___cache_free) from [<c029c658>] (kfree+0xac/0x1bc)
+>  [<c029c658>] (kfree) from [<c06da094>] (mtd_otp_size+0xc4/0x108)
+>  [<c06da094>] (mtd_otp_size) from [<c06dc864>]
+> (mtd_device_parse_register+0xe4/0x2b4)
+>  [<c06dc864>] (mtd_device_parse_register) from [<c06e3ccc>]
+> (spi_nor_probe+0x210/0x2c0)
+>  [<c06e3ccc>] (spi_nor_probe) from [<c06e9578>] (spi_probe+0x88/0xac)
+>  [<c06e9578>] (spi_probe) from [<c066891c>] (really_probe+0x214/0x3a4)
+>  [<c066891c>] (really_probe) from [<c0668b14>] 
+> (driver_probe_device+0x68/0xc0)
+>  [<c0668b14>] (driver_probe_device) from [<c0666cf8>]
+> (bus_for_each_drv+0x5c/0xbc)
+>  [<c0666cf8>] (bus_for_each_drv) from [<c0668694>] 
+> (__device_attach+0xe4/0x150)
+>  [<c0668694>] (__device_attach) from [<c06679e0>] 
+> (bus_probe_device+0x84/0x8c)
+>  [<c06679e0>] (bus_probe_device) from [<c06657f8>] 
+> (device_add+0x48c/0x868)
+>  [<c06657f8>] (device_add) from [<c06eb784>] 
+> (spi_add_device+0xa0/0x168)
+>  [<c06eb784>] (spi_add_device) from [<c06ec9a8>]
+> (spi_register_controller+0x8b8/0xb38)
+>  [<c06ec9a8>] (spi_register_controller) from [<c06ecc3c>]
+> (devm_spi_register_controller+0x14/0x50)
+>  [<c06ecc3c>] (devm_spi_register_controller) from [<c06f0510>]
+> (tegra_spi_probe+0x33c/0x450)
+>  [<c06f0510>] (tegra_spi_probe) from [<c066abec>] 
+> (platform_probe+0x5c/0xb8)
+>  [<c066abec>] (platform_probe) from [<c066891c>] 
+> (really_probe+0x214/0x3a4)
+>  [<c066891c>] (really_probe) from [<c0668b14>] 
+> (driver_probe_device+0x68/0xc0)
+>  [<c0668b14>] (driver_probe_device) from [<c0668e30>]
+> (device_driver_attach+0x58/0x60)
+>  [<c0668e30>] (device_driver_attach) from [<c0668eb8>]
+> (__driver_attach+0x80/0xc8)
+>  [<c0668eb8>] (__driver_attach) from [<c0666c48>] 
+> (bus_for_each_dev+0x78/0xb8)
+>  [<c0666c48>] (bus_for_each_dev) from [<c0667c44>] 
+> (bus_add_driver+0x164/0x1e8)
+>  [<c0667c44>] (bus_add_driver) from [<c066997c>] 
+> (driver_register+0x7c/0x114)
+>  [<c066997c>] (driver_register) from [<c010223c>] 
+> (do_one_initcall+0x50/0x2b0)
+>  [<c010223c>] (do_one_initcall) from [<c11011f0>]
+> (kernel_init_freeable+0x1a8/0x1fc)
+>  [<c11011f0>] (kernel_init_freeable) from [<c0c09190>] 
+> (kernel_init+0x8/0x118)
+>  [<c0c09190>] (kernel_init) from [<c01001b0>] (ret_from_fork+0x14/0x24)
+>  ...
+>  ---[ end trace 0f652dd222de75d7 ]---
+> 
+> In the function mtd_otp_size() a buffer is allocated by calling
+> kmalloc() and a pointer to the buffer is stored in a variable 'info'.
+> The pointer 'info' may then be incremented depending on the length
+> returned from mtd_get_user/fact_prot_info(). If 'info' is incremented,
+> when kfree() is called to free the buffer the above panic occurs 
+> because
+> we are no longer passing the original address of the buffer allocated.
+> Fix this by indexing through the buffer allocated to avoid incrementing
+> the pointer.
+> 
+> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+uhm.. yes of course. Two fixes for this function. Not my best day :/
+
+I'm wondering why CONFIG_SLUB_DEBUG_ON doesn't catch this, whereas
+slub_debug=f (or fzpu) as commandline parameter works as expected.
+
+Reviewed-by: Michael Walle <michael@walle.cc>
+
+Thanks,
+-michael
