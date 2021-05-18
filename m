@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA8E3877B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCBE3877BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238827AbhERLdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237487AbhERLc7 (ORCPT
+        id S239613AbhERLdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:33:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4728 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239909AbhERLdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:32:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00627C061573;
-        Tue, 18 May 2021 04:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bcVit+6mgvFx6heftajsrfaGxDkJsK5oc1JEKMXcvbk=; b=t8b781qfNVrmqOk36u2HkQAnOx
-        3W8zk/6U2ayPe7nlMCdyQKDq5sK6zToIkich1QZsLvVi4Ef40iM1NQf/c3DO2Bw5VrEd12V5SzHb+
-        1cOUCYljpa9RqEfXAJRGJSCEloeSVRUtjxY3I5Zy4v61LDPhLryztZfyIO+zqSUOkZNQTZaUnvKos
-        h1HVt1hJZP9IapTE2fnBHe/L/qbbxFtY7Ms4cork7z+pdoSjGbQGNRW1dMn5uMqcasMHRm/GyMKti
-        vUYpR/zArMKUU2BLUwaJiCEz1z3/DGSEA+G7R31dwlBynnjx2qNl9FJxQY+ISkqeBIX+63q9u4h+B
-        geD92rLw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lixvF-00DvfV-Dm; Tue, 18 May 2021 11:30:53 +0000
-Date:   Tue, 18 May 2021 12:30:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v10 18/33] mm/filemap: Add folio_unlock
-Message-ID: <YKOlOfFBrVu36g1q@casper.infradead.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-19-willy@infradead.org>
- <e3869efd-b4a3-93a2-b510-21142db91603@suse.cz>
+        Tue, 18 May 2021 07:33:32 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fktzw4g0JzmhMZ;
+        Tue, 18 May 2021 19:28:44 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 19:32:12 +0800
+Received: from [10.47.83.99] (10.47.83.99) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
+ 2021 12:32:10 +0100
+Subject: Re: [patch 5/8] perf/arm-dsu: Use irq_set_affinity()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Frank Li <Frank.li@nxp.com>, "Shawn Guo" <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+References: <20210518091725.046774792@linutronix.de>
+ <20210518093118.505110632@linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4fe8eb68-c940-dd4b-6781-6cdaf052f4f5@huawei.com>
+Date:   Tue, 18 May 2021 12:31:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3869efd-b4a3-93a2-b510-21142db91603@suse.cz>
+In-Reply-To: <20210518093118.505110632@linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.83.99]
+X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 12:06:42PM +0200, Vlastimil Babka wrote:
-> >  /**
-> > - * unlock_page - unlock a locked page
-> > - * @page: the page
-> > + * folio_unlock - Unlock a locked folio.
-> > + * @folio: The folio.
-> >   *
-> > - * Unlocks the page and wakes up sleepers in wait_on_page_locked().
-> > - * Also wakes sleepers in wait_on_page_writeback() because the wakeup
-> > - * mechanism between PageLocked pages and PageWriteback pages is shared.
-> > - * But that's OK - sleepers in wait_on_page_writeback() just go back to sleep.
-> > + * Unlocks the folio and wakes up any thread sleeping on the page lock.
-> >   *
-> > - * Note that this depends on PG_waiters being the sign bit in the byte
-> > - * that contains PG_locked - thus the BUILD_BUG_ON(). That allows us to
-> > - * clear the PG_locked bit and test PG_waiters at the same time fairly
-> > - * portably (architectures that do LL/SC can test any bit, while x86 can
-> > - * test the sign bit).
-> 
-> Was it necessary to remove the comments about wait_on_page_writeback() and
-> PG_waiters etc?
+On 18/05/2021 10:17, Thomas Gleixner wrote:
+>   
+> @@ -769,7 +769,6 @@ static int dsu_pmu_device_probe(struct p
+>   	if (rc) {
 
-I think so.  This kernel-doc is for the person who wants to understand
-how to use the function, not for the person who wants to understand why
-the function is written the way it is.  For that person, we have git log
-messages and other comments dotted throughout, eg the comment on
-clear_bit_unlock_is_negative_byte() in mm/filemap.c and the comment
-on PG_waiters in include/linux/page-flags.h.
+nit: I think that someone will send a patch to remove these {} later...
 
-> > + * Context: May be called from interrupt or process context.  May not be
-> > + * called from NMI context.
-> 
-> Where did the NMI part come from?
+>   		cpuhp_state_remove_instance(dsu_pmu_cpuhp_state,
+>   						 &dsu_pmu->cpuhp_node);
+> -		irq_set_affinity_hint(dsu_pmu->irq, NULL);
+>   	}
 
-If you're in NMI context and call unlock_page() and the page has a
-waiter on it, we call folio_wake_bit(), which calls spin_lock_irqsave()
-on the wait_queue_head_t lock, which I believe cannot be done safely 
-from NMI context (as the NMI may have interrupted us while holding
-that lock).
+Thanks,
+John
+
 
