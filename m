@@ -2,162 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722A0386FC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D46386FC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346170AbhERCDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 22:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        id S1346191AbhERCDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 22:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235741AbhERCDE (ORCPT
+        with ESMTP id S235741AbhERCDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 22:03:04 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683A5C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:01:46 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id d11so7835065iod.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:01:46 -0700 (PDT)
+        Mon, 17 May 2021 22:03:22 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55932C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:02:05 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id v3-20020a0cdd830000b02901efe0c3571eso3383757qvk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eiOP4WhukkqWvHIe+lpGPImxAkNhpIv8Q/xSjCssMYE=;
-        b=tfxl3LXoKZOqzT25D2GmW0+3xhRoFtBHcapsoEUgP/Y+G+IIEd26DVi4XfSTMt/FFE
-         CZdH1dKND7CZCr6KMu83xPt5UNz5++3PAuzjUBR1xSSRia6faT3U/sR7mnmJQUIpmO9a
-         fm7tfJ2vVKDCgCeA5fQ2lOj79nZGfv9jv4Rihxkc8Jenn/IaTDtftEJSyDHTh+LkMbtM
-         04kZjdWbalMCbROilNT+Mv2OwxWvis3o0IQL32EbYQ9Fx/JMxSY93CWQ1E8H1L3Q8uVm
-         IMIOseFJEsXXwiDeA0I1NVrmDH99Vjp7K5zMD+D3HeP2DhDoc/wQz+gQVN4blXZI8ZF9
-         qTvg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=T5li4zeXiPCAmRKCyOCQp3Ojk3ZxPKqc9P5sUfpNB/s=;
+        b=jsy3oKqlvCk+RurZn+gnlKuQETG7vG57mbjApt2SzF3MvVcH9lZNL8bVQtMhR/dZpY
+         A1jZdzfNB1I0iZa/sJXZeEWA0nJM7fSgC65eTiW8LfQQC7gQk0VJUgKLzddUiPRNzvn8
+         7giosJduSiSa2rUuizgrWWPJTmpMVh5OWG2gfMJOzgbFsooWALw4/0Qqica36rweIkIT
+         F2te8OckCha4anXWGZWWw0azzdtCUpB6Ac7tqKpA5nQXzCvoqzO7i7E3X7Xh4BmCw8AV
+         Rl+itAK552njhYDDraHFmXC+ZnTW9vbAOk53Bw0chK3dGkYgvB3ffi+vCpIVTwZBMr63
+         uKEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eiOP4WhukkqWvHIe+lpGPImxAkNhpIv8Q/xSjCssMYE=;
-        b=MF5f6Oap1YgtzKgTCz8ANfsVpB0v+sfX+rRQphfnpgzyQn4+qY6Oy8d28Yp5g226NU
-         ibzh86mO81m9abks6tyhYDxa3qhdBbI369r4c4jeL2vfuRIbWkgjGUR/EB3ITeVETE5v
-         ffktyZdaoWl+R2EQ23QurEfZvV3SKX5/Me5wp1i4hHR+ZUdO+VS8hxhXdBOaN5ZikGdM
-         s5Thf5+UcKSktn/UpYzb+FMXjq4Bt55iCQGtdFL/ISrYPRXY0AcSEJnnco4dq34UUYue
-         ya0PQBh4uk2nnrjOaMr9G/8wVQ0524oWrataNMOdVdIS9tymQqP10eJIzskDIr+iyqWS
-         ZPdg==
-X-Gm-Message-State: AOAM533G48GBo/79/s9s3Ol9E64g3Eb0I7AJnUa35E3EeoIqCKRPEzhN
-        zlDE9Quo6i38quUxCmfoEXgGDwJFVLnOP7LC+bmauQ==
-X-Google-Smtp-Source: ABdhPJyQ2ALt/nIOyU7QFJ0S3oRqnCZ9G8SnQnBWadudtIeZwYLkxXAmel1aWJfQRhfAFy7e60kwaVSwFvWGe3Vpg6M=
-X-Received: by 2002:a05:6638:b14:: with SMTP id a20mr2975623jab.132.1621303305671;
- Mon, 17 May 2021 19:01:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1619193043.git.ashish.kalra@amd.com> <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
- <YJvU+RAvetAPT2XY@zn.tnic> <20210513043441.GA28019@ashkalra_ubuntu_server>
- <YJ4n2Ypmq/7U1znM@zn.tnic> <7ac12a36-5886-cb07-cc77-a96daa76b854@redhat.com>
- <20210514090523.GA21627@ashkalra_ubuntu_server> <YJ5EKPLA9WluUdFG@zn.tnic> <20210514100519.GA21705@ashkalra_ubuntu_server>
-In-Reply-To: <20210514100519.GA21705@ashkalra_ubuntu_server>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 17 May 2021 19:01:09 -0700
-Message-ID: <CABayD+e9NHytm5RA7MakRq5EqPJ+U11jWkEFpJKSqm0otBidaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
- status is changed
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=T5li4zeXiPCAmRKCyOCQp3Ojk3ZxPKqc9P5sUfpNB/s=;
+        b=gBozcs3v++64fzsPe0FdSrB6JEtGlz0bc7+5F88LPBrv+kcwc78Ov3DwHRqicpYEw+
+         6j2SCjsO3iesmIfZtIzRwIz6ielb49EwP774EtE4uW//VR1jMLi7v9xEkC0comeOCROY
+         dBBp/SWyqh2FzapOK1RTr6lhQ1veyIhx7Qa+7UA0dTNcnf0yHclOn51OGWdQ9b2MxTR7
+         ObooAKB0Dg5sAMFrbjTIEnFPwnCNWrI+ub0kkB9ndC/RtWNCTOQGykJCXC3cFS80uM6E
+         kAcySEQskN6vvossuOLbq1Czbgdmh+Uvef4XGhqgPPvpz7l9k1gex5vmaDEaOSUha/Yz
+         83MA==
+X-Gm-Message-State: AOAM5324o+wHkFk8qZAPFTy2IFOz2cnsmlwf1yvgb+pYr4voHijD6hmI
+        /Urh+K53Xb6lOwBOLnczASLrVF7FVW8=
+X-Google-Smtp-Source: ABdhPJyWJZn1IQMwFZTUIQyajZyzZJ/An7rI9Lxp1ehxkMQhiF6t6d9ZQHc67M3GDg0wX4O2bAGY4IYP2ns=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:13e2:8aa6:de41:f251])
+ (user=surenb job=sendgmr) by 2002:a05:6214:13f2:: with SMTP id
+ ch18mr2978786qvb.42.1621303324494; Mon, 17 May 2021 19:02:04 -0700 (PDT)
+Date:   Mon, 17 May 2021 19:02:00 -0700
+Message-Id: <20210518020200.1790058-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+Subject: [PATCH v2 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     tj@kernel.org
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        minchan@kernel.org, corbet@lwn.net, bristot@redhat.com,
+        paulmck@kernel.org, rdunlap@infradead.org,
+        akpm@linux-foundation.org, tglx@linutronix.de, macro@orcam.me.uk,
+        viresh.kumar@linaro.org, mike.kravetz@oracle.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, surenb@google.com, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 3:05 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
->
-> On Fri, May 14, 2021 at 11:34:32AM +0200, Borislav Petkov wrote:
-> > On Fri, May 14, 2021 at 09:05:23AM +0000, Ashish Kalra wrote:
-> > > Ideally we should fail/stop migration even if a single guest page
-> > > encryption status cannot be notified and that should be the way to
-> > > proceed in this case, the guest kernel should notify the source
-> > > userspace VMM to block/stop migration in this case.
-> >
-> > Yap, and what I'm trying to point out here is that if the low level
-> > machinery fails for whatever reason and it cannot recover, we should
-> > propagate that error up the chain so that the user is aware as to why it
-> > failed.
-> >
->
-> I totally agree.
->
-> > WARN is a good first start but in some configurations those splats don't
-> > even get shown as people don't look at dmesg, etc.
-> >
-> > And I think it is very important to propagate those errors properly
-> > because there's a *lot* of moving parts involved in a guest migration
-> > and you have encrypted memory which makes debugging this probably even
-> > harder, etc, etc.
-> >
-> > I hope this makes more sense.
-> >
-> > > From a practical side, i do see Qemu's migrate_add_blocker() interface
-> > > but that looks to be a static interface and also i don't think it will
-> > > force stop an ongoing migration, is there an existing mechanism
-> > > to inform userspace VMM from kernel about blocking/stopping migration ?
-> >
-> > Hmm, so __set_memory_enc_dec() which calls
-> > notify_addr_enc_status_changed() is called by the guest, right, when it
-> > starts migrating.
-> >
->
-> No, actually notify_addr_enc_status_changed() is called whenever a range
-> of memory is marked as encrypted or decrypted, so it has nothing to do
-> with migration as such.
->
-> This is basically modifying the encryption attributes on the page tables
-> and correspondingly also making the hypercall to inform the hypervisor about
-> page status encryption changes. The hypervisor will use this information
-> during an ongoing or future migration, so this information is maintained
-> even though migration might never be initiated here.
->
-> > Can an error value from it be propagated up the callchain so it can be
-> > turned into an error messsage for the guest owner to see?
-> >
->
-> The error value cannot be propogated up the callchain directly
-> here, but one possibility is to leverage the hypercall and use Sean's
-> proposed hypercall interface to notify the host/hypervisor to block/stop
-> any future/ongoing migration.
->
-> Or as from Paolo's response, writing 0 to MIGRATION_CONTROL MSR seems
-> more ideal.
->
-> Thanks,
-> Ashish
+PSI accounts stalls for each cgroup separately and aggregates it at each
+level of the hierarchy. This causes additional overhead with psi_avgs_work
+being called for each cgroup in the hierarchy. psi_avgs_work has been
+highly optimized, however on systems with large number of cgroups the
+overhead becomes noticeable.
+Systems which use PSI only at the system level could avoid this overhead
+if PSI can be configured to skip per-cgroup stall accounting.
+Add "cgroup_disable=pressure" kernel command-line option to allow
+requesting system-wide only pressure stall accounting. When set, it
+keeps system-wide accounting under /proc/pressure/ but skips accounting
+for individual cgroups and does not expose PSI nodes in cgroup hierarchy.
 
-How realistic is this type of failure? If you've gotten this deep, it
-seems like something has gone very wrong if the memory you are about
-to mark as shared (or encrypted) doesn't exist and isn't mapped. In
-particular, is the kernel going to page fault when it tries to
-reinitialize the page it's currently changing the c-bit of? From what
-I recall, most paths that do either set_memory_encrypted or
-set_memory_decrypted memset the region being toggled. Note: dma_pool
-doesn't immediately memset, but the VA it's providing to set_decrypted
-is freshly fetched from a recently allocated region (something has to
-have gone pretty wrong if this is invalid if I'm not mistaken. No one
-would think twice if you wrote to that freshly allocated page).
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+changes in v2:
+- Added psi_cgroups_disabled static key, per PeterZ
+- Refactored iterate_groups, per Johannes
 
-The reason I mention this is that SEV migration is going to be the
-least of your concerns if you are already on a one-way train towards a
-Kernel oops. I'm not certain I would go so far as to say this should
-BUG() instead (I think the page fault on access might be easier to
-debug a BUG here), but I'm pretty skeptical that the kernel is going
-to do too well if it doesn't know if its kernel VAs are valid.
+ .../admin-guide/kernel-parameters.txt         |  9 +++-
+ include/linux/cgroup-defs.h                   |  1 +
+ include/linux/cgroup.h                        |  7 +++
+ kernel/cgroup/cgroup.c                        | 46 +++++++++++++++++++
+ kernel/sched/psi.c                            | 30 ++++++------
+ 5 files changed, 78 insertions(+), 15 deletions(-)
 
-If, despite the above, we expect to infrequently-but-not-never disable
-migration with no intention of reenabling it, we should signal it
-differently than we currently signal migration enablement. Currently,
-if you toggle migration from on to off there is an implication that
-you are about to reboot, and you are only ephemerally unable to
-migrate. Having permanent disablement be indistinguishable from a
-really long reboot is a recipe for a really sad long timeout in
-userspace.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb89dbdedc46..653c62142f07 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -497,16 +497,21 @@
+ 	ccw_timeout_log	[S390]
+ 			See Documentation/s390/common_io.rst for details.
+ 
+-	cgroup_disable=	[KNL] Disable a particular controller
+-			Format: {name of the controller(s) to disable}
++	cgroup_disable=	[KNL] Disable a particular controller or optional feature
++			Format: {name of the controller(s) or feature(s) to disable}
+ 			The effects of cgroup_disable=foo are:
+ 			- foo isn't auto-mounted if you mount all cgroups in
+ 			  a single hierarchy
+ 			- foo isn't visible as an individually mountable
+ 			  subsystem
++			- if foo is an optional feature then the feature is
++			  disabled and corresponding cgroup files are not
++			  created
+ 			{Currently only "memory" controller deal with this and
+ 			cut the overhead, others just disable the usage. So
+ 			only cgroup_disable=memory is actually worthy}
++			Specifying "pressure" disables per-cgroup pressure
++			stall information accounting feature
+ 
+ 	cgroup_no_v1=	[KNL] Disable cgroup controllers and named hierarchies in v1
+ 			Format: { { controller | "all" | "named" }
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 559ee05f86b2..671f55cac0f0 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -110,6 +110,7 @@ enum {
+ 	CFTYPE_NO_PREFIX	= (1 << 3),	/* (DON'T USE FOR NEW FILES) no subsys prefix */
+ 	CFTYPE_WORLD_WRITABLE	= (1 << 4),	/* (DON'T USE FOR NEW FILES) S_IWUGO */
+ 	CFTYPE_DEBUG		= (1 << 5),	/* create when cgroup_debug */
++	CFTYPE_PRESSURE		= (1 << 6),	/* only if pressure feature is enabled */
+ 
+ 	/* internal flags, do not use outside cgroup core proper */
+ 	__CFTYPE_ONLY_ON_DFL	= (1 << 16),	/* only on default hierarchy */
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 4f2f79de083e..b929f589968b 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -676,6 +676,8 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+ 	return &cgrp->psi;
+ }
+ 
++bool cgroup_psi_enabled(void);
++
+ static inline void cgroup_init_kthreadd(void)
+ {
+ 	/*
+@@ -735,6 +737,11 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+ 	return NULL;
+ }
+ 
++static inline bool cgroup_psi_enabled(void)
++{
++	return false;
++}
++
+ static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
+ 					       struct cgroup *ancestor)
+ {
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index e049edd66776..c4b16c82e199 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -209,6 +209,22 @@ struct cgroup_namespace init_cgroup_ns = {
+ static struct file_system_type cgroup2_fs_type;
+ static struct cftype cgroup_base_files[];
+ 
++/* cgroup optional features */
++enum cgroup_opt_features {
++#ifdef CONFIG_PSI
++	OPT_FEATURE_PRESSURE,
++#endif
++	OPT_FEATURE_COUNT
++};
++
++static const char *cgroup_opt_feature_names[OPT_FEATURE_COUNT] = {
++#ifdef CONFIG_PSI
++	"pressure",
++#endif
++};
++
++static u16 cgroup_feature_disable_mask __read_mostly;
++
+ static int cgroup_apply_control(struct cgroup *cgrp);
+ static void cgroup_finalize_control(struct cgroup *cgrp, int ret);
+ static void css_task_iter_skip(struct css_task_iter *it,
+@@ -3631,6 +3647,18 @@ static void cgroup_pressure_release(struct kernfs_open_file *of)
+ {
+ 	psi_trigger_replace(&of->priv, NULL);
+ }
++
++bool cgroup_psi_enabled(void)
++{
++	return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
++}
++
++#else /* CONFIG_PSI */
++bool cgroup_psi_enabled(void)
++{
++	return false;
++}
++
+ #endif /* CONFIG_PSI */
+ 
+ static int cgroup_freeze_show(struct seq_file *seq, void *v)
+@@ -3881,6 +3909,8 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
+ restart:
+ 	for (cft = cfts; cft != cft_end && cft->name[0] != '\0'; cft++) {
+ 		/* does cft->flags tell us to skip this file on @cgrp? */
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
+ 		if ((cft->flags & __CFTYPE_ONLY_ON_DFL) && !cgroup_on_dfl(cgrp))
+ 			continue;
+ 		if ((cft->flags & __CFTYPE_NOT_ON_DFL) && cgroup_on_dfl(cgrp))
+@@ -3958,6 +3988,9 @@ static int cgroup_init_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
+ 
+ 		WARN_ON(cft->ss || cft->kf_ops);
+ 
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
++
+ 		if (cft->seq_start)
+ 			kf_ops = &cgroup_kf_ops;
+ 		else
+@@ -4866,6 +4899,7 @@ static struct cftype cgroup_base_files[] = {
+ #ifdef CONFIG_PSI
+ 	{
+ 		.name = "io.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_io_pressure_show,
+ 		.write = cgroup_io_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -4873,6 +4907,7 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "memory.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_memory_pressure_show,
+ 		.write = cgroup_memory_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -4880,6 +4915,7 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "cpu.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_cpu_pressure_show,
+ 		.write = cgroup_cpu_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -6216,6 +6252,13 @@ static int __init cgroup_disable(char *str)
+ 				continue;
+ 			cgroup_disable_mask |= 1 << i;
+ 		}
++
++		for (i = 0; i < OPT_FEATURE_COUNT; i++) {
++			if (strcmp(token, cgroup_opt_feature_names[i]))
++				continue;
++			cgroup_feature_disable_mask |= 1 << i;
++			break;
++		}
+ 	}
+ 	return 1;
+ }
+@@ -6514,6 +6557,9 @@ static ssize_t show_delegatable_files(struct cftype *files, char *buf,
+ 		if (!(cft->flags & CFTYPE_NS_DELEGATABLE))
+ 			continue;
+ 
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
++
+ 		if (prefix)
+ 			ret += snprintf(buf + ret, size - ret, "%s.", prefix);
+ 
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3cff41f..4b8e72640ac9 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -148,6 +148,7 @@
+ static int psi_bug __read_mostly;
+ 
+ DEFINE_STATIC_KEY_FALSE(psi_disabled);
++DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
+ 
+ #ifdef CONFIG_PSI_DEFAULT_DISABLED
+ static bool psi_enable;
+@@ -211,6 +212,9 @@ void __init psi_init(void)
+ 		return;
+ 	}
+ 
++	if (!cgroup_psi_enabled())
++		static_branch_enable(&psi_cgroups_disabled);
++
+ 	psi_period = jiffies_to_nsecs(PSI_FREQ);
+ 	group_init(&psi_system);
+ }
+@@ -744,23 +748,23 @@ static void psi_group_change(struct psi_group *group, int cpu,
+ 
+ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+ {
++	if (*iter == &psi_system)
++		return NULL;
++
+ #ifdef CONFIG_CGROUPS
+-	struct cgroup *cgroup = NULL;
++	if (!static_branch_likely(&psi_cgroups_disabled)) {
++		struct cgroup *cgroup = NULL;
+ 
+-	if (!*iter)
+-		cgroup = task->cgroups->dfl_cgrp;
+-	else if (*iter == &psi_system)
+-		return NULL;
+-	else
+-		cgroup = cgroup_parent(*iter);
++		if (!*iter)
++			cgroup = task->cgroups->dfl_cgrp;
++		else
++			cgroup = cgroup_parent(*iter);
+ 
+-	if (cgroup && cgroup_parent(cgroup)) {
+-		*iter = cgroup;
+-		return cgroup_psi(cgroup);
++		if (cgroup && cgroup_parent(cgroup)) {
++			*iter = cgroup;
++			return cgroup_psi(cgroup);
++		}
+ 	}
+-#else
+-	if (*iter)
+-		return NULL;
+ #endif
+ 	*iter = &psi_system;
+ 	return &psi_system;
+-- 
+2.31.1.751.gd2f1c929bd-goog
+
