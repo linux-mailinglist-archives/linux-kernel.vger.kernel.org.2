@@ -2,130 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28361387477
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85343387479
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347617AbhERI6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:58:52 -0400
-Received: from smtp-32-i2.italiaonline.it ([213.209.12.32]:58184 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234654AbhERI6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:58:50 -0400
-Received: from oxapps-11-062.iol.local ([10.101.8.72])
-        by smtp-32.iol.local with ESMTPA
-        id ivXflS2QoBc6YivXflyVc1; Tue, 18 May 2021 10:57:31 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1621328251; bh=NVnw5g+VXhVolsNBA9uOez+5YRjViDjU8xB516saj4c=;
-        h=From;
-        b=KV2KAo9X6fPXwYtzH3q+0GN7GvtyTZlWnripOO/8qsxlHQDhU3GJuxpxND0ojAX7G
-         lWvRNSoAxsWi8o3KN0uXmHrjexb7lRQGCF+0dFsNUjH1FvQjcQfdu0oAX+J+KAinpp
-         6DcL+o7shC0KSna31mxXfVqm2qAFtQYeQgiSCFePD1BYQDECvQvHMDg0wSDH5WxQCX
-         iRFiUwImB6H1uJUxluBXg+sGiobMOdfaNl1GoPb3rCy0+7Rk8tiSZqY9fSRuV1DlYD
-         TSNbIwdFV52wCerr0D8OZT6/UEM8SzYHTZopH48AwQ81ny9PZm32oxEXSOU3UXAgSx
-         YQ5FR+DRZQ86w==
-X-CNFS-Analysis: v=2.4 cv=B6l8bMhM c=1 sm=1 tr=0 ts=60a3817b cx=a_exe
- a=ArCppHiS2LX9rvfu7+HyXQ==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
- a=vesc6bHxzc4A:10 a=2KMo9-giAAAA:8 a=D_9wInirL2l4cj3dWgsA:9 a=QEXdDO2ut3YA:10
- a=UeCTMeHK7YUBiLmz_SX7:22
-Date:   Tue, 18 May 2021 10:57:31 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Message-ID: <1340368809.152927.1621328251188@mail1.libero.it>
-In-Reply-To: <YKNZIzyO5Q/XGLRs@atomide.com>
-References: <20210517200002.6316-1-dariobin@libero.it>
- <20210517200002.6316-3-dariobin@libero.it> <YKNZIzyO5Q/XGLRs@atomide.com>
-Subject: Re: [PATCH v2 2/2] pinctrl: single: set pinmux from pins debug file
+        id S1347621AbhERI7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:59:24 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40135 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241201AbhERI7V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 04:59:21 -0400
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <dimitri.ledkov@canonical.com>)
+        id 1livYA-0003zl-IF
+        for linux-kernel@vger.kernel.org; Tue, 18 May 2021 08:58:02 +0000
+Received: by mail-wr1-f72.google.com with SMTP id c13-20020a5d6ccd0000b029010ec741b84bso5256998wrc.23
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 01:58:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/lh2U8FrwDr6MxMarxfgPX9eu/47a6TaB97JHxOd8BE=;
+        b=dkouUy5VPTNxR0wCK6tSufBYnW7KtsC1qq1LfsoIGm3fmdYkIJ/GD7mBwbGWm5XfCQ
+         ldlyY7sYZAxLjJnUsBNPE0mS26DKeQWJTWqIHXLEMPiA4MiN/TLTEsh+klJpZvnpiopg
+         BHZr3fD2+4RGSfF9BZdCXNeZUeZAY4pf+o//uk8mZ1xJRxU6DjgyyfM3o+tKHj+c9JP7
+         LNGMSAKYISkoSEN4J90udh+mushLLNv+SW/DqSVWC/g4QqQepgwW15I1rCvx0thYsiPg
+         66Lr13TQ5E7ebCFixT61j++a0FZeoPMmxoHQ8wXuZ4O0YX+ui0wFkiNJ1UOqqOLVH0NM
+         yXlQ==
+X-Gm-Message-State: AOAM532lgGBmn9YwZEbd2p2dx7UeUdb8KB4AKqAR8aYaPGhh8sHpwNrS
+        goDaeYsXmZFCemyEyaiObZbWFGtMIRpqYML1WwyfNfMQs8UCsHvzCOUZnSQxbRB6Vg2XuzV+1Wu
+        NilNpeB55zi1W//Rd6bMXBSZNVuc+9AAr3Lhdt8Yg2w==
+X-Received: by 2002:a5d:6882:: with SMTP id h2mr1562475wru.275.1621328281760;
+        Tue, 18 May 2021 01:58:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYULudlQqfl57noIfvG4GevGHJs9v5jYGrt2qdgRQz9ACquEZs3EvjkBa5HTPAdCO3bLjbsg==
+X-Received: by 2002:a5d:6882:: with SMTP id h2mr1562452wru.275.1621328281453;
+        Tue, 18 May 2021 01:58:01 -0700 (PDT)
+Received: from localhost ([2a01:4b00:85fd:d700:5e37:8c51:f26a:2ada])
+        by smtp.gmail.com with ESMTPSA id b81sm2351091wmd.18.2021.05.18.01.58.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 01:58:00 -0700 (PDT)
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        keyrings@vger.kernel.org, Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH v2] integrity: add informational messages when revoking certs
+Date:   Tue, 18 May 2021 09:57:40 +0100
+Message-Id: <20210518085740.129136-1-dimitri.ledkov@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210512110302.262104-1-dimitri.ledkov@canonical.com>
+References: <20210512110302.262104-1-dimitri.ledkov@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 185.33.57.41
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: B0TjijWmrbfJWP3WAkKFWo1lCjhGy9T6
-x-libjamv: ghWYi9jvb6w=
-X-CMAE-Envelope: MS4xfCr5xJ5H3yfOGVmZvzF4wcZgFaf0rRSXvIEcInlgH1v5EZ/YwGVek1PyBI+EJJvi7FRHYPUjrF/2YiYR2VT7/91Fg7GaZuHmZYk6kh8kS7A4hBeOREmu
- 0flGY6ZewK/uspSQ0HLHmyr2/6a+q4L3vhIkXqXEasYtNwx20D+Kdsel1635GBLQoG1GDB6FQdz5bGgFHM3dJA7ZEKS8uLBoKzrdoTNSbopQ1irMLEgUp6/V
- y+eW+mIQ86THswG+MKbNcQRBB1Chdu+CEEJ0WOG9vVddkLd46N/yKcAKiTSlM8l+DJnsyvDWwzBOxcxqMy4Zu3Uj+WQzN9elFOhzbk7UwF57GQ9HD4HwxPDL
- Xni1zqz9pznlUCr/woNVIHlJQ2uJFwxGgseyJ0vKV+Ma7LEbe8R53Vfi+cdSOMZUp4JRvZqqMknbgQYShnEVQGP1A0C1yA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+integrity_load_cert() prints messages of the source and cert details
+when adding certs as trusted. Mirror those messages in
+uefi_revocation_list_x509() when adding certs as revoked.
 
-> Il 18/05/2021 08:05 Tony Lindgren <tony@atomide.com> ha scritto:
-> 
->  
-> Hi,
-> 
-> I noticed few more things I started to wonder about after
-> looking at this again.
-> 
-> * Dario Binacchi <dariobin@libero.it> [210517 20:00]:
-> > +static int pcs_pin_dbg_set(struct pinctrl_dev *pctldev, unsigned int pin,
-> > +			   char *buf)
-> > +{
-> > +	struct pcs_device *pcs;
-> > +	unsigned int val, mux_bytes;
-> > +
-> > +	buf = skip_spaces(buf);
-> > +	if (kstrtouint(buf, 0, &val))
-> > +		return -EINVAL;
-> > +
-> > +	pcs = pinctrl_dev_get_drvdata(pctldev);
-> > +
-> > +	mux_bytes = pcs->width / BITS_PER_BYTE;
-> > +	pcs->write(val, pcs->base + pin * mux_bytes);
-> > +	return 0;
-> > +}
-> 
-> Since you're adding a new interface, how about pass unsigned
-> int val instead of char *buf?
+Sample dmesg with this change:
 
-I thought about passing char *buf because it seemed more generic 
-to me. As the output of pin_dbg_show() depends on the platform 
-driver, perhaps pin_dbg_set() may need driver-dependent data.
-Is it possible that only the value to be set in the register 
-(unsigned int) is required?
+    integrity: Platform Keyring initialized
+    integrity: Loading X.509 certificate: UEFI:db
+    integrity: Loaded X.509 cert 'Microsoft Corporation UEFI CA 2011: 13adbf4309bd82709c8cd54f316ed522988a1bd4'
+    integrity: Revoking X.509 certificate: UEFI:MokListXRT (MOKvar table)
+    blacklist: Revoked X.509 cert 'Canonical Ltd. Secure Boot Signing: 61482aa2830d0ab2ad5af10b7250da9033ddcef0'
+    integrity: Loading X.509 certificate: UEFI:MokListRT (MOKvar table)
+    integrity: Loaded X.509 cert 'Canonical Ltd. Master Certificate Authority: ad91990bc22ab1f517048c23b6655a268e345a63'
 
-> 
-> >  static void pcs_dt_free_map(struct pinctrl_dev *pctldev,
-> >  				struct pinctrl_map *map, unsigned num_maps)
-> >  {
-> > @@ -331,6 +348,9 @@ static const struct pinctrl_ops pcs_pinctrl_ops = {
-> >  	.get_group_name = pinctrl_generic_get_group_name,
-> >  	.get_group_pins = pinctrl_generic_get_group_pins,
-> >  	.pin_dbg_show = pcs_pin_dbg_show,
-> > +#if IS_ENABLED(CONFIG_DEVMEM)
-> > +	.pin_dbg_set = pcs_pin_dbg_set,
-> > +#endif
-> >  	.dt_node_to_map = pcs_dt_node_to_map,
-> >  	.dt_free_map = pcs_dt_free_map,
-> >  };
-> 
-> It might be better to always have the .pin_dbg_set around to
-> avoid the IS_ENABLED(CONFIG_DEVMEM).
+Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+cc: keyrings@vger.kernel.org
+cc: Eric Snowberg <eric.snowberg@oracle.com>
+cc: Jarkko Sakkinen <jarkko@kernel.org>
+cc: David Woodhouse <dwmw2@infradead.org>
+cc: David Howells <dhowells@redhat.com>
+---
+ Changes since v1:
+ - Correct C coding style add {} around second branch.
 
-Ok, I'll remove the CONFIG_DEVMEM dependency
+ certs/blacklist.c                                   | 3 +++
+ security/integrity/platform_certs/keyring_handler.c | 1 +
+ 2 files changed, 4 insertions(+)
 
-> 
-> Does the new interface need something under Documentation too?
+diff --git a/certs/blacklist.c b/certs/blacklist.c
+index c9a435b15af4..9e8998868e3e 100644
+--- a/certs/blacklist.c
++++ b/certs/blacklist.c
+@@ -172,6 +172,9 @@ int add_key_to_revocation_list(const char *data, size_t size)
+ 	if (IS_ERR(key)) {
+ 		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
+ 		return PTR_ERR(key);
++	} else {
++		pr_notice("Revoked X.509 cert '%s'\n",
++			  key_ref_to_ptr(key)->description);
+ 	}
+ 
+ 	return 0;
+diff --git a/security/integrity/platform_certs/keyring_handler.c b/security/integrity/platform_certs/keyring_handler.c
+index 5604bd57c990..9f85626702b2 100644
+--- a/security/integrity/platform_certs/keyring_handler.c
++++ b/security/integrity/platform_certs/keyring_handler.c
+@@ -61,6 +61,7 @@ static __init void uefi_blacklist_binary(const char *source,
+ static __init void uefi_revocation_list_x509(const char *source,
+ 					     const void *data, size_t len)
+ {
++	pr_info("Revoking X.509 certificate: %s\n", source);
+ 	add_key_to_revocation_list(data, len);
+ }
+ 
+-- 
+2.27.0
 
-Yes, the description of `pins` in Documentation/driver-api/pin-control.rst 
-needs to be updated. I'll add another patch to the series.
-
-Thanks and regards,
-Dario
-
-> 
-> Regards,
-> 
-> Tony
