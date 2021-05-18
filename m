@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C442038751D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8852638751B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347891AbhERJaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:30:15 -0400
-Received: from mga03.intel.com ([134.134.136.65]:41388 "EHLO mga03.intel.com"
+        id S1347888AbhERJaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:30:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240100AbhERJaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:30:14 -0400
-IronPort-SDR: smUdeMnoUi1ZZQRUB7/Un8sNZze/VRR4OJjLXLtZ9V9Tx0vjwKFZMzRH0L26V6b+1FH8+7pD5a
- BlGWGvgU/2oA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200721317"
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="200721317"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 02:28:42 -0700
-IronPort-SDR: s4/YpV65u7qXWBbIU0VNgF7/SmPU4nIjltm3nEUBtyCU5H9hSAdzXPavgQQUxBqQq5K+xZfc0+
- jGB0mWSRMF5w==
-X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
-   d="scan'208";a="472869205"
-Received: from lmrad-mobl.ger.corp.intel.com (HELO localhost) ([10.252.52.115])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 02:28:39 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     intel-gfx@lists.freedesktop.org, x86@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        hch@lst.de
-Subject: Re: [Intel-gfx] 5.13 i915/PAT regression on Brasswell, adding nopat to the kernel commandline worksaround this
-In-Reply-To: <20210512115736.GA10444@lst.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <b6b61cf0-5874-f4c0-1fcc-4b3848451c31@redhat.com> <YJu4tzXmCJbKp7Fm@hirez.programming.kicks-ass.net> <20210512115736.GA10444@lst.de>
-Date:   Tue, 18 May 2021 12:28:36 +0300
-Message-ID: <87eee4fl17.fsf@intel.com>
+        id S240100AbhERJ37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:29:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B37A761042;
+        Tue, 18 May 2021 09:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621330121;
+        bh=PO6u9YQbB3wB7JoQpRmp62bUHAgeGHuboxhZStRAZnU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qKsFkv+V9//XE6m5KtLnDx3JwOoUtcc2Gle4/jakALKhjMZ3P5ndUdO8vAo8rY6+5
+         IuU953PpBosBX8BL8/BpXXI1aY4/7w4CnFGGm51/jhNld5DLt8nsnCjcmF7l8TEj4i
+         +/NAgIYJtT8FoOSpfzBQ1DyBCyEmqDZiMf6wgGfVrwnU9vn+R8b5eMMdjBud9D95nI
+         aM4wBQ5AVHpuqZOg36uKU9ZgzhjgTuEvIXNVzNujKbdJ0S716yaUqMtEjHobvZ95e8
+         3UKWpZjYqirqkvNJkTJqoALPKvH6AJ2tt+btVdnarXua30YzaQY09fNGxYP0yn71Yh
+         rforhnXhd3nOw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1liw1n-0070pH-De; Tue, 18 May 2021 11:28:39 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Fabien Dessenne <fabien.dessenne@foss.st.com>,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH] media: sti: fix obj-$(config) targets
+Date:   Tue, 18 May 2021 11:28:37 +0200
+Message-Id: <a95148cc90a7202e9518b8a5c5f6910ff2b7d18b.1621330112.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021, Christoph Hellwig <hch@lst.de> wrote:
-> On Wed, May 12, 2021 at 01:15:03PM +0200, Peter Zijlstra wrote:
->> IIRC it's because of 74ffa5a3e685 ("mm: add remap_pfn_range_notrack"),
->> which added a sanity check to make sure expectations were met. It turns
->> out they were not.
->> 
->> The bug is not new, the warning is. AFAIK the i915 team is aware, but
->> other than that I've not followed.
->
->
-> The actual culprit is b12d691ea5e0 ("i915: fix remap_io_sg to verify the
-> pgprot"), but otherwise agreed.  Someone the i915 maintainers all seem
-> to be on vacation as the previous report did not manage to trigger any
-> kind of reply.
+The right thing to do is to add a new object to the building
+system when a certain config option is selected, and *not*
+override them.
 
-We are aware. I've been rattling the cages to get more attention.
+So, fix obj-$(config) logic at sti makefiles, using "+=",
+instead of ":=".
 
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/platform/sti/bdisp/Makefile | 2 +-
+ drivers/media/platform/sti/delta/Makefile | 2 +-
+ drivers/media/platform/sti/hva/Makefile   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-BR,
-Jani.
-
-
+diff --git a/drivers/media/platform/sti/bdisp/Makefile b/drivers/media/platform/sti/bdisp/Makefile
+index caf7ccd193ea..39ade0a34723 100644
+--- a/drivers/media/platform/sti/bdisp/Makefile
++++ b/drivers/media/platform/sti/bdisp/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_VIDEO_STI_BDISP) := bdisp.o
++obj-$(CONFIG_VIDEO_STI_BDISP) += bdisp.o
+ 
+ bdisp-objs := bdisp-v4l2.o bdisp-hw.o bdisp-debug.o
+diff --git a/drivers/media/platform/sti/delta/Makefile b/drivers/media/platform/sti/delta/Makefile
+index 92b37e216f00..32412fa4c632 100644
+--- a/drivers/media/platform/sti/delta/Makefile
++++ b/drivers/media/platform/sti/delta/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) := st-delta.o
++obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) += st-delta.o
+ st-delta-y := delta-v4l2.o delta-mem.o delta-ipc.o delta-debug.o
+ 
+ # MJPEG support
+diff --git a/drivers/media/platform/sti/hva/Makefile b/drivers/media/platform/sti/hva/Makefile
+index 74b41ec52f97..b5a5478bdd01 100644
+--- a/drivers/media/platform/sti/hva/Makefile
++++ b/drivers/media/platform/sti/hva/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_VIDEO_STI_HVA) := st-hva.o
++obj-$(CONFIG_VIDEO_STI_HVA) += st-hva.o
+ st-hva-y := hva-v4l2.o hva-hw.o hva-mem.o hva-h264.o
+ st-hva-$(CONFIG_VIDEO_STI_HVA_DEBUGFS) += hva-debugfs.o
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.31.1
+
