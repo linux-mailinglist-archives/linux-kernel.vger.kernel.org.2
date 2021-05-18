@@ -2,112 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EFB387EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF14387EEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351387AbhERRuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:50:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50976 "EHLO mail.kernel.org"
+        id S1351362AbhERRtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:49:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345233AbhERRuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:50:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0A060FE3;
-        Tue, 18 May 2021 17:48:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621360140;
-        bh=V8V1ZGhyCm1f0bz+BCKOcnGPm27EYtaeoap0qCVRIYg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UmO6CZdDIHbUSKeqHuEPdi1isApMgqr+3n/hnf5v5G+dnkFQo/+I3XivSP4HpGRPZ
-         pyYlZrEDB5uO+IPUE3++y0DAeske/18YDYyCzLWIjFksO1Fo7J+2rMrc9JgQZ7IwdX
-         1cNLAcdxkgzpca0aein0OVv70Ycy09rXudUscLougLBP9+5HNrh1alkIJGQDeijRMa
-         D1rok/twuPrbFWx+oh63DpTA87eFTy6bxL5a1SeKKGKxDdK/02wb68RSakrqDXCqRi
-         N1tTWWsucmQXXaUUP5bRiF4Di8a9rNs6RvOySQMiGXOdfwPtUy/UtBGIogGiEG9EnG
-         ADpOpvmE6Z5ig==
-Date:   Tue, 18 May 2021 20:48:57 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] selftests/sgx: Migrate to kselftest harness
-Message-ID: <YKP+CavM21klDHH8@kernel.org>
-References: <20210512215323.420639-1-jarkko@kernel.org>
- <20210512215323.420639-2-jarkko@kernel.org>
- <3b920525-694c-a8e4-93f5-7b1a3f9ad009@intel.com>
+        id S1345469AbhERRt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:49:29 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC2E261154;
+        Tue, 18 May 2021 17:48:07 +0000 (UTC)
+Date:   Tue, 18 May 2021 18:49:24 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Dan Robertson <dan@dlrobertson.com>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+Subject: Re: [PATCH v1 1/1] iio: Drop Duplicated "mount-matrix" parameter
+Message-ID: <20210518184924.185b7b7c@jic23-huawei>
+In-Reply-To: <66a1a5e2-181d-bcc6-b453-357fcfd5e5f1@geanix.com>
+References: <20210518112546.44592-1-andriy.shevchenko@linux.intel.com>
+        <66a1a5e2-181d-bcc6-b453-357fcfd5e5f1@geanix.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b920525-694c-a8e4-93f5-7b1a3f9ad009@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:03:42AM -0700, Reinette Chatre wrote:
-> Hi Jarkko,
-> 
-> On 5/12/2021 2:53 PM, Jarkko Sakkinen wrote:
-> > Migrate to kselftest harness. Use a fixture test with enclave initialized
-> > and de-initialized for each of the existing three tests, in other words:
+On Tue, 18 May 2021 14:38:24 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
+
+> On 18/05/2021 13.25, Andy Shevchenko wrote:
+> > All of the users of iio_read_mount_matrix() are using the very same
+> > property name. Moreover, the property name is hard coded in the API
+> > documentation.
 > > 
-> > 1. One FIXTURE() for managing the enclave life-cycle.
-> > 2. Three TEST_F()'s, one for each test case.
+> > Make this clear and avoid duplication now and in the future.
 > > 
-> > This gives a leaps better reporting than before. Here's an example
-> > transcript:
-> > 
-> > TAP version 13
-> > 1..3
-> > 
-> > ok 1 enclave.unclobbered_vdso
-> > 
-> > ok 2 enclave.clobbered_vdso
-> > 
-> > ok 3 enclave.clobbered_vdso_and_user_function
-> > 
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> > 
-> > v5:
-> > * Use TH_LOG() for printing enclave address ranges instead of printf(),
-> >    based on Reinette's remark.
-> 
-> Thank you for considering my feedback. The motivation for my comment was to
-> consider how this test output will be parsed. If these tests will have their
-> output parsed by automated systems then it needs to conform to the TAP13
-> format as supported by kselftest.
-> 
-> In your latest version the output printed during a successful test has been
-> changed, using TH_LOG() as you noted. From what I can tell this is the only
-> output addressed - failing tests continue to print error messages (perror,
-> fprintf) without consideration of how they will be parsed. My apologies, I
-> am not a kselftest expert to know what the best way for this integration is.
-> 
-> Reinette
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>  
+> Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+> > ---Good idea :)  
 
-It's a valid question, yes.
+Agreed :)
 
-The problem is that only main.c can use kselftest macros because
-kselftest_harness.h pulls 
+Applied to the togreg branch of iio.git and pushed out as testing.
+@Linus, if you happen to send an update of your series out that
+doesn't take this into account I can fix up whilst applying.
 
-static int test_harness_run(int __attribute__((unused)) argc,
-			    char __attribute__((unused)) **argv)
+Thanks,
 
-which will not end up having a call site (because there's no
-"TEST_HARNESS_MAIN").
+Jonathan
 
-The whole logging thing in kselftest harness is a bit ambiguous.
-Namely:
-
-1. There's a macro TH_LOG() defined in kselftest_harness.h, which
-   "internally" uses fprintf().
-2. There's an inline function ksft_print_msg() in kselftest.h
-   using vsprintf().
-
-To add to that, kselftest_harness.h internally prints by using
-ksft_print_msg(), and provides TH_LOG(), which does not use
-ksft_print_msg().
-
-I don't really get the logic in all this.
-
-/Jarkko
