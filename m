@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A2A386FCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4D0386FF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346212AbhERCJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 22:09:23 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4724 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234428AbhERCJW (ORCPT
+        id S240375AbhERCct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 22:32:49 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:50378 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234963AbhERCct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 22:09:22 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FkfSz5nxVzmhqb;
-        Tue, 18 May 2021 10:04:35 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 10:08:04 +0800
-Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
- 2021 10:08:03 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <maz@kernel.org>, <tglx@linutronix.de>
-CC:     <john.wanghui@huawei.com>, <yangyingliang@huawei.com>,
-        <dingtianhong@huawei.com>, <cuibixuan@huawei.com>,
-        <wangxiongfeng2@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] genirq/msi: Fix unpaired calls in msi
-Date:   Tue, 18 May 2021 11:31:17 +0800
-Message-ID: <20210518033117.78104-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 17 May 2021 22:32:49 -0400
+X-Greylist: delayed 521 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 May 2021 22:32:48 EDT
+Received: from Wanjb.localdomain (unknown [36.152.145.182])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id 29208AC0444;
+        Tue, 18 May 2021 10:22:48 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Marco Cesati <marcocesati@gmail.com>,
+        Jiabing Wan <kael_w@yeah.net>,
+        Ivan Safonov <insafonov@gmail.com>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: os_dep: Align comments and add a blank line
+Date:   Tue, 18 May 2021 10:20:54 +0800
+Message-Id: <20210518022207.83513-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGklITFYdGk5NGh9DThhLTxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OAg6Pgw*Cj8VTjQWDjgtMjYI
+        SjowFBVVSlVKTUlKSEtPTk1DTE1JVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJT0hCNwY+
+X-HM-Tid: 0a797d486a20b039kuuu29208ac0444
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are unpaired calls in the msi:
+From: Jiabing Wan <kael_w@yeah.net>
 
-msi_domain_alloc_irqs() {
-        ...
-        __irq_domain_alloc_irqs()
-        ...
-        irq_domain_activate_irq()
-}
+Fixing the following checkpatch warnings:
+WARNING: Block comments should align the * on each line
+WARNING: Missing a blank line after declarations
 
-msi_domain_free_irqs() {
-        ...
-        irq_domain_free_irqs()
-}
-
-When msi_domain_alloc_irqs() and msi_domain_free_irqs() are called in
-pairs, the irq_domain_deactivate_irq() is missing calls.
-
-This problem occurs during PCI initialization.After pci_msi_setup_msi_irqs
-is executed (invoke irq_domain_activate_irq to initialize the MSI irq),
-error_cleanup_irqs() of pcie_port_device_register() is executed.
-As follows:
-
-pcie_port_device_register() {
-	...
-
-	error_cleanup_irqs:
-		pci_free_irq_vectors(dev);
-}
-
-Invoking Procedure:
-	pcie_port_device_register
-	-> goto error_cleanup_irqs
-	-> pci_free_irq_vectors(dev);
-	    pci_disable_msi
-	        free_msi_irqs
-		    pci_msi_teardown_msi_irqs
-		        msi_domain_free_irqs // no deactivate before free
-			    irq_domain_free_irqs
-
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Jiabing Wan<kael_w@yeah.net>
 ---
- kernel/irq/msi.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/staging/rtl8723bs/os_dep/osdep_service.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
-index c41965e348b5..8828d4863c5d 100644
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -476,11 +476,6 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
- 	return 0;
+diff --git a/drivers/staging/rtl8723bs/os_dep/osdep_service.c b/drivers/staging/rtl8723bs/os_dep/osdep_service.c
+index c58555a4012f..2d965e62347f 100644
+--- a/drivers/staging/rtl8723bs/os_dep/osdep_service.c
++++ b/drivers/staging/rtl8723bs/os_dep/osdep_service.c
+@@ -7,10 +7,10 @@
+ #include <drv_types.h>
+ #include <rtw_debug.h>
  
- cleanup:
--	for_each_msi_vector(desc, i, dev) {
--		irq_data = irq_domain_get_irq_data(domain, i);
--		if (irqd_is_activated(irq_data))
--			irq_domain_deactivate_irq(irq_data);
--	}
- 	msi_domain_free_irqs(domain, dev);
- 	return ret;
- }
-@@ -506,6 +501,14 @@ int msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
- void __msi_domain_free_irqs(struct irq_domain *domain, struct device *dev)
+-/*
+-* Translate the OS dependent @param error_code to OS independent RTW_STATUS_CODE
+-* @return: one of RTW_STATUS_CODE
+-*/
++/**
++ * Translate the OS dependent @param error_code to OS independent RTW_STATUS_CODE
++ * @return: one of RTW_STATUS_CODE
++ */
+ inline int RTW_STATUS_CODE(int error_code)
  {
- 	struct msi_desc *desc;
-+	struct irq_data *irq_data;
-+	int i;
+ 	if (error_code >= 0)
+@@ -262,6 +262,7 @@ bool rtw_cbuf_push(struct rtw_cbuf *cbuf, void *buf)
+ void *rtw_cbuf_pop(struct rtw_cbuf *cbuf)
+ {
+ 	void *buf;
 +
-+	for_each_msi_vector(desc, i, dev) {
-+		irq_data = irq_domain_get_irq_data(domain, i);
-+		if (irqd_is_activated(irq_data))
-+			irq_domain_deactivate_irq(irq_data);
-+	}
+ 	if (rtw_cbuf_empty(cbuf))
+ 		return NULL;
  
- 	for_each_msi_entry(desc, dev) {
- 		/*
 -- 
-2.17.1
+2.20.1
 
