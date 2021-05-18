@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64341387528
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02922387533
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347922AbhERJcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
+        id S1347953AbhERJed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239643AbhERJcX (ORCPT
+        with ESMTP id S1347938AbhERJeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:32:23 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ABCC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/vSU8RTGnwlIQLK2t7JJuA7v3cI83CZKt9aMUNg5/2Y=; b=A3fJEG2VLSLHZIKtQkqAWgSG1E
-        BFnYhY24E2VBhleNRECWSlUvq14ki5jho67YmEz9YQBV1wPEEhoamkmaD9jHIuXF5bxx50N8HbFdX
-        +aIvW6PTV+/Xer7c/949sfR+cMywplVyl1TCDKca/bd8C9NiEKAf2QT6OcxI6FYv8mdGXhbpo7sXl
-        skr9HKSSv9LRT+3Luph9OwfzPjVoKtnecygpmH+0I8OiE1XpTjQtc282vRMSjlW7yoYuchgEeDQ27
-        h5QzutTMDz3+1G8H5brrzRe1zNkcuKB3DNYL0oZKxI7d8tTsuF+T7JR2FvfqEV9BN4bvbbkGGCNku
-        VZWAkuCw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liw41-0008jT-2u; Tue, 18 May 2021 09:30:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 67BF430021B;
-        Tue, 18 May 2021 11:30:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 536BD2D3D3E90; Tue, 18 May 2021 11:30:54 +0200 (CEST)
-Date:   Tue, 18 May 2021 11:30:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Tue, 18 May 2021 05:34:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E60C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:33:13 -0700 (PDT)
+Message-Id: <20210518091725.046774792@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621330390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=F013rQx8kVLjRBvwLGIM4eJIUfTukYcnmJFI+pPxhiU=;
+        b=KKS33fP51PiCM0ZWRaBthTlweJYoNIK74Ag8UBpwnasKoXcxPdjBcc3icHdx9n6KVuedcT
+        Cwf14Jz2/pg7LrnEj52fCw7IaDzh0D6o5koDHSCevZ2gp6+yA48t0+SVHlZim97mezoePm
+        gATXhu7dUYr+ZHJPmPjm7w1cwVSrUr2qZ5Ru7TmLtV0gL7NgITcltiQQDdqMwY4YpcOLBM
+        Du4CFb59I8GLOulRAWLmb2ZL1IHBmnc3cbEVsMcQY5I2808dRL6E0/GGELZ/VlMj7uOfJi
+        1N+m8259GSVS+JNs3ZfDi65poz8cdsdVPBcv7p1SrOJjU7/xPnwVH2yl3Qtbqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621330390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=F013rQx8kVLjRBvwLGIM4eJIUfTukYcnmJFI+pPxhiU=;
+        b=h3XWcxkcbxu9AOw2VMn4X0OLpSWaX3z1eSGqXmLdGFNiO0wmMabVeT7m18LMT3TyoNMv+s
+        XiZvhg863JY/oLCg==
+Date:   Tue, 18 May 2021 11:17:25 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, seanjc@google.com,
-        x86@kernel.org
-Subject: Re: [PATCH v2 1/2] perf/x86: Skip checking if 0x0 MSR exists for
- guest Arch LBR
-Message-ID: <YKOJTtmjvxbBJOcS@hirez.programming.kicks-ass.net>
-References: <20210430052247.3079672-1-like.xu@linux.intel.com>
+        linux-arm-kernel@lists.infradead.org, Frank Li <Frank.li@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [patch 0/8] genirq, perf: Cleanup the abuse of irq_set_affinity_hint()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430052247.3079672-1-like.xu@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 01:22:46PM +0800, Like Xu wrote:
-
-> - Avoid checking unrelated Architecture MSR 0x0 in a simple way
-
-I'm thinking the below is simpler still, no?
-
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 5272f349dca2..456aa6ffd9a1 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -6250,7 +6250,8 @@ __init int intel_pmu_init(void)
->  	 * Check all LBT MSR here.
->  	 * Disable LBR access if any LBR MSRs can not be accessed.
->  	 */
-> -	if (x86_pmu.lbr_nr && !check_msr(x86_pmu.lbr_tos, 0x3UL))
-> +	if (x86_pmu.lbr_nr && !static_cpu_has(X86_FEATURE_ARCH_LBR) &&
-> +	    !check_msr(x86_pmu.lbr_tos, 0x3UL))
->  		x86_pmu.lbr_nr = 0;
->  	for (i = 0; i < x86_pmu.lbr_nr; i++) {
->  		if (!(check_msr(x86_pmu.lbr_from + i, 0xffffUL) &&
-
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 2521d03de5e0..e28892270c58 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -6253,7 +6253,7 @@ __init int intel_pmu_init(void)
- 	 * Check all LBT MSR here.
- 	 * Disable LBR access if any LBR MSRs can not be accessed.
- 	 */
--	if (x86_pmu.lbr_nr && !check_msr(x86_pmu.lbr_tos, 0x3UL))
-+	if (x86_pmu.lbr_tos && !check_msr(x86_pmu.lbr_tos, 0x3UL))
- 		x86_pmu.lbr_nr = 0;
- 	for (i = 0; i < x86_pmu.lbr_nr; i++) {
- 		if (!(check_msr(x86_pmu.lbr_from + i, 0xffffUL) &&
+VGhlIG1vZHVsYXIgUE1VIGRyaXZlcnMgdXNlIGlycV9zZXRfYWZmaW5pdHlfaGludCgpIHRvIHNl
+dCB0aGUgYWZmaW5pdHkKZm9yIHRoZSBQTVUgaW50ZXJydXB0cywgd2hpY2ggcmVsaWVzIG9uIHRo
+ZSB1bmRvY3VtZW50ZWQgc2lkZSBlZmZlY3QgdGhhdAp0aGlzIGZ1bmN0aW9uIGFjdHVhbGx5IHNl
+dHMgdGhlIGFmZmluaXR5IHVuZGVyIHRoZSBob29kLgoKU2V0dGluZyBhbiBoaW50IGlzIGNsZWFy
+bHkgbm90IGEgZ3VhcmFudGVlIGFuZCBmb3IgdGhlc2UgUE1VIGludGVycnVwdHMgYW4KYWZmaW5p
+dHkgaGludCwgd2hpY2ggaXMgc3VwcG9zZWQgdG8gZ3VpZGUgdXNlcnNwYWNlIGZvciBzZXR0aW5n
+IGFmZmluaXR5LAppcyBiZXlvbmQgcG9pbnRsZXNzLCBiZWNhdXNlIHRoZSBhZmZpbml0eSBvZiB0
+aGVzZSBpbnRlcnJ1cHRzIGNhbm5vdCBiZQptb2RpZmllZCBmcm9tIHVzZXIgc3BhY2UuCgpBc2lk
+ZSBvZiB0aGF0IHRoZSBlcnJvciBjaGVja3MgYXJlIGJvZ3VzIGJlY2F1c2UgdGhlIG9ubHkgZXJy
+b3Igd2hpY2ggaXMKcmV0dXJuZWQgZnJvbSBpcnFfc2V0X2FmZmluaXR5X2hpbnQoKSBpcyB3aGVu
+IHRoZXJlIGlzIG5vIGlycSBkZXNjcmlwdG9yCmZvciB0aGUgaW50ZXJydXB0IG51bWJlciwgYnV0
+IG5vdCB3aGVuIHRoZSBhZmZpbml0eSBzZXQgZmFpbHMuIFRoYXQncyBvbgpwdXJwb3NlIGJlY2F1
+c2UgdGhlIGhpbnQgY2FuIHBvaW50IHRvIGFuIG9mZmxpbmUgQ1BVLgoKU2lnaCwgaWYgcGVvcGxl
+IHdvdWxkIGF0IGxlYXN0IHRhbGsgaWYgc29tZXRoaW5nIGlzIG1pc3NpbmcuLi4KCkNsZWFuIHVw
+IHRoZSBtZXNzIGJ5IGV4cG9zaW5nIGlycV9zZXRfYWZmaW5pdHkoKSBhbmQgY29udmVydGluZyB0
+aGUgZHJpdmVycwpvdmVyIHRvIHRoYXQuCgpUaGFua3MsCgoJdGdseAotLS0KIGRyaXZlcnMvcGVy
+Zi9hcm0tY2NuLmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgKy0tLQogZHJpdmVycy9w
+ZXJmL2FybS1jbW4uYyAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgOSArLS0tLS0KIGRyaXZl
+cnMvcGVyZi9hcm1fZG1jNjIwX3BtdS5jICAgICAgICAgICAgICAgICB8ICAgIDUgKy0tCiBkcml2
+ZXJzL3BlcmYvYXJtX2RzdV9wbXUuYyAgICAgICAgICAgICAgICAgICAgfCAgICA4ICstLS0tCiBk
+cml2ZXJzL3BlcmYvYXJtX3NtbXV2M19wbXUuYyAgICAgICAgICAgICAgICAgfCAgIDEwICsrLS0t
+LS0KIGRyaXZlcnMvcGVyZi9mc2xfaW14OF9kZHJfcGVyZi5jICAgICAgICAgICAgICB8ICAgIDUg
+Ky0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX2RkcmNfcG11LmMgfCAgICAz
+IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX2hoYV9wbXUuYyAgfCAgICAz
+IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX2wzY19wbXUuYyAgfCAgICAz
+IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX3BhX3BtdS5jICAgfCAgICAz
+IC0tCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX3BtdS5jICAgICAgfCAgICA0
+ICstCiBkcml2ZXJzL3BlcmYvaGlzaWxpY29uL2hpc2lfdW5jb3JlX3NsbGNfcG11LmMgfCAgICAz
+IC0tCiBpbmNsdWRlL2xpbnV4L2ludGVycnVwdC5oICAgICAgICAgICAgICAgICAgICAgfCAgIDM1
+ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiBrZXJuZWwvaXJxL21hbmFnZS5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgIDMzICsrKysrKysrKysrKysrKysrKysrKysrLQogMTQgZmls
+ZXMgY2hhbmdlZCwgNDkgaW5zZXJ0aW9ucygrKSwgODEgZGVsZXRpb25zKC0pCgoK
