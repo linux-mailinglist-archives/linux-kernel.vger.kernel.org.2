@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020F5387A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78384387A7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343873AbhERN4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:56:01 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:34604 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244964AbhERNzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:55:55 -0400
-Received: from zn.tnic (p200300ec2f0ae2009a42d70f2967689e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e200:9a42:d70f:2967:689e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 029101EC050D;
-        Tue, 18 May 2021 15:54:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621346075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=u4eUluMRW6ql/XQGfzXi2XvOmvNCHQYvmwNvCKSF5go=;
-        b=e4A7xV00ipPerZAZZnidO8rIuXqQAptdKeIWdGsdBGFlbifHKflSDj18yhEkxz5tzO+PDh
-        4JCIEWF9hMQr7Ebg7T+hLJoF1fiWWp2E5XBV16Yf7wJdzih/Y46+1BBVmcE5SKS6PhaTm2
-        DnZf9es6K4iwVxQ/NKStQkq1+QF5TBk=
-Date:   Tue, 18 May 2021 15:54:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 06/20] x86/sev: Define SNP guest request NAE
- events
-Message-ID: <YKPHFXR+3t1HM38S@zn.tnic>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-7-brijesh.singh@amd.com>
- <YKOaxBBAB/BJZmbY@zn.tnic>
- <d6736f33-721d-cbe5-eda2-eab7730db962@amd.com>
+        id S1343931AbhERN6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244711AbhERN6G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:58:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00136C061573;
+        Tue, 18 May 2021 06:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=s36KeDCQTjjdbNaJPGBotFdZABcZ6K5ODWo6m4Tm+Tk=; b=GqjuVupZZdr7ohq92vjExxWC+g
+        KjLHczLGtrzn+kflb9uaLoM58CsWOaU3r7Cx0z2WF6g6sEbXwdRMoYmqwifZW78vP/4lDjS+ECaLR
+        Dzu25YK8li9B3wL9Se6+DF+yIeajG9fEz9oJyjDPVs4mj7tRQZx4+8iaEJlgHhvFM6LBlh9TQCwMm
+        dYMEgmU5O/ZFrjzBw2orErotQStBgt6pdPxwu0TnxEZi5fnBiI//9W6rKbrUe3U+DsakXXYUP0E+1
+        l64I2NE9EinIchynh3B85IqlbRungbuGsGaYTe+xMsmTyoWPlHFOBkQ/6itoeELUSGFrNjncNtKJ5
+        eEeTIijA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lj0Bu-00E28c-OY; Tue, 18 May 2021 13:56:05 +0000
+Date:   Tue, 18 May 2021 14:55:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v10 27/33] mm/writeback: Add folio_wait_stable
+Message-ID: <YKPHSulXmAldvrDq@casper.infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-28-willy@infradead.org>
+ <f87c35b1-4755-de51-1ce7-7f1deccee44c@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d6736f33-721d-cbe5-eda2-eab7730db962@amd.com>
+In-Reply-To: <f87c35b1-4755-de51-1ce7-7f1deccee44c@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 08:42:44AM -0500, Brijesh Singh wrote:
-> This VMGEXIT is optional and is available only when the SNP feature is
-> advertised through HV_FEATURE VMGEXIT. The GHCB specification spells it
-> with the "SNP" prefix" to distinguish it from others. The other
-> "VMGEXIT's" defined in this file are available for both the SNP and ES
-> guests, so we don't need any prefixes.
+On Tue, May 18, 2021 at 01:42:04PM +0200, Vlastimil Babka wrote:
+> On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> > Move wait_for_stable_page() into the folio compatibility file.
+> > folio_wait_stable() avoids a call to compound_head() and is 14 bytes
+> > smaller than wait_for_stable_page() was.  The net text size grows by 24
+> > bytes as a result of this patch.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Acked-by: Jeff Layton <jlayton@kernel.org>
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> This seems to remove last user of thp_head(). Remove it as obsolete?
 
-Sure but are there any other VMGEXIT guest requests besides those two?
-If not, then they're unique so we can just as well drop the SNP prefix.
-Bottom line is, I'd like the code to be short and readable at a glance.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Good catch!  I'll squash that in.  We're down to just one user of
+thp_order in my tree ...
