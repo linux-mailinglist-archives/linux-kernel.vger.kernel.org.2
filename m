@@ -2,156 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9DB387C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA332387C29
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350178AbhERPMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:12:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:54428 "EHLO foss.arm.com"
+        id S1350072AbhERPNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:13:36 -0400
+Received: from mga18.intel.com ([134.134.136.126]:5096 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350032AbhERPLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:11:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2C66ED1;
-        Tue, 18 May 2021 08:09:53 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CA8C3F73B;
-        Tue, 18 May 2021 08:09:51 -0700 (PDT)
-Date:   Tue, 18 May 2021 16:09:48 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        id S1350106AbhERPNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:13:07 -0400
+IronPort-SDR: WLjSkG9zf3refgBkr5XbeKeF4gOWRuCIgUxWd3PL0u54rY7/DaanixKAFCxHkFEBbMRQ8PjtZM
+ ZPTaL+vULCwQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="188145772"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="188145772"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:11:47 -0700
+IronPort-SDR: aIqzug+W2qHQCWc6eJ5PxsUHoCxArlTW0EKyVN1+Dum6mH0qtzcaAC4BKcKqtHHYIB1icyVGkh
+ U+69WlMDa7jw==
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="542007113"
+Received: from craigsmi-mobl.amr.corp.intel.com (HELO [10.212.132.228]) ([10.212.132.228])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:11:46 -0700
+Subject: Re: [RFC v2-fix 1/1] x86/traps: Add #VE support for TDX guest
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v4 1/3] sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL
- sched_domain flag
-Message-ID: <20210518150947.GC3993@e120325.cambridge.arm.com>
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
- <1621239831-5870-2-git-send-email-beata.michalska@arm.com>
- <CAKfTPtAPcayjhedNWaL20rsaUQbxXFdEXAF8aqwd9YX5gLVbOQ@mail.gmail.com>
- <20210518142746.GA3993@e120325.cambridge.arm.com>
- <CAKfTPtAk8pQfpN7FrBqdOiSz2Ncby4ozXOgQvT_QZMX67-FRKA@mail.gmail.com>
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+ <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <4fc32900-412d-fa10-520e-afa6caade33e@intel.com>
+Date:   Tue, 18 May 2021 08:11:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAk8pQfpN7FrBqdOiSz2Ncby4ozXOgQvT_QZMX67-FRKA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 04:53:09PM +0200, Vincent Guittot wrote:
-> On Tue, 18 May 2021 at 16:27, Beata Michalska <beata.michalska@arm.com> wrote:
-> >
-> > On Tue, May 18, 2021 at 03:39:27PM +0200, Vincent Guittot wrote:
-> > > On Mon, 17 May 2021 at 10:24, Beata Michalska <beata.michalska@arm.com> wrote:
-> > > >
-> > > > Introducing new, complementary to SD_ASYM_CPUCAPACITY, sched_domain
-> > > > topology flag, to distinguish between shed_domains where any CPU
-> > > > capacity asymmetry is detected (SD_ASYM_CPUCAPACITY) and ones where
-> > > > a full range of CPU capacities is visible to all domain members
-> > > > (SD_ASYM_CPUCAPACITY_FULL).
-> > >
-> > > I'm not sure about what you want to detect:
-> > >
-> > > Is it a sched_domain level with a full range of cpu capacity, i.e.
-> > > with at least 1 min capacity and 1 max capacity ?
-> > > or do you want to get at least 1 cpu of each capacity ?
-> > That would be at least one CPU of each available capacity within given domain,
-> > so full -set- of available capacities within a domain.
-> 
-> Would be good to add the precision.
-Will do.
-> 
-> Although I'm not sure if that's the best policy compared to only
-> getting the range which would be far simpler to implement.
-> Do you have some topology example ?
+On 5/17/21 5:09 PM, Kuppuswamy Sathyanarayanan wrote:
+> After TDGETVEINFO #VE could happen in theory (e.g. through an NMI),
+> although we don't expect it to happen because we don't expect NMIs to
+> trigger #VEs. Another case where they could happen is if the #VE
+> exception panics, but in this case there are no guarantees on anything
+> anyways.
 
-An example from second patch from the series:
-
-DIE      [                                ]
-MC       [                       ][       ]
-
-CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
-Capacity  |.....| |.....| |.....|  |.....|
-	     L	     M       B        B
-
-Where:
- arch_scale_cpu_capacity(L) = 512
- arch_scale_cpu_capacity(M) = 871
- arch_scale_cpu_capacity(B) = 1024
-
-which could also look like:
-
-DIE      [                                        ]
-MC       [                       ][               ]
-
-CPU       [0] [1] [2] [3] [4] [5]  [6] [7] [8] [9]
-Capacity  |.....| |.....| |.....|  |.....| |.....|
-	     L	     M       B        L       B
-
-Considering only range would mean loosing the 2 (M) CPUs out of sight
-for feec in some cases.
-
----
-BR.
-B
-> 
-> 
-> 
-> 
-> 
-> 
-> >
-> > ---
-> > BR
-> > B.
-> > >
-> > >
-> > > >
-> > > > With the distinction between full and partial CPU capacity asymmetry,
-> > > > brought in by the newly introduced flag, the scope of the original
-> > > > SD_ASYM_CPUCAPACITY flag gets shifted, still maintaining the existing
-> > > > behaviour when one is detected on a given sched domain, allowing
-> > > > misfit migrations within sched domains that do not observe full range
-> > > > of CPU capacities but still do have members with different capacity
-> > > > values. It loses though it's meaning when it comes to the lowest CPU
-> > > > asymmetry sched_domain level per-cpu pointer, which is to be now
-> > > > denoted by SD_ASYM_CPUCAPACITY_FULL flag.
-> > > >
-> > > > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> > > > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> > > > ---
-> > > >  include/linux/sched/sd_flags.h | 10 ++++++++++
-> > > >  1 file changed, 10 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-> > > > index 34b21e9..57bde66 100644
-> > > > --- a/include/linux/sched/sd_flags.h
-> > > > +++ b/include/linux/sched/sd_flags.h
-> > > > @@ -91,6 +91,16 @@ SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
-> > > >  SD_FLAG(SD_ASYM_CPUCAPACITY, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > > >
-> > > >  /*
-> > > > + * Domain members have different CPU capacities spanning all unique CPU
-> > > > + * capacity values.
-> > > > + *
-> > > > + * SHARED_PARENT: Set from the topmost domain down to the first domain where
-> > > > + *               all available CPU capacities are visible
-> > > > + * NEEDS_GROUPS: Per-CPU capacity is asymmetric between groups.
-> > > > + */
-> > > > +SD_FLAG(SD_ASYM_CPUCAPACITY_FULL, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > > > +
-> > > > +/*
-> > > >   * Domain members share CPU capacity (i.e. SMT)
-> > > >   *
-> > > >   * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-> > > > --
-> > > > 2.7.4
-> > > >
+This implies: "we do not expect any NMI to do MMIO".  Is that true?  Why?
