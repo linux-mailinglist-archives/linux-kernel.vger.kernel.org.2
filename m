@@ -2,198 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021F8387C76
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC4E387C80
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245024AbhERP3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240041AbhERP3n (ORCPT
+        id S1343608AbhERPfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:35:22 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23896 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238479AbhERPfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:29:43 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AD1C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:28:24 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id p20so12078558ljj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:28:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lpRvF+xJ/4IcCek+cggWbs10JI8lkpvOBQ+cLldKIIU=;
-        b=Q1Xn+dOVy2cUeeM8Q6YEGcIaBmPSenlSExzNe2VV+Ln/RroRbTMnsUCBvrEa/4S8Kp
-         P3LjSGgIiWdAnedCndCWvTmNhyI87HcaxrqU8ZpeKW8TuQo1fM5Gnhh4pC34MYbg0TYb
-         HbTEL+hzqTlFdDlvjpvcsnkjp5uzkmNDy5aFP8Cftwi4ZCywZK0gYCmfeGR0Kooi3v1R
-         vnPb+61q6NDDFoPO7PIMziu5DMaTjRae5PR+l+pobPndB43tBo2pI6sVhAURhcvX/cgj
-         HJNpSggF6E+TaIOPX2LPVNoTjGs0NJhQoY5VILW0Dma5Hye49UvG8I92oxc9Al28YWu4
-         sSlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lpRvF+xJ/4IcCek+cggWbs10JI8lkpvOBQ+cLldKIIU=;
-        b=jaMppizaVhhDLfJyWYkc2egtV+Ha5Zn2D9fdoi9RH3RyeLpfFqq1UqdBuDmwoCYrjS
-         cj/tED24UhVLnWJkRgh9Ci1lYITHp/Uk76P8jtKxqXnGi4128O+cwPpja6a89fubZhTM
-         qUm2fHgJMII9RHcJdiAPttaMX6RvdLvNBsu8JIC/G6P1uTYx2xr9dV8Yg+XLk2ylwCVX
-         kAi5psw4Jj9KITWwue4XZeab5AEUOh4sics5673paiLGSeq3dpJmLLnRHWL+rGnZOIZF
-         vgpBpo0L4W4UpKKgsDajTZ+uUNJmmd0l+E0s8ob7Et+cHS5U6b+NK5FznDWE+VADZKEJ
-         AGkg==
-X-Gm-Message-State: AOAM533DjPhnbcLlI/Jrz/1eMQl7RBbo13E1/zm+Q/1FOt4ooKpicZbl
-        aIR68TzSmjluX5vi22pQX3FkSiZbvJrO4u0wz5ROXg==
-X-Google-Smtp-Source: ABdhPJymDaoBvxC1m+UFkPfPnTNc2aZzsYMub514jj8ualntwMLqVJIB2cXHIjK6mmXgmFBrDkEtHJNe3rGDCU93VC8=
-X-Received: by 2002:a2e:9211:: with SMTP id k17mr4620637ljg.284.1621351702710;
- Tue, 18 May 2021 08:28:22 -0700 (PDT)
+        Tue, 18 May 2021 11:35:20 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IFXeVh077928;
+        Tue, 18 May 2021 11:34:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=TQr62DpZ4SQb4D5M08QfWn2SRhd+ESpxOz7ZKFQozY0=;
+ b=MCe4+h/HY+ahovMfQ8XPsbQqbuT7U/WzGO0CzkNnq/71nDRRDxX3zy1VdFG7xMKtzpta
+ L9EjozSdue6fY2JtpUNQ5vhtWi4JE35gwJcuTih5YaJ5ZVvIgqvR1b4N0JBrvVatBbkK
+ npRbfEpzEnbNEn2nyKRn4qke3+/2NKEjnXfIvAWbdEsMjMFIcBJBAfuMQjxmxgnluJZn
+ u8Zk0/SFKydxPQJxwPFgw7pqctqS5GxgIRJF5vke1n27hMNS+5z97bqGmxWSJcBJ/qc8
+ 2KHTSNbcwuYTbigkbdGo+jd5zHtmJqUh49F+3OHrWMeUsBUYmvLTRR+80VpBw5qGOMTz Ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38mfatafef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 11:34:00 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IFXuuK079543;
+        Tue, 18 May 2021 11:34:00 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38mfatafd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 11:33:59 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IFXNg5022860;
+        Tue, 18 May 2021 15:33:57 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 38j5x89jw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 15:33:57 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IFXsLj33030438
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 15:33:54 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7DB1A42047;
+        Tue, 18 May 2021 15:33:54 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AFB6442041;
+        Tue, 18 May 2021 15:33:53 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.17.64])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 18 May 2021 15:33:53 +0000 (GMT)
+Date:   Tue, 18 May 2021 17:33:51 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
+ callback
+Message-ID: <20210518173351.39646b45.pasic@linux.ibm.com>
+In-Reply-To: <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+        <20210512203536.4209c29c.pasic@linux.ibm.com>
+        <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
+        <20210513194541.58d1628a.pasic@linux.ibm.com>
+        <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
+        <20210514021500.60ad2a22.pasic@linux.ibm.com>
+        <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
+        <20210517211030.368ca64b.pasic@linux.ibm.com>
+        <966a60ad-bdde-68d0-ae2f-06121c6ad970@de.ibm.com>
+        <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
+        <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
- <1621239831-5870-2-git-send-email-beata.michalska@arm.com>
- <CAKfTPtAPcayjhedNWaL20rsaUQbxXFdEXAF8aqwd9YX5gLVbOQ@mail.gmail.com>
- <20210518142746.GA3993@e120325.cambridge.arm.com> <CAKfTPtAk8pQfpN7FrBqdOiSz2Ncby4ozXOgQvT_QZMX67-FRKA@mail.gmail.com>
- <20210518150947.GC3993@e120325.cambridge.arm.com>
-In-Reply-To: <20210518150947.GC3993@e120325.cambridge.arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 18 May 2021 17:28:11 +0200
-Message-ID: <CAKfTPtAYjzMfj3Uh=xjAeiOZtkb5iyPA72+ow+RXYtQq0mGNDA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL
- sched_domain flag
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: t3K8MoDSLSCjFz7UQHyiJ7pzRaIflBtA
+X-Proofpoint-ORIG-GUID: oKisr6c5qlFYMRjJi5pfcvZJA4yiC3BW
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_07:2021-05-18,2021-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105180111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 at 17:09, Beata Michalska <beata.michalska@arm.com> wrote:
->
-> On Tue, May 18, 2021 at 04:53:09PM +0200, Vincent Guittot wrote:
-> > On Tue, 18 May 2021 at 16:27, Beata Michalska <beata.michalska@arm.com> wrote:
-> > >
-> > > On Tue, May 18, 2021 at 03:39:27PM +0200, Vincent Guittot wrote:
-> > > > On Mon, 17 May 2021 at 10:24, Beata Michalska <beata.michalska@arm.com> wrote:
-> > > > >
-> > > > > Introducing new, complementary to SD_ASYM_CPUCAPACITY, sched_domain
-> > > > > topology flag, to distinguish between shed_domains where any CPU
-> > > > > capacity asymmetry is detected (SD_ASYM_CPUCAPACITY) and ones where
-> > > > > a full range of CPU capacities is visible to all domain members
-> > > > > (SD_ASYM_CPUCAPACITY_FULL).
-> > > >
-> > > > I'm not sure about what you want to detect:
-> > > >
-> > > > Is it a sched_domain level with a full range of cpu capacity, i.e.
-> > > > with at least 1 min capacity and 1 max capacity ?
-> > > > or do you want to get at least 1 cpu of each capacity ?
-> > > That would be at least one CPU of each available capacity within given domain,
-> > > so full -set- of available capacities within a domain.
-> >
-> > Would be good to add the precision.
-> Will do.
-> >
-> > Although I'm not sure if that's the best policy compared to only
-> > getting the range which would be far simpler to implement.
-> > Do you have some topology example ?
->
-> An example from second patch from the series:
->
-> DIE      [                                ]
-> MC       [                       ][       ]
->
-> CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
-> Capacity  |.....| |.....| |.....|  |.....|
->              L       M       B        B
+On Tue, 18 May 2021 15:59:36 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-The one above , which is described in your patchset, works with the range policy
+> On 18.05.21 15:42, Tony Krowiak wrote:
+> > 
+> > 
+> > On 5/18/21 5:30 AM, Christian Borntraeger wrote:  
+> >>
+> >>
+> >> On 17.05.21 21:10, Halil Pasic wrote:  
+> >>> On Mon, 17 May 2021 09:37:42 -0400
+> >>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >>>  
+> >>>>>
+> >>>>> Because of this, I don't think the rest of your argument is valid.  
+> >>>>
+> >>>> Okay, so your concern is that between the point in time the
+> >>>> vcpu->kvm->arch.crypto.pqap_hook pointer is checked in
+> >>>> priv.c and the point in time the handle_pqap() function
+> >>>> in vfio_ap_ops.c is called, the memory allocated for the
+> >>>> matrix_mdev containing the struct kvm_s390_module_hook
+> >>>> may get freed, thus rendering the function pointer invalid.
+> >>>> While not impossible, that seems extremely unlikely to
+> >>>> happen. Can you articulate a scenario where that could
+> >>>> even occur?  
+> >>>
+> >>> Malicious userspace. We tend to do the pqap aqic just once
+> >>> in the guest right after the queue is detected. I do agree
+> >>> it ain't very likely to happen during normal operation. But why are
+> >>> you asking?  
+> >>
+> >> Would it help, if the code in priv.c would read the hook once
+> >> and then only work on the copy? We could protect that with rcu
+> >> and do a synchronize rcu in vfio_ap_mdev_unset_kvm after
+> >> unsetting the pointer?
 
->
-> Where:
->  arch_scale_cpu_capacity(L) = 512
->  arch_scale_cpu_capacity(M) = 871
->  arch_scale_cpu_capacity(B) = 1024
->
-> which could also look like:
->
-> DIE      [                                        ]
-> MC       [                       ][               ]
->
-> CPU       [0] [1] [2] [3] [4] [5]  [6] [7] [8] [9]
-> Capacity  |.....| |.....| |.....|  |.....| |.....|
->              L       M       B        L       B
+Unfortunately just "the hook" is ambiguous in this context. We
+have kvm->arch.crypto.pqap_hook that is supposed to point to
+a struct kvm_s390_module_hook member of struct ap_matrix_mdev 
+which is also called pqap_hook. And struct kvm_s390_module_hook
+has function pointer member named "hook".
 
-I know that that HW guys can come with crazy idea but they would
-probably add M  instead of L with B in the 2nd cluster as a boost of
-performance at the cost of powering up another "cluster" in which case
-the range policy works as well
+> > 
+> > I'll look into this.  
+> 
+> I think it could work. in priv.c use rcu_readlock, save the
+> pointer, do the check and call, call rcu_read_unlock.
+> In vfio_ap use rcu_assign_pointer to set the pointer and
+> after setting it to zero call sychronize_rcu.
 
->
-> Considering only range would mean loosing the 2 (M) CPUs out of sight
-> for feec in some cases.
+In my opinion, we should make the accesses to the
+kvm->arch.crypto.pqap_hook pointer properly synchronized. I'm
+not sure if that is what you are proposing. How do we usually
+do synchronisation on the stuff that lives in kvm->arch?
 
-Is it realistic ? Considering all the code and complexity added by
-patch 2, will we really use it at the end ?
+BTW, something as simple as a cmpxchg which boils down to the
+CSG instruction for us would suffice in this case (or forcing
+any interlocked update type construct). 
+
+> 
+> Halil, I think we can do this as an addon patch as it makes
+> sense to have this callback pointer protected independent of
+> this patch. Agree?
+
+Unfortunately I didn't quite get at the bottom of what exactly gets
+leaked. My intuition is, that trading a leak for an use after free
+is in general not a good idea. In this particular case, assuming
+userspace is well behaved, the use after free is very unlikely,
+but then I don't consider the leak to be awfully likely either. A
+well behaved userspace should not attempt to remove the mdev while
+it is associated with a guest. We documented that in:
+Documentation/s390/vfio-ap.rst
+"""
+  remove:
+    deallocates the mediated matrix device's ap_matrix_mdev structure. This will
+    be allowed only if a running guest is not using the mdev.
+"""
+BTW this patch should probably change that piece of documentation as
+well.
+
+In this case, because the leak is much likelier than the use after
+free (assuming a non-malicious-userspace) the trade may be worth it. Yet my
+independent opinion is that I would prefer this fixed in one go and
+properly. But I do trust your judgement better than mine (especially in
+matters like this). So feel free to go ahead (i.e. I'm not going to NACK
+this). 
 
 Regards,
-Vincent
->
-> ---
-> BR.
-> B
-> >
-> >
-> >
-> >
-> >
-> >
-> > >
-> > > ---
-> > > BR
-> > > B.
-> > > >
-> > > >
-> > > > >
-> > > > > With the distinction between full and partial CPU capacity asymmetry,
-> > > > > brought in by the newly introduced flag, the scope of the original
-> > > > > SD_ASYM_CPUCAPACITY flag gets shifted, still maintaining the existing
-> > > > > behaviour when one is detected on a given sched domain, allowing
-> > > > > misfit migrations within sched domains that do not observe full range
-> > > > > of CPU capacities but still do have members with different capacity
-> > > > > values. It loses though it's meaning when it comes to the lowest CPU
-> > > > > asymmetry sched_domain level per-cpu pointer, which is to be now
-> > > > > denoted by SD_ASYM_CPUCAPACITY_FULL flag.
-> > > > >
-> > > > > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> > > > > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> > > > > ---
-> > > > >  include/linux/sched/sd_flags.h | 10 ++++++++++
-> > > > >  1 file changed, 10 insertions(+)
-> > > > >
-> > > > > diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-> > > > > index 34b21e9..57bde66 100644
-> > > > > --- a/include/linux/sched/sd_flags.h
-> > > > > +++ b/include/linux/sched/sd_flags.h
-> > > > > @@ -91,6 +91,16 @@ SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
-> > > > >  SD_FLAG(SD_ASYM_CPUCAPACITY, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > > > >
-> > > > >  /*
-> > > > > + * Domain members have different CPU capacities spanning all unique CPU
-> > > > > + * capacity values.
-> > > > > + *
-> > > > > + * SHARED_PARENT: Set from the topmost domain down to the first domain where
-> > > > > + *               all available CPU capacities are visible
-> > > > > + * NEEDS_GROUPS: Per-CPU capacity is asymmetric between groups.
-> > > > > + */
-> > > > > +SD_FLAG(SD_ASYM_CPUCAPACITY_FULL, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > > > > +
-> > > > > +/*
-> > > > >   * Domain members share CPU capacity (i.e. SMT)
-> > > > >   *
-> > > > >   * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-> > > > > --
-> > > > > 2.7.4
-> > > > >
+Halil
