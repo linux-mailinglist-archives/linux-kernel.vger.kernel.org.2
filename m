@@ -2,117 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CBF38765F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8323C387665
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348446AbhERKZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241038AbhERKZd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:25:33 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA194C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:24:15 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so1202615wmk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ZzcYCHi4oczNX5v8RqtwGoJp8057rvZdCwxA6gSVHSI=;
-        b=YMJuF44+fHnixYFA+J38p2ON5BsdYljj/LxfEg6ub/dZl3DnzOOewy5zNHc6EoGxHJ
-         dxM3p+UyeD1AS6KLsR0FLu8gpVN41O5YtaW3l+SsdBFV7v6FWS0SKeGNuQNuAcJu2c46
-         MO+aTcs5g9P3zPuAbk92gIKBf7GJwAFh+JfjP4mm+3zTOw1JPqMScYHfamQdpkC+H9l3
-         byUI4TM7gUa6dwzvShtbsMS34PIa6/Cu6rrZFaTsyT/kxmlrHIrIho9VU/QMxpSKfIzL
-         w1lC0ndh2GEM5YoL0G2ocgwbCTf2NJvuSisQ6R6UlVXhX9n6H3Tm43/zQB2+1AJY8LXN
-         p45Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ZzcYCHi4oczNX5v8RqtwGoJp8057rvZdCwxA6gSVHSI=;
-        b=ko1n6grph7at6dIr541/YecSLI5PxBSNByz2Y+E40pyeFM4E81lJj3qSrknN6Ea3jg
-         p0PpHXSGBvqRB8kVk04uL4pLpo1ixqoiUf+bkMd8RkWDHO0UTRfgnha/qm8kYCUEIjaX
-         4itL2bSBmdyIC3eTOHoaXbrJQIuJ7LYYWKmXprq61/U701+p2pmU07CuNYMwg9uk/43/
-         rusEfiWURVi58VPUTsZCJdHt+hUA2V8lUugMRokdhZrPzkTw/PkHjJUC3HY+kwmNrmf0
-         SBZhrqW1vLuTdU1zD5DlW5uL1zMfodvS3mq5betGR4ef7jlPsocYL8WUnRg24VzFzUfF
-         0GQw==
-X-Gm-Message-State: AOAM530Ksa/uBnk9xs59Pwwgz9LbDrEmfqBjE9tcb40Oir71NIYOxPno
-        WZEmFN+JcyJYOL3oxMSmPLo=
-X-Google-Smtp-Source: ABdhPJwbUiO6MWpfSFN+cfQmihen4aG+jx9u0Zls1xEI1ynCHK9FC0da6y/BZ3nKoKoZQXzAhB6zPg==
-X-Received: by 2002:a1c:4d01:: with SMTP id o1mr4736696wmh.42.1621333453921;
-        Tue, 18 May 2021 03:24:13 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id s83sm17005964wms.16.2021.05.18.03.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 03:24:13 -0700 (PDT)
-Date:   Tue, 18 May 2021 12:24:12 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: REGRESSION: initrd is disabled due to memory overlap
-Message-ID: <YKOVzLHGcHoVTqSi@Red>
+        id S243514AbhERKZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:25:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:48128 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239674AbhERKZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:25:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F83E1FB;
+        Tue, 18 May 2021 03:24:36 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.6.226])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A1EB3F719;
+        Tue, 18 May 2021 03:24:27 -0700 (PDT)
+Date:   Tue, 18 May 2021 11:24:24 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v19 6/8] PM: hibernate: disable when there are active
+ secretmem users
+Message-ID: <20210518102424.GD82842@C02TD0UTHF1T.local>
+References: <20210513184734.29317-1-rppt@kernel.org>
+ <20210513184734.29317-7-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210513184734.29317-7-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Thu, May 13, 2021 at 09:47:32PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> It is unsafe to allow saving of secretmem areas to the hibernation
+> snapshot as they would be visible after the resume and this essentially
+> will defeat the purpose of secret memory mappings.
+> 
+> Prevent hibernation whenever there are active secret memory users.
 
-On my SSI1328 gemini board, I use initrd=0x800000,9M in cmdline.
-On next-20210518 and 5.13-rc1 I got:
-Booting Linux on physical CPU 0x0
-Linux version 5.13.0-rc2-next-20210518+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 10.2.0-r5 p6) 10.2.0, GNU ld (Gentoo 2.35.2 p1) 2.35.2) #77 PREEMPT Tue May 18 12:14:41 CEST 2021
-CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
-CPU: VIVT data cache, VIVT instruction cache
-OF: fdt: Machine model: SSI 1328
-Memory policy: Data cache writeback
-INITRD: 0x00800000+0x00900000 overlaps in-use memory region - disabling initrd
-Zone ranges:
-  Normal   [mem 0x0000000000000000-0x0000000007ffffff]
-  HighMem  empty
-Movable zone start for each node
-Early memory node ranges
-  node   0: [mem 0x0000000000000000-0x0000000007ffffff]
-Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
-Built 1 zonelists, mobility grouping on.  Total pages: 32512
-Kernel command line: console=ttyS0,19200n8 initrd=0x800000,9M
-Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
-Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
-mem auto-init: stack:off, heap alloc:off, heap free:off
-Memory: 117480K/131072K available (5459K kernel code, 595K rwdata, 1508K rodata, 180K init, 376K bss, 13592K reserved, 0K cma-reserved, 0K highmem)
+Have we thought about how this is going to work in practice, e.g. on
+mobile systems? It seems to me that there are a variety of common
+applications which might want to use this which people don't expect to
+inhibit hibernate (e.g. authentication agents, web browsers).
 
-On 5.12, initrd is used and works.
+Are we happy to say that any userspace application can incidentally
+inhibit hibernate?
 
-I bisected the problem, but without any result:
-git bisect start
-# bad: [6efb943b8616ec53a5e444193dccf1af9ad627b5] Linux 5.13-rc1
-git bisect bad 6efb943b8616ec53a5e444193dccf1af9ad627b5
-# good: [9f4ad9e425a1d3b6a34617b8ea226d56a119a717] Linux 5.12
-git bisect good 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
-# good: [6c0029211382011af508273c4fc98a732f841d95] Merge tag 'for-5.13/block-2021-04-27' of git://git.kernel.dk/linux-block
-git bisect good 6c0029211382011af508273c4fc98a732f841d95
-# bad: [9d31d2338950293ec19d9b095fbaa9030899dcb4] Merge tag 'net-next-5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
-git bisect bad 9d31d2338950293ec19d9b095fbaa9030899dcb4
-# good: [3e1b0c168f6c8648f217c78ed6a4135af8c9d830] netfilter: flowtable: add vlan match offload support
-git bisect good 3e1b0c168f6c8648f217c78ed6a4135af8c9d830
-# good: [3644286f6cbcea86f6fa4d308e7ac06bf2a3715a] Merge tag 'fsnotify_for_v5.13-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-git bisect good 3644286f6cbcea86f6fa4d308e7ac06bf2a3715a
-# good: [96874c619c200bc704ae2d8e34a3746350922135] net: stmmac: Add HW descriptor prefetch setting for DWMAC Core 5.20 onwards
-git bisect good 96874c619c200bc704ae2d8e34a3746350922135
-# good: [eb43c081a6df85e3119226b932ddb9a9572b26e4] Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next
-git bisect good eb43c081a6df85e3119226b932ddb9a9572b26e4
-# good: [0711459095bc9ddb5a0086146d2751e6d5412cbf] Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next
-git bisect good 0711459095bc9ddb5a0086146d2751e6d5412cbf
-# good: [635de956a7f5a6ffcb04f29d70630c64c717b56b] Merge tag 'x86-mm-2021-04-29' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect good 635de956a7f5a6ffcb04f29d70630c64c717b56b
-# good: [f89271f09f589b8e9f98a9d3373d4868d3e668a5] Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next
-git bisect good f89271f09f589b8e9f98a9d3373d4868d3e668a5
-# good: [4a52dd8fefb45626dace70a63c0738dbd83b7edb] net: selftest: fix build issue if INET is disabled
-git bisect good 4a52dd8fefb45626dace70a63c0738dbd83b7edb
-# first bad commit: [9d31d2338950293ec19d9b095fbaa9030899dcb4] Merge tag 'net-next-5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
+Thanks,
+Mark.
 
-Regards
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Christopher Lameter <cl@linux.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Elena Reshetova <elena.reshetova@intel.com>
+> Cc: Hagen Paul Pfeifer <hagen@jauu.net>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: James Bottomley <jejb@linux.ibm.com>
+> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Tycho Andersen <tycho@tycho.ws>
+> Cc: Will Deacon <will@kernel.org>
+> ---
+>  include/linux/secretmem.h |  6 ++++++
+>  kernel/power/hibernate.c  |  5 ++++-
+>  mm/secretmem.c            | 15 +++++++++++++++
+>  3 files changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+> index e617b4afcc62..21c3771e6a56 100644
+> --- a/include/linux/secretmem.h
+> +++ b/include/linux/secretmem.h
+> @@ -30,6 +30,7 @@ static inline bool page_is_secretmem(struct page *page)
+>  }
+>  
+>  bool vma_is_secretmem(struct vm_area_struct *vma);
+> +bool secretmem_active(void);
+>  
+>  #else
+>  
+> @@ -43,6 +44,11 @@ static inline bool page_is_secretmem(struct page *page)
+>  	return false;
+>  }
+>  
+> +static inline bool secretmem_active(void)
+> +{
+> +	return false;
+> +}
+> +
+>  #endif /* CONFIG_SECRETMEM */
+>  
+>  #endif /* _LINUX_SECRETMEM_H */
+> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+> index da0b41914177..559acef3fddb 100644
+> --- a/kernel/power/hibernate.c
+> +++ b/kernel/power/hibernate.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/genhd.h>
+>  #include <linux/ktime.h>
+>  #include <linux/security.h>
+> +#include <linux/secretmem.h>
+>  #include <trace/events/power.h>
+>  
+>  #include "power.h"
+> @@ -81,7 +82,9 @@ void hibernate_release(void)
+>  
+>  bool hibernation_available(void)
+>  {
+> -	return nohibernate == 0 && !security_locked_down(LOCKDOWN_HIBERNATION);
+> +	return nohibernate == 0 &&
+> +		!security_locked_down(LOCKDOWN_HIBERNATION) &&
+> +		!secretmem_active();
+>  }
+>  
+>  /**
+> diff --git a/mm/secretmem.c b/mm/secretmem.c
+> index 1ae50089adf1..7c2499e4de22 100644
+> --- a/mm/secretmem.c
+> +++ b/mm/secretmem.c
+> @@ -40,6 +40,13 @@ module_param_named(enable, secretmem_enable, bool, 0400);
+>  MODULE_PARM_DESC(secretmem_enable,
+>  		 "Enable secretmem and memfd_secret(2) system call");
+>  
+> +static atomic_t secretmem_users;
+> +
+> +bool secretmem_active(void)
+> +{
+> +	return !!atomic_read(&secretmem_users);
+> +}
+> +
+>  static vm_fault_t secretmem_fault(struct vm_fault *vmf)
+>  {
+>  	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+> @@ -94,6 +101,12 @@ static const struct vm_operations_struct secretmem_vm_ops = {
+>  	.fault = secretmem_fault,
+>  };
+>  
+> +static int secretmem_release(struct inode *inode, struct file *file)
+> +{
+> +	atomic_dec(&secretmem_users);
+> +	return 0;
+> +}
+> +
+>  static int secretmem_mmap(struct file *file, struct vm_area_struct *vma)
+>  {
+>  	unsigned long len = vma->vm_end - vma->vm_start;
+> @@ -116,6 +129,7 @@ bool vma_is_secretmem(struct vm_area_struct *vma)
+>  }
+>  
+>  static const struct file_operations secretmem_fops = {
+> +	.release	= secretmem_release,
+>  	.mmap		= secretmem_mmap,
+>  };
+>  
+> @@ -202,6 +216,7 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
+>  	file->f_flags |= O_LARGEFILE;
+>  
+>  	fd_install(fd, file);
+> +	atomic_inc(&secretmem_users);
+>  	return fd;
+>  
+>  err_put_fd:
+> -- 
+> 2.28.0
+> 
