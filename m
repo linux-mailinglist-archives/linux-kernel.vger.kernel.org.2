@@ -2,225 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8323C387665
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C03D38766C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243514AbhERKZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:25:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:48128 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239674AbhERKZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:25:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F83E1FB;
-        Tue, 18 May 2021 03:24:36 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.6.226])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A1EB3F719;
-        Tue, 18 May 2021 03:24:27 -0700 (PDT)
-Date:   Tue, 18 May 2021 11:24:24 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v19 6/8] PM: hibernate: disable when there are active
- secretmem users
-Message-ID: <20210518102424.GD82842@C02TD0UTHF1T.local>
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-7-rppt@kernel.org>
+        id S1348473AbhERK1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242870AbhERK1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:27:49 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E521EC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:26:30 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id x15so9272490oic.13
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5mU/NNV0Kszseb1MnLIIdlRvIBPmRmPf+2nBb/wwtKw=;
+        b=pRYuI5YFZrPoNB4YYh1aPgWGEG3Hkr1vYF3dJJby7Q4Up+iMseB4HRTUuZBwqOZDDr
+         BuDtlcsPhVG3FjcDuy9wtQmOGnbzpfGQB+pX6T4LKBqSW1Scyk83wDdjnOD46w6Rms+x
+         LBD/B6JexSvpi/lLQCFiMszD8BktObOxPIRun9QDYdgvYHHx8NXEbaHrcD0Nss9Bs7BB
+         k6+3Uq+P5UI7kSUYNEviCrY3NPMnAQSGVzne4qSVoPTAUv3iu45yLqzTQnGoeLoRhdwN
+         Q6QzJCdQXgfHoT3i6P3J7c4CLgg9Cc/jW1oDOIeNDsV59kzAlpU0Yezujy4r9n8GxdNV
+         1UCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5mU/NNV0Kszseb1MnLIIdlRvIBPmRmPf+2nBb/wwtKw=;
+        b=HcfdMwe6PdoHZoRj3e3zYoFNyOGepA7U22XZMp3AvG1WNxYDBDjvtsKKBctMd3cVjN
+         IFru3JAtPNLLu/KQw3Hzfi6U3B7WyFqg82aOKAcYoGPfOWWFVqH/x1vKjsHYijnsJbvv
+         ROc/k1XsHC3yGr4EPIMLQfqjvuTnFrhtlIJlG3eh+w7gxjH6NJs3s+THqVwNJpfepHWG
+         +3KjPkyMfwDD3HzknLuD7sTogDiW6zLRfr8voq8OMRWk6vMb6bjXq0mUZFW+cEWimndA
+         Z7zyltK6jU2re5tl2jW7td4/0O9yLRUe8MzHRzLdWDlcdcAurSXX5Dgw80Bk6lD/2pP8
+         UvYw==
+X-Gm-Message-State: AOAM53361hNp0UVGoa0xcNycPLDPMRH85uwWF0U/rv8sSkW99hL1MyNU
+        XSt+HjxgF++iH8IO07hvOyQSr3FFHvsyKt4Ewpg=
+X-Google-Smtp-Source: ABdhPJxm141ZsUF6u39+57ylWb2ptiOY7eTW2B1ZaYFPJYhW1ZPlf2ltkyfZa84v4XTBJC+3cCn0YO+QXQlNjIVWOKE=
+X-Received: by 2002:a05:6808:a96:: with SMTP id q22mr2913741oij.47.1621333590379;
+ Tue, 18 May 2021 03:26:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513184734.29317-7-rppt@kernel.org>
+References: <20210517112044.233138-1-aisheng.dong@nxp.com> <20210517112044.233138-3-aisheng.dong@nxp.com>
+ <YKOSZELQWd6o7cva@kernel.org>
+In-Reply-To: <YKOSZELQWd6o7cva@kernel.org>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Tue, 18 May 2021 18:25:28 +0800
+Message-ID: <CAA+hA=QcNWo3brs4HvdBb+QHHOiBHgF3hdbfJ1ivaGHiBXM4EQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm/sparse: free section usage memory in case
+ populate_section_memmap failed
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:47:32PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> It is unsafe to allow saving of secretmem areas to the hibernation
-> snapshot as they would be visible after the resume and this essentially
-> will defeat the purpose of secret memory mappings.
-> 
-> Prevent hibernation whenever there are active secret memory users.
+On Tue, May 18, 2021 at 6:09 PM Mike Rapoport <rppt@kernel.org> wrote:
+>
+> On Mon, May 17, 2021 at 07:20:41PM +0800, Dong Aisheng wrote:
+> > Free section usage memory in case populate_section_memmap failed.
+> > We use map_count to track the remain unused memory to be freed.
+> >
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> > ---
+> >  mm/sparse.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/mm/sparse.c b/mm/sparse.c
+> > index 7ac481353b6b..98bfacc763da 100644
+> > --- a/mm/sparse.c
+> > +++ b/mm/sparse.c
+> > @@ -549,12 +549,14 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
+> >                              __func__, nid);
+> >                       pnum_begin = pnum;
+> >                       sparse_buffer_fini();
+> > +                     memblock_free_early(__pa(usage), map_count * mem_section_usage_size());
+>
+> I'd move both sparse_buffer_fini() and freeing of 'usage' memory after the
+> failed label.
+>
 
-Have we thought about how this is going to work in practice, e.g. on
-mobile systems? It seems to me that there are a variety of common
-applications which might want to use this which people don't expect to
-inhibit hibernate (e.g. authentication agents, web browsers).
+Doing that needs to introduce another 'failed' label.
+Do you think if it's necessary?
 
-Are we happy to say that any userspace application can incidentally
-inhibit hibernate?
+e.g.
+diff --git a/mm/sparse.c b/mm/sparse.c
+index 7ac481353b6b..408b737e168e 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -533,7 +533,7 @@ static void __init sparse_init_nid(int nid,
+unsigned long pnum_begin,
+                        mem_section_usage_size() * map_count);
+        if (!usage) {
+                pr_err("%s: node[%d] usemap allocation failed", __func__, nid);
+-               goto failed;
++               goto failed1;
+        }
+        sparse_buffer_init(map_count * section_map_size(), nid);
+        for_each_present_section_nr(pnum_begin, pnum) {
+@@ -548,17 +548,20 @@ static void __init sparse_init_nid(int nid,
+unsigned long pnum_begin,
+                        pr_err("%s: node[%d] memory map backing
+failed. Some memory will not be available.",
+                               __func__, nid);
+                        pnum_begin = pnum;
+-                       sparse_buffer_fini();
+-                       goto failed;
++                       goto failed2;
+                }
+                check_usemap_section_nr(nid, usage);
+                sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
+                                SECTION_IS_EARLY);
+                usage = (void *) usage + mem_section_usage_size();
++               map_count--;
+        }
+        sparse_buffer_fini();
+        return;
+-failed:
++failed2:
++       sparse_buffer_fini();
++       memblock_free_early(__pa(usage), map_count * mem_section_usage_size());
++failed1:
+        /* We failed to allocate, mark all the following pnums as not present */
+        for_each_present_section_nr(pnum_begin, pnum) {
+                struct mem_section *ms;
 
-Thanks,
-Mark.
-
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Christopher Lameter <cl@linux.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Elena Reshetova <elena.reshetova@intel.com>
-> Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: James Bottomley <jejb@linux.ibm.com>
-> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Tycho Andersen <tycho@tycho.ws>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->  include/linux/secretmem.h |  6 ++++++
->  kernel/power/hibernate.c  |  5 ++++-
->  mm/secretmem.c            | 15 +++++++++++++++
->  3 files changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
-> index e617b4afcc62..21c3771e6a56 100644
-> --- a/include/linux/secretmem.h
-> +++ b/include/linux/secretmem.h
-> @@ -30,6 +30,7 @@ static inline bool page_is_secretmem(struct page *page)
->  }
->  
->  bool vma_is_secretmem(struct vm_area_struct *vma);
-> +bool secretmem_active(void);
->  
->  #else
->  
-> @@ -43,6 +44,11 @@ static inline bool page_is_secretmem(struct page *page)
->  	return false;
->  }
->  
-> +static inline bool secretmem_active(void)
-> +{
-> +	return false;
-> +}
-> +
->  #endif /* CONFIG_SECRETMEM */
->  
->  #endif /* _LINUX_SECRETMEM_H */
-> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-> index da0b41914177..559acef3fddb 100644
-> --- a/kernel/power/hibernate.c
-> +++ b/kernel/power/hibernate.c
-> @@ -31,6 +31,7 @@
->  #include <linux/genhd.h>
->  #include <linux/ktime.h>
->  #include <linux/security.h>
-> +#include <linux/secretmem.h>
->  #include <trace/events/power.h>
->  
->  #include "power.h"
-> @@ -81,7 +82,9 @@ void hibernate_release(void)
->  
->  bool hibernation_available(void)
->  {
-> -	return nohibernate == 0 && !security_locked_down(LOCKDOWN_HIBERNATION);
-> +	return nohibernate == 0 &&
-> +		!security_locked_down(LOCKDOWN_HIBERNATION) &&
-> +		!secretmem_active();
->  }
->  
->  /**
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index 1ae50089adf1..7c2499e4de22 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -40,6 +40,13 @@ module_param_named(enable, secretmem_enable, bool, 0400);
->  MODULE_PARM_DESC(secretmem_enable,
->  		 "Enable secretmem and memfd_secret(2) system call");
->  
-> +static atomic_t secretmem_users;
-> +
-> +bool secretmem_active(void)
-> +{
-> +	return !!atomic_read(&secretmem_users);
-> +}
-> +
->  static vm_fault_t secretmem_fault(struct vm_fault *vmf)
->  {
->  	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-> @@ -94,6 +101,12 @@ static const struct vm_operations_struct secretmem_vm_ops = {
->  	.fault = secretmem_fault,
->  };
->  
-> +static int secretmem_release(struct inode *inode, struct file *file)
-> +{
-> +	atomic_dec(&secretmem_users);
-> +	return 0;
-> +}
-> +
->  static int secretmem_mmap(struct file *file, struct vm_area_struct *vma)
->  {
->  	unsigned long len = vma->vm_end - vma->vm_start;
-> @@ -116,6 +129,7 @@ bool vma_is_secretmem(struct vm_area_struct *vma)
->  }
->  
->  static const struct file_operations secretmem_fops = {
-> +	.release	= secretmem_release,
->  	.mmap		= secretmem_mmap,
->  };
->  
-> @@ -202,6 +216,7 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
->  	file->f_flags |= O_LARGEFILE;
->  
->  	fd_install(fd, file);
-> +	atomic_inc(&secretmem_users);
->  	return fd;
->  
->  err_put_fd:
-> -- 
-> 2.28.0
-> 
+Regards
+Aisheng
+> >                       goto failed;
+> >               }
+> >               check_usemap_section_nr(nid, usage);
+> >               sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
+> >                               SECTION_IS_EARLY);
+> >               usage = (void *) usage + mem_section_usage_size();
+> > +             map_count--;
+> >       }
+> >       sparse_buffer_fini();
+> >       return;
+> > --
+> > 2.25.1
+> >
+> >
+>
+> --
+> Sincerely yours,
+> Mike.
