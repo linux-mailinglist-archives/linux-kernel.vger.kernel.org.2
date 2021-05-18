@@ -2,148 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BC2387B68
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382F8387B6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhEROlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234972AbhEROlH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:41:07 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12077C06138E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:39:49 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id b25so10032567oic.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:39:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zp3it5Zu0KA9JHtt+jDEOh0cwWAwW8S1nVYQo9cUI6g=;
-        b=M+LBCcMHMPB69ojN8igqTaiE33ZRMpEcF1APy9OlgsLWEwTLhd++g9E5r/PdgPXEYk
-         Sf+oWKImVvjttXeuquw1tqKq5sDT5hjJaJrr+UNwmVU4yyHWnKmjWyMw/MlpRuRujG3f
-         OPz9XnatcZBy1chC6V/PUTr8885yi7PK0DlXuwh780MM5fxWeByS/rU5afx+k05h1jpm
-         6Fcu7iuPNq3rkO4cA5dE3C1+aLyOA0g1mfkf0PgTpooOLOhwOnpmJucMbwAHPEXBoGUI
-         M0YmbK1i3TawT2Kq/MdoI37cIF1l4xEwiO9riemaM2il88FrHe0Ly8xeiVsF219JVpb/
-         6zcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zp3it5Zu0KA9JHtt+jDEOh0cwWAwW8S1nVYQo9cUI6g=;
-        b=qDDyRMfHb+Pvrb6paFlbuVYY+AcPPBZPHQWt2eC9ACHD4m7cEL6v7EDOFRIKF43QeM
-         7ZdwzFJ/tPDTaz1n54LI3q0ML51U1WB9fE6Q5B3RjG0UvTasTnPeDvoWvS3vuak4QKDQ
-         wZ2/lo7LUnw7nVfIhycUlVkmKUuHdiRI904JzJFN3cARLPXvOC4oNP/h1n9YWZOdJX92
-         jyeX7Uluu7n4IPB6VIztubhY2mCLHgcTPbh/3x74xFvXYYXTof2hEBaJ7pG2MjI9UZV/
-         c6A81J0RbJ7kytsmXZZYi5w69W13y95M/ObovDthEJM7+TlsrUPO5r6bUTr8fgGdASLL
-         noWA==
-X-Gm-Message-State: AOAM532BprDVBeJO0f7oFAFQ+49yitGMelwvM0L+Lmo0A4vkg7kmNplw
-        GEPTrzOiu55UIGKzWbzi1ymZJvRoG11Ob3PiQ4+POQ==
-X-Google-Smtp-Source: ABdhPJztinWXNYTl+kiATtOdsiKD/CaM/e4dVlbDyWrHV5TSscaWHVYcyb9gQYVDavq46dJM3FBF4Qd71vU3cs+rKMU=
-X-Received: by 2002:a05:6808:f0b:: with SMTP id m11mr3641199oiw.12.1621348788489;
- Tue, 18 May 2021 07:39:48 -0700 (PDT)
+        id S234519AbhEROl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:41:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:53698 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234201AbhEROl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 10:41:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6A89ED1;
+        Tue, 18 May 2021 07:40:37 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 502693F73B;
+        Tue, 18 May 2021 07:40:36 -0700 (PDT)
+Date:   Tue, 18 May 2021 15:40:34 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210518144033.GB3993@e120325.cambridge.arm.com>
+References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
+ <1621239831-5870-3-git-send-email-beata.michalska@arm.com>
+ <87mtst1s8m.mognet@arm.com>
+ <20210517131816.GA13965@e120325.cambridge.arm.com>
+ <87k0nx1jtu.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
- <20210505213731.538612-17-bhupesh.sharma@linaro.org> <d809f290-ed94-7e35-bc4d-bd695965fa04@linaro.org>
-In-Reply-To: <d809f290-ed94-7e35-bc4d-bd695965fa04@linaro.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Tue, 18 May 2021 20:09:37 +0530
-Message-ID: <CAH=2NtwS+WBbwbp1tftyMjOCWo9ORZfiZFRr+UNxKQLc9aUNcA@mail.gmail.com>
-Subject: Re: [PATCH v2 16/17] crypto: qce: Defer probe in case interconnect is
- not yet initialized
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0nx1jtu.mognet@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thara,
-
-On Mon, 10 May 2021 at 18:53, Thara Gopinath <thara.gopinath@linaro.org> wrote:
->
->
->
-> On 5/5/21 5:37 PM, Bhupesh Sharma wrote:
-> > On some Qualcomm parts the qce crypto driver needs the interconnect between
-> > the crypto block and main memory to be initialized first before the crypto
-> > registers can be accessed. So it makes sense to defer the qce crypto driver
-> > probing in case the interconnect driver is not yet probed.
+On Mon, May 17, 2021 at 04:06:05PM +0100, Valentin Schneider wrote:
+> On 17/05/21 14:18, Beata Michalska wrote:
+> > On Mon, May 17, 2021 at 01:04:25PM +0100, Valentin Schneider wrote:
+> >> On 17/05/21 09:23, Beata Michalska wrote:
+> >> > +static void asym_cpu_capacity_scan(const struct cpumask *cpu_map)
+> >> > +{
+> >> > +	struct asym_cap_data *entry, *next;
+> >> > +	int cpu;
+> >> >
+> >> > -		for_each_sd_topology(tl) {
+> >> > -			if (tl_id < asym_level)
+> >> > -				goto next_level;
+> >> > +	if (!list_empty(&asym_cap_list))
+> >> > +		list_for_each_entry(entry, &asym_cap_list, link)
+> >> > +			cpumask_clear(entry->cpu_mask);
+> >> >
+> >>
+> >> The topology isn't going to change between domain rebuilds, so why
+> >> recompute the masks? The sched_domain spans are already masked by cpu_map,
+> >> so no need to do this masking twice. I'm thinking this scan should be done
+> >> once against the cpu_possible_mask - kinda like sched_init_numa() done once
+> >> against the possible nodes.
+> >>
+> > This is currently done, as what you have mentioned earlier, the tl->mask
+> > may contain CPUs that are not 'available'. So it makes sure that the masks
+> > kept on  the list are representing only those CPUs that are online.
+> > And it is also needed case all CPUs of given capacity go offline - not to to
+> > lose the full asymmetry that might change because of that ( empty masks are
+> > being removed from the list).
 > >
-> > This fixes the qce probe failure issues when both qce and
-> > interconnect drivers are compiled as static part of the kernel.
+> > I could change that and use the CPU mask that represents the online CPUs as
+> > a checkpoint but then it also means additional tracking which items on the
+> > list are actually available at a given point of time.
+> > So if the CPUs masks on the list are to be set once (as you are suggesting)
+> > than it needs additional logic to count the number of available capacities
+> > to decide whether there is a full asymmetry or not.
 > >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: dmaengine@vger.kernel.org
-> > Cc: linux-clk@vger.kernel.org
-> > Cc: linux-crypto@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: bhupesh.linux@gmail.com
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >   drivers/crypto/qce/core.c | 14 ++++++++++++++
-> >   1 file changed, 14 insertions(+)
-> >
-> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> > index 3e742e9911fa..9915b184f780 100644
-> > --- a/drivers/crypto/qce/core.c
-> > +++ b/drivers/crypto/qce/core.c
-> > @@ -222,6 +222,20 @@ static int qce_crypto_probe(struct platform_device *pdev)
-> >               return ret;
-> >
-> >       qce->mem_path = of_icc_get(qce->dev, "memory");
-> > +
-> > +     /* Check for NULL return path, which indicates
-> > +      * interconnect API is disabled or the "interconnects"
-> > +      * DT property is missing.
-> > +      */
-> > +     if (!qce->mem_path)
-> > +             /* On some qcom parts, the qce crypto block needs interconnect
-> > +              * paths to be configured before the registers can be accessed.
-> > +              * Check here for the same.
-> > +              */
-> > +             if (!strcmp(of_id->compatible, "qcom,ipq6018-qce") ||
-> > +                 !strcmp(of_id->compatible, "qcom,sdm845-qce"))
-> > +                     return -EPROBE_DEFER;
-> > +
->
-> Hi Bhupesh,
->
-> You don't need this here. of_icc_get returns -EPROBE_DEFER if the
-> interconnect provider is not initialized yet.
+> 
+> That should be doable by counting non-empty intersections between each
+> entry->cpumask and the cpu_online_mask in _classify().
+> 
+> That said I'm afraid cpufreq module loading forces us to dynamically update
+> those masks, as you've done. The first domain build could see asymmetry
+> without cpufreq loaded, and a later one with cpufreq loaded would need an
+> update. Conversely, as much of a fringe case as it is, we'd have to cope
+> with the cpufreq module being unloaded later on...
+> 
+> :(
+So it got me thinking that maybe we could actually make it more
+'update-on-demand' and use the cpufreq policy notifier to trigger the update.
+I could try to draft smth generic enough to make it ... relatively easy to adapt
+to different archs case needed.
+Any thoughts ?
 
-Thanks for the review.
-
-Yes, I finished testing all the possible combinations with qce, bam
-dma and interconnect drivers compiled as modules v/s as static parts
-of the kernel and we don't need this extra check for the interconnect
-here. We should be fine with checking just the qce_dma_request()
-return value and returning early in the qce probe() flow if no dma
-channels are yet available from the bam dma driver.
-
-I have made the changes in v3 and will post it for review shortly.
-
-Regards,
-Bhupesh
+---
+BR
+B.
