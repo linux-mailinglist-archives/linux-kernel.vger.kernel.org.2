@@ -2,190 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C91387B7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9E6387B7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235392AbhEROoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
+        id S235827AbhEROo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234650AbhEROoI (ORCPT
+        with ESMTP id S235547AbhEROo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:44:08 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F368C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:42:50 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso1657541pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:42:50 -0700 (PDT)
+        Tue, 18 May 2021 10:44:28 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450EFC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:43:10 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g24so5621168pji.4
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:43:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b3DMt2F3yR1S8LhJiSdAhlPcYPUp2f9kxGSREUS+xFY=;
-        b=hrKuPisLxc8CgXd9G6ghQ6FBg4IJtnIX7kOnnpJojVxnuLnLTdp7lfi3kHnxK9dz0+
-         v+gfHV/vAujTUbSAZUMzTXMkFkS06vjZKGpIpbupOJ0CQzyDiB9qEwDG9gBbYwNjwB4d
-         4/Sf3gbt9uYnMkgDd4vJ4RAplDIoz0rt8sNrsoWPDkLadtBj8lQDAplYoqANqXtRTxxB
-         9Uu38T6Ax0+/znT5ex5MKtIhfm+jjo6r6sCDk+5rEXrNF0dGBmJcQq2cfYm3W6e2PAML
-         +bdCUUIS3x+IPNlwCBnwGWge0nKbJeB1ZSjS4dDyFnma0emXEP+2ooA+vRqNc1qdezZ/
-         xQ/Q==
+        d=heitbaum.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PDDjAQxR5YHDKeoXEoU6CBD/UdRBnwhueJQ+IO7Oa+c=;
+        b=BeagsnSWZ3B+AFYGz0mTpWBDbs5hk1PNAI5gKYREw9w4Uv0kSnfsG/PXa2YLJi7YKm
+         C2PD+R5KeVMeBXAuuatnXPfghphlcGR/vf5IKUkcE32iH8qZ/PvHCQjfQVgRwkpg2ShG
+         RMgnuXKLKy7JZ60Kn4zNwnSTSPMnf19YqPheU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b3DMt2F3yR1S8LhJiSdAhlPcYPUp2f9kxGSREUS+xFY=;
-        b=tiGBPzEUmGLUQYRJZCiRYwgE3UWO2MOx0ocVbx1eQ847vxo7h2Zv6Rrvsjeq7ObJKq
-         aMA/zKssk79eR4+7e3xspUuHSTfMOpxwK6ke6frikW0XlzHSY6OeZlpXzGtPwFiHsRrK
-         p0Ls5JZLva94/X/R0NRMC969WCWw+hw3I9743OJUVXOjdyUY/6TdnTe5aaQl67ostkBz
-         AJZwI061bRtL5B4QJh0uFdIwaWZePw45XgNthAjj/bLjxNBDOtf8bCDDP5O9maQKr4dN
-         1naU2+OfIDCMc4njTn54WiaEh2F+xCBcO7E2n4wM4CIVHI2Izv9hGRTacEbmHv/3wfNN
-         zCRw==
-X-Gm-Message-State: AOAM532cWE2N/QRBoschznMeJ5mwMjRwq5L57WG/2iBT4KrSTlk7IOAC
-        0AdYCperP3SOB2doh4FFdFZb2u4CmDrI9VsxMI8wZg==
-X-Google-Smtp-Source: ABdhPJz6HxDCbuqQzC6kuOWJ/Z4wKk+gxz+hYXy740zOMxhRX6CV1XDh880v/3VEjfhmUyaukGJCeYabreKqbOSypV0=
-X-Received: by 2002:a17:90a:e391:: with SMTP id b17mr1086553pjz.75.1621348970117;
- Tue, 18 May 2021 07:42:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PDDjAQxR5YHDKeoXEoU6CBD/UdRBnwhueJQ+IO7Oa+c=;
+        b=Zj8km8rBwk0uhDq+EVR3IyPHoBw+eYYhF3PpTZ/wOl0nB6BkGiRx43r6IDioMVjz1h
+         JKQpyfVdMLCRnGn06/CB5lw6K0YxqRr1JXWo3CTKCdixTHLerQeB+ZGODefNVrw2+SM+
+         r8zo60xY/PBETUZ04DT7bSIwNeYclUMOogywzsj6OoiZpZQciTafMd4vQgEqeV22Rlqr
+         AuR/mvypVVieeV4OBRMNEGX+S9dLyxc3do+opAHrJARf1OD+alkmP7ht+EXlruLxNrjk
+         nw3CFCupoDIn3F0dl2pJwxsdv7CqwgiQiVAm+GLyiyQgTdQI+lUmz2Sy5huDmMgAf3I8
+         r2gw==
+X-Gm-Message-State: AOAM530HAUKNL++nKvkAP3Vuh4ESiuMK/+O9utIFRU8F5awaTUDu5Dpx
+        nwIYDbprRCkGZNbwfegSOFD78pwDxrDNd0wP4Zo=
+X-Google-Smtp-Source: ABdhPJyjsCiUrz25zqnCbsfCy6jzEVS99dsbelq4TUGjGEr+RAB7ZdHcFrzUSNMQHUnDYCc7lQAoxw==
+X-Received: by 2002:a17:90a:6446:: with SMTP id y6mr4229405pjm.135.1621348989821;
+        Tue, 18 May 2021 07:43:09 -0700 (PDT)
+Received: from e07e318d3c06 (110-175-118-133.tpgi.com.au. [110.175.118.133])
+        by smtp.gmail.com with ESMTPSA id y190sm13610030pgd.24.2021.05.18.07.43.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 May 2021 07:43:09 -0700 (PDT)
+Date:   Tue, 18 May 2021 14:43:02 +0000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc2 review
+Message-ID: <20210518144257.GA41@e07e318d3c06>
+References: <20210518135831.445321364@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210518141927.24795-1-dafna.hirschfeld@collabora.com> <20210518141927.24795-2-dafna.hirschfeld@collabora.com>
-In-Reply-To: <20210518141927.24795-2-dafna.hirschfeld@collabora.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 18 May 2021 16:42:38 +0200
-Message-ID: <CAG3jFyuu7Vvd3QtKpfVg+uSFB9JJmKOAovxpX_gs=BoBUYuamw@mail.gmail.com>
-Subject: Re: [PATCH v6 RESEND 1/2] dt-bindings: display: add google,cros-ec-anx7688.yaml
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-mediatek@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>, megous@megous.com,
-        linux-usb@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        enric.balletbo@collabora.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, kernel@collabora.com,
-        dafna3@gmail.com, Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518135831.445321364@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Series applied to drm-misc-next.
+On Tue, May 18, 2021 at 03:59:03PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.5 release.
+> There are 363 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 20 May 2021 13:57:42 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-https://cgit.freedesktop.org/drm/drm-misc/commit/?id=b67f7599c90ae36a5174826132f7690fa13d462c
+On Tiger Lake x86_64 kernel:
+- tested ok.
 
-On Tue, 18 May 2021 at 16:19, Dafna Hirschfeld
-<dafna.hirschfeld@collabora.com> wrote:
->
-> ChromeOS EC ANX7688 is a display bridge that converts HDMI 2.0 to
-> DisplayPort 1.3 Ultra-HDi (4096x2160p60). It is an Analogix ANX7688 chip
-> which is connected to and operated by the ChromeOS Embedded Controller
-> (See google,cros-ec.yaml). It is accessed using I2C tunneling through
-> the EC and therefore its node should be a child of an EC I2C tunnel node
-> (See google,cros-ec-i2c-tunnel.yaml).
->
-> ChromOS EC ANX7688 is found on Acer Chromebook R13 (elm)
->
-> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bridge/google,cros-ec-anx7688.yaml        | 82 +++++++++++++++++++
->  1 file changed, 82 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/google,cros-ec-anx7688.yaml
->
-> diff --git a/Documentation/devicetree/bindings/display/bridge/google,cros-ec-anx7688.yaml b/Documentation/devicetree/bindings/display/bridge/google,cros-ec-anx7688.yaml
-> new file mode 100644
-> index 000000000000..9f7cc6b757cb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/google,cros-ec-anx7688.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/google,cros-ec-anx7688.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ChromeOS EC ANX7688 HDMI to DP Converter through Type-C Port
-> +
-> +maintainers:
-> +  - Nicolas Boichat <drinkcat@chromium.org>
-> +  - Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> +
-> +description: |
-> +  ChromeOS EC ANX7688 is a display bridge that converts HDMI 2.0 to
-> +  DisplayPort 1.3 Ultra-HDi (4096x2160p60). It is an Analogix ANX7688 chip
-> +  which is connected to and operated by the ChromeOS Embedded Controller
-> +  (See google,cros-ec.yaml). It is accessed using I2C tunneling through
-> +  the EC and therefore its node should be a child of an EC I2C tunnel node
-> +  (See google,cros-ec-i2c-tunnel.yaml).
-> +
-> +properties:
-> +  compatible:
-> +    const: google,cros-ec-anx7688
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: I2C address of the device.
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Video port for HDMI input.
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: USB Type-c connector.
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c_tunnel_b: i2c-tunnel1 {
-> +        compatible = "google,cros-ec-i2c-tunnel";
-> +        google,remote-bus = <1>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        anx7688: anx7688@2c {
-> +            compatible = "google,cros-ec-anx7688";
-> +            reg = <0x2c>;
-> +
-> +            ports {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                port@0 {
-> +                    reg = <0>;
-> +                    anx7688_in: endpoint {
-> +                        remote-endpoint = <&hdmi0_out>;
-> +                    };
-> +                };
-> +                port@1 {
-> +                    reg = <1>;
-> +                    anx7688_out: endpoint {
-> +                        remote-endpoint = <&typec_connector>;
-> +                    };
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> --
-> 2.17.1
->
+Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
+-- 
+Rudi
