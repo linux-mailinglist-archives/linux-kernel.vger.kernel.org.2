@@ -2,117 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF342387AAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A146B387ABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343619AbhEROJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244785AbhEROJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:09:02 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE0FC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:07:43 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id v6so11727536ljj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ow2wyNdh8+R7ARRDomTcJEbmQCdAIpt9ovmT4PgzrPU=;
-        b=Suu9SlFUO1cccxn8PAskTRJbdD6hSPAOTK4UAG0SmfQlJI+nzEU7uqN2NjZ7V+fz7o
-         RQ/VOep7gSNjAInEkwjhMu2Er5AnRBUJW7RI7yPJ8PTJ6wUjaUyx4aghAWtCGtnWwNDi
-         fWZ6NSoE5o36QgwZZtmkfV7vucmdGYMLEpJEuJNKBs/odLqB6Pb1zn7c/xlU7qBzYXOg
-         YTHEUYlJ/ILfe+0tY8euHToUNxQWSWk5ubU9BL5AweXX0UfgaMAJu1kPmRZORAnOezj7
-         xwpcjN146ubr6jEabSoCXIIIRvRBkQxVNw90ugRt245wYCrVb3OodSdDa76pgpS4CUSf
-         8GCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ow2wyNdh8+R7ARRDomTcJEbmQCdAIpt9ovmT4PgzrPU=;
-        b=Szu0Uod8whY6AGAjVC/fSFN9hZIqGsE8ets4kq+b31xyavXYK9k8jQWT9+hPKOOkV+
-         MqUEMKuHT1uGxABUTDSMiDqUgepOmxMCwaieBqPhSawU8ETzFctYrfrSJmtDJ3qrmgWu
-         9s1I7ZNyYk2TGKOqPuQF19JD5lncy26cCDweUNh6hOtD4STr2CxL1j8569c6U+zCgfbe
-         hsQetPq7OhkAdFT4SaPcJuODGr+heMT5oCZKcNhHHPSn6EKnpDyU6j3dkK5ad06aoDMt
-         j1Nja/qO/Lv+UzEsUXKSHBkWWnJcDDaFY55ubz97osVInvy8EXwcK0ad/jVhcgs8VVxf
-         Kv3g==
-X-Gm-Message-State: AOAM532+D7mItwaZhebyPf70pzpj3xUVa6uofQc8JqpE2wCZ87r10/JJ
-        eO/av/J9WpJoQSBbvFzgH10g3g==
-X-Google-Smtp-Source: ABdhPJzbJcXoc7QDCM7Cj6m32IgC47xj05fl/UacJqsf0szAy8dR6eken7FJz9gqDBV6rWp8y6CExA==
-X-Received: by 2002:a2e:b5a7:: with SMTP id f7mr4239030ljn.509.1621346862067;
-        Tue, 18 May 2021 07:07:42 -0700 (PDT)
-Received: from pdkmachine.localdomain (91-123-191-9.gigainternet.pl. [91.123.191.9])
-        by smtp.gmail.com with ESMTPSA id a26sm904940lfi.255.2021.05.18.07.07.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 07:07:41 -0700 (PDT)
-From:   Patryk Duda <pdk@semihalf.com>
-To:     Benson Leung <bleung@chromium.org>
-Cc:     Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com, Patryk Duda <pdk@semihalf.com>
-Subject: [PATCH v2] platform/chrome: cros_ec_proto: Send command again when timeout occurs
-Date:   Tue, 18 May 2021 16:07:58 +0200
-Message-Id: <20210518140758.29318-1-pdk@semihalf.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210518090925.15480-1-pdk@semihalf.com>
-References: <20210518090925.15480-1-pdk@semihalf.com>
+        id S1349824AbhEROLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:11:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:52878 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349703AbhEROL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 10:11:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E0B4D6E;
+        Tue, 18 May 2021 07:10:08 -0700 (PDT)
+Received: from [10.57.66.179] (unknown [10.57.66.179])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F007C3F73B;
+        Tue, 18 May 2021 07:10:06 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
+To:     Mark Kettenis <mark.kettenis@xs4all.nl>, devicetree@vger.kernel.org
+Cc:     maz@kernel.org, arnd@arndb.de,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210516211851.74921-1-mark.kettenis@xs4all.nl>
+ <20210516211851.74921-2-mark.kettenis@xs4all.nl>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <be890747-5f6d-8a7d-3e20-db58463028b1@arm.com>
+Date:   Tue, 18 May 2021 15:10:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210516211851.74921-2-mark.kettenis@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
-hasn't initialized SPI yet. This can happen because FPMCU is restarted
-during system boot and kernel can send message in short window
-eg. between sysjump to RW and SPI initialization.
+On 2021-05-16 22:18, Mark Kettenis wrote:
+> From: Mark Kettenis <kettenis@openbsd.org>
+> 
+> The Apple PCIe host controller is a PCIe host controller with
+> multiple root ports present in Apple ARM SoC platforms, including
+> various iPhone and iPad devices and the "Apple Silicon" Macs.
+> 
+> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> ---
+>   .../devicetree/bindings/pci/apple,pcie.yaml   | 150 ++++++++++++++++++
+>   MAINTAINERS                                   |   1 +
+>   2 files changed, 151 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> new file mode 100644
+> index 000000000000..af3c9f64e380
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> @@ -0,0 +1,150 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple PCIe host controller
+> +
+> +maintainers:
+> +  - Mark Kettenis <kettenis@openbsd.org>
+> +
+> +description: |
+> +  The Apple PCIe host controller is a PCIe host controller with
+> +  multiple root ports present in Apple ARM SoC platforms, including
+> +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: apple,t8103-pcie
+> +      - const: apple,pcie
+> +
+> +  reg:
+> +    minItems: 4
+> +    maxItems: 6
+> +
+> +  reg-names:
+> +    minItems: 4
+> +    maxItems: 7
+> +    items:
+> +      - const: ecam
+> +      - const: rc
+> +      - const: phy
+> +      - const: port0
+> +      - const: port1
+> +      - const: port2
+> +
+> +  ranges:
+> +    minItems: 2
+> +    maxItems: 2
+> +
+> +  interrupts:
+> +    minItems: 3
+> +    maxItems: 3
+> +
+> +  msi-ranges:
+> +    description:
+> +      A list of pairs <intid span>, where "intid" is the first
+> +      interrupt number that can be used as an MSI, and "span" the size
+> +      of that range.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> +    items:
+> +      minItems: 2
+> +      maxItems: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - bus-range
+> +  - interrupts
+> +  - msi-controller
+> +  - msi-parent
+> +  - msi-ranges
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/apple-aic.h>
+> +    #include <dt-bindings/pinctrl/apple.h>
+> +
+> +    soc {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      pcie0: pcie@690000000 {
+> +        compatible = "apple,t8103-pcie", "apple,pcie";
+> +        device_type = "pci";
+> +
+> +        reg = <0x6 0x90000000 0x0 0x1000000>,
+> +              <0x6 0x80000000 0x0 0x4000>,
+> +              <0x6 0x8c000000 0x0 0x4000>,
+> +              <0x6 0x81000000 0x0 0x8000>,
+> +              <0x6 0x82000000 0x0 0x8000>,
+> +              <0x6 0x83000000 0x0 0x8000>;
+> +        reg-names = "ecam", "rc", "phy", "port0", "port1", "port2";
+> +
+> +        interrupt-parent = <&aic>;
+> +        interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +        msi-controller;
+> +        msi-parent = <&pcie0>;
+> +        msi-ranges = <704 32>;
+> +
+> +        iommu-map = <0x0 &dart0 0x8000 0x100>,
+> +                    <0x100 &dart0 0x100 0x100>,
+> +                    <0x200 &dart1 0x200 0x100>,
+> +                    <0x300 &dart2 0x300 0x100>;
+> +        iommu-map-mask = <0xff00>;
 
-Cc: <stable@vger.kernel.org> # 4.4+
-Signed-off-by: Patryk Duda <pdk@semihalf.com>
----
-Fingerprint MCU is rebooted during system startup by AP firmware (coreboot).
-During cold boot kernel can query FPMCU in a window just after jump to RW
-section of firmware but before SPI is initialized. The window was
-shortened to <1ms, but it can't be eliminated completly.
+This doesn't quite add up - if the mask is ignoring the bottom 8 bits, 
+then each of those map entries is describing one single ID mapping, not 256.
 
-Communication with FPMCU (and all devices based on EC) is bi-directional.
-When kernel sends message, EC will send EC_SPI* status codes. When EC is
-not able to process command one of bytes will be eg. EC_SPI_NOT_READY.
-This mechanism won't work when SPI is not initailized on EC side. In fact,
-buffer is filled with 0xFF bytes, so from kernel perspective device is not
-responding. To avoid this problem, we can query device once again. We are
-already waiting EC_MSG_DEADLINE_MS for response, so we can send command
-immediately.
+> +        bus-range = <0 7>;
 
-Best regards,
-Patryk
-v1 -> v2
-- Removed message about timeout
- drivers/platform/chrome/cros_ec_proto.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Given that the iommu-map only covers buses 0-3, what happens to traffic 
+from buses 4-7?
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index aa7f7aa77297..a7404d69b2d3 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -279,6 +279,15 @@ static int cros_ec_host_command_proto_query(struct cros_ec_device *ec_dev,
- 	msg->insize = sizeof(struct ec_response_get_protocol_info);
- 
- 	ret = send_command(ec_dev, msg);
-+	/*
-+	 * Send command once again when timeout occurred.
-+	 * Fingerprint MCU (FPMCU) is restarted during system boot which
-+	 * introduces small window in which FPMCU won't respond for any
-+	 * messages sent by kernel. There is no need to wait before next
-+	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
-+	 */
-+	if (ret == -ETIMEDOUT)
-+		ret = send_command(ec_dev, msg);
- 
- 	if (ret < 0) {
- 		dev_dbg(ec_dev->dev,
--- 
-2.31.1.751.gd2f1c929bd-goog
+Robin.
 
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
+> +                 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
+> +
+> +        clocks = <&pcie_core_clk>, <&pcie_aux_clk>, <&pcie_ref_clk>;
+> +        pinctrl-0 = <&pcie_pins>;
+> +        pinctrl-names = "default";
+> +
+> +        pci@0,0 {
+> +          device_type = "pci";
+> +          reg = <0x0 0x0 0x0 0x0 0x0>;
+> +          reset-gpios = <&pinctrl_ap 152 0>;
+> +          max-link-speed = <2>;
+> +
+> +          #address-cells = <3>;
+> +          #size-cells = <2>;
+> +          ranges;
+> +        };
+> +
+> +        pci@1,0 {
+> +          device_type = "pci";
+> +          reg = <0x800 0x0 0x0 0x0 0x0>;
+> +          reset-gpios = <&pinctrl_ap 153 0>;
+> +          max-link-speed = <2>;
+> +
+> +          #address-cells = <3>;
+> +          #size-cells = <2>;
+> +          ranges;
+> +        };
+> +
+> +        pci@2,0 {
+> +          device_type = "pci";
+> +          reg = <0x1000 0x0 0x0 0x0 0x0>;
+> +          reset-gpios = <&pinctrl_ap 33 0>;
+> +          max-link-speed = <1>;
+> +
+> +          #address-cells = <3>;
+> +          #size-cells = <2>;
+> +          ranges;
+> +        };
+> +      };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7327c9b778f1..789d79315485 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1654,6 +1654,7 @@ C:	irc://chat.freenode.net/asahi-dev
+>   T:	git https://github.com/AsahiLinux/linux.git
+>   F:	Documentation/devicetree/bindings/arm/apple.yaml
+>   F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+> +F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
+>   F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+>   F:	arch/arm64/boot/dts/apple/
+>   F:	drivers/irqchip/irq-apple-aic.c
+> 
