@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B923876DA
+	by mail.lfdr.de (Postfix) with ESMTP id 793B33876DB
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348635AbhERKq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:46:57 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:56200 "EHLO mail.skyhub.de"
+        id S1348651AbhERKrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:47:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56856 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348624AbhERKqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348114AbhERKqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 May 2021 06:46:49 -0400
-Received: from zn.tnic (p200300ec2f0ae20067192df7af4aebb0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e200:6719:2df7:af4a:ebb0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 624A51EC01A8;
-        Tue, 18 May 2021 12:45:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621334724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=rdxWhvramxY856CMW4AScLuyJ9Po7Sk21r5YjR+qMxQ=;
-        b=eceG3+gGdIIDxssqhT97mwkGW+VZpYrBShWX4iKkX/kBpt+2B/wylevpzAZ0LKyqMwk9In
-        P0CLgp2r+7B4PkEf5Gmc9aWXjzXf0tX+dlgn9XrjKgHf78KOA5ylXlTWKg7XFq1NtsDvX2
-        K06zbBXDp7VOJPhHNlJXKA2cnVD9Lgs=
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6F7C6AFBD;
+        Tue, 18 May 2021 10:45:24 +0000 (UTC)
+Subject: Re: [PATCH v10 22/33] mm/filemap: Add __folio_lock_or_retry
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-23-willy@infradead.org>
+ <76184de4-4ab9-0f04-ab37-8637f4b22566@suse.cz>
+Message-ID: <ccd527b4-de71-82a6-d86a-2d3abc75d2b9@suse.cz>
 Date:   Tue, 18 May 2021 12:45:24 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 06/20] x86/sev: Define SNP guest request NAE
- events
-Message-ID: <YKOaxBBAB/BJZmbY@zn.tnic>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-7-brijesh.singh@amd.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <76184de4-4ab9-0f04-ab37-8637f4b22566@suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210430121616.2295-7-brijesh.singh@amd.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 07:16:02AM -0500, Brijesh Singh wrote:
-> Version 2 of the GHCB specification added the support for SNP guest
-> request NAE events. The SEV-SNP guests will use this event to request
-> the attestation report. See the GHCB specification for more details.
+On 5/18/21 12:38 PM, Vlastimil Babka wrote:
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -1623,20 +1623,18 @@ static int __folio_lock_async(struct folio *folio, struct wait_page_queue *wait)
+>>  
+>>  /*
+>>   * Return values:
+>> - * 1 - page is locked; mmap_lock is still held.
+>> - * 0 - page is not locked.
+>> + * 1 - folio is locked; mmap_lock is still held.
+>> + * 0 - folio is not locked.
+>>   *     mmap_lock has been released (mmap_read_unlock(), unless flags had both
+>>   *     FAULT_FLAG_ALLOW_RETRY and FAULT_FLAG_RETRY_NOWAIT set, in
+>>   *     which case mmap_lock is still held.
+>>   *
+>>   * If neither ALLOW_RETRY nor KILLABLE are set, will always return 1
+>> - * with the page locked and the mmap_lock unperturbed.
+>> + * with the folio locked and the mmap_lock unperturbed.
+>>   */
+>> -int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
+>> +int __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
+>>  			 unsigned int flags)
+>>  {
+>> -	struct folio *folio = page_folio(page);
+>> -
+>>  	if (fault_flag_allow_retry_first(flags)) {
+>>  		/*
+>>  		 * CAUTION! In this case, mmap_lock is not released
 > 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/uapi/asm/svm.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
-> index f7bf12cad58c..7a45aa284530 100644
-> --- a/arch/x86/include/uapi/asm/svm.h
-> +++ b/arch/x86/include/uapi/asm/svm.h
-> @@ -109,6 +109,8 @@
->  #define SVM_VMGEXIT_SET_AP_JUMP_TABLE		0
->  #define SVM_VMGEXIT_GET_AP_JUMP_TABLE		1
->  #define SVM_VMGEXIT_SNP_PAGE_STATE_CHANGE	0x80000010
-> +#define SVM_VMGEXIT_SNP_GUEST_REQUEST		0x80000011
-> +#define SVM_VMGEXIT_SNP_EXT_GUEST_REQUEST	0x80000012
+> A bit later in this branch, 'page' is accessed, but it no longer exists. And
+> thus as expected, it doesn't compile. Assuming it's fixed later, but
+> bisectability etc...
 
-Why does this need the "VMGEXIT" *and* "SNP" prefixes?
-
-Why not simply:
-
-SVM_VMGEXIT_GUEST_REQ
-SVM_VMGEXIT_EXT_GUEST_REQ
-
-like the rest of the VMGEXIT defines in there?
-
-
->  #define SVM_VMGEXIT_HYPERVISOR_FEATURES		0x8000fffd
->  #define SVM_VMGEXIT_UNSUPPORTED_EVENT		0x8000ffff
->  
-> @@ -218,6 +220,8 @@
->  	{ SVM_VMGEXIT_AP_HLT_LOOP,	"vmgexit_ap_hlt_loop" }, \
->  	{ SVM_VMGEXIT_AP_JUMP_TABLE,	"vmgexit_ap_jump_table" }, \
->  	{ SVM_VMGEXIT_SNP_PAGE_STATE_CHANGE,	"vmgexit_page_state_change" }, \
-> +	{ SVM_VMGEXIT_SNP_GUEST_REQUEST,	"vmgexit_snp_guest_request" }, \
-> +	{ SVM_VMGEXIT_SNP_EXT_GUEST_REQUEST,	"vmgexit_snp_extended_guest_request" }, \
->  	{ SVM_VMGEXIT_HYPERVISOR_FEATURES,	"vmgexit_hypervisor_feature" }, \
->  	{ SVM_EXIT_ERR,         "invalid_guest_state" }
-
-Ditto.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Also, the switch from 'page' to &folio->page in there should probably have been
+done already in "[PATCH v10 20/33] mm/filemap: Add folio_lock_killable", not in
+this patch?
