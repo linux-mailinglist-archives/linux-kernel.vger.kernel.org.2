@@ -2,212 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A60387833
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7CB38783A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348941AbhERL7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:59:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3584 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348936AbhERL7n (ORCPT
+        id S232938AbhERMBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:01:36 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13248 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348925AbhERMBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:59:43 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkvZx4X4vzsRnJ;
-        Tue, 18 May 2021 19:55:37 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 19:58:22 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 19:58:21 +0800
-Subject: Re: [RFC PATCH v3 6/9] hw/arm/virt-acpi-build: Use possible cpus in
- generation of MADT
-To:     Salil Mehta <salil.mehta@huawei.com>
-CC:     Peter Maydell <peter.maydell@linaro.org>,
-        Andrew Jones <drjones@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Shannon Zhao <shannon.zhaosl@gmail.com>,
-        "Alistair Francis" <alistair.francis@wdc.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "qemu-arm@nongnu.org" <qemu-arm@nongnu.org>,
-        "Paolo Bonzini" <pbonzini@redhat.com>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@redhat.com>,
-        yangyicong <yangyicong@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
-        zhukeqian <zhukeqian1@huawei.com>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <20210516102900.28036-1-wangyanan55@huawei.com>
- <20210516102900.28036-7-wangyanan55@huawei.com>
- <6d3c643dc9174f8199ea9422f9e995e5@huawei.com>
- <14284387-dcf4-cfb2-127c-5d1e1d0ecb79@huawei.com>
- <82d006dab8b64e658f205246abc850c2@huawei.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <d99a32e6-99f7-6977-5f74-0d9f9a06b5ea@huawei.com>
-Date:   Tue, 18 May 2021 19:58:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 18 May 2021 08:01:35 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IBlY8m058093;
+        Tue, 18 May 2021 08:00:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=fDqI/9Bf4nbAzLJhSZmnuMVCjOZ+SR/1c4d5fB4+Kgw=;
+ b=L/3EKFH7Dd2mJQ4vxiQX/fJaE1NCtB/pby1J1B0tylVMrvjDCTwlNNSjJHC4dxnp3L3a
+ 7cjNkOzLI2A7Luo1trHdnIMrnAmwfZLD3v/RVhVlqTv634S+KnCzQw9qBCxdnLqPPue7
+ fzV1QPGeRQPkSKdHDnKXfgjHgKEuAnXHbRN6FTlLMGpMJjaxwuM+bAl6E0/GhI6JAWks
+ FoHiMmj6of2Cf1X8RLhWXoJv/31fxFeXxz0gqzrhanLZJuAzxv1yF1VJ8hW660oxHt59
+ q9uFDq7rN7m9x3qaTLE0aAGdoCMqSv9MVOIiW4LLYztFoAlOJZ8ZxaN9OyMhW/0kM8CF bA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38md14g8h2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 08:00:16 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IBr4Ws095044;
+        Tue, 18 May 2021 08:00:15 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38md14g8ej-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 08:00:15 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IBwH4J000902;
+        Tue, 18 May 2021 12:00:13 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 38mceh80f2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 12:00:13 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IC0Aew39518640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 12:00:10 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20873A4040;
+        Tue, 18 May 2021 12:00:10 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C98AA4081;
+        Tue, 18 May 2021 12:00:09 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.37.27])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 18 May 2021 12:00:09 +0000 (GMT)
+Subject: Re: [PATCH v1 01/11] KVM: s390: pv: leak the ASCE page when destroy
+ fails
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
+ <20210517200758.22593-2-imbrenda@linux.ibm.com>
+ <13cb02d1-df3b-7994-8a31-99aacfd15566@linux.ibm.com>
+ <20210518124027.48f36caa@ibm-vm>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <62e16545-d078-6d91-2370-e4e5677306c7@linux.ibm.com>
+Date:   Tue, 18 May 2021 14:00:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <82d006dab8b64e658f205246abc850c2@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210518124027.48f36caa@ibm-vm>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VWvI3ObC1yZIO9X-rdR8eWOQirAD2PrH
+X-Proofpoint-ORIG-GUID: wD2Tqk0huFotGSIbvIukuAjMqMMKGU6f
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 clxscore=1015 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105180082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/5/18 14:47, Salil Mehta wrote:
->> From: wangyanan (Y)
->> Sent: Tuesday, May 18, 2021 6:03 AM
->>
->> Hi Salil,
->>
->> On 2021/5/18 1:07, Salil Mehta wrote:
->>>> From: Qemu-arm
->> [mailto:qemu-arm-bounces+salil.mehta=huawei.com@nongnu.org]
->>>> On Behalf Of Yanan Wang
->>>> Sent: Sunday, May 16, 2021 11:29 AM
->>>> To: Peter Maydell <peter.maydell@linaro.org>; Andrew Jones
->>>> <drjones@redhat.com>; Michael S . Tsirkin <mst@redhat.com>; Igor Mammedov
->>>> <imammedo@redhat.com>; Shannon Zhao <shannon.zhaosl@gmail.com>; Alistair
->>>> Francis <alistair.francis@wdc.com>; David Gibson
->>>> <david@gibson.dropbear.id.au>; qemu-devel@nongnu.org; qemu-arm@nongnu.org
->>>> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>; zhukeqian
->>>> <zhukeqian1@huawei.com>; yangyicong <yangyicong@huawei.com>; Zengtao (B)
->>>> <prime.zeng@hisilicon.com>; Wanghaibin (D) <wanghaibin.wang@huawei.com>;
->>>> yuzenghui <yuzenghui@huawei.com>; Paolo Bonzini <pbonzini@redhat.com>;
->>>> Philippe Mathieu-Daudé <philmd@redhat.com>
->>>> Subject: [RFC PATCH v3 6/9] hw/arm/virt-acpi-build: Use possible cpus in
->>>> generation of MADT
->>>>
->>>> When building ACPI tables regarding CPUs we should always build
->>>> them for the number of possible CPUs, not the number of present
->>>> CPUs. So we create gicc nodes in MADT for possible cpus and then
->>>> ensure only the present CPUs are marked ENABLED. Furthermore, it
->>>> also needed if we are going to support CPU hotplug in the future.
->>> Hi Yanan,
->>> Yes, these changes are part of the QEMU patch-set I floated last year.
+On 5/18/21 12:40 PM, Claudio Imbrenda wrote:
+> On Tue, 18 May 2021 12:26:51 +0200
+> Janosch Frank <frankja@linux.ibm.com> wrote:
+> 
+>> On 5/17/21 10:07 PM, Claudio Imbrenda wrote:
+>>> When the destroy configuration UVC fails, the page pointed to by the
+>>> ASCE of the VM becomes poisoned, and, to avoid issues it must not be
+>>> used again.
 >>>
->>> Link: https://www.mail-archive.com/qemu-devel@nongnu.org/msg712018.html
->> Yes, I noticed this. Thanks!
->>> Perhaps I am missing something, but how this patch is related to the vcpu
->>> topology support?
->> No related actually. But this patch together with patch 5 aim to provide
->> complete information (all cpus including enabled and the others) to guest,
->> which will be more consistent with requirement in ACPI spec.
->
-> Well, if it is not related to the cpu topology support then this and other
-> similar patches included with the same line of thought should not be
-> part of this patch-set.
->
-> I am already working with ARM folks in this regard.
-Hi Salil,
-
-I'm planning to pack this part into a separate patchset and may repost
-it another time, given that there are still some issues to solve.
-
-Thanks,
-Yanan
-> Thanks
->
->> We don't consider cpu hotplug at all in this patch, but it indeed pave way
->> for cpu hotplug in the future.
+>>> Since the page becomes in practice unusable, we set it aside and
+>>> leak it.  
 >>
->> Thanks,
->> Yanan
->>> Thanks
+>> I think we need something a bit more specific.
+>>
+>> On creation of a protected guest the top most level of page tables are
+>> marked by the Ultravisor and can only be used as top level page tables
+>> for the protected guest that was created. If another protected guest
+>> would re-use those pages for its top level page tables the UV would
+>> throw errors.
+>>
+>> When a destroy fails the UV will not remove the markings so these
+>> pages are basically unusable since we can't guarantee that they won't
+>> be used for a guest ASCE in the future.
+>>
+>> Hence we choose to leak those pages in the very unlikely event that a
+>> destroy fails.
+> 
+> it's more than that. the top level page, once marked, also cannot be
+> used as backing for the virtual and real memory areas donated with the
+> create secure configuration and create secure cpu UVCs.
+> 
+> and there might also other circumstances in which that page cannot be
+> used that I am not aware of
+> 
+
+Even more reason to document it :)
+
+>>
+>> LGTM
+>>
 >>>
->>>> Co-developed-by: Andrew Jones <drjones@redhat.com>
->>>> Signed-off-by: Andrew Jones <drjones@redhat.com>
->>>> Co-developed-by: Ying Fang <fangying1@huawei.com>
->>>> Signed-off-by: Ying Fang <fangying1@huawei.com>
->>>> Co-developed-by: Yanan Wang <wangyanan55@huawei.com>
->>>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->>>> ---
->>>>    hw/arm/virt-acpi-build.c | 29 +++++++++++++++++++++++++----
->>>>    1 file changed, 25 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/hw/arm/virt-acpi-build.c b/hw/arm/virt-acpi-build.c
->>>> index a2d8e87616..4d64aeb865 100644
->>>> --- a/hw/arm/virt-acpi-build.c
->>>> +++ b/hw/arm/virt-acpi-build.c
->>>> @@ -481,6 +481,9 @@ build_madt(GArray *table_data, BIOSLinker *linker,
->>>> VirtMachineState *vms)
->>>>        const int *irqmap = vms->irqmap;
->>>>        AcpiMadtGenericDistributor *gicd;
->>>>        AcpiMadtGenericMsiFrame *gic_msi;
->>>> +    MachineClass *mc = MACHINE_GET_CLASS(vms);
->>>> +    const CPUArchIdList *possible_cpus =
->>>> mc->possible_cpu_arch_ids(MACHINE(vms));
->>>> +    bool pmu;
->>>>        int i;
->>>>
->>>>        acpi_data_push(table_data, sizeof(AcpiMultipleApicTable));
->>>> @@ -491,11 +494,21 @@ build_madt(GArray *table_data, BIOSLinker *linker,
->>>> VirtMachineState *vms)
->>>>        gicd->base_address = cpu_to_le64(memmap[VIRT_GIC_DIST].base);
->>>>        gicd->version = vms->gic_version;
->>>>
->>>> -    for (i = 0; i < MACHINE(vms)->smp.cpus; i++) {
->>>> +    for (i = 0; i < possible_cpus->len; i++) {
->>>>            AcpiMadtGenericCpuInterface *gicc = acpi_data_push(table_data,
->>>>                                                               sizeof(*gicc));
->>>>            ARMCPU *armcpu = ARM_CPU(qemu_get_cpu(i));
->>>>
->>>> +        /*
->>>> +         * PMU should have been either implemented for all CPUs or not,
->>>> +         * so we only get information from the first CPU, which could
->>>> +         * represent the others.
->>>> +         */
->>>> +        if (i == 0) {
->>>> +            pmu = arm_feature(&armcpu->env, ARM_FEATURE_PMU);
->>>> +        }
->>>> +        assert(!armcpu || arm_feature(&armcpu->env, ARM_FEATURE_PMU) ==
->> pmu);
->>>> +
->>>>            gicc->type = ACPI_APIC_GENERIC_CPU_INTERFACE;
->>>>            gicc->length = sizeof(*gicc);
->>>>            if (vms->gic_version == 2) {
->>>> @@ -504,11 +517,19 @@ build_madt(GArray *table_data, BIOSLinker *linker,
->>>> VirtMachineState *vms)
->>>>                gicc->gicv_base_address =
->>>> cpu_to_le64(memmap[VIRT_GIC_VCPU].base);
->>>>            }
->>>>            gicc->cpu_interface_number = cpu_to_le32(i);
->>>> -        gicc->arm_mpidr = cpu_to_le64(armcpu->mp_affinity);
->>>> +        gicc->arm_mpidr = cpu_to_le64(possible_cpus->cpus[i].arch_id);
->>>>            gicc->uid = cpu_to_le32(i);
->>>> -        gicc->flags = cpu_to_le32(ACPI_MADT_GICC_ENABLED);
->>>>
->>>> -        if (arm_feature(&armcpu->env, ARM_FEATURE_PMU)) {
->>>> +        /*
->>>> +         * ACPI spec says that LAPIC entry for non present CPU may be
->>>> +         * omitted from MADT or it must be marked as disabled. Here we
->>>> +         * choose to also keep the disabled ones in MADT.
->>>> +         */
->>>> +        if (possible_cpus->cpus[i].cpu != NULL) {
->>>> +            gicc->flags = cpu_to_le32(ACPI_MADT_GICC_ENABLED);
->>>> +        }
->>>> +
->>>> +        if (pmu) {
->>>>                gicc->performance_interrupt =
->> cpu_to_le32(PPI(VIRTUAL_PMU_IRQ));
->>>>            }
->>>>            if (vms->virt) {
->>>> --
->>>> 2.19.1
->>>>
->>> .
+>>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+>>> ---
+>>>  arch/s390/kvm/pv.c | 53
+>>> +++++++++++++++++++++++++++++++++++++++++++++- 1 file changed, 52
+>>> insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+>>> index 813b6e93dc83..e0532ab725bf 100644
+>>> --- a/arch/s390/kvm/pv.c
+>>> +++ b/arch/s390/kvm/pv.c
+>>> @@ -150,6 +150,55 @@ static int kvm_s390_pv_alloc_vm(struct kvm
+>>> *kvm) return -ENOMEM;
+>>>  }
+>>>  
+>>> +/*
+>>> + * Remove the topmost level of page tables from the list of page
+>>> tables of
+>>> + * the gmap.
+>>> + * This means that it will not be freed when the VM is torn down,
+>>> and needs
+>>> + * to be handled separately by the caller, unless an intentional
+>>> leak is
+>>> + * intended.
+>>> + */
+>>> +static void kvm_s390_pv_remove_old_asce(struct kvm *kvm)
+>>> +{
+>>> +	struct page *old;
+>>> +
+>>> +	old = virt_to_page(kvm->arch.gmap->table);
+>>> +	list_del(&old->lru);
+>>> +	/* in case the ASCE needs to be "removed" multiple times */
+>>> +	INIT_LIST_HEAD(&old->lru);  
+>>
+>> ?
+>>
+>>> +}
+>>> +
+>>> +/*
+>>> + * Try to replace the current ASCE with another equivalent one.
+>>> + * If the allocation of the new top level page table fails, the
+>>> ASCE is not
+>>> + * replaced.
+>>> + * In any case, the old ASCE is removed from the list, therefore
+>>> the caller
+>>> + * has to make sure to save a pointer to it beforehands, unless an
+>>> + * intentional leak is intended.
+>>> + */
+>>> +static int kvm_s390_pv_replace_asce(struct kvm *kvm)
+>>> +{
+>>> +	unsigned long asce;
+>>> +	struct page *page;
+>>> +	void *table;
+>>> +
+>>> +	kvm_s390_pv_remove_old_asce(kvm);
+>>> +
+>>> +	page = alloc_pages(GFP_KERNEL_ACCOUNT, CRST_ALLOC_ORDER);
+>>> +	if (!page)
+>>> +		return -ENOMEM;
+>>> +	list_add(&page->lru, &kvm->arch.gmap->crst_list);
+>>> +
+>>> +	table = page_to_virt(page);
+>>> +	memcpy(table, kvm->arch.gmap->table, 1UL <<
+>>> (CRST_ALLOC_ORDER + PAGE_SHIFT)); +
+>>> +	asce = (kvm->arch.gmap->asce & ~PAGE_MASK) | __pa(table);
+>>> +	WRITE_ONCE(kvm->arch.gmap->asce, asce);
+>>> +	WRITE_ONCE(kvm->mm->context.gmap_asce, asce);
+>>> +	WRITE_ONCE(kvm->arch.gmap->table, table);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>>  /* this should not fail, but if it does, we must not free the
+>>> donated memory */ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16
+>>> *rc, u16 *rrc) {
+>>> @@ -164,9 +213,11 @@ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16
+>>> *rc, u16 *rrc) atomic_set(&kvm->mm->context.is_protected, 0);
+>>>  	KVM_UV_EVENT(kvm, 3, "PROTVIRT DESTROY VM: rc %x rrc %x",
+>>> *rc, *rrc); WARN_ONCE(cc, "protvirt destroy vm failed rc %x rrc
+>>> %x", *rc, *rrc);
+>>> -	/* Inteded memory leak on "impossible" error */
+>>> +	/* Intended memory leak on "impossible" error */
+>>>  	if (!cc)
+>>>  		kvm_s390_pv_dealloc_vm(kvm);
+>>> +	else
+>>> +		kvm_s390_pv_replace_asce(kvm);
+>>>  	return cc ? -EIO : 0;
+>>>  }
+>>>  
+>>>   
+>>
+> 
+
