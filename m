@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3076387532
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B646387534
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347945AbhERJeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:34:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58860 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241318AbhERJea (ORCPT
+        id S1347970AbhERJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347946AbhERJeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:34:30 -0400
-Message-Id: <20210518093117.968251441@linutronix.de>
+        Tue, 18 May 2021 05:34:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FAFC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:33:14 -0700 (PDT)
+Message-Id: <20210518093118.128250213@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621330391;
+        s=2020; t=1621330392;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Nj6vVjQqhP20P/gc7ktwvGxf5OKwxxGe/sIC+rIcp3c=;
-        b=0Ww2cxu0KQvgdejUDgHRbCQMZQYzGAtqLgK6A28Z72YRAbk4EKwcBv/R/52PCF9D90iXXT
-        nFgMzZsAqnHNJc244WQJ+9AZc2CUdEuwwvR5QUIH3M2nF50sQcJJVWW8HACf1f6yC9b2Ug
-        XE6D0euzEv+fp697UWUPxrg9HUWnDPHQwBYjnkmzl07xQagOem79yzA74arMylSfwl9ogM
-        aK2k8W3Xqo/zNIhzJMBzYOITPSExUL81XoL9Qo24sACoBLbunNNWDyg7zF5t0W8sEdCJEE
-        fxy2qmwE+imZ4lg6y1IsL885oyDA6fhLnChDEiJCDOVS01KvNuseOzjdWphHzw==
+        bh=xgxWrmDeDwFcZVosRdGu2aXTryt71ywlqfvU/UpOvTE=;
+        b=lmUWDic0xKRoYIFopWB7A5EyT7AMa3perXn0V85VCgBB73ufYcJ/Yf+/54p+dH/0pvTxtI
+        TKkCRirJG8MnweUAwIaEtGZI43VM9X6VGJQZxHIZ+K+ntMWkSaXMj2BxrgQ1pL4lLo/F5B
+        u+rKiXKD2RBdlxFEhuAWqQsHKkmCow/4D0R/nnnf29NXWH2sIFyuHzYb5rdqmPJL+HmQW+
+        wEm6xwK3y/9R9c8b/Xvzocj9+8wZVYTds68/GU+DQPevBWytHE+2xJqmtZDq+iMRLfqp1W
+        h/GsxctofoVUccyFxL58Q/YhKmzBXYdxT/Byzwzj5Dtnr3bYkEr17BfMSabQ3Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621330391;
+        s=2020e; t=1621330392;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Nj6vVjQqhP20P/gc7ktwvGxf5OKwxxGe/sIC+rIcp3c=;
-        b=+qUMQh1JPwTjvi/Cti9zbqXNRf1StZxGS8wUmeYzDtKJRV+6Fv9ew9u9mNWL55PT77/YaH
-        +VAow57A0OtDeRDw==
-Date:   Tue, 18 May 2021 11:17:26 +0200
+        bh=xgxWrmDeDwFcZVosRdGu2aXTryt71ywlqfvU/UpOvTE=;
+        b=fL0TTVh71wwKJteJdTCRD0y/xcTIiGkv9htd38SnVIvvPjjjrMBXdS440T5gGl0PYVPS2h
+        KCEYGC15Tb77QuDw==
+Date:   Tue, 18 May 2021 11:17:27 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,7 +51,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [patch 1/8] genirq: Export affinity setter for modules
+Subject: [patch 2/8] perf/arm-ccn: Use irq_set_affinity()
 References: <20210518091725.046774792@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,112 +60,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Perf modules abuse irq_set_affinity_hint() to set the affinity of system
-PMU interrupts just because irq_set_affinity() was not exported.
+The driver uses irq_set_affinity_hint() to set the affinity for the PMU
+interrupts, which relies on the undocumented side effect that this function
+actually sets the affinity under the hood.
 
-The fact that irq_set_affinity_hint() actually sets the affinity is a
-non-documented side effect and the name is clearly saying it's a hint.
+Setting an hint is clearly not a guarantee and for these PMU interrupts an
+affinity hint, which is supposed to guide userspace for setting affinity,
+is beyond pointless, because the affinity of these interrupts cannot be
+modified from user space.
 
-To clean this up, export the real affinity setter.
+Aside of that the error checks are bogus because the only error which is
+returned from irq_set_affinity_hint() is when there is no irq descriptor
+for the interrupt number, but not when the affinity set fails. That's on
+purpose because the hint can point to an offline CPU.
+
+Replace the mindless abuse with irq_set_affinity().
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- include/linux/interrupt.h |   35 ++---------------------------------
- kernel/irq/manage.c       |   33 ++++++++++++++++++++++++++++++++-
- 2 files changed, 34 insertions(+), 34 deletions(-)
+ drivers/perf/arm-ccn.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -322,39 +322,8 @@ struct irq_affinity_desc {
- 
- extern cpumask_var_t irq_default_affinity;
- 
--/* Internal implementation. Use the helpers below */
--extern int __irq_set_affinity(unsigned int irq, const struct cpumask *cpumask,
--			      bool force);
--
--/**
-- * irq_set_affinity - Set the irq affinity of a given irq
-- * @irq:	Interrupt to set affinity
-- * @cpumask:	cpumask
-- *
-- * Fails if cpumask does not contain an online CPU
-- */
--static inline int
--irq_set_affinity(unsigned int irq, const struct cpumask *cpumask)
--{
--	return __irq_set_affinity(irq, cpumask, false);
--}
--
--/**
-- * irq_force_affinity - Force the irq affinity of a given irq
-- * @irq:	Interrupt to set affinity
-- * @cpumask:	cpumask
-- *
-- * Same as irq_set_affinity, but without checking the mask against
-- * online cpus.
-- *
-- * Solely for low level cpu hotplug code, where we need to make per
-- * cpu interrupts affine before the cpu becomes online.
-- */
--static inline int
--irq_force_affinity(unsigned int irq, const struct cpumask *cpumask)
--{
--	return __irq_set_affinity(irq, cpumask, true);
--}
-+extern int irq_set_affinity(unsigned int irq, const struct cpumask *cpumask);
-+extern int irq_force_affinity(unsigned int irq, const struct cpumask *cpumask);
- 
- extern int irq_can_set_affinity(unsigned int irq);
- extern int irq_select_affinity(unsigned int irq);
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -441,7 +441,8 @@ int irq_update_affinity_desc(unsigned in
- 	return ret;
+--- a/drivers/perf/arm-ccn.c
++++ b/drivers/perf/arm-ccn.c
+@@ -1211,7 +1211,7 @@ static int arm_ccn_pmu_offline_cpu(unsig
+ 	perf_pmu_migrate_context(&dt->pmu, cpu, target);
+ 	dt->cpu = target;
+ 	if (ccn->irq)
+-		WARN_ON(irq_set_affinity_hint(ccn->irq, cpumask_of(dt->cpu)));
++		WARN_ON(irq_set_affinity(ccn->irq, cpumask_of(dt->cpu)));
+ 	return 0;
  }
  
--int __irq_set_affinity(unsigned int irq, const struct cpumask *mask, bool force)
-+static int __irq_set_affinity(unsigned int irq, const struct cpumask *mask,
-+			      bool force)
- {
- 	struct irq_desc *desc = irq_to_desc(irq);
- 	unsigned long flags;
-@@ -456,6 +457,36 @@ int __irq_set_affinity(unsigned int irq,
- 	return ret;
- }
+@@ -1291,7 +1291,7 @@ static int arm_ccn_pmu_init(struct arm_c
  
-+/**
-+ * irq_set_affinity - Set the irq affinity of a given irq
-+ * @irq:	Interrupt to set affinity
-+ * @cpumask:	cpumask
-+ *
-+ * Fails if cpumask does not contain an online CPU
-+ */
-+int irq_set_affinity(unsigned int irq, const struct cpumask *cpumask)
-+{
-+	return __irq_set_affinity(irq, cpumask, false);
-+}
-+EXPORT_SYMBOL_GPL(irq_set_affinity);
-+
-+/**
-+ * irq_force_affinity - Force the irq affinity of a given irq
-+ * @irq:	Interrupt to set affinity
-+ * @cpumask:	cpumask
-+ *
-+ * Same as irq_set_affinity, but without checking the mask against
-+ * online cpus.
-+ *
-+ * Solely for low level cpu hotplug code, where we need to make per
-+ * cpu interrupts affine before the cpu becomes online.
-+ */
-+int irq_force_affinity(unsigned int irq, const struct cpumask *cpumask)
-+{
-+	return __irq_set_affinity(irq, cpumask, true);
-+}
-+EXPORT_SYMBOL_GPL(irq_force_affinity);
-+
- int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
- {
- 	unsigned long flags;
+ 	/* Also make sure that the overflow interrupt is handled by this CPU */
+ 	if (ccn->irq) {
+-		err = irq_set_affinity_hint(ccn->irq, cpumask_of(ccn->dt.cpu));
++		err = irq_set_affinity(ccn->irq, cpumask_of(ccn->dt.cpu));
+ 		if (err) {
+ 			dev_err(ccn->dev, "Failed to set interrupt affinity!\n");
+ 			goto error_set_affinity;
+@@ -1325,8 +1325,6 @@ static void arm_ccn_pmu_cleanup(struct a
+ 
+ 	cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_CCN_ONLINE,
+ 					    &ccn->dt.node);
+-	if (ccn->irq)
+-		irq_set_affinity_hint(ccn->irq, NULL);
+ 	for (i = 0; i < ccn->num_xps; i++)
+ 		writel(0, ccn->xp[i].base + CCN_XP_DT_CONTROL);
+ 	writel(0, ccn->dt.base + CCN_DT_PMCR);
 
