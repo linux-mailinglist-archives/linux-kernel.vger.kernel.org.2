@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421EB386EEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD63386EED
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345700AbhERBL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:11:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345593AbhERBL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:11:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F8DD613CE;
-        Tue, 18 May 2021 01:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621300210;
-        bh=wj0QOsfNOBtX701n2BDKmsB94m/zURdKlOYZuzfEqXs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CH557ljF79DrPWmJ1/0B841wSJjwrNkKqZS1m4/7e3bLQPys7sbQIuzBEAd6/d1XA
-         DCw/JHgUNrmfjwxQZjIKHT9fru7yAAsGgKS+oWvb0j6JqLcSdjJYV3VAybP3kmDr8J
-         9Lpe3NtcK648ssB2dY2+jtWegg1mnVy4WdVHiHrG96ixYVId6AjFdcbW5x77ACxMFP
-         b+nXL7a/Jkj/m2Oda069Kc+eG0eAAlS3RY2qkXsjU1Se7cn1NlITpPgptgaQANqrRc
-         YWU8mgjxcCaJLq6qbxvLy6ThZXV206D6K/qF16w/LniW6HLQnkfdg1WqAwDmeXc9Ph
-         HAeGwtJ6oPMyA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniel Wagner <dwagner@suse.de>,
-        Enzo Matsumiya <ematsumiya@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 2/2] nvmet: seset ns->file when open fails
-Date:   Mon, 17 May 2021 21:10:06 -0400
-Message-Id: <20210518011006.1486026-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210518011006.1486026-1-sashal@kernel.org>
-References: <20210518011006.1486026-1-sashal@kernel.org>
+        id S1345647AbhERBLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:11:51 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:43930 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345592AbhERBL0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 21:11:26 -0400
+Received: by mail-oi1-f170.google.com with SMTP id j75so8205574oih.10;
+        Mon, 17 May 2021 18:10:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7VRx1KOGTd/mlN9tivtVrwdAcsGI2VRzEg2JPb/ZPK4=;
+        b=mU3Dq29JGDKOMCkjlmPmkp5wm7QI329MKXp+DDQhFNXHMRqI1ys4+xRsAm+cX8EMjb
+         Qynu5rR4xDR6lBfyZDrlOwERPjL2Ou7hG+atW2LpcgO2oGzuIawv1z69Kp4yC959uoi4
+         ZvMDfAjV4eNIK4+vOBH6X8LBMJS1NB/OPDUfM2tlnjcyHgEhxjCxtYWIY4hMjb1mMZwg
+         qZ+TCnoB7kIlIh+Z5Yh3BkYH/FGzviJGWrkgbqYHQs7X8G+jNC2Ws4qnQPPCkGjjWdDR
+         JxofuQjVunr82spCHemvHb2xEtJGl7XwVAlSEn1iV7jiQxNOVBB6RoQGFtyC2DcPEFLo
+         86bQ==
+X-Gm-Message-State: AOAM531wGvdgUBe029vdpwJHgqj8yVipTno6Kj8u6tcXbgfYmZMGM3rI
+        iaHR1PwUooM++Eez8DUd4g==
+X-Google-Smtp-Source: ABdhPJxJwaQqKnuSbG53ylbD2hOPzHyziLLftz7JZWGc73yw7BNscf0h/pFLTwqkn/9oQux8MjpoLw==
+X-Received: by 2002:aca:da8b:: with SMTP id r133mr1949783oig.36.1621300208883;
+        Mon, 17 May 2021 18:10:08 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z4sm1046825oib.40.2021.05.17.18.10.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 18:10:08 -0700 (PDT)
+Received: (nullmailer pid 3571898 invoked by uid 1000);
+        Tue, 18 May 2021 01:10:07 -0000
+Date:   Mon, 17 May 2021 20:10:07 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-arm-msm@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: msm: Add SAW2 for APQ8026 and
+ MSM8226
+Message-ID: <20210518011007.GA3571838@robh.at.kernel.org>
+References: <20210513150150.51464-1-bartosz.dudziak@snejp.pl>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513150150.51464-1-bartosz.dudziak@snejp.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
+On Thu, 13 May 2021 17:01:49 +0200, Bartosz Dudziak wrote:
+> Add the dt-binding compatible in the SPM AVS Wrapper 2 (SAW2) for the
+> APQ8026 and MSM8226 SoC platforms.
+> 
+> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+> ---
+>  Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-[ Upstream commit 85428beac80dbcace5b146b218697c73e367dcf5 ]
-
-Reset the ns->file value to NULL also in the error case in
-nvmet_file_ns_enable().
-
-The ns->file variable points either to file object or contains the
-error code after the filp_open() call. This can lead to following
-problem:
-
-When the user first setups an invalid file backend and tries to enable
-the ns, it will fail. Then the user switches over to a bdev backend
-and enables successfully the ns. The first received I/O will crash the
-system because the IO backend is chosen based on the ns->file value:
-
-static u16 nvmet_parse_io_cmd(struct nvmet_req *req)
-{
-	[...]
-
-	if (req->ns->file)
-		return nvmet_file_parse_io_cmd(req);
-
-	return nvmet_bdev_parse_io_cmd(req);
-}
-
-Reported-by: Enzo Matsumiya <ematsumiya@suse.com>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/nvme/target/io-cmd-file.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
-index 39d972e2595f..ad6263cf7303 100644
---- a/drivers/nvme/target/io-cmd-file.c
-+++ b/drivers/nvme/target/io-cmd-file.c
-@@ -38,9 +38,11 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
- 
- 	ns->file = filp_open(ns->device_path, flags, 0);
- 	if (IS_ERR(ns->file)) {
--		pr_err("failed to open file %s: (%ld)\n",
--				ns->device_path, PTR_ERR(ns->file));
--		return PTR_ERR(ns->file);
-+		ret = PTR_ERR(ns->file);
-+		pr_err("failed to open file %s: (%d)\n",
-+			ns->device_path, ret);
-+		ns->file = NULL;
-+		return ret;
- 	}
- 
- 	ret = vfs_getattr(&ns->file->f_path,
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
