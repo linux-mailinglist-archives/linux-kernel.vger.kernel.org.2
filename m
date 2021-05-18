@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287CD38783D
+	by mail.lfdr.de (Postfix) with ESMTP id 74A7A38783E
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbhERMBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
+        id S234279AbhERMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233864AbhERMBp (ORCPT
+        with ESMTP id S233219AbhERMBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:01:45 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A102DC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:27 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w12so3055629edx.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:27 -0700 (PDT)
+        Tue, 18 May 2021 08:01:50 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2351FC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:31 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w12so3055917edx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:references
          :user-agent:mime-version:content-transfer-encoding;
-        bh=PisMFgDdWXg2D3g0jXTIbfoTlrtA5Bc6PgufqTlUJ3k=;
-        b=MqBiadAlRjQ+P3OF0k9Cy7JFMJt8VybUe7GLaF2IsKEVH7+LNVVVLbmX5EMJf0bQye
-         qC1RNKolkB4ZalO6a8Yqmsv6zMMSJrQ8fJkzTVfUv32fjYU5Q1wAHQvBclXlWpl5zFDm
-         T6KJ1eATFovCDnwk+NfDCFFvQXj1CM02u7Yz3dyePEpZxYQRp2zmWKpnVNsF7UwarFOF
-         AS7wBqdxFERlsaL88zlglNy3j0KyOR686fbZ5YAlnDPiOqfmTggXoVEKmfqi3L8aAwr/
-         tUufjio6hb4qXxdX1vuQwd7Pc0gQ4kZYSghFAH3jikiYbtSXv8SVvmYXf0CIVA9uVizf
-         ELcA==
+        bh=+wvJ54BU7HaSAbDHZZnLTmKsrugDkKfADEFCDdDLU/g=;
+        b=mtOD9U2P99BgcuWsxPUDFrQEzL0pBowgdqLXaBvKYyABsXslVn+qe/fvtJwkSrHoFm
+         LInALbTUXbNuGMYnjiC0TzXqJ30QAMUkUXfz2duNpNSs4McPoOwIFKF3xeWvh57CaQIb
+         zybI27mYxT2jkEG85Af0TUMuz3ucp/T1kF+PtMhUAAVtPJAwcmYszmQvA7Ol5CjkAe5p
+         5O76t091zLvqSwLbcXG57kMBaqOjOum5Cqg5/oA79tqjm5+xikJr9IjbKD/86wXGlhmK
+         VYffWtzVN/aFBePSStrU2JjqyPpVW3ima0WXGj8YGb+WXIUXKvUeK73GhMBjQIC/BXxv
+         jSKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
          :in-reply-to:references:user-agent:mime-version
          :content-transfer-encoding;
-        bh=PisMFgDdWXg2D3g0jXTIbfoTlrtA5Bc6PgufqTlUJ3k=;
-        b=Hd/ATEDQC1D2/c0S4bnod+NoI2R8154gjq27xGotIP/B6E0fXfZMflx9DLNlS7oiy0
-         EggUKuC1uCaxJXzPjfoTD9PhaRrMH2SqHhrxOrA5lnMs8xvsDEpM9Gb6sh1E22onkwZm
-         pb6pb9+JGi3KfjXRKpN4JjwWxuocf0wXAT912TjYUI2QRP+2mQDZRbnEPNipqsZJF6v7
-         u5nyCENzyS4TknoVPhf194Yi1qS/uGKnOA5M9w3e6K73EXiWtSpEtc8tXQ0qAIvZvQAq
-         KwAcfcLpRGdmo7XSbXOrpb4Nuit8h2J8qVCSJerpUa/vTegQnNRqtVW0G3iqiqqwsdjQ
-         E2GA==
-X-Gm-Message-State: AOAM532cXUoONBvbU86ATM5WdFpFaQek9VeAtLsAaZ19/B/4BRcJpA5Q
-        1polttGzEUghEPoSlIdiSpA=
-X-Google-Smtp-Source: ABdhPJxLo+M80/grTifcuCNRJOhcvly6Eke9zFoHQ9M75IumFKAJOT/sxl9eBtTWuypoq3YAjhd11g==
-X-Received: by 2002:a05:6402:50c6:: with SMTP id h6mr6629269edb.327.1621339226276;
-        Tue, 18 May 2021 05:00:26 -0700 (PDT)
+        bh=+wvJ54BU7HaSAbDHZZnLTmKsrugDkKfADEFCDdDLU/g=;
+        b=aMdWOjY3HaBTXgEa7ZfpDvrZqAoYwXVRT6YjrKMq+HPMT90rndy7HNjahkwXMF7cbz
+         vnrjU/fMwZaKJHwficdy9jVmvFTI8cSfwS4adjHjpBZbHhQ3wlUHCfIB8Bti69C6okXb
+         rTn7PkjFhJnti0cYaKeWczbJKpGhMEF9NYE42zmMSSqurv8m8xaRpGIpSunTFI5nJrCL
+         NZFeJsm1t4V/L5bHz9nAbxCAD08doCzHc3YoB7YvphawNc2E4xEDfN9WOf+bJCce8+4w
+         jj30OgnN9Lm1EWSbaWOW3E5vpxtQc2VHkOdiowUNBOz4BSeyqeRr8GiEibOVMs7Zl/1V
+         /n4A==
+X-Gm-Message-State: AOAM533lcjXkP36iUjD+ubUiSoUJSwKfwfrD56SrImOxFg+4yCbVDvsM
+        a6xmpSlQwnmCYz0LXLfqQ/0=
+X-Google-Smtp-Source: ABdhPJzpFvji9svJQtES6aQiuYBDhl0vur2iSXsIGdRJYnqtAdmLA3sfoMN6ZtQeY9qDTTT9cWuY0g==
+X-Received: by 2002:a05:6402:13c3:: with SMTP id a3mr6723638edx.18.1621339229933;
+        Tue, 18 May 2021 05:00:29 -0700 (PDT)
 Received: from mars.fritz.box ([2a02:8070:b9d:f200:bee0:f4e2:68f9:3d11])
-        by smtp.gmail.com with ESMTPSA id w14sm12990474edj.6.2021.05.18.05.00.25
+        by smtp.gmail.com with ESMTPSA id r25sm12786575edv.78.2021.05.18.05.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 05:00:25 -0700 (PDT)
-Message-ID: <8a8fad66288f38a3dacd5dc23cee62bf3e3e6d5f.camel@googlemail.com>
-Subject: Re: [PATCH v2 1/2] regulator: fan53880: Fix missing n_voltages
- setting
+        Tue, 18 May 2021 05:00:29 -0700 (PDT)
+Message-ID: <d4b936d1de6a1ad6d43fe9070ab5c712851eec52.camel@googlemail.com>
+Subject: Re: [PATCH v2 2/2] regulator: fan53880: Convert to use .probe_new
 From:   Christoph Fritz <chf.fritz@googlemail.com>
 Reply-To: chf.fritz@googlemail.com
 To:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Date:   Tue, 18 May 2021 14:00:25 +0200
-In-Reply-To: <20210517105325.1227393-1-axel.lin@ingics.com>
+Date:   Tue, 18 May 2021 14:00:28 +0200
+In-Reply-To: <20210517105325.1227393-2-axel.lin@ingics.com>
 References: <20210517105325.1227393-1-axel.lin@ingics.com>
+         <20210517105325.1227393-2-axel.lin@ingics.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
@@ -68,45 +68,40 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, 2021-05-17 at 18:53 +0800, Axel Lin wrote:
-> Fixes: e6dea51e2d41 ("regulator: fan53880: Add initial support")
+> Use the new .probe_new for fan53880.
+> 
 > Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
 Acked-by: Christoph Fritz <chf.fritz@googlemail.com>
 
 > ---
-> v2: address Christoph' comment
->  drivers/regulator/fan53880.c | 3 +++
->  1 file changed, 3 insertions(+)
+> v2: no change
+>  drivers/regulator/fan53880.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/regulator/fan53880.c b/drivers/regulator/fan53880.c
-> index e83eb4fb1876..1684faf82ed2 100644
+> index 1684faf82ed2..f3268b4d5066 100644
 > --- a/drivers/regulator/fan53880.c
 > +++ b/drivers/regulator/fan53880.c
-> @@ -51,6 +51,7 @@ static const struct regulator_ops fan53880_ops = {
->  		      REGULATOR_LINEAR_RANGE(800000, 0xf, 0x73, 25000),	\
->  		},							\
->  		.n_linear_ranges = 2,					\
-> +		.n_voltages =	   0x74,				\
->  		.vsel_reg =	   FAN53880_LDO ## _num ## VOUT,	\
->  		.vsel_mask =	   0x7f,				\
->  		.enable_reg =	   FAN53880_ENABLE,			\
-> @@ -76,6 +77,7 @@ static const struct regulator_desc
-> fan53880_regulators[] = {
->  		      REGULATOR_LINEAR_RANGE(600000, 0x1f, 0xf7, 12500),
->  		},
->  		.n_linear_ranges = 2,
-> +		.n_voltages =	   0xf8,
->  		.vsel_reg =	   FAN53880_BUCKVOUT,
->  		.vsel_mask =	   0x7f,
->  		.enable_reg =	   FAN53880_ENABLE,
-> @@ -95,6 +97,7 @@ static const struct regulator_desc
-> fan53880_regulators[] = {
->  		      REGULATOR_LINEAR_RANGE(3000000, 0x4, 0x70, 25000),
->  		},
->  		.n_linear_ranges = 2,
-> +		.n_voltages =	   0x71,
->  		.vsel_reg =	   FAN53880_BOOSTVOUT,
->  		.vsel_mask =	   0x7f,
->  		.enable_reg =	   FAN53880_ENABLE_BOOST,
+> @@ -114,8 +114,7 @@ static const struct regmap_config fan53880_regmap = {
+>  	.max_register = FAN53880_ENABLE_BOOST,
+>  };
+>  
+> -static int fan53880_i2c_probe(struct i2c_client *i2c,
+> -			     const struct i2c_device_id *id)
+> +static int fan53880_i2c_probe(struct i2c_client *i2c)
+>  {
+>  	struct regulator_config config = { };
+>  	struct regulator_dev *rdev;
+> @@ -177,7 +176,7 @@ static struct i2c_driver fan53880_regulator_driver =
+> {
+>  		.name = "fan53880",
+>  		.of_match_table	= of_match_ptr(fan53880_dt_ids),
+>  	},
+> -	.probe = fan53880_i2c_probe,
+> +	.probe_new = fan53880_i2c_probe,
+>  	.id_table = fan53880_i2c_id,
+>  };
+>  module_i2c_driver(fan53880_regulator_driver);
 
 
