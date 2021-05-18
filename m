@@ -2,150 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B384387493
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281E5387498
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347683AbhERJFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:05:01 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48610 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241978AbhERJFA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:05:00 -0400
-X-UUID: 8c1b65f0da6a4294a839ce39e8d245cb-20210518
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Ff8SSG849fNHcYzr/rvAKGbCBzDghp42qUMZJWngw28=;
-        b=uUUVSHeHO6sDyUYj/SoN3EkPgv0kWg5lICXYkb9fk3zi2ODHvynO/WGXTOxrD2wUCTxcRHnMLif6fkeDi1zwb3t/Nv7dyKNhRWJKzEUqC+l+1jxoHQbOrprpWXdCgIBcMkul2JyTu3bVhlNJUkjZ7ulRUzjr3HolWlnOp2cfmPc=;
-X-UUID: 8c1b65f0da6a4294a839ce39e8d245cb-20210518
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2135526858; Tue, 18 May 2021 17:03:38 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 18 May 2021 17:03:36 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 18 May 2021 17:03:36 +0800
-Message-ID: <1621328616.14194.12.camel@mtkswgap22>
-Subject: Re: REGRESSION: kernel BUG at arch/arm64/kernel/alternative.c:157!
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     John Stultz <john.stultz@linaro.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        "Amit Pundir" <amit.pundir@linaro.org>
-Date:   Tue, 18 May 2021 17:03:36 +0800
-In-Reply-To: <CANcMJZDOMZVj6WVEe+7b--Rwkdg1-WVFfHkVm4KR-ykS4LxQFQ@mail.gmail.com>
-References: <CANcMJZDOMZVj6WVEe+7b--Rwkdg1-WVFfHkVm4KR-ykS4LxQFQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1347695AbhERJGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:06:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347688AbhERJGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:06:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5B7160720;
+        Tue, 18 May 2021 09:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621328683;
+        bh=nb4BuGb/+is5eMdI1zcg2hwUDGXDghWOPkp+2GA/Oog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pu/INOpRPuIyDr9Xfol25gKEvgbNe894H7CHu0LJfyfDmg6nMCXP7Q1rtmiBUNZWk
+         zitNM9DlTjjq7WLA7RRFiUlhxfOBwXZaYlsI6Rd//3NX80tcEVXXfdzx3XZaPnbfcM
+         Mzs90HhnG91axR2w/innWyseA0oCSmC+TUELaCGE=
+Date:   Tue, 18 May 2021 11:04:40 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nianfu Bai <bnf20061983@gmail.com>
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, nianfu.bai@unisoc.com,
+        ruifeng.zhang1@unisoc.com
+Subject: Re: [PATCH] clocksource/drivers/sprd: Remove the dependency between
+ sprd timer and SPRD arch
+Message-ID: <YKODKHkIAi4mMh6B@kroah.com>
+References: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA1LTE3IGF0IDE0OjUyIC0wNzAwLCBKb2huIFN0dWx0eiB3cm90ZToNCj4g
-V2l0aCB2NS4xMy1yYzIsIEkndmUgYmVlbiBzZWVpbmcgYW4gb2RkIGJvb3QgcmVncmVzc2lvbiB3
-aXRoIHRoZQ0KPiBEcmFnb25Cb2FyZCA4NDVjOg0KDQpJIGFsc28gb2JzZXJ2ZWQgdGhlIHNhbWUg
-aXNzdWUgd2l0aCB2NS4xMy1yYzIgKGJ5IG1lcmdpbmcNCmFuZHJvaWQtbWFpbmxpbmUpLiBIZXJl
-IGlzIG15IGJpc2VjdCByZXN1bHQgc28gZmFyLg0KDQooYmFkKSBjY2QyNWVmY2I0ZmUgTWVyZ2Ug
-dGFnICd2NS4xMy1yYzInIGludG8gYW5kcm9pZC1tYWlubGluZQ0KKGJhZCkgM2Q4NmFlNGZjZGZm
-IE1lcmdlIDI1YTEyOTg3MjZlOSAoIk1lcmdlIHRhZyAndHJhY2UtdjUuMTMtcmMxJyBvZg0KZ2l0
-Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3Jvc3RlZHQvbGludXgt
-dHJhY2UiKSBpbnRvDQphbmRyb2lkLW1haW5saW5lDQooZ29vZCkgODVhZGM4NjBmZGYzIE1lcmdl
-IDZlZmI5NDNiODYxNmUgTGludXggNS4xMy1yYzEgaW50bw0KYW5kcm9pZC1tYWlubGluZQ0KDQoN
-Cj4gDQo+IFVuZm9ydHVuYXRlbHksIHRyeWluZyB0byBiaXNlY3QgaXQgZG93biAodjUuMTMtcmMx
-IHdvcmtzIG9rKSBpcyBnaXZpbmcNCj4gbWUgaW5jb25zaXN0ZW50IHJlc3VsdHMgc28gZmFyLiBJ
-dCBmZWVscyBhIGJpdCBsaWtlIG1heWJlIHNvbWUgY29uZmlnDQo+IG9wdGlvbiBnZXRzIGVuYWJs
-ZWQgbW92aW5nIGZvcndhcmQsIGFuZCB0aGVuIHN0aWNrcyBhcm91bmQgd2hlbiB3ZSBnbw0KPiBi
-YWNrLiAgSSdsbCB0YWtlIGFub3RoZXIgc3dpbmcgYXQgYmlzZWN0aW5nIGl0IGxhdGVyIHRvZGF5
-LCBidXQgSSBoYXZlDQo+IHRvIG1vdmUgb24gdG8gc29tZSBvdGhlciB3b3JrIHJpZ2h0IG5vdywg
-c28gSSBmaWd1cmVkIEknZCBzaGFyZSAod2l0aA0KPiBmb2xrcyB3aG8gYmV0dGVyIGtub3cgdGhl
-IHJlY2VudCBfX2FwcGx5X2FsdGVybmF0aXZlcyBjaGFuZ2VzKSBpbiBjYXNlDQo+IGZvbGtzIGhh
-dmUgYSBiZXR0ZXIgaWRlYToNCj4gDQo+IFsgICAgMC4yNTQzODRdIENQVSBmZWF0dXJlczogZGV0
-ZWN0ZWQ6IFJBUyBFeHRlbnNpb24gU3VwcG9ydA0KPiBbICAgIDAuMjU5OTI4XSBDUFU6IEFsbCBD
-UFUocykgc3RhcnRlZCBhdCBFTDENCj4gWyAgICAwLjI2NDEyN10gYWx0ZXJuYXRpdmVzOiBwYXRj
-aGluZyBrZXJuZWwgY29kZQ0KPiBbICAgIDAuMjY4NjM1XSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJl
-IF0tLS0tLS0tLS0tLS0NCj4gWyAgICAwLjI3MzMwM10ga2VybmVsIEJVRyBhdCBhcmNoL2FybTY0
-L2tlcm5lbC9hbHRlcm5hdGl2ZS5jOjE1NyENCj4gWyAgICAwLjI3OTE5Ml0gSW50ZXJuYWwgZXJy
-b3I6IE9vcHMgLSBCVUc6IDAgWyMxXSBQUkVFTVBUIFNNUA0KPiBbICAgIDAuMjg0NzM2XSBNb2R1
-bGVzIGxpbmtlZCBpbjoNCj4gWyAgICAwLjI4NzgzM10gQ1BVOiAwIFBJRDogMTQgQ29tbTogbWln
-cmF0aW9uLzAgTm90IHRhaW50ZWQNCj4gNS4xMy4wLXJjMi1tYWlubGluZSAjNDUwMQ0KPiBbICAg
-IDAuMjk1NDcyXSBIYXJkd2FyZSBuYW1lOiBUaHVuZGVyY29tbSBEcmFnb25ib2FyZCA4NDVjIChE
-VCkNCj4gWyAgICAwLjMwMTE4Ml0gU3RvcHBlcjogbXVsdGlfY3B1X3N0b3ArMHgwLzB4MWEwIDwt
-DQo+IHN0b3BfbWFjaGluZV9jcHVzbG9ja2VkKzB4MTI4LzB4MTYwDQo+IFsgICAgMC4zMDkwMjBd
-IHBzdGF0ZTogMjA0MDAwYzUgKG56Q3YgZGFJRiArUEFOIC1VQU8gLVRDTyBCVFlQRT0tLSkNCj4g
-WyAgICAwLjMxNTA4Nl0gcGMgOiBfX2FwcGx5X2FsdGVybmF0aXZlcysweDFmMC8weDI3MA0KPiBb
-ICAgIDAuMzE5ODQ3XSBsciA6IF9fYXBwbHlfYWx0ZXJuYXRpdmVzKzB4ZjQvMHgyNzANCj4gWyAg
-ICAwLjMyNDUxNV0gc3AgOiBmZmZmZmZjMDEwMjBiY2EwDQo+IFsgICAgMC4zMjc4NzRdIHgyOTog
-ZmZmZmZmYzAxMDIwYmNhMCB4Mjg6IDAwMDAwMDAwMDAwMDAwYTAgeDI3OiBmZmZmZmZkN2Y1YzEx
-MTI0DQo+IFsgICAgMC4zMzUwODZdIHgyNjogZmZmZmZmZDdmNWMxMTEyOCB4MjU6IDAwMDAwMDAw
-MDAxYjAwMjAgeDI0OiBmZmZmZmZkN2Y3MDBhYjkwDQo+IFsgICAgMC4zNDIyOTddIHgyMzogMDAw
-MDAwMDAwMDAwMDAwMCB4MjI6IGZmZmZmZmMwMTAyMGJkMjAgeDIxOiBmZmZmZmZkN2Y3YmVhMzc0
-DQo+IFsgICAgMC4zNDk1MDhdIHgyMDogZmZmZmZmYzAxMDIwYmQzMCB4MTk6IGZmZmZmZmQ3Zjcy
-MTk0ZmMgeDE4OiBmZmZmZmZmZmZmZmZmZmZmDQo+IFsgICAgMC4zNTY3MThdIHgxNzogZmZmZmZm
-ZDdmN2JkY2U0MCB4MTY6IDAwMDAwMDAwNWM4ZTFiNDMgeDE1OiBmZmZmZmZkN2Y3NmQ5ZDEwDQo+
-IFsgICAgMC4zNjM5MjldIHgxNDogZmZmZmZmYzA5MDIwYjk2NyB4MTM6IGZmZmZmZmMwMTAyMGI5
-NzUgeDEyOiBmZmZmZmZkN2Y3NmQ5ZTMwDQo+IFsgICAgMC4zNzExNDBdIHgxMTogMDAwMDAwMDAw
-NWY1ZTBmZiB4MTA6IGZmZmZmZmMwMTAyMGI4YzAgeDkgOiAwMDAwMDAwMGZmZmZmZmQwDQo+IFsg
-ICAgMC4zNzgzNTBdIHg4IDogNmIyMDY3NmU2OTY4NjM3NCB4NyA6IGZmZmZmZmQ3Zjc5YjkyMzgg
-eDYgOiBjMDAwMDAwMGZmZmY3ZmZmDQo+IFsgICAgMC4zODU1NjBdIHg1IDogMDAwMDAwMDAwMDAw
-MDAwMCB4NCA6IGZmZmZmZmQ3ZjVjMjI4OTggeDMgOiAwMDAwMDAwMDAwMDAwMDEwDQo+IFsgICAg
-MC4zOTI3NzFdIHgyIDogMDAwMDAwMDAwMDAwMDAwNCB4MSA6IDAwMDAwMDAwMDAwMDAwMDAgeDAg
-OiAwMDAwMDAwMDAwMDAwMDNmDQo+IFsgICAgMC4zOTk5ODJdIENhbGwgdHJhY2U6DQo+IFsgICAg
-MC40MDI0NjFdICBfX2FwcGx5X2FsdGVybmF0aXZlcysweDFmMC8weDI3MA0KPiBbICAgIDAuNDA2
-ODczXSAgX19hcHBseV9hbHRlcm5hdGl2ZXNfbXVsdGlfc3RvcCsweGMwLzB4ZTANCj4gWyAgICAw
-LjQxMjA2Ml0gIG11bHRpX2NwdV9zdG9wKzB4YjgvMHgxYTANCj4gWyAgICAwLjQxNTg1MV0gIGNw
-dV9zdG9wcGVyX3RocmVhZCsweGFjLzB4MTIwDQo+IFsgICAgMC40MTk5OTddICBzbXBib290X3Ro
-cmVhZF9mbisweDIwMC8weDIzOA0KPiBbICAgIDAuNDI0MTQ2XSAga3RocmVhZCsweDE0Yy8weDE1
-OA0KPiBbICAgIDAuNDI3NDIzXSAgcmV0X2Zyb21fZm9yaysweDEwLzB4MWMNCj4gWyAgICAwLjQz
-MTA0NV0gQ29kZTogMzk0MDJlNjEgMzk0MDJhNjIgNmIwMTAwNWYgNTRmZmY1MDAgKGQ0MjEwMDAw
-KQ0KPiBbICAgIDAuNDM3MTk5XSAtLS1bIGVuZCB0cmFjZSA1MjNlMTNkOWQ2MGE5OTJkIF0tLS0N
-Cj4gWyAgICAwLjQ0MTg2OF0gbm90ZTogbWlncmF0aW9uLzBbMTRdIGV4aXRlZCB3aXRoIHByZWVt
-cHRfY291bnQgMg0KPiBbICAgIDAuNDQ3NzM5XSBtaWdyYXRpb24vMCAoMTQpIHVzZWQgZ3JlYXRl
-c3Qgc3RhY2sgZGVwdGg6IDEyNDQ4IGJ5dGVzIGxlZnQNCj4gWyAgICAwLjQ1NDU0M10gLS0tLS0t
-LS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+IFsgICAgMC40NTkyMTFdIFdBUk5JTkc6
-IENQVTogMCBQSUQ6IDAgYXQga2VybmVsL3JjdS90cmVlLmM6NjM4DQo+IHJjdV9lcXNfZW50ZXIu
-aXNyYS42MisweDk4LzB4MTM4DQo+IFsgICAgMC40Njc3MzRdIE1vZHVsZXMgbGlua2VkIGluOg0K
-PiBbICAgIDAuNDcwODI2XSBDUFU6IDAgUElEOiAwIENvbW06IHN3YXBwZXIvMCBUYWludGVkOiBH
-ICAgICAgRA0KPiAgIDUuMTMuMC1yYzItbWFpbmxpbmUgIzQ1MDENCj4gWyAgICAwLjQ3OTU5NF0g
-SGFyZHdhcmUgbmFtZTogVGh1bmRlcmNvbW0gRHJhZ29uYm9hcmQgODQ1YyAoRFQpDQo+IFsgICAg
-MC40ODUzMDNdIHBzdGF0ZTogMjA0MDAzYzUgKG56Q3YgREFJRiArUEFOIC1VQU8gLVRDTyBCVFlQ
-RT0tLSkNCj4gWyAgICAwLjQ5MTM2Nl0gcGMgOiByY3VfZXFzX2VudGVyLmlzcmEuNjIrMHg5OC8w
-eDEzOA0KPiBbICAgIDAuNDk2MTIyXSBsciA6IHJjdV9lcXNfZW50ZXIuaXNyYS42MisweDEwLzB4
-MTM4DQo+IFsgICAgMC41MDA4NzhdIHNwIDogZmZmZmZmZDdmNzZkM2U3MA0KPiBbICAgIDAuNTA0
-MjM2XSB4Mjk6IGZmZmZmZmQ3Zjc2ZDNlNzAgeDI4OiBmZmZmZmZkN2Y3NmU5NzgwIHgyNzogMDAw
-MDAwMDAwMDAwMDAwMA0KPiBbICAgIDAuNTExNDQ4XSB4MjY6IDAwMDAwMDAwMDAwMDAwMDAgeDI1
-OiBmZmZmZmZkN2Y3MDdhNDgwIHgyNDogZmZmZmZmZDdmNzJjMTRmMA0KPiBbICAgIDAuNTE4NjYw
-XSB4MjM6IGZmZmZmZmQ3Zjc2ZDkwMDAgeDIyOiBmZmZmZmZkN2Y3ZDRjMDAwIHgyMTogZmZmZmZm
-ZDdmNzZkOTAwMA0KPiBbICAgIDAuNTI1ODcxXSB4MjA6IGZmZmZmZmQ3Zjc2ZTk3ODAgeDE5OiBm
-ZmZmZmY4MGZkNmExMzgwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPiBbICAgIDAuNTMzMDgyXSB4
-MTc6IDAwMDAwMDAwMDAwMDAwMDAgeDE2OiAwMDAwMDAwMDAwMDAwMDBlIHgxNTogZmZmZmZmZDdm
-NzZkOWQxMA0KPiBbICAgIDAuNTQwMjkzXSB4MTQ6IGZmZmZmZmMwOTAyMGI1ZjcgeDEzOiBmZmZm
-ZmZkN2Y3MDEzMGIwIHgxMjogZmZmZmZmZDdmNzZkOWUzMA0KPiBbICAgIDAuNTQ3NTA0XSB4MTE6
-IDAwMDAwMDAwMDVmNWUwZmYgeDEwOiAwMDAwMDAwMDAwMDAwYTEwIHg5IDogZmZmZmZmZDdmNzZk
-M2UwMA0KPiBbICAgIDAuNTU0NzE1XSB4OCA6IGZmZmZmZmQ3Zjc2ZWExZjAgeDcgOiAwMDAwMDAw
-MDAwMDAwMDAwIHg2IDogMDAwMDAwMDBmZmZlZGIzNg0KPiBbICAgIDAuNTYxOTI2XSB4NSA6IDAw
-MDAwMDAwZmZmZmZmZmYgeDQgOiBmZmZmZmZhOTA2M2RlMDAwIHgzIDogMDAwMDAwMDAwMDAwMDAw
-MQ0KPiBbICAgIDAuNTY5MTM2XSB4MiA6IDQwMDAwMDAwMDAwMDAwMDAgeDEgOiBmZmZmZmZkN2Y3
-NmRhNzY4IHgwIDogNDAwMDAwMDAwMDAwMDAwMg0KPiBbICAgIDAuNTc2MzQ3XSBDYWxsIHRyYWNl
-Og0KPiBbICAgIDAuNTc4ODI1XSAgcmN1X2Vxc19lbnRlci5pc3JhLjYyKzB4OTgvMHgxMzgNCj4g
-WyAgICAwLjU4MzIzNl0gIHJjdV9pZGxlX2VudGVyKzB4MTQvMHgyMA0KPiBbICAgIDAuNTg2OTQx
-XSAgZGVmYXVsdF9pZGxlX2NhbGwrMHg0NC8weDFiOA0KPiBbICAgIDAuNTkxMDAzXSAgZG9faWRs
-ZSsweDIwMC8weDJhMA0KPiBbICAgIDAuNTk0Mjc5XSAgY3B1X3N0YXJ0dXBfZW50cnkrMHgyYy8w
-eDUwDQo+IFsgICAgMC41OTgyNTFdICByZXN0X2luaXQrMHhkNC8weGUwDQo+IFsgICAgMC42MDE1
-MjRdICBhcmNoX2NhbGxfcmVzdF9pbml0KzB4MTQvMHgxYw0KPiBbICAgIDAuNjA1NjgwXSAgc3Rh
-cnRfa2VybmVsKzB4NTA0LzB4NTM4DQo+IFsgICAgMC42MDkzODJdIC0tLVsgZW5kIHRyYWNlIDUy
-M2UxM2Q5ZDYwYTk5MmUgXS0tLQ0KPiANCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18NCj4gbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QNCj4gbGlu
-dXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbA0KDQo=
+On Tue, May 11, 2021 at 03:08:45PM +0800, Nianfu Bai wrote:
+> From: Nianfu Bai <nianfu.bai@unisoc.com>
+> 
+> Tick broadcast installed by insmod cannot switch to oneshot mode correctly
+> caused by linux timer framework, need to build in kernel image. SPRD_TIMER
+> has been selected by SPRD arch, we have to enable SPRD arch when we build
+> sprd timer in kernel image, this action conflicts with general kernel image,
+> so we need to remove the dependency between sprd timer and SPRD arch.
 
+This wording is a bit rough to parse.
+
+All you really want to do is take away the fact that ARCH_SPRD is
+required here to turn this off, right?
+
+> 
+> Signed-off-by: Nianfu Bai <nianfu.bai@unisoc.com>
+> Signed-off-by: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+> ---
+>  drivers/clocksource/Kconfig | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index 39aa21d..04b333c 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -447,10 +447,8 @@ config MTK_TIMER
+>  	  Support for Mediatek timer driver.
+>  
+>  config SPRD_TIMER
+> -	bool "Spreadtrum timer driver" if EXPERT
+> +	bool "Spreadtrum timer driver" if COMPILE_TEST
+
+No need for "if COMPILE_TEST" on this line.
+
+>  	depends on HAS_IOMEM
+> -	depends on (ARCH_SPRD || COMPILE_TEST)
+> -	default ARCH_SPRD
+
+Just drop the ARCH_SPRD portion here and maybe make it depend on ARM64
+instead like:
+	depends on (ARM64 || COMPILE_TEST)
+
+and drop the EXPERT check above?
+
+What is the goal of what you want to do here?  Just allow this to be
+enabled on what type of systems?
+
+thanks,
+
+greg k-h
