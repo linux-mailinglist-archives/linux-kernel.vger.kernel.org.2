@@ -2,191 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD2C387D24
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448D3387D38
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350530AbhERQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:14:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64340 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350239AbhERQOc (ORCPT
+        id S1350539AbhERQTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242950AbhERQTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:14:32 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IG3c4A049206;
-        Tue, 18 May 2021 12:13:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Kuh0RMEqHHwd8FOG++wxjthmVwDNJDZy6Vnj8O82ZBU=;
- b=KsT//ZnXcEx/voXauzNdDiXC9TJ1cJKf8SPmAB49e/zYu6UIkHMO9mZrC3x4Ai2HrAxS
- HAFgXj+xyKbf7xYwrZo8FRGYrw3AHaMt3dhd8sydJjfy8S/arHWC9ybk45mWbaFjCQj5
- DNblT5jVcZ8LQIb9AE/iRaCOpjMumk6Ps5cQMypY1oXwOMrqgrXH7xdO1WmznrUtbhHC
- VJWIZpSvJnU/mcL1DdO7kMHKLJ41jqSqndqzqohp65sQJoYuzXYREge872Um+qwyl33f
- a6sx8G8gj3HuiTmGoBJM4LIgq7lVYigkr5RatSvWffTdtk5kWfD65t+8KdPnBeyS58IY wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mfatbrmx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 12:13:14 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IG42MG051782;
-        Tue, 18 May 2021 12:13:14 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mfatbrm4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 12:13:13 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IFi9HV006617;
-        Tue, 18 May 2021 16:13:11 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma01fra.de.ibm.com with ESMTP id 38m1gv08jh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 16:13:11 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IGD89W42336608
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 16:13:08 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 28E484204C;
-        Tue, 18 May 2021 16:13:08 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B77DD42042;
-        Tue, 18 May 2021 16:13:07 +0000 (GMT)
-Received: from ibm-vm (unknown [9.145.14.34])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 18 May 2021 16:13:07 +0000 (GMT)
-Date:   Tue, 18 May 2021 18:13:05 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
-        david@redhat.com, linux-s390@vger.kernel.org,
+        Tue, 18 May 2021 12:19:31 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DB2C061573;
+        Tue, 18 May 2021 09:18:12 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id b13so4025209pfv.4;
+        Tue, 18 May 2021 09:18:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kkGl0q5dtXcq1wwjaee1QPCyiht3mYNUlPYkrGV1fYQ=;
+        b=vGvJUNgkZxBkxU+5DTcUcfIWo9NYtZB+7mrTe8dBMAEmNAB6Yzq2WpMgPKizlNRhE9
+         FMkOLjXlxEinrlQQJ2bJ/XJV+VlyzkhpEq7SFXhIF8eyqPf9QCDYUv7zbtclsbQChuoB
+         N3zX8WP+8pJwheydqLaMW+waJhnhc1s4eke95wUaE5twOvtsRhzY+x+mGr6j6IGS0l+H
+         Umx0zUY8EA3Ey05w5VxEtCqFCerYs0HGqAxZZzXVONcCiDC6XK46PbwmY8JmHYLkhWLT
+         9n2JHL+gZfe9O0cCT0bYfTm4ymnij0BB23vdt/zdtbS6AcPU+9eemNX5GzlRINBvnE+w
+         h+5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kkGl0q5dtXcq1wwjaee1QPCyiht3mYNUlPYkrGV1fYQ=;
+        b=UkA7/9t2v7Y72Yp8yHTi30BtSPe1Z8a0soBbubDUoptToieraDWxF/CTYZxXFaJTEt
+         ohBsSNxRAfqNkymEubWqR641ngY+02cPXnR5P0wNR9lmLgARJYEvOOpENmushtkS2glg
+         PSwLkwxU8kXyrbDlGNO1zs79QTWupAnr1I53euciqKrUPMKacdjg01MG5qjPToRnkwDC
+         iN0jyPRZi5KaKaoKpPmFZ3FMP8kYK6l8hk/R8eUBD1TRu5S4xQ67xpKy75hVTmKt8unS
+         9Sb6pci/DHVd3mjDoVg35xjthWqafAl9rd+ZoKIMMbpg4wrRvlSrTLXnzwtD2H04LKi2
+         mWyA==
+X-Gm-Message-State: AOAM531mITyj/9BU6Ge6sQj4ximp6ANjRUmlo22Zx0BoZt4q+4B0gzgi
+        tPcJlm1LHh4N5uJL8DoFuHpQyHvo7V/DvA==
+X-Google-Smtp-Source: ABdhPJwC9EVqhaVUEwh7lnRBmN+zwFMsGPRbW+1TT/t9meat6eB1EMdrJ+RJ162YtfedBDVrTNAOMA==
+X-Received: by 2002:a63:f511:: with SMTP id w17mr2306148pgh.44.1621354691699;
+        Tue, 18 May 2021 09:18:11 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id t13sm2382827pjo.54.2021.05.18.09.18.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 09:18:10 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 00/11] KVM: s390: pv: implement lazy destroy
-Message-ID: <20210518181305.2a9d19f3@ibm-vm>
-In-Reply-To: <225fe3ec-f2e9-6c76-97e1-b252fe3326b3@de.ibm.com>
-References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
-        <20210518170537.58b32ffe.cohuck@redhat.com>
-        <20210518173624.13d043e3@ibm-vm>
-        <225fe3ec-f2e9-6c76-97e1-b252fe3326b3@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210518135831.445321364@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f00e26c8-abf7-37fc-e4b6-0684b4e03c20@gmail.com>
+Date:   Tue, 18 May 2021 09:18:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210518135831.445321364@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qpyhIDVOXTUKyNJhZ9t04ARzuYTlSHvL
-X-Proofpoint-ORIG-GUID: UUJUIPWLDF4sqYrjDXChyi2V0iISzRu2
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_08:2021-05-18,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 priorityscore=1501 malwarescore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105180111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 17:45:18 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-> On 18.05.21 17:36, Claudio Imbrenda wrote:
-> > On Tue, 18 May 2021 17:05:37 +0200
-> > Cornelia Huck <cohuck@redhat.com> wrote:
-> >   
-> >> On Mon, 17 May 2021 22:07:47 +0200
-> >> Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
-> >>  
-> >>> Previously, when a protected VM was rebooted or when it was shut
-> >>> down, its memory was made unprotected, and then the protected VM
-> >>> itself was destroyed. Looping over the whole address space can
-> >>> take some time, considering the overhead of the various
-> >>> Ultravisor Calls (UVCs).  This means that a reboot or a shutdown
-> >>> would take a potentially long amount of time, depending on the
-> >>> amount of used memory.
-> >>>
-> >>> This patchseries implements a deferred destroy mechanism for
-> >>> protected guests. When a protected guest is destroyed, its memory
-> >>> is cleared in background, allowing the guest to restart or
-> >>> terminate significantly faster than before.
-> >>>
-> >>> There are 2 possibilities when a protected VM is torn down:
-> >>> * it still has an address space associated (reboot case)
-> >>> * it does not have an address space anymore (shutdown case)
-> >>>
-> >>> For the reboot case, the reference count of the mm is increased,
-> >>> and then a background thread is started to clean up. Once the
-> >>> thread went through the whole address space, the protected VM is
-> >>> actually destroyed.
-> >>>
-> >>> For the shutdown case, a list of pages to be destroyed is formed
-> >>> when the mm is torn down. Instead of just unmapping the pages when
-> >>> the address space is being torn down, they are also set aside.
-> >>> Later when KVM cleans up the VM, a thread is started to clean up
-> >>> the pages from the list.  
-> >>
-> >> Just to make sure, 'clean up' includes doing uv calls?  
-> > 
-> > yes
-> >   
-> >>>
-> >>> This means that the same address space can have memory belonging
-> >>> to more than one protected guest, although only one will be
-> >>> running, the others will in fact not even have any CPUs.  
-> >>
-> >> Are those set-aside-but-not-yet-cleaned-up pages still possibly
-> >> accessible in any way? I would assume that they only belong to the
-> >>  
-> > 
-> > in case of reboot: yes, they are still in the address space of the
-> > guest, and can be swapped if needed
-> >   
-> >> 'zombie' guests, and any new or rebooted guest is a new entity that
-> >> needs to get new pages?  
-> > 
-> > the rebooted guest (normal or secure) will re-use the same pages of
-> > the old guest (before or after cleanup, which is the reason of
-> > patches 3 and 4)
-> > 
-> > the KVM guest is not affected in case of reboot, so the userspace
-> > address space is not touched.
-> >   
-> >> Can too many not-yet-cleaned-up pages lead to a (temporary) memory
-> >> exhaustion?  
-> > 
-> > in case of reboot, not much; the pages were in use are still in use
-> > after the reboot, and they can be swapped.
-> > 
-> > in case of a shutdown, yes, because the pages are really taken aside
-> > and cleared/destroyed in background. they cannot be swapped. they
-> > are freed immediately as they are processed, to try to mitigate
-> > memory exhaustion scenarios.
-> > 
-> > in the end, this patchseries is a tradeoff between speed and memory
-> > consumption. the memory needs to be cleared up at some point, and
-> > that requires time.
-> > 
-> > in cases where this might be an issue, I introduced a new KVM flag
-> > to disable lazy destroy (patch 10)  
+
+On 5/18/2021 6:59 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.5 release.
+> There are 363 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Maybe we could piggy-back on the OOM-kill notifier and then fall back
-> to synchronous freeing for some pages?
+> Responses should be made by Thu, 20 May 2021 13:57:42 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I'm not sure I follow
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-once the pages have been set aside, it's too late
-
-while the pages are being set aside, every now and then some memory
-needs to be allocated. the allocation is atomic, not allowed to use
-emergency reserves, and can fail without warning. if the allocation
-fails, we clean up one page and continue, without setting aside
-anything (patch 9)
-
-so if the system is low on memory, the lazy destroy should not make the
-situation too much worse.
-
-the only issue here is starting a normal process in the host (maybe
-a non secure guest) that uses a lot of memory very quickly, right after
-a large secure guest has terminated.
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
