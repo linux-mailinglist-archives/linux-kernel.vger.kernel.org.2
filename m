@@ -2,220 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653F3387BF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FF9387C09
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349998AbhERPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345185AbhERPI0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:08:26 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DF0C06138C
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:07:05 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id c3so10047438oic.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+lBDaMrVcXCmNsGsG2GHtvXuohiK3y1fAq9YmDvlMUI=;
-        b=TfFm6XUl8usCh+YDjlrfsKSJsgSrVFG2r9LmR7R1O2boLhrRI/yzD+CcQ7RfAWEW9G
-         7G+47UqXAauSsG+54SqM9HVYBdDYo/eaoP/L5ii3Q9P2D/x3jy+65MFG9CAcg+6f7ubV
-         nkteko1WvbfFYxK5vzaBCi9lyvCoyzi1EpfJWTaqsXcNJMfq5msijgBvR0LginJIqtXY
-         iIVWtcx+P3Zhkr7PNkHKEqIKbEWdR8qPJWTdwUdouIt3Wyi3RVmKZibaZzUK7VO1HbJw
-         mDXXeol1aIdYxWhMn9tiOg/8P1P1NQQ+rt0K9VZvIp38iHFX9yIqi/CTxb1kk56P5Jum
-         rxtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+lBDaMrVcXCmNsGsG2GHtvXuohiK3y1fAq9YmDvlMUI=;
-        b=WW9A6REpGDHzVZqG79wmNh609Cg8rAwW2eJC/fC3n+m8lbKmRGH1Cgv5GrpROK9LoV
-         cIRf21Esjb9sjmlD0iNjBwCM4WYTL1wjg230heSNzmkQzflp+iPHdiL3etWBEthJ2igr
-         NFWp0JynwizechPHfXVVTW/TycGusyaViMejKVMMUzJMj70X6Wu5hSt00T1LLrOHQ9Ks
-         Epfqq1YH6O8r8mKt7NBSheR3HIqWeGgRZC1GryDAFrMWPXL1z2hXThYF9tbTIFBAUc/y
-         iuP7vhf2VVBA7sZqC1fNUK47oRlVhLt+JMLToiRZTtnhKCcJpVgzX56SvvpVzvZ5m9ey
-         JR0g==
-X-Gm-Message-State: AOAM532HY8WKsh931AuFiWXg/CZfBcWXX5OTc2wdhTvsKvJWwYxdKPWP
-        7cV+k11ZmAzSWhF1+tgVLJd1HA==
-X-Google-Smtp-Source: ABdhPJze1PGjl6NkBbu38cuIam83kD4ddjg9LMGeI1tzvfuEQnG7R6F7031etdypFyPiWOgWhRxTpQ==
-X-Received: by 2002:a05:6808:8ee:: with SMTP id d14mr3858352oic.18.1621350424989;
-        Tue, 18 May 2021 08:07:04 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h20sm3451707oie.33.2021.05.18.08.07.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 08:07:04 -0700 (PDT)
-Date:   Tue, 18 May 2021 10:07:02 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH v2 09/17] crypto: qce: core: Add support to initialize
- interconnect path
-Message-ID: <20210518150702.GW2484@yoga>
-References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
- <20210505213731.538612-10-bhupesh.sharma@linaro.org>
+        id S1345065AbhERPLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238675AbhERPK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:10:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21E1361350;
+        Tue, 18 May 2021 15:09:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621350550;
+        bh=P8/Nc52S1Mm1vaMyPNp8Z+6fLczbT6upDCNfpoFSPTA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uKf7GbnyZKfClrbmJclmnmLQLaPJHShVvVL104Aa63/i6UnzZgKLsEYfX2sB4moV8
+         jhaPAshW3T2XHw2JHsoJqn/xp9AHuRpbMK5g7y48PMJsB4bjqrP4gkvrOuHifQNuzg
+         IwA4Pknhd6SngURK5Z+xGaPFFoT027KJQ3mu26BjX/bJ3lgAS/PnWpNsJ1t4MrBnDO
+         AXgLL0sO6tFMsHntJCm+99+6BQZrtDZoz+WLUIC1m+zJbUra5+WXerv/cyYJ6BmqC/
+         V66nsljbdCv0EZ5SoBKc+ivYmxuaYW7nRC2OLaUR83edjgXEqqos8FEaP0fE7la2CO
+         /flFipDk/Bg0g==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lj1LH-007HNu-TR; Tue, 18 May 2021 17:09:07 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        gregkh@linuxfoundation.org, Pavel Machek <pavel@ucw.cz>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: [PATCH v2 00/17] Adding support for controlling the leds found on Intel NUC
+Date:   Tue, 18 May 2021 17:08:49 +0200
+Message-Id: <cover.1621349813.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505213731.538612-10-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 05 May 16:37 CDT 2021, Bhupesh Sharma wrote:
+This series add support for the LEDs found at Intel NUCs since
+NUC version 6.
 
-> From: Thara Gopinath <thara.gopinath@linaro.org>
-> 
-> Crypto engine on certain Snapdragon processors like sm8150, sm8250, sm8350
-> etc. requires interconnect path between the engine and memory to be
-> explicitly enabled and bandwidth set prior to any operations. Add support
-> in the qce core to enable the interconnect path appropriately.
-> 
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> [Make header file inclusion alphabetical]
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+On several NUC models, the function of the LEDs are controlled by the NUC firmware
+and are programmable, which allow them to indicate several different hardware events.
 
-This says that you prepared the patch, then Thara picked up the patch
-and sorted the includes. But somehow you then sent the patch.
+They can also be programmed to represent an userspace-driven event.
 
-I.e. you name should be the last - unless you jointly wrote the path, in
-which case you should also add a "Co-developed-by: Thara".
+Some models come with single colored or dual-colored LEDs, but high end models 
+have RGB LEDs.
 
-> ---
->  drivers/crypto/qce/core.c | 35 ++++++++++++++++++++++++++++-------
->  drivers/crypto/qce/core.h |  1 +
->  2 files changed, 29 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 80b75085c265..92a0ff1d357e 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -5,6 +5,7 @@
->  
->  #include <linux/clk.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/interconnect.h>
->  #include <linux/interrupt.h>
->  #include <linux/module.h>
->  #include <linux/mod_devicetable.h>
-> @@ -21,6 +22,8 @@
->  #define QCE_MAJOR_VERSION5	0x05
->  #define QCE_QUEUE_LENGTH	1
->  
-> +#define QCE_DEFAULT_MEM_BANDWIDTH	393600
+Programming them can ether be done via BIOS or by the OS, however, BIOS settings
+are limited. So, the vendor offers a Windows application that allows to fully use the
+functionality provided by the firmware/hardware.
 
-Do we know what this rate is?
+It should be noticed that there are 3 different API types, and there are already some
+OOT drivers that were written to support them, using procfs, each one using a 
+different (and IMO confusing) API.
 
-> +
->  static const struct qce_algo_ops *qce_ops[] = {
->  #ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->  	&skcipher_ops,
-> @@ -202,21 +205,35 @@ static int qce_crypto_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		return ret;
->  
-> +	qce->mem_path = of_icc_get(qce->dev, "memory");
+After looking at the existing drivers and not liking the uAPI interfaces there, 
+and needed to ajust the LEDs again after BIOS config reset,  as this is a
+recommended procedure after BIOS upgrades, I opted to write a new driver
+from scratch, unifying support for all different versions and using sysfs via
+the leds class.
 
-Using devm_of_icc_get() would save you some changes to the error path.
+It should be noticed that those devices use the ACPI Windows Management
+Interface (WMI). There are actually 3 different implementations for it:
 
-> +	if (IS_ERR(qce->mem_path))
-> +		return PTR_ERR(qce->mem_path);
-> +
->  	qce->core = devm_clk_get(qce->dev, "core");
-> -	if (IS_ERR(qce->core))
-> -		return PTR_ERR(qce->core);
-> +	if (IS_ERR(qce->core)) {
-> +		ret = PTR_ERR(qce->core);
-> +		goto err_mem_path_put;
-> +	}
->  
->  	qce->iface = devm_clk_get(qce->dev, "iface");
-> -	if (IS_ERR(qce->iface))
-> -		return PTR_ERR(qce->iface);
-> +	if (IS_ERR(qce->iface)) {
-> +		ret = PTR_ERR(qce->iface);
-> +		goto err_mem_path_put;
-> +	}
->  
->  	qce->bus = devm_clk_get(qce->dev, "bus");
-> -	if (IS_ERR(qce->bus))
-> -		return PTR_ERR(qce->bus);
-> +	if (IS_ERR(qce->bus)) {
-> +		ret = PTR_ERR(qce->bus);
-> +		goto err_mem_path_put;
-> +	}
-> +
-> +	ret = icc_set_bw(qce->mem_path, QCE_DEFAULT_MEM_BANDWIDTH, QCE_DEFAULT_MEM_BANDWIDTH);
-> +	if (ret)
-> +		goto err_mem_path_put;
->  
->  	ret = clk_prepare_enable(qce->core);
->  	if (ret)
-> -		return ret;
-> +		goto err_mem_path_disable;
->  
->  	ret = clk_prepare_enable(qce->iface);
->  	if (ret)
-> @@ -256,6 +273,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
->  	clk_disable_unprepare(qce->iface);
->  err_clks_core:
->  	clk_disable_unprepare(qce->core);
-> +err_mem_path_disable:
-> +	icc_set_bw(qce->mem_path, 0, 0);
+- one for NUC6/NUC7, which has limited support for programming just
+  two LEDs;
+- a complely re-written interface for NUC8, which can program up to
+  seven LEDs, named version 0.64;
+- an extended version of the NUC8 API, added for NUC10, called version 
+  1.0, with has a few differences from version 0.64.
 
-When you icc_put() (or devm_of_icc_get() does it for you) the path's
-votes are implicitly set to 0, so you don't need to do this.
+Such WMI APIs are documented at:
+  - https://www.intel.com/content/www/us/en/support/articles/000023426/intel-nuc/intel-nuc-kits.html
+  - https://raw.githubusercontent.com/nomego/intel_nuc_led/master/specs/INTEL_WMI_LED_0.64.pdf
+  - https://www.intel.com/content/dam/support/us/en/documents/intel-nuc/WMI-Spec-Intel-NUC-NUC10ixFNx.pdf
 
-And as such, you don't need to change the error path at all.
+It should be noticed that, I wrote this driver mainly for my NUC8 (NUC8i7HNK),
+but I also used a NUC6 in order to double-check if NUC6 support was not
+crashing.  Yet, while the NUC6 model I have accepts the WMI LED API, it
+doesn't really work, as it seems that the BIOS of my NUC6 doesn't let
+userspace to program the LEDs.
 
-Regards,
-Bjorn
+I don't have any devices using NUC10 API, so the few differences between it
+and NUC8 API weren't tested.
 
-> +err_mem_path_put:
-> +	icc_put(qce->mem_path);
->  	return ret;
->  }
->  
-> diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
-> index 085774cdf641..228fcd69ec51 100644
-> --- a/drivers/crypto/qce/core.h
-> +++ b/drivers/crypto/qce/core.h
-> @@ -35,6 +35,7 @@ struct qce_device {
->  	void __iomem *base;
->  	struct device *dev;
->  	struct clk *core, *iface, *bus;
-> +	struct icc_path *mem_path;
->  	struct qce_dma_data dma;
->  	int burst_size;
->  	unsigned int pipe_pair_id;
-> -- 
-> 2.30.2
-> 
+Due to the lack of full tests on NUC6 and NUC10, and because I wrote a new 
+uAPI that's different than the procfs-based ones found at the OOT drivers, 
+IMO, the better would be to merge this via staging, but as Greg's feedback
+were to apply it directly under drivers/leds, this version was changed 
+considering such premise.
+
+PS. : after having the series accepted, I'll submit an extra patch for
+Documentation/ABI, summarizing the ABI documentation found on patch 01.
+
+-
+
+- v2:
+  - Added an ABI documentation at patch 01 and dropped the TODO;
+  - Removed the .remove function, as it was just printing a message;
+  - Add a check for a return code, as suggested by Dan Carpenter;
+  - Did some code cleanups as also suggested by Dan Carpenter;
+  - Changed the Kconfig description as suggested by Randy Dunlap.
+
+Mauro Carvalho Chehab (17):
+  docs: describe the API used to set NUC LEDs
+  leds: add support for NUC WMI LEDs
+  leds: leds-nuc: detect WMI API detection
+  leds: leds-nuc: add support for changing S0 brightness
+  leds: leds-nuc: add all types of brightness
+  leds: leds-nuc: allow changing the LED colors
+  leds: leds-nuc: add support for WMI API version 1.0
+  leds: leds-nuc: add basic support for NUC6 WMI
+  leds: leds-nuc: add brightness and color for NUC6 API
+  leds: leds-nuc: Add support to blink behavior for NUC8/10
+  leds: leds-nuc: get rid of an unused variable
+  leds: leds-nuc: implement blink control for NUC6
+  leds: leds-nuc: better detect NUC6/NUC7 devices
+  leds: leds-nuc: add support for HDD activity default
+  leds: leds-nuc: fix software blink behavior logic
+  leds: leds-nuc: add support for changing the ethernet type indicator
+  leds: leds-nuc: add support for changing the power limit scheme
+
+ Documentation/leds/index.rst    |    1 +
+ Documentation/leds/leds-nuc.rst |  447 +++++++
+ MAINTAINERS                     |    7 +
+ drivers/leds/Kconfig            |    8 +
+ drivers/leds/Makefile           |    1 +
+ drivers/leds/leds-nuc.c         | 2097 +++++++++++++++++++++++++++++++
+ 6 files changed, 2561 insertions(+)
+ create mode 100644 Documentation/leds/leds-nuc.rst
+ create mode 100644 drivers/leds/leds-nuc.c
+
+-- 
+2.31.1
+
+
