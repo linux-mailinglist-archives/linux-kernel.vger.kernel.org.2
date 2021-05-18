@@ -2,133 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717AE38763B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C0F387649
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348416AbhERKPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242072AbhERKPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:15:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA85360BD3;
-        Tue, 18 May 2021 10:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621332837;
-        bh=IqDH4vdVUMgzvIbN6g+Y4cX4AiGT3hpmx+38vDl6Gug=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fVccqNUWIE+4M1Zoox0dygTkdiQ0iZOEcg1AohbcAUMdYYuDOy0izNWAaq8bGXJR5
-         lrOfbJjGRAUhnMl8t0MTkLHwkoop8Vr+l4UDpWOGSYnHSW6EJLkJlBVLdKP5etXBLm
-         Jf03MLNGtWm4BnocO0Vq61P3JsYfD1ma3NlcEFLCx19Q02FfEMwc9+N8ThvgGfVqnp
-         DrmrqLDf6+Kg9q+pEIJXpUauhn2pUwDNRIzvfjAuuH9Lu0lqy2VRdZzooDgxmMRwAd
-         AMSx8/z+fjHfWIFL6j9jQ+bcxSWDNZsy9M/9TvmTDuptSwe1A2d9+amS9rriYpZXxV
-         amoBYbIjVDT4g==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-rc] RDMA/core: Sanitize WQ state received from the userspace
-Date:   Tue, 18 May 2021 13:13:51 +0300
-Message-Id: <932f87b48c07278730c3c760b3a707d6a984b524.1621332736.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S243311AbhERKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:18:31 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48746 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241172AbhERKSa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:18:30 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14IAF7mh097788;
+        Tue, 18 May 2021 10:16:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Dz0JFBpG2YkGnA6Kv+iRNqW5ei6j9FYbBlVBaa8JuDE=;
+ b=j/msDuiXPVfGAKm6W7G3t7KrT7HSSMjxMOz3rCLqQVkbCkOrjP+dVeEk3CpLGxek+JCb
+ xELI9DYOJESBCVu1u1f68s0cT3rGRGrBZhEDkQxRB00NzE0Hvr8v4RFQLSXOICeOl7Hf
+ CMYbj9S6OHK9ztKMXRuAlStvDwBwDIjtCw1sgYOjNCN2BO1gvT2iz788PeoLV4ygwatv
+ BiAGeO4C/LLuQceg26mcXL66lHuIw3PKSPhw8+F3leG+68ywVQhmD5tkH77Yw6pATDD5
+ H6ZQlfP6KulEgX6N7gukK3Bl2MLJsM7q2g2D6gGkFFSEU4D2IsQqEGqbKtXC2jhtmtY3 2A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 38j5qr5wgu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 10:16:40 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14IAFq2r125832;
+        Tue, 18 May 2021 10:16:39 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38j6486fg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 10:16:39 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14IAGcZ0132121;
+        Tue, 18 May 2021 10:16:38 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38j6486feh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 10:16:38 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14IAGY6b016208;
+        Tue, 18 May 2021 10:16:36 GMT
+Received: from kadam (/62.8.83.26)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 18 May 2021 10:16:34 +0000
+Date:   Tue, 18 May 2021 13:16:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        knaack.h@gmx.de, pmeerw@pmeerw.net, gregkh@linuxfoundation.org,
+        linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: iio: cdc: ad7746: Remove unnecessary assignment
+ in ad7746_probe()
+Message-ID: <20210518101626.GO1955@kadam>
+References: <20210518095647.3008-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518095647.3008-1-tangbin@cmss.chinamobile.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: pFFpgWCER-ethSIjiD4beJU8BUWa1bhp
+X-Proofpoint-ORIG-GUID: pFFpgWCER-ethSIjiD4beJU8BUWa1bhp
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9987 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105180071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, May 18, 2021 at 05:56:47PM +0800, Tang Bin wrote:
+> In the function ad7746_probe(), the initialized value of 'ret' is unused,
+> because it will be assigned by the function i2c_smbus_write_byte_data(),
+> thus remove it.
+> 
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 
-The mlx4 and mlx5 implemented differently the WQ input checks.
-Instead of duplicating mlx4 logic in the mlx5, let's prepare
-the input in the central place.
+Thanks!
 
-Fixes: f213c0527210 ("IB/uverbs: Add WQ support")
-Reported-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/uverbs_cmd.c | 22 ++++++++++++++++++++--
- drivers/infiniband/hw/mlx4/qp.c      |  9 ++-------
- drivers/infiniband/hw/mlx5/qp.c      |  6 ++----
- 3 files changed, 24 insertions(+), 13 deletions(-)
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 4f890bff80f8..8e80bd01a096 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -3084,12 +3084,30 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
- 	if (!wq)
- 		return -EINVAL;
- 
--	wq_attr.curr_wq_state = cmd.curr_wq_state;
--	wq_attr.wq_state = cmd.wq_state;
- 	if (cmd.attr_mask & IB_WQ_FLAGS) {
- 		wq_attr.flags = cmd.flags;
- 		wq_attr.flags_mask = cmd.flags_mask;
- 	}
-+
-+	if (cmd.attr_mask & IB_WQ_CUR_STATE) {
-+		if (cmd.curr_wq_state < IB_WQS_RESET ||
-+		    cmd.curr_wq_state > IB_WQS_ERR)
-+			return -EINVAL;
-+
-+		wq_attr.curr_wq_state = cmd.curr_wq_state;
-+	} else {
-+		wq_attr.curr_wq_state = wq->state;
-+	}
-+
-+	if (cmd.attr_mask & IB_WQ_STATE) {
-+		if (cmd.wq_state < IB_WQS_RESET || cmd.wq_state > IB_WQS_ERR)
-+			return -EINVAL;
-+
-+		wq_attr.wq_state = cmd.wq_state;
-+	} else {
-+		wq_attr.wq_state = wq_attr.curr_wq_state;
-+	}
-+
- 	ret = wq->device->ops.modify_wq(wq, &wq_attr, cmd.attr_mask,
- 					&attrs->driver_udata);
- 	rdma_lookup_put_uobject(&wq->uobject->uevent.uobject,
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 92ddbcc00eb2..2ae22bf50016 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -4251,13 +4251,8 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
- 	if (wq_attr_mask & IB_WQ_FLAGS)
- 		return -EOPNOTSUPP;
- 
--	cur_state = wq_attr_mask & IB_WQ_CUR_STATE ? wq_attr->curr_wq_state :
--						     ibwq->state;
--	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
--
--	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
--	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
--		return -EINVAL;
-+	cur_state = wq_attr->curr_wq_state;
-+	new_state = wq_attr->wq_state;
- 
- 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
- 		return -EINVAL;
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index d984b451c379..becd250388af 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -5483,10 +5483,8 @@ int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
- 
- 	rqc = MLX5_ADDR_OF(modify_rq_in, in, ctx);
- 
--	curr_wq_state = (wq_attr_mask & IB_WQ_CUR_STATE) ?
--		wq_attr->curr_wq_state : wq->state;
--	wq_state = (wq_attr_mask & IB_WQ_STATE) ?
--		wq_attr->wq_state : curr_wq_state;
-+	curr_wq_state = wq_attr->curr_wq_state;
-+	wq_state = wq_attr->wq_state;
- 	if (curr_wq_state == IB_WQS_ERR)
- 		curr_wq_state = MLX5_RQC_STATE_ERR;
- 	if (wq_state == IB_WQS_ERR)
--- 
-2.31.1
+regards,
+dan carpenter
 
