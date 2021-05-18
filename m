@@ -2,65 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E7E386FBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722A0386FC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240209AbhERCBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 22:01:24 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:54091 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235741AbhERCBW (ORCPT
+        id S1346170AbhERCDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 22:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235741AbhERCDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 22:01:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UZGJFVz_1621303201;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UZGJFVz_1621303201)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 18 May 2021 10:00:02 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     pkshih@realtek.com
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] rtlwifi: Remove redundant assignments to ul_enc_algo
-Date:   Tue, 18 May 2021 09:59:59 +0800
-Message-Id: <1621303199-1542-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 17 May 2021 22:03:04 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683A5C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:01:46 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id d11so7835065iod.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eiOP4WhukkqWvHIe+lpGPImxAkNhpIv8Q/xSjCssMYE=;
+        b=tfxl3LXoKZOqzT25D2GmW0+3xhRoFtBHcapsoEUgP/Y+G+IIEd26DVi4XfSTMt/FFE
+         CZdH1dKND7CZCr6KMu83xPt5UNz5++3PAuzjUBR1xSSRia6faT3U/sR7mnmJQUIpmO9a
+         fm7tfJ2vVKDCgCeA5fQ2lOj79nZGfv9jv4Rihxkc8Jenn/IaTDtftEJSyDHTh+LkMbtM
+         04kZjdWbalMCbROilNT+Mv2OwxWvis3o0IQL32EbYQ9Fx/JMxSY93CWQ1E8H1L3Q8uVm
+         IMIOseFJEsXXwiDeA0I1NVrmDH99Vjp7K5zMD+D3HeP2DhDoc/wQz+gQVN4blXZI8ZF9
+         qTvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eiOP4WhukkqWvHIe+lpGPImxAkNhpIv8Q/xSjCssMYE=;
+        b=MF5f6Oap1YgtzKgTCz8ANfsVpB0v+sfX+rRQphfnpgzyQn4+qY6Oy8d28Yp5g226NU
+         ibzh86mO81m9abks6tyhYDxa3qhdBbI369r4c4jeL2vfuRIbWkgjGUR/EB3ITeVETE5v
+         ffktyZdaoWl+R2EQ23QurEfZvV3SKX5/Me5wp1i4hHR+ZUdO+VS8hxhXdBOaN5ZikGdM
+         s5Thf5+UcKSktn/UpYzb+FMXjq4Bt55iCQGtdFL/ISrYPRXY0AcSEJnnco4dq34UUYue
+         ya0PQBh4uk2nnrjOaMr9G/8wVQ0524oWrataNMOdVdIS9tymQqP10eJIzskDIr+iyqWS
+         ZPdg==
+X-Gm-Message-State: AOAM533G48GBo/79/s9s3Ol9E64g3Eb0I7AJnUa35E3EeoIqCKRPEzhN
+        zlDE9Quo6i38quUxCmfoEXgGDwJFVLnOP7LC+bmauQ==
+X-Google-Smtp-Source: ABdhPJyQ2ALt/nIOyU7QFJ0S3oRqnCZ9G8SnQnBWadudtIeZwYLkxXAmel1aWJfQRhfAFy7e60kwaVSwFvWGe3Vpg6M=
+X-Received: by 2002:a05:6638:b14:: with SMTP id a20mr2975623jab.132.1621303305671;
+ Mon, 17 May 2021 19:01:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1619193043.git.ashish.kalra@amd.com> <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
+ <YJvU+RAvetAPT2XY@zn.tnic> <20210513043441.GA28019@ashkalra_ubuntu_server>
+ <YJ4n2Ypmq/7U1znM@zn.tnic> <7ac12a36-5886-cb07-cc77-a96daa76b854@redhat.com>
+ <20210514090523.GA21627@ashkalra_ubuntu_server> <YJ5EKPLA9WluUdFG@zn.tnic> <20210514100519.GA21705@ashkalra_ubuntu_server>
+In-Reply-To: <20210514100519.GA21705@ashkalra_ubuntu_server>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 17 May 2021 19:01:09 -0700
+Message-ID: <CABayD+e9NHytm5RA7MakRq5EqPJ+U11jWkEFpJKSqm0otBidaQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
+ status is changed
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable ul_enc_algo is being initialized with a value that is never
-read, it is being set again in the following switch statements in
-all of the case and default paths. Hence the unitialization is
-redundant and can be removed.
+On Fri, May 14, 2021 at 3:05 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
+>
+> On Fri, May 14, 2021 at 11:34:32AM +0200, Borislav Petkov wrote:
+> > On Fri, May 14, 2021 at 09:05:23AM +0000, Ashish Kalra wrote:
+> > > Ideally we should fail/stop migration even if a single guest page
+> > > encryption status cannot be notified and that should be the way to
+> > > proceed in this case, the guest kernel should notify the source
+> > > userspace VMM to block/stop migration in this case.
+> >
+> > Yap, and what I'm trying to point out here is that if the low level
+> > machinery fails for whatever reason and it cannot recover, we should
+> > propagate that error up the chain so that the user is aware as to why it
+> > failed.
+> >
+>
+> I totally agree.
+>
+> > WARN is a good first start but in some configurations those splats don't
+> > even get shown as people don't look at dmesg, etc.
+> >
+> > And I think it is very important to propagate those errors properly
+> > because there's a *lot* of moving parts involved in a guest migration
+> > and you have encrypted memory which makes debugging this probably even
+> > harder, etc, etc.
+> >
+> > I hope this makes more sense.
+> >
+> > > From a practical side, i do see Qemu's migrate_add_blocker() interface
+> > > but that looks to be a static interface and also i don't think it will
+> > > force stop an ongoing migration, is there an existing mechanism
+> > > to inform userspace VMM from kernel about blocking/stopping migration ?
+> >
+> > Hmm, so __set_memory_enc_dec() which calls
+> > notify_addr_enc_status_changed() is called by the guest, right, when it
+> > starts migrating.
+> >
+>
+> No, actually notify_addr_enc_status_changed() is called whenever a range
+> of memory is marked as encrypted or decrypted, so it has nothing to do
+> with migration as such.
+>
+> This is basically modifying the encryption attributes on the page tables
+> and correspondingly also making the hypercall to inform the hypervisor about
+> page status encryption changes. The hypervisor will use this information
+> during an ongoing or future migration, so this information is maintained
+> even though migration might never be initiated here.
+>
+> > Can an error value from it be propagated up the callchain so it can be
+> > turned into an error messsage for the guest owner to see?
+> >
+>
+> The error value cannot be propogated up the callchain directly
+> here, but one possibility is to leverage the hypercall and use Sean's
+> proposed hypercall interface to notify the host/hypervisor to block/stop
+> any future/ongoing migration.
+>
+> Or as from Paolo's response, writing 0 to MIGRATION_CONTROL MSR seems
+> more ideal.
+>
+> Thanks,
+> Ashish
 
-Clean up clang warning:
+How realistic is this type of failure? If you've gotten this deep, it
+seems like something has gone very wrong if the memory you are about
+to mark as shared (or encrypted) doesn't exist and isn't mapped. In
+particular, is the kernel going to page fault when it tries to
+reinitialize the page it's currently changing the c-bit of? From what
+I recall, most paths that do either set_memory_encrypted or
+set_memory_decrypted memset the region being toggled. Note: dma_pool
+doesn't immediately memset, but the VA it's providing to set_decrypted
+is freshly fetched from a recently allocated region (something has to
+have gone pretty wrong if this is invalid if I'm not mistaken. No one
+would think twice if you wrote to that freshly allocated page).
 
-drivers/net/wireless/realtek/rtlwifi/cam.c:170:6: warning: Value stored
-to 'ul_enc_algo' during its initialization is never read
-[clang-analyzer-deadcode.DeadStores]
+The reason I mention this is that SEV migration is going to be the
+least of your concerns if you are already on a one-way train towards a
+Kernel oops. I'm not certain I would go so far as to say this should
+BUG() instead (I think the page fault on access might be easier to
+debug a BUG here), but I'm pretty skeptical that the kernel is going
+to do too well if it doesn't know if its kernel VAs are valid.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/net/wireless/realtek/rtlwifi/cam.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/realtek/rtlwifi/cam.c b/drivers/net/wireless/realtek/rtlwifi/cam.c
-index 7aa28da..7a0355d 100644
---- a/drivers/net/wireless/realtek/rtlwifi/cam.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/cam.c
-@@ -167,7 +167,7 @@ void rtl_cam_mark_invalid(struct ieee80211_hw *hw, u8 uc_index)
- 
- 	u32 ul_command;
- 	u32 ul_content;
--	u32 ul_enc_algo = rtlpriv->cfg->maps[SEC_CAM_AES];
-+	u32 ul_enc_algo;
- 
- 	switch (rtlpriv->sec.pairwise_enc_algorithm) {
- 	case WEP40_ENCRYPTION:
--- 
-1.8.3.1
-
+If, despite the above, we expect to infrequently-but-not-never disable
+migration with no intention of reenabling it, we should signal it
+differently than we currently signal migration enablement. Currently,
+if you toggle migration from on to off there is an implication that
+you are about to reboot, and you are only ephemerally unable to
+migrate. Having permanent disablement be indistinguishable from a
+really long reboot is a recipe for a really sad long timeout in
+userspace.
