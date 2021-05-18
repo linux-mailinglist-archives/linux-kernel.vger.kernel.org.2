@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC35387419
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0087C38741B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347497AbhERIa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:30:57 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:42192 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242456AbhERIao (ORCPT
+        id S1347481AbhERIbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236556AbhERIbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:30:44 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14I8T5e5030752;
-        Tue, 18 May 2021 08:29:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=mjm2389M6xU+/vps2nDbC/9gZkJjzYIN9Xv+5bntbZA=;
- b=PSeveHJW0vgvKGfYSyGkKZPWcuJ8Mx4L69mbeBP8MrNMhi6cdcXyjAc8TsojaYlJSkF3
- UJhiMMysyk1xTwb/hf6F0EHOcY9K0H6VZEH4m+fzchVpyahoSJV9XJ2AFbsmnNy35P/z
- CZvcXqrHk3Nn0uxoTFt7SAL8HnLqoujtaJmRjdYJlQsj7T6QLmhoe855/sSGTw4+mxrA
- rpQa4xyLzgC7CgajAryeEP4GfqP53RpNc/UTfl0Ek2A67TAQmmu2/U919Xl7fc92YB0Q
- dbWgpSYGDzurcXGuFjlXkcveQjD8lrDf3u2zWc3o50H/P78wmUF3GYZgLqb6b9WSwXbl kA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 38j6xndfd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 08:29:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14I8PrTn024766;
-        Tue, 18 May 2021 08:29:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38j647w740-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 08:29:04 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14I8RHSH037750;
-        Tue, 18 May 2021 08:29:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 38j647w729-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 08:29:03 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14I8T220011971;
-        Tue, 18 May 2021 08:29:02 GMT
-Received: from kadam (/62.8.83.26)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 18 May 2021 01:29:01 -0700
-Date:   Tue, 18 May 2021 11:28:55 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] staging: rtl8188eu: use safe iterator in
- rtw_free_network_queue
-Message-ID: <20210518082855.GB32682@kadam>
-References: <20210516160613.30489-1-martin@kaiser.cx>
- <20210517155733.GK1955@kadam>
+        Tue, 18 May 2021 04:31:14 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282F8C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 01:29:57 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id k4so4725159ili.4
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 01:29:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HXiJrh+p9s0WWsTLQQadzlpiuPrT1XSgZ2/ewYgHYsY=;
+        b=x/yXG9ffYBn4zTOLXh2qn9eeSklSdoqOtqeUbitOM+WxGczCVKioKWHMMUnUkSiEb0
+         K8GGhabg2gIMrxojjGMibQhguuQe/YOq73sWxSarfR0Na7OSzYkKFWMG+P27XUocwkf2
+         M/UhOHRVw+rBEcHUnzsCOvfnPVvlpdq3SeKK9nZGN8X6c7pUX7moxvYDe8DhQltFKnUa
+         rqI3s6RX0wGb3dQoWGAB2WPUysuJJDIKl193Cq1oREY4PNF0WbUqqDi4Ou5ti8vw0TRp
+         kMFQmaS1zBUnPXc3+LZOTMEy/724NP2q2Uq9yvwJQM/ewgjan6Vw9fY4bUUoK2aBxYce
+         yOJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HXiJrh+p9s0WWsTLQQadzlpiuPrT1XSgZ2/ewYgHYsY=;
+        b=rSyG/qdpC6B2+Ii5V+QQgSzFt13YULdiC8JGsOefznFrkfGooVxoMuYiR06eyjwgsY
+         kfm4RO3HLl588BV1ys+/x3BD9Jhuyspef+poBoIWTwJ9Rf0aKAYzdzjf5TN/3BcYYJLj
+         xFPuVA3eU8gXM0f5wrH6DVYQPvhBB01vTnJCntDotNxKZauWU9A4kUGpQPH9A/GKrVMp
+         BPbh1NzcuvAq5jiGey+/mIQssufe4Oz8Ce1CHwkd+YVg/aBrcVfh57AKHhbJBWlzjhps
+         l7bjN8vfwOTawERLUb9VVG9ST2CNeJZ/t7HLmBfXmdxgVKiF2I+O6u57FzC7FVYoKzRD
+         4N4g==
+X-Gm-Message-State: AOAM5301nh+r+qh+yuCnq5r5Y8d5nayKonLYSKStlM/6grToCrZncmYa
+        23i3xa7x/TDaBJBFqAfkjeWlX55I7uT7bBZeXupa
+X-Google-Smtp-Source: ABdhPJxI7fzDt1/9x3wfDORWMw82Vc3ei6SQuYvygrFNo3PQKQvxZB2aRi2tjX+cveh7eTEl1nIacherxYZCgrJP9Aw=
+X-Received: by 2002:a92:c94a:: with SMTP id i10mr130560ilq.290.1621326596637;
+ Tue, 18 May 2021 01:29:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517155733.GK1955@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: UdcIccWTxjhHBZviQBZGOBBlLnO8prSb
-X-Proofpoint-ORIG-GUID: UdcIccWTxjhHBZviQBZGOBBlLnO8prSb
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9987 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105180061
+References: <20210517090836.533-1-xieyongji@bytedance.com> <20210517193912-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210517193912-mutt-send-email-mst@kernel.org>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 18 May 2021 16:29:44 +0800
+Message-ID: <CACycT3uWexPNTiroO5EBT9q8YOorvvVaY_kymapWkLZ078J7aQ@mail.gmail.com>
+Subject: Re: Re: [RFC PATCH 00/17] Add validation for used length
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>, amit@kernel.org,
+        arei.gonglei@huawei.com, airlied@linux.ie, kraxel@redhat.com,
+        dan.j.williams@intel.com,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ohad Ben Cohen <ohad@wizery.com>, bjorn.andersson@linaro.org,
+        David Hildenbrand <david@redhat.com>, vgoyal@redhat.com,
+        miklos@szeredi.hu, Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 06:57:33PM +0300, Dan Carpenter wrote:
-> Thanks for catching these...  I've created a new Smatch static checker
-> warning for this but it only works for list_for_each_entry().
-> Eventually someone would have run the coccinelle script to convert these
-> list_for_each loops into list_for_each_entry().  Otherwise you have to
-> parse container_of() and I've been meaning to do that for a while but I
-> haven't yet.
-> 
-> Anyway, I'm going to test it out overnight and see what it finds.  It's
-> sort a new use for the modification_hook(), before I had only ever used
-> it to silence warnings but this check uses it to trigger warnings.  So
-> perhaps it will generate a lot of false positives.  We'll see.
-> 
-> It sets the state of the iterator to &start at the start of the loop
-> and if it's not &start state at the end then it prints a warning.
-> 
-> regards,
-> dan carpenter
-> 
+On Tue, May 18, 2021 at 7:40 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, May 17, 2021 at 05:08:19PM +0800, Xie Yongji wrote:
+> > Current virtio device drivers may trust the used length returned
+> > in virtqueue_get_buf()/virtqueue_get_buf_ctx(). But the used length
+> > might come from an untrusted device when VDUSE[1] is enabled. To
+> > protect this case, this series tries to add validation for the
+> > used length.
+> >
+> > Since many legacy devices will also set the used length incorrectly,
+> > we did not add the validation unconditionally. Instead, we will do
+> > the validation only when the device driver needs the used length.
+> > A NULL len passed to virtqueue_get_buf()/virtqueue_get_buf_ctx()
+> > will mean the used length is not needed by the device driver.
+>
+> Can we be more specific? Which drivers have problems when used len
+> is incorrect? Maybe there's an easier way like validating the length
+> in the driver ...
+>
 
-That Smatch check didn't work at all.  :P  Back to the drawing board.
+It's ok to me. But this means all future new drivers need to remember
+to do the validation.
 
-regards,
-dan carpenter
+Now only virtio-net and virtio-console drivers have this problem. I
+can send some patches to fix it.
 
+Thanks,
+Yongji
