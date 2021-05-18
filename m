@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E6A388052
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD98388054
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240764AbhERTKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237963AbhERTKt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:10:49 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D82C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:09:31 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id z1so10160694ils.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=n//qGDirJD9obH9G3hvF0yOly+mUVRFHRac3HkYPIZQ=;
-        b=HHwynUO+BYcb/EYBz12eEF0+Nd781lggA9/qxCoUOHozVRxwcodj8V8Hn9YhkEv9qQ
-         N5yRFSeCAroOemxOAEwbWhvbaPU9035JQXSKHpngYfDqe4js8DfXApiUN+FrseQk31+o
-         P3lvJ1CTrEXR4Q8TPrT28450ttAvxQU5EAVqE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=n//qGDirJD9obH9G3hvF0yOly+mUVRFHRac3HkYPIZQ=;
-        b=Rql+QsEk3BjI0l+qJ5rZhVZKunNxNLVCGgj5+jjXZIOqqPF2yA9+muWSUhpjIlOkFe
-         lxDK2MbEN64Vt5hc9Q4oxu3a11TQv/gdZhiDtVV+taW/O9c+4Z28M4UjRTjolOldbERS
-         plCYEkFKvKlp53yB0WMD99MYBa2a3RSws4TfrnrYH1VStUzsePr4q73oEjhQ2kLXD7+4
-         34kKbG4P/nM+VJZY3MQOKy+e2r/Me/9hfuuPwHRlgqc+slycEY7R4j+gCrgHw83IYX2s
-         724D6pPOk6M5YduLf57hB+KE9yXn/pjmIx0Znnv/x72WRHJmJ4DbitaCqO/tTyQVEWdm
-         QspA==
-X-Gm-Message-State: AOAM530TxN06FyRI+OAvDT+nKkHlZLtCBNzBXS0+m79mpJnOSnx6hSOD
-        s6F+NHz+8i8JH/YtowDbIaYK889SpJjVV9Eo
-X-Google-Smtp-Source: ABdhPJxbYsfYZBnyCHTxD9DBD1S25bVeRGL58ZcgL6bD2TNGSMzCrncSKZaE0Hl7di1ZKJBo1ul3iw==
-X-Received: by 2002:a92:cecb:: with SMTP id z11mr2896028ilq.186.1621364970884;
-        Tue, 18 May 2021 12:09:30 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id x14sm10897470ill.74.2021.05.18.12.09.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 12:09:30 -0700 (PDT)
-To:     linux-kernel@vger.kernel.org
-Cc:     tech-board-discuss@lists.linuxfoundation.org,
-        "conduct@kernel.org" <conduct@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: Linux Kernel Code of Conduct Committee: April 2021 report
-Message-ID: <448b06e4-41fc-26df-a862-c3ba2f70b6b3@linuxfoundation.org>
-Date:   Tue, 18 May 2021 13:09:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S241776AbhERTND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:13:03 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27653 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237158AbhERTNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 15:13:02 -0400
+IronPort-SDR: gLnCtBRxzprdP3A9vmRXbZ2NiOxQXyOPRTmQt5z1rlbnvABa1qs/m3kFgL8PB2btFSX0mt2pGv
+ wDgok45v6/Jg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="188204657"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="188204657"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 12:11:29 -0700
+IronPort-SDR: Oy/DYjgEn0wFps9s1XM+TzK+IBDVccQCVmCc/glFBWPHnP6kDaVtbKEm2JxFrltlYh98jZ8Bwx
+ 95LkY064NwmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="473956127"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga002.fm.intel.com with ESMTP; 18 May 2021 12:11:28 -0700
+Date:   Tue, 18 May 2021 12:10:39 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v3 5/6] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <20210518191039.GB15251@ranerica-svr.sc.intel.com>
+References: <20210513154909.6385-1-ricardo.neri-calderon@linux.intel.com>
+ <20210513154909.6385-6-ricardo.neri-calderon@linux.intel.com>
+ <3e346f3d-45c4-bd8c-57d9-a11feda42834@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e346f3d-45c4-bd8c-57d9-a11feda42834@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux Kernel Code of Conduct Committee: April 30 2021
+On Mon, May 17, 2021 at 05:18:29PM +0200, Dietmar Eggemann wrote:
+> On 13/05/2021 17:49, Ricardo Neri wrote:
+> 
+> [...]
+> 
+> > @@ -8447,6 +8456,89 @@ group_type group_classify(unsigned int imbalance_pct,
+> >  	return group_has_spare;
+> >  }
+> >  
+> > +/**
+> > + * asym_can_pull_tasks - Check whether the load balancing CPU can pull tasks
+> > + * @dst_cpu:	Destination CPU of the load balancing
+> > + * @sds:	Load-balancing data with statistics of the local group
+> > + * @sgs:	Load-balancing statistics of the candidate busiest group
+> > + * @sg:		The candidate busiet group
+> > + *
+> > + * Check the state of the SMT siblings of both @sds::local and @sg and decide
+> > + * if @dst_cpu can pull tasks. If @dst_cpu does not have SMT siblings, it can
+> > + * pull tasks if two or more of the SMT siblings of @sg are busy. If only one
+> > + * CPU in @sg is busy, pull tasks only if @dst_cpu has higher priority.
+> > + *
+> > + * If both @dst_cpu and @sg have SMT siblings. Even the number of idle CPUs
+> > + * between @sds::local and @sg. Thus, pull tasks from @sg if the difference
+> > + * between the number of busy CPUs is 2 or more. If the difference is of 1,
+> > + * only pull if @dst_cpu has higher priority. If @sg does not have SMT siblings
+> > + * only pull tasks if all of the SMT siblings of @dst_cpu are idle and @sg
+> > + * has lower priority.
+> > + */
+> > +static bool asym_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
+> > +				struct sg_lb_stats *sgs, struct sched_group *sg)
+> > +{
+> > +#ifdef CONFIG_SCHED_SMT
+> > +	int cpu, local_busy_cpus, sg_busy_cpus;
+> > +	bool local_is_smt, sg_is_smt;
+> > +
+> > +	cpu = group_first_cpu(sg);
+> 
+> Looks like `cpu` isn't used.
 
-In the period of November 1, 2020 through April 30, 2021 the Code of
-Conduct Committee received the following reports:
+Thank you very much for your feedback Dietmar!
 
-Unacceptable behavior or comments in email (3rd party): 4
+Ah! That is correct. I will remove this variable.
 
-The result of the investigation:
-   - Education and coaching: 1
-   - Public response to call attention to the behavior and
-     request correction with consequence of ban if behavior
-     persists: 1
-   - Public response to attention to the behavior and request
-     correction: 1
-   - Clarification on the Code of Conduct conduct related to
-     maintainer rights and responsibility to reject code: 1
-
-We would like to thank the Linux kernel community members who have
-supported the adoption of the Code of Conduct and who continue to uphold
-the professional standards of our community.  If you have questions
-about this report, please write to <conduct@kernel.org>.
-
------------------------
-
-This report and the past Code Of Conduct Committee reports
-can be found on the Code of Conduct website at
-
-https://www.kernel.org/code-of-conduct.html
-
-thanks,
--- Shuah (On behalf of the Code of Conduct Committee)
+Thanks and BR,
+Ricardo
+> 
+> [...]
