@@ -2,93 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB4F3876A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7083876B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348562AbhERKhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242136AbhERKhH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:37:07 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8AC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=3HQnmJvFwnqakmh608DrvB8oicJK2URFyDw6ZWw2EkA=; b=o6ElVB+kFcGaqyBi9092RhjhL
-        60kc9eQ+86mSQ7mVJMtPDveI4AnsFmEEiVGOu4eq1+8DbDAxnb9S6mVDIPAE8ohxAsvI9/PyK8F3H
-        hY6W7I4osHI7sGKwJ1AHfZs7VPdKxYOvTd+mHXD31V8ciE+qB8zuhToiKMvl4mX7meKzJaPuHxolV
-        45AS6sWxwin61jmmSi6k8NCcbcChnlbB6cTTGS2dqv32K8Zs7hko6Bg3MBUlwXHn0El9NvNUK8nuR
-        wOp6IwMxbZ+2yO7hReWfnINstAq9/znYB1Ce8YTg+U/7LIvVLy8gSDtJ6SinlqvxxPujZiRCLAjL7
-        3WZ+LANFQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44128)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lix4k-00047c-Vq; Tue, 18 May 2021 11:35:47 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lix4k-0007oo-Kt; Tue, 18 May 2021 11:35:46 +0100
-Date:   Tue, 18 May 2021 11:35:46 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: REGRESSION: initrd is disabled due to memory overlap
-Message-ID: <20210518103546.GU12395@shell.armlinux.org.uk>
-References: <YKOVzLHGcHoVTqSi@Red>
+        id S243279AbhERKkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:40:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49820 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242136AbhERKkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:40:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 48F38AF37;
+        Tue, 18 May 2021 10:38:47 +0000 (UTC)
+Subject: Re: [PATCH v10 22/33] mm/filemap: Add __folio_lock_or_retry
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-23-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <76184de4-4ab9-0f04-ab37-8637f4b22566@suse.cz>
+Date:   Tue, 18 May 2021 12:38:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKOVzLHGcHoVTqSi@Red>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210511214735.1836149-23-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 12:24:12PM +0200, Corentin Labbe wrote:
-> Hello
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> Convert __lock_page_or_retry() to __folio_lock_or_retry().  This actually
+> saves 4 bytes in the only caller of lock_page_or_retry() (due to better
+> register allocation) and saves the 20 byte cost of calling page_folio()
+> in __folio_lock_or_retry() for a total saving of 24 bytes.
 > 
-> On my SSI1328 gemini board, I use initrd=0x800000,9M in cmdline.
-> On next-20210518 and 5.13-rc1 I got:
-> Booting Linux on physical CPU 0x0
-> Linux version 5.13.0-rc2-next-20210518+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 10.2.0-r5 p6) 10.2.0, GNU ld (Gentoo 2.35.2 p1) 2.35.2) #77 PREEMPT Tue May 18 12:14:41 CEST 2021
-> CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
-> CPU: VIVT data cache, VIVT instruction cache
-> OF: fdt: Machine model: SSI 1328
-> Memory policy: Data cache writeback
-> INITRD: 0x00800000+0x00900000 overlaps in-use memory region - disabling initrd
-> Zone ranges:
->   Normal   [mem 0x0000000000000000-0x0000000007ffffff]
->   HighMem  empty
-> Movable zone start for each node
-> Early memory node ranges
->   node   0: [mem 0x0000000000000000-0x0000000007ffffff]
-> Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
-> Built 1 zonelists, mobility grouping on.  Total pages: 32512
-> Kernel command line: console=ttyS0,19200n8 initrd=0x800000,9M
-> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
-> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
-> mem auto-init: stack:off, heap alloc:off, heap free:off
-> Memory: 117480K/131072K available (5459K kernel code, 595K rwdata, 1508K rodata, 180K init, 376K bss, 13592K reserved, 0K cma-reserved, 0K highmem)
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  include/linux/pagemap.h |  9 ++++++---
+>  mm/filemap.c            | 10 ++++------
+>  mm/memory.c             |  8 ++++----
+>  3 files changed, 14 insertions(+), 13 deletions(-)
 > 
-> On 5.12, initrd is used and works.
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 41224e4ca8cc..21e394964288 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -640,7 +640,7 @@ static inline bool wake_page_match(struct wait_page_queue *wait_page,
+>  
+>  void __folio_lock(struct folio *folio);
+>  int __folio_lock_killable(struct folio *folio);
+> -extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
+> +int __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
+>  				unsigned int flags);
+>  void unlock_page(struct page *page);
+>  void folio_unlock(struct folio *folio);
+> @@ -701,13 +701,16 @@ static inline int lock_page_killable(struct page *page)
+>   * caller indicated that it can handle a retry.
+>   *
+>   * Return value and mmap_lock implications depend on flags; see
+> - * __lock_page_or_retry().
+> + * __folio_lock_or_retry().
+>   */
+>  static inline int lock_page_or_retry(struct page *page, struct mm_struct *mm,
+>  				     unsigned int flags)
+>  {
+> +	struct folio *folio;
+>  	might_sleep();
+> -	return trylock_page(page) || __lock_page_or_retry(page, mm, flags);
+> +
+> +	folio = page_folio(page);
+> +	return folio_trylock(folio) || __folio_lock_or_retry(folio, mm, flags);
+>  }
+>  
+>  /*
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 67334eb3fd94..28bf50041671 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1623,20 +1623,18 @@ static int __folio_lock_async(struct folio *folio, struct wait_page_queue *wait)
+>  
+>  /*
+>   * Return values:
+> - * 1 - page is locked; mmap_lock is still held.
+> - * 0 - page is not locked.
+> + * 1 - folio is locked; mmap_lock is still held.
+> + * 0 - folio is not locked.
+>   *     mmap_lock has been released (mmap_read_unlock(), unless flags had both
+>   *     FAULT_FLAG_ALLOW_RETRY and FAULT_FLAG_RETRY_NOWAIT set, in
+>   *     which case mmap_lock is still held.
+>   *
+>   * If neither ALLOW_RETRY nor KILLABLE are set, will always return 1
+> - * with the page locked and the mmap_lock unperturbed.
+> + * with the folio locked and the mmap_lock unperturbed.
+>   */
+> -int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
+> +int __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
+>  			 unsigned int flags)
+>  {
+> -	struct folio *folio = page_folio(page);
+> -
+>  	if (fault_flag_allow_retry_first(flags)) {
+>  		/*
+>  		 * CAUTION! In this case, mmap_lock is not released
 
-I think this is caused by the normal growth of the size of the kernel.
-If you look in the System.map for the _end symbol, I think you'll find
-that its address is larger than PAGE_OFFSET + 0x800000, causing the
-overlap.
+A bit later in this branch, 'page' is accessed, but it no longer exists. And
+thus as expected, it doesn't compile. Assuming it's fixed later, but
+bisectability etc...
 
-If so, the only realistic thing to do is to move the initrd higher up
-in memory - I don't think you'll get much traction with the idea of
-reducing the kernel's memory footprint.
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 86ba6c1f6821..fc3f50d0702c 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4065,7 +4065,7 @@ static vm_fault_t do_shared_fault(struct vm_fault *vmf)
+>   * We enter with non-exclusive mmap_lock (to exclude vma changes,
+>   * but allow concurrent faults).
+>   * The mmap_lock may have been released depending on flags and our
+> - * return value.  See filemap_fault() and __lock_page_or_retry().
+> + * return value.  See filemap_fault() and __folio_lock_or_retry().
+>   * If mmap_lock is released, vma may become invalid (for example
+>   * by other thread calling munmap()).
+>   */
+> @@ -4307,7 +4307,7 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
+>   * concurrent faults).
+>   *
+>   * The mmap_lock may have been released depending on flags and our return value.
+> - * See filemap_fault() and __lock_page_or_retry().
+> + * See filemap_fault() and __folio_lock_or_retry().
+>   */
+>  static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+>  {
+> @@ -4411,7 +4411,7 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+>   * By the time we get here, we already hold the mm semaphore
+>   *
+>   * The mmap_lock may have been released depending on flags and our
+> - * return value.  See filemap_fault() and __lock_page_or_retry().
+> + * return value.  See filemap_fault() and __folio_lock_or_retry().
+>   */
+>  static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
+>  		unsigned long address, unsigned int flags)
+> @@ -4567,7 +4567,7 @@ static inline void mm_account_fault(struct pt_regs *regs,
+>   * By the time we get here, we already hold the mm semaphore
+>   *
+>   * The mmap_lock may have been released depending on flags and our
+> - * return value.  See filemap_fault() and __lock_page_or_retry().
+> + * return value.  See filemap_fault() and __folio_lock_or_retry().
+>   */
+>  vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
+>  			   unsigned int flags, struct pt_regs *regs)
+> 
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
