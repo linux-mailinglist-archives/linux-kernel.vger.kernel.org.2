@@ -2,165 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DE3386EA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4FD386EA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345296AbhERBAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:00:17 -0400
-Received: from mga05.intel.com ([192.55.52.43]:6129 "EHLO mga05.intel.com"
+        id S242118AbhERBBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:01:21 -0400
+Received: from mga18.intel.com ([134.134.136.126]:52803 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238525AbhERBAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:00:16 -0400
-IronPort-SDR: EnjuMe4tLGbFnAp4e/XNxzXSo4ANM7AlB5+JV8RRTSg666fuiUcGconmJF1lv7kg8fy6iIu/pA
- ox3aDxeNfsFQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="286129103"
+        id S239539AbhERBBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 21:01:19 -0400
+IronPort-SDR: NFMScb0ALJQXV+8jZiUjrE54Uw5xmEZiZoxvHSY1jpeMHM8gXAyPnnN/6rsvd3GXSfAxaWdz30
+ pWgrt56RXqaw==
+Subject: [WARNING: UNSCANNABLE EXTRACTION FAILED][WARNING: UNSCANNABLE EXTRACTION FAILED][RFC v2-fix 1/1] x86/boot: Avoid #VE during boot for TDX platforms
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="188002988"
 X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="286129103"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:58:59 -0700
-IronPort-SDR: /160PXf7zYW2EmMv7JqaRY5vm+F2WPyp5HuUh8ONLJc1I2zAQFLWWVUiUBN3brpeg78d2y4pSi
- ul/E+2B7OKHQ==
-X-ExtLoop1: 1
+   d="scan'208";a="188002988"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 18:00:01 -0700
+IronPort-SDR: wuepASz99PonOrmiU+HoI0FxDUgYZf51wMR5FxgaqTZ/TFXvIHiJBrZL4gx3Ly0PBFl17u0aa/
+ E5AOc5nJa3zQ==
 X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="460529180"
-Received: from aubrey-app.sh.intel.com (HELO [10.239.53.25]) ([10.239.53.25])
-  by fmsmga004.fm.intel.com with ESMTP; 17 May 2021 17:58:56 -0700
-Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
- callback
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
- <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
- <47d29f1d-cea6-492a-5125-85db6bce0fa7@linux.intel.com>
- <20210513073112.GV2633526@linux.vnet.ibm.com>
- <5823f298-6fae-5a73-3ab8-f708d90a7e52@linux.intel.com>
- <20210517104058.GW2633526@linux.vnet.ibm.com>
- <9d493353-7a27-16aa-3e99-c6a07e69de25@linux.intel.com>
- <20210517125727.GX2633526@linux.vnet.ibm.com>
-From:   Aubrey Li <aubrey.li@linux.intel.com>
-Message-ID: <27ab234c-b36b-bf7f-52f4-92c1804f8245@linux.intel.com>
-Date:   Tue, 18 May 2021 08:59:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="541531992"
+Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:59:59 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Date:   Mon, 17 May 2021 17:59:51 -0700
+Message-Id: <20210518005951.258819-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAPcyv4jqr8vyh7BwYxW3QJ_ui_yH+iGniJYuUMEnTLWjiYsvPQ@mail.gmail.com>
+References: <CAPcyv4jqr8vyh7BwYxW3QJ_ui_yH+iGniJYuUMEnTLWjiYsvPQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210517125727.GX2633526@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 8:57 PM, Srikar Dronamraju wrote:
-> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-17 20:48:46]:
-> 
->> On 5/17/21 6:40 PM, Srikar Dronamraju wrote:
->>> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-14 12:11:50]:
->>>
->>>> On 5/13/21 3:31 PM, Srikar Dronamraju wrote:
->>>>> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-12 16:08:24]:
->>>>>> On 5/7/21 12:45 AM, Srikar Dronamraju wrote:
->>>
->>> <snip>
->>>
->>>>>> Also, for those frequent context-switching tasks with very short idle,
->>>>>> it's expensive for scheduler to mark idle/busy every time, that's why
->>>>>> my patch only marks idle every time and marks busy ratelimited in
->>>>>> scheduler tick.
->>>>>>
->>>>>
->>>>> I have tried few tasks with very short idle times and updating nr_busy
->>>>> everytime, doesnt seem to be impacting. Infact, it seems to help in picking
->>>>> the idler-llc more often.
->>>>>
->>>>
->>>> How many CPUs in your LLC?
->>>
->>> I have tried with X86, 48 CPUs, 2 nodes, each having 24 CPUs in LLC
->>> +
->>> POWER10, Multiple CPUs with 4 CPUs in LLC
->>> +
->>> POWER9, Multiple CPUs with 8 CPUs in LLC
->>>
->>>>
->>>> This is a system with 192 CPUs, 4 nodes and each node has 48 CPUs in LLC
->>>> domain.
->>>>
->>>
->>> Okay,
->>>
->>>> It looks like for netperf both TCP and UDP cases have the notable change
->>>> under 2 x overcommit, it may be not interesting though.
->>>>
->>>>
->>>
->>> I believe the extra load on this 24 core LLC could be because we may end up
->>> trying to set the idle-core, even when there is no idle core available.
->>>
->>> If possible, can you please give a try with v3 with the call to
->>> set_next_idle_core commented out?
->>>
->>>
->>
->> v3 seems not be applicable on tip/sched/core 915a2bc3c6b7?
-> 
-> I had applied on top of 2ea46c6fc9452ac100ad907b051d797225847e33
-> which was tag: sched-core-2021-04-28
-> 
-> The only conflict you get on today's tip is Gautham's one line patch.
-> Gautham's patch replaced 'this' with 'target'.
-> 
-> The 2nd patch does away with that line
-> 
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-This is v3. It looks like hackbench gets better. And netperf still has
-some notable changes under 2 x overcommit cases.
+Avoid operations which will inject #VE during boot process,
+which is obviously fatal for TDX platforms.
 
+Details are,
 
-hackbench (48 tasks per group)
-=========
-case            	load    	baseline(std%)	compare%( std%)
-process-pipe    	group-1 	 1.00 (  4.51)	 +1.36 (  4.26)
-process-pipe    	group-2 	 1.00 ( 18.73)	 -9.66 ( 31.15)
-process-pipe    	group-3 	 1.00 ( 23.67)	 +8.52 ( 21.13)
-process-pipe    	group-4 	 1.00 ( 14.65)	+17.12 ( 25.23)
-process-pipe    	group-8 	 1.00 (  3.11)	+16.41 (  5.94)
-process-sockets 	group-1 	 1.00 (  8.83)	 +1.53 ( 11.93)
-process-sockets 	group-2 	 1.00 (  5.32)	-15.43 (  7.17)
-process-sockets 	group-3 	 1.00 (  4.79)	 -4.14 (  1.90)
-process-sockets 	group-4 	 1.00 (  2.39)	 +4.37 (  1.31)
-process-sockets 	group-8 	 1.00 (  0.38)	 +4.41 (  0.05)
-threads-pipe    	group-1 	 1.00 (  3.06)	 -1.57 (  3.71)
-threads-pipe    	group-2 	 1.00 ( 17.41)	 -2.16 ( 15.29)
-threads-pipe    	group-3 	 1.00 ( 17.94)	+19.86 ( 13.24)
-threads-pipe    	group-4 	 1.00 ( 15.38)	 +3.71 ( 11.97)
-threads-pipe    	group-8 	 1.00 (  2.72)	+13.40 (  8.43)
-threads-sockets 	group-1 	 1.00 (  8.51)	 -2.73 ( 17.48)
-threads-sockets 	group-2 	 1.00 (  5.44)	-12.04 (  5.91)
-threads-sockets 	group-3 	 1.00 (  4.38)	 -5.00 (  1.48)
-threads-sockets 	group-4 	 1.00 (  1.08)	 +4.46 (  1.15)
-threads-sockets 	group-8 	 1.00 (  0.61)	 +5.12 (  0.20)
+1. TDX module injects #VE if a TDX guest attempts to write
+   EFER.
+   
+   Boot code updates EFER in following cases:
+   
+   * When enabling Long Mode configuration, EFER.LME bit will
+     be set. Since TDX forces EFER.LME=1, we can skip updating
+     it again. Check for EFER.LME before updating it and skip
+     it if it is already set.
 
-netperf
-=======
-case            	load    	baseline(std%)	compare%( std%)
-TCP_RR          	thread-48	 1.00 (  3.79)	 +4.69 (  4.03)
-TCP_RR          	thread-96	 1.00 (  4.98)	 -6.74 (  3.59)
-TCP_RR          	thread-144	 1.00 (  6.04)	 -2.36 (  3.57)
-TCP_RR          	thread-192	 1.00 (  4.97)	 -0.44 (  4.89)
-TCP_RR          	thread-384	 1.00 ( 19.87)	-19.12 ( 28.99)
-UDP_RR          	thread-48	 1.00 ( 12.54)	 -2.73 (  1.59)
-UDP_RR          	thread-96	 1.00 (  6.51)	 -6.66 ( 10.42)
-UDP_RR          	thread-144	 1.00 ( 45.41)	 -3.81 ( 31.37)
-UDP_RR          	thread-192	 1.00 ( 32.06)	 +3.07 ( 71.89)
-UDP_RR          	thread-384	 1.00 ( 29.57)	-21.52 ( 35.50)
+   * EFER is also updated to enable support for features like
+     System call and No Execute page setting. In TDX, these
+     features are set up by the TDX module. So check whether
+     it is already enabled, and skip enabling it again.
+   
+2. TDX module also injects a #VE if the guest attempts to clear
+   CR0.NE. Ensure CR0.NE is set when loading CR0 during compressed
+   boot. The Setting CR0.NE should be a nop on all CPUs that
+   support 64-bit mode.
+   
+3. The TDX-Module (effectively part of the hypervisor) requires
+   CR4.MCE to be set at all times and injects a #VE if the guest
+   attempts to clear CR4.MCE. So, preserve CR4.MCE instead of
+   clearing it during boot to avoid #VE.
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+
+Changes since RFC v2:
+ * Merged Avoid #VE related changes together.
+   * [RFC v2 22/32] x86/boot: Avoid #VE during compressed boot
+     for TDX platforms
+   * [RFC v2 23/32] x86/boot: Avoid unnecessary #VE during boot process.
+ * Fixed commit log as per review comments.
+
+ arch/x86/boot/compressed/head_64.S   | 10 +++++++---
+ arch/x86/kernel/head_64.S            | 13 +++++++++++--
+ arch/x86/realmode/rm/trampoline_64.S | 11 +++++++++--
+ 3 files changed, 27 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index e94874f4bbc1..2d79e5f97360 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -616,12 +616,16 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
+ 	btsl	$_EFER_LME, %eax
++	jc	1f
+ 	wrmsr
+-	popl	%edx
++1:	popl	%edx
+ 	popl	%ecx
+ 
+ 	/* Enable PAE and LA57 (if required) paging modes */
+-	movl	$X86_CR4_PAE, %eax
++	movl	%cr4, %eax
++	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
++	andl	$X86_CR4_MCE, %eax
++	orl	$X86_CR4_PAE, %eax
+ 	testl	%edx, %edx
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
+@@ -636,7 +640,7 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	pushl	%eax
+ 
+ 	/* Enable paging again */
+-	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
++	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 
+ 	lret
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 04bddaaba8e2..92c77cf75542 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -141,7 +141,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 1:
+ 
+ 	/* Enable PAE mode, PGE and LA57 */
+-	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
++	movq	%cr4, %rcx
++	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
++	andl	$X86_CR4_MCE, %ecx
++	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
+ #ifdef CONFIG_X86_5LEVEL
+ 	testl	$1, __pgtable_l5_enabled(%rip)
+ 	jz	1f
+@@ -229,13 +232,19 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	/* Setup EFER (Extended Feature Enable Register) */
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
++	movl    %eax, %edx
+ 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
+ 	btl	$20,%edi		/* No Execute supported? */
+ 	jnc     1f
+ 	btsl	$_EFER_NX, %eax
+ 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
+-1:	wrmsr				/* Make changes effective */
+ 
++	/* Skip the WRMSR if the current value matches the desired value. */
++1:	cmpl	%edx, %eax
++	je	1f
++	xor	%edx, %edx
++	wrmsr				/* Make changes effective */
++1:
+ 	/* Setup cr0 */
+ 	movl	$CR0_STATE, %eax
+ 	/* Make changes effective */
+diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+index 754f8d2ac9e8..12b734b1da8b 100644
+--- a/arch/x86/realmode/rm/trampoline_64.S
++++ b/arch/x86/realmode/rm/trampoline_64.S
+@@ -143,13 +143,20 @@ SYM_CODE_START(startup_32)
+ 	movl	%eax, %cr3
+ 
+ 	# Set up EFER
++	movl	$MSR_EFER, %ecx
++	rdmsr
++	cmp	pa_tr_efer, %eax
++	jne	.Lwrite_efer
++	cmp	pa_tr_efer + 4, %edx
++	je	.Ldone_efer
++.Lwrite_efer:
+ 	movl	pa_tr_efer, %eax
+ 	movl	pa_tr_efer + 4, %edx
+-	movl	$MSR_EFER, %ecx
+ 	wrmsr
+ 
++.Ldone_efer:
+ 	# Enable paging and in turn activate Long Mode
+-	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
++	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 
+ 	/*
+-- 
+2.25.1
+
