@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0913876BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311C93876B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348578AbhERKlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348567AbhERKk6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:40:58 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0B9C061573;
-        Tue, 18 May 2021 03:39:38 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so1315386pjv.1;
-        Tue, 18 May 2021 03:39:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=93ZCo4gwS7aFEVcH8ZnCKUdH+XCaNbCPSJVocK9d0RU=;
-        b=k4Nuh+EFxvlhaQCW21jHO5N0NEDQIR0P1BplDxOrcuF7IQwhtUYhGd54/5tldabvu3
-         3wIFtA8SGS2N1nbacetJ2HFgbqMBcRrER4npynFF15uBVyfw97KZ7u6oyzLznJXua9/y
-         C9eI6R2PVqq/m45Pc8adMTsxcZfo/lpWHAhYzahW/bTkrhDWHQ3Vbj1oZcRy2N+jCFhw
-         oKdkJM3rz3J5BAtjFtlT7cajO4ENBwPP39sXl6jgXC7ZnBU5sfHao4oC00Jk3eM7UCH+
-         vDo1F5Mtz0MGKbDQndMKEFa84cRwM4Wx9cNptUqB5iI6JGYgdfmiNS68uJTgDGTjGbqw
-         3YeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=93ZCo4gwS7aFEVcH8ZnCKUdH+XCaNbCPSJVocK9d0RU=;
-        b=F1kwCd7pgiO4wN95nJkEXP0cxnFwx1lVKRaFQbB9J/dmrfXuSi5+XAfplPOop5yyIF
-         hCXlKkLbltonmjP+yfmvALGTCSfj5xmMlfTr+H5DVrQRKO3Yq945NgiGukTsNzutwVMO
-         pOeyWuT7qszZE+OrlNE9E6+cm+jDkmeqQSv907GkA6DIpNsch6rE9ZMDPvcv/af3F0Kc
-         65u3H6KvO7LbHXhuk81emgecehVWs55BamAXI5fYiJMAPAT6eeZteoeFCCmV5rY4/+Om
-         op/n0tPoHYFvMn0gtZ0Pp6jEwuRRgY03rWMnXrhjynEl7eCZ0KwBhQ2+ICdQvp0+exR5
-         eP4g==
-X-Gm-Message-State: AOAM530leG6SYra0crdSdgEasNArXjh5IFCa3jkiGyDoVU/l3waTfuzZ
-        OugIhJw8gCvdwtsGGWjeTJXzttkRMdzAU+Q3MPA=
-X-Google-Smtp-Source: ABdhPJxXvj6vZtvTRQW71XBT8gOzShwnMHxAZ8bDXL11j7BINt/O0dAvUBxWn2wDW/ikyh8Wa4lt256txDncrvxHIZc=
-X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr740563pjq.228.1621334378382;
- Tue, 18 May 2021 03:39:38 -0700 (PDT)
+        id S1348566AbhERKk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:40:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50620 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241525AbhERKkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:40:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C35E7AF19;
+        Tue, 18 May 2021 10:39:30 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B00521F2C6E; Tue, 18 May 2021 12:39:28 +0200 (CEST)
+Date:   Tue, 18 May 2021 12:39:28 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     chi wu <wuchi.zero@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, tan.hu@zte.com.cn
+Subject: Re: [PATCH] lib/flex_proportions.c: Use abs() when percpu_counter is
+ negative.
+Message-ID: <20210518103928.GC28667@quack2.suse.cz>
+References: <20210517155306.11113-1-wuchi.zero@gmail.com>
+ <CA+tQmHAE6vK17Xghi9YT7+7r4oFJuQ86cU8m5MzMs6-D0G=DBQ@mail.gmail.com>
+ <20210518085955.GB28667@quack2.suse.cz>
+ <CA+tQmHBEvZTe9-7tReRHBw1tkTW7uGS5FhPZ41eZFOqtoyqkHQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1621279162.git.sander@svanheule.net> <d5f294489d31a80b69169f358da89bb7f70d1328.1621279162.git.sander@svanheule.net>
- <675e36df5aaa1e1be3a1a77289a0a952@walle.cc>
-In-Reply-To: <675e36df5aaa1e1be3a1a77289a0a952@walle.cc>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 18 May 2021 13:39:22 +0300
-Message-ID: <CAHp75VdLwSoPpmDm1j=d9kLWzzfGsHCVvMSX-9wD+sgRzHC9oA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] gpio: regmap: Add configurable dir/value order
-To:     Michael Walle <michael@walle.cc>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Sander Vanheule <sander@svanheule.net>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+tQmHBEvZTe9-7tReRHBw1tkTW7uGS5FhPZ41eZFOqtoyqkHQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Matti
+On Tue 18-05-21 18:22:05, chi wu wrote:
+> Jan Kara <jack@suse.cz> 于2021年5月18日周二 下午4:59写道：
+> >
+> > On Tue 18-05-21 11:42:53, chi wu wrote:
+> > > Chi Wu <wuchi.zero@gmail.com> 于2021年5月17日周一 下午11:53写道：
+> > > >
+> > > > The value of percpu_counter_read() may become negative after
+> > > > running percpu_counter_sum() in fprop_reflect_period_percpu().
+> > > > The value of variable 'num' will be zero in fprop_fraction_percpu()
+> > > > when using percpu_counter_read_positive(), but if using the abs of
+> > > > percpu_counter_read() will be close to the correct value.
+> > > >
+> > >
+> > > I realized that I was wrong as follow:
+> > > (a) the decay rule is broken, the negative means the difference in
+> > > decay here.
+> > > (b) as the target event increasing, proportion of the event will
+> > > decrease to 0 firstly and then it will increase. The logic is bad.
+> > > 1. abs(-50) / abs(100) = 50%       //+50 to 2
+> > > 2. abs(0) / abs(150) = 0 %           //+50 to 3
+> > > 3. abs(50)/abs(200) = 25%
+> > >
+> > > Anyway, the percpu_counter_sum() had cost a lost performance,
+> > > may be we could get a little benefits from that. So could we add a
+> > > variable to stroe the decay value, we will get the value when
+> > > percpu_counter_read() is negative?
+> >
+> > The result of percpu_counter_read() is inherently inexact (but fast! ;). It
+> > can be upto number_of_cpus * counter_batch away from the real counter
+> > value. But do you observe any practical problems with this inaccuracy on
+> > your system? Sure, cache memory won't be split among devices exactly
+> > according to writeout proportion but that usually does not matter.
+> >
+> >                                                                 Honza
+> >
+> 
+> Thanks, Got it.
+> Just try to optimize the fuse (with strictlimit feature)performance
+> issue: The writing thread will be paused and runs slowly, when the
+> proportion of fuse-bdi is 0.
+> The issue is normal,and one of reasons is the characteristics of
+> percpu_counter batch. Even the pages are writeout, we may be could not
+> get the real proportion value due to side effects of counter
+> performance. It's just a slight disappointment.
 
-On Tue, May 18, 2021 at 11:39 AM Michael Walle <michael@walle.cc> wrote:
-> Am 2021-05-17 21:28, schrieb Sander Vanheule:
+Well, you can tune 'min_ratio' of the fuse-bdi to avoid problems with these
+near-zero states... To always give the bdi some breathing room for ramping
+up.
 
-...
-
-> Instead of adding a new one, we can also just check no_set_on_input
-> in gpio_regmap_direction_output(), which I'd prefer.
-
-+! here.
-
-> static int gpio_regmap_direction_output(struct gpio_chip *chip,
->                                         unsigned int offset, int value)
-> {
->         struct gpio_regmap *gpio = gpiochip_get_data(chip);
->         int ret;
->
->         if (gpio->no_set_on_input) {
->                 /* some smart comment here, also mention gliches */
->                 ret = gpio_regmap_set_direction(chip, offset, true);
->                 gpio_regmap_set(chip, offset, value);
->         } else {
->                 gpio_regmap_set(chip, offset, value);
->                 ret = gpio_regmap_set_direction(chip, offset, true);
->         }
->
->         return ret;
-> }
-
-...
-
-> > + * @no_set_on_input: Set if output value can only be set when the
-> > direction
-> > + *                   is configured as output.
->
-> set_direction_first ?
-
-Perhaps we need to establish rather something like
-
-/* Broken hardware can't set value on input pin, we have to set it to
-output first */
-#define GPIO_REGMAP_QUIRK_...  BIT(0)
-
-unsigned int quirks;
-
-?
+								Honza
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
