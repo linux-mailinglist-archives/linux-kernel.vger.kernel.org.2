@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABFE3870F1
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF753870E7
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244312AbhEREoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 00:44:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3004 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbhEREoR (ORCPT
+        id S1345358AbhEREcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 00:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239763AbhEREcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 00:44:17 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fkjvj2rp3zQpH8;
-        Tue, 18 May 2021 12:39:29 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 12:42:58 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
- 2021 12:42:57 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <broonie@kernel.org>
-Subject: [PATCH -next] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
-Date:   Tue, 18 May 2021 12:45:14 +0800
-Message-ID: <20210518044514.607010-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 18 May 2021 00:32:01 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5155C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:30:43 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id v22so8594860oic.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=edTAC+VberfNzmpERBE9GVjs5mtrV8JaHhvqsq7uIFU=;
+        b=dLuJJej8/uEvpBeGhA1/Y5GsGsMFYUb/0EpYi6VrxMEsPJDrwau71hC9S9lRuH1IOk
+         dFhwzmE9tIkNpO72l4uL612FG4Zug54KwbTPgz1iX5iwvzU0aaPwt8xo8yuvf8IlA+pi
+         tk1mxusnY/enJDT9/0PutctBU475awvAap+Q8hW6ondtgnBnBc/mVEwnGersCBtZUol7
+         Bo9od8yNmsNzVmQka6iDvM8tXqB+RdmSMgiUBloAzxZyj3ccCXO7tLny+Hxb07+7Cjuc
+         iH8rOphOk6OhoEoeRCXqHtiQndHa9BEtelnN/ZUinVzuJZ7P3hF9mEY7zXteIQ6OqUnu
+         RnLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=edTAC+VberfNzmpERBE9GVjs5mtrV8JaHhvqsq7uIFU=;
+        b=o4XXOZukmRsUHBykFJhnNcKKmlIWRPqKzP7/fcxRXW5sZHIAbq113qG9ThBrzhXifC
+         neI0x0dZ04a9990aAiUQrBbEQd6+34R4LvEIy2i2AlVvSOvHMoFP2JGpWKSo6Z7w0V/d
+         inY16aBPsQhuCHgUnZpaJ16V0YxE9Erwc4dcLUND3bS4wQ0+hSozzZMHWyBYdQs+icb1
+         yzu68ZUdDaoDDPZaF/vDbtkYuf9NzTtoWGS4b+csmu2dQOfQpLBjgCfjBpxq0diYORvM
+         YPWW44YqyxDE2kqjjQJEiqvvwMLwmjurrDg7hHgplQ68cNZ2ELsStCO6YcBv1k8OkWPQ
+         8i0w==
+X-Gm-Message-State: AOAM530jpss+pLiONv42dSXdv68HdF32i2fV4XJunJtMA2QWRtyACOeO
+        K+B895ykwaOcBkuCn5ZuVLmA+BmdXxigdso4
+X-Google-Smtp-Source: ABdhPJw3rg34jdvRBg7UfZMvjZh9ZVnoXPaRDW7+ClvXOuEC35VQdlhboR/aOy6EX77F75BWPpCMWw==
+X-Received: by 2002:aca:c685:: with SMTP id w127mr1961677oif.89.1621312242855;
+        Mon, 17 May 2021 21:30:42 -0700 (PDT)
+Received: from [192.168.86.127] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id w66sm3492578ooa.37.2021.05.17.21.30.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 21:30:42 -0700 (PDT)
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Philipp Rudo <prudo@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Rob Landley <rob@landley.net>
+Subject: [PATCH] Replace use of perl with sed and tr in s390x build.
+Message-ID: <a48c51f8-5fe4-87e7-284e-c96e2381801a@landley.net>
+Date:   Mon, 17 May 2021 23:46:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After calling clk_prepare_enable(), clk_disable_unprepare() need
-be called when calling clk_set_rate() failed.
+From: Rob Landley <rob@landley.net>
 
-Fixes: 0bf750f4cbe1 ("ASoC: hisilicon: Add hi6210 i2s audio driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Commit 246218962e21 in November added a perl dependency to the s390x vmlinux
+build, complicating the "countering trusting trust" build approach ala
+http://lists.landley.net/pipermail/toybox-landley.net/2020-July/011898.html
+
+Signed-off-by: Rob Landley <rob@landley.net>
 ---
- sound/soc/hisilicon/hi6210-i2s.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index 907f5f1f7b44..ff05b9779e4b 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -102,18 +102,15 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
- 
- 	for (n = 0; n < i2s->clocks; n++) {
- 		ret = clk_prepare_enable(i2s->clk[n]);
--		if (ret) {
--			while (n--)
--				clk_disable_unprepare(i2s->clk[n]);
--			return ret;
--		}
-+		if (ret)
-+			goto err_unprepare_clk;
- 	}
- 
- 	ret = clk_set_rate(i2s->clk[CLK_I2S_BASE], 49152000);
- 	if (ret) {
- 		dev_err(i2s->dev, "%s: setting 49.152MHz base rate failed %d\n",
- 			__func__, ret);
--		return ret;
-+		goto err_unprepare_clk;
- 	}
- 
- 	/* enable clock before frequency division */
-@@ -165,6 +162,11 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
- 	hi6210_write_reg(i2s, HII2S_SW_RST_N, val);
- 
- 	return 0;
-+
-+err_unprepare_clk:
-+	while (n--)
-+		clk_disable_unprepare(i2s->clk[n]);
-+	return ret;
- }
- 
- static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
--- 
-2.25.1
+ arch/s390/boot/compressed/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/s390/boot/compressed/Makefile b/arch/s390/boot/compressed/Makefile
+index de18dab518bb..e941b165bd4f 100644
+--- a/arch/s390/boot/compressed/Makefile
++++ b/arch/s390/boot/compressed/Makefile
+@@ -33,7 +33,7 @@ $(obj)/vmlinux.syms: $(obj)/vmlinux.lds $(objtree)/arch/s390/boot/startup.a $(OB
+ 
+ quiet_cmd_dumpsyms = DUMPSYMS $<
+ define cmd_dumpsyms
+-	$(NM) -n -S --format=bsd "$<" | $(PERL) -ne '/(\w+)\s+(\w+)\s+[tT]\s+(\w+)/ and printf "%x %x %s\0",hex $$1,hex $$2,$$3' > "$@"
++	$(NM) -n -S --format=bsd "$<" | sed -nE 's/^0*([0-9a-fA-F]+) 0*([0-9a-fA-F]+) [tT] ([^ ]*)$$/\1 \2 \3/p' | tr '\n' '\0' > "$@"
+ endef
+ 
+ $(obj)/syms.bin: $(obj)/vmlinux.syms FORCE
