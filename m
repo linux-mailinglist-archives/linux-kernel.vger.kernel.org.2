@@ -2,154 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B008E387A86
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FCC387A8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349704AbhERN7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:59:14 -0400
-Received: from smtp-34-i2.italiaonline.it ([213.209.12.34]:55639 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243387AbhERN7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:59:02 -0400
-Received: from oxapps-15-086.iol.local ([10.101.8.96])
-        by smtp-34.iol.local with ESMTPA
-        id j0EAlzpEt5WrZj0EAlFIwH; Tue, 18 May 2021 15:57:42 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1621346262; bh=FOfLt10TiVeFqvn1BJZhsE1iqcFUNQB5NLaFkxVKwVA=;
-        h=From;
-        b=lv2X90aUi2sKd8HFgWQFQkl3E9rShMmXYo1Ghvv5h3yrUcggkbcIF0OGqJUSG7sLa
-         EeZzeI/jYFAfwR6yg333GRYGeUZFRYxTWZlYVi9Q+ZjCH6GKZrLdsHmnxViCV/7NkR
-         +mOjzN5g8SbC1nxzknr8MZ9T/N/Y9lOyTcGsCKtSTHnY2VbJBwu8/qyCuB/xZiGVSY
-         7IaYmE/LVckCc8KhvuOf7G1eIcfZu9uTEYeq+p48x5oYBYdn9Ig4Dqftww6bnmaCBx
-         yTPhmJycCzywr0ZaIH1gjPylClOppNaE1f3EIsTgrG6mxRefJYxTuisPAsby0AXYZr
-         RnkKBPQsGVIPw==
-X-CNFS-Analysis: v=2.4 cv=W4/96Tak c=1 sm=1 tr=0 ts=60a3c7d6 cx=a_exe
- a=v+7NFWUWLAxl90LcUtT8lA==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
- a=vesc6bHxzc4A:10 a=pGLkceISAAAA:8 a=L547Ubht33J7g4M119MA:9 a=QEXdDO2ut3YA:10
-Date:   Tue, 18 May 2021 15:57:42 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Message-ID: <1735504854.166374.1621346262270@mail1.libero.it>
-In-Reply-To: <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
-References: <20210516135531.2203-1-dariobin@libero.it>
- <20210516135531.2203-2-dariobin@libero.it>
- <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug
- file
+        id S1349728AbhERN77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239860AbhERN76 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:59:58 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AF8C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:58:40 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id s19so9828936oic.7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:58:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c0rcuf59hk8zzhGYb9mHFLDEmB+phP4Kth6slEOIZYA=;
+        b=lFI0AHcModwrEa18qX2uKnk2Wac55m5AiPLM2cv6lnVwkVH8JDjqEIw0gazCaElftB
+         cHNLRg0l98UfE8vp/8XiQGbD96CtVJc0fhLv9d7phtdY+1C1sgwhDT1cCrwNauVQRMVj
+         zr3eFfPWbISXhR8fSSHBrFosPT42cHLgNrX+4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c0rcuf59hk8zzhGYb9mHFLDEmB+phP4Kth6slEOIZYA=;
+        b=lvsJyNewAghgfd431E2u+qS+6cwbSHGFyNVhLaSNrpcu0xHB5ACBKw6B+hIoUTLSTx
+         wA3wetD5vODkxJTTDoKt22C9eFyae+hB5z+cJXpmIJ870oDQnZpESyhz87EkzT/qgUeJ
+         1eyyq4RS25ijcUVftXiHK4incrEege4s0BTDZrjQVVB3Q5UI6b8z4arQwXKtLSQGP3r7
+         hE2oNVGm5SoAZO8zE/K4hBfhqyGP3Co+3Odwux6ZLeazYv3qZDlVk/4LN/RT+NtrTv+z
+         iGMXBsF2WhgQKIvygVrpvXwkI7CriXORNJDTn0EhFu+pP+9s8hyVD1emUzfSUHGNGOkL
+         yCCw==
+X-Gm-Message-State: AOAM5336ZdAyrS2ZtyxS4HinlD8heZeT2wH303fRbcs25S9vzGfbc6f2
+        s1wWLb8W+6exOIsV2FJFnAgMnOVG5kH66w==
+X-Google-Smtp-Source: ABdhPJxw36qQNl4x0l0w/Pk71hm4A0hu5iUoiOXA2zlCw1DNMzB2HjJ5MvJbl00bNC4TtpPI/7dnkQ==
+X-Received: by 2002:a05:6808:1401:: with SMTP id w1mr4003911oiv.52.1621346319959;
+        Tue, 18 May 2021 06:58:39 -0700 (PDT)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com. [209.85.210.54])
+        by smtp.gmail.com with ESMTPSA id v9sm3853465otn.44.2021.05.18.06.58.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 06:58:39 -0700 (PDT)
+Received: by mail-ot1-f54.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so8677274otp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:58:39 -0700 (PDT)
+X-Received: by 2002:a25:aad4:: with SMTP id t78mr7268437ybi.343.1621346308916;
+ Tue, 18 May 2021 06:58:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 185.33.57.41
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: vSw5ATWRP9oT0Qm6yB5B4Ld4Nh24bik/
-x-libjamv: WOw4sxia8EU=
-X-CMAE-Envelope: MS4xfIGqIQFtXe9VbPscHiVEg1wVgwd9KALqR6oww1JdTJpem7gLAUeeXckAiFXJ9+RUz0TXIF6fXViM9EgLgxgSczwan9tqRLcmRgHuxwqvDsKbHG0QZR+4
- 4OKnrihaxNp9nNCNzKngEA5JTVXEDzQP0faTfrDnCDlA3Cmvz6zBnD+ppGdvlveWlGaxUNUiLB42tKo1gaBl+gsLr/zfsrexUol+xJryHO5JdF6iAYGSzhJ0
- +QS2F6+Mcw3lJSHQCHJ/wVym8nsuGRL20f2ATJ1N40xNUC2X+1BqUIv+1cglh1Dels+SzaiBQk7Ec6Qocq8wE0yEeVA/1sYTMZBpU9cJiUIGTWBWm5rp2r+D
- RBMScHxO
+References: <20210517200907.1459182-1-dianders@chromium.org>
+ <20210517130450.v7.2.Ieb731d23680db4700cc41fe51ccc73ba0b785fb7@changeid> <CAL_JsqLMs10Luj7fKkNVu-BUZhpqAGJMZyUxz76N3b9Xa7EByg@mail.gmail.com>
+In-Reply-To: <CAL_JsqLMs10Luj7fKkNVu-BUZhpqAGJMZyUxz76N3b9Xa7EByg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 18 May 2021 06:58:16 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Xsc1noo7ZBK4_+Cty6KO5vc7Ex7G7BCg38rRu3s=fvUg@mail.gmail.com>
+Message-ID: <CAD=FV=Xsc1noo7ZBK4_+Cty6KO5vc7Ex7G7BCg38rRu3s=fvUg@mail.gmail.com>
+Subject: Re: [PATCH v7 02/10] dt-bindings: display: simple: List hpd
+ properties in panel-simple
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linus W <linus.walleij@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-> Il 17/05/2021 22:02 Andy Shevchenko <andy.shevchenko@gmail.com> ha scritto:
-> 
->  
-> On Sun, May 16, 2021 at 7:43 PM Dario Binacchi <dariobin@libero.it> wrote:
+On Tue, May 18, 2021 at 5:42 AM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Mon, May 17, 2021 at 3:09 PM Douglas Anderson <dianders@chromium.org> wrote:
 > >
-> > The MPUs of some architectures (e.g AM335x) must be in privileged
-> > operating mode to write on the pinmux
-> 
-> pinmux is not pin configuration. You need to rethink the approach.
-> 
-> > registers. In such cases, where
-> > writes will not work from user space, now it can be done from the pins
-> > debug file if the platform driver exports the pin_dbg_set() helper among
-> > the registered operations.
-> 
-> Drew, is it similar to what you are trying to achieve?
-> 
-> ...
-> 
-> > +static ssize_t pinctrl_pins_write(struct file *file,
-> > +                                 const char __user *user_buf, size_t count,
-> > +                                 loff_t *ppos)
-> > +{
-> > +       struct seq_file *s = file->private_data;
-> > +       struct pinctrl_dev *pctldev = s->private;
-> > +       const struct pinctrl_ops *ops = pctldev->desc->pctlops;
-> > +       char buf[32];
-> > +       char *c = &buf[0];
-> > +       char *token;
-> > +       int ret, buf_size;
-> > +       unsigned int i, pin;
-> > +
-> > +       if (!ops->pin_dbg_set)
-> > +               return -EFAULT;
-> > +
-> > +       /* Get userspace string and assure termination */
-> > +       buf_size = min(count, sizeof(buf) - 1);
-> > +       if (copy_from_user(buf, user_buf, buf_size))
-> > +               return -EFAULT;
-> > +
-> > +       buf[buf_size] = 0;
-> 
-> Can't you use strncpy_from_user() ?
+> > These are described in panel-common.yaml but if I don't list them in
+> > panel-simple then I get yells when running 'dt_binding_check' in a
+> > future patch. List them along with other properties that seem to be
+> > listed in panel-simple for similar reasons.
+>
+> If you have HPD, is it still a simple panel? I don't see this as an
+> omission because the use of these properties for simple panels was
+> never documented IIRC.
 
-Ok, I'll use strncpy_from_user() in the next version of the patch
+I would say so. It is currently supported by panel-simple in Linux. Of
+course, you could make the argument that panel-simple is no longer
+really "simple" because of things like this...
 
-> 
-> 
-> > +       token = strsep(&c, " ");
-> 
-> > +       if (kstrtouint(token, 0, &pin))
-> > +               return -EINVAL;
-> 
-> Don't shadow an error code.
+I guess I'd say this: I believe that the HPD properties eventually
+belong in the generic "edp-panel" that I'm still planning to post (and
+which will be based on this series). I justified that previously [1]
+by talking about the fact that there's a single timing diagram that
+(as far as I've been able to tell) is fairly universal in panel specs.
+It's a complicated timing diagram showing some two dozen timings (and
+includes HPD!), but if you support all the timings then you've
+supported pretty much all panels. IMO the original intent of
+"simple-panel" was to specify a panel that's just like all the other
+panels w/ a few parameters.
 
-You are right
+NOTE: I'd also say that for nearly all eDP panels HPD is important,
+but in many designs HPD is handled "magically" and not specified in
+the device tree. This is because it goes to a dedicated location on
+the eDP controller / bridge chip. I added the HPD GPIO support (and
+no-hpd) to simple-panel because my bridge chip has a fairly useless
+HPD line and we don't use it. Even though the fact that we need the
+HPD specified like this is a function of our bridge chip, back in the
+day I was told that the property belonged in the panel and so that's
+where it lives.
 
-> 
-> > +       for (i = 0; i < pctldev->desc->npins; i++) {
-> > +               if (pin != pctldev->desc->pins[i].number)
-> > +                       continue;
-> 
-> Hmm... I don't get this. Why is it needed?
 
-I want to make sure the pin is managed
+> Not saying we can't add them, but justify it as an addition, not just
+> fixing a warning.
 
-Thanks and regards,
-Dario
-> 
-> > +               ret = ops->pin_dbg_set(pctldev, pin, c);
-> > +               if (ret)
-> > +                       return ret;
-> > +
-> > +               return count;
-> > +       }
-> > +
-> > +       return -EINVAL;
-> > +}
-> 
-> ...
-> 
-> > -       debugfs_create_file("pins", 0444,
-> > +       debugfs_create_file("pins", 0644,
-> >                             device_root, pctldev, &pinctrl_pins_fops);
-> 
-> Why is it in this file?
-> 
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+Sure, I'll beef up the commit message.
+
+
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> > I didn't spend tons of time digging to see if there was supposed to be
+> > a better way of doing this. If there is, feel free to yell.
+>
+> That's the right way to do it unless you want to allow all common
+> properties, then we'd use unevaluatedProperties instead of
+> additionalProperties.
+
+Ah, perfect. Thanks!
+
+[1] https://lore.kernel.org/r/CAD=FV=VZYOMPwQZzWdhJGh5cjJWw_EcM-wQVEivZ-bdGXjPrEQ@mail.gmail.com/
+
+
+-Doug
