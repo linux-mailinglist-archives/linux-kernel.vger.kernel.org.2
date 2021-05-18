@@ -2,174 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E09E3882EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985753882F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352831AbhERXEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:04:54 -0400
-Received: from mail-bn1nam07on2040.outbound.protection.outlook.com ([40.107.212.40]:23971
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233477AbhERXEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:04:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LyWcuoSmIrOHazYuE/+rOin7h8QzgD8tb//XDrUNh7tdDECdG4eesWoUcU+BSdaLzVm/qP9clbbRYJRL3yTNyq7JaEM2wZ7PbMCi8BQHoeuVB6ALHGXZZtOoQDQfuDlHy8wbYXARw1XYf0iF17twDjOVrguPGdTcKCT+5w0OmvGgUfkcs6OHyhl9TTo9EipL59xz028q9sBXRjE4vux3KkHiLBz3DhT1dLEwwfFaRRaHq6hXgw8igPt376SYOWyoeVmAWjXHBsa7kVwNGvr9eP6wbOWEBXlPcdDk97cCRvuOG4Sjq3VX+sIhBzFTsz+XqE0+FZe4Dr4mykMSUieZ9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k3IdNSFiUnrRT1x/bsOS120s+m2wuDnGHTEFgMv8S+E=;
- b=OIuGjkOdd/Iiynfb04LCLXDirFyu9IvMlpqDElOSWe8+GVA7wNNoHlazJs2XWutsqjPpFC3Eq9Ru7FC23qAHbnpbQepJ14xdSWBVeaScKELkf9/Ppfwwg7MemfOzi3ugGG9xoX0OZtDUPxEG51ZJ/DXsOiK0Y88K3isLrkjEIQXqY93qjL/CKUO8o5yv7D5iK5V0gMYA53+rr+2tEeSH6pNumjZWC2N7Bukq7lWWmZ8yM0ppBXTSfOc6+LQj/O3SXz9Kqk8B7kC2oSxD2bz6N0GfS1UVNaMIFoKhnmIfoD2MJ9Vm78a4Yfc0tRhqUJSqKbk6TIBBG0IDFzpBIclLiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k3IdNSFiUnrRT1x/bsOS120s+m2wuDnGHTEFgMv8S+E=;
- b=o06ber1whiLSdl+NjxFVil2rC6xYYmRgj6+YI/gxLad8zbtEAUgS+lAPDWHiShdU+3uArF3CZqQFDARyil+mGwp+0tz17upDnF2QHvAsouo2TwhSbA3E6FZjY+6qn/Ou2DXx4ym/6q8E83D9bfcUBeqRQoIh/9mpPaRvlD9M3e3u84eL41uBRk5w/DuCxkoleIsr0V5lsFjNaN5Kf0akJALpu1y6cuZ9Oq4xSkK70+4BDX+M9SQrHnlt66OomVK1U0IssQIGIMTuXTco8BqS8owda3GLj1X8iOd4lskeVobS4hFGc4Flkuo+I/uvUX/W4DDI9Ee67IncxiRb37EIRA==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2858.namprd12.prod.outlook.com (2603:10b6:5:182::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Tue, 18 May
- 2021 23:03:30 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.033; Tue, 18 May 2021
- 23:03:29 +0000
-Date:   Tue, 18 May 2021 20:03:27 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
-        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
-        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
-        bsingharora@gmail.com, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
-Message-ID: <20210518230327.GG1002214@nvidia.com>
-References: <20210407084238.20443-1-apopple@nvidia.com>
- <20210407084238.20443-6-apopple@nvidia.com>
- <YKMhorngO2DVrxac@t490s>
- <47694715.suB6H4Uo8R@nvdebian>
- <YKP5Dj4Q/riGGc43@t490s>
- <20210518173334.GE1002214@nvidia.com>
- <YKQBACJCjsxeM3ro@t490s>
- <20210518194509.GF1002214@nvidia.com>
- <YKQjmtMo+YQGx/wZ@t490s>
+        id S1352841AbhERXFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233477AbhERXFi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 19:05:38 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2157C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:04:19 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id k19so8552222pfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mSnep0E6p740HwmxCoTsibVSy/5YhYtyFAmCVDEAaLA=;
+        b=Akkz5CURmoJcRlEXLzqx1M5h7Hp2+Ve7uVqZaCwDi9WcE2h/XN4698GPVVGax7o+dB
+         W3kEhApCTEEMW8g0u6pSYHI4SCP8sMBdTo3+RUKx8Q/DxqDuhi6RAr8Vj2HbMmscllXZ
+         U3wgtYLjloxYJzgWz/FWbGyDFd0m7J1RgIhUbCkix/9b3sCNXRY8PdLa7+j/F423XEKa
+         9oO6JsspTSOKgBVsG7NhZ5rqkx7k9ydyVYZ+tsu1/2c5fUl76sLP5vChWa2yD6i5+y9s
+         jKNVXhlqbDVbiJqcueJ2PTPuKJIliWYjUM0E+j00NKk2wsfcjXtSfIRdfAJgP2s8ZwzL
+         0XSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mSnep0E6p740HwmxCoTsibVSy/5YhYtyFAmCVDEAaLA=;
+        b=VseIoydS2Uv9Jqcw42WBvNL6hdsoJwzDnNOQf5/VBDnQllFL0+mBgAEMuj/0r1T0RU
+         g6Rl7lNXhu4C6+kMLskiUO+3bkEKSh8rYIITuYKbmJDyNJhXTG1t3+cEoBbkX4gFaKBW
+         RSWyCn4RWCmOHYGfh6vfzFN71bUsHofVlHU/oq9EkIDfG8QbueJRBXE8FCwO2jMCfzqJ
+         e51ZF0yA7atnWNavqnigggHkijKeBU+LdHJp9cYMlMZQp+mC9DjWh/LeMTNhc2Vo8V3v
+         Do1eDn/r8Kio1pH3TermxtPhA4Z2mfdsKlC0jEBDUxc62fQPshv2Q3BaOb111+bagvdh
+         nEpg==
+X-Gm-Message-State: AOAM532KaGPJeW/aWtWSXDo8f8D0P3mObMY2RN9PVrir/3VBhbbodnsV
+        73MBBTCV8UH9bH0sdPepsQCjKQ==
+X-Google-Smtp-Source: ABdhPJwmhbK3o/picrfTp8QXUtTamx591kpVEksxVbdNg7OCnAY3fgc79GACPhEtTlN2lePA+3zroQ==
+X-Received: by 2002:a63:2542:: with SMTP id l63mr7622151pgl.128.1621379059000;
+        Tue, 18 May 2021 16:04:19 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id g19sm8007685pfj.138.2021.05.18.16.04.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 16:04:18 -0700 (PDT)
+Date:   Tue, 18 May 2021 23:04:14 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ilias Stamatis <ilstam@amazon.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, mlevitsk@redhat.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        zamsden@gmail.com, mtosatti@redhat.com, dwmw@amazon.co.uk
+Subject: Re: [PATCH v2 03/10] KVM: X86: Add kvm_scale_tsc_l1() and
+ kvm_compute_tsc_offset_l1()
+Message-ID: <YKRH7qVHpow6kwi5@google.com>
+References: <20210512150945.4591-1-ilstam@amazon.com>
+ <20210512150945.4591-4-ilstam@amazon.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKQjmtMo+YQGx/wZ@t490s>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0024.namprd13.prod.outlook.com
- (2603:10b6:208:256::29) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0024.namprd13.prod.outlook.com (2603:10b6:208:256::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Tue, 18 May 2021 23:03:29 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lj8kJ-00AUDU-VE; Tue, 18 May 2021 20:03:27 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: edce9c3d-2ee7-47d2-1ee6-08d91a5126ab
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2858:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2858E661E3DB8252ECDAF608C22C9@DM6PR12MB2858.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yVAEG2RA8ZiBycRMAF8K+XAnmDyfsZKqJJMURckFRgzFV+9ihfOL1Il1y0xumgadfy+/ysZbUV3KtPS9xuhR6MVQUtj2iafr3SciywXdjaGf1NetwHd7XRV7DauHxJKmcHwZdUZFTKq5WiyoXx0UVu6CXVGRuY7nCRyNXt6S1DDSc7IszCxmuUHWT45O2QynMV/1wHfwV2Ks/iZt65ivqpb2FM6ajIu1QP7sECYEhVN1XUNlXUMlBtKjScXl7aKxV1etKtVmU6vHVCn5FDBxmESNDBa9XfL4n73KDNCrznIsX5DXrT6XiFuXAmEVBVah2nExUII8/E7C+vqCKGpgO6MLh9dsNaDCtp2xH50Vxmf9UeEfvsFmKdccQyGy/D6QTIo8WknYQPRk1nRVTEuS/u1f8zNhGGoo2myobge2dUNaStICyjigCPlLUe23U0ET7OMXKXYG+0+jEu8df0z/jLZSxR98vyMt1f96A7lnW+WcDR67owfq0X52iyR+mhaRppW5vGOS0AAr7i3k/DvbpxwFYqORcOnCYm9tuFcgR048fvBomJlkeAtgJCihmyLCCIYRkhumH4smVCMWLpDvG70LAWXxqioDkGazbIQYJz0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(136003)(39860400002)(376002)(66946007)(86362001)(66556008)(66476007)(478600001)(33656002)(2906002)(36756003)(83380400001)(5660300002)(9786002)(38100700002)(426003)(26005)(2616005)(9746002)(186003)(54906003)(6916009)(7416002)(8936002)(1076003)(4326008)(8676002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?M9+lTZt6fQD1XpvJ/adZSiTHZeNJDq7QswWvPVkYfKveuFMXrd8h4NMwilme?=
- =?us-ascii?Q?c5ak0Y7KZ87tCVBZqHA4jhVcKwumCfgFjNm5HBBwCkK5JpKmXazvgnxazdUT?=
- =?us-ascii?Q?4rYVxDaHU654S8q1Eu3P4mtQ9q8ajUwgaRaOoPurAQkZzGFJJQRmbEuxxIbS?=
- =?us-ascii?Q?bHIjOZpltYMRQtVKm7g8r24hlQS1NJ/qiB4T8KhgHw4Ah3H26e7WBt2xjzig?=
- =?us-ascii?Q?ADheUOXro5s6xRpI9/J/BzHMnHLc7DcyiP1Ld04BFkVwInVc9B8ujUivXJ+T?=
- =?us-ascii?Q?wJWblNNVrrd1Sv+36Km8f6gqNuMnQsDTARwmWgMTGj6JB5ysPdYw75UUqflv?=
- =?us-ascii?Q?apLK56RVaTVkgbAz1xol1MrmT2toCCBabehfHFXP09lU2+kMZhz4t81xAB0W?=
- =?us-ascii?Q?9sm1RSlABqeuBq7hzadAcZVk5GkB91nB9CfmdPjf458Fu5MabRPaM126DJVm?=
- =?us-ascii?Q?b+DFWlsdGVQyrqyxseeU1Fro/kU1Y6qGhnICOYeiRGDq7L1v1gpAAaxNirsH?=
- =?us-ascii?Q?9lWxMr6cPFGa3LzkqjxXIkiUhJQjhK9k6xxa433+l/iGh4lae9L//Ubh4lU4?=
- =?us-ascii?Q?byHd2vsFYU0YAlKwN0I+McqtkmMOiwEq0fIp9OCcghtM9TGYuLEhKwMTLdvO?=
- =?us-ascii?Q?kgKB4SDcn//lMbMDBWq28NL8/CV+Qi0IYBflfHDyeecbovl4PWIZ6NSSr1SN?=
- =?us-ascii?Q?495F/+0k17H5TW4VNsUXcRazrWY4Z2/LnVmdklFG1oVKsB8/Z3PxTVE8qC5u?=
- =?us-ascii?Q?DWDo89S8SEYOVmBEbn6zq9jeZk8qhwIFxiK8+J5QF39f6kJKWuaXMR09nBDv?=
- =?us-ascii?Q?BR9EYjUXCY+SBRqfJfDoVtpeEBVagVHqWDaJ/V4rtmnR44OC9TA539KJelBk?=
- =?us-ascii?Q?PnVsOgw2cOIT6F1dm+IUFQYPssr3R6I/8Fou4brXdyMqMfUx0jtiWN6rKjJL?=
- =?us-ascii?Q?y/O3QYFEmXMmsksEK4TEyVrIixvsfUU5meNuFyv21xfCYogz7yFySfBnENlK?=
- =?us-ascii?Q?3DOefKpxXFY/DmARiyD7QWCQIuB44g9/c5iK0BEeHrFrwMI54hr6VmcWoyfP?=
- =?us-ascii?Q?676jp+KPXGJtElM/fQOmrEjHiKty6YjU7qEmzMhbZpPDYkw5xHP/lXlz0yI5?=
- =?us-ascii?Q?mBPJ3IyP4ot6t3TwMf0lWe8TuwUm/7NjRHB2UpuMdwX+OwFvi2/i8hyI52sX?=
- =?us-ascii?Q?+HdNx1ejmBsYnL2quyLVWFpsQNEvwQ3rrT4Bp6q2hzUVUpC5U2EvSKDoL+yt?=
- =?us-ascii?Q?vqw+/525RcgGakKNHUD9LLuro8SVJ/RxbFrOLnnG7G37iQ0fLBdhls+MOLKs?=
- =?us-ascii?Q?sfjb3WYMyg1uHsS1UOMgeXHv?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: edce9c3d-2ee7-47d2-1ee6-08d91a5126ab
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2021 23:03:29.7365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ieXBGgViPdUfRu3rI073PIUqb4LkLiKgrQJiVSnfnZfXJvyQWKdmwoGId39ldvLD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2858
+In-Reply-To: <20210512150945.4591-4-ilstam@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 04:29:14PM -0400, Peter Xu wrote:
-> On Tue, May 18, 2021 at 04:45:09PM -0300, Jason Gunthorpe wrote:
-> > On Tue, May 18, 2021 at 02:01:36PM -0400, Peter Xu wrote:
-> > > > > Indeed it'll be odd for a COW page since for COW page then it means after
-> > > > > parent/child writting to the page it'll clone into two, then it's a mistery on
-> > > > > which one will be the one that "exclusived owned" by the device..
-> > > > 
-> > > > For COW pages it is like every other fork case.. We can't reliably
-> > > > write-protect the device_exclusive page during fork so we must copy it
-> > > > at fork time.
-> > > > 
-> > > > Thus three reasonable choices:
-> > > >  - Copy to a new CPU page
-> > > >  - Migrate back to a CPU page and write protect it
-> > > >  - Copy to a new device exclusive page
-> > > 
-> > > IMHO the ownership question would really help us to answer this one..
-> > 
-> > I'm confused about what device ownership you are talking about
+On Wed, May 12, 2021, Ilias Stamatis wrote:
+> The existing kvm_scale_tsc() scales the TSC using the current TSC
+> scaling ratio. That used to be the same as L1's scaling ratio but now
+> with nested TSC scaling support it is no longer the case.
 > 
-> My question was more about the user scenario rather than anything related to
-> the kernel code, nor does it related to page struct at all.
+> This patch adds a new kvm_scale_tsc_l1() function that scales the TSC
+> using L1's scaling ratio. The existing kvm_scale_tsc() can still be used
+> for scaling L2 TSC values.
 > 
-> Let me try to be a little bit more verbose...
+> Additionally, this patch renames the kvm_compute_tsc_offset() function
+> to kvm_compute_tsc_offset_l1() and has the function treat its TSC
+> argument as an L1 TSC value. All existing code uses this function
+> passing L1 values to it.
 > 
-> Firstly, I think one simple solution to handle fork() of device exclusive ptes
-> is to do just like device private ptes: if COW we convert writable ptes into
-> readable ptes.  Then when CPU access happens (in either parent/child) page
-> restore triggers which will convert those readable ptes into read-only present
-> ptes (with the original page backing it).  Then do_wp_page() will take care of
-> page copy.
+> Signed-off-by: Ilias Stamatis <ilstam@amazon.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  1 +
+>  arch/x86/kvm/x86.c              | 41 ++++++++++++++++++++++-----------
+>  2 files changed, 29 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 7dfc609eacd6..be59197e5eb7 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1789,6 +1789,7 @@ static inline bool kvm_is_supported_user_return_msr(u32 msr)
+>  }
+>  
+>  u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc);
+> +u64 kvm_scale_tsc_l1(struct kvm_vcpu *vcpu, u64 tsc);
+>  u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc);
 
-I suspect it doesn't work. This is much more like pinning than
-anything, the data in the page is still under active use by a device
-and if we cannot globally write write protect it, both from CPU and
-device access, then we cannot do COW. IIRC the mm can't trigger a full
-global write protect through the pgmap?
- 
-> Then here comes the ownership question: If we still want to have the parent
-> process behave like before it fork()ed, IMHO we must make sure that original
-> page (that exclusively owned by the device once) still belongs to the parent
-> process not the child.  That's why I think if that's the case we'd do early cow
-> in fork(), because it guarantees that.
+I don't really care which version is used, but we should be consistent, i.e. choose
+kvm_<action>_tsc_l1 or kvm_<action>_tsc_l1, not both.  The easy choice is the
+former since it's already there.
 
-Logically during fork all these device exclusive pages should be
-reverted back to their CPU pages, write protected and the CPU page PTE
-copied to the fork.
+>  unsigned long kvm_get_linear_rip(struct kvm_vcpu *vcpu);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 07cf5d7ece38..84af1af7a2cc 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2319,18 +2319,30 @@ u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_scale_tsc);
+>  
+> -static u64 kvm_compute_tsc_offset(struct kvm_vcpu *vcpu, u64 target_tsc)
+> +u64 kvm_scale_tsc_l1(struct kvm_vcpu *vcpu, u64 tsc)
+> +{
+> +	u64 _tsc = tsc;
+> +	u64 ratio = vcpu->arch.l1_tsc_scaling_ratio;
+> +
+> +	if (ratio != kvm_default_tsc_scaling_ratio)
+> +		_tsc = __scale_tsc(ratio, tsc);
+> +
+> +	return _tsc;
+> +}
 
-We should not copy the device exclusive page PTE to the fork. I think
-I pointed to this on an earlier rev..
+Just make the ratio a param.  This is complete copy+paste of kvm_scale_tsc(),
+with 3 characters added.  And all of the callers are already in an L1-specific
+function or have L1 vs. L2 awareness.  IMO, that makes the code less magical, too,
+as I don't have to dive into a helper to see that it reads l1_tsc_scaling_ratio
+versus tsc_scaling_ratio.
 
-We can optimize this into the various variants above, but logically
-device exclusive stop existing during fork.
+> +EXPORT_SYMBOL_GPL(kvm_scale_tsc_l1);
+> +
+> +static u64 kvm_compute_tsc_offset_l1(struct kvm_vcpu *vcpu, u64 target_tsc)
+>  {
+>  	u64 tsc;
+>  
+> -	tsc = kvm_scale_tsc(vcpu, rdtsc());
+> +	tsc = kvm_scale_tsc_l1(vcpu, rdtsc());
+>  
+>  	return target_tsc - tsc;
+>  }
+>  
+>  u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
+>  {
+> -	return vcpu->arch.l1_tsc_offset + kvm_scale_tsc(vcpu, host_tsc);
+> +	return vcpu->arch.l1_tsc_offset + kvm_scale_tsc_l1(vcpu, host_tsc);
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_read_l1_tsc);
+>  
+> @@ -2363,7 +2375,7 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
+>  	bool synchronizing = false;
+>  
+>  	raw_spin_lock_irqsave(&kvm->arch.tsc_write_lock, flags);
+> -	offset = kvm_compute_tsc_offset(vcpu, data);
+> +	offset = kvm_compute_tsc_offset_l1(vcpu, data);
+>  	ns = get_kvmclock_base_ns();
+>  	elapsed = ns - kvm->arch.last_tsc_nsec;
+>  
+> @@ -2402,7 +2414,7 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
+>  		} else {
+>  			u64 delta = nsec_to_cycles(vcpu, elapsed);
+>  			data += delta;
+> -			offset = kvm_compute_tsc_offset(vcpu, data);
+> +			offset = kvm_compute_tsc_offset_l1(vcpu, data);
+>  		}
+>  		matched = true;
+>  		already_matched = (vcpu->arch.this_tsc_generation == kvm->arch.cur_tsc_generation);
+> @@ -2463,7 +2475,7 @@ static inline void adjust_tsc_offset_host(struct kvm_vcpu *vcpu, s64 adjustment)
+>  {
+>  	if (vcpu->arch.l1_tsc_scaling_ratio != kvm_default_tsc_scaling_ratio)
+>  		WARN_ON(adjustment < 0);
+> -	adjustment = kvm_scale_tsc(vcpu, (u64) adjustment);
+> +	adjustment = kvm_scale_tsc_l1(vcpu, (u64) adjustment);
+>  	adjust_tsc_offset_guest(vcpu, adjustment);
+>  }
+>  
+> @@ -2846,7 +2858,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+>  	/* With all the info we got, fill in the values */
+>  
+>  	if (kvm_has_tsc_control)
+> -		tgt_tsc_khz = kvm_scale_tsc(v, tgt_tsc_khz);
+> +		tgt_tsc_khz = kvm_scale_tsc_l1(v, tgt_tsc_khz);
+>  
+>  	if (unlikely(vcpu->hw_tsc_khz != tgt_tsc_khz)) {
+>  		kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000LL,
+> @@ -3235,7 +3247,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		if (msr_info->host_initiated) {
+>  			kvm_synchronize_tsc(vcpu, data);
+>  		} else {
+> -			u64 adj = kvm_compute_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
+> +			u64 adj = kvm_compute_tsc_offset_l1(vcpu, data) - vcpu->arch.l1_tsc_offset;
+>  			adjust_tsc_offset_guest(vcpu, adj);
+>  			vcpu->arch.ia32_tsc_adjust_msr += adj;
+>  		}
+> @@ -3537,10 +3549,13 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		 * return L1's TSC value to ensure backwards-compatible
+>  		 * behavior for migration.
+>  		 */
+> -		u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
+> -							    vcpu->arch.tsc_offset;
+> -
+> -		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
+> +		if (msr_info->host_initiated) {
 
-Jason
+Unnecessary curly braces.
+
+> +			msr_info->data = kvm_scale_tsc_l1(vcpu, rdtsc()) +
+> +					 vcpu->arch.l1_tsc_offset;
+> +		} else {
+> +			msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) +
+> +					 vcpu->arch.tsc_offset;
+> +		}
+>  		break;
+>  	}
+>  	case MSR_MTRRcap:
+> @@ -4123,7 +4138,7 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+>  			mark_tsc_unstable("KVM discovered backwards TSC");
+>  
+>  		if (kvm_check_tsc_unstable()) {
+> -			u64 offset = kvm_compute_tsc_offset(vcpu,
+> +			u64 offset = kvm_compute_tsc_offset_l1(vcpu,
+>  						vcpu->arch.last_guest_tsc);
+>  			kvm_vcpu_write_tsc_offset(vcpu, offset);
+>  			vcpu->arch.tsc_catchup = 1;
+> -- 
+> 2.17.1
+> 
