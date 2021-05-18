@@ -2,116 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612883870D7
+	by mail.lfdr.de (Postfix) with ESMTP id 88F1A3870F0
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244782AbhEREaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 00:30:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:40698 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235926AbhEREaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 00:30:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AECA31B;
-        Mon, 17 May 2021 21:28:58 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 185D53F73D;
-        Mon, 17 May 2021 21:28:57 -0700 (PDT)
-Subject: Re: [PATCH v3 13/14] PCI/MSI: Document the various ways of ending up
- with NO_MSI
-To:     Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bharat Kumar Gogada <bharatku@xilinx.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
-References: <20210330151145.997953-1-maz@kernel.org>
- <20210330151145.997953-14-maz@kernel.org>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <b5a5a6d8-6ffc-8c5c-c5b1-fb4f5616069f@arm.com>
-Date:   Mon, 17 May 2021 23:28:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1344220AbhEREaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 00:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242723AbhEREax (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 00:30:53 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FF2C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:29:35 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id v12so8573053wrq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IYivGhbkgN/0kOX9moGua2NF+G4pIWkoseKbkugbZk8=;
+        b=b/QzFYlSCIrp2x7Ol1KR9fZeYmrh9fuQnORQMISfz94c4LGcCztOQE+joRIa/yDCvm
+         S6KZQhefd9EsRZUSyi9v9GDwzs4U/UMjeFz1Q0xM9W3W8q6UAbre3ZSENZKRgKY0qf/L
+         OHE6Isb5ZXUK8zDPXLpLv/nQSMqznz4rsAmnfR+ilt9ju4kumWfbm2KIa1+ug3Jm04S1
+         cSmQTjvsI35Hauy72QZNRZJ8ZDh+KihfuTUtWWGhY3j4NUkOkh2mGY8J+zj99l6Fm/mg
+         EfOQ93cGSGKpLzytWUn5d7vN8Y7xZTxBoV7lO6XHMbA4+vEEeOHinXYmk2nhWOiSkmb1
+         /fkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IYivGhbkgN/0kOX9moGua2NF+G4pIWkoseKbkugbZk8=;
+        b=NKzCbMSFDuOiGqPQ6Vn3YytTu1FWrfX1Rh/reerMsZ0FrzPqrGSVJE6XqRI/Jz9ee7
+         jb9/3IVqxWTy/+g7n+qW56bpLOJcht4SZfKV6X50eXNXdt8cRJJARyuffZqV4vJFISHK
+         E5p+Bc5Bf20/zROX8KJfaHt/HWk7WCTBsou7qAdigbMetVpw1js+HYEnvNfvMDssrcDM
+         oP0tfGo2VmZi9hoUqHXgTrMmdT8FOM0Nk1isfqRWXNz76BeytaI6W0djBUzxL50bNrOt
+         btoUWBLgp7Pd9Jc8Ot3OHPciEpm/iRyvu19wzB77RT8auSNTQnbQMNDRr6ur3Q+Upw5w
+         pDCw==
+X-Gm-Message-State: AOAM531i0srrla5FPYCUrVWmEyNK/XZ2olsZgC4BMDmo4RL4t9WNKBBc
+        +JMy9iTfC0JdOzJGIYRz0vv1YEdLkAvH9oUK1JUPtg==
+X-Google-Smtp-Source: ABdhPJz73C/JeMEY7R3wJhYkQwIiUPW6qbsA6Exu7snYht6lCDkBlkpzGwS739hPzgZX0IvEs+sGHHVFeJ+yjoeM/7g=
+X-Received: by 2002:a05:6000:1147:: with SMTP id d7mr4151974wrx.302.1621312173995;
+ Mon, 17 May 2021 21:29:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210330151145.997953-14-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210513193204.816681-1-davidgow@google.com> <20210513193204.816681-6-davidgow@google.com>
+ <CAPDyKFoEeRUjHLZ3iSvPT4_0X107G3Xw+ujxJ9zsDk06dTxo7w@mail.gmail.com>
+In-Reply-To: <CAPDyKFoEeRUjHLZ3iSvPT4_0X107G3Xw+ujxJ9zsDk06dTxo7w@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 18 May 2021 12:29:22 +0800
+Message-ID: <CABVgOSmv6axdgXLPAwb=q0_RRL44Kbd73SLf=UogEM-k7WMNLw@mail.gmail.com>
+Subject: Re: [PATCH v2 06/10] mmc: sdhci-of-aspeed: Remove some unnecessary
+ casts from KUnit tests
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Joel Stanley <joel@jms.id.au>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, May 17, 2021 at 5:23 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Thu, 13 May 2021 at 21:36, David Gow <davidgow@google.com> wrote:
+> >
+> > With KUnit's EXPECT macros no longer typechecking arguments as strictly,
+> > get rid of a number of now unnecessary casts.
+> >
+> > Signed-off-by: David Gow <davidgow@google.com>
+>
+> I guess you will funnel this via another tree than the mmc?
+>
+> Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+>
+> Kind regards
+> Uffe
+>
 
+Yeah: the plan is to have this whole series go through the
+kselftest/kunit tree so we don't have to worry about potentially
+temporarily introducing a bunch of compiler warnings.
 
-On 3/30/21 10:11 AM, Marc Zyngier wrote:
-> We have now three ways of ending up with NO_MSI being set.
-> Document them.
-> 
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->   drivers/pci/msi.c | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> index d9c73c173c14..217dc9f0231f 100644
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -871,8 +871,15 @@ static int pci_msi_supported(struct pci_dev *dev, int nvec)
->   	 * Any bridge which does NOT route MSI transactions from its
->   	 * secondary bus to its primary bus must set NO_MSI flag on
->   	 * the secondary pci_bus.
-> -	 * We expect only arch-specific PCI host bus controller driver
-> -	 * or quirks for specific PCI bridges to be setting NO_MSI.
-> +	 *
-> +	 * The NO_MSI flag can either be set directly by:
-> +	 * - arch-specific PCI host bus controller drivers (deprecated)
-> +	 * - quirks for specific PCI bridges
-> +	 *
-> +	 * or indirectly by platform-specific PCI host bridge drivers by
-> +	 * advertising the 'msi_domain' property, which results in
-> +	 * the NO_MSI flag when no MSI domain is found for this bridge
-> +	 * at probe time.
+Cheers,
+-- David
 
-I have an ACPI machine with a gicv2 (no m), and a MSI region that isn't 
-described by ACPI because its non-standard. In the past this tended to 
-work because PCIe device drivers would fall back to legacy pci intx 
-silently. But, with 5.13, it seems this series now triggers the 
-WARN_ON_ONCE() in arch_setup_msi_irq, because duh, no MSI support.
-
-Everything of course continues to work, it just gets this ugly splat on 
-bootup telling me basically the machine doesn't support MSIs. So, I 
-considered a few patches, including just basically setting nomsi if 
-gicv2 && acpi, or eek a host bridge quirk.
-
-None of these seem great, so how can this be fixed?
-
-Thanks,
-
-
-
-
->   	 */
->   	for (bus = dev->bus; bus; bus = bus->parent)
->   		if (bus->bus_flags & PCI_BUS_FLAGS_NO_MSI)
-> 
-
+> > ---
+> > This should be a no-op functionality wise, and while it depends on the
+> > first couple of patches in this series, it's otherwise independent from
+> > the others. I think this makes the test more readable, but if you
+> > particularly dislike it, I'm happy to drop it.
+> >
+> >  drivers/mmc/host/sdhci-of-aspeed-test.c | 34 ++++++++++++-------------
+> >  1 file changed, 17 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
+> > index bb67d159b7d8..1ed4f86291f2 100644
+> > --- a/drivers/mmc/host/sdhci-of-aspeed-test.c
+> > +++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
+> > @@ -26,23 +26,23 @@ static void aspeed_sdhci_phase_ddr52(struct kunit *test)
+> >         KUNIT_EXPECT_EQ(test, 15,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 25));
+> >
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 180));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 181));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 182));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 183));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 184));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 185));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 203));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 204));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 205));
+> >  }
+> >
+> > @@ -67,21 +67,21 @@ static void aspeed_sdhci_phase_hs200(struct kunit *test)
+> >         KUNIT_EXPECT_EQ(test, 15,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 96));
+> >
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 180));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 185));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 186));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 187));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 269));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 270));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 271));
+> > -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> > +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+> >                         aspeed_sdhci_phase_to_tap(NULL, rate, 276));
+> >  }
+> >
+> > --
+> > 2.31.1.751.gd2f1c929bd-goog
+> >
