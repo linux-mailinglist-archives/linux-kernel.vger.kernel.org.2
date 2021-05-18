@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C836C387BE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727E8387BEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344435AbhERPGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:06:12 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:56801 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344161AbhERPGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:06:12 -0400
-Received: from [IPv6:2601:646:8602:8be1:c569:1cd0:3c83:3a98] ([IPv6:2601:646:8602:8be1:c569:1cd0:3c83:3a98])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14IF4dJI3967288
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 18 May 2021 08:04:40 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14IF4dJI3967288
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621350280;
-        bh=wimyxhuEh6IiLThCe1ubHmUesa58ublLSsS8OXmapko=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=VnUdbCRrGwg38mCBJ9+R9zkHunTLxOMeF/LfVnyzVzGMGRbNS+TQXoYULjqe2X8JH
-         /PBGRJzlmaO5wlbh1Tt9O3HD02qHhAj4CiZPmP+6R2WqZ35gUt0ybK+gaN5Fp4XrSf
-         UlzYRMcXffXnh0ncisnxfVqLk/NJC/FBAFvqhMj6UvNae0XdSdbTbKOW51wrjQQ5OJ
-         2fD/11igDYyY9GLvNC9ls4ZZZrDaJd9AKiFtnhs7rutJaXSXXaaeTc55G0R1QdxjMk
-         ObR2zJbAZ2qOtvW0PfUBHA+0Oi7f09RmtsUkOCXATc3L6Afb0QTo0M6ye+rTLFKEY9
-         yqh1N5m3/Fb7g==
-Date:   Tue, 18 May 2021 08:04:28 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YKDPJum3pB/Ma9Gs@gmail.com>
-References: <20210515011015.2707542-1-hpa@zytor.com> <20210515011015.2707542-3-hpa@zytor.com> <YKDPJum3pB/Ma9Gs@gmail.com>
+        id S1344858AbhERPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:07:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48018 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343837AbhERPHK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621350352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=STXxttVWUuxEk4dKEc/75iAMgKsQFPcICY7qFMTjQ80=;
+        b=eaC+xinW3A9SnrLgMsA1Nlc7QLPEcottJxHahkMZibyYbUD+VnSr7H6YjeX2FclGU70fBn
+        djyfBPwcqwVVcbVhVAwvwCYN/PcownHKhkDPytO1VfDr2yXz7OJJK0HSrJuoPx8y9NcC3M
+        G6VITD1wJFTiR0Y1YpAxu0hOo6MmLfw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-6HoZWoUtPCyrttgjBR-1_A-1; Tue, 18 May 2021 11:05:48 -0400
+X-MC-Unique: 6HoZWoUtPCyrttgjBR-1_A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 899A0107ACFB;
+        Tue, 18 May 2021 15:05:47 +0000 (UTC)
+Received: from gondolin.fritz.box (ovpn-113-74.ams2.redhat.com [10.36.113.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7411060855;
+        Tue, 18 May 2021 15:05:40 +0000 (UTC)
+Date:   Tue, 18 May 2021 17:05:37 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 00/11] KVM: s390: pv: implement lazy destroy
+Message-ID: <20210518170537.58b32ffe.cohuck@redhat.com>
+In-Reply-To: <20210517200758.22593-1-imbrenda@linux.ibm.com>
+References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3 2/4] x86/syscall: update and extend selftest syscall_numbering_64
-To:     Ingo Molnar <mingo@kernel.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <F236981F-F8B5-4994-9550-730676DDE074@zytor.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well, I finished the ptracer addition to the test=2E It was *interesting*: =
-it turns out that ptracing system calls, *even without modifying the state =
-in any way*, just being a passive observer, a sign-extends the system call =
-numbers *on current kernels*=2E
+On Mon, 17 May 2021 22:07:47 +0200
+Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
 
-This means that on current kernels passively tracing a process changes the=
- syscall behavior=2E I think we can all agree that that is not acceptable=
-=2E
+> Previously, when a protected VM was rebooted or when it was shut down,
+> its memory was made unprotected, and then the protected VM itself was
+> destroyed. Looping over the whole address space can take some time,
+> considering the overhead of the various Ultravisor Calls (UVCs).  This
+> means that a reboot or a shutdown would take a potentially long amount
+> of time, depending on the amount of used memory.
+> 
+> This patchseries implements a deferred destroy mechanism for protected
+> guests. When a protected guest is destroyed, its memory is cleared in
+> background, allowing the guest to restart or terminate significantly
+> faster than before.
+> 
+> There are 2 possibilities when a protected VM is torn down:
+> * it still has an address space associated (reboot case)
+> * it does not have an address space anymore (shutdown case)
+> 
+> For the reboot case, the reference count of the mm is increased, and
+> then a background thread is started to clean up. Once the thread went
+> through the whole address space, the protected VM is actually
+> destroyed.
+> 
+> For the shutdown case, a list of pages to be destroyed is formed when
+> the mm is torn down. Instead of just unmapping the pages when the
+> address space is being torn down, they are also set aside. Later when
+> KVM cleans up the VM, a thread is started to clean up the pages from
+> the list.
 
-I will do a couple of cleanups and add this to a v4 patchset=2E
+Just to make sure, 'clean up' includes doing uv calls?
 
-On May 16, 2021 12:52:06 AM PDT, Ingo Molnar <mingo@kernel=2Eorg> wrote:
->
->* H=2E Peter Anvin <hpa@zytor=2Ecom> wrote:
->
->> From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom>
->>=20
->> Update the syscall_numbering_64 selftest to reflect that a system
->call
->> is to be extended from 32 bits=2E Add a mix of tests for valid and
->> invalid system calls in 64-bit and x32 space=2E
->>=20
->> Use an explicit system call instruction, because we cannot know if
->the
->> glibc syscall() wrapper intercepts instructions, extends the system
->> call number independently, or anything similar=2E
->>=20
->> Use long long instead of long to make it possible to compile this
->test
->> on x32 as well as 64 bits=2E
->>=20
->> Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
->> ---
->>  =2E=2E=2E/testing/selftests/x86/syscall_numbering=2Ec | 274
->++++++++++++++----
->>  1 file changed, 222 insertions(+), 52 deletions(-)
->
->Small request: I'd suggest moving this to the first place - so that we
->can=20
->easily test before/after effects of (current) patch #1/4=2E
->
->Thanks,
->
->	Ingo
+> 
+> This means that the same address space can have memory belonging to
+> more than one protected guest, although only one will be running, the
+> others will in fact not even have any CPUs.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Are those set-aside-but-not-yet-cleaned-up pages still possibly
+accessible in any way? I would assume that they only belong to the
+'zombie' guests, and any new or rebooted guest is a new entity that
+needs to get new pages?
+
+Can too many not-yet-cleaned-up pages lead to a (temporary) memory
+exhaustion?
+
