@@ -2,144 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C8B387ACA
+	by mail.lfdr.de (Postfix) with ESMTP id ABE0E387ACB
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349802AbhEROOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
+        id S1349847AbhEROOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349844AbhEROOH (ORCPT
+        with ESMTP id S1349872AbhEROOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:14:07 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3C8C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:12:49 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id q2so7461798pfh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SPfPtCLbzkmNg1kSYw7mvxQUWmbeLInogT4WAGPjSVM=;
-        b=nO7TWl3baJhp4LD8iNn0IfBKlXcwmSHmTgGg+shGfU2jyyksQ5FI9s9g2+ZJ7dBpHK
-         9oiWLxbhMVp9mCqqNzfaun6OOo1IwVP5ttnL4/UBwotFAeO1v6pOC0KXuRd3mLS7TWCO
-         KTknXiAPPWQlrnoPg2kpCtFMBHQa7B3rkCJdg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SPfPtCLbzkmNg1kSYw7mvxQUWmbeLInogT4WAGPjSVM=;
-        b=M2IEBtdbDdECHiS60PXIl+bzlbvvUzVaIKmScBZsqRAYxyH+o4SqnvGpF/E3SB40RZ
-         LiOyror3nDeVlz1/QETsYFW7x0Zmmkf0YLjaL9KbWo69r7j19WAFUC9UaZhk3G2ESMSm
-         /vkAIRLVjHPYVZSWdVKfpIGa0m1rgdpPC3ZNgQKmfx8jWDzzM7aOWsLr7t3fq8Nq6gnG
-         imlBSlg+CRFGw+aV6PvJqRY+M72Rzm9wXWeMPb9PqGDFUzom2kvOrfukTxf2/7VoCG/V
-         x/wB9uHXqkj9hAIAW+ZqnDD2mwKtR9vxe2T+svdFVseEmjJINAl4jtyfQXaqK2dJBbnX
-         8v0g==
-X-Gm-Message-State: AOAM532AANDCWoZLVdKvOo4wt4LNwzx+gPfs7eKrKBHgEVqtzO7hbQbN
-        iLIYJ8yXn5r2IYPTbgO4r33gRA==
-X-Google-Smtp-Source: ABdhPJxT5F2/6+OjX9ZFD2Wd8LwQ9UtJtdyI+2KeJSeu0ns9RtNDermYQJTnW/il3ApxTCadVWasww==
-X-Received: by 2002:a63:f65:: with SMTP id 37mr5256201pgp.239.1621347168722;
-        Tue, 18 May 2021 07:12:48 -0700 (PDT)
-Received: from 416f1e4b4f0c (110-175-118-133.tpgi.com.au. [110.175.118.133])
-        by smtp.gmail.com with ESMTPSA id c6sm12092568pfo.192.2021.05.18.07.12.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 18 May 2021 07:12:48 -0700 (PDT)
-Date:   Tue, 18 May 2021 14:12:42 +0000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.12 081/363] net: bridge: propagate error code and
- extack from br_mc_disabled_update
-Message-ID: <20210518141238.GA20@416f1e4b4f0c>
-References: <20210517140302.508966430@linuxfoundation.org>
- <20210517140305.339768334@linuxfoundation.org>
- <20210518122449.GA65@ec3d6f83b95b>
- <YKO1jx78HibCUDkD@kroah.com>
+        Tue, 18 May 2021 10:14:16 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960A3C06175F;
+        Tue, 18 May 2021 07:12:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 58D541F42A10;
+        Tue, 18 May 2021 15:12:56 +0100 (BST)
+Date:   Tue, 18 May 2021 16:12:52 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     <patrice.chotard@foss.st.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH v4 1/3] spi: spi-mem: add automatic poll status
+ functions
+Message-ID: <20210518161252.3e4f2999@collabora.com>
+In-Reply-To: <20210518134332.17826-2-patrice.chotard@foss.st.com>
+References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
+        <20210518134332.17826-2-patrice.chotard@foss.st.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKO1jx78HibCUDkD@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 02:39:43PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, May 18, 2021 at 12:24:57PM +0000, Rudi Heitbaum wrote:
-> > On Mon, May 17, 2021 at 03:59:07PM +0200, Greg Kroah-Hartman wrote:
-> > > From: Florian Fainelli <f.fainelli@gmail.com>
-> > > 
-> > > [ Upstream commit ae1ea84b33dab45c7b6c1754231ebda5959b504c ]
-> > > 
-> > > Some Ethernet switches might only be able to support disabling multicast
-> > > snooping globally, which is an issue for example when several bridges
-> > > span the same physical device and request contradictory settings.
-> > > 
-> > > Propagate the return value of br_mc_disabled_update() such that this
-> > > limitation is transmitted correctly to user-space.
-> > > 
-> > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> > > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > > Signed-off-by: David S. Miller <davem@davemloft.net>
-> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > ---
-> > >  net/bridge/br_multicast.c | 28 +++++++++++++++++++++-------
-> > >  net/bridge/br_netlink.c   |  4 +++-
-> > >  net/bridge/br_private.h   |  3 ++-
-> > >  net/bridge/br_sysfs_br.c  |  8 +-------
-> > >  4 files changed, 27 insertions(+), 16 deletions(-)
-> > 
-> > This patch results in docker failing to start, and a regression between
-> > 5.12.4 and 5.12.5-rc1
-> > 
-> > A working dmesg output is like:
-> > 
-> > [   11.545255] device eth0 entered promiscuous mode
-> > [   11.693848] process 'docker/tmp/qemu-check643160757/check' started with executable stack
-> > [   17.233059] br-92020c7e3aea: port 1(veth17a0552) entered blocking state
-> > [   17.233065] br-92020c7e3aea: port 1(veth17a0552) entered disabled state
-> > [   17.233098] device veth17a0552 entered promiscuous mode
-> > [   17.292839] docker0: port 2(veth9d227f5) entered blocking state
-> > [   17.292848] docker0: port 2(veth9d227f5) entered disabled state
-> > [   17.292946] device veth9d227f5 entered promiscuous mode
-> > [   17.293070] docker0: port 2(veth9d227f5) entered blocking state
-> > [   17.293075] docker0: port 2(veth9d227f5) entered forwarding state
-> > 
-> > with this patch "device veth17a0552 entered promiscuous mode" never
-> > shows up.
-> > 
-> > the docker error itself is:
-> > 
-> > docker: Error response from daemon: failed to create endpoint
-> > sleepy_dijkstra on network bridge: adding interface veth8cbd8f9 to
-> > bridge docker0 failed: operation not supported.
-> 
-> Ick.
-> 
-> Does 5.13-rc1 also show this same problem?
-> 
-> And thanks for testing!
-> 
-> greg k-h
+On Tue, 18 May 2021 15:43:30 +0200
+<patrice.chotard@foss.st.com> wrote:
 
-Hi Greg,
+> From: Patrice Chotard <patrice.chotard@foss.st.com>
+> 
+> With STM32 QSPI, it is possible to poll the status register of the device.
+> This could be done to offload the CPU during an operation (erase or
+> program a SPI NAND for example).
+> 
+> spi_mem_poll_status API has been added to handle this feature.
+> This new function take care of the offload/non-offload cases.
+> 
+> For the non-offload case, use read_poll_timeout() to poll the status in
+> order to release CPU during this phase.
+> For example, previously, when erasing large area, in non-offload case,
+> CPU load can reach ~50%, now it decrease to ~35%.
+> 
+> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> ---
+> Changes in v4:
+>   - Remove init_completion() from spi_mem_probe() added in v2.
+>   - Add missing static for spi_mem_read_status().
+>   - Check if operation in spi_mem_poll_status() is a READ.
+> 
+> Changes in v3:
+>   - Add spi_mem_read_status() which allows to read 8 or 16 bits status.
+>   - Add initial_delay_us and polling_delay_us parameters to spi_mem_poll_status()
+>     and also to poll_status() callback.
+>   - Move spi_mem_supports_op() in SW-based polling case.
+>   - Add delay before invoking read_poll_timeout().
+>   - Remove the reinit/wait_for_completion() added in v2.
+> 
+> Changes in v2:
+>   - Indicates the spi_mem_poll_status() timeout unit
+>   - Use 2-byte wide status register
+>   - Add spi_mem_supports_op() call in spi_mem_poll_status()
+>   - Add completion management in spi_mem_poll_status()
+>   - Add offload/non-offload case management in spi_mem_poll_status()
+>   - Optimize the non-offload case by using read_poll_timeout()
+> 
+>  drivers/spi/spi-mem.c       | 85 +++++++++++++++++++++++++++++++++++++
+>  include/linux/spi/spi-mem.h | 14 ++++++
+>  2 files changed, 99 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 1513553e4080..97c7a83686c7 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -6,6 +6,7 @@
+>   * Author: Boris Brezillon <boris.brezillon@bootlin.com>
+>   */
+>  #include <linux/dmaengine.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/spi/spi.h>
+>  #include <linux/spi/spi-mem.h>
+> @@ -743,6 +744,90 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+>  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+>  }
+>  
+> +static int spi_mem_read_status(struct spi_mem *mem,
+> +			       const struct spi_mem_op *op,
+> +			       u16 *status)
+> +{
+> +	const u8 *bytes = (u8 *)op->data.buf.in;
+> +	int ret;
+> +
+> +	ret = spi_mem_exec_op(mem, op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (op->data.nbytes > 1)
+> +		*status = ((u16)bytes[0] << 8) | bytes[1];
+> +	else
+> +		*status = bytes[0];
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * spi_mem_poll_status() - Poll memory device status
+> + * @mem: SPI memory device
+> + * @op: the memory operation to execute
+> + * @mask: status bitmask to ckeck
+> + * @match: (status & mask) expected value
+> + * @initial_delay_us: delay in us before starting to poll
+> + * @polling_delay_us: time to sleep between reads in us
+> + * @timeout_ms: timeout in milliseconds
+> + *
+> + * This function send a polling status request to the controller driver
 
-I can confirm that docker starts correctly with 5.13-rc1
+"
+This function polls a status register and returns when
+(status & mask) == match or when the timeout has expired.
+"
 
-# dmesg | head
-[    0.000000] Linux version 5.13.0-rc1 (rudi@0e5f93d4a8a2) (x86_64-libreelec-linux-gnu-gcc-10.3.0 (GCC) 10.3.0, GNU ld (GNU Binutils) 2.36.1) #1 SMP Tue May 18 14:00:41 UTC 2021
-[    0.000000] Command line: BOOT_IMAGE=/KERNEL boot=LABEL=LIBREELEC disk=LABEL=STORAGE i915.enable_guc=2 quiet
-...
-[   11.214582] docker0: port 1(veth2b37ac4) entered blocking state
-[   11.214589] docker0: port 1(veth2b37ac4) entered disabled state
-[   11.214649] device veth2b37ac4 entered promiscuous mode
-[   11.214752] docker0: port 1(veth2b37ac4) entered blocking state
-[   11.214755] docker0: port 1(veth2b37ac4) entered forwarding state
+> + *
+> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+> + *         -EOPNOTSUPP if not supported.
+> + */
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u16 mask, u16 match,
+> +			unsigned long initial_delay_us,
+> +			unsigned long polling_delay_us,
+> +			u16 timeout_ms)
+> +{
+> +	struct spi_controller *ctlr = mem->spi->controller;
+> +	int ret = -EOPNOTSUPP;
+> +	int read_status_ret;
+> +	u16 status;
+> +
+> +	if (op->data.nbytes < 1 || op->data.nbytes > 2 ||
+> +	    op->data.dir != SPI_MEM_DATA_IN)
+> +		return (-EINVAL);
 
-Regards
-Rudi
+s/return (-EINVAL);/return -EINVAL;/
+
+
+[...]
+
+>  /**
+> @@ -369,6 +376,13 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
+>  void devm_spi_mem_dirmap_destroy(struct device *dev,
+>  				 struct spi_mem_dirmap_desc *desc);
+>  
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u16 mask, u16 match,
+> +			unsigned long initial_delay_us,
+> +			unsigned long polling_delay_us,
+> +			u16 timeout);
+
+s/timeout/timeout_ms/.
+
+With those minor things fixed
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> +
+>  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+>  				       struct module *owner);
+>  
+
