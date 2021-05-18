@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5C438798A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7511387985
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349432AbhERNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:09:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:51652 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349431AbhERNJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:09:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD1EBD6E;
-        Tue, 18 May 2021 06:07:52 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DAD533F73B;
-        Tue, 18 May 2021 06:07:51 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-Subject: [PATCH] sched/debug: Don't update sched_domain debug directories before sched_debug_init()
-Date:   Tue, 18 May 2021 14:07:25 +0100
-Message-Id: <20210518130725.3563132-1-valentin.schneider@arm.com>
+        id S1349278AbhERNIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:08:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4734 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231857AbhERNIL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:08:11 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fkx573XYCzqVBP;
+        Tue, 18 May 2021 21:03:23 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 21:06:52 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
+ 2021 21:06:51 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
+CC:     <john.garry@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+Subject: [PATCH -next] scsi: hisi_sas: drop free_irq of devm_request_irq allocated irq
+Date:   Tue, 18 May 2021 21:09:02 +0800
+Message-ID: <20210518130902.1307494-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since CPU capacity asymmetry can stem purely from maximum frequency
-differences (e.g. Pixel 1), a rebuild of the scheduler topology can be
-issued upon loading cpufreq, see:
+irq allocated with devm_request_irq should not be freed using
+free_irq, because doing so causes a dangling pointer, and a
+subsequent double free.
 
-  arch_topology.c::init_cpu_capacity_callback()
-
-Turns out that if this rebuild happens *before* sched_debug_init() is
-run (which is a late initcall), we end up messing up the sched_domain debug
-directory: passing a NULL parent to debugfs_create_dir() ends up creating
-the directory at the debugfs root, which in this case creates
-/sys/kernel/debug/domains (instead of /sys/kernel/debug/sched/domains).
-
-This currently doesn't happen on asymmetric systems which use cpufreq-scpi
-or cpufreq-dt drivers, as those are loaded via
-deferred_probe_initcall() (it is also a late initcall, but appears to be
-ordered *after* sched_debug_init()).
-
-Ionela has been working on detecting maximum frequency asymmetry via ACPI,
-and that actually happens via a *device* initcall, thus before
-sched_debug_init(), and causes the aforementionned debugfs mayhem.
-
-One option would be to punt sched_debug_init() down to
-fs_initcall_sync(). Preventing update_sched_domain_debugfs() from running
-before sched_debug_init() appears to be the safer option.
-
-Link: http://lore.kernel.org/r/20210514095339.12979-1-ionela.voinescu@arm.com
-Fixes: 3b87f136f8fc ("sched,debug: Convert sysctl sched_domains to debugfs")
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- kernel/sched/debug.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 3bdee5fd7d29..6b5d6c7612fd 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -388,6 +388,13 @@ void update_sched_domain_debugfs(void)
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+index 499c770d405c..684f762bcfb3 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+@@ -4811,9 +4811,9 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, struct hisi_hba *hisi_hba)
  {
- 	int cpu, i;
+ 	int i;
  
-+	/*
-+	 * This can unfortunately be invoked before sched_debug_init() creates
-+	 * the debug directory. Don't touch sd_sysctl_cpus until then.
-+	 */
-+	if (!debugfs_sched)
-+		return;
-+
- 	if (!cpumask_available(sd_sysctl_cpus)) {
- 		if (!alloc_cpumask_var(&sd_sysctl_cpus, GFP_KERNEL))
- 			return;
+-	free_irq(pci_irq_vector(pdev, 1), hisi_hba);
+-	free_irq(pci_irq_vector(pdev, 2), hisi_hba);
+-	free_irq(pci_irq_vector(pdev, 11), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
+ 	for (i = 0; i < hisi_hba->cq_nvecs; i++) {
+ 		struct hisi_sas_cq *cq = &hisi_hba->cq[i];
+ 		int nr = hisi_sas_intr_conv ? 16 : 16 + i;
 -- 
 2.25.1
 
