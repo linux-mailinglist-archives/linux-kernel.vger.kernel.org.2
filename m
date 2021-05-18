@@ -2,196 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A86388090
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F65388098
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351884AbhERTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhERTg5 (ORCPT
+        id S1351886AbhERTlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:41:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50568 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229813AbhERTk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:36:57 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BECC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:35:39 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id n83so3981878ybg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zuttx+ccp2WJpeVo41ApR4QzlKZXH0hmSVWBq1ylj1s=;
-        b=r01H/LXoxE+CT6mAOiH2s+UHWFMDnVq1591tvNy96n2aTtUTSY3h/VaXnqcxl/iLGD
-         OwLEiDdAFdMyB2IoSx470QJd9JbJlJQlhcb83zioeUI6+1X1MbEN7p1QyH53aQul3fnM
-         RtE4CAAi3aiTCGFrqdhkyb3b16kTduuxExSy2Tj3hx+as9nD/9AnYnsPtgGKHjzhgFEp
-         IjpWVi124kLu0c3v1bYtx4u/DoGXAM/MElIJaKaNgPzr0yHVFNydcw/WRC2aw59RW52Y
-         TcQWBe3uFU9byEVB6foASvYYAuD0lKmOeNxb7gfPcAFU4CkOELZHQOJXkPmUIiGK9QeD
-         2WUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zuttx+ccp2WJpeVo41ApR4QzlKZXH0hmSVWBq1ylj1s=;
-        b=PXqfHUqogDDzT3tFgZAJSyz6gx+4rmP65BjFlerv9ht/i4yJTjsmFfMsfNHoAREWpJ
-         q6/yqmNCPo0nRdrxrk9UrIvL3imjFb71BPR8qwgebGOEXU9hPXihrvRkCOnBDhTzp6HP
-         Bg0R0bzuuo858aRjxkbrzVJ/B+JptuCrx0i3LhGGjL2L0nALWbVCAVVDf5oEMN3oMSjs
-         ILbmPYHPUdRW5m5F4DWTeBr/KYvNfWQUoLs/PxoTi5qR3EiE4wNxkV3MlBR+vbUOUdjw
-         fhSUcVIh75xstuVJntF5JnJqRqwSvJCosFp1SNeFEB/GMSUvjI/9gZRBl5j9JDbYng5w
-         +GYg==
-X-Gm-Message-State: AOAM5336gYxBzPtbeCO4thKCp9xZw5PpWjrLKlMUm/Qe0bc7Z6Yrb74q
-        GhW0YRpUukBqbzTqv2c1RevL4v88a8F3WCX0eS/X6Ja4Zgw=
-X-Google-Smtp-Source: ABdhPJwd6LPFInfHlB0MoYTGJBNYl6tOWlIcXNtchel3ebgFsJbwFmOPhHEI/49CuTvKdTxtoX37odJCBnGzIQH81F0=
-X-Received: by 2002:a5b:711:: with SMTP id g17mr550659ybq.446.1621366537876;
- Tue, 18 May 2021 12:35:37 -0700 (PDT)
+        Tue, 18 May 2021 15:40:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621366780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5zqqX1IaXTEbDmyAG1p0aodW9voE4HBxeQmi3CXD/I0=;
+        b=Wccv5XlfQLMpK7FEIGKLC0tJRQddEaXxiNGfLsvKSr5XMkwcfZeCRAWaU3fX7ufuUwoDiR
+        blC0sB9qpA/9IdO83tBKT5M/QJXXqCco5RJkRUwgtS1NfpMumbamu+9K+DJ1trvlmxW0vf
+        cmow+UY3JpCoLPnO+8Xi2wjGIQjyflY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-ClJTDOeWPvuJVwkRki2Zfg-1; Tue, 18 May 2021 15:39:38 -0400
+X-MC-Unique: ClJTDOeWPvuJVwkRki2Zfg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F419D107ACC7;
+        Tue, 18 May 2021 19:39:36 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8716E5C1CF;
+        Tue, 18 May 2021 19:39:36 +0000 (UTC)
+Date:   Tue, 18 May 2021 13:39:36 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     <qemu-devel@nongnu.org>, <cohuck@redhat.com>,
+        <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [Question] Indefinitely block in the host when remove the PF
+ driver
+Message-ID: <20210518133936.0593d3fc.alex.williamson@redhat.com>
+In-Reply-To: <c09fed39-bde5-b7a9-d945-79ef85260e5a@hisilicon.com>
+References: <c9466e2c-385d-8298-d03c-80dcfc359f52@hisilicon.com>
+        <20210430082940.4b0e0397@redhat.com>
+        <c09fed39-bde5-b7a9-d945-79ef85260e5a@hisilicon.com>
 MIME-Version: 1.0
-References: <20210412084004.200986670@linuxfoundation.org> <20210412084005.653952525@linuxfoundation.org>
- <20210412051230-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210412051230-mutt-send-email-mst@kernel.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 18 May 2021 21:35:26 +0200
-Message-ID: <CANn89iJ+5qFw+sPmxBqzxd6rp=3fnc8xkbup7SWWa_LxyhUUrg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 042/111] virtio_net: Do not pull payload in skb->head
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 11:12 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Mon, Apr 12, 2021 at 10:40:20AM +0200, Greg Kroah-Hartman wrote:
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > [ Upstream commit 0f6925b3e8da0dbbb52447ca8a8b42b371aac7db ]
-> >
-> > Xuan Zhuo reported that commit 3226b158e67c ("net: avoid 32 x truesize
-> > under-estimation for tiny skbs") brought  a ~10% performance drop.
-> >
-> > The reason for the performance drop was that GRO was forced
-> > to chain sk_buff (using skb_shinfo(skb)->frag_list), which
-> > uses more memory but also cause packet consumers to go over
-> > a lot of overhead handling all the tiny skbs.
-> >
-> > It turns out that virtio_net page_to_skb() has a wrong strategy :
-> > It allocates skbs with GOOD_COPY_LEN (128) bytes in skb->head, then
-> > copies 128 bytes from the page, before feeding the packet to GRO stack.
-> >
-> > This was suboptimal before commit 3226b158e67c ("net: avoid 32 x truesize
-> > under-estimation for tiny skbs") because GRO was using 2 frags per MSS,
-> > meaning we were not packing MSS with 100% efficiency.
-> >
-> > Fix is to pull only the ethernet header in page_to_skb()
-> >
-> > Then, we change virtio_net_hdr_to_skb() to pull the missing
-> > headers, instead of assuming they were already pulled by callers.
-> >
-> > This fixes the performance regression, but could also allow virtio_net
-> > to accept packets with more than 128bytes of headers.
-> >
-> > Many thanks to Xuan Zhuo for his report, and his tests/help.
-> >
-> > Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
-> > Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Link: https://www.spinics.net/lists/netdev/msg731397.html
-> > Co-Developed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Signed-off-by: Eric Dumazet <edumazet@google.com>
-> > Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> > Cc: Jason Wang <jasowang@redhat.com>
-> > Cc: virtualization@lists.linux-foundation.org
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> > Signed-off-by: David S. Miller <davem@davemloft.net>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->
-> Note that an issue related to this patch was recently reported.
-> It's quite possible that the root cause is a bug elsewhere
-> in the kernel, but it probably makes sense to defer the backport
-> until we know more ...
+On Tue, 11 May 2021 11:44:49 +0800
+Yicong Yang <yangyicong@hisilicon.com> wrote:
 
-I think the patch should be backported now, all issues have been sorted out ?
+> [ +qemu-devel ]
+> 
+> On 2021/4/30 22:29, Alex Williamson wrote:
+> > On Fri, 30 Apr 2021 15:57:47 +0800
+> > Yicong Yang <yangyicong@hisilicon.com> wrote:
+> >   
+> >> When I try to remove the PF driver in the host, the process will be blocked
+> >> if the related VF of the device is added in the Qemu as an iEP.
+> >>
+> >> here's what I got in the host:
+> >>
+> >> [root@localhost 0000:75:00.0]# rmmod hisi_zip
+> >> [99760.571352] vfio-pci 0000:75:00.1: Relaying device request to user (#0)
+> >> [99862.992099] vfio-pci 0000:75:00.1: Relaying device request to user (#10)
+> >> [...]
+> >>
+> >> and in the Qemu:
+> >>
+> >> estuary:/$ lspci -tv
+> >> -[0000:00]-+-00.0  Device 1b36:0008
+> >>            +-01.0  Device 1af4:1000
+> >>            +-02.0  Device 1af4:1009
+> >>            \-03.0  Device 19e5:a251 <----- the related VF device
+> >> estuary:/$ qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> >> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> >> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> >> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> >> [...]
+> >>
+> >> The rmmod process will be blocked until I kill the Qemu process. That's the only way if I
+> >> want to end the rmmod.
+> >>
+> >> So my question is: is such block reasonable? If the VF devcie is occupied or doesn't
+> >> support hotplug in the Qemu, shouldn't we fail the rmmod and return something like -EBUSY
+> >> rather than make the host blocked indefinitely?  
+> > 
+> > Where would we return -EBUSY?  pci_driver.remove() returns void.
+> > Without blocking, I think our only option would be to kill the user
+> > process.
+> >    
+> 
+> yes. the remove() callback of pci_driver doesn't provide a way to abort the process.
+> 
+> >> Add the VF under a pcie root port will avoid this. Is it encouraged to always
+> >> add the VF under a pcie root port rather than directly add it as an iEP?  
+> > 
+> > Releasing a device via the vfio request interrupt is always a
+> > cooperative process currently, the VM needs to be configured such that
+> > the device is capable of being unplugged and the guest needs to respond
+> > to the ejection request.  Thanks,
+> >   
+> 
+> Does it make sense to abort the VM creation and give some warnings if user try to
+> pass a vfio pci device to the Qemu and doesn't attach it to a hotpluggable
+> bridge? Currently I think there isn't such a mechanism in Qemu.
 
->
->
-> > ---
-> >  drivers/net/virtio_net.c   | 10 +++++++---
-> >  include/linux/virtio_net.h | 14 +++++++++-----
-> >  2 files changed, 16 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index b67460864b3c..d8ee001d8e8e 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -406,9 +406,13 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> >       offset += hdr_padded_len;
-> >       p += hdr_padded_len;
-> >
-> > -     copy = len;
-> > -     if (copy > skb_tailroom(skb))
-> > -             copy = skb_tailroom(skb);
-> > +     /* Copy all frame if it fits skb->head, otherwise
-> > +      * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
-> > +      */
-> > +     if (len <= skb_tailroom(skb))
-> > +             copy = len;
-> > +     else
-> > +             copy = ETH_HLEN + metasize;
-> >       skb_put_data(skb, p, copy);
-> >
-> >       if (metasize) {
-> > diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-> > index 98775d7fa696..b465f8f3e554 100644
-> > --- a/include/linux/virtio_net.h
-> > +++ b/include/linux/virtio_net.h
-> > @@ -65,14 +65,18 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
-> >       skb_reset_mac_header(skb);
-> >
-> >       if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
-> > -             u16 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
-> > -             u16 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
-> > +             u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
-> > +             u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
-> > +             u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
-> > +
-> > +             if (!pskb_may_pull(skb, needed))
-> > +                     return -EINVAL;
-> >
-> >               if (!skb_partial_csum_set(skb, start, off))
-> >                       return -EINVAL;
-> >
-> >               p_off = skb_transport_offset(skb) + thlen;
-> > -             if (p_off > skb_headlen(skb))
-> > +             if (!pskb_may_pull(skb, p_off))
-> >                       return -EINVAL;
-> >       } else {
-> >               /* gso packets without NEEDS_CSUM do not set transport_offset.
-> > @@ -102,14 +106,14 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
-> >                       }
-> >
-> >                       p_off = keys.control.thoff + thlen;
-> > -                     if (p_off > skb_headlen(skb) ||
-> > +                     if (!pskb_may_pull(skb, p_off) ||
-> >                           keys.basic.ip_proto != ip_proto)
-> >                               return -EINVAL;
-> >
-> >                       skb_set_transport_header(skb, keys.control.thoff);
-> >               } else if (gso_type) {
-> >                       p_off = thlen;
-> > -                     if (p_off > skb_headlen(skb))
-> > +                     if (!pskb_may_pull(skb, p_off))
-> >                               return -EINVAL;
-> >               }
-> >       }
-> > --
-> > 2.30.2
-> >
-> >
->
+You're essentially trying to define a usage policy and pick somewhere
+to impose it.  I think QEMU is not the right place.  There are plenty
+of valid assigned device configurations where the device is not
+hotpluggable.  You therefore either need to look up in the stack if
+your environment demands that VM configurations should always be able
+to release devices at the request of the kernel, or down in the stack
+if you believe the kernel has an obligation to take that device if the
+user fails to respond to a device request.  We've shied away from the
+latter because it generally involves killing the holding process,
+either directly or by closing off access to the device, where in the
+case of mmaps to the device, ongoing access would result in a SIGBUS to
+the process anyway.  I wouldn't object to the kernel having a right to
+do this, but it's not something that has reached a high priority.
+Thanks,
+
+Alex
+
