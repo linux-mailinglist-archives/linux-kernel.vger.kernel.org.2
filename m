@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3567F38770C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A5D38770D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348708AbhERLCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:02:44 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:44846 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239147AbhERLCm (ORCPT
+        id S1348266AbhERLDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243762AbhERLDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:02:42 -0400
-Received: by mail-wr1-f51.google.com with SMTP id i17so9688616wrq.11;
-        Tue, 18 May 2021 04:01:24 -0700 (PDT)
+        Tue, 18 May 2021 07:03:32 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164DAC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:02:14 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so1230371wmn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ODZu957DIFm73DXjmBGOo+SbGeoYd9t83KWfjWOGESQ=;
+        b=OV46vw/Xw5rivr9umOBpPJm9zaA9HHctDjUUllafzLDjhAuA5PcEccaW9c6Q5ClqPs
+         fNT/nOe8gckSrdGB7KfKVCAtLLew8cIH7wLxLYjvxb89wmWAoZ1u+ri+fzR7c6yvIhc0
+         fAk43nQOBH6CsbszJGH/bIr8vpsDl3RsC6gsVrauYWLzWJDc0z+APIoobWA3u9pM8DLD
+         BI29lUFSx5DeTfe+gvEostr5aoPNk2Hf0QesEB01CQF27heU8Qx81+i0VUdEp96h32SR
+         g5wYeoIpOet2O8HlBXx/uRe4jQKCVYfRxKSeLFpIXsdE728qETrPKIKCOgLW5goPMdAA
+         GIrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QzZxkEakh34tyEfQFZI2csBDnhSxvUZaSSg9wasYYNU=;
-        b=iZTF+lCTLzCJA0ErC0qVzXwl1Urf+r3hUh7KjRofitw337DQTvjqnspgzR91PUq5GS
-         SZ5ZpiMcSMpI9CGVGWUq4TdqwN8KUxUbw1thF2F4I2YmdMi115jT5m/S5DHZAusPElB9
-         YwrAZxof+TQQJxWXbqYTEOunmSDLkMemIbc9sU9rP9xiYsXfz3Zx0qmOS0mctx6yddKl
-         5+bSC45mY3/pkHBVQhTTaRz9RIlurAfhbadNUMfhd9XLit2oBXngKrklb4OIR81MHgWD
-         pyHYOKXq/ewOXgxkoYTIr+Bgzn2Roh8+eQVs3z/cwr/+Wqtet/h6/eQSGCiTmkMF0coP
-         jzSQ==
-X-Gm-Message-State: AOAM5334O//orS7qUWQR2mFtSCwBQ1Oy9nqDfeAkjEcCTqawjMTD2xWe
-        I8rlA9SiwQLMi+fSqyDaTP4=
-X-Google-Smtp-Source: ABdhPJxs7v5zSsNsyuAEsCU0p/xdP6wAviwWyscstWsXMK28OyMhris6AMxnTUk93GcdkYfllndLNQ==
-X-Received: by 2002:adf:e58c:: with SMTP id l12mr6088525wrm.133.1621335684013;
-        Tue, 18 May 2021 04:01:24 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id c6sm2677133wru.50.2021.05.18.04.01.23
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ODZu957DIFm73DXjmBGOo+SbGeoYd9t83KWfjWOGESQ=;
+        b=VWeEbhZvComHTjyWdahLlocxEdrAgOBdDjAcYjff3/+dQ23YCSJ8GPj/VR1T+FL6sg
+         fF7DfLrrdqTMY1wcLY0kMQBmy/n2c14KMDNW5R2ARHCwsk4UcWz8UiT4E8OexCJbgAAk
+         zlBygA8O1klMO1AwPgET86pjN1vk0oKBwvU6ftT+7Wwvu5Km/ATGsrnfa6iN+hzxptgG
+         My9YpYEsaMLuhulhYfF9hOxCmW6ZMx3zkAdjtZdL4ddKUpb8A+cyf9HTLYQRmwMtuZEV
+         kGk5zwbiTIys5REQyFKE4aEYVcE1AyaFvUs3y+aq8dzUDkVRwxqzpEL1+OtJWdTcVVWY
+         ahLw==
+X-Gm-Message-State: AOAM531sK7R/JSIGaHvrqYri3X5lU68/eU/NcRoF5BCtQy5mxD/pH8Ko
+        HAlRodw7BeI1QT/ajx+QNdpYc2oVmaY=
+X-Google-Smtp-Source: ABdhPJwqU6ufHu2UL0u33Va3Xm9VL1RKmLQC2sNIOoYdvXeOIsllaX56eDnAnywRbKrV/3vM8K1opg==
+X-Received: by 2002:a1c:f404:: with SMTP id z4mr4375215wma.39.1621335732861;
+        Tue, 18 May 2021 04:02:12 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id p10sm19453141wrr.58.2021.05.18.04.02.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 04:01:23 -0700 (PDT)
-Date:   Tue, 18 May 2021 11:01:22 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        longli@microsoft.com
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com,
-        gregkh@linuxfoundation.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] uio_hv_generic: Fix a memory leak in error handling
- paths
-Message-ID: <20210518110122.7jbktl6olsl75vqz@liuwe-devbox-debian-v2>
-References: <4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr>
- <20210511095227.ggrl3z6otjanwffz@liuwe-devbox-debian-v2>
+        Tue, 18 May 2021 04:02:12 -0700 (PDT)
+Date:   Tue, 18 May 2021 13:02:10 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: REGRESSION: initrd is disabled due to memory overlap
+Message-ID: <YKOesr9CrvT4gRHx@Red>
+References: <YKOVzLHGcHoVTqSi@Red>
+ <20210518103546.GU12395@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210511095227.ggrl3z6otjanwffz@liuwe-devbox-debian-v2>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210518103546.GU12395@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc Long Li.
+Le Tue, May 18, 2021 at 11:35:46AM +0100, Russell King (Oracle) a écrit :
+> On Tue, May 18, 2021 at 12:24:12PM +0200, Corentin Labbe wrote:
+> > Hello
+> > 
+> > On my SSI1328 gemini board, I use initrd=0x800000,9M in cmdline.
+> > On next-20210518 and 5.13-rc1 I got:
+> > Booting Linux on physical CPU 0x0
+> > Linux version 5.13.0-rc2-next-20210518+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 10.2.0-r5 p6) 10.2.0, GNU ld (Gentoo 2.35.2 p1) 2.35.2) #77 PREEMPT Tue May 18 12:14:41 CEST 2021
+> > CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
+> > CPU: VIVT data cache, VIVT instruction cache
+> > OF: fdt: Machine model: SSI 1328
+> > Memory policy: Data cache writeback
+> > INITRD: 0x00800000+0x00900000 overlaps in-use memory region - disabling initrd
+> > Zone ranges:
+> >   Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+> >   HighMem  empty
+> > Movable zone start for each node
+> > Early memory node ranges
+> >   node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+> > Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+> > Built 1 zonelists, mobility grouping on.  Total pages: 32512
+> > Kernel command line: console=ttyS0,19200n8 initrd=0x800000,9M
+> > Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+> > Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+> > mem auto-init: stack:off, heap alloc:off, heap free:off
+> > Memory: 117480K/131072K available (5459K kernel code, 595K rwdata, 1508K rodata, 180K init, 376K bss, 13592K reserved, 0K cma-reserved, 0K highmem)
+> > 
+> > On 5.12, initrd is used and works.
+> 
+> I think this is caused by the normal growth of the size of the kernel.
+> If you look in the System.map for the _end symbol, I think you'll find
+> that its address is larger than PAGE_OFFSET + 0x800000, causing the
+> overlap.
+> 
+> If so, the only realistic thing to do is to move the initrd higher up
+> in memory - I don't think you'll get much traction with the idea of
+> reducing the kernel's memory footprint.
+> 
 
-Long, Stephen suggested I check with you. Do you have any opinion?
+Thanks, moving initrd to 0x90000 made it works.
+next:
+cat /proc/iomem 
+00000000-07ffffff : System RAM
+  00008000-006f8fff : Kernel code
+  00726000-00818edb : Kernel data
+v5.12:
+# cat /proc/iomem 
+00000000-07ffffff : System RAM
+  00008000-006d5fff : Kernel code
+  00704000-007ee2b3 : Kernel data
+So yes, it seems getting bigger.
 
-Wei.
-
-On Tue, May 11, 2021 at 09:52:27AM +0000, Wei Liu wrote:
-> On Sun, May 09, 2021 at 09:13:03AM +0200, Christophe JAILLET wrote:
-> > If 'vmbus_establish_gpadl()' fails, the (recv|send)_gpadl will not be
-> > updated and 'hv_uio_cleanup()' in the error handling path will not be
-> > able to free the corresponding buffer.
-> > 
-> > In such a case, we need to free the buffer explicitly.
-> > 
-> > Fixes: cdfa835c6e5e ("uio_hv_generic: defer opening vmbus until first use")
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > ---
-> > Before commit cdfa835c6e5e, the 'vfree' were done unconditionally
-> > in 'hv_uio_cleanup()'.
-> > So, another way for fixing the potential leak is to modify
-> > 'hv_uio_cleanup()' and revert to the previous behavior.
-> > 
-> 
-> I think this is cleaner.
-> 
-> Stephen, you authored cdfa835c6e5e. What do you think?
-> 
-> Christophe, OOI how did you discover these issues?
-> 
-> > I don't know the underlying reason for this change so I don't know which is
-> > the best way to fix this error handling path. Unless there is a specific
-> > reason, changing 'hv_uio_cleanup()' could be better because it would keep
-> > the error handling path of the probe cleaner, IMHO.
-> > ---
-> >  drivers/uio/uio_hv_generic.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
-> > index 0330ba99730e..eebc399f2cc7 100644
-> > --- a/drivers/uio/uio_hv_generic.c
-> > +++ b/drivers/uio/uio_hv_generic.c
-> > @@ -296,8 +296,10 @@ hv_uio_probe(struct hv_device *dev,
-> >  
-> >  	ret = vmbus_establish_gpadl(channel, pdata->recv_buf,
-> >  				    RECV_BUFFER_SIZE, &pdata->recv_gpadl);
-> > -	if (ret)
-> > +	if (ret) {
-> > +		vfree(pdata->recv_buf);
-> >  		goto fail_close;
-> > +	}
-> >  
-> >  	/* put Global Physical Address Label in name */
-> >  	snprintf(pdata->recv_name, sizeof(pdata->recv_name),
-> > @@ -316,8 +318,10 @@ hv_uio_probe(struct hv_device *dev,
-> >  
-> >  	ret = vmbus_establish_gpadl(channel, pdata->send_buf,
-> >  				    SEND_BUFFER_SIZE, &pdata->send_gpadl);
-> > -	if (ret)
-> > +	if (ret) {
-> > +		vfree(pdata->send_buf);
-> >  		goto fail_close;
-> > +	}
-> >  
-> >  	snprintf(pdata->send_name, sizeof(pdata->send_name),
-> >  		 "send:%u", pdata->send_gpadl);
-> > -- 
-> > 2.30.2
-> > 
+Thanks for your help.
