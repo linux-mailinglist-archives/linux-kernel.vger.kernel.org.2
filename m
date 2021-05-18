@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBB13881EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF403881F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242956AbhERVPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:15:39 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:57336 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242341AbhERVPh (ORCPT
+        id S242341AbhERVQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235250AbhERVQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:15:37 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-258-XZiFWQz-NZmRbfTBBekA3Q-1; Tue, 18 May 2021 22:14:06 +0100
-X-MC-Unique: XZiFWQz-NZmRbfTBBekA3Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 22:14:04 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Tue, 18 May 2021 22:14:04 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>
-CC:     Eric Biggers <ebiggers@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "Russell King" <linux@armlinux.org.uk>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
-Subject: RE: [PATCH v2 07/13] asm-generic: unaligned always use struct helpers
-Thread-Topic: [PATCH v2 07/13] asm-generic: unaligned always use struct
- helpers
-Thread-Index: AQHXS/YCMZkjEhef40atSxJR3LrT4Krpu4HQ
-Date:   Tue, 18 May 2021 21:14:04 +0000
-Message-ID: <2a31acad459d4e37b31da5b270dcf0ba@AcuMS.aculab.com>
-References: <20210514100106.3404011-1-arnd@kernel.org>
- <20210514100106.3404011-8-arnd@kernel.org> <YKLlyQnR+3uW4ETD@gmail.com>
- <CAK8P3a0iqe5V6uvaW+Eo0qiwzvyUVavVEfZGwXh4s8ad+0RdCg@mail.gmail.com>
- <CAHk-=wjjo+F8HVkq3eLg+=7hjZPF5mkA4JbgAU8FGE_oAw2MEg@mail.gmail.com>
-In-Reply-To: <CAHk-=wjjo+F8HVkq3eLg+=7hjZPF5mkA4JbgAU8FGE_oAw2MEg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 18 May 2021 17:16:35 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B689C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:15:17 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id i6so992345plt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C43/i5T89+Z7YHAazX11QPS1qt3iN5sh35aKnQ1xBXc=;
+        b=L3SbeGKHfRXdqFWSY/DjtKEhkdISuPfaf1/glYzvtU6a0s3YUDaXW/V2vSONOb9az5
+         ar6USRpYYzyUHUvBCVpIXy01hUckq3toF9CEzNTqevyNlVn0oaKwy04ztEZY9s9KVohr
+         c+L2SCmGjU987rGITNpj8OFctyth8m4DBrzM3AjVvqKnRJPj2ePJv+ZquXgm75JlYm4s
+         xYwZ0mmw3xwdp9IRqnb/g9tzuw3sTUp3KaPMDh8Yr02zbRwiXCDLS4ztVL9K85hvh+b5
+         sgBK4fQ1EYBraCdirQ1/Cag9AIQBaI4q1QZ3yzlJnPRibfQ1zVbGu/aRSkArBtdmT2v4
+         xsWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C43/i5T89+Z7YHAazX11QPS1qt3iN5sh35aKnQ1xBXc=;
+        b=Am5rCyexYEMUWVD6+TIhyw8405XVFLcT5ECa8LGMTxZN24hm8L+6DSUic/0yAhWVvD
+         ZgRfZ1/zoWgCr7l6CJP5L8n212qz4SpSVEI4OBXyM+zW3TuOHFfJOieOwzDSmf3jDjXa
+         UuK9jhgyp59bZNINBWUVkiQMPKV5rlFMMODfe8IBEwZWeYRWjaXpkBSZWvN9xPxVcxeV
+         1/wH0t3HXvMGd4cBnu1TUEIsMelE7IDlkMyl/GyMnsinUeuBLCITVWL5M5BbAC646D1c
+         IE/kibPFvevDaaULKGzfG6S6/foVtTQfYceU1ULr9dBSVZZO8yyMWNA3SLfmcIWh2SS8
+         Fvdg==
+X-Gm-Message-State: AOAM530kXUP/xYoEEwdC3GMNcL2hv2PT6jl3UwrW7jnIg6u96Gxr+07u
+        IJlTxaoM/h0lfIRrqgWJjMDNI0XOOuCxbUvJLjlQPA==
+X-Google-Smtp-Source: ABdhPJyoobLYnIWbWswtFV+hnCncsmdZCqoP03K67oJ14BVc7qPq4WxTKk04oRtwVQhRoxIz0t3Q99bKTrl82//++vs=
+X-Received: by 2002:a17:90a:7306:: with SMTP id m6mr7191995pjk.217.1621372516465;
+ Tue, 18 May 2021 14:15:16 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20210518035825.1885357-1-davidgow@google.com>
+In-Reply-To: <20210518035825.1885357-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 18 May 2021 14:15:05 -0700
+Message-ID: <CAFd5g47kTYkUudpOTFW6k24yJWzgBQ63-ycksOYhqkhAW2P8kQ@mail.gmail.com>
+Subject: Re: [PATCH] kunit: arch/um/configs: Enable KUNIT_ALL_TESTS by default
+To:     David Gow <davidgow@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTggTWF5IDIwMjEgMTU6NTYNCj4gDQo+IE9u
-IFR1ZSwgTWF5IDE4LCAyMDIxIGF0IDEyOjI3IEFNIEFybmQgQmVyZ21hbm4gPGFybmRAa2VybmVs
-Lm9yZz4gd3JvdGU6DQo+ID4gPg0KPiA+ID4gSSB3b25kZXIgaWYgdGhlIGtlcm5lbCBzaG91bGQg
-ZG8gdGhlIHNhbWUsIG9yIHdoZXRoZXIgdGhlcmUgYXJlIHN0aWxsIGNhc2VzDQo+ID4gPiB3aGVy
-ZSBtZW1jcHkoKSBpc24ndCBjb21waWxlZCBvcHRpbWFsbHkuICBhcm12Ni83IHVzZWQgdG8gYmUg
-b25lIHN1Y2ggY2FzZSwgYnV0DQo+ID4gPiBpdCB3YXMgZml4ZWQgaW4gZ2NjIDYuDQo+ID4NCj4g
-PiBJdCB3b3VsZCBoYXZlIHRvIGJlIG1lbW1vdmUoKSwgbm90IG1lbWNweSgpIGluIHRoaXMgY2Fz
-ZSwgcmlnaHQ/DQo+IA0KPiBObywgaXQgd291bGQgc2ltcGx5IGJlIHNvbWV0aGluZyBsaWtlDQo+
-IA0KPiAgICNkZWZpbmUgX19nZXRfdW5hbGlnbmVkX3QodHlwZSwgcHRyKSBcDQo+ICAgICAgICAg
-KHsgdHlwZSBfX3ZhbDsgbWVtY3B5KCZfX3ZhbCwgcHRyLCBzaXplb2YodHlwZSkpOyBfX3ZhbDsg
-fSkNCg0KWW91IHN0aWxsIG5lZWQgc29tZXRoaW5nIHRvIGVuc3VyZSB0aGF0IGdjYyBjYW4ndCBh
-c3N1bWUgdGhhdA0KJ3B0cicgaGFzIGFuIGFsaWduZWQgdHlwZS4NCklmIHRoZXJlIGlzIGFuICdp
-bnQgKnB0cicgdmlzaWJsZSBpbiB0aGUgY2FsbCBjaGFpbiBubyBhbW91bnQNCm9mICh2b2lkICop
-IGNhc3RzIHdpbGwgbWFrZSBnY2MgZm9yZ2V0IHRoZSBhbGlnbm1lbnQuDQpTbyB0aGUgbWVtY3B5
-KCkgd2lsbCBnZXQgY29udmVydGVkIHRvIGFuIGFsaWduZWQgbG9hZC1zdG9yZSBwYWlyLg0KKFRo
-aXMgaGFzIGFsd2F5cyBjYXVzZWQgZ3JpZWYgb24gc3BhcmMuKQ0KDQpBIGNhc3QgdGhvdWdoIChs
-b25nKSBtaWdodCBiZSBlbm91Z2gsIGFzIG1pZ2h0IGEgY2FzdCB0byBhIF9fcGFja2VkDQpzdHJ1
-Y3QgcG9pbnRlciB0eXBlLg0KVXNpbmcgYSB1bmlvbiBvZiB0aGUgdHdvIHBvaW50ZXIgdHlwZXMg
-bWlnaHQgYmUgb2sgLSBidXQgbWlnaHQNCmdlbmVyYXRlIGEgc3RvcmUvbG9hZCB0byBzdGFjay4N
-CkFuIGFsdGVybmF0aXZlIGlzIGFuIGFzbSBzdGF0ZW1lbnQgd2l0aCBpbnB1dCBhbmQgb3V0cHV0
-IG9mIGRpZmZlcmVudA0KcG9pbnRlciB0eXBlcyBidXQgdXNpbmcgdGhlIHNhbWUgcmVnaXN0ZXIg
-Zm9yIGJvdGguDQpUaGF0IG91Z2h0IHRvIGZvcmNlIHRoZSBjb21waWxlIHRvIGZvcmdldCBhbnkg
-dHJhY2tlZCB0eXBlDQphbmQgdmFsdWUuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
-c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
-IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Mon, May 17, 2021 at 8:58 PM David Gow <davidgow@google.com> wrote:
+>
+> Make the default .kunitconfig (specified in
+> arch/um/configs/kunit_defconfig) specify CONFIG_KUNIT_ALL_TESTS by
+> default. KUNIT_ALL_TESTS runs all tests which have satisfied
+> dependencies in the current .config (which would be the architecture
+> defconfig).
+>
+> Currently, the default .kunitconfig enables only the example tests and
+> KUnit's own tests. While this does provide a good example of what a
+> .kunitconfig for running a few individual tests should look like, it
+> does mean that kunit_tool runs a pretty paltry collection of tests by
+> default.
+>
+> A default run of ./tools/testing/kunit/kunit.py run now runs 70 tests
+> instead of 14.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
+I am totally on board with what you want to do here, but I have one
+minor issue below.
+
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+
+> ---
+>  arch/um/configs/kunit_defconfig | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
+> index 9235b7d42d38..becf3432a375 100644
+> --- a/arch/um/configs/kunit_defconfig
+> +++ b/arch/um/configs/kunit_defconfig
+
+Could we also apply this to
+tools/testing/kunit/configs/all_tests.config ? The contents of the
+file are identical, and I think are supposed to be for the same
+purpose.
+
+> @@ -1,3 +1,2 @@
+>  CONFIG_KUNIT=y
+> -CONFIG_KUNIT_TEST=y
+> -CONFIG_KUNIT_EXAMPLE_TEST=y
+> +CONFIG_KUNIT_ALL_TESTS=y
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+>
