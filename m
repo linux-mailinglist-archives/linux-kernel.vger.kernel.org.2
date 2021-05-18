@@ -2,76 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98283388340
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F81B388344
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235850AbhERXmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
+        id S235919AbhERXoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235382AbhERXme (ORCPT
+        with ESMTP id S230114AbhERXod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:42:34 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C062CC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:41:13 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id e11so13374284ljn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:41:13 -0700 (PDT)
+        Tue, 18 May 2021 19:44:33 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CD4C061573;
+        Tue, 18 May 2021 16:43:14 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id lg14so17197251ejb.9;
+        Tue, 18 May 2021 16:43:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AktLZrGpYgV8H67Vy+ElEpmR7sF/guI5YPVEh+qgC1s=;
-        b=VI4tvm90SOABVqSHLlEITyFRSTGVQvmk72TPZQiT547coPipBUixu4qnfqMb7HkmSb
-         DmK2/yJ/UmG0BYFOQHVtgS24c8/y/quzeW5Fi+sCKFK87qzHmGeK/sBOCr5M0vpC3wHN
-         Fs+Zf4zH5qPw3cYDOxzWWWwkDerQLE7hMmc9vzgTRjSH3km3yENmZQ21VvYiJ0V/yzrZ
-         k/jyAX9xmyHpkiF6P2s8QDFZCz9cxHqjTMbePha6Ui7U8hGKzlvOlzjNp9U6qN0VaRg8
-         QrJ8fBLkeomp048ykk5CobNdieoH3GJoNAgfsD+IyFhYKxjidYwnitJAjpDdrMMhdAtp
-         RSRg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x6BN/PyTHg0vWjClj6KF7Z9rFUMiX9eq6dsc19wtdr4=;
+        b=n6wyx8OsDzlIlED4O93DtiZhz6eERcfdK3k6vpm3EXg5zXa+1oUGm01Phbrrpzs5E5
+         qQ3tdtBZEEq8WSlUxVi2s6/MX6K+dRSVOMGlPGRcbCYXmOZ98RF7KLngTJLuRvkRM2bZ
+         DXUJtqfYPDb7zHt8Kyxccd5hrAG/hjvmfISMkpLyhd7prJ5RoLlvljk37X/Sa3VoK94d
+         9zpcJJs5+jU7YZfoLm7PPZLZt1ZjlfzqMnOl2EFg+vb9QDqLxZdp570J0cascxregwnP
+         ArFOogQv4PVTn1HGagK12A7ksXTgk1dCRcYDClJtElglk+t436DyUbYSrRI0dyEWIq8g
+         eMcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AktLZrGpYgV8H67Vy+ElEpmR7sF/guI5YPVEh+qgC1s=;
-        b=jg8Cw/Cqua7/7nHBggAOoRcFtCrjncbkTShxNar7BXZNfmkR+6nv7L2+uCLJnzlclI
-         qKlbmC5fBMyDiKlfIqJnSZiG6XaBqC9ULXAp99rmBiCUahpFwCAtdRuAWEe8Ct0nKP9t
-         E5gvNk4lVjkhkEp/2vxS9bL/vewFedKGF2SD9bC4PDOiHYqSfNG8jMzpZre8woNT1kQ1
-         4g98ouQoJnsf0PliBnvdEzwq135nyvBCzVCaCVHzBC2vtsOtQ/2gjktGeNGuzqM6H4ao
-         soZzW4U8y3RZTj2Cwkcjge53NnOvRjtUN3IE+l3x9di6CIn4hU/Ngp6EoOEr/1EeWeEe
-         IFew==
-X-Gm-Message-State: AOAM530qxbMXWI1z2BQThBe9VawsVyjOUmP4YtZH3sPv6X47I6tJ4nkm
-        2x3LYsWg2lA8s59rAF8qUPanUORZQO8xS4Z5qwJPCQ==
-X-Google-Smtp-Source: ABdhPJyEEWE3b4+6Un92qL+0uvA2Tw0R5aXwivUPrWCeMfFADssWM/8q5ALNjXZvRF/YuuyK/mjAG3EK3fmmfBXsEAI=
-X-Received: by 2002:a2e:814d:: with SMTP id t13mr5819007ljg.467.1621381272289;
- Tue, 18 May 2021 16:41:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x6BN/PyTHg0vWjClj6KF7Z9rFUMiX9eq6dsc19wtdr4=;
+        b=OS+eSAbOyDTWXeTOziUkrVex3I0qXPQPajvq9JP8RlqutYtb8ZAt4OTLx3e9WJXClt
+         xdVFnZ6XK65AqrEz5Zf1fyZsu3GcnbV9sagM22QUTzC9cZKescUF55oYkcCxV3+6DmYm
+         H6ZdwF84QdiHO7WslXQl+2w3dxFDi3SF6y2Y90hObEAXmMAqwj4CQLYvC3EGFrIw8UFn
+         E9c5SnNWr4Ueykpj71l6cUPVa96EE8YfvwzAVvuQPcMA+X0EsdXSyU2PtT5e4/u2AvJ6
+         jBvKnSV2kzqNO/w1KbWqw9Q7tW7FUoycAg0qiBOU7OKFhpdbscDOVoRtg6mYYH8kNDW6
+         uLJQ==
+X-Gm-Message-State: AOAM532Sz6+r/efZcgrBOG1LppOWk6Oc0mLZ3II6jAtx+RHSyPGXim6F
+        +SX8y8TuNVnwrQ2HMegID30=
+X-Google-Smtp-Source: ABdhPJyx4g0eF9jK3jR9GNaW4zcqF2TMglN8q9DN3A6CTzKP9unCmlTL3ltDAQYjzDHsTxzjwkO/DQ==
+X-Received: by 2002:a17:906:640c:: with SMTP id d12mr8429650ejm.70.1621381392638;
+        Tue, 18 May 2021 16:43:12 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.googlemail.com with ESMTPSA id bm13sm11220567ejb.75.2021.05.18.16.43.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 16:43:12 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] drivers: thermal: tsens: add timeout to get_tem_tsens_valid
+Date:   Wed, 19 May 2021 01:43:06 +0200
+Message-Id: <20210518234309.29014-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 19 May 2021 01:41:01 +0200
-Message-ID: <CACRpkdZXUgORMQXN2RRnPboF=EOBwkuHOWaXX+Xn=k==VVVjgg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 10:33 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+The function can loop and lock the system if for whatever reason the bit
+for the target sensor is NEVER valid. This is the case if a sensor is
+disabled by the factory and the valid bit is never reported as actually
+valid. Add a timeout check and exit if a timeout occurs. As this is
+a very rare condition, handle the timeout only if the first read fails.
 
-> In a few places we are using a loop against all GPIO descriptors
-> with a given flag for a given device. Replace it with a consolidated
-> for_each type of macro.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/thermal/qcom/tsens.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-This is great for readability.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index b1162e566a70..38afde1a599f 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -599,6 +599,7 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+ 	int hw_id = s->hw_id;
+ 	u32 temp_idx = LAST_TEMP_0 + hw_id;
+ 	u32 valid_idx = VALID_0 + hw_id;
++	unsigned long timeout;
+ 	u32 valid;
+ 	int ret;
+ 
+@@ -607,13 +608,21 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+ 		ret = regmap_field_read(priv->rf[valid_idx], &valid);
+ 		if (ret)
+ 			return ret;
+-		while (!valid) {
+-			/* Valid bit is 0 for 6 AHB clock cycles.
+-			 * At 19.2MHz, 1 AHB clock is ~60ns.
+-			 * We should enter this loop very, very rarely.
+-			 */
+-			ndelay(400);
+-			ret = regmap_field_read(priv->rf[valid_idx], &valid);
++
++		if (!valid) {
++			timeout = jiffies + msecs_to_jiffies(20);
++
++			do {
++				/* Valid bit is 0 for 6 AHB clock cycles.
++				 * At 19.2MHz, 1 AHB clock is ~60ns.
++				 * We should enter this loop very, very rarely.
++				 */
++				ndelay(400);
++				ret = regmap_field_read(priv->rf[valid_idx], &valid);
++				if (valid || ret)
++					break;
++			} while (!(ret = time_after_eq(jiffies, timeout)));
++
+ 			if (ret)
+ 				return ret;
+ 		}
+-- 
+2.30.2
 
-Yours,
-Linus Walleij
