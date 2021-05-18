@@ -2,133 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116EF386E34
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8806F386E38
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344942AbhERARJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344871AbhERARI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:17:08 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1307C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:15:50 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id c21so4025122vso.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v7fdRHc9Wi7UG6lD/9HPxLLCPuJpaTRjDV9ZqVM+M7I=;
-        b=Y5JZPZDUm6GUMAmEQQ4jiFpsrosr3DsdfYLaUg8NUs3T4SREERUGcXeYJ+gPlk73sN
-         oPx/W3nJCBvN3N8S5Ozb5XOPioNQS/dkRdgWnhbH5AGbMhjhC5+wiwbsyTQ7BClGHq/F
-         rxAQkwD90r8Y0Z4zxxvLgQkT9Xm8UNOJziHqQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v7fdRHc9Wi7UG6lD/9HPxLLCPuJpaTRjDV9ZqVM+M7I=;
-        b=J2th2JnMJfAn2ibJrtwyYSXd4RiuXTdw8wfC7ufcnOYcyXu9yHXDzzC6WgRmez+Fwg
-         seCbvhCRNAp+aIKdiwpDXzRnqa8NI3uRc859ANVq+mqkiL8iOujnGZYLKF2jfPXoTW+j
-         1kwEH1qhKbOtGl8dqXDj6e9HAcXKw4GujrlWIS+XH8aLOvsnWZzTTKmaTtv4Gf9umKmk
-         OVA4NrYwaqPNKWa3f01CTkcMyUUAG3mOx08Zm84wVnWILlzMQhPgOhehos1asCSoePG1
-         vfXmCLOU4q3bViaCQp/SUGN3unZh6mfgV/knHuljaoinpZHr8QHYo4U/Zc3NAWSnCvwq
-         aA6A==
-X-Gm-Message-State: AOAM530dV4A8OkRBu6fuhS4HaLQ7OnJq0Sx2bSdSjGasKvvsZKfgYYPF
-        9UR4rJW2y96hAEogiwoQLArfVH9nSKobIJmQ
-X-Google-Smtp-Source: ABdhPJyc/rZqp/+J4gGio2GNX/pKIdT7v/tHtRW2tfAKb0Qyc3GECB2NEfuP/BMvOnnLmVFNUJeLsA==
-X-Received: by 2002:a05:6102:c51:: with SMTP id y17mr3284966vss.26.1621296949807;
-        Mon, 17 May 2021 17:15:49 -0700 (PDT)
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
-        by smtp.gmail.com with ESMTPSA id a187sm2479622vsa.3.2021.05.17.17.15.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 17:15:49 -0700 (PDT)
-Received: by mail-vs1-f44.google.com with SMTP id s15so4040091vsi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:15:48 -0700 (PDT)
-X-Received: by 2002:a67:1ac4:: with SMTP id a187mr3159847vsa.45.1621296948281;
- Mon, 17 May 2021 17:15:48 -0700 (PDT)
+        id S1344954AbhERARl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:17:41 -0400
+Received: from mga07.intel.com ([134.134.136.100]:15626 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239680AbhERARk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 20:17:40 -0400
+IronPort-SDR: fovHzXRuSn1JSS3xjM0vJz3QSTKTW4B7+ryiigY/eYe+acvau1dwWHNjisc+3e7+5rD0RN5zSG
+ uAl2ewOwRuuw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="264507062"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="264507062"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:16:21 -0700
+IronPort-SDR: zdoLRS9HnSUEbMndQrgJj5wq1bH/qcvWvg1mQB4PioV5T5k150OGeKCCiNLZT43Y3lYr7ImPD5
+ mzaVLWjL0doA==
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="439170849"
+Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:16:20 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2-fix 1/1] x86/tdx: Wire up KVM hypercalls
+Date:   Mon, 17 May 2021 17:15:51 -0700
+Message-Id: <20210518001551.258126-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <2a4e9702-5407-aa95-be9b-864775bbaabd@intel.com>
+References: <2a4e9702-5407-aa95-be9b-864775bbaabd@intel.com>
 MIME-Version: 1.0
-References: <1621295824-12730-1-git-send-email-johnny.chuang.emc@gmail.com>
-In-Reply-To: <1621295824-12730-1-git-send-email-johnny.chuang.emc@gmail.com>
-From:   Harry Cutts <hcutts@chromium.org>
-Date:   Mon, 17 May 2021 17:15:37 -0700
-X-Gmail-Original-Message-ID: <CA+jURcv-o3g3C6zZhGio7KKtco-b+dGk+vm=3Nj8ps_-yMQRNA@mail.gmail.com>
-Message-ID: <CA+jURcv-o3g3C6zZhGio7KKtco-b+dGk+vm=3Nj8ps_-yMQRNA@mail.gmail.com>
-Subject: Re: [PATCH] HID: i2c-hid: Add I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON to
- optimize timing
-To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        James Chen <james.chen@emc.com.tw>,
-        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
-        Paul Liang <paul.liang@emc.com.tw>,
-        Jeff Chuang <jeff.chuang@emc.com.tw>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jingle <jingle.wu@emc.com.tw>, Paris Yeh <pyeh@google.com>,
-        "sukumar . ghorai" <sukumar.ghorai@intel.corp-partner.google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 16:57, Johnny Chuang <johnny.chuang.emc@gmail.com> wrote:
->
-> There is a hard coding 60ms delay after I2C_HID_PWR_ON commadn.
-> Elan didn't need the delay, so we add a quirk to reduce boot time and resume time.
->
-> Optimized: eef4016243e9("HID: i2c-hid: Always sleep 60ms after I2C_HID_PWR_ON commands")
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-I don't think Optimized: is a valid commit tag, though I'm not sure if
-it'll cause any problems.
+KVM hypercalls use the "vmcall" or "vmmcall" instructions.
+Although the ABI is similar, those instructions no longer
+function for TDX guests. Make vendor specififc TDVMCALLs
+instead of VMCALL.
 
->
-> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
-> ---
->  drivers/hid/i2c-hid/i2c-hid-core.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-> index 9993133..e7ec280 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> [...snip...]
-> @@ -178,6 +179,11 @@ static const struct i2c_hid_quirks {
->                  I2C_HID_QUIRK_RESET_ON_RESUME },
->         { USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
->                 I2C_HID_QUIRK_BAD_INPUT_SIZE },
-> +       /*
-> +        * Optimize boot time and resume time
-> +        */
+[Isaku: proposed KVM VENDOR string]
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+Changes since RFC v2:
+ * Introduced INTEL_TDX_GUEST_KVM config for TDX+KVM related changes.
+ * Removed "C" include file.
+ * Fixed commit log as per Dave's comments.
 
-This comment is a bit too vague to be useful; maybe state that Elan
-devices don't need the delay instead, or just remove the comment.
+ arch/x86/Kconfig                |  6 +++++
+ arch/x86/include/asm/kvm_para.h | 21 +++++++++++++++
+ arch/x86/include/asm/tdx.h      | 41 ++++++++++++++++++++++++++++
+ arch/x86/kernel/Makefile        |  1 +
+ arch/x86/kernel/tdcall.S        | 20 ++++++++++++++
+ arch/x86/kernel/tdx-kvm.c       | 48 +++++++++++++++++++++++++++++++++
+ 6 files changed, 137 insertions(+)
+ create mode 100644 arch/x86/kernel/tdx-kvm.c
 
-Other than that,
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 9e0e0ff76bab..768df1b98487 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -886,6 +886,12 @@ config INTEL_TDX_GUEST
+ 	  run in a CPU mode that protects the confidentiality of TD memory
+ 	  contents and the TD’s CPU state from other software, including VMM.
+ 
++config INTEL_TDX_GUEST_KVM
++	def_bool y
++	depends on KVM_GUEST && INTEL_TDX_GUEST
++	help
++	 This option enables KVM specific hypercalls in TDX guest.
++
+ endif #HYPERVISOR_GUEST
+ 
+ source "arch/x86/Kconfig.cpu"
+diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
+index 338119852512..2fa85481520b 100644
+--- a/arch/x86/include/asm/kvm_para.h
++++ b/arch/x86/include/asm/kvm_para.h
+@@ -6,6 +6,7 @@
+ #include <asm/alternative.h>
+ #include <linux/interrupt.h>
+ #include <uapi/asm/kvm_para.h>
++#include <asm/tdx.h>
+ 
+ extern void kvmclock_init(void);
+ 
+@@ -34,6 +35,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
+ static inline long kvm_hypercall0(unsigned int nr)
+ {
+ 	long ret;
++
++	if (is_tdx_guest())
++		return tdx_kvm_hypercall0(nr);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr)
+@@ -44,6 +49,10 @@ static inline long kvm_hypercall0(unsigned int nr)
+ static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
+ {
+ 	long ret;
++
++	if (is_tdx_guest())
++		return tdx_kvm_hypercall1(nr, p1);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1)
+@@ -55,6 +64,10 @@ static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
+ 				  unsigned long p2)
+ {
+ 	long ret;
++
++	if (is_tdx_guest())
++		return tdx_kvm_hypercall2(nr, p1, p2);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1), "c"(p2)
+@@ -66,6 +79,10 @@ static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
+ 				  unsigned long p2, unsigned long p3)
+ {
+ 	long ret;
++
++	if (is_tdx_guest())
++		return tdx_kvm_hypercall3(nr, p1, p2, p3);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3)
+@@ -78,6 +95,10 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
+ 				  unsigned long p4)
+ {
+ 	long ret;
++
++	if (is_tdx_guest())
++		return tdx_kvm_hypercall4(nr, p1, p2, p3, p4);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3), "S"(p4)
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 8ab4067afefc..eb758b506dba 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -73,4 +73,45 @@ static inline void tdx_early_init(void) { };
+ 
+ #endif /* CONFIG_INTEL_TDX_GUEST */
+ 
++#ifdef CONFIG_INTEL_TDX_GUEST_KVM
++u64 __tdx_hypercall_vendor_kvm(u64 fn, u64 r12, u64 r13, u64 r14,
++			       u64 r15, struct tdx_hypercall_output *out);
++long tdx_kvm_hypercall0(unsigned int nr);
++long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1);
++long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1, unsigned long p2);
++long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1, unsigned long p2,
++		unsigned long p3);
++long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1, unsigned long p2,
++		unsigned long p3, unsigned long p4);
++#else
++static inline long tdx_kvm_hypercall0(unsigned int nr)
++{
++	return -ENODEV;
++}
++
++static inline long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1)
++{
++	return -ENODEV;
++}
++
++static inline long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1,
++				      unsigned long p2)
++{
++	return -ENODEV;
++}
++
++static inline long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1,
++				      unsigned long p2, unsigned long p3)
++{
++	return -ENODEV;
++}
++
++static inline long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1,
++				      unsigned long p2, unsigned long p3,
++				      unsigned long p4)
++{
++	return -ENODEV;
++}
++#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
++
+ #endif /* _ASM_X86_TDX_H */
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 7966c10ea8d1..a90fec004844 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -128,6 +128,7 @@ obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
+ 
+ obj-$(CONFIG_JAILHOUSE_GUEST)	+= jailhouse.o
+ obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdcall.o tdx.o
++obj-$(CONFIG_INTEL_TDX_GUEST_KVM) += tdx-kvm.o
+ 
+ obj-$(CONFIG_EISA)		+= eisa.o
+ obj-$(CONFIG_PCSPKR_PLATFORM)	+= pcspeaker.o
+diff --git a/arch/x86/kernel/tdcall.S b/arch/x86/kernel/tdcall.S
+index a484c4aef6e6..3c57a1d67b79 100644
+--- a/arch/x86/kernel/tdcall.S
++++ b/arch/x86/kernel/tdcall.S
+@@ -25,6 +25,8 @@
+ 					  TDG_R12 | TDG_R13 | \
+ 					  TDG_R14 | TDG_R15 )
+ 
++#define TDVMCALL_VENDOR_KVM		0x4d564b2e584454 /* "TDX.KVM" */
++
+ /*
+  * TDX guests use the TDCALL instruction to make requests to the
+  * TDX module and hypercalls to the VMM. It is supported in
+@@ -213,3 +215,21 @@ SYM_FUNC_START(__tdx_hypercall)
+ 	call do_tdx_hypercall
+ 	retq
+ SYM_FUNC_END(__tdx_hypercall)
++
++#ifdef CONFIG_INTEL_TDX_GUEST_KVM
++/*
++ * Helper function for KVM vendor TDVMCALLs. This assembly wrapper
++ * lets us reuse do_tdvmcall() for KVM-specific hypercalls (
++ * TDVMCALL_VENDOR_KVM).
++ */
++SYM_FUNC_START(__tdx_hypercall_vendor_kvm)
++	/*
++	 * R10 is not part of the function call ABI, but it is a part
++	 * of the TDVMCALL ABI. So set it before making call to the
++	 * do_tdx_hypercall().
++	 */
++	movq $TDVMCALL_VENDOR_KVM, %r10
++	call do_tdx_hypercall
++	retq
++SYM_FUNC_END(__tdx_hypercall_vendor_kvm)
++#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
+diff --git a/arch/x86/kernel/tdx-kvm.c b/arch/x86/kernel/tdx-kvm.c
+new file mode 100644
+index 000000000000..b21453a81e38
+--- /dev/null
++++ b/arch/x86/kernel/tdx-kvm.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2020 Intel Corporation */
++
++#include <asm/tdx.h>
++
++static long tdx_kvm_hypercall(unsigned int fn, unsigned long r12,
++			      unsigned long r13, unsigned long r14,
++			      unsigned long r15)
++{
++	return __tdx_hypercall_vendor_kvm(fn, r12, r13, r14, r15, NULL);
++}
++
++/* Used by kvm_hypercall0() to trigger hypercall in TDX guest */
++long tdx_kvm_hypercall0(unsigned int nr)
++{
++	return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
++}
++EXPORT_SYMBOL_GPL(tdx_kvm_hypercall0);
++
++/* Used by kvm_hypercall1() to trigger hypercall in TDX guest */
++long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1)
++{
++	return tdx_kvm_hypercall(nr, p1, 0, 0, 0);
++}
++EXPORT_SYMBOL_GPL(tdx_kvm_hypercall1);
++
++/* Used by kvm_hypercall2() to trigger hypercall in TDX guest */
++long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1, unsigned long p2)
++{
++	return tdx_kvm_hypercall(nr, p1, p2, 0, 0);
++}
++EXPORT_SYMBOL_GPL(tdx_kvm_hypercall2);
++
++/* Used by kvm_hypercall3() to trigger hypercall in TDX guest */
++long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1, unsigned long p2,
++		unsigned long p3)
++{
++	return tdx_kvm_hypercall(nr, p1, p2, p3, 0);
++}
++EXPORT_SYMBOL_GPL(tdx_kvm_hypercall3);
++
++/* Used by kvm_hypercall4() to trigger hypercall in TDX guest */
++long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1, unsigned long p2,
++		unsigned long p3, unsigned long p4)
++{
++	return tdx_kvm_hypercall(nr, p1, p2, p3, p4);
++}
++EXPORT_SYMBOL_GPL(tdx_kvm_hypercall4);
+-- 
+2.25.1
 
-Reviewed-by: Harry Cutts <hcutts@chromium.org>
-
-> +       { USB_VENDOR_ID_ELAN, HID_ANY_ID,
-> +                I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON },
->         { 0, 0 }
->  };
->
-> @@ -427,7 +433,8 @@ static int i2c_hid_set_power(struct i2c_client *client, int power_state)
->          * PWR_ON requests. Testing has confirmed that several devices
->          * will not work properly without a delay after a PWR_ON request.
->          */
-> -       if (!ret && power_state == I2C_HID_PWR_ON)
-> +       if (!ret && power_state == I2C_HID_PWR_ON &&
-> +           !(ihid->quirks & I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON))
->                 msleep(60);
->
->         return ret;
-> --
-> 2.7.4
->
