@@ -2,57 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18B8387F24
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F29387F1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351422AbhERSAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:00:47 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:43717 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345799AbhERSAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:00:39 -0400
-Received: by mail-wm1-f54.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so1944705wmn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 10:59:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
-        b=EpZO9P+k9X/0Sekw6kOsFYknqDsbx0UCc9g2GadF0KsrMzAB4EbsxM+yrb5KKpr3lq
-         lY6+xvx0/sP3qCNXdQZ/qka+WdOWBVyTwDBdDy0tV878SWinzcRMosvKaHvkLwfBA0Zi
-         Xt1Y8uGO//QB59rRVS7RpzJ7rlIjMpzXQgVGrcQKQ6fFsDCwdA1HXy9ef5Cj+Zi2lG1B
-         2ELw+zLwrT0i6SMEVUFb5+vjGKBeH1Sv5jn/YBrBzKrU28zwihQh+2jys4zRrTj+nfev
-         Ipd30YiCSKGj2Xw8VYuFbtpblAoC9NpkHX4Ok260uCBTe8Y8rmG0oJVqrzFTP/3AfgZV
-         y3cQ==
-X-Gm-Message-State: AOAM533yix3sV/ytMBHiTuDyaWiZLPdZgRTozyUeSjlkeXMfPF2YjcoA
-        rEX+TBN19mTZwiwthBxa3cA=
-X-Google-Smtp-Source: ABdhPJyCHy1Y6ONQuCnsRU/NA0aFJlrcBnYFsBnvRs+a2KUVrQgl9Di7mwlDPSi44RK0HLzFH8Ojow==
-X-Received: by 2002:a1c:e487:: with SMTP id b129mr6748712wmh.137.1621360759887;
-        Tue, 18 May 2021 10:59:19 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:f888:e3f1:214b:6edc? ([2601:647:4802:9070:f888:e3f1:214b:6edc])
-        by smtp.gmail.com with ESMTPSA id s6sm3957505wms.0.2021.05.18.10.59.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 10:59:19 -0700 (PDT)
-Subject: Re: [PATCH] nvmet: fix memory leak on nvmet_alloc_ctrl()
-To:     Wu Bo <wubo40@huawei.com>, hch@lst.de, chaitanya.kulkarni@wdc.com,
-        kbusch@kernel.org, amit.engel@dell.com,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     linfeilong@huawei.com
-References: <1621327598-542045-1-git-send-email-wubo40@huawei.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <7b29210e-8d64-0fea-2cb4-3e96e85559bf@grimberg.me>
-Date:   Tue, 18 May 2021 10:59:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1351312AbhERR7o convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 May 2021 13:59:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344568AbhERR7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:59:37 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C931611B0;
+        Tue, 18 May 2021 17:58:16 +0000 (UTC)
+Date:   Tue, 18 May 2021 18:59:33 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     tangbin <tangbin@cmss.chinamobile.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>, lars@metafoo.de,
+        Michael.Hennerich@analog.com, knaack.h@gmx.de, pmeerw@pmeerw.net,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: iio: cdc: ad7746: Fix unnecessary check
+ andassignment in ad7746_probe()
+Message-ID: <20210518185933.7839f848@jic23-huawei>
+In-Reply-To: <dfb7d829-94e6-2051-8795-79402160afdb@cmss.chinamobile.com>
+References: <20210517150006.8436-1-tangbin@cmss.chinamobile.com>
+        <20210518075254.GN1955@kadam>
+        <dfb7d829-94e6-2051-8795-79402160afdb@cmss.chinamobile.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1621327598-542045-1-git-send-email-wubo40@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+On Tue, 18 May 2021 17:27:07 +0800
+tangbin <tangbin@cmss.chinamobile.com> wrote:
+
+> Hi Dan：
+> 
+> On 2021/5/18 15:52, Dan Carpenter wrote:
+> > On Mon, May 17, 2021 at 11:00:06PM +0800, Tang Bin wrote:  
+> >> @@ -730,11 +730,7 @@ static int ad7746_probe(struct i2c_client *client,
+> >>   	if (ret < 0)
+> >>   		return ret;
+> >>   
+> >> -	ret = devm_iio_device_register(indio_dev->dev.parent, indio_dev);
+> >> -	if (ret)
+> >> -		return ret;
+> >> -
+> >> -	return 0;
+> >> +	return devm_iio_device_register(indio_dev->dev.parent, indio_dev);
+> >>   }  
+> > This sort of thing is done deliberately as a style choice...  I probably
+> > wouldn't have written it that way myself, but there really isn't a
+> > downside to leaving it as-is.
+> >
+> > The unused "int ret = 0;" just introduces a static checker warning about
+> > unused assignments and disables the static checker warning for
+> > uninitialized variables so we want to remove that.
+> >  
+> Got it, I will send this patch for you.
+
+I fall a bit different on this and would consider the above a cleanup
+though one I'd prefer to get with more significant stuff rather
+than on it's own.  However, there is already a patch in revision
+that includes the same change from Lucas Stankus.
+
+> 
+> Thanks
+> 
+> Tang Bin
+> 
+> 
+> 
+
