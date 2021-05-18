@@ -2,138 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C387387675
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA4E38767A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348496AbhERK2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:28:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34793 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348485AbhERK2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:28:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621333638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Th9b0uelp+zuS5Dolk9edCcQodErGvwWmi6QbbSzCQ8=;
-        b=hu4cwNlgqIF9y6apOx12S2Ln9ed/WSIc5qETK3CNvMU7q+r+gTr9soTYGttRGNOEuNjaSM
-        pif+hPFuDmB8R2mJotHO4CzpzJhMpNxX4EHGbSKhfFIAr+uY9x3aA88hXNFEMEcnWGVn3z
-        Gw01N0VUayxiTcznVWu9omKv/9drT/I=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-0-_bdxyuNfaFJZDaH82B8g-1; Tue, 18 May 2021 06:27:16 -0400
-X-MC-Unique: 0-_bdxyuNfaFJZDaH82B8g-1
-Received: by mail-wm1-f72.google.com with SMTP id n127-20020a1c27850000b02901717a27c785so391790wmn.9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:27:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Th9b0uelp+zuS5Dolk9edCcQodErGvwWmi6QbbSzCQ8=;
-        b=BSk2wjesizRln7LKmXKka5d2yq1iWd2eaaHaA9VYbK5AtwKZ9bRPbaVV8XLJ+nk9Yh
-         PcjR4b05oBBSz8yG04saoVcxDK3GCyCQ56+v3SpBJ+Z2DAb5LLvWODU7hVxw/oCjafDY
-         oMPexKxQZBYJFFfFxdEkqhbR8lkKGeej/BYjJMm/P4UK2CzLHBy4q6bdWpCw3S7QJxcm
-         px6tuKGMySyl6GVJKbTs6ZNU3oginGo8mC3/cphBIB3qbo7mGYNxV7hhmCWP9tS67cMw
-         L3tUKBZIJAuvjza3eUkoZFpc+WbBuS6d2O7kOjm0OQFrz3vy5btILSc4IcyXl27ZTnZg
-         KeKQ==
-X-Gm-Message-State: AOAM530KJ85TIYYXdNJTvahvDCBBwUya1d07lJaNCFVCGFsdo8OlV3GX
-        u4VJVW4JauUK32KQYPmurIZx646HdxyoYB2vF31oePP03TdONGOSBd1iKbUtJglCQl8mVmDv8nu
-        qikJ+Q2RP+W4w/ZtzZmDsM35d
-X-Received: by 2002:a05:600c:35cc:: with SMTP id r12mr4525760wmq.157.1621333635631;
-        Tue, 18 May 2021 03:27:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzL+bP4BGJ/+tDiLE4ZHcq1wv671RbTKwVIAcgFztdQnfjanbuq/Gm2r3B/QzaKSEduy6Y9Cg==
-X-Received: by 2002:a05:600c:35cc:: with SMTP id r12mr4525739wmq.157.1621333635433;
-        Tue, 18 May 2021 03:27:15 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64fd.dip0.t-ipconnect.de. [91.12.100.253])
-        by smtp.gmail.com with ESMTPSA id z3sm1173826wrq.42.2021.05.18.03.27.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 03:27:15 -0700 (PDT)
-Subject: Re: [PATCH v19 6/8] PM: hibernate: disable when there are active
- secretmem users
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-7-rppt@kernel.org>
- <20210518102424.GD82842@C02TD0UTHF1T.local>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <47d0e5b1-ffee-d694-4865-8718619c1be0@redhat.com>
-Date:   Tue, 18 May 2021 12:27:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1348504AbhERK26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:28:58 -0400
+Received: from mga03.intel.com ([134.134.136.65]:45513 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348500AbhERK2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:28:53 -0400
+IronPort-SDR: Wg25PeXp4ZfJNWS21vj+IpKh9VVm+wdcPzNAo7SvjL3r1QB6J9hhrxk5gUz7RekbMPJHTcRNF+
+ HPRS9ouwrZrw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200731103"
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="200731103"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 03:27:33 -0700
+IronPort-SDR: 1WGRa5GEdY/FlUCw9j3o3zISHvOUQR/HMqsM2MDlLp00233eeN2jrA3cQSGHhp/ZZmdAX9YSfl
+ D63ocSmMtPFQ==
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="611926237"
+Received: from dborkows-mobl.amr.corp.intel.com ([10.212.82.250])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 03:27:30 -0700
+Message-ID: <025db5b34f40d250331184daee38a0acf8f765b4.camel@linux.intel.com>
+Subject: Re: [PATCH v2] ACPI: DPTF: Add new PCH FIVR methods
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Date:   Tue, 18 May 2021 03:27:26 -0700
+In-Reply-To: <CAJZ5v0ivv9ouf065aYyLqN_JtjR5vomUumAQtGHPunze0BdUmQ@mail.gmail.com>
+References: <20210518034119.2116555-1-srinivas.pandruvada@linux.intel.com>
+         <CAJZ5v0ivv9ouf065aYyLqN_JtjR5vomUumAQtGHPunze0BdUmQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210518102424.GD82842@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.05.21 12:24, Mark Rutland wrote:
-> On Thu, May 13, 2021 at 09:47:32PM +0300, Mike Rapoport wrote:
->> From: Mike Rapoport <rppt@linux.ibm.com>
->>
->> It is unsafe to allow saving of secretmem areas to the hibernation
->> snapshot as they would be visible after the resume and this essentially
->> will defeat the purpose of secret memory mappings.
->>
->> Prevent hibernation whenever there are active secret memory users.
+On Tue, 2021-05-18 at 11:36 +0200, Rafael J. Wysocki wrote:
+> On Tue, May 18, 2021 at 5:42 AM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> > 
+> > Some additional information is required for updating PCH FIVR
+> > values
+> > upon WiFi channel changes.
+> > 
+> > New attributes added to the existing sysfs:
+> > fivr_switching_freq_mhz : Get the FIVR switching control frequency
+> >                           using ACPI method GFCS. Refer to the
+> >                           documentation for the equation.
+> > fivr_switching_fault_status: Read the FIVR switching frequency
+> > control
+> >                         fault status. Uses ACPI method GFFS
+> > 
+> > ssc_clock_info : Presents SSC (spread spectrum clock) information
+> > for EMI
+> > (Electro magnetic interference) control. Use ACPI method GEMI.
+> > Refer
+> > to the description of GEMI method below.
+> > 
+> > GFFS
+> > This ACPI method is used to read the FIVR switching frequency
+> > control
+> > fault status.
+> > Bits    Description
+> > [0:0]   Fault status when set to 1
+> > [31:1]  Reserved
+> > 
+> > GFCS
+> > This ACPI method is used to read the FIVR switching control
+> > frequency.
+> > Bits    Description
+> > [11:0]  Actual Frequency = value * XTAL_FREQ / 128
+> > [31:12] Reserved
+> > 
+> > GEMI
+> > This ACPI method is used to read the programmed register value for
+> > EMI
+> > (Electro magnetic interference) control.
+> > 
+> > Bits    Description
+> > [7:0]   Sets clock spectrum spread percentage:
+> >         0x00=0.2% , 0x3F=10%
+> >         1 LSB = 0.1% increase in spread (for
+> >         settings 0x01 thru 0x1C)
+> >         1 LSB = 0.2% increase in spread (for
+> >         settings 0x1E thru 0x3F)
+> > [8]     When set to 1, enables spread
+> >         spectrum clock
+> > [9]     0: Triangle mode. FFC frequency
+> >         walks around the Fcenter in a linear
+> >         fashion
+> >         1: Random walk mode. FFC frequency
+> >         changes randomly within the SSC
+> >         (Spread spectrum clock) range
+> > [10]    0: No white noise. 1: Add white noise
+> >         to spread waveform
+> > [11]    When 1, future writes are ignored.
+> > 
+> > Signed-off-by: Srinivas Pandruvada <  
+> > srinivas.pandruvada@linux.intel.com>
+> > ---
+> > v2
+> >         Update documentation for fivr_switching_freq_mhz
+> > 
+> >  Documentation/ABI/testing/sysfs-platform-dptf | 42
+> > +++++++++++++++++++
+> >  drivers/acpi/dptf/dptf_pch_fivr.c             |  9 ++++
+> >  2 files changed, 51 insertions(+)
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-platform-dptf
+> > b/Documentation/ABI/testing/sysfs-platform-dptf
+> > index 141834342a4d..fe62f024eb93 100644
+> > --- a/Documentation/ABI/testing/sysfs-platform-dptf
+> > +++ b/Documentation/ABI/testing/sysfs-platform-dptf
+> > @@ -111,3 +111,45 @@ Contact:   linux-acpi@vger.kernel.org
+> >  Description:
+> >                 (RW) The PCH FIVR (Fully Integrated Voltage
+> > Regulator) switching frequency in MHz,
+> >                 when FIVR clock is 38.4MHz.
+> > +
+> > +What:         
+> > /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fiv
+> > r_switching_freq_mhz
+> > +Date:          June, 2021
+> > +KernelVersion: v5.14
+> > +Contact:       linux-acpi@vger.kernel.org
+> > +Description:
+> > +               (RO) Get the FIVR switching control frequency in
+> > MHz after applying equation
+> > +               "fivr_switching_freq_mhz * XTAL_FREQ / 128". Here
+> > XTAL_FREQ is Crystal Oscillator frequency
+> > +               in MHz, which is product specific.
 > 
-> Have we thought about how this is going to work in practice, e.g. on
-> mobile systems? It seems to me that there are a variety of common
-> applications which might want to use this which people don't expect to
-> inhibit hibernate (e.g. authentication agents, web browsers).
+> IMO it would be sufficient to say the following here:
 > 
-> Are we happy to say that any userspace application can incidentally
-> inhibit hibernate?
+> +               (RO) PCH FIVR switching control frequency in the
+> units
+> of XTAL_FREQ / 128,
+> +               where XTAL_FREQ is the Crystal Oscillator frequency
+> (product specific).
+> 
+> This means that it needs to be multiplied by XTAL_FREQ / 128 to get
+> the frequency in the whatever units XTAL_FREQ is expressed.
+> 
+Looks good.
 
-It's worth noting that secretmem has to be explicitly enabled by the 
-admin to even work.
+> I can make this change when applying the patch.
 
--- 
+> 
 Thanks,
+Srinivas
 
-David / dhildenb
+
+> > +What:         
+> > /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fiv
+> > r_switching_fault_status
+> > +Date:          June, 2021
+> > +KernelVersion: v5.14
+> > +Contact:       linux-acpi@vger.kernel.org
+> > +Description:
+> > +               (RO) Read the FIVR switching frequency control
+> > fault status.
+> > +
+> > +What:         
+> > /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/ssc
+> > _clock_info
+> > +Date:          June, 2021
+> > +KernelVersion: v5.14
+> > +Contact:       linux-acpi@vger.kernel.org
+> > +Description:
+> > +               (RO) Presents SSC (spread spectrum clock)
+> > information for EMI
+> > +               (Electro magnetic interference) control. This is a
+> > bit mask.
+> > +               Bits    Description
+> > +               [7:0]   Sets clock spectrum spread percentage:
+> > +                       0x00=0.2% , 0x3F=10%
+> > +                       1 LSB = 0.1% increase in spread (for
+> > +                       settings 0x01 thru 0x1C)
+> > +                       1 LSB = 0.2% increase in spread (for
+> > +                       settings 0x1E thru 0x3F)
+> > +               [8]     When set to 1, enables spread
+> > +                       spectrum clock
+> > +               [9]     0: Triangle mode. FFC frequency
+> > +                       walks around the Fcenter in a linear
+> > +                       fashion
+> > +                       1: Random walk mode. FFC frequency
+> > +                       changes randomly within the SSC
+> > +                       (Spread spectrum clock) range
+> > +               [10]    0: No white noise. 1: Add white noise
+> > +                       to spread waveform
+> > +               [11]    When 1, future writes are ignored.
+> > diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c
+> > b/drivers/acpi/dptf/dptf_pch_fivr.c
+> > index 5fca18296bf6..22c4ae0401ef 100644
+> > --- a/drivers/acpi/dptf/dptf_pch_fivr.c
+> > +++ b/drivers/acpi/dptf/dptf_pch_fivr.c
+> > @@ -55,15 +55,24 @@ static ssize_t name##_store(struct device
+> > *dev,\
+> > 
+> >  PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
+> >  PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
+> > +PCH_FIVR_SHOW(ssc_clock_info, GEMI)
+> > +PCH_FIVR_SHOW(fivr_switching_freq_mhz, GFCS)
+> > +PCH_FIVR_SHOW(fivr_switching_fault_status, GFFS)
+> >  PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
+> >  PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
+> > 
+> >  static DEVICE_ATTR_RW(freq_mhz_low_clock);
+> >  static DEVICE_ATTR_RW(freq_mhz_high_clock);
+> > +static DEVICE_ATTR_RO(ssc_clock_info);
+> > +static DEVICE_ATTR_RO(fivr_switching_freq_mhz);
+> > +static DEVICE_ATTR_RO(fivr_switching_fault_status);
+> > 
+> >  static struct attribute *fivr_attrs[] = {
+> >         &dev_attr_freq_mhz_low_clock.attr,
+> >         &dev_attr_freq_mhz_high_clock.attr,
+> > +       &dev_attr_ssc_clock_info.attr,
+> > +       &dev_attr_fivr_switching_freq_mhz.attr,
+> > +       &dev_attr_fivr_switching_fault_status.attr,
+> >         NULL
+> >  };
+> > 
+> > --
+> > 2.27.0
+> > 
+
 
