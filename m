@@ -2,51 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9F33877E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880C03877EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245022AbhERLnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:43:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47268 "EHLO mx2.suse.de"
+        id S1348834AbhERLo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:44:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240052AbhERLnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:43:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80A20AE4D;
-        Tue, 18 May 2021 11:42:04 +0000 (UTC)
-Subject: Re: [PATCH v10 27/33] mm/writeback: Add folio_wait_stable
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-28-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <f87c35b1-4755-de51-1ce7-7f1deccee44c@suse.cz>
-Date:   Tue, 18 May 2021 13:42:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231655AbhERLoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 07:44:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B16560BD3;
+        Tue, 18 May 2021 11:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621338184;
+        bh=XIzw+7OS/V1zUzWXN8higtcu24gjwfGY3HOOQ6GgKwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eHVpQ/pP/mDVLHU7rqDTrLRoI2M44s1EbX2EQFODh5nm3tn1iDQrei0lCPi48Vqci
+         OHO8QFnaph1z8AEl+sL6YO2s31U/6FS0m+vi2tpm/vB4YzRugk4zHwiX7VHqWNxRGA
+         ttVNVlVwPxV0C/AzqdJuzlbo+yS1UMDL9YcLDOY2ZlXgR/Gsd7ql5sePcKn2Rr7B59
+         fp7upzQTM9YYday43YIPUdY0raybJ/2N0YSWeRjoPkE3YyJGnGFMoIsSstMeBgKjBb
+         senkfXtMhEzpbC/JtnbN10qFeJ4NfA4CsOujWASP6jCJVqmxRp2IHLrEC7/BPxWEBn
+         qtE5dHGn4+qRQ==
+Date:   Tue, 18 May 2021 17:13:00 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [RESEND PATCH V4 1/8] arm64: dts: qcom: sm8350: Add label for
+ thermal-zones node
+Message-ID: <YKOoRPDiTnOQG+4l@vkoul-mobl.Dlink>
+References: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
+ <1621318822-29332-2-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-28-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621318822-29332-2-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> Move wait_for_stable_page() into the folio compatibility file.
-> folio_wait_stable() avoids a call to compound_head() and is 14 bytes
-> smaller than wait_for_stable_page() was.  The net text size grows by 24
-> bytes as a result of this patch.
+On 18-05-21, 11:50, satya priya wrote:
+> Add label "thermal_zones" for thermal-zones node.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+> Changes in RESEND V4:
+>  - No Changes.
+> 
+>  arch/arm64/boot/dts/qcom/sm8350.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> index ed0b51b..47c6c0b 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> @@ -1317,7 +1317,7 @@
+>  		};
+>  	};
+>  
+> -	thermal-zones {
+> +	thermal_zones: thermal-zones {
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+is this label used anywhere in this series? If not lets drop it
 
-This seems to remove last user of thp_head(). Remove it as obsolete?
+>  		cpu0-thermal {
+>  			polling-delay-passive = <250>;
+>  			polling-delay = <1000>;
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+
+-- 
+~Vinod
