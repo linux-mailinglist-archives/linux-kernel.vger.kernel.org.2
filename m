@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99754387DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6532387DF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350912AbhERQyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:54:51 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:19086 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346785AbhERQyq (ORCPT
+        id S1350931AbhERQ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:56:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18074 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1350921AbhERQ4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:54:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621356807; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4ouhNzv64W56jIKdgY8HWa/2U7fy4tFAWB86eRu+Cmg=;
- b=UE3PLs10oYrDV3l1G9dUgPW+fqtpTU/HGLtgFgiKl4Uc+ThiTxHBVU8LcAu+cQIzQcXTs2rs
- 3ASjaji0pMVwrhXw+kovAJUZCsVW7JJBDPsJy6Ggr6iFm+P1uUNi9fwmQI97kw0C6SvA6/vL
- jivE2FVP9K6naRb+wZn5cepjdrM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60a3f10167d156359ab8f5ed (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 May 2021 16:53:21
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 89E9EC433D3; Tue, 18 May 2021 16:53:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EF16BC433F1;
-        Tue, 18 May 2021 16:53:19 +0000 (UTC)
+        Tue, 18 May 2021 12:56:10 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IGXCOK093854;
+        Tue, 18 May 2021 12:54:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=HZhH9XcAVtvzJ3MjEaaWljjyMwNM1vD7cRb5rJX3WME=;
+ b=Wqye7yL4rWyG4TZWii9laSKQPUr4qhcqkD8iV8eps6nVFzmQLtt7j627XPHbEYQoKzQ4
+ pRFJU+n0/LbdNXK4Y65QzPUZukHQm5Hup+S5eWVMYG/oLw3KR/ucs40rD1qTWWHa0ll9
+ GKGyqBwoS6rpW5+t7I0U9Z3dcKIqfOP76pnyOMJwuGiv7VUBa6DtgP32F7HwKnqkXlpB
+ L/mVgVFuc/HOrri1hOhNpmOdE5XuiANoSVka7Tgs+7XmTbj5yKD74p3llrCm83wnuTPX
+ tBYV1AjyI0RtOKNaFxQ5vhjc2M7hvRHBQnrAGLAjnpF5FyMw8esGbsxYyfKAGqlncfVw 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38mh5xrk65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 12:54:48 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IGYZA7098391;
+        Tue, 18 May 2021 12:54:47 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38mh5xrk5q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 12:54:47 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IGqtFl009318;
+        Tue, 18 May 2021 16:54:45 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 38m19sr8wu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 16:54:45 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IGsgH815073696
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 16:54:42 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8F2F5AE04D;
+        Tue, 18 May 2021 16:54:42 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AFF3CAE053;
+        Tue, 18 May 2021 16:54:41 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.17.64])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 18 May 2021 16:54:41 +0000 (GMT)
+Date:   Tue, 18 May 2021 18:54:39 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, freude@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com
+Subject: Re: [PATCH v16 00/14] s390/vfio-ap: dynamic configuration support
+Message-ID: <20210518185439.72a4d37e.pasic@linux.ibm.com>
+In-Reply-To: <60e91bd2-0802-a3af-11a3-fa6dd8146d90@linux.ibm.com>
+References: <20210510164423.346858-1-akrowiak@linux.ibm.com>
+        <60e91bd2-0802-a3af-11a3-fa6dd8146d90@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 18 May 2021 22:23:19 +0530
-From:   okukatla@codeaurora.org
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        evgreen@google.com, Andy Gross <agross@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, ilina@codeaurora.org, seansw@qti.qualcomm.com,
-        elder@linaro.org, linux-arm-msm-owner@vger.kernel.org,
-        sibis=codeaurora.org@codeaurora.org
-Subject: Re: [1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
-In-Reply-To: <825aca2d853e5dd577d61396df49f44a@codeaurora.org>
-References: <1618556290-28303-1-git-send-email-okukatla@codeaurora.org>
- <1618556290-28303-2-git-send-email-okukatla@codeaurora.org>
- <825aca2d853e5dd577d61396df49f44a@codeaurora.org>
-Message-ID: <51ccc3e65a25fe6e278621459a75e191@codeaurora.org>
-X-Sender: okukatla@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tX4ghSEMO8Nk_e444TKSa5C11W7acrzp
+X-Proofpoint-ORIG-GUID: k21VCz2pxeSy25ww5OcBb9gVr-6NKgIg
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_08:2021-05-18,2021-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 mlxscore=0 clxscore=1015
+ adultscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105180113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-30 11:04, Sibi Sankar wrote:
-> Hey Odelu,
-> Thanks for the patch!
-> 
-> On 2021-04-16 12:28, Odelu Kukatla wrote:
->> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
->> SoCs.
->> 
->> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
->> ---
->>  Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git
->> a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
->> b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
->> index d6a95c3..98223f8 100644
->> --- a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
->> +++ b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
->> @@ -18,6 +18,7 @@ properties:
->>    compatible:
->>      enum:
->>        - qcom,sc7180-osm-l3
->> +      - qcom,sc7280-epss-l3
->>        - qcom,sdm845-osm-l3
->>        - qcom,sm8150-osm-l3
->>        - qcom,sm8250-epss-l3
-> 
-> Based on the driver/dts changes the
-> reg property maxItems will no longer
-> be just 1.
-Thanks Sibi!
-I will address this in next revision.
+On Tue, 18 May 2021 09:26:01 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> Ping!
+
+I'm already working on it. I went trough the all the changes once, and
+I'm currently trying to understand the new usages of 
+matrix_mdev->wait_for_kvm and matrix_mdev->kvm_busy. You seem to be
+using these a new purpose...
+
+Regards,
+Halil
