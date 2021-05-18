@@ -2,202 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED2387BF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653F3387BF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245404AbhERPIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:08:40 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:41593 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343837AbhERPIP (ORCPT
+        id S1349998AbhERPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345185AbhERPI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:08:15 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id A9CCB5C0154;
-        Tue, 18 May 2021 11:06:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 18 May 2021 11:06:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=UtZnScApeETjyLyNRFDWSVh+wz6
-        +gPca+YgDd6VPR5E=; b=Vrx4mu49F+jjLkO3TymHrB0XV72VRYt0gEwF4vR2Rqe
-        XNq+hTB2XBpnmCaMG+/HwNQZFhX8iRSQH6D/Wnta09KnJMOqb1ZHGOIiUMKrOba5
-        SKvMe9f07evWK5NOoS+IHqKLQvYkoInlRLnGz0uWk7HWs7yq5u4rCkcrj44eAwDr
-        iLbRK8waq0X9oT63zsjyY6z6bkZzSf/F8IPCgLkv18JxL/re8jXemd+/ttGk8+PA
-        lcErDSmt09MZJPg9ejwNuJhx1N2gmkajZ3ZmRReXLsj2bbH+kLH7UZg40Q5xJlTR
-        Xy0NzbbmtPDR/256wL6MS43RN8pXctRtMRfqZHU/apA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=UtZnSc
-        ApeETjyLyNRFDWSVh+wz6+gPca+YgDd6VPR5E=; b=hUjZZKYFtiOWtlef0HiIOm
-        /9IgrR27rkAvQehkAPdMy1Lo5shMOj3/s8bDdKzWawQ8jfXUNemRW60ocX47u5yC
-        LTiXrdv6bK68yVzwGFSC4cseMDXauHWAaL/iqlibQU2E6Q2Jm1l3I5Nwkk9yvktc
-        bsoirodCq8+nVo4Kk691q3ltuHuf4RdbXiJuJ9Y0L1rBnD57ND6VvycLx/NXDfON
-        bEqecQf8pYPXaaB1lB+RQFXZcpmFMu+tzsHlGt2utTX+6EcpGRjy0DwaZS1KhDn3
-        5Z9VME55vdMZGARAGuChfkWGgJdQDPQeqSO7huue/jldylYcm4WQabXBUZjq8EHQ
-        ==
-X-ME-Sender: <xms:D9ijYJg0ZDZoDCy5u_NzUZiReq2XDCy6iFj3nvMczDe_3gGxmOF2Vw>
-    <xme:D9ijYOAQAcQvcyg1U9JyRt_C8lHQgSdxhiMqFbBI4Zk6F2SvYIkTdn6y3KkPLmVJa
-    e6P6X6ejxWS0ed5sGk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhephfeutddvuedthfdtffeltefhudfhgeekueffhfefveehjeethfelffevfedt
-    veegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpkhgrlhiiuhhmvghushdrtghomh
-    enucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:D9ijYJHHfS-6dhRNV3mPiE27pRHiwspVFMy2Xq0F8_xs1d116A3Tuw>
-    <xmx:D9ijYOSqaTa0sAO9lgfOl6dFffDHJ7w9DbTq5csiryA3ddlH7cYBCQ>
-    <xmx:D9ijYGxf-phLAaMF6orCGBKadaewhGCGg143nezImMHT06hVAXKJNQ>
-    <xmx:ENijYByTUF4wjTxcVrZ4Lv7jr4DzU5pivtPypnIwaI2NUGo0P2iJ6Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 18 May 2021 11:06:55 -0400 (EDT)
-Date:   Tue, 18 May 2021 17:06:52 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Vagrant Cascadian <vagrant@reproducible-builds.org>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        "B.R. Oake" <broake@mailfence.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Tue, 18 May 2021 11:08:26 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DF0C06138C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:07:05 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id c3so10047438oic.8
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+lBDaMrVcXCmNsGsG2GHtvXuohiK3y1fAq9YmDvlMUI=;
+        b=TfFm6XUl8usCh+YDjlrfsKSJsgSrVFG2r9LmR7R1O2boLhrRI/yzD+CcQ7RfAWEW9G
+         7G+47UqXAauSsG+54SqM9HVYBdDYo/eaoP/L5ii3Q9P2D/x3jy+65MFG9CAcg+6f7ubV
+         nkteko1WvbfFYxK5vzaBCi9lyvCoyzi1EpfJWTaqsXcNJMfq5msijgBvR0LginJIqtXY
+         iIVWtcx+P3Zhkr7PNkHKEqIKbEWdR8qPJWTdwUdouIt3Wyi3RVmKZibaZzUK7VO1HbJw
+         mDXXeol1aIdYxWhMn9tiOg/8P1P1NQQ+rt0K9VZvIp38iHFX9yIqi/CTxb1kk56P5Jum
+         rxtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+lBDaMrVcXCmNsGsG2GHtvXuohiK3y1fAq9YmDvlMUI=;
+        b=WW9A6REpGDHzVZqG79wmNh609Cg8rAwW2eJC/fC3n+m8lbKmRGH1Cgv5GrpROK9LoV
+         cIRf21Esjb9sjmlD0iNjBwCM4WYTL1wjg230heSNzmkQzflp+iPHdiL3etWBEthJ2igr
+         NFWp0JynwizechPHfXVVTW/TycGusyaViMejKVMMUzJMj70X6Wu5hSt00T1LLrOHQ9Ks
+         Epfqq1YH6O8r8mKt7NBSheR3HIqWeGgRZC1GryDAFrMWPXL1z2hXThYF9tbTIFBAUc/y
+         iuP7vhf2VVBA7sZqC1fNUK47oRlVhLt+JMLToiRZTtnhKCcJpVgzX56SvvpVzvZ5m9ey
+         JR0g==
+X-Gm-Message-State: AOAM532HY8WKsh931AuFiWXg/CZfBcWXX5OTc2wdhTvsKvJWwYxdKPWP
+        7cV+k11ZmAzSWhF1+tgVLJd1HA==
+X-Google-Smtp-Source: ABdhPJze1PGjl6NkBbu38cuIam83kD4ddjg9LMGeI1tzvfuEQnG7R6F7031etdypFyPiWOgWhRxTpQ==
+X-Received: by 2002:a05:6808:8ee:: with SMTP id d14mr3858352oic.18.1621350424989;
+        Tue, 18 May 2021 08:07:04 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h20sm3451707oie.33.2021.05.18.08.07.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 08:07:04 -0700 (PDT)
+Date:   Tue, 18 May 2021 10:07:02 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Thara Gopinath <thara.gopinath@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY mode
-Message-ID: <20210518150652.zxj56bljjeq3ogln@gilmour>
-References: <1243888060.510560.1612783497400@ichabod.co-bxl>
- <20210210150118.ly252i37eykayrcb@gilmour>
- <1719200956.433094.1613199092092@ichabod.co-bxl>
- <6612268.HtAl026vyE@jernej-laptop>
- <YKFPGC2qBMipQPbd@eldamar.lan>
- <87o8dawhy3.fsf@yucca>
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Subject: Re: [PATCH v2 09/17] crypto: qce: core: Add support to initialize
+ interconnect path
+Message-ID: <20210518150702.GW2484@yoga>
+References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+ <20210505213731.538612-10-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qqqwqasxaqgopl6t"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87o8dawhy3.fsf@yucca>
+In-Reply-To: <20210505213731.538612-10-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 05 May 16:37 CDT 2021, Bhupesh Sharma wrote:
 
---qqqwqasxaqgopl6t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: Thara Gopinath <thara.gopinath@linaro.org>
+> 
+> Crypto engine on certain Snapdragon processors like sm8150, sm8250, sm8350
+> etc. requires interconnect path between the engine and memory to be
+> explicitly enabled and bandwidth set prior to any operations. Add support
+> in the qce core to enable the interconnect path appropriately.
+> 
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> [Make header file inclusion alphabetical]
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-On Sun, May 16, 2021 at 01:18:44PM -0700, Vagrant Cascadian wrote:
-> On 2021-05-16, Salvatore Bonaccorso wrote:
-> > On Sat, Feb 13, 2021 at 09:51:17AM +0100, Jernej =C5=A0krabec wrote:
-> >> Let me first explain that it was oversight on my side not noticing ini=
-tials in=20
-> >> your SoB tag. But since the issue was raised by Maxime, I didn't follo=
-w up.
-> >>=20
-> >> Dne sobota, 13. februar 2021 ob 07:51:32 CET je B.R. Oake napisal(a):
-> >> > On Wed Feb 10 at 16:01:18 CET 2021, Maxime Ripard wrote:
-> >> > > Unfortunately we can't take this patch as is, this needs to be you=
-r real
-> >> > > name, see:
-> >> > > https://www.kernel.org/doc/html/latest/process/submitting-patches.=
-html#de
-> >> > > veloper-s-certificate-of-origin-1-1
-> >> > Dear Maxime,
-> >> >=20
-> >> > Thank you very much for considering my contribution and for all your
-> >> > work on supporting sunxi-based hardware; I appreciate it.
-> >> >=20
-> >> > Thank you for referring me to the Developer's Certificate of Origin,=
- but
-> >> > I had already read it before submitting (I had to do so in order to =
-know
-> >> > what I was saying by "Signed-off-by:") and I do certify what it says.
-> >> >=20
-> >> > Looking through recent entries in the commit log of the mainline ker=
-nel,
-> >> > I see several patches from authors such as:
-> >> >=20
-> >> >   H.J. Lu <hjl.tools@gmail.com>
-> >> >   B K Karthik <karthik.bk2000@live.com>
-> >> >   JC Kuo <jckuo@nvidia.com>
-> >> >   EJ Hsu <ejh@nvidia.com>
-> >> >   LH Lin <lh.lin@mediatek.com>
-> >> >   KP Singh <kpsingh@kernel.org>
-> >> >   Karthik B S <karthik.b.s@intel.com>
-> >> >   Shreyas NC <shreyas.nc@intel.com>
-> >> >   Vandana BN <bnvandana@gmail.com>
-> >> >=20
-> >> > so I believe names of this form are in fact acceptable, even if the
-> >> > style might seem a little old-fashioned to some.
-> >>=20
-> >> Speaking generally, not only for this case, prior art arguments rarely=
- hold,=20
-> >> because:
-> >> - it might be oversight,
-> >> - it might be a bad practice, which should not be followed in new=20
-> >> contributions,
-> >> - different maintainers have different point of view on same thing,
-> >> - maintainer wants to adapt new practice or steer subsystem in new dir=
-ection
-> >>=20
-> >> >=20
-> >> > I would like to add that I have met many people with names such as C=
-=2EJ.,
-> >> > A A, TC, MG, etc. That is what everybody calls them and it would be
-> >> > natural for them to sign themselves that way. Some of them might wan=
-t to
-> >> > contribute to Linux some day, and I think it would be a great shame =
-and
-> >> > a loss to all of us if they were discouraged from doing so by reading
-> >> > our conversation in the archives and concluding that any contribution
-> >> > from them, however small, would be summarily refused simply because =
-of
-> >> > their name. Please could you ensure that does not happen?
-> >>=20
-> >> The link you posted says following:
-> >> "using your real name (sorry, no pseudonyms or anonymous contributions=
-=2E)"
-> >>=20
-> >> I believe that real name means no initials, no matter what people are=
-=20
-> >> accustomed to. From my point of view, CJ is pseudonym derived from rea=
-l name.
-> >>=20
-> >> This is not the first time that fix of SoB tag was requested, you can =
-find such=20
-> >> requests in ML archives.
->=20
-> I'm sure this isn't the first time this sort of thing has been brought
-> up on this subject, but I feel obliged to mention:
->=20
->   https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-abo=
-ut-names/
->=20
-> This seems to be blocked on culturally dependent perception of what
-> looks like a "real name" as opposed to any technical grounds.
->=20
-> What is the goal of the "real name" in Signed-off-by actually trying to
-> achieve?
+This says that you prepared the patch, then Thara picked up the patch
+and sorted the includes. But somehow you then sent the patch.
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#deve=
-loper-s-certificate-of-origin-1-1
+I.e. you name should be the last - unless you jointly wrote the path, in
+which case you should also add a "Co-developed-by: Thara".
 
-I'm not the one making the rules, sorry
+> ---
+>  drivers/crypto/qce/core.c | 35 ++++++++++++++++++++++++++++-------
+>  drivers/crypto/qce/core.h |  1 +
+>  2 files changed, 29 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index 80b75085c265..92a0ff1d357e 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -5,6 +5,7 @@
+>  
+>  #include <linux/clk.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/interconnect.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+>  #include <linux/mod_devicetable.h>
+> @@ -21,6 +22,8 @@
+>  #define QCE_MAJOR_VERSION5	0x05
+>  #define QCE_QUEUE_LENGTH	1
+>  
+> +#define QCE_DEFAULT_MEM_BANDWIDTH	393600
 
-Maxime
+Do we know what this rate is?
 
---qqqwqasxaqgopl6t
-Content-Type: application/pgp-signature; name="signature.asc"
+> +
+>  static const struct qce_algo_ops *qce_ops[] = {
+>  #ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
+>  	&skcipher_ops,
+> @@ -202,21 +205,35 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	qce->mem_path = of_icc_get(qce->dev, "memory");
 
------BEGIN PGP SIGNATURE-----
+Using devm_of_icc_get() would save you some changes to the error path.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKPYDAAKCRDj7w1vZxhR
-xXECAPwPQPuDwA61Q2rSL92rcSESsZsduUWrz98QLINr377e+gD9HXsf9H7P36qZ
-DleU5wX9rkQ417ncngbQxsmmAH/6pwA=
-=ayow
------END PGP SIGNATURE-----
+> +	if (IS_ERR(qce->mem_path))
+> +		return PTR_ERR(qce->mem_path);
+> +
+>  	qce->core = devm_clk_get(qce->dev, "core");
+> -	if (IS_ERR(qce->core))
+> -		return PTR_ERR(qce->core);
+> +	if (IS_ERR(qce->core)) {
+> +		ret = PTR_ERR(qce->core);
+> +		goto err_mem_path_put;
+> +	}
+>  
+>  	qce->iface = devm_clk_get(qce->dev, "iface");
+> -	if (IS_ERR(qce->iface))
+> -		return PTR_ERR(qce->iface);
+> +	if (IS_ERR(qce->iface)) {
+> +		ret = PTR_ERR(qce->iface);
+> +		goto err_mem_path_put;
+> +	}
+>  
+>  	qce->bus = devm_clk_get(qce->dev, "bus");
+> -	if (IS_ERR(qce->bus))
+> -		return PTR_ERR(qce->bus);
+> +	if (IS_ERR(qce->bus)) {
+> +		ret = PTR_ERR(qce->bus);
+> +		goto err_mem_path_put;
+> +	}
+> +
+> +	ret = icc_set_bw(qce->mem_path, QCE_DEFAULT_MEM_BANDWIDTH, QCE_DEFAULT_MEM_BANDWIDTH);
+> +	if (ret)
+> +		goto err_mem_path_put;
+>  
+>  	ret = clk_prepare_enable(qce->core);
+>  	if (ret)
+> -		return ret;
+> +		goto err_mem_path_disable;
+>  
+>  	ret = clk_prepare_enable(qce->iface);
+>  	if (ret)
+> @@ -256,6 +273,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>  	clk_disable_unprepare(qce->iface);
+>  err_clks_core:
+>  	clk_disable_unprepare(qce->core);
+> +err_mem_path_disable:
+> +	icc_set_bw(qce->mem_path, 0, 0);
 
---qqqwqasxaqgopl6t--
+When you icc_put() (or devm_of_icc_get() does it for you) the path's
+votes are implicitly set to 0, so you don't need to do this.
+
+And as such, you don't need to change the error path at all.
+
+Regards,
+Bjorn
+
+> +err_mem_path_put:
+> +	icc_put(qce->mem_path);
+>  	return ret;
+>  }
+>  
+> diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
+> index 085774cdf641..228fcd69ec51 100644
+> --- a/drivers/crypto/qce/core.h
+> +++ b/drivers/crypto/qce/core.h
+> @@ -35,6 +35,7 @@ struct qce_device {
+>  	void __iomem *base;
+>  	struct device *dev;
+>  	struct clk *core, *iface, *bus;
+> +	struct icc_path *mem_path;
+>  	struct qce_dma_data dma;
+>  	int burst_size;
+>  	unsigned int pipe_pair_id;
+> -- 
+> 2.30.2
+> 
