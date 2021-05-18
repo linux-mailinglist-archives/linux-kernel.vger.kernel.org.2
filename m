@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB9F3881E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4E43881E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352411AbhERVKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:10:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29516 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352412AbhERVKk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:10:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621372161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=prvD609VA1uqqbSC01aL2lSdSeHhEcopBWufKRbRPx8=;
-        b=BvuRIvVxUV2hcYkAegVsnOR7b3BSPxTJbEB2rh5eMULcLs9Tm0ct4srqQ6EwZUWap4Mrp1
-        EJsXND4sln7UdGnmRhUKOF6h8rj26s2IxEoctt6y977WMyNoTrYt2HGu+odxzTi2UDM64f
-        ZEr2x0B/EuxyE1vJSenzT0QydLR9mR4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-Be5p2DJaNYep39DMoDgl_g-1; Tue, 18 May 2021 17:09:18 -0400
-X-MC-Unique: Be5p2DJaNYep39DMoDgl_g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89E288015DB;
-        Tue, 18 May 2021 21:09:16 +0000 (UTC)
-Received: from f33vm.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 554A95C1A1;
-        Tue, 18 May 2021 21:09:15 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: [PATCH 4/4] bond_alb: put all slaves into promisc
-Date:   Tue, 18 May 2021 17:08:49 -0400
-Message-Id: <20210518210849.1673577-5-jarod@redhat.com>
-In-Reply-To: <20210518210849.1673577-1-jarod@redhat.com>
-References: <20210518210849.1673577-1-jarod@redhat.com>
+        id S236987AbhERVOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230166AbhERVOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 17:14:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDE79611BF;
+        Tue, 18 May 2021 21:12:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621372378;
+        bh=+XwfrEanFh4KN53uNfFPtVzdxotlHS4G0gMOF3X0WWU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jW7Z5QSAQBCRP3CKw+PHGutOzM5iOK9y1tHxZ6wz9E3G9YwJphlNGn4YXcrY5VVvU
+         /8G7pnwdxTS8Be9nMmIT4mMf34ma2lXxCrYCifz10pMNCgGPrbq1D3MafdTe0cD180
+         thyhN50YhNCqhYek5zhBP7w5KqK9BRQO1b6/QgZFq14s/+WJxLlz1TEmrOYMw25STx
+         lwQEf8oR297grjB9ipFruYyE0UgGB830qqXQR6kDeYYSpe/fXNMfZWPiSHYeeOqdeo
+         AjjIYQxIbigYb/4UmQ1iZ1QJrJDC6hULdYEy7tg9dN72d4Km1cerHjsoJHVYejXtSB
+         pFCddv1n/5rnw==
+Subject: Re: [PATCH] powerpc: Kconfig: disable CONFIG_COMPAT for clang < 12
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Fangrui Song <maskray@google.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210518205858.2440344-1-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <fe638f4e-4dea-2f5e-2193-2f8b63aaf7a8@kernel.org>
+Date:   Tue, 18 May 2021 14:12:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210518205858.2440344-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ALB mode bonding can receive on all slaves, so it would seem to make sense
-that they're all in promisc, unlike other modes that have a primary
-interface and can only receive on that interface.
+On 5/18/2021 1:58 PM, Nick Desaulniers wrote:
+> Until clang-12, clang would attempt to assemble 32b powerpc assembler in
+> 64b emulation mode when using a 64b target triple with -m32, leading to
+> errors during the build of the compat VDSO. Simply disable all of
+> CONFIG_COMPAT; users should upgrade to the latest release of clang for
+> proper support.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1160
+> Link: https://github.com/llvm/llvm-project/commits/2288319733cd5f525bf7e24dece08bfcf9d0ff9e
+> Link: https://groups.google.com/g/clang-built-linux/c/ayNmi3HoNdY/m/XJAGj_G2AgAJ
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-Cc: Veaceslav Falico <vfalico@gmail.com>
-Cc: Andy Gospodarek <andy@greyhouse.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Thomas Davis <tadavis@lbl.gov>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
----
- drivers/net/bonding/bond_main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index d71e398642fb..93f57ff1c552 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -644,9 +644,10 @@ static int bond_check_dev_link(struct bonding *bond,
- static int bond_set_promiscuity(struct bonding *bond, int inc)
- {
- 	struct list_head *iter;
--	int err = 0;
-+	int mode, err = 0;
- 
--	if (bond_uses_primary(bond)) {
-+	mode = BOND_MODE(bond);
-+	if (mode == BOND_MODE_ACTIVEBACKUP || mode == BOND_MODE_TLB) {
- 		struct slave *curr_active = rtnl_dereference(bond->curr_active_slave);
- 
- 		if (curr_active)
--- 
-2.30.2
+> ---
+>   arch/powerpc/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index ce3f59531b51..2a02784b7ef0 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -289,6 +289,7 @@ config PANIC_TIMEOUT
+>   config COMPAT
+>   	bool "Enable support for 32bit binaries"
+>   	depends on PPC64
+> +	depends on !CC_IS_CLANG || CLANG_VERSION >= 120000
+>   	default y if !CPU_LITTLE_ENDIAN
+>   	select ARCH_WANT_OLD_COMPAT_IPC
+>   	select COMPAT_OLD_SIGACTION
+> 
 
