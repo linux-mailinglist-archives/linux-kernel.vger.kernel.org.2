@@ -2,117 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A555387881
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD7D38787A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244520AbhERMLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:11:49 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3019 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbhERMLm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:11:42 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FkvsK6kj1zlg8D;
-        Tue, 18 May 2021 20:08:05 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 20:10:20 +0800
-Received: from localhost (10.52.121.12) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
- 2021 13:10:18 +0100
-Date:   Tue, 18 May 2021 13:08:33 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-CC:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        <linux-staging@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] staging: iio: cdc: ad7746: avoid overwrite of
- num_channels
-Message-ID: <20210518130833.00001807@Huawei.com>
-In-Reply-To: <CACKVXZA9rPGLLxyq3gWTynoH7dPgYitqe-dO=YNad7VxHfwQhA@mail.gmail.com>
-References: <cover.1620766020.git.lucas.p.stankus@gmail.com>
-        <09e65d3a235febfc4c3ee172b573ba8c9cde94b8.1620766020.git.lucas.p.stankus@gmail.com>
-        <CA+U=DsptfNDut3984MJkKckgWBhNd_0p17RfpidEXwYhMRfxtg@mail.gmail.com>
-        <CACKVXZA9rPGLLxyq3gWTynoH7dPgYitqe-dO=YNad7VxHfwQhA@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S244487AbhERMKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:10:18 -0400
+Received: from mga14.intel.com ([192.55.52.115]:28990 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235289AbhERMKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:10:17 -0400
+IronPort-SDR: 1aqobQwW3kxrz8MoD2qQNCd8ZHYLUL2To0M48+ItFvf2TBT7Naq10D3Dy7NgdtcPtawd0SYI1e
+ Lr7OVmZK6f6Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200389350"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="200389350"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:08:59 -0700
+IronPort-SDR: vLeCAHE20ijNg3k4AUW4yxNtE3HlvJXu7AvNQxCLO4sH/XRMKqKRwAEH93LODTDIe2+O0kW3eN
+ bWGmQmo8HbCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="433047511"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 18 May 2021 05:08:57 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2260D12F; Tue, 18 May 2021 15:09:19 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v1 1/1] gpiolib: Use sysfs_emit() in "show" functions
+Date:   Tue, 18 May 2021 15:09:17 +0300
+Message-Id: <20210518120917.30336-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.12]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 21:55:20 -0300
-Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
+The sysfs_emit() function was introduced to make it less ambiguous
+which function is preferred when writing to the output buffer in
+a "show" callback [1].
 
-> On Wed, May 12, 2021 at 2:20 PM Alexandru Ardelean
-> <ardeleanalex@gmail.com> wrote:
-> >
-> > On Tue, May 11, 2021 at 11:55 PM Lucas Stankus
-> > <lucas.p.stankus@gmail.com> wrote:  
-> > >
-> > > AD7745 devices don't have the CIN2 pins and therefore can't handle related
-> > > channels. Forcing the number of AD7746 channels may lead to enabling more
-> > > channels than what the hardware actually supports.
-> > > Avoid num_channels being overwritten after first assignment.
-> > >
-> > > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> > > ---
-> > >  drivers/staging/iio/cdc/ad7746.c | 1 -
-> > >  1 file changed, 1 deletion(-)
-> > >
-> > > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> > > index e03d010b2f4c..9e0da43b2871 100644
-> > > --- a/drivers/staging/iio/cdc/ad7746.c
-> > > +++ b/drivers/staging/iio/cdc/ad7746.c
-> > > @@ -693,7 +693,6 @@ static int ad7746_probe(struct i2c_client *client,
-> > >                 indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
-> > >         else
-> > >                 indio_dev->num_channels =  ARRAY_SIZE(ad7746_channels) - 2;
-> > > -       indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);  
-> >
-> > ohh; good catch
-> >
-> > this falls into the category of a fix, so a Fixes tag is required;
-> > this looks so old, that i did not bother tracking it before
-> > 83e416f458d53  [which is 2011]  
-> 
-> As Jonathan said, this bug was already fixed and the patch will be dropped,
-> but thank you for the review.
-> 
-> This was my first bug fix in the kernel, so sorry for the absence of a
-> Fixes tag, I'll make sure to add one next time.
-> 
+Convert the GPIO library sysfs interface from sprintf() to sysfs_emit()
+accordingly, as the latter is aware of the PAGE_SIZE buffer and correctly
+returns the number of bytes written into the buffer.
 
-Wasn't already fixed - I just applied this patch without PATCH 1/2
-so now it is ;)
+No functional change intended.
 
-Jonathan
+[1] Documentation/filesystems/sysfs.rst
 
-> 
-> >
-> > so, maybe something like:
-> >
-> > Fixes: 83e416f458d53 ("staging: iio: adc: Replace, rewrite ad7745 from
-> > scratch.")
-> >  
-> > >         indio_dev->modes = INDIO_DIRECT_MODE;
-> > >
-> > >         if (pdata) {
-> > > --
-> > > 2.31.1
-> > >  
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/gpio/gpiolib-sysfs.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+index 7c5afd999210..d836aba91d3c 100644
+--- a/drivers/gpio/gpiolib-sysfs.c
++++ b/drivers/gpio/gpiolib-sysfs.c
+@@ -66,9 +66,7 @@ static ssize_t direction_show(struct device *dev,
+ 	mutex_lock(&data->mutex);
+ 
+ 	gpiod_get_direction(desc);
+-	status = sprintf(buf, "%s\n",
+-			test_bit(FLAG_IS_OUT, &desc->flags)
+-				? "out" : "in");
++	status = sysfs_emit(buf, "%s\n", test_bit(FLAG_IS_OUT, &desc->flags) ? "out" : "in");
+ 
+ 	mutex_unlock(&data->mutex);
+ 
+@@ -109,13 +107,9 @@ static ssize_t value_show(struct device *dev,
+ 	mutex_lock(&data->mutex);
+ 
+ 	status = gpiod_get_value_cansleep(desc);
+-	if (status < 0)
+-		goto err;
++	if (status >= 0)
++		status = sysfs_emit(buf, "%zd\n", status);
+ 
+-	buf[0] = '0' + status;
+-	buf[1] = '\n';
+-	status = 2;
+-err:
+ 	mutex_unlock(&data->mutex);
+ 
+ 	return status;
+@@ -249,11 +243,11 @@ static ssize_t edge_show(struct device *dev,
+ 	mutex_lock(&data->mutex);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(trigger_types); i++) {
+-		if (data->irq_flags == trigger_types[i].flags) {
+-			status = sprintf(buf, "%s\n", trigger_types[i].name);
++		if (data->irq_flags == trigger_types[i].flags)
+ 			break;
+-		}
+ 	}
++	if (i < ARRAY_SIZE(trigger_types))
++		status = sysfs_emit(buf, "%s\n", trigger_types[i].name);
+ 
+ 	mutex_unlock(&data->mutex);
+ 
+@@ -333,8 +327,7 @@ static ssize_t active_low_show(struct device *dev,
+ 
+ 	mutex_lock(&data->mutex);
+ 
+-	status = sprintf(buf, "%d\n",
+-				!!test_bit(FLAG_ACTIVE_LOW, &desc->flags));
++	status = sysfs_emit(buf, "%d\n", !!test_bit(FLAG_ACTIVE_LOW, &desc->flags));
+ 
+ 	mutex_unlock(&data->mutex);
+ 
+@@ -412,7 +405,7 @@ static ssize_t base_show(struct device *dev,
+ {
+ 	const struct gpio_chip	*chip = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%d\n", chip->base);
++	return sysfs_emit(buf, "%d\n", chip->base);
+ }
+ static DEVICE_ATTR_RO(base);
+ 
+@@ -421,7 +414,7 @@ static ssize_t label_show(struct device *dev,
+ {
+ 	const struct gpio_chip	*chip = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%s\n", chip->label ? : "");
++	return sysfs_emit(buf, "%s\n", chip->label ?: "");
+ }
+ static DEVICE_ATTR_RO(label);
+ 
+@@ -430,7 +423,7 @@ static ssize_t ngpio_show(struct device *dev,
+ {
+ 	const struct gpio_chip	*chip = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%u\n", chip->ngpio);
++	return sysfs_emit(buf, "%u\n", chip->ngpio);
+ }
+ static DEVICE_ATTR_RO(ngpio);
+ 
+-- 
+2.30.2
 
