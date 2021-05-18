@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D36638813F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C12A388141
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238211AbhERUUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:20:46 -0400
-Received: from smtp-16-i2.italiaonline.it ([213.209.12.16]:39101 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230248AbhERUUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:20:45 -0400
-Received: from oxapps-35-162.iol.local ([10.101.8.208])
-        by smtp-16.iol.local with ESMTPA
-        id j6BYlAGVOf2ANj6BYlp5F5; Tue, 18 May 2021 22:19:25 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1621369165; bh=XVkFxo7ZKGNtFNrYhiClXGixHnfMmxA8+YV87zyDpmA=;
-        h=From;
-        b=VqSY8/2wMIs+fZtNamtICQJHs1qOYzAszVobwZKjrNm89NBDOB+mhiB9EGDjwnRqF
-         d6Jz3d2bD3eIQpA5e/6lA53MGX8fOIiaEvY+5vMyh19ap7QXGne4wkTUsADTYIt4Ti
-         9a5U77elb1KnZHPUpK/3xcypD9XvRXmMmQhoRdNfU4VyCwEoFhBqspUBiHn1wlx4+J
-         gFgwArH+lXL4hzbCCXsJWEvtw7LMmzZ1Uw0+gg7o4z8SfolIuCjTnula19ZK0dFSr/
-         YNhlsnaYCIFrmHKmPrKFsPcnJHLddbsPHs8r4RtV4f7nIxXzjO1AmNFozhZlJobQjr
-         cv8Q0HBK59yZQ==
-X-CNFS-Analysis: v=2.4 cv=Adt0o1bG c=1 sm=1 tr=0 ts=60a4214d cx=a_exe
- a=OCAZjQWm+uh9gf1btJle/A==:117 a=VYA5D5F8Gk0A:10 a=IkcTkHD0fZMA:10
- a=4ehuGOvBq5EA:10 a=2KMo9-giAAAA:8 a=KpX_iGQJn2wPZywkGhQA:9 a=QEXdDO2ut3YA:10
- a=UeCTMeHK7YUBiLmz_SX7:22
-Date:   Tue, 18 May 2021 22:19:24 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Message-ID: <1573333464.184266.1621369164919@mail1.libero.it>
-In-Reply-To: <YKNZ0A7umnk4LwKU@atomide.com>
-References: <20210514163818.12178-1-dariobin@libero.it>
- <YKNZ0A7umnk4LwKU@atomide.com>
-Subject: Re: [PATCH] pinctrl: single: config: enable the pin's input
+        id S239133AbhERUVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238378AbhERUVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 16:21:00 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5ADC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:19:42 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id lg14so16556524ejb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AbjKDwD1WRRxmkhXc4f3TugAgjL4KbmiuHqJM1zpTUo=;
+        b=IRuZgZtPG7LPVpmRZeET6NZ2nUuo/rMgBH40E6dtMMqRu/janHK2WrJ1WE5BQ6xR3L
+         Of0dOjvc29GpBADtaHjv82d4GytQD3CByP51KBsTCelfA2a00s9gKUSteF5oAgznkjE/
+         7+xvgGWolTbd7loHjJeop7lYPMFIZqHekb6wrP41Q2oTLsJj7J02CA+wt+sfWOuVR1KS
+         QpaR+JzM5ud7py7Wd/q5k1n+b9Q+TRwljLGB58Rbwn0BPtvSsTjsbhWpaJgmYMc7IdKl
+         qY9qylcFFgtdwiEdt9Yd4E6lyn4Qw0F8UF4LXVGtTYXhIwAu73QTmtdS/WVJT+QLTDsJ
+         Zdpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AbjKDwD1WRRxmkhXc4f3TugAgjL4KbmiuHqJM1zpTUo=;
+        b=KA3mCc+27rffqpo7I4aer2EmZCAwTBlUbmhgBmGBtu8rowsP5Mj4D2NIdJ7zCAjj0B
+         0kSwQuHgTExeBF/kD+Rx1i0NzxOJCwVEctWaZ9tNjl6tmCNXFjcR9Hku2cmRN7cUrtpf
+         5PjFy6ErNOvXpMBdwusDvOElxSIZobaX8fUZ/8ODYdcbWFmP/jXH2sWsE2CWGKz7wUfB
+         ZkWevjOyP9RJh6s39uM1q94qLanbVf08/UIdGT7wznAg/5rPyXqBTfMN1YypYzPVMuwz
+         8jPM6J3r1hsHOarbwbWLOWx7RXv+eZnh8laOomJHxkWjSJK89XgsNX5zyX+uuGkR4sXv
+         4W9g==
+X-Gm-Message-State: AOAM5321Wut9q4ax2Jd+EZMUMeNn94GhmH9aR79s5hQNl6R390CaaUfG
+        hE0MexTcPladtffwzbB3JmOwdctG4GtE6HuQx0w=
+X-Google-Smtp-Source: ABdhPJzztRLQmBRFMR015kSLwVbJs7ud7gcNtBafi3NrcJ4G/wbN67YksdWdiHm8F4e5xKQxmN/kDCovr3axkj55iUw=
+X-Received: by 2002:a17:906:1699:: with SMTP id s25mr7720560ejd.238.1621369180706;
+ Tue, 18 May 2021 13:19:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 95.244.94.151
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: u3Vr1NmJGlSn2wGsKv1MD0oU2EQpEehm
-x-libjamv: GvOt3+Fyat8=
-X-CMAE-Envelope: MS4xfCUfRbZ4GNf2gdmc2/DrsRAzGKXJfN+R5Xa8rxeRTbEqPTtIjK0l9tqEPcDdHPTZfmCRA2nCSXsGSDS94vTFbGf5atyRU2de+0BQ/aE8AhRb75fceVdV
- 1h4+22o9rTeNaII+CWVhKrxiCfuc/2Y3AsRnOwcyoFi1wtPV3ydjjezTECspprFN93E5hvsIrEl+GAzUTVplqi2qnRLBP5Ew7Ny6qLKAiadO0KC073cJoMxv
- LN+ZDEvrG8GeRFZoU2S4S60+D31DTcAWEJvcPwRT9pSi6asFuD9MlTro75Jf+in6+L7bVSfvAsc2ABN7eIfNAF8Le147MiemA/PpIu7NtQTvKntar1rNrDf5
- rxIJrrXLn5Sfnfc1w9mSKkzxxIDEI1Bm+uUbeV0GraSmJV2GFi1uzH56G1Grm5LfQR7HUJSMMZ4ccNmS54X4ZJQO3quDlg==
+References: <20210518200927.69011-1-jrdr.linux@gmail.com>
+In-Reply-To: <20210518200927.69011-1-jrdr.linux@gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 18 May 2021 13:19:29 -0700
+Message-ID: <CAHbLzkpZnqAwDDFYHwd7K7CA-8i1yZEwOVVZsb4GqA9_7XCz_Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/huge_memory.c: Remove unused variable unmap_success
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On Tue, May 18, 2021 at 1:09 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> Kernel test robot throws below warning ->
+>
+>    mm/huge_memory.c: In function 'unmap_page':
+> >> mm/huge_memory.c:2345:7: warning: variable 'unmap_success' set but not used [-Wunused-but-set-variable]
+>     2345 |  bool unmap_success;
+>          |       ^~~~~~~~~~~~~
+>
+> Remove the unused variable unmap_success.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-> Il 18/05/2021 08:08 Tony Lindgren <tony@atomide.com> ha scritto:
-> 
->  
-> * Dario Binacchi <dariobin@libero.it> [210514 16:38]:
-> > It enables / disables the input buffer. As explained in the description
-> > of 'enum pin_config_param' this does not affect the pin's ability to
-> > drive output.
-> > 
-> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> > ---
-> > 
-> >  drivers/pinctrl/pinctrl-single.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-> > index 2c9c9835f375..4e7cdb9ee855 100644
-> > --- a/drivers/pinctrl/pinctrl-single.c
-> > +++ b/drivers/pinctrl/pinctrl-single.c
-> > @@ -534,6 +534,7 @@ static int pcs_pinconf_get(struct pinctrl_dev *pctldev,
-> >  		case PIN_CONFIG_DRIVE_STRENGTH:
-> >  		case PIN_CONFIG_SLEW_RATE:
-> >  		case PIN_CONFIG_MODE_LOW_POWER:
-> > +		case PIN_CONFIG_INPUT_ENABLE:
-> >  		default:
-> >  			*config = data;
-> >  			break;
-> > @@ -572,6 +573,7 @@ static int pcs_pinconf_set(struct pinctrl_dev *pctldev,
-> >  			case PIN_CONFIG_DRIVE_STRENGTH:
-> >  			case PIN_CONFIG_SLEW_RATE:
-> >  			case PIN_CONFIG_MODE_LOW_POWER:
-> > +			case PIN_CONFIG_INPUT_ENABLE:
-> >  				shift = ffs(func->conf[i].mask) - 1;
-> >  				data &= ~func->conf[i].mask;
-> >  				data |= (arg << shift) & func->conf[i].mask;
-> > @@ -918,6 +920,7 @@ static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
-> >  	static const struct pcs_conf_type prop2[] = {
-> >  		{ "pinctrl-single,drive-strength", PIN_CONFIG_DRIVE_STRENGTH, },
-> >  		{ "pinctrl-single,slew-rate", PIN_CONFIG_SLEW_RATE, },
-> > +		{ "pinctrl-single,input-enable", PIN_CONFIG_INPUT_ENABLE, },
-> >  		{ "pinctrl-single,input-schmitt", PIN_CONFIG_INPUT_SCHMITT, },
-> >  		{ "pinctrl-single,low-power-mode", PIN_CONFIG_MODE_LOW_POWER, },
-> >  	};
-> 
-> Looks OK to me if this works for Linus W. You need another patch to
-> update the binding though:
-> 
-> Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
+Thanks for catching this. Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-I think the Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml file 
-does not need to be updated. 
-The 'input-enable' property is already documented.
-
-Thanks and regards,
-Dario
-> 
-> Or if there is such a patch floating around, I was not in Cc :)
-> 
-> Regards,
-> 
-> Tony
+Just like https://lore.kernel.org/linux-mm/CAHbLzkonsd9f=48+cxKOJamNb9e8qpvWJCYDGFB_wNTdET2zmQ@mail.gmail.com/T/#t,
+not sure why my compiler didn't catch such warning.
+> ---
+>  mm/huge_memory.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 52ca04b905cf..ff79a12993c9 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2342,14 +2342,13 @@ static void unmap_page(struct page *page)
+>  {
+>         enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
+>                 TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+> -       bool unmap_success;
+>
+>         VM_BUG_ON_PAGE(!PageHead(page), page);
+>
+>         if (PageAnon(page))
+>                 ttu_flags |= TTU_SPLIT_FREEZE;
+>
+> -       unmap_success = try_to_unmap(page, ttu_flags);
+> +       try_to_unmap(page, ttu_flags);
+>  }
+>
+>  static void remap_page(struct page *page, unsigned int nr)
+> --
+> 2.25.1
+>
+>
