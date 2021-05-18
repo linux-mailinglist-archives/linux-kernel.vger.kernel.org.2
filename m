@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9813880FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5945E388114
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242894AbhERUKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        id S1352169AbhERULB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352071AbhERUJ5 (ORCPT
+        with ESMTP id S1352100AbhERUKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:09:57 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2043DC061763;
-        Tue, 18 May 2021 13:08:33 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id v13so5725582ple.9;
-        Tue, 18 May 2021 13:08:33 -0700 (PDT)
+        Tue, 18 May 2021 16:10:41 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D81C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:09:22 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id t7so8483948qtn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/vcL4h8Y/iDJ4PQ//oXXgHbE7D0ndwuNE52sYaiQ5uA=;
-        b=Rm/Otlj3gP5XkV3BLLxJkLQZNy2jj12x4U46YT0W9OzEwpis3BcOIrYA7TVCiGcBYd
-         Y/A52de9C1ucmsAiRKng/fYtrQYoCX40xawvO30vOcJUOan7Bv2m4ddeDNmr4hxw0Qq0
-         6jl+8hWGd+pTu+rgkD94iUuIYKjREOUB2cvP2M5h11Udgoyr7RPzlPbEi5XXf4WweaUf
-         ZpLLVOF0qWA1+HfY6ZP6JGee3F1z5RIbsZofK3zJeI+YbVgxyJb61AlXkNcywq7xNgtx
-         S8bSVLZUqAGKZLV9CHJpPhGdkhrgfZCRAoZ+R2kGYxTIKwp5+kZWKvxXdkwpQeMKM6cu
-         +FHA==
+        d=gwmail.gwu.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=KeFGs+XgiT4GeNWCCgafjwdeWaSG59cF2HfJOv3nLZw=;
+        b=VcWqaHvKphNZDm5r4JxYL5xhI9rymCjHASfBV6erFnoQnaQq2j0okjNNvMIOlf3gUZ
+         EJy/T5VLGqIuMyydSGHtmF53CPYT/kWo9i/U54bKJjsNq81jYKeumDk91PtxxFNVbaqA
+         iGGJraYKKCfDhsNrtBqJuYRNDqvCCk/FQWtthUGS5hwRgP2S+uw1Y+dpHSdDi2JkKJkx
+         GaG2wcHkK+B+mxgJ8MS1FyOHlPTgA/wQ+ORyVXud5miQS6Yx0LZHyAxIG58KrEzCCPJm
+         WkRFU785GCK6hV6D66C/VyppwHsI2W765+D2VsQfKdrvcCjNWabsNbh8Ro7dbRwELpET
+         ousg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/vcL4h8Y/iDJ4PQ//oXXgHbE7D0ndwuNE52sYaiQ5uA=;
-        b=snS1imFqURXbtEa5SVXsZh718Vri6BNxqIQQhyAbqV+o+iOsdNiUrhn/7afxVvFPmw
-         qn7WSeaIkZG+CNKlGcChGO96lLNAGHOgd6Mp4YZjv7AN6aUq/ArtD7G475fQ4nXk4ziV
-         JpT954mnNCB7pIqHxAueizgGFWdjnUca16VXnqGnzdfAHf1AWQMxBPlW1F6q1T9OolMW
-         8hQ/aYue0aBHd4iWm8oJD5AUK67YtjImAsTUof2Zq19esSG2uD2oiCXmuJU/tfogwuSG
-         dgJMfz9IyUjUhHtxpRZzYQ5EoiUL+woHRXDFJjo9RoqpudW9Zi3CZZI3q1PJLM7kPBNv
-         o6Zg==
-X-Gm-Message-State: AOAM532yxA1PLeDO5wvLfYLFj5xPDglvGSiipzeR0RGUShfqD5de0SDV
-        De9d922tMWXhq6RAheDPl+E=
-X-Google-Smtp-Source: ABdhPJzHjDupKD9HBvIBLGRi6l5SuWQ81rgs7GzcOZnGf3LhF6AGiUZhf89yxQ3FkYWXt210nsqHGw==
-X-Received: by 2002:a17:902:8c91:b029:f3:b4da:4600 with SMTP id t17-20020a1709028c91b02900f3b4da4600mr3168651plo.30.1621368512990;
-        Tue, 18 May 2021 13:08:32 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id r11sm13456600pgl.34.2021.05.18.13.08.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KeFGs+XgiT4GeNWCCgafjwdeWaSG59cF2HfJOv3nLZw=;
+        b=F556nSj1vaMmzoFew7R5xBxGpKS5lcAAj8m1IgdP7SJleXHSAzyyWN2aUmRWBMhjtI
+         uJGMK8Zbvqlbne1ATkXv1lbUDbet9wlQ04eKs1/3/FXuItI37nmZ6rOse2B30uuZXQGL
+         TtFaygE24DkZK1yH201v//d9a9BxBpLuSb/cl7JBQPfgTnym/6XmGrrm9HATgdCyHMRl
+         lsxtrEdlzLd/af7N2hGxDh3PVcK+teSt8vNISIt8K+MuE5Y9fy6lcnZmq+RG/SWdcmey
+         8djjTWgOR4ImPYgM4mw4vZE7PEUbLgUDXhADblwisd5iBkWudgI0EgrqUJuyoERERWbG
+         MHzA==
+X-Gm-Message-State: AOAM532B/KELewZ7+C95Szs+St6T08O4AWw207nFzMQ7H40OWoPb2n3Z
+        X7fI1ICyzURzuwtZkRX8kDhYlg==
+X-Google-Smtp-Source: ABdhPJyTZg/7h6ux+qSVPdgBujgr9LFp57H4rAT7WH4EWdYOJrVyeX5em/IuiWqovWIK2V3VvAv5NA==
+X-Received: by 2002:ac8:41cc:: with SMTP id o12mr3038321qtm.225.1621368562028;
+        Tue, 18 May 2021 13:09:22 -0700 (PDT)
+Received: from bunsen3.telenet.unc.edu (bunsen3.telenet.unc.edu. [204.85.191.47])
+        by smtp.googlemail.com with ESMTPSA id h14sm4566128qto.58.2021.05.18.13.09.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 13:08:32 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     mgorman@suse.de, kirill.shutemov@linux.intel.com, ziy@nvidia.com,
-        ying.huang@intel.com, mhocko@suse.com, hughd@google.com,
-        gerald.schaefer@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v3 PATCH 7/7] mm: thp: skip make PMD PROT_NONE if THP migration is not supported
-Date:   Tue, 18 May 2021 13:08:01 -0700
-Message-Id: <20210518200801.7413-8-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210518200801.7413-1-shy828301@gmail.com>
-References: <20210518200801.7413-1-shy828301@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 18 May 2021 13:09:21 -0700 (PDT)
+From:   wenhuizhang <wenhui@gwmail.gwu.edu>
+Cc:     wenhui@gwmail.gwu.edu, Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] memcontrol: use flexible-array member
+Date:   Tue, 18 May 2021 16:09:08 -0400
+Message-Id: <20210518200910.29912-1-wenhui@gwmail.gwu.edu>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A quick grep shows x86_64, PowerPC (book3s), ARM64 and S390 support both
-NUMA balancing and THP.  But S390 doesn't support THP migration so NUMA
-balancing actually can't migrate any misplaced pages.
+Change depracated zero-length-and-one-element-arrays into flexible
+array member.Zero-length and one-element arrays detected by Lukas's CodeChecker.
+Zero/one element arrays causes undefined behaviours if sizeof() used.
 
-Skip make PMD PROT_NONE for such case otherwise CPU cycles may be wasted
-by pointless NUMA hinting faults on S390.
-
-Acked-by: Mel Gorman <mgorman@suse.de>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: wenhuizhang <wenhui@gwmail.gwu.edu>
 ---
- mm/huge_memory.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/memcontrol.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index b8526b9b041a..fb984ef5a761 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1735,6 +1735,7 @@ bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
-  * Returns
-  *  - 0 if PMD could not be locked
-  *  - 1 if PMD was locked but protections unchanged and TLB flush unnecessary
-+ *      or if prot_numa but THP migration is not supported
-  *  - HPAGE_PMD_NR if protections changed and TLB flush necessary
-  */
- int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
-@@ -1749,6 +1750,9 @@ int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
- 	bool uffd_wp = cp_flags & MM_CP_UFFD_WP;
- 	bool uffd_wp_resolve = cp_flags & MM_CP_UFFD_WP_RESOLVE;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0ce97eff79e2..3cc18c2176e7 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -349,8 +349,7 @@ struct mem_cgroup {
+ 	struct deferred_split deferred_split_queue;
+ #endif
  
-+	if (prot_numa && !thp_migration_supported())
-+		return 1;
-+
- 	ptl = __pmd_trans_huge_lock(pmd, vma);
- 	if (!ptl)
- 		return 0;
+-	struct mem_cgroup_per_node *nodeinfo[0];
+-	/* WARNING: nodeinfo must be the last member here */
++	struct mem_cgroup_per_node *nodeinfo[];
+ };
+ 
+ /*
 -- 
-2.26.2
+2.17.1
 
