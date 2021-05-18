@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BCF38817F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6887388182
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352186AbhERUk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:40:59 -0400
-Received: from mail-ed1-f53.google.com ([209.85.208.53]:34434 "EHLO
-        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236628AbhERUk6 (ORCPT
+        id S1352204AbhERUlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236628AbhERUlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:40:58 -0400
-Received: by mail-ed1-f53.google.com with SMTP id w12so5046450edx.1;
-        Tue, 18 May 2021 13:39:39 -0700 (PDT)
+        Tue, 18 May 2021 16:41:18 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FD7C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:39:59 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id j12so7848843pgh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8MubtEG9hK/q62MrmOSyAzp2k5GJqxjxUkR+amxPdgc=;
+        b=PcrjhRa4xcHp7ujVxO0lmMGqSmgSR4otIGIf/+coy/SW7sRDxwEKyrm9o9dl/3bOcy
+         iXOMGxh6b7kzfKskp6FH5dTZi4V6bEU4ejXmpqmdsTX8aZnVb6FPHPhGMuV0m/IZh1qE
+         hcFvrYqCn4F4Z96r3DXpmh8OXCSWs8YRTAoZA48fMAEi9+d4lPN3wFQUQ2+lDiWPk553
+         8POSF+ud5ujlr1oUuvRuUvbkJeGfw//Qw2wjS5ihoCwhkPyi8Uf/w6hwlISU0O14cClm
+         dQ+ZCohdyBi9yCBcRSETSb2qZnkAOgkm57WlBfAl9sSxHJYOc5Jkcoy1Q+muDRbuUwGJ
+         NU1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mbLSlUzjnQi9LF9AztCJB11CoBKrMpAM+VLmKOfWpRM=;
-        b=G1VA/I69KWPHSUwwRbapPd4rw8TIB+ei7cQDX/EzwVOEY9gJ2sJEyFpQO98zRQFtZR
-         6PLmLKpZ2mUBSuPbzR2Za4kcY8FZ1urmPKZL9FkzgcbeanAtyrV4BlF23R/3WQUiA5Tj
-         xwvnEQp+k+P5KCSnJCff2NCIbixzUcUENn/fAATEYOV/Yrjj+Ux3d0c9nvoVOM+Vk0Vq
-         JsNwOAhw3ICTut5WHdudzmJ/9n+OXRH36zHk/FPavBOsDG1jgH4qMZHOELWW7CSQQKfM
-         3zd/be5ALUg8o37qNNcZum7gtMRw+fYjFpJhWQuJIG0QdR6EBsDdjaXjYjkq++UHwmkA
-         0UlA==
-X-Gm-Message-State: AOAM531V3cfBrK3/X2Jb/HRX1s09UsHgb/M5sXfpPMd1N0t/8E9y/LG4
-        nWw66uvvt5+xOss4r5FtoglKpKeNH8N2+Wpeusua3pRoUvs=
-X-Google-Smtp-Source: ABdhPJxw5S0oKG/063Mjks6XP0/hBfpkaOmAgGXCuwZUj6YRAeqLLCfzj0j/MLpmDI18M8ARWsipim5braA8S+9cWSY=
-X-Received: by 2002:a05:6402:358a:: with SMTP id y10mr9252017edc.122.1621370378826;
- Tue, 18 May 2021 13:39:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8MubtEG9hK/q62MrmOSyAzp2k5GJqxjxUkR+amxPdgc=;
+        b=jaWQUsOPl8DHqiZs9eKR9XuH5Rb0DqEWOUBLKhMdTisAedCTLZvrx0XE6+h5qsUvXm
+         BhQN5h3zFLELQaerMkFBqkn0s31elhnGPdiE2tpJ18dc0xAx2VY/BpMvySfiLVfZAuxO
+         Eizc+M9MbxfD6FTcoXXqcTpwvEAg+20+Fc2Yde2FcmllvjJH3jjqUPU3fDDuyVbSv8fw
+         RFqOrW6DlGcSuljrR5tsfzDLGIbnOsob98cJ+FV1X5RudVzm/eTewaziUCep98AYHCdk
+         ftuPX9i9h7H757DLhtc8nocT4/Bp1qb3xEAf81J5r5rswESIVnOAa5r5SFfmC88yZVjv
+         MWyA==
+X-Gm-Message-State: AOAM533owwDo1MZkSPvmkH/q+ZbQWRRy+t1Ai6FFImrf3pdpVVHmqYB+
+        8VHEYl44v+mrfwcVOBQmXfZYcw==
+X-Google-Smtp-Source: ABdhPJyJTdNS2lrAnYR/uikbhBl5SfQpQwYVsIIIOsAoPSHilYioRlMVXx4wLfM/LO4yNcXFcKdhnA==
+X-Received: by 2002:a63:4083:: with SMTP id n125mr6960937pga.398.1621370399328;
+        Tue, 18 May 2021 13:39:59 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id r13sm7745401pfl.191.2021.05.18.13.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 13:39:58 -0700 (PDT)
+Date:   Tue, 18 May 2021 20:39:55 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] KVM: x86: Use common 'enable_apicv' variable for
+ both APICv and AVIC
+Message-ID: <YKQmG3rMpwSI3WrV@google.com>
+References: <20210518144339.1987982-1-vkuznets@redhat.com>
+ <20210518144339.1987982-4-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
- <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <8735uxmucw.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <8735uxmucw.ffs@nanos.tec.linutronix.de>
-From:   Len Brown <lenb@kernel.org>
-Date:   Tue, 18 May 2021 16:39:27 -0400
-Message-ID: <CAJvTdK=6B8fXasshqOoMknAt25vWPDW6LVLovOhnmY10ZEdL1Q@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518144339.1987982-4-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 5:45 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, May 18, 2021, Vitaly Kuznetsov wrote:
+> Unify VMX and SVM code by moving APICv/AVIC enablement tracking to common
+> 'enable_apicv' variable. Note: unlike APICv, AVIC is disabled by default.
+> 
+> No functional change intended.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
 
-> Where is #6 which describes the signal interaction?
+...
 
-#6 Per the current ABI, Linux gives signal handlers access to all of
-the hardware architectural state.
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 8c3918a11826..0d6ec34d1e4b 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -185,6 +185,10 @@ module_param(vls, int, 0444);
+>  static int vgif = true;
+>  module_param(vgif, int, 0444);
+>  
+> +/* enable / disable AVIC */
+> +static int avic;
+> +module_param(avic, int, 0444);
 
-#6a Signal Stack is on User Stack
+We should opportunistically make avic a "bool".
 
-The architectural state is pushed on the user stack in uncompressed
-XSTATE format.
+> +
+>  bool __read_mostly dump_invalid_vmcb;
+>  module_param(dump_invalid_vmcb, bool, 0644);
+>  
+> @@ -1009,14 +1013,15 @@ static __init int svm_hardware_setup(void)
+>  			nrips = false;
+>  	}
+>  
+> -	if (avic) {
+> -		if (!npt_enabled || !boot_cpu_has(X86_FEATURE_AVIC)) {
+> -			avic = false;
+> -		} else {
+> -			pr_info("AVIC enabled\n");
+> +	if (!npt_enabled || !boot_cpu_has(X86_FEATURE_AVIC))
+> +		avic = false;
+>  
+> -			amd_iommu_register_ga_log_notifier(&avic_ga_log_notifier);
+> -		}
+> +	/* 'enable_apicv' is common between VMX/SVM but the defaults differ */
 
-It is established that there exists application code that counts on
-this opaque state being complete so that it can do a user-space
-XRESTORE instead of a sigreturn(2).  (My opinion is that not breaking
-that legacy code is a requirement, and I'm actually shocked this view
-is not unanimous)
+-1 for not throwing Jim under the bus :-)
 
-If a feature is enabled in XCR0 but is in INIT state, the XSAVE will
-transfer zeros.
-While this is established for AVX-512, we optimize for this case for AMX
-by checking for this scenario and not transferring any data.
-(this optimization, and the self-test for it, is in AMX patch series v5)
+Nits aside,
 
-The signal hander is empowered to alter everything in XSTATE on the
-signal stack.
-
-Upon sigreturn, the kernel will dutifully XRESTORE the XSTATE.
-
-#6b Applications that allocate and register a dedicated alternate signal stack
-
-Run-time is similar to above, except the user has allocated a
-dedicated signal stack.
-The problem is that the user had to decide this stack's size.
-
-Unfortunately, signal.h ABI contained #define MIN/SIG-STACKSIZE
-(2k/8k) constants, which were:
-a) constant
-b) not updated in decades
-
-The kernel, for its part, also failed to check that an altstack was
-big enough before writing to it.
-
-Indeed, AVX-512 made the 2k constant a lie, which Andy points out is
-ABI breakage.
-This is factual, and there were real programs that broke because of it.
-
-Were AMX to be deployed in this manner without repairing the broken ABI,
-the 8K state would exceed both of these constants, and that would be
-more severe breakage than AVX-512.
-
-glibc 2.34 addressed both the existing and future problem, by updating
-these constants
-to be calculated at run-time.  The run-time calculation can be done
-entirely in glibc,
-or if glibc is running on an updated kernel, it will ask the kernel
-for the size via altvec.
-
-Further, the kernel has been updated to check for alt-stack too-small
-at run-time.
-
-https://lore.kernel.org/lkml/20210518200320.17239-1-chang.seok.bae@intel.com/
-
-I believe that all feedback has been addressed in that patch series,
-and that it is ready for linux-next.
-
-There are still two potential failures on systems that have AVX-512/AMX enabled:
-1. program, re-compiled or not, that hard-codes its own too-small alt-stack
-2. legacy static binary using old signal.h constants to allocate alt-stack.
-
-The kernel will not prohibit these programs from executing, but if they actually
-take a signal, the kernel will SIGSEGV them instead of overflowing their stack.
-
-Len Brown, Intel Open Source Technology Center
+Reviewed-by: Sean Christopherson <seanjc@google.com>
