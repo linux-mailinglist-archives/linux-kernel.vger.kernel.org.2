@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8B0388354
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6DD388355
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237351AbhERXwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
+        id S239120AbhERXw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhERXwK (ORCPT
+        with ESMTP id S231872AbhERXw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:52:10 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BD9C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:50:51 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id m11so16321396lfg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:50:51 -0700 (PDT)
+        Tue, 18 May 2021 19:52:57 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39E7C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:51:37 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id k14so13746989eji.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 16:51:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Or2R4Rgp1bMsUJI5I59/6T+1pBzEGWKIXn0WeYpuT0M=;
-        b=IGtBmndmCZfB4uX/YyPwXljP4djbXMsu0NxAogv7ai7K9ZHTkAW4pcHaN2Uw2RDcfP
-         svXenHwGWnTf7zcrNk0dqZroLnO/bOW9vzubw5Xb1kDwWmxiqLZJQxEmuX/toYHF+X2n
-         Ycnua+2Jt5PeaCP6XC32zNyKYEetxQ6K8QxEyZ+6wZsZcs1PZAPfhkcQ7xzp5WxlOVLe
-         b91pu1s36ZAtwk2pistrQM9PnfY0Hlxc8JMkzrmNavxn/U0aER5DgnmgVHwt0300zp8y
-         Q2I6lyWo/k248pgBHwv71GBdfHuXpoif5Ym4IqZaI2C2VzbG8wtFZF2GJTq7E40a9/sx
-         SZpw==
+        bh=0IjcznopF00s42V62Q4DwQxE1WnpZq8FmdwRVPdjvEo=;
+        b=WsZ+Fm5yv2oDq/u/6I23ZY7ycwVDxzauC8u6hdwmDloiTD9btCT7WdP5Um49pACXzz
+         def+9JyxT9WDprDCjenPCmRVujwLW4W4cc2ekw+MUm9VTY0QcmzDe1Bn7aOXqp7XqKQ8
+         l9or71ngl29KIuq0S8Po6jTdtv9I+lcdvmcjrnR3Wb19953aqyhnuN+dVjfAIomlNtXH
+         GKNnSO50O+l55QkeQErBsO8Bj7P+5SQM8vBd1rVB2dIyD2u9WTCNolJ+YOSw5zEg4hCv
+         i/iUNBpRQ9Oprw+5Xd3q+4x9ifoF4T7bJKzFtaODZxmTNotm8xFs4afcxbC6m5jLcQOi
+         8KWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Or2R4Rgp1bMsUJI5I59/6T+1pBzEGWKIXn0WeYpuT0M=;
-        b=DFt7Dr6c9zvnzNaA0LNVnYmU2BDZuYYviH8MpChVsQO4P61rZytz+K3rgenTWjkhCR
-         tY8WTQLnKjfXRsZhNocoJFw0iwrFEvedu/wclGSVX9nucKt+3SiTWRmxBPSKIjCldCAo
-         6U3DZ7M98HhMqq1fIN9b3aU3eK3CjpdKY2EP2lTxlhId5YLPsap13KHjI29YlNmgfzEP
-         HzzOz5BAmQoOGqPHk3eN33XRa3IZKjwN0kt8pYZ64Ro1b6tRomrbxytee/Ony82w+H5t
-         naFrYmLebZ0ASLxSns8Idf86ErBqLm8Oo0UxA8kgQx53aBr4XRkaloOJBlPx7fPGSsPr
-         yTQw==
-X-Gm-Message-State: AOAM530Nopxu3ZBXBGcuDS43Ab3rVBShrgR/Xz/4wrdN/VFbORBhkEcs
-        3l2uNByu8EqNrHjfChcZpZ/Vvy/PPVaUiujIEnlE6Q==
-X-Google-Smtp-Source: ABdhPJzmiFR7Y8glCvCrYZeMmfzFV7Wqr+nA7KGRL/dsYpUpI2qFsGj6xuY9vsGG6ua8zEMbHkW63HEJbWQmBmFoIA8=
-X-Received: by 2002:a19:a418:: with SMTP id q24mr5701463lfc.649.1621381849628;
- Tue, 18 May 2021 16:50:49 -0700 (PDT)
+        bh=0IjcznopF00s42V62Q4DwQxE1WnpZq8FmdwRVPdjvEo=;
+        b=Nz3yeEZvUSbLCG6oCoba0ywteoqqnP0WnbCns76aXoo4dKR/dvQoEA4jPdvdm6YAvF
+         Ajlp08vDSVZX3c7RMEiuPQq5boYQ8yTfVitJwPLydvClDkHk5KFJmFI0XqP/tinRnLAz
+         IskDyEoblIcClUcBVlBdFM2dhG9gCktxahY2OJQ5g2KTwkWOfI0pTZbpx1xY2RKz1m2+
+         5ujs6wr1jzg01aku6QpsKk519RTERNzHr5KjxvAn4x3fXlVlu72Pra9ycl6rdP+Y/obr
+         Cxhp9fdQkqv0U5Y0urWxutsvrA0yFbm3qDjs56GITs5xfXzz2Vs2se36zp99TnAlwMwf
+         LE8g==
+X-Gm-Message-State: AOAM530P/aZPGH3WQ+JFYx4ea5Mz9nAlfN3rJ6IT6d0Ei9CHZ7h9sGJP
+        Wnd83f6yRZlfqOgGLAmo8myDQ/FPZl2O+2Ec/qc=
+X-Google-Smtp-Source: ABdhPJw9zyvsAtZH0Fu9ekeObuTogb3dy2yR6SuMVoj7iWZLNLuwyLlvErUT73Mn6WUb+u1TMlMyiZfDohsWqJD07jA=
+X-Received: by 2002:a17:906:17ca:: with SMTP id u10mr8517332eje.124.1621381896332;
+ Tue, 18 May 2021 16:51:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210514123309.134048-1-tsbogend@alpha.franken.de>
-In-Reply-To: <20210514123309.134048-1-tsbogend@alpha.franken.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 19 May 2021 01:50:39 +0200
-Message-ID: <CACRpkdYTor-c2qvE=6YD4A+NmvpLgS3LsOfNpBZ5EdTrDkGgkg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20210518090658.9519-1-amanieu@gmail.com> <20210518090658.9519-9-amanieu@gmail.com>
+ <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
+In-Reply-To: <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
+From:   "Amanieu d'Antras" <amanieu@gmail.com>
+Date:   Wed, 19 May 2021 00:51:00 +0100
+Message-ID: <CA+y5pbRiXAF=gobC9sqJmvjVAmihA=O7xcSTkA1f8=QsnZzoEg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat syscalls
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-thanks for your patch!
-
-I can see this is starting to look really good.
-
-There is one thing that confuses me:
-
-On Fri, May 14, 2021 at 2:33 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
-
-> IDT 79RC3243x SoCs integrated a gpio controller, which handles up
-> to 32 gpios. All gpios could be used as an interrupt source.
+On Tue, May 18, 2021 at 2:03 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> I'm still undecided about this approach. It is an easy way to expose the 32-bit
+> ABIs, it mostly copies what x86-64 already does with 32-bit syscalls and
+> it doesn't expose a lot of attack surface that isn't already exposed to normal
+> 32-bit tasks running compat mode.
 >
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
-> Changes in v5:
-(...)
+> On the other hand, exposing the entire aarch32 syscall set seems both
+> too broad and not broad enough: Half of the system calls behave the
+> exact same way in native and compat mode, so they wouldn't need to
+> be exposed like this, a lot of others are trivially emulated in user space
+> by calling the native versions. The syscalls that are actually hard to do
+> such as ioctl() or the signal handling will work for aarch32 emulation, but
+> they are still insufficient to correctly emulate other 32-bit architectures
+> that have a slightly different ABI. This means the interface is a fairly good
+> fit for Tango, but much less so for FEX.
+>
+> It's also worth pointing out that this approach has a few things in common
+> with Yury's ilp32 tree at https://github.com/norov/linux/tree/ilp32-5.2
+> Unlike the x86 x32 mode, that port however does not allow calling compat
+> syscalls from normal 64-bit tasks but rather keys the syscall entry point
+> off the executable format., which wouldn't work here. It also uses the
+> asm-generic system call numbers instead of the arm32 syscall numbers.
+>
+> I assume you have already considered or tried the alternative approach of
+> only adding a minimal set of syscalls that are needed for the emulation.
+> Having a way to limit the address space for mmap() and similar
+> system calls sounds like a generally useful addition, and having an
+> extended variant of ioctl() that lets you pick the target ABI (arm32, x86-32,
+> ...) on supported drivers would probably be better for FEX. Can you
+> explain the tradeoffs that led you towards duplicating the syscall
+> entry points instead?
 
-> +static int idt_gpio_irq_set_type(struct irq_data *d, unsigned int flow_type)
-> +{
-(...)
-> +       /* hardware only supports level triggered */
-> +       if (sense == IRQ_TYPE_NONE || (sense & IRQ_TYPE_EDGE_BOTH))
-> +               return -EINVAL;
-(...)
-> +       irq_set_handler_locked(d, handle_level_irq);
+Tango needs the entire compat ABI to be exposed to support seccomp for
+translated AArch32 processes. Here's how this works:
 
-But:
+1. When a translated process installs a seccomp filter, Tango injects
+a prefix into the seccomp program which effectively does:
+    if (arch == AUDIT_ARCH_AARCH64) {
+        // 64-bit syscalls used by Tango for internal operations
+        if (syscall_in_tango_whitelist(nr))
+            return SECCOMP_RET_ALLOW;
+    }
+    // continue to user-supplied seccomp program
 
-> +static void idt_gpio_ack(struct irq_data *d)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
-> +
-> +       writel(~BIT(d->hwirq), ctrl->gpio + IDT_GPIO_ISTAT);
-> +}
-(...)
-> +       .irq_ack = idt_gpio_ack,
-
-Correct me if I'm wrong but I thing .irq_ack() is only called
-from handle_edge_irq ... so never in this case.
-
-Can this ACK just be deleted?
-
-The code in the ACK callback also looks really weird:
-write all bits except for the current IRQ into the status
-register? It's usually the other way around with these
-things. That really makes me suspect it is unused.
-
-Yours,
-Linus Walleij
+2. When Tango performs a 32-bit syscall on behalf of the translated
+process, the seccomp filter will see a syscall with AUDIT_ARCH_ARM and
+the compat syscall number. This allows the user-supplied seccomp
+filter to behave exactly as if it was running in a native AArch32
+process.
