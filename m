@@ -2,208 +2,459 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006C43879E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA703879E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349567AbhERN1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:27:10 -0400
-Received: from mail-eopbgr130081.outbound.protection.outlook.com ([40.107.13.81]:49123
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S244483AbhERN1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:27:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J32mF+hNRRpYduiCb9y34MbtxVyKsmjOkrLS0RLPcdxpD/oQeRK8NskUoPIrSo7rdLykydZ9NKw0Qm+wjqODSTiCYLiRHp2kb49Ly8OBFHeDTStqdSUqYTeCjZ/sD5f/Uj9SHfvIi/ZXDQK08QzxsTLe0mYs9XcTaEzr3vXdxz1pvq3io9+qMWqYD6kAi8YgR5uOtCOjEUutVSpo3FGHetK1A2NQrXabzqCpQjqwqTgOB+5bYlEpDJiY03z7CGoIFKlIU9qV7Ez39/DCvnrDHkb5tcoxykXkaa5Nyz91XWVt5YXedcu1jaKj6J1vPUjzmGF9gT6SeHWoiB28bObsZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TtQpf0avNAMZsCvYKNv6eXa6zRAUCsVEAGdIO3CPzfc=;
- b=S3Vg35Hm3N4RHeiqccQWnDIBefI8vM1L0Xam2HWlLXiZmKOBeBKeqJgsH1ryhSV7xNuWYFph3tZGv5RN1EPGowGJdA+7mb7dhpgeb2gxyUVtzlcPZ3alOe0d2XPbU74Ltflir8KWhKdRHvS39XzOtReOSQlE2nLwx8a5190Id2803J8x2mGMSBGwCKWp6EsZ5Lwx68Ke1rZXyIxHjM+lNhUJOHzxrvwTC0YNmm+az34IH/W9dpww+JPR3YRhslWihDLUUlLZSEABrzQKEIDHaVLDIBkkNGcw4AjGtbd81tyfhf8tZpqB3564HONVyPi9nbSCHQrU0onqVTkI6QtXlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=orolia.com; dmarc=pass action=none header.from=orolia.com;
- dkim=pass header.d=orolia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orolia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TtQpf0avNAMZsCvYKNv6eXa6zRAUCsVEAGdIO3CPzfc=;
- b=IizmXhL9CfkVzyYclFecVXtXvHZ/gtJllfSos38grbvsloJ8ypy27ydU5KR3gRIMFYXXMBxYYsYfOr5kESCjsmZxJzQ/vzIxyvF5TA929CEnWSRitRnSZeJwYaultD2BIDFD06iBOFdtPqcmU97er8CZddUi8GiMO1tEy05d6nI=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=orolia.com;
-Received: from PR1PR06MB4746.eurprd06.prod.outlook.com (2603:10a6:102:11::28)
- by PR3PR06MB6715.eurprd06.prod.outlook.com (2603:10a6:102:65::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Tue, 18 May
- 2021 13:25:46 +0000
-Received: from PR1PR06MB4746.eurprd06.prod.outlook.com
- ([fe80::81ef:de90:c451:d6e3]) by PR1PR06MB4746.eurprd06.prod.outlook.com
- ([fe80::81ef:de90:c451:d6e3%6]) with mapi id 15.20.4129.031; Tue, 18 May 2021
- 13:25:46 +0000
-Date:   Tue, 18 May 2021 15:25:32 +0200
-From:   Olivier Dautricourt <olivier.dautricourt@orolia.com>
-To:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Stefan Roese <sr@denx.de>
-Cc:     Olivier Dautricourt <olivier.dautricourt@orolia.com>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/3] dmaengine: altera-msgdma: add OF support
-Message-ID: <088a373c92bdee6e24da771c1ae2e4ed0887c0d7.1621343877.git.olivier.dautricourt@orolia.com>
-References: <7d77772f49b978e3d52d3815b8743fe54c816994.1621343877.git.olivier.dautricourt@orolia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d77772f49b978e3d52d3815b8743fe54c816994.1621343877.git.olivier.dautricourt@orolia.com>
-X-Originating-IP: [2a01:e34:ec42:fd70:167:681b:bc47:e8b1]
-X-ClientProxiedBy: PAYP264CA0029.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:11f::16) To PR1PR06MB4746.eurprd06.prod.outlook.com
- (2603:10a6:102:11::28)
+        id S1349578AbhERN13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:27:29 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59448 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244483AbhERN1Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:27:25 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ID3BFi073206;
+        Tue, 18 May 2021 09:26:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DgjZmupGwPiG55TfQpKgeMLEGo1teCb4NuEFGNHk8+A=;
+ b=JqwwKGAvtU2oGdkvCL75Cwqf71gNhcVjSGwXIuOXQ7uAya12g3N2tkyIe05/vedmt09G
+ kKvZxuWcKg8ymEr2jahBn6r3PNqDYUd685Mdv3Xq5i5NB8+sb7E+Sbu5a8+LK90ibi97
+ zr/RsrEMff0YTDgZesLKu/B4Q4wVUJjiYaVIwTDIf2Cp/FyVnK28xgcvdBhmHrmayZnF
+ Ckl2+yLayoq8ORHRG+rAI8y7ljDDe2lRTe8EsgU4f4I5VmXB8brIia5AxyPoc+AGP8Z9
+ AmT6ACGWb3+N00NIWpXx0Lm9ogk3k9U+bNEdFebWzna82ugcB/KgV2Z5aZRpzC5hAi+s fw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38md083124-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 09:26:05 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14ID4KOA077869;
+        Tue, 18 May 2021 09:26:05 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38md083110-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 09:26:05 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IDMlW1003477;
+        Tue, 18 May 2021 13:26:03 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma05wdc.us.ibm.com with ESMTP id 38j7taxtet-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 13:26:03 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IDQ2uu5833694
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 13:26:02 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E05FAC06E;
+        Tue, 18 May 2021 13:26:02 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B96CBAC06A;
+        Tue, 18 May 2021 13:26:01 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 18 May 2021 13:26:01 +0000 (GMT)
+Subject: Re: [PATCH v16 00/14] s390/vfio-ap: dynamic configuration support
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, freude@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        pasic@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, fiuczy@linux.ibm.com
+References: <20210510164423.346858-1-akrowiak@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <60e91bd2-0802-a3af-11a3-fa6dd8146d90@linux.ibm.com>
+Date:   Tue, 18 May 2021 09:26:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from orolia.com (2a01:e34:ec42:fd70:167:681b:bc47:e8b1) by PAYP264CA0029.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:11f::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 18 May 2021 13:25:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c601982b-8f04-4c5b-e742-08d91a0071e6
-X-MS-TrafficTypeDiagnostic: PR3PR06MB6715:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PR3PR06MB67154F86711AAA5A8AD923198F2C9@PR3PR06MB6715.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:628;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YwasrRSWYzLp+b01tvnISbBxvPf2sT8L1Piv4ejwvhnyqjXGF7Ook2f1ph1YY1T9zpsGITK501x5fQWzPIF9NTDUvL6nMlQ6nfkamMqmtlZ2X4WjWwmVicFOAvCFPuJbvqarZ9l0WFF8rKGUs/kqEhA/Njeu+WsYFusDJcL5yHbfX+z9THeiMpSUhHeXxjnYz0l2wCmFbv+0hDM1SrjmqkDePg0QTIN0SQPUQRmecHCEteHFJ2iQiwpd05VmRGoGmCBYlMZfza5tAPp97hPTd0yJJjpHGfgGg3hDo/1lYpyQRahGh7vvDzg4AMmVcxoLUbK9BZeMczci3SVlvnH6JMzmaGwPGlKw2NWrJKqfivnZ3T7PVU9TWmuO/j76mzz3hlNZrd/Wtf+6x+vR4LQdjG/pLhM5PygQ2IeHq9P7eXLTHUhb2KLufEraMoiXGju4bOs8QZ07mjAg/hl+HUyN73XuJNnkpXWZoqecug6QBcdzPuVZG9R6wCDOwCXKBzdyhJAZ1ZwBsWx9LAlbHnqNamT44gmA1duv3+YArSwWnhRCjw6aHJppxSeejyy6hrln656h012owCmPLURd14DPb92GXukPNsEseYTRsJ7UYtI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR1PR06MB4746.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39840400004)(346002)(366004)(376002)(396003)(83380400001)(6666004)(478600001)(66556008)(66476007)(36756003)(66946007)(2906002)(8886007)(7696005)(110136005)(2616005)(44832011)(4326008)(186003)(316002)(55016002)(8936002)(16526019)(86362001)(8676002)(38100700002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hV6Kn7SUaD4re4kBs7G2DEPtZVvarNRdkOIrQDPi3RlVQhoq5lLut9ECKLJ3?=
- =?us-ascii?Q?vvWt0eB0KVfhHy33aJhaprDWW1vReygl/BUF9XNge553Po8y67eABbNXbMif?=
- =?us-ascii?Q?HtgLIasrMn7tkxQFOC43GKmAS3HD4Hs4s8SjdW96xQyMu1IIujUsSiJFEm0G?=
- =?us-ascii?Q?+jtQ6qHJxej0owP82vzpPzb+POlfYoAXWdC+czznPORHPlglZ0Ax4DR52RXR?=
- =?us-ascii?Q?XpbUGbRYocRpqOa+eMCNz/UwcvfsFlgyFS2g/tNOGr3VeUBVVCK+z0lQt9hG?=
- =?us-ascii?Q?+ddNl4idlExWzycfSVa+ip2x0b8c2jIqLeKDLaCkfJ+85f78HUvAuEKStxwN?=
- =?us-ascii?Q?+kQ2amMlQzweHjuUfuC5/ry6+TQnM3OjlqJFhbn09TBm6zQTH7xm2X1Dk8vw?=
- =?us-ascii?Q?yVBY6+VEZtxf26ey/7OVzu76XjWjAXa9kt6i73c8Wrb9aiXSa3RWpteCiBSE?=
- =?us-ascii?Q?PDYxqZk6t8NaeDFVQLQQDV9xVh+JYmcs5Qa75K19SpjQ9PjTtnl4beXmRhDE?=
- =?us-ascii?Q?1OGaB1A74A8tScLIcbj11RuTchgCuY4l8VwqHOHypzJKYAv+/DDKCi+g6ZHP?=
- =?us-ascii?Q?NMKYqrQaGLlOgDYW/rk7OWnnV1xKyvz1J2fuedb7ZcHOzSeafo+/+pdcB2VR?=
- =?us-ascii?Q?xvPL/8HiGr8d3Fjm+iUT4pJg6du8+XF8nPRQEOijEHNzh8Kukou9Qj6plkxL?=
- =?us-ascii?Q?LhpJJArEvI4HaWuk1prbYEH9bMy3bWtmL4UH90V8FCMR4sOp//L1IGehNpbO?=
- =?us-ascii?Q?GlHYAZy3KggVMXh/fvekbUgDQXKZwSf8/GpRL7xNFBC1POp/TAi6+lyJl9Ym?=
- =?us-ascii?Q?8chBNlNDOfaMMZZlZabjTN68dU/gNTbFwwUjZTBTxNCg6OhIt/M/BK/PiOCr?=
- =?us-ascii?Q?ApuJoR2yZfcNJFdx5N5QQtX2iacLYm6Y03//rL9PdpkzKMU0i00vFzJyU5Ko?=
- =?us-ascii?Q?ieim+i6YVY8nKX75Z8tZqN6ry8vxKcYS0lH88UKxtJu9PTEXqg0tMaFb9kF8?=
- =?us-ascii?Q?LD2gt6w913hNzYC8Nigru2GxSjWRnDbXwGYoOvSAGgkrJ8b5gz7mLtpDBWZu?=
- =?us-ascii?Q?WBPIisJZCcpiAOoZcSw8k7IAv41wzJKPHPGNZhL4wqKdWh4PcUxQLveew10P?=
- =?us-ascii?Q?CGXXBICh6VdSy9d+AfbzYF2xHcbE9Rsje1uwNgFRQdEF7oDvMvQG3b9zCEgk?=
- =?us-ascii?Q?vyeau/CtrtNqJ7JjRcj52Bqn/1Rp1+RZnRvaBInlwGKoUVpV2V03SbrrJObo?=
- =?us-ascii?Q?EVSE9/Kw54T0mfUUUwMZRYXverC+hAv1pQyptvjFd52GZFrjwvrmR0VybP1R?=
- =?us-ascii?Q?SXD/n++xUT0n7usXGU4T7/TSSqZdLRcz3xeQ8lu3DgPCt0ORENa6Fls1UzQg?=
- =?us-ascii?Q?CoJWGwddLp4A4fxJeHJBqjuO42Wt?=
-X-OriginatorOrg: orolia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c601982b-8f04-4c5b-e742-08d91a0071e6
-X-MS-Exchange-CrossTenant-AuthSource: PR1PR06MB4746.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2021 13:25:46.3965
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a263030c-9c1b-421f-9471-1dec0b29c664
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J8MnRHio10zn9ee0dFQhotmAIn+3OKQbsGS20Ad4okakPFDjTToT0JSi2RWbuF7V5uHGF8jUd9iMh5FZCWrsPyI0YuYpCIoT1nJEKOs6IBI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR06MB6715
+In-Reply-To: <20210510164423.346858-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TTHy7jc9HkE-WnDCCucuIapZ9GSKpUhz
+X-Proofpoint-GUID: mGJhdRnd8t8wE2-imTq3UuFUAFUJq8Od
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
+ malwarescore=0 lowpriorityscore=0 clxscore=1015 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105180091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver had no device tree support.
+Ping!
 
-- add compatible field "altr,socfpga-msgdma"
-- define msgdma_of_xlate, with no argument
-- register dma controller with of_dma_controller_register
-
-Reviewed-by: Stefan Roese <sr@denx.de>
-Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
----
-
-Notes:
-    Changes in v2:
-        none
-
-    Changes from v2 to v3:
-        Removed CONFIG_OF #ifdef's and use if (IS_ENABLED(CONFIG_OF))
-        only once.
-
-    Changes from v3 to v4
-        Reintroduce #ifdef CONFIG_OF for msgdma_match
-        as it produces a unused variable warning
-
-    Changes from v4 to v5
-        - As per Rob's comments on patch 1/2:
-          change compatible field from altr,msgdma to
-          altr,socfpga-msgdma.
-        - change commit title to fit previous commits naming
-        - As per Vinod's comments:
-          - use dma_get_slave_channel instead of dma_get_any_slave_channel which
-            makes more sense.
-          - remove if (IS_ENABLED(CONFIG_OF)) for of_dma_controller_register
-            as it is taken care by the core
-
- drivers/dma/altera-msgdma.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
-index 9a841ce5f0c5..acf0990d73ae 100644
---- a/drivers/dma/altera-msgdma.c
-+++ b/drivers/dma/altera-msgdma.c
-@@ -19,6 +19,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <linux/of_dma.h>
-
- #include "dmaengine.h"
-
-@@ -784,6 +785,14 @@ static int request_and_map(struct platform_device *pdev, const char *name,
- 	return 0;
- }
-
-+static struct dma_chan *msgdma_of_xlate(struct of_phandle_args *dma_spec,
-+					struct of_dma *ofdma)
-+{
-+	struct msgdma_device *d = ofdma->of_dma_data;
-+
-+	return dma_get_slave_channel(&d->dmachan);
-+}
-+
- /**
-  * msgdma_probe - Driver probe function
-  * @pdev: Pointer to the platform_device structure
-@@ -888,6 +897,13 @@ static int msgdma_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto fail;
-
-+	ret = of_dma_controller_register(pdev->dev.of_node,
-+					 msgdma_of_xlate, mdev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register dma controller");
-+		goto fail;
-+	}
-+
- 	dev_notice(&pdev->dev, "Altera mSGDMA driver probe success\n");
-
- 	return 0;
-@@ -916,9 +932,19 @@ static int msgdma_remove(struct platform_device *pdev)
- 	return 0;
- }
-
-+#ifdef CONFIG_OF
-+static const struct of_device_id msgdma_match[] = {
-+	{ .compatible = "altr,socfpga-msgdma", },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, msgdma_match);
-+#endif
-+
- static struct platform_driver msgdma_driver = {
- 	.driver = {
- 		.name = "altera-msgdma",
-+		.of_match_table = of_match_ptr(msgdma_match),
- 	},
- 	.probe = msgdma_probe,
- 	.remove = msgdma_remove,
---
-2.31.0.rc2
+On 5/10/21 12:44 PM, Tony Krowiak wrote:
+> Note: Patch 1, "s390/vfio-ap: fix memory leak in mdev remove callback"
+>        does not belong to this series. It is currently being reviewed
+>        and is included here because it will be a pre-req for this series
+>        when it is accepted and merged.
+>
+> The current design for AP pass-through does not support making dynamic
+> changes to the AP matrix of a running guest resulting in a few
+> deficiencies this patch series is intended to mitigate:
+>
+> 1. Adapters, domains and control domains can not be added to or removed
+>     from a running guest. In order to modify a guest's AP configuration,
+>     the guest must be terminated; only then can AP resources be assigned
+>     to or unassigned from the guest's matrix mdev. The new AP
+>     configuration becomes available to the guest when it is subsequently
+>     restarted.
+>
+> 2. The AP bus's /sys/bus/ap/apmask and /sys/bus/ap/aqmask interfaces can
+>     be modified by a root user without any restrictions. A change to
+>     either mask can result in AP queue devices being unbound from the
+>     vfio_ap device driver and bound to a zcrypt device driver even if a
+>     guest is using the queues, thus giving the host access to the guest's
+>     private crypto data and vice versa.
+>
+> 3. The APQNs derived from the Cartesian product of the APIDs of the
+>     adapters and APQIs of the domains assigned to a matrix mdev must
+>     reference an AP queue device bound to the vfio_ap device driver. The
+>     AP architecture allows assignment of AP resources that are not
+>     available to the system, so this artificial restriction is not
+>     compliant with the architecture.
+>
+> 4. The AP configuration profile can be dynamically changed for the linux
+>     host after a KVM guest is started. For example, a new domain can be
+>     dynamically added to the configuration profile via the SE or an HMC
+>     connected to a DPM enabled lpar. Likewise, AP adapters can be
+>     dynamically configured (online state) and deconfigured (standby state)
+>     using the SE, an SCLP command or an HMC connected to a DPM enabled
+>     lpar. This can result in inadvertent sharing of AP queues between the
+>     guest and host.
+>
+> 5. A root user can manually unbind an AP queue device representing a
+>     queue in use by a KVM guest via the vfio_ap device driver's sysfs
+>     unbind attribute. In this case, the guest will be using a queue that
+>     is not bound to the driver which violates the device model.
+>
+> This patch series introduces the following changes to the current design
+> to alleviate the shortcomings described above as well as to implement
+> more of the AP architecture:
+>
+> 1. A root user will be prevented from making edits to the AP bus's
+>     /sys/bus/ap/apmask or /sys/bus/ap/aqmask if the change would transfer
+>     ownership of an APQN from the vfio_ap device driver to a zcrypt driver
+>     while the APQN is assigned to a matrix mdev.
+>
+> 2. Allow a root user to hot plug/unplug AP adapters, domains and control
+>     domains for a KVM guest using the matrix mdev via its sysfs
+>     assign/unassign attributes.
+>
+> 4. Allow assignment of an AP adapter or domain to a matrix mdev even if
+>     it results in assignment of an APQN that does not reference an AP
+>     queue device bound to the vfio_ap device driver, as long as the APQN
+>     is not reserved for use by the default zcrypt drivers (also known as
+>     over-provisioning of AP resources). Allowing over-provisioning of AP
+>     resources better models the architecture which does not preclude
+>     assigning AP resources that are not yet available in the system. Such
+>     APQNs, however, will not be assigned to the guest using the matrix
+>     mdev; only APQNs referencing AP queue devices bound to the vfio_ap
+>     device driver will actually get assigned to the guest.
+>
+> 5. Handle dynamic changes to the AP device model.
+>
+> 1. Rationale for changes to AP bus's apmask/aqmask interfaces:
+> ----------------------------------------------------------
+> Due to the extremely sensitive nature of cryptographic data, it is
+> imperative that great care be taken to ensure that such data is secured.
+> Allowing a root user, either inadvertently or maliciously, to configure
+> these masks such that a queue is shared between the host and a guest is
+> not only avoidable, it is advisable. It was suggested that this scenario
+> is better handled in user space with management software, but that does
+> not preclude a malicious administrator from using the sysfs interfaces
+> to gain access to a guest's crypto data. It was also suggested that this
+> scenario could be avoided by taking access to the adapter away from the
+> guest and zeroing out the queues prior to the vfio_ap driver releasing the
+> device; however, stealing an adapter in use from a guest as a by-product
+> of an operation is bad and will likely cause problems for the guest
+> unnecessarily. It was decided that the most effective solution with the
+> least number of negative side effects is to prevent the situation at the
+> source.
+>
+> 2. Rationale for hot plug/unplug using matrix mdev sysfs interfaces:
+> ----------------------------------------------------------------
+> Allowing a user to hot plug/unplug AP resources using the matrix mdev
+> sysfs interfaces circumvents the need to terminate the guest in order to
+> modify its AP configuration. Allowing dynamic configuration makes
+> reconfiguring a guest's AP matrix much less disruptive.
+>
+> 3. Rationale for allowing over-provisioning of AP resources:
+> -----------------------------------------------------------
+> Allowing assignment of AP resources to a matrix mdev and ultimately to a
+> guest better models the AP architecture. The architecture does not
+> preclude assignment of unavailable AP resources. If a queue subsequently
+> becomes available while a guest using the matrix mdev to which its APQN
+> is assigned, the guest will be given access to it. If an APQN
+> is dynamically unassigned from the underlying host system, it will
+> automatically become unavailable to the guest.
+>
+> Change log v15-v16:
+> ------------------
+> * Added patch to reset queues after an adapter or domain is unassigned in
+>    case of re-assignment to a different mdev (see patch description for
+>    patch 9, "s390/vfio-ap: reset queues after adapter/domain unassignment").
+>
+> * Fixed circular lockdep re-introduced by hot plugging of AP resources into
+>    a KVM guest (see changes to vfio_ap_mdev_commit_apcb() function in patch
+>    8, "s390/vfio-ap: allow hot plug/unplug of AP resources using mdev
+>    device").
+>
+>
+> Change log v14-v15:
+> ------------------
+> * Fixed bug: Unlink mdev from all queues when the mdev is removed.
+>
+> Change log v13-v14:
+> ------------------
+> * Removed patch "s390/vfio-ap: clean up vfio_ap resources when KVM pointer
+>    invalidated". The patch is not necessary because that is handled
+>    with patch 1 of this series (currently being merged) and
+>    commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
+>
+> * Removed patch "s390/vfio-ap: No need to disable IRQ after queue reset",
+>    that has already been merged with
+>    commit 6c12a6384e0c ("s390/vfio-ap: No need to disable IRQ after queue reset").
+>
+> * Initialize the vfio_ap_queue object before setting the drvdata in
+>    the probe callback
+>
+> * Change return code from mdev assignment interfaces to -EAGAIN when
+>    mutex_trylock fails for the mdev lock.
+>
+> * Restored missing hunk from v12 in the group notifier callback, but
+>    had to restore it to the vfio_ap_mdev_set_kvm() function due to
+>    changes made via merged commits noted above.
+>
+> * Reordered patch "s390/vfio-ap: sysfs attribute to display the
+>    guest's matrix" to follow the patches that modify the shadow
+>    APCB.
+>
+> * Remove queue from APCB before resetting it in the remove
+>    callback.
+>
+> * Split the vfio_ap_mdev_unlink_queue() function into two
+>    functions: one to remove the link from the matrix mdev to
+>    the queue; and, one to remove the link from the queue to the matrix
+>    mdev.
+>
+> * Removed the QCI call and the shadow_apcb memcpy from the
+>    vfio_ap_mdev_filter_apcb() function.
+>
+> * Do not clear shadow_apcb when there are not adapters or domains
+>    assigned.
+>
+> * Moved filtering code from "s390/vfio-ap: allow hot plug/unplug of
+>    AP resources using mdev device" into its own patch.
+>
+> * Squashed the two patches comprising the handling of changes to
+>    the AP configuration into one patch.
+>
+> * Added code to delay hot plug during probe until the AP bus scan
+>    is complete if the APID of the queue is in the bitmap of adapters
+>    currently being added to the AP configuration.
+>
+> Change log v12-v13:
+> ------------------
+> * Combined patches 12/13 from previous series into one patch
+>
+> * Moved all changes for linking queues and mdevs into a single patch
+>
+> * Re-ordered some patches to aid in review
+>
+> * Using mutex_trylock() function in adapter/domain assignment functions
+>    to avoid potential deadlock condition with in_use callback
+>
+> * Using filtering function for refreshing the guest's APCB for all events
+>    that change the APCB: assign/unassign adapters, domains, control domains;
+>    bind/unbind of queue devices; and, changes to the host AP configuration.
+>
+> Change log v11-v12:
+> ------------------
+> * Moved matrix device lock to protect group notifier callback
+>
+> * Split the 'No need to disable IRQ after queue reset' patch into
+>    multiple patches for easier review (move probe/remove callback
+>    functions and remove disable IRQ after queue reset)
+>
+> * Added code to decrement reference count for KVM in group notifier
+>    callback
+>
+> * Using mutex_trylock() in functions implementing the sysfs assign_adapter
+>    and assign_domain as well as the in_use callback to avoid deadlock
+>    between the AP bus's ap_perms mutex and the matrix device lock used by
+>    vfio_ap driver.
+>
+> * The sysfs guest_matrix attribute of the vfio_ap mdev will now display
+>    the shadow APCB regardless of whether a guest is using the mdev or not
+>
+> * Replaced vfio_ap mdev filtering function with a function that initializes
+>    the guest's APCB by filtering the vfio_ap mdev by APID.
+>
+> * No longer using filtering function during adapter/domain assignment
+>    to/from the vfio_ap mdev; replaced with new hot plug/unplug
+>    adapter/domain functions.
+>
+> * No longer using filtering function during bind/unbind; replaced with
+>    hot plug/unplug queue functions.
+>
+> * No longer using filtering function for bulk assignment of new adapters
+>    and domains in on_scan_complete callback; replaced with new hot plug
+>    functions.
+>
+>
+> Change log v10-v11:
+> ------------------
+> * The matrix mdev's configuration is not filtered by APID so that if any
+>    APQN assigned to the mdev is not bound to the vfio_ap device driver,
+>    the adapter will not get plugged into the KVM guest on startup, or when
+>    a new adapter is assigned to the mdev.
+>
+> * Replaced patch 8 by squashing patches 8 (filtering patch) and 15 (handle
+>    probe/remove).
+>
+> * Added a patch 1 to remove disable IRQ after a reset because the reset
+>    already disables a queue.
+>
+> * Now using filtering code to update the KVM guest's matrix when
+>    notified that AP bus scan has completed.
+>
+> * Fixed issue with probe/remove not inititiated by a configuration change
+>    occurring within a config change.
+>
+>
+> Change log v9-v10:
+> -----------------
+> * Updated the documentation in vfio-ap.rst to include information about the
+>    AP dynamic configuration support
+>
+> Change log v8-v9:
+> ----------------
+> * Fixed errors flagged by the kernel test robot
+>
+> * Fixed issue with guest losing queues when a new queue is probed due to
+>    manual bind operation.
+>
+> Change log v7-v8:
+> ----------------
+> * Now logging a message when an attempt to reserve APQNs for the zcrypt
+>    drivers will result in taking a queue away from a KVM guest to provide
+>    the sysadmin a way to ascertain why the sysfs operation failed.
+>
+> * Created locked and unlocked versions of the ap_parse_mask_str() function.
+>
+> * Now using new interface provided by an AP bus patch -
+>    s390/ap: introduce new ap function ap_get_qdev() - to retrieve
+>    struct ap_queue representing an AP queue device. This patch is not a
+>    part of this series but is a prerequisite for this series.
+>
+> Change log v6-v7:
+> ----------------
+> * Added callbacks to AP bus:
+>    - on_config_changed: Notifies implementing drivers that
+>      the AP configuration has changed since last AP device scan.
+>    - on_scan_complete: Notifies implementing drivers that the device scan
+>      has completed.
+>    - implemented on_config_changed and on_scan_complete callbacks for
+>      vfio_ap device driver.
+>    - updated vfio_ap device driver's probe and remove callbacks to handle
+>      dynamic changes to the AP device model.
+> * Added code to filter APQNs when assigning AP resources to a KVM guest's
+>    CRYCB
+>
+> Change log v5-v6:
+> ----------------
+> * Fixed a bug in ap_bus.c introduced with patch 2/7 of the v5
+>    series. Harald Freudenberer pointed out that the mutex lock
+>    for ap_perms_mutex in the apmask_store and aqmask_store functions
+>    was not being freed.
+>
+> * Removed patch 6/7 which added logging to the vfio_ap driver
+>    to expedite acceptance of this series. The logging will be introduced
+>    with a separate patch series to allow more time to explore options
+>    such as DBF logging vs. tracepoints.
+>
+> * Added 3 patches related to ensuring that APQNs that do not reference
+>    AP queue devices bound to the vfio_ap device driver are not assigned
+>    to the guest CRYCB:
+>
+>    Patch 4: Filter CRYCB bits for unavailable queue devices
+>    Patch 5: sysfs attribute to display the guest CRYCB
+>    Patch 6: update guest CRYCB in vfio_ap probe and remove callbacks
+>
+> * Added a patch (Patch 9) to version the vfio_ap module.
+>
+> * Reshuffled patches to allow the in_use callback implementation to
+>    invoke the vfio_ap_mdev_verify_no_sharing() function introduced in
+>    patch 2.
+>
+> Change log v4-v5:
+> ----------------
+> * Added a patch to provide kernel s390dbf debug logs for VFIO AP
+>
+> Change log v3->v4:
+> -----------------
+> * Restored patches preventing root user from changing ownership of
+>    APQNs from zcrypt drivers to the vfio_ap driver if the APQN is
+>    assigned to an mdev.
+>
+> * No longer enforcing requirement restricting guest access to
+>    queues represented by a queue device bound to the vfio_ap
+>    device driver.
+>
+> * Removed shadow CRYCB and now directly updating the guest CRYCB
+>    from the matrix mdev's matrix.
+>
+> * Rebased the patch series on top of 'vfio: ap: AP Queue Interrupt
+>    Control' patches.
+>
+> * Disabled bind/unbind sysfs interfaces for vfio_ap driver
+>
+> Change log v2->v3:
+> -----------------
+> * Allow guest access to an AP queue only if the queue is bound to
+>    the vfio_ap device driver.
+>
+> * Removed the patch to test CRYCB masks before taking the vCPUs
+>    out of SIE. Now checking the shadow CRYCB in the vfio_ap driver.
+>
+> Change log v1->v2:
+> -----------------
+> * Removed patches preventing root user from unbinding AP queues from
+>    the vfio_ap device driver
+> * Introduced a shadow CRYCB in the vfio_ap driver to manage dynamic
+>    changes to the AP guest configuration due to root user interventions
+>    or hardware anomalies.
+>
+> Tony Krowiak (14):
+>    s390/vfio-ap: fix memory leak in mdev remove callback
+>    s390/vfio-ap: use new AP bus interface to search for queue devices
+>    s390/vfio-ap: move probe and remove callbacks to vfio_ap_ops.c
+>    s390/vfio-ap: manage link between queue struct and matrix mdev
+>    s390/vfio-ap: introduce shadow APCB
+>    s390/vfio-ap: refresh guest's APCB by filtering APQNs assigned to mdev
+>    s390/vfio-ap: allow assignment of unavailable AP queues to mdev device
+>    s390/vfio-ap: allow hot plug/unplug of AP resources using mdev device
+>    s390/vfio-ap: reset queues after adapter/domain unassignment
+>    s390/zcrypt: driver callback to indicate resource in use
+>    s390/vfio-ap: implement in-use callback for vfio_ap driver
+>    s390/vfio-ap: sysfs attribute to display the guest's matrix
+>    s390/zcrypt: notify drivers on config changed and scan complete
+>      callbacks
+>    s390/vfio-ap: update docs to include dynamic config support
+>
+>   Documentation/s390/vfio-ap.rst        |  383 +++++++---
+>   drivers/s390/crypto/ap_bus.c          |  249 +++++-
+>   drivers/s390/crypto/ap_bus.h          |   16 +
+>   drivers/s390/crypto/vfio_ap_drv.c     |   46 +-
+>   drivers/s390/crypto/vfio_ap_ops.c     | 1008 ++++++++++++++++++-------
+>   drivers/s390/crypto/vfio_ap_private.h |   28 +-
+>   6 files changed, 1322 insertions(+), 408 deletions(-)
+>
 
