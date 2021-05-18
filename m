@@ -2,117 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40FB386E97
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8620C386E92
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345257AbhERA5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238397AbhERA5O (ORCPT
+        id S1345229AbhERA4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:56:52 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:33318 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238397AbhERA4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:57:14 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51640C061756;
-        Mon, 17 May 2021 17:55:57 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id t4-20020a05683014c4b02902ed26dd7a60so7211171otq.7;
-        Mon, 17 May 2021 17:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yucLhkWF+a1ME5Qb9j9m9s8qqNJAVcLcCSl2OC45snE=;
-        b=a1KtrMinmN+R1YtVythdwnFkHS+Tdbgcmy9l7vSOkqxC/vVzx3wsPHDcDj0DG+1l2/
-         RAbz/FiBBFOjwDrtjtYHY7181fS0TDnX/yv85f7YxllwE/6X1eKZp22timlc9ZYCAZpo
-         TF/QlZ3Eyyp6fVaUIbgfXYalF67Do2Yc3RLE40lf+4qfiALN1jJ22SMRVlKlsV0x6Qsl
-         VtUIP1xQle5akujtsLkyGB8lA20n81jCSRIT+DuB9XSVPpPhuk8N0j/rXwzJEVn9cOQn
-         1pNrxzGbdOfiIlBlBZSopbArR3+M48OmHTD47uPPg+7xoLyLuwhmIbzIAPQW+v6xRY7k
-         ipRg==
+        Mon, 17 May 2021 20:56:51 -0400
+Received: by mail-oi1-f173.google.com with SMTP id b25so8269310oic.0;
+        Mon, 17 May 2021 17:55:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yucLhkWF+a1ME5Qb9j9m9s8qqNJAVcLcCSl2OC45snE=;
-        b=dkh0Vq5/Y7GzkcmlxVwi7z1Iu0FXzxhLZvSDDt3/8Jn7DSoIM9HaAxjawZPuLgRYT0
-         vxwzFv454gVjiHMSnSKH5iDohmUkORtcME+N4mJC/Bk/TpxJ/xlt92wHmzkgFE+ALNly
-         GPDI3oHFP6hlWWDot++8N+YddSVBgBmrmXql8OS+wcWzjT6260wT/9lZLIHKYOHjevlz
-         CKXDd2rbk97uPIjd6Vt467atwDKFRl8pImrvcyWd+PZyiE5DfH/yGIQHuaoNyyH9HTn+
-         YhMVmtw7YyDHfQES2IAceFK4zcPN2AgP28ANolSNdH//LTMjKfHf0gbQ1XYzIjfNHee4
-         VRzQ==
-X-Gm-Message-State: AOAM532qdhuXf1uHT4ZUxu7t7LYE23+VLW5A23Zxlsg5hzG52D6IhPdG
-        DxcOB9IT6Q4SN2K6y5r2Y0RLMeDnhEAPZCklAgY=
-X-Google-Smtp-Source: ABdhPJwuJ0+nGKTuihXix656KLbhr2kT8htvpkRAwuHkWBDuRxzKK2bQGjz+fNsbob/VoKSe9F7HsrIUJTbcT2S43K8=
-X-Received: by 2002:a05:6830:15d2:: with SMTP id j18mr1995944otr.89.1621299356430;
- Mon, 17 May 2021 17:55:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wGTUJVaGi2vt0X1DPJ7HK4WSdmnqY5nH6zbfoY0v/ZM=;
+        b=tegbHOriLuSxsgN7gTPAU13b67VS/jUtXrdfGclU3rkz6ev31gYDIkE3DCcFkO72Hl
+         aKWcPLwrjWrX5k2trTR54gSED2FOk29I1lOeDd0VSUUAMy233vzyne5d1oB/DIQmlHvO
+         K3CZoPNWd2c620sjNjcnwa7E+Ga7H4lGUBTnsn9Ce/be7f28l4mMVvVb/iLEhguLwzhO
+         F95+gR2naexqglmlWz4Z2fAq/zx5FiSVwnrKbcTaq7o8LzoE1tkivivhrzE9XpK/v3E0
+         VQ+W11seVWFC9RRc4IGQ6PgWk6VxslpdfaDzHjg1gbA75UE2bFNkc2nHUmC3uduAfHDy
+         syWQ==
+X-Gm-Message-State: AOAM532/C+UiEZ2f+38sGHP+lIoDbxSue6rChKajFTj+K0DLaVdlXx9I
+        f6AVwc9nQ9VniZIvSWXW5drOKdM0/Q==
+X-Google-Smtp-Source: ABdhPJx9y6NYXD/QSwdJQBZpXT3hnfJO77xc5bRiLZ0+Wo1uzpD0xR2XaeaNda9tMrrOGvAC0Q1aWQ==
+X-Received: by 2002:aca:47ca:: with SMTP id u193mr1424602oia.69.1621299332631;
+        Mon, 17 May 2021 17:55:32 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o20sm3385995oos.19.2021.05.17.17.55.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 17:55:32 -0700 (PDT)
+Received: (nullmailer pid 3548426 invoked by uid 1000);
+        Tue, 18 May 2021 00:55:31 -0000
+Date:   Mon, 17 May 2021 19:55:31 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V3 3/3] dt-bindings: pinctrl: qcom-pmic-gpio: Convert
+ qcom pmic gpio bindings to YAML
+Message-ID: <20210518005531.GA3539579@robh.at.kernel.org>
+References: <1620817988-18809-1-git-send-email-skakit@codeaurora.org>
+ <1620817988-18809-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <cover.1620766020.git.lucas.p.stankus@gmail.com>
- <09e65d3a235febfc4c3ee172b573ba8c9cde94b8.1620766020.git.lucas.p.stankus@gmail.com>
- <CA+U=DsptfNDut3984MJkKckgWBhNd_0p17RfpidEXwYhMRfxtg@mail.gmail.com>
-In-Reply-To: <CA+U=DsptfNDut3984MJkKckgWBhNd_0p17RfpidEXwYhMRfxtg@mail.gmail.com>
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-Date:   Mon, 17 May 2021 21:55:20 -0300
-Message-ID: <CACKVXZA9rPGLLxyq3gWTynoH7dPgYitqe-dO=YNad7VxHfwQhA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] staging: iio: cdc: ad7746: avoid overwrite of num_channels
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620817988-18809-4-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 2:20 PM Alexandru Ardelean
-<ardeleanalex@gmail.com> wrote:
->
-> On Tue, May 11, 2021 at 11:55 PM Lucas Stankus
-> <lucas.p.stankus@gmail.com> wrote:
-> >
-> > AD7745 devices don't have the CIN2 pins and therefore can't handle related
-> > channels. Forcing the number of AD7746 channels may lead to enabling more
-> > channels than what the hardware actually supports.
-> > Avoid num_channels being overwritten after first assignment.
-> >
-> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> > ---
-> >  drivers/staging/iio/cdc/ad7746.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> > index e03d010b2f4c..9e0da43b2871 100644
-> > --- a/drivers/staging/iio/cdc/ad7746.c
-> > +++ b/drivers/staging/iio/cdc/ad7746.c
-> > @@ -693,7 +693,6 @@ static int ad7746_probe(struct i2c_client *client,
-> >                 indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
-> >         else
-> >                 indio_dev->num_channels =  ARRAY_SIZE(ad7746_channels) - 2;
-> > -       indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
->
-> ohh; good catch
->
-> this falls into the category of a fix, so a Fixes tag is required;
-> this looks so old, that i did not bother tracking it before
-> 83e416f458d53  [which is 2011]
-
-As Jonathan said, this bug was already fixed and the patch will be dropped,
-but thank you for the review.
-
-This was my first bug fix in the kernel, so sorry for the absence of a
-Fixes tag, I'll make sure to add one next time.
+On Wed, May 12, 2021 at 04:43:08PM +0530, satya priya wrote:
+> Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> Changes in V3:
+>  - As per Rob's comments fixed bot erros.
+>  - Moved this patch to end of the series so that other patches are not
+>    blocked on this.
+> 
+> Changes in V4:
+>  - As per Rob's comments, added maxItems for reg and interrupts.
+>    Added reference of "pinmux-node.yaml" and "pincfg-node.yaml".
+>    Made 'additionalProperties' as false.
+> 
+>  .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 288 ---------------------
+>  .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 245 ++++++++++++++++++
+>  2 files changed, 245 insertions(+), 288 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
 
 
->
-> so, maybe something like:
->
-> Fixes: 83e416f458d53 ("staging: iio: adc: Replace, rewrite ad7745 from
-> scratch.")
->
-> >         indio_dev->modes = INDIO_DIRECT_MODE;
-> >
-> >         if (pdata) {
-> > --
-> > 2.31.1
-> >
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> new file mode 100644
+> index 0000000..85381a0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> @@ -0,0 +1,245 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm PMIC GPIO block
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@sonymobile.com>
+> +
+> +description: |
+> +  This binding describes the GPIO block(s) found in the 8xxx series of
+> +  PMIC's from Qualcomm.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,pm8005-gpio
+> +          - qcom,pm8018-gpio
+> +          - qcom,pm8038-gpio
+> +          - qcom,pm8058-gpio
+> +          - qcom,pm8916-gpio
+> +          - qcom,pm8917-gpio
+> +          - qcom,pm8921-gpio
+> +          - qcom,pm8941-gpio
+> +          - qcom,pm8950-gpio
+> +          - qcom,pm8994-gpio
+> +          - qcom,pm8998-gpio
+> +          - qcom,pma8084-gpio
+> +          - qcom,pmi8950-gpio
+> +          - qcom,pmi8994-gpio
+> +          - qcom,pmi8998-gpio
+> +          - qcom,pms405-gpio
+> +          - qcom,pm660-gpio
+> +          - qcom,pm660l-gpio
+> +          - qcom,pm8150-gpio
+> +          - qcom,pm8150b-gpio
+> +          - qcom,pm6150-gpio
+> +          - qcom,pm6150l-gpio
+> +          - qcom,pmx55-gpio
+> +          - qcom,pm7325-gpio
+> +          - qcom,pm8350c-gpio
+> +          - qcom,pmk8350-gpio
+> +          - qcom,pmr735a-gpio
+> +
+> +      - enum:
+> +          - qcom,spmi-gpio
+> +          - qcom,ssbi-gpio
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 44
+
+Please say something about what the 1-44 interrupts are if you can't 
+define each one.
+
+> +
+> +  '#interrupt-cells':
+> +    const: 2
+> +
+> +  interrupt-controller: true
+> +
+> +  gpio-controller: true
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +    description: |
+> +        The first cell will be used to define gpio number and the
+> +        second denotes the flags for this gpio
+> +
+> +  gpio-keys:
+> +    type: object
+> +    properties:
+> +      volume-keys:
+> +        type: object
+> +        anyOf:
+> +          - $ref: "pinmux-node.yaml"
+> +          - $ref: "pincfg-node.yaml"
+> +        properties:
+> +          pins:
+> +            description: |
+> +                List of gpio pins affected by the properties specified in
+> +                this subnode.  Valid pins are
+> +                     - gpio1-gpio4 for pm8005
+> +                     - gpio1-gpio6 for pm8018
+> +                     - gpio1-gpio12 for pm8038
+> +                     - gpio1-gpio40 for pm8058
+> +                     - gpio1-gpio4 for pm8916
+> +                     - gpio1-gpio38 for pm8917
+> +                     - gpio1-gpio44 for pm8921
+> +                     - gpio1-gpio36 for pm8941
+> +                     - gpio1-gpio8 for pm8950 (hole on gpio3)
+> +                     - gpio1-gpio22 for pm8994
+> +                     - gpio1-gpio26 for pm8998
+> +                     - gpio1-gpio22 for pma8084
+> +                     - gpio1-gpio2 for pmi8950
+> +                     - gpio1-gpio10 for pmi8994
+> +                     - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
+> +                                                and gpio10)
+> +                     - gpio1-gpio10 for pm8150 (holes on gpio2, gpio5,
+> +                                                gpio7 and gpio8)
+> +                     - gpio1-gpio12 for pm8150b (holes on gpio3, gpio4
+> +                                                 and gpio7)
+> +                     - gpio1-gpio12 for pm8150l (hole on gpio7)
+> +                     - gpio1-gpio10 for pm6150
+> +                     - gpio1-gpio12 for pm6150l
+> +                     - gpio1-gpio10 for pm7325
+> +                     - gpio1-gpio9 for pm8350c
+> +                     - gpio1-gpio4 for pmk8350
+> +                     - gpio1-gpio4 for pmr735a
+> +
+> +            items:
+> +              pattern: "^gpio([0-9]+)$"
+> +
+> +          function:
+> +            description: |
+> +                Specify the alternative function to be configured for the
+> +                specified pins.
+
+No need to redescribe a common property.
+
+> +            items:
+> +              - enum:
+> +                  - normal
+> +                  - paired
+> +                  - func1
+> +                  - func2
+> +                  - dtest1
+> +                  - dtest2
+> +                  - dtest3
+> +                  - dtest4
+> +                  - func3  # supported by LV/MV GPIO subtypes
+> +                  - func4  # supported by LV/MV GPIO subtypes
+> +
+> +          bias-disable: true
+> +
+> +          bias-pull-down: true
+> +
+> +          bias-pull-up: true
+> +
+> +          qcom,pull-up-strength:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Specifies the strength to use for pull up, if selected.
+> +                Valid values are defined in
+> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +                If this property is omitted 30uA strength will be used
+> +                if pull up is selected
+> +
+> +          bias-high-impedance: true
+> +
+> +          input-enable: true
+> +
+> +          output-high: true
+> +
+> +          output-low: true
+> +
+> +          power-source: true
+> +
+> +          qcom,drive-strength:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects the drive strength for the specified pins
+> +                Valid drive strength values are defined in
+> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+
+Please define the constraints here.
+
+> +
+> +          drive-push-pull: true
+> +
+> +          drive-open-drain: true
+> +
+> +          drive-open-source: true
+> +
+> +          qcom,analog-pass:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description: |
+> +                The specified pins are configured in
+> +                analog-pass-through mode.
+> +
+> +          qcom,atest:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects ATEST rail to route to GPIO when it's
+> +                configured in analog-pass-through mode.
+> +            enum: [1 2 3 4]
+
+enum: [ 1, 2, 3, 4 ]
+
+> +
+> +          qcom,dtest-buffer:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects DTEST rail to route to GPIO when it's
+> +                configured as digital input.
+> +            enum: [1 2 3 4]
+
+Ditto.
+
+> +
+> +        required:
+> +          - pins
+> +          - function
+> +
+> +        additionalProperties: false
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +
+> +    pm8921_gpio: gpio@150 {
+> +      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
+> +      reg = <0x150 0x160>;
+> +      interrupts = <192 1>, <193 1>, <194 1>,
+> +                   <195 1>, <196 1>, <197 1>,
+> +                   <198 1>, <199 1>, <200 1>,
+> +                   <201 1>, <202 1>, <203 1>,
+> +                   <204 1>, <205 1>, <206 1>,
+> +                   <207 1>, <208 1>, <209 1>,
+> +                   <210 1>, <211 1>, <212 1>,
+> +                   <213 1>, <214 1>, <215 1>,
+> +                   <216 1>, <217 1>, <218 1>,
+> +                   <219 1>, <220 1>, <221 1>,
+> +                   <222 1>, <223 1>, <224 1>,
+> +                   <225 1>, <226 1>, <227 1>,
+> +                   <228 1>, <229 1>, <230 1>,
+> +                   <231 1>, <232 1>, <233 1>,
+> +                   <234 1>, <235 1>;
+> +
+> +      gpio-controller;
+> +      #gpio-cells = <2>;
+> +
+> +      pm8921_gpio_keys: gpio-keys {
+> +        volume-keys {
+> +          pins = "gpio20", "gpio21";
+> +          function = "normal";
+> +
+> +          input-enable;
+> +          bias-pull-up;
+> +          drive-push-pull;
+> +          qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+> +          power-source = <PM8921_GPIO_S4>;
+> +        };
+> +      };
+> +    };
+> +...
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
