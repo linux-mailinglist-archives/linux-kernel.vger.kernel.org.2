@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE76E3874BF
+	by mail.lfdr.de (Postfix) with ESMTP id A5D6A3874BE
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241931AbhERJJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S1347713AbhERJJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347856AbhERJI3 (ORCPT
+        with ESMTP id S1347809AbhERJIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:08:29 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8819FC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:07:11 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so1042899wmn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:07:11 -0700 (PDT)
+        Tue, 18 May 2021 05:08:30 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49337C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:07:12 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id r12so9352095wrp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:07:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ui6DkSfSUHVuV2NqDDwW1VpfGUapkm0wPnlAdb6e2cM=;
-        b=MKnOXAYqobu9vZgnQo2xLbvYvLmegYQO/FLgmDUx3jBKyLlS638sZHMgtsC4NxZNj7
-         mHzksuIXaNE9inxo+D5WlitiKZVIgqEgYAi7qItT88oyYVytD6jirj9JThwBdR9F9L0c
-         e0U16Cfj1y5r40srtwtIZRG5EcZgBsSLiwDH6ec6SySAkvYVJm2CY+5LNd0kJ4wAyFaZ
-         Wh0H17ZFyY9MRYbm/3zQ/ThQfWyyaxbcxwGtq/kZs9e6tOw9AHkLeecKmY/bY5CCKLzl
-         p6zCTw2b833Yd7v6Kudv0yHTVYYoJzGuMlDb8LGDfac54oXMCY+p2cHvPNMqg/i9lzxI
-         6pHQ==
+        bh=G/r5fensnn55MXUHGBjpVLt7X4x9tXaFMDjcQRg5EpA=;
+        b=eUJE1f1YvEhBwCYMcbqD+IMmg8AvbE3Y2ox7q6oQSyKdbDSMnTKfChaWfqNCSwh5Y5
+         l1349V6mwRmwj8biCJ/NRe0DE7QKW7sDue1E7G6gaCvUBiIfjwai6p+0zYig0AKnduFf
+         In3eRdQJYonyyqPJAOrEGwL+fXM4hleyqjCApPY5KqhYfwKE+Yr41zXhZjEE2AO2/ZOo
+         SYtXCMIy7oPi18cJkyoNQCkFfRZRbihoeimDdCEXvT9hz/agnQhvfMgIUXi6Ak/f4SQ5
+         TPqZjOKCHAAC7RIcpLMNskPUeC/Z6gw1LQJppIB99faQFNRpNcNBraN4ggn7E6eKk136
+         LVGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ui6DkSfSUHVuV2NqDDwW1VpfGUapkm0wPnlAdb6e2cM=;
-        b=BIeUjNdldWrU08o/4DW5vObYdjcljelo/ygWgdKx91EMjiZcChEz0SkXVemvgmz/7O
-         DBtsmvEzSKXcDx8QSXQek2FfzoUjXI33DyMvXj7j+nivq2yIEj1qYzX0L4lVmwwMRsZc
-         sOjreen1c6JOw/w9oRsG10GaO0XT5Vz8m1APtLP+OWd6X1PRQLDw65CD2vMjwElmYQp6
-         mpUBbQCMues4dfUF1+rBkDj4y15/3rt4oRRH3/t6MI1gPBqsQFHdCjpR59XRLfO1U9I7
-         apoF10clU3+01pgPCGDEWvDut5Xy2ZkadpsgIwgDETwOhhVdBHwWiu6RQVwDRFAthkfU
-         6pZA==
-X-Gm-Message-State: AOAM532OS35e2JlZ3ukaUHJV/XH7wtvYVeXGrEwqobEFOJ6PG44fDD0s
-        HyghRbOhJYrK01Yn41MjSHE=
-X-Google-Smtp-Source: ABdhPJyJ87Lk/qEv0BvAQqI2fLVrmtr4vyBKChU+E38Ab22pnAniKtbWa2D0iOqrXPMptqs07F/bBg==
-X-Received: by 2002:a05:600c:35c9:: with SMTP id r9mr3742415wmq.56.1621328830331;
-        Tue, 18 May 2021 02:07:10 -0700 (PDT)
+        bh=G/r5fensnn55MXUHGBjpVLt7X4x9tXaFMDjcQRg5EpA=;
+        b=qJBpw8Ipg+lOGl1RpAAeksb7e46OnxTrALvrVx5Ig8msOX68r/x/RcHBXFWQDxC+UT
+         xO8HKZwytyuUK0Jp2VYifWfUwiDyMMasiI/RdVabh52U09XJwGReczpao8OKRFxvDTju
+         zdDdmtwZr8aL69FOWhfJqAU5QsDm2gU5qKiPVuDpg2s2y8wAzu1+IMJQvxIFkQGVz6OD
+         K0WVdKNgQwp42maVZP6J4GEbmG2KfQgHjFsIpIK52kGqUbAdJZHutjcYK2PRm5caIydQ
+         cnvhXy2lK7KmDDxcIDneUNUYgkPaN3gPSHN9Toa6hTdqgn9Y0JeFOpgfY7h20ubEjIIR
+         rxsg==
+X-Gm-Message-State: AOAM532Nj/MaPbV+VO8YJO8iYAivGU7EBJzmvdMdyREORU+dbznOnaOw
+        y94t6EuDGLadGXI+gpUy8ik=
+X-Google-Smtp-Source: ABdhPJweEKk2l8D7ru8vr0SN32RW6HDKj9rEKHootedlexMXHcpQSqg1DuJKtxJaY0VMRcQjOYP66A==
+X-Received: by 2002:a5d:5049:: with SMTP id h9mr5596727wrt.24.1621328831089;
+        Tue, 18 May 2021 02:07:11 -0700 (PDT)
 Received: from amanieu-laptop.home ([2a00:23c6:f081:f801:91cf:b949:c46c:f5a9])
-        by smtp.gmail.com with ESMTPSA id z17sm7520306wrt.81.2021.05.18.02.07.09
+        by smtp.gmail.com with ESMTPSA id z17sm7520306wrt.81.2021.05.18.02.07.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 02:07:09 -0700 (PDT)
+        Tue, 18 May 2021 02:07:10 -0700 (PDT)
 From:   Amanieu d'Antras <amanieu@gmail.com>
 Cc:     Amanieu d'Antras <amanieu@gmail.com>,
         Ryan Houdek <Houdek.Ryan@fex-emu.org>,
@@ -59,9 +59,9 @@ Cc:     Amanieu d'Antras <amanieu@gmail.com>,
         David Laight <David.Laight@aculab.com>,
         Mark Brown <broonie@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v4 4/8] arm64: Separate in_compat_syscall from is_compat_task
-Date:   Tue, 18 May 2021 10:06:54 +0100
-Message-Id: <20210518090658.9519-5-amanieu@gmail.com>
+Subject: [RESEND PATCH v4 5/8] arm64: mm: Use HAVE_ARCH_COMPAT_MMAP_BASES
+Date:   Tue, 18 May 2021 10:06:55 +0100
+Message-Id: <20210518090658.9519-6-amanieu@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210518090658.9519-1-amanieu@gmail.com>
 References: <20210518090658.9519-1-amanieu@gmail.com>
@@ -72,136 +72,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is preliminary work for allowing 64-bit processes to invoke compat
-syscalls.
+This patch switches arm64 to use separate mmap_base for 32-bit and
+64-bit mmaps. This is needed to ensure that compat syscalls
+invoked by 64-bit tasks perform VM allocations in the low 4G of the
+address space.
 
 Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
 Co-developed-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
 Signed-off-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
 ---
- arch/arm64/include/asm/compat.h  | 24 ++++++++++++++++++++----
- arch/arm64/include/asm/ftrace.h  |  2 +-
- arch/arm64/include/asm/syscall.h |  6 +++---
- arch/arm64/kernel/ptrace.c       |  2 +-
- arch/arm64/kernel/syscall.c      |  2 +-
- 5 files changed, 26 insertions(+), 10 deletions(-)
+ arch/arm64/Kconfig                 |  1 +
+ arch/arm64/include/asm/elf.h       |  8 +++++---
+ arch/arm64/include/asm/processor.h | 33 ++++++++++++++++++------------
+ arch/arm64/mm/mmap.c               | 33 ++++++++++++++++++++++++++++++
+ 4 files changed, 59 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm64/include/asm/compat.h b/arch/arm64/include/asm/compat.h
-index 23a9fb73c04f..a2f5001f7793 100644
---- a/arch/arm64/include/asm/compat.h
-+++ b/arch/arm64/include/asm/compat.h
-@@ -178,21 +178,37 @@ struct compat_shmid64_ds {
- 	compat_ulong_t __unused5;
- };
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index dfdc3e0af5e1..d57b7bcbd758 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -133,6 +133,7 @@ config ARM64
+ 	select HAVE_ALIGNED_STRUCT_PAGE if SLUB
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_BITREVERSE
++	select HAVE_ARCH_COMPAT_MMAP_BASES if COMPAT
+ 	select HAVE_ARCH_COMPILER_H
+ 	select HAVE_ARCH_HUGE_VMAP
+ 	select HAVE_ARCH_JUMP_LABEL
+diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
+index 8d1c8dcb87fd..e21964898d06 100644
+--- a/arch/arm64/include/asm/elf.h
++++ b/arch/arm64/include/asm/elf.h
+@@ -187,12 +187,14 @@ extern int arch_setup_additional_pages(struct linux_binprm *bprm,
+ 				       int uses_interp);
  
--static inline int is_compat_task(void)
-+static inline bool is_compat_task(void)
- {
- 	return test_thread_flag(TIF_32BIT);
- }
+ /* 1GB of VA */
++#define STACK_RND_MASK_64		(0x3ffff >> (PAGE_SHIFT - 12))
+ #ifdef CONFIG_COMPAT
++#define STACK_RND_MASK_32		(0x7ff >> (PAGE_SHIFT - 12))
+ #define STACK_RND_MASK			(test_thread_flag(TIF_32BIT) ? \
+-						0x7ff >> (PAGE_SHIFT - 12) : \
+-						0x3ffff >> (PAGE_SHIFT - 12))
++						STACK_RND_MASK_32 : \
++						STACK_RND_MASK_64)
+ #else
+-#define STACK_RND_MASK			(0x3ffff >> (PAGE_SHIFT - 12))
++#define STACK_RND_MASK			STACK_RND_MASK_64
+ #endif
  
--static inline int is_compat_thread(struct thread_info *thread)
-+static inline bool is_compat_thread(struct thread_info *thread)
- {
- 	return test_ti_thread_flag(thread, TIF_32BIT);
- }
+ #ifdef __AARCH64EB__
+diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+index f47528aae321..f8309f8d0ece 100644
+--- a/arch/arm64/include/asm/processor.h
++++ b/arch/arm64/include/asm/processor.h
+@@ -70,29 +70,36 @@
  
-+static inline bool in_compat_syscall(void)
-+{
-+	return is_compat_task();
-+}
-+#define in_compat_syscall in_compat_syscall	/* override the generic impl */
+ #ifdef CONFIG_ARM64_FORCE_52BIT
+ #define STACK_TOP_MAX		TASK_SIZE_64
+-#define TASK_UNMAPPED_BASE	(PAGE_ALIGN(TASK_SIZE / 4))
++#define TASK_UNMAPPED_BASE_64	(PAGE_ALIGN(TASK_SIZE_64 / 4))
+ #else
+ #define STACK_TOP_MAX		DEFAULT_MAP_WINDOW_64
+-#define TASK_UNMAPPED_BASE	(PAGE_ALIGN(DEFAULT_MAP_WINDOW / 4))
++#define TASK_UNMAPPED_BASE_64	(PAGE_ALIGN(DEFAULT_MAP_WINDOW_64 / 4))
+ #endif /* CONFIG_ARM64_FORCE_52BIT */
+ 
++#ifdef CONFIG_COMPAT
++#define TASK_UNMAPPED_BASE_32	(PAGE_ALIGN(TASK_SIZE_32 / 4))
++#define TASK_UNMAPPED_BASE	(test_thread_flag(TIF_32BIT) ? \
++				TASK_UNMAPPED_BASE_32 : TASK_UNMAPPED_BASE_64)
++#else
++#define TASK_UNMAPPED_BASE	TASK_UNMAPPED_BASE_64
++#endif /* CONFIG_COMPAT */
 +
-+static inline bool thread_in_compat_syscall(struct thread_info *thread)
-+{
-+	return is_compat_thread(thread);
-+}
-+
- #else /* !CONFIG_COMPAT */
- 
--static inline int is_compat_thread(struct thread_info *thread)
-+static inline bool is_compat_thread(struct thread_info *thread)
-+{
-+	return false;
-+}
-+
-+static inline bool thread_in_compat_syscall(struct thread_info *thread)
- {
--	return 0;
-+	return false;
- }
- 
++#define STACK_TOP_64		STACK_TOP_MAX
+ #ifdef CONFIG_COMPAT
+ #define AARCH32_VECTORS_BASE	0xffff0000
++#define STACK_TOP_32		AARCH32_VECTORS_BASE
+ #define STACK_TOP		(test_thread_flag(TIF_32BIT) ? \
+-				AARCH32_VECTORS_BASE : STACK_TOP_MAX)
++				STACK_TOP_32 : STACK_TOP_64)
+ #else
+-#define STACK_TOP		STACK_TOP_MAX
++#define STACK_TOP		STACK_TOP_64
  #endif /* CONFIG_COMPAT */
-diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-index 91fa4baa1a93..f41aad92c67a 100644
---- a/arch/arm64/include/asm/ftrace.h
-+++ b/arch/arm64/include/asm/ftrace.h
-@@ -88,7 +88,7 @@ int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
- #define ARCH_TRACE_IGNORE_COMPAT_SYSCALLS
- static inline bool arch_trace_is_compat_syscall(struct pt_regs *regs)
+ 
+-#ifndef CONFIG_ARM64_FORCE_52BIT
+-#define arch_get_mmap_end(addr) ((addr > DEFAULT_MAP_WINDOW) ? TASK_SIZE :\
+-				DEFAULT_MAP_WINDOW)
+-
+-#define arch_get_mmap_base_topdown(addr) \
+-	((addr > DEFAULT_MAP_WINDOW) ? \
+-	current->mm->mmap_base + TASK_SIZE - DEFAULT_MAP_WINDOW :\
+-	current->mm->mmap_base)
+-#endif /* CONFIG_ARM64_FORCE_52BIT */
++#define arch_get_mmap_end arch_get_mmap_end
++#define arch_get_mmap_base arch_get_mmap_base
++#define arch_get_mmap_base_topdown arch_get_mmap_base_topdown
++unsigned long arch_get_mmap_end(unsigned long addr);
++unsigned long arch_get_mmap_base(unsigned long addr);
++unsigned long arch_get_mmap_base_topdown(unsigned long addr);
+ 
+ extern phys_addr_t arm64_dma_phys_limit;
+ #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit - 1)
+diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
+index a38f54cd638c..956cab3ade11 100644
+--- a/arch/arm64/mm/mmap.c
++++ b/arch/arm64/mm/mmap.c
+@@ -38,3 +38,36 @@ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
  {
--	return is_compat_task();
-+	return in_compat_syscall();
+ 	return !(((pfn << PAGE_SHIFT) + size) & ~PHYS_MASK);
  }
- 
- #define ARCH_HAS_SYSCALL_MATCH_SYM_NAME
-diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-index cfc0672013f6..0dfc01ea386c 100644
---- a/arch/arm64/include/asm/syscall.h
-+++ b/arch/arm64/include/asm/syscall.h
-@@ -35,7 +35,7 @@ static inline long syscall_get_error(struct task_struct *task,
- {
- 	unsigned long error = regs->regs[0];
- 
--	if (is_compat_thread(task_thread_info(task)))
-+	if (thread_in_compat_syscall(task_thread_info(task)))
- 		error = sign_extend64(error, 31);
- 
- 	return IS_ERR_VALUE(error) ? error : 0;
-@@ -54,7 +54,7 @@ static inline void syscall_set_return_value(struct task_struct *task,
- 	if (error)
- 		val = error;
- 
--	if (is_compat_thread(task_thread_info(task)))
-+	if (thread_in_compat_syscall(task_thread_info(task)))
- 		val = lower_32_bits(val);
- 
- 	regs->regs[0] = val;
-@@ -88,7 +88,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
-  */
- static inline int syscall_get_arch(struct task_struct *task)
- {
--	if (is_compat_thread(task_thread_info(task)))
-+	if (thread_in_compat_syscall(task_thread_info(task)))
- 		return AUDIT_ARCH_ARM;
- 
- 	return AUDIT_ARCH_AARCH64;
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 170f42fd6101..017a82b24f49 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1721,7 +1721,7 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- 	 * 32-bit children use an extended user_aarch32_ptrace_view to allow
- 	 * access to the TLS register.
- 	 */
--	if (is_compat_task())
++
++unsigned long arch_get_mmap_end(unsigned long addr)
++{
++#ifdef CONFIG_COMPAT
 +	if (in_compat_syscall())
- 		return &user_aarch32_view;
- 	else if (is_compat_thread(task_thread_info(task)))
- 		return &user_aarch32_ptrace_view;
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index b9cf12b271d7..e0e9d54de0a2 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -51,7 +51,7 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 		ret = do_ni_syscall(regs, scno);
- 	}
- 
--	if (is_compat_task())
++		return TASK_SIZE_32;
++#endif /* CONFIG_COMPAT */
++#ifndef CONFIG_ARM64_FORCE_52BIT
++	if (addr > DEFAULT_MAP_WINDOW_64)
++		return TASK_SIZE_64;
++#endif /* CONFIG_ARM64_FORCE_52BIT */
++	return DEFAULT_MAP_WINDOW_64;
++}
++unsigned long arch_get_mmap_base(unsigned long addr)
++{
++#ifdef CONFIG_COMPAT
 +	if (in_compat_syscall())
- 		ret = lower_32_bits(ret);
- 
- 	regs->regs[0] = ret;
++		return current->mm->mmap_compat_base;
++#endif /* CONFIG_COMPAT */
++	return current->mm->mmap_base;
++}
++unsigned long arch_get_mmap_base_topdown(unsigned long addr)
++{
++#ifdef CONFIG_COMPAT
++	if (in_compat_syscall())
++		return current->mm->mmap_compat_base;
++#endif /* CONFIG_COMPAT */
++#ifndef CONFIG_ARM64_FORCE_52BIT
++	if (addr > DEFAULT_MAP_WINDOW_64)
++		return current->mm->mmap_base + TASK_SIZE - DEFAULT_MAP_WINDOW_64;
++#endif /* CONFIG_ARM64_FORCE_52BIT */
++	return current->mm->mmap_base;
++}
 -- 
 2.31.1
 
