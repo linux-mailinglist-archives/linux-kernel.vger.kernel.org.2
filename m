@@ -2,153 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D8338775D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54CA387764
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhERLYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
+        id S231817AbhERLYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbhERLYB (ORCPT
+        with ESMTP id S233497AbhERLYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:24:01 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372D4C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:22:43 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id w4so11083496ljw.9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:22:43 -0700 (PDT)
+        Tue, 18 May 2021 07:24:19 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E4BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:23:00 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id j14so8050488wrq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:22:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rdF8gyGM2Z+kErBHsZUshH2jdfE4Xe2DvLEUbreL60U=;
-        b=1sVP6RY0xs/XVwcMfqv4WRnrwBmXXikMvu1TQJKiSO31kX9DZeKI57xT+5FL0EYx1x
-         +3seia/Q7r5h7t6ZX35ELEdvGoxEQN2T+MqDHUIEWCv96cL1r+ib3Z0JLTGMluRQFJDL
-         ZUAZWmEylF+8OtZq5QDeIdlekR4sGDmh+TZkuh7Q+mKEpenzoml7GtYeQPr4FvABvqN9
-         WnDh7EvM+OCrxIH64AwUMxFQONX8SXJpO6PsaBP/1rl+B6T7zghl78igm41gBSQbVquJ
-         5mXB/Jcm/wkOODAxd2CfZ33ptYVHR7L2HVg5ADTZa1YUH3mJ99LL3bg3d4tnMc2xWxZJ
-         TKJQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DCCqrr8wK9Z3oX5rCaA/n2nKsKJmS6s8+5KqyY7fBB4=;
+        b=ADRUVcjfyh7wZo3ai7Jq+kamkrpn1NhqE2Uw9xnl7FpO6NO3acOJ188VsHlZh4yXed
+         aBMn0Mg9z1PGgva7uPUyTXObcFMPAL7XkomDwf1ygn6kCsZ2P/FqRF8QQE9LmKVEebBD
+         BWdo60LPPy42Ak5WblviNwa40W0eUHs1VlDY8voDaWXGRP3rVnz68rAY5HfXXeHF97+c
+         /hIYla5G5VSW6srZin6MsA4xVbPUY5D+lfKTanbB5tYkHmQq10mdAvHoH6YBefBOoCaX
+         1eKuuhHEdjbNcVuoQfAJkPCqwwHlsRi6W+7GPWVjU31bmXaatCxQe5qZmgCRaDwWNZ9h
+         lIzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rdF8gyGM2Z+kErBHsZUshH2jdfE4Xe2DvLEUbreL60U=;
-        b=KUx5qEyVKstc90ZRN9XueXw9yGsueBYZIUSPcYNGKPrYLClgi0iPyjtYm1M5N8UH7/
-         21sS3KberXt6qGjHk0fADoZ38i29zJkImFB/TRQsmSzSz8RQzsDVCyJaT4TtYfnyqUeH
-         CI/JiOilO39QIqncH+oMtzR9TQ2AS3KIOEq6GSe9PwVAG6rybGZ2gOtbnq5IqVbX5iZ8
-         UADAKWjAO9VvtcuQngKWYs1vZHzabcRwcV9JlZk0XrZfVjZGvYqP53p/zArK9jFMdeNT
-         zCzJlNFhR7g+hVwwAnJzbN7LomvVRXK7pEZo9DiJ53k/9LOHPzoA9jQnQexTuQHABy8S
-         kEag==
-X-Gm-Message-State: AOAM533B7CoNLczUn+Za1QPgFKnkSWmz+nwZCu4KECuT5MRqkEHqMYf1
-        i+vhKrNeNcgtqAM7S2kVBE+Dx/3PUkbNFzYvDBskdQ==
-X-Google-Smtp-Source: ABdhPJxBW/CEWIJES064VALHXUE3Rx9StlZhCWBm/mjDDQH6cTQbrZrHxWnR9ESSztRpf6Wum7KRjECmh/vA1A7fvFI=
-X-Received: by 2002:a05:651c:156:: with SMTP id c22mr3703525ljd.175.1621336961673;
- Tue, 18 May 2021 04:22:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DCCqrr8wK9Z3oX5rCaA/n2nKsKJmS6s8+5KqyY7fBB4=;
+        b=AEEvEsGWU7vYR71cWEgXnKuhG8t1+ZS/0qSbeOdHovOOsS+3J6i1jPW8s+EKrV9i42
+         UanLPfuqDDPM5GlsF5U/Uq00NhdJd2S1SLxzzfG+JZ/QtCP2ou9Xmqwp2DD7q7yxKZ1D
+         GTjGeI2kG2h031UfM34fUvZBEKCbYOGy3j/tvGzuBms4MnoU2rroRwJcR6PEqrkGkBrd
+         /8jY5aiHvQVXcjaQsrnmJTu5v90XKYGDKxAuJ5CFR2BctUB2Iu3qBZ7E9Z/NDYXSR5ZV
+         gXULb89p6UEgtdANuzkhjVDzS0nKyEZz1F/TMACSgiZTfEmiZPGGG7/0SA2SGXdvDdvX
+         feZQ==
+X-Gm-Message-State: AOAM530K7/RjJiB78mf6TYgqe8tq+xLTe5LEJ8o/POYaRYUqKVqXyAHU
+        Y5tfHx8mz7uqTmV77CITNNPQjg==
+X-Google-Smtp-Source: ABdhPJzWfBKWSIvh12WRInRFuIbcscfo06bwrlqRgQ6iVnYGxH1e0APjYYd/RYQzdnFUMzyG5/s2Zg==
+X-Received: by 2002:a5d:45c6:: with SMTP id b6mr6217248wrs.333.1621336978698;
+        Tue, 18 May 2021 04:22:58 -0700 (PDT)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id y20sm2881337wmi.0.2021.05.18.04.22.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 04:22:58 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: rng: mediatek: convert to yaml schema
+Date:   Tue, 18 May 2021 13:22:49 +0200
+Message-Id: <20210518112250.2146819-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210518090925.15480-1-pdk@semihalf.com> <YKOI9ndTg8s1uUvx@kroah.com>
-In-Reply-To: <YKOI9ndTg8s1uUvx@kroah.com>
-From:   Patryk Duda <pdk@semihalf.com>
-Date:   Tue, 18 May 2021 13:22:30 +0200
-Message-ID: <CAGOBvLq8hyRs7MZoZE0o0h0s9y1bL9eV3ex2A3FsmfjtofxsAg@mail.gmail.com>
-Subject: Re: [PATCH] platform/chrome: cros_ec_proto: Send command again when
- timeout occurs
-To:     Greg KH <greg@kroah.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel@vger.kernel.org, upstream@semihalf.com,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 18 maj 2021 o 11:29 Greg KH <greg@kroah.com> napisa=C5=82(a):
->
-> On Tue, May 18, 2021 at 11:09:25AM +0200, Patryk Duda wrote:
-> > Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
-> > hasn't initialized SPI yet. This can happen because FPMCU is restarted
-> > during system boot and kernel can send message in short window
-> > eg. between sysjump to RW and SPI initialization.
-> >
-> > Cc: <stable@vger.kernel.org> # 4.4+
-> > Signed-off-by: Patryk Duda <pdk@semihalf.com>
-> > ---
-> > Fingerprint MCU is rebooted during system startup by AP firmware (coreb=
-oot).
-> > During cold boot kernel can query FPMCU in a window just after jump to =
-RW
-> > section of firmware but before SPI is initialized. The window was
-> > shortened to <1ms, but it can't be eliminated completly.
-> >
-> > Communication with FPMCU (and all devices based on EC) is bi-directiona=
-l.
-> > When kernel sends message, EC will send EC_SPI* status codes. When EC i=
-s
-> > not able to process command one of bytes will be eg. EC_SPI_NOT_READY.
-> > This mechanism won't work when SPI is not initailized on EC side. In fa=
-ct,
-> > buffer is filled with 0xFF bytes, so from kernel perspective device is =
-not
-> > responding. To avoid this problem, we can query device once again. We a=
-re
-> > already waiting EC_MSG_DEADLINE_MS for response, so we can send command
-> > immediately.
-> >
-> > Best regards,
-> > Patryk
-> >  drivers/platform/chrome/cros_ec_proto.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform=
-/chrome/cros_ec_proto.c
-> > index aa7f7aa77297..3384631d21e2 100644
-> > --- a/drivers/platform/chrome/cros_ec_proto.c
-> > +++ b/drivers/platform/chrome/cros_ec_proto.c
-> > @@ -279,6 +279,18 @@ static int cros_ec_host_command_proto_query(struct=
- cros_ec_device *ec_dev,
-> >       msg->insize =3D sizeof(struct ec_response_get_protocol_info);
-> >
-> >       ret =3D send_command(ec_dev, msg);
-> > +     /*
-> > +      * Send command once again when timeout occurred.
-> > +      * Fingerprint MCU (FPMCU) is restarted during system boot which
-> > +      * introduces small window in which FPMCU won't respond for any
-> > +      * messages sent by kernel. There is no need to wait before next
-> > +      * attempt because we waited at least EC_MSG_DEADLINE_MS.
-> > +      */
-> > +     if (ret =3D=3D -ETIMEDOUT) {
-> > +             dev_warn(ec_dev->dev,
-> > +                      "Timeout to get response from EC. Retrying.\n");
->
-> If a user sees this, what can they do?  No need to spam the kernel logs,
-> just retry.
-User can do nothing about it. I will remove this in next version of patch.
->
-> > +             ret =3D send_command(ec_dev, msg);
->
-> But wait, why just retry once?  Why not 10 times?  100?  1000?  How
-> about a simple loop here instead, with a "sane" number of retries as a
-> max.
-EC based devices are designed to respond always or return appropriate
-status code
-when they can't process command. But this assumes that SPI is always
-ready to work.
-It's true for Embedded Controller, but not for Fingerprint MCU. So we
-can retry once,
-in case of sending message, when FPMCU is in narrow window (~1ms) when SPI =
-is
-not initialized.
+Convert the RNG binding for MediaTek to use YAML schema.
 
-Every send_command() call can take about 200ms when device is not respondin=
-g,
-so next retry will happen after 200ms, at least. If 200ms is not
-enough for FPMCU
-to initialize SPI, it's definitely something wrong with FPMCU
->
-> thanks,
->
-> greg k-h
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ .../devicetree/bindings/rng/mtk-rng.txt       | 22 --------
+ .../devicetree/bindings/rng/mtk-rng.yaml      | 53 +++++++++++++++++++
+ 2 files changed, 53 insertions(+), 22 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.txt
+ create mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.yaml
 
-Best regards,
-Patryk
+diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.txt b/Documentation/devicetree/bindings/rng/mtk-rng.txt
+deleted file mode 100644
+index dfdcb5cd2ea8..000000000000
+--- a/Documentation/devicetree/bindings/rng/mtk-rng.txt
++++ /dev/null
+@@ -1,22 +0,0 @@
+-Device-Tree bindings for Mediatek random number generator
+-found in MediaTek SoC family
+-
+-Required properties:
+-- compatible	    : Should be
+-			"mediatek,mt7622-rng", 	"mediatek,mt7623-rng" : for MT7622
+-			"mediatek,mt7629-rng",  "mediatek,mt7623-rng" : for MT7629
+-			"mediatek,mt7623-rng" : for MT7623
+-			"mediatek,mt8516-rng", "mediatek,mt7623-rng" : for MT8516
+-- clocks	    : list of clock specifiers, corresponding to
+-		      entries in clock-names property;
+-- clock-names	    : Should contain "rng" entries;
+-- reg 		    : Specifies base physical address and size of the registers
+-
+-Example:
+-
+-rng: rng@1020f000 {
+-	compatible = "mediatek,mt7623-rng";
+-	reg = <0 0x1020f000 0 0x1000>;
+-	clocks = <&infracfg CLK_INFRA_TRNG>;
+-	clock-names = "rng";
+-};
+diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.yaml b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+new file mode 100644
+index 000000000000..d9731f0ae47d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/rng/mtk-rng.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: MediaTek Random number generator
++
++maintainers:
++  - Sean Wang <sean.wang@mediatek.com>
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - mediatek,mt7623-rng
++      - items:
++          - const: mediatek,mt7622-rng
++          - const: mediatek,mt7623-rng
++      - items:
++          - const: mediatek,mt7629-rng
++          - const: mediatek,mt7623-rng
++      - items:
++          - const: mediatek,mt8516-rng
++          - const: mediatek,mt7623-rng
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: rng
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/mt2701-clk.h>
++    rng: rng@1020f000 {
++            compatible = "mediatek,mt7623-rng";
++            reg = <0x1020f000 0x1000>;
++            clocks = <&infracfg CLK_INFRA_TRNG>;
++            clock-names = "rng";
++    };
+-- 
+2.31.1
+
