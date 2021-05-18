@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8852638751B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD8A387520
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347888AbhERJaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240100AbhERJ37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:29:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B37A761042;
-        Tue, 18 May 2021 09:28:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621330121;
-        bh=PO6u9YQbB3wB7JoQpRmp62bUHAgeGHuboxhZStRAZnU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qKsFkv+V9//XE6m5KtLnDx3JwOoUtcc2Gle4/jakALKhjMZ3P5ndUdO8vAo8rY6+5
-         IuU953PpBosBX8BL8/BpXXI1aY4/7w4CnFGGm51/jhNld5DLt8nsnCjcmF7l8TEj4i
-         +/NAgIYJtT8FoOSpfzBQ1DyBCyEmqDZiMf6wgGfVrwnU9vn+R8b5eMMdjBud9D95nI
-         aM4wBQ5AVHpuqZOg36uKU9ZgzhjgTuEvIXNVzNujKbdJ0S716yaUqMtEjHobvZ95e8
-         3UKWpZjYqirqkvNJkTJqoALPKvH6AJ2tt+btVdnarXua30YzaQY09fNGxYP0yn71Yh
-         rforhnXhd3nOw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1liw1n-0070pH-De; Tue, 18 May 2021 11:28:39 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Fabien Dessenne <fabien.dessenne@foss.st.com>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH] media: sti: fix obj-$(config) targets
-Date:   Tue, 18 May 2021 11:28:37 +0200
-Message-Id: <a95148cc90a7202e9518b8a5c5f6910ff2b7d18b.1621330112.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S1347902AbhERJax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:30:53 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:39787 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240100AbhERJar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:30:47 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A978A580729;
+        Tue, 18 May 2021 05:29:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 18 May 2021 05:29:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=MbOekwFYh3ZNeYFAq9oXcP4VD4r
+        kLeeLk7e8qTQg8A0=; b=vmLvarEmJTonv5iZmlSHzdECI66NDgZ7mQSO1pduGJB
+        0L8MwWonFM75R2Y1ojOXrpz35lg73SfTUxqco44sw9v5fki4AgLRKjZmuMARH6xY
+        fTkZNAKHGENkgF6soydGHby51P8Vkh5r1bbZfVWbk1qfnXnjYBO/TOXWCJPGlLHx
+        lVNeaOcnH1kwLCd+O2MKwH7bFaKskpuugrVYocDHJTm6yjy+79EAABzyhB12rfJl
+        KmnEmzxkHNgWD2xcGzi0JPIrGlWE0MVMI901jyR2qvBI+mn9UAR5pm7rlDClmnxo
+        4an7WtZqyxJoMZaSAu6Dc150jJjLY4yTyX8WpYSJzmw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=MbOekw
+        FYh3ZNeYFAq9oXcP4VD4rkLeeLk7e8qTQg8A0=; b=HZRSQRuhsrBwNQc3uu4/eR
+        yHE13lVaOILcJxJ9RCexhFCfcWMSz0QuJqXhys94tdn5BnsndiZCdaWynkpkKfz5
+        uD9mIpzEXhMfX1vXZECjhUb4gyGaBQxjKzC/o5L+YjoXs+giHL9ccVs9sIYg7fiC
+        mmI6kH3vI97rTJyQjThJV6tS4Tk1jud8V9SPGyUs/dS+rTI10Fz4RZv83rk70rYM
+        +/ZLuFwruDmX0oUYDgxwGpz/cQzTs3zJ3BXPpD/AT/o3nnCJGjs8mJITQiqy8vTm
+        VTb4gglXUuiY8GbZHRFsV1JCg/iXbWZ8o0nzhM6RFPgrXvnuA7ItzJIYyihBQIgw
+        ==
+X-ME-Sender: <xms:-YijYLiZkzfOG7MoOPKrNM2NN-n_bWM0NxqVU_nDxDrprnlthAG0pQ>
+    <xme:-YijYIDfidNA3b-_9eWcOFS3cgg9IKZoSyoj7agmQAUadaJSIHSLaiRaF9A3tt_8g
+    -w2wamqK7NcLw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:-YijYLGB4fFKDtxJVvYkC27fh4y1nQboCP-47EAYVr0P5A8w5mNPsQ>
+    <xmx:-YijYISqmOm0EbXVaEE0JbPOqJf8VKEE7-pU8AK0O-1vXSzq0vamoA>
+    <xmx:-YijYIz2JoUA8tVy2YaVQVIjIK1Wfi7y3L9egY7n23bjBWvTmUGdWQ>
+    <xmx:-YijYEd0_WH0bhaMWqosimcJaV2Z_m2tg6vbUTWSQjp5dHZf4MEzdw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 18 May 2021 05:29:28 -0400 (EDT)
+Date:   Tue, 18 May 2021 11:29:26 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Patryk Duda <pdk@semihalf.com>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel@vger.kernel.org, upstream@semihalf.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] platform/chrome: cros_ec_proto: Send command again when
+ timeout occurs
+Message-ID: <YKOI9ndTg8s1uUvx@kroah.com>
+References: <20210518090925.15480-1-pdk@semihalf.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518090925.15480-1-pdk@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The right thing to do is to add a new object to the building
-system when a certain config option is selected, and *not*
-override them.
+On Tue, May 18, 2021 at 11:09:25AM +0200, Patryk Duda wrote:
+> Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
+> hasn't initialized SPI yet. This can happen because FPMCU is restarted
+> during system boot and kernel can send message in short window
+> eg. between sysjump to RW and SPI initialization.
+> 
+> Cc: <stable@vger.kernel.org> # 4.4+
+> Signed-off-by: Patryk Duda <pdk@semihalf.com>
+> ---
+> Fingerprint MCU is rebooted during system startup by AP firmware (coreboot).
+> During cold boot kernel can query FPMCU in a window just after jump to RW
+> section of firmware but before SPI is initialized. The window was
+> shortened to <1ms, but it can't be eliminated completly.
+> 
+> Communication with FPMCU (and all devices based on EC) is bi-directional.
+> When kernel sends message, EC will send EC_SPI* status codes. When EC is
+> not able to process command one of bytes will be eg. EC_SPI_NOT_READY.
+> This mechanism won't work when SPI is not initailized on EC side. In fact,
+> buffer is filled with 0xFF bytes, so from kernel perspective device is not
+> responding. To avoid this problem, we can query device once again. We are
+> already waiting EC_MSG_DEADLINE_MS for response, so we can send command
+> immediately.
+> 
+> Best regards,
+> Patryk
+>  drivers/platform/chrome/cros_ec_proto.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+> index aa7f7aa77297..3384631d21e2 100644
+> --- a/drivers/platform/chrome/cros_ec_proto.c
+> +++ b/drivers/platform/chrome/cros_ec_proto.c
+> @@ -279,6 +279,18 @@ static int cros_ec_host_command_proto_query(struct cros_ec_device *ec_dev,
+>  	msg->insize = sizeof(struct ec_response_get_protocol_info);
+>  
+>  	ret = send_command(ec_dev, msg);
+> +	/*
+> +	 * Send command once again when timeout occurred.
+> +	 * Fingerprint MCU (FPMCU) is restarted during system boot which
+> +	 * introduces small window in which FPMCU won't respond for any
+> +	 * messages sent by kernel. There is no need to wait before next
+> +	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
+> +	 */
+> +	if (ret == -ETIMEDOUT) {
+> +		dev_warn(ec_dev->dev,
+> +			 "Timeout to get response from EC. Retrying.\n");
 
-So, fix obj-$(config) logic at sti makefiles, using "+=",
-instead of ":=".
+If a user sees this, what can they do?  No need to spam the kernel logs,
+just retry.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/platform/sti/bdisp/Makefile | 2 +-
- drivers/media/platform/sti/delta/Makefile | 2 +-
- drivers/media/platform/sti/hva/Makefile   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+> +		ret = send_command(ec_dev, msg);
 
-diff --git a/drivers/media/platform/sti/bdisp/Makefile b/drivers/media/platform/sti/bdisp/Makefile
-index caf7ccd193ea..39ade0a34723 100644
---- a/drivers/media/platform/sti/bdisp/Makefile
-+++ b/drivers/media/platform/sti/bdisp/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_BDISP) := bdisp.o
-+obj-$(CONFIG_VIDEO_STI_BDISP) += bdisp.o
- 
- bdisp-objs := bdisp-v4l2.o bdisp-hw.o bdisp-debug.o
-diff --git a/drivers/media/platform/sti/delta/Makefile b/drivers/media/platform/sti/delta/Makefile
-index 92b37e216f00..32412fa4c632 100644
---- a/drivers/media/platform/sti/delta/Makefile
-+++ b/drivers/media/platform/sti/delta/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) := st-delta.o
-+obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) += st-delta.o
- st-delta-y := delta-v4l2.o delta-mem.o delta-ipc.o delta-debug.o
- 
- # MJPEG support
-diff --git a/drivers/media/platform/sti/hva/Makefile b/drivers/media/platform/sti/hva/Makefile
-index 74b41ec52f97..b5a5478bdd01 100644
---- a/drivers/media/platform/sti/hva/Makefile
-+++ b/drivers/media/platform/sti/hva/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_HVA) := st-hva.o
-+obj-$(CONFIG_VIDEO_STI_HVA) += st-hva.o
- st-hva-y := hva-v4l2.o hva-hw.o hva-mem.o hva-h264.o
- st-hva-$(CONFIG_VIDEO_STI_HVA_DEBUGFS) += hva-debugfs.o
--- 
-2.31.1
+But wait, why just retry once?  Why not 10 times?  100?  1000?  How
+about a simple loop here instead, with a "sane" number of retries as a
+max.
 
+thanks,
+
+greg k-h
