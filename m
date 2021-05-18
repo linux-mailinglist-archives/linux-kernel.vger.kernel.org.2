@@ -2,201 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4FD386EA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A3E386EA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242118AbhERBBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:01:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:52803 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239539AbhERBBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:01:19 -0400
-IronPort-SDR: NFMScb0ALJQXV+8jZiUjrE54Uw5xmEZiZoxvHSY1jpeMHM8gXAyPnnN/6rsvd3GXSfAxaWdz30
- pWgrt56RXqaw==
-Subject: [WARNING: UNSCANNABLE EXTRACTION FAILED][WARNING: UNSCANNABLE EXTRACTION FAILED][RFC v2-fix 1/1] x86/boot: Avoid #VE during boot for TDX platforms
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="188002988"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="188002988"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 18:00:01 -0700
-IronPort-SDR: wuepASz99PonOrmiU+HoI0FxDUgYZf51wMR5FxgaqTZ/TFXvIHiJBrZL4gx3Ly0PBFl17u0aa/
- E5AOc5nJa3zQ==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="541531992"
-Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:59:59 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Date:   Mon, 17 May 2021 17:59:51 -0700
-Message-Id: <20210518005951.258819-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAPcyv4jqr8vyh7BwYxW3QJ_ui_yH+iGniJYuUMEnTLWjiYsvPQ@mail.gmail.com>
-References: <CAPcyv4jqr8vyh7BwYxW3QJ_ui_yH+iGniJYuUMEnTLWjiYsvPQ@mail.gmail.com>
+        id S1345325AbhERBCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:02:32 -0400
+Received: from gateway23.websitewelcome.com ([192.185.50.107]:35267 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345310AbhERBCb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 21:02:31 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id BEE3A5254
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:01:12 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id io6il4E7kvAWvio6ilECBT; Mon, 17 May 2021 20:01:12 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=g9aBbdlWEIXLQ91l3oXZPVNVSDcfsWGvnZBY5r44FHw=; b=phC7PcKu2EfF/L0ObDfrRVu57u
+        NmUUFnmFNKyhKdBOCpZQ2d4Byb7bZ20uGqYRChDe6Y2gt3GHIf7dWd53OgQJG9qP9oPVVGZ80duIy
+        33ShssOmlZK5WKi+MYOy75ni/bN5BgETuQna3tZatlMfKMUdv7xodXn7KNrTGK8UkSbQ5XIfV0SVU
+        Hi573Frstn5Couafpa48R8giz5RzXLVcwmWbS9oOHW8zj0sXM+4iwDJCLjTHk4lwtHX3DIddeQ3KM
+        4E8WjeLqNkizaH2V17E3zIQyg6MQhGErcarrH1Zp5VvMLnMi3CEiOblrlE5OL7OPQH4W9THSjtW+m
+        i87XNBnQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53596 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lio6f-002yw1-5y; Mon, 17 May 2021 20:01:09 -0500
+Subject: Re: [PATCH RESEND][next] rds: Fix fall-through warnings for Clang
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+References: <20210305090612.GA139288@embeddedor>
+ <cd935ba5-a072-5b5a-d455-e06ef87a3a34@embeddedor.com>
+ <6AB78D3D-C73D-4633-A6FD-9452DD8E4751@oracle.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <480ab028-5de9-85ea-3dc1-275eba61f544@embeddedor.com>
+Date:   Mon, 17 May 2021 20:01:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <6AB78D3D-C73D-4633-A6FD-9452DD8E4751@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lio6f-002yw1-5y
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53596
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+Hi all,
 
-Avoid operations which will inject #VE during boot process,
-which is obviously fatal for TDX platforms.
+If you don't mind, I'm taking this in my -next[1] branch for v5.14.
 
-Details are,
+Thanks
+--
+Gustavo
 
-1. TDX module injects #VE if a TDX guest attempts to write
-   EFER.
-   
-   Boot code updates EFER in following cases:
-   
-   * When enabling Long Mode configuration, EFER.LME bit will
-     be set. Since TDX forces EFER.LME=1, we can skip updating
-     it again. Check for EFER.LME before updating it and skip
-     it if it is already set.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
 
-   * EFER is also updated to enable support for features like
-     System call and No Execute page setting. In TDX, these
-     features are set up by the TDX module. So check whether
-     it is already enabled, and skip enabling it again.
-   
-2. TDX module also injects a #VE if the guest attempts to clear
-   CR0.NE. Ensure CR0.NE is set when loading CR0 during compressed
-   boot. The Setting CR0.NE should be a nop on all CPUs that
-   support 64-bit mode.
-   
-3. The TDX-Module (effectively part of the hypervisor) requires
-   CR4.MCE to be set at all times and injects a #VE if the guest
-   attempts to clear CR4.MCE. So, preserve CR4.MCE instead of
-   clearing it during boot to avoid #VE.
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-
-Changes since RFC v2:
- * Merged Avoid #VE related changes together.
-   * [RFC v2 22/32] x86/boot: Avoid #VE during compressed boot
-     for TDX platforms
-   * [RFC v2 23/32] x86/boot: Avoid unnecessary #VE during boot process.
- * Fixed commit log as per review comments.
-
- arch/x86/boot/compressed/head_64.S   | 10 +++++++---
- arch/x86/kernel/head_64.S            | 13 +++++++++++--
- arch/x86/realmode/rm/trampoline_64.S | 11 +++++++++--
- 3 files changed, 27 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index e94874f4bbc1..2d79e5f97360 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -616,12 +616,16 @@ SYM_CODE_START(trampoline_32bit_src)
- 	movl	$MSR_EFER, %ecx
- 	rdmsr
- 	btsl	$_EFER_LME, %eax
-+	jc	1f
- 	wrmsr
--	popl	%edx
-+1:	popl	%edx
- 	popl	%ecx
- 
- 	/* Enable PAE and LA57 (if required) paging modes */
--	movl	$X86_CR4_PAE, %eax
-+	movl	%cr4, %eax
-+	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
-+	andl	$X86_CR4_MCE, %eax
-+	orl	$X86_CR4_PAE, %eax
- 	testl	%edx, %edx
- 	jz	1f
- 	orl	$X86_CR4_LA57, %eax
-@@ -636,7 +640,7 @@ SYM_CODE_START(trampoline_32bit_src)
- 	pushl	%eax
- 
- 	/* Enable paging again */
--	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
-+	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
- 
- 	lret
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 04bddaaba8e2..92c77cf75542 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -141,7 +141,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 1:
- 
- 	/* Enable PAE mode, PGE and LA57 */
--	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
-+	movq	%cr4, %rcx
-+	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
-+	andl	$X86_CR4_MCE, %ecx
-+	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
- #ifdef CONFIG_X86_5LEVEL
- 	testl	$1, __pgtable_l5_enabled(%rip)
- 	jz	1f
-@@ -229,13 +232,19 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	/* Setup EFER (Extended Feature Enable Register) */
- 	movl	$MSR_EFER, %ecx
- 	rdmsr
-+	movl    %eax, %edx
- 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
- 	btl	$20,%edi		/* No Execute supported? */
- 	jnc     1f
- 	btsl	$_EFER_NX, %eax
- 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
--1:	wrmsr				/* Make changes effective */
- 
-+	/* Skip the WRMSR if the current value matches the desired value. */
-+1:	cmpl	%edx, %eax
-+	je	1f
-+	xor	%edx, %edx
-+	wrmsr				/* Make changes effective */
-+1:
- 	/* Setup cr0 */
- 	movl	$CR0_STATE, %eax
- 	/* Make changes effective */
-diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index 754f8d2ac9e8..12b734b1da8b 100644
---- a/arch/x86/realmode/rm/trampoline_64.S
-+++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -143,13 +143,20 @@ SYM_CODE_START(startup_32)
- 	movl	%eax, %cr3
- 
- 	# Set up EFER
-+	movl	$MSR_EFER, %ecx
-+	rdmsr
-+	cmp	pa_tr_efer, %eax
-+	jne	.Lwrite_efer
-+	cmp	pa_tr_efer + 4, %edx
-+	je	.Ldone_efer
-+.Lwrite_efer:
- 	movl	pa_tr_efer, %eax
- 	movl	pa_tr_efer + 4, %edx
--	movl	$MSR_EFER, %ecx
- 	wrmsr
- 
-+.Ldone_efer:
- 	# Enable paging and in turn activate Long Mode
--	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
-+	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
- 
- 	/*
--- 
-2.25.1
-
+On 5/6/21 01:50, Haakon Bugge wrote:
+> Sorry for the delay.
+> 
+> 
+>> On 20 Apr 2021, at 22:10, Gustavo A. R. Silva <gustavo@embeddedor.com> wrote:
+>>
+>> Hi all,
+>>
+>> Friendly ping: who can take this, please?
+>>
+>> Thanks
+>> --
+>> Gustavo
+>>
+>> On 3/5/21 03:06, Gustavo A. R. Silva wrote:
+>>> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+>>> warnings by explicitly adding multiple break statements instead of
+>>> letting the code fall through to the next case.
+>>>
+>>> Link: https://github.com/KSPP/linux/issues/115
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+> 
+> 
+> Thxs, Håkon
+> 
+> 
+>>> ---
+>>> net/rds/tcp_connect.c | 1 +
+>>> net/rds/threads.c     | 2 ++
+>>> 2 files changed, 3 insertions(+)
+>>>
+>>> diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
+>>> index 4e64598176b0..5461d77fff4f 100644
+>>> --- a/net/rds/tcp_connect.c
+>>> +++ b/net/rds/tcp_connect.c
+>>> @@ -78,6 +78,7 @@ void rds_tcp_state_change(struct sock *sk)
+>>> 	case TCP_CLOSE_WAIT:
+>>> 	case TCP_CLOSE:
+>>> 		rds_conn_path_drop(cp, false);
+>>> +		break;
+>>> 	default:
+>>> 		break;
+>>> 	}
+>>> diff --git a/net/rds/threads.c b/net/rds/threads.c
+>>> index 32dc50f0a303..1f424cbfcbb4 100644
+>>> --- a/net/rds/threads.c
+>>> +++ b/net/rds/threads.c
+>>> @@ -208,6 +208,7 @@ void rds_send_worker(struct work_struct *work)
+>>> 		case -ENOMEM:
+>>> 			rds_stats_inc(s_send_delayed_retry);
+>>> 			queue_delayed_work(rds_wq, &cp->cp_send_w, 2);
+>>> +			break;
+>>> 		default:
+>>> 			break;
+>>> 		}
+>>> @@ -232,6 +233,7 @@ void rds_recv_worker(struct work_struct *work)
+>>> 		case -ENOMEM:
+>>> 			rds_stats_inc(s_recv_delayed_retry);
+>>> 			queue_delayed_work(rds_wq, &cp->cp_recv_w, 2);
+>>> +			break;
+>>> 		default:
+>>> 			break;
+>>> 		}
+>>>
+> 
