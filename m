@@ -2,152 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A1A387CDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A01387CE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350390AbhERPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:51:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:45895 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240361AbhERPvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:51:20 -0400
-IronPort-SDR: yGzgACAx1xS3+M6KIwUZWrUBoutGsHQY9BNdiqT+fXMM3hqt0VXswBFxQKjy7XW/0d3RXrJ/iu
- SQB9IO2JNcJQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="197657334"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="197657334"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:50:01 -0700
-IronPort-SDR: fbd72Sc3wSKHE5OFTWe1UWU5h5glrGatWwUc3NlZjyK7XSwj3JnGnGvIpuhI6ovC74ZAkCtjcq
- nPOUQPjvd35w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="411328261"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 18 May 2021 08:49:59 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1486750E; Tue, 18 May 2021 18:50:21 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kent Gibson <warthog618@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v1 2/2] gpiolib: Introduce gpiod_request_user() helper
-Date:   Tue, 18 May 2021 18:50:13 +0300
-Message-Id: <20210518155013.45622-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
-References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
+        id S1350411AbhERPwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239415AbhERPwE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:52:04 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D77C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:50:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621353041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eP07YdamiVewjEJZjJGc2aSYnYn1bdpViTbROQEztfQ=;
+        b=HZ1RtICuIpM7SKiBXx4HewwfB26nMvXOAq9DqupedB15l/qGTIXkj0ICI/+ELb6soR3PCi
+        sdg2xF0dpQPuLTQ++RThICIz/jz8VTnjcwOntCDXRZWFBXozsVu5FDu8p2GuppUz/7rmxw
+        hPqyO53+z3keyIy9V+6aiy/SrGgLH/wAK7lkaR1KIzCzg7RKVi67pihG5euMCvGeJgSKHR
+        oXsAfipf9PTpemtJKktEQCAeA7E468uUZeRP2fgZH5KU7XtvvbPDIy1PQ4omHINjc7Vxfg
+        NRSNDVuwK23bSdzwbGyx40WSjIOsyfA/Z+OxCcDF2C8cjYqpmf1mTLeiTpfdcQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621353041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eP07YdamiVewjEJZjJGc2aSYnYn1bdpViTbROQEztfQ=;
+        b=gEXLIIaGoPPMOGB30zLe5eCEQ4YA0uLM1Vu2BcGQsnVpY1q6dknz+r9lVQrulzg9KQyXRD
+        BewiZkNRLCUdflCw==
+To:     John Garry <john.garry@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, Frank Li <Frank.li@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: Re: [patch 5/8] perf/arm-dsu: Use irq_set_affinity()
+In-Reply-To: <4fe8eb68-c940-dd4b-6781-6cdaf052f4f5@huawei.com>
+References: <20210518091725.046774792@linutronix.de> <20210518093118.505110632@linutronix.de> <4fe8eb68-c940-dd4b-6781-6cdaf052f4f5@huawei.com>
+Date:   Tue, 18 May 2021 17:50:40 +0200
+Message-ID: <877djwdorz.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gpiod_request_user() is a special helper to avoid propagating stuff
-to user space that should not be propagated, e.g. internal error codes.
+On Tue, May 18 2021 at 12:31, John Garry wrote:
+> On 18/05/2021 10:17, Thomas Gleixner wrote:
+>>   
+>> @@ -769,7 +769,6 @@ static int dsu_pmu_device_probe(struct p
+>>   	if (rc) {
+>
+> nit: I think that someone will send a patch to remove these {} later...
+>
+>>   		cpuhp_state_remove_instance(dsu_pmu_cpuhp_state,
+>>   						 &dsu_pmu->cpuhp_node);
+>> -		irq_set_affinity_hint(dsu_pmu->irq, NULL);
+>>   	}
 
-For now, hide EPROBE_DEFER with ENODEV.
+which should be rejected because
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpiolib-cdev.c  | 21 ++++++---------------
- drivers/gpio/gpiolib-sysfs.c |  7 ++-----
- drivers/gpio/gpiolib.h       | 12 ++++++++++++
- 3 files changed, 20 insertions(+), 20 deletions(-)
+		cpuhp_state_remove_instance(dsu_pmu_cpuhp_state,
+  					    &dsu_pmu->cpuhp_node);
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 1d8f66880d63..8a934914f93a 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -330,12 +330,9 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
- 			goto out_free_lh;
- 		}
- 
--		ret = gpiod_request(desc, lh->label);
--		if (ret) {
--			if (ret == -EPROBE_DEFER)
--				ret = -ENODEV;
-+		ret = gpiod_request_user(desc, lh->label);
-+		if (ret)
- 			goto out_free_lh;
--		}
- 		lh->descs[i] = desc;
- 		linehandle_flags_to_desc_flags(handlereq.flags, &desc->flags);
- 
-@@ -1381,12 +1378,9 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
- 			goto out_free_linereq;
- 		}
- 
--		ret = gpiod_request(desc, lr->label);
--		if (ret) {
--			if (ret == -EPROBE_DEFER)
--				ret = -ENODEV;
-+		ret = gpiod_request_user(desc, lr->label);
-+		if (ret)
- 			goto out_free_linereq;
--		}
- 
- 		lr->lines[i].desc = desc;
- 		flags = gpio_v2_line_config_flags(lc, i);
-@@ -1770,12 +1764,9 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
- 		}
- 	}
- 
--	ret = gpiod_request(desc, le->label);
--	if (ret) {
--		if (ret == -EPROBE_DEFER)
--			ret = -ENODEV;
-+	ret = gpiod_request_user(desc, le->label);
-+	if (ret)
- 		goto out_free_le;
--	}
- 	le->desc = desc;
- 	le->eflags = eflags;
- 
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index d836aba91d3c..22a9ad1a2978 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -473,12 +473,9 @@ static ssize_t export_store(struct class *class,
- 	 * they may be undone on its behalf too.
- 	 */
- 
--	status = gpiod_request(desc, "sysfs");
--	if (status) {
--		if (status == -EPROBE_DEFER)
--			status = -ENODEV;
-+	status = gpiod_request_user(desc, "sysfs");
-+	if (status)
- 		goto done;
--	}
- 
- 	status = gpiod_set_transitory(desc, false);
- 	if (!status) {
-diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
-index 69c96a4276de..7f760745c457 100644
---- a/drivers/gpio/gpiolib.h
-+++ b/drivers/gpio/gpiolib.h
-@@ -142,6 +142,18 @@ struct gpio_desc {
- 
- int gpiod_request(struct gpio_desc *desc, const char *label);
- void gpiod_free(struct gpio_desc *desc);
-+
-+static inline int gpiod_request_user(struct gpio_desc *desc, const char *label)
-+{
-+	int ret;
-+
-+	ret = gpiod_request(desc, label);
-+	if (ret == -EPROBE_DEFER)
-+		ret = -ENODEV;
-+
-+	return ret;
-+}
-+
- int gpiod_configure_flags(struct gpio_desc *desc, const char *con_id,
- 		unsigned long lflags, enum gpiod_flags dflags);
- int gpio_set_debounce_timeout(struct gpio_desc *desc, unsigned int debounce);
--- 
-2.30.2
+is _NOT_ a one line statement.
 
+	if (foo)
+		cpuhp_state_remove_instance(state, &node);
+
+is fine, but
+
+	if (foo)
+		cpuhp_state_remove_instance(dsu_pmu_cpuhp_state,
+  					    &dsu_pmu->cpuhp_node);
+
+breaks the expectation of a single line following the condition which
+confuses my brain based OCR. :)
+
+So I left the brackets there on purpose.
+
+Thanks,
+
+        tglx
