@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843133877E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8E93877EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348828AbhERLmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:42:05 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38794 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348798AbhERLmA (ORCPT
+        id S245073AbhERLnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245054AbhERLne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:42:00 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9B4561F42F6C;
-        Tue, 18 May 2021 12:40:41 +0100 (BST)
-Date:   Tue, 18 May 2021 13:40:37 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v3 1/3] spi: spi-mem: add automatic poll status
- functions
-Message-ID: <20210518134037.0e5839b0@collabora.com>
-In-Reply-To: <20210518093951.23136-2-patrice.chotard@foss.st.com>
-References: <20210518093951.23136-1-patrice.chotard@foss.st.com>
-        <20210518093951.23136-2-patrice.chotard@foss.st.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 18 May 2021 07:43:34 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74336C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:42:14 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id t4so4931803plc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7S6PUZObKkIfh3dODhQCy9E7mIQHbGFC9dWCAcju/jo=;
+        b=SwBpWj+/Sbd3xmdoFsEWL4TtWjdKN15Sfgx7w030cR7SVp6Ye1cVLF/GgJrB8PdJ3t
+         +bWWuSUBuB1S6wyeQTzPboeQVPgyIKTIfegE/8OIhCCSCynGDynUFDGzQz6mXE7+pvIW
+         dM353u8JWAaT6zEiBJ+LSggu4nM//+AIqjqXyRGO6UDLpxPZlkun7Hpvdt41hBAmP/gj
+         oVN/+/9BJWbZCzVcLMu7EFQ21iZ8eCc6cB2IWdLhb5dbMmgsFpTcJ9BJysNFQ/6IX3BC
+         0pQwP9p4EGhKsuCMF5q6BL4n6VkGpnyTbZPZ0sCvIo/HrvdSb4eM2LIgM1Cr5ViZj5rp
+         hvLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7S6PUZObKkIfh3dODhQCy9E7mIQHbGFC9dWCAcju/jo=;
+        b=JzQXCxCNfKQKFYxipCy6TR7OEPJ1fVjgJSdQxchbW/68lJl+iRvDfHXZ6TNOBW6bD+
+         pip9Z/hklEikQZZMOrLUL2D4o8ms7Khdw3KMdtTh8PJsohrek2P/sw5fRSit+zR8Uebf
+         nx2i5PTlbzBG3cB/a8jS/QM8GuTPcpsiaXYrJoKEJczD2zGZHe1Cw2wbjEF7G+hjUg/D
+         kDlN9jkh9DPES5fAHkewiwtLiI6RY/POX0x7E52l6W3HCIj48fn5F8a/pVys5ZWRClnB
+         SccmmRrGWe5PFwGVhL336Qxjh11IPknF0kjGt5mXMnygQg0F7qWJQlfGVyY3Vg4VzlEP
+         +K9g==
+X-Gm-Message-State: AOAM532A3euPgZbtaBemoJrp8LPnDPb6j1sTmgvcfdtI+bkgBXOgGhW/
+        yFb6iTZebmeP7oeCt+I2jnNCO+YZPIG7XDh84PEy/Q==
+X-Google-Smtp-Source: ABdhPJxFfhcir7SromnhgqTH2KqWlndpO3tIOi4AVJmcHUKmPMiLDixKblE4Sk6MK9lPqY7c+ddadZP+ObGtVwvmRCk=
+X-Received: by 2002:a17:90a:e391:: with SMTP id b17mr282959pjz.75.1621338133894;
+ Tue, 18 May 2021 04:42:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210513175258.5842-1-jonathan@marek.ca> <20210513175258.5842-4-jonathan@marek.ca>
+In-Reply-To: <20210513175258.5842-4-jonathan@marek.ca>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 18 May 2021 13:42:02 +0200
+Message-ID: <CAG3jFys=aCJOnP11EC_PK-KBJxMksT78McKb6pLTHuBxhU2qdg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] clk: qcom: Add camera clock controller driver for SM8250
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 11:39:49 +0200
-<patrice.chotard@foss.st.com> wrote:
+Hey Jonathan,
 
-> +/**
-> + * spi_mem_poll_status() - Poll memory device status
-> + * @mem: SPI memory device
-> + * @op: the memory operation to execute
-> + * @mask: status bitmask to ckeck
-> + * @match: (status & mask) expected value
-> + * @initial_delay_us: delay in us before starting to poll
-> + * @polling_delay_us: time to sleep between reads in us
-> + * @timeout_ms: timeout in milliseconds
-> + *
-> + * This function send a polling status request to the controller driver
-> + *
-> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
-> + *         -EOPNOTSUPP if not supported.
-> + */
-> +int spi_mem_poll_status(struct spi_mem *mem,
-> +			const struct spi_mem_op *op,
-> +			u16 mask, u16 match,
-> +			unsigned long initial_delay_us,
-> +			unsigned long polling_delay_us,
-> +			u16 timeout_ms)
+
+> +static int cam_cc_sm8250_probe(struct platform_device *pdev)
 > +{
-> +	struct spi_controller *ctlr = mem->spi->controller;
-> +	int ret = -EOPNOTSUPP;
-> +	int read_status_ret;
-> +	u16 status;
+> +       struct regmap *regmap;
 > +
-> +	if (op->data.nbytes < 1 || op->data.nbytes > 2)
-> +		return -EINVAL;
+> +       regmap = qcom_cc_map(pdev, &cam_cc_sm8250_desc);
+> +       if (IS_ERR(regmap))
+> +               return PTR_ERR(regmap);
+> +
+> +       clk_lucid_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config);
+> +       clk_lucid_pll_configure(&cam_cc_pll1, regmap, &cam_cc_pll1_config);
+> +       clk_lucid_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config);
+> +       clk_lucid_pll_configure(&cam_cc_pll4, regmap, &cam_cc_pll4_config);
+> +
+> +       return qcom_cc_really_probe(pdev, &cam_cc_sm8250_desc, regmap);;
 
-We should also make sure this is a read operation.
+Remove a semicolon.
 
-> +
-> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
-> +		ret = spi_mem_access_start(mem);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
-> +						 initial_delay_us, polling_delay_us,
-> +						 timeout_ms);
-> +
-> +		spi_mem_access_end(mem);
-> +	}
-> +
-> +	if (ret == -EOPNOTSUPP) {
-> +		if (!spi_mem_supports_op(mem, op))
-> +			return ret;
-> +
-> +		if (initial_delay_us < 10)
-> +			udelay(initial_delay_us);
-> +		else
-> +			usleep_range((initial_delay_us >> 2) + 1,
-> +				     initial_delay_us);
-> +
-> +		ret = read_poll_timeout(spi_mem_read_status, read_status_ret,
-> +					(read_status_ret || ((status) & mask) == match),
-> +					polling_delay_us, timeout_ms * 1000, false, mem,
-> +					op, &status);
-> +		if (read_status_ret)
-> +			return read_status_ret;
-> +	}
-> +
-> +	return ret;
 > +}
+> +
+> +static struct platform_driver cam_cc_sm8250_driver = {
+> +       .probe = cam_cc_sm8250_probe,
+> +       .driver = {
+> +               .name = "cam_cc-sm8250",
+
+Maybe conforming with the naming scheme of "sdm845-camcc" is the
+better way to go.
+
+> +               .of_match_table = cam_cc_sm8250_match_table,
+> +       },
+> +};
+> +
+> +static int __init cam_cc_sm8250_init(void)
+> +{
+> +       return platform_driver_register(&cam_cc_sm8250_driver);
+> +}
+> +subsys_initcall(cam_cc_sm8250_init);
+> +
+> +static void __exit cam_cc_sm8250_exit(void)
+> +{
+> +       platform_driver_unregister(&cam_cc_sm8250_driver);
+> +}
+> +module_exit(cam_cc_sm8250_exit);
+> +
+> +MODULE_DESCRIPTION("QTI CAMCC SM8250 Driver");
+> +MODULE_LICENSE("GPL v2");
+> --
+> 2.26.1
+>
