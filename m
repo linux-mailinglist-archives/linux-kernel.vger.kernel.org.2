@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59143387605
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DD238760A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348309AbhERKHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
+        id S1348328AbhERKIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241178AbhERKHN (ORCPT
+        with ESMTP id S241178AbhERKIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:07:13 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C934C061573;
-        Tue, 18 May 2021 03:05:55 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j14so7792240wrq.5;
-        Tue, 18 May 2021 03:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V7Ti7WJ2nzXe+Bb1Ba5zI+FwxdjEmUUPP1pWWO8icL0=;
-        b=putMerDYNwU75ozlSzEJU837uiljGtrInMJs2kcFOIbd3pxgjwgUZ73fEXSmBf/aTe
-         uByfvyIdTjeD41f5LplMlQOVc7a7cDBqNbwP33HPXVuYWgPo5wTWfF9WEV3Rb94Vv4Y0
-         tEQW+TNx9TtRBCajbcaomjhZ/jaznX+Wpo6iWPXlQWgAaS5FUL0fmJIFWp0l6LTIfj4N
-         cgIKuWp8WjwunUJFKi6K7JBvSU0TJNzE7l/QPYCby6oHetjCBsQXIdy7s3mT3pFgh6Jz
-         wCiAO7IrFq1GIm09elz8mcIiK1ciZ9spEdkE08CyCD+C1Zp/x3qUJQRTrFkn2QB+ZCxs
-         mJCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V7Ti7WJ2nzXe+Bb1Ba5zI+FwxdjEmUUPP1pWWO8icL0=;
-        b=IhkVHEpAStTUiBCfSpqMaoKPrnszL8w5pximqtEIK5q9M+qL69wRjUhNOwZTvoTziK
-         NbBZM9APqva169vio6Jyznyt7u6UXMXJuTTlO3k4JTMcOG22+koYMAnDAuxt9A6dO7sN
-         Qrdpqc4Qhzv5EckF7wOCC7Igk9CuZJN8XEmUClfE2oze3nx86lFTfCnaD7wQL1kvdmUb
-         uzJqqeDdvRaQk5Dm+QWBHhIqugKo9UW3BfZP8U+vQzCj3UhHglvfFMEhG43/D9SssaZd
-         6Pek4gieHSfGyol8+8fm7bN8NmRYLZHYravwcBf0TC7XG5l62y8l9dq5Vf6dDxVy7wDC
-         tWmw==
-X-Gm-Message-State: AOAM531QYgpKIyfrEDCJZkz3TYmUjzsF0MeePCnUhkdbxUrnI4Guc6HC
-        O7vgsoxrCOdq3h5NLnmolH4=
-X-Google-Smtp-Source: ABdhPJypoRWlIeu39qDbHGvht2rMA4uoan8wqMbhAaYO1RN0jrCjtOn7AlMKv+AbKgRxZFwhyk+61g==
-X-Received: by 2002:a5d:63c4:: with SMTP id c4mr5794672wrw.287.1621332354162;
-        Tue, 18 May 2021 03:05:54 -0700 (PDT)
-Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
-        by smtp.gmail.com with ESMTPSA id d3sm21317120wri.75.2021.05.18.03.05.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 03:05:53 -0700 (PDT)
-Date:   Tue, 18 May 2021 11:05:51 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/141] 5.4.120-rc1 review
-Message-ID: <YKORf9Xw1DAFmO4q@debian>
-References: <20210517140242.729269392@linuxfoundation.org>
+        Tue, 18 May 2021 06:08:01 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7E9C061573;
+        Tue, 18 May 2021 03:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=XcUE59BbQI5VCk62NQ98jAv25zo//emUHUedcxxcgyA=; b=B+1u6ZG4uJf1OSsB0tVOyeq0N
+        H+f35qC+o3JQhJf0dqEAUIURiaEown3+hepXFL/kFsdRe5AnAXhCIr6odFUcrSryaajMcfXd7lHSV
+        oERv2lMclyCkH88TtgEHbvmIjNuiaaskphGn/68qNsJVObsFzkALdGKWJnX2FP1mqe6ytC45X9SUH
+        JOZlL7c8SLi92/bJOPHxXqYy/CdA1jei51V5eRNuZvzT7bn/n+6/NXPoPu+KSzaxpEWV+9shIdC8z
+        pzsC2s8JthkHOanWWYH+W3ao8o0rzYPudZqRQqUkWQJea5CTgYcaXde0QKP4Qyg7/QjPw/chMtbu+
+        FgWLQSc9Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44126)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1liwcR-00042a-B7; Tue, 18 May 2021 11:06:31 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1liwcN-0007nP-Tc; Tue, 18 May 2021 11:06:27 +0100
+Date:   Tue, 18 May 2021 11:06:27 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>
+Cc:     "Jose.Abreu@synopsys.com" <Jose.Abreu@synopsys.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "Voon, Weifeng" <weifeng.voon@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Tan, Tee Min" <tee.min.tan@intel.com>,
+        "vee.khee.wong@linux.intel.com" <vee.khee.wong@linux.intel.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 2/2] net: stmmac: Add callbacks for DWC xpcs
+ Energy Efficient Ethernet
+Message-ID: <20210518100627.GT12395@shell.armlinux.org.uk>
+References: <20210517094332.24976-1-michael.wei.hong.sit@intel.com>
+ <20210517094332.24976-3-michael.wei.hong.sit@intel.com>
+ <20210517105424.GP12395@shell.armlinux.org.uk>
+ <CO1PR11MB50447EDBEB4835C3EB5B3C7A9D2D9@CO1PR11MB5044.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <CO1PR11MB50447EDBEB4835C3EB5B3C7A9D2D9@CO1PR11MB5044.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, May 17, 2021 at 04:00:52PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.120 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, May 17, 2021 at 11:37:12AM +0000, Sit, Michael Wei Hong wrote:
+> > From: Russell King <linux@armlinux.org.uk>
+> > 
+> > On Mon, May 17, 2021 at 05:43:32PM +0800, Michael Sit Wei Hong
+> > wrote:
+> > > Link xpcs callback functions for MAC to configure the xpcs EEE
+> > feature.
+> > >
+> > > The clk_eee frequency is used to calculate the
+> > MULT_FACT_100NS. This
+> > > is to adjust the clock tic closer to 100ns.
+> > >
+> > > Signed-off-by: Michael Sit Wei Hong
+> > <michael.wei.hong.sit@intel.com>
+> > 
+> > What is the initial state of the EEE configuration before the first
+> > call to stmmac_ethtool_op_set_eee()? Does it reflect the default
+> > EEE settings?
 > 
-> Responses should be made by Wed, 19 May 2021 14:02:20 +0000.
-> Anything received after that time might be too late.
+> The register values before the first call are the default reset values in
+> the registers. The reset values assumes the clk_eee_i time period is 10ns,
+> Hence, the reset value is set to 9.
+> According to the register description,
+> This value should be programmed such that the
+> clk_eee_i_time_period * (MULT_FACT_100NS + 1) should be
+> within 80 ns to 120 ns.
+> 
+> Since we are using a fixed 19.2MHz clk_eee, which is 52ns,
+> we are setting the value to 1.
 
-Build test:
-mips (gcc version 11.1.1 20210430): 65 configs -> no failure
-arm (gcc version 11.1.1 20210430): 107 configs -> no new failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
-
+Does that hardware default configuration match what is returned by
+ethtool --show-eee ?
+ 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
