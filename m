@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A056838811D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC46F388121
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238643AbhERUMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        id S235931AbhERUNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236044AbhERUL4 (ORCPT
+        with ESMTP id S231580AbhERUNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:11:56 -0400
+        Tue, 18 May 2021 16:13:18 -0400
 Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FA5C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:10:37 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id a2so15727058lfc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:10:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7538FC061573;
+        Tue, 18 May 2021 13:11:59 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id q7so14423216lfr.6;
+        Tue, 18 May 2021 13:11:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RQxXHB1Ph7+P2xHMeXt5/XrQmHM246cZK2cxKNZ552s=;
-        b=Ae2O00o4sZHTYI8szB56TRKiLOXTBPgOr7RGyvNPNXHrArQu9lF683OLOqIYMIUhE5
-         Xqv2GBcO2bwaZoqM4lNm7BfEf6i4TLaIPz101hOVcBDS5c9zlKPjwRP79WGhco0ADSCR
-         Gj4IJ0Jy65lK9Zjk4y2CigKjLCzoXAY5ARdZ3JRWDi3YH0ZzhZBenHVJOP9NFYaA1Rl1
-         jlPVh55IwhUzOqqL6IaABtqClFMaF067v2wMjFjMkX8FqCuGwsSZZMvrSPWeZm14Ng9x
-         wrX2Hm5lCRbj4c45DLY6YUdVhmIZnkXDTrQ1RrM83zT3SYEb+Ua/X0XCiUcPiz7fMUtV
-         zbBA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eqnKON75MC7wmOo09rQx8YXcKOuSxztzztMBXxXm75A=;
+        b=q/4iatmrOgeg1PWQq7qdnEK93Mf5xlYSKZsJTH9Tv5UkG27MQ2EvSilQhDzJJGkfSi
+         zPoez1JT5MkXAXfF0TdJOXl9jMMmFNB97v85pIW3kRiiRl4RNREjCBeEFUO9nJRxx+N4
+         P8Ulebw30vk7rxv3h4sOPXKF0KbLZ95zWbbmwKTMouPL0dnM/QJ1IdbOC6U/fIfVv79m
+         Of0LbTJI7C6ZeIEQRGejGtzZhBuc0nFI3f4ZJnGhm05EPZZ5aj8SaWGaQkCaSBTsVylx
+         V+PAiPdj2EqK5ZnOuFa48ZTvVxCS93rB4vKwHpiYGWyhe/OaDNDiOvYxFSw8SRTXdQPG
+         DF1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RQxXHB1Ph7+P2xHMeXt5/XrQmHM246cZK2cxKNZ552s=;
-        b=m8D0fbEh5C0LaISYDEGzbhVyupsQ4ll8VmMdde2ygb3q7LLz6gIoH8BuFqFmwN6BiO
-         hRiT9NKd/0n2wBS2o92B6E7773U1gYIhWlSJMA2uWSjPfoW78z3xTR48FXxbFvOMNm59
-         8uBAqMH3QtplgLP8Y8FMPAC+kCaNV7G/bGVi22U85PSXVe4GfNCzK154/HJ0DdjQJPyq
-         tagqAHbaEzYK+nxI5vnPCdJkpuQp8R+0AvgDm67uQo4nYoIDU15GrCWcJq9tAUMAPnFC
-         p2ia700YIqSDuu1WwaY2rv6MsAk7X1/Xx4cwJ3fy+GhH2NvShkOvR/UFEi3NoKI1Qeih
-         N7tw==
-X-Gm-Message-State: AOAM5314k5MFtWBEXZbC7nuP5of4yg8SaBqewR1h7JkOf3ptwsKgqVh9
-        /WvUFBTjdbM/OrssJ+Fh5MEg9aCVpGpjWhbZQGrQgg==
-X-Google-Smtp-Source: ABdhPJy/O3f3557dx5LWLnEvRJb07rzCjEyU10gDDCLXd7y0RaH3MvyyIqEGKVXMEulQDobi42C+1nuyWbktgTBTxL0=
-X-Received: by 2002:ac2:544f:: with SMTP id d15mr5147305lfn.465.1621368635625;
- Tue, 18 May 2021 13:10:35 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eqnKON75MC7wmOo09rQx8YXcKOuSxztzztMBXxXm75A=;
+        b=H76aDim1Rp1Qcm8oXHSCTzun+uCUeCSsrc4GhTIiASDcDeHMkPDR23qWRapOD3fkvJ
+         sqT6d4sPeJ0FCqdjG4F541OsVhqcm+QuCEg9JTv8xF/Jc3iCdu9CPD4SfZXm6dxhBygV
+         tjVxjCapUluvyJWcQI57A1yyxtkq2NZ+db1cCWrGwSl9yhDVIBqgnG33r58JQWvNroKs
+         D993AaASqcc5W49zcGNMz0s6s9nNVrldY0iADaavK6oVq1XcdhUQ28WdE8mXsoGdh5Wc
+         wTvEpgIIG1p3ROGAvNc0Lj9Xrs0tyMQ1intcVCEPD5KZA79yE/3//EudHyxMIpVng/9/
+         rPwA==
+X-Gm-Message-State: AOAM5336y+4R4LeBcr8cag2ZGhBcyO5JZuuFii6uaQoGzHkwGG3Cc3Ze
+        2g7hoVpn7foWza+2sb9Jxol9z76Qvas=
+X-Google-Smtp-Source: ABdhPJx6fBKAk+vMXzaeJUMIPe/E1mlIHljaim+HQDVwv3IcRiDuJXXqx9U0k27vviVxgdudscSDPw==
+X-Received: by 2002:a05:6512:33c4:: with SMTP id d4mr5533905lfg.536.1621368717835;
+        Tue, 18 May 2021 13:11:57 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id r17sm3431037ljp.40.2021.05.18.13.11.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 13:11:57 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] ASoC: tegra: Unify ASoC machine drivers
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20210518001356.19227-1-digetx@gmail.com>
+ <20210518001356.19227-3-digetx@gmail.com>
+ <20210518180949.GA949047@robh.at.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <95f62f68-b081-2f98-1f88-f39e52c49bfe@gmail.com>
+Date:   Tue, 18 May 2021 23:11:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210518112546.44592-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210518112546.44592-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 18 May 2021 22:10:24 +0200
-Message-ID: <CACRpkdZBRGBMgGPeqebHtLD6RczABQDLpA884rm3D=qm-UFBow@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] iio: Drop Duplicated "mount-matrix" parameter
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Dan Robertson <dan@dlrobertson.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210518180949.GA949047@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 1:25 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+18.05.2021 21:09, Rob Herring пишет:
+>> +static const char * const tegra_active_low_hp_compats[] = {
+>> +	"ad,tegra-audio-plutux",
+>> +	"ad,tegra-audio-wm8903-medcom-wide",
+>> +	"ad,tegra-audio-wm8903-tec",
+>> +	"nvidia,tegra-audio-wm8903-cardhu",
+>> +	"nvidia,tegra-audio-wm8903-harmony",
+>> +	"nvidia,tegra-audio-wm8903-picasso",
+>> +	"nvidia,tegra-audio-wm8903-seaboard",
+>> +	"nvidia,tegra-audio-wm8903-ventana",
+>> +	NULL,
+> I think this list should be added to the main match table below with 
+> data having a flag for active low HP. Then you only match once, don't 
+> need the exported function and the next difference is much easier to 
+> add.
+> 
 
-> All of the users of iio_read_mount_matrix() are using the very same
-> property name. Moreover, the property name is hard coded in the API
-> documentation.
->
-> Make this clear and avoid duplication now and in the future.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Thank you for the suggestion. You're right that these compats will take
+precedence.
 
-Excellent patch!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I'm also now thinking that it should be okay to assume that the GPIO is
+active-low by default. I haven't seen tegra boards with the active-high
+configuration.
 
-I will simply stick it in front in my branch when I resend the series
-so it applies cleanly on top of this patch.
-
-Yours,
-Linus Walleij
+I'll remove the use of the exported function in v2.
