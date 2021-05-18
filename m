@@ -2,214 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29343387A1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878ED387A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239112AbhERNkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:40:07 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56914 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349560AbhERNkE (ORCPT
+        id S1349695AbhERNjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:39:54 -0400
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:40852 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239112AbhERNjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:40:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621345126; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=FBUT57+IqbqFX+drWKs01cPuieWBXB3IuBAVyAh25vY=; b=nuiiwTTOc2Q6AOj4JgE6+0jeMQzPw47KyZ23cu217CWih90dJVELAFTKsAuJHs4bYQGXROqr
- Q8QqSl0eNNMpWo2a8SSTMdLCNFumomjSq8OK9gSryU91PTCn35cUhdYCGXO22yfwjyzlNF3u
- wK1+UeSlw0wwR6rB9Y4Se0+5nSs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60a3c3561449805ea2b6ff76 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 May 2021 13:38:30
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1925CC4360C; Tue, 18 May 2021 13:38:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2ADE7C433D3;
-        Tue, 18 May 2021 13:38:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2ADE7C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com, vbabka@suse.cz,
-        nigupta@nvidia.com, bhe@redhat.com, mateusznosek0@gmail.com,
-        sh_def@163.com, iamjoonsoo.kim@lge.com, vinmenon@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH V2] mm: compaction: support triggering of proactive compaction by user
-Date:   Tue, 18 May 2021 19:07:38 +0530
-Message-Id: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 18 May 2021 09:39:51 -0400
+Received: by mail-oo1-f41.google.com with SMTP id j26-20020a4adf5a0000b029020eac899f76so451202oou.7;
+        Tue, 18 May 2021 06:38:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aXOzbw6kj/huhT91E46/d3VHyM30D8TcdD0+bpXFius=;
+        b=l9p7tCSnVJo8cftRFBFrG7WJw6yx4UJjf/bjO2mNFGiEjVi7iEWAQFdMNZDayfgDnY
+         KqrLh/TI4NVS8aM0XyVGLIFJvWSq4Ba6MK4rRckRqEZ1cc33/jdL4YepgZWvNR2mrrHG
+         xydP+G3z5VkXvBLT2gnVDEV2HrnRECgv2T4UI9UL3/QG9VN2ixRaNHzEzH8fs3YaNEtj
+         wW2vuAg5A8Mmw1/l3M6u1lME6fiz5+ur+Hcc8XLnnXqPdjmgpCJkZr8JE6oig5Oa0dv+
+         CSZFp1ZGOFrBwTgXTQfQUYI4ci96WOLwZD1oCh79NuEqiPbXxZ0RZyDGS4n/rw2cfRCA
+         z04w==
+X-Gm-Message-State: AOAM532nlaaJ3CLguEyiCVlS6vY+eYuUb5ae1AFb3jvMQ3eDDD5IrAff
+        eL3rIgDwSDBkaZzACj3e1kLtz1LiGA==
+X-Google-Smtp-Source: ABdhPJyqJW8jb/jAVhJ7YM46fiQroC3rAm4U5DdM5U9zrld9tG2eyhqubnJzRTpvOnpIwaO29vW/2w==
+X-Received: by 2002:a4a:9c8c:: with SMTP id z12mr4485317ooj.3.1621345113591;
+        Tue, 18 May 2021 06:38:33 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k7sm3713033ood.36.2021.05.18.06.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 06:38:32 -0700 (PDT)
+Received: (nullmailer pid 553081 invoked by uid 1000);
+        Tue, 18 May 2021 13:38:31 -0000
+Date:   Tue, 18 May 2021 08:38:31 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] regulator: rt6160: Add DT binding document for
+ Richtek RT6160
+Message-ID: <20210518133831.GA543149@robh.at.kernel.org>
+References: <1621183560-6668-1-git-send-email-u0084500@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621183560-6668-1-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The proactive compaction[1] gets triggered for every 500msec and run
-compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
-pages based on the value set to sysctl.compaction_proactiveness.
-Triggering the compaction for every 500msec in search of
-COMPACTION_HPAGE_ORDER pages is not needed for all applications,
-especially on the embedded system usecases which may have few MB's of
-RAM. Enabling the proactive compaction in its state will endup in
-running almost always on such systems.
+On Mon, May 17, 2021 at 12:45:59AM +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+> 
+> Add DT binding document for Richtek RT6160 voltage regulator.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> ---
+> since v2
+> - Move buckboost node from patternProperties to Properties.
+> ---
+>  .../regulator/richtek,rt6160-regulator.yaml        | 67 ++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+> new file mode 100644
+> index 00000000..4ce1f7c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/richtek,rt6160-regulator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Richtek RT6160 BuckBoost converter
+> +
+> +maintainers:
+> +  - ChiYuan Huang <cy_huang@richtek.com>
+> +
+> +description: |
+> +  The RT6160 is a high-efficiency buck-boost converter that can provide
+> +  up to 3A output current from 2025mV to 5200mV. And it support the wide
+> +  input voltage range from 2200mV to 5500mV.
+> +
+> +  Datasheet is available at
+> +  https://www.richtek.com/assets/product_file/RT6160A/DS6160A-00.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - richtek,rt6160
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  enable-gpios:
+> +    description: A connection of the 'enable' gpio line.
+> +    maxItems: 1
+> +
+> +  richtek,vsel_active_low:
 
-Other side, proactive compaction can still be very much useful for
-getting a set of higher order pages in some controllable
-manner(controlled by using the sysctl.compaction_proactiveness). Thus on
-systems where enabling the proactive compaction always may proove not
-required, can trigger the same from user space on write to its sysctl
-interface. As an example, say app launcher decide to launch the memory
-heavy application which can be launched fast if it gets more higher
-order pages thus launcher can prepare the system in advance by
-triggering the proactive compaction from userspace.
+richtek,vsel-active-low
 
-This triggering of proactive compaction is done on a write to
-sysctl.compaction_proactiveness by user.
+> +    description: |
+> +      Used to indicate the 'vsel' pin active level. if not specified, use
+> +      high active level as the default.
+> +    type: boolean
+> +
+> +  buckboost:
 
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
+If this is the only regulator, you don't really need a child node here. 
+Just move everything up.
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
-changes in V2: 
-    - remove /proc interface trigger for proactive compaction
-    - Intention is same that add a way to trigger proactive compaction by user.
-
-changes in V1:
-    -  https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
-
- include/linux/compaction.h |  2 ++
- include/linux/mmzone.h     |  1 +
- kernel/sysctl.c            |  2 +-
- mm/compaction.c            | 35 ++++++++++++++++++++++++++++++++---
- 4 files changed, 36 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index 4221888..04d5d9f 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -84,6 +84,8 @@ static inline unsigned long compact_gap(unsigned int order)
- extern unsigned int sysctl_compaction_proactiveness;
- extern int sysctl_compaction_handler(struct ctl_table *table, int write,
- 			void *buffer, size_t *length, loff_t *ppos);
-+extern int compaction_proactiveness_sysctl_handler(struct ctl_table *table,
-+		int write, void *buffer, size_t *length, loff_t *ppos);
- extern int sysctl_extfrag_threshold;
- extern int sysctl_compact_unevictable_allowed;
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 0d53eba..9455809 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -815,6 +815,7 @@ typedef struct pglist_data {
- 	enum zone_type kcompactd_highest_zoneidx;
- 	wait_queue_head_t kcompactd_wait;
- 	struct task_struct *kcompactd;
-+	bool proactive_compact_trigger;
- #endif
- 	/*
- 	 * This is a per-node reserve of pages that are not available
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 14edf84..bed2fad 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2840,7 +2840,7 @@ static struct ctl_table vm_table[] = {
- 		.data		= &sysctl_compaction_proactiveness,
- 		.maxlen		= sizeof(sysctl_compaction_proactiveness),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= compaction_proactiveness_sysctl_handler,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= &one_hundred,
- 	},
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 84fde27..9056693 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2708,6 +2708,30 @@ static void compact_nodes(void)
-  */
- unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
- 
-+int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
-+		void *buffer, size_t *length, loff_t *ppos)
-+{
-+	int rc, nid;
-+
-+	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
-+	if (rc)
-+		return rc;
-+
-+	if (write && sysctl_compaction_proactiveness) {
-+		for_each_online_node(nid) {
-+			pg_data_t *pgdat = NODE_DATA(nid);
-+
-+			if (pgdat->proactive_compact_trigger)
-+				continue;
-+
-+			pgdat->proactive_compact_trigger = true;
-+			wake_up_interruptible(&pgdat->kcompactd_wait);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * This is the entry point for compacting all nodes via
-  * /proc/sys/vm/compact_memory
-@@ -2752,7 +2776,8 @@ void compaction_unregister_node(struct node *node)
- 
- static inline bool kcompactd_work_requested(pg_data_t *pgdat)
- {
--	return pgdat->kcompactd_max_order > 0 || kthread_should_stop();
-+	return pgdat->kcompactd_max_order > 0 || kthread_should_stop() ||
-+		pgdat->proactive_compact_trigger;
- }
- 
- static bool kcompactd_node_suitable(pg_data_t *pgdat)
-@@ -2905,7 +2930,8 @@ static int kcompactd(void *p)
- 		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
- 		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
- 			kcompactd_work_requested(pgdat),
--			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC))) {
-+			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC)) &&
-+			!pgdat->proactive_compact_trigger) {
- 
- 			psi_memstall_enter(&pflags);
- 			kcompactd_do_work(pgdat);
-@@ -2919,7 +2945,7 @@ static int kcompactd(void *p)
- 
- 			if (proactive_defer) {
- 				proactive_defer--;
--				continue;
-+				goto loop;
- 			}
- 			prev_score = fragmentation_score_node(pgdat);
- 			proactive_compact_node(pgdat);
-@@ -2931,6 +2957,9 @@ static int kcompactd(void *p)
- 			proactive_defer = score < prev_score ?
- 					0 : 1 << COMPACT_MAX_DEFER_SHIFT;
- 		}
-+loop:
-+		if (pgdat->proactive_compact_trigger)
-+			pgdat->proactive_compact_trigger = false;
- 	}
- 
- 	return 0;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+> +    description: BuckBoost converter regulator description.
+> +    type: object
+> +    $ref: regulator.yaml#
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      rt6160@75 {
+> +        compatible = "richtek,rt6160";
+> +        reg = <0x75>;
+> +        enable-gpios = <&gpio26 2 0>;
+> +
+> +        buckboost {
+> +          regulator-name = "rt6160-buckboost";
+> +          regulator-min-microvolt = <2025000>;
+> +          regulator-max-microvolt = <5200000>;
+> +          regulator-allowed-modes = <0 1>;
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.7.4
+> 
