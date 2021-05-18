@@ -2,71 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB54387A7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0596C387A7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244774AbhERN55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234985AbhERN54 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:57:56 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07647C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:56:38 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id d30so3244616uae.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 06:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0218MIjV6sDk3GtBhJUUBoqbpznvnThNvXyXAl2dRdo=;
-        b=cRL2w3zHWlxCUzo28Q5gSGrJRv38mw6NXXdLPG2CP2eZHhN5159XlXpc4TnJ74kX/1
-         kg8/NtknW1TWLEtB1XL9yfyrlnDrtBj3qRO4ARcBnSO+ZoHNNy6CUMo4J9451eOa3cY0
-         jSJ/yB9Ld6UNrUHjv7GP5lWg33y8WbC5pVsAc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0218MIjV6sDk3GtBhJUUBoqbpznvnThNvXyXAl2dRdo=;
-        b=fdVUretBkmSfCx3BhaVoaLW57giVonGNOYAGpARQzDFnWVIcniAfs+QHR7Z0VWSuV1
-         mweuDNvIdAnmf1SwCe7hxXbI8jfCm2IRDcyEhBOT8GIE/0scriMOvd7tzN3/uG/KHGGH
-         A0kMbnXj2BBywW4nNL2CwLfG6Pz47Q4SP7dm9AfauKVgaOGb8CPyiNF+J6zUE2njmeAW
-         vMfcoRMg9IHouraKsTrMfdESgRx5tuipITcA3k0IKSTRFQjECuqBsz3oiwHYM8L2yswF
-         gEUyc682phuxE8O5QWQVn7Q6MpNvTsOLCFXXf4m1jKKAd44+lu5KOPdift2ni2vbs/jt
-         SjVA==
-X-Gm-Message-State: AOAM532GhwEl1ut5lHPHb1UgukVbIp7wnAdyw/BkH7f59Wa+3QV944fe
-        sWMOFN+LanNtVpZxAxnrEQrPWCd3mvDd4VR2Xbhg4g==
-X-Google-Smtp-Source: ABdhPJxte7giQP+HVI9f/B2gI531JC6jLeyS0GC1SRzloLPO6wRCAOAhyugLZlibpywStzpKhIzB6TLxKGXUlchCa8Y=
-X-Received: by 2002:ab0:2690:: with SMTP id t16mr6459810uao.9.1621346197241;
- Tue, 18 May 2021 06:56:37 -0700 (PDT)
+        id S1344124AbhERN6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:58:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243387AbhERN6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 09:58:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C95F461184;
+        Tue, 18 May 2021 13:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621346237;
+        bh=TzkSu69RYouvQQc0B8rvBmw30q3/etOKjmHDnYJ8dI4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hJrpif0/bqpO5YFefybvaTTFhfhxQbE4jcjM+G5/3TBFgwwBYCCV8TujGIkrI3Jk/
+         o6bfeytyaBZh8MzvGxAULF/OeyqH7rhUROL3Ldwu85fRzqJgvsnuUNAy9VtHNnE8Lw
+         nz6lchtimKZ/i/DzeoKnBKl4PNTSj0ultqRHJG5w=
+Date:   Tue, 18 May 2021 15:57:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Rudi Heitbaum <rudi@heitbaum.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.12 081/363] net: bridge: propagate error code and
+ extack from br_mc_disabled_update
+Message-ID: <YKPHu3cx+R1B5dHQ@kroah.com>
+References: <20210517140302.508966430@linuxfoundation.org>
+ <20210517140305.339768334@linuxfoundation.org>
+ <20210518122449.GA65@ec3d6f83b95b>
+ <YKO1jx78HibCUDkD@kroah.com>
+ <20210518134909.iak6mdnscrcbzm6f@skbuf>
 MIME-Version: 1.0
-References: <20210512161848.3513818-1-rjones@redhat.com> <20210512161848.3513818-2-rjones@redhat.com>
-In-Reply-To: <20210512161848.3513818-2-rjones@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 18 May 2021 15:56:25 +0200
-Message-ID: <CAJfpegv=C-tUwbAi+JMWrNb+pai=HiAU8YCDunE5yUZB7qMK1g@mail.gmail.com>
-Subject: Re: [PATCH v4] fuse: Allow fallocate(FALLOC_FL_ZERO_RANGE)
-To:     "Richard W.M. Jones" <rjones@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eblake@redhat.com, libguestfs@redhat.com,
-        Shachar Sharon <synarete@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518134909.iak6mdnscrcbzm6f@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 at 18:19, Richard W.M. Jones <rjones@redhat.com> wrote:
->
-> The current fuse module filters out fallocate(FALLOC_FL_ZERO_RANGE)
-> returning -EOPNOTSUPP.  libnbd's nbdfuse would like to translate
-> FALLOC_FL_ZERO_RANGE requests into the NBD command
-> NBD_CMD_WRITE_ZEROES which allows NBD servers that support it to do
-> zeroing efficiently.
->
-> This commit treats this flag exactly like FALLOC_FL_PUNCH_HOLE.
+On Tue, May 18, 2021 at 01:49:10PM +0000, Vladimir Oltean wrote:
+> Greg,
+> 
+> On Tue, May 18, 2021 at 02:39:43PM +0200, Greg Kroah-Hartman wrote:
+> > On Tue, May 18, 2021 at 12:24:57PM +0000, Rudi Heitbaum wrote:
+> > > On Mon, May 17, 2021 at 03:59:07PM +0200, Greg Kroah-Hartman wrote:
+> > > > From: Florian Fainelli <f.fainelli@gmail.com>
+> > > > 
+> > > > [ Upstream commit ae1ea84b33dab45c7b6c1754231ebda5959b504c ]
+> > > > 
+> > > > Some Ethernet switches might only be able to support disabling multicast
+> > > > snooping globally, which is an issue for example when several bridges
+> > > > span the same physical device and request contradictory settings.
+> > > > 
+> > > > Propagate the return value of br_mc_disabled_update() such that this
+> > > > limitation is transmitted correctly to user-space.
+> > > > 
+> > > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> > > > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> > > > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > ---
+> > > >  net/bridge/br_multicast.c | 28 +++++++++++++++++++++-------
+> > > >  net/bridge/br_netlink.c   |  4 +++-
+> > > >  net/bridge/br_private.h   |  3 ++-
+> > > >  net/bridge/br_sysfs_br.c  |  8 +-------
+> > > >  4 files changed, 27 insertions(+), 16 deletions(-)
+> > > 
+> > > This patch results in docker failing to start, and a regression between
+> > > 5.12.4 and 5.12.5-rc1
+> > > 
+> > > A working dmesg output is like:
+> > > 
+> > > [   11.545255] device eth0 entered promiscuous mode
+> > > [   11.693848] process 'docker/tmp/qemu-check643160757/check' started with executable stack
+> > > [   17.233059] br-92020c7e3aea: port 1(veth17a0552) entered blocking state
+> > > [   17.233065] br-92020c7e3aea: port 1(veth17a0552) entered disabled state
+> > > [   17.233098] device veth17a0552 entered promiscuous mode
+> > > [   17.292839] docker0: port 2(veth9d227f5) entered blocking state
+> > > [   17.292848] docker0: port 2(veth9d227f5) entered disabled state
+> > > [   17.292946] device veth9d227f5 entered promiscuous mode
+> > > [   17.293070] docker0: port 2(veth9d227f5) entered blocking state
+> > > [   17.293075] docker0: port 2(veth9d227f5) entered forwarding state
+> > > 
+> > > with this patch "device veth17a0552 entered promiscuous mode" never
+> > > shows up.
+> > > 
+> > > the docker error itself is:
+> > > 
+> > > docker: Error response from daemon: failed to create endpoint
+> > > sleepy_dijkstra on network bridge: adding interface veth8cbd8f9 to
+> > > bridge docker0 failed: operation not supported.
+> > 
+> > Ick.
+> > 
+> > Does 5.13-rc1 also show this same problem?
+> > 
+> > And thanks for testing!
+> 
+> Did you backport this patch too?
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=68f5c12abbc9b6f8c5eea16c62f8b7be70793163
 
-Thanks, applied.
+Ick, I didn't run my "do we need additional fixes" script before this
+round :(
 
-Miklos
+So no, I didn't.  I'll go queue that up now and push out a -rc2.
+
+thanks,
+
+greg k-h
