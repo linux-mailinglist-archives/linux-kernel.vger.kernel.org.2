@@ -2,188 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21807386FCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF66386FCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346187AbhERCGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 22:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
+        id S1346202AbhERCIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 22:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236022AbhERCGc (ORCPT
+        with ESMTP id S234428AbhERCI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 22:06:32 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090D7C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:05:14 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id d14so3235011ybe.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:05:14 -0700 (PDT)
+        Mon, 17 May 2021 22:08:27 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA43C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:07:10 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id b25so12066981eju.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:07:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sZm5cS0Op3FLJ1htgR1p5EodcjeArnY0szqtWe/bTlE=;
-        b=tEsQCNpKqbPJ1GszI9UYQvdpTWUwJRo9+c8TdRSFGjJe3xvNWN3/+5mYVQeYZeGTUl
-         E9LPTljYrGwLHHt61jU+BYYBIWqzvc4vK4WS6xT/3zBzRobwN1Zn3TMxyS8KFshdbLQ6
-         nEIwYDMLI4Bwn/FySzkjuwj5E0TLAZ8bwpacmcIAXzs5fsz9JFvr2EPbFPAGN0TZGA81
-         qs1lBPSuRUW3CCNJiykAbRDYU/rI12igKQ+VTvSpwNjcu5irlWe7VuhtqRsKRUiUKCFC
-         wLFWgq1rFqojnSW7oSNlv8nZFr+OtGgsJhZB58KTWLUoxlWABUCQy1yDWE/cZYFdp7Q7
-         thZQ==
+        bh=6R2TCkTPl5ch8k18PpQa2k69H7V66iSHnj7Tv7HfHYk=;
+        b=kZwPoHjpbe5HwMwA79poj8e4KHmf7MYxECvXwBIh8yW3j3Hu/KjXOGvajmBOPaSXpD
+         pNVj/wTvO+ozWukJVzLDrdz0fOzVUPQ7j2xilWKRo3x7nE7WVW38WzIZjoAY9nN+vRG5
+         eBMM37qiKd1YcOl/i+qFpQfBYMjKdqtf7ctOsFha7t2zLX2RCJtj5N3v7WVrKfMlxJI7
+         HsmnmjbqibPWtkwSgC5jGjDfHAXjolWE/2hp3sYi/K/K83JLq3kb/PRcrWLVfIhFROV7
+         4b5TD+KYWgvlJKN9axPz+NheTpiFZwluJfn5jci1Jl19/DSczkKIwaE0dYZyM+rXw/kc
+         djfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sZm5cS0Op3FLJ1htgR1p5EodcjeArnY0szqtWe/bTlE=;
-        b=tn+PKOBd2SfOUoFelpOyrCxv5MXb1bVb4aoZZUvnaR04RlVq8A7HFnQngWD7zmVjAV
-         FrKs29PSPxRm9kSclm6ffbN/8SQhuP0570J9XK+ELpZp49HOc53O97WcfcECgqw+HuMZ
-         BOJ8ER994wK1vqoutbjw/Hbn778EcwuyLyMnHS7QkecVyyIZDA4X9WNDqU650ML3rQWP
-         Z1Xt/s5h27SPjJD/Ms3rBKbDN/moQeMTVEO8Fs2ejlznTGQe0gbEIkiClWhEoVHsm9QZ
-         aPi/CU5AD3p1yYvxTOHEoEdeqR0UijNgV2tdpSY2O7P3vPHiI95fj01sDtaO3n1BlTdj
-         YO+w==
-X-Gm-Message-State: AOAM533/5DyEH/uv84Ebo0QlOZDqTarjtZ43KmddGgB5W7HrFJWUxxPi
-        3jyqFJOI4EHVqf/TEBHQGXXJziP2TZbymWalqAuNXg==
-X-Google-Smtp-Source: ABdhPJydZNdAGwNtBFRCQVuhsrhElqwRPaQ029byznL53KiS6oGv0a5CCtO+wcXRe+c4GA3NHpDoofI7SgXJZBgKuXE=
-X-Received: by 2002:a5b:7c5:: with SMTP id t5mr4033359ybq.190.1621303513064;
- Mon, 17 May 2021 19:05:13 -0700 (PDT)
+        bh=6R2TCkTPl5ch8k18PpQa2k69H7V66iSHnj7Tv7HfHYk=;
+        b=KL7s19RHLmzeE2UY+6QQocVw/GUL02WqragmqhUcl8ZW95Y9OOOf7xM0VWg4pPVCoB
+         rYasnSBNp7Uo4JRWVKKs9Sad6G6IIrU6W4tlhFIcFe5iPOO7M8UV3bNvbOKOHGuP22rH
+         WAGDTwECtznBXFuKXmWh7jgA6t4LC+Hp/iYXvY1ufHMDSmEiGyaUZPkUFi3d8gbMbsPl
+         A9TWe1w9u3WrHk1QaYa0yyTZv1ETvJoZpdTX+3ESIA+hqpsgD4xHvzhHQqlSB09kB2hz
+         mVfOLK5XoJt0tQqevzr1C+0z7xiFrvJpIkHNCEPmGPSTh/4xjxZS0gqBP5Kz035eS3EC
+         j3WA==
+X-Gm-Message-State: AOAM531AFEry60XTdxcZu/y/dl5E5hxPjiDsRXYLkiGx3PKhCJ2LhrV/
+        O8jSbW+pVGAG+AWk2MsHhBik0gpMQKXi2Qqedom0Bg==
+X-Google-Smtp-Source: ABdhPJzR1wcpQBUU/ZNoCSB6U91VYz9iVdYRnBa5jLVw/fSe7qEK63b608qz57aftzl8zLDaQfb76oVuyGh6Itt4c2g=
+X-Received: by 2002:a17:906:e210:: with SMTP id gf16mr3433096ejb.472.1621303628834;
+ Mon, 17 May 2021 19:07:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
- <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
- <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net> <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
- <CAJuCfpH2X47_3VvfZXs_eWhYDziOh13qdUwcfxPJe=Zg_Nkvqw@mail.gmail.com>
- <CAJuCfpEznCYhjbM+1=dMdEn1J2NVw88M+4AThD99PBKg41RgTw@mail.gmail.com>
- <YKK2ZumDWcaGWvBj@cmpxchg.org> <CAJuCfpGx7w2E8Bq7jcq7HS41i40r4Lp+-z9m1P095B+MkAOWqg@mail.gmail.com>
-In-Reply-To: <CAJuCfpGx7w2E8Bq7jcq7HS41i40r4Lp+-z9m1P095B+MkAOWqg@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 17 May 2021 19:05:02 -0700
-Message-ID: <CAJuCfpFW_LkqcmC_0FE8fyBY75yXYAjeLnOxU0-0R8WxksYoSA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
-        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Minchan Kim <minchan@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
-        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
+References: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
+ <20210518005404.258660-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210518005404.258660-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 17 May 2021 19:06:57 -0700
+Message-ID: <CAPcyv4hvFe5v72zm5+4mpmsv1u4pEizXMCcjFysKZAEkkOSrGw@mail.gmail.com>
+Subject: Re: [RFC v2-fix 1/1] x86/boot: Add a trampoline for APs booting in
+ 64-bit mode
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kai Huang <kai.huang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:02 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Mon, May 17, 2021 at 11:31 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Sun, May 16, 2021 at 12:52:32PM -0700, Suren Baghdasaryan wrote:
-> > > After reworking the code to add a static key I had to expand the
-> > > #ifdef CONFIG_CGROUPS section, so I think a code refactoring below
-> > > would make sense. It localizes config-specific code and it has the
-> > > same exact code for CONFIG_CGROUPS=n and for
-> > > cgroup_psi_enabled()==false. WDYT?:
-> > >
-> > > --- a/kernel/sched/psi.c
-> > > +++ b/kernel/sched/psi.c
-> > > @@ -181,6 +181,7 @@ struct psi_group psi_system = {
-> > >  };
-> > >
-> > >  static void psi_avgs_work(struct work_struct *work);
-> > > +static void cgroup_iterator_init(void);
-> > >
-> > >  static void group_init(struct psi_group *group)
-> > >  {
-> > > @@ -211,6 +212,8 @@ void __init psi_init(void)
-> > >                  return;
-> > >          }
-> > >
-> > > +        cgroup_iterator_init();
-> > > +
-> > >          psi_period = jiffies_to_nsecs(PSI_FREQ);
-> > >          group_init(&psi_system);
-> > >  }
-> > > @@ -742,11 +745,31 @@ static void psi_group_change(struct psi_group
-> > > *group, int cpu,
-> > >                  schedule_delayed_work(&group->avgs_work, PSI_FREQ);
-> > >  }
-> > >
-> > > -static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> > > +static inline struct psi_group *sys_group_iterator(struct task_struct *task,
-> > > +                                                   void **iter)
-> > >  {
-> > > +        *iter = &psi_system;
-> > > +        return &psi_system;
-> > > +}
-> > > +
-> > >  #ifdef CONFIG_CGROUPS
-> > > +
-> > > +DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
-> > > +
-> > > +static void cgroup_iterator_init(void)
-> > > +{
-> > > +        if (!cgroup_psi_enabled())
-> > > +                static_branch_enable(&psi_cgroups_disabled);
-> > > +}
-> > > +
-> > > +static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> > > +{
-> > >          struct cgroup *cgroup = NULL;
-> > >
-> > > +        /* Skip to psi_system if per-cgroup accounting is disabled */
-> > > +        if (static_branch_unlikely(&psi_cgroups_disabled))
-> > > +                return *iter ? NULL : sys_group_iterator(task, iter);
-> > > +
-> > >          if (!*iter)
-> > >                  cgroup = task->cgroups->dfl_cgrp;
-> >
-> > That looks over-engineered. You have to check iter whether cgroups are
-> > enabled or not. Pulling the jump label check up doesn't save anything,
-> > but it ends up duplicating code.
-> >
-> > What you had in the beginning was better, it just had the system label
-> > in an unexpected place where it would check iter twice in a row.
-> >
-> > The (*iter == &psi_system) check inside the cgroups branch has the
-> > same purpose as the (*iter) check in the else branch. We could
-> > consolidate that by pulling it up front.
-> >
-> > If we wrap the entire cgroup iteration block into the static branch,
-> > IMO it becomes a bit clearer as well.
-> >
-> > How about this?
-> >
-> > static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> > {
-> >         if (*iter == &psi_system)
-> >                 return NULL;
-> >
-> > #ifdef CONFIG_CGROUPS
-> >         if (!static_branch_likely(&psi_cgroups_disabled)) {
-> >                 struct cgroup *cgroup = NULL;
-> >
-> >                 if (!*iter)
-> >                         cgroup = task->cgroups->dfl_cgrp;
-> >                 else
-> >                         cgroup = cgroup_parent(*iter);
-> >
-> >                 if (cgroup && cgroup_parent(cgroup)) {
-> >                         *iter = cgroup;
-> >                         return cgroup_psi(cgroup);
-> >                 }
-> >         }
-> > #endif
-> >
-> >         *iter = &psi_system;
-> >         return &psi_system;
-> > }
->
-> This looks great to me. Will use it in the next version. Thanks!
+I notice that you have [RFC v2-fix 1/1] as the prefix for this patch.
+b4 recently gained support for partial series re-rolls [1], but I
+think you would need to bump the version number [RFC PATCH v3 21/32]
+and maintain the patch numbering. In this case with changes moving
+between patches, and those other patches being squashed any chance of
+automated reconstruction of this series is likely lost.
 
-V2 is posted at https://lore.kernel.org/patchwork/patch/1430980
+Just wanted to note that for future reference in case you were hoping
+to avoid resending full series in the future. For now, some more
+comments below:
+
+[1]: https://lore.kernel.org/tools/20210517161317.teawoh5qovxpmqdc@nitro.local/
+
+On Mon, May 17, 2021 at 5:54 PM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Add a trampoline for booting APs in 64-bit mode via a software handoff
+> with BIOS, and use the new trampoline for the ACPI MP wake protocol used
+> by TDX. You can find MADT MP wake protocol details in ACPI specification
+> r6.4, sec 5.2.12.19.
+>
+> Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
+> mode.  For the GDT pointer, create a new entry as the existing storage
+> for the pointer occupies the zero entry in the GDT itself.
+>
+> Reported-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>
+> Changes since RFC v2:
+>  * Removed X86_CR0_NE and EFER related changes from this changes
+
+This was only partially done, see below...
+
+>    and moved it to patch titled "x86/boot: Avoid #VE during
+>    boot for TDX platforms"
+>  * Fixed commit log as per Dan's suggestion.
+>  * Added inline get_trampoline_start_ip() to set start_ip.
+
+You also added a comment to tr_idt, but didn't mention it here, so I
+went to double check. Please take care to document all changes to the
+patch from the previous review.
+
+>
+>  arch/x86/boot/compressed/pgtable.h       |  2 +-
+>  arch/x86/include/asm/realmode.h          | 10 +++++++
+>  arch/x86/kernel/smpboot.c                |  2 +-
+>  arch/x86/realmode/rm/header.S            |  1 +
+>  arch/x86/realmode/rm/trampoline_64.S     | 38 ++++++++++++++++++++++++
+>  arch/x86/realmode/rm/trampoline_common.S |  7 ++++-
+>  6 files changed, 57 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
+> index 6ff7e81b5628..cc9b2529a086 100644
+> --- a/arch/x86/boot/compressed/pgtable.h
+> +++ b/arch/x86/boot/compressed/pgtable.h
+> @@ -6,7 +6,7 @@
+>  #define TRAMPOLINE_32BIT_PGTABLE_OFFSET        0
+>
+>  #define TRAMPOLINE_32BIT_CODE_OFFSET   PAGE_SIZE
+> -#define TRAMPOLINE_32BIT_CODE_SIZE     0x70
+> +#define TRAMPOLINE_32BIT_CODE_SIZE     0x80
+>
+>  #define TRAMPOLINE_32BIT_STACK_END     TRAMPOLINE_32BIT_SIZE
+>
+> diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
+> index 5db5d083c873..3328c8edb200 100644
+> --- a/arch/x86/include/asm/realmode.h
+> +++ b/arch/x86/include/asm/realmode.h
+> @@ -25,6 +25,7 @@ struct real_mode_header {
+>         u32     sev_es_trampoline_start;
+>  #endif
+>  #ifdef CONFIG_X86_64
+> +       u32     trampoline_start64;
+>         u32     trampoline_pgd;
+>  #endif
+>         /* ACPI S3 wakeup */
+> @@ -88,6 +89,15 @@ static inline void set_real_mode_mem(phys_addr_t mem)
+>         real_mode_header = (struct real_mode_header *) __va(mem);
+>  }
+>
+> +static inline unsigned long get_trampoline_start_ip(void)
+
+I'd prefer this helper take a 'struct real_mode_header *rmh' as an
+argument rather than assume a global variable.
+
+> +{
+> +#ifdef CONFIG_X86_64
+> +        if (is_tdx_guest())
+> +                return real_mode_header->trampoline_start64;
+> +#endif
+> +       return real_mode_header->trampoline_start;
+> +}
+> +
+>  void reserve_real_mode(void);
+>
+>  #endif /* __ASSEMBLY__ */
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index 16703c35a944..0b4dff5e67a9 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1031,7 +1031,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
+>                        int *cpu0_nmi_registered)
+>  {
+>         /* start_ip had better be page-aligned! */
+> -       unsigned long start_ip = real_mode_header->trampoline_start;
+> +       unsigned long start_ip = get_trampoline_start_ip();
+>
+>         unsigned long boot_error = 0;
+>         unsigned long timeout;
+> diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
+> index 8c1db5bf5d78..2eb62be6d256 100644
+> --- a/arch/x86/realmode/rm/header.S
+> +++ b/arch/x86/realmode/rm/header.S
+> @@ -24,6 +24,7 @@ SYM_DATA_START(real_mode_header)
+>         .long   pa_sev_es_trampoline_start
+>  #endif
+>  #ifdef CONFIG_X86_64
+> +       .long   pa_trampoline_start64
+>         .long   pa_trampoline_pgd;
+>  #endif
+>         /* ACPI S3 wakeup */
+> diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+> index 84c5d1b33d10..754f8d2ac9e8 100644
+> --- a/arch/x86/realmode/rm/trampoline_64.S
+> +++ b/arch/x86/realmode/rm/trampoline_64.S
+> @@ -161,6 +161,19 @@ SYM_CODE_START(startup_32)
+>         ljmpl   $__KERNEL_CS, $pa_startup_64
+>  SYM_CODE_END(startup_32)
+>
+> +SYM_CODE_START(pa_trampoline_compat)
+> +       /*
+> +        * In compatibility mode.  Prep ESP and DX for startup_32, then disable
+> +        * paging and complete the switch to legacy 32-bit mode.
+> +        */
+> +       movl    $rm_stack_end, %esp
+> +       movw    $__KERNEL_DS, %dx
+> +
+> +       movl    $(X86_CR0_NE | X86_CR0_PE), %eax
+
+Before this patch the startup path did not touch X86_CR0_NE. I assume
+it was added opportunistically for the TDX case? If it is to stay in
+this patch it deserves a code comment / mention in the changelog, or
+it needs to move to the other patch that fixes up the CR0 setup for
+TDX.
+
+
+> +       movl    %eax, %cr0
+> +       ljmpl   $__KERNEL32_CS, $pa_startup_32
+> +SYM_CODE_END(pa_trampoline_compat)
+> +
+>         .section ".text64","ax"
+>         .code64
+>         .balign 4
+> @@ -169,6 +182,20 @@ SYM_CODE_START(startup_64)
+>         jmpq    *tr_start(%rip)
+>  SYM_CODE_END(startup_64)
+>
+> +SYM_CODE_START(trampoline_start64)
+> +       /*
+> +        * APs start here on a direct transfer from 64-bit BIOS with identity
+> +        * mapped page tables.  Load the kernel's GDT in order to gear down to
+> +        * 32-bit mode (to handle 4-level vs. 5-level paging), and to (re)load
+> +        * segment registers.  Load the zero IDT so any fault triggers a
+> +        * shutdown instead of jumping back into BIOS.
+> +        */
+> +       lidt    tr_idt(%rip)
+> +       lgdt    tr_gdt64(%rip)
+> +
+> +       ljmpl   *tr_compat(%rip)
+> +SYM_CODE_END(trampoline_start64)
+> +
+>         .section ".rodata","a"
+>         # Duplicate the global descriptor table
+>         # so the kernel can live anywhere
+> @@ -182,6 +209,17 @@ SYM_DATA_START(tr_gdt)
+>         .quad   0x00cf93000000ffff      # __KERNEL_DS
+>  SYM_DATA_END_LABEL(tr_gdt, SYM_L_LOCAL, tr_gdt_end)
+>
+> +SYM_DATA_START(tr_gdt64)
+> +       .short  tr_gdt_end - tr_gdt - 1 # gdt limit
+> +       .long   pa_tr_gdt
+> +       .long   0
+> +SYM_DATA_END(tr_gdt64)
+> +
+> +SYM_DATA_START(tr_compat)
+> +       .long   pa_trampoline_compat
+> +       .short  __KERNEL32_CS
+> +SYM_DATA_END(tr_compat)
+> +
+>         .bss
+>         .balign PAGE_SIZE
+>  SYM_DATA(trampoline_pgd, .space PAGE_SIZE)
+> diff --git a/arch/x86/realmode/rm/trampoline_common.S b/arch/x86/realmode/rm/trampoline_common.S
+> index 5033e640f957..ade7db208e4e 100644
+> --- a/arch/x86/realmode/rm/trampoline_common.S
+> +++ b/arch/x86/realmode/rm/trampoline_common.S
+> @@ -1,4 +1,9 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>         .section ".rodata","a"
+>         .balign 16
+> -SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
+> +
+> +/* .fill cannot be used for size > 8. So use short and quad */
+
+If there is to be a comment here it should be to clarify why @tr_idt
+is 10 bytes, not necessarily a quirk of the assembler.
+
+> +SYM_DATA_START_LOCAL(tr_idt)
+
+The .fill restriction is only for @size, not @repeat. So, what's wrong
+with SYM_DATA_LOCAL(tr_idt, .fill 2, 5, 0)?
