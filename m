@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24B4387F3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E1C387F42
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351454AbhERSG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:06:57 -0400
-Received: from mga01.intel.com ([192.55.52.88]:26931 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346758AbhERSGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:06:55 -0400
-IronPort-SDR: q+McRJhdftoHISkLhODa1E5JP+ke3SD4bEIeuLAwCAfubEZrATPlunM/k0+DtU5DNUZ+7KsKkI
- RRVnQKeSedzA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="221838914"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="221838914"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 11:05:30 -0700
-IronPort-SDR: gAUNy8H1tWzyDtk3RjWGu7NYwEdtvHR844tMogSjaHv7ceZTTVu4XZLZKd+4fKBQaVCefCmmE4
- wSoG94ONbg3g==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="473078661"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.166.158]) ([10.209.166.158])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 11:05:28 -0700
-Subject: Re: [PATCH v26 24/30] x86/cet/shstk: Introduce shadow stack token
- setup/verify routines
-To:     Eugene Syromiatnikov <esyr@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-25-yu-cheng.yu@intel.com> <YKIfIEyW+sR+bDCk@zn.tnic>
- <e225e357-a1d5-9596-8900-79e6b94cf924@intel.com>
- <20210518001316.GR15897@asgard.redhat.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <ea096f7e-7761-081f-e855-3294f8d09471@intel.com>
-Date:   Tue, 18 May 2021 11:05:25 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1351463AbhERSJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346898AbhERSJi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 14:09:38 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2626DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:08:20 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id c15so12611345ljr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 11:08:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6E7Z7TDc06/eMEz9G837ZKMVJn1ufiTnEi/jaPd1NvY=;
+        b=wOsUI1tgO5GyceYANUg7bhK+kgPr8bEKnGXv/CrfjPyGFSLphMKWdlZbBEhK7JawBf
+         VD4c2QD/2KMR0E1qrzCd8QMtksaO27A+uv8JW3OhfX3sgIO7YNQSvG7SBMKQu5+L4oyT
+         e+jYaEtihbIO72lE8SQhtw1Kqu81Hhb60lIgHixmIpFlXHvyFghJ4FSyT2qOSKhkPN2B
+         Ru9nHknSVzUt8GKlVm1bXVCs9/yj6iUBDkUShcRkSXiSUKjjyG1Ji+9RF32Qqd0FkesP
+         mxQH2WbtbiAguRwQ3nYFu4iEy7nxrOU7RLTANf7M9dgJbX9r+B2cdYFpSwE9QrIPOOje
+         EuvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6E7Z7TDc06/eMEz9G837ZKMVJn1ufiTnEi/jaPd1NvY=;
+        b=ShUzpE85//K1qb4vVhrJsm19QLIQYByTjn0Sdib+MYGK/1tPdwPkDpfUd8YuH+n0Uw
+         D2D+K1AvV56zaskvG0YzvfEJiWiHzr1gt6XeKaGD/3pcF550xfQqaP9vYsRKivI0dHRr
+         HY7IUskqH9Oq5/nrB2VcHmVWMfLpnC8lnfR6qeoiOQEBCmlCbrIlJUtMusofjECD04oU
+         2Kul/vWp26Ewllh8cYgCznBdjjL7RxfzoTgWwyHx8lvHgFQ/8VgLkqRERWNz958+KRKo
+         vNwOuxEZY6SmdC/faDnbskzYrp+I7u2ElDu5TaRyEMIZP8Ut9wOJbCrJBN8OIhgZAPA5
+         klGw==
+X-Gm-Message-State: AOAM531CMqQu/lLF20et0E2yvkiaQBysG3/1MEejdHK32mRm7CdR1C3+
+        VTP0mUdit3AN9Sjf/rDRS+pYzpHb96vj1QtmZlybZA==
+X-Google-Smtp-Source: ABdhPJyLLwcAeGX5sDd57fzmMT0ecsaNhxJsRNedKf9DMhNB1jsVArj8Os8vAkYsZdR+La9q6npu0K2+JNJ4YUxhMWY=
+X-Received: by 2002:a05:651c:b1f:: with SMTP id b31mr5225520ljr.0.1621361298314;
+ Tue, 18 May 2021 11:08:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210518001316.GR15897@asgard.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210518020200.1790058-1-surenb@google.com>
+In-Reply-To: <20210518020200.1790058-1-surenb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 18 May 2021 11:08:06 -0700
+Message-ID: <CALvZod7VBQMyftOffc8maCKtDwybLWGQNkk+R0M2SJPy2BuEjg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
+        paulmck@kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
+        viresh.kumar@linaro.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/2021 5:14 PM, Eugene Syromiatnikov wrote:
-> On Mon, May 17, 2021 at 01:55:01PM -0700, Yu, Yu-cheng wrote:
->> On 5/17/2021 12:45 AM, Borislav Petkov wrote:
->>> On Tue, Apr 27, 2021 at 01:43:09PM -0700, Yu-cheng Yu wrote:
->>>> +static inline int write_user_shstk_32(u32 __user *addr, u32 val)
->>>> +{
->>>> +	WARN_ONCE(1, "%s used but not supported.\n", __func__);
->>>> +	return -EFAULT;
->>>> +}
->>>> +#endif
->>>
->>> What is that supposed to catch? Any concrete (mis-)use cases?
->>>
->>
->> If 32-bit apps are not supported, there should be no need of 32-bit shadow
->> stack write, otherwise there is a bug.
-> 
-> Speaking of which, I wonder what would happen if a 64-bit process makes
-> a 32-bit system call (using int 0x80, for example), and gets a signal.
-> 
+On Mon, May 17, 2021 at 7:02 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> PSI accounts stalls for each cgroup separately and aggregates it at each
+> level of the hierarchy. This causes additional overhead with psi_avgs_work
+> being called for each cgroup in the hierarchy. psi_avgs_work has been
+> highly optimized, however on systems with large number of cgroups the
+> overhead becomes noticeable.
+> Systems which use PSI only at the system level could avoid this overhead
+> if PSI can be configured to skip per-cgroup stall accounting.
+> Add "cgroup_disable=pressure" kernel command-line option to allow
+> requesting system-wide only pressure stall accounting. When set, it
+> keeps system-wide accounting under /proc/pressure/ but skips accounting
+> for individual cgroups and does not expose PSI nodes in cgroup hierarchy.
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Yes, that's right.  Thanks!  I should have said, if neither IA32 nor X32 
-is supported.
+I am assuming that this is for Android and at the moment Android is
+only interested in system level pressure. I am wondering if there is
+any plan for Android to have cgroup hierarchies with explicit limits
+in future?
 
-Yu-cheng
+If yes, then I think we should follow up (this patch is fine
+independently) with making this feature more general by explicitly
+enabling psi for each cgroup level similar to how we enable
+controllers through cgroup.subtree_control.
+
+Something like:
+
+$ echo "+psi" > cgroup.subtree_control
+
+This definitely would be helpful for server use cases where jobs do
+sub-containers but might not be interested in psi but the admin is
+interested in the top level job's psi.
