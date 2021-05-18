@@ -2,174 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1CA3874CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4398C3874C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242915AbhERJKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S1347882AbhERJJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242352AbhERJKu (ORCPT
+        with ESMTP id S1347858AbhERJIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:10:50 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9F8C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:09:33 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id t193so6574384pgb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:09:33 -0700 (PDT)
+        Tue, 18 May 2021 05:08:31 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18C4C061346
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:07:12 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1174616wmc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:07:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IKuoT5nKuLm4nCvjaFH9akFazgyohMpWaEbqiBhEoS8=;
-        b=er8IQOKHN3ADm6FUvQrnuF0uTcji/JQG63CRZhpm09pdo9hEOIVphFQrABWMgbyaH/
-         Z/nsZUZzavwAmMSCEwjj6afj2LRYW/8G4T0SX9EIBJ/P/MkEj0mBhJNyxjcSq5wE4VMB
-         cKzxavQbcDOU8WeCJa4XmZ0kSHA4lkuKFfDc5gQFSp7BCRRArxgiN9Z26R5vEBTaxXy3
-         PWQ9v5llXxICqICNbM0GnaMzENgK5Q9tYEcBRdEagjE7XKee6P5fkIanyHseK1DXSrJF
-         Tg4LB1jzUDpDltSqNl+ZymF1R0EgveTJNGVZjEpt5xfjkVd+1UjgQEnXm1wCbEc+ZXR5
-         iFlA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wp7Rsa3dbFK1Rt2HaXcIflNA2UCoRc1Jacf2kiGOD4Y=;
+        b=ff0261f4Hko1waXn6rNO/FtWFyjFfVyqzR/nJiZ3YbrHr8a+uxlj92umxGVEHT7Rt9
+         p7Nq32ktvBjGCor012fDkLVAqz7tSaQ20lSavshJ2VCUUqljyNqk0l+VOOXSnWKmRdz9
+         Aq8PgdJZSlFkh77zNfyCew+AZQvhdaJ8l+xcn4ZaxysJIKLjtRYr4qadcWnVpeDSPf0r
+         xkfliCW42GMftD84B/E5qGVDZ5M/5i6FjYsAqwqXgE96DrjBaTF0taaZnbNZfplnNLyY
+         q6heNIttlsHO+OuPperd2nY0U+xA0KpZx+JtuNX0CPxBItkloqBJVxSXLe4RmjfZU50Z
+         tXww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IKuoT5nKuLm4nCvjaFH9akFazgyohMpWaEbqiBhEoS8=;
-        b=A9TFL5sLH/6+Ysczj/C05VqSdewrRrPsO1jDGhecO3ZrY8EQeEXOLf9oQ4BX8NEbcK
-         V+/QAYqDLSB/BQu7YcNqq+NBXvOT2XoZRAgUIzUh3bfMMU4CvBc/MqY8TUqsjK5OJW3S
-         BuLXvQs6k3yNDDKCdbp9DhKj0Bg5qGHPU+TDkVklmDpGCMexiqlBfjiR6MuBvQbG1/8p
-         xM0hCcpvKT4a3e+QssKPzLDKBjMhgw3uMAjBRRs7mfznwPdOtA8nvE56BTfqRlkTC8Oc
-         X7U5DLMH4Q1bFHZLd6OrMh7oA9sPepvMkY0uvF3GjJEZB3idm/Hj0IuPuPEOvdMCVcxk
-         jWsw==
-X-Gm-Message-State: AOAM530TiXafkBYEb6a1dZj2Ju/G26t17NnKm1aqQoBYENmqJMvyiNtB
-        3+CKfcGlfcfVGMq5dLETsaU=
-X-Google-Smtp-Source: ABdhPJw3gHUSXUH2tED4CevcMBuairBkOmmTvQtvD4u07VHuGXOvyXVQPI3/gsINT+V3wQX59tUttQ==
-X-Received: by 2002:aa7:8686:0:b029:2db:7eea:8fb4 with SMTP id d6-20020aa786860000b02902db7eea8fb4mr4052806pfo.34.1621328972799;
-        Tue, 18 May 2021 02:09:32 -0700 (PDT)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id t19sm11895723pfg.70.2021.05.18.02.08.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 May 2021 02:09:32 -0700 (PDT)
-From:   Huangzhaoyang <huangzhaoyang@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH v3] psi: fix race between psi_trigger_create and psimon
-Date:   Tue, 18 May 2021 17:06:56 +0800
-Message-Id: <1621328816-21332-1-git-send-email-huangzhaoyang@gmail.com>
-X-Mailer: git-send-email 1.7.9.5
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wp7Rsa3dbFK1Rt2HaXcIflNA2UCoRc1Jacf2kiGOD4Y=;
+        b=EJnTs3lmgO+DKbMVSqSff5NPNkena/1mjjV2F4oSX6gGukDCwt0UJ3bL2Q/ijxzQOr
+         5bzajt3KRgbZOCrAgKrUcioQbLIrrlTEpVRBFZGn7mZ0KXk9b20KYalS+NWuuRUH4MwY
+         o3n7kj0ZdS7Hp3XyZOToCbijEtMDYth7TWfevvLRZfL0Ni50PEZjs3/bu0hMT32O3BSB
+         7BgV3Oo2b1NJrEEgoEQ/QM0N3uVx/cqg4Y5bXEc1wacMhk9HT6p8owY/2TxinSo6L4ig
+         5cdXxc/JCEC3+BjoNO78tmBcXnbarkE7y/n+BjW5HFWni/4wHaI4xJhlOAOWEiGTQHHg
+         CfFw==
+X-Gm-Message-State: AOAM530Zc89Yi0iI+FrQ5DHQLZQsK6uLtNZw7qU+vfURv7hc+zTKSFOU
+        xUIMcD+AmCOFAli+QSrofXI=
+X-Google-Smtp-Source: ABdhPJw1APcsYlGJ45XHsowAtoxXAPYrvMyzUxHQYFHWRpZRviO9X6zJ63aXS7UiWJjupn+s3oHHcA==
+X-Received: by 2002:a7b:cbd4:: with SMTP id n20mr4335730wmi.187.1621328831729;
+        Tue, 18 May 2021 02:07:11 -0700 (PDT)
+Received: from amanieu-laptop.home ([2a00:23c6:f081:f801:91cf:b949:c46c:f5a9])
+        by smtp.gmail.com with ESMTPSA id z17sm7520306wrt.81.2021.05.18.02.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 02:07:11 -0700 (PDT)
+From:   Amanieu d'Antras <amanieu@gmail.com>
+Cc:     Amanieu d'Antras <amanieu@gmail.com>,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v4 6/8] arm64: Add a compat syscall flag to thread_info
+Date:   Tue, 18 May 2021 10:06:56 +0100
+Message-Id: <20210518090658.9519-7-amanieu@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210518090658.9519-1-amanieu@gmail.com>
+References: <20210518090658.9519-1-amanieu@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+This flag is used by in_compat_syscall to handle compat syscalls coming
+from 64-bit tasks.
 
-Race detected between psimon_new and psimon_old as shown below, which
-cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
-and psi_system->poll_timer->entry->next. Under this modification, the
-race window is removed by initialising poll_wait and poll_timer in
-group_init which are executed only once at beginning.
-
-psi_trigger_create      psimon_new     psimon_old
- init_waitqueue_head                    finish_wait
-                                          spin_lock(lock_old)
-  spin_lock_init(lock_new)
- wake_up_process(psimon_new)
-
-                        finish_wait
-                          spin_lock(lock_new)
-                            list_del       list_del
-
-Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
-Signed-off-by: ke.wang <ke.wang@unisoc.com>
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
+Co-developed-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
+Signed-off-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
 ---
-v2: change del_timer_sync to del_timer in psi_trigger_destroy
-v3: remove timer_setup within psi_tirgger_create
-    protect del_timer by extending the critical section of mutex_lock
----
----
- kernel/sched/psi.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ arch/arm64/include/asm/compat.h      |  4 ++--
+ arch/arm64/include/asm/elf.h         | 13 ++++++++++++-
+ arch/arm64/include/asm/thread_info.h |  6 ++++++
+ 3 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index cc25a3c..7b53217 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+diff --git a/arch/arm64/include/asm/compat.h b/arch/arm64/include/asm/compat.h
+index a2f5001f7793..124f4487dfee 100644
+--- a/arch/arm64/include/asm/compat.h
++++ b/arch/arm64/include/asm/compat.h
+@@ -190,13 +190,13 @@ static inline bool is_compat_thread(struct thread_info *thread)
  
- static void psi_avgs_work(struct work_struct *work);
- 
-+static void poll_timer_fn(struct timer_list *t);
-+
- static void group_init(struct psi_group *group)
+ static inline bool in_compat_syscall(void)
  {
- 	int cpu;
-@@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
- 	memset(group->polling_total, 0, sizeof(group->polling_total));
- 	group->polling_next_update = ULLONG_MAX;
- 	group->polling_until = 0;
-+	init_waitqueue_head(&group->poll_wait);
-+	timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 	rcu_assign_pointer(group->poll_task, NULL);
+-	return is_compat_task();
++	return current_thread_info()->use_compat_syscall;
+ }
+ #define in_compat_syscall in_compat_syscall	/* override the generic impl */
+ 
+ static inline bool thread_in_compat_syscall(struct thread_info *thread)
+ {
+-	return is_compat_thread(thread);
++	return thread->use_compat_syscall;
  }
  
-@@ -1157,9 +1161,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
- 			return ERR_CAST(task);
- 		}
- 		atomic_set(&group->poll_wakeup, 0);
--		init_waitqueue_head(&group->poll_wait);
- 		wake_up_process(task);
--		timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 		rcu_assign_pointer(group->poll_task, task);
- 	}
+ #else /* !CONFIG_COMPAT */
+diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
+index e21964898d06..49a9a9db612c 100644
+--- a/arch/arm64/include/asm/elf.h
++++ b/arch/arm64/include/asm/elf.h
+@@ -158,10 +158,20 @@ typedef struct user_fpsimd_state elf_fpregset_t;
+  */
+ #define ELF_PLAT_INIT(_r, load_addr)	(_r)->regs[0] = 0
  
-@@ -1214,16 +1216,8 @@ static void psi_trigger_destroy(struct kref *ref)
- 		}
- 	}
- 
--	mutex_unlock(&group->trigger_lock);
--
--	/*
--	 * Wait for both *trigger_ptr from psi_trigger_replace and
--	 * poll_task RCUs to complete their read-side critical sections
--	 * before destroying the trigger and optionally the poll_task
--	 */
--	synchronize_rcu();
- 	/*
--	 * Destroy the kworker after releasing trigger_lock to prevent a
-+	 * Destroy psimon after releasing trigger_lock to prevent a
- 	 * deadlock while waiting for psi_poll_work to acquire trigger_lock
- 	 */
- 	if (task_to_destroy) {
-@@ -1233,9 +1227,20 @@ static void psi_trigger_destroy(struct kref *ref)
- 		 * But it might have been already scheduled before
- 		 * that - deschedule it cleanly before destroying it.
- 		 */
--		del_timer_sync(&group->poll_timer);
-+		del_timer(&group->poll_timer);
-+		mutex_unlock(&group->trigger_lock);
- 		kthread_stop(task_to_destroy);
-+	} else {
-+		mutex_unlock(&group->trigger_lock);
- 	}
++#ifdef CONFIG_COMPAT
++#define CLEAR_COMPAT_SYSCALL()						\
++({									\
++	current_thread_info()->use_compat_syscall = false;		\
++})
++#else
++#define CLEAR_COMPAT_SYSCALL()	((void)0)
++#endif
 +
+ #define SET_PERSONALITY(ex)						\
+ ({									\
+ 	clear_thread_flag(TIF_32BIT);					\
+ 	current->personality &= ~READ_IMPLIES_EXEC;			\
++	CLEAR_COMPAT_SYSCALL();						\
+ })
+ 
+ /* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
+@@ -228,7 +238,8 @@ typedef compat_elf_greg_t		compat_elf_gregset_t[COMPAT_ELF_NGREG];
+ #define COMPAT_SET_PERSONALITY(ex)					\
+ ({									\
+ 	set_thread_flag(TIF_32BIT);					\
+- })
++	current_thread_info()->use_compat_syscall = true;		\
++})
+ #ifdef CONFIG_COMPAT_VDSO
+ #define COMPAT_ARCH_DLINFO						\
+ do {									\
+diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
+index 6623c99f0984..02310b45900d 100644
+--- a/arch/arm64/include/asm/thread_info.h
++++ b/arch/arm64/include/asm/thread_info.h
+@@ -42,6 +42,12 @@ struct thread_info {
+ 	void			*scs_base;
+ 	void			*scs_sp;
+ #endif
++#ifdef CONFIG_COMPAT
 +	/*
-+	 * Wait for both *trigger_ptr from psi_trigger_replace and
-+	 * poll_task RCUs to complete their read-side critical sections
-+	 * before destroying the trigger and optionally the poll_task
++	 * compat task or inside a compat syscall from a 64-bit task
 +	 */
-+	synchronize_rcu();
-+
- 	kfree(t);
- }
++	bool			use_compat_syscall;
++#endif
+ };
  
+ #define thread_saved_pc(tsk)	\
 -- 
-1.9.1
+2.31.1
 
