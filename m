@@ -2,124 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12D5387948
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655EA387938
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349435AbhERM41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S1349368AbhERMyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349395AbhERM4U (ORCPT
+        with ESMTP id S244238AbhERMyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:56:20 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8820CC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:55:01 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 131so11418610ljj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cWKAKWFCOFChPGwAbKymaVFn6SZ1ozwG8tvGIzigvls=;
-        b=T4f1OcTND4D2vmi8JrodCfZl8q4Pm5TExZMTTG1Zoxr0hAiQtEtmblc5RhdE04AjQ0
-         rJApzDKqbiryagcoQe9DeVMsABy3iXA6PD9KQfZk2sVnoWJ+Eecgxauaeqy+GqMzTuo6
-         EO0qyzYY68FZxf6F1RMfexc+NvYh8lAgQ81QCLFCDskgs3MMvFrIyqz5P0aPCbzuwglN
-         PJWTk2TfAaSKhT2z/qD3Kp2rIK/317slxAI6Nt9xHIILSOUdyvIvjy9NF4oELjeq42Ox
-         n+j/AYmuO9qhzKEtkXpEnFIoQNdDRTUv94zP/zNPz5ynLwPQ4crOOB8PTtKhJNoRIZq8
-         A+mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cWKAKWFCOFChPGwAbKymaVFn6SZ1ozwG8tvGIzigvls=;
-        b=Ume5wHvsyMQ2qNWXuQXXrdRV/ojcEC8jmj0D2oXYRLdPwtCntWTUn7P/gu87BN83Jr
-         qxCRhAEglKILr9G5WilP4UVR8b0cb4PE7TR0wOPrD9UYmKxPHUTvhJmiubwYzTPT6BES
-         ULJ/dOk9FSU+u4lujf4Fp1qAnt3zt6ql2zsvOPkoAsWaGhZoVJsCvPvARDCd9ws4EX0l
-         qDW3Gu1WLfymkoEv7t4bAB/vS1YhyEf//C8TZjspZwyhSL3g55K2KheLj8i1lThus+yc
-         +ZmAQyxaMggyGPQ7xcbW3AGtBpArFVbs/FBSk0qrB0SXq7kmROBmIlIRtsQizRMGE71A
-         tvjw==
-X-Gm-Message-State: AOAM531fSEqFMQN1+g6vF2qzDsJF0YYhVaCHJ4fjEO9/6aZNeKT6wZm3
-        8vkCHqxolZq1CKcqHYNzUAfI0w==
-X-Google-Smtp-Source: ABdhPJyhXsR+7M52rZ7CmLZwGoS3Gd8871cFPsiYy/hpGtsfF2wSZNAOlP6D8WG+ngSwdVI5vQKlXQ==
-X-Received: by 2002:a2e:9193:: with SMTP id f19mr4063066ljg.41.1621342500096;
-        Tue, 18 May 2021 05:55:00 -0700 (PDT)
-Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
-        by smtp.gmail.com with ESMTPSA id v14sm2265898lfb.201.2021.05.18.05.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 05:54:59 -0700 (PDT)
-From:   Odin Ugedal <odin@uged.al>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Odin Ugedal <odin@uged.al>
-Subject: [PATCH 3/3] sched/fair: Fix ascii art by relpacing tabs
-Date:   Tue, 18 May 2021 14:52:02 +0200
-Message-Id: <20210518125202.78658-4-odin@uged.al>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210518125202.78658-1-odin@uged.al>
-References: <20210518125202.78658-1-odin@uged.al>
+        Tue, 18 May 2021 08:54:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FADCC061573;
+        Tue, 18 May 2021 05:52:43 -0700 (PDT)
+Date:   Tue, 18 May 2021 12:52:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621342360;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+5B4L2l45iVUWq5xO8x1wE11+/M3UlE3CB7C4GTh8O4=;
+        b=TizdyBTsNCmYY2ZoTOnqOfdKxGpIknym/hLAdcq2FnjorYlos8wINr9MJ5Y+qM+jdjbZxq
+        ZSjRGYvOYFXfJBeBZpHE0ORfS7UcDbuVqoL093YwciTFdlTm/o+3wwvibMjeXEyJa6GHXz
+        uYbu4m7vBSVZG+qBU/XIurSqq5V23y2TXKUBXX9uRhfz3Sl9msyX0UFr2WTrx+izLRRPYs
+        zypSCw1SPnCguF2mDaw7dbXNSCdiWbhFCjQVdxSxLqWvEoCootvBcr6iHIA5meYbcKzLnK
+        gvgUxsfUQbk9IDZ4F7xB1nO9ZYXTaur7k0TXcXEeDCvuHKaCKpVW+XZIsG5PpA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621342360;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+5B4L2l45iVUWq5xO8x1wE11+/M3UlE3CB7C4GTh8O4=;
+        b=PUYydTdjErI6/UR6DJtzW9ifv882pzP3XPNME0I7k0brOw2g4rSTrTSqgtip3o+KiX8HFU
+        mIStkwIiKzg6INBA==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] x86/cpu: Init AP exception handling from cpu_init_secondary()
+Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
+References: <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162134235888.29796.6870292258763745495.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using something other than 8 spaces per tab, this ascii art
-makes not sense, and the reader might end up wondering what this
-advanced equation "is".
+The following commit has been merged into the x86/apic branch of tip:
 
-Signed-off-by: Odin Ugedal <odin@uged.al>
+Commit-ID:     b1efd0ff4bd16e8bb8607ba566b03f2024a830bb
+Gitweb:        https://git.kernel.org/tip/b1efd0ff4bd16e8bb8607ba566b03f2024a830bb
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Mon, 10 May 2021 23:29:25 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 18 May 2021 14:49:21 +02:00
+
+x86/cpu: Init AP exception handling from cpu_init_secondary()
+
+SEV-ES guests require properly setup task register with which the TSS
+descriptor in the GDT can be located so that the IST-type #VC exception
+handler which they need to function properly, can be executed.
+
+This setup needs to happen before attempting to load microcode in
+ucode_cpu_init() on secondary CPUs which can cause such #VC exceptions.
+
+Simplify the machinery by running that exception setup from a new function
+cpu_init_secondary() and explicitly call cpu_init_exception_handling() for
+the boot CPU before cpu_init(). The latter prepares for fixing and
+simplifying the exception/IST setup on the boot CPU.
+
+There should be no functional changes resulting from this patch.
+
+[ tglx: Reworked it so cpu_init_exception_handling() stays seperate ]
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>                                                                                                                                                                                                                        
+Link: https://lore.kernel.org/r/87k0o6gtvu.ffs@nanos.tec.linutronix.de
+
+
 ---
- kernel/sched/fair.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/processor.h |  1 +
+ arch/x86/kernel/cpu/common.c     | 28 +++++++++++++++-------------
+ arch/x86/kernel/smpboot.c        |  3 +--
+ arch/x86/kernel/traps.c          |  4 +---
+ 4 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index e7423d658389..c872e38ec32b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3142,7 +3142,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------               (1)
-- *			  \Sum grq->load.weight
-+ *                       \Sum grq->load.weight
-  *
-  * Now, because computing that sum is prohibitively expensive to compute (been
-  * there, done that) we approximate it with this average stuff. The average
-@@ -3156,7 +3156,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->avg.load_avg
-  *   ge->load.weight = ------------------------------              (3)
-- *				tg->load_avg
-+ *                             tg->load_avg
-  *
-  * Where: tg->load_avg ~= \Sum grq->avg.load_avg
-  *
-@@ -3172,7 +3172,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = ----------------------------- = tg->weight   (4)
-- *			    grp->load.weight
-+ *                         grp->load.weight
-  *
-  * That is, the sum collapses because all other CPUs are idle; the UP scenario.
-  *
-@@ -3191,7 +3191,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------		   (6)
-- *				tg_load_avg'
-+ *                             tg_load_avg'
-  *
-  * Where:
-  *
--- 
-2.31.1
-
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 556b2b1..364d0e4 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -663,6 +663,7 @@ extern void load_direct_gdt(int);
+ extern void load_fixmap_gdt(int);
+ extern void load_percpu_segment(int);
+ extern void cpu_init(void);
++extern void cpu_init_secondary(void);
+ extern void cpu_init_exception_handling(void);
+ extern void cr4_init(void);
+ 
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index a1b756c..212e8bc 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1938,13 +1938,12 @@ void cpu_init_exception_handling(void)
+ 
+ /*
+  * cpu_init() initializes state that is per-CPU. Some data is already
+- * initialized (naturally) in the bootstrap process, such as the GDT
+- * and IDT. We reload them nevertheless, this function acts as a
+- * 'CPU state barrier', nothing should get across.
++ * initialized (naturally) in the bootstrap process, such as the GDT.  We
++ * reload it nevertheless, this function acts as a 'CPU state barrier',
++ * nothing should get across.
+  */
+ void cpu_init(void)
+ {
+-	struct tss_struct *tss = this_cpu_ptr(&cpu_tss_rw);
+ 	struct task_struct *cur = current;
+ 	int cpu = raw_smp_processor_id();
+ 
+@@ -1957,8 +1956,6 @@ void cpu_init(void)
+ 	    early_cpu_to_node(cpu) != NUMA_NO_NODE)
+ 		set_numa_node(early_cpu_to_node(cpu));
+ #endif
+-	setup_getcpu(cpu);
+-
+ 	pr_debug("Initializing CPU#%d\n", cpu);
+ 
+ 	if (IS_ENABLED(CONFIG_X86_64) || cpu_feature_enabled(X86_FEATURE_VME) ||
+@@ -1970,7 +1967,6 @@ void cpu_init(void)
+ 	 * and set up the GDT descriptor:
+ 	 */
+ 	switch_to_new_gdt(cpu);
+-	load_current_idt();
+ 
+ 	if (IS_ENABLED(CONFIG_X86_64)) {
+ 		loadsegment(fs, 0);
+@@ -1990,12 +1986,6 @@ void cpu_init(void)
+ 	initialize_tlbstate_and_flush();
+ 	enter_lazy_tlb(&init_mm, cur);
+ 
+-	/* Initialize the TSS. */
+-	tss_setup_ist(tss);
+-	tss_setup_io_bitmap(tss);
+-	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
+-
+-	load_TR_desc();
+ 	/*
+ 	 * sp0 points to the entry trampoline stack regardless of what task
+ 	 * is running.
+@@ -2017,6 +2007,18 @@ void cpu_init(void)
+ 	load_fixmap_gdt(cpu);
+ }
+ 
++#ifdef CONFIG_SMP
++void cpu_init_secondary(void)
++{
++	/*
++	 * Relies on the BP having set-up the IDT tables, which are loaded
++	 * on this CPU in cpu_init_exception_handling().
++	 */
++	cpu_init_exception_handling();
++	cpu_init();
++}
++#endif
++
+ /*
+  * The microcode loader calls this upon late microcode load to recheck features,
+  * only when microcode has been updated. Caller holds microcode_mutex and CPU
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 7770245..2ed45b0 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -232,8 +232,7 @@ static void notrace start_secondary(void *unused)
+ 	load_cr3(swapper_pg_dir);
+ 	__flush_tlb_all();
+ #endif
+-	cpu_init_exception_handling();
+-	cpu_init();
++	cpu_init_secondary();
+ 	rcu_cpu_starting(raw_smp_processor_id());
+ 	x86_cpuinit.early_percpu_clock_init();
+ 	preempt_disable();
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 853ea7a..41f7dc4 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -1162,9 +1162,7 @@ void __init trap_init(void)
+ 
+ 	idt_setup_traps();
+ 
+-	/*
+-	 * Should be a barrier for any external CPU state:
+-	 */
++	cpu_init_exception_handling();
+ 	cpu_init();
+ 
+ 	idt_setup_ist_traps();
