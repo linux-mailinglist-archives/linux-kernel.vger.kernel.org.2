@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23353882BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF7B3882C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352751AbhERWaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 18:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
+        id S236888AbhERWcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 18:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352741AbhERWat (ORCPT
+        with ESMTP id S237154AbhERWcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 18:30:49 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170BDC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:29:31 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id z24so11059820ioj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:29:31 -0700 (PDT)
+        Tue, 18 May 2021 18:32:50 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94374C061573;
+        Tue, 18 May 2021 15:31:31 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id i9so16095522lfe.13;
+        Tue, 18 May 2021 15:31:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sJSTAKCZ+krTWG3lgInmgl4vdo4n0Oih7NdB8EZOroE=;
-        b=jbuHe9+Qf8UciW37lf7ZswZs7ReoWXczX04sFI1v7v+3FEj4I+EoN+d69cBUfvxZL2
-         pppqzzmCpxde7Hh+QW7SdZ1jnX4IX5TcXLfsMzhVJOrTYHglNNe+YSCOyZrx8IZeqH1D
-         IXg0zl7mwhjrFeuEQYeofug0VDMviAXFvR3ZUcYWSeo/1nefLar6o+c5Cb94aEOmOEE9
-         MQy8UMokWYa8Fi1ImWSqAGd0WJbpPO0JSFgRT6Jmr+Nw5hnSuXw/G4l0obG05YIbnKtn
-         XjsnCgoHUZulXA1LHNcZ3wLelpQCj9ucW4gS+3QoYK/5Ibly+MvFuRT9L+37QjSIjH/f
-         tnGw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6ljTRHwDIGzKo93ro0EyJFj979FSc4cfbPsSrjnxUwY=;
+        b=EZ1892QSAlcdInwXoIsMLGfBxydo1KcRAPSMXGWFBtVz33HsOcLCnYuXraX+CikYq4
+         MXk/yi+C6QME/uL9aalttKXxoKix8sL2suoO/6QP2322m4DLH4p3GWCPMULIumAk5Lfk
+         3hpwqiEIOLOKEeSXwUI4Vpsry4X1eQOjE5kTns+E01m4ssxuXe0n5u1xjBQw0wFrSl6U
+         ZLcF3ehyVwO4z2qWjoCfKfn9ej4x65SZ2Vex3P9E+OsEDzm94CWjj0JxOUZxAKfklGY6
+         JR76fvBSQw8qjEKE2CGcEvuBVjFThmoVeDlA5WFQxFs8CIPKsi4mumcG2vsAKlt697iH
+         JXNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sJSTAKCZ+krTWG3lgInmgl4vdo4n0Oih7NdB8EZOroE=;
-        b=o6/cB3E4Z6yaH6GWZfYW3DTFD+sFuUIVS/qRBYUG8GEuiHC9NjoYFXDASFjHW66LlV
-         LnYZgi/3aiV3GmxehnkEx73FyKZSxisRuXzMKew57/CXFgRLLViiFk133hzbiOnoMPYs
-         gkNCOTeTz/4WfbuPwS07erP9ZQulSMpwWJyGd840kIPrA1wOigtNPF0bEfywd+4fzXV/
-         eojRRe0rUBgK/6vDJE4UF/yHuBkVpTy+y0RQSwb0kVHb1oxG7mVToqa+muUfBUfSxScZ
-         z/tRhO+LjgGbsZBYoYAxdpWthBtnyYqXPKxe+TbW2yof1fpRjaTBb1VhIG/FzGRPeSNP
-         sP7A==
-X-Gm-Message-State: AOAM531inD5hDfA56swQHkD5WUM1MRXN8JVX/sQAQW/hieX9RTn3O6As
-        2cfJQR61BCXXeAE1Y2NKi1V8wHAB/58ZH6HCacOQhA==
-X-Google-Smtp-Source: ABdhPJxg1XeLxXOYntitmR4NlPBu0nqJwFp2PCXTohQRhknrcmZuOxJxUcxf72xJjinay2qMPf2wVkwu5qRUYJyu2as=
-X-Received: by 2002:a05:6602:446:: with SMTP id e6mr6560189iov.20.1621376969710;
- Tue, 18 May 2021 15:29:29 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6ljTRHwDIGzKo93ro0EyJFj979FSc4cfbPsSrjnxUwY=;
+        b=GsQpfUFBAwTLnie9swUvAEMSmBBRtxjFsbGnV8DNZf+GxhuotgrDTk5vG3Y7Af8qMb
+         VQsp8LMqjFOC4CRXiSZjvWI/Z7p7ISvCFihgUj2uZytLsv/NsPzfcMwIhcoXQ7x/3cLM
+         fg2coUSRP9lWSGntYR2nfzr7VCY5vOBxB3vMsylCOXxTVWPtRP7XInJQhAlcQp43XQCe
+         4p9D5rjt3lYz9pjeEryfc28pbWqQMfGd6zS/dC2xGHWSfkW8PZHvF/rTuCen9IYTmLzJ
+         mmr9kExJqhRm8b20aMIkvyCj7SXyD/jTcDUl9F+Um5tEpFxATC+Vb0PHy9235GFYLPLa
+         wvjQ==
+X-Gm-Message-State: AOAM530cFFg1/8/FLDJVcjZj1F5FRB2C23xlPbschHubWchpr6pqaJlr
+        PROxpd58NI3T6ZeiGesJwDg=
+X-Google-Smtp-Source: ABdhPJybbVaMiPw92JX0U2shg8oyjsaIK95UmJ6HxuvOu18l6A+ecA9rZrx3Yn/FqFTI23c+Zl+7EA==
+X-Received: by 2002:a19:431b:: with SMTP id q27mr5484708lfa.226.1621377089928;
+        Tue, 18 May 2021 15:31:29 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id m22sm2392071lfu.219.2021.05.18.15.31.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 15:31:29 -0700 (PDT)
+Subject: Question about Tegra UCMs
+To:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+References: <20210518001356.19227-1-digetx@gmail.com>
+ <20210518001356.19227-3-digetx@gmail.com>
+ <20210518180949.GA949047@robh.at.kernel.org>
+ <20210518183455.GE4358@sirena.org.uk>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <92cef674-c454-e08c-b44d-d8c08b1e8ccf@gmail.com>
+Date:   Wed, 19 May 2021 01:31:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210427225244.4326-1-axelrasmussen@google.com>
- <20210427225244.4326-10-axelrasmussen@google.com> <YKQqKrl+/cQ1utrb@t490s>
-In-Reply-To: <YKQqKrl+/cQ1utrb@t490s>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 18 May 2021 15:28:52 -0700
-Message-ID: <CAJHvVch3SZ80yt+FnK5M=m4haJ-pFZqvMtGVYHnw9rs1pBkNcw@mail.gmail.com>
-Subject: Re: [PATCH v5 09/10] userfaultfd/selftests: reinitialize test context
- in each test
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210518183455.GE4358@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I suppose it will be squashed anyway, but in case it's useful feel free to add:
+Mark, could you please help me to understand the UCM naming scheme that ALSA uses..
 
-Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+About a year ago I tried to complain to Jaroslav Kysela in a comment to the UCM change [1] that it should be breaking the naming scheme of Tegra UCMs, but haven't got a meaningful reply and moved on to other things.
 
-Thanks for catching this, Peter!
+[1] https://github.com/alsa-project/alsa-ucm-conf/commit/8ff2d50745efbb6959324f672460e413f0b618b8
 
-On Tue, May 18, 2021 at 1:57 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Tue, Apr 27, 2021 at 03:52:43PM -0700, Axel Rasmussen wrote:
-> > Currently, the context (fds, mmap-ed areas, etc.) are global. Each test
-> > mutates this state in some way, in some cases really "clobbering it"
-> > (e.g., the events test mremap-ing area_dst over the top of area_src, or
-> > the minor faults tests overwriting the count_verify values in the test
-> > areas). We run the tests in a particular order, each test is careful to
-> > make the right assumptions about its starting state, etc.
-> >
-> > But, this is fragile. It's better for a test's success or failure to not
-> > depend on what some other prior test case did to the global state.
-> >
-> > To that end, clear and reinitialize the test context at the start of
-> > each test case, so whatever prior test cases did doesn't affect future
-> > tests.
-> >
-> > This is particularly relevant to this series because the events test's
-> > mremap of area_dst screws up assumptions the minor fault test was
-> > relying on. This wasn't a problem for hugetlb, as we don't mremap in
-> > that case.
-> >
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
->
-> Hi, Andrew,
->
-> There's a conflict on the uffd test case with v5.13-rc1-mmots-2021-05-13-17-23
-> between this patch and the uffd pagemap series, so I think we may need to queue
-> another fixup patch (to be squashed into this patch of Axel's) which is
-> attached.
->
-> Thanks,
->
-> --
-> Peter Xu
+Today I noticed that the naming scheme changed again and I still don't understand what to do about it.
+
+I have two devices:
+
+ 1. Acer Picasso tablet that uses "Acer Iconia Tab A500 WM8903" for the card model name.
+
+ 2. Google Nexus 7 that uses "ASUS Google Nexus 7 ALC5642".
+
+Previously UCMs were picked up by pulseaudio from these paths:
+
+ 1. /usr/share/alsa/ucm2/Acer Iconia Tab A500 WM8903/
+ 2. /usr/share/alsa/ucm2/ASUS Google Nexus 7 ALC5642/
+
+Now the lookup paths are changed to:
+
+ 1. /usr/share/alsa/ucm2/Acer_Iconia_Tab/
+ 2. /usr/share/alsa/ucm2/ASUS_Google_Nex/
+
+Strace shows that pulseaudio searches UCMs only at these paths.
+
+The output of /proc/asound/cards:
+
+ 0 [WM8903         ]: Acer_Iconia_Tab - Acer Iconia Tab A500 WM8903
+                      Acer Iconia Tab A500 WM8903
+
+ 0 [ALC5642        ]: ASUS_Google_Nex - ASUS Google Nexus 7 ALC5642
+                      ASUS Google Nexus 7 ALC5642
+
+IIUC, the "ucm2/Tegra/codec_name" scheme [2] that the current ALSA UCM uses simply doesn't work at all. Is there anything on the kernel side that I could change to get a working naming scheme? If yes, I may try to do something about it in the v2, thanks in advance.
+
+[2] https://github.com/alsa-project/alsa-ucm-conf/tree/master/ucm2/Tegra
