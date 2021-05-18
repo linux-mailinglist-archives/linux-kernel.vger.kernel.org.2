@@ -2,106 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C878A387168
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273A4387182
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241633AbhERFr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 01:47:26 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:53211 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234640AbhERFrY (ORCPT
+        id S245196AbhERF5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 01:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240152AbhERF5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 01:47:24 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 80CC758123F;
-        Tue, 18 May 2021 01:46:06 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 18 May 2021 01:46:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=Jbmf4WRhsfHsu1LE7NMnVkzakBi
-        NS33xX0ldvnGydxc=; b=m5XlY1eLYX5EHnTiBxtOk4EshiYNVV3/JPAOwinAIwa
-        Pc+bAQCoQtepYB796CC/fqOlyQOoh6RVY4sfO8iMzDSxZ+B4Hbclnh2GLi3s0+gO
-        WRk1R+YxsNdmGADB1QsaRxUk+H9M7HXcVkFav54WBhPsT1PShI5TEgVLgh3x6bFJ
-        XPsy5a5VUWHVah2NyrIdB6Jh3iMxhdY8H6pj6SyPNCYLAH7lr+5J2uE8YicjRWfb
-        CpFGn2sx9lqNyJF2J9ocQxH1MgUzJb1Odm4bsPR+414gBKqr3UN7YxwJpBcX5RpU
-        4Y5B02nDdGgp3XrJRBZpxf2ZDkLEt4UQAUifDmoyB7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Jbmf4W
-        RhsfHsu1LE7NMnVkzakBiNS33xX0ldvnGydxc=; b=U3ykAomG81+5MrN9HJXlfm
-        Muv1aJdWzVZ1O9GppD6WDRH9LNKMcLpSDSup24DRIxsmAJ+4qPWy81Kut8VErFtP
-        DPLteZbxv/Vn9DcAs5zJyR/NSU6HaOWMTLMBTr/HIRbWdHBEK7IvhMPjWNx5LM3W
-        OyKb1kSiYsH37IWAGCdt3MjAh270GR+SusI/U6LdJf5adKXYmfyeuRVE0bb3LXzz
-        NplM5kt7wJVAC3BY8gCrwClfNks8r26aTPUpfbz6CBDcGYyKZKPAdxNol+/1lLdP
-        o+MNWONlm4JqyzyR5iXOIJ6MVE5Tf6e0WdpZhrqa00POdryO4lYPNOHvaanF2M2g
-        ==
-X-ME-Sender: <xms:nVSjYGYH_rNflfC5QpS_SWitCwRtBl2Lv02cxI40ujktJfgJ6otVHg>
-    <xme:nVSjYJbmzGtQIu-3MyWuNuwuHCZ4m5z4EFqAYJqOF0CNZ0MyApgxyUCrP7WBatb1J
-    LO9EHKugizdXw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeiiedgleegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:nVSjYA9KEZtikOS7goNVrTzwaGgoOP7eCXVRS34eJqQCCOEfP93Pog>
-    <xmx:nVSjYIpunRuXAGI1vhnfuaUDogPsrtr0o8Wg-fCxEOTBwJbRSWih0g>
-    <xmx:nVSjYBrR0wIKVHBPWxFSqDMdT_iQtEvubgXAOonvKzePxi7qGcwI3A>
-    <xmx:nlSjYC5roDjwitsOwJ4iCXjBv_cfJkbbL20F62TFs5OMo2_3B1sYqg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 18 May 2021 01:46:05 -0400 (EDT)
-Date:   Tue, 18 May 2021 07:45:59 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.12 5/5] tty: vt: always invoke
- vc->vc_sw->con_resize callback
-Message-ID: <YKNUl/f/c8HfF6dS@kroah.com>
-References: <20210518010940.1485417-1-sashal@kernel.org>
- <20210518010940.1485417-5-sashal@kernel.org>
- <CAHk-=whw9_rp0NYTsCqcGnUkcV5Qgv7FTxADtPrdq4KFmsj+Lg@mail.gmail.com>
+        Tue, 18 May 2021 01:57:34 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44873C061573;
+        Mon, 17 May 2021 22:56:17 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ae2005a49629880ac02d2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e200:5a49:6298:80ac:2d2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A18381EC04BF;
+        Tue, 18 May 2021 07:56:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621317374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CoUZNshFKwxzJxvmNesTEWJlLKO0exgHkOr0ngGYwGI=;
+        b=W6eJZYjN6OnGJsyDztzN/sdVdUAbQx1dIeHKqupFUaPUwJGH0Cv+k6IWqpHcsdMOFLs4Om
+        2yzHcQIIT7BswXG35L+1FYQ2Q3QHSgvXmQrXO2fond/n0k1FEGWEXFfiA7QWi3O/ZYUVj+
+        fZFj44LzauzVdhV4ExYc6fy4mBxiFRs=
+Date:   Tue, 18 May 2021 07:56:09 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v26 24/30] x86/cet/shstk: Introduce shadow stack token
+ setup/verify routines
+Message-ID: <YKNW+eiosSVDCTsA@zn.tnic>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-25-yu-cheng.yu@intel.com>
+ <YKIfIEyW+sR+bDCk@zn.tnic>
+ <e225e357-a1d5-9596-8900-79e6b94cf924@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whw9_rp0NYTsCqcGnUkcV5Qgv7FTxADtPrdq4KFmsj+Lg@mail.gmail.com>
+In-Reply-To: <e225e357-a1d5-9596-8900-79e6b94cf924@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 06:35:24PM -0700, Linus Torvalds wrote:
-> On Mon, May 17, 2021 at 6:09 PM Sasha Levin <sashal@kernel.org> wrote:
-> >
-> > From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> >
-> > [ Upstream commit ffb324e6f874121f7dce5bdae5e05d02baae7269 ]
-> 
-> So I think the commit is fine, and yes, it should be applied to
-> stable, but it's one of those "there were three different patches in
-> as many days to fix the problem, and this is the right one, but maybe
-> stable should hold off for a while to see that there aren't any
-> problem reports".
-> 
-> I don't think there will be any problems from this, but while the
-> patch is tiny, it's conceptually quite a big change to something that
-> people haven't really touched for a long time.
-> 
-> So use your own judgement, but it might be a good idea to wait a week
-> before backporting this to see if anything screams.
+On Mon, May 17, 2021 at 01:55:01PM -0700, Yu, Yu-cheng wrote:
+> If 32-bit apps are not supported, there should be no need of 32-bit shadow
+> stack write, otherwise there is a bug.
 
-I was going to wait a few weeks for this, and the other vt patches that
-were marked with cc: stable@ before queueing them up.
+Aha, just a precaution. Then you can reduce the ifdeffery a bit (ontop
+of yours):
 
-thanks,
+---
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index f962da1fe9b5..5b48c91fa8d4 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -235,9 +235,14 @@ static inline void clwb(volatile void *__p)
+ }
+ 
+ #ifdef CONFIG_X86_SHADOW_STACK
+-#if defined(CONFIG_IA32_EMULATION) || defined(CONFIG_X86_X32)
+ static inline int write_user_shstk_32(u32 __user *addr, u32 val)
+ {
++	if (WARN_ONCE(!IS_ENABLED(CONFIG_IA32_EMULATION) &&
++		      !IS_ENABLED(CONFIG_X86_X32),
++		      "%s used but not supported.\n", __func__)) {
++		return -EFAULT;
++	}
++
+ 	asm_volatile_goto("1: wrussd %[val], (%[addr])\n"
+ 			  _ASM_EXTABLE(1b, %l[fail])
+ 			  :: [addr] "r" (addr), [val] "r" (val)
+@@ -246,13 +251,6 @@ static inline int write_user_shstk_32(u32 __user *addr, u32 val)
+ fail:
+ 	return -EFAULT;
+ }
+-#else
+-static inline int write_user_shstk_32(u32 __user *addr, u32 val)
+-{
+-	WARN_ONCE(1, "%s used but not supported.\n", __func__);
+-	return -EFAULT;
+-}
+-#endif
+ 
+ static inline int write_user_shstk_64(u64 __user *addr, u64 val)
+ {
 
-greg k-h
+> These are static functions.  I thought that would make the static scope
+> clear.  I can remove "_".
+
+No, "_" or "__" prefixed functions are generally supposed to denote
+internal interfaces which should not be used by other kernel facilities.
+In that case you have the external api <function_name> and the lower
+level helpers _<function_name>, __<function_name>, etc. They can be
+static but not necessarily.
+
+This is not the case here so you can simply drop the "_" prefixes.
+
+> If the busy bit is set, it is only for SAVEPREVSSP, and invalid as a
+> normal restore token.
+
+Sure but the busy bit is independent from the mode.
+
+> With the lower two bits masked out, the restore token must point
+> directly above itself.
+
+That I know - I'm just questioning the design. It should be
+
+	addr = ALIGN_DOWN(ssp, 8);
+
+Plain and simple.
+
+Not this silly pushing and popping of stuff. But it is too late now
+anyway and it's not like hw people talk to software people who get to
+implement their shit.
+
+> Ok, then, we don't use #define's. I will put in comments about what it
+> is doing, and fix the rest.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
