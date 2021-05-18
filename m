@@ -2,119 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B16A386E61
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090EF386E67
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239593AbhERAjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:39:36 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.9]:34542 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235470AbhERAjf (ORCPT
+        id S1345074AbhERAnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239351AbhERAnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:39:35 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 1A048E59AF0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:38:18 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id inkYlxZqsMGeEinkYl00jn; Mon, 17 May 2021 19:38:18 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=4RWxH2aMjPw2HSLpv4Ox8ZbpnFLLqLifGHgZKKmBLB8=; b=Zyx6BH8SuObchvVV+OQuUswGSy
-        +Xf6OFxssDkxxY0ZmmULPoazWY8n6c03pHquDa6AgAG+f1+WzpEnSmNXtzoyHa+VCoyVo9hNC9xaR
-        c6nErunCqKZ+K8BZ1iAN856s4glkosIR6SeuH970mh2KDs5bweVYSi4WtX60uAAQx1ndT1XMN6DHN
-        Je2JAqDWHi78UfTDWSlFlsOlBAGWRxmFOLSc+ydPZKvWINldb3bWL3ENklLvquzORl46VMzc2yhiJ
-        ze0Zu6xQr2o41t2OWPSfsMc+lXVdglmD0NBV4JtID8D3fKdzyq47JDhTHZZu6KG67RNIS62GPHqbo
-        pZXSflRw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53490 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1linkW-002fSu-Np; Mon, 17 May 2021 19:38:16 -0500
-Subject: Re: [PATCH 071/141] braille_console: Fix fall-through warnings for
- Clang
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <a0be16871b77956d75ea2f877da2fa5fba3e64ac.1605896059.git.gustavoars@kernel.org>
- <f7e58552-309f-ef96-7ac8-3cb692c979d1@embeddedor.com>
-Message-ID: <0e8e9cee-57c3-47ea-703c-b9ed3fa8b7f7@embeddedor.com>
-Date:   Mon, 17 May 2021 19:39:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 20:43:02 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCEAC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:41:45 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id a22so7713830qkl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:41:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IL6fo34EfWMFpnXZyScGEY1OCLmf06KwslOAvmhdV5c=;
+        b=G13cJxBFuuNgvISCw8xxLOag94s2okvsuzL+kzN4+ws7FqqzaDrXDULXB5qCg5liPg
+         Tn6UwulUnZdlCqFumOFrO1zCPse8AfhTKPenPMi/XO+iuv8njI6x70mlskr9FOD0aQt0
+         381x/NbMxn5MztIEqeWl+ZSWgaJ4GeK0UDYRlP8UHwO5nBOXiTFGAuu4y249gNeG3M1h
+         PDrM/Lqm9IVBSOMzVShJzlN1KdWE+3+pGweeTsFIbuP+CZ0LtiW8hn9Ii2g9wpxga7IR
+         vaf6ZRU7uN2vUdBvbg5oLxqvQD2a8K9L1eoETYA60KZyzO4WIUcc2JUkH92ITUhq/dNp
+         QQeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IL6fo34EfWMFpnXZyScGEY1OCLmf06KwslOAvmhdV5c=;
+        b=EEmBQr6+ykEa9PINnZ1jdNxEUjYkybHZTWHzaj7sE113ygv/nVWg1gkcw3ooQ7SLrw
+         FxbmI5v3VHgQR1eH7WCZI+rdqp6uN6GkvpTaAhyc2vAPoCk3GCgYV5/7lBLLTXe0MTFY
+         yRTg+qpWeMhhQjMawk0M0tCvzdQ2RKQrs3szMOmcxMbXVvEWI6hHVB12hokCCbQqjfl8
+         FSAW9JoR363S6oOGkXyVzUapQcnVvlPqpGrbvbzdVYYf0NXIrikXmSFXZqtVV6HFjpAF
+         C0fwzB+N8SSg6pupffjBNx36KcGPEz20VAwn7auECrqZrh72x7KUB4kwHXYR805Soa8Z
+         LVBQ==
+X-Gm-Message-State: AOAM530xLxf4q5VJNXoJdf2f5gr8edIwqLurjet/0IzEnriKTI4ok16Z
+        EvDLo3PxZ4TlghAsLRyAfG5cGjANItbT4A+zoko=
+X-Google-Smtp-Source: ABdhPJwfBRXk2quNlV7JBYmG5T0z4omsGq7/g4AmjifWPU2aB2qj9CeY1Qn2+BavAv4y8i8rVgK7HjSn2rquZRiEP0g=
+X-Received: by 2002:a05:620a:1036:: with SMTP id a22mr2761386qkk.186.1621298505213;
+ Mon, 17 May 2021 17:41:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f7e58552-309f-ef96-7ac8-3cb692c979d1@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1linkW-002fSu-Np
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53490
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 56
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <1621242249-8314-1-git-send-email-huangzhaoyang@gmail.com>
+ <YKK3wgrhqzaiE7rQ@cmpxchg.org> <CAJuCfpGLTkvH6CzQXz4oD39_xtArBt3upk-F=gf4-LPoswagGg@mail.gmail.com>
+ <CAJuCfpE+Z3O_5PfDg8rEB7Cj+nMbsGPp_eWF6rRz8h2YJhy+PA@mail.gmail.com>
+In-Reply-To: <CAJuCfpE+Z3O_5PfDg8rEB7Cj+nMbsGPp_eWF6rRz8h2YJhy+PA@mail.gmail.com>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Tue, 18 May 2021 08:40:17 +0800
+Message-ID: <CAGWkznEMxa7BL3hih+adOEhOg5p5qiSgNaERdLjDqk_JNMv1Hg@mail.gmail.com>
+Subject: Re: [[RFC]PATCH] psi: fix race between psi_trigger_create and psimon
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-I'm taking this in my -next[1] branch for v5.14.
-
-Thanks
---
-Gustavo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
-
-On 4/20/21 15:16, Gustavo A. R. Silva wrote:
-> Hi all,
-> 
-> Friendly ping: who can take this, please?
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> On 11/20/20 12:34, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->> by explicitly adding a break statement instead of letting the code fall
->> through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>  drivers/accessibility/braille/braille_console.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/accessibility/braille/braille_console.c b/drivers/accessibility/braille/braille_console.c
->> index 9861302cc7db..359bead4b280 100644
->> --- a/drivers/accessibility/braille/braille_console.c
->> +++ b/drivers/accessibility/braille/braille_console.c
->> @@ -246,6 +246,7 @@ static int keyboard_notifier_call(struct notifier_block *blk,
->>  				beep(440);
->>  		}
->>  	}
->> +		break;
->>  	case KBD_UNBOUND_KEYCODE:
->>  	case KBD_UNICODE:
->>  	case KBD_KEYSYM:
->>
+On Tue, May 18, 2021 at 5:30 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Mon, May 17, 2021 at 12:33 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Mon, May 17, 2021 at 11:36 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > >
+> > > CC Suren
+> >
+> > Thanks!
+> >
+> > >
+> > > On Mon, May 17, 2021 at 05:04:09PM +0800, Huangzhaoyang wrote:
+> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > >
+> > > > Race detected between psimon_new and psimon_old as shown below, which
+> > > > cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
+> > > > and psi_system->poll_timer->entry->next. It is not necessary to reinit
+> > > > resource of psi_system when psi_trigger_create.
+> >
+> > resource of psi_system will not be reinitialized because
+> > init_waitqueue_head(&group->poll_wait) and friends are initialized
+> > only during the creation of the first trigger for that group (see this
+> > condition: https://elixir.bootlin.com/linux/latest/source/kernel/sched/psi.c#L1119).
+> >
+> > > >
+> > > > psi_trigger_create      psimon_new     psimon_old
+> > > >  init_waitqueue_head                    finish_wait
+> > > >                                           spin_lock(lock_old)
+> > > >       spin_lock_init(lock_new)
+> > > >  wake_up_process(psimon_new)
+> > > >
+> > > >                         finish_wait
+> > > >                           spin_lock(lock_new)
+> > > >                             list_del       list_del
+> >
+> > Could you please clarify this race a bit? I'm having trouble
+> > deciphering this diagram. I'm guessing psimon_new/psimon_old refer to
+> > a new trigger being created while an old one is being deleted, so it
+> > seems like a race between psi_trigger_create/psi_trigger_destroy. The
+> > combination of trigger_lock and RCU should be protecting us from that
+> > but maybe I missed something?
+> > I'm excluding a possibility of a race between psi_trigger_create with
+> > another existing trigger on the same group because the codepath
+> > calling init_waitqueue_head(&group->poll_wait) happens only when the
+> > first trigger for that group is created. Therefore if there is an
+> > existing trigger in that group that codepath will not be taken.
+>
+> Ok, looking at the current code I think you can hit the following race
+> when psi_trigger_destroy is destroying the last trigger in a psi group
+> while racing with psi_trigger_create:
+>
+> psi_trigger_destroy                      psi_trigger_create
+> mutex_lock(trigger_lock);
+> rcu_assign_pointer(poll_task, NULL);
+> mutex_unlock(trigger_lock);
+>                                                     mutex_lock(trigger_lock);
+>                                                     if
+> (!rcu_access_pointer(group->poll_task)) {
+>
+> timer_setup(poll_timer, poll_timer_fn, 0);
+>
+> rcu_assign_pointer(poll_task, task);
+>                                                     }
+>                                                     mutex_unlock(trigger_lock);
+>
+> synchronize_rcu();
+> del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
+> psi_trigger_create
+>
+> So, trigger_lock/RCU correctly protects destruction of
+> group->poll_task but misses this race affecting poll_timer and
+> poll_wait.
+> Let me think if we can handle this without moving initialization into
+> group_init().
+Right, this is exactly what we met during a monkey test on an android
+system, where the psimon will be destroyed/recreated by unref/recreate
+the psi_trigger. IMHO,  poll_timer and poll_wait should exist during
+whole period
+>
+> >
+> > > >
+> > > > Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
+> > > > Signed-off-by: ke.wang <ke.wang@unisoc.com>
+> > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > ---
+> > > >  kernel/sched/psi.c | 6 ++++--
+> > > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> > > > index cc25a3c..d00e585 100644
+> > > > --- a/kernel/sched/psi.c
+> > > > +++ b/kernel/sched/psi.c
+> > > > @@ -182,6 +182,8 @@ struct psi_group psi_system = {
+> > > >
+> > > >  static void psi_avgs_work(struct work_struct *work);
+> > > >
+> > > > +static void poll_timer_fn(struct timer_list *t);
+> > > > +
+> > > >  static void group_init(struct psi_group *group)
+> > > >  {
+> > > >       int cpu;
+> > > > @@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
+> > > >       memset(group->polling_total, 0, sizeof(group->polling_total));
+> > > >       group->polling_next_update = ULLONG_MAX;
+> > > >       group->polling_until = 0;
+> > > > +     init_waitqueue_head(&group->poll_wait);
+> > > > +     timer_setup(&group->poll_timer, poll_timer_fn, 0);
+> > >
+> > > This makes sense.
+> >
+> > Well, this means we initialize resources for triggers in each psi
+> > group even if the user never creates any triggers. Current logic
+> > initializes them when the first trigger in the group gets created.
+> >
+> > >
+> > > >       rcu_assign_pointer(group->poll_task, NULL);
+> > > >  }
+> > > >
+> > > > @@ -1157,7 +1161,6 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+> > > >                       return ERR_CAST(task);
+> > > >               }
+> > > >               atomic_set(&group->poll_wakeup, 0);
+> > > > -             init_waitqueue_head(&group->poll_wait);
+> > > >               wake_up_process(task);
+> > > >               timer_setup(&group->poll_timer, poll_timer_fn, 0);
+> > >
+> > > This looks now unncessary?
+> > >
+> > > >               rcu_assign_pointer(group->poll_task, task);
+> > > > @@ -1233,7 +1236,6 @@ static void psi_trigger_destroy(struct kref *ref)
+> > > >                * But it might have been already scheduled before
+> > > >                * that - deschedule it cleanly before destroying it.
+> > > >                */
+> > > > -             del_timer_sync(&group->poll_timer);
+> > >
+> > > And this looks wrong. Did you mean to delete the timer_setup() line
+> > > instead?
+> >
+> > I would like to get more details about this race before trying to fix
+> > it. Please clarify.
+> > Thanks!
