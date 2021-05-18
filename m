@@ -2,244 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3385F3873C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718853873C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347408AbhERIOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242017AbhERIOB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:14:01 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701D1C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 01:12:42 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id et19so6094784ejc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 01:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8+rvu90qqHRVLIV6jyDYwaC+D+UAbpfG2s6LRRdF7Tw=;
-        b=iLYMyT7GGyobgp3BOsIb8vCQ4JaEp0FlaCq8WZdJXvHzYgUgqk7xP2oQa2uqZBWj4K
-         GbbKvGDheVPHQOp0354TwwTHz79kSoeu0DrEUyhBOdFMpLDATYpA62HAl2OVsBOtpjDW
-         GuV8DEMOrpWmhFUeR7srEFgzw1ScccvTKcn6z1MlJVqThei3H79/QLO1xtEsh6nzCvmE
-         3cLdbC1PAZ17Tjx+loAXDZp74XXwliZ9u9+X8KwnZ7x021p4nK+EGhg1U/zVJI33g1ku
-         bjQL7tlDQpVsMblbeLH4OVK3OM+QAADeiemKhNzCyyvn9MkE7seavAksTXFtU1p34yoW
-         bLGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8+rvu90qqHRVLIV6jyDYwaC+D+UAbpfG2s6LRRdF7Tw=;
-        b=SqcQ8vvTyQQdoNUyuzbTyVOQBX4fviWeSFYFStB1Rcv+rNlyYMZ5CXdToCc5iwv1Tl
-         VNPEm3dj8vPvS4c+goOSXuWQ4NbTt6Y4PMmWyl7a3fVODXrOkjYYb0h1YUJdgYgnnKHq
-         oFSQAOTp7cdmFjA3BiYWNqpY5eQZ9QrdJbw9YQjfYziTZeSEa/yB9tijo3iiqNmoHBGm
-         mIyctJ4w/VopP3ZW5iwH+ANcAFN4ExeACes9NxGRJ1les3E32/jJNCFUkk9poYz42gt0
-         g9Qk1nPA8NpqLzmozi+L7+5nhJ5p02kLSBzU1tHIk7akzhPGF+zQy9EQwZiBBxxNJJKI
-         7zfw==
-X-Gm-Message-State: AOAM531xbsFbbcYBy1B6BMj0vmeF+hdbmj23fg9fhhVVpJraIhKAUFWM
-        Xa3SVzabMT8dQNa66OD3pnc/jmeucQIm3TOQDXUroQ==
-X-Google-Smtp-Source: ABdhPJxEw3S1tILNEp6/aSmt9S1DVpPVaXzjk3cKAuJCNfa+z614rDbJ/HiIEC8u2iZxckhSk9PGMTUXlOBudwCQ5mU=
-X-Received: by 2002:a17:906:4e59:: with SMTP id g25mr4804469ejw.133.1621325560935;
- Tue, 18 May 2021 01:12:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210517140302.508966430@linuxfoundation.org>
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 18 May 2021 13:42:29 +0530
-Message-ID: <CA+G9fYsdpoByDJ3ULPRCUCQo7NOyyxwg_xXp3tjR9QE4hZnJkA@mail.gmail.com>
-Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S241934AbhERIOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:14:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:44814 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240129AbhERIN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 04:13:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 436271063;
+        Tue, 18 May 2021 01:12:41 -0700 (PDT)
+Received: from p8cg001049571a15.blr.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0BFD73F719;
+        Tue, 18 May 2021 01:12:38 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/debug_vm_pgtable: Ensure THP availability via has_transparent_hugepage()
+Date:   Tue, 18 May 2021 13:43:10 +0530
+Message-Id: <1621325590-18199-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 19:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.12.5 release.
-> There are 363 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 19 May 2021 14:02:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.12.5-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.12.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On certain platforms, THP support could not just be validated via the build
+option CONFIG_TRANSPARENT_HUGEPAGE. Instead has_transparent_hugepage() also
+needs to be called upon to verify THP runtime support. Otherwise the debug
+test might just run into unusable THP helpers like in the case of a 4K hash
+config on powerpc platform [1]. This just moves all pfn_pmd() and pfn_pud()
+after THP runtime validation with has_transparent_hugepage() which prevents
+the mentioned problem.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=213069
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v5.13-rc2 after the following patches.
 
-## Build
-* kernel: 5.12.5-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.12.y
-* git commit: 8c6ba5015affe5c570b32cf542f58218e4dfebf1
-* git describe: v5.12.4-364-g8c6ba5015aff
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
-.4-364-g8c6ba5015aff
+[1] https://lore.kernel.org/linux-mm/20210419071820.750217-1-liushixin2@huawei.com/
+[2] https://lore.kernel.org/linux-mm/20210419071820.750217-2-liushixin2@huawei.com/
 
-## No regressions (compared to v5.12.4)
+ mm/debug_vm_pgtable.c | 58 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 48 insertions(+), 10 deletions(-)
 
-## Fixes (compared to v5.12.4)
-* mips, build
-  - clang-10-allnoconfig
-  - clang-10-defconfig
-  - clang-10-tinyconfig
-  - clang-11-allnoconfig
-  - clang-11-defconfig
-  - clang-11-tinyconfig
-  - clang-12-allnoconfig
-  - clang-12-defconfig
-  - clang-12-tinyconfig
+diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+index e2f35db8ba69..6ff92c8b0a00 100644
+--- a/mm/debug_vm_pgtable.c
++++ b/mm/debug_vm_pgtable.c
+@@ -146,13 +146,14 @@ static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+ static void __init pmd_basic_tests(unsigned long pfn, int idx)
+ {
+ 	pgprot_t prot = protection_map[idx];
+-	pmd_t pmd = pfn_pmd(pfn, prot);
+ 	unsigned long val = idx, *ptr = &val;
++	pmd_t pmd;
+ 
+ 	if (!has_transparent_hugepage())
+ 		return;
+ 
+ 	pr_debug("Validating PMD basic (%pGv)\n", ptr);
++	pmd = pfn_pmd(pfn, prot);
+ 
+ 	/*
+ 	 * This test needs to be executed after the given page table entry
+@@ -232,9 +233,14 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
+ 
+ static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PMD leaf\n");
++	pmd = pfn_pmd(pfn, prot);
++
+ 	/*
+ 	 * PMD based THP is a leaf entry.
+ 	 */
+@@ -244,12 +250,16 @@ static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
+ 
+ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_NUMA_BALANCING))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD saved write\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_savedwrite(pmd_mk_savedwrite(pmd_clear_savedwrite(pmd))));
+ 	WARN_ON(pmd_savedwrite(pmd_clear_savedwrite(pmd_mk_savedwrite(pmd))));
+ }
+@@ -258,13 +268,14 @@ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+ static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx)
+ {
+ 	pgprot_t prot = protection_map[idx];
+-	pud_t pud = pfn_pud(pfn, prot);
+ 	unsigned long val = idx, *ptr = &val;
++	pud_t pud;
+ 
+ 	if (!has_transparent_hugepage())
+ 		return;
+ 
+ 	pr_debug("Validating PUD basic (%pGv)\n", ptr);
++	pud = pfn_pud(pfn, prot);
+ 
+ 	/*
+ 	 * This test needs to be executed after the given page table entry
+@@ -348,9 +359,13 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+ 
+ static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pud_t pud = pfn_pud(pfn, prot);
++	pud_t pud;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PUD leaf\n");
++	pud = pfn_pud(pfn, prot);
+ 	/*
+ 	 * PUD based THP is a leaf entry.
+ 	 */
+@@ -642,12 +657,16 @@ static void __init pte_protnone_tests(unsigned long pfn, pgprot_t prot)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void __init pmd_protnone_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_NUMA_BALANCING))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD protnone\n");
++	pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
+ 	WARN_ON(!pmd_protnone(pmd));
+ 	WARN_ON(!pmd_present(pmd));
+ }
+@@ -667,18 +686,26 @@ static void __init pte_devmap_tests(unsigned long pfn, pgprot_t prot)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void __init pmd_devmap_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PMD devmap\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_devmap(pmd_mkdevmap(pmd)));
+ }
+ 
+ #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+ static void __init pud_devmap_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pud_t pud = pfn_pud(pfn, prot);
++	pud_t pud;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PUD devmap\n");
++	pud = pfn_pud(pfn, prot);
+ 	WARN_ON(!pud_devmap(pud_mkdevmap(pud)));
+ }
+ #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+@@ -721,25 +748,33 @@ static void __init pte_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void __init pmd_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_MEM_SOFT_DIRTY))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD soft dirty\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_soft_dirty(pmd_mksoft_dirty(pmd)));
+ 	WARN_ON(pmd_soft_dirty(pmd_clear_soft_dirty(pmd)));
+ }
+ 
+ static void __init pmd_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_MEM_SOFT_DIRTY) ||
+ 		!IS_ENABLED(CONFIG_ARCH_ENABLE_THP_MIGRATION))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD swap soft dirty\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_swp_soft_dirty(pmd_swp_mksoft_dirty(pmd)));
+ 	WARN_ON(pmd_swp_soft_dirty(pmd_swp_clear_soft_dirty(pmd)));
+ }
+@@ -768,6 +803,9 @@ static void __init pmd_swap_tests(unsigned long pfn, pgprot_t prot)
+ 	swp_entry_t swp;
+ 	pmd_t pmd;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD swap\n");
+ 	pmd = pfn_pmd(pfn, prot);
+ 	swp = __pmd_to_swp_entry(pmd);
+-- 
+2.20.1
 
-## Test result summary
- total: 76409, pass: 63868, fail: 1049, skip: 10771, xfail: 721,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
