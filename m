@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E26387D96
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7DC387D97
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350741AbhERQdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35874 "EHLO mail.kernel.org"
+        id S1350751AbhERQdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:33:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350725AbhERQdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:33:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FCB9611AD;
-        Tue, 18 May 2021 16:32:25 +0000 (UTC)
+        id S1350739AbhERQdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 12:33:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8B26611AD;
+        Tue, 18 May 2021 16:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621355546;
-        bh=MtfEqFsM9NpkvPLnkOTKghSZ7LxdsCPng/AwYG+eM08=;
+        s=k20201202; t=1621355549;
+        bh=/alZ/eY/uSw2vc0DTVTaTtc0iIV5WKMkyrUowvbP5/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IpWum8a2kktsj6dKV/nV470MwWin7rM4bR9QhtT6c2p/ZEI6pMOcDHfKybe3/7OOm
-         fuVe+t2x4IX29IiECOfFyqeEBI4WS9eckHjb2tO+TXeXYkJGNkw4zmLu2S387+VDFC
-         bqIci1lPN77R0ciYb6m20jaKExiWvbEeKfhkYe5wxUrN0gqxz3J+V5dFAZeCy56Yk6
-         4/hwTxXuLdcwY22SxxEnJalj0g6f4u4r9pFKuHVb4nwuiZidnfe6oycdqwvlUJIQjG
-         mUNnRc11Bkca/z+JFe42WLfUf1gOhDoR+SQk9htjMuvXdDLCfrjuyzBm4eqfJ5Ht/W
-         ONljybBPPaDcQ==
+        b=RhfvdhMWo7G3uKHRugTcAuSZ+bKX2O6SHwzXiWGjA1z7Y0x/uqaHaELtPG3H1wLAl
+         IXHmRB+jAva21Wb1jUOK+KtgozTBOXWfYNGdV8lybgvbg2GGesvC3laAWIeADhffjN
+         LukHL2VW24x/elljJdGtxyTCKIrGji0ih5b8lN39xFdBeAGxaNMF86exXS8WcIyMUL
+         tnOJRBYGAwn8d+dZ5+xXP1PfP3KtlRBwCbWLBcdm+sNZiU09IvjMo4EAZldP2u3PdX
+         HjNgFKG2y51dTwvEAOVEkRnJWENKxPDvQM+4VweC8yOSY3THJCg8JF/ORihcN4HTOw
+         /07yhQ5sUsY8w==
 From:   Mark Brown <broonie@kernel.org>
 To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>,
-        Christoph Fritz <chf.fritz@googlemail.com>,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
         linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH v2 1/2] regulator: fan53880: Fix missing n_voltages setting
-Date:   Tue, 18 May 2021 17:31:28 +0100
-Message-Id: <162135540359.37947.3720161842499754631.b4-ty@kernel.org>
+Subject: Re: [PATCH] regulator: da9121: Return REGULATOR_MODE_INVALID for invalid mode
+Date:   Tue, 18 May 2021 17:31:29 +0100
+Message-Id: <162135540356.37947.9500143538514467753.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210517105325.1227393-1-axel.lin@ingics.com>
-References: <20210517105325.1227393-1-axel.lin@ingics.com>
+In-Reply-To: <20210517052721.1063375-1-axel.lin@ingics.com>
+References: <20210517052721.1063375-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,9 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 18:53:24 +0800, Axel Lin wrote:
-> 
-
+On Mon, 17 May 2021 13:27:21 +0800, Axel Lin wrote:
+> -EINVAL is not a valid return value for .of_map_mode, return
+> REGULATOR_MODE_INVALID instead.
 
 Applied to
 
@@ -51,10 +52,8 @@ Applied to
 
 Thanks!
 
-[1/2] regulator: fan53880: Fix missing n_voltages setting
-      commit: 34991ee96fd8477479dd15adadceb6b28b30d9b0
-[2/2] regulator: fan53880: Convert to use .probe_new
-      commit: 7075359c8e0da1b01e34201b09b9ab2fd23b8a7d
+[1/1] regulator: da9121: Return REGULATOR_MODE_INVALID for invalid mode
+      commit: 0b1e552673724832b08d49037cdeeac634a3b319
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
