@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C8E3881A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D153881A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351917AbhERUvI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 May 2021 16:51:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:43288 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238356AbhERUvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:51:06 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-154-NzcuNrSXNs2GIOJ9Fn180Q-1; Tue, 18 May 2021 21:49:35 +0100
-X-MC-Unique: NzcuNrSXNs2GIOJ9Fn180Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 21:49:34 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Tue, 18 May 2021 21:49:34 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>
-Subject: RE: [PATCH v3 2/4] mm: simplify compat_sys_move_pages
-Thread-Topic: [PATCH v3 2/4] mm: simplify compat_sys_move_pages
-Thread-Index: AQHXS1wYCu76VfkYCU+t8Sv5x7/YH6rpt7nQ
-Date:   Tue, 18 May 2021 20:49:34 +0000
-Message-ID: <f52b8bc9600443dab1814766552fe6bf@AcuMS.aculab.com>
-References: <20210517203343.3941777-1-arnd@kernel.org>
- <20210517203343.3941777-3-arnd@kernel.org>
-In-Reply-To: <20210517203343.3941777-3-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1352033AbhERUvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351949AbhERUvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 16:51:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F403661361;
+        Tue, 18 May 2021 20:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621371013;
+        bh=ZsXD6a12n2WQP724uC8PsAGmyDMPJB3omfsNR5lLKl0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=i95RAtKCcdKbhaykpFs4dVB+bI3YowT9AfBLbQ5Ym9nQFTRyYafgJXSgsCDIFFEVX
+         ReOyV9aMI3fpe21IOx8QKf45xk6c9k0KVdG9kTHo2gi3211QXN/qAICHmEWqyw4eEN
+         1BwAPxLSDTmFbaeqUoPf+k55TmVfJ6QhCavtGAYVHPPmYuz1eCRQv8eT6BH8z3bKMw
+         vmQ8VZMq3vu6+ntcG8d71GFY1Zb1tb3zgZErqNWxNkL96ZrCLOGPVRcNqf6Mu551To
+         SCHiaQZ6YvjmDSmUgwW9UmoJMWrJs0CDWxJHcv/fX6a2XHO4zwN4L2cLmi4HIZhg37
+         9/M3NhEGGe3Zg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E4AB660CD5;
+        Tue, 18 May 2021 20:50:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: dcb: Remove unnecessary INIT_LIST_HEAD()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162137101293.13244.17645853233299810569.git-patchwork-notify@kernel.org>
+Date:   Tue, 18 May 2021 20:50:12 +0000
+References: <20210518130358.1304701-1-yangyingliang@huawei.com>
+In-Reply-To: <20210518130358.1304701-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 17 May 2021 21:34
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 18 May 2021 21:03:58 +0800 you wrote:
+> The list_head dcb_app_list is initialized statically.
+> It is unnecessary to initialize by INIT_LIST_HEAD().
 > 
-> The compat move_pages() implementation uses compat_alloc_user_space()
-> for converting the pointer array. Moving the compat handling into
-> the function itself is a bit simpler and lets us avoid the
-> compat_alloc_user_space() call.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  mm/migrate.c | 45 ++++++++++++++++++++++++++++++---------------
->  1 file changed, 30 insertions(+), 15 deletions(-)
-> 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index b234c3f3acb7..a68d07f19a1a 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1855,6 +1855,23 @@ static void do_pages_stat_array(struct mm_struct *mm, unsigned long nr_pages,
->  	mmap_read_unlock(mm);
->  }
-> 
-> +static int put_compat_pages_array(const void __user *chunk_pages[],
-> +				  const void __user * __user *pages,
-> +				  unsigned long chunk_nr)
-> +{
+>  net/dcb/dcbnl.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-Should that be get_compat_pages_array() ?
+Here is the summary with links:
+  - [net-next] net: dcb: Remove unnecessary INIT_LIST_HEAD()
+    https://git.kernel.org/netdev/net-next/c/e2bd6bad9c1e
 
-	David
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
