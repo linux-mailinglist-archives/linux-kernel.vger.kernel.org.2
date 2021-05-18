@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013413882B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127F53882B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352736AbhERWWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 18:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        id S1352740AbhERWWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 18:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352722AbhERWWB (ORCPT
+        with ESMTP id S236910AbhERWWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 18:22:01 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7DCC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:20:43 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so10044836oth.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:20:43 -0700 (PDT)
+        Tue, 18 May 2021 18:22:44 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E76C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:21:25 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id e11so13229001ljn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jODzuDp4sTac2DHZrxz2pkx069Ko9bvNGW4qcLZX5ak=;
-        b=ZPDXs04y3cwopzpzq9a6TrwilIRv8qgiq65vbhA+foD90s8vO0isbq41OOxIqzwuGg
-         0TmWM50+IaGZfCmIcZ0G+RM4YZaAGV4+ZhD4OOXKC1MKcX7h5hfmBbQuPE+4pfdLx6yo
-         zqzgrKa/kmdu/sWtlZ6+zBoaWSg0fEyqtsjPo=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6wvxlnMACzl5Vgyrn4bxRllNgosr37fqx5aWg2Pc570=;
+        b=uimXX1kMk7Yd1tMNua5/EW3Dr0eu10uzFXDOL6LNd1bgX0TH2xjaIu/RImU4snFEBE
+         jJ5x8BDkyRY22nVbRAwfkSkv3dq/e+P6EKZKLA65OH95Li335DtCzXXBEv/m/NF6f8m7
+         Zvx0d5XkofbSuRhx8CUOG8f4F8w92ZeCrLAKZ1kZzVIuHE+ASUG4aCHpVhcONpYFvaZa
+         zgv5uxd+BeEyxlX0a/thQev7DZ0Vi93CC9L/ap9flZ2tM2N+IyammDpuAjrGLvLiMnw5
+         RkHMjKFgALjIC4jrucVLN7UmnnkQCFd3rE6AXImJZ5aXalsrR5NbaUjzayIFlHtmmq7E
+         LfYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jODzuDp4sTac2DHZrxz2pkx069Ko9bvNGW4qcLZX5ak=;
-        b=Nkq+pJ8gKB71PTBKCdyG8KBm9opI8C7Wx0nz0ohybFhc4EKVWOLjwsYq26/UAN6jm5
-         20Ct6fanqPGYGqDEKlEK0G+FlsyBIeEk0jkwLV0V0gvAxcrXGGtK1zEIKuA/U7IIYIDQ
-         gGoQpgQhwscZZdKtrEwm/WoEZvYZGYAgVkIQZMesSiiOldREjKeT4IeXJqjn62YALkiI
-         ZJog4Gqhcar7FdhblhnwoGgoYAvZXrO4QOSWJohnaf+R3nyAr4HmLO4Ay2oeBSYzv3au
-         NiSSyC/hdh21lXGn103cMand7csZ0lCHDzQEQf38Q+S9WYG/9q6L2HdGD7ZXbeOwLpif
-         a6/Q==
-X-Gm-Message-State: AOAM531tim0xqN7hmVrfIez6bR0nackPpxG/F8zEyBiOp6uMCZ8rZzZP
-        Ubxdo7vTDmAPJVfjD05OYNFWlg==
-X-Google-Smtp-Source: ABdhPJz43mxfhCri+Uh73Va5/8oWpZ8EBkxxvRBCwU4cap3f22XiWEU0XDX0VwiU6Sfn6CFSY7I4og==
-X-Received: by 2002:a9d:1b24:: with SMTP id l33mr6090155otl.309.1621376442700;
-        Tue, 18 May 2021 15:20:42 -0700 (PDT)
-Received: from rrangel920.bld.corp.google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
-        by smtp.gmail.com with ESMTPSA id e22sm4084696otl.74.2021.05.18.15.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 15:20:42 -0700 (PDT)
-From:   Raul E Rangel <rrangel@chromium.org>
-To:     linux-acpi@vger.kernel.org
-Cc:     Raul E Rangel <rrangel@chromium.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Robert Moore <robert.moore@intel.com>, devel@acpica.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI: Increase ACPI_MAX_HANDLES
-Date:   Tue, 18 May 2021 16:20:39 -0600
-Message-Id: <20210518162034.1.I7db737fa0a8e7da8247a1a614633bc0fc6455a00@changeid>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6wvxlnMACzl5Vgyrn4bxRllNgosr37fqx5aWg2Pc570=;
+        b=nwDOERVdoeQFhTath9BbEQudkNTjhl6cmBq+xL1HBdxUBGmuQi2riDf81T7+L2I7cw
+         DfXgvvR3PhjYbcx8Paduku5LTGQFv1TkxiebsRoSoVHu8DwryyRUiDmBW8I4zY7hyUaV
+         HIo9tbSibftFJXUYI6XjLajT99GACuoJob4fd795gzDFHKJp5uYpZC0fcUTgEv0qPq5f
+         zXTmskcclHQ6yBrd2PA1hcRU9+49qjBAGIOByog5MmOupHSr0cfBDAJkZuMnaTEayxVU
+         /x5GXhrrS5htERd8ObbvqAy8IhmfB7qKsOsNwcSYYaHW574IU3+XFYJmdCbBo+8AmAEL
+         HwKw==
+X-Gm-Message-State: AOAM533/+VtyxxCJKujp8gULbz5VuMRa5M8gLh29lGWoKz2XW4mtZcJ7
+        OUe8Zgqv/DlBp+JykrMUhiy4GvQCg9QwwKMOVOkR8w==
+X-Google-Smtp-Source: ABdhPJwlnW3ly6Ny6e9IIz9/CA7MNOePxxOU0BqKeMkRRi+b2Ljau2EQiV/khaJy56dbImbe7rM07lY5GpAgcnCGeSA=
+X-Received: by 2002:a2e:889a:: with SMTP id k26mr5694835lji.438.1621376484445;
+ Tue, 18 May 2021 15:21:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210518120633.GW12395@shell.armlinux.org.uk> <E1liydf-0005BQ-PY@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1liydf-0005BQ-PY@rmk-PC.armlinux.org.uk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 19 May 2021 00:21:13 +0200
+Message-ID: <CACRpkdZyGPp6oJWPMdYEEddugj4Amt4+5Hw_YVtkQuxETw5g=w@mail.gmail.com>
+Subject: Re: [PATCH 4/4] ARM: change vmalloc_start to vmalloc_size
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hailong liu <carver4lio@163.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-acpi_handle_list is used to store the references returned by
-ThermalZone._PSL. With processors supporting Hyper-threading and more
-cores, the previous limit is not enough for common cases. If _PSL
-returns more than the limit, the passive thermal threshold fails to
-initialize.
+On Tue, May 18, 2021 at 2:15 PM Russell King (Oracle)
+<rmk+kernel@armlinux.org.uk> wrote:
 
-This change increase the limit to 32, so we can support at least 16 core
-CPUs with Hyper-threads.
+> Rather than storing the start of vmalloc space, store the size, and
+> move the calculation into adjust_lowmem_limit(). We now have one single
+> place where this calculation takes place.
+>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-I acknowledge that this change is just kicking the can down the road.
+This is really nice.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
----
-
- include/acpi/acpi_bus.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 37dac195adbb..fdce8e7c4718 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -13,7 +13,7 @@
- #include <linux/property.h>
- 
- /* TBD: Make dynamic */
--#define ACPI_MAX_HANDLES	10
-+#define ACPI_MAX_HANDLES	32
- struct acpi_handle_list {
- 	u32 count;
- 	acpi_handle handles[ACPI_MAX_HANDLES];
--- 
-2.31.1.751.gd2f1c929bd-goog
-
+Yours,
+Linus Walleij
