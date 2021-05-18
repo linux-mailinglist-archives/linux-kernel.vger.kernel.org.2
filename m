@@ -2,179 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F979388076
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D3E388077
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242872AbhERTYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:24:19 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:61813 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351822AbhERTYP (ORCPT
+        id S1351837AbhERTYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351817AbhERTY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:24:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621365776; h=Message-ID: Subject: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=hLybCi/ygasfpNLeWHoitaWEbLPIEH/x3PtjDNAca8A=; b=LfCZtLi7cRKfaKvtDViiW7orxhQbXhGBm4UZkztpFvxuo7HznChrdmnd4mHBasUS+vLamo64
- X1n7hvuYWl2oyDvQ77qLDvFX0sQzPkRM+doZFwSDlGV2YqD59UKDTKmLBEC/BThwhtJ6tGzw
- cZHPbZ/PDGHOu3RoAHwacbAH4LQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60a413f68dd30e785f1a2c50 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 May 2021 19:22:30
- GMT
-Sender: sharathv=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0B34FC4323A; Tue, 18 May 2021 19:22:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sharathv)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17EC9C43217;
-        Tue, 18 May 2021 19:22:28 +0000 (UTC)
+        Tue, 18 May 2021 15:24:27 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D6FC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:23:09 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id j30so10121403ila.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CXi9ZJTQ7L7FSHgEGdvSYj+oXb2IqANDPyavbrcuBn4=;
+        b=E3AGjHlTYVk7+nTSuYrNsectzZCPRKmUEnWS96aPpztrVrJlWneXFE+XFLJ1VNLUfC
+         aMfrnR7HCcW33p6XEaTVTZhd5cSLZL96EdwyIF/9tTmKrywDDNL46dzlUwl0mk5CsX7E
+         DcErxGTiPwnpLdOTcZdFpOoMJ6M6o2QWdvSGZeW3qeSg6vUJYcCsGN3N+41wj/CS9V1Q
+         JadECSjVTJli/NAxJz2H67r2Y39ygVHZSijyjghCz9DYFJ+QnhFNLq/teYKQMvFFmEWW
+         WNK7ywVnwY3UuSao5HRkSQeU8VrQKG4CWf/hRzuuFWOWqEXlocJBdo4l1e6y2FWhB3A8
+         KU+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CXi9ZJTQ7L7FSHgEGdvSYj+oXb2IqANDPyavbrcuBn4=;
+        b=Wk4BjtAW+aCvJ+lujXfAC1EHWPnYAYBuQZNMT0a/MfgKAnp6WYiI+89USopKFwPNeY
+         A1zHcgMv1Jf2I3FgtV3T7CnkhOtBD/ZwzkWesJwch4GRwn5Ld5sDWWkJa0z/QPAbWnRT
+         O/r7tFeGMiyVdEUi/o25JdNj+Hb52JNVdSLwKhXKUjeBpHw0MzMtRwjfHULk43AspRnX
+         pzYTfipZRHbfKpiIcluhSawGzzGemKSVSEjUhgqHAaADRQpi4AyxJoL5WKODMHwBBoqU
+         eFdYYimkwAEhJiaTrpp8OsGJ5BlqgCxJo3pXqgzTBl7vcKw3qbii2A9y9Fp5LO+DJFrN
+         Fk2g==
+X-Gm-Message-State: AOAM532QY7g2FK+wDklvdlAe+h1toxEn38HI7QGdJlrLcPmiBTloXvV9
+        5BKWv5XQXxLd3w1H60zh0dlXPMsq6OCbQeh8mbnjhiwMnRteefJU
+X-Google-Smtp-Source: ABdhPJxDRkz/qvYqPjNf13OqweXH5naZq3dR8WAuBzqxGMF0MCERef4c4fo4ta4aVrcHwj4MgRizjmQVHKYs+LX1Opg=
+X-Received: by 2002:a92:4446:: with SMTP id a6mr6088757ilm.9.1621365788410;
+ Tue, 18 May 2021 12:23:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 19 May 2021 00:52:27 +0530
-From:   sharathv@codeaurora.org
-To:     tgraf@suug.ch, herbert@gondor.apana.org.au, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, edumazet@google.com
-Subject: Internal error: Oops  from inet_frag_find, when inserting a IP frag
- into a rhashtable
-Message-ID: <997dfef63f2bd14acc2e478758bfc425@codeaurora.org>
-X-Sender: sharathv@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
+In-Reply-To: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Tue, 18 May 2021 12:22:57 -0700
+Message-ID: <CAA5qM4BWkSTwSz4PCcn4WOKFFjVaFuZ+Jz-EqTAGdVV_42Y0BA@mail.gmail.com>
+Subject: Re: misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, May 18, 2021 at 11:32 AM Colin Ian King
+<colin.king@canonical.com> wrote:
+>
+> Hi,
+>
+> Static analysis on linux-next with Coverity has detected an issue in
+> drivers/misc/cardreader/alcor_pci.c in function
+> alcor_pci_init_check_aspm  with the following commit:
+>
+> commit 3ce3e45cc333da707d4d6eb433574b990bcc26f5
+> Author: Tong Zhang <ztong0001@gmail.com>
+> Date:   Thu May 13 00:07:33 2021 -0400
+>
+>     misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
+>
+> The analysis is as follows:
+>
+> 135 static void alcor_pci_init_check_aspm(struct alcor_pci_priv *priv)
+> 136 {
+> 137        struct pci_dev *pci;
+> 138        int where;
+> 139        u32 val32;
+> 140
+> 141        priv->pdev_cap_off    = alcor_pci_find_cap_offset(priv,
+> priv->pdev);
+> 142        /*
+> 143         * A device might be attached to root complex directly and
+> 144         * priv->parent_pdev will be NULL. In this case we don't
+> check its
+> 145         * capability and disable ASPM completely.
+> 146         */
+>
+>    1. Condition !priv->parent_pdev, taking true branch.
+>    2. var_compare_op: Comparing priv->parent_pdev to null implies that
+> priv->parent_pdev might be null.
+>
+> 147        if (!priv->parent_pdev)
+>
+>    Dereference after null check (FORWARD_NULL)
+>    3. var_deref_model: Passing null pointer priv->parent_pdev to
+> alcor_pci_find_cap_offset, which dereferences it.
+>
+> 148                priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
+> 149
+> priv->parent_pdev);
+>
+> When !priv->parent_pdev is true, then priv->parent_pdev is NULL and
+> hence the call to alcor_pci_find_cap_offset() is dereferencing a null
+> pointer in the priv->parent_pdev argument.
+>
+> I suspect the logic in the if statement is inverted, the ! should be
+> removed. This seems too trivial to be wrong. Maybe I'm missing something
+> deeper.
 
-We are observing BUG_ON from the __get_vm_area_node when processing the 
-IP fragments in the context of NET_RX.
-
-When the rehashing is in progress and an insertion is attempted, we may 
-end up doing a bucket_table_alloc, which results in BUG_ON if in 
-interrupt context.
-Is it the case that the slow path code has to be executed only in the 
-context of rht_deferred_worker and not in any other context? OR are 
-these scenario's not anticipated and is a missed handling?
-
-Please provide your suggestions on proceeding further with this issue.
-
-  static struct vm_struct *__get_vm_area_node(unsigned long size,
-            unsigned long align, unsigned long flags, unsigned long 
-start,
-            unsigned long end, int node, gfp_t gfp_mask, const void 
-*caller)
-  {
-     struct vmap_area *va;
-     struct vm_struct *area;
-
-       BUG_ON(in_interrupt()); --> Point of panic.
-
-Panic stack:
-
-784.185010:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754253]@2 
-Workqueue: events rht_deferred_worker
-    784.185020:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754262]@2 
-pstate: 00c00005 (nzcv daif +PAN +UAO)
-    784.185032:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754274]@2 pc 
-: __get_vm_area_node.llvm.17374696036975823682+0x1ac/0x1c8
-    784.185041:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754283]@2 lr 
-: __vmalloc_node_flags_caller+0xb4/0x170
-    784.185046:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754289]@2 sp 
-: ffffffc0104135a0
-    784.185052:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754295]@2 
-x29: ffffffc0104135a0 x28: ffffff82ccbcae50
-    784.185060:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754303]@2 
-x27: ffffff82eea8d3c0 x26: ffffff800ad044b0
-    784.185067:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754311]@2 
-x25: fffffffffffffffe x24: fffffffffffffff5
-    784.185075:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754318]@2 
-x23: 0000000000001000 x22: 0068000000000f13
-    784.185082:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754326]@2 
-x21: 00000000ffffffff x20: 0000000000008040
-    784.185090:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754333]@2 
-x19: 0000000000002b20 x18: ffffffc0103ad0c0
-    784.185097:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754340]@2 
-x17: 00000000e1ba4003 x16: d101500000cf012a
-    784.185104:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754347]@2 
-x15: 52d39bfeffbfebd0 x14: 3130393837363534
-    784.185111:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754355]@2 
-x13: 000000003b1ad624 x12: 0000000000000000
-    784.185118:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754362]@2 
-x11: 000000000000002e x10: 0000000000000600
-    784.185126:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754369]@2 x9 
-: 00000000002c022a x8 : 0000000000000101
-    784.185133:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754376]@2 x7 
-: f6da030000000000 x6 : ffffffe14adb3990
-    784.185140:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754384]@2 x5 
-: 0000000000002b20 x4 : fffffffebfff0000
-    784.185148:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754391]@2 x3 
-: ffffffc010000000 x2 : 0000000000000022
-    784.185155:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754398]@2 x1 
-: 0000000000000001 x0 : 0000000000009000
-    784.185164:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754406]@2 
-Call trace:
-   784.185172:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754415]@2  
-__get_vm_area_node.llvm.17374696036975823682+0x1ac/0x1c8
-    784.185179:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754422]@2  
-__vmalloc_node_flags_caller+0xb4/0x170
-    784.185189:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754432]@2  
-kvmalloc_node+0x40/0xa8
-    784.185199:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754442]@2  
-rhashtable_insert_rehash+0x84/0x264
-    784.185206:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754449]@2  
-rhashtable_try_insert+0x3fc/0x478
-    784.185213:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754455]@2  
-rhashtable_insert_slow+0x34/0x5c
-    784.185223:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754466]@2  
-__rhashtable_insert_fast+0x368/0x4f0
-    784.185234:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754476]@2  
-inet_frag_find+0x21c/0x2a8
-    784.185244:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754486]@2  
-nf_ct_frag6_gather+0x1f4/0x2a0
-    784.185252:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754494]@2  
-ipv6_defrag+0x58/0x7c
-    784.185262:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754504]@2  
-nf_hook_slow+0xa8/0x148
-    784.185272:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754514]@2  
-ipv6_rcv+0x80/0xe4
-    784.185282:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754524]@2  
-__netif_receive_skb+0x84/0x17c
-    784.185290:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754532]@2  
-process_backlog+0x15c/0x1b8
-    784.185297:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754539]@2  
-napi_poll+0x88/0x284
-    784.185304:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754547]@2  
-net_rx_action+0xbc/0x23c
-    784.185314:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754557]@2  
-__do_softirq+0x1e8/0x44c
-    784.185325:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754567]@2  
-__local_bh_enable_ip+0xb8/0xc8
-    784.185333:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754576]@2  
-local_bh_enable+0x1c/0x28
-    784.185340:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754583]@2  
-rhashtable_rehash_chain+0x12c/0x1ec
-    784.185347:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754590]@2  
-rht_deferred_worker+0x13c/0x200
-    784.185357:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754600]@2  
-process_one_work+0x2cc/0x568
-    784.185365:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754607]@2  
-worker_thread+0x28c/0x524
-    784.185373:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754616]@2  
-kthread+0x184/0x194
-    784.185381:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754623]@2  
-ret_from_fork+0x10/0x18
+Hi Colin,
+Thanks for pointing that out.
+You are right. I made a terrible mistake here while refactoring the patch. :'(
+I think I need to get away from this thing for a while and have some rest.
+- Tong
 
 
+>
+> Colin
+>
