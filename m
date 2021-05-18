@@ -2,239 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF21387076
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 06:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1142387078
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 06:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344338AbhEREEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 00:04:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57456 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230378AbhEREEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 00:04:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4998AB007;
-        Tue, 18 May 2021 04:03:17 +0000 (UTC)
-Subject: Re: [PATCH] bcache: avoid oversized read request in cache missing
- code path
-To:     linux-bcache@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Diego Ercolani <diego.ercolani@gmail.com>,
-        Jan Szubiak <jan.szubiak@linuxpolska.pl>,
-        Marco Rebhan <me@dblsaiko.net>,
-        Matthias Ferdinand <bcache@mfedv.net>,
-        Thorsten Knabe <linux@thorsten-knabe.de>,
-        Victor Westerhuis <victor@westerhu.is>,
-        Vojtech Pavlik <vojtech@suse.cz>, stable@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-References: <20210517162256.128236-1-colyli@suse.de>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <36999d42-d70e-04a3-fd56-30a560a05b53@suse.de>
-Date:   Tue, 18 May 2021 12:03:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S244587AbhEREKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 00:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhEREKN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 00:10:13 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94178C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:08:55 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id df21so9400594edb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aB4bTQQ4pORgnOI95Z/auAi6uV/+Xm2dmhOL5NIsfaA=;
+        b=ozw34U/XDqV3Cg2lRRg+OOiqrVQ3blbm40nniYzSE7gciBJZ21UK8HvcWHmrk3f8nw
+         tjTqdt0XO4zNMsbD21pcEvz/fRhcHxEjrADpQDOfOb8DhEPNDKV/0PET4N/aKgnarx6Y
+         uwQ51O8JdmPj/SydAG2saT4KnA309eEti2IjQgVjOT3BPSu+KwQ4sGYcK1wcs4rASWVI
+         eNg+aFFt5RhuELhH0nluicqlz6fPTFqzpHrT8pBB4kI8q/M56mVV9fkmWkiM6RUoars7
+         9k0mBJ99olXkSjunQCIjhk7Ywes48u4ozIuBOjcAc8a+QF2tG9mZg1W6K7WDJwy6haSe
+         A+Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aB4bTQQ4pORgnOI95Z/auAi6uV/+Xm2dmhOL5NIsfaA=;
+        b=uf6wwaPdA5De4VKE0QDMD2utaJttxgMqyFOlF9dZQeUMdAPFpTTT5DWOirsa5gvD4j
+         i/CgALmLhQOx5zQaOmvCz8tw2dPOoQF4Tbf2R5WFp7BzOgvpGdaIgMxervKgqPUKnaGS
+         fsVdv5UmxUXo32iRLZ6lMbnWpXKcCY4RkbErNdUozDn/5EMIVDDq5eSg6LUEZx6R7eMv
+         NuRj5pI5XE0McWzZFoUGKfHD4vTIc0uC3boBmpqpJcaY9XLj1AtDUALkf/D5PNal+ebQ
+         iTL6yfeuyFkpGKULE/DP3awMoVJIYhK3GW3mXGiSG2kM0SanBg0daSk7D1UiIlBjqQ2G
+         tR+Q==
+X-Gm-Message-State: AOAM530lfsxJVsYQ5Mqbih8/y2EvEkdUhTZF+5pqJ1XQySJYl6xDWyMW
+        vJxKYCK6soZPX1elYbS4SJSqIIOil4le1LeEZGVlKA==
+X-Google-Smtp-Source: ABdhPJyx6MpHC5r3bwaLW7c0en0RZK2Nv6ZG4sTVs0C69NJoJ8UEtyQ3eZRKTKkGWz2DgotE2iUpsLL6sY9tCY/JZcY=
+X-Received: by 2002:a05:6402:35c5:: with SMTP id z5mr4741243edc.210.1621310934281;
+ Mon, 17 May 2021 21:08:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210517162256.128236-1-colyli@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
+ <20210518005404.258660-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4hvFe5v72zm5+4mpmsv1u4pEizXMCcjFysKZAEkkOSrGw@mail.gmail.com> <861a316c-09f6-5969-6238-e402fca917db@linux.intel.com>
+In-Reply-To: <861a316c-09f6-5969-6238-e402fca917db@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 17 May 2021 21:08:43 -0700
+Message-ID: <CAPcyv4hv4brS7Vp4rjtnPvF5z7FDuEQkCp+sQ0q6FOxpnKCYCA@mail.gmail.com>
+Subject: Re: [RFC v2-fix 1/1] x86/boot: Add a trampoline for APs booting in
+ 64-bit mode
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kai Huang <kai.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+On Mon, May 17, 2021 at 7:53 PM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+>
+> On 5/17/21 7:06 PM, Dan Williams wrote:
+> > I notice that you have [RFC v2-fix 1/1] as the prefix for this patch.
+> > b4 recently gained support for partial series re-rolls [1], but I
+> > think you would need to bump the version number [RFC PATCH v3 21/32]
+> > and maintain the patch numbering. In this case with changes moving
+> > between patches, and those other patches being squashed any chance of
+> > automated reconstruction of this series is likely lost.
+>
+> Ok. I will make sure to bump the version in next partial re-roll.
+>
+> If I am fixing this patch as per your comments, do I need bump the
+> patch version for it as well?
 
-Please hold on, this patch fails on a large size read test case this
-morning. I will post a new version after the issue fixed.
+I don't think it matters too much in this case as I don't think I can
+use b4 to assemble this series. So just for future reference on other
+patch sets. That said, I wouldn't mind a link to your work-in-progress
+branch to see all the changes together in one place.
 
-Thanks.
+[..]
+> > I'd prefer this helper take a 'struct real_mode_header *rmh' as an
+> > argument rather than assume a global variable.
+>
+> I am fine with it. But existing inline functions also directly read/writes
+> the real_mode_header. So I just followed the same format.
 
-Coly Li
+I notice the SEV-ES code passes an @rmh variable around for this purpose.
 
-On 5/18/21 12:22 AM, colyli@suse.de wrote:
-> From: Coly Li <colyli@suse.de>
-> 
-> In the cache missing code path of cached device, if a proper location
-> from the internal B+ tree is matched for a cache miss range, function
-> cached_dev_cache_miss() will be called in cache_lookup_fn() in the
-> following code block,
-> [code block 1]
->   526         unsigned int sectors = KEY_INODE(k) == s->iop.inode
->   527                 ? min_t(uint64_t, INT_MAX,
->   528                         KEY_START(k) - bio->bi_iter.bi_sector)
->   529                 : INT_MAX;
->   530         int ret = s->d->cache_miss(b, s, bio, sectors);
-> 
-> Here s->d->cache_miss() is the call backfunction pointer initialized as
-> cached_dev_cache_miss(), the last parameter 'sectors' is an important
-> hint to calculate the size of read request to backing device of the
-> missing cache data.
-> 
-> Current calculation in above code block may generate oversized value of
-> 'sectors', which consequently may trigger 2 different potential kernel
-> panics by BUG() or BUG_ON() as listed below,
-> 
-> 1) BUG_ON() inside bch_btree_insert_key(),
-> [code block 2]
->    886         BUG_ON(b->ops->is_extents && !KEY_SIZE(k));
-> 2) BUG() inside biovec_slab(),
-> [code block 3]
->    51         default:
->    52                 BUG();
->    53                 return NULL;
-> 
-> All the above panics are original from cached_dev_cache_miss() by the
-> oversized parameter 'sectors'.
-> 
-> Inside cached_dev_cache_miss(), parameter 'sectors' is used to calculate
-> the size of data read from backing device for the cache missing. This
-> size is stored in s->insert_bio_sectors by the following lines of code,
-> [code block 4]
->   909    s->insert_bio_sectors = min(sectors, bio_sectors(bio) + reada);
-> 
-> Then the actual key inserting to the internal B+ tree is generated and
-> stored in s->iop.replace_key by the following lines of code,
-> [code block 5]
->   911   s->iop.replace_key = KEY(s->iop.inode,
->   912                    bio->bi_iter.bi_sector + s->insert_bio_sectors,
->   913                    s->insert_bio_sectors);
-> The oversized parameter 'sectors' may trigger panic 1) by BUG_ON() from
-> the above code block.
-> 
-> And the bio sending to backing device for the missing data is allocated
-> with hint from s->insert_bio_sectors by the following lines of code,
-> [code block 6]
->   926    cache_bio = bio_alloc_bioset(GFP_NOWAIT,
->   927                 DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS),
->   928                 &dc->disk.bio_split);
-> The oversized parameter 'sectors' may trigger panic 2) by BUG() from the
-> agove code block.
-> 
-> Now let me explain how the panics happen with the oversized 'sectors'.
-> In code block 5, replace_key is generated by macro KEY(). From the
-> definition of macro KEY(),
-> [code block 7]
->   71 #define KEY(inode, offset, size)                                  \
->   72 ((struct bkey) {                                                  \
->   73      .high = (1ULL << 63) | ((__u64) (size) << 20) | (inode),     \
->   74      .low = (offset)                                              \
->   75 })
-> 
-> Here 'size' is 16bits width embedded in 64bits member 'high' of struct
-> bkey. But in code block 1, if "KEY_START(k) - bio->bi_iter.bi_sector" is
-> very probably to be larger than (1<<16) - 1, which makes the bkey size
-> calculation in code block 5 is overflowed. In one bug report the value
-> of parameter 'sectors' is 131072 (= 1 << 17), the overflowed 'sectors'
-> results the overflowed s->insert_bio_sectors in code block 4, then makes
-> size field of s->iop.replace_key to be 0 in code block 5. Then the 0-
-> sized s->iop.replace_key is inserted into the internal B+ tree as cache
-> missing check key (a special key to detect and avoid a racing between
-> normal write request and cache missing read request) as,
-> [code block 8]
->   915   ret = bch_btree_insert_check_key(b, &s->op, &s->iop.replace_key);
-> 
-> Then the 0-sized s->iop.replace_key as 3rd parameter triggers the bkey
-> size check BUG_ON() in code block 2, and causes the kernel panic 1).
-> 
-> Another kernel panic is from code block 6, is from the oversized value
-> s->insert_bio_sectors resulted by the oversized 'sectors'. From a bug
-> report the result of "DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS)"
-> from code block 6 can be 344, 282, 946, 342 and many other values which
-> larther than BIO_MAX_VECS (a.k.a 256). When calling bio_alloc_bioset()
-> with such larger-than-256 value as the 2nd parameter, this value will
-> eventually be sent to biovec_slab() as parameter 'nr_vecs' in following
-> code path,
->    bio_alloc_bioset() ==> bvec_alloc() ==> biovec_slab()
-> 
-> Because parameter 'nr_vecs' is larger-than-256 value, the panic by BUG()
-> in code block 3 is triggered inside biovec_slab().
-> 
-> From the above analysis, it is obvious that in order to avoid the kernel
-> panics in code block 2 and code block 3, the calculated 'sectors' in
-> code block 1 should not generate overflowed value in code block 5 and
-> code block 6.
-> 
-> To avoid overflow in code block 5, the maximum 'sectors' value should be
-> equal or less than (1 << KEY_SIZE_BITS) - 1. And to avoid overflow in
-> code block 6, the maximum 'sectors' value should be euqal or less than
-> BIO_MAX_VECS * PAGE_SECTORS. Considering the kernel page size can be
-> variable, a reasonable maximum limitation of 'sectors' in code block 1
-> should be smaller on from "(1 << KEY_SIZE_BITS) - 1" and "BIO_MAX_VECS *
-> PAGE_SECTORS".
-> 
-> In this patch, a local variable inside cache_lookup_fn() is added as,
->      max_cache_miss_size = min_t(uint32_t,
-> 		(1 << KEY_SIZE_BITS) - 1, BIO_MAX_VECS * PAGE_SECTORS);
-> Then code block 1 uses max_cache_miss_size to limit the maximum value of
-> 'sectors' calculation as,
->   533        unsigned int sectors = KEY_INODE(k) == s->iop.inode
->   534                 ? min_t(uint64_t, max_cache_miss_size,
->   535                         KEY_START(k) - bio->bi_iter.bi_sector)
->   536                 : max_cache_miss_size;
-> 
-> Now the calculated 'sectors' value sent into cached_dev_cache_miss()
-> won't trigger neither of the above kernel panics.
-> 
-> Current problmatic code can be partially found since Linux v5.13-rc1,
-> therefore all maintained stable kernels should try to apply this fix.
-> 
-> Reported-by: Diego Ercolani <diego.ercolani@gmail.com>
-> Reported-by: Jan Szubiak <jan.szubiak@linuxpolska.pl>
-> Reported-by: Marco Rebhan <me@dblsaiko.net>
-> Reported-by: Matthias Ferdinand <bcache@mfedv.net>
-> Reported-by: Thorsten Knabe <linux@thorsten-knabe.de>
-> Reported-by: Victor Westerhuis <victor@westerhu.is>
-> Reported-by: Vojtech Pavlik <vojtech@suse.cz>
-> Signed-off-by: Coly Li <colyli@suse.de>
-> Cc: stable@vger.kernel.org
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Kent Overstreet <kent.overstreet@gmail.com>
-> ---
->  drivers/md/bcache/request.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-> index 29c231758293..90fa9ac47661 100644
-> --- a/drivers/md/bcache/request.c
-> +++ b/drivers/md/bcache/request.c
-> @@ -515,18 +515,25 @@ static int cache_lookup_fn(struct btree_op *op, struct btree *b, struct bkey *k)
->  	struct search *s = container_of(op, struct search, op);
->  	struct bio *n, *bio = &s->bio.bio;
->  	struct bkey *bio_key;
-> -	unsigned int ptr;
-> +	unsigned int ptr, max_cache_miss_size;
->  
->  	if (bkey_cmp(k, &KEY(s->iop.inode, bio->bi_iter.bi_sector, 0)) <= 0)
->  		return MAP_CONTINUE;
->  
-> +	/*
-> +	 * Make sure the cache missing size won't exceed the restrictions of
-> +	 * max bkey size and max bio's bi_max_vecs.
-> +	 */
-> +	max_cache_miss_size = min_t(uint32_t,
-> +		(1 << KEY_SIZE_BITS) - 1, BIO_MAX_VECS * PAGE_SECTORS);
-> +
->  	if (KEY_INODE(k) != s->iop.inode ||
->  	    KEY_START(k) > bio->bi_iter.bi_sector) {
->  		unsigned int bio_sectors = bio_sectors(bio);
->  		unsigned int sectors = KEY_INODE(k) == s->iop.inode
-> -			? min_t(uint64_t, INT_MAX,
-> +			? min_t(uint64_t, max_cache_miss_size,
->  				KEY_START(k) - bio->bi_iter.bi_sector)
-> -			: INT_MAX;
-> +			: max_cache_miss_size;
->  		int ret = s->d->cache_miss(b, s, bio, sectors);
->  
->  		if (ret != MAP_CONTINUE)
-> @@ -547,7 +554,7 @@ static int cache_lookup_fn(struct btree_op *op, struct btree *b, struct bkey *k)
->  	if (KEY_DIRTY(k))
->  		s->read_dirty_data = true;
->  
-> -	n = bio_next_split(bio, min_t(uint64_t, INT_MAX,
-> +	n = bio_next_split(bio, min_t(uint64_t, max_cache_miss_size,
->  				      KEY_OFFSET(k) - bio->bi_iter.bi_sector),
->  			   GFP_NOIO, &s->d->bio_split);
->  
-> 
+[..]
+> > If there is to be a comment here it should be to clarify why @tr_idt
+> > is 10 bytes, not necessarily a quirk of the assembler.
+>
+> Got it. I will fix the comment or remove it.
+>
+> >
+> >> +SYM_DATA_START_LOCAL(tr_idt)
+> >
+> > The .fill restriction is only for @size, not @repeat. So, what's wrong
+> > with SYM_DATA_LOCAL(tr_idt, .fill 2, 5, 0)?
+>
+> Any reason to prefer above change over previous code ?
 
+What I'm really after is capturing why this size needs to be adjusted
+for future reference. Maybe it's plainly obvious to someone who has
+worked with this code, but it was not immediately obvious to me.
+
+>
+> SYM_DATA_START_LOCAL(tr_idt)
+>          .short  0
+>          .quad   0
+> SYM_DATA_END(tr_idt)
+
+This format implies that tr_idt is reserving space for 2 distinct data
+structure attributes of those sizes, can you just put those names here
+as comments? Otherwise the .fill format is more compact.
