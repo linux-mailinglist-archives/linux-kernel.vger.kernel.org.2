@@ -2,211 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E8B386E71
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64658386E76
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345136AbhERAto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:49:44 -0400
-Received: from mga17.intel.com ([192.55.52.151]:60295 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239874AbhERAtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:49:42 -0400
-IronPort-SDR: ymV8JGPCx/fE4YfKJoaNyKxMt1ln4IMcS+ohL3PJFnPky6/lGgucr+e0arPqNFjmcyfYTzujYQ
- d+G1pQaSKWlQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="180876267"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="180876267"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:48:21 -0700
-IronPort-SDR: FUghebYxmyHkEfASwtQj+fiV0+K7tyLLmUqhDhZWBbEIvl8S3Vy39NO2WSIPz1icLzGmS4K/bP
- UAGHQLa9u0dQ==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="411046683"
-Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:48:20 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
-Date:   Mon, 17 May 2021 17:48:07 -0700
-Message-Id: <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
-References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
+        id S1345154AbhERAuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:50:32 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:41664 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235151AbhERAua (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 20:50:30 -0400
+Received: by mail-ot1-f52.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so7187726oth.8;
+        Mon, 17 May 2021 17:49:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yrOVOD3qCQLVHCAZtNnKfo5QLzokUdgJlnu6Nj1LShg=;
+        b=bksPmQOl1KmLt8+GbI3BysmLt/jNV1DiszPzDa56X6iDZsqaIKjcUI/egYcOoC+y2l
+         +HiBLJllVFxSqf1LxrsxX55r+plRL4lS9ucKhA5mvKHUUkq4h5vnZ4V61hkBUeRkQT8J
+         3mRgRxzSVfrgw8tVu8IPFJcOCIZQSSYxBRrIn3khfjIYmPaYOHeudb3lEjNvW4eXOYxu
+         4ALHJP0IydUq4gefpChVUkDlsF0Y5/FIUj4a3KFH84NUNtZ3OOIj6DkxmXCxekEAl5mO
+         r7I2VPGff996OuFn7ZgfHfE5crbwoxVVI59NoLqkhe7AnNT2HBpRVRiAc7K4qzOss7e0
+         Fvog==
+X-Gm-Message-State: AOAM531feDvPBxaZvpQO/opKfd8Y+hoip4eTW2OogiaabUAxXjM/SF9G
+        KyfRC6pWhLLp2llLha8/VowsQu2JgA==
+X-Google-Smtp-Source: ABdhPJzZGd6W9pWreOFJczdOUWlEjgy74Wn/YqJdcE9vazY5nq6T8nk1pZFnHebne/IBkKE8s44FHQ==
+X-Received: by 2002:a05:6830:1256:: with SMTP id s22mr1861242otp.333.1621298951553;
+        Mon, 17 May 2021 17:49:11 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i18sm3411184oot.48.2021.05.17.17.49.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 17:49:10 -0700 (PDT)
+Received: (nullmailer pid 3538545 invoked by uid 1000);
+        Tue, 18 May 2021 00:49:09 -0000
+Date:   Mon, 17 May 2021 19:49:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, David Collins <collinsd@codeaurora.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-input@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kgunda@codeaurora.org,
+        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH V4 4/5] dt-bindings: input: pm8941-pwrkey: Convert pm8941
+ power key binding to yaml
+Message-ID: <20210518004909.GA3538493@robh.at.kernel.org>
+References: <1620800053-26405-1-git-send-email-skakit@codeaurora.org>
+ <1620800053-26405-5-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620800053-26405-5-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+On Wed, 12 May 2021 11:44:12 +0530, satya priya wrote:
+> Convert qcom pm8941 power key binding from .txt to .yaml format.
+> 
+> The example has been removed in favour of full example being
+> available in the qcom,pon.yaml binding.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> Changes in V2:
+>  - Fixed bot errors, took reference from input.yaml for "linux,code"
+>  - Added one complete example for powerkey and resin, and referenced it
+>    in main PON binding.
+>  - Moved this patch to the end of the series.
+> 
+> Changes in V3:
+>  - Moved this patch before PON binding patch.
+>  - As per Rob's comments, added allOf at the beginning of binding.
+>    Added maxItems for interrupts.
+>  - Added 'unevaluatedProperties' instead of 'additionalProperties' as
+>    we are using allOf.
+> 
+> Changes in V4:
+>  - Removed the example and added in qcom,pon.yaml
+> 
+>  .../bindings/input/qcom,pm8941-pwrkey.txt          | 55 ----------------------
+>  .../bindings/input/qcom,pm8941-pwrkey.yaml         | 51 ++++++++++++++++++++
+>  2 files changed, 51 insertions(+), 55 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt
+>  create mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
+> 
 
-In traditional VMs, MMIO tends to be implemented by giving a
-guest access to a mapping which will cause a VMEXIT on access.
-That's not possible in TDX guest. So use #VE to implement MMIO
-support. In TDX guest, MMIO triggers #VE with EPT_VIOLATION
-exit reason.
-
-For now we only handle a subset of instructions that the kernel
-uses for MMIO operations. User-space access triggers SIGBUS.
-
-Also, reasons for supporting #VE based MMIO in TDX guest are,
-
-* MMIO is widely used and we'll have more drivers in the future.
-* We don't want to annotate every TDX specific MMIO readl/writel etc.
-* If we didn't annotate we would need to add an alternative to every
-  MMIO access in the kernel (even though 99.9% will never be used on
-  TDX) which would be a complete waste and incredible binary bloat
-  for nothing.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-
-Changes since RFC v2:
- * Fixed commit log as per Dave's review.
-
- arch/x86/kernel/tdx.c | 100 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 100 insertions(+)
-
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index b9e3010987e0..9330c7a9ad69 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -5,6 +5,8 @@
- 
- #include <asm/tdx.h>
- #include <asm/vmx.h>
-+#include <asm/insn.h>
-+#include <linux/sched/signal.h> /* force_sig_fault() */
- 
- #include <linux/cpu.h>
- #include <linux/protected_guest.h>
-@@ -209,6 +211,101 @@ static void tdg_handle_io(struct pt_regs *regs, u32 exit_qual)
- 	}
- }
- 
-+static unsigned long tdg_mmio(int size, bool write, unsigned long addr,
-+		unsigned long val)
-+{
-+	return tdx_hypercall_out_r11(EXIT_REASON_EPT_VIOLATION, size,
-+				     write, addr, val);
-+}
-+
-+static inline void *get_reg_ptr(struct pt_regs *regs, struct insn *insn)
-+{
-+	static const int regoff[] = {
-+		offsetof(struct pt_regs, ax),
-+		offsetof(struct pt_regs, cx),
-+		offsetof(struct pt_regs, dx),
-+		offsetof(struct pt_regs, bx),
-+		offsetof(struct pt_regs, sp),
-+		offsetof(struct pt_regs, bp),
-+		offsetof(struct pt_regs, si),
-+		offsetof(struct pt_regs, di),
-+		offsetof(struct pt_regs, r8),
-+		offsetof(struct pt_regs, r9),
-+		offsetof(struct pt_regs, r10),
-+		offsetof(struct pt_regs, r11),
-+		offsetof(struct pt_regs, r12),
-+		offsetof(struct pt_regs, r13),
-+		offsetof(struct pt_regs, r14),
-+		offsetof(struct pt_regs, r15),
-+	};
-+	int regno;
-+
-+	regno = X86_MODRM_REG(insn->modrm.value);
-+	if (X86_REX_R(insn->rex_prefix.value))
-+		regno += 8;
-+
-+	return (void *)regs + regoff[regno];
-+}
-+
-+static int tdg_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
-+{
-+	int size;
-+	bool write;
-+	unsigned long *reg;
-+	struct insn insn;
-+	unsigned long val = 0;
-+
-+	/*
-+	 * User mode would mean the kernel exposed a device directly
-+	 * to ring3, which shouldn't happen except for things like
-+	 * DPDK.
-+	 */
-+	if (user_mode(regs)) {
-+		pr_err("Unexpected user-mode MMIO access.\n");
-+		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *) ve->gla);
-+		return 0;
-+	}
-+
-+	kernel_insn_init(&insn, (void *) regs->ip, MAX_INSN_SIZE);
-+	insn_get_length(&insn);
-+	insn_get_opcode(&insn);
-+
-+	write = ve->exit_qual & 0x2;
-+
-+	size = insn.opnd_bytes;
-+	switch (insn.opcode.bytes[0]) {
-+	/* MOV r/m8	r8	*/
-+	case 0x88:
-+	/* MOV r8	r/m8	*/
-+	case 0x8A:
-+	/* MOV r/m8	imm8	*/
-+	case 0xC6:
-+		size = 1;
-+		break;
-+	}
-+
-+	if (inat_has_immediate(insn.attr)) {
-+		BUG_ON(!write);
-+		val = insn.immediate.value;
-+		tdg_mmio(size, write, ve->gpa, val);
-+		return insn.length;
-+	}
-+
-+	BUG_ON(!inat_has_modrm(insn.attr));
-+
-+	reg = get_reg_ptr(regs, &insn);
-+
-+	if (write) {
-+		memcpy(&val, reg, size);
-+		tdg_mmio(size, write, ve->gpa, val);
-+	} else {
-+		val = tdg_mmio(size, write, ve->gpa, val);
-+		memset(reg, 0, size);
-+		memcpy(reg, &val, size);
-+	}
-+	return insn.length;
-+}
-+
- unsigned long tdg_get_ve_info(struct ve_info *ve)
- {
- 	u64 ret;
-@@ -258,6 +355,9 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_IO_INSTRUCTION:
- 		tdg_handle_io(regs, ve->exit_qual);
- 		break;
-+	case EXIT_REASON_EPT_VIOLATION:
-+		ve->instr_len = tdg_handle_mmio(regs, ve);
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
- 		return -EFAULT;
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
