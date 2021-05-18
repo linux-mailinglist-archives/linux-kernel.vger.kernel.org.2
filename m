@@ -2,128 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04DB38832C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244C138832D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240027AbhERXam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:30:42 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:43727 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239043AbhERXa2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:30:28 -0400
-Received: by mail-oi1-f179.google.com with SMTP id j75so11394942oih.10;
-        Tue, 18 May 2021 16:29:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kaw4fdxwXpH2Tc4Crz2ymu7i5j1xi8qpQ3DL7swjbB8=;
-        b=Hy8sFdRpLoqNcpm9kMsE+KBYPHSy3yEOceOjy8VoDrZ6BkL/muLeQOpF6S10mRQF7o
-         IMtcqqjx22XGXhKT7so84KiHBL1VKuT9WyjnetbxrZtFV04vBmtEGJ4lENXUz7U+WZUR
-         7SBdQL9Ki4BLQ1cmJR4AepcEcGHXe+9BpqsgAkw1vp4pVuPVa1VJFb2oU+XF/YlviL6a
-         KBiDTXxA/4cYTI+yejwU2kZHbBTGiUQz4xp9SkQicDIfVaAlE3WzmaI5/5UcsS65m7If
-         Wam0L7hcVGY276HRpxuQHrnOSzsf0xOI+fp8JXvNkSLDdZUHCagcufn5WHGQnwQKx+zZ
-         rEmA==
-X-Gm-Message-State: AOAM532G56tQD6bjwmDPDFWXB4L2OfIw5XhUj4v62j8Mgc0iX4EbB+Gy
-        sR38TIzEHgDyiqdEELB1G9Qjn8VDrA==
-X-Google-Smtp-Source: ABdhPJzy60bW7jOMP9l8J926xwD2kkYdNKYxJ1XI45JCGcle3eCUzwPiB4MH9mB5QK0S2q3fYst8pw==
-X-Received: by 2002:a05:6808:184:: with SMTP id w4mr5599516oic.27.1621380549000;
-        Tue, 18 May 2021 16:29:09 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id d19sm3985608oop.26.2021.05.18.16.29.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 16:29:08 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Roger Quadros <rogerq@ti.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Subject: [PATCH 6/6] dt-bindings: i2c: maxim,max9286: Use the i2c-mux.yaml schema
-Date:   Tue, 18 May 2021 18:28:58 -0500
-Message-Id: <20210518232858.1535403-7-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210518232858.1535403-1-robh@kernel.org>
-References: <20210518232858.1535403-1-robh@kernel.org>
+        id S238853AbhERXaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:30:52 -0400
+Received: from mga02.intel.com ([134.134.136.20]:32403 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238884AbhERXau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 19:30:50 -0400
+IronPort-SDR: sYLNGjH8vBG+Aex6/9w/xu70IjbAzzQKZQIVLWwDYmFy1fis0oPAYTqsyrWU/jU+LEojs7H+bI
+ KXtFHUijPg6A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="187974714"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="187974714"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 16:29:30 -0700
+IronPort-SDR: /+e+s9tSYNxtLIFcO43SvAGYdrC/2c0XG7MuFApcWnjObitK+etYirQYkZ+TSKaAHJpU0RHGxC
+ 4xiyzmf9gZZA==
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="542177421"
+Received: from craigsmi-mobl.amr.corp.intel.com (HELO [10.212.132.228]) ([10.212.132.228])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 16:29:28 -0700
+Subject: Re: [RFC v2-fix-v2 1/1] x86/tdx: Wire up KVM hypercalls
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <36760dae-2f61-2072-460a-f8359224fcf1@intel.com>
+ <20210518211938.635092-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <97588756-5c12-2913-05a7-938eb7a510c8@intel.com>
+Date:   Tue, 18 May 2021 16:29:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20210518211938.635092-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the i2c-mux.yaml schema in the maxim,max9286 binding schema. With this,
-several properties can be dropped as they are defined in i2c-mux.yaml
-already.
+On 5/18/21 2:19 PM, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> 
+> KVM hypercalls use the "vmcall" or "vmmcall" instructions.
+> Although the ABI is similar, those instructions no longer
+> function for TDX guests. Make vendor-specific TDVMCALLs
+> instead of VMCALL. This enables TDX guests to run with KVM
+> acting as the hypervisor. TDX guests running under other
+> hypervisors will continue to use those hypervisor's
+> hypercalls.
 
-Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Cc: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/media/i2c/maxim,max9286.yaml     | 23 +++----------------
- 1 file changed, 3 insertions(+), 20 deletions(-)
+Well, I screwed this up when I typed it too, but it is:
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-index ee16102fdfe7..02f656e78700 100644
---- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-@@ -111,17 +111,10 @@ properties:
- 
-   i2c-mux:
-     type: object
-+    $ref: /schemas/i2c/i2c-mux.yaml#
-+    unevaluatedProperties: false
-     description: |
--      Each GMSL link is modelled as a child bus of an i2c bus
--      multiplexer/switch, in accordance with bindings described in
--      Documentation/devicetree/bindings/i2c/i2c-mux.txt.
--
--    properties:
--      '#address-cells':
--        const: 1
--
--      '#size-cells':
--        const: 0
-+      Each GMSL link is modelled as a child bus of an i2c bus multiplexer/switch.
- 
-     patternProperties:
-       "^i2c@[0-3]$":
-@@ -133,12 +126,6 @@ properties:
-           channels.
- 
-         properties:
--          '#address-cells':
--            const: 1
--
--          '#size-cells':
--            const: 0
--
-           reg:
-             description: The index of the GMSL channel.
-             maxItems: 1
-@@ -173,10 +160,6 @@ properties:
- 
-             additionalProperties: false
- 
--        additionalProperties: false
--
--    additionalProperties: false
--
- required:
-   - compatible
-   - reg
--- 
-2.27.0
+	TDX guests running under other hypervisors will continue
+	to use those hypervisors' hypercalls.
 
+I hate how that reads, but oh well.
+
+> Since KVM hypercall functions can be included and called
+> from kernel modules, export tdx_kvm_hypercall*() functions
+> to avoid symbol errors
+
+No, you're not avoiding errors, you're exporting the symbol so it can be
+*USED*.  The error comes from it not being exported.
+
+It also helps to be specific here:  Export tdx_kvm_hypercall*() to make
+the symbols visible to kvm.ko.
+
+> [Isaku Yamahata: proposed KVM VENDOR string]
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+
+Also, FWIW, if you did this in the header:
+
++static inline long tdx_kvm_hypercall0(unsigned int nr)
++{
++	return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
++}
+
+You could get away with just exporting tdx_kvm_hypercall() instead of 4
+symbols.  The rest of the code would look the same.
