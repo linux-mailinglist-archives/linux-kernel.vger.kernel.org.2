@@ -2,167 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ECB3872FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59506387305
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 09:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347023AbhERHVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 03:21:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21430 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S241083AbhERHVc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 03:21:32 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14I7DbNN035089;
-        Tue, 18 May 2021 03:18:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=0ZPBUZUkOrTcW6YPM/YRI0Amr8obvw69ulniybDxJIg=;
- b=NnOkR40WEgT6XTnJQ/27F9lAgpXSMBJSvPtwCUhsNcYB9mNB6/9W5yeH+ASTe5bW9mr9
- 1LraIRzX1QsaNrMeVT/VuIdGx6MF7jXhuU3ux63orBW5G+Gm3bpKqXpLN/1XUg4+IWyH
- d2ByA7cj42LjzCXp7jNeNHtFRnknOpgdJ5vSKuBMYP7TOeErM2nkU1Ma83EtmXemeJC+
- UptcGb7l9rLhgtdbzNEnipXjQx90jnl6Xqegpin8Y7EfM1DKnOwzFLkF3bMTP+eXnKJS
- C5asDbC7KmEkM8vin6JLlVBn3ccd5l31tGu0toYA+MXseWokIEMWBH9LLr9y7HVW5Ya5 Mg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38m90mr3wc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 03:18:51 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14I7HTge013816;
-        Tue, 18 May 2021 07:18:49 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 38j5jgs8xb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 07:18:49 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14I7IkgP29884734
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 07:18:46 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6E39F42047;
-        Tue, 18 May 2021 07:18:46 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F07042045;
-        Tue, 18 May 2021 07:18:44 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 18 May 2021 07:18:44 +0000 (GMT)
-Date:   Tue, 18 May 2021 12:48:43 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
+        id S1347058AbhERHWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 03:22:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347038AbhERHWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 03:22:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0CFB61285;
+        Tue, 18 May 2021 07:20:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621322450;
+        bh=l84iPZLMSWa+1gRiotGw3RYbPRxJwZEvVf7X02ydNHU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=R0u2kHaJK3uBuAP+TZqN2fysJePYZTocRTDjzZd6q84tXaOycq4dnPZM2rGO1Ucyo
+         aMvFCbRqzKqwfatLNRnm9diDklE1fBuzk+LU1fHq6eaZVLvEYSVNF7iZuOXoq7Kf5m
+         RGxU+s5OBxudOXA6OBnR+FCrG1zfc00xRG5sbgMFsHAZBemf7HpdCADz+A0gniiP6J
+         21GNA3nA7/puAuhswFkUUlQYz23f43Pp6zO3fChi0CbNhD9kqar3FnRv0RI0bUk0uS
+         Xsqc1gkCp/bqye9PBrjmUf18wfrnNaRDPCWeFuOQlBIp7et73IEThLp6PV0ObHXveU
+         z5zSlFDax5Srw==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
- callback
-Message-ID: <20210518071843.GZ2633526@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
- <47d29f1d-cea6-492a-5125-85db6bce0fa7@linux.intel.com>
- <20210513073112.GV2633526@linux.vnet.ibm.com>
- <5823f298-6fae-5a73-3ab8-f708d90a7e52@linux.intel.com>
- <20210517104058.GW2633526@linux.vnet.ibm.com>
- <9d493353-7a27-16aa-3e99-c6a07e69de25@linux.intel.com>
- <20210517125727.GX2633526@linux.vnet.ibm.com>
- <27ab234c-b36b-bf7f-52f4-92c1804f8245@linux.intel.com>
- <20210518040024.GY2633526@linux.vnet.ibm.com>
- <ce4eba7e-dc2e-1c67-d04d-579f04c2040b@linux.intel.com>
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH v20 0/7] mm: introduce memfd_secret system call to create "secret" memory areas
+Date:   Tue, 18 May 2021 10:20:27 +0300
+Message-Id: <20210518072034.31572-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <ce4eba7e-dc2e-1c67-d04d-579f04c2040b@linux.intel.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: G8vc8ih0-N40VvRJCLBAhgvOEXU5o1CM
-X-Proofpoint-GUID: G8vc8ih0-N40VvRJCLBAhgvOEXU5o1CM
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_03:2021-05-17,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 impostorscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105180048
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Aubrey Li <aubrey.li@linux.intel.com> [2021-05-18 14:05:56]:
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-> On 5/18/21 12:00 PM, Srikar Dronamraju wrote:
-> > * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-18 08:59:00]:
-> > 
-> >> On 5/17/21 8:57 PM, Srikar Dronamraju wrote:
-> >>> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-17 20:48:46]:
-> >>>
-> >>>> On 5/17/21 6:40 PM, Srikar Dronamraju wrote:
-> >>>>> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-14 12:11:50]:
-> >>>>>
-> >>>>>> On 5/13/21 3:31 PM, Srikar Dronamraju wrote:
-> >>>>>>> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-12 16:08:24]:
-> >>>>>>>> On 5/7/21 12:45 AM, Srikar Dronamraju wrote:
-> >>>>>
+Hi,
 
-<snip>
-> >>
-> >> This is v3. It looks like hackbench gets better. And netperf still has
-> >> some notable changes under 2 x overcommit cases.
-> >>
-> > 
-> > Thanks Aubrey for the results. netperf (2X) case does seem to regress.
-> > I was actually expecting the results to get better with overcommit.
-> > Can you confirm if this was just v3 or with v3 + set_next_idle_core
-> > disabled?
-> 
-> Do you mean set_idle_cores(not set_next_idle_core) actually? Gautham's patch
-> changed "this" to "target" in set_idle_cores, and I removed it to apply
-> v3-2-8-sched-fair-Maintain-the-identity-of-idle-core.patch for tip/sched/core
-> commit-id 915a2bc3c6b7.
+@Andrew, this is based on v5.13-rc1, I can rebase whatever way you prefer.
 
-Thats correct,
+This is an implementation of "secret" mappings backed by a file descriptor.
 
-In the 3rd patch, I had introduced set_next_idle_core
-which is suppose to set idle_cores in the LLC.
-What I suspected was is this one is causing issues in your 48 CPU LLC.
+The file descriptor backing secret memory mappings is created using a
+dedicated memfd_secret system call The desired protection mode for the
+memory is configured using flags parameter of the system call. The mmap()
+of the file descriptor created with memfd_secret() will create a "secret"
+memory mapping. The pages in that mapping will be marked as not present in
+the direct map and will be present only in the page table of the owning mm.
 
-I am expecting set_next_idle_core to be spending much time in your scenario.
-I was planning for something like the below on top of my patch.
-With this we dont look for an idle-core if we already know that we dont find one.
-But in the mean while I had asked if you could have dropped the call to
-set_next_idle_core.
+Although normally Linux userspace mappings are protected from other users,
+such secret mappings are useful for environments where a hostile tenant is
+trying to trick the kernel into giving them access to other tenants
+mappings.
 
+It's designed to provide the following protections:
+
+* Enhanced protection (in conjunction with all the other in-kernel
+attack prevention systems) against ROP attacks. Seceretmem makes "simple"
+ROP insufficient to perform exfiltration, which increases the required
+complexity of the attack. Along with other protections like the kernel
+stack size limit and address space layout randomization which make finding
+gadgets is really hard, absence of any in-kernel primitive for accessing
+secret memory means the one gadget ROP attack can't work. Since the only
+way to access secret memory is to reconstruct the missing mapping entry,
+the attacker has to recover the physical page and insert a PTE pointing to
+it in the kernel and then retrieve the contents.  That takes at least three
+gadgets which is a level of difficulty beyond most standard attacks.
+
+* Prevent cross-process secret userspace memory exposures. Once the secret
+memory is allocated, the user can't accidentally pass it into the kernel to
+be transmitted somewhere. The secreremem pages cannot be accessed via the
+direct map and they are disallowed in GUP.
+
+* Harden against exploited kernel flaws. In order to access secretmem, a
+kernel-side attack would need to either walk the page tables and create new
+ones, or spawn a new privileged uiserspace process to perform secrets
+exfiltration using ptrace.
+
+In the future the secret mappings may be used as a mean to protect guest memory
+in a virtual machine host.
+
+For demonstration of secret memory usage we've created a userspace library
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git
+
+that does two things: the first is act as a preloader for openssl to
+redirect all the OPENSSL_malloc calls to secret memory meaning any secret
+keys get automatically protected this way and the other thing it does is
+expose the API to the user who needs it. We anticipate that a lot of the
+use cases would be like the openssl one: many toolkits that deal with
+secret keys already have special handling for the memory to try to give
+them greater protection, so this would simply be pluggable into the
+toolkits without any need for user application modification.
+
+Hiding secret memory mappings behind an anonymous file allows usage of
+the page cache for tracking pages allocated for the "secret" mappings as
+well as using address_space_operations for e.g. page migration callbacks.
+
+The anonymous file may be also used implicitly, like hugetlb files, to
+implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
+ABIs in the future.
+
+Removing of the pages from the direct map may cause its fragmentation on
+architectures that use large pages to map the physical memory which affects
+the system performance. However, the original Kconfig text for
+CONFIG_DIRECT_GBPAGES said that gigabyte pages in the direct map "... can
+improve the kernel's performance a tiny bit ..." (commit 00d1c5e05736
+("x86: add gbpages switches")) and the recent report [1] showed that "...
+although 1G mappings are a good default choice, there is no compelling
+evidence that it must be the only choice". Hence, it is sufficient to have
+secretmem disabled by default with the ability of a system administrator to
+enable it at boot time.
+
+In addition, there is also a long term goal to improve management of the
+direct map.
+
+[1] https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
+
+v20:
+* Drop the patch that enable multi-page updates to the direct map, per David
+* Drop the changes to /dev/mem, they anyway have no effect when CONFIG_STRICT_DEVMEM=y
+* Add Acked-by and Reviewed-by tags
+
+v19: https://lore.kernel.org/lkml/20210513184734.29317-1-rppt@kernel.org
+* block /dev/mem mmap access, per David
+* disallow mmap/mprotect with PROT_EXEC, per Kees
+* simplify return in page_is_secretmem(), per Matthew
+* use unsigned int for syscall falgs, per Yury
+
+v18: https://lore.kernel.org/lkml/20210303162209.8609-1-rppt@kernel.org
+* rebase on v5.12-rc1
+* merge kfence fix into the original patch
+* massage commit message of the patch introducing the memfd_secret syscall
+
+v17: https://lore.kernel.org/lkml/20210208084920.2884-1-rppt@kernel.org
+* Remove pool of large pages backing secretmem allocations, per Michal Hocko
+* Add secretmem pages to unevictable LRU, per Michal Hocko
+* Use GFP_HIGHUSER as secretmem mapping mask, per Michal Hocko
+* Make secretmem an opt-in feature that is disabled by default
+ 
+v16: https://lore.kernel.org/lkml/20210121122723.3446-1-rppt@kernel.org
+* Fix memory leak intorduced in v15
+* Clean the data left from previous page user before handing the page to
+  the userspace
+
+Older history:
+v15: https://lore.kernel.org/lkml/20210120180612.1058-1-rppt@kernel.org
+v14: https://lore.kernel.org/lkml/20201203062949.5484-1-rppt@kernel.org
+v13: https://lore.kernel.org/lkml/20201201074559.27742-1-rppt@kernel.org
+v12: https://lore.kernel.org/lkml/20201125092208.12544-1-rppt@kernel.org
+v11: https://lore.kernel.org/lkml/20201124092556.12009-1-rppt@kernel.org
+v10: https://lore.kernel.org/lkml/20201123095432.5860-1-rppt@kernel.org
+v9: https://lore.kernel.org/lkml/20201117162932.13649-1-rppt@kernel.org
+v8: https://lore.kernel.org/lkml/20201110151444.20662-1-rppt@kernel.org
+v7: https://lore.kernel.org/lkml/20201026083752.13267-1-rppt@kernel.org
+v6: https://lore.kernel.org/lkml/20200924132904.1391-1-rppt@kernel.org
+v5: https://lore.kernel.org/lkml/20200916073539.3552-1-rppt@kernel.org
+v4: https://lore.kernel.org/lkml/20200818141554.13945-1-rppt@kernel.org
+v3: https://lore.kernel.org/lkml/20200804095035.18778-1-rppt@kernel.org
+v2: https://lore.kernel.org/lkml/20200727162935.31714-1-rppt@kernel.org
+v1: https://lore.kernel.org/lkml/20200720092435.17469-1-rppt@kernel.org
+rfc-v2: https://lore.kernel.org/lkml/20200706172051.19465-1-rppt@kernel.org/
+rfc-v1: https://lore.kernel.org/lkml/20200130162340.GA14232@rapoport-lnx/
+rfc-v0: https://lore.kernel.org/lkml/1572171452-7958-1-git-send-email-rppt@kernel.org/
+
+Mike Rapoport (7):
+  mmap: make mlock_future_check() global
+  riscv/Kconfig: make direct map manipulation options depend on MMU
+  set_memory: allow querying whether set_direct_map_*() is actually
+    enabled
+  mm: introduce memfd_secret system call to create "secret" memory areas
+  PM: hibernate: disable when there are active secretmem users
+  arch, mm: wire up memfd_secret system call where relevant
+  secretmem: test: add basic selftest for memfd_secret(2)
+
+ arch/arm64/include/asm/Kbuild             |   1 -
+ arch/arm64/include/asm/cacheflush.h       |   6 -
+ arch/arm64/include/asm/kfence.h           |   2 +-
+ arch/arm64/include/asm/set_memory.h       |  17 ++
+ arch/arm64/include/uapi/asm/unistd.h      |   1 +
+ arch/arm64/kernel/machine_kexec.c         |   1 +
+ arch/arm64/mm/mmu.c                       |   6 +-
+ arch/arm64/mm/pageattr.c                  |  13 +-
+ arch/riscv/Kconfig                        |   4 +-
+ arch/riscv/include/asm/unistd.h           |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl    |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl    |   1 +
+ include/linux/secretmem.h                 |  54 ++++
+ include/linux/set_memory.h                |  12 +
+ include/linux/syscalls.h                  |   1 +
+ include/uapi/asm-generic/unistd.h         |   7 +-
+ include/uapi/linux/magic.h                |   1 +
+ kernel/power/hibernate.c                  |   5 +-
+ kernel/sys_ni.c                           |   2 +
+ mm/Kconfig                                |   5 +
+ mm/Makefile                               |   1 +
+ mm/gup.c                                  |  12 +
+ mm/internal.h                             |   3 +
+ mm/mlock.c                                |   3 +-
+ mm/mmap.c                                 |   5 +-
+ mm/secretmem.c                            | 254 +++++++++++++++++++
+ scripts/checksyscalls.sh                  |   4 +
+ tools/testing/selftests/vm/.gitignore     |   1 +
+ tools/testing/selftests/vm/Makefile       |   3 +-
+ tools/testing/selftests/vm/memfd_secret.c | 296 ++++++++++++++++++++++
+ tools/testing/selftests/vm/run_vmtests.sh |  17 ++
+ 31 files changed, 716 insertions(+), 24 deletions(-)
+ create mode 100644 arch/arm64/include/asm/set_memory.h
+ create mode 100644 include/linux/secretmem.h
+ create mode 100644 mm/secretmem.c
+ create mode 100644 tools/testing/selftests/vm/memfd_secret.c
+
+
+base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
 -- 
-Thanks and Regards
-Srikar Dronamraju
-
------------->8-----------------8<--------------------------
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index bee8e5225d99..2e2113262647 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6207,6 +6207,9 @@ static void set_next_idle_core(int target)
- 	if (!sd)
- 		return;
- 
-+	if (atomic_read(&sd->shared->nr_busy_cpus) * 2 >=  per_cpu(sd_llc_size, target))
-+		goto out;
-+
- 	cpumask_andnot(cpus, sched_domain_span(sd), cpu_smt_mask(target));
- 	for_each_cpu_wrap(core, cpus, target) {
- 		bool idle = true;
-@@ -6225,6 +6228,7 @@ static void set_next_idle_core(int target)
- 
- 		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 	}
-+out:
- 	set_idle_core(target, -2);
- }
- 
+2.28.0
 
