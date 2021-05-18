@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEC9388251
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A1C388254
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352562AbhERVor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S1352577AbhERVqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236052AbhERVop (ORCPT
+        with ESMTP id S236052AbhERVqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:44:45 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF06C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:43:26 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id m11so16023108lfg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:43:26 -0700 (PDT)
+        Tue, 18 May 2021 17:46:09 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB53C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:44:50 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id r5so16005511lfr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:44:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9W8CG42kAAwkhvgorWzkgl2HDP2DkVdnYaRY02J71Bs=;
-        b=uNTgtOUlmnxpNkiXuhNVaEaI+mym1NHTPnngxZrWzShoDImoaVBo4fUB4Ttv2KLd58
-         CZSzwugn8LcRRojl5bxNAU/JXg+vFA327UfuZnNFHH6JwUO0rXwDPkaRrRcpZBSV/Lp5
-         i2FLsHQbOpo0DsA29NdLARZF3jGpEzOE4pd1Ey82TJr3YdrswYzMIng43aGGv3i74OY3
-         OzNhXN0/JTjkQPdIiif8MKB0FV0aUjhpUuwT6DCynt2aB1tTYB/3jI1d5puNNMmuAVxU
-         kaclZPke/UVkfFSsb9TcP8GGfTO3fzI+GDnXsNfalCnH5VINfC8OiVZzdqewT5CInNvo
-         zx6w==
+        bh=gDa4WHcFdueIrXi1rhrqppN7ZdRyzonqmDM/tclsxk8=;
+        b=Lozegdgl3LLaiS0DXMtRyh+aYAHSn61Q/FZlftfF4LWfmAT2SnDWl/kDnCvxJ0+HCg
+         C/UczA06CvIaQwdsRrA0MRbAP18/vKmY3tp8abR4BWTx9vExf4998RxT+wY4EjVlgIA3
+         P9dMcEWNlvtU8tJps7PF1fbPzPLKjRrQZRlLFdFw6rcl1zMBoUuEMfuET28VQgrrUP5a
+         zwmFBQhStoj5cxp+N77Qu61+4FJNBwaqNjqQzeHhjNFz4RjCmNxRDaZv4ycSqK8WFUq3
+         oCwDwaGi5gelGVkpHyD7wSJJNXcQbKeOxVM/azsA+biQ6dJ+wa7qS1e7YAxhFKyjyM/X
+         1QWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9W8CG42kAAwkhvgorWzkgl2HDP2DkVdnYaRY02J71Bs=;
-        b=hnJ9+UNkyZ98ydPoF5R0hb7vBadvXXM4vZRFtJSXI+JaZ/ahxo/xcR5eEOVwH7YayC
-         v0BRdBQaISpV//gwKqQI5vePPBIVPfxrbbRtr699qDKW6sjJbrxa4ZBDeZ/+y2LdTO9I
-         A38XosvBfpbxRdQ+y3yHCBtfS+xDTuKYNR1QlXjkUPrVFEdiaPzCpQ35f9JMGL+raSNI
-         46cXjN5rMnUnqTwIppZWlMERNvgea/AUuCayAj4IzfY6cj8S6Ny3eAHH/YnuKfzmh1Hy
-         k7LzDSXGmls658mNP/G3llnuQ4UV7sRQV+ftcWPSi8QL9qWhe2oNWNnw41CoydeRDHyK
-         ih4A==
-X-Gm-Message-State: AOAM533MZ6OFehWTmzhfjDV5jPeml9CLZLX/ng6wyNEYsfUBRBCRGamH
-        oljDBbr9lEPQlmaXzaMNsmBrJtcCF/L5UmESSZDhOuw0H1M=
-X-Google-Smtp-Source: ABdhPJxiQ3bmMsEgGknfvRhvTLU6Jz2UZqabLd+SRMPufcllZQf1K+8AtkRfkP47bpUsSgIFtiajY6O3HSKHCIkPtiw=
-X-Received: by 2002:a19:a418:: with SMTP id q24mr5417009lfc.649.1621374205507;
- Tue, 18 May 2021 14:43:25 -0700 (PDT)
+        bh=gDa4WHcFdueIrXi1rhrqppN7ZdRyzonqmDM/tclsxk8=;
+        b=oXboJOsk+ue7kHqJELBaPcIGokgBkG6pjHqyTkxih7f1V2pQxOkDYSkdM786Wq8qqI
+         MTHWbw+C30lf8lqL3vFHGFBHvpoB/T4BVuIbyvaAvZ5+L+6qazEPGgX6HojceKiSaOiK
+         UIOTdy7d9CtTtVQCk6C3oRxeFHHLIRXxNTM7+QeEYxOatprH6B2iP6ZeRPv6GHQTW5Em
+         cgWt6CjfKONz+HvnhCp1ZMGBwrMhHl83ocSxRgxZnULbV0A3LyjvCqeat0A2XDT6YOoS
+         eEnZcfCVsJQQI2lA+wMo5lKNUkJT+Z8cpQFcBF5wCL6TTPsTkACnPGn1dADfCIrujMgr
+         Rimg==
+X-Gm-Message-State: AOAM530CSRwzZ42LFrisp9+Qthqff0rJZnjLeKkFeKGGr6WBjwx0QTM6
+        1JmkjVMeo9qarPWv0G/3zt2FQfUKBBkWxhubKcKJbA==
+X-Google-Smtp-Source: ABdhPJyv4BLDM+5oyevoFet2Ve5mvZ0YIVLNRIwIVT5044vGftDZlD8yee6eNLuaQFvmk1PTZxkoGk+fLfCys6C7K6o=
+X-Received: by 2002:a05:6512:49b:: with SMTP id v27mr5678712lfq.29.1621374288547;
+ Tue, 18 May 2021 14:44:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518151655.125153-1-clabbe@baylibre.com> <20210518151655.125153-4-clabbe@baylibre.com>
-In-Reply-To: <20210518151655.125153-4-clabbe@baylibre.com>
+References: <20210518151655.125153-1-clabbe@baylibre.com> <20210518151655.125153-5-clabbe@baylibre.com>
+In-Reply-To: <20210518151655.125153-5-clabbe@baylibre.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 18 May 2021 23:43:14 +0200
-Message-ID: <CACRpkdZ2LH9zKgbs7ci=7paOF6KRsQhMNSOJ_5qjzr=KKFnV+w@mail.gmail.com>
-Subject: Re: [PATCH 3/5] ARM: dts: gemini: add crypto node
+Date:   Tue, 18 May 2021 23:44:37 +0200
+Message-ID: <CACRpkdaP5eGe+afaDd29hYy=_drH-245OTcdUFgq0Sz8nZxajw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] ARM: gemini_config: enable sl3516-ce crypto
 To:     Corentin Labbe <clabbe@baylibre.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -69,13 +69,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, May 18, 2021 at 5:17 PM Corentin Labbe <clabbe@baylibre.com> wrote:
 
-> The SL3516 SoC has a crypto offloader IP.
-> This patch adds it on the gemini SoC Device-tree.
+> Enable the crypto offloader by default.
 >
 > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 
-Looks good to me, as soon as the bindings are accepted I will apply
-this patch to my gemini DTS branch.
+I'll apply this once the driver is applied to the crypto tree, I need to
+update the defconfig for gemini in some other regards as well.
 
-Yours,
+Thanks!
 Linus Walleij
