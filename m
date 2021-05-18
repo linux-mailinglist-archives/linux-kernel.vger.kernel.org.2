@@ -2,74 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFC2388196
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461D238819C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236538AbhERUrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:47:43 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:30306 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232261AbhERUrl (ORCPT
+        id S241007AbhERUtL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 May 2021 16:49:11 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:45378 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238356AbhERUtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:47:41 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d52 with ME
-        id 6LmK2500421Fzsu03LmKQJ; Tue, 18 May 2021 22:46:20 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 18 May 2021 22:46:20 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH 1/2] uio_hv_generic: Fix a memory leak in error handling
- paths
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        decui@microsoft.com, gregkh@linuxfoundation.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr>
- <20210511095227.ggrl3z6otjanwffz@liuwe-devbox-debian-v2>
- <f0dca7cf-c737-0f06-34aa-e4759826a974@wanadoo.fr>
- <20210515160932.v4inlp5xlzokmmel@liuwe-devbox-debian-v2>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <dd8b09a6-ced1-3b96-4422-01219f5bbc7a@wanadoo.fr>
-Date:   Tue, 18 May 2021 22:46:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 18 May 2021 16:49:09 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-225-zZ4PUMaUP8CQ45Z6-Pf8hg-1; Tue, 18 May 2021 21:47:38 +0100
+X-MC-Unique: zZ4PUMaUP8CQ45Z6-Pf8hg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 21:47:36 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 18 May 2021 21:47:36 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+Subject: RE: [PATCH v3 1/4] kexec: simplify compat_sys_kexec_load
+Thread-Topic: [PATCH v3 1/4] kexec: simplify compat_sys_kexec_load
+Thread-Index: AQHXS1wVPpN9Wz+83EGX6Ch7EQlMgqrptkWg
+Date:   Tue, 18 May 2021 20:47:36 +0000
+Message-ID: <dcc79c4336234b6a84b597e0e39d65d0@AcuMS.aculab.com>
+References: <20210517203343.3941777-1-arnd@kernel.org>
+ <20210517203343.3941777-2-arnd@kernel.org>
+In-Reply-To: <20210517203343.3941777-2-arnd@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210515160932.v4inlp5xlzokmmel@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 15/05/2021 à 18:09, Wei Liu a écrit :
-> On Tue, May 11, 2021 at 08:18:23PM +0200, Christophe JAILLET wrote:
->> Le 11/05/2021 à 11:52, Wei Liu a écrit :
->>>> Before commit cdfa835c6e5e, the 'vfree' were done unconditionally
->>>> in 'hv_uio_cleanup()'.
->>>> So, another way for fixing the potential leak is to modify
->>>> 'hv_uio_cleanup()' and revert to the previous behavior.
->>>>
->>>
->>> I think this is cleaner.
->>
->> Agreed
+From: Arnd Bergmann
+> Sent: 17 May 2021 21:34
 > 
-> Stephen, ping?
+> The compat version of sys_kexec_load() uses compat_alloc_user_space to
+> convert the user-provided arguments into the native format.
 > 
-> If I don't hear back from you, I think Christophe should move ahead with
-> modifying hv_uio_cleanup.
+> Move the conversion into the regular implementation with
+> an in_compat_syscall() check to simplify it and avoid the
+> compat_alloc_user_space() call.
 > 
-> Wei.
+> compat_sys_kexec_load() now behaves the same as sys_kexec_load().
 > 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  include/linux/kexec.h |  2 -
+>  kernel/kexec.c        | 95 +++++++++++++++++++------------------------
+>  2 files changed, 42 insertions(+), 55 deletions(-)
+> 
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index 0c994ae37729..f61e310d7a85 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -88,14 +88,12 @@ struct kexec_segment {
+>  	size_t memsz;
+>  };
+> 
+> -#ifdef CONFIG_COMPAT
+>  struct compat_kexec_segment {
+>  	compat_uptr_t buf;
+>  	compat_size_t bufsz;
+>  	compat_ulong_t mem;	/* User space sees this as a (void *) ... */
+>  	compat_size_t memsz;
+>  };
+> -#endif
+> 
+>  #ifdef CONFIG_KEXEC_FILE
+>  struct purgatory_info {
+> diff --git a/kernel/kexec.c b/kernel/kexec.c
+> index c82c6c06f051..6618b1d9f00b 100644
+> --- a/kernel/kexec.c
+> +++ b/kernel/kexec.c
+> @@ -19,21 +19,46 @@
+> 
+>  #include "kexec_internal.h"
+> 
+> +static int copy_user_compat_segment_list(struct kimage *image,
+> +					 unsigned long nr_segments,
+> +					 void __user *segments)
+> +{
+> +	struct compat_kexec_segment __user *cs = segments;
+> +	struct compat_kexec_segment segment;
+> +	int i;
+> +
+> +	for (i = 0; i < nr_segments; i++) {
+> +		if (copy_from_user(&segment, &cs[i], sizeof(segment)))
+> +			return -EFAULT;
 
-Hi,
-just for your information, it has already been picked by Greg KH (see [1]).
-If the cleaner solution is preferred, it will be built on top of this patch.
+How many segments are there?
+The multiple copy_from_user() will be slow.
 
-CJ
+> +
+> +		image->segment[i] = (struct kexec_segment) {
+> +			.buf   = compat_ptr(segment.buf),
+> +			.bufsz = segment.bufsz,
+> +			.mem   = segment.mem,
+> +			.memsz = segment.memsz,
+> +		};
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +
+>  static int copy_user_segment_list(struct kimage *image,
+>  				  unsigned long nr_segments,
+>  				  struct kexec_segment __user *segments)
+>  {
+> -	int ret;
+>  	size_t segment_bytes;
+> 
+>  	/* Read in the segments */
+>  	image->nr_segments = nr_segments;
+>  	segment_bytes = nr_segments * sizeof(*segments);
 
-[1]: 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/uio/uio_hv_generic.c?id=3ee098f96b8b6c1a98f7f97915f8873164e6af9d
+Should there be a bound check on nr_segments?
+I can't see one in the code in this patch.
+
+> -	ret = copy_from_user(image->segment, segments, segment_bytes);
+> -	if (ret)
+> -		ret = -EFAULT;
+> +	if (in_compat_syscall())
+> +		return copy_user_compat_segment_list(image, nr_segments, segments);
+> 
+> -	return ret;
+> +	if (copy_from_user(image->segment, segments, segment_bytes))
+> +		return -EFAULT;
+> +
+> +	return 0;
+
+An alternate sequence (which Eric will like even less!) is to
+do a single copy_from_user() for the entire compat size array
+into the 'normal' buffer and then do a reverse order conversion
+of each array entry from 'compat' to '64 bit'.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
