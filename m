@@ -2,167 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA069386FF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D087A38700D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343494AbhERCfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 22:35:55 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:40257 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhERCfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 22:35:53 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210518023434epoutp0215582af665a63ae877565cac6e987d64~ACI6anNG_1985819858epoutp02-
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:34:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210518023434epoutp0215582af665a63ae877565cac6e987d64~ACI6anNG_1985819858epoutp02-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1621305274;
-        bh=kwVY0w5ghYheMv4Tcly+CPmTc9SqQ00Ru/Vb1zkcDOk=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=W/o3c282+B8+ZxM3Ci3QZYLcwfw88R+jkG6QNLFla7YE9CbClM2V42LoOOTJEeSY4
-         5bllmIKfqaBWb7Gw4OEGS+k1hcOyn5VTsXAvaY7GbwnYRMtDajK2o8E/T852M9cudU
-         dM60ePKEtO9A6Af70uQOcDNFMeJLAIw2oZ/F5mNE=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210518023433epcas1p4b32a9b0fc0c8b24bc30ec3b9723b3705~ACI5spLpQ0673106731epcas1p4-;
-        Tue, 18 May 2021 02:34:33 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Fkg7V0H25z4x9Px; Tue, 18 May
-        2021 02:34:30 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        68.14.09578.3B723A06; Tue, 18 May 2021 11:34:27 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210518023427epcas1p335882bac2e663dbd8ffbf077b64dd316~ACIzxHxET1385313853epcas1p3c;
-        Tue, 18 May 2021 02:34:27 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210518023427epsmtrp19c4ff6305aca1e2a303745f5e95ef315~ACIzwg6fj0315903159epsmtrp1x;
-        Tue, 18 May 2021 02:34:27 +0000 (GMT)
-X-AuditID: b6c32a35-fb9ff7000000256a-1b-60a327b3594c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A6.9C.08637.3B723A06; Tue, 18 May 2021 11:34:27 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210518023427epsmtip1484ca1087b07e7de829a1f9597ee281e~ACIzk6cSt2029120291epsmtip1d;
-        Tue, 18 May 2021 02:34:27 +0000 (GMT)
-Subject: Re: [PATCH v1 1/1] extcon-intel-mrfld: initialize mrfld_extcon
- status
-To:     Ferry Toth <ftoth@exalondelft.nl>, linux-kernel@vger.kernel.org
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <d83c8a54-5db8-e1e5-2aa3-6d3065fbeef4@samsung.com>
-Date:   Tue, 18 May 2021 11:52:57 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S1345019AbhERCya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 22:54:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18385 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237572AbhERCy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 22:54:29 -0400
+IronPort-SDR: csTxDLbKIPnXY1NirKwDQxXedgnSZ8hLlOYt8/nyrBQgE+dqZcoU9VWHtmsCV+KJRR6uRRsoid
+ WtqM1V65kPUA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="221661595"
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="221661595"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 19:53:11 -0700
+IronPort-SDR: zf55Xp2jX6fZE1hqG92JwDxnU6fi+fO9KI8cLaQVyaOf4qxLBrt5U5c9b5FZii3UuOwDVRAsrq
+ jNYbiodoo3PQ==
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="543928534"
+Received: from daltonda-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.182.28])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 19:53:10 -0700
+Subject: Re: [RFC v2-fix 1/1] x86/boot: Add a trampoline for APs booting in
+ 64-bit mode
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kai Huang <kai.huang@intel.com>
+References: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
+ <20210518005404.258660-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4hvFe5v72zm5+4mpmsv1u4pEizXMCcjFysKZAEkkOSrGw@mail.gmail.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <861a316c-09f6-5969-6238-e402fca917db@linux.intel.com>
+Date:   Mon, 17 May 2021 19:53:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210424174138.175889-1-ftoth@exalondelft.nl>
+In-Reply-To: <CAPcyv4hvFe5v72zm5+4mpmsv1u4pEizXMCcjFysKZAEkkOSrGw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkk+LIzCtJLcpLzFFi42LZdlhTT3ez+uIEg1kfTCx6m6YzWXy+JWZx
-        edccNovbjSvYHFg8ejbfZ/SYdzLQo2/LKkaPz5vkAliism0yUhNTUosUUvOS81My89JtlbyD
-        453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgBYqKZQl5pQChQISi4uV9O1sivJLS1IVMvKL
-        S2yVUgtScgosC/SKE3OLS/PS9ZLzc60MDQyMTIEKE7Iz9tydw1jwW6Dif1MzUwPjW94uRg4O
-        CQETiY+7E7oYuTiEBHYwSvxo3M0K4XxilNiz5QYbhPONUeJDy3/GLkZOsI77u09BJfYySix6
-        95gJwnnPKHHsDkSVsECAxIMdW8BsEQFniV1H97GB2MwCSRKn918Gs9kEtCT2v7gBZvMLKEpc
-        /fEYrJ5XwE7i486PYDaLgKrEs7NtzCC2qECYxMltLVA1ghInZz5hAbE5Bawl7j6/wwoxX1zi
-        1pP5TBC2vMT2t3OYIa7+yS5xa6kihO0isW7ZK1YIW1ji1fEt7BC2lMTL/jYou1pi5ckjYF9K
-        CHQwSmzZfwGqwVhi/9LJTKDAYxbQlFi/Sx8irCix8/dcRoi9fBLvvvawQsKXV6KjTQiiRFni
-        8oO7TBC2pMTi9k62CYxKs5B8MwvJB7OQfDALYdkCRpZVjGKpBcW56anFhgWGyJG9iRGcFrVM
-        dzBOfPtB7xAjEwfjIUYJDmYlEd5PYfMThHhTEiurUovy44tKc1KLDzGaAsN3IrOUaHI+MDHn
-        lcQbmhoZGxtbmBiamRoaKonzpjtXJwgJpCeWpGanphakFsH0MXFwSjUwHa2qrFu1oU5eeImJ
-        qhzTveJ1PaqXA82lrd+EzOhoN5h3O+5hQmtS1QyO7OOxP8r+Zn66xFlZeJfzlV7pF8FAuRc+
-        03Wmb+y5NeNV957d732TjBxvTu2e/mRr1WOfY+wngzYznglv//hH/ueSabUzmFIuSW9Tt2ZS
-        Sv0nKFjyRzT15tRJZkqWPY/Odl5U8siQ+X3W46qOE3vT6pinT+ZUnd1jtuNeo3Lz0RjDUO6K
-        h4oc/AvszJtYL0+dl5HD/an7fxfriXsSQjL2W/kmq31jlhAJl2O8OleH4+Gz1YkXmCTklBb8
-        ET7gHHGSRf5+kUJv05Hwv0VuVg+4AxLW8SVx/Jbbev67ybRyBsUdn8WVWIozEg21mIuKEwFz
-        cTU0FAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLLMWRmVeSWpSXmKPExsWy7bCSnO5m9cUJBlvfc1n0Nk1nsvh8S8zi
-        8q45bBa3G1ewObB49Gy+z+gx72SgR9+WVYwenzfJBbBEcdmkpOZklqUW6dslcGXsuTuHseC3
-        QMX/pmamBsa3vF2MnBwSAiYS93efYuti5OIQEtjNKDFpzX0miISkxLSLR5m7GDmAbGGJw4eL
-        IWreMkpM33eIDaRGWMBP4s2EZawgtoiAs8Suo/vA4swCSRKPmhZBDe1jlNi6fA5Ygk1AS2L/
-        ixtgNr+AosTVH48ZQWxeATuJjzs/gtksAqoSz862MYPYogJhEjuXPGaCqBGUODnzCQuIzSlg
-        LXH3+R1WiGXqEn/mXWKGsMUlbj2ZzwRhy0tsfzuHeQKj8Cwk7bOQtMxC0jILScsCRpZVjJKp
-        BcW56bnFhgWGeanlesWJucWleel6yfm5mxjBMaKluYNx+6oPeocYmTgYDzFKcDArifB+Cpuf
-        IMSbklhZlVqUH19UmpNafIhRmoNFSZz3QtfJeCGB9MSS1OzU1ILUIpgsEwenVAOT/KGpcSuc
-        A62WbLY2vHbmEeM1g55Ssd6vR16FSGy6EnLiQ9EkkdMx4eZ5P8zKs9sLQz0b1LQ2y/27orPb
-        fLPDlVIr7f2C/Se1VjHvSzwUeLmUedOGeKOPJaqPuq/lJfaYTDFrCedkC1kdOk1tw+ab2p1R
-        7m73jG9uVX+c28e+Qu/i9ETp88zHcl83OHCuEygP81wp777noVCtTLin3K2uVN0NH15PNdzA
-        pukafIQ784+Cus+8CF6mL2dfRtRVy5pJmhX/Oa7cG/b+q+J/9X/lCRe9j9zxO337Thd3teP5
-        acdLl+RkLdL2PvDAPSY542h62juuaclrj+nN8wqOfl29cPeyU29/vN6hvTGrNUOJpTgj0VCL
-        uag4EQDHfJ/ZAAMAAA==
-X-CMS-MailID: 20210518023427epcas1p335882bac2e663dbd8ffbf077b64dd316
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210424174208epcas1p2aa4ad71d4450b9995a79e2d378c78865
-References: <CGME20210424174208epcas1p2aa4ad71d4450b9995a79e2d378c78865@epcas1p2.samsung.com>
-        <20210424174138.175889-1-ftoth@exalondelft.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/25/21 2:41 AM, Ferry Toth wrote:
-> extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
-> DRD to detect a change in the switch position. This change initializes the
-> status at probe time.
-> 
-> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
-> Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
-> ---
->  drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
-> index f47016fb28a8..cd1a5f230077 100644
-> --- a/drivers/extcon/extcon-intel-mrfld.c
-> +++ b/drivers/extcon/extcon-intel-mrfld.c
-> @@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
->  	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
->  	struct regmap *regmap = pmic->regmap;
->  	struct mrfld_extcon_data *data;
-> +	unsigned int status;
->  	unsigned int id;
->  	int irq, ret;
->  
-> @@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
->  	/* Get initial state */
->  	mrfld_extcon_role_detect(data);
->  
-> +	/*
-> +	 * Cached status value is used for cable detection, see comments
-> +	 * in mrfld_extcon_cable_detect(), we need to sync cached value
-> +	 * with a real state of the hardware.
-> +	 */
-> +	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
-> +	data->status = status;
-> +
->  	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
->  	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
->  
-> 
 
-Looks good. But need to change the patch title as following:
-I can change the patch title before merge. But, this fixes patch
-should be applied to both extcon tree and stable tree.
-So that the author better to change the patch title to keep
-the consistent patch title naming as following:
 
-If possible, need to specify what to fix on title for the readability.
-IMO, this patch title doesn't seems the fix patch.
+On 5/17/21 7:06 PM, Dan Williams wrote:
+> I notice that you have [RFC v2-fix 1/1] as the prefix for this patch.
+> b4 recently gained support for partial series re-rolls [1], but I
+> think you would need to bump the version number [RFC PATCH v3 21/32]
+> and maintain the patch numbering. In this case with changes moving
+> between patches, and those other patches being squashed any chance of
+> automated reconstruction of this series is likely lost.
 
-- before : extcon-intel-mrfld: initialize mrfld_extcon status
-- after : extcon: intel-mrfld: Initialize mrfld_extcon status
+Ok. I will make sure to bump the version in next partial re-roll.
+
+If I am fixing this patch as per your comments, do I need bump the
+patch version for it as well?
+
+> 
+> Just wanted to note that for future reference in case you were hoping
+> to avoid resending full series in the future. For now, some more
+> comments below:
+
+Thanks.
+
+> 
+> [1]: https://lore.kernel.org/tools/20210517161317.teawoh5qovxpmqdc@nitro.local/
+> 
+> On Mon, May 17, 2021 at 5:54 PM Kuppuswamy Sathyanarayanan
+> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>>
+>> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>>
+>> Add a trampoline for booting APs in 64-bit mode via a software handoff
+>> with BIOS, and use the new trampoline for the ACPI MP wake protocol used
+>> by TDX. You can find MADT MP wake protocol details in ACPI specification
+>> r6.4, sec 5.2.12.19.
+>>
+>> Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
+>> mode.  For the GDT pointer, create a new entry as the existing storage
+>> for the pointer occupies the zero entry in the GDT itself.
+>>
+>> Reported-by: Kai Huang <kai.huang@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> ---
+>>
+>> Changes since RFC v2:
+>>   * Removed X86_CR0_NE and EFER related changes from this changes
+> 
+> This was only partially done, see below...
+> 
+>>     and moved it to patch titled "x86/boot: Avoid #VE during
+>>     boot for TDX platforms"
+>>   * Fixed commit log as per Dan's suggestion.
+>>   * Added inline get_trampoline_start_ip() to set start_ip.
+> 
+> You also added a comment to tr_idt, but didn't mention it here, so I
+> went to double check. Please take care to document all changes to the
+> patch from the previous review.
+
+Ok. I will make sure change log is current.
+
+> 
+>>
+>>   arch/x86/boot/compressed/pgtable.h       |  2 +-
+>>   arch/x86/include/asm/realmode.h          | 10 +++++++
+>>   arch/x86/kernel/smpboot.c                |  2 +-
+>>   arch/x86/realmode/rm/header.S            |  1 +
+>>   arch/x86/realmode/rm/trampoline_64.S     | 38 ++++++++++++++++++++++++
+>>   arch/x86/realmode/rm/trampoline_common.S |  7 ++++-
+>>   6 files changed, 57 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
+>> index 6ff7e81b5628..cc9b2529a086 100644
+>> --- a/arch/x86/boot/compressed/pgtable.h
+>> +++ b/arch/x86/boot/compressed/pgtable.h
+>> @@ -6,7 +6,7 @@
+>>   #define TRAMPOLINE_32BIT_PGTABLE_OFFSET        0
+>>
+>>   #define TRAMPOLINE_32BIT_CODE_OFFSET   PAGE_SIZE
+>> -#define TRAMPOLINE_32BIT_CODE_SIZE     0x70
+>> +#define TRAMPOLINE_32BIT_CODE_SIZE     0x80
+>>
+>>   #define TRAMPOLINE_32BIT_STACK_END     TRAMPOLINE_32BIT_SIZE
+>>
+>> diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
+>> index 5db5d083c873..3328c8edb200 100644
+>> --- a/arch/x86/include/asm/realmode.h
+>> +++ b/arch/x86/include/asm/realmode.h
+>> @@ -25,6 +25,7 @@ struct real_mode_header {
+>>          u32     sev_es_trampoline_start;
+>>   #endif
+>>   #ifdef CONFIG_X86_64
+>> +       u32     trampoline_start64;
+>>          u32     trampoline_pgd;
+>>   #endif
+>>          /* ACPI S3 wakeup */
+>> @@ -88,6 +89,15 @@ static inline void set_real_mode_mem(phys_addr_t mem)
+>>          real_mode_header = (struct real_mode_header *) __va(mem);
+>>   }
+>>
+>> +static inline unsigned long get_trampoline_start_ip(void)
+> 
+> I'd prefer this helper take a 'struct real_mode_header *rmh' as an
+> argument rather than assume a global variable.
+
+I am fine with it. But existing inline functions also directly read/writes
+the real_mode_header. So I just followed the same format.
+
+I will fix this in next version.
+
+> 
+>> +{
+>> +#ifdef CONFIG_X86_64
+>> +        if (is_tdx_guest())
+>> +                return real_mode_header->trampoline_start64;
+>> +#endif
+>> +       return real_mode_header->trampoline_start;
+>> +}
+>> +
+>>   void reserve_real_mode(void);
+>>
+>>   #endif /* __ASSEMBLY__ */
+>> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+>> index 16703c35a944..0b4dff5e67a9 100644
+>> --- a/arch/x86/kernel/smpboot.c
+>> +++ b/arch/x86/kernel/smpboot.c
+>> @@ -1031,7 +1031,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
+>>                         int *cpu0_nmi_registered)
+>>   {
+>>          /* start_ip had better be page-aligned! */
+>> -       unsigned long start_ip = real_mode_header->trampoline_start;
+>> +       unsigned long start_ip = get_trampoline_start_ip();
+>>
+>>          unsigned long boot_error = 0;
+>>          unsigned long timeout;
+>> diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
+>> index 8c1db5bf5d78..2eb62be6d256 100644
+>> --- a/arch/x86/realmode/rm/header.S
+>> +++ b/arch/x86/realmode/rm/header.S
+>> @@ -24,6 +24,7 @@ SYM_DATA_START(real_mode_header)
+>>          .long   pa_sev_es_trampoline_start
+>>   #endif
+>>   #ifdef CONFIG_X86_64
+>> +       .long   pa_trampoline_start64
+>>          .long   pa_trampoline_pgd;
+>>   #endif
+>>          /* ACPI S3 wakeup */
+>> diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+>> index 84c5d1b33d10..754f8d2ac9e8 100644
+>> --- a/arch/x86/realmode/rm/trampoline_64.S
+>> +++ b/arch/x86/realmode/rm/trampoline_64.S
+>> @@ -161,6 +161,19 @@ SYM_CODE_START(startup_32)
+>>          ljmpl   $__KERNEL_CS, $pa_startup_64
+>>   SYM_CODE_END(startup_32)
+>>
+>> +SYM_CODE_START(pa_trampoline_compat)
+>> +       /*
+>> +        * In compatibility mode.  Prep ESP and DX for startup_32, then disable
+>> +        * paging and complete the switch to legacy 32-bit mode.
+>> +        */
+>> +       movl    $rm_stack_end, %esp
+>> +       movw    $__KERNEL_DS, %dx
+>> +
+>> +       movl    $(X86_CR0_NE | X86_CR0_PE), %eax
+> 
+> Before this patch the startup path did not touch X86_CR0_NE. I assume
+> it was added opportunistically for the TDX case? If it is to stay in
+> this patch it deserves a code comment / mention in the changelog, or
+> it needs to move to the other patch that fixes up the CR0 setup for
+> TDX.
+
+I will move X86_CR0_NE related update to the patch that has other
+X86_CR0_NE related updates.
+
+> 
+> 
+>> +       movl    %eax, %cr0
+>> +       ljmpl   $__KERNEL32_CS, $pa_startup_32
+>> +SYM_CODE_END(pa_trampoline_compat)
+>> +
+>>          .section ".text64","ax"
+>>          .code64
+>>          .balign 4
+>> @@ -169,6 +182,20 @@ SYM_CODE_START(startup_64)
+>>          jmpq    *tr_start(%rip)
+>>   SYM_CODE_END(startup_64)
+>>
+>> +SYM_CODE_START(trampoline_start64)
+>> +       /*
+>> +        * APs start here on a direct transfer from 64-bit BIOS with identity
+>> +        * mapped page tables.  Load the kernel's GDT in order to gear down to
+>> +        * 32-bit mode (to handle 4-level vs. 5-level paging), and to (re)load
+>> +        * segment registers.  Load the zero IDT so any fault triggers a
+>> +        * shutdown instead of jumping back into BIOS.
+>> +        */
+>> +       lidt    tr_idt(%rip)
+>> +       lgdt    tr_gdt64(%rip)
+>> +
+>> +       ljmpl   *tr_compat(%rip)
+>> +SYM_CODE_END(trampoline_start64)
+>> +
+>>          .section ".rodata","a"
+>>          # Duplicate the global descriptor table
+>>          # so the kernel can live anywhere
+>> @@ -182,6 +209,17 @@ SYM_DATA_START(tr_gdt)
+>>          .quad   0x00cf93000000ffff      # __KERNEL_DS
+>>   SYM_DATA_END_LABEL(tr_gdt, SYM_L_LOCAL, tr_gdt_end)
+>>
+>> +SYM_DATA_START(tr_gdt64)
+>> +       .short  tr_gdt_end - tr_gdt - 1 # gdt limit
+>> +       .long   pa_tr_gdt
+>> +       .long   0
+>> +SYM_DATA_END(tr_gdt64)
+>> +
+>> +SYM_DATA_START(tr_compat)
+>> +       .long   pa_trampoline_compat
+>> +       .short  __KERNEL32_CS
+>> +SYM_DATA_END(tr_compat)
+>> +
+>>          .bss
+>>          .balign PAGE_SIZE
+>>   SYM_DATA(trampoline_pgd, .space PAGE_SIZE)
+>> diff --git a/arch/x86/realmode/rm/trampoline_common.S b/arch/x86/realmode/rm/trampoline_common.S
+>> index 5033e640f957..ade7db208e4e 100644
+>> --- a/arch/x86/realmode/rm/trampoline_common.S
+>> +++ b/arch/x86/realmode/rm/trampoline_common.S
+>> @@ -1,4 +1,9 @@
+>>   /* SPDX-License-Identifier: GPL-2.0 */
+>>          .section ".rodata","a"
+>>          .balign 16
+>> -SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
+>> +
+>> +/* .fill cannot be used for size > 8. So use short and quad */
+> 
+> If there is to be a comment here it should be to clarify why @tr_idt
+> is 10 bytes, not necessarily a quirk of the assembler.
+
+Got it. I will fix the comment or remove it.
+
+> 
+>> +SYM_DATA_START_LOCAL(tr_idt)
+> 
+> The .fill restriction is only for @size, not @repeat. So, what's wrong
+> with SYM_DATA_LOCAL(tr_idt, .fill 2, 5, 0)?
+
+Any reason to prefer above change over previous code ?
+
+SYM_DATA_START_LOCAL(tr_idt)
+         .short  0
+         .quad   0
+SYM_DATA_END(tr_idt)
+
+> 
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
