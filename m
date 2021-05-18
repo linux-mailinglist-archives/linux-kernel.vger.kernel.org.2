@@ -2,183 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76BF386E6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57893386E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345099AbhERAos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:44:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239149AbhERAop (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:44:45 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638CAC061573;
-        Mon, 17 May 2021 17:43:28 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id 1so6346474qtb.0;
-        Mon, 17 May 2021 17:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tZsE7qYxd3nDHuwaSmlREMeLJi8XLtPn+ZY7CZp+dNk=;
-        b=UQZSSkeWbHZDNvk2f8IjSvBZlOQHBiIvTvG/hW0LSNNM77hdKZDTT9KHswNHhjiqj6
-         CHRyLaCh/goaB2rSac0wTdrbLTUM6UmWDmjz+gfzn5djiCTHeBLJaX66dm/HHqXVBsC/
-         QT5UZgrsy6XiIJU9AoI0cTNdVVS0ZJsFiG+f9D6UdmFTsmsmh0k9l6sAqXbZgANisJzy
-         NMGN6vA/FomJuRUHH5hGP/b2ajF2ww3V6KnWbMX+FnG9zUahyi/z0h2BVFJEJpAe/jVL
-         vjakngRDzhJhRCV0dlyiQTbQDew5urgN0kkdfbSsNWKwSp08YPCbqRDKXcAe2m4xnYke
-         L7qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tZsE7qYxd3nDHuwaSmlREMeLJi8XLtPn+ZY7CZp+dNk=;
-        b=G0jTwYRLkeCUOLFn8sE0/2XGUEETvmxpd5J6MMXSHqiA9KoYZB8cJcSYeWLKIYREx8
-         4axvAlolAg+t8MgCtyB2hDiErhRhxGE1PZpGvrBFGcz4l46+wa3pu5w2THqLjpwiJcsW
-         c1aYxkS8OSrYMD64Wor6Oh6rYeP4UGgJ+fJciyj29OMAtrBZV0wNIhp23lkn0CEJyMM3
-         BlFD7O10Kwo/JtPuP57TA5LUXIhJ+wWC0pMoNJUkqvs1w+3SluttKpXK54slGCjayXtV
-         v5TZgZ8dYybBDY39lvQEbB3/+OAfn19eHoLBVy65HsPgDc5hPc7f6sR7Xuth079OOGRb
-         ctBA==
-X-Gm-Message-State: AOAM530+lYoRtprnaJNSJJS4Iw3R4z3FOkpxvDk1eYRx0qA2HHUupRel
-        GoNyhKrgNvO6BK2D+54JiqaQ+1TrP4CuoneK
-X-Google-Smtp-Source: ABdhPJzh5NIvcXxTVpqZq5wFTPuzISxrj1qLS+Do69icnKYn1m/uBsWdwNds+75pJ49OmY40u80JWQ==
-X-Received: by 2002:ac8:6c22:: with SMTP id k2mr2162942qtu.303.1621298607295;
-        Mon, 17 May 2021 17:43:27 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:14c:73:9a01::1002])
-        by smtp.gmail.com with ESMTPSA id q192sm11858060qke.89.2021.05.17.17.43.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 17:43:26 -0700 (PDT)
-Date:   Mon, 17 May 2021 21:43:22 -0300
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        fabioaiuto83@gmail.com
-Subject: Re: [PATCH 1/2] staging: iio: cdc: ad7746: clean up driver comments
- and probe return
-Message-ID: <20210518004322.v2hshj2xzj37vgmg@smtp.gmail.com>
-References: <cover.1620766020.git.lucas.p.stankus@gmail.com>
- <687a1923add71303da13e3a838e97a6ffc7dcda7.1620766020.git.lucas.p.stankus@gmail.com>
- <20210513170012.78326bfa@jic23-huawei>
+        id S1345080AbhERAoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:44:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239149AbhERAom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 20:44:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22C0D60FF0;
+        Tue, 18 May 2021 00:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621298605;
+        bh=YhiRwfdTmsYWyIN8KfAxmHBe/njsn546d3dY8ADNxg4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=JGZFQJSbnkMWdYXTittkfh+uDbQRsOYMx1H4lXaD1nBSB8bW6BDmQuUQJXbSsqt85
+         xNnv/7c1/Ax5CqCOE1xahL4hZ/GdNjVUMkuhNnoHnv7DQZLVMtqMKxT6AKD28Jf8Bc
+         J8OcmJZXudlxVLPGxo/UhQiOLgpQrks6LHv0s/Zc5SquGlZg19Elntm/cBQODi0JWY
+         gDVegA4O2FBp0KxhTR6karwrzp4l4z9I17S+1IZ7JpFnxHICY3mIsuX3Nes2ocrV8r
+         VXQHET3d1VW9knKUMSlZ5y0gP/sdzviuAjrlarbCQETjva7/EGgYZZGTTGnlFf0+q6
+         Pb/ZPRE41MgKA==
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in kmalloc_index()
+ to compile-time
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
+        linux-next@vger.kernel.org, ndesaulniers@google.com,
+        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
+        Marco Elver <elver@google.com>
+References: <20210511173448.GA54466@hyeyoo> <20210515210950.GA52841@hyeyoo>
+ <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
+ <YKC9CeAfw3aBmHTU@archlinux-ax161> <20210518003859.GC80297@hyeyoo>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <a1287a21-bcbb-77ed-c88d-f5890b785213@kernel.org>
+Date:   Mon, 17 May 2021 17:43:22 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210513170012.78326bfa@jic23-huawei>
+In-Reply-To: <20210518003859.GC80297@hyeyoo>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 12:59 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Tue, 11 May 2021 17:54:01 -0300
-> Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
->
-> > Remove vague comments, align temperature comment with indent block and
-> > simplify probe return on device register.
-> >
-> > Also fix the following checkpatch warning:
-> > CHECK: Alignment should match open parenthesis
-> >
-> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
->
-> As Fabio pointed out, finer grained patches with one type of change per
-> patch would be good.
+On 5/17/2021 5:38 PM, Hyeonggon Yoo wrote:
+> On Sat, May 15, 2021 at 11:34:49PM -0700, Nathan Chancellor wrote:
+>> This should work I think:
+> 
+> compiled well with clang-10.0.1, clang-11.0.0,
+> and gcc-10.2.0 with x86_64 default config.
+> 
+> is the condition CONFIG_CLANG_VERSION > 110000,
+> not including 110000 it self?
 
-Thank you both for the review and sorry for the radio silence, I'll split
-the patch in the v2.
+Ah sorry, that should definitely be >= :(
 
->
-> > ---
-> >  drivers/staging/iio/cdc/ad7746.c | 31 ++++++++++---------------------
-> >  1 file changed, 10 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> > index dfd71e99e872..e03d010b2f4c 100644
-> > --- a/drivers/staging/iio/cdc/ad7746.c
-> > +++ b/drivers/staging/iio/cdc/ad7746.c
-> > @@ -84,10 +84,6 @@
-> >  #define AD7746_CAPDAC_DACEN          BIT(7)
-> >  #define AD7746_CAPDAC_DACP(x)                ((x) & 0x7F)
-> >
-> > -/*
-> > - * struct ad7746_chip_info - chip specific information
-> > - */
-> > -
-> >  struct ad7746_chip_info {
-> >       struct i2c_client *client;
-> >       struct mutex lock; /* protect sensor state */
-> > @@ -232,13 +228,14 @@ static int ad7746_select_channel(struct iio_dev *indio_dev,
-> >
-> >               if (chip->capdac_set != chan->channel) {
-> >                       ret = i2c_smbus_write_byte_data(chip->client,
-> > -                             AD7746_REG_CAPDACA,
-> > -                             chip->capdac[chan->channel][0]);
-> > +                                                     AD7746_REG_CAPDACA,
-> > +                                                     chip->capdac[chan->channel][0]);
-> >                       if (ret < 0)
-> >                               return ret;
-> > +                       ret = i2c_smbus_write_byte_data(chip->client,
-> > -                             AD7746_REG_CAPDACB,
-> > -                             chip->capdac[chan->channel][1]);
-> > +                                                     AD7746_REG_CAPDACB,
-> > +                                                     chip->capdac[chan->channel][1]);
-> >                       if (ret < 0)
-> >                               return ret;
->
-> I wondered if it might be sensible to factor this code out to reduce the indent
-> and make things more readable.  Having taken a look it seems there is another
-> place with exactly the same call sequence.  From how it's used there, I'm
-> assuming this is updating the offsets.  As such, I would introduce an
->
-> ad7746_offsets_set(struct iio_dev *indio_dev, int channel)
->
-> or similar.
->
+That is what I get for writing an email that late... in reality, it 
+probably won't matter due to the availability of 11.0.1 and 11.1.0 but 
+it should absolutely be changed.
 
-Makes sense, I'll do that in the v2 as well.
+I have not given Nick's patch a go yet but would something like this be 
+acceptable? If so, did you want me to send a formal fixup patch or did 
+you want to send a v4? I have no personal preference.
 
->
-> >
-> > @@ -564,10 +561,10 @@ static int ad7746_read_raw(struct iio_dev *indio_dev,
-> >
-> >               switch (chan->type) {
-> >               case IIO_TEMP:
-> > -             /*
-> > -              * temperature in milli degrees Celsius
-> > -              * T = ((*val / 2048) - 4096) * 1000
-> > -              */
-> > +                     /*
-> > +                      * temperature in milli degrees Celsius
-> > +                      * T = ((*val / 2048) - 4096) * 1000
-> > +                      */
-> >                       *val = (*val * 125) / 256;
-> >                       break;
-> >               case IIO_VOLTAGE:
-> > @@ -669,10 +666,6 @@ static const struct iio_info ad7746_info = {
-> >       .write_raw = ad7746_write_raw,
-> >  };
-> >
-> > -/*
-> > - * device probe and remove
-> > - */
-> > -
-> >  static int ad7746_probe(struct i2c_client *client,
-> >                       const struct i2c_device_id *id)
-> >  {
-> > @@ -730,11 +723,7 @@ static int ad7746_probe(struct i2c_client *client,
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > -     ret = devm_iio_device_register(indio_dev->dev.parent, indio_dev);
-> > -     if (ret)
-> > -             return ret;
-> > -
-> > -     return 0;
-> > +     return devm_iio_device_register(indio_dev->dev.parent, indio_dev);
-> >  }
-> >
-> >  static const struct i2c_device_id ad7746_id[] = {
->
+>> diff --git a/include/linux/slab.h b/include/linux/slab.h
+>> index 9d316aac0aba..1b653266f2aa 100644
+>> --- a/include/linux/slab.h
+>> +++ b/include/linux/slab.h
+>> @@ -413,7 +413,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
+>>   	if (size <=  16 * 1024 * 1024) return 24;
+>>   	if (size <=  32 * 1024 * 1024) return 25;
+>>   
+>> -	if (size_is_constant)
+>> +	if ((IS_ENABLED(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION > 110000) && size_is_constant)
+>>   		BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+>>   	else
+>>   		BUG();
+
