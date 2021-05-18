@@ -2,123 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491DA3880DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672503880DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351990AbhERT6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239073AbhERT6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:58:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AD5F61285;
-        Tue, 18 May 2021 19:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621367841;
-        bh=W7vLOdSKLFgEV5k0jhtQlIFKhbJ5L0R4LHTEFOdxSEU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QB4owFZkV2aDv2Fu2AUqXpp1mPGhL+DBAl+X9CUe2kA9z7gV73+vpOSALb+GFc/uY
-         yYqrltR7+tl/2QJpbWuQ0i/fmZJr/KumoCq+MbADkLC03y8qCvMgYcManl5tMO+qlG
-         Z6eICpd3qq24t7KPwZa/FDikKy/5Ni3gryIdCHKeRFHH7izT3K5Mue1sd/4BDVa1uK
-         VgyyOWf/i0TUZA2dAnsMaK4QH5hIfDn2/Yh0DHQ3jkMVkpXUv5Q6wIbvHPRNqhTBoy
-         noUU97EU5lAfRE30LqZW7OPkkXq2R4rEYXUpCvO+XNyfVzbsHJicWS/xRgvOcPdk2n
-         lNIOvIJLs1Zsg==
-Date:   Tue, 18 May 2021 22:57:19 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] selftests/sgx: Migrate to kselftest harness
-Message-ID: <YKQcH2/5ENIp2Bps@kernel.org>
-References: <20210512215323.420639-1-jarkko@kernel.org>
- <20210512215323.420639-2-jarkko@kernel.org>
- <3b920525-694c-a8e4-93f5-7b1a3f9ad009@intel.com>
- <YKP+CavM21klDHH8@kernel.org>
+        id S239073AbhERT7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351992AbhERT67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 15:58:59 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8687CC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:57:40 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id h7so5732692plt.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JvjDB9x37KbkhXGo+mBIOIKWP7D/vvjksKE9jNsnqVM=;
+        b=XlBzqimzzkY84/NrA1P3tJSm49jxfiKijMeSOBsbwBNlL6+dhVZ9sUpEyWvvnBMr52
+         sT0udTR/tCkm+5hqS3C1BG00fWJon8JhQezqR32DuJvJTc1eZdxx94zztu0kzi7ooAdI
+         7cq2ep8B5IM6VMgaWLuLIkEklwTqmuexNpLzIsepNCI7vuseTs6whFcCu53wXSHlNiP2
+         gMRw4iKefuEP7ZG/RNntgFHUBIIiM5G+jjoQlDgFWQBO/bLTxcFD5EYXb6ifEnxDlXH6
+         kFQKgVxLSHtAR1LrrAwWRYEpbjYVKKINihgKCXncmNOLzFL4LHLh2NieKWVMS5S8LQUs
+         c9AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JvjDB9x37KbkhXGo+mBIOIKWP7D/vvjksKE9jNsnqVM=;
+        b=AEYsigHLT1DDC9KLcClchKXtAoISvdrDPfkh5Rq+MUie2xhIanuN74B50rni48uTHm
+         YXLU+8k6bhVeUq2W8ZYYDQmZ/EZ+bVcTWVuSFVWjPoUgLxSMr5OFpyZN8IgaxdAmjMQT
+         Id7hnosLjeRCy1WPyqyprGIEHkJKZOW3t+E3giv+JIYJ7E9aN4Cqb1eusPiSACRh7eSe
+         rQaf/w8o6cU91zQLUrE2ZfNjX2hu/8k4alyBQ+GwNTZW9y1nBxdbCn6rKf4kKAEobinf
+         71MUz4NMQT3Semb/Sep6WWKZp3mq+mPr9crGEhMUuLkyqPZ1XghkCb/iDz9SguGI1l9a
+         dJTw==
+X-Gm-Message-State: AOAM530UO8yzCnnEybVh4mFayc4nC9HKH/lppl/GVvDcJqYVm6ZGWinq
+        skqj9qNa42+xXlcHMIGE/x+ZJQ==
+X-Google-Smtp-Source: ABdhPJwk6T7X0m8/MN/fEIPyLCYo2XlEldnEZomo4j04VpS+puwXQbF5lr58CXwqsju89hCz1oFTWQ==
+X-Received: by 2002:a17:90a:4593:: with SMTP id v19mr6917000pjg.207.1621367859939;
+        Tue, 18 May 2021 12:57:39 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id g202sm6072346pfb.54.2021.05.18.12.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 12:57:39 -0700 (PDT)
+Date:   Tue, 18 May 2021 19:57:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] KVM: SVM: Drop unneeded CONFIG_X86_LOCAL_APIC
+ check for AVIC
+Message-ID: <YKQcL4ThiuCqWMIf@google.com>
+References: <20210518144339.1987982-1-vkuznets@redhat.com>
+ <20210518144339.1987982-2-vkuznets@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKP+CavM21klDHH8@kernel.org>
+In-Reply-To: <20210518144339.1987982-2-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 08:49:00PM +0300, Jarkko Sakkinen wrote:
-> On Mon, May 17, 2021 at 10:03:42AM -0700, Reinette Chatre wrote:
-> > Hi Jarkko,
-> > 
-> > On 5/12/2021 2:53 PM, Jarkko Sakkinen wrote:
-> > > Migrate to kselftest harness. Use a fixture test with enclave initialized
-> > > and de-initialized for each of the existing three tests, in other words:
-> > > 
-> > > 1. One FIXTURE() for managing the enclave life-cycle.
-> > > 2. Three TEST_F()'s, one for each test case.
-> > > 
-> > > This gives a leaps better reporting than before. Here's an example
-> > > transcript:
-> > > 
-> > > TAP version 13
-> > > 1..3
-> > > 
-> > > ok 1 enclave.unclobbered_vdso
-> > > 
-> > > ok 2 enclave.clobbered_vdso
-> > > 
-> > > ok 3 enclave.clobbered_vdso_and_user_function
-> > > 
-> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > ---
-> > > 
-> > > v5:
-> > > * Use TH_LOG() for printing enclave address ranges instead of printf(),
-> > >    based on Reinette's remark.
-> > 
-> > Thank you for considering my feedback. The motivation for my comment was to
-> > consider how this test output will be parsed. If these tests will have their
-> > output parsed by automated systems then it needs to conform to the TAP13
-> > format as supported by kselftest.
-> > 
-> > In your latest version the output printed during a successful test has been
-> > changed, using TH_LOG() as you noted. From what I can tell this is the only
-> > output addressed - failing tests continue to print error messages (perror,
-> > fprintf) without consideration of how they will be parsed. My apologies, I
-> > am not a kselftest expert to know what the best way for this integration is.
-> > 
-> > Reinette
+On Tue, May 18, 2021, Vitaly Kuznetsov wrote:
+> AVIC dependency on CONFIG_X86_LOCAL_APIC is dead code since
+> commit e42eef4ba388 ("KVM: add X86_LOCAL_APIC dependency").
 > 
-> It's a valid question, yes.
-> 
-> The problem is that only main.c can use kselftest macros because
-> kselftest_harness.h pulls 
-> 
-> static int test_harness_run(int __attribute__((unused)) argc,
-> 			    char __attribute__((unused)) **argv)
-> 
-> which will not end up having a call site (because there's no
-> "TEST_HARNESS_MAIN").
-> 
-> The whole logging thing in kselftest harness is a bit ambiguous.
-> Namely:
-> 
-> 1. There's a macro TH_LOG() defined in kselftest_harness.h, which
->    "internally" uses fprintf().
-> 2. There's an inline function ksft_print_msg() in kselftest.h
->    using vsprintf().
-> 
-> To add to that, kselftest_harness.h internally prints by using
-> ksft_print_msg(), and provides TH_LOG(), which does not use
-> ksft_print_msg().
-> 
-> I don't really get the logic in all this.
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
 
-I tried to split TH_LOG() as separate entity but it's not possible, as the
-macros access a static variable called '_metadata'.
-
-I'm not exactly sure how to proceed from this, if we want to make logging
-consistent.
-
-I would personally suggest to leave the error messages intact in load.c,
-because there is no way to make them consistent, except by removing them.
-
-/Jarkko
+Reviewed-by: Sean Christopherson <seanjc@google.com>
