@@ -2,280 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C510387A33
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E573387A36
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhERNmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:42:51 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:37022 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhERNmm (ORCPT
+        id S232010AbhERNnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:43:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32662 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231718AbhERNnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:42:42 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lizyG-00Axt3-Vi; Tue, 18 May 2021 07:41:17 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lizyF-0005tf-St; Tue, 18 May 2021 07:41:16 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        kexec@lists.infradead.org
-References: <20210517203343.3941777-1-arnd@kernel.org>
-        <20210517203343.3941777-2-arnd@kernel.org>
-Date:   Tue, 18 May 2021 08:41:07 -0500
-In-Reply-To: <20210517203343.3941777-2-arnd@kernel.org> (Arnd Bergmann's
-        message of "Mon, 17 May 2021 22:33:40 +0200")
-Message-ID: <m1bl982m8c.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 18 May 2021 09:43:00 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IDX03t044105;
+        Tue, 18 May 2021 09:41:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pOIHMhFzCXCPWmC6yM0WDfHScvMC60L69Vu1xZDuV+k=;
+ b=buOqMCqUbs05ypERFCytSfHKY8NvqNnh64Ow+u3cB3i0gsQxycTGJubcIwiwthFmDcFN
+ yaub+ZhiAQREogTHB0aTYDvPxsZY4PT6IFHVXlHE7+LPvSlAHi/HuRKKoaWFL2C3ZJW9
+ Ld5Wl4gGfSTxHx9F/s/kzccsY23ZCsXglZ30BoDVd+wLwfyROjvYeFIvO0Fe2k8MwX46
+ K6sv56gqKtAkUN+jam5Oti3HuvcjIpsv4NhMs4oLP05XPBz6SOgDixM98O0GrbGTXGXV
+ B3JZusbfl+VDqH36ka2vCnBKfBfejgwO6x4y0A0yHaoU4Yq07Jt7KSPbmp/6ix85eb8A 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38mc33w0ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 09:41:38 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IDYK7Z051492;
+        Tue, 18 May 2021 09:41:37 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38mc33w0nd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 09:41:37 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IDcl03021963;
+        Tue, 18 May 2021 13:41:37 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 38j7taxw9d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 13:41:37 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IDfaAU31260994
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 May 2021 13:41:36 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63AF8AC075;
+        Tue, 18 May 2021 13:41:36 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF779AC068;
+        Tue, 18 May 2021 13:41:35 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 18 May 2021 13:41:35 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+ <20210512203536.4209c29c.pasic@linux.ibm.com>
+ <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
+ <20210513194541.58d1628a.pasic@linux.ibm.com>
+ <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
+ <20210514021500.60ad2a22.pasic@linux.ibm.com>
+ <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
+ <20210517211030.368ca64b.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <f9785365-0269-c22e-f9b1-c261a15dad23@linux.ibm.com>
+Date:   Tue, 18 May 2021 09:41:35 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lizyF-0005tf-St;;;mid=<m1bl982m8c.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+3MixM5wFfwyFMlKmVM10vOLfImi60fNc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Arnd Bergmann <arnd@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 683 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 13 (1.8%), b_tie_ro: 11 (1.6%), parse: 1.70
-        (0.2%), extract_message_metadata: 24 (3.5%), get_uri_detail_list: 5
-        (0.7%), tests_pri_-1000: 19 (2.8%), tests_pri_-950: 1.52 (0.2%),
-        tests_pri_-900: 1.23 (0.2%), tests_pri_-90: 147 (21.5%), check_bayes:
-        145 (21.2%), b_tokenize: 15 (2.2%), b_tok_get_all: 10 (1.5%),
-        b_comp_prob: 2.8 (0.4%), b_tok_touch_all: 113 (16.5%), b_finish: 1.09
-        (0.2%), tests_pri_0: 454 (66.5%), check_dkim_signature: 0.75 (0.1%),
-        check_dkim_adsp: 3.0 (0.4%), poll_dns_idle: 0.82 (0.1%), tests_pri_10:
-        4.3 (0.6%), tests_pri_500: 13 (1.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3 1/4] kexec: simplify compat_sys_kexec_load
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20210517211030.368ca64b.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Jei_MJs9UKrk_-BTfg_EgVxlxWZhhFex
+X-Proofpoint-ORIG-GUID: tPi5cajfSfIEV8GjPca5OHFx9Kz7Wr-S
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_04:2021-05-18,2021-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ bulkscore=0 clxscore=1015 mlxscore=0 impostorscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105180096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
 
-> From: Arnd Bergmann <arnd@arndb.de>
+
+On 5/17/21 3:10 PM, Halil Pasic wrote:
+> On Mon, 17 May 2021 09:37:42 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 >
-> The compat version of sys_kexec_load() uses compat_alloc_user_space to
-> convert the user-provided arguments into the native format.
->
-> Move the conversion into the regular implementation with
-> an in_compat_syscall() check to simplify it and avoid the
-> compat_alloc_user_space() call.
->
-> compat_sys_kexec_load() now behaves the same as sys_kexec_load().
+>>> Because of this, I don't think the rest of your argument is valid.
+>> Okay, so your concern is that between the point in time the
+>> vcpu->kvm->arch.crypto.pqap_hook pointer is checked in
+>> priv.c and the point in time the handle_pqap() function
+>> in vfio_ap_ops.c is called, the memory allocated for the
+>> matrix_mdev containing the struct kvm_s390_module_hook
+>> may get freed, thus rendering the function pointer invalid.
+>> While not impossible, that seems extremely unlikely to
+>> happen. Can you articulate a scenario where that could
+>> even occur?
+> Malicious userspace. We tend to do the pqap aqic just once
+> in the guest right after the queue is detected. I do agree
+> it ain't very likely to happen during normal operation. But why are
+> you asking?
 
-Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-
-The patch is wrong.
-
-The logic between the compat entry point and the ordinary entry point
-are by necessity different.   This unifies the logic and breaks the compat
-entry point.
-
-The fundamentally necessity is that the code being loaded needs to know
-which mode the kernel is running in so it can safely transition to the
-new kernel.
-
-Given that the two entry points fundamentally need different logic,
-and that difference was not preserved and the goal of this patchset
-was to unify that which fundamentally needs to be different.  I don't
-think this patch series makes any sense for kexec.
-
-Eric
-
-
-
+I'm just trying to wrap my head around how this can
+happen given the incredibly small window between
+access to the pointer to the structure containing the
+function pointer and access to the function pointer
+itself.
 
 >
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/linux/kexec.h |  2 -
->  kernel/kexec.c        | 95 +++++++++++++++++++------------------------
->  2 files changed, 42 insertions(+), 55 deletions(-)
+> I'm not sure I understood correctly what kind of a scenario are
+> you asking for. PQAP AQIC and mdev remove are independent
+> events originated in userspace, so AFAIK we may not assume
+> that the execution of two won't overlap, nor are we allowed
+> to make assumptions on how does the execution of these two
+> overlap (except for the things we explicitly ensure -- e.g.
+> some parts are made mutually exclusive using the matrix_dev->lock
+> lock).
+
+It looks like we need a way to control access to the
+struct kvm_s390_module_hook. I'm looking into
+Christian's suggestion for using RCU as well as other
+solutions.
+
 >
-> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-> index 0c994ae37729..f61e310d7a85 100644
-> --- a/include/linux/kexec.h
-> +++ b/include/linux/kexec.h
-> @@ -88,14 +88,12 @@ struct kexec_segment {
->  	size_t memsz;
->  };
->  
-> -#ifdef CONFIG_COMPAT
->  struct compat_kexec_segment {
->  	compat_uptr_t buf;
->  	compat_size_t bufsz;
->  	compat_ulong_t mem;	/* User space sees this as a (void *) ... */
->  	compat_size_t memsz;
->  };
-> -#endif
->  
->  #ifdef CONFIG_KEXEC_FILE
->  struct purgatory_info {
-> diff --git a/kernel/kexec.c b/kernel/kexec.c
-> index c82c6c06f051..6618b1d9f00b 100644
-> --- a/kernel/kexec.c
-> +++ b/kernel/kexec.c
-> @@ -19,21 +19,46 @@
->  
->  #include "kexec_internal.h"
->  
-> +static int copy_user_compat_segment_list(struct kimage *image,
-> +					 unsigned long nr_segments,
-> +					 void __user *segments)
-> +{
-> +	struct compat_kexec_segment __user *cs = segments;
-> +	struct compat_kexec_segment segment;
-> +	int i;
-> +
-> +	for (i = 0; i < nr_segments; i++) {
-> +		if (copy_from_user(&segment, &cs[i], sizeof(segment)))
-> +			return -EFAULT;
-> +
-> +		image->segment[i] = (struct kexec_segment) {
-> +			.buf   = compat_ptr(segment.buf),
-> +			.bufsz = segment.bufsz,
-> +			.mem   = segment.mem,
-> +			.memsz = segment.memsz,
-> +		};
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +
->  static int copy_user_segment_list(struct kimage *image,
->  				  unsigned long nr_segments,
->  				  struct kexec_segment __user *segments)
->  {
-> -	int ret;
->  	size_t segment_bytes;
->  
->  	/* Read in the segments */
->  	image->nr_segments = nr_segments;
->  	segment_bytes = nr_segments * sizeof(*segments);
-> -	ret = copy_from_user(image->segment, segments, segment_bytes);
-> -	if (ret)
-> -		ret = -EFAULT;
-> +	if (in_compat_syscall())
-> +		return copy_user_compat_segment_list(image, nr_segments, segments);
->  
-> -	return ret;
-> +	if (copy_from_user(image->segment, segments, segment_bytes))
-> +		return -EFAULT;
-> +
-> +	return 0;
->  }
->  
->  static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
-> @@ -233,8 +258,9 @@ static inline int kexec_load_check(unsigned long nr_segments,
->  	return 0;
->  }
->  
-> -SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
-> -		struct kexec_segment __user *, segments, unsigned long, flags)
-> +static int kernel_kexec_load(unsigned long entry, unsigned long nr_segments,
-> +			     struct kexec_segment __user * segments,
-> +			     unsigned long flags)
->  {
->  	int result;
->  
-> @@ -265,57 +291,20 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
->  	return result;
->  }
->  
-> +SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
-> +		struct kexec_segment __user *, segments, unsigned long, flags)
-> +{
-> +	return kernel_kexec_load(entry, nr_segments, segments, flags);
-> +}
-> +
->  #ifdef CONFIG_COMPAT
->  COMPAT_SYSCALL_DEFINE4(kexec_load, compat_ulong_t, entry,
->  		       compat_ulong_t, nr_segments,
->  		       struct compat_kexec_segment __user *, segments,
->  		       compat_ulong_t, flags)
->  {
-> -	struct compat_kexec_segment in;
-> -	struct kexec_segment out, __user *ksegments;
-> -	unsigned long i, result;
-> -
-> -	result = kexec_load_check(nr_segments, flags);
-> -	if (result)
-> -		return result;
-> -
-> -	/* Don't allow clients that don't understand the native
-> -	 * architecture to do anything.
-> -	 */
-> -	if ((flags & KEXEC_ARCH_MASK) == KEXEC_ARCH_DEFAULT)
-> -		return -EINVAL;
-> -
-> -	ksegments = compat_alloc_user_space(nr_segments * sizeof(out));
-> -	for (i = 0; i < nr_segments; i++) {
-> -		result = copy_from_user(&in, &segments[i], sizeof(in));
-> -		if (result)
-> -			return -EFAULT;
-> -
-> -		out.buf   = compat_ptr(in.buf);
-> -		out.bufsz = in.bufsz;
-> -		out.mem   = in.mem;
-> -		out.memsz = in.memsz;
-> -
-> -		result = copy_to_user(&ksegments[i], &out, sizeof(out));
-> -		if (result)
-> -			return -EFAULT;
-> -	}
-> -
-> -	/* Because we write directly to the reserved memory
-> -	 * region when loading crash kernels we need a mutex here to
-> -	 * prevent multiple crash  kernels from attempting to load
-> -	 * simultaneously, and to prevent a crash kernel from loading
-> -	 * over the top of a in use crash kernel.
-> -	 *
-> -	 * KISS: always take the mutex.
-> -	 */
-> -	if (!mutex_trylock(&kexec_mutex))
-> -		return -EBUSY;
-> -
-> -	result = do_kexec_load(entry, nr_segments, ksegments, flags);
-> -
-> -	mutex_unlock(&kexec_mutex);
-> -
-> -	return result;
-> +	return kernel_kexec_load(entry, nr_segments,
-> +				 (struct kexec_segment __user *)segments,
-> +				 flags);
->  }
->  #endif
+> Regards,
+> Halil
+>
+
