@@ -2,49 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818D4387502
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A27E38750F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347847AbhERJZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344886AbhERJZ5 (ORCPT
+        id S1347860AbhERJ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:28:30 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:43684 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240100AbhERJ21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:25:57 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABAAC061573;
-        Tue, 18 May 2021 02:24:40 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id C4AEF2FA; Tue, 18 May 2021 11:24:38 +0200 (CEST)
-Date:   Tue, 18 May 2021 11:24:37 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Bixuan Cui <cuibixuan@huawei.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] iommu/virtio: Add missing MODULE_DEVICE_TABLE
-Message-ID: <YKOH1SvN0CrfRgZ9@8bytes.org>
-References: <20210508031451.53493-1-cuibixuan@huawei.com>
+        Tue, 18 May 2021 05:28:27 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.15]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee160a3885f1a8-8c1f2; Tue, 18 May 2021 17:26:56 +0800 (CST)
+X-RM-TRANSID: 2ee160a3885f1a8-8c1f2
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.21.77] (unknown[10.42.68.12])
+        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee860a3885e647-b4121;
+        Tue, 18 May 2021 17:26:55 +0800 (CST)
+X-RM-TRANSID: 2ee860a3885e647-b4121
+Subject: Re: [PATCH] staging: iio: cdc: ad7746: Fix unnecessary check
+ andassignment in ad7746_probe()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        knaack.h@gmx.de, pmeerw@pmeerw.net, gregkh@linuxfoundation.org,
+        linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210517150006.8436-1-tangbin@cmss.chinamobile.com>
+ <20210518075254.GN1955@kadam>
+From:   tangbin <tangbin@cmss.chinamobile.com>
+Message-ID: <dfb7d829-94e6-2051-8795-79402160afdb@cmss.chinamobile.com>
+Date:   Tue, 18 May 2021 17:27:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210508031451.53493-1-cuibixuan@huawei.com>
+In-Reply-To: <20210518075254.GN1955@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 11:14:51AM +0800, Bixuan Cui wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  drivers/iommu/virtio-iommu.c | 1 +
->  1 file changed, 1 insertion(+)
+Hi Dan：
 
-Applied for v5.13, thanks.
+On 2021/5/18 15:52, Dan Carpenter wrote:
+> On Mon, May 17, 2021 at 11:00:06PM +0800, Tang Bin wrote:
+>> @@ -730,11 +730,7 @@ static int ad7746_probe(struct i2c_client *client,
+>>   	if (ret < 0)
+>>   		return ret;
+>>   
+>> -	ret = devm_iio_device_register(indio_dev->dev.parent, indio_dev);
+>> -	if (ret)
+>> -		return ret;
+>> -
+>> -	return 0;
+>> +	return devm_iio_device_register(indio_dev->dev.parent, indio_dev);
+>>   }
+> This sort of thing is done deliberately as a style choice...  I probably
+> wouldn't have written it that way myself, but there really isn't a
+> downside to leaving it as-is.
+>
+> The unused "int ret = 0;" just introduces a static checker warning about
+> unused assignments and disables the static checker warning for
+> uninitialized variables so we want to remove that.
+>
+Got it, I will send this patch for you.
+
+Thanks
+
+Tang Bin
+
+
+
