@@ -2,140 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B048C387AA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47696387AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349763AbhEROHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:07:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54089 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244785AbhEROHS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:07:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621346760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hwF9LeDBndbc4TKf08dL36rjBtWuzIAPQdyuiQwz9l0=;
-        b=EIssXiAN5tS6NNyIZc2JG6IyyvrazfTOFL7w0fY2dFtysOAEWobhKtNv5ux92wa1Y+gEHn
-        E27gbfcfKPL0PwWI8SzzfFuUB69ityR+ZWxJcHvFI7VTVXiWam3J1kBZ2+hhc4MBroOdX1
-        7r9SdsFlQWZ2Nr5gSuOT4Ruc9jlz974=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-g1wRtwF3P3GgTgutta3mRQ-1; Tue, 18 May 2021 10:05:58 -0400
-X-MC-Unique: g1wRtwF3P3GgTgutta3mRQ-1
-Received: by mail-wm1-f72.google.com with SMTP id j128-20020a1c55860000b02901384b712094so585319wmb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:05:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hwF9LeDBndbc4TKf08dL36rjBtWuzIAPQdyuiQwz9l0=;
-        b=sTJF0q8QVeXAXjt/ACRJ6mkZRrcobKqdQGyIqPcnIWyMKmS5ztwO3Wr1aLR0+0vYC0
-         klAvnzzIuCJUjKytrtHTFHtJTAiriOtIzo81/2pjulXGy5z/O2ITu42zxSIM7QDFYo3+
-         3CSclQ2zmXEzx6UJKh4ACnadcxFnXiSxCh2uZNJSTnEiPX4xubSmXp5QSwjXB45zSrOb
-         yfMGREAQ9/JxCXb8XxRRlZvHb7JD1FBVAf2WhmQALXugIH+yQTqM3f4lD7joQyb/7QAS
-         y6qn7dEQ3QInBbMaMJOIPGpsd4RFCT5TRm5tCuFg9hE0pNahYVPKCIDZY1m1wraJDEWQ
-         xGIw==
-X-Gm-Message-State: AOAM532rfGAsrp6urNUlTwyfj85/tzgF4VxBZTULG+v6tX0dGEySj+7h
-        /d9wUCuDuHWm8lbnP0CuesUOyGFsQjqItnYnlJnhDhBumvd7WQKrzU9gQ4Lr/WwmtHqstIfWoJF
-        Duvi++Rqrf5jGyrSoLxE1acQ=
-X-Received: by 2002:a5d:4b08:: with SMTP id v8mr7352462wrq.122.1621346756525;
-        Tue, 18 May 2021 07:05:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyThmqOZjeIy3KQ28wEzYYlXG8qZbWV69joGSKqboCqYIqvYg8Pr78tyqaPsFc5dn36E6BTsQ==
-X-Received: by 2002:a5d:4b08:: with SMTP id v8mr7352437wrq.122.1621346756332;
-        Tue, 18 May 2021 07:05:56 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id y14sm2729448wmj.37.2021.05.18.07.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 07:05:55 -0700 (PDT)
-Date:   Tue, 18 May 2021 15:05:54 +0100
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/page_alloc: try oom if reclaim is unable to make
- forward progress
-Message-ID: <20210518140554.dwan66i4ttmzw4hj@ava.usersys.com>
-X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
-X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
-References: <20210315165837.789593-1-atomlin@redhat.com>
- <YFN8wXwJA59w9twA@dhcp22.suse.cz>
- <20210319172901.cror2u53b7caws3a@ava.usersys.com>
- <YFh10eSTKY5lbE9u@dhcp22.suse.cz>
- <20210325210159.r565fvfitoqeuykp@ava.usersys.com>
- <YF2YTNnyzWNHfrEg@dhcp22.suse.cz>
- <20210326112254.jy5jkiwtgj3pqkt2@ava.usersys.com>
- <YF3/YZPd+iz/xGu6@dhcp22.suse.cz>
+        id S1349774AbhEROHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:07:25 -0400
+Received: from mga14.intel.com ([192.55.52.115]:40327 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244785AbhEROHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 10:07:22 -0400
+IronPort-SDR: mvIvGkY4EEkezmry0/mCOpQuXV/sOyXe8+pbjk92ACcuoLEK0O0mZ33Jlozy8Wy2POcAh7oUFw
+ nmHmIEkOs32Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200413209"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="200413209"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 07:06:04 -0700
+IronPort-SDR: jC8sz1bNPimczh67OzWbwHkgHhSoGhxg1bBGuokQrEIPj/pXy9uCtGfPMd3vFO3xrxh9YSCeJE
+ 1HmNRlU2Nmrg==
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="472969079"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.30.127]) ([10.255.30.127])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 07:06:00 -0700
+Subject: Re: [PATCH v6 07/16] KVM: x86/pmu: Reprogram PEBS event to emulate
+ guest PEBS counter
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-8-like.xu@linux.intel.com>
+ <YKIz/J1HoOvbmR42@hirez.programming.kicks-ass.net>
+ <2d874bce-2823-13b4-0714-3de5b7c475f0@intel.com>
+ <YKPCxnKc1MGqXsJ4@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <6f4061ef-1a3e-b21c-2dd1-051bb93c846f@intel.com>
+Date:   Tue, 18 May 2021 22:05:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4oj4tq5xtvq4w6dd"
-Content-Disposition: inline
-In-Reply-To: <YF3/YZPd+iz/xGu6@dhcp22.suse.cz>
+In-Reply-To: <YKPCxnKc1MGqXsJ4@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/5/18 21:36, Peter Zijlstra wrote:
+> On Tue, May 18, 2021 at 09:28:52PM +0800, Xu, Like wrote:
+>
+>>> How would pebs && !intr be possible?
+>> I don't think it's possible.
+> And yet you keep that 'intr||pebs' weirdness :/
+>
+>>> Also; wouldn't this be more legible
+>>> when written like:
+>>>
+>>> 	perf_overflow_handler_t ovf = kvm_perf_overflow;
+>>>
+>>> 	...
+>>>
+>>> 	if (intr)
+>>> 		ovf = kvm_perf_overflow_intr;
+>>>
+>>> 	...
+>>>
+>>> 	event = perf_event_create_kernel_counter(&attr, -1, current, ovf, pmc);
+>>>
+>> Please yell if you don't like this:
+>>
+>> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+>> index 711294babb97..a607f5a1b9cd 100644
+>> --- a/arch/x86/kvm/pmu.c
+>> +++ b/arch/x86/kvm/pmu.c
+>> @@ -122,6 +122,8 @@ static void pmc_reprogram_counter(struct kvm_pmc *pmc,
+>> u32 type,
+>>                  .config = config,
+>>          };
+>>          bool pebs = test_bit(pmc->idx, (unsigned long *)&pmu->pebs_enable);
+>> +       perf_overflow_handler_t ovf = (intr || pebs) ?
+>> +               kvm_perf_overflow_intr : kvm_perf_overflow;
+> This, that's exactly the kind of code I wanted to get rid of. ?: has
+> it's place I suppose, but you're creating dense ugly code for no reason.
+>
+> 	perf_overflow_handle_t ovf = kvm_perf_overflow;
+>
+> 	if (intr)
+> 		ovf = kvm_perf_overflow_intr;
+>
+> Is so much easier to read. And if you really worry about that pebs
+> thing; you can add:
+>
+> 	WARN_ON_ONCE(pebs && !intr);
+>
 
---4oj4tq5xtvq4w6dd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Michal,
-
-On Fri 2021-03-26 16:36 +0100, Michal Hocko wrote:
-> OK, I kinda expected this would be not easily reproducible.
-
-Unfortunately, I'm still waiting for feedback on this.
-
-> We should be focusing on the compaction retry logic and see whether we
-> can have some "run away" scenarios there. Seeing so many retries without
-> compaction bailing out sounds like a bug in that retry logic.
-
-I suspect so.
-
-This is indeed a case of excessive reclaim/compaction retries (i.e. the
-last known value stored in the no_progress_loops variable was 31,611,688).
-
-What might be particularly unique about this situation is that a fatal
-signal was found pending. In this context, if I understand correctly, it
-does not make sense to retry compaction when the last known compact result
-was skipped and a fatal signal is pending.
-
-Looking at try_to_compact_pages(), indeed COMPACT_SKIPPED can be returned;
-albeit, not every zone, on the zone list, would be considered in the case
-a fatal signal is found to be pending. Yet, in should_compact_retry(),
-given the last known compaction result, each zone, on the zone list, can be
-considered/or checked (see compaction_zonelist_suitable()). If a zone e.g.
-was found to succeed then reclaim/compaction would be tried again
-(notwithstanding the above).
-
-
-
---=20
-Aaron Tomlin
-
---4oj4tq5xtvq4w6dd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEeQaE6/qKljiNHm6b4t6WWBnMd9YFAmCjybAACgkQ4t6WWBnM
-d9a+MBAAmH76h+vl0MTKp+BW4YxqXL9f0lULDieShMJQys2khOOQSuRcnFIsuCM3
-fg2AuDFB8SgKY++gws6+ardG9i6jtNRFEczsK0ZFwwvUzxo5TOZ78EE8/PaMeAcv
-z5o2pAGdSBARUGgBzNVzur60uGekXjiq2nG3shuU1BtgUiki1M3xXfzHFofvbrM7
-LPzIdnXUxmGVsMORH0raYkSdZNbP5xY2lKHCoUu/NpkVsqcRENNRwULgFIiDKexJ
-tRG1eOjDuJ0R7j5jTOIlsDtIuSdg2YAUEE1YNqt+05LvF7RjuRcKedlaelirw3Wv
-cuNTxFw0YBj8xLxcIBPzayzF0w480OAZg9jkC8RbRI/1scd5tp3GiEVPawiwFcHH
-GLg9FP2Y7qRDCymy2kurpW5xHnAj5gX0WvrApBXmTUR1eowwy27iRu39lvqN4k8P
-LAXSpk+YmQm231YuSv4qn9wGoIrzBwTWISMZL8vUW0oJ+TikSqEzenptOBm2HSQd
-U++Jyv8+ChbiiZan+spabF8RsOzKip0afwMNqzaOfklJ8DMy7PiCw6AAwI304LGj
-Bua6ba3UzY2/NXjJRqnNNWBUg2i50nm9YsuS4h5sLbWwaKimG6TAHnayeoBUdCgP
-45lMlrofia3baPxitQfsPbc51N37T/y1uQLZU4ui42EhCKB8bw0=
-=onqo
------END PGP SIGNATURE-----
-
---4oj4tq5xtvq4w6dd--
+Thanks!  Glad you could review my code.
+As a new generation, we do appreciate your patient guidance on your taste 
+in code.
 
