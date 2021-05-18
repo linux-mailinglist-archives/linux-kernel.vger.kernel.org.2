@@ -2,259 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4D9387B9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD10387BA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240034AbhEROqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:46:44 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:28465 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238737AbhEROqn (ORCPT
+        id S242441AbhEROsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:48:42 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:35591 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234550AbhEROsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:46:43 -0400
-Date:   Tue, 18 May 2021 14:45:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1621349123;
-        bh=7SqQ0z/yC4RMI5cS8AVUWXVYMaQLT2hax05NR/DcuiY=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=HXJrOc1cH5zHv5kORllo13xEMHOu/WkmzWOZwTV3mmMXcAns8T0Cq1GQ2LMElOrL6
-         x3BXl7S9Dhlsz+26bBI4A19KJZZxDMvXprGbroZBd6ZPej4Y764VGkDpwK5QGOE8ld
-         7OF/1/CFbuVND6wjEgSqrbFICvWkkUe7teLGMwi+BnD6ZNr0u7iqnjBwJDM/K/hCqu
-         2sNVHKfqRHSq763+VOoctmBSZ1DGWaMmworcWd5wOvLFq7tzlPAKCsNdjFvRS8JdMq
-         wDyFJ3qoiey66tIb1WF+BpsjbI6iB4fPw+x17Yg3EIu5gYRZXSog5t/8qMDMv0aQrG
-         8gGmrxDETYX6Q==
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] staging: rtl8723bs: remove if (true) statement
-Message-ID: <20210518144335.1677320-1-hello@bryanbrattlof.com>
+        Tue, 18 May 2021 10:48:41 -0400
+Received: by mail-ot1-f42.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so8849942otg.2;
+        Tue, 18 May 2021 07:47:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i/3knGC4CpMEkTbYVCH3cvqb7hCOaLFy+F4QJW4cARQ=;
+        b=VgIUTGjFIYEyx89OyA+x2eyprZkhbidxndWSDmGvKvsU2F/BjQhjZ37I0pcEaJ2UL+
+         Yd4zuVIZhMXhbSwHeMfwTbx9vxw4viMRyS9NSzqMBDQDBWmrp/aGsdL/stQQb0qP3F+g
+         yP1lkhXcn1ReYkYi+9TCyV1JkrkA0R9VX7nrK/DkvQDYIY3VIbhPbA2g94UooOs/wdz5
+         lsFdHM+9iudcJkLw47shxd6g8ONYgOgqYW1gKGJz9vysYJhRcq5IkgWXGwrEATFerEBI
+         ZwH6NE/9ITMiyBDfyJc6dZdI5s7kNcjUNff3V8Y3DWi5on/oZw7YtfrgYlYSeeRN4KI5
+         aVZQ==
+X-Gm-Message-State: AOAM533TChvvo9usaT6J3KEu6QzM2d7TUIGMb+2fcRqYDqE7AiG34h8Y
+        SG0SWqjtmLfLOYU1/7qDP8gRvUttxA==
+X-Google-Smtp-Source: ABdhPJwNmUr4/MF32fXbrpebVI1fsgUw9cKHKbmY3WR/0DiaZb3AQD49VP0j6t9aYWtsxn3SuKSE0w==
+X-Received: by 2002:a05:6830:1284:: with SMTP id z4mr4599470otp.148.1621349243412;
+        Tue, 18 May 2021 07:47:23 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v79sm3415081oia.14.2021.05.18.07.47.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 07:47:23 -0700 (PDT)
+Received: (nullmailer pid 656643 invoked by uid 1000);
+        Tue, 18 May 2021 14:47:22 -0000
+Date:   Tue, 18 May 2021 09:47:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: touchscreen: Convert resistive-adc-touch
+ binding to json schema
+Message-ID: <20210518144722.GA617855@robh.at.kernel.org>
+References: <20210517071825.20316-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517071825.20316-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'if (true) { ... }' will always evaluate to true. Remove it and
-save a few tabs for somewhere else.
+On Mon, May 17, 2021 at 09:18:24AM +0200, Oleksij Rempel wrote:
+> Convert the resistive-adc-touch binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../input/touchscreen/resistive-adc-touch.txt | 33 ----------
+>  .../touchscreen/resistive-adc-touch.yaml      | 61 +++++++++++++++++++
+>  2 files changed, 61 insertions(+), 33 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+> deleted file mode 100644
+> index af5223bb5bdd..000000000000
+> --- a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+> +++ /dev/null
+> @@ -1,33 +0,0 @@
+> -Generic resistive touchscreen ADC
+> -
+> -Required properties:
+> -
+> - - compatible: must be "resistive-adc-touch"
+> -The device must be connected to an ADC device that provides channels for
+> -position measurement and optional pressure.
+> -Refer to
+> -https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
+> -for details
+> -
+> - - iio-channels: must have at least two channels connected to an ADC device.
+> -These should correspond to the channels exposed by the ADC device and should
+> -have the right index as the ADC device registers them. These channels
+> -represent the relative position on the "x" and "y" axes.
+> - - iio-channel-names: must have all the channels' names. Mandatory channels
+> -are "x" and "y".
+> -
+> -Optional properties:
+> - - iio-channels: The third channel named "pressure" is optional and can be
+> -used if the ADC device also measures pressure besides position.
+> -If this channel is missing, pressure will be ignored and the touchscreen
+> -will only report position.
+> - - iio-channel-names: optional channel named "pressure".
+> -
+> -Example:
+> -
+> -	resistive_touch: resistive_touch {
+> -		compatible = "resistive-adc-touch";
+> -		touchscreen-min-pressure = <50000>;
+> -		io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
+> -		io-channel-names = "x", "y", "pressure";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+> new file mode 100644
+> index 000000000000..53df21a6589e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/resistive-adc-touch.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic resistive touchscreen ADC
+> +
+> +maintainers:
+> +  - Oleksij Rempel <o.rempel@pengutronix.de>
+> +
+> +description: |
+> +  Generic ADC based resistive touchscreen controller
+> +  The device must be connected to an ADC device that provides channels for
+> +  position measurement and optional pressure.
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: resistive-adc-touch
+> +
+> +  io-channels:
+> +    minItems: 2
+> +    maxItems: 3
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
----
- drivers/staging/rtl8723bs/core/rtw_ap.c | 159 ++++++++++++------------
- 1 file changed, 78 insertions(+), 81 deletions(-)
+maxItems is implied by the 'items' length.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8=
-723bs/core/rtw_ap.c
-index 9df4476b2e2d..98b1bec67999 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-@@ -59,112 +59,109 @@ static void update_BCNTIM(struct adapter *padapter)
- =09unsigned char *pie =3D pnetwork_mlmeext->IEs;
+> +    items:
+> +      - description: x
+> +      - description: y
+> +      - description: pressure (optional)
+> +
+> +  io-channel-names:
 
- =09/* update TIM IE */
--=09/* if (pstapriv->tim_bitmap) */
--=09if (true) {
--=09=09u8 *p, *dst_ie, *premainder_ie =3D NULL, *pbackup_remainder_ie =3D N=
-ULL;
--=09=09__le16 tim_bitmap_le;
--=09=09uint offset, tmp_len, tim_ielen, tim_ie_offset, remainder_ielen;
--
--=09=09tim_bitmap_le =3D cpu_to_le16(pstapriv->tim_bitmap);
--
--=09=09p =3D rtw_get_ie(pie + _FIXED_IE_LENGTH_,
--=09=09=09       WLAN_EID_TIM,
--=09=09=09       &tim_ielen,
--=09=09=09       pnetwork_mlmeext->IELength - _FIXED_IE_LENGTH_
--=09=09);
--=09=09if (p && tim_ielen > 0) {
--=09=09=09tim_ielen +=3D 2;
-+=09u8 *p, *dst_ie, *premainder_ie =3D NULL, *pbackup_remainder_ie =3D NULL=
-;
-+=09__le16 tim_bitmap_le;
-+=09uint offset, tmp_len, tim_ielen, tim_ie_offset, remainder_ielen;
+This needs minItems, too.
 
--=09=09=09premainder_ie =3D p + tim_ielen;
-+=09tim_bitmap_le =3D cpu_to_le16(pstapriv->tim_bitmap);
+> +    items:
+> +      - const: x
+> +      - const: y
+> +      - const: pressure
+> +
+> +  touchscreen-size-x: true
+> +  touchscreen-size-y: true
+> +  touchscreen-fuzz-x: true
+> +  touchscreen-fuzz-y: true
+> +  touchscreen-inverted-x: true
+> +  touchscreen-inverted-y: true
+> +  touchscreen-swapped-x-y: true
+> +  touchscreen-min-pressure: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - io-channels
+> +  - io-channel-names
+> +
+> +examples:
+> +  - |
+> +    resistive_touch {
 
--=09=09=09tim_ie_offset =3D (signed int)(p - pie);
-+=09p =3D rtw_get_ie(pie + _FIXED_IE_LENGTH_,
-+=09=09       WLAN_EID_TIM,
-+=09=09       &tim_ielen,
-+=09=09       pnetwork_mlmeext->IELength - _FIXED_IE_LENGTH_
-+=09);
-+=09if (p && tim_ielen > 0) {
-+=09=09tim_ielen +=3D 2;
+touchscreen {
 
--=09=09=09remainder_ielen =3D pnetwork_mlmeext->IELength - tim_ie_offset - =
-tim_ielen;
-+=09=09premainder_ie =3D p + tim_ielen;
-
--=09=09=09/* append TIM IE from dst_ie offset */
--=09=09=09dst_ie =3D p;
--=09=09} else {
--=09=09=09tim_ielen =3D 0;
-+=09=09tim_ie_offset =3D (signed int)(p - pie);
-
--=09=09=09/* calculate head_len */
--=09=09=09offset =3D _FIXED_IE_LENGTH_;
-+=09=09remainder_ielen =3D pnetwork_mlmeext->IELength - tim_ie_offset - tim=
-_ielen;
-
--=09=09=09/* get ssid_ie len */
--=09=09=09p =3D rtw_get_ie(pie + _BEACON_IE_OFFSET_,
--=09=09=09=09       WLAN_EID_SSID,
--=09=09=09=09       &tmp_len,
--=09=09=09=09       (pnetwork_mlmeext->IELength - _BEACON_IE_OFFSET_)
--=09=09=09);
--=09=09=09if (p)
--=09=09=09=09offset +=3D tmp_len + 2;
-+=09=09/* append TIM IE from dst_ie offset */
-+=09=09dst_ie =3D p;
-+=09} else {
-+=09=09tim_ielen =3D 0;
-
--=09=09=09/*  get supported rates len */
--=09=09=09p =3D rtw_get_ie(pie + _BEACON_IE_OFFSET_,
--=09=09=09=09       WLAN_EID_SUPP_RATES, &tmp_len,
--=09=09=09=09       (pnetwork_mlmeext->IELength - _BEACON_IE_OFFSET_)
--=09=09=09);
--=09=09=09if (p)
--=09=09=09=09offset +=3D tmp_len + 2;
-+=09=09/* calculate head_len */
-+=09=09offset =3D _FIXED_IE_LENGTH_;
-
--=09=09=09/* DS Parameter Set IE, len =3D3 */
--=09=09=09offset +=3D 3;
-+=09=09/* get ssid_ie len */
-+=09=09p =3D rtw_get_ie(pie + _BEACON_IE_OFFSET_,
-+=09=09=09       WLAN_EID_SSID,
-+=09=09=09       &tmp_len,
-+=09=09=09       (pnetwork_mlmeext->IELength - _BEACON_IE_OFFSET_)
-+=09=09);
-+=09=09if (p)
-+=09=09=09offset +=3D tmp_len + 2;
-
--=09=09=09premainder_ie =3D pie + offset;
-+=09=09/*  get supported rates len */
-+=09=09p =3D rtw_get_ie(pie + _BEACON_IE_OFFSET_,
-+=09=09=09       WLAN_EID_SUPP_RATES, &tmp_len,
-+=09=09=09       (pnetwork_mlmeext->IELength - _BEACON_IE_OFFSET_)
-+=09=09);
-+=09=09if (p)
-+=09=09=09offset +=3D tmp_len + 2;
-
--=09=09=09remainder_ielen =3D pnetwork_mlmeext->IELength - offset - tim_iel=
-en;
-+=09=09/* DS Parameter Set IE, len =3D3 */
-+=09=09offset +=3D 3;
-
--=09=09=09/* append TIM IE from offset */
--=09=09=09dst_ie =3D pie + offset;
--=09=09}
-+=09=09premainder_ie =3D pie + offset;
-
--=09=09if (remainder_ielen > 0) {
--=09=09=09pbackup_remainder_ie =3D rtw_malloc(remainder_ielen);
--=09=09=09if (pbackup_remainder_ie && premainder_ie)
--=09=09=09=09memcpy(pbackup_remainder_ie, premainder_ie, remainder_ielen);
--=09=09}
-+=09=09remainder_ielen =3D pnetwork_mlmeext->IELength - offset - tim_ielen;
-
--=09=09*dst_ie++ =3D WLAN_EID_TIM;
-+=09=09/* append TIM IE from offset */
-+=09=09dst_ie =3D pie + offset;
-+=09}
-
--=09=09if ((pstapriv->tim_bitmap & 0xff00) && (pstapriv->tim_bitmap & 0x00f=
-e))
--=09=09=09tim_ielen =3D 5;
--=09=09else
--=09=09=09tim_ielen =3D 4;
-+=09if (remainder_ielen > 0) {
-+=09=09pbackup_remainder_ie =3D rtw_malloc(remainder_ielen);
-+=09=09if (pbackup_remainder_ie && premainder_ie)
-+=09=09=09memcpy(pbackup_remainder_ie, premainder_ie, remainder_ielen);
-+=09}
-
--=09=09*dst_ie++ =3D tim_ielen;
-+=09*dst_ie++ =3D WLAN_EID_TIM;
-
--=09=09*dst_ie++ =3D 0;/* DTIM count */
--=09=09*dst_ie++ =3D 1;/* DTIM period */
-+=09if ((pstapriv->tim_bitmap & 0xff00) && (pstapriv->tim_bitmap & 0x00fe))
-+=09=09tim_ielen =3D 5;
-+=09else
-+=09=09tim_ielen =3D 4;
-
--=09=09if (pstapriv->tim_bitmap & BIT(0))/* for bc/mc frames */
--=09=09=09*dst_ie++ =3D BIT(0);/* bitmap ctrl */
--=09=09else
--=09=09=09*dst_ie++ =3D 0;
-+=09*dst_ie++ =3D tim_ielen;
-
--=09=09if (tim_ielen =3D=3D 4) {
--=09=09=09__le16 pvb;
-+=09*dst_ie++ =3D 0;/* DTIM count */
-+=09*dst_ie++ =3D 1;/* DTIM period */
-
--=09=09=09if (pstapriv->tim_bitmap & 0xff00)
--=09=09=09=09pvb =3D cpu_to_le16(pstapriv->tim_bitmap >> 8);
--=09=09=09else
--=09=09=09=09pvb =3D tim_bitmap_le;
-+=09if (pstapriv->tim_bitmap & BIT(0))/* for bc/mc frames */
-+=09=09*dst_ie++ =3D BIT(0);/* bitmap ctrl */
-+=09else
-+=09=09*dst_ie++ =3D 0;
-
--=09=09=09*dst_ie++ =3D le16_to_cpu(pvb);
-+=09if (tim_ielen =3D=3D 4) {
-+=09=09__le16 pvb;
-
--=09=09} else if (tim_ielen =3D=3D 5) {
--=09=09=09memcpy(dst_ie, &tim_bitmap_le, 2);
--=09=09=09dst_ie +=3D 2;
--=09=09}
-+=09=09if (pstapriv->tim_bitmap & 0xff00)
-+=09=09=09pvb =3D cpu_to_le16(pstapriv->tim_bitmap >> 8);
-+=09=09else
-+=09=09=09pvb =3D tim_bitmap_le;
-
--=09=09/* copy remainder IE */
--=09=09if (pbackup_remainder_ie) {
--=09=09=09memcpy(dst_ie, pbackup_remainder_ie, remainder_ielen);
-+=09=09*dst_ie++ =3D le16_to_cpu(pvb);
-
--=09=09=09kfree(pbackup_remainder_ie);
--=09=09}
-+=09} else if (tim_ielen =3D=3D 5) {
-+=09=09memcpy(dst_ie, &tim_bitmap_le, 2);
-+=09=09dst_ie +=3D 2;
-+=09}
-+
-+=09/* copy remainder IE */
-+=09if (pbackup_remainder_ie) {
-+=09=09memcpy(dst_ie, pbackup_remainder_ie, remainder_ielen);
-
--=09=09offset =3D  (uint)(dst_ie - pie);
--=09=09pnetwork_mlmeext->IELength =3D offset + remainder_ielen;
-+=09=09kfree(pbackup_remainder_ie);
- =09}
-+
-+=09offset =3D  (uint)(dst_ie - pie);
-+=09pnetwork_mlmeext->IELength =3D offset + remainder_ielen;
- }
-
- u8 chk_sta_is_alive(struct sta_info *psta);
---
-2.27.0
-
-
+> +      compatible = "resistive-adc-touch";
+> +      touchscreen-min-pressure = <50000>;
+> +      io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
+> +      io-channel-names = "x", "y", "pressure";
+> +    };
+> -- 
+> 2.29.2
+> 
