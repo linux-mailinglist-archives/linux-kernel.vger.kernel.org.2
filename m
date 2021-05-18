@@ -2,67 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C74B38791F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091553878FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244837AbhERMro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:47:44 -0400
-Received: from first.geanix.com ([116.203.34.67]:33738 "EHLO first.geanix.com"
+        id S1349254AbhERMlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244400AbhERMrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:47:42 -0400
-X-Greylist: delayed 476 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 08:47:42 EDT
-Received: from [192.168.64.199] (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 98D21464055;
-        Tue, 18 May 2021 12:38:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1621341506; bh=N8dF9lNhoA62MtvBLfiXHYsJEDkxAjPBIVcvZZB2w84=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=hEbAO8ZmeNTFvzKOciKV7IiVmLhi32RQZ9aMpYS+O8mg4jB8lLEuTPdN1s8Wo4sTf
-         FU/5q/SAkbM17psfqdhxBb9Egwd6o0TiLZlqrliN+OTMEM7JlQFhU90ReWqb5v0hI1
-         zNR0k9Dxapjmc9TDbhI6EJdAjGFCZ7+xL/COOVQUgfH9QWVwsRVMR0cCGqL5WGCJRf
-         QgMpQuGMHlWM9GRHdUgCjNUkOZeM2qunIMAC02bOm7dSJfL3LigxqbW3Sej4dziZfs
-         OcNe4mQZQkvCXbBEQ60Bs37YNDZBzlpecEKOptYoyyXuTikpz/SO/jLhbpNJIiuKv5
-         hpZ5p9RcfcE2A==
-Subject: Re: [PATCH v1 1/1] iio: Drop Duplicated "mount-matrix" parameter
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Dan Robertson <dan@dlrobertson.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
-References: <20210518112546.44592-1-andriy.shevchenko@linux.intel.com>
-From:   Sean Nyekjaer <sean@geanix.com>
-Message-ID: <66a1a5e2-181d-bcc6-b453-357fcfd5e5f1@geanix.com>
-Date:   Tue, 18 May 2021 14:38:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S241412AbhERMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:41:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DDCF61185;
+        Tue, 18 May 2021 12:39:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621341585;
+        bh=F2UdS6cLiN/LZ0pqKzAK2trMNWftL6aAnrLJ9ytG5EI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jpiuHKlOjeWqXsf9DWXnvo9i0IwSHaUZ5m3CVNrBp6qXyHV3RG6w0f2jXxkrxDkXK
+         0qnIgATxk3R6HRSHyb2+vpzHn9sdPv+JtvZhJ59TSFB9VGKAHZRG7Kgcnu7hmQ9qLn
+         VVvU8E2Vm/KknEGwuZOAV9fTz4jL168H2+H4UFMk=
+Date:   Tue, 18 May 2021 14:39:43 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rudi Heitbaum <rudi@heitbaum.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.12 081/363] net: bridge: propagate error code and
+ extack from br_mc_disabled_update
+Message-ID: <YKO1jx78HibCUDkD@kroah.com>
+References: <20210517140302.508966430@linuxfoundation.org>
+ <20210517140305.339768334@linuxfoundation.org>
+ <20210518122449.GA65@ec3d6f83b95b>
 MIME-Version: 1.0
-In-Reply-To: <20210518112546.44592-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        URIBL_BLOCKED autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518122449.GA65@ec3d6f83b95b>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/2021 13.25, Andy Shevchenko wrote:
-> All of the users of iio_read_mount_matrix() are using the very same
-> property name. Moreover, the property name is hard coded in the API
-> documentation.
+On Tue, May 18, 2021 at 12:24:57PM +0000, Rudi Heitbaum wrote:
+> On Mon, May 17, 2021 at 03:59:07PM +0200, Greg Kroah-Hartman wrote:
+> > From: Florian Fainelli <f.fainelli@gmail.com>
+> > 
+> > [ Upstream commit ae1ea84b33dab45c7b6c1754231ebda5959b504c ]
+> > 
+> > Some Ethernet switches might only be able to support disabling multicast
+> > snooping globally, which is an issue for example when several bridges
+> > span the same physical device and request contradictory settings.
+> > 
+> > Propagate the return value of br_mc_disabled_update() such that this
+> > limitation is transmitted correctly to user-space.
+> > 
+> > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >  net/bridge/br_multicast.c | 28 +++++++++++++++++++++-------
+> >  net/bridge/br_netlink.c   |  4 +++-
+> >  net/bridge/br_private.h   |  3 ++-
+> >  net/bridge/br_sysfs_br.c  |  8 +-------
+> >  4 files changed, 27 insertions(+), 16 deletions(-)
 > 
-> Make this clear and avoid duplication now and in the future.
+> This patch results in docker failing to start, and a regression between
+> 5.12.4 and 5.12.5-rc1
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Sean Nyekjaer <sean@geanix.com>
-> ---Good idea :)
+> A working dmesg output is like:
+> 
+> [   11.545255] device eth0 entered promiscuous mode
+> [   11.693848] process 'docker/tmp/qemu-check643160757/check' started with executable stack
+> [   17.233059] br-92020c7e3aea: port 1(veth17a0552) entered blocking state
+> [   17.233065] br-92020c7e3aea: port 1(veth17a0552) entered disabled state
+> [   17.233098] device veth17a0552 entered promiscuous mode
+> [   17.292839] docker0: port 2(veth9d227f5) entered blocking state
+> [   17.292848] docker0: port 2(veth9d227f5) entered disabled state
+> [   17.292946] device veth9d227f5 entered promiscuous mode
+> [   17.293070] docker0: port 2(veth9d227f5) entered blocking state
+> [   17.293075] docker0: port 2(veth9d227f5) entered forwarding state
+> 
+> with this patch "device veth17a0552 entered promiscuous mode" never
+> shows up.
+> 
+> the docker error itself is:
+> 
+> docker: Error response from daemon: failed to create endpoint
+> sleepy_dijkstra on network bridge: adding interface veth8cbd8f9 to
+> bridge docker0 failed: operation not supported.
+
+Ick.
+
+Does 5.13-rc1 also show this same problem?
+
+And thanks for testing!
+
+greg k-h
