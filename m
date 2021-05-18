@@ -2,66 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1623877DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3393877DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348776AbhERLlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49076 "EHLO mail.kernel.org"
+        id S1348796AbhERLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:41:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44636 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348268AbhERLlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:41:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0393611BD;
-        Tue, 18 May 2021 11:39:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621337986;
-        bh=UuzjoZQAgtP5TrBiEAAkMusdRlGv9OEnQByPr+J8Oug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=huiO1381jMo+dEy+gqcBG39NdQ6joCTUyrnObV4NB2DGooXrNdUi8y0ZjZfHJKXro
-         dGZaiD/nwo0xK9jAz148uJlZuaBZBzbaGaW0JrhzcSMubLd+8+7RYe2E2XX37tLh0N
-         xUk0oW4Q/AmxneFoMxWNwzUPKs6Lz6jUMxA8ZoJnFfyaewc0LkGyy+o3j7TlVX1oHO
-         g1crrnkjgrLY+4S2g75VMkCno6MRYYHIzukjSqY/EKetx1EuWF6gyWh01pKXOGWJ5r
-         Ieaqs6q2caKbmLwrwjDmPnxsc2EQ16ICXGgrPxX6bYxC5aGIjzLBGKcZAEmAMgKHxz
-         zGHVWz+EiHDpw==
-Date:   Tue, 18 May 2021 17:09:43 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, robert.foss@linaro.org,
-        andrey.konovalov@linaro.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH 3/3] clk: qcom: Add camera clock controller driver for
- SM8250
-Message-ID: <YKOnf36z7bg+FOsH@vkoul-mobl.Dlink>
-References: <20210513175258.5842-1-jonathan@marek.ca>
- <20210513175258.5842-4-jonathan@marek.ca>
+        id S1348769AbhERLli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 07:41:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 27027AFF8;
+        Tue, 18 May 2021 11:40:20 +0000 (UTC)
+Date:   Tue, 18 May 2021 13:40:18 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org
+Subject: Re: [PATCH stable-5.10,5.11,5.12] x86/boot/compressed/64: Check SEV
+ encryption in the 32-bit boot-path
+Message-ID: <YKOnot8C4RKrWtXm@suse.de>
+References: <20210508032224.039CF613ED@mail.kernel.org>
+ <YJZnYDty7Siyo68k@kroah.com>
+ <YKOnVYLRxk9CUzTc@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513175258.5842-4-jonathan@marek.ca>
+In-Reply-To: <YKOnVYLRxk9CUzTc@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-05-21, 13:52, Jonathan Marek wrote:
+On Tue, May 18, 2021 at 01:39:02PM +0200, Joerg Roedel wrote:
+> [ Upstream commit fef81c86262879d4b1176ef51a834c15b805ebb9 ]
+> 
+> Check whether the hypervisor reported the correct C-bit when running
+> as an SEV guest. Using a wrong C-bit position could be used to leak
+> sensitive data from the guest to the hypervisor.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Link: https://lkml.kernel.org/r/20210312123824.306-8-joro@8bytes.org
+> ---
+>  arch/x86/boot/compressed/head_64.S | 85 ++++++++++++++++++++++++++++++
+>  1 file changed, 85 insertions(+)
 
-> +static const struct alpha_pll_config cam_cc_pll1_config = {
-> +	.l = 0x1F,
-> +	.alpha = 0x4000,
-> +	.config_ctl_val = 0x20485699,
-> +	.config_ctl_hi_val = 0x00002261,
-> +	.config_ctl_hi1_val = 0x329A699C,
+This is compile-tested now for 5.10, 5.11 and 5.12. With 5.12 I also did
+a boot-test using the 32-bit boot-path and verified it still works as
+expected.
 
-lower hexes here and few other places as well
+Regards,
 
-> +
-> +static const struct alpha_pll_config cam_cc_pll2_config = {
-> +	.l = 0x4B,
-> +	//.cal_l = 0x4B,
-
-debug artifact?
--- 
-~Vinod
+	Joerg
