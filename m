@@ -2,238 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718853873C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57153873CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241934AbhERIOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:14:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:44814 "EHLO foss.arm.com"
+        id S1347420AbhERIPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:15:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:11498 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240129AbhERIN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:13:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 436271063;
-        Tue, 18 May 2021 01:12:41 -0700 (PDT)
-Received: from p8cg001049571a15.blr.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0BFD73F719;
-        Tue, 18 May 2021 01:12:38 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/debug_vm_pgtable: Ensure THP availability via has_transparent_hugepage()
-Date:   Tue, 18 May 2021 13:43:10 +0530
-Message-Id: <1621325590-18199-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S242198AbhERIPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 04:15:00 -0400
+IronPort-SDR: +rXcNqY2VF07+JHK/bldMdVcq6MjVzvGYWagfi3PLz+A6yIqr3oNy1jFQXNVk7MePI5NUpcYl+
+ 6n+ZcWX7X4qQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200350191"
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="200350191"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:13:42 -0700
+IronPort-SDR: DDc3bdMAKnR4RyF+G1GbXBza8dsSJItYN8ny3BQx+KVhdkw14oSIKHv6AHZFsyDBHka+ZPoHrS
+ 6it0w3hbZzCg==
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="472841391"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 01:13:36 -0700
+Subject: Re: [PATCH v6 06/16] KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation
+ for extended PEBS
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-7-like.xu@linux.intel.com>
+ <YKIqbph62oclxjnt@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <69c3b712-0e6b-65d9-a0f9-40d939cd9d54@intel.com>
+Date:   Tue, 18 May 2021 16:13:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <YKIqbph62oclxjnt@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On certain platforms, THP support could not just be validated via the build
-option CONFIG_TRANSPARENT_HUGEPAGE. Instead has_transparent_hugepage() also
-needs to be called upon to verify THP runtime support. Otherwise the debug
-test might just run into unusable THP helpers like in the case of a 4K hash
-config on powerpc platform [1]. This just moves all pfn_pmd() and pfn_pud()
-after THP runtime validation with has_transparent_hugepage() which prevents
-the mentioned problem.
+On 2021/5/17 16:33, Peter Zijlstra wrote:
+> On Tue, May 11, 2021 at 10:42:04AM +0800, Like Xu wrote:
+>> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>> index 2f89fd599842..c791765f4761 100644
+>> --- a/arch/x86/events/intel/core.c
+>> +++ b/arch/x86/events/intel/core.c
+>> @@ -3898,31 +3898,49 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>>   	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+>>   	u64 intel_ctrl = hybrid(cpuc->pmu, intel_ctrl);
+>> +	u64 pebs_mask = (x86_pmu.flags & PMU_FL_PEBS_ALL) ?
+>> +		cpuc->pebs_enabled : (cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+>> -	if (x86_pmu.flags & PMU_FL_PEBS_ALL)
+>> -		arr[0].guest &= ~cpuc->pebs_enabled;
+>> -	else
+>> -		arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+>> -	*nr = 1;
+> Instead of endlessly mucking about with branches, do we want something
+> like this instead?
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=213069
+Fine to me. How about the commit message for your below patch:
 
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on v5.13-rc2 after the following patches.
+x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK value
 
-[1] https://lore.kernel.org/linux-mm/20210419071820.750217-1-liushixin2@huawei.com/
-[2] https://lore.kernel.org/linux-mm/20210419071820.750217-2-liushixin2@huawei.com/
+The value of pebs_counter_mask will be accessed frequently
+for repeated use in the intel_guest_get_msrs(). So it can be
+optimized instead of endlessly mucking about with branches.
 
- mm/debug_vm_pgtable.c | 58 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 48 insertions(+), 10 deletions(-)
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index e2f35db8ba69..6ff92c8b0a00 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -146,13 +146,14 @@ static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
- static void __init pmd_basic_tests(unsigned long pfn, int idx)
- {
- 	pgprot_t prot = protection_map[idx];
--	pmd_t pmd = pfn_pmd(pfn, prot);
- 	unsigned long val = idx, *ptr = &val;
-+	pmd_t pmd;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
- 	pr_debug("Validating PMD basic (%pGv)\n", ptr);
-+	pmd = pfn_pmd(pfn, prot);
- 
- 	/*
- 	 * This test needs to be executed after the given page table entry
-@@ -232,9 +233,14 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
- 
- static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
- {
--	pmd_t pmd = pfn_pmd(pfn, prot);
-+	pmd_t pmd;
-+
-+	if (!has_transparent_hugepage())
-+		return;
- 
- 	pr_debug("Validating PMD leaf\n");
-+	pmd = pfn_pmd(pfn, prot);
-+
- 	/*
- 	 * PMD based THP is a leaf entry.
- 	 */
-@@ -244,12 +250,16 @@ static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
- 
- static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
- {
--	pmd_t pmd = pfn_pmd(pfn, prot);
-+	pmd_t pmd;
- 
- 	if (!IS_ENABLED(CONFIG_NUMA_BALANCING))
- 		return;
- 
-+	if (!has_transparent_hugepage())
-+		return;
-+
- 	pr_debug("Validating PMD saved write\n");
-+	pmd = pfn_pmd(pfn, prot);
- 	WARN_ON(!pmd_savedwrite(pmd_mk_savedwrite(pmd_clear_savedwrite(pmd))));
- 	WARN_ON(pmd_savedwrite(pmd_clear_savedwrite(pmd_mk_savedwrite(pmd))));
- }
-@@ -258,13 +268,14 @@ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
- static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx)
- {
- 	pgprot_t prot = protection_map[idx];
--	pud_t pud = pfn_pud(pfn, prot);
- 	unsigned long val = idx, *ptr = &val;
-+	pud_t pud;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
- 	pr_debug("Validating PUD basic (%pGv)\n", ptr);
-+	pud = pfn_pud(pfn, prot);
- 
- 	/*
- 	 * This test needs to be executed after the given page table entry
-@@ -348,9 +359,13 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
- 
- static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot)
- {
--	pud_t pud = pfn_pud(pfn, prot);
-+	pud_t pud;
-+
-+	if (!has_transparent_hugepage())
-+		return;
- 
- 	pr_debug("Validating PUD leaf\n");
-+	pud = pfn_pud(pfn, prot);
- 	/*
- 	 * PUD based THP is a leaf entry.
- 	 */
-@@ -642,12 +657,16 @@ static void __init pte_protnone_tests(unsigned long pfn, pgprot_t prot)
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- static void __init pmd_protnone_tests(unsigned long pfn, pgprot_t prot)
- {
--	pmd_t pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
-+	pmd_t pmd;
- 
- 	if (!IS_ENABLED(CONFIG_NUMA_BALANCING))
- 		return;
- 
-+	if (!has_transparent_hugepage())
-+		return;
-+
- 	pr_debug("Validating PMD protnone\n");
-+	pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
- 	WARN_ON(!pmd_protnone(pmd));
- 	WARN_ON(!pmd_present(pmd));
- }
-@@ -667,18 +686,26 @@ static void __init pte_devmap_tests(unsigned long pfn, pgprot_t prot)
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- static void __init pmd_devmap_tests(unsigned long pfn, pgprot_t prot)
- {
--	pmd_t pmd = pfn_pmd(pfn, prot);
-+	pmd_t pmd;
-+
-+	if (!has_transparent_hugepage())
-+		return;
- 
- 	pr_debug("Validating PMD devmap\n");
-+	pmd = pfn_pmd(pfn, prot);
- 	WARN_ON(!pmd_devmap(pmd_mkdevmap(pmd)));
- }
- 
- #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
- static void __init pud_devmap_tests(unsigned long pfn, pgprot_t prot)
- {
--	pud_t pud = pfn_pud(pfn, prot);
-+	pud_t pud;
-+
-+	if (!has_transparent_hugepage())
-+		return;
- 
- 	pr_debug("Validating PUD devmap\n");
-+	pud = pfn_pud(pfn, prot);
- 	WARN_ON(!pud_devmap(pud_mkdevmap(pud)));
- }
- #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
-@@ -721,25 +748,33 @@ static void __init pte_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- static void __init pmd_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
- {
--	pmd_t pmd = pfn_pmd(pfn, prot);
-+	pmd_t pmd;
- 
- 	if (!IS_ENABLED(CONFIG_MEM_SOFT_DIRTY))
- 		return;
- 
-+	if (!has_transparent_hugepage())
-+		return;
-+
- 	pr_debug("Validating PMD soft dirty\n");
-+	pmd = pfn_pmd(pfn, prot);
- 	WARN_ON(!pmd_soft_dirty(pmd_mksoft_dirty(pmd)));
- 	WARN_ON(pmd_soft_dirty(pmd_clear_soft_dirty(pmd)));
- }
- 
- static void __init pmd_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
- {
--	pmd_t pmd = pfn_pmd(pfn, prot);
-+	pmd_t pmd;
- 
- 	if (!IS_ENABLED(CONFIG_MEM_SOFT_DIRTY) ||
- 		!IS_ENABLED(CONFIG_ARCH_ENABLE_THP_MIGRATION))
- 		return;
- 
-+	if (!has_transparent_hugepage())
-+		return;
-+
- 	pr_debug("Validating PMD swap soft dirty\n");
-+	pmd = pfn_pmd(pfn, prot);
- 	WARN_ON(!pmd_swp_soft_dirty(pmd_swp_mksoft_dirty(pmd)));
- 	WARN_ON(pmd_swp_soft_dirty(pmd_swp_clear_soft_dirty(pmd)));
- }
-@@ -768,6 +803,9 @@ static void __init pmd_swap_tests(unsigned long pfn, pgprot_t prot)
- 	swp_entry_t swp;
- 	pmd_t pmd;
- 
-+	if (!has_transparent_hugepage())
-+		return;
-+
- 	pr_debug("Validating PMD swap\n");
- 	pmd = pfn_pmd(pfn, prot);
- 	swp = __pmd_to_swp_entry(pmd);
--- 
-2.20.1
+>
+> ---
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 2521d03de5e0..bcfba11196c8 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -2819,10 +2819,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>   	 * counters from the GLOBAL_STATUS mask and we always process PEBS
+>   	 * events via drain_pebs().
+>   	 */
+> -	if (x86_pmu.flags & PMU_FL_PEBS_ALL)
+> -		status &= ~cpuc->pebs_enabled;
+> -	else
+> -		status &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+> +	status &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
+>   
+>   	/*
+>   	 * PEBS overflow sets bit 62 in the global status register
+> @@ -3862,10 +3859,7 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
+>   	arr[0].msr = MSR_CORE_PERF_GLOBAL_CTRL;
+>   	arr[0].host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+>   	arr[0].guest = intel_ctrl & ~cpuc->intel_ctrl_host_mask;
+> -	if (x86_pmu.flags & PMU_FL_PEBS_ALL)
+> -		arr[0].guest &= ~cpuc->pebs_enabled;
+> -	else
+> -		arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+> +	arr[0].guest &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
+>   	*nr = 1;
+>   
+>   	if (x86_pmu.pebs && x86_pmu.pebs_no_isolation) {
+> @@ -5546,6 +5540,7 @@ __init int intel_pmu_init(void)
+>   	x86_pmu.events_mask_len		= eax.split.mask_length;
+>   
+>   	x86_pmu.max_pebs_events		= min_t(unsigned, MAX_PEBS_EVENTS, x86_pmu.num_counters);
+> +	x86_pmu.pebs_capable		= PEBS_COUNTER_MASK;
+>   
+>   	/*
+>   	 * Quirk: v2 perfmon does not report fixed-purpose events, so
+> @@ -5730,6 +5725,7 @@ __init int intel_pmu_init(void)
+>   		x86_pmu.pebs_aliases = NULL;
+>   		x86_pmu.pebs_prec_dist = true;
+>   		x86_pmu.lbr_pt_coexist = true;
+> +		x86_pmu.pebs_capable = ~0ULL;
+>   		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
+>   		x86_pmu.flags |= PMU_FL_PEBS_ALL;
+>   		x86_pmu.get_event_constraints = glp_get_event_constraints;
+> @@ -6080,6 +6076,7 @@ __init int intel_pmu_init(void)
+>   		x86_pmu.pebs_aliases = NULL;
+>   		x86_pmu.pebs_prec_dist = true;
+>   		x86_pmu.pebs_block = true;
+> +		x86_pmu.pebs_capable = ~0ULL;
+>   		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
+>   		x86_pmu.flags |= PMU_FL_NO_HT_SHARING;
+>   		x86_pmu.flags |= PMU_FL_PEBS_ALL;
+> @@ -6123,6 +6120,7 @@ __init int intel_pmu_init(void)
+>   		x86_pmu.pebs_aliases = NULL;
+>   		x86_pmu.pebs_prec_dist = true;
+>   		x86_pmu.pebs_block = true;
+> +		x86_pmu.pebs_capable = ~0ULL;
+>   		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
+>   		x86_pmu.flags |= PMU_FL_NO_HT_SHARING;
+>   		x86_pmu.flags |= PMU_FL_PEBS_ALL;
+> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+> index 27fa85e7d4fd..6f3cf81ccb1b 100644
+> --- a/arch/x86/events/perf_event.h
+> +++ b/arch/x86/events/perf_event.h
+> @@ -805,6 +805,7 @@ struct x86_pmu {
+>   	void		(*pebs_aliases)(struct perf_event *event);
+>   	unsigned long	large_pebs_flags;
+>   	u64		rtm_abort_event;
+> +	u64		pebs_capable;
+>   
+>   	/*
+>   	 * Intel LBR
 
