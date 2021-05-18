@@ -2,161 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAB6387004
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9656387008
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 04:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346257AbhERCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 22:49:28 -0400
-Received: from mail-eopbgr60072.outbound.protection.outlook.com ([40.107.6.72]:35394
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240178AbhERCtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 22:49:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gbkXa81dWeQQCPHAXwvkDkDKax8p9PLWXolTfV/w8xLGxacflfFVOxIF/+Nzgk8OysZqdgO3zbAban6LbELTk9mIc/1XByyxzVL5MlYfXHQ0HaedOnSDvI25dL1ulKsF9a65i7mb6fKLa8GeF/Pq64uTxd4TgTfAdvpo/MnHOtNjzFcAGDpQOfEiCyJOIXeA2c2MuOzHyjObmYcr2bzVmD8OUt/8SFfAJL03fNs2U7rdwZ3DFppnh6DsiREzsIhz2doZ5gWEr4EXH2IphwuVI5vhdlH5leKl5Eju7sBM18m1r9kgUOBZvEk0rHGBGLI2c60qp5vKGMS8MC6NNeAvpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m88twPtAarJOEk/7HLiKHscDbc1J5C21J6in1tUTUKM=;
- b=MOlf5vbJ7wUdhGhxL+sZsMnQepRQhti5YcVZfcUSkhqydNR8ChMLSZkT76zF2+6+tB+7ygD2asrjfwTGHgBkamDBcQFO8t3xsKCWyi6gOUWfY1npwptf/elRCxjqoTgjaUozo6rOp/hJ9N25G9KXpUVVWzaR4ua9brKLhS0WvDgO4j0ZX0zbcj7wZD3gpxR3mkrgyk+idmoEq2zqvYaNJ9ffj5UR4hVS0bqjyc4fXY8/ZqUUQO/on+DjJJXQ6p1OlknbtuJ2IKN7yDtFX2xqg1mzU75Jb71cApVaRyP35180AttWFgo+uG8KpAUc431C5/MZc4U4a9/8/viaetPMSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m88twPtAarJOEk/7HLiKHscDbc1J5C21J6in1tUTUKM=;
- b=NHrWAPrKzgXw2OMvJEjYgvTWiguTF/A36Zt8YTGb99NDskVTKVEaYO9WtILLAENaEshgIjm3iMUOMyf5r9ncFhjWrGQt9LRKSswWjA0vSpzSCGm/YwJCTxdfCvO7iwmf3CcqMFs8cw1lwhpr9CUVqw77DjdYUgKqjg0re3U+pBE=
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM6PR04MB5815.eurprd04.prod.outlook.com (2603:10a6:20b:b0::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Tue, 18 May
- 2021 02:48:04 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b%2]) with mapi id 15.20.4129.031; Tue, 18 May 2021
- 02:48:04 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Yu Zhao <yuzhao@google.com>
-CC:     Linux-MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "dongas86@gmail.com" <dongas86@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: RE: [PATCH 1/5] mm: correct SECTION_SHIFT name in code comments
-Thread-Topic: [PATCH 1/5] mm: correct SECTION_SHIFT name in code comments
-Thread-Index: AQHXSw7SPViHYZfhlE+Hr7BWF+5UAKrn6vqAgACbdrA=
-Date:   Tue, 18 May 2021 02:48:04 +0000
-Message-ID: <AM6PR04MB4966B8259896953F9E4C1078802C9@AM6PR04MB4966.eurprd04.prod.outlook.com>
-References: <20210517112044.233138-1-aisheng.dong@nxp.com>
- <20210517112044.233138-2-aisheng.dong@nxp.com>
- <CAOUHufabmeUedgOvxWB+Xy_W8rnqZssvjOR+QVt0VxWHuyLq2w@mail.gmail.com>
-In-Reply-To: <CAOUHufabmeUedgOvxWB+Xy_W8rnqZssvjOR+QVt0VxWHuyLq2w@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4f0cd4e6-259e-4c46-11cf-08d919a75c55
-x-ms-traffictypediagnostic: AM6PR04MB5815:
-x-microsoft-antispam-prvs: <AM6PR04MB5815083F18A4389A174AB076802C9@AM6PR04MB5815.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rgP5X2ASuqX+jB5gg1txlsHob6bkWPT+k0AGxELMR2ozIpDvNjJJxy0h32REeEvxf9bPMPyYQvxNrN7pyOir2NL6/GTXxp6PpeT+CgIe6Jalo74XRouFsuyY0tVSUkCApZysqNbiqj2WwOAL/XCPZZQLvPdK0nrI45eqDympzXzuwCts9kEdvYWd2IMNps3UeYH5YrIRx3sQ6OGxLX/fxfELeKegOlJbJGOXDJqRhGDGCU8QYmuZJ1bUZGQSSmfvx0H/QzcmvddvB/WXd2rLv2pyoWMIVSv6OseQf0dl8ryD+k9bN4M8zxyNWmq22Ix4+nRNoI2rMIFwJm/lNpvPQxHk88IF4vXG5ajZk2++4OwTQ5kBGPqg5ekcQnU1r9eilLWQKWABc/OoUwfYgVZlBVl72r4qdT09GMN69agOBKTf2NMfeVsvadHN/BJPrSAS6C5X2dZfYpm/lDpBEGtK4aC1l/BDQPye+FT4+miDVrpdNEBreWXqLooKsajxZHBHG+amBnGcmQ2Igq64zCUZHEUkq+nZl2KzjFgaCUCi8W762woxunsnsO/GaT0YWGvragoV7C1T22BK4hR+MFSjkQYT4f9qvY918VL7gVMoTlw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(366004)(346002)(396003)(2906002)(38100700002)(122000001)(83380400001)(26005)(5660300002)(66946007)(6916009)(52536014)(478600001)(54906003)(33656002)(7696005)(44832011)(53546011)(6506007)(71200400001)(4326008)(76116006)(66446008)(64756008)(66556008)(66476007)(316002)(55016002)(186003)(86362001)(9686003)(8676002)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?ZnRKVFZldU1zanJVN21OSFF0T0xnNHhDZ1JNTlZaVmJxaEkydG9Da3FHMlpj?=
- =?utf-8?B?QjZKbm9pQ05LZ3dVZ1V0N3lJYTA5TEt6WWlML2xwSWpGZWdrSExkUXJWamJZ?=
- =?utf-8?B?NVBTeHl0REtKdStCaFh5U1lMWVoxWEl5djN6NGpyUklReGFxcWJJVkNXVEVm?=
- =?utf-8?B?cEhyWFh6dTlaak1NWk5LZ1F1YWo1SXlQZHhnN2hGRGVvT0dSMERaMXQ5RmpI?=
- =?utf-8?B?ZS9wT1YwK3M1eGJaUHhnK0IzbjAzS1pJNktkSWFpMDdHWTZMZUdlNkhQRWVV?=
- =?utf-8?B?b3QybHFsNnR3djJlRm5yM2ozOS9sQ2t0akVQTi9zMC84WW9kT0djSnZaZmQy?=
- =?utf-8?B?Vk5aaEl1MVo3cTZZcm9IMzhWSnlWcWVzUGR4WUM3N3dDWGpkZzB0dlJTZFRR?=
- =?utf-8?B?eW5xOVlmejQwcUY4YWZLMFM0QkpTU29PVlg1Z2FSbnBsRlZ5cWc4eklZR1pV?=
- =?utf-8?B?T0FkNkZOYjdhWHZ3aVovYTNXUlpmUzJmRzVZcFNReGJkZUxhbXkzZG5WSWpl?=
- =?utf-8?B?U09TQXUvaERDYW9YM21YSGxNazhzbTl0Mk80U21VZWk4cE1qOWZENlkxcVF6?=
- =?utf-8?B?Q1d3UEVtUURoMjA3TTNYdE5pSEJLTzdlWjhEaHpVVE1XZmRHUUR4MGNFanhv?=
- =?utf-8?B?WEFRU2c4aUM5TVFCckl0bjFnZDlEenBYTW1vMkpDUlQ1akpWNldtTGM1VC94?=
- =?utf-8?B?RXRucVBJalI5THgxTVY3RHBQUWNISnRpak1hYVp4MEF3bGZhZUdZL3hXOG03?=
- =?utf-8?B?VUVUSWErY0liU3ltNVFzT0twSHVoZHlaazRBaEo5VGc5cjBSaElBUFhpeHJi?=
- =?utf-8?B?OHdVempYNmhPUWhsMUZ3ek5lZ3YxaFNWTzg4TjVVR1VtaW1xazhGMTRqYURy?=
- =?utf-8?B?SjNycmkwU3VjbVV5dzhkc2lKOGxNTUpiVzczZmdDZkRxYmQ0cENWVGdodjM1?=
- =?utf-8?B?S3FCSWxCTEVyNkhYd3R4RTBkWXUvaW5IeWkrTUNQek16V2JPcVRVSUpSQXl4?=
- =?utf-8?B?MFd4M2RLelRxZVRKbGd5aUpKb2JsdW1WSVZPVTk4Sm4wSDJmMTBYbUEyTUZK?=
- =?utf-8?B?UlZVUDVZZnY5TkpnQlNDSWh3ZWF0QUdvektRWnZJeFQ4U241ZnJERlZ2Sjlx?=
- =?utf-8?B?UlpWSTVvWmZnQ211QXZXZk96S3cxaUNQTmJVbWNzalNsQTlJelRvblRFVC9G?=
- =?utf-8?B?QW0waWtGY0ozcHp5aDJ0ZjRNVzd4Kzk3VGlydTFGb2V0eXg4eWpIenNScmtE?=
- =?utf-8?B?OXZ2aWhHOERVU00xcjU2NHpFVmlEVWRTcTgzaVBoWmJaOC9KcnZmR1BKdExC?=
- =?utf-8?B?Z1d3dkFFempOMTVxNC8vRVc5MTRTOXM0S1ZtbnMxN0Z1ZTlJcUdPajBoMkY5?=
- =?utf-8?B?Z29mNUgzeDBRc1NBcjMzN04veE0ya2R2S1RjZm1TTkZIS3VCQ2NtUlVZb2JO?=
- =?utf-8?B?cmZITmpOSGxMY0dDSUhSaUFIZENNTXBxN1RjdGdja3JIWUNrQmIwSEJpcnBl?=
- =?utf-8?B?YmRXdlIxQUsrQWZJR0FyS2FYQ1hCTmw4ZFpSSlc5dC9QR2FYejhWblV1Ym53?=
- =?utf-8?B?VU0zS1lIZSsvSnk1TWFnOWJzWWc3WDhtN0VTTXVwNW96Y3F6NWx4UWVIVDhJ?=
- =?utf-8?B?Um1rOXlKM2twVnJiOWtuOXErSy81UWFxZiszNzRYemx2bUY5cXJnVEpaVWxv?=
- =?utf-8?B?clFhbkJTeHdZbU90RWQwL0ZVM2lueDEvWG5CTjdCSzdiUTFSNG0yU3VkZzZO?=
- =?utf-8?Q?GLU6+R8NpELtqJ3fDIXQL8WFLva1CBTrxns9MCw?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S242147AbhERCtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 22:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345610AbhERCtc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 22:49:32 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE16C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:48:14 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e14so7804218ils.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BRkks4605+UoXCWgr/rS+r0/gbRif4B+Nb12472cPkM=;
+        b=EGRnf/dWcD1J6D90hSQhTZm534z305G6fSOkRQZ8l26m0liP6MYzsfNDeo14gZTSek
+         zJHQez0UC3O9rhfxyECwXkN8s8uWmvuJnXSNyNpewsvHnz9dC5Hrg7gFg/rk2Ga9rYOi
+         bXK0By4kDgHUgde+t0LdIIsQMIt04SxCfklwcIN6h+8AcbT8MF6VeaSJXyVIQZqC72jv
+         Vz56n13fYWNLukTwkEYEpo87b2J983tPXuzxMpseNw7EtWIoDEZGlHdC8mlCdNEnT8Aw
+         FjqkVjcL+WmayRZUDKop/tjh/e+a5noeJKbtcN7/neJMFhY12vpuKfNzafv2iApJzlvc
+         c+GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BRkks4605+UoXCWgr/rS+r0/gbRif4B+Nb12472cPkM=;
+        b=h3bGFE9MKQcqdV9ow5rS60EduehC7lP4vdgJQvgzQXfuivit1UeH5RseN3Di8lYvGu
+         JWDfTSog1s8EZ2P0P6tjcKc8pEUYA2S5vwrpOHFPzCGpfWN+0gkluhaoViEzox6IHqIn
+         kC/CXyah3B9RVaK7HIuwvgBDyGSffQXNllKuoVMD7lOX8XYv0xg8HcqU4P5FCXnwAV7f
+         66U+RZ2h5ygXNYcC4q5xP1MyNYm5xaLP5vnaj7frkdhQ07dYOkXRiRaYwe7ekGRvh28T
+         w3Zz/7K3Tb0NfFrZuIOQKe8ZK+TWAkmDV9Nxi1n30Pw+Rp4wjzAMG7kzsgOP6fgrjau+
+         3+tw==
+X-Gm-Message-State: AOAM533n8vQy7XXgc/XrMxicoFC85+hx4hyY55KvGroiEBdgGvK2Dq+D
+        nB7910VzJ/4vHUtmHYOzI3z18dyuPkw6fA==
+X-Google-Smtp-Source: ABdhPJw22/zkz1/TgVaG03mlPKr3hKpRnSstCMcOSyXOdi3X74PyPQdlQSvj2N3vahCgY/SRT/Pqcg==
+X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr2267775ilj.263.1621306093533;
+        Mon, 17 May 2021 19:48:13 -0700 (PDT)
+Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
+        by smtp.gmail.com with ESMTPSA id q5sm9580889ilv.19.2021.05.17.19.48.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 19:48:13 -0700 (PDT)
+Date:   Mon, 17 May 2021 19:48:09 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Dave Taht <dave.taht@gmail.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        bloat <bloat@lists.bufferbloat.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [Bloat] virtio_net: BQL?
+Message-ID: <20210517194809.071fc896@hermes.local>
+In-Reply-To: <CAA93jw4bSx=0gnJtNJLeS00ELMgo2Na+t7hYTNL3G3juDFvcNg@mail.gmail.com>
+References: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
+        <CAA93jw6LUAnWZj0b5FvefpDKUyd6cajCNLoJ6OKrwbu-V_ffrA@mail.gmail.com>
+        <CA+FuTSf0Af2RXEG=rCthNNEb5mwKTG37gpEBBZU16qKkvmF=qw@mail.gmail.com>
+        <CAA93jw7Vr_pFMsPCrPadqaLGu0BdC-wtCmW2iyHFkHERkaiyWQ@mail.gmail.com>
+        <20210517160036.4093d3f2@hermes.local>
+        <CAA93jw4bSx=0gnJtNJLeS00ELMgo2Na+t7hYTNL3G3juDFvcNg@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f0cd4e6-259e-4c46-11cf-08d919a75c55
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2021 02:48:04.8078
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dIagyAGk0T0avjpguJAy4zPqNH00b9qPFAHCJ2J1/BWX4jyLuFUn9I3/jmkVQxGYTipUPoEFpH9VeHi5yiA67g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5815
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBZdSBaaGFvIDx5dXpoYW9AZ29vZ2xlLmNvbT4NCj4gU2VudDogVHVlc2RheSwgTWF5
-IDE4LCAyMDIxIDE6MTggQU0NCj4gDQo+IE9uIE1vbiwgTWF5IDE3LCAyMDIxIGF0IDU6MjEgQU0g
-RG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCj4gd3JvdGU6DQo+ID4NCj4gPiBB
-Y3R1YWxseSBTRUNUSU9OU19TSElGVCBpcyB1c2VkIGluIHRoZSBrZXJuZWwgY29kZSwgZml4ZWQg
-dGhlIGNvZGUNCj4gPiBjb21tZW50cy4gQlRXLCBhbHNvIG1vdmVkIHRoZSBjb2RlIGNvbW1lbnQg
-dG8gd2hlcmUgaXQncyBkZWZpbmVkLg0KPiA+DQo+ID4gQWxzbyBmaXhlZCBhIGNoZWNrcGF0Y2gg
-Y29tcGxhaW4gZGVyaXZlZCBmcm9tIHRoZSBvcmlnaW5hbCBjb2RlOg0KPiA+IFdBUk5JTkc6IHBs
-ZWFzZSwgbm8gc3BhY2UgYmVmb3JlIHRhYnMNCj4gPiArICogU0VDVElPTlNfU0hJRlQgICAgXkle
-SSNiaXRzIHNwYWNlIHJlcXVpcmVkIHRvIHN0b3JlIGEgc2VjdGlvbiAjJA0KPiA+DQo+ID4gQ2M6
-IEFuZHJldyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+DQo+ID4gQ2M6IFl1IFpo
-YW8gPHl1emhhb0Bnb29nbGUuY29tPg0KPiA+IENjOiBBbmRyZXkgS29ub3ZhbG92IDxhbmRyZXlr
-bnZsQGdtYWlsLmNvbT4NCj4gPiBDYzogQ2F0YWxpbiBNYXJpbmFzIDxjYXRhbGluLm1hcmluYXNA
-YXJtLmNvbT4NCj4gPiBDYzogS2VlcyBDb29rIDxrZWVzY29va0BjaHJvbWl1bS5vcmc+DQo+ID4g
-U2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCj4gPiAt
-LS0NCj4gPiAgaW5jbHVkZS9saW51eC9tbXpvbmUuaCAgICAgICAgICAgIHwgMiAtLQ0KPiA+ICBp
-bmNsdWRlL2xpbnV4L3BhZ2UtZmxhZ3MtbGF5b3V0LmggfCAzICsrKw0KPiA+ICAyIGZpbGVzIGNo
-YW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1n
-aXQgYS9pbmNsdWRlL2xpbnV4L21tem9uZS5oIGIvaW5jbHVkZS9saW51eC9tbXpvbmUuaCBpbmRl
-eA0KPiA+IDljZGM4OGQwOWYyYi4uZmMyM2UzNmNiMTY1IDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1
-ZGUvbGludXgvbW16b25lLmgNCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L21tem9uZS5oDQo+ID4g
-QEAgLTExOTgsOCArMTE5OCw2IEBAIHN0YXRpYyBpbmxpbmUgc3RydWN0IHpvbmVyZWYNCj4gPiAq
-Zmlyc3Rfem9uZXNfem9uZWxpc3Qoc3RydWN0IHpvbmVsaXN0ICp6b25lbGlzdCwgICNpZmRlZg0K
-PiA+IENPTkZJR19TUEFSU0VNRU0NCj4gPg0KPiA+ICAvKg0KPiA+IC0gKiBTRUNUSU9OX1NISUZU
-ICAgICAgICAgICAgICAgI2JpdHMgc3BhY2UgcmVxdWlyZWQgdG8gc3RvcmUgYSBzZWN0aW9uICMN
-Cj4gPiAtICoNCj4gPiAgICogUEFfU0VDVElPTl9TSElGVCAgICAgICAgICAgIHBoeXNpY2FsIGFk
-ZHJlc3MgdG8vZnJvbSBzZWN0aW9uDQo+IG51bWJlcg0KPiA+ICAgKiBQRk5fU0VDVElPTl9TSElG
-VCAgICAgICAgICAgcGZuIHRvL2Zyb20gc2VjdGlvbiBudW1iZXINCj4gPiAgICovDQo+ID4gZGlm
-ZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvcGFnZS1mbGFncy1sYXlvdXQuaA0KPiA+IGIvaW5jbHVk
-ZS9saW51eC9wYWdlLWZsYWdzLWxheW91dC5oDQo+ID4gaW5kZXggZWYxZTNlNzM2ZTE0Li5hZmY2
-MTY4NTU0OTIgMTAwNjQ0DQo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9wYWdlLWZsYWdzLWxheW91
-dC5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9wYWdlLWZsYWdzLWxheW91dC5oDQo+ID4gQEAg
-LTI2LDYgKzI2LDkgQEANCj4gPg0KPiA+ICAjZGVmaW5lIFpPTkVTX1dJRFRIICAgICAgICAgICAg
-Wk9ORVNfU0hJRlQNCj4gPg0KPiA+ICsvKg0KPiA+ICsgKiBTRUNUSU9OU19TSElGVCAgICAgICAg
-ICAgICAgI2JpdHMgc3BhY2UgcmVxdWlyZWQgdG8gc3RvcmUgYSBzZWN0aW9uICMNCj4gPiArICov
-DQo+IA0KPiBJTU8sIHdlIHNob3VsZCBlaXRoZXIgbWFrZSB0aGUgb3JpZ2luYWwgY29tbWVudCBo
-ZWxwZnVsIG9yIGp1c3QgcmVtb3ZlIGl0Lg0KPiBNb3ZpbmcgaXQgaGVyZSBkb2Vzbid0IGltcHJv
-dmUgcmVhZGFiaWxpdHkgYmVjYXVzZSBpdCdzIHN0YXRpbmcgdGhlIG9idmlvdXMuDQo+IA0KDQpT
-b3VuZHMgZ29vZCB0byBtZS4NCklmIG5vdCBvYmplY3Rpb25zLCBJIHdpbGwgcmVtb3ZlIGl0IGlu
-IHYyIGxhdGVyLg0KVGhhbmtzIGZvciB0aGUgc3VnZ2VzdGlvbi4NCg0KUmVnYXJkcw0KQWlzaGVu
-Zw0KDQo+ID4gICNpZmRlZiBDT05GSUdfU1BBUlNFTUVNDQo+ID4gICNpbmNsdWRlIDxhc20vc3Bh
-cnNlbWVtLmg+DQo+ID4gICNkZWZpbmUgU0VDVElPTlNfU0hJRlQgKE1BWF9QSFlTTUVNX0JJVFMg
-LSBTRUNUSU9OX1NJWkVfQklUUykNCj4gPiAtLQ0KPiA+IDIuMjUuMQ0KPiA+DQo=
+On Mon, 17 May 2021 16:32:21 -0700
+Dave Taht <dave.taht@gmail.com> wrote:
+
+> On Mon, May 17, 2021 at 4:00 PM Stephen Hemminger
+> <stephen@networkplumber.org> wrote:
+> >
+> > On Mon, 17 May 2021 14:48:46 -0700
+> > Dave Taht <dave.taht@gmail.com> wrote:
+> >  
+> > > On Mon, May 17, 2021 at 1:23 PM Willem de Bruijn
+> > > <willemdebruijn.kernel@gmail.com> wrote:  
+> > > >
+> > > > On Mon, May 17, 2021 at 2:44 PM Dave Taht <dave.taht@gmail.com> wrote:  
+> > > > >
+> > > > > Not really related to this patch, but is there some reason why virtio
+> > > > > has no support for BQL?  
+> > > >
+> > > > There have been a few attempts to add it over the years.
+> > > >
+> > > > Most recently, https://lore.kernel.org/lkml/20181205225323.12555-2-mst@redhat.com/
+> > > >
+> > > > That thread has a long discussion. I think the key open issue remains
+> > > >
+> > > > "The tricky part is the mode switching between napi and no napi."  
+> > >
+> > > Oy, vey.
+> > >
+> > > I didn't pay any attention to that discussion, sadly enough.
+> > >
+> > > It's been about that long (2018) since I paid any attention to
+> > > bufferbloat in the cloud and my cloudy provider (linode) switched to
+> > > using virtio when I wasn't looking. For over a year now, I'd been
+> > > getting reports saying that comcast's pie rollout wasn't working as
+> > > well as expected, that evenroute's implementation of sch_cake and sqm
+> > > on inbound wasn't working right, nor pf_sense's and numerous other
+> > > issues at Internet scale.
+> > >
+> > > Last week I ran a string of benchmarks against starlink's new services
+> > > and was really aghast at what I found there, too. but the problem
+> > > seemed deeper than in just the dishy...
+> > >
+> > > Without BQL, there's no backpressure for fq_codel to do its thing.
+> > > None. My measurement servers aren't FQ-codeling
+> > > no matter how much load I put on them. Since that qdisc is the default
+> > > now in most linux distributions, I imagine that the bulk of the cloud
+> > > is now behaving as erratically as linux was in 2011 with enormous
+> > > swings in throughput and latency from GSO/TSO hitting overlarge rx/tx
+> > > rings, [1], breaking various rate estimators in codel, pie and the tcp
+> > > stack itself.
+> > >
+> > > See:
+> > >
+> > > http://fremont.starlink.taht.net/~d/virtio_nobql/rrul_-_evenroute_v3_server_fq_codel.png
+> > >
+> > > See the swings in latency there? that's symptomatic of tx/rx rings
+> > > filling and emptying.
+> > >
+> > > it wasn't until I switched my measurement server temporarily over to
+> > > sch_fq that I got a rrul result that was close to the results we used
+> > > to get from the virtualized e1000e drivers we were using in 2014.
+> > >
+> > > http://fremont.starlink.taht.net/~d/virtio_nobql/rrul_-_evenroute_v3_server_fq.png
+> > >
+> > > While I have long supported the use of sch_fq for tcp-heavy workloads,
+> > > it still behaves better with bql in place, and fq_codel is better for
+> > > generic workloads... but needs bql based backpressure to kick in.
+> > >
+> > > [1] I really hope I'm overreacting but, um, er, could someone(s) spin
+> > > up a new patch that does bql in some way even half right for this
+> > > driver and help test it? I haven't built a kernel in a while.
+> > >  
+> >
+> > The Azure network driver (netvsc) also does not have BQL. Several years ago
+> > I tried adding it but it benchmarked worse and there is the added complexity
+> > of handling the accelerated networking VF path.  
+> 
+> I certainly agree it adds complexity, but the question is what sort of
+> network behavior resulted without backpressure inside the
+> vm?
+> 
+> What sorts of benchmarks did you do?
+> 
+> I will get setup to do some testing of this that is less adhoc.
+
+Less of an issue than it seems for must users.
+
+For the most common case, all transmits are passed through to the underlying
+VF network device (Mellanox). So since Mellanox supports BQL, that works.
+The special case is if accelerated networking is disabled or host is being
+serviced and the slow path is used. Optimizing the slow path is not that
+interesting.
+
+I wonder if the use of SRIOV with virtio (which requires another layer
+with the failover device) behaves the same way?
