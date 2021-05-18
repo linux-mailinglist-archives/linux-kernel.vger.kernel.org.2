@@ -2,259 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DACC387E8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69E9387E9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351330AbhERRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351206AbhERRfu (ORCPT
+        id S1346583AbhERRmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:42:04 -0400
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:34622
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237923AbhERRmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:35:50 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471CBC061761
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 10:34:32 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id g13-20020ac8580d0000b02901e117526d0fso7891721qtg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 10:34:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=QJBRdiNT50y6CWenT8iHGZ+jatWGFL5n8aWtdmK//io=;
-        b=lq+642t/uIN+3l8/YXQdQ9VpERXKH/FAKZ1CnqHdfk7zw8dw3Om/dUBR3SYDjfA0mT
-         QJCesbCHigRxleDQ6xFaX0f8i1b88osHnoE1mlgc2s0w52TJvgPWBKYI+8e4jTI6Y2qX
-         +wtP+1qhfBMSNytwthMAph2umI4nVKkGrXdc68MF9/VO65PbcK6MNKkny34eWznp26UT
-         QTCYBsEtNaHnjwN1WqqFqvd02QRAfoWgi4+mloYhH034hSwVVD/41SpDz82HfkxZUsTj
-         LorhErhgAW9deu8ZqCeGImJ9Dfj7fz38r0u21ma5t80GpijY5/F6aHCochR+iWrr/g9D
-         Ahjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=QJBRdiNT50y6CWenT8iHGZ+jatWGFL5n8aWtdmK//io=;
-        b=p5pjsmVq2YNnnUo/RLIOIJpiHStUl/BWR4AiqRCHuv+rmNUZUBcNctpsMDH550/Fwp
-         NDF/mQjF7Fqm1oEw0Wb+tV/bprZHCFwbpJpV9So3jJyaqofja78f5iAB6oBkK6VlS/fP
-         pQRM14w88dFvPy+MMyv6q5tvzrJeBsFdfHtKk7KU+OKI2YLX/hMb9Uzf0vsFfwWAGrSj
-         3U7xCFwXdqcx1vEIcHdQlkOYBZLTn6O68yWQr/XXCdrt5N97mP0Y6mVhajHibbteXNcU
-         ouDubvWfQUoMOtMf/SJpLvlus4MvynCb5+JHw+p2Ho1PYcRHbKM8CSQHBSQxJy2EufSs
-         2pLw==
-X-Gm-Message-State: AOAM531yvP+6eVBZX36nVTM4yDMidVHpHE4+TQCVeUfBNmwPMJFg1fUP
-        35r/EQp9lj1/glebUwziADJRd2wxaLKIl2gcvAACJ7HRo9kkhcJUrnMKN/VdRBqKC8Pmq6olysA
-        /dy167cK2oFg/pUMFBOnpi5iO6zOQCoTUSpuOVlknt8ILp5NAj/UwAdoHOHG9fyUiN1UGk+kW
-X-Google-Smtp-Source: ABdhPJxlZBvsJ7tEWJAysMi9ycSI3V6Lv90wDn44kMX/vfhOOjh0C8HqUirDFz7+ImKy1PFaGMwoGIO3Zt5C
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:2715:2de:868e:9db7])
- (user=bgardon job=sendgmr) by 2002:a0c:8e49:: with SMTP id
- w9mr6721541qvb.35.1621359271150; Tue, 18 May 2021 10:34:31 -0700 (PDT)
-Date:   Tue, 18 May 2021 10:34:14 -0700
-In-Reply-To: <20210518173414.450044-1-bgardon@google.com>
-Message-Id: <20210518173414.450044-8-bgardon@google.com>
-Mime-Version: 1.0
-References: <20210518173414.450044-1-bgardon@google.com>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v5 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 18 May 2021 13:42:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1621359644; bh=OaRaXZ/TyLu+rceOhMWTshaqetdfiL84Ys2DWla4GaE=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=cHTfS16ouunxapRJtevME9XWI36OpoDesNx4owqyRVzDr5zO/XV147zh4mM9KUGB+IbiqsPq80svHsKVpnoi4QI+QE5/OIzY1DRzHP1YsIafFvyLawAqqDLiYdHq7H/07bGq8994kteeUd1QNAtxMEV/o9XRME81MpW6543QDfw/gLfr2/3F6HLnEEBUgfD6e6PLyYuZZxJ0InWP3AS0iUBqQf+JWY3wnf4802AGpePoFJ+5yJ71GMUsfh/fQpyiPq/WdUCg8MNzOMj/qo+gDXf2TsGvpi/KbymFnTX5DE5e2UihDZ9vZa5gWuT5mQMXMcDOlst3w+C8GNA+Od3AlA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1621359644; bh=6ETJSKxd/n3W0jylI8cVdKEYJ+mSomcdrAioFk+OZsc=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=KSSt12t9oPlrgbvqP8rtPOhnLVYIOE1s4dYCfzyRp77f/Q31DbNwDNPkGfcR2cE85a2oQVSvU4C2S6gxK7HYVlBJXMvOKOzlGpeeolJPqvvnJDA1X6fod9j5Fh2VcqRrWE5358tg3zBf2+DOsnoeGRLYiCA5SlV5kR9V5yI9XCd/ynrL+i5I4Y9VGkpghVybnnihmcCr7wuTvArEWjhubFe2AR9sEG9Nc6UD788rfs1ZvlhS1JrR/8kvHBPewji83hLyrgW8zRPBXcMBN4rrS+wcbjy0jrq/09PAnDN377KJUCV+G36+C0QaNFmeu4J7w7GBIQR5/uDUsZ/c+TRe/g==
+X-YMail-OSG: aLknHFcVM1kcOHo.Zowg.xsmp0F64c26Q7QDTmFUHtxtedz5WPL_brFC_GTpGBm
+ q2imlIui.k_R2.V.15gCJEZ2zrEB_Rm28YmahRkCIOLqxreLsxTW8jnb5Y2bR2GHjsELImC0Wanj
+ Oeu4EAo3ewHG2WnfzTkqP9j19L22DZi.VPXiTTzzgY_FnaJn_TmtDNHtZR4s3hNNlkLRDKT2k24S
+ z7vqI5KABqr2DKh9I6MuXFzrlEQBIEeZNqWfmE1H9AB7ctQLR3ni1JdfxbncB.wU2ly9J109wSd.
+ BzBHGjgK1Ddu2IrewLM1fbky9cJ9ogNb8BnzX1NzEDh7KR.J_pHB.o7uKPcst8imb_Mym779Ljqu
+ qHewhUdjU7iKG2pg4zmwnExPSCZZZu45uaqzGwXF_MDLwjrJKudvu0Wb9nQQNyDdziUd7NAe67bA
+ 5w2cpV8vwF8uc3hS2hqWx2fCMEfT8Eao9c27BiSGIJ5gnjxvV6cp6FFK6VB1pkln8qa2flAPbYBB
+ OQYj4pKaebqLkWgqb37ekyjSYa6VYOIE4w5CiLxNaXFSvgN_d7d79qa7eX9ASIHpGUO_aMJlwVTh
+ RuG4ChbfOJC_TYACvXSvrlLy2zuhD.3J44henbJykX9oBT.F9FWr4W5B0BhlSavTffyl1_nyhkJI
+ IqaXP9xBNWwu9sVTxUxpzixzAdh6kHEPLugnf.hxCS9WpekgV4qmuK5OjMW1G7LilPyeTVKeh.PB
+ ceQiBH3SV7N3JxQ_6klMq46PBhsW1fFBICQa7virIRfRXmiCZ7mEE0uCMBQLxCvG23qT2Vbgbg_t
+ nEb6D9pFqW4yafC4z1QeEophQJ4xapC.tgRuAGBlhVuT8rszSobqwUAQCnlUML5pmSRdnXllIV4V
+ 59bNirWhZWlSX.yedOZcT7C2aikl6XuJLjZQm93pZ1qH0GJ4cZJ_GnmzVLMH7S1WK0cDZMkj5D22
+ bNYx2yQPBbqR3t7tFn.ina8.ufq3Dtpe9FZdgFI1tpIcgvAW37mTgupHp0NrokWxZP17D4o3B9RP
+ 3FZBsRq4QMYipxCtIlJ0Q2LMc8Deirr4Yaz_f0els.5gj0Gp7ghANCmXqH4RrlPI38GIm.sbojVb
+ EbIveV4hDWI4lDmIhckJ6v3Rjbng8gVUsRmZIWzg9bWjodjXvNagTE5Cv.ORtuF7end6_NdCohPR
+ UKKq53kuU3e0jgkQRCwL42.WKHvTw5lMAVIm4aoAJz1SFPau74Zy1qX7ap0wxclcsMOmerZc.KL2
+ xn2AyG668s1RZk7CfHvQHTB2dtm3v1OjO_hTtF3wzvAy4iZjjbNt0kqA_Iiw0a5MLClBezzgy5on
+ odKpwlvgfj6q5KFVHQA.AosDYnV6MN8XKFfzxwdNd5OxDGOr5I6qIs_HjiOCF_jrSA7IxJJQ_apC
+ qPssGg6aLS2iZKzfhO3i7xE8YNNKUYIbfpDKHnXlU3rKoqyC8kLfidPzXTKZm3idF_l2bDqjTc9N
+ NZhYg3_zg2CXJBy2vApabji3GiFWiPPd1AYM4dEvBmt61jnGih2RFvo386asrO6X.7pXDBdPOHuv
+ TWWYeHByhb0UR9QTbZSmMqbymZAy.mIEbq1bKAD_yN.yqwOf.vPvi9zZ58IqzjjejQGxbQTh.7mv
+ ZPxuV8_XoUqyUalme1i4khl.l9P6dR5sx74W6YHWe_IvLCpmRJCsalMzjA76dAGNyt6S6AB.5eEi
+ UCnTgbr5aUv42yX0rMX5CBgeJH4BhrhWeii3EI8ypgMZwL2x5.4LIJaIRCYMO9W2Bsu.ydO5ltYY
+ b13CS.95VuZx_TX2n3Ea9Qa.zGYSZYZ8MRtM3mUveCcCpPDoqshWQjeFSIPV7Jd7Gb8c2rls3Ukx
+ svrTP5z9AU5SYnzj1BwSHnu7G6kFY_O380ovi7Uhq7WyoxRj4x65sYdO1hrNKNWIORscf36cmP_y
+ 42weCKNuvGLqZtNsDK57R35hxRpeBnnk65UlyN6_PbowaFLrt3g15WuOE0tGAg1ByILGZxAFJksg
+ RVte1TNLdf500nRA67WnZBcNpvIcBH7voyA6agZM3cRxyzxLneGVl2i7hOV5La01fHdouKIs9gl9
+ 5IOn81W6b9veAZhImxl99snaZHdT4oqqPR8VoZxRss5Kcj8pgGrRhOxEh0MQVonTZfmoBQ6Y1ePh
+ BnjTLUcYpSUN0Ryu57xCX.wj0u7r9NvWHu1pYJMtZFQESpDTgeQBHE6i2RIlnYUPysmEqvvDznmo
+ psZAz_W7x6xeUhNnHSEEugxaaTt.BQdZyrSJV5sCQflgLE9YCtVGOwzLckV.byK_W9PQWwGFmbdw
+ QGgTQaAh33D_4UalbrGHeqlR0GTh_BvBaWQG2DXNl2PU5vjVE8sJSCmNMbY6R3GSwOGN2m8oPbSl
+ vmXzi9RY91QWr_CXw7l4djV9WtGAVKKu8urKTKx9yd3oyQznzq9P2r8tl3LywprQa.2wN3DDKnEU
+ VTaNNlP31LIPI9yj4zvmz5L3F8fqqXmQk0x4IpMt9kfO08Y3GFvqd5HIjDL_ayQw5nA4ZH6uQfIE
+ dycvTrjj1bvhAyH3MCzUmXAL75j4nDIr0eb5rKZFj_YatwG39D6F_aeBa8.6G0nGvK516.UqiwQk
+ 7V_OS._.ieiO8wME.I0pm.nQZN9ak4WBIOgcOs9tQjq2cC9zGHjCb79Ju01sI5yPaNRTyexib_43
+ GYR6obqEqO4cWhNahpCjxstDGCG8VkaVioluV.A--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 18 May 2021 17:40:44 +0000
+Received: by kubenode546.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 6ed5589bd64c2f62052162e8342531d0;
+          Tue, 18 May 2021 17:40:40 +0000 (UTC)
+Subject: Re: [PATCH] Revert "Smack: Handle io_uring kernel thread privileges"
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-security-module@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <04c7c410-08e8-626a-795e-b77db6666804@kernel.dk>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <89593a3e-96dc-f14c-0925-4b62872ca42e@schaufler-ca.com>
+Date:   Tue, 18 May 2021 10:40:40 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <04c7c410-08e8-626a-795e-b77db6666804@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.18291 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the TDP MMU is in use, wait to allocate the rmaps until the shadow
-MMU is actually used. (i.e. a nested VM is launched.) This saves memory
-equal to 0.2% of guest memory in cases where the TDP MMU is used and
-there are no nested guests involved.
+On 3/25/2021 5:42 PM, Jens Axboe wrote:
+> This reverts commit 942cb357ae7d9249088e3687ee6a00ed2745a0c7.
+>
+> The io_uring PF_IO_WORKER threads no longer have PF_KTHREAD set, so no
+> need to special case them for credential checks.
+>
+> Cc: Casey Schaufler <casey@schaufler-ca.com>
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- arch/x86/include/asm/kvm_host.h |  2 ++
- arch/x86/kvm/mmu.h              |  7 ++++-
- arch/x86/kvm/mmu/mmu.c          | 14 +++++++---
- arch/x86/kvm/mmu/tdp_mmu.c      |  6 +++--
- arch/x86/kvm/mmu/tdp_mmu.h      |  4 +--
- arch/x86/kvm/x86.c              | 46 +++++++++++++++++++++++++++++++++
- 6 files changed, 71 insertions(+), 8 deletions(-)
+I have added this to smack-next. Thank you.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index fc75ed49bfee..7b65f82ade1c 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1868,4 +1868,6 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
- 
- int kvm_cpu_dirty_log_size(void);
- 
-+int alloc_all_memslots_rmaps(struct kvm *kvm);
-+
- #endif /* _ASM_X86_KVM_HOST_H */
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index af09c47b1aa2..e987c9af82b6 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -234,7 +234,12 @@ void kvm_mmu_pre_destroy_vm(struct kvm *kvm);
- 
- static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
- {
--	return kvm->arch.memslots_have_rmaps;
-+	/*
-+	 * Ensure that threads reading memslots_have_rmaps in various
-+	 * lock contexts see the value before trying to dereference
-+	 * the memslot rmap pointers.
-+	 */
-+	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
- }
- 
- #endif
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 1e0daabc83ca..2ac7bec515a1 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3294,6 +3294,10 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
-+	r = alloc_all_memslots_rmaps(vcpu->kvm);
-+	if (r)
-+		return r;
-+
- 	write_lock(&vcpu->kvm->mmu_lock);
- 	r = make_mmu_pages_available(vcpu);
- 	if (r < 0)
-@@ -5481,9 +5485,13 @@ void kvm_mmu_init_vm(struct kvm *kvm)
- {
- 	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
- 
--	kvm_mmu_init_tdp_mmu(kvm);
--
--	kvm->arch.memslots_have_rmaps = true;
-+	if (!kvm_mmu_init_tdp_mmu(kvm))
-+		/*
-+		 * No smp_load/store wrappers needed here as we are in
-+		 * VM init and there cannot be any memslots / other threads
-+		 * accessing this struct kvm yet.
-+		 */
-+		kvm->arch.memslots_have_rmaps = true;
- 
- 	node->track_write = kvm_mmu_pte_write;
- 	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 95eeb5ac6a8a..ea00c9502ba1 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -14,10 +14,10 @@ static bool __read_mostly tdp_mmu_enabled = false;
- module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
- 
- /* Initializes the TDP MMU for the VM, if enabled. */
--void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
-+bool kvm_mmu_init_tdp_mmu(struct kvm *kvm)
- {
- 	if (!tdp_enabled || !READ_ONCE(tdp_mmu_enabled))
--		return;
-+		return false;
- 
- 	/* This should not be changed for the lifetime of the VM. */
- 	kvm->arch.tdp_mmu_enabled = true;
-@@ -25,6 +25,8 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
- 	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
- 	spin_lock_init(&kvm->arch.tdp_mmu_pages_lock);
- 	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_pages);
-+
-+	return true;
- }
- 
- static __always_inline void kvm_lockdep_assert_mmu_lock_held(struct kvm *kvm,
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 5fdf63090451..b046ab5137a1 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -80,12 +80,12 @@ int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
- 			 int *root_level);
- 
- #ifdef CONFIG_X86_64
--void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
-+bool kvm_mmu_init_tdp_mmu(struct kvm *kvm);
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
- static inline bool is_tdp_mmu_enabled(struct kvm *kvm) { return kvm->arch.tdp_mmu_enabled; }
- static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return sp->tdp_mmu_page; }
- #else
--static inline void kvm_mmu_init_tdp_mmu(struct kvm *kvm) {}
-+static inline bool kvm_mmu_init_tdp_mmu(struct kvm *kvm) { return false; }
- static inline void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm) {}
- static inline bool is_tdp_mmu_enabled(struct kvm *kvm) { return false; }
- static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return false; }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 7cbaa92687f7..28dc8bdd0c8a 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10931,6 +10931,8 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 		int lpages = gfn_to_index(slot->base_gfn + npages - 1,
- 					  slot->base_gfn, level) + 1;
- 
-+		WARN_ON(slot->arch.rmap[i]);
-+
- 		slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
- 		if (!slot->arch.rmap[i]) {
- 			memslot_rmap_free(slot);
-@@ -10941,6 +10943,50 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 	return 0;
- }
- 
-+int alloc_all_memslots_rmaps(struct kvm *kvm)
-+{
-+	struct kvm_memslots *slots;
-+	struct kvm_memory_slot *slot;
-+	int r, i;
-+
-+	/*
-+	 * Check if memslots alreday have rmaps early before acquiring
-+	 * the slots_arch_lock below.
-+	 */
-+	if (kvm_memslots_have_rmaps(kvm))
-+		return 0;
-+
-+	mutex_lock(&kvm->slots_arch_lock);
-+
-+	/*
-+	 * Read memslots_have_rmaps again, under the slots arch lock,
-+	 * before allocating the rmaps
-+	 */
-+	if (kvm_memslots_have_rmaps(kvm)) {
-+		mutex_unlock(&kvm->slots_arch_lock);
-+		return 0;
-+	}
-+
-+	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-+		slots = __kvm_memslots(kvm, i);
-+		kvm_for_each_memslot(slot, slots) {
-+			r = memslot_rmap_alloc(slot, slot->npages);
-+			if (r) {
-+				mutex_unlock(&kvm->slots_arch_lock);
-+				return r;
-+			}
-+		}
-+	}
-+
-+	/*
-+	 * Ensure that memslots_have_rmaps becomes true strictly after
-+	 * all the rmap pointers are set.
-+	 */
-+	smp_store_release(&kvm->arch.memslots_have_rmaps, true);
-+	mutex_unlock(&kvm->slots_arch_lock);
-+	return 0;
-+}
-+
- static int kvm_alloc_memslot_metadata(struct kvm *kvm,
- 				      struct kvm_memory_slot *slot,
- 				      unsigned long npages)
--- 
-2.31.1.751.gd2f1c929bd-goog
-
+> ---
+>  security/smack/smack_access.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
+> index 7eabb448acab..efe2406a3960 100644
+> --- a/security/smack/smack_access.c
+> +++ b/security/smack/smack_access.c
+> @@ -688,10 +688,9 @@ bool smack_privileged_cred(int cap, const struct cred *cred)
+>  bool smack_privileged(int cap)
+>  {
+>  	/*
+> -	 * Kernel threads may not have credentials we can use.
+> -	 * The io_uring kernel threads do have reliable credentials.
+> +	 * All kernel tasks are privileged
+>  	 */
+> -	if ((current->flags & (PF_KTHREAD | PF_IO_WORKER)) == PF_KTHREAD)
+> +	if (unlikely(current->flags & PF_KTHREAD))
+>  		return true;
+>  
+>  	return smack_privileged_cred(cap, current_cred());
