@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251FB387D4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E88387D5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350595AbhERQY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        id S1350605AbhERQ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237986AbhERQY0 (ORCPT
+        with ESMTP id S1350604AbhERQ2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:24:26 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55DCC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:23:07 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id b7so1222313plg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:23:07 -0700 (PDT)
+        Tue, 18 May 2021 12:28:55 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632BFC0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:27:35 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so1859497pjt.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 09:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=q4D2XFgEAj1BhNrNo2lFSglWPsdouq2uNHG7Lv+ctok=;
-        b=Z6s3NnonKJEwf5rrQDiDmxH3c6liP3P7W2F76e6nLdTjFeWDS74JBATG/hLMzhfvZA
-         KUdNOaXBnb0f3GU24iOJq8lNssvD4ZBF0dmrQ0b4Kh/XHg5cEg/kkGdaLm902m7Cq5GA
-         mO81+pu0x7SBI7kEeLQuFjYFfVEL+YslU2994myUTZGGCeHe2mkkocqqieOu7Fc9rQ1z
-         Y7ynA2hykse41yLsmrttyu5ffI+Mdb97XWavCfuZGf77cjUp9Zi5UKsyLh/4WqR8sSOF
-         tetOCWbCnwfnSEQp9ezW8lGGxrEz33uhjg86i5qN+KM4gYiDcojF5pa0mGZn7HVgyc8X
-         kEvQ==
+        bh=f1d/gi6dWIkxeOVPavTj9FbVcjVV1QNQTHRoa065Axw=;
+        b=ltK2Iy7UdPjTLSC30wGMvTDqSuz9Tgdw5TPVjMsfHwcsICjhevbCzkqvnNmYfn4OGw
+         ME3LAkIlii0f3cb+FMfATTKVje3qgqtyyLv7HbeqRlZsaUkGCLFATvjez4IZ96DDla5m
+         PxBhkAB9GQL67fnkmX2ZLFmzmtcJyR6PF0uag=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=q4D2XFgEAj1BhNrNo2lFSglWPsdouq2uNHG7Lv+ctok=;
-        b=QJb6XiXn12TcFW54nX7oj0B5xvdpFPBwCw8wOL71cnQtcGW1rU9O15RJ8Wjle7Yegt
-         pfTxCJ2OFInVEHmBipgMwPSYZbGVML/l/QlXqHOSabomGOFyMzbXvEu/vAlNggMgFcPT
-         sAopp+4u8KQyzj4FnuSvE4bwGjrxnqqoTz1Ll0LJ0lcN0ukMWYw+UNMcpNuh2ukXVR6w
-         ijuK2kGu6Wehrbl+Gg0Vj/BHEE1es/ajUS3qt9xenttEahiYkBa6l9iGZPbE6bqmI91s
-         XRJW2+C1O5cs5g80Nl0l9jwUmJD36m+NX5CvcrhHexYIMkjGw+sKOz80nE8oeUK/HhNM
-         K8+g==
-X-Gm-Message-State: AOAM533abnop3hROEXCKOiFxzBxDj9mm3j0oN4VhVfvPoj2tZiSavxBF
-        8tM5wtqvB9HTSqkyaUpqNFygUA==
-X-Google-Smtp-Source: ABdhPJw/1djl7Vba2/JVPpZFYLh9GNSpJ87x5rMxb0SZx931psP16/c+EHnp3H9O4GEF/mLfRvaT8g==
-X-Received: by 2002:a17:90a:2:: with SMTP id 2mr5982777pja.107.1621354987057;
-        Tue, 18 May 2021 09:23:07 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 15sm13512580pjt.17.2021.05.18.09.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 09:23:06 -0700 (PDT)
-Date:   Tue, 18 May 2021 16:23:02 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
-        Isaku Yamahata <isaku.yamahata@intel.com>
-Subject: Re: [RFC v2-fix 1/1] x86/tdx: Wire up KVM hypercalls
-Message-ID: <YKPp5gNtCgWo0khu@google.com>
-References: <2a4e9702-5407-aa95-be9b-864775bbaabd@intel.com>
- <20210518001551.258126-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <f9bbc6b2-c7ac-3f36-08e3-9c4da68a6a9d@intel.com>
+        bh=f1d/gi6dWIkxeOVPavTj9FbVcjVV1QNQTHRoa065Axw=;
+        b=gz2RKOOv+osWt8MJbXmksPhVDy+lVo4TIwLjyYNe1iPb4mGhVCz+Db9ZkzX0LQcbqJ
+         OVsZ9HurZSc3/zaU40fJ4bj7t7RsJnfwhYaoIsWIKC0XAR4SSF2uOewfEj4DTJus4Hkq
+         xIYgZSlqGbnBI5oufktI1ClFqS0kwKwflaYg2mrg8V06xYM3I8OZZduznPOzjnpJtSs6
+         IhOpfEH9LZmSod+QIMwAkL5Zbsek4Cph0oPBu3o8D2rdLrmV5t3ojzN6NmAbT9to8qZD
+         yI5I7PtIHHZRCrkjIPoPbWs4Jj520fBvncbHUwT45uOWDUK0YI4IBSgoY/lko/uwJIk7
+         gvGg==
+X-Gm-Message-State: AOAM5323WuZYgRAY7agRuZk2F4dNcWGIo3JQBflRVJuYOK+N9PYqlQNy
+        LW4al47lKcaEUaC1tmNVB9IPKg==
+X-Google-Smtp-Source: ABdhPJzWDMbUyShJOIx/gvCaFmMVofj6AaRHabNDQzzxjDYAOK3p+QoSxAXMzeVSyXoUi8wW/IS3YA==
+X-Received: by 2002:a17:902:44:b029:ee:9107:4242 with SMTP id 62-20020a1709020044b02900ee91074242mr5541000pla.18.1621355254874;
+        Tue, 18 May 2021 09:27:34 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:5b64:c814:4f8b:838e])
+        by smtp.gmail.com with UTF8SMTPSA id l67sm13529552pgl.18.2021.05.18.09.27.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 09:27:34 -0700 (PDT)
+Date:   Tue, 18 May 2021 09:27:31 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     satya priya <skakit@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [RESEND PATCH V4 2/8] arm64: dts: qcom: sc7280: Add
+ thermal-zones node
+Message-ID: <YKPq84r7soE0yjMA@google.com>
+References: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
+ <1621318822-29332-3-git-send-email-skakit@codeaurora.org>
+ <YKOog43JZghth3Np@vkoul-mobl.Dlink>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f9bbc6b2-c7ac-3f36-08e3-9c4da68a6a9d@intel.com>
+In-Reply-To: <YKOog43JZghth3Np@vkoul-mobl.Dlink>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021, Dave Hansen wrote:
-> Question for KVM folks: Should all of these guest patches say:
-> "x86/tdx/guest:" or something?
+On Tue, May 18, 2021 at 05:14:03PM +0530, Vinod Koul wrote:
+> On 18-05-21, 11:50, satya priya wrote:
+> > Add thermal-zones node for SC7280 SoC.
+> > 
+> > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> > Changes in RESEND V4:
+> >  - No Changes.
+> > 
+> >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> > index 2cc4785..2a7d488 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> > @@ -1125,4 +1125,7 @@
+> >  			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
+> >  			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
+> >  	};
+> > +
+> > +	thermal_zones: thermal-zones {
+> > +	};
+> 
+> Empty node..? what am i missing here...
 
-x86/tdx is fine.  The KVM convention is to use "KVM: xxx:" for KVM host code and
-"x86/kvm" for KVM guest code.  E.g. for KVM TDX host code, the subjects will be
-"KVM: x86:", "KVM: VMX:" or "KVM: TDX:".
+The 'thermal-zones' node with the SoC thermal zones is usually created
+in the <soc>.dtsi, however it doesn't exist yet. The 'Add DT bindings
+and device tree nodes for TSENS in SC7280' series
+(https://patchwork.kernel.org/project/linux-arm-msm/list/?series=478225)
+is creating it, but the series hasn't landed yet.
 
-The one I really don't like is using "tdg_" as the acronym for guest functions.
-I find that really confusion and grep-unfriendly.
+The node is needed by other patches in this series that add non-SoC
+thermal zones. Hence either an empty node needs to be added (for now)
+or this series should 'officially' depend on the TSENS series mentioned
+above.
