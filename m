@@ -2,136 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588F6386E3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9249F386E42
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239701AbhERAS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235539AbhERAS0 (ORCPT
+        id S1344965AbhERAYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:24:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29296 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238215AbhERAYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:18:26 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26B4C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:17:08 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id m11so11387827lfg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9CEolhPmqveQdMHrQLZCdsiXhuzpxEikCHjkALj6N6s=;
-        b=TbTUPK4keNe56luPmgX6uCwhrSdQZ+sh3+tKsNtLQZ5Ccvjic26ktns90GazmBY0Au
-         lfjMKbGtNPTJCGovKTpXPhfF5vXDQRHiSN3jugeadftQxnhyO4CsHP1PZXqT6ppic5ZX
-         FMw1MZHH/2FiqBHm+7HR7wap2ExLuwRljdy89af3sxtrP0/8AoD7h8+3GLGgZgrPkXIh
-         ZLUVkkBFM4qNFqEDZRgavkH+wqy6Ex+/mEmSPqcDpRFiqVVSU5k4GviJMe0XgO84cJ8x
-         9AitHiYtJaCiFkZblooua5Oa3R1GMBPQ6UQywcEQ+bAVQH6QHdTTRddpHQh0re2qVWAY
-         Nz1w==
+        Mon, 17 May 2021 20:24:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621297400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1CFhwAdeADWfjY+TeEUXI0dttR2qRWxmhTMkaKMBCuk=;
+        b=UYZaEetOebS9zOWu1FUz6LGrN+u/Tw0wjudDwjeHlvrZRWwTYwZG/+maG0ai0yZfc0dB5l
+        DBkmUdaC2lHxEdaPMSiMfXC+/QTb6KpVyPwsU88j8m2v4Qp1u5yqL1JEhXYRsBaQzmKWrS
+        zYPduMi7BE4J9WnNFqHsdM2efYd3Wms=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-jFp36KDaOu-lvhnaHAxoFg-1; Mon, 17 May 2021 20:23:18 -0400
+X-MC-Unique: jFp36KDaOu-lvhnaHAxoFg-1
+Received: by mail-lj1-f198.google.com with SMTP id h1-20020a2e9ec10000b02900edf305c2e1so3857626ljk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:23:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9CEolhPmqveQdMHrQLZCdsiXhuzpxEikCHjkALj6N6s=;
-        b=XNYYn0jjTAoBA2pL8mEsvROTn71qTXC5z9kTiK+6+2Aurd9g2DGVclNxWBSBMtlmp8
-         O+F8OD4MGb2y0lrAe+IaGrVZLCoqOZZ1cd0DvmxMC1iZYhDaC63wnQz1E/VOVq7zN0Tz
-         6ZyeZddnOlU3zTP5QqIVc7JGY+GkbtTbU121Axm15eF9WfFaJNTWpL67NbKkiAMSlNbo
-         4CSD+OlfqmJhDWmrYrYnf35rQAyBfpxTJ3czFAw0nFuPmcA+WZ+ZWV3HPDp7l2a9Xa9H
-         /CKVWi7KVB95PH+YbZ7MPudy1UVROAtoOK0fzDcwrwYbTinyRqobY/2GYIp/dZOKimUo
-         nT9w==
-X-Gm-Message-State: AOAM5330kRa/vEjGazp4r4TgwPzv0tLxLAl3Tu+NzG4egbd3wSlIPahc
-        80tAVGoxENZ7xMmg0Km0FOXbJFb/JEK6NZTHx1I+qg==
-X-Google-Smtp-Source: ABdhPJyoWr87UCAbWx72DAglWwjbyV1piF0F7vlhsJEOX3Y/PT9jj+qa3mIycS6Kldf5epigLhL7eAP1BbERn+gbD5Y=
-X-Received: by 2002:a05:6512:220c:: with SMTP id h12mr1945348lfu.374.1621297027203;
- Mon, 17 May 2021 17:17:07 -0700 (PDT)
+        bh=1CFhwAdeADWfjY+TeEUXI0dttR2qRWxmhTMkaKMBCuk=;
+        b=KnwORj8fnXFDD/PxdDdMJI5NCMuvNMAsMskU1wlDquYVflDM1dfwbL7McX1v0bvn4D
+         1gp6NyWy3dD7KeX8FFM11YCIQQ+gHxGXJDHEJCoWc1tcak0IMnbPqGRnwIdhLBYEPvpl
+         vtnZ3b30127+YlOhnnqFFZwxnpCRIgPSyDUjdRJE8wPMCEmlU4thkYNdW90gRjh+y6BW
+         j8hpBA1JWk6+rsntAmMD3PrCjNMsKv9p7Iu6sKR/rCdDAFizzxacJGXUt7D0cxWq9Dlp
+         h5KHW31ime7IeX9ZvEJz3ftQD+sQ/hHrHWyVB/Db1hEuuHLSrzdtzaUJo78Ni0cOg+VJ
+         QRCw==
+X-Gm-Message-State: AOAM532BfxFQIccqETQIN7EzyusqopSzUpkniKPfqKxJqLo0Xw4G5Pli
+        dmHZnyehjTWv8QB+nP5a4caP2SrWKWRwVBzMg4dvxWWhCODrv64phgjOf9D9klNxJDlHek1QxvO
+        pEpMsY1M3s0r3dZYe/JLjN3FxjGtnIX1FIoghBlPB
+X-Received: by 2002:a05:6512:3da1:: with SMTP id k33mr1954929lfv.114.1621297396825;
+        Mon, 17 May 2021 17:23:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyhOM/aeHK0aO1U0IXX7Bz97GQL+BiXI9gjCeNpT1VQx45C+gwAHC4wQS/KVuaPU2Um6MqyAaMyIDDi2YeTCBA=
+X-Received: by 2002:a05:6512:3da1:: with SMTP id k33mr1954902lfv.114.1621297396624;
+ Mon, 17 May 2021 17:23:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210422195405.4053917-1-ndesaulniers@google.com>
- <87lf99zzl3.fsf@dja-thinkpad.axtens.net> <CAOSf1CGoN5R0LUrU=Y=UWho1Z_9SLgCX8s3SbFJXwJXc5BYz4A@mail.gmail.com>
-In-Reply-To: <CAOSf1CGoN5R0LUrU=Y=UWho1Z_9SLgCX8s3SbFJXwJXc5BYz4A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 17 May 2021 17:16:55 -0700
-Message-ID: <CAKwvOdmMugQkTRwC3HOEt2-em2zSfAoi7gpvJRkqfdzSDRMeEg@mail.gmail.com>
-Subject: Re: [PATCH] powerpc/powernv/pci: remove dead code from !CONFIG_EEH
-To:     "Oliver O'Halloran" <oohall@gmail.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+ <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com> <87im3gewlu.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87im3gewlu.ffs@nanos.tec.linutronix.de>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Mon, 17 May 2021 20:23:05 -0400
+Message-ID: <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
+Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
+ setting the hint
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 6:13 PM Oliver O'Halloran <oohall@gmail.com> wrote:
+On Mon, May 17, 2021 at 8:04 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> On Fri, Apr 23, 2021 at 9:09 AM Daniel Axtens <dja@axtens.net> wrote:
+> On Mon, May 17 2021 at 18:44, Nitesh Lal wrote:
+> > On Mon, May 17, 2021 at 4:48 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >> The hint was added so that userspace has a better understanding where it
+> >> should place the interrupt. So if irqbalanced ignores it anyway, then
+> >> what's the point of the hint? IOW, why is it still used drivers?
+> >>
+> > Took a quick look at the irqbalance repo and saw the following commit:
 > >
-> > Hi Nick,
+> > dcc411e7bf    remove affinity_hint infrastructure
 > >
-> > > While looking at -Wundef warnings, the #if CONFIG_EEH stood out as a
-> > > possible candidate to convert to #ifdef CONFIG_EEH, but it seems that
-> > > based on Kconfig dependencies it's not possible to build this file
-> > > without CONFIG_EEH enabled.
-> >
-> > This seemed odd to me, but I think you're right:
-> >
-> > arch/powerpc/platforms/Kconfig contains:
-> >
-> > config EEH
-> >         bool
-> >         depends on (PPC_POWERNV || PPC_PSERIES) && PCI
-> >         default y
-> >
-> > It's not configurable from e.g. make menuconfig because there's no prompt.
-> > You can attempt to explicitly disable it with e.g. `scripts/config -d EEH`
-> > but then something like `make oldconfig` will silently re-enable it for
-> > you.
-> >
-> > It's been forced on since commit e49f7a9997c6 ("powerpc/pseries: Rivet
-> > CONFIG_EEH for pSeries platform") in 2012 which fixed it for
-> > pseries. That moved out from pseries to pseries + powernv later on.
-> >
-> > There are other cleanups in the same vein that could be made, from the
-> > Makefile (which has files only built with CONFIG_EEH) through to other
-> > source files. It looks like there's one `#ifdef CONFIG_EEH` in
-> > arch/powerpc/platforms/powernv/pci-ioda.c that could be pulled out, for
-> > example.
-> >
-> > I think it's probably worth trying to rip out all of those in one patch?
+> > The commit message mentions that "PJ is redesiging how affinity hinting
+> > works in the kernel, the future model will just tell us to ignore an IRQ,
+> > and the kernel will handle placement for us.  As such we can remove the
+> > affinity_hint recognition entirely".
 >
-> The change in commit e49f7a9997c6 ("powerpc/pseries: Rivet CONFIG_EEH
-> for pSeries platform") never should have been made.
+> No idea who PJ is. I really love useful commit messages. Maybe Neil can
+> shed some light on that.
+>
+> > This does indicate that apparently, irqbalance moved away from the usage of
+> > affinity_hint. However, the next question is what was this future
+> > model?
+>
+> I might have missed something in the last 5 years, but that's the first
+> time I hear about someone trying to cleanup that thing.
+>
+> > I don't know but I can surely look into it if that helps or maybe someone
+> > here already knows about it?
+>
+> I CC'ed Neil :)
 
-I'll change my patch to keep the conditionals, but use #ifdef instead
-of #if then?
+Thanks, I have added PJ Waskiewicz as well who I think was referred in
+that commit message as PJ.
 
 >
-> There's no inherent reason why EEH needs to be enabled and forcing it
-> on is (IMO) a large part of why EEH support is the byzantine
-> clusterfuck that it is. One of the things I was working towards was
-> allowing pseries and powernv to be built with !CONFIG_EEH since that
-> would help define a clearer boundary between what is "eeh support" and
-> what is required to support PCI on the platform. Pseries is
-> particularly bad for this since PAPR says the RTAS calls needed to do
-> a PCI bus reset are part of the EEH extension, but there's non-EEH
-> reasons why you might want to use those RTAS calls. The PHB reset that
-> we do when entering a kdump kernel is a good example since that uses
-> the same RTAS calls, but it has nothing to do with the EEH recovery
-> machinery enabled by CONFIG_EEH.
+> >> Now there is another aspect to that. What happens if irqbalanced does
+> >> not run at all and a driver relies on the side effect of the hint
+> >> setting the initial affinity. Bah...
+> >>
+> >
+> > Right, but if they only rely on this API so that the IRQs are spread across
+> > all the CPUs then that issue is already resolved and these other drivers
+> > should not regress because of changing this behavior. Isn't it?
 >
-> I was looking into that largely because people were considering using
-> OPAL for microwatt platforms. Breaking the assumption that
-> powernv==EEH support is one of the few bits of work required to enable
-> that, but even if you don't go down that road I think everyone would
-> be better off if you kept a degree of separation between the two.
+> Is that true for all architectures?
 
+Unfortunately, I don't know and that's probably why we have to be careful.
 
+--
+Nitesh
 
--- 
-Thanks,
-~Nick Desaulniers
