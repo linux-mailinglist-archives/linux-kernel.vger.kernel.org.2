@@ -2,147 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3419C3877B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2D23877AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348568AbhERLbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:31:17 -0400
-Received: from mail-eopbgr70055.outbound.protection.outlook.com ([40.107.7.55]:62934
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234295AbhERLbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:31:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UcqLhmThzU5WLlAJW2levJb6HxqEC4f/wQ45pw1RxStSX/P+XJisFA538qwE9Sug+8zMexyxD232V9E58udIHfkppQpLeNyA0Oj31qkNek/OPHdCiQKctxZ5ChPCx1uuOxoXYs13UA8xTsJoMdnkwZ3A6kJwobkhio1iMd0DCrXb4E57DsZfjFrRuLspzzxOVJ71CzXglGxhXivbrkui30t/740hcjLFvqlF0EuVgMbsJIM0KQ8gkkg+6Yp2dEwzPMRZi3V6mY29bCbqrR9eKs647MddJliApYs44rNn/oRx8FqhnFvsthdxulC3RjjJ9HHoi09+VA/Fdmj8MQvTsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RZN2gzulOaC1cK2GhNNFhiN210BLdEW8qKLN7Ke0SFc=;
- b=FjlvzqO8HgHplos+Skl3rlhHl2xFbrFKuDCNQbbDqYf2QT8+zg+24c2/jQ/Z3OoG5YhdE7JbdcuzpFFh9uiEcYK/z2ST03DBFZEcauB5rI5foLRxf9OG0TS4VSHg457sI7GaUs5QPgI6V2I6X4GilgeFowiUsBhbi+6u0pXwxgqrR91Q+NlUbvksQ8NHxQd0jzdTLb3NMhjuecu2aggAjDdRqToQql1DSa5TmSj3YrT2hqdFVZlP+CC9E43Emo3okkRPGTKDDAd/cAR267rR/QTEMTCvHO6uT7dvFvQFFxwzTVHGTs2TdHsiX9MoAzV678dNtzqzIX6pT+xkJ1gMCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RZN2gzulOaC1cK2GhNNFhiN210BLdEW8qKLN7Ke0SFc=;
- b=P3WQby90VA8gONZcXYqQJ76JQmFb9sEaM0T3dI0HeesR2XpLhGmMEWPx8fJBf/LHa4De1HkAn/eDdaSE4a6ptLarXh8kyvbxCSWFCXjCO0nYzPw16CZy1n7EqkJQmY+TRDqJfoAftocP21ctpPCAkhKmYFso629VXBrjZA93E7g=
-Authentication-Results: lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM7PR04MB6871.eurprd04.prod.outlook.com (2603:10a6:20b:109::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Tue, 18 May
- 2021 11:29:52 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b%2]) with mapi id 15.20.4129.031; Tue, 18 May 2021
- 11:29:52 +0000
-From:   Dong Aisheng <aisheng.dong@nxp.com>
-To:     iommu@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: [PATCH 1/1] dma-contiguous: return early for dt case in dma_contiguous_reserve
-Date:   Tue, 18 May 2021 19:28:57 +0800
-Message-Id: <20210518112857.1198415-1-aisheng.dong@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR03CA0147.apcprd03.prod.outlook.com
- (2603:1096:4:c8::20) To AM6PR04MB4966.eurprd04.prod.outlook.com
- (2603:10a6:20b:2::14)
+        id S244091AbhERLad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:30:33 -0400
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:33452 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238801AbhERLaa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 07:30:30 -0400
+Received: by mail-lf1-f54.google.com with SMTP id h4so13661093lfv.0;
+        Tue, 18 May 2021 04:29:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dcJhZHI2dMBnsGGuAZxTwh/jDPWWPYy1O0c7zJIFI2Q=;
+        b=DikOqRPFItvq/zDpraDr0Oevx3V9Pn4UsG7FPWl71h70ekQ+lyVUmMHCjt7W6ikHC0
+         ffjO/eLWxQeEKgu6TKxW/BlTuT3UOApKn4d1S+AVm5Q+mIXJet8aXCO3JTTmUUypgKes
+         VHdJ2cv/O5FH5oKKluD4Xx9eCOYRf4Lh5m8v4gTWaOu/BGXuOmB6X3akfC5ZVsEzVctH
+         7e805evd3O3OSSFVUzbCDJP7THhzWSmQpEkI5czE0qB15knRuqFeBQGGB0Bi+XoyhiJj
+         lyS8PZoymJXmOAoVSKjjxsZxRFcsnbBRTQamC9NJMysGYxV+nZbt5NkAhCHutrpl7YzV
+         l83A==
+X-Gm-Message-State: AOAM5324meWRcnBQnmoNTrYA8Gc0ZzmqHCOMC7Ru0d4UySOC5XeA7PIl
+        zAOKCIP3l4hdZ+6bTl+ojVk=
+X-Google-Smtp-Source: ABdhPJwe5wZdkDxZsmNXpGcgrdpRaYMah8nwFziwesxZzIh4oRkc/xlzCVi0bxg5aMoJRBIZe8fnJA==
+X-Received: by 2002:a05:6512:510:: with SMTP id o16mr1673142lfb.488.1621337350977;
+        Tue, 18 May 2021 04:29:10 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::1])
+        by smtp.gmail.com with ESMTPSA id t22sm2258555lfe.309.2021.05.18.04.29.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 04:29:10 -0700 (PDT)
+Date:   Tue, 18 May 2021 14:29:04 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: [PATCH v10 11/11] MAINTAINERS: Add reviewer for regulator irq_helpers
+Message-ID: <15105258ec870240c7e05ea01236986b379bf7f8.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0147.apcprd03.prod.outlook.com (2603:1096:4:c8::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Tue, 18 May 2021 11:29:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ff4df551-2829-4eb8-caa2-08d919f040d8
-X-MS-TrafficTypeDiagnostic: AM7PR04MB6871:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB6871460A0F5055A35B91B6CB802C9@AM7PR04MB6871.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:626;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1DFmXUdzZpo6e2xRG2nyF0YeofZkmtJWP4qoP6qEqnlUg/34FZrWgNdF9nH82dFdTewVVexb5x32h69oSnSzB3hy8n28PmZMHIFoofHhN+lW+UIzhilR6QE+DGjJ0I/hUN5BNVRpJTHbPMYyqq/Sj2wCBY7wfR4PjvlOBaRKA2S4ED96vTP+pabJNegusIReTTlgez6EnG7RUSNC63NU9fpT1SeqsA6W2NQwgnkeOiZz9+c7VBEuWFqO7mAvzOdH6EYi5yJZPV2PSdwJj6twRDXRu0A68RYwl+PXQdVuhX+2qOBJMPeT4Bu/q/cQkfpWROU/u17zJPBDt8U0bQ09PJ78HaJSSIGBJ04G/SdwtyfJnwtXk5z1/Nsf70n06oHbJzMPpROhcNi1AR42oe5uWfHCmGZsPxKtzYJLtah/kIMnedFRcKkCK09tPm3BFVPp/HY4xFH89g71nERk/02nPtve/3M08dW8w8894C9Z0oE+cWwQ7Xs/hc2k7dxv+aF+VxV5zl4CfgvaEFUKbM0KdSTYbD6HrNwchANEHkOKpRGz7FBDtwVAdoAJUm/hWXFPzK0QV+5U6YUC2xrcRBzyFHI4SzKSrnS7ox4U0cvNDl8o1mHrY8e3Exzjbk/9o6f1AN9BvzzAkP63eeQXQYZqc3b7KDKwWsL50No2nkr94sSvkGOFtWJO5H3CQM2oRLjI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(366004)(186003)(54906003)(316002)(6506007)(8676002)(6916009)(52116002)(2906002)(4326008)(38350700002)(2616005)(86362001)(8936002)(66476007)(36756003)(956004)(66556008)(26005)(6486002)(1076003)(16526019)(6512007)(66946007)(38100700002)(5660300002)(6666004)(478600001)(83380400001)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?S49xjejyDziAis48HFZTDawC0ddNFq73gtAD7y4KmLPixli8KLv6uYDFtbvK?=
- =?us-ascii?Q?DvFOD2c/NN81cmdbOqM+Sk9aK7a3ByRxZvIzZzfRWBAHo4HzJKVKoSAdX4q0?=
- =?us-ascii?Q?nDTWpME7FpAN6oqBzqONpd+lkIVbgWBnrsb9cUu136tKE6OJoI25oIu9kGx7?=
- =?us-ascii?Q?EJTKt1JBRnMywDzOpaRf9x6pZRPqBVdr6z3eSB0FDHb0DnU4Q5kktYuxTp+M?=
- =?us-ascii?Q?TghkNcSrkGO5w9ZVnX/iks2YKEp5NNSO/CgoTN2zbdi60hl0vpdi8HkRJ8s2?=
- =?us-ascii?Q?jkhnjfsU8O3mc7S66hZu9xNfCjzuunEHN1nAZjWIqBtiPfnZsERekYL8Iztf?=
- =?us-ascii?Q?vz2UEESKrA94y03ZSybdWQcz59fAafbL9cc8uEuyBr2AXueQtbP5VvAO2uek?=
- =?us-ascii?Q?RSdWBLInIS+Epd4GIYuvey0MY5CH4Xh4oXoyEc13DsMiigwaLM3i4HjCLGy5?=
- =?us-ascii?Q?deO4ijKwR5tvopZXPQYpUDbclPMvzbuvdwXyM2I7MqnmUCyIcvtwYqO5t76S?=
- =?us-ascii?Q?OOX21zDLcWy0vYnKyIbd8cBSn4cBwsilY3uWnYhG20YLCGm+1YW17K0tDb14?=
- =?us-ascii?Q?8dvvqzIul0AddEmcue0lw/3qMnfAmLRS7gkoK1s159MD5z7CNzU5ZL9JWjAe?=
- =?us-ascii?Q?1yFWrkd1naG68LHGMzxwvYHcr8GbUl3h5FNE0O8MOHkGJfMTymVsHDyb9iMY?=
- =?us-ascii?Q?ZAzdcvxZLg1bszc9OqDo7M/bhYuM7PUZHzXF0x33BEpfDYMR/2Oflw7lfQ84?=
- =?us-ascii?Q?x91zmeRR7G9bEhRb8b/AsRjGkMTqT/uQeFSxYCgnStirm9emWJjO0rI72/UM?=
- =?us-ascii?Q?wa1HAw0NLGbMzL5Onu9CZoXzXH7u3DOXPYYoWPil1MkFj56GCxuM7SKa6ITY?=
- =?us-ascii?Q?RAah1AYBaL8UM0QytyDhqLj5Fm33q9Wt9eZ94ABG4IRzNxloYfcpFgMzpI9O?=
- =?us-ascii?Q?HymE7+fOLz2jAHRIaBsUq9I8QFMFFIBYVLzec3VQ0BbFsofQT6yPejioKggh?=
- =?us-ascii?Q?KlGKutYNUnwAi7R37v82sq9r5g4cKR/AmJVWILtvMc2ddG5zXNjJm/0nMmeV?=
- =?us-ascii?Q?+qSMB55IRV9L9ktfeJNEEx3TfrXz4oDex7oCcf5dNR54d95hzpv47rUecPoT?=
- =?us-ascii?Q?aMg3TCp1mjFEuPrpxVgvcznBf6v6NVzCEW2UlnwokgNRyF10Gz6feBYQqP4X?=
- =?us-ascii?Q?YgTDizyRbtJb7p9OxR6JqHfO2wJDD+hWbacX+akKaRAOX03OWFMXguNQ6oBb?=
- =?us-ascii?Q?L59LlaLSQFtqjqjhuWdR0e5GDu7XlwBRLp5L3hW+7dL4OResx6W3QXUBejay?=
- =?us-ascii?Q?EauFny8BmTuoFnYQvQmbSB08?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff4df551-2829-4eb8-caa2-08d919f040d8
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2021 11:29:52.3878
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T6xMNDhMEtZKjboprkVl+Z7ZMcL6OAPqWkQxGQDPD36Zu57v5FA8qJ5UzvTkthqv2S/jGxjiYqYKOtaSebVqRQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6871
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
+In-Reply-To: <cover.1621333893.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_contiguous_reserve() aims to support cmdline case for CMA memory
-reserve. But if users define reserved memory in DT,
-'dma_contiguous_default_area' will not be 0, then it's meaningless
-to continue to run dma_contiguous_reserve(). So we return early
-if detect 'dma_contiguous_default_area' is unzero.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Add a reviewer entry for the regulator irq_helpers.
+
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
- kernel/dma/contiguous.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Changelog:
+ v7 - onwards
+  - no changes
+ v6:
+  - New patch
+---
+ MAINTAINERS | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-index 3d63d91cba5c..ebade9f43eff 100644
---- a/kernel/dma/contiguous.c
-+++ b/kernel/dma/contiguous.c
-@@ -171,6 +171,9 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
- 	phys_addr_t selected_limit = limit;
- 	bool fixed = false;
- 
-+	if (dma_contiguous_default_area)
-+		return;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 008fcad7ac00..48fd36e93b66 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19551,6 +19551,10 @@ F:	include/dt-bindings/regulator/
+ F:	include/linux/regulator/
+ K:	regulator_get_optional
+=20
++VOLTAGE AND CURRENT REGULATOR IRQ HELPERS
++R:	Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
++F:	drivers/regulator/irq_helpers.c
 +
- 	pr_debug("%s(limit %08lx)\n", __func__, (unsigned long)limit);
- 
- 	if (size_cmdline != -1) {
-@@ -191,7 +194,7 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
- #endif
- 	}
- 
--	if (selected_size && !dma_contiguous_default_area) {
-+	if (selected_size) {
- 		pr_debug("%s: reserving %ld MiB for global area\n", __func__,
- 			 (unsigned long)selected_size / SZ_1M);
- 
--- 
-2.25.1
+ VRF
+ M:	David Ahern <dsahern@kernel.org>
+ L:	netdev@vger.kernel.org
+--=20
+2.25.4
 
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCjpQAACgkQeFA3/03a
+ocV2mwgArv5FNsn4yKrQE5FJBeqzxxCob1kdon3S3j1oL2yP8GfvDcSgOnAX7vFp
+xK8XjQy/XF8bOuST+igrlI1oL6oPMLuv2MDotPYFzdybWAvIzGsnLp1jULOL967I
+f9+4cvk65RmFeAji4Bukzaotgl6KWpoPW2mNCZ2YIM8QxQWqOA9iZ8RTkUXd76GB
+u4l5OReAqrh9ip9hFvboDpro0YRU0IwznJfJ0SyMsYOMsfLhAne4ku7Aopz1ugyj
+oF5EpC0rGg/b5czPBtieW9uGhR4WX4bDp18DPQLE0ph1duNw8NGxF4pn1cd5IAwJ
+tPS9mf7/0ZJgYWAiSNntSQN2wy4hjw==
+=oKGl
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
