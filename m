@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77E7387F5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E963A387F61
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhERSP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:15:59 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:34654 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhERSP5 (ORCPT
+        id S234152AbhERSRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:17:16 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:46763 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhERSRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:15:57 -0400
-Received: by mail-ot1-f43.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso9489810ote.1;
-        Tue, 18 May 2021 11:14:38 -0700 (PDT)
+        Tue, 18 May 2021 14:17:16 -0400
+Received: by mail-ot1-f47.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso9415635otb.13;
+        Tue, 18 May 2021 11:15:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MqzmUfFQvWACmELeeJIeSI5XVhxUZgmOCwYifMZTRQk=;
-        b=jSYmrixJ77OY/BT0LF7IRv9wbVYhFx/SlNZbGPkrkyt2Go6YIlvTfhKv9XQYC6a8Sl
-         GyBMuwi5yTlKm73gF2ugmjW9ZkEn1/X/7rzmVxXi9+yKg5wzrb+CWTClD9nYx7BMTiFS
-         Gbmth/WnCy+trMSX26KO34jsWIfTY9gPfVBE41a8ybw6/XqEyYgfvfOV9tvWKZF5StEq
-         SoHkbUUKyNet7tMdtQhVErHqhPIa9Dr0NetCkGchZKsvgvEVLiTw5TtY5cDSzPYGIQqX
-         Xy05bfkBD1Apgki/Wp/b22RV06D3E/DUHzWjE/ZP+y8B1/HWiFhMWZZbg3ysUvg8gYuW
-         0qsg==
-X-Gm-Message-State: AOAM533+PM1qXFl1hPDzCgfPT9BYXicsM2IUCr52WU/ZzCx73snMzWLn
-        +WEX3YAdatJg/wfSyeq7CQ==
-X-Google-Smtp-Source: ABdhPJz0l2e+YzveBfbUDExvUUb4ozSZ0fEA9Sg7/956oxQts1fxdYml8imxKkVA8bXCFfL8lQBASA==
-X-Received: by 2002:a9d:7410:: with SMTP id n16mr5276878otk.262.1621361678442;
-        Tue, 18 May 2021 11:14:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=+g05SB4aoT3YIpI6N4IhJVhX2l169+uO0nZE9GNr+Mo=;
+        b=E7tM2Rb4mpXHGisgoFKw2o8Zc4dD/1+5lEI+gksZVyLSBzttiqThuZdVqPYJlbc9qF
+         xemoaoXHpZU51BRt0Q/I11GR6NMzmRuC4MBqgkWkMtt5pmchD0NuO048RwmCiU65asOA
+         YSmI13SUePD2fLImhkz00RKhKhk5F6109BhsP+877XBXb3dPkX6E3CikP1prdw24nNDx
+         K4WyxIu+oA1pXN3iV0+cLolz8Ni1/YMkECJG29aBXV3F6/WUE4wLwZDnbiWVmkDVc/Dt
+         wL+I6HUS8CHcmN4AziTpGuXEjuf0Yc1gYd4ldIIb5GTv5fp1SdX6J3L2v1mil9Y0Ra3t
+         2sog==
+X-Gm-Message-State: AOAM531KMSFWZU3l1W9acB4be9UF9alxoeaEcjAmK4zuwoFvJmkNVngw
+        iZx/QhA8sMHLNVtxjiSscQ==
+X-Google-Smtp-Source: ABdhPJww1OVaLPTwZ5zjCatbIXjAd8Nt777S40pBMd+GHaOom3iOiJwsr7y2qRts2CV7dlh5dgtbPw==
+X-Received: by 2002:a9d:7348:: with SMTP id l8mr5485819otk.240.1621361757424;
+        Tue, 18 May 2021 11:15:57 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o80sm3844961ooo.41.2021.05.18.11.14.36
+        by smtp.gmail.com with ESMTPSA id o80sm3845687ooo.41.2021.05.18.11.15.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 11:14:37 -0700 (PDT)
-Received: (nullmailer pid 968440 invoked by uid 1000);
-        Tue, 18 May 2021 18:14:35 -0000
-Date:   Tue, 18 May 2021 13:14:35 -0500
+        Tue, 18 May 2021 11:15:56 -0700 (PDT)
+Received: (nullmailer pid 970611 invoked by uid 1000);
+        Tue, 18 May 2021 18:15:55 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] of: base: Export of_device_compatible_match()
-Message-ID: <20210518181435.GB949047@robh.at.kernel.org>
-References: <20210518001356.19227-1-digetx@gmail.com>
- <20210518001356.19227-2-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518001356.19227-2-digetx@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     David Jander <david@protonic.nl>, linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20210518125748.26823-4-o.rempel@pengutronix.de>
+References: <20210518125748.26823-1-o.rempel@pengutronix.de> <20210518125748.26823-4-o.rempel@pengutronix.de>
+Subject: Re: [PATCH v2 3/4] dt-bindings: touchscreen: resistive-adc-touch: add support for z1 and z2 channels
+Date:   Tue, 18 May 2021 13:15:55 -0500
+Message-Id: <1621361755.675568.970610.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 03:13:55AM +0300, Dmitry Osipenko wrote:
-> The of_device_compatible_match() will be used by the updated NVIDIA Tegra
-> ASoC WM8903 driver which could be build as a loadable module, export the
-> OF function.
+On Tue, 18 May 2021 14:57:47 +0200, Oleksij Rempel wrote:
+> For pressure calculation based on plates resistance we need some additional
+> properties:
+> - z1 and z2 channels with additional measurements between plates
+> - actual resistance of the touchscreen. Currently we use only
+>   X-resistance.
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  drivers/of/base.c | 1 +
->  1 file changed, 1 insertion(+)
+>  .../bindings/input/touchscreen/resistive-adc-touch.yaml  | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/drivers/of/base.c b/drivers/of/base.c
-> index 48e941f99558..eeca92467531 100644
-> --- a/drivers/of/base.c
-> +++ b/drivers/of/base.c
-> @@ -556,6 +556,7 @@ int of_device_compatible_match(struct device_node *device,
->  
->  	return score;
->  }
-> +EXPORT_SYMBOL(of_device_compatible_match);
 
-I should document this, but there's a number of of_* functions that have 
-only a few users and I want to get rid of. This is one of them. Grep 
-this function and you'll notice most should be using 
-of_machine_is_compatible instead and we're left with sunxi_mbus...
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Rob
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.example.dt.yaml: resistive_touch: io-channels: [[4294967295, 1], [4294967295, 2], [4294967295, 3], [4294967295, 4]] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.example.dt.yaml: resistive_touch: io-channels: Additional items are not allowed ([4294967295, 4] was unexpected)
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.example.dt.yaml: resistive_touch: io-channel-names:2: 'pressure' was expected
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.example.dt.yaml: resistive_touch: io-channel-names: ['x', 'y', 'z1', 'z2'] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.example.dt.yaml: resistive_touch: io-channel-names: Additional items are not allowed ('z2' was unexpected)
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+
+See https://patchwork.ozlabs.org/patch/1480237
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
