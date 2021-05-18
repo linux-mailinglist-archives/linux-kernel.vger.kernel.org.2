@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B797C387D98
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB09387D99
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350757AbhERQd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:33:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36072 "EHLO mail.kernel.org"
+        id S1350777AbhERQeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:34:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350740AbhERQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:33:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8883B611CE;
-        Tue, 18 May 2021 16:32:31 +0000 (UTC)
+        id S1350758AbhERQdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 12:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF00611AD;
+        Tue, 18 May 2021 16:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621355552;
-        bh=EzEVnm2Y5CunIGaLAh4VqbVByFAoFKrDnoSTa9kXYGM=;
+        s=k20201202; t=1621355555;
+        bh=wY55NAYe5MkIZJCvMDNA5zES2hne44anMPpiK/g6bWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TounrEgTTWjYTQedosCjwN49rMPr8Jvg90PdNXQ7U+qxKbbjRLfhUnerplCLHZ4XV
-         aDwIrN6N+wbgPj/qYXbMtW8WoBzhL7kmmReXVIfuvCAHWgF38grrCWbB/kEPcNR8ED
-         uH6w4/ircgd2M3kLOcJlNOQlwpyUpE931vmxwz0Rvo/pRXHRFw4bELv0W/Pw7mPddg
-         r/qs+RIj3hK09rXmw+Lkt/HQPlxO5xcuJPoSakbxqDAnOD7V/aEFHRqFMLM8DqUJes
-         UFcGhA1GZiru8B/Gl8T+33k/zuILprXKX3L4tvxXOXqqYxlw0GcFnPA95tzX/fDfVK
-         d1LPC1XtZYJSg==
+        b=OEiZoQ69e2NBS5/So98B8TA4eKdWZImfLSJ7nCEXYCTmJdy1G9/AN0jWBifCHqEe5
+         FI2o+1wRoAL6bM/sUTql50FH9oqOaS7xw4igEUBh2pAm4X/ggemHGH64Onfg61G1FH
+         SGRSYvUQErJ0eKLupR6GO/NpnJJ+OGxHmha723i9gIPCUi91MjfeMGgDOsquzD5ahh
+         GZLVwlbgC9kXsHhuDe509vYgH5uLCu5oJA/mjLUIAsuIbAMgGQzM36ujw7wugcxIC2
+         bZVGc8Vp6vceM4DCoBbSvWB/i+0BmooiSNXqAktBtnUE3VvHjCnQOTT/l4duZZcM5w
+         9kRWbsKcf0/pQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Subject: Re: [PATCH] regulator: bd71815: Fix missing include files
-Date:   Tue, 18 May 2021 17:31:30 +0100
-Message-Id: <162135540357.37947.10342032964730109695.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rk3328: fix missing clk_disable_unprepare() on error in rk3328_platform_probe()
+Date:   Tue, 18 May 2021 17:31:31 +0100
+Message-Id: <162135531446.37831.5863010309474559267.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210518114843.1495152-1-axel.lin@ingics.com>
-References: <20210518114843.1495152-1-axel.lin@ingics.com>
+In-Reply-To: <20210518075847.1116983-1-yangyingliang@huawei.com>
+References: <20210518075847.1116983-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,19 +41,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 19:48:43 +0800, Axel Lin wrote:
-> Include linux/of.h and linux/gpio/consumer.h to fix below errors:
-> error: implicit declaration of function ‘of_match_ptr’
-> error: implicit declaration of function ‘devm_gpiod_get_from_of_node’
+On Tue, 18 May 2021 15:58:47 +0800, Yang Yingliang wrote:
+> Fix the missing clk_disable_unprepare() before return
+> from rk3328_platform_probe() in the error handling case.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regulator: bd71815: Fix missing include files
-      commit: 3799fa23afa4cac347739d5290df44a474a82a82
+[1/1] ASoC: rk3328: fix missing clk_disable_unprepare() on error in rk3328_platform_probe()
+      commit: d14eece945a8068a017995f7512ea2beac21e34b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
