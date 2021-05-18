@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6206A388176
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3645138817D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352155AbhERUhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        id S1352178AbhERUjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236628AbhERUhp (ORCPT
+        with ESMTP id S236628AbhERUjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:37:45 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF66C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:36:26 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id p6so5766178plr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:36:26 -0700 (PDT)
+        Tue, 18 May 2021 16:39:21 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D101C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:38:03 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id c17so8300934pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=iMHbPKb1AhvuJccsSxrJGFr8X4+0YMZrG3gQe/JeWjM=;
-        b=b3GWO2fSSF+IEHLWy8rVuzHE25lpIcW/uGadrCE5ZgqIOSEhDwiBRhm/ZKR8eC2pqp
-         9IvUfPhXkkP6bdgnNdn3ePR1c+VfhDmXvKG1TSmcJw/QSbOuSxfKRjOQix8ls9i9Rzik
-         IowCGFfjVE2MhibvZsLxpJRZAkBydwV5TgP0t2npq/uAEfwHtWrxnFCWS4L4WeEAfXoh
-         R2ZOHlpRPSJ4il4yTNZ5fxr7+tjwyX5pIv2Deh8272LPr1knqErkbzFnbqtAaURAwxZP
-         4mzdkdIiagmifLuWX1OYJMd3W39hJdQO20hjIJGKyt0HlJsq/Z7kMXi1FrL2vyIHuQwq
-         W53Q==
+        bh=XnFfLl2UDQpNOM7J0sY8oP5lxN10cYtX8CfE86wJNNM=;
+        b=IVXC7MHxCxNopOOvt7tAeBgXJFH0RyS8DSFqqLXSOEhPX+5TlfU5S+QtLh4by8bRE9
+         7f3XNai4ObMWNRBksw2xxEXMXOFkptJftqzvEP2mYdTiHCTf99oB9Lkcl5yBOiFv5hZ7
+         ERbIDimT/pIBZ91j7AvlVsvF2CFa6a0HXYXkL5rpP1yw9Mb+0+61ZLjah9hfeJj6+Nkt
+         i5v2kK6uuGmTkoDSJF3VM2/6mNzUPTubCJBh9dGUDxA63iWTatrek0Zei9qYG6DkKC6b
+         Mqqf4+RlZSX2YcUZqfgFQgNvvNZQe/W4CFek6fEK10LEtDUSLA67dfKjiP7K6qh8um20
+         eKDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iMHbPKb1AhvuJccsSxrJGFr8X4+0YMZrG3gQe/JeWjM=;
-        b=BMZqahQWYHnbA3l8be3ag+lFdkUZxf4q9eLjjShYBcj7qRMu7vp+J3ApHRfGqNjqpc
-         eRYoWmKfCMMGEHeMj+xgiSQWj1qJLXn6ew4W7A1Ky4mN39Z9gHvcT42k+ri5/vaxm6oo
-         5kvuOJQOeQbPjZs5l1uFk0wwNwzFniSFONF3IdgWiXsk0WA8tbqGZ8cIrPDVTCaL9sFa
-         g9A6F0eFJGVg6QNe1dJQfuJqD35Tt+vDNbKTz6vlVIOf47aavmQdI8c7EOyMDAHh4Kzn
-         FJykXfhtOHMc9HHJcokjJkpm2YRr1PdWp8hA5HMxqwv55p/B2vuSgBFgYM2taLy/3E4R
-         MvMw==
-X-Gm-Message-State: AOAM532DiH8/bBjho/t/Lfa+PBdSsuFuO62yog67A5NtewcNF+mZiYFA
-        3M2cTPbuAzsNxNphP9xqNQI=
-X-Google-Smtp-Source: ABdhPJyu6aZtH9UBP+047gh6lGAL2nkLew0eMESzPTWTYRexz04yXy+P9EIubrQjnclebD7BmCkaDg==
-X-Received: by 2002:a17:902:8682:b029:ef:d2:4311 with SMTP id g2-20020a1709028682b02900ef00d24311mr6552896plo.4.1621370186078;
-        Tue, 18 May 2021 13:36:26 -0700 (PDT)
-Received: from devbox.home ([50.39.96.2])
-        by smtp.gmail.com with ESMTPSA id p65sm8547563pfb.62.2021.05.18.13.36.25
+        bh=XnFfLl2UDQpNOM7J0sY8oP5lxN10cYtX8CfE86wJNNM=;
+        b=Ic8hEOIYXjN17OdKPEGW385sicwp2SrmT80PIdWu9IB3YUdqjuK5kd1+7ieFI/qE+K
+         dU7rbCtwpLAdxg+YqcgkkAodlARg3efTc/cAXvmsI99gMyZHVZK+WdCzcHA9CQgZsI+Q
+         x8rRM/6EvRlqv1T7F4+DyTdvyN3xFdVbK5ozuVBsGBoTkCJeGPKgYEBU0FK/Qrj2IlMp
+         uqsaFW6hRbF700Y4mwvCDzZ3cK8H4Ronb0a4QgNH+IE6+AgHygR8C3n6LvwHHJ38g+zO
+         fvvtor/+Vpwpf7IcNC1oRQmOgrklxjpceBnfR4xp7Fejt8J/quaZib0mhddNLRE20696
+         E+eQ==
+X-Gm-Message-State: AOAM533qK4nDIUoXpfldqLNP3V0R6gFaPtHB+fOkprHcb5HngciwZZPT
+        06qOzfag8OjAQ1pJovPA91lh6Q==
+X-Google-Smtp-Source: ABdhPJzaoZFC7TTpp3zIHhl6P5+Ct/dxTj7G56pZG2S9WMJL6cRav/lZxo83MUBRakgj1WROOHHClA==
+X-Received: by 2002:a63:4f50:: with SMTP id p16mr6820680pgl.245.1621370282951;
+        Tue, 18 May 2021 13:38:02 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id g13sm13521721pfi.18.2021.05.18.13.38.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 13:36:25 -0700 (PDT)
-Date:   Tue, 18 May 2021 13:35:27 -0700
-From:   Pawan Gupta <writetopawan@gmail.com>
-To:     "Saripalli, RK" <rsaripal@amd.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
-Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
- Forwarding
-Message-ID: <20210518203527.3i7bfpo7j6lx42i2@devbox.home>
-References: <20210517220059.6452-1-rsaripal@amd.com>
- <20210517220059.6452-2-rsaripal@amd.com>
- <20c6fa3d-949d-156a-6d74-89829e3bffdf@infradead.org>
- <5fee3f12-27f3-3984-ce33-60734190ff0c@amd.com>
+        Tue, 18 May 2021 13:38:02 -0700 (PDT)
+Date:   Tue, 18 May 2021 20:37:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
+Message-ID: <YKQlpuKHb7DFFG8y@google.com>
+References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
+ <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
+ <43e583a3-ee2b-52d8-5275-e26a6609c126@linux.intel.com>
+ <YKP1Xty7EEzHkZ6Y@google.com>
+ <8fb0e52c-ed0a-2185-585a-27007c27ed56@linux.intel.com>
+ <YKQF08wqTsCQ3qHL@google.com>
+ <3a037a43-435b-fc28-63d0-48e543cddfdd@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5fee3f12-27f3-3984-ce33-60734190ff0c@amd.com>
+In-Reply-To: <3a037a43-435b-fc28-63d0-48e543cddfdd@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.05.2021 07:27, Saripalli, RK wrote:
->
->
->On 5/17/2021 9:55 PM, Randy Dunlap wrote:
->> Hi again,
->>
->> On 5/17/21 3:00 PM, Ramakrishna Saripalli wrote:
->>> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
->>>
->>> Certain AMD processors feature a new technology called Predictive Store
->>> Forwarding (PSF).
->>>
->>> PSF is a micro-architectural optimization designed to improve the
->>> performance of code execution by predicting dependencies between
->>> loads and stores.
->>>
->>> Incorrect PSF predictions can occur due to two reasons.
->>>
->> ...
->>
->>>
->>> Kernel parameter predictive_store_fwd_disable has the following values
->>>
->>> - on. Disable PSF on all CPUs.
->>>
->>> - off. Enable PSF on all CPUs.
->>>        This is also the default setting.
->>>
->>> Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
->>> ---
->>>  .../admin-guide/kernel-parameters.txt         |  5 +
->>>  arch/x86/include/asm/cpufeatures.h            |  1 +
->>>  arch/x86/include/asm/msr-index.h              |  2 +
->>>  arch/x86/include/asm/nospec-branch.h          |  6 ++
->>>  arch/x86/kernel/cpu/bugs.c                    | 94 +++++++++++++++++++
->>>  5 files changed, 108 insertions(+)
->>>
->>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->>> index 04545725f187..a5f694dccb24 100644
->>> --- a/Documentation/admin-guide/kernel-parameters.txt
->>> +++ b/Documentation/admin-guide/kernel-parameters.txt
->>> @@ -3940,6 +3940,11 @@
->>>  			Format: {"off"}
->>>  			Disable Hardware Transactional Memory
->>>
->>> +	predictive_store_fwd_disable=	[X86] This option controls PSF.
->>> +			off - Turns on PSF.
->>> +			on  - Turns off PSF.
->>> +			default : off.
->>
->>
->> and as I did earlier, I still object to "off" meaning PSF is on
->> and "on" meaning that PSF is off.
->>
->> It's not at all user friendly.
->>
->> If it's done this way because that's how the h/w bit is defined/used,
->> that's not a good excuse IMHO.
->>
->> Hm, it sorta seems to be a common "theme" when dealing with mitigations.
->> And too late to fix that.
->
->Based on previous feedback from Thomas Gleixner, I reworded this as a mitigation instead of as a "feature".
->In that vein, all the mitigation code moved into bugs.c like other mitigations, similar to
->spec_control_bypass_disable with an ON/OFF but no prctl/seccomp/auto.
+On Tue, May 18, 2021, Andi Kleen wrote:
+> 
+> On 5/18/2021 11:22 AM, Sean Christopherson wrote:
+> > On Tue, May 18, 2021, Andi Kleen wrote:
+> > > > The extra bytes for .altinstructions is very different than the extra bytes for
+> > > > the code itself.  The .altinstructions section is freed after init, so yes it
+> > > > bloats the kernel size a bit, but the runtime footprint is unaffected by the
+> > > > patching metadata.
+> > > > 
+> > > > IIRC, patching read/write{b,w,l,q}() can be done with 3 bytes of .text overhead.
+> > > > 
+> > > > The other option to explore is to hook/patch IO_COND(), which can be done with
+> > > > neglible overhead because the helpers that use IO_COND() are not inlined.  In a
+> > > > TDX guest, redirecting IO_COND() to a paravirt helper would likely cover the
+> > > > majority of IO/MMIO since virtio-pci exclusively uses the IO_COND() wrappers.
+> > > > And if there are TDX VMMs that want to deploy virtio-mmio, hooking
+> > > > drivers/virtio/virtio_mmio.c directly would be a viable option.
+> > > Yes but what's the point of all that?
+> > Patching IO_COND() is relatively low effort.  With some clever refactoring, I
+> > suspect the net lines of code added would be less than 10.  That seems like a
+> > worthwhile effort to avoid millions of faults over the lifetime of the guest.
+> 
+> AFAIK IO_COND is only for iomap users. But most drivers don't even use
+> iomap. virtio doesn't for example, and that's really the only case we
+> currently care about.
 
-Maybe change the help text to something like:
-
-	on  - Turns on PSF mitigation.
-	off - Turns off PSF mitigation.
-
-Thanks,
-Pawan
+virtio-pci, which is going to used by pretty much all traditional VMs, uses iomap.
+See vp_get(), vp_set(), and all the vp_io{read,write}*() wrappers.
