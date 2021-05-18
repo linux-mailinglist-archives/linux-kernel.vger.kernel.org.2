@@ -2,61 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CA8386F0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E99386F0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241420AbhERBVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:21:19 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:33594 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233019AbhERBVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:21:03 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lioOV-00047L-OL; Tue, 18 May 2021 09:19:35 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lioOQ-00022u-NR; Tue, 18 May 2021 09:19:30 +0800
-Date:   Tue, 18 May 2021 09:19:30 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Corentin Labbe <clabbe@baylibre.com>, chohnstaedt@innominate.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/11] crypto: start to fix ixp4xx
-Message-ID: <20210518011930.nywtcgualmsrx35v@gondor.apana.org.au>
-References: <20210505202618.2663889-1-clabbe@baylibre.com>
- <CACRpkdbR9mt-X-Dt9uR9vGtg_EDJCk3H5Umuh2eUX-PGZ7VBfQ@mail.gmail.com>
+        id S244083AbhERBVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:21:24 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:44638 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240845AbhERBVQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 21:21:16 -0400
+Received: by mail-ot1-f49.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so7236796otp.11;
+        Mon, 17 May 2021 18:19:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lQyD2GWtj103+jAsSAlVSEacTextBV6NwaSeCGgoqTE=;
+        b=Vb6Wgub8VgkI7us15uf8tJbJ22UASKWfBhb3zs665nT6RrXo6FFC7zBdI9gy7J80HB
+         jp11NWfwqI1cNGtFWwHywHFc0F6xj18sBtcmP79Av+wDNl6vWJmM+cxpy7jZB8EU0aO6
+         +/+cFjYSI2s/pZGR30XmcJEjZDdQ0JYj3fqRC3kRuaWatzXZPfjqjF8CdMAHvu3RJAvt
+         Z1cYJitw9JDm3ad90vjW+QcPSu4v6hiEb0XC7GmXvuLyOyEy7YgwWfa2R/ct7LrAz24h
+         UmkiT5nnfHB1OodN6h/xwrRoxYhfiJZN32yHyfNpn8AH6pgu0ira5yKrbF/aoK8GQR0d
+         JQ5A==
+X-Gm-Message-State: AOAM532wKpu/zYCGOelaVrygQi9bBY1SJkpBaipj+cpl2wZP8ytUGmia
+        14boG/H6ipfrlfaJHxJpyg==
+X-Google-Smtp-Source: ABdhPJx3Cah7HBLH1rOuCHWlRTVK4JcqnkhRVjkCNHaZzTuPfUQzoGwRf3xkCX3W34RT/ftSRl5ITA==
+X-Received: by 2002:a05:6830:16c4:: with SMTP id l4mr2089684otr.93.1621300798603;
+        Mon, 17 May 2021 18:19:58 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a12sm3468072oti.12.2021.05.17.18.19.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 18:19:58 -0700 (PDT)
+Received: (nullmailer pid 3587505 invoked by uid 1000);
+        Tue, 18 May 2021 01:19:57 -0000
+Date:   Mon, 17 May 2021 20:19:57 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        john@phrozen.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: gpio: stp: add gphy3 and gphy4
+ properties
+Message-ID: <20210518011957.GA3586154@robh.at.kernel.org>
+References: <20210513210340.10466-1-olek2@wp.pl>
+ <20210513210340.10466-2-olek2@wp.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdbR9mt-X-Dt9uR9vGtg_EDJCk3H5Umuh2eUX-PGZ7VBfQ@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20210513210340.10466-2-olek2@wp.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 01:53:56AM +0200, Linus Walleij wrote:
-> On Wed, May 5, 2021 at 10:26 PM Corentin Labbe <clabbe@baylibre.com> wrote:
+On Thu, May 13, 2021 at 11:03:40PM +0200, Aleksander Jan Bajkowski wrote:
+> The xRX300 family has 3 and the xRX330 has 4 gphs. They can also control
+> some pins of the gpio cascade. This patch documents the missing properties.
 > 
-> > Loading the ixp4xx crypto driver exhibits lots of error.
-> > All algorithm fail selftests with different reasons.
-> > This series start to fixes some of thoses problem.
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> ---
+>  .../devicetree/bindings/gpio/gpio-stp-xway.yaml  | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-> Excellent! Thanks for taking over this Corentin!!
-> FWIW:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> If I merge my 3 additional patches through ARM SoC
-> will it work out or do I need to think about some clever
-> merging strategy?
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+> index a36acc98898c..beb755edf639 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+> @@ -84,6 +84,22 @@ properties:
+>      minimum: 0x0
+>      maximum: 0x7
+>  
+> +  lantiq,phy3:
+> +    description:
+> +      The gphy3 core can control 3 bits of the gpio cascade. Available on
+> +      the xRX300 and xRX330 family.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0x0
+> +    maximum: 0x7
+> +
+> +  lantiq,phy4:
 
-Well if your patches don't touch the drivers/crypto then there
-shouldn't be any conflicts.
+You could make these a pattern under patternProperties instead.
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> +    description:
+> +      The gphy4 core can control 3 bits of the gpio cascade. Available on
+> +      the xRX330 family.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0x0
+> +    maximum: 0x7
+> +
+>    lantiq,rising:
+>      description:
+>        Use rising instead of falling edge for the shift register.
+> -- 
+> 2.30.2
+> 
