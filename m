@@ -2,184 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FF7387289
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE28387227
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346897AbhERGqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 02:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346877AbhERGqA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 02:46:00 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A459AC061346
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 23:44:42 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id 69so4531734plc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 23:44:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I5cfiiuVy355q+pMGkQSgcYSZ5RdxJgoq0S/wr5t2jQ=;
-        b=VCVUNM1MLDDCM1YEpGwmMdmzVg+pX5xmo6WpPBxB4HadDcwl/CwygcBJ5Z5xVX7EGU
-         JOp+gYR2V8ugVsU2F+sXgC/jRu3mFZRgRkzZFN+5qA7YQg/e6fHR9WHgCovgX+k3cvqU
-         Wun2WPZQV8InkeRjlR+5gd/zLl5l3irc9NkFk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I5cfiiuVy355q+pMGkQSgcYSZ5RdxJgoq0S/wr5t2jQ=;
-        b=KhaX1nQW1+0iud58mD3+AluGwhADxPW3tvtlAjh6g4b8z9jqJyVPbLuFsGvohOmpbB
-         id46FFJmSq0vbD/UpioGBLWm5AnZ1SeAaL+cv5a1J+sLHCgVxbOnejbMQeslZS9SUFm+
-         CZFkDk/X7sOur7GamsyrcrpBSF27sqW+5meHB5pSIvhvUYloRSawtQIf7Gjp8eBTlNLS
-         AKsl9448nRLPiQ9LmkUF4jd3v2LA9y87/mUKqj3DhsegdEtpoZBKR5KxHsUvMP+WdkIa
-         xebzM5+vgw/xdm3flgqb2QgSyNVfNz0AgpuDjAEXfKeRGWDMkt+4TPJ7epl3epxdv9Ab
-         LKTA==
-X-Gm-Message-State: AOAM532zxZ2hpaYRrM0KAlLtXSQHh8pNQbiqJ+6c6cOA2LYzp5bi/I6z
-        ADqHXR1izhFO2JVwHJavEsxtFw==
-X-Google-Smtp-Source: ABdhPJwzOAZEABY7sDXY0ei+QGCalaTIdclP5XZ2XQEkXIWtCph5uBf4dqlngGwrRv8DyOssDP/zXQ==
-X-Received: by 2002:a17:90a:9312:: with SMTP id p18mr3499688pjo.171.1621320282285;
-        Mon, 17 May 2021 23:44:42 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:f284:b819:54ca:c198])
-        by smtp.gmail.com with UTF8SMTPSA id u23sm1635824pfn.106.2021.05.17.23.44.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 23:44:41 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: [PATCH v7 15/15] of: Add plumbing for restricted DMA pool
-Date:   Tue, 18 May 2021 14:42:15 +0800
-Message-Id: <20210518064215.2856977-16-tientzu@chromium.org>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-In-Reply-To: <20210518064215.2856977-1-tientzu@chromium.org>
-References: <20210518064215.2856977-1-tientzu@chromium.org>
+        id S1346679AbhERGoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 02:44:12 -0400
+Received: from muru.com ([72.249.23.125]:56996 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241635AbhERGoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 02:44:07 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id F1DCF80F5;
+        Tue, 18 May 2021 06:42:52 +0000 (UTC)
+Date:   Tue, 18 May 2021 09:42:45 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Maciej Falkowski <maciej.falkowski9@gmail.com>
+Cc:     aaro.koskinen@iki.fi, linux@armlinux.org.uk,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] usb: isp1301-omap: Add missing gpiod_add_lookup_table
+ function
+Message-ID: <YKNh5ekJ1ffBZ+xd@atomide.com>
+References: <20210401162032.10150-1-maciej.falkowski9@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401162032.10150-1-maciej.falkowski9@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is not behind an IOMMU, we look up the device node and set
-up the restricted DMA when the restricted-dma-pool is presented.
+* Maciej Falkowski <maciej.falkowski9@gmail.com> [210401 19:22]:
+> The gpiod table was added without any usage making it unused
+> as reported by Clang compilation from omap1_defconfig on linux-next:
+> 
+> arch/arm/mach-omap1/board-h2.c:347:34: warning: unused variable 'isp1301_gpiod_table' [-Wunused-variable]
+> static struct gpiod_lookup_table isp1301_gpiod_table = {
+>                                  ^
+> 1 warning generated.
+> 
+> The patch adds the missing gpiod_add_lookup_table() function.
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- drivers/of/address.c    | 25 +++++++++++++++++++++++++
- drivers/of/device.c     |  3 +++
- drivers/of/of_private.h |  5 +++++
- 3 files changed, 33 insertions(+)
+Applying into fixes thanks.
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index aca94c348bd4..c562a9ff5f0b 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -8,6 +8,7 @@
- #include <linux/logic_pio.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <linux/sizes.h>
-@@ -1112,6 +1113,30 @@ bool of_dma_is_coherent(struct device_node *np)
- }
- EXPORT_SYMBOL_GPL(of_dma_is_coherent);
- 
-+int of_dma_set_restricted_buffer(struct device *dev)
-+{
-+	struct device_node *node;
-+	int count, i;
-+
-+	if (!dev->of_node)
-+		return 0;
-+
-+	count = of_property_count_elems_of_size(dev->of_node, "memory-region",
-+						sizeof(phandle));
-+	for (i = 0; i < count; i++) {
-+		node = of_parse_phandle(dev->of_node, "memory-region", i);
-+		/* There might be multiple memory regions, but only one
-+		 * restriced-dma-pool region is allowed.
-+		 */
-+		if (of_device_is_compatible(node, "restricted-dma-pool") &&
-+		    of_device_is_available(node))
-+			return of_reserved_mem_device_init_by_idx(
-+				dev, dev->of_node, i);
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * of_mmio_is_nonposted - Check if device uses non-posted MMIO
-  * @np:	device node
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index c5a9473a5fb1..d8d865223e51 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -165,6 +165,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 
- 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
- 
-+	if (!iommu)
-+		return of_dma_set_restricted_buffer(dev);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(of_dma_configure_id);
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index d717efbd637d..9fc874548528 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -163,12 +163,17 @@ struct bus_dma_region;
- #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
- int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map);
-+int of_dma_set_restricted_buffer(struct device *dev);
- #else
- static inline int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map)
- {
- 	return -ENODEV;
- }
-+static inline int of_dma_set_restricted_buffer(struct device *dev)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* _LINUX_OF_PRIVATE_H */
--- 
-2.31.1.751.gd2f1c929bd-goog
-
+Tony
