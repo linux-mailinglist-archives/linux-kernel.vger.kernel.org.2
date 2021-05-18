@@ -2,396 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F20387740
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6FD387742
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348764AbhERLQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
+        id S242764AbhERLR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348475AbhERLQm (ORCPT
+        with ESMTP id S237443AbhERLRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:16:42 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0902C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:15:24 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id k15so6754410pgb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:15:24 -0700 (PDT)
+        Tue, 18 May 2021 07:17:54 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD527C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:16:36 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id k19so7147368pfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:16:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rMKnzxRmjpsxvf399XdssqdAcsyhVxeW8xMKc4bly4E=;
-        b=L20mdIJLWmBGOt6Zr0wKtKN2hmAsVsuRvrBq38YtV6trCJ0Mm2wBnoMKzHID+Zz0x/
-         tqEJO6XN+bNkN2guD2KoIrEYDvCYNWS/+vD1dIuyzgsJ6MIoQ2eXTJfSlr8sNGp48grj
-         yyjHF/2uMdZ1ZGGSyDroMPJqlVXWTrbWrJBWJKctc7s5Iii/AqzVWVeglUjRi83txDZJ
-         n/r0q2F3n1gH5nrjTpIh6ZMvpWx0Cpl8HnRfrwbLrtHFcWhDASB9/Fs6QB55212Pplfk
-         Bnp0jPhbhBBjXXOG5ikGRcBDL0qBA1eZWU7ivd+FVEYxTp9t+XgZSQqxfkYlmJGOGqm0
-         66dQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=PT1ViMRA8GOBG5oCmyeoONxSbXXiNjRACO4QiTXbGtE=;
+        b=JpZNDZvA5AUVL/N+EdaH+RbnWc5OBjSDSGkoaeg3j893RYM8Co8BcFqwKUsAFYv9EG
+         dsNcGQxtrNpe64ckDuLV4NC06hbIEla/kU1MU/SgphpTlERKJCgKEPZHP9ubVfJi687d
+         ql4v+6KFIZ7mq+xq/tqIUQR+8JPP6kZ8eW5agla+7luK0YAehflravnQ28Ac3Muw3evV
+         qgMzaP+fQBDJF8L+nMlAyL5HX+Mv9ASiazhgOIaArzoJYGKKPHf6lo87yRuAVHB1ykBP
+         OGlz/BeB+NvWgXHZ1/xMXYh0J2/U4dDRfmQxVdLcum5pqDXJaNlH3WtswFnp8dPUgASz
+         /h9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rMKnzxRmjpsxvf399XdssqdAcsyhVxeW8xMKc4bly4E=;
-        b=gmr3eKYg2udDRUYRN5a2ORCWkK7ldCNo2z5/2A4I/sJQxvpOMdI6dKsjv8BIwIa5vI
-         ViH75XHJ3yl4IPw0AIW6t2kmk2YdS+8Ff2vq94RaZSKPPCvMi4Zea0z61PYPlsWO56SC
-         VARgcMbs3nhazHCaNVNc2y3Jf33e4zBHVa7tFBPXyUqzcTTpzB0G4fAgGL/smUj2TdR6
-         Bnt++B2XSrR5qAkK9vjrUEuBUrqlZya+VnJMuelvGXUQc4+euwxT6LT+HY960xpi5qX6
-         cUZ+BFIJmRMwUQg2v7uTtDAXnjlKpfj6DvnMh15OnUC4AvOI2g0pdhwdMVLXGLmM91e6
-         2Jbw==
-X-Gm-Message-State: AOAM530FvFIj5u4Idaj4y3ykJLjlXfZm1qHFvEv2Re5f9MNBZF5+Js7l
-        B36KS8vHB/r0XbSt0I3fBWJlfsIhcM7fNRtFt7SlDw==
-X-Google-Smtp-Source: ABdhPJyGJky0kq4cz/sS0Qdl3z1SdGh0e3GJKG8woQktve1SQtUFgEFRcX0l0CiI0OLo0JeFDtreU149pO3ezEkRCoU=
-X-Received: by 2002:a62:a517:0:b029:2dc:9daf:5e91 with SMTP id
- v23-20020a62a5170000b02902dc9daf5e91mr4638350pfm.39.1621336524229; Tue, 18
- May 2021 04:15:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210513175258.5842-1-jonathan@marek.ca> <20210513175258.5842-2-jonathan@marek.ca>
-In-Reply-To: <20210513175258.5842-2-jonathan@marek.ca>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 18 May 2021 13:15:12 +0200
-Message-ID: <CAG3jFyuBnaY28D9FmA8JEQKtXX5r0LF78pco=skDSWrPfFou4A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] clk: qcom: clk-alpha-pll: add support for zonda pll
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PT1ViMRA8GOBG5oCmyeoONxSbXXiNjRACO4QiTXbGtE=;
+        b=kH9wQmf5bxZfAznZzT6OMF1+7IMKPvPbMKaJ4sc7VBHlBdZ+8lJpCpnYDAWkeWdiVG
+         Shrab+xb4dQ2NmxCsqx/Dw1jUDQaAuiMWA016Q7Pt48kb97ca0bmdAQv3zjTQ08awTk4
+         rbZUKMoOL6JFoLX+zKIrsHWctTsLNeiQazGEkL8pAoF6Z/YhsTGbzqoBxsx30Ptalpt8
+         GUnGSfs5fujchMMQIFUTFZAAT++gfdlCQIOi/FxHd7mAFXYk2dTr4OuXo1JxOHtLU36S
+         DG+lVMemVjs89tAldrIKbkMcHsZDWGqP1zsUYzn1iQMxO5doeBcATY5wUCHFnY8Gqj/v
+         Czmw==
+X-Gm-Message-State: AOAM5324Rf36tD8h7r2mc7kTRnKwByg/Jhyd4/xdHYmYfWwWJjVee2iV
+        /5rbtU+UKoOoroW9PFMmOeYomBN+rUkKP73Z
+X-Google-Smtp-Source: ABdhPJx1miN8WRa6xboN9pbBnvVhN9EhDXH7B2KPIxVJ1+LzqQma8rX4jl2ZEg8NYdqkgstoWBdEww==
+X-Received: by 2002:a62:31c4:0:b029:28d:1ad0:340c with SMTP id x187-20020a6231c40000b029028d1ad0340cmr4440383pfx.35.1621336596129;
+        Tue, 18 May 2021 04:16:36 -0700 (PDT)
+Received: from mi-HP-ProDesk-600-G5-PCI-MT.mioffice.cn ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id s48sm3540840pfw.205.2021.05.18.04.16.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 04:16:35 -0700 (PDT)
+From:   chenguanyou <chenguanyou9338@gmail.com>
+X-Google-Original-From: chenguanyou <chenguanyou@xiaomi.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, keescook@chromium.org, mhocko@suse.com,
+        lukas.bulwahn@gmail.com, vbabka@suse.cz, gpiccoli@canonical.com,
+        chenguanyou <chenguanyou@xiaomi.com>
+Subject: [PATCH] hungtask: add filter kthread/check comm
+Date:   Tue, 18 May 2021 19:16:16 +0800
+Message-Id: <20210518111616.26695-1-chenguanyou@xiaomi.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Jonathan,
+Signed-off-by: chenguanyou <chenguanyou@xiaomi.com>
+---
+ include/linux/sched/sysctl.h |  4 ++++
+ kernel/hung_task.c           | 17 +++++++++++++++++
+ kernel/sysctl.c              | 15 +++++++++++++++
+ lib/Kconfig.debug            | 23 +++++++++++++++++++++++
+ 4 files changed, 59 insertions(+)
 
-On Thu, 13 May 2021 at 19:53, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> Ported over from the downstream driver. Will be used by SM8250 CAMCC.
->
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  drivers/clk/qcom/clk-alpha-pll.c | 245 +++++++++++++++++++++++++++++++
->  drivers/clk/qcom/clk-alpha-pll.h |   6 +
->  2 files changed, 251 insertions(+)
->
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> index c6eb99169ddc..7b332a8935f4 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -126,6 +126,19 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
->                 [PLL_OFF_TEST_CTL_U] = 0x1c,
->                 [PLL_OFF_STATUS] = 0x2c,
->         },
-> +       [CLK_ALPHA_PLL_TYPE_ZONDA] =  {
-> +               [PLL_OFF_L_VAL] = 0x04,
-> +               [PLL_OFF_ALPHA_VAL] = 0x08,
-> +               [PLL_OFF_USER_CTL] = 0x0c,
-> +               [PLL_OFF_CONFIG_CTL] = 0x10,
-> +               [PLL_OFF_CONFIG_CTL_U] = 0x14,
-> +               [PLL_OFF_CONFIG_CTL_U1] = 0x18,
-> +               [PLL_OFF_TEST_CTL] = 0x1c,
-> +               [PLL_OFF_TEST_CTL_U] = 0x20,
-> +               [PLL_OFF_TEST_CTL_U1] = 0x24,
-> +               [PLL_OFF_OPMODE] = 0x28,
-> +               [PLL_OFF_STATUS] = 0x38,
-> +       },
->  };
->  EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->
-> @@ -162,6 +175,11 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->  #define LUCID_5LPE_PLL_LATCH_INPUT     BIT(14)
->  #define LUCID_5LPE_ENABLE_VOTE_RUN     BIT(21)
->
-> +/* ZONDA PLL specific */
-> +#define ZONDA_PLL_OUT_MASK     0xf
-> +#define ZONDA_STAY_IN_CFA      BIT(16)
-> +#define ZONDA_PLL_FREQ_LOCK_DET        BIT(29)
-> +
->  #define pll_alpha_width(p)                                     \
->                 ((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ? \
->                                  ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
-> @@ -208,6 +226,9 @@ static int wait_for_pll(struct clk_alpha_pll *pll, u32 mask, bool inverse,
->  #define wait_for_pll_enable_lock(pll) \
->         wait_for_pll(pll, PLL_LOCK_DET, 0, "enable")
->
-> +#define wait_for_zonda_pll_freq_lock(pll) \
-> +       wait_for_pll(pll, ZONDA_PLL_FREQ_LOCK_DET, 0, "freq enable")
-> +
->  #define wait_for_pll_disable(pll) \
->         wait_for_pll(pll, PLL_ACTIVE_FLAG, 1, "disable")
->
-> @@ -1398,6 +1419,13 @@ const struct clk_ops clk_alpha_pll_postdiv_fabia_ops = {
->  };
->  EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_fabia_ops);
->
-> +const struct clk_ops clk_alpha_pll_postdiv_zonda_ops = {
-> +       .recalc_rate = clk_alpha_pll_postdiv_fabia_recalc_rate,
-> +       .round_rate = clk_alpha_pll_postdiv_fabia_round_rate,
-> +       .set_rate = clk_alpha_pll_postdiv_fabia_set_rate,
-> +};
-> +EXPORT_SYMBOL(clk_alpha_pll_postdiv_zonda_ops);
-> +
->  /**
->   * clk_lucid_pll_configure - configure the lucid pll
->   *
-> @@ -1777,3 +1805,220 @@ const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops = {
->         .set_rate = clk_lucid_5lpe_pll_postdiv_set_rate,
->  };
->  EXPORT_SYMBOL(clk_alpha_pll_postdiv_lucid_5lpe_ops);
-> +
-> +void clk_zonda_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
-> +                               const struct alpha_pll_config *config)
-> +{
-> +       if (config->l)
-> +               regmap_write(regmap, PLL_L_VAL(pll), config->l);
-> +
-> +       if (config->alpha)
-> +               regmap_write(regmap, PLL_ALPHA_VAL(pll), config->alpha);
-> +
-> +       if (config->config_ctl_val)
-> +               regmap_write(regmap, PLL_CONFIG_CTL(pll),
-> +                               config->config_ctl_val);
-> +
-> +       if (config->config_ctl_hi_val)
-> +               regmap_write(regmap, PLL_CONFIG_CTL_U(pll),
-> +                               config->config_ctl_hi_val);
-> +
-> +       if (config->config_ctl_hi1_val)
-> +               regmap_write(regmap, PLL_CONFIG_CTL_U1(pll),
-> +                               config->config_ctl_hi1_val);
-> +
-> +       if (config->user_ctl_val)
-> +               regmap_write(regmap, PLL_USER_CTL(pll),
-> +                               config->user_ctl_val);
-> +
-> +       if (config->user_ctl_hi_val)
-> +               regmap_write(regmap, PLL_USER_CTL_U(pll),
-> +                               config->user_ctl_hi_val);
-> +
-> +       if (config->user_ctl_hi1_val)
-> +               regmap_write(regmap, PLL_USER_CTL_U1(pll),
-> +                               config->user_ctl_hi1_val);
-> +
-> +       if (config->test_ctl_val)
-> +               regmap_write(regmap, PLL_TEST_CTL(pll),
-> +                               config->test_ctl_val);
-> +
-> +       if (config->test_ctl_hi_val)
-> +               regmap_write(regmap, PLL_TEST_CTL_U(pll),
-> +                               config->test_ctl_hi_val);
-> +
-> +       if (config->test_ctl_hi1_val)
-> +               regmap_write(regmap, PLL_TEST_CTL_U1(pll),
-> +                               config->test_ctl_hi1_val);
-> +
-> +       regmap_update_bits(regmap, PLL_MODE(pll),
-> +                        PLL_BYPASSNL, 0);
-> +
-> +       /* Disable PLL output */
-> +       regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
-> +
-> +       /* Set operation mode to OFF */
-> +       regmap_write(regmap, PLL_OPMODE(pll), PLL_STANDBY);
-> +
-> +       /* PLL should be in OFF mode before continuing */
-> +       wmb();
-> +
-> +       /* Place the PLL in STANDBY mode */
-> +       regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
-> +}
-> +
-> +static int clk_zonda_pll_enable(struct clk_hw *hw)
-> +{
-> +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +       struct regmap *regmap = pll->clkr.regmap;
-> +       u32 val;
-> +       int ret;
-> +
-> +       ret = regmap_read(regmap, PLL_MODE(pll), &val);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* If in FSM mode, just vote for it */
-> +       if (val & PLL_VOTE_FSM_ENA) {
-> +               ret = clk_enable_regmap(hw);
-> +               if (ret)
-> +                       return ret;
-> +               return wait_for_pll_enable_active(pll);
-> +       }
-> +
-> +       /* Get the PLL out of bypass mode */
-> +       regmap_update_bits(regmap, PLL_MODE(pll), PLL_BYPASSNL, PLL_BYPASSNL);
-> +
-> +       /*
-> +        * H/W requires a 1us delay between disabling the bypass and
-> +        * de-asserting the reset.
-> +        */
-> +       mb();
-> +       udelay(1);
-> +
-> +       regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
-> +
-> +       /* Set operation mode to RUN */
-> +       regmap_write(regmap, PLL_OPMODE(pll), PLL_RUN);
-> +
-> +       ret = regmap_read(regmap, PLL_TEST_CTL(pll), &val);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* If cfa mode then poll for freq lock */
-> +       if (val & ZONDA_STAY_IN_CFA)
-> +               ret = wait_for_zonda_pll_freq_lock(pll);
-> +       else
-> +               ret = wait_for_pll_enable_lock(pll);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Enable the PLL outputs */
-> +       ret = regmap_update_bits(regmap, PLL_USER_CTL(pll),
-> +                                ZONDA_PLL_OUT_MASK, ZONDA_PLL_OUT_MASK);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Enable the global PLL outputs */
-> +       ret = regmap_update_bits(regmap, PLL_MODE(pll),
-> +                                PLL_OUTCTRL, PLL_OUTCTRL);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Ensure that the write above goes through before returning. */
-> +       mb();
-> +
-> +       return 0;
-> +}
-> +
-> +static void clk_zonda_pll_disable(struct clk_hw *hw)
-> +{
-> +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +       struct regmap *regmap = pll->clkr.regmap;
-> +       u32 val;
-> +       int ret;
-> +
-> +       ret = regmap_read(regmap, PLL_MODE(pll), &val);
-> +       if (ret)
-> +               return;
-> +
-> +       /* If in FSM mode, just unvote it */
-> +       if (val & PLL_VOTE_FSM_ENA) {
-> +               clk_disable_regmap(hw);
-> +               return;
-> +       }
-> +
-> +       /* Disable the global PLL output */
-> +       ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
-> +
-> +       /* Disable the PLL outputs */
-> +       regmap_update_bits(regmap, PLL_USER_CTL(pll), ZONDA_PLL_OUT_MASK, 0);
-> +
-> +       /* Put the PLL in bypass and reset */
-> +       regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N | PLL_BYPASSNL, 0);
-> +
-> +       /* Place the PLL mode in OFF state */
-> +       regmap_write(regmap, PLL_OPMODE(pll), 0x0);
-> +}
-> +
-> +static int clk_zonda_pll_set_rate(struct clk_hw *hw, unsigned long rate,
-> +                                 unsigned long prate)
-> +{
-> +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +       unsigned long rrate;
-> +       u32 test_ctl_val;
-> +       u32 l;
-> +       u64 a;
-> +       int ret;
-> +
-> +       rrate = alpha_pll_round_rate(rate, prate, &l, &a, ALPHA_BITWIDTH);
-> +
-> +       ret = alpha_pll_check_rate_margin(hw, rrate, rate);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
-> +       regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
-> +
-> +       /* Wait before polling for the frequency latch */
-> +       udelay(5);
-> +
-> +       /* Read stay in cfa mode */
-> +       ret = regmap_read(pll->clkr.regmap, PLL_TEST_CTL(pll), &test_ctl_val);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* If cfa mode then poll for freq lock */
-> +       if (test_ctl_val & ZONDA_STAY_IN_CFA)
-> +               ret = wait_for_zonda_pll_freq_lock(pll);
-> +       else
-> +               ret = wait_for_pll_enable_lock(pll);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Wait for PLL output to stabilize */
-> +       udelay(100);
-> +       return 0;
-> +}
-> +
-> +static unsigned long
-> +clk_zonda_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-> +{
-> +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +       u32 l, frac;
-> +
-> +       regmap_read(pll->clkr.regmap, PLL_L_VAL(pll), &l);
-> +       regmap_read(pll->clkr.regmap, PLL_ALPHA_VAL(pll), &frac);
-> +
-> +       return alpha_pll_calc_rate(parent_rate, l, frac, ALPHA_BITWIDTH);
-> +}
-> +
-> +const struct clk_ops clk_alpha_pll_zonda_ops = {
-> +       .enable = clk_zonda_pll_enable,
-> +       .disable = clk_zonda_pll_disable,
-> +       .is_enabled = clk_trion_pll_is_enabled,
-> +       .recalc_rate = clk_zonda_pll_recalc_rate,
-> +       .round_rate = clk_alpha_pll_round_rate,
-> +       .set_rate = clk_zonda_pll_set_rate,
-> +};
-> +EXPORT_SYMBOL(clk_alpha_pll_zonda_ops);
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.h b/drivers/clk/qcom/clk-alpha-pll.h
-> index 6943e933be0f..4871af27cf76 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.h
-> +++ b/drivers/clk/qcom/clk-alpha-pll.h
-> @@ -16,6 +16,7 @@ enum {
->         CLK_ALPHA_PLL_TYPE_TRION,
->         CLK_ALPHA_PLL_TYPE_LUCID = CLK_ALPHA_PLL_TYPE_TRION,
->         CLK_ALPHA_PLL_TYPE_AGERA,
-> +       CLK_ALPHA_PLL_TYPE_ZONDA,
->         CLK_ALPHA_PLL_TYPE_MAX,
->  };
->
-> @@ -148,6 +149,9 @@ extern const struct clk_ops clk_alpha_pll_lucid_5lpe_ops;
->  extern const struct clk_ops clk_alpha_pll_fixed_lucid_5lpe_ops;
->  extern const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops;
->
-> +extern const struct clk_ops clk_alpha_pll_zonda_ops;
-> +extern const struct clk_ops clk_alpha_pll_postdiv_zonda_ops;
-> +
->  void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
->                              const struct alpha_pll_config *config);
->  void clk_fabia_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
-> @@ -159,6 +163,8 @@ void clk_agera_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
->  #define clk_lucid_pll_configure(pll, regmap, config) \
->         clk_trion_pll_configure(pll, regmap, config)
->
-> +void clk_zonda_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
-> +                            const struct alpha_pll_config *config);
->
->
->  #endif
+diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+index 3c31ba88aca5..e8a9a28215bf 100644
+--- a/include/linux/sched/sysctl.h
++++ b/include/linux/sched/sysctl.h
+@@ -14,11 +14,15 @@ extern unsigned int sysctl_hung_task_all_cpu_backtrace;
+ #define sysctl_hung_task_all_cpu_backtrace 0
+ #endif /* CONFIG_SMP */
+ 
++#define TASK_COMM_LEN 16
++
+ extern int	     sysctl_hung_task_check_count;
+ extern unsigned int  sysctl_hung_task_panic;
+ extern unsigned long sysctl_hung_task_timeout_secs;
+ extern unsigned long sysctl_hung_task_check_interval_secs;
+ extern int sysctl_hung_task_warnings;
++extern unsigned int sysctl_hung_task_filter_kthread;
++extern char sysctl_hung_task_check_comm[TASK_COMM_LEN];
+ int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
+ 		void *buffer, size_t *lenp, loff_t *ppos);
+ #else
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index 396ebaebea3f..e018563d4882 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -23,6 +23,7 @@
+ #include <linux/sched/sysctl.h>
+ 
+ #include <trace/events/sched.h>
++#include <linux/string.h>
+ 
+ /*
+  * The number of tasks checked:
+@@ -48,6 +49,16 @@ unsigned long __read_mostly sysctl_hung_task_timeout_secs = CONFIG_DEFAULT_HUNG_
+  */
+ unsigned long __read_mostly sysctl_hung_task_check_interval_secs;
+ 
++/*
++ * Non zero means no checking kthread
++ */
++unsigned int __read_mostly sysctl_hung_task_filter_kthread = CONFIG_DEFAULT_HUNG_TASK_FILTER_KTHREAD;
++
++/*
++ * Only one
++ */
++char __read_mostly sysctl_hung_task_check_comm[TASK_COMM_LEN] = CONFIG_DEFAULT_HUNG_TASK_CHECK_COMM;
++
+ int __read_mostly sysctl_hung_task_warnings = 10;
+ 
+ static int __read_mostly did_panic;
+@@ -88,6 +99,12 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ {
+ 	unsigned long switch_count = t->nvcsw + t->nivcsw;
+ 
++	if (unlikely(strlen(sysctl_hung_task_check_comm) && !strstr(t->comm, sysctl_hung_task_check_comm)))
++		return;
++
++	if (unlikely(sysctl_hung_task_filter_kthread && t->flags & PF_KTHREAD))
++		return;
++
+ 	/*
+ 	 * Ensure the task is not frozen.
+ 	 * Also, skip vfork and any other user process that freezer should skip.
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 62fbd09b5dc1..157c47a8430a 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2519,6 +2519,21 @@ static struct ctl_table kern_table[] = {
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= &neg_one,
+ 	},
++	{
++		.procname	= "hung_task_filter_kthread",
++		.data		= &sysctl_hung_task_filter_kthread,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.extra1		= SYSCTL_ZERO,
++		.extra2		= SYSCTL_ONE,
++	},
++	{
++		.procname	= "hung_task_check_comm",
++		.data		= &sysctl_hung_task_check_comm,
++		.maxlen		= TASK_COMM_LEN,
++		.mode		= 0644,
++		.proc_handler	= proc_dostring,
++	},
+ #endif
+ #ifdef CONFIG_RT_MUTEXES
+ 	{
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 2c7f46b366f1..59cfa9e230ee 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1101,6 +1101,29 @@ config DEFAULT_HUNG_TASK_TIMEOUT
+ 	  A timeout of 0 disables the check.  The default is two minutes.
+ 	  Keeping the default should be fine in most cases.
+ 
++config DEFAULT_HUNG_TASK_FILTER_KTHREAD
++	bool "Default filter kthread for hung task"
++	depends on DETECT_HUNG_TASK
++	default 0
++	help
++	  This option controls filter kthread used to determine when
++	  a kernel task has become "state=TASK_UNINTERRUPTIBLE" and should be skip.
++
++	  It can be adjusted at runtime via the kernel.hung_task_filter_kthread
++	  sysctl or by writing a value to
++	  /proc/sys/kernel/hung_task_filter_kthread.
++
++	  A filter of 1 disables the check
++
++config DEFAULT_HUNG_TASK_CHECK_COMM
++	string "Default check only one comm"
++	depends on DETECT_HUNG_TASK
++	default ""
++	help
++	  It can be adjusted at runtime via the kernel.hung_task_check_comm
++	  sysctl or by writing a value to
++	  /proc/sys/kernel/hung_task_check_comm.
++
+ config BOOTPARAM_HUNG_TASK_PANIC
+ 	bool "Panic (Reboot) On Hung Tasks"
+ 	depends on DETECT_HUNG_TASK
+-- 
+2.17.1
 
-I'm seeing some checkpatch --strict warnings, with those fixed this
-patch looks good to me.
-
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
