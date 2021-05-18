@@ -2,146 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBC9387615
+	by mail.lfdr.de (Postfix) with ESMTP id 9E46D387617
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348357AbhERKIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:08:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348340AbhERKIG (ORCPT
+        id S1348355AbhERKIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347756AbhERKId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:08:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621332407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dFkmeu2athwSt2LK0RUUi/E/grHFe/dKRRuvCpK8qJo=;
-        b=DvVzlLIiJep/n8KFdyk90AQKKEfVlBjAvuImkvRCnAa+n4SDjle9QfWbVVpmdRDeLPBv2f
-        j0na5zyruwqd0Wm5AYftDDxCVuAB07sAUHDMgs96LVcZ5ESuaDymKgn/uuwpLF6lKa0GSA
-        svnPAxFEKZ30Cr8VG6jmjfXjxMmsgcE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-EamBJhjIPC6cjyhilTupZQ-1; Tue, 18 May 2021 06:06:46 -0400
-X-MC-Unique: EamBJhjIPC6cjyhilTupZQ-1
-Received: by mail-wr1-f71.google.com with SMTP id s7-20020adfc5470000b0290106eef17cbdso5333901wrf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:06:46 -0700 (PDT)
+        Tue, 18 May 2021 06:08:33 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD59C061756;
+        Tue, 18 May 2021 03:07:14 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id x8so9526399wrq.9;
+        Tue, 18 May 2021 03:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eBi8F14785uXQWNmA/g7DYUV0B/mXEuxDd9UNl+DXWw=;
+        b=abZb+EYL3lF7+knDgi+MniVFEO9rejeB6HgSSjINLdVflb7bHziQ65GIaXVS0cxGo8
+         j1sbbjfPNfwUkM2p/jLcweQ9GOHTCLE9vq5xQX8gAMUkS4gM1PsmFxqHG48ztFX+hGQR
+         YPCbtY0BaELX+FRvDeUPbGa2v3ru/IUEwZSArvzLIXjQ2MmPWoZ9m8qfjiUUI0fo5QXZ
+         tJ/1vzQhDJEInGR7XY8w25074JU9roBQ5OE3im3ha4i8kNgPFIGnQGjXJSXJk4n7OfIr
+         gpoe8YFXrKvN0L/AFC8ftu033Z+a5MmRi4CkZE/Y34Qm7cTvO3vEi9u53+aAjzE65g0g
+         dPgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=dFkmeu2athwSt2LK0RUUi/E/grHFe/dKRRuvCpK8qJo=;
-        b=tmsDmqz3CV5qZ7v06l59NJeadIPnWb7KqgNl1KHETZHdvMFkMisbQO8i1mWD1B59GV
-         6MfGrMoT1rl1jz/CCM/Z0dW4/m+PJeaExenaDztD3U+gIvBlac2HURRHeWEPCVhHCJD7
-         h7S/fU72tCBpMsXosifm8agR+2nli7RBDHBffwir8XYhTT57/lgyecKCU1b3Q1PgzhOg
-         4cpBcqKuVI4CitZ1oJZTHKyAR8MbneFcluVtuWPYtN3DOgXMC0RFIg+1CKZIiZO66tpR
-         wfM8WxFG2z7p09/WoAk83UkXdY6lAptssuVvasWHYjUJlicd1k3l01LCoA/2GW3Km+f9
-         yikQ==
-X-Gm-Message-State: AOAM532LJHU4xbFy8tBdI2kNuyoSRPunSNv/jWKpTucmCM2QgE8dmUzq
-        VmE05F1QhONJup/mCCqAEk6VnBQZ+anOjCjYUvMyax9e5I2hf+8uWv7TVvXdPceAqRZ83QIrDeH
-        D2zYNSnCkQzQHVcnOBfhHfjMV
-X-Received: by 2002:a05:6000:1ac5:: with SMTP id i5mr5879840wry.6.1621332405357;
-        Tue, 18 May 2021 03:06:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiVxI2VqHM3UC3HkCv7YVP9ChZhf/paSvmhTbK/1R/b2aClM7EAkaKYj9OwIH5AzvG3tEX6Q==
-X-Received: by 2002:a05:6000:1ac5:: with SMTP id i5mr5879787wry.6.1621332405164;
-        Tue, 18 May 2021 03:06:45 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64fd.dip0.t-ipconnect.de. [91.12.100.253])
-        by smtp.gmail.com with ESMTPSA id f14sm8395872wry.40.2021.05.18.03.06.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 03:06:44 -0700 (PDT)
-Subject: Re: [PATCH v19 5/8] mm: introduce memfd_secret system call to create
- "secret" memory areas
-To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-6-rppt@kernel.org>
- <b625c5d7-bfcc-9e95-1f79-fc8b61498049@redhat.com>
- <YKDJ1L7XpJRQgSch@kernel.org> <YKOP5x8PPbqzcsdK@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <8e114f09-60e4-2343-1c42-1beaf540c150@redhat.com>
-Date:   Tue, 18 May 2021 12:06:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eBi8F14785uXQWNmA/g7DYUV0B/mXEuxDd9UNl+DXWw=;
+        b=bZvuVYqD8vtlMYs3pXixYwlgNM99xURHRbXF9y+WpyXqJP/Eh0dPormu2nQ32ieRYI
+         qiqoIadDCw/LhZx4Q1LqRB8+/SIYsR59WttDgYcBGmlUgWaldSoQjLykR7gFFS7c98uY
+         dJbEvoqfk6tG4M7i0b8dtMQW3HBsgrEttUh+Lavl+G5AWJt/dMfmatrhlQHfS4QRkiBj
+         6hdaaGOBVK9XVt0I1LM1khENXUKun+u7jZpdNlckMeVDnlK+chCexcP4UkbeCF3it+RJ
+         wAA8J+vrsZyeV9ps3IuM4ZbWcl/NBwLfqprHbcFvlHb4uK3gv+K6RoYoI5Tv6Z0Tt/FA
+         WpXw==
+X-Gm-Message-State: AOAM533tqEmzgPgR7LIJiZG+hvnhH4ema/jWpGeuWDvrYzdwI+Xz7V7h
+        5VJlOjNjgkXNgxPNVQqTSmA=
+X-Google-Smtp-Source: ABdhPJwpuKFLMlDkELRv/wsWr3gla2+IboHOiG2hD5J0WVazcac9MxXJoytDwwwMLUxk8XOk1dGLDA==
+X-Received: by 2002:adf:e684:: with SMTP id r4mr5729340wrm.378.1621332433067;
+        Tue, 18 May 2021 03:07:13 -0700 (PDT)
+Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
+        by smtp.gmail.com with ESMTPSA id u16sm2509921wmj.27.2021.05.18.03.07.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 03:07:12 -0700 (PDT)
+Date:   Tue, 18 May 2021 11:07:10 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/289] 5.10.38-rc1 review
+Message-ID: <YKORzubQmqAZCHRe@debian>
+References: <20210517140305.140529752@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <YKOP5x8PPbqzcsdK@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.05.21 11:59, Michal Hocko wrote:
-> On Sun 16-05-21 10:29:24, Mike Rapoport wrote:
->> On Fri, May 14, 2021 at 11:25:43AM +0200, David Hildenbrand wrote:
-> [...]
->>>> +		if (!page)
->>>> +			return VM_FAULT_OOM;
->>>> +
->>>> +		err = set_direct_map_invalid_noflush(page, 1);
->>>> +		if (err) {
->>>> +			put_page(page);
->>>> +			return vmf_error(err);
->>>
->>> Would we want to translate that to a proper VM_FAULT_..., which would most
->>> probably be VM_FAULT_OOM when we fail to allocate a pagetable?
->>
->> That's what vmf_error does, it translates -ESOMETHING to VM_FAULT_XYZ.
+Hi Greg,
+
+On Mon, May 17, 2021 at 03:58:45PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.38 release.
+> There are 289 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I haven't read through the rest but this has just caught my attention.
-> Is it really reasonable to trigger the oom killer when you cannot
-> invalidate the direct mapping. From a quick look at the code it is quite
-> unlikely to se ENOMEM from that path (it allocates small pages) but this
-> can become quite sublte over time. Shouldn't this simply SIGBUS if it
-> cannot manipulate the direct mapping regardless of the underlying reason
-> for that?
-> 
+> Responses should be made by Wed, 19 May 2021 14:02:24 +0000.
+> Anything received after that time might be too late.
 
-OTOH, it means our kernel zones are depleted, so we'd better reclaim 
-somehow ...
+Build test:
+mips (gcc version 11.1.1 20210430): 63 configs -> no failure
+arm (gcc version 11.1.1 20210430): 105 configs -> no new failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
--- 
-Thanks,
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
-David / dhildenb
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
+--
+Regards
+Sudip
