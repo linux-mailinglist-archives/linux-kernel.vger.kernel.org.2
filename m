@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6E8387915
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D66387906
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349340AbhERMmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238860AbhERMmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:42:45 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B720FC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:41:23 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id a4so10099765wrr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hcTo/xjSai7+osUF8Q2k+rYqy/qwu121JkrPDsYsoVo=;
-        b=pr081h7fpAVj/o9r3RNVCDtocZcHc52z9gfCDqd19RovMZYw8oen9DJqpPkVaWGh8i
-         FEB7DK2vrVLByswr6xk389k8n8Rdwodrwa5cpRzQ9hkL0Nt4ZNI6hxQNZXmoovR1bxjd
-         54C3dHpIdR5Nq/O4Jk3Db7mPwzQyCk81yZJq+JlqdsFXl6bO2bpFhHhDbkumwzvXHH5M
-         euwpR5uckFtuXal20JAcTIcMeJ1JpKbQ0QkSCUrlGNDeh06A50i+UH12G2ef2M0ptSNd
-         bBFE6WbaBSONIQkD3uJGw6xhzeLeb1hsz20ww6vv3oww4jhdNJxeTgQi7mcQfAKYoGyJ
-         Jf2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hcTo/xjSai7+osUF8Q2k+rYqy/qwu121JkrPDsYsoVo=;
-        b=DvxNOFIxqc/H89L1fz/Qq/pp1dXvwqx6vlsW/nCJDbVk/gxrhAXN1tsPq6VjnjLp5/
-         sHkmm2bVy052wyuTLH8e8z9z96yUw6bUp9Qwzw3bfBAm6mzgB2ZzCJxe8E7EylOpC9+A
-         YgCqefpBI3MbPlWJsF0dspWhG9s4IN7bZMddapR0kunvTzRrGYd0d7y/lVfobfpfHrIi
-         GOL42SJb2BiZlfGhD7be3DlRafI9Hd5K1fenbEtf638gWwy1xznI+pqltINdDvcZPPJ5
-         +rwZlV55HoqY8invzEq1Ux5+BAu7RReah20AFmbIYPuYvgWx+6K9knW0AAz5wde13Z0U
-         Yg4g==
-X-Gm-Message-State: AOAM533rZNymzTsOsKNYa6EuBuSVnjxHTH85+/d+ktCym4zNq1lWzVj6
-        T92TDgqXajCdiCelDDZohpBy6g==
-X-Google-Smtp-Source: ABdhPJzDn6VQiLsCOZzSSM0fFq1gVT+7Ow6q9E78vsMn8Fg5W5ywkxmuYsbzc28hgCwySs2sVccaiw==
-X-Received: by 2002:a05:6000:44:: with SMTP id k4mr6816431wrx.76.1621341682565;
-        Tue, 18 May 2021 05:41:22 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id z3sm1677239wrq.42.2021.05.18.05.41.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 05:41:22 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     gregkh@linuxfoundation.org, mchehab@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 3/5] staging: media: zoran: remove blank line
-Date:   Tue, 18 May 2021 12:41:11 +0000
-Message-Id: <20210518124113.1823055-3-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210518124113.1823055-1-clabbe@baylibre.com>
-References: <20210518124113.1823055-1-clabbe@baylibre.com>
+        id S1349295AbhERMmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:42:14 -0400
+Received: from mga18.intel.com ([134.134.136.126]:53511 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349285AbhERMmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:42:13 -0400
+IronPort-SDR: 4FAgMFK7rHv8c1Xxo2/7SUW9dfcyCTXPaV7rRXYpUwjF5mrqQneW3VEYZ/QbVIiLVrDAGQf9zB
+ 5sD/IbntMhbw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="188109671"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="188109671"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:40:54 -0700
+IronPort-SDR: sgggo7ok56IsqNjKGpzCvHMUBi/XmWmxVBdqawlmROTrG0Hvs0QHaEvwXDv+HgO2oh5jBlGM7P
+ zk+xuEcfUn+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="544093527"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 18 May 2021 05:40:53 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 5526312F; Tue, 18 May 2021 15:41:14 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: [PATCH v1 1/1] infiniband: hf1: Use string_upper() instead of open coded variant
+Date:   Tue, 18 May 2021 15:41:11 +0300
+Message-Id: <20210518124111.20030-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor style fix by removing useless blank line.
+Use string_upper() from string helper module instead of open coded variant.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/staging/media/zoran/zoran.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/infiniband/hw/hfi1/efivar.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/media/zoran/zoran.h b/drivers/staging/media/zoran/zoran.h
-index e7fe8da7732c..b1ad2a2b914c 100644
---- a/drivers/staging/media/zoran/zoran.h
-+++ b/drivers/staging/media/zoran/zoran.h
-@@ -158,7 +158,6 @@ struct zoran_jpg_settings {
- 	struct v4l2_jpegcompression jpg_comp;	/* JPEG-specific capture settings */
- };
+diff --git a/drivers/infiniband/hw/hfi1/efivar.c b/drivers/infiniband/hw/hfi1/efivar.c
+index c22ab7b5163b..197cbd620662 100644
+--- a/drivers/infiniband/hw/hfi1/efivar.c
++++ b/drivers/infiniband/hw/hfi1/efivar.c
+@@ -45,7 +45,8 @@
+  *
+  */
  
--
- struct zoran;
+-#include <linux/ctype.h>
++#include <linux/string_helpers.h>
++
+ #include "efivar.h"
  
- /* zoran_fh contains per-open() settings */
+ /* GUID for HFI1 variables in EFI */
+@@ -154,7 +155,6 @@ int read_hfi1_efi_var(struct hfi1_devdata *dd, const char *kind,
+ 	char prefix_name[64];
+ 	char name[64];
+ 	int result;
+-	int i;
+ 
+ 	/* create a common prefix */
+ 	snprintf(prefix_name, sizeof(prefix_name), "%04x:%02x:%02x.%x",
+@@ -170,10 +170,7 @@ int read_hfi1_efi_var(struct hfi1_devdata *dd, const char *kind,
+ 	 * variable.
+ 	 */
+ 	if (result) {
+-		/* Converting to uppercase */
+-		for (i = 0; prefix_name[i]; i++)
+-			if (isalpha(prefix_name[i]))
+-				prefix_name[i] = toupper(prefix_name[i]);
++		string_upper(prefix_name, prefix_name);
+ 		snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
+ 		result = read_efi_var(name, size, return_data);
+ 	}
 -- 
-2.26.3
+2.30.2
 
