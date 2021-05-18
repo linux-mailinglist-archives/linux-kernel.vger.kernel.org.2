@@ -2,236 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079C7387844
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6EC38784E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348978AbhERMCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbhERMCJ (ORCPT
+        id S1349027AbhERMDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:03:17 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37180 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348965AbhERMCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:02:09 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DEDC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:51 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id y184-20020a1ce1c10000b02901769b409001so1325746wmg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AdmdWz0ZuUjyLuIJtQQK0QbXX0QdjMKWz2XY/sEGAjU=;
-        b=BecK8iJGG9RGzlicf31GthNJqzoswqTx+epBMvxv13JnO8WpW8MCBdrnouQyGoPHnA
-         EXmWSKuB6Op8dPoLd/rUEoLBHtFCfaSqO6L8k9mqC6qOXeh6/1LuAe+FpmPLWN3kAnx5
-         ZUawBRN3srvu/bCgmPIKPnWUwuKXpiCx8DYOQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AdmdWz0ZuUjyLuIJtQQK0QbXX0QdjMKWz2XY/sEGAjU=;
-        b=Ly/If3kKL6DWIoxvI75/sPY4ZNy/FB7yfvLt8zs1bBhf2K9JjbvbfvnrnJMq6iEm4d
-         mKsNPEzHpsgH6i5/cD8kJ4nNR8jqmbi/NdoEoZ95mNNmVQTW/Xgx/jHLH3LFaWP/wuVN
-         ltrUlirdI8HtBFbLp34AwGBPe8tzzJbI1zX9jAvn63BKCJ/72kF9o/8B/t1464oZLt8y
-         d67xHe8mFRUqGIHIhvHUe6dwqgxdwTpjPwaM4+SPHbxM5eHsGfZi5+mADosPa1xI/axe
-         2pFD7DsjU870YOokQ/TjansIc03kYpxOeTg2NFzQAUjQha6WYj7GmCKyO00NGnaWT/w5
-         0sOg==
-X-Gm-Message-State: AOAM532Vgg6PSly5MK+cRGIjIMFW68XCzIf1urz35Lbh9qv80KlkIxqg
-        LtF+i/2xKOPlwg1fFa+SMrxzlGPHeuWggWxSE+o=
-X-Google-Smtp-Source: ABdhPJzavpXhV72yfhu+6b2h6LxfToOvgCWrSKj+nK/nuY+GTGBJqbjlrT0WruAXNaE668iRSEQCkw==
-X-Received: by 2002:a1c:a758:: with SMTP id q85mr4662928wme.79.1621339249422;
-        Tue, 18 May 2021 05:00:49 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:5c4a])
-        by smtp.gmail.com with ESMTPSA id g128sm9205132wme.0.2021.05.18.05.00.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 05:00:49 -0700 (PDT)
-Date:   Tue, 18 May 2021 13:00:48 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     linux-kernel@vger.kernel.org
-Cc:     Petr Mladek <pmladek@suse.com>, Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: [PATCH v6 4/4] printk: index: Add indexing support to dev_printk
-Message-ID: <fff5e1c790f14e9af4559e902ba9689ec93d38e2.1621338324.git.chris@chrisdown.name>
-References: <cover.1621338324.git.chris@chrisdown.name>
+        Tue, 18 May 2021 08:02:54 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14IC1Xoe022496;
+        Tue, 18 May 2021 07:01:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621339293;
+        bh=1lel3gH0yK6JEo4QIhQRWSw3/QbFc7G9njZHvEgNBFE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=xPC0UHk/RcfYKAVu0CpYyg7/EPR7Bxsui16JxeuFrrOLdQFmlGN22+PQGkLiyEddR
+         QklKyWyrltKOgpKefdtRqT3NdHTM5SZh6H9oGeMiG9XXI6w1qhxIidIPDzTVmfACgs
+         FZuW/8cQpxu+NE0ISYgTifkbV3+KkjI/r2hTjgXk=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14IC1XgD126896
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 18 May 2021 07:01:33 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 18
+ May 2021 07:01:33 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 18 May 2021 07:01:33 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14IC1X7v021298;
+        Tue, 18 May 2021 07:01:33 -0500
+Date:   Tue, 18 May 2021 07:01:33 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham <kishon@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Gowtham Tammana <g-tammana@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am64-main: Enable crypto
+ accelerator
+Message-ID: <20210518120133.73qmsd6uu6dwtjfu@backshift>
+References: <20210518062630.144154-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <cover.1621338324.git.chris@chrisdown.name>
-User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
+In-Reply-To: <20210518062630.144154-1-vaibhavgupta40@gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While for most kinds of issues we have counters, tracepoints, or metrics
-with a stable interface which can reliably be used to indicate issues,
-in order to react to production issues quickly we sometimes need to work
-with the interface which most kernel developers naturally use when
-developing: printk, and printk-esques like dev_printk.
+On 11:56-20210518, Vaibhav Gupta wrote:
+> From: Vaibhav Gupta <v_gupta@ti.com>
+> 
+> Add the node for SA2UL including the random number generator.
+> 
+> [v_gupta@ti.com: Add address ranges entry in cbass_main]
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Signed-off-by: Vaibhav Gupta <v_gupta@ti.com>
 
-dev_printk is by far the most likely custom subsystem printk to benefit
-from the printk indexing infrastructure, since niche device issues
-brought about by production changes, firmware upgrades, and the like are
-one of the most common things that we need printk infrastructure's
-assistance to monitor.
 
-Often these errors were never expected to practically manifest in
-reality, and exhibit in code without extensive (or any) metrics present.
-As such, there are typically very few options for issue detection
-available to those with large fleets at the time the incident happens,
-and we thus benefit strongly from monitoring netconsole in these
-instances.
+I see that you have missed the series Suman posted in [1]. It has a few
+cleanups of interest.
 
-As such, add the infrastructure for dev_printk to be indexed in the
-printk index. Even on a minimal kernel config, the coverage of the base
-kernel's printk index is significantly improved:
+> ---
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 25 ++++++++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-am64.dtsi      |  1 +
+>  2 files changed, 26 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> index 25b702303637..adbc3c0673f3 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> @@ -160,6 +160,31 @@ k3_reset: reset-controller {
+>  		};
+>  	};
+>  
+> +	main_crypto: crypto@40900000 {
+> +		compatible = "ti,am64-sa2ul";
+> +		reg = <0x0 0x40900000 0x0 0x1200>;
+> +		power-domains = <&k3_pds 133 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 133 0>, <&k3_clks 133 1>, <&k3_clks 133 2>;
+> +		clock-names = "pka_in_clk" , "x1_clk" , "x2_clk";
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges = <0x0 0x040900000 0x00 0x040900000 0x0 0x30000>;
+> +
+> +		status = "okay";
+drop this..
+> +
+> +		dmas = <&main_pktdma 0xc001 15>, <&main_pktdma 0x4002 15>,
+> +				<&main_pktdma 0x4003 15>;
+> +		dma-names = "tx", "rx1", "rx2";
+> +
+> +		eip76d_rng: rng@40910000 {
+> +			compatible = "inside-secure,safexcel-eip76";
+> +			reg = <0x0 0x40910000 0x0 0x80>;
+> +			interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&k3_clks 133 2>;
+> +			clock-names = "x2_clk";
+> +		};
+> +	};
+> +
+>  	main_pmx0: pinctrl@f4000 {
+>  		compatible = "pinctrl-single";
+>  		reg = <0x00 0xf4000 0x00 0x2d0>;
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64.dtsi b/arch/arm64/boot/dts/ti/k3-am64.dtsi
+> index 0ae8c844c482..e2bea44a16c5 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64.dtsi
+> @@ -85,6 +85,7 @@ cbass_main: bus@f4000 {
+>  			 <0x00 0x78000000 0x00 0x78000000 0x00 0x00800000>, /* Main R5FSS */
+>  			 <0x06 0x00000000 0x06 0x00000000 0x01 0x00000000>, /* PCIe DAT1 */
+>  			 <0x05 0x00000000 0x05 0x00000000 0x01 0x00000000>, /* FSS0 DAT3 */
+> +			 <0x00 0x40900000 0x00 0x40900000 0x00 0x00030000>, /* SA2UL */
+>  
+>  			 /* MCU Domain Range */
+>  			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>;
 
-Before:
 
-    [root@ktst ~]# wc -l /sys/kernel/debug/printk/index/vmlinux
-    4497 /sys/kernel/debug/printk/index/vmlinux
+I think you might have missed the discussion here:[1]
+a) Could I suggest you co-ordinate with Suman as to which series should
+   I consider? Suman's looks a lot complete..
+b) Considering the potential for TF-A booting Linux without u-boot on HS
+   devices, may I suggest making sure that the dts board files for evm have the
+   nodes disabled by default?
 
-After:
+[1] https://lore.kernel.org/linux-arm-kernel/20210514221148.m42zldo6lfxn5l4m@underfed/
 
-    [root@ktst ~]# wc -l /sys/kernel/debug/printk/index/vmlinux
-    5573 /sys/kernel/debug/printk/index/vmlinux
-
-In terms of implementation, in order to trivially disambiguate them,
-dev_printk is now a macro which wraps _dev_printk. If preferred, it's
-also possible to have the macro and function have the same name.
-
-Signed-off-by: Chris Down <chris@chrisdown.name>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- drivers/base/core.c        |  6 ++--
- include/linux/dev_printk.h | 63 ++++++++++++++++++++++++++++----------
- 2 files changed, 49 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 60c5f5ea0268..78b8297e7f2b 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -4547,8 +4547,8 @@ static void __dev_printk(const char *level, const struct device *dev,
- 		printk("%s(NULL device *): %pV", level, vaf);
- }
- 
--void dev_printk(const char *level, const struct device *dev,
--		const char *fmt, ...)
-+void _dev_printk(const char *level, const struct device *dev,
-+		 const char *fmt, ...)
- {
- 	struct va_format vaf;
- 	va_list args;
-@@ -4562,7 +4562,7 @@ void dev_printk(const char *level, const struct device *dev,
- 
- 	va_end(args);
- }
--EXPORT_SYMBOL(dev_printk);
-+EXPORT_SYMBOL(_dev_printk);
- 
- #define define_dev_printk_level(func, kern_level)		\
- void func(const struct device *dev, const char *fmt, ...)	\
-diff --git a/include/linux/dev_printk.h b/include/linux/dev_printk.h
-index 6f009559ee54..202c6a9ea7eb 100644
---- a/include/linux/dev_printk.h
-+++ b/include/linux/dev_printk.h
-@@ -38,8 +38,8 @@ __printf(3, 4) __cold
- int dev_printk_emit(int level, const struct device *dev, const char *fmt, ...);
- 
- __printf(3, 4) __cold
--void dev_printk(const char *level, const struct device *dev,
--		const char *fmt, ...);
-+void _dev_printk(const char *level, const struct device *dev,
-+		 const char *fmt, ...);
- __printf(2, 3) __cold
- void _dev_emerg(const struct device *dev, const char *fmt, ...);
- __printf(2, 3) __cold
-@@ -69,7 +69,7 @@ static inline void __dev_printk(const char *level, const struct device *dev,
- 				struct va_format *vaf)
- {}
- static inline __printf(3, 4)
--void dev_printk(const char *level, const struct device *dev,
-+void _dev_printk(const char *level, const struct device *dev,
- 		 const char *fmt, ...)
- {}
- 
-@@ -97,25 +97,54 @@ void _dev_info(const struct device *dev, const char *fmt, ...)
- 
- #endif
- 
-+/*
-+ * Some callsites directly call dev_printk rather than going through the
-+ * dev_<level> infrastructure, so we need to emit here as well as inside those
-+ * level-specific macros. Only one index entry will be produced, either way,
-+ * since dev_printk's `fmt` isn't known at compile time if going through the
-+ * dev_<level> macros.
-+ */
-+#define dev_printk(level, dev, fmt, ...) ({			\
-+	dev_printk_index_emit(level, fmt);			\
-+	_dev_printk(level, dev, fmt, ##__VA_ARGS__);		\
-+})
-+
- /*
-  * #defines for all the dev_<level> macros to prefix with whatever
-  * possible use of #define dev_fmt(fmt) ...
-  */
- 
--#define dev_emerg(dev, fmt, ...)					\
--	_dev_emerg(dev, dev_fmt(fmt), ##__VA_ARGS__)
--#define dev_crit(dev, fmt, ...)						\
--	_dev_crit(dev, dev_fmt(fmt), ##__VA_ARGS__)
--#define dev_alert(dev, fmt, ...)					\
--	_dev_alert(dev, dev_fmt(fmt), ##__VA_ARGS__)
--#define dev_err(dev, fmt, ...)						\
--	_dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
--#define dev_warn(dev, fmt, ...)						\
--	_dev_warn(dev, dev_fmt(fmt), ##__VA_ARGS__)
--#define dev_notice(dev, fmt, ...)					\
--	_dev_notice(dev, dev_fmt(fmt), ##__VA_ARGS__)
--#define dev_info(dev, fmt, ...)						\
--	_dev_info(dev, dev_fmt(fmt), ##__VA_ARGS__)
-+#define dev_printk_index_emit(level, fmt)				\
-+	printk_index_subsys_emit("%s %s: ", "", level, fmt)
-+
-+#define dev_emerg(dev, fmt, ...) ({					\
-+	dev_printk_index_emit(KERN_EMERG, dev_fmt(fmt));		\
-+	_dev_emerg(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
-+})
-+#define dev_crit(dev, fmt, ...) ({					\
-+	dev_printk_index_emit(KERN_CRIT, dev_fmt(fmt));			\
-+	_dev_crit(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
-+})
-+#define dev_alert(dev, fmt, ...) ({					\
-+	dev_printk_index_emit(KERN_ALERT, dev_fmt(fmt));		\
-+	_dev_alert(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
-+})
-+#define dev_err(dev, fmt, ...) ({					\
-+	dev_printk_index_emit(KERN_ERR, dev_fmt(fmt));			\
-+	_dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
-+})
-+#define dev_warn(dev, fmt, ...) ({					\
-+	dev_printk_index_emit(KERN_WARNING, dev_fmt(fmt));		\
-+	_dev_warn(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
-+})
-+#define dev_notice(dev, fmt, ...) ({					\
-+	dev_printk_index_emit(KERN_NOTICE, dev_fmt(fmt));		\
-+	_dev_notice(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
-+})
-+#define dev_info(dev, fmt, ...) ({					\
-+	dev_printk_index_emit(KERN_INFO, dev_fmt(fmt));			\
-+	_dev_info(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
-+})
- 
- #if defined(CONFIG_DYNAMIC_DEBUG) || \
- 	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
 -- 
-2.31.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
