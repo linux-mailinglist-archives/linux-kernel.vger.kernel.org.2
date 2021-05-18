@@ -2,123 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCAD387B1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E237B387B22
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhERO35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:29:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
+        id S232154AbhEROan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:30:43 -0400
+Received: from phobos.denx.de ([85.214.62.61]:56360 "EHLO phobos.denx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231704AbhERO3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:29:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDFB6109F;
-        Tue, 18 May 2021 14:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621348112;
-        bh=O7IMIQvzJLMltit9Z4tUy5pRmXeTCujbBxsU2HAhLTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KiHCIHQoVtGNkRsyVekLnFCx5W9eArs2b0zwmKkI9zdNyyUL2TTtXH6Aqc5xdyXz4
-         5j1Q/DXTtt/5MNDo3fzndah7KmEa1dBgp9UMkr5BEpFwMNJVdKfMJdR4RM3AHPxkCc
-         8s3PB1QxDdyvZ81/hcm8dmMWojGEf1EJUapA3mlw=
-Date:   Tue, 18 May 2021 16:28:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rudi Heitbaum <rudi@heitbaum.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.12 081/363] net: bridge: propagate error code and
- extack from br_mc_disabled_update
-Message-ID: <YKPPDufNZwowyIyb@kroah.com>
-References: <20210517140302.508966430@linuxfoundation.org>
- <20210517140305.339768334@linuxfoundation.org>
- <20210518122449.GA65@ec3d6f83b95b>
- <YKO1jx78HibCUDkD@kroah.com>
- <20210518141238.GA20@416f1e4b4f0c>
+        id S230373AbhEROak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 10:30:40 -0400
+X-Greylist: delayed 110140 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 10:30:39 EDT
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 6115681E77;
+        Tue, 18 May 2021 16:29:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1621348159;
+        bh=SJkkxv8FIvOpWr84nF14awOgVmTv3IbdPVxLiM7xvNM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ApL5dpEEqlbZCtMvGbzf61BWcaT05QxcvtDhlkLrR7OD3cw2DHXcyEWAAlDPkMUNF
+         2kUMLqe2dDIcvnrlhFL/KcHOtYSQeDjeg9Pmfk8ik3DmeTSgNZydytsnH2Q4ACwAxp
+         P3XnFMFBXvrM3VD+15GxHLLjA5X0liGKEEvp6i5OSNYZsGvimZV7hbUMGgSwawAGRi
+         UDaqM74k8MGeF+XjT9YRJ91TyD7lPXFrXW6w706LqjcLlUmyuG53QBnIZnaDiTgwos
+         w5lVsbocQskPwrGx6VOflO0nt72RrTd6j4fJmmoZn45jEE9ez8QBv8jnV3PVPd8mRV
+         twtkoDyJ3IngQ==
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     soc@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH v3] ARM: dts: imx28: Add DTS description of imx28 based XEA board
+Date:   Tue, 18 May 2021 16:28:57 +0200
+Message-Id: <20210518142857.26170-1-lukma@denx.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518141238.GA20@416f1e4b4f0c>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 02:12:42PM +0000, Rudi Heitbaum wrote:
-> On Tue, May 18, 2021 at 02:39:43PM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, May 18, 2021 at 12:24:57PM +0000, Rudi Heitbaum wrote:
-> > > On Mon, May 17, 2021 at 03:59:07PM +0200, Greg Kroah-Hartman wrote:
-> > > > From: Florian Fainelli <f.fainelli@gmail.com>
-> > > > 
-> > > > [ Upstream commit ae1ea84b33dab45c7b6c1754231ebda5959b504c ]
-> > > > 
-> > > > Some Ethernet switches might only be able to support disabling multicast
-> > > > snooping globally, which is an issue for example when several bridges
-> > > > span the same physical device and request contradictory settings.
-> > > > 
-> > > > Propagate the return value of br_mc_disabled_update() such that this
-> > > > limitation is transmitted correctly to user-space.
-> > > > 
-> > > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> > > > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > > > Signed-off-by: David S. Miller <davem@davemloft.net>
-> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > ---
-> > > >  net/bridge/br_multicast.c | 28 +++++++++++++++++++++-------
-> > > >  net/bridge/br_netlink.c   |  4 +++-
-> > > >  net/bridge/br_private.h   |  3 ++-
-> > > >  net/bridge/br_sysfs_br.c  |  8 +-------
-> > > >  4 files changed, 27 insertions(+), 16 deletions(-)
-> > > 
-> > > This patch results in docker failing to start, and a regression between
-> > > 5.12.4 and 5.12.5-rc1
-> > > 
-> > > A working dmesg output is like:
-> > > 
-> > > [   11.545255] device eth0 entered promiscuous mode
-> > > [   11.693848] process 'docker/tmp/qemu-check643160757/check' started with executable stack
-> > > [   17.233059] br-92020c7e3aea: port 1(veth17a0552) entered blocking state
-> > > [   17.233065] br-92020c7e3aea: port 1(veth17a0552) entered disabled state
-> > > [   17.233098] device veth17a0552 entered promiscuous mode
-> > > [   17.292839] docker0: port 2(veth9d227f5) entered blocking state
-> > > [   17.292848] docker0: port 2(veth9d227f5) entered disabled state
-> > > [   17.292946] device veth9d227f5 entered promiscuous mode
-> > > [   17.293070] docker0: port 2(veth9d227f5) entered blocking state
-> > > [   17.293075] docker0: port 2(veth9d227f5) entered forwarding state
-> > > 
-> > > with this patch "device veth17a0552 entered promiscuous mode" never
-> > > shows up.
-> > > 
-> > > the docker error itself is:
-> > > 
-> > > docker: Error response from daemon: failed to create endpoint
-> > > sleepy_dijkstra on network bridge: adding interface veth8cbd8f9 to
-> > > bridge docker0 failed: operation not supported.
-> > 
-> > Ick.
-> > 
-> > Does 5.13-rc1 also show this same problem?
-> > 
-> > And thanks for testing!
-> > 
-> > greg k-h
-> 
-> Hi Greg,
-> 
-> I can confirm that docker starts correctly with 5.13-rc1
-> 
-> # dmesg | head
-> [    0.000000] Linux version 5.13.0-rc1 (rudi@0e5f93d4a8a2) (x86_64-libreelec-linux-gnu-gcc-10.3.0 (GCC) 10.3.0, GNU ld (GNU Binutils) 2.36.1) #1 SMP Tue May 18 14:00:41 UTC 2021
-> [    0.000000] Command line: BOOT_IMAGE=/KERNEL boot=LABEL=LIBREELEC disk=LABEL=STORAGE i915.enable_guc=2 quiet
-> ...
-> [   11.214582] docker0: port 1(veth2b37ac4) entered blocking state
-> [   11.214589] docker0: port 1(veth2b37ac4) entered disabled state
-> [   11.214649] device veth2b37ac4 entered promiscuous mode
-> [   11.214752] docker0: port 1(veth2b37ac4) entered blocking state
-> [   11.214755] docker0: port 1(veth2b37ac4) entered forwarding state
+This patch adds DTS definition of the imx278 based XEA board.
 
-Great, can you try 5.12.5-rc2 now?
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
 
-thanks,
+---
+Changes for v3:
+- Remove meaningless 'regulator-always-on' and 'enable-active-high'
+- Provide proper order for ssp{023}
+- Change memory start address to @40000000
 
-greg k-h
+Changes for v2:
+- Fix 'memory' node and remove regulators subnode
+- Rename 'flash0: s25fl256s0@0' to flash@0
+- Add proper compatible for XEA board
+---
+ arch/arm/boot/dts/Makefile       |   3 +-
+ arch/arm/boot/dts/imx28-lwe.dtsi | 170 +++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/imx28-xea.dts  |  99 ++++++++++++++++++
+ 3 files changed, 271 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/imx28-lwe.dtsi
+ create mode 100644 arch/arm/boot/dts/imx28-xea.dts
+
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 8e5d4ab4e75e..d2398a090e4d 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -721,7 +721,8 @@ dtb-$(CONFIG_ARCH_MXS) += \
+ 	imx28-m28evk.dtb \
+ 	imx28-sps1.dtb \
+ 	imx28-ts4600.dtb \
+-	imx28-tx28.dtb
++	imx28-tx28.dtb \
++	imx28-xea.dtb
+ dtb-$(CONFIG_ARCH_NOMADIK) += \
+ 	ste-nomadik-s8815.dtb \
+ 	ste-nomadik-nhk15.dtb
+diff --git a/arch/arm/boot/dts/imx28-lwe.dtsi b/arch/arm/boot/dts/imx28-lwe.dtsi
+new file mode 100644
+index 000000000000..bb971e660db8
+--- /dev/null
++++ b/arch/arm/boot/dts/imx28-lwe.dtsi
+@@ -0,0 +1,170 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++/*
++ * Copyright 2021
++ * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
++ */
++
++/dts-v1/;
++#include "imx28.dtsi"
++
++/ {
++	aliases {
++		spi2 = &ssp3;
++	};
++
++	chosen {
++		bootargs = "root=/dev/mmcblk0p2 rootfstype=ext4 ro rootwait console=ttyAMA0,115200 panic=1";
++	};
++
++	memory@40000000 {
++		reg = <0x40000000 0x08000000>;
++	};
++
++	reg_3v3: regulator-reg-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "3V3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	reg_usb_5v: regulator-reg-usb-5v {
++		compatible = "regulator-fixed";
++		regulator-name = "usb_vbus";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
++
++	reg_fec_3v3: regulator-reg-fec-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "fec-phy";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++};
++
++&duart {
++	pinctrl-names = "default";
++	pinctrl-0 = <&duart_pins_a>;
++	status = "okay";
++};
++
++&i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c0_pins_a>;
++	status = "okay";
++};
++
++&saif0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&saif0_pins_a>;
++	#sound-dai-cells = <0>;
++	assigned-clocks = <&clks 53>;
++	assigned-clock-rates = <12000000>;
++	status = "okay";
++};
++
++&saif1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&saif1_pins_a>;
++	fsl,saif-master = <&saif0>;
++	#sound-dai-cells = <0>;
++	status = "okay";
++};
++
++&spi3_pins_a {
++	fsl,pinmux-ids = <
++		MX28_PAD_AUART2_RX__SSP3_D4
++		MX28_PAD_AUART2_TX__SSP3_D5
++		MX28_PAD_SSP3_SCK__SSP3_SCK
++		MX28_PAD_SSP3_MOSI__SSP3_CMD
++		MX28_PAD_SSP3_MISO__SSP3_D0
++		MX28_PAD_SSP3_SS0__SSP3_D3
++		MX28_PAD_AUART2_TX__GPIO_3_9
++	>;
++};
++
++&ssp0 {
++	compatible = "fsl,imx28-mmc";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mmc0_8bit_pins_a>;
++	bus-width = <8>;
++	vmmc-supply = <&reg_3v3>;
++	non-removable;
++	status = "okay";
++};
++
++&ssp2 {
++	compatible = "fsl,imx28-spi";
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi2_pins_a>;
++	status = "okay";
++};
++
++&ssp3 {
++	compatible = "fsl,imx28-spi";
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi3_pins_a>;
++	status = "okay";
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		spi-max-frequency = <40000000>;
++		reg = <0>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "u-boot";
++				reg = <0 0x80000>;
++				read-only;
++			};
++
++			partition@80000 {
++				label = "env0";
++				reg = <0x80000 0x10000>;
++			};
++
++			partition@90000 {
++				label = "env1";
++				reg = <0x90000 0x10000>;
++			};
++
++			partition@100000 {
++				label = "kernel";
++				reg = <0x100000 0x400000>;
++			};
++
++			partition@500000 {
++				label = "swupdate";
++				reg = <0x500000 0x800000>;
++			};
++		};
++	};
++};
++
++&usb0 {
++	vbus-supply = <&reg_usb_5v>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb0_pins_b>, <&usb0_id_pins_a>;
++	dr_mode = "host";
++	status = "okay";
++};
++
++&usbphy0 {
++	status = "okay";
++};
++
++&usb1 {
++	vbus-supply = <&reg_usb_5v>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb1_pins_b>;
++	dr_mode = "host";
++	status = "okay";
++};
++
++&usbphy1 {
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/imx28-xea.dts b/arch/arm/boot/dts/imx28-xea.dts
+new file mode 100644
+index 000000000000..a400c108f66a
+--- /dev/null
++++ b/arch/arm/boot/dts/imx28-xea.dts
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++/*
++ * Copyright 2021
++ * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
++ */
++
++/dts-v1/;
++#include "imx28-lwe.dtsi"
++
++/ {
++	compatible = "lwn,imx28-xea", "fsl,imx28";
++};
++
++&can0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&can1_pins_a>;
++	status = "okay";
++};
++
++&i2c1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c1_pins_b>;
++	status = "okay";
++};
++
++&pinctrl {
++	pinctrl-names = "default";
++	pinctrl-0 = <&hog_pins_a &hog_pins_tiva>;
++
++	hog_pins_a: hog@0 {
++		reg = <0>;
++		fsl,pinmux-ids = <
++			MX28_PAD_GPMI_D00__GPIO_0_0
++			MX28_PAD_GPMI_D02__GPIO_0_2
++			MX28_PAD_GPMI_D05__GPIO_0_5
++			MX28_PAD_GPMI_CE1N__GPIO_0_17
++			MX28_PAD_GPMI_RDY0__GPIO_0_20
++			MX28_PAD_GPMI_RDY1__GPIO_0_21
++			MX28_PAD_GPMI_RDY2__GPIO_0_22
++			MX28_PAD_GPMI_RDN__GPIO_0_24
++			MX28_PAD_GPMI_CLE__GPIO_0_27
++			MX28_PAD_LCD_VSYNC__GPIO_1_28
++			MX28_PAD_SSP1_SCK__GPIO_2_12
++			MX28_PAD_SSP1_CMD__GPIO_2_13
++			MX28_PAD_SSP2_SS1__GPIO_2_20
++			MX28_PAD_SSP2_SS2__GPIO_2_21
++			MX28_PAD_LCD_D00__GPIO_1_0
++			MX28_PAD_LCD_D01__GPIO_1_1
++			MX28_PAD_LCD_D02__GPIO_1_2
++			MX28_PAD_LCD_D03__GPIO_1_3
++			MX28_PAD_LCD_D04__GPIO_1_4
++			MX28_PAD_LCD_D05__GPIO_1_5
++			MX28_PAD_LCD_D06__GPIO_1_6
++		>;
++		fsl,drive-strength = <MXS_DRIVE_4mA>;
++		fsl,voltage = <MXS_VOLTAGE_HIGH>;
++		fsl,pull-up = <MXS_PULL_DISABLE>;
++	};
++
++	hog_pins_tiva: hog@1 {
++		reg = <1>;
++		fsl,pinmux-ids = <
++			MX28_PAD_GPMI_RDY3__GPIO_0_23
++			MX28_PAD_GPMI_WRN__GPIO_0_25
++		>;
++		fsl,voltage = <MXS_VOLTAGE_HIGH>;
++		fsl,pull-up = <MXS_PULL_DISABLE>;
++	};
++
++	hog_pins_coding: hog@2 {
++		reg = <2>;
++		fsl,pinmux-ids = <
++			MX28_PAD_GPMI_D01__GPIO_0_1
++			MX28_PAD_GPMI_D03__GPIO_0_3
++			MX28_PAD_GPMI_D04__GPIO_0_4
++			MX28_PAD_GPMI_D06__GPIO_0_6
++			MX28_PAD_GPMI_D07__GPIO_0_7
++		>;
++		fsl,voltage = <MXS_VOLTAGE_HIGH>;
++		fsl,pull-up = <MXS_PULL_DISABLE>;
++	};
++};
++
++&reg_fec_3v3 {
++	gpio = <&gpio0 0 0>;
++};
++
++&reg_usb_5v {
++	gpio = <&gpio0 2 0>;
++};
++
++&spi2_pins_a {
++	fsl,pinmux-ids = <
++		MX28_PAD_SSP2_SCK__SSP2_SCK
++		MX28_PAD_SSP2_MOSI__SSP2_CMD
++		MX28_PAD_SSP2_MISO__SSP2_D0
++		MX28_PAD_SSP2_SS0__GPIO_2_19
++	>;
++};
+-- 
+2.20.1
+
