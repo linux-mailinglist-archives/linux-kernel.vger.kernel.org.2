@@ -2,106 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A7A38783E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCD4387849
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbhERMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        id S1348995AbhERMDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233219AbhERMBu (ORCPT
+        with ESMTP id S233662AbhERMCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:01:50 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2351FC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:31 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w12so3055917edx.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:00:31 -0700 (PDT)
+        Tue, 18 May 2021 08:02:50 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F60C061573;
+        Tue, 18 May 2021 05:01:32 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so1419317pjv.1;
+        Tue, 18 May 2021 05:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=+wvJ54BU7HaSAbDHZZnLTmKsrugDkKfADEFCDdDLU/g=;
-        b=mtOD9U2P99BgcuWsxPUDFrQEzL0pBowgdqLXaBvKYyABsXslVn+qe/fvtJwkSrHoFm
-         LInALbTUXbNuGMYnjiC0TzXqJ30QAMUkUXfz2duNpNSs4McPoOwIFKF3xeWvh57CaQIb
-         zybI27mYxT2jkEG85Af0TUMuz3ucp/T1kF+PtMhUAAVtPJAwcmYszmQvA7Ol5CjkAe5p
-         5O76t091zLvqSwLbcXG57kMBaqOjOum5Cqg5/oA79tqjm5+xikJr9IjbKD/86wXGlhmK
-         VYffWtzVN/aFBePSStrU2JjqyPpVW3ima0WXGj8YGb+WXIUXKvUeK73GhMBjQIC/BXxv
-         jSKg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=em3y75NXotaLU/AKtI4LMXPcEnf5Ld1kv/mHHILm70c=;
+        b=V/p4lH/6d5UguGqICWMegLeErmFH7naXSe4DlY8l+O9zRNBHKkp8LUKd2lN4M2qCZ/
+         Trfkad+GRBI0RamLpWK3ZyCmXmEqFbV6NJePLgTFCNJjgMHwGWgCRtKt00TIYG0joO4k
+         anoh6qGD6DuPuv5gV77s2MQLWPIO5Kx3XOTx+XtklL587DU3TGpUjnvGY3qK9Ntrg/IG
+         /cYtXr8tfUYW2Qkv/HpRerACyiOJdAlfcp0KaWDk0Yvlo+LjdkWl41LDnazF1MNDs5Bw
+         HlfGiR1kq7LWa2iaXyCbebVh9T/ue0MEoJ69JYBlgMZ0z8HSU8xW2H/p7ngeQ7Cqy9ni
+         eJLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=+wvJ54BU7HaSAbDHZZnLTmKsrugDkKfADEFCDdDLU/g=;
-        b=aMdWOjY3HaBTXgEa7ZfpDvrZqAoYwXVRT6YjrKMq+HPMT90rndy7HNjahkwXMF7cbz
-         vnrjU/fMwZaKJHwficdy9jVmvFTI8cSfwS4adjHjpBZbHhQ3wlUHCfIB8Bti69C6okXb
-         rTn7PkjFhJnti0cYaKeWczbJKpGhMEF9NYE42zmMSSqurv8m8xaRpGIpSunTFI5nJrCL
-         NZFeJsm1t4V/L5bHz9nAbxCAD08doCzHc3YoB7YvphawNc2E4xEDfN9WOf+bJCce8+4w
-         jj30OgnN9Lm1EWSbaWOW3E5vpxtQc2VHkOdiowUNBOz4BSeyqeRr8GiEibOVMs7Zl/1V
-         /n4A==
-X-Gm-Message-State: AOAM533lcjXkP36iUjD+ubUiSoUJSwKfwfrD56SrImOxFg+4yCbVDvsM
-        a6xmpSlQwnmCYz0LXLfqQ/0=
-X-Google-Smtp-Source: ABdhPJzpFvji9svJQtES6aQiuYBDhl0vur2iSXsIGdRJYnqtAdmLA3sfoMN6ZtQeY9qDTTT9cWuY0g==
-X-Received: by 2002:a05:6402:13c3:: with SMTP id a3mr6723638edx.18.1621339229933;
-        Tue, 18 May 2021 05:00:29 -0700 (PDT)
-Received: from mars.fritz.box ([2a02:8070:b9d:f200:bee0:f4e2:68f9:3d11])
-        by smtp.gmail.com with ESMTPSA id r25sm12786575edv.78.2021.05.18.05.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 05:00:29 -0700 (PDT)
-Message-ID: <d4b936d1de6a1ad6d43fe9070ab5c712851eec52.camel@googlemail.com>
-Subject: Re: [PATCH v2 2/2] regulator: fan53880: Convert to use .probe_new
-From:   Christoph Fritz <chf.fritz@googlemail.com>
-Reply-To: chf.fritz@googlemail.com
-To:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Date:   Tue, 18 May 2021 14:00:28 +0200
-In-Reply-To: <20210517105325.1227393-2-axel.lin@ingics.com>
-References: <20210517105325.1227393-1-axel.lin@ingics.com>
-         <20210517105325.1227393-2-axel.lin@ingics.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=em3y75NXotaLU/AKtI4LMXPcEnf5Ld1kv/mHHILm70c=;
+        b=osG/hjTWDXsgCY9PgdzdlhEM9OlZzIHq+F1PmWpYyzmOZKKuoKD9Q13auMHnCGoK5B
+         2yM0hc5Cgo+8QjUGtRE59skDh8Mua0FsTb2pnPuq+ZGiemUIqri6cDoFO9ITdwpcl/qh
+         Hw32QwOH0dlztBCl3K/h6wpA8cjnEI7L5NyTWAghXn3yioj7jfoF2Y1KVq/VoHjBNUTv
+         AioiQY4z/eJvsiZgFrHAYgCirjEJiKleEXpczWCvShONyqWPM4+wyhNugJDqw1InUX+Y
+         gKb0JH55oSusiJTUz9cm0eeqwzAh3OrWX3E5QD20/trBoFxKjrOD6j7FchhE6VVUA6P6
+         xr0w==
+X-Gm-Message-State: AOAM5329CEqUv76cUaLUwUFubKkIzjj9ZkB5r3xycnMQqU2EEYVvUir9
+        SgwLLUiehss3a4CVC+EJbru/M3OX+Q0=
+X-Google-Smtp-Source: ABdhPJzuaIu1kDieJYdkyutSSE1hKoGm9LjVD+Vi0D2+YlF331ZxLvgY6I3C4fUQhe3dRm4RAN44MQ==
+X-Received: by 2002:a17:902:f203:b029:f0:d225:c6e4 with SMTP id m3-20020a170902f203b02900f0d225c6e4mr4271634plc.0.1621339291776;
+        Tue, 18 May 2021 05:01:31 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.53])
+        by smtp.googlemail.com with ESMTPSA id l20sm12757394pjq.38.2021.05.18.05.01.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 May 2021 05:01:31 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        David Matlack <dmatlack@google.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+Subject: [PATCH v4 1/5] KVM: exit halt polling on need_resched() for both book3s and generic halt-polling
+Date:   Tue, 18 May 2021 05:00:31 -0700
+Message-Id: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-17 at 18:53 +0800, Axel Lin wrote:
-> Use the new .probe_new for fan53880.
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Acked-by: Christoph Fritz <chf.fritz@googlemail.com>
+Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+one task to get the task to block. It was likely allowing VMs to overrun their
+quota when halt polling. Due to PPC implements an arch specific halt polling
+logic, we should add the need_resched() checking there as well. This
+patch adds a helper function that to be shared between book3s and generic
+halt-polling loop.
 
-> ---
-> v2: no change
->  drivers/regulator/fan53880.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/regulator/fan53880.c b/drivers/regulator/fan53880.c
-> index 1684faf82ed2..f3268b4d5066 100644
-> --- a/drivers/regulator/fan53880.c
-> +++ b/drivers/regulator/fan53880.c
-> @@ -114,8 +114,7 @@ static const struct regmap_config fan53880_regmap = {
->  	.max_register = FAN53880_ENABLE_BOOST,
->  };
->  
-> -static int fan53880_i2c_probe(struct i2c_client *i2c,
-> -			     const struct i2c_device_id *id)
-> +static int fan53880_i2c_probe(struct i2c_client *i2c)
->  {
->  	struct regulator_config config = { };
->  	struct regulator_dev *rdev;
-> @@ -177,7 +176,7 @@ static struct i2c_driver fan53880_regulator_driver =
-> {
->  		.name = "fan53880",
->  		.of_match_table	= of_match_ptr(fan53880_dt_ids),
->  	},
-> -	.probe = fan53880_i2c_probe,
-> +	.probe_new = fan53880_i2c_probe,
->  	.id_table = fan53880_i2c_id,
->  };
->  module_i2c_driver(fan53880_regulator_driver);
+Reviewed-by: David Matlack <dmatlack@google.com>
+Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Venkatesh Srinivas <venkateshs@chromium.org>
+Cc: Jim Mattson <jmattson@google.com> 
+Cc: David Matlack <dmatlack@google.com>
+Cc: Paul Mackerras <paulus@ozlabs.org>
+Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v3 -> v4:
+ * rename to kvm_vcpu_can_poll
+v2 -> v3:
+ * add a helper function
+v1 -> v2:
+ * update patch description
 
+ arch/powerpc/kvm/book3s_hv.c | 2 +-
+ include/linux/kvm_host.h     | 2 ++
+ virt/kvm/kvm_main.c          | 8 ++++++--
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 28a80d240b76..7360350e66ff 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -3936,7 +3936,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+ 				break;
+ 			}
+ 			cur = ktime_get();
+-		} while (single_task_running() && ktime_before(cur, stop));
++		} while (kvm_vcpu_can_poll(cur, stop));
+ 
+ 		spin_lock(&vc->lock);
+ 		vc->vcore_state = VCORE_INACTIVE;
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 2f34487e21f2..ba682f738a25 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1583,4 +1583,6 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
+ /* Max number of entries allowed for each kvm dirty ring */
+ #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
+ 
++bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop);
++
+ #endif
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 6b4feb92dc79..62522c12beba 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2945,6 +2945,11 @@ update_halt_poll_stats(struct kvm_vcpu *vcpu, u64 poll_ns, bool waited)
+ 		vcpu->stat.halt_poll_success_ns += poll_ns;
+ }
+ 
++bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop)
++{
++	return single_task_running() && !need_resched() && ktime_before(cur, stop);
++}
++
+ /*
+  * The vCPU has executed a HLT instruction with in-kernel mode enabled.
+  */
+@@ -2973,8 +2978,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+ 				goto out;
+ 			}
+ 			poll_end = cur = ktime_get();
+-		} while (single_task_running() && !need_resched() &&
+-			 ktime_before(cur, stop));
++		} while (kvm_vcpu_can_poll(cur, stop));
+ 	}
+ 
+ 	prepare_to_rcuwait(&vcpu->wait);
+-- 
+2.25.1
 
