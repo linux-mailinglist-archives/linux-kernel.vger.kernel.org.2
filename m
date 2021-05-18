@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3311B386E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3662386E32
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344933AbhERAQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:16:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47311 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344871AbhERAQX (ORCPT
+        id S1344902AbhERAQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344869AbhERAQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:16:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621296905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m1Brqivodx+Oej8cFA0+U8CBPFw0wpmw/nPAdL9W5IQ=;
-        b=dn41k2B5K88ZuNaGLbHq7XI1KEiKFlrEwOY07RBC+WfoS0Rf8KzUjdIaWoLw93/7cCrzo4
-        WMyUSLezLd9malN4bNjVr3jPh3tj6Gl69v0ST5FCjJlpamasTzYKoCJJPbFOx1w5tqHXYL
-        oZR75TeLaMDlrGjUlz90QJR0Xb7neXI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-1urGEQsMMFWI2uB5G78gFQ-1; Mon, 17 May 2021 20:15:02 -0400
-X-MC-Unique: 1urGEQsMMFWI2uB5G78gFQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37867107ACCD;
-        Tue, 18 May 2021 00:14:58 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 20D615D6A8;
-        Tue, 18 May 2021 00:14:23 +0000 (UTC)
-Date:   Tue, 18 May 2021 02:14:14 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v26 24/30] x86/cet/shstk: Introduce shadow stack token
- setup/verify routines
-Message-ID: <20210518001316.GR15897@asgard.redhat.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-25-yu-cheng.yu@intel.com>
- <YKIfIEyW+sR+bDCk@zn.tnic>
- <e225e357-a1d5-9596-8900-79e6b94cf924@intel.com>
+        Mon, 17 May 2021 20:16:47 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9208BC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:15:29 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i9so11346084lfe.13
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 17:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qgg2j889/fnQxfXmN+eFv5gIjFubNQa/eAl3dDOh+ds=;
+        b=Bp9VYB6PwxuhIJzOCUSrybM0FKwQ8JUxWCIF/avC1m4QrdTpFTWCdytz2eHp8t8m1s
+         gC2wypRqOHqNXR/mkO0+AFPjyQ5I+BEWaeT4AhPxrSSdE5w3YX6jYxFWfdPrE2iW4UMK
+         IUe1aHEl4hZjvfepXrDFHELldTfNd0JclGmqaDSJHrO9lke0LjIMTGssuNLj9LkE8Tmu
+         ScgSRAxpftGnFVwAw09wy7NEtglZSHsGLSMGEAC9OBz9YapNlOA19bp4ZeZD1ZpcVzVp
+         Fjsxwua7Iqplp4fWhzLto0Nqhb76UMzSdkijURLg22WAbkynMmXL6FecFAJZKAUdivVO
+         pHSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qgg2j889/fnQxfXmN+eFv5gIjFubNQa/eAl3dDOh+ds=;
+        b=HSqqiBt5X8yqaOWQwuvS9R4NOhvw5l6wtWfenVaDKtWsh+Qlu/ItsUHPrbLpTvLnAm
+         AbbaIAGOqq7VJSSQXCiw08nRETauPOoeo4YBznXt68wxYo3icJfDJU1SChWH1G4bULIU
+         7u74RoIAhq1FdhF5z3Ciu+lB2S05wZjiA93BUybMsrtmIckXxKNLQV6lf2VplvjUi3l8
+         4OMi/fG4NqtGuxsYUiNde++6eV5iB8UIt2rSAI4C1+IvIE1IBDuHFL34ULFQFDg+3VBj
+         vLZHNDaLWflYaWxDI3qG/1RoSfIBmPE+5kAHyt4uCGOBpfrLKfmbdYv4XP42LcYJC3ZQ
+         gWnw==
+X-Gm-Message-State: AOAM532gmLl10ubNorLfPuZsR8bp7faCDerUYtIOTnXZdzd8pPU15S3n
+        wQjIdEOfHk0cSjCt2mtpxvuf4GmLjoV0b2WWA6LPnw==
+X-Google-Smtp-Source: ABdhPJwwHCxFUtvOlL30GYF5vmaju3im/FNIdvGILw4NTZ3a5EXdIs7CMHgX5t5LVL9V9nn61+GgPorVK5PQ0z/vtt0=
+X-Received: by 2002:a19:b0b:: with SMTP id 11mr1863131lfl.291.1621296928140;
+ Mon, 17 May 2021 17:15:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e225e357-a1d5-9596-8900-79e6b94cf924@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210412230320.382885-1-sebastian.reichel@collabora.com> <20210412230320.382885-4-sebastian.reichel@collabora.com>
+In-Reply-To: <20210412230320.382885-4-sebastian.reichel@collabora.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 18 May 2021 02:15:17 +0200
+Message-ID: <CACRpkdYFQxzPYjmeZ_wZ-79fsR6tgY9OCcPHiyRO-kiJwd0TuA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] ARM: dts: ux500: Rename gpio-controller node
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 01:55:01PM -0700, Yu, Yu-cheng wrote:
-> On 5/17/2021 12:45 AM, Borislav Petkov wrote:
-> >On Tue, Apr 27, 2021 at 01:43:09PM -0700, Yu-cheng Yu wrote:
-> >>+static inline int write_user_shstk_32(u32 __user *addr, u32 val)
-> >>+{
-> >>+	WARN_ONCE(1, "%s used but not supported.\n", __func__);
-> >>+	return -EFAULT;
-> >>+}
-> >>+#endif
-> >
-> >What is that supposed to catch? Any concrete (mis-)use cases?
-> >
-> 
-> If 32-bit apps are not supported, there should be no need of 32-bit shadow
-> stack write, otherwise there is a bug.
+On Tue, Apr 13, 2021 at 1:03 AM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
 
-Speaking of which, I wonder what would happen if a 64-bit process makes
-a 32-bit system call (using int 0x80, for example), and gets a signal.
+> Rename the AB8500 gpio controller node from ab8500-gpio to
+> ab8500-gpiocontroller, since -gpio is a common suffix for
+> gpio consumers.
+>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
+Reluctantly applied, this is unorthodox but with the prefix I see
+the syntactic problem.
+
+Yours,
+Linus Walleij
