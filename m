@@ -2,97 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49639388257
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F85838822E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352589AbhERVqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:46:15 -0400
-Received: from mailfilter05-out40.webhostingserver.nl ([195.211.74.36]:47116
-        "EHLO mailfilter05-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352580AbhERVqN (ORCPT
+        id S1352334AbhERVgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244028AbhERVgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:46:13 -0400
-X-Greylist: delayed 964 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 17:46:12 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=exalondelft.nl; s=whs1;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
-         from;
-        bh=r1V16Y5GIRXwUTK+1TLre5uwbLOjG0Lm/wFKIhXVtXY=;
-        b=miTktNcY7YTq2u9lPqkSuJ6v2iSkoBIuafLAk/cz2/D9XxKL0ctaKmnse0v1D4zAJfQP/C9wo4Y3l
-         UDPuCxEYRL0Dz5L5HWBxbsJvbnU4S6dT3gA4muXx+MscedtBzFDcQ6RlyxJocGmwhau/m0GEDXkBG+
-         9iTT5L6Fe6p/KoOuDhWRvUqGYuOt/kFV8U9JbK4zyceLO6y1TDZZXkZZNZY47ZB8LMvUvrv8NmSi/g
-         j5qSGtpbRUb/mYOzwTyuYN4Fdcu2y3aSm93vS8SRp+Qw0m95qEcw3eK2ktDU10NuhWj2vnBTmvbCua
-         csoDRyTGjXozu6iHmP2B0/eIZkSHM3w==
-X-Halon-ID: 086bd20a-b820-11eb-b080-001a4a4cb933
-Received: from s198.webhostingserver.nl (s198.webhostingserver.nl [141.138.168.154])
-        by mailfilter05.webhostingserver.nl (Halon) with ESMTPSA
-        id 086bd20a-b820-11eb-b080-001a4a4cb933;
-        Tue, 18 May 2021 23:28:48 +0200 (CEST)
-Received: from [2001:981:6fec:1:dae6:899:1e05:8781] (helo=delfion.fritz.box)
-        by s198.webhostingserver.nl with esmtpa (Exim 4.94.2)
-        (envelope-from <ftoth@exalondelft.nl>)
-        id 1lj7Gi-004E57-8x; Tue, 18 May 2021 23:28:48 +0200
-From:   Ferry Toth <ftoth@exalondelft.nl>
-To:     linux-kernel@vger.kernel.org
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ferry Toth <ftoth@exalondelft.nl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2 1/1] extcon: intel-mrfld: Sync hardware and software state on init
-Date:   Tue, 18 May 2021 23:27:09 +0200
-Message-Id: <20210518212708.301112-1-ftoth@exalondelft.nl>
-X-Mailer: git-send-email 2.30.2
+        Tue, 18 May 2021 17:36:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC553C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:35:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Mgp8VIxRG3WR01A5wXzYm9aqAFHvu+NrxQhHQf3pQXA=; b=FCpC8gTKwh4qTrv8AtyZqv8Pfj
+        69zVY3VeTFVQejhk+DWiDINdL3N3cvvZny8Nx0Kli0gfaKsExw9bvRxgpwPr/Ckf0eeESh/0sibRl
+        ilO6VMrFuDIay7vBTYNbyNwe+QXh4CBFNmr044dbZTXeZ9uB73JzudZPJ8vJgXJdN5DHhRgJsiBpR
+        fqKZDIMagu3IpYMFCcLvSQzkZFS0l01o2n1KZzpK7bbqvCyX7L51mepkVLVmKNq1hW9htDgCFGDLD
+        6hqrr+m/gYd3u135eT5IpTXP2E8wXV6xST6AZSOTmaMY0pUGMAqMxn5/0x0bwVhkcQSXWqK9FqbCo
+        gszftbKw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lj7MX-00EMrX-Bd; Tue, 18 May 2021 21:34:51 +0000
+Date:   Tue, 18 May 2021 22:34:49 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 5/5] mm/swap: simplify the code of find_get_incore_page()
+Message-ID: <YKQy+fMIxQVTSjaW@casper.infradead.org>
+References: <20210518135352.3705306-1-linmiaohe@huawei.com>
+ <20210518135352.3705306-6-linmiaohe@huawei.com>
+ <YKPQUjjdC3mP5f/P@casper.infradead.org>
+ <20210518141304.c09cd8762e3f3d16a722444c@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518141304.c09cd8762e3f3d16a722444c@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
-DRD to detect a change in the switch position. This change initializes the
-status at probe time.
+On Tue, May 18, 2021 at 02:13:04PM -0700, Andrew Morton wrote:
+> On Tue, 18 May 2021 15:33:54 +0100 Matthew Wilcox <willy@infradead.org> wrote:
+> 
+> > On Tue, May 18, 2021 at 09:53:52PM +0800, Miaohe Lin wrote:
+> > > pagecache_get_page() can do find_subpage() for us if we do not specify
+> > > FGP_HEAD. No functional change intended.
+> > 
+> > Please, no.  This interferes with the folio work.
+> 
+> In what way?  Can't the folio patches simply revert this or suitably
+> alter it?
 
-Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
-Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: stable@vger.kernel.org
----
-
-v2:
- - Clarified patch title (Chanwoo)
----
- drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
-index f47016fb28a8..cd1a5f230077 100644
---- a/drivers/extcon/extcon-intel-mrfld.c
-+++ b/drivers/extcon/extcon-intel-mrfld.c
-@@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
- 	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
- 	struct regmap *regmap = pmic->regmap;
- 	struct mrfld_extcon_data *data;
-+	unsigned int status;
- 	unsigned int id;
- 	int irq, ret;
- 
-@@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
- 	/* Get initial state */
- 	mrfld_extcon_role_detect(data);
- 
-+	/*
-+	 * Cached status value is used for cable detection, see comments
-+	 * in mrfld_extcon_cable_detect(), we need to sync cached value
-+	 * with a real state of the hardware.
-+	 */
-+	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
-+	data->status = status;
-+
- 	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
- 	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
- 
--- 
-2.30.2
-
+Of course, it's just software.  Anything can just be modified.  I don't
+see the point of putting in a cleanup patch that creates a conflict with
+important work.
