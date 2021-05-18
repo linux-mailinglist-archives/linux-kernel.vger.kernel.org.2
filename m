@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C80387870
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4511A387872
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244297AbhERMHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:07:02 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:46370 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235289AbhERMHB (ORCPT
+        id S244396AbhERMIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235289AbhERMIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:07:01 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IC1kA4009644;
-        Tue, 18 May 2021 12:05:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=v/C7sk4g6ZmfKo3L4Pn/9AdcXHZUnCVvxhxlWgHNpps=;
- b=XsNG1TTwq7ugZ+wXE+A8xDRY1akJNwGlLSsP6TsYLxF3EKQMNxCgFID8W6qA2xCNfUzU
- t4aox/3LjqNrtTD6Ee1gPF4VGzcVi3AOUNZipnnKYhhts77s5F/pla4qap3VWuRo6V4c
- le0Cz1hd9y7pK7W54eVpIGFyO1iHhahl32qc9G3e9INcE5oqQu9VKLSs4k1+ZtSiUP9K
- hXM7QO1YFoFjs9Cvg+oziw9NoRfO0536QRcO7uC6JUZ95X5H7dK+nzF3OaFjW+NpnqRA
- IiVH+QVBCNSIuMYSE0CSFUS+uUS+Vbe733gyb9LI7dZ9W3ebYa92Hwo8nfbykMYjRp7+ aA== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38kh0h8mtu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 12:05:30 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14IBvlnd060870;
-        Tue, 18 May 2021 12:05:29 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38kb37w44n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 12:05:29 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14IC5TMc074128;
-        Tue, 18 May 2021 12:05:29 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 38kb37w44c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 12:05:29 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14IC5RIR023079;
-        Tue, 18 May 2021 12:05:27 GMT
-Received: from kadam (/62.8.83.26)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 18 May 2021 05:05:26 -0700
-Date:   Tue, 18 May 2021 15:05:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        Tue, 18 May 2021 08:08:06 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4966C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=A0bnY9zwm+FBk1NHGMYRSCnW726sXdnf0iswF1lZG/M=; b=mN9TPGfrX+kwGFJLCI5PeyMKy
+        lZo1hFDQnbmMzX5T09tHHEdtqDYcqirqKPEiBpvcxWZNAvdQSOiQxa8D/Ayf4IA8TPp67kWys8AuP
+        wfu36V0OxMa9mpORDRMM2NA3IKLzJWsNJmwIpQ64AnJnCME6M2NycLC3oNufDjSA12mrprJvVZ9GP
+        ekCNsIVnyX+8RCuSTeq/ztkJ6dJLQJuXDTX1P3jA+wRMt87o1kwUkEuF2u5VkGmEb75Ei6+gywgFg
+        wwp0kDPfz23dTInfsRKxg04O4/xd36n5g8IoF5NWoSfdFwypRYCKmfOVipzRJtJGXGGwhyikPsWo7
+        x1+oL2xkg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44136)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1liyUf-0004FG-9g; Tue, 18 May 2021 13:06:37 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1liyUb-0007si-5J; Tue, 18 May 2021 13:06:33 +0100
+Date:   Tue, 18 May 2021 13:06:33 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     rppt@kernel.org, ardb@kernel.org, linus.walleij@linaro.org,
+        akpm@linux-foundation.org, carver4lio@163.com,
+        tiantao6@hisilicon.com, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: fix some formatting issues
-Message-ID: <20210518120519.GP1955@kadam>
-References: <1621338514-11577-1-git-send-email-wangqing@vivo.com>
+Subject: Re: [PATCH] arm: make the size of vmalloc in cmdline and meminfo
+ uniform
+Message-ID: <20210518120633.GW12395@shell.armlinux.org.uk>
+References: <20210518111254.3820480-1-yanfei.xu@windriver.com>
+ <20210518112932.GV12395@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621338514-11577-1-git-send-email-wangqing@vivo.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: 5aHPNJYmuvZOpbWV8gf-z7ooHBVz97WM
-X-Proofpoint-ORIG-GUID: 5aHPNJYmuvZOpbWV8gf-z7ooHBVz97WM
+In-Reply-To: <20210518112932.GV12395@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 07:48:34PM +0800, Wang Qing wrote:
-> fixing WARNING: void function return statements are not generally useful
+On Tue, May 18, 2021 at 12:29:32PM +0100, Russell King (Oracle) wrote:
+> On Tue, May 18, 2021 at 07:12:54PM +0800, Yanfei Xu wrote:
+> > The value of "vmalloc=" set in cmdline is always 8M more than the value
+> > of "VmallocTotal" in meminfo. When use the "vmalloc=" parameter, user
+> > expect to get the size what they input, and no need to consider the 8M
+> > "hole" hided in codes. This commit make real vmalloc size equal to value
+> > of "vmalloc=" in cmdline.
+> > 
+> > Also, the commit will reduce the size of vmalloc printed in boot message
+> > by 8M when the size set in cmdline is irrational.
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> ---
->  drivers/staging/greybus/audio_codec.c | 1 -
->  1 file changed, 1 deletion(-)
+> Hi,
 > 
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index b589cf6..ffd8997
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -1028,7 +1028,6 @@ static int gbcodec_probe(struct snd_soc_component *comp)
->  static void gbcodec_remove(struct snd_soc_component *comp)
->  {
->  	/* Empty function for now */
-> -	return;
->  }
+> I think I'd like to do several cleanups with this:
+> 
+> 1. change vmalloc_min to be an unsigned long.
+> 2. exclude VMALLOC_OFFSET from vmalloc_min, moving it into
+>    adjust_lowmem_bounds where vmalloc_min is used.
+> 3. rename vmalloc_min to be vmalloc_start
+> 4. enforce vmalloc_start to be a multiple of 2MiB
+> 5. in early_vmalloc(), calculate vmalloc_max as:
+> 	VMALLOC_END - (PAGE_OFFSET + SZ_32M + VMALLOC_OFFSET)
+>    and use that to set the upper bound of vmalloc_reserve (which is
+>    something your patch doesn't do, which I think is a bug.
+> 
+> Thoughts?
 
-This is called from snd_soc_component_remove().  Just delete the whole
-function.  It's unclear why there are so many dummy functions in this
-driver...
+I've slightly modified the above idea, and will shortly follow up with
+some patches to show the idea a bit better...
 
-regards,
-dan carpenter
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
