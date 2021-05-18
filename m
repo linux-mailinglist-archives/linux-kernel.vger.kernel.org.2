@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735CA3870E2
+	by mail.lfdr.de (Postfix) with ESMTP id 78F6D3870E5
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 07:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346375AbhEREpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 00:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346364AbhEREpp (ORCPT
+        id S1346303AbhEREl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 00:41:57 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3003 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhEREl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 00:45:45 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADD6C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:44:27 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id gm21so4834556pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 21:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XZRMdbjxMxB4jilOYqB66sZPAREoVkPe1v6Lee0oUs4=;
-        b=iLWsrAi1bzNb6Ny1SZ+EqLbTmvGKxgXbnO87xCBUV/SioaE7lWKJNfclmiiMll3RVe
-         GBT2lZ4zljRObXp/WM/KqkRMM/1tBoc8QegQj10NJ/pH8k6qV15q4rV0wntQxU6CzVTy
-         8GCQCvxHzrT8jiGo2QEbirbgRXFaJIDvlT9R8EXJoYm31jw/SJSknfwcEo/6tT1AKrzO
-         lhkvPVrzb8KwOBkZz5QoVhxm7WW02QowLJFqpXk0K/LQyYFpCoydwLaike0G9Mlgerfx
-         CFx3SwRWUQBelG1nHuhmuxPxBEPBJQJ0h4kk1gB+HWujjhw7+pr8kVyAf11v2V9ko/gD
-         asTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XZRMdbjxMxB4jilOYqB66sZPAREoVkPe1v6Lee0oUs4=;
-        b=EH1cYybjXD7MF9tNMzBHvG1japP/BqBfv1g902WOcBMrZf1Swrxw6eD7d+P7XM+h7g
-         vu5c83nf5idFu2a/OOdPozYMShTPNQi8H8kvQBTn3sXhFmt7Dofa+PYPERAVh1Es+LAt
-         W+GJtysRFsGQctkMwbdSyukKTaWBQuDpexOg+rIYdmRqxY8zJL5U93RkifKZTKc4gc77
-         ugP4YjltsXQS53xMS/3mkQCo7reNcwVuTG/do+tRcISCjOhX7sQy9OjxIz5VbS6RH5IG
-         XRw1SkdmKZyNd8DA2imLQE8ze/SaLVCVEngGcT5AUdqTfOMziJIkpI7crJDNSIAC0aDq
-         29sg==
-X-Gm-Message-State: AOAM532r3yUCNWzpzsc/NTwoAFl7OKQ/CLz2ZDJ933JtTbZ7xsOEoghw
-        k9qZUcdGaoqrZLU+GWh5vUo=
-X-Google-Smtp-Source: ABdhPJwrEPev0BjXHphGbKgGWulX1v4SAk+tUih50mHbMnYF0UvN0YbbrrzOmiAec3MkuJoGz9CJDQ==
-X-Received: by 2002:a17:90a:f18e:: with SMTP id bv14mr3341739pjb.234.1621313067403;
-        Mon, 17 May 2021 21:44:27 -0700 (PDT)
-Received: from localhost.localdomain ([203.126.139.7])
-        by smtp.gmail.com with ESMTPSA id t15sm357538pjh.0.2021.05.17.21.44.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 21:44:27 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     gregkh@linuxfoundation.org, marcocesati@gmail.com,
-        dan.carpenter@oracle.com, fabioaiuto83@gmail.com,
-        fmdefrancesco@gmail.com, eantoranz@gmail.com, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        skhan@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v2 7/7] Staging: rtl8723bs: remove dead code in HalBtc8723b1Ant.c
-Date:   Tue, 18 May 2021 00:41:19 -0400
-Message-Id: <20210518044119.2960494-8-desmondcheongzx@gmail.com>
+        Tue, 18 May 2021 00:41:56 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fkjrw68DczQpgX;
+        Tue, 18 May 2021 12:37:04 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 12:40:33 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
+ 2021 12:40:33 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>
+CC:     <jonathanh@nvidia.com>, <thierry.reding@gmail.com>,
+        <sboyd@kernel.org>
+Subject: [PATCH -next] clk: tegra: tegra124-emc: fix missing clk_disable_unprepare() on error in emc_set_timing()
+Date:   Tue, 18 May 2021 12:42:47 +0800
+Message-ID: <20210518044247.605370-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210518044119.2960494-1-desmondcheongzx@gmail.com>
-References: <20210518044119.2960494-1-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit removes dead code to resolve the following checkpatch.pl
-warning:
+After calling clk_prepare_enable(), clk_disable_unprepare() need
+be called when prepare_timing_change() failed.
 
-WARNING: Block comments use * on subsequent lines
-+		/*
-+		CL_SPRINTF(cliBuf, BT_TMP_BUF_SIZE, "\r\n %-35s = 0x%x ", "Latest error condition(should be 0)", \
-
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Fixes: 2db04f16b589 ("clk: tegra: Add EMC clock driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/clk/tegra/clk-tegra124-emc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-index cc7f558903ac..e5464a27c052 100644
---- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-+++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-@@ -2509,12 +2509,6 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
- 		CL_SPRINTF(cliBuf, BT_TMP_BUF_SIZE, "\r\n %-35s = %d", "IgnWlanAct",
- 			   pCoexDm->bCurIgnoreWlanAct);
- 		CL_PRINTF(cliBuf);
--
--		/*
--		CL_SPRINTF(cliBuf, BT_TMP_BUF_SIZE, "\r\n %-35s = 0x%x ", "Latest error condition(should be 0)", \
--			pCoexDm->errorCondition);
--		CL_PRINTF(cliBuf);
--		*/
- 	}
+diff --git a/drivers/clk/tegra/clk-tegra124-emc.c b/drivers/clk/tegra/clk-tegra124-emc.c
+index bdf6f4a51617..74c1d894cca8 100644
+--- a/drivers/clk/tegra/clk-tegra124-emc.c
++++ b/drivers/clk/tegra/clk-tegra124-emc.c
+@@ -249,8 +249,10 @@ static int emc_set_timing(struct tegra_clk_emc *tegra,
+ 	div = timing->parent_rate / (timing->rate / 2) - 2;
  
- 	/*  Hw setting */
+ 	err = tegra->prepare_timing_change(emc, timing->rate);
+-	if (err)
++	if (err) {
++		clk_disable_unprepare(timing->parent);
+ 		return err;
++	}
+ 
+ 	spin_lock_irqsave(tegra->lock, flags);
+ 
 -- 
 2.25.1
 
