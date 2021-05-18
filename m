@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3C738793C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABABF38793E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349383AbhERMzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:55:07 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:37581 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349378AbhERMyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:54:39 -0400
-Received: by mail-oi1-f174.google.com with SMTP id h9so9673499oih.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:53:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0QT2Iwiu7Ufcs6EfabXWFcRHNA85+LzV8OWphAen84Q=;
-        b=Y2UUZCz4UIis/ImROAypQ5yQc5ToKWRgBJDBTlCULtV0sVQYgvtEXKBNm+v8uSe/XQ
-         LcJaP3A9v5foygMyyP5DJUaPw+wNdBR/K6N7Mon+fozlM0l25MX2yWNHqss93tzMQ5iO
-         zaCK57alxxc3PyKPTOClUp9J7DqYd3SjTxb9lKojde92YRDAZ56dB6QjBXwqZbybZKPo
-         tUY3K1lp7T+DkjP8A9IHL84z3+y7FW49d5dUNzudTsTo5faaQlKSkwvgQ4DxooSvbtH1
-         7MM1OYrE1Mr52kSGkITIJa4MbHw1/R7rx+QFHe330TIPMLDsbHs/7rTd+h7Nl9ugUABF
-         X2zw==
-X-Gm-Message-State: AOAM531wz+AJBTr1VpUY83ykLSij2zbFEPJnsgn9T8WWuGilbx1iPRVJ
-        Lpu0UFqAPJhzfCWPaRTsEe7ha5q+5pLyat6KvUSC6IdB
-X-Google-Smtp-Source: ABdhPJz4f22obT2zlz+cnGz2Jw9sBkFsoJ7LRicguy/nNs+ZhucmI1IKOhsHn6WkMiCuyfeVEs8nvkMGXrLYXoATxr0=
-X-Received: by 2002:aca:4758:: with SMTP id u85mr406947oia.71.1621342400780;
- Tue, 18 May 2021 05:53:20 -0700 (PDT)
+        id S1349384AbhERMzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:55:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233502AbhERMzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:55:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5DC8611CE;
+        Tue, 18 May 2021 12:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621342446;
+        bh=9lenmshXeiU9okb7x8EkrhziX5DvkNFHZglZh7iyXh0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=egpyDl4iUgrv2k9SFO6wiHiM/2OrxIisPsq+vXi7qXou6Y+v69xqzKI/01hNz9h8m
+         RzIDqHAjWtdIOzCj0CNZ+aoZhvxZrS5bYUC4e0ay8R+Oymjq41InC9yUU/g4ZsFupI
+         UIPaOLRXfaOWmR8FarVNHLvAas8SDJE2Xw8iOqdj33YyItotVb1W16DPzr1fxmYsCe
+         bToqkAWhyBYF1LJD88nLHvN/WFaasieqIN+W+lY8aVPUjyzz64m/TW7OMgisxA8pn6
+         7jZiE/pduJdUMvuaZdaIU1CjEx60nnqTjBRCUBUfOs5hKCpma7QEA9kmEHvpyCBIoY
+         aaUKHr3zM3Bnw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 84B864034C; Tue, 18 May 2021 09:54:02 -0300 (-03)
+Date:   Tue, 18 May 2021 09:54:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Grant <Al.Grant@arm.com>
+Subject: Re: [PATCH v1 2/3] perf arm-spe: Correct sample flags for dummy event
+Message-ID: <YKO46nX17/GjqJjV@kernel.org>
+References: <20210429150100.282180-1-leo.yan@linaro.org>
+ <20210429150100.282180-3-leo.yan@linaro.org>
+ <f4e483ae-acbb-7afa-c215-cb4244c2e820@arm.com>
+ <20210512152330.GA121227@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-References: <20210518083046.23302-1-heikki.krogerus@linux.intel.com>
- <YKOB6lRqc5DKo2GS@smile.fi.intel.com> <YKOjRyGlx6bHtgZc@kuha.fi.intel.com>
- <YKOlcQqLarSIxE37@kuha.fi.intel.com> <YKOplS4Z4lleYWht@smile.fi.intel.com> <YKO1wiwCzSx62OIK@kroah.com>
-In-Reply-To: <YKO1wiwCzSx62OIK@kroah.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 18 May 2021 14:53:09 +0200
-Message-ID: <CAJZ5v0hyXOQuLCKB9D_-j64VK-syo5AZmSgEGRHSyuMyvVciOg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] driver core: platform: Remove platform_device_add_properties()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512152330.GA121227@leoy-ThinkPad-X240s>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 2:40 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, May 18, 2021 at 02:48:37PM +0300, Andy Shevchenko wrote:
-> > On Tue, May 18, 2021 at 02:30:57PM +0300, Heikki Krogerus wrote:
-> > > On Tue, May 18, 2021 at 02:21:46PM +0300, Heikki Krogerus wrote:
-> > > > On Tue, May 18, 2021 at 11:59:22AM +0300, Andy Shevchenko wrote:
-> > > > > On Tue, May 18, 2021 at 11:30:44AM +0300, Heikki Krogerus wrote:
-> > > > > > Hi,
-> > > > > >
-> > > > > > It looks like there is only one place left that still uses the
-> > > > > > function. Converting that last user and removing the thing.
-> > > > > >
-> > > > > > Note, I'm actually resending the patch for board-paz00.c. I'm assuming
-> > > > > > the original patch slipped through the cracks because it did not end
-> > > > > > up anywhere.
-> > > > >
-> > > > > Cool!
-> > > > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > >
-> > > > > Btw, which base have you used for this series?
-> > > >
-> > > > intel-next for this one.
-> > >
-> > > I mean linux-next :-)
-> >
-> > Let's wait for CIs to respond. I have a feeling that the first patch is good
-> > for v5.14, while the second one is probably for the next cycle.
->
-> Why?  I can take both now, no problem...
+Em Wed, May 12, 2021 at 11:23:30PM +0800, Leo Yan escreveu:
+> On Wed, May 12, 2021 at 05:39:56PM +0300, James Clark wrote:
+> > 
+> > 
+> > On 29/04/2021 18:00, Leo Yan wrote:
+> > > The dummy event is mainly used for mmap, the TIME sample is only needed
+> > > for per-cpu case so that the perf tool can rely on the correct timing
+> > > for parsing symbols.  And the CPU sample is useless for mmap.
+> > > 
+> > > This patch enables TIME sample for per-cpu mmap and doesn't enable CPU
+> > > sample.  For later extension (e.g. support multiple AUX events), it sets
+> > > the dummy event when the condition "opts->full_auxtrace" is true.
+> > > 
+> > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > > ---
+> > >  tools/perf/arch/arm64/util/arm-spe.c | 30 ++++++++++++++++------------
+> > >  1 file changed, 17 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+> > > index 902e73a64184..f6eec0900604 100644
+> > > --- a/tools/perf/arch/arm64/util/arm-spe.c
+> > > +++ b/tools/perf/arch/arm64/util/arm-spe.c
+> > > @@ -70,7 +70,6 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+> > >  	struct evsel *evsel, *arm_spe_evsel = NULL;
+> > >  	struct perf_cpu_map *cpus = evlist->core.cpus;
+> > >  	bool privileged = perf_event_paranoid_check(-1);
+> > > -	struct evsel *tracking_evsel;
+> > >  	int err;
+> > >  
+> > >  	sper->evlist = evlist;
+> > > @@ -126,18 +125,23 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+> > >  		evsel__set_sample_bit(arm_spe_evsel, CPU);
+> > >  
+> > >  	/* Add dummy event to keep tracking */
+> > > -	err = parse_events(evlist, "dummy:u", NULL);
+> > > -	if (err)
+> > > -		return err;
+> > > -
+> > > -	tracking_evsel = evlist__last(evlist);
+> > > -	evlist__set_tracking_event(evlist, tracking_evsel);
+> > > -
+> > > -	tracking_evsel->core.attr.freq = 0;
+> > > -	tracking_evsel->core.attr.sample_period = 1;
+> > > -	evsel__set_sample_bit(tracking_evsel, TIME);
+> > > -	evsel__set_sample_bit(tracking_evsel, CPU);
+> > > -	evsel__reset_sample_bit(tracking_evsel, BRANCH_STACK);
+> > > +	if (opts->full_auxtrace) {
+> > > +		struct evsel *tracking_evsel;
+> > 
+> > Hi Leo,
+> > 
+> > I know the "if (opts->full_auxtrace)" pattern is copied from other auxtrace
+> > files, but I don't think it does anything because there is this at the top
+> > of the function:
+> > 
+> >    	if (!opts->full_auxtrace)
+> > 		return 0;
+> > 
+> > The same applies for other usages of "full_auxtrace" in the same function.
+> > They are all always true. I'm also not sure if it's ever defined what
+> > full_auxtrace means.
+> 
+> Good pointing.  TBH, I also stuggled for handling "opts->full_auxtrace"
+> when wrote the patch; IIUC, "opts->full_auxtrace" is also used in
+> builtin-record.c to indicate if the recording contains AUX tracing.
+> 
+> Will follow your suggestion to respin the patch (and refine the code)
+> to remove the redundant condition checking for "opts->full_auxtrace".
 
-Not really, there are dependencies, one in my tree ATM.
+Ok, so please collect his Tested-by and Reviewed-by and I'll wait for v2
+then,
 
-It's better if I take them IMHO.
+- Arnaldo
