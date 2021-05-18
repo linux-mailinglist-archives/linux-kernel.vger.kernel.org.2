@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA36387CD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42483387CD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350370AbhERPuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240361AbhERPud (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:50:33 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5676AC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:49:15 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id w127so6364579oig.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ar+i+hKYQJKBrVVrwYFr2WXlLUhRfwyYOh3n4BNryGc=;
-        b=b5J5fxxYf2Pa3zywWtqYXQ1JR3fU/z9E/8Dfcw+RXKKCbcfRyzsrb3yU+4BJ3JHrUs
-         9fcLa8eoWbectK5MrgXNo/Tw0dHXFAXjVYKOUKj9mAfhX9WCb3BeGcGzUOLPS1e5Q/is
-         LjzoNJi1ud9tZRokeqBYYt3hwiVTuKJKYMr3E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ar+i+hKYQJKBrVVrwYFr2WXlLUhRfwyYOh3n4BNryGc=;
-        b=GJ3kgUZzmSJEv67qAQxsSZ1gNTzcgkmsEySE7Ved9xoEjrXFBA1B87c4ASWR5zYOVR
-         AjgOaxNBBP7aFtpTaE5VRMBBo1Qim5dYE4YInEjklK0mT551PEkE794Ghc04r2d4M7gG
-         v13LwoEu9dEMOR17G3M6zyIN0YnZAGqyIjhwLWw51pGlotrt8wXddRXnHpZCB9SSL41U
-         89NUVSfXSXRF26kMHHWcdKquM8m+2xD3TD3Hb998SVm/7NWFA2S+0mUktqPDa/Tw4eoK
-         oe8ioIf7HPBHIIDhOHVQWxXz6pLbUr6N5GfwTrciyJn2d6H96rkhBvjIwuDmCn7L6uzz
-         x2og==
-X-Gm-Message-State: AOAM532V3FFHTAXL05l+Z+iR4upguRqyPu1LZCCMJDSaigJOF4oL5aZ5
-        hNIwIvzYKIybN2I+GpIheBVN5g==
-X-Google-Smtp-Source: ABdhPJwxHCs9d9PowhXDP4QMkM3BAfPF3ZyEKd0VJFq9QknCtIt+cdJNJpFEgirtzpwjfwsM+lhH7Q==
-X-Received: by 2002:aca:2818:: with SMTP id 24mr4321292oix.67.1621352954645;
-        Tue, 18 May 2021 08:49:14 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id f21sm3751334oou.24.2021.05.18.08.49.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 08:49:14 -0700 (PDT)
-Date:   Tue, 18 May 2021 10:49:12 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/329] 5.11.22-rc1 review
-Message-ID: <YKPh+GejNxyYKTZ5@fedora64.linuxtx.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+        id S1346135AbhERPvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:51:22 -0400
+Received: from mga11.intel.com ([192.55.52.93]:45895 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244533AbhERPvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:51:19 -0400
+IronPort-SDR: /pYI1ZoLG7TMiPJEk7OoexsZC0C/R4B3PGmXwKj4rIOnD2D5H15gAd+DGbV8cE/JwMUK0eSaj1
+ pAXRelGtjLcA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="197657331"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="197657331"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:50:00 -0700
+IronPort-SDR: J6YrVZQkYKx+An4K5vDSlHfYFMiKMlVYAMS24LqhM5IAE+L/X8KC0+BQgEDuPhPz+Etyswjc4I
+ 8nMojLixL2/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="411328265"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 18 May 2021 08:49:58 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id B15BF348; Tue, 18 May 2021 18:50:19 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kent Gibson <warthog618@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
+Subject: [PATCH v1 1/2] gpiolib: Never return internal error codes to user space
+Date:   Tue, 18 May 2021 18:50:12 +0300
+Message-Id: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 03:58:31PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.11.22 release.
-> There are 329 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 19 May 2021 14:02:16 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.22-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Currently it's possible that character device interface may return
+the error codes which are not supposed to be seen by user space.
+In this case it's EPROBE_DEFER.
 
-Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
+Wrap it to return -ENODEV instead as sysfs does.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
+Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
+Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
+Reported-by: Suresh Balakrishnan <suresh.balakrishnan@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/gpio/gpiolib-cdev.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index 1631727bf0da..1d8f66880d63 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -331,8 +331,11 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
+ 		}
+ 
+ 		ret = gpiod_request(desc, lh->label);
+-		if (ret)
++		if (ret) {
++			if (ret == -EPROBE_DEFER)
++				ret = -ENODEV;
+ 			goto out_free_lh;
++		}
+ 		lh->descs[i] = desc;
+ 		linehandle_flags_to_desc_flags(handlereq.flags, &desc->flags);
+ 
+@@ -1379,8 +1382,11 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
+ 		}
+ 
+ 		ret = gpiod_request(desc, lr->label);
+-		if (ret)
++		if (ret) {
++			if (ret == -EPROBE_DEFER)
++				ret = -ENODEV;
+ 			goto out_free_linereq;
++		}
+ 
+ 		lr->lines[i].desc = desc;
+ 		flags = gpio_v2_line_config_flags(lc, i);
+@@ -1765,8 +1771,11 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
+ 	}
+ 
+ 	ret = gpiod_request(desc, le->label);
+-	if (ret)
++	if (ret) {
++		if (ret == -EPROBE_DEFER)
++			ret = -ENODEV;
+ 		goto out_free_le;
++	}
+ 	le->desc = desc;
+ 	le->eflags = eflags;
+ 
+-- 
+2.30.2
+
