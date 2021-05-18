@@ -2,186 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027DA387CCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1E6387CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346120AbhERPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:49:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:55394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245521AbhERPtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:49:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FB93ED1;
-        Tue, 18 May 2021 08:48:00 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD82D3F73B;
-        Tue, 18 May 2021 08:47:58 -0700 (PDT)
-Date:   Tue, 18 May 2021 16:47:56 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v4 1/3] sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL
- sched_domain flag
-Message-ID: <20210518154756.GD3993@e120325.cambridge.arm.com>
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
- <1621239831-5870-2-git-send-email-beata.michalska@arm.com>
- <CAKfTPtAPcayjhedNWaL20rsaUQbxXFdEXAF8aqwd9YX5gLVbOQ@mail.gmail.com>
- <20210518142746.GA3993@e120325.cambridge.arm.com>
- <CAKfTPtAk8pQfpN7FrBqdOiSz2Ncby4ozXOgQvT_QZMX67-FRKA@mail.gmail.com>
- <20210518150947.GC3993@e120325.cambridge.arm.com>
- <CAKfTPtAYjzMfj3Uh=xjAeiOZtkb5iyPA72+ow+RXYtQq0mGNDA@mail.gmail.com>
+        id S1346045AbhERPu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:50:28 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60983 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245015AbhERPu0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:50:26 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IFdFL9004337;
+        Tue, 18 May 2021 17:48:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=x8rk4SF8kUA9lhdRyqORx0Hd48/7Wmd859uaIYQogP8=;
+ b=kv4K43tO4C1zplxFDnyeWJau3vyR+Z596aA0Q7/dnzf8URn32MUzKeBxueu7VK+Kj2gM
+ VCbYRSJMEa27L58x/BifhZmKeQC5v7kSpNwuxi+VvaxbUsArah1PtynF74fSlyI+2NqC
+ E+dufxOxh1Ywwd8DT8D+utAvmUECxCdtFfJ0nfASR34hEmU2C1SKi89vb+vapSYN7LEv
+ dLMZZUDbW4k+sM7BfGSj18NFdDPFC+WxvLr6Rrf/WaICczsfvmogOciJAi5FncHJ6k2u
+ 3wWtbru2Jq6X+j/y0MR7+82odg+1rRWkg//WySUFID1G4055o/0M4miblz3vTl3LUore dw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38maunt66k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 17:48:50 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A90C10002A;
+        Tue, 18 May 2021 17:48:49 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3508F231DCF;
+        Tue, 18 May 2021 17:48:49 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May
+ 2021 17:48:48 +0200
+Subject: Re: [PATCH v4 3/3] spi: stm32-qspi: add automatic poll status feature
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
+ <20210518134332.17826-4-patrice.chotard@foss.st.com>
+ <20210518163707.0e6bd120@collabora.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <e0abdaf9-0f30-91a3-7cd4-c0e4140d6aa4@foss.st.com>
+Date:   Tue, 18 May 2021 17:48:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAYjzMfj3Uh=xjAeiOZtkb5iyPA72+ow+RXYtQq0mGNDA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210518163707.0e6bd120@collabora.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-18_08:2021-05-18,2021-05-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 05:28:11PM +0200, Vincent Guittot wrote:
-> On Tue, 18 May 2021 at 17:09, Beata Michalska <beata.michalska@arm.com> wrote:
-> >
-> > On Tue, May 18, 2021 at 04:53:09PM +0200, Vincent Guittot wrote:
-> > > On Tue, 18 May 2021 at 16:27, Beata Michalska <beata.michalska@arm.com> wrote:
-> > > >
-> > > > On Tue, May 18, 2021 at 03:39:27PM +0200, Vincent Guittot wrote:
-> > > > > On Mon, 17 May 2021 at 10:24, Beata Michalska <beata.michalska@arm.com> wrote:
-> > > > > >
-> > > > > > Introducing new, complementary to SD_ASYM_CPUCAPACITY, sched_domain
-> > > > > > topology flag, to distinguish between shed_domains where any CPU
-> > > > > > capacity asymmetry is detected (SD_ASYM_CPUCAPACITY) and ones where
-> > > > > > a full range of CPU capacities is visible to all domain members
-> > > > > > (SD_ASYM_CPUCAPACITY_FULL).
-> > > > >
-> > > > > I'm not sure about what you want to detect:
-> > > > >
-> > > > > Is it a sched_domain level with a full range of cpu capacity, i.e.
-> > > > > with at least 1 min capacity and 1 max capacity ?
-> > > > > or do you want to get at least 1 cpu of each capacity ?
-> > > > That would be at least one CPU of each available capacity within given domain,
-> > > > so full -set- of available capacities within a domain.
-> > >
-> > > Would be good to add the precision.
-> > Will do.
-> > >
-> > > Although I'm not sure if that's the best policy compared to only
-> > > getting the range which would be far simpler to implement.
-> > > Do you have some topology example ?
-> >
-> > An example from second patch from the series:
-> >
-> > DIE      [                                ]
-> > MC       [                       ][       ]
-> >
-> > CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
-> > Capacity  |.....| |.....| |.....|  |.....|
-> >              L       M       B        B
-> 
-> The one above , which is described in your patchset, works with the range policy
-Yeap, but that is just a variation of all the possibilities....
-> 
-> >
-> > Where:
-> >  arch_scale_cpu_capacity(L) = 512
-> >  arch_scale_cpu_capacity(M) = 871
-> >  arch_scale_cpu_capacity(B) = 1024
-> >
-> > which could also look like:
-> >
-> > DIE      [                                        ]
-> > MC       [                       ][               ]
-> >
-> > CPU       [0] [1] [2] [3] [4] [5]  [6] [7] [8] [9]
-> > Capacity  |.....| |.....| |.....|  |.....| |.....|
-> >              L       M       B        L       B
-> 
-> I know that that HW guys can come with crazy idea but they would
-> probably add M  instead of L with B in the 2nd cluster as a boost of
-> performance at the cost of powering up another "cluster" in which case
-> the range policy works as well
-> 
-> >
-> > Considering only range would mean loosing the 2 (M) CPUs out of sight
-> > for feec in some cases.
-> 
-> Is it realistic ? Considering all the code and complexity added by
-> patch 2, will we really use it at the end ?
-> 
-I do completely agree that the first approach was slightly .... blown out of
-proportions, but with Peter's idea, the complexity has dropped significantly.
-With the range being considered we are back to per domain tracking of available
-capacities (min/max), plus additional cycles on comparing capacities.
-Unless I fail to see the simplicity of that approach ?
 
----
-BR
-B.
-> Regards,
-> Vincent
-> >
-> > ---
-> > BR.
-> > B
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > > >
-> > > > ---
-> > > > BR
-> > > > B.
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > With the distinction between full and partial CPU capacity asymmetry,
-> > > > > > brought in by the newly introduced flag, the scope of the original
-> > > > > > SD_ASYM_CPUCAPACITY flag gets shifted, still maintaining the existing
-> > > > > > behaviour when one is detected on a given sched domain, allowing
-> > > > > > misfit migrations within sched domains that do not observe full range
-> > > > > > of CPU capacities but still do have members with different capacity
-> > > > > > values. It loses though it's meaning when it comes to the lowest CPU
-> > > > > > asymmetry sched_domain level per-cpu pointer, which is to be now
-> > > > > > denoted by SD_ASYM_CPUCAPACITY_FULL flag.
-> > > > > >
-> > > > > > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> > > > > > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> > > > > > ---
-> > > > > >  include/linux/sched/sd_flags.h | 10 ++++++++++
-> > > > > >  1 file changed, 10 insertions(+)
-> > > > > >
-> > > > > > diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-> > > > > > index 34b21e9..57bde66 100644
-> > > > > > --- a/include/linux/sched/sd_flags.h
-> > > > > > +++ b/include/linux/sched/sd_flags.h
-> > > > > > @@ -91,6 +91,16 @@ SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
-> > > > > >  SD_FLAG(SD_ASYM_CPUCAPACITY, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > > > > >
-> > > > > >  /*
-> > > > > > + * Domain members have different CPU capacities spanning all unique CPU
-> > > > > > + * capacity values.
-> > > > > > + *
-> > > > > > + * SHARED_PARENT: Set from the topmost domain down to the first domain where
-> > > > > > + *               all available CPU capacities are visible
-> > > > > > + * NEEDS_GROUPS: Per-CPU capacity is asymmetric between groups.
-> > > > > > + */
-> > > > > > +SD_FLAG(SD_ASYM_CPUCAPACITY_FULL, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-> > > > > > +
-> > > > > > +/*
-> > > > > >   * Domain members share CPU capacity (i.e. SMT)
-> > > > > >   *
-> > > > > >   * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-> > > > > > --
-> > > > > > 2.7.4
-> > > > > >
+
+On 5/18/21 4:37 PM, Boris Brezillon wrote:
+> On Tue, 18 May 2021 15:43:32 +0200
+> <patrice.chotard@foss.st.com> wrote:
+> 
+>> +static int stm32_qspi_poll_status(struct spi_mem *mem, const struct spi_mem_op *op,
+>> +				  u16 mask, u16 match,
+>> +				  unsigned long initial_delay_us,
+>> +				  unsigned long polling_rate_us,
+>> +				  unsigned long timeout_ms)
+>> +{
+>> +	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
+>> +	int ret;
+>> +
+> 
+> The spi_mem_supports_op() call is still missing.
+
+Yes, i forgot it
+
+Thanks
+Patrice
+
+> 
+>> +	ret = pm_runtime_get_sync(qspi->dev);
+>> +	if (ret < 0) {
+>> +		pm_runtime_put_noidle(qspi->dev);
+>> +		return ret;
+>> +	}
+>> +
+>> +	mutex_lock(&qspi->lock);
+>> +
+>> +	writel_relaxed(mask, qspi->io_base + QSPI_PSMKR);
+>> +	writel_relaxed(match, qspi->io_base + QSPI_PSMAR);
+>> +	qspi->fmode = CCR_FMODE_APM;
+>> +	qspi->status_timeout = timeout_ms;
+>> +
+>> +	ret = stm32_qspi_send(mem, op);
+>> +	mutex_unlock(&qspi->lock);
+>> +
+>> +	pm_runtime_mark_last_busy(qspi->dev);
+>> +	pm_runtime_put_autosuspend(qspi->dev);
+>> +
+>> +	return ret;
+>> +}
