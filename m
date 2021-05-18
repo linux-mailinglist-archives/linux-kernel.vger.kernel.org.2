@@ -2,251 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F73F387904
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC95C387908
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343862AbhERMmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:42:10 -0400
-Received: from mga03.intel.com ([134.134.136.65]:57939 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349284AbhERMmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:42:08 -0400
-IronPort-SDR: v16exUBZhBDwpB0GgdhKq6SKhgkPt0dJgx/Ky4P0U2diZBf0tfBkPKY5m1BTt+5yL5IVBGxyD0
- sFjaSg/ftMmw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200753814"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="200753814"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:40:49 -0700
-IronPort-SDR: f1EHggIkxe+EbxF7DCWqC8JNCxPz7fjaOSzftIN32fcFvVJbc3Fb3wJi5OS0jLHG3GxUGr+QDX
- q41qnX+ioSEg==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="472932722"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.30.127]) ([10.255.30.127])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:40:44 -0700
-Subject: Re: [PATCH v6 00/16] KVM: x86/pmu: Add *basic* support to enable
- guest PEBS via DS
-To:     Liuxiangdong <liuxiangdong5@huawei.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <609FA2B7.7030801@huawei.com>
- <868a0ed9-d4a5-c135-811e-a3420b7913ac@linux.intel.com>
- <60A3B1DC.7000002@huawei.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <a65c8556-4eac-b8db-8aa4-98229f47fc8d@intel.com>
-Date:   Tue, 18 May 2021 20:40:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S1349300AbhERMml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242984AbhERMmk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 08:42:40 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47116C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:41:22 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so1410800wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 05:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lFCCf9Zadqmdb5+PTGtOnmwq2MMa2WLH4wJ8jc9X6CI=;
+        b=hz3iR9DZKzar9RisXj35P/cH4E/OklwqizSwOuKA+P9jci3qo9hMZ5gzlW/sly9SSh
+         6zunLWBZkCgMuU35+SsWvaK0mxu/AeNbjZseOjdVrexcKt09np5AIsYVvl2B52U9gDwc
+         qJ2lshVMVJmcmbcghh+x2hJnN4IC33aSAG8DLhpiTMgsIiUNokQWYIFs6iNcIrimpGrJ
+         jw1xNvkl30OO/7EfYyK5inByFH26Ikzqjvi9a/AhcQoUj6X/hPtfBuUdob4hkWtdp53s
+         CSEergk0MLXB8nTpbipmSk4Ptrw1EFC5/4PT4O5RdVfnsU7ucVu3+afhx7bbXAG4Ft0X
+         grQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lFCCf9Zadqmdb5+PTGtOnmwq2MMa2WLH4wJ8jc9X6CI=;
+        b=WcoODGGJC99iT0+aSpstm807tNfSjbXz8j8YKr6DuOw7Dih3/lnUdYvNRMokogrlMq
+         0Cuzl3Nvh6Z3yhJVri+8SmRiT+bAUDyRZqm4O5pkJ/HocVdEJT2vWfRmojYBD3apU1BO
+         8JzO+xUdB65m2g7Y8DuioEvdTiZ40RfSJn4TGGWfu0YN2IrwmWZJvTTegG3XnT/ht+AG
+         PoQP2EAl311BQOL32lZsoCjzdktUlMEDqDHKq/UojMVB6t1j2sh/1Htxt+rRT5yxW8Ov
+         nZdXI33TywYR5dNhF9DywuOtT6EJJbEbWiPlw5AuuhcUTfBeOsxnAafPPdN9nQypqThc
+         Ijrw==
+X-Gm-Message-State: AOAM531YACHDIJ2T2JPxq6eWxebNFjcNdukMecQjDIpb7m78/CnufzT4
+        wp3QTO3gbak1bxvDciPFYJ0kOQ==
+X-Google-Smtp-Source: ABdhPJzSy40WfPhdwmshIXqLyiDyN0wXHif79hqRyhwDPulgerCWoG4o2VFd5eyuQ+IzM/rfmKmLtw==
+X-Received: by 2002:a1c:4c10:: with SMTP id z16mr4887905wmf.134.1621341680913;
+        Tue, 18 May 2021 05:41:20 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id z3sm1677239wrq.42.2021.05.18.05.41.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 05:41:20 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     gregkh@linuxfoundation.org, mchehab@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH 1/5] staging: media: zoran: remove detect_guest_activity
+Date:   Tue, 18 May 2021 12:41:09 +0000
+Message-Id: <20210518124113.1823055-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <60A3B1DC.7000002@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/18 20:23, Liuxiangdong wrote:
->
->
-> On 2021/5/17 14:38, Like Xu wrote:
->> Hi xiangdong,
->>
->> On 2021/5/15 18:30, Liuxiangdong wrote:
->>>
->>>
->>> On 2021/5/11 10:41, Like Xu wrote:
->>>> A new kernel cycle has begun, and this version looks promising.
->>>>
->>>> The guest Precise Event Based Sampling (PEBS) feature can provide
->>>> an architectural state of the instruction executed after the guest
->>>> instruction that exactly caused the event. It needs new hardware
->>>> facility only available on Intel Ice Lake Server platforms. This
->>>> patch set enables the basic PEBS feature for KVM guests on ICX.
->>>>
->>>> We can use PEBS feature on the Linux guest like native:
->>>>
->>>>    # perf record -e instructions:ppp ./br_instr a
->>>>    # perf record -c 100000 -e instructions:pp ./br_instr a
->>>
->>> Hi, Like.
->>> Has the qemu patch been modified?
->>>
->>> https://lore.kernel.org/kvm/f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com/ 
->>> ?
->>
->> I think the qemu part still works based on
->> 609d7596524ab204ccd71ef42c9eee4c7c338ea4 (tag: v6.0.0).
->>
->
-> Yes. I applied these two qemu patches to qemu v6.0.0 and this kvm patches 
-> set to latest kvm tree.
->
-> I can see pebs flags in Guest(linux 5.11) on the IceLake( Model: 106  
-> Model name: Intel(R) Xeon(R) Platinum 8378A CPU),
-> and i can use PEBS like this.
->
->     #perf record -e instructions:pp
->
-> It can work normally.
->
-> But  there is no sampling when i use "perf record -e events:pp" or just 
-> "perf record" in guest
-> unless i delete patch 09 and patch 13 from this kvm patches set.
->
->
+The detect_guest_activity function is no longer used, so lets removed it.
 
-With patch 9 and 13, does the basic counter sampling still work ?
-You may retry w/ "echo 0 > /proc/sys/kernel/watchdog" on the host and guest.
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/staging/media/zoran/zoran_device.c | 46 ----------------------
+ drivers/staging/media/zoran/zoran_device.h |  2 -
+ 2 files changed, 48 deletions(-)
 
-> Have you tried "perf record -e events:pp" in this patches set? Does it 
-> work normally?
-
-All my PEBS testcases passed. You may dump guest msr traces from your 
-testcase with me.
-
->
->
->
-> Thanks!
-> Xiangdong Liu
->
->
->
->> When the LBR qemu patch receives the ACK from the maintainer,
->> I will submit PBES qemu support because their changes are very similar.
->>
->> Please help review this version and
->> feel free to add your comments or "Reviewed-by".
->>
->> Thanks,
->> Like Xu
->>
->>>
->>>
->>>> To emulate guest PEBS facility for the above perf usages,
->>>> we need to implement 2 code paths:
->>>>
->>>> 1) Fast path
->>>>
->>>> This is when the host assigned physical PMC has an identical index as
->>>> the virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
->>>> This path is used in most common use cases.
->>>>
->>>> 2) Slow path
->>>>
->>>> This is when the host assigned physical PMC has a different index
->>>> from the virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0)
->>>> In this case, KVM needs to rewrite the PEBS records to change the
->>>> applicable counter indexes to the virtual PMC indexes, which would
->>>> otherwise contain the physical counter index written by PEBS facility,
->>>> and switch the counter reset values to the offset corresponding to
->>>> the physical counter indexes in the DS data structure.
->>>>
->>>> The previous version [0] enables both fast path and slow path, which
->>>> seems a bit more complex as the first step. In this patchset, we want
->>>> to start with the fast path to get the basic guest PEBS enabled while
->>>> keeping the slow path disabled. More focused discussion on the slow
->>>> path [1] is planned to be put to another patchset in the next step.
->>>>
->>>> Compared to later versions in subsequent steps, the functionality
->>>> to support host-guest PEBS both enabled and the functionality to
->>>> emulate guest PEBS when the counter is cross-mapped are missing
->>>> in this patch set (neither of these are typical scenarios).
->>>>
->>>> With the basic support, the guest can retrieve the correct PEBS
->>>> information from its own PEBS records on the Ice Lake servers.
->>>> And we expect it should work when migrating to another Ice Lake
->>>> and no regression about host perf is expected.
->>>>
->>>> Here are the results of pebs test from guest/host for same workload:
->>>>
->>>> perf report on guest:
->>>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
->>>> 1473377250
->>>> # Overhead  Command   Shared Object      Symbol
->>>>    57.74%  br_instr  br_instr           [.] lfsr_cond
->>>>    41.40%  br_instr  br_instr           [.] cmp_end
->>>>     0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
->>>>
->>>> perf report on host:
->>>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
->>>> 1462721386
->>>> # Overhead  Command   Shared Object     Symbol
->>>>    57.90%  br_instr  br_instr          [.] lfsr_cond
->>>>    41.95%  br_instr  br_instr          [.] cmp_end
->>>>     0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
->>>>     Conclusion: the profiling results on the guest are similar tothat 
->>>> on the host.
->>>>
->>>> A minimum guest kernel version may be v5.4 or a backport version
->>>> support Icelake server PEBS.
->>>>
->>>> Please check more details in each commit and feel free to comment.
->>>>
->>>> Previous:
->>>> https://lore.kernel.org/kvm/20210415032016.166201-1-like.xu@linux.intel.com/ 
->>>>
->>>>
->>>> [0] 
->>>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
->>>> [1] 
->>>> https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/ 
->>>>
->>>>
->>>> V5 -> V6 Changelog:
->>>> - Rebased on the latest kvm/queue tree;
->>>> - Fix a git rebase issue (Liuxiangdong);
->>>> - Adjust the patch sequence 06/07 for bisection (Liuxiangdong);
->>>>
->>>> Like Xu (16):
->>>>    perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
->>>>    perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
->>>>    perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
->>>>    KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
->>>>    KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
->>>>    KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
->>>>    KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
->>>>    KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
->>>>    KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
->>>>    KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
->>>>    KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
->>>>    KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
->>>>    KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
->>>>    KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
->>>>    KVM: x86/cpuid: Refactor host/guest CPU model consistency check
->>>>    KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
->>>>
->>>>   arch/x86/events/core.c            |   5 +-
->>>>   arch/x86/events/intel/core.c      | 129 ++++++++++++++++++++++++------
->>>>   arch/x86/events/perf_event.h      |   5 +-
->>>>   arch/x86/include/asm/kvm_host.h   |  16 ++++
->>>>   arch/x86/include/asm/msr-index.h  |   6 ++
->>>>   arch/x86/include/asm/perf_event.h |   5 +-
->>>>   arch/x86/kvm/cpuid.c              |  24 ++----
->>>>   arch/x86/kvm/cpuid.h              |   5 ++
->>>>   arch/x86/kvm/pmu.c                |  50 +++++++++---
->>>>   arch/x86/kvm/pmu.h                |  38 +++++++++
->>>>   arch/x86/kvm/vmx/capabilities.h   |  26 ++++--
->>>>   arch/x86/kvm/vmx/pmu_intel.c      | 115 +++++++++++++++++++++-----
->>>>   arch/x86/kvm/vmx/vmx.c            |  24 +++++-
->>>>   arch/x86/kvm/vmx/vmx.h            |   2 +-
->>>>   arch/x86/kvm/x86.c                |  14 ++--
->>>>   15 files changed, 368 insertions(+), 96 deletions(-)
->>>>
->>
->
+diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
+index cf788d9cd1df..7d2718744d18 100644
+--- a/drivers/staging/media/zoran/zoran_device.c
++++ b/drivers/staging/media/zoran/zoran_device.c
+@@ -166,52 +166,6 @@ static void dump_guests(struct zoran *zr)
+ 	}
+ }
+ 
+-void detect_guest_activity(struct zoran *zr)
+-{
+-	int timeout, i, j, res, guest[8], guest0[8], change[8][3];
+-	ktime_t t0, t1;
+-
+-	/* do not print random data */
+-	guest[0] = 0;
+-	guest0[0] = 0;
+-
+-	dump_guests(zr);
+-	pci_info(zr->pci_dev, "Detecting guests activity, please wait...\n");
+-	for (i = 1; i < 8; i++) /* Don't read jpeg codec here */
+-		guest0[i] = guest[i] = post_office_read(zr, i, 0);
+-
+-	timeout = 0;
+-	j = 0;
+-	t0 = ktime_get();
+-	while (timeout < 10000) {
+-		udelay(10);
+-		timeout++;
+-		for (i = 1; (i < 8) && (j < 8); i++) {
+-			res = post_office_read(zr, i, 0);
+-			if (res != guest[i]) {
+-				t1 = ktime_get();
+-				change[j][0] = ktime_to_us(ktime_sub(t1, t0));
+-				t0 = t1;
+-				change[j][1] = i;
+-				change[j][2] = res;
+-				j++;
+-				guest[i] = res;
+-			}
+-		}
+-		if (j >= 8)
+-			break;
+-	}
+-
+-	pci_info(zr->pci_dev, "Guests: %*ph\n", 8, guest0);
+-
+-	if (j == 0) {
+-		pci_info(zr->pci_dev, "No activity detected.\n");
+-		return;
+-	}
+-	for (i = 0; i < j; i++)
+-		pci_info(zr->pci_dev, "%6d: %d => 0x%02x\n", change[i][0], change[i][1], change[i][2]);
+-}
+-
+ /*
+  * JPEG Codec access
+  */
+diff --git a/drivers/staging/media/zoran/zoran_device.h b/drivers/staging/media/zoran/zoran_device.h
+index 24be19a61b6d..6c5d70238228 100644
+--- a/drivers/staging/media/zoran/zoran_device.h
++++ b/drivers/staging/media/zoran/zoran_device.h
+@@ -20,8 +20,6 @@ extern int post_office_wait(struct zoran *zr);
+ extern int post_office_write(struct zoran *zr, unsigned int guest, unsigned int reg, unsigned int value);
+ extern int post_office_read(struct zoran *zr, unsigned int guest, unsigned int reg);
+ 
+-extern void detect_guest_activity(struct zoran *zr);
+-
+ extern void jpeg_codec_sleep(struct zoran *zr, int sleep);
+ extern int jpeg_codec_reset(struct zoran *zr);
+ 
+-- 
+2.26.3
 
