@@ -2,121 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4580387546
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3DD38754C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241478AbhERJii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:38:38 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45199 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241065AbhERJih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:38:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621330625;
-        bh=AD1ds06VVPVYGYLP8IB2Xh0Qsqb8Ho9cPxzhed8QWaw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=XVhbMhvJbTuxiTl+ii0FgbH6Ib0+xf7jtpRrjVMaCPWpO1jFqWss4fPVG0bjMKBi1
-         8+CHh9xsyLVtEfHSWJE8+dFXuFaH7Nbtw4zLNZr0Rye0uuoBsoyN+oFHjtpzvS4amx
-         +gUuKTzkdPDL6N7Fi8wCXV/EwA0i/gWnG6pUNXTo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MTzfG-1lrHsY3rNK-00R2p9; Tue, 18
- May 2021 11:37:05 +0200
-Date:   Tue, 18 May 2021 11:37:00 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Benjamin Fair <benjaminfair@google.com>
-Subject: Re: [PATCH] ARM: npcm: wpcm450: select interrupt controller driver
-Message-ID: <YKOKvAyu6/9Kw9DP@latitude>
-References: <20210513165627.1767093-1-j.neuschaefer@gmx.net>
- <CACPK8XdVNfjbs+KmhT8g899d74t7M8b6iBuGC_3=DEBy+A_VHg@mail.gmail.com>
+        id S241830AbhERJj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:39:59 -0400
+Received: from smtp-36-i2.italiaonline.it ([213.209.12.36]:58308 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241065AbhERJj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 05:39:57 -0400
+Received: from oxapps-10-056.iol.local ([10.101.8.66])
+        by smtp-36.iol.local with ESMTPA
+        id iwBSlou6lQTiRiwBSluMWg; Tue, 18 May 2021 11:38:38 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1621330718; bh=RX3VysOeZND07OSeQShv9fUFNUFVbaB2i05WydIcxeo=;
+        h=From;
+        b=GlIteFyFXSPcd4cg7t8JjvlsMLzV9RQZgw+abU1zDCPqwxE113JpF3izpzcsyRLgq
+         4GxFNEuyw7HwYNkRAyXxDOH8BHN83dmYcHi3REgQK+9sc33KjvZxkgie0ur67eBwRZ
+         qd/rx5GPDyYwTN38HXyAAeJej2AxiG3UC5LpkJCF2ogZARoVojkBOhBwKhPKdDsbbh
+         DuyV+297mvEiVmn6+uiDgc7Oszjymb9YaWpi19Mticj0wjQLxTea3hFVYOgfm8uDHU
+         QK9uni0LdAYDI5q4UAORH5ddjjpo0ifLKWuO2xUQN4v36usBQQ7UVzml05/tX49/ZR
+         92LC4N7Struog==
+X-CNFS-Analysis: v=2.4 cv=TeVTCTch c=1 sm=1 tr=0 ts=60a38b1e cx=a_exe
+ a=jBhkkplKmJJfLUdjeloIeA==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
+ a=vesc6bHxzc4A:10 a=fGhLjsSNAAAA:8 a=VwQbUJbxAAAA:8 a=k0ZWKtjwVB-qIq3JdvgA:9
+ a=QEXdDO2ut3YA:10 a=LYKFdyShAPKLkGq8p7WX:22 a=AjGcO6oz07-iQ99wixmX:22
+Date:   Tue, 18 May 2021 11:38:38 +0200 (CEST)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Drew Fustini <drew@beagleboard.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Message-ID: <960608833.161310.1621330718253@mail1.libero.it>
+In-Reply-To: <20210517225713.GB2936462@x1>
+References: <20210516135531.2203-1-dariobin@libero.it>
+ <20210516135531.2203-2-dariobin@libero.it>
+ <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
+ <20210517225713.GB2936462@x1>
+Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug
+ file
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BYjp4V8dNL0PBJME"
-Content-Disposition: inline
-In-Reply-To: <CACPK8XdVNfjbs+KmhT8g899d74t7M8b6iBuGC_3=DEBy+A_VHg@mail.gmail.com>
-X-Provags-ID: V03:K1:2COAoMhLWQVx8aCRC/QXgo9P1rGf9+93jz4L87EPcEABP2qGG5Y
- V0PG61LnPavihULoCj0j9DvVtmkZ1xoQ7x8+XtCkWu4AjoW1L8Xdd375v2H9pjK/vRbmVzW
- ElgFP2Em3awvT5UvjFis4sXVyeq4vb6YdWWvKWszxo6WoK7LBavX5Sr5QvY5+yN3nvg2mKr
- TxTbwBbOoFhf58DMwwUhw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ilwcagYyRqU=:S1mS64YVhO7cKuHY6rwEUa
- NJLxhf2q1BnBZKnX8SwDaISBnxsMwcXgwxlQejP4oEQSZuplbKKGyH6Gv6eXj4hY9mgQu+pkW
- TC4/Q96abW4BiKItbunY7SOyUG+SF4u8KBIK9qYomijy75E6c+2O2JO3aGpy4V8KW/OfEBmrx
- /uqB+z/TGb08bTMQFlulAttIo8wSTcKMAMOSUastW4i14e4TkX+Fnmd8aIPb3H9jKYspWuopR
- DPj2fzvkibeKcaX2kzI3d67ZrenowFsQPfR1IVoYo1gmgcIbxxXI2WeI6xKso9+2rvnSYWfo8
- +SknaPDoOofd9WxW8S40nZ80KU+1rC5jqCRzapV3kT5oRbRElNqaUJv9YqILE9YcoOJzzPBP5
- A+k6Xr/5+TTjimPMD16VXJDhsWOPdfiggRP+Mdf5//Ul3yEi7eNIGUA+SKF6ox1QVOIVqK/nu
- 6TbDk4IOPDTN3ipveOzO7GyyQX5G2s3YLB/+AP3y4/AxKX8ZNY+yB3FVe/P2MpdbfZd5rFtIB
- lUjlItlhEUc4kPNPlxrgFitUQwfKXlBd55BA3uXJ9NppeMfWR9bvo5wEEmgVbA94wdrz4NAFS
- 6eHKCnIwRrc+3oXSyF4sUWLDKRuK7/ZOYmy+p8qOiV7D/FX/shsb/VAOYQiJguMtcVz0MB+1v
- zCXSccDysq1eBlquf+VH+yUyaxnpBmYuOs7s4ZSbqvuX+rh0LyqAMBVBbicKuVAFsK3keVpg7
- 2LTX52odu72pV1u4xnUX45mSv888uu1QsmO1eIfN7EEyqoJlyuhD+Y4EyY+gqKZuUgRyEdVSq
- /Wb4X86reKLXHqNSTiHp+tb5plcRyrE5uvRpMgVLf7HvbVzpH9bieA9kmgFNw0ajyIo8qoZji
- d1Sxhc4fs+c4uKcjwLkAklzlw4u8Zxu4FmhRvD1diTFC5C3p3pZhQvgeUSvNp/pCrpxhs3nFX
- 35DdnatGQyWVkmkV2WQVrvJpaO8DWa/Dx/vdZpv0u0eRpbv5m/vnMxmG1zBL8ohNY/yPQuxMc
- zaVAmW7FjKry2r5eQpMuoivmzx3w9SPuwmqV4R3XGA3DbrbLWsmYTpidilqRuS1cZK9abnlVY
- mZjCLShVekLlQlT0AOrBE6Mh6ljRRwBAHBPG9jSUF5+9lkfX7bXnvv1cCVcfqZUqN9NmVLD3F
- 8o6XEPLGtM2iBHF+qWIKXr0cvRISGRZn7d6bOf7dq+JXByRt0bPdyeJPOdKOGg8eG+0OGsS/7
- n9B2NNXECHm8IoMSj
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 185.33.57.41
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: jugf+bqEB+2gl7i8I6Yt2LjItx5DHhHk
+x-libjamv: XzFQ/hJAbmQ=
+X-CMAE-Envelope: MS4xfNBgZt30XIYL3+/IEZzLHbj1AGZw0iBcP6+Gn2hxLutIfavg2IWrNnKxvNjEKa8Nj8XOQohvkFczm6ofGlSyh9jsKTqnSZuIAd+P/nI7ZSPgzpdRxUak
+ r1Q9202e2Rkj/VgPkWjB+UrZgTWvclNqC9os7ZifDw8KdY48IkYJ0LlrFSYNYLU0v9kK2/piZmbEa+XkFP/IJ5A4PlpIcApAwhwFtU7okuoDwEVjpYDyWoMF
+ tMRVRsxcKYue8xubNcvLLa67TnSJwLJYy1hIS1mcuShT0hpblvAylHxQBhkpA0bZ/LKhxiurDYmZQqhaDh9QKEY7JFTmBpVlyYTXc9a7Z6kkW5jgER/UnoXc
+ EsdyMOaZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---BYjp4V8dNL0PBJME
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Il 18/05/2021 00:57 Drew Fustini <drew@beagleboard.org> ha scritto:
+> 
+>  
+> On Mon, May 17, 2021 at 11:02:00PM +0300, Andy Shevchenko wrote:
+> > On Sun, May 16, 2021 at 7:43 PM Dario Binacchi <dariobin@libero.it> wrote:
+> > >
+> > > The MPUs of some architectures (e.g AM335x) must be in privileged
+> > > operating mode to write on the pinmux
+> > 
+> > pinmux is not pin configuration. You need to rethink the approach.
+> > 
+> > > registers. In such cases, where
+> > > writes will not work from user space, now it can be done from the pins
+> > > debug file if the platform driver exports the pin_dbg_set() helper among
+> > > the registered operations.
+> > 
+> > Drew, is it similar to what you are trying to achieve?
+> 
+> Yes, I would say this similar to what I was trying to accomplish: being
+> able to change contents of conf_<module>_<pin> register [table 9-60]
+> from userspace.
+> 
+> However, I was specifically looking to change bits 2:0 which is mux
+> mode. My motivation was to allow BeagleBone users to easily switch
+> between pin functions on the expansion headers during runtime to make
+> rapid prototyping with a breadboard easier (such as changing header pin
+> from GPIO to SPI mode). Most of the header pins have 7 different modes.
+> 
+> Ultimately, the solution I settled on with feedback from this list was
+> to create pinmux-select debugfs file that can activate desired fucntion:
+> 6199f6becc86 ("pinctrl: pinmux: Add pinmux-select debugfs file")
+> 
+> Bits 6:3 are related to what this subsystem would refer to as pin conf
+> such as slew, input enable and bias. Thus it might make sense to expose
+> something like a select-pinconf file to activate pin conf settings from
+> userspace. This would require using 'pinconf-single' compatible.
+> 
+> I fixed pinctrl-single bug regarding pinconf last year so it should be
+> possible to use 'pinconf-single' compatible for the am33xx_pinmux node:
+> f46fe79ff1b6 ("pinctrl-single: fix pcs_parse_pinconf() return value")
+> 
 
-On Tue, May 18, 2021 at 07:12:40AM +0000, Joel Stanley wrote:
-> On Thu, 13 May 2021 at 16:57, Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx=
-=2Enet> wrote:
-> >
-> > The interrupt controller driver is necessary in order to have a
-> > functioning Linux system on WPCM450. Select it in mach-npcm/Kconfig.
-> >
-> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
->=20
-> Fixes: ece3fe93e8f4 ("ARM: npcm: Introduce Nuvoton WPCM450 SoC")
+In the kernel version 4.1.6 that I am using on my custom board, I have fixed
+the commit f07512e615dd ("pinctrl/pinconfig: add debug interface"). However, 
+this feature was later removed (https://lore.kernel.org/patchwork/patch/1033755/). 
+Do you think it is better to bring that functionality back to life or the submitted
+patch could be fine too?
 
-Ah, right, the fixes tag makes sense.
+Thanks and regards,
+Dario
 
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
->=20
-> I will send this to the soc maintainers to apply as a fix.
-
-Thanks!
-
-Jonathan
-
---BYjp4V8dNL0PBJME
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmCjirUACgkQCDBEmo7z
-X9uheQ/+J3rREcfk+0H0mbBCp1zvU5TMJRzZ6PCxdyW305R8pjn5hHZGso/9daS3
-sXgfoBGwX1YtJAZ8arQbk8O1b+e1E+M95OajLkdLGQA6orRiN1JeWozCGteIqWG6
-lHQ2dz9LtTnDXznfUJBzWihu+XMrjhJ6ahTnxAbaQeHz0AL9OVeFPqbr29mpc15X
-oS4tB2yZvT7JTwlSgwqjJ66dLCCmmSevyfZrOpErjtYvyVmR/P8YtHDMFJJ5tfpL
-afYdwWwEmzz+lyVmciFUxdUdXoK5HBH6beJn9jtpI3Qn022oI7oI0ihBQZRehsuC
-QdcIBN+Ce7lbHONpzyuWIIA/kRwM2u86FFIW0rcnum9QlyhPd2cHikyYFWcnMSAE
-muphmdLQAAavDlDs+fGwM8mxMMMfVjlG6F4M7umoYp0J2OFdtnW8mQPPzoIy/SDz
-UmfbV2jnzn6Wn3nc6qNSl19J3QRR34hF3kzqkd7/UxBVLhI8i724TQxIuG+n92Ue
-mC+4KJERdA91NjNUC6CnUqMI+V20mWYfHbvEF9MB4OJBwTG26hCFuNX5FIuhIFp5
-9LAQn7ajK7tDXruOtrI0yFVi0DauQQMZqgw7w1xfkEf/rRcyEWOH3cLQW4g7aXMX
-D+A+lE91kIJJpuMr3amDSRlSI5fdKe5mNt5bMRyZR7vPgb6Rurk=
-=XJwn
------END PGP SIGNATURE-----
-
---BYjp4V8dNL0PBJME--
+> Thanks,
+> Drew
