@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B673880FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758293880FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352096AbhERUKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        id S1352122AbhERUKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352050AbhERUJr (ORCPT
+        with ESMTP id S1352068AbhERUJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:09:47 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1FBC061573;
-        Tue, 18 May 2021 13:08:28 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id b9-20020a17090a9909b029015cf9effaeaso2186084pjp.5;
-        Tue, 18 May 2021 13:08:28 -0700 (PDT)
+        Tue, 18 May 2021 16:09:57 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C96BC061761;
+        Tue, 18 May 2021 13:08:31 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id cu11-20020a17090afa8bb029015d5d5d2175so2192794pjb.3;
+        Tue, 18 May 2021 13:08:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xsOsjkhPCcPV0zv6oCcbmotnPtBUzCdIBSrvKgiDikA=;
-        b=SwtmZy7QhVhjTdJlzMLxTCWs9t9a8LPJVRDTfGexGYehagSrQXPy+sobHKasW8WhMi
-         vyV+EDOWiHNG0QHiCEaYBWXlmDvgeZnSCrI4kVdoDW1fnMCb5fLVB4oqPzCldtWSd+Aq
-         gnIYMHgbuzjF1EoItH0nV+nzV6vuIjtVYMQ0NhpjLnAt37nvq8soPHEWH/eA6ajm/r13
-         IB2pUlLLDtEFKgoRUKuJp9XPRlvKj8c8YlJtdggxxjE6Kx+uMm6CBKme163wi42wIKX2
-         azfWKcO/Ws8VlDvHQOVcmOUNGTp7+WJM1G1SkP4IQhPMyODP/qleLPrnGGRja+3FeoXW
-         Nifw==
+        bh=Bft5/S3sIep+UIOe0wjEBCs4qeqthplQvAas8/8e+yo=;
+        b=nHLS3OJzElgnE2B/Z8SKCricVXLIx3iJxQjJ0syYMD0st4Cu/HagKgnXREM54zswjw
+         XMNbtKvBMaoANopTaCd8U7u2Hm86+M3RuZtminAUpNjSsKZa0ANHy7i82oYV5IUBo3y5
+         9as9AvR0a6Tf/pms+EH7p0fkg0BSIgxX0pHVwN8P5Wx2tzfzJWe1qn5USVLiIJCq+FuE
+         BSJupLShAnX1rbhtkb46N4UqYZ8EQt19Oxj+xOEtlDuZCPe1a2dfSKZZsE6riRl+RTUN
+         VZadMbE778WhVEQIFJBh5I6kdzgTgYVgZZeinQpMkA7oXwHQKhc9R+s52vZyIwRN3/vc
+         4HjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xsOsjkhPCcPV0zv6oCcbmotnPtBUzCdIBSrvKgiDikA=;
-        b=JA/NkYHvLGWJ0+3Xe/kQn7TodUAa7N/C2M5VOgAqissEqPCVccRx5LSIVJV7tsPUHS
-         EeXSNZ6CcwPmJR6TAhYvS1/hglF+3HyLXPtrjRC5X53fhYZpQ6zB2vfIq9453vkzFhmL
-         fJEHwnH7eqjtXOawWeZx6o+SKCdwpP9tmxJKhSGR0aW+ShHZtyS9qi6/Ol9B2LIe+mDF
-         3v/9Cb1BtMLd/EUOGOtaz4UwiQljHX9VQhivGHb4k4C5eLH8CzIijLgo9W8BvwT4hBmF
-         G8DOdPT/WWXDjt+vv/qMQzYy6chPVTpLglD4YIl+ba6CrMmR7n+kirvxlD8BZfCp6xxa
-         IpXA==
-X-Gm-Message-State: AOAM532T4bv2Jh25BmFh7D8RjLRcmJu+946C32K5q5IetsGyD8IlYor7
-        b//T13WY0cowjZ5mZObS7Eo=
-X-Google-Smtp-Source: ABdhPJytDWDaq+aC4veI99lmSFliP67cUhY8lIZXHRGfmTdfTnvkUJxAwyUWmh809yNfMsIcSzth1w==
-X-Received: by 2002:a17:90a:6402:: with SMTP id g2mr7237187pjj.82.1621368508608;
-        Tue, 18 May 2021 13:08:28 -0700 (PDT)
+        bh=Bft5/S3sIep+UIOe0wjEBCs4qeqthplQvAas8/8e+yo=;
+        b=ZXtqbnM3KF3DRg7BvJvnLWwaaw5dIwlO1JzPA+UIVebCU9aSkSU1QKrmTz6IQj9sC7
+         /oF/ADQNhPrcC6/LLRFzccf+J5JVspoilQU0smYvh7GGEUlpQNWvmINAEioJ7FyVPFaL
+         9Rv+9z9rYE6Uduq3nbAe6+qsMNjWR8p83FjXX3NreK4UVByM8oPAJeD+FsUJ6zJoV0gx
+         99w0NvjjMo+PPWr7n4Khe3BCkzkEJwBAOO4j7BknIJMJfQCTn84fLAAqOC37/LWcBQz3
+         nwKoMypV3g1nAlyeG/XkoNgw29hAK8YNtIey6kaLmyZoHVZSK3MM5mGmEmuTCa0wEhb4
+         B3MQ==
+X-Gm-Message-State: AOAM530jIg0vUl2h5yxQU7FSo2OWkzPgYt6s96KHOAcStbX07aTM/LqV
+        RPcHD/A9P78hTXfntiaX4hk=
+X-Google-Smtp-Source: ABdhPJycucOy8RWBt3ZSLaK0DULZYOHapGP8SDJZBX29cfFbM7ELURa2SaI9yfmt82bS4uEWVqBwiA==
+X-Received: by 2002:a17:902:e007:b029:ef:9dd2:be6 with SMTP id o7-20020a170902e007b02900ef9dd20be6mr6495035plo.12.1621368510709;
+        Tue, 18 May 2021 13:08:30 -0700 (PDT)
 Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id r11sm13456600pgl.34.2021.05.18.13.08.26
+        by smtp.gmail.com with ESMTPSA id r11sm13456600pgl.34.2021.05.18.13.08.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 13:08:27 -0700 (PDT)
+        Tue, 18 May 2021 13:08:29 -0700 (PDT)
 From:   Yang Shi <shy828301@gmail.com>
 To:     mgorman@suse.de, kirill.shutemov@linux.intel.com, ziy@nvidia.com,
         ying.huang@intel.com, mhocko@suse.com, hughd@google.com,
@@ -56,9 +56,9 @@ To:     mgorman@suse.de, kirill.shutemov@linux.intel.com, ziy@nvidia.com,
         akpm@linux-foundation.org
 Cc:     shy828301@gmail.com, linux-mm@kvack.org,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v3 PATCH 5/7] mm: migrate: don't split THP for misplaced NUMA page
-Date:   Tue, 18 May 2021 13:07:59 -0700
-Message-Id: <20210518200801.7413-6-shy828301@gmail.com>
+Subject: [v3 PATCH 6/7] mm: migrate: check mapcount for THP instead of refcount
+Date:   Tue, 18 May 2021 13:08:00 -0700
+Message-Id: <20210518200801.7413-7-shy828301@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210518200801.7413-1-shy828301@gmail.com>
 References: <20210518200801.7413-1-shy828301@gmail.com>
@@ -68,39 +68,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The old behavior didn't split THP if migration is failed due to lack of
-memory on the target node.  But the THP migration does split THP, so keep
-the old behavior for misplaced NUMA page migration.
+The generic migration path will check refcount, so no need check refcount here.
+But the old code actually prevents from migrating shared THP (mapped by multiple
+processes), so bail out early if mapcount is > 1 to keep the behavior.
 
-Acked-by: Mel Gorman <mgorman@suse.de>
 Signed-off-by: Yang Shi <shy828301@gmail.com>
 ---
- mm/migrate.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mm/migrate.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/mm/migrate.c b/mm/migrate.c
-index 26f79f516100..035daaec1ca0 100644
+index 035daaec1ca0..77215f28502b 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -1420,6 +1420,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 	int swapwrite = current->flags & PF_SWAPWRITE;
- 	int rc, nr_subpages;
- 	LIST_HEAD(ret_pages);
-+	bool nosplit = (reason == MR_NUMA_MISPLACED);
+@@ -2070,6 +2070,10 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
  
- 	trace_mm_migrate_pages_start(mode, reason);
+ 	VM_BUG_ON_PAGE(compound_order(page) && !PageTransHuge(page), page);
  
-@@ -1491,8 +1492,9 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 				/*
- 				 * When memory is low, don't bother to try to migrate
- 				 * other pages, just exit.
-+				 * THP NUMA faulting doesn't split THP to retry.
- 				 */
--				if (is_thp) {
-+				if (is_thp && !nosplit) {
- 					if (!try_split_thp(page, &page2, from)) {
- 						nr_thp_split++;
- 						goto retry;
++	/* Do not migrate THP mapped by multiple processes */
++	if (PageTransHuge(page) && total_mapcount(page) > 1)
++		return 0;
++
+ 	/* Avoid migrating to a node that is nearly full */
+ 	if (!migrate_balanced_pgdat(pgdat, compound_nr(page)))
+ 		return 0;
+@@ -2077,18 +2081,6 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+ 	if (isolate_lru_page(page))
+ 		return 0;
+ 
+-	/*
+-	 * migrate_misplaced_transhuge_page() skips page migration's usual
+-	 * check on page_count(), so we must do it here, now that the page
+-	 * has been isolated: a GUP pin, or any other pin, prevents migration.
+-	 * The expected page count is 3: 1 for page's mapcount and 1 for the
+-	 * caller's pin and 1 for the reference taken by isolate_lru_page().
+-	 */
+-	if (PageTransHuge(page) && page_count(page) != 3) {
+-		putback_lru_page(page);
+-		return 0;
+-	}
+-
+ 	page_lru = page_is_file_lru(page);
+ 	mod_node_page_state(page_pgdat(page), NR_ISOLATED_ANON + page_lru,
+ 				thp_nr_pages(page));
 -- 
 2.26.2
 
