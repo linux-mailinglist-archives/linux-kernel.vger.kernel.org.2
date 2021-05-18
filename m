@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DF7387888
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA1A387885
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 14:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245061AbhERMQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 08:16:24 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:43909 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbhERMQW (ORCPT
+        id S244853AbhERMOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 08:14:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4661 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233638AbhERMOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 08:16:22 -0400
-Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210518121502epoutp04772f6c7e837547d75e23c5207d50f42c~AKDu6L2dn0301903019epoutp04P
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:15:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210518121502epoutp04772f6c7e837547d75e23c5207d50f42c~AKDu6L2dn0301903019epoutp04P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1621340102;
-        bh=ftfW5RCRRu47HHcS4y6Q2kEbXts9hxGMQGCqRkXKY08=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=SF6w/nJPeoEZRdvM0Ec4ayadhZ7mWgr3boIcgrsqmDWw/Sev1gMrt10BXAchZRSby
-         g3DFmSfiOZT3I9Sc2ib3hof9go4D/k0+0c8b0KFcBXlkaKNqlir6yvRTGEU11GphSN
-         PuoIlsWHJaNGYc+6BXHnWyY1oQ+wrO431ys7kdhk=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
-        20210518121502epcas3p2ce8d6e01799a46f093f1133310c4fcfc~AKDucjODJ2120221202epcas3p2k;
-        Tue, 18 May 2021 12:15:02 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp3.localdomain
-        (Postfix) with ESMTP id 4Fkw1L2D5Jz4x9Pw; Tue, 18 May 2021 12:15:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH] scsi: ufs: Clean up white space
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "satyat@google.com" <satyat@google.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <2038148563.21621340102306.JavaMail.epsvc@epcpadp3>
-Date:   Tue, 18 May 2021 21:12:17 +0900
-X-CMS-MailID: 20210518121217epcms2p6b35173a078be7eb2cea2d80e2bbc1b00
+        Tue, 18 May 2021 08:14:52 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FkvwQ5gZjz16QMh;
+        Tue, 18 May 2021 20:10:46 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 20:13:31 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 18 May 2021 20:13:31 +0800
+Subject: Re: [PATCH 5.4 000/141] 5.4.120-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210517140242.729269392@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <9dd7fe6a-568e-545c-a6b9-98ed4970f1f6@huawei.com>
+Date:   Tue, 18 May 2021 20:13:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210518121217epcms2p6b35173a078be7eb2cea2d80e2bbc1b00
-References: <CGME20210518121217epcms2p6b35173a078be7eb2cea2d80e2bbc1b00@epcms2p6>
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkpatch reports the followings:
 
-	ERROR: space prohibited before that ',' (ctx:WxW)
-	#945: FILE: drivers/scsi/ufs/ufshcd.h:945:
-	+int ufshcd_init(struct ufs_hba * , void __iomem * , unsigned int);
-	                                  ^
 
-	ERROR: space prohibited before that ',' (ctx:WxW)
-	#945: FILE: drivers/scsi/ufs/ufshcd.h:945:
-	+int ufshcd_init(struct ufs_hba * , void __iomem * , unsigned int);
-	                                                   ^
-remove unnecessary whitespace in ufshcd.h
+On 2021/5/17 22:00, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.120 release.
+> There are 141 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 19 May 2021 14:02:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.120-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
----
- drivers/scsi/ufs/ufshcd.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Tested on arm64 and x86 for 5.4.120-rc1,
 
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index b8b4fe2b6bd5..791fb86409c2 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -942,7 +942,7 @@ static inline void ufshcd_rmwl(struct ufs_hba *hba, u32 mask, u32 val, u32 reg)
- int ufshcd_alloc_host(struct device *, struct ufs_hba **);
- void ufshcd_dealloc_host(struct ufs_hba *);
- int ufshcd_hba_enable(struct ufs_hba *hba);
--int ufshcd_init(struct ufs_hba * , void __iomem * , unsigned int);
-+int ufshcd_init(struct ufs_hba *, void __iomem *, unsigned int);
- int ufshcd_link_recovery(struct ufs_hba *hba);
- int ufshcd_make_hba_operational(struct ufs_hba *hba);
- void ufshcd_remove(struct ufs_hba *);
--- 
-2.17.1
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.120-rc1
+Commit: d406e11dbc1324e375ab1f7c4669abc3cbd994f4
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8895
+passed: 8895
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8895
+passed: 8895
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
