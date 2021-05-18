@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEA53874CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E2E3874D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 11:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242138AbhERJKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 05:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241405AbhERJKq (ORCPT
+        id S242567AbhERJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 05:10:56 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:44968 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240960AbhERJKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 05:10:46 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE99C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:09:28 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id s25so10638738ljo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 02:09:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zDPLZY6n1fzjF1/PuV70TugjmL5LRz4hKWzApMGHl5U=;
-        b=DapZIgcrYoOpwcatlFni9M5PYI5eV4rQjFml2F2E9R3cMeH9boVnlDlOmzPzlLSqdV
-         gl3UUtFieKqosZKIWMjG5hC4OuC34Eu8PMJoe67JTqLaK/K0Xy/58gfmYNDAjdlnJ6XJ
-         xS9cEci4hfeayNCt8dyOyBGswnmphqjsOCyttaBsQtH6Z1igSfcW44GGrlWX1Qw2vI52
-         Z36IKwOs2x1TBR+QYlackh0+WglK/1uVkRS8DSC7VyZ0B6f6bZUZUbD4uoJuwPLGjkvR
-         hCT1dUwK8haFxJwPqI5RJiBfd+/sMrGXaeCAp9jo7Lv+LlhwJwvydUOEg19CC3WzZQM9
-         73LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zDPLZY6n1fzjF1/PuV70TugjmL5LRz4hKWzApMGHl5U=;
-        b=SPxhx3Jr/72HHwHGeiE2u2hskxgk/FDXj9m0BgnBHpcC7499DjsxNQo6Of6HCMFqWu
-         5j7An1TKq5Ybopsb0ByBiFRlvNABrhftuARyTX/YMwynvB+aIh64Gce4NAKV94ALKzQc
-         tzk9DSBsHBikIlOnK0VYreldKysN31219p2Lap2txyou5gRbqdkn3oBxnNF3hOv1qxux
-         QWch1gZB/CtkrmVGDI2+VmpvsOs2rBnWyi2q81wfFIU0Dj55QpFgMv6IulQA5hrsT9Ne
-         Qu40P7By4RohiylTCaubSNI8Rq/UGvv4RpsgAw19UwK0fO3glgKcsxsE8FO8bCdjEPs8
-         cWyQ==
-X-Gm-Message-State: AOAM53048Ru+47mHfmdFz8uQ0XJOcYwh/r9vWperHFDx8Abo5YsfrQs1
-        SMldUPe8n3ljsUoQ/3dxbBN79g==
-X-Google-Smtp-Source: ABdhPJwd36FdQw5OjeaJNExrYMnqgMrs9WA1iin+4PQZuKnVgjNayk86ub6DZ3d0pvz+Q6NUI7DdAA==
-X-Received: by 2002:a2e:9196:: with SMTP id f22mr3318140ljg.88.1621328966961;
-        Tue, 18 May 2021 02:09:26 -0700 (PDT)
-Received: from pdkmachine.localdomain (91-123-191-9.gigainternet.pl. [91.123.191.9])
-        by smtp.gmail.com with ESMTPSA id r1sm3215559ljj.21.2021.05.18.02.09.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 02:09:26 -0700 (PDT)
-From:   Patryk Duda <pdk@semihalf.com>
-To:     Benson Leung <bleung@chromium.org>
-Cc:     Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com, Patryk Duda <pdk@semihalf.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] platform/chrome: cros_ec_proto: Send command again when timeout occurs
-Date:   Tue, 18 May 2021 11:09:25 +0200
-Message-Id: <20210518090925.15480-1-pdk@semihalf.com>
-X-Mailer: git-send-email 2.26.3
+        Tue, 18 May 2021 05:10:55 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AgRcJdau78I1GjhvwJj1IVqpy7skDY9V00zEX?=
+ =?us-ascii?q?/kB9WHVpmwKj9/xG/c536faaslgssR0b8uxofZPgfZqjz/RICPgqUYtKNTOO0F?=
+ =?us-ascii?q?dAbrsSj7cKqAeOJ8SRzJ8/6U4ZSdkaNOHN?=
+X-IronPort-AV: E=Sophos;i="5.82,309,1613430000"; 
+   d="scan'208";a="508676330"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 May 2021 11:09:36 +0200
+Date:   Tue, 18 May 2021 11:09:36 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scripts: coccicheck: fix troubles on non-English
+ builds
+In-Reply-To: <1d3320d81fd7db23beaaea78888c389ab5f85ab8.1621328716.git.mchehab+huawei@kernel.org>
+Message-ID: <alpine.DEB.2.22.394.2105181109220.6885@hadrien>
+References: <1d3320d81fd7db23beaaea78888c389ab5f85ab8.1621328716.git.mchehab+huawei@kernel.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323329-397356270-1621328977=:6885"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
-hasn't initialized SPI yet. This can happen because FPMCU is restarted
-during system boot and kernel can send message in short window
-eg. between sysjump to RW and SPI initialization.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Cc: <stable@vger.kernel.org> # 4.4+
-Signed-off-by: Patryk Duda <pdk@semihalf.com>
----
-Fingerprint MCU is rebooted during system startup by AP firmware (coreboot).
-During cold boot kernel can query FPMCU in a window just after jump to RW
-section of firmware but before SPI is initialized. The window was
-shortened to <1ms, but it can't be eliminated completly.
+--8323329-397356270-1621328977=:6885
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Communication with FPMCU (and all devices based on EC) is bi-directional.
-When kernel sends message, EC will send EC_SPI* status codes. When EC is
-not able to process command one of bytes will be eg. EC_SPI_NOT_READY.
-This mechanism won't work when SPI is not initailized on EC side. In fact,
-buffer is filled with 0xFF bytes, so from kernel perspective device is not
-responding. To avoid this problem, we can query device once again. We are
-already waiting EC_MSG_DEADLINE_MS for response, so we can send command
-immediately.
 
-Best regards,
-Patryk
- drivers/platform/chrome/cros_ec_proto.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index aa7f7aa77297..3384631d21e2 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -279,6 +279,18 @@ static int cros_ec_host_command_proto_query(struct cros_ec_device *ec_dev,
- 	msg->insize = sizeof(struct ec_response_get_protocol_info);
- 
- 	ret = send_command(ec_dev, msg);
-+	/*
-+	 * Send command once again when timeout occurred.
-+	 * Fingerprint MCU (FPMCU) is restarted during system boot which
-+	 * introduces small window in which FPMCU won't respond for any
-+	 * messages sent by kernel. There is no need to wait before next
-+	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
-+	 */
-+	if (ret == -ETIMEDOUT) {
-+		dev_warn(ec_dev->dev,
-+			 "Timeout to get response from EC. Retrying.\n");
-+		ret = send_command(ec_dev, msg);
-+	}
- 
- 	if (ret < 0) {
- 		dev_dbg(ec_dev->dev,
--- 
-2.31.1.751.gd2f1c929bd-goog
+On Tue, 18 May 2021, Mauro Carvalho Chehab wrote:
 
+> When LANG is not set to English, the logic which checks the
+> number of CPUs fail, as the messages can be localized, and
+> the logic at:
+>
+>     THREADS_PER_CORE=$(lscpu | grep "Thread(s) per core: " | tr -cd "[:digit:]")
+>
+> will not get the number of threads per core.
+>
+> This causes the script to not run properly, as it will produce
+> a warning:
+>
+> 	$ make coccicheck COCCI=$PWD/scripts/coccinelle/misc/add_namespace.cocci MODE=report drivers/media/
+> 	./scripts/coccicheck: linha 93: [: número excessivo de argumentos
+>
+> Fix it by forcing LANG=C when calling lscpu.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Applied, thanks.
+
+julia
+
+> ---
+>  scripts/coccicheck | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/coccicheck b/scripts/coccicheck
+> index 65fee63aeadb..caba0bff6da7 100755
+> --- a/scripts/coccicheck
+> +++ b/scripts/coccicheck
+> @@ -87,7 +87,7 @@ else
+>      fi
+>
+>      # Use only one thread per core by default if hyperthreading is enabled
+> -    THREADS_PER_CORE=$(lscpu | grep "Thread(s) per core: " | tr -cd "[:digit:]")
+> +    THREADS_PER_CORE=$(LANG=C lscpu | grep "Thread(s) per core: " | tr -cd "[:digit:]")
+>      if [ -z "$J" ]; then
+>          NPROC=$(getconf _NPROCESSORS_ONLN)
+>  	if [ $THREADS_PER_CORE -gt 1 -a $NPROC -gt 4 ] ; then
+> --
+> 2.31.1
+>
+>
+--8323329-397356270-1621328977=:6885--
