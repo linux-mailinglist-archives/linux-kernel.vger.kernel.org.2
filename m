@@ -2,117 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1862C38807A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD596388082
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351845AbhERTZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        id S1351853AbhERTaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245320AbhERTZn (ORCPT
+        with ESMTP id S232056AbhERTaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:25:43 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2EDC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:24:25 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id p6so5658894plr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:24:25 -0700 (PDT)
+        Tue, 18 May 2021 15:30:06 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6352AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:28:47 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g24so6052155pji.4
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 12:28:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r5Jk+9Ja+kn0VHFuLnbq34Qrw9ShVEHa6rhQvetZyQY=;
-        b=W2or1ahYnIFqgo0AiCmxrnFPCtu43CiGXJ6jy7l9dWtdlzjQ1+AxotfO+umlsoOdWW
-         2vse/gU6FAjBWawxyMBSuI+wZ93MVdfknmitBW1A1XIoqE6iQ9/FjqgvN5m15EOWvW59
-         PnX9x/0BI+A/1LZ0HyApBzpjfhStcel35joRAOJ642HSOwPe48wHvuIfdcV1NDaNUDbG
-         5h1N36k4zHIV+DYydxjsAFlEhkgdGuhvK40NJliLNyvT3CLN/qNRoJs5i8KOb2F7wH06
-         8E1IUoED+G5IWd5XdtGhQ0wq9YBMacdQW+5qpEAkGdhrNr6GTucqTQjFQCFENdoyg77p
-         nUTA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Rsvs60aN2Tn4zdMpprOFok80g2REFGU9zS+Btntv1Ps=;
+        b=masGlSlSWJ0TJs2SaAcTU0IGJlrLidnaTsVPqVpcnKVXQerKu+8jiJLAbkYcPRmFKl
+         58KvTFEL4r1cudFwviocinQq/lQyiSvzBWLO0xd3b9+PYWhokcVzQWcNpqzjpdcBK9jx
+         pYqRCMesiksTohv867v7qQjuj/4dfNbRQZetz76Z9brfIiIXKA3EO2NNpdfgRD43kCQZ
+         GrcSJmEtmu26E/S6EeDlCEGyypoDzrsQ7PB5IAanYF9woMp40Tc3+YISv6ssj33ZyVwX
+         /mOeAlwpauZWuAd96KildXdwpoQqWpRwPfGVDIlI0iZVTIdiihIDeLKzQsTShuuzYGUT
+         KOyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r5Jk+9Ja+kn0VHFuLnbq34Qrw9ShVEHa6rhQvetZyQY=;
-        b=jCTW1p1/4wfNPfaYNbh+k5m5eaweLxN7z/nbubPNcgK/21igp1EQIAmMRT0yol1ZsC
-         9Ot5SO0ZOzBVA5hq57kgoEBtKUFVigvyuQbp/pB/ZuQOeeAQXF4N0soxFYMXGjL7dTQS
-         fiagYeEZ094PQMDandTF6Sl3prtuAwnmd0IV1OA3EF5jrzsOWTy8xLMJbLp9SP/DzpQA
-         dJCSAxXKmhWhrI4FyVbjok93IUq2wof7hSsKIWed7sc5602hjDiIxA8ItBItGyHIjR0u
-         4Lq4iXkBi9IiH+yYR+kiydmc5S9DML7XNwQf6hvEyzJd5sr1GgRUOkSiPd+pMsDaDu2w
-         3R6A==
-X-Gm-Message-State: AOAM530M5QYHfQPp+JaSronDhh/+7hh6S95TwUUl+wyDlzR7D0retzoD
-        RubOHXaO3D3fKLYYQ1U+T6lFdQ==
-X-Google-Smtp-Source: ABdhPJxc3ZNUABU74g4MkROq1xAEn6f0RnT3SGzwbKXOjV5nZA5lW+lo8QCbwlhpEDeLu0oG/tWc7A==
-X-Received: by 2002:a17:902:dac9:b029:f2:bda7:a4b8 with SMTP id q9-20020a170902dac9b02900f2bda7a4b8mr6229831plx.15.1621365864386;
-        Tue, 18 May 2021 12:24:24 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id o9sm13652828pfh.217.2021.05.18.12.24.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Rsvs60aN2Tn4zdMpprOFok80g2REFGU9zS+Btntv1Ps=;
+        b=QJ6cgo1Vbrsb72990VUwWq7RcHaVEhVbfnJjd4ATmcQnedthuFCEBOtJ3kKFdesCoj
+         3Pn4YWaFvTPYR2KomAG6uqpQa9YN7CNTuOsDO5Y8xWiAlFp4wcHoGqSQM15ZEQ+BjkyF
+         MaXPHbjhzYPUO0Gh4QKwQqE9JPkPdIUdSE3rHVhP84kbsoTwy9UavZVMWdKGEsJCNWm4
+         SPJ61H/ebMJzY5hmQm5FahaArDKBpSrWu76/zZh4ajRt2AzWpHXGw/JvOJgyT22/E2Qp
+         MReAk0imSsfQh24SQhcDoVA56TSZuKTlG6BfFFoM4VcyLE/qmQGlubN4Hh7Q4/uhIn1B
+         hw3w==
+X-Gm-Message-State: AOAM531NkvenvyfQKj1OumqGe4p11+Oa2nq+ho5SUKRNCPwEy24lOspo
+        8VPB0a51JSMFFFaF0SS9Uy6odBLjw3pmHhyS
+X-Google-Smtp-Source: ABdhPJypDZIaLv9s4QJg9Oax+DP4vpTFqCWMM050+GeC4NE//enu1b88OfdMt8y3x+NXfZEQCcRsBw==
+X-Received: by 2002:a17:902:b68c:b029:e6:bb9f:7577 with SMTP id c12-20020a170902b68cb02900e6bb9f7577mr6318048pls.0.1621366126750;
+        Tue, 18 May 2021 12:28:46 -0700 (PDT)
+Received: from tong-desktop.local ([2601:647:4200:13:45d1:3e2e:2ae6:a74])
+        by smtp.googlemail.com with ESMTPSA id t15sm1814970pjh.0.2021.05.18.12.28.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 12:24:23 -0700 (PDT)
-Date:   Tue, 18 May 2021 19:24:20 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
- disabled in the guest
-Message-ID: <YKQUZF8Ejxh7Eytg@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
- <20210504171734.1434054-4-seanjc@google.com>
- <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
- <YJHCadSIQ/cK/RAw@google.com>
- <1b50b090-2d6d-e13d-9532-e7195ebffe14@redhat.com>
- <CALMp9eSSiPVWDf43Zed3+ukUc+NwMP8z7feoxX0eMmimvrznzA@mail.gmail.com>
- <4a4b9fea4937da7b0b42e6f3179566d73bf022e2.camel@redhat.com>
- <YJlluzMze2IfUM6S@google.com>
- <1245ad2f-78b2-a334-e36a-524579274183@redhat.com>
+        Tue, 18 May 2021 12:28:46 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tong Zhang <ztong0001@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Colin Ian King <colin.king@canonical.com>
+Subject: [PATCH v4] misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
+Date:   Tue, 18 May 2021 15:28:18 -0400
+Message-Id: <20210518192820.181500-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
+References: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1245ad2f-78b2-a334-e36a-524579274183@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021, Paolo Bonzini wrote:
-> On 10/05/21 18:56, Sean Christopherson wrote:
-> > On Mon, May 10, 2021, Maxim Levitsky wrote:
-> > > On Tue, 2021-05-04 at 14:58 -0700, Jim Mattson wrote:
-> > > > On Tue, May 4, 2021 at 2:57 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> > > > > On 04/05/21 23:53, Sean Christopherson wrote:
-> > > > > > > Does the right thing happen here if the vCPU is in guest mode when
-> > > > > > > userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
-> > > > > > > off?
-> > > > > > I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
-> > > > > > you specifically mean running in L2?
-> > > > > > 
-> > > > > 
-> > > > > Guest mode should mean L2.
-> > > > > 
-> > > > > (I wonder if we should have a capability that says "KVM_SET_CPUID2 can
-> > > > > only be called prior to KVM_RUN").
-> > > > 
-> > > > It would certainly make it easier to reason about potential security issues.
-> > > > 
-> > > I vote too for this.
-> > 
-> > Alternatively, what about adding KVM_VCPU_RESET to let userspace explicitly
-> > pull RESET#, and defining that ioctl() to freeze the vCPU model?  I.e. after
-> > userspace resets the vCPU, KVM_SET_CPUID (and any other relevant ioctls() is
-> > disallowed.
-> > 
-> > Lack of proper RESET emulation is annoying, e.g. userspace has to manually stuff
-> > EDX after vCPU creation to get the right value at RESET.  A dedicated ioctl()
-> > would kill two birds with one stone, without having to add yet another "2"
-> > ioctl().
-> 
-> That has a disadvantage of opting into the more secure behavior, but we can
-> do both (forbidding KVM_SET_CPUID2 after both KVM_RUN and KVM_RESET).
+There is an issue with the ASPM(optional) capability checking function.
+A device might be attached to root complex directly, in this case,
+bus->self(bridge) will be NULL, thus priv->parent_pdev is NULL.
+Since alcor_pci_init_check_aspm(priv->parent_pdev) checks the PCI link's
+ASPM capability and populate parent_cap_off, which will be used later by
+alcor_pci_aspm_ctrl() to dynamically turn on/off device, what we can do
+here is to avoid checking the capability if we are on the root complex.
+This will make pdev_cap_off 0 and alcor_pci_aspm_ctrl() will simply
+return when bring called, effectively disable ASPM for the device.
 
-Doesn't changing KVM_SET_CPUID2 need to be opt-in as well, e.g. if the strict
-behavior is activated via a capability?
+[    1.246492] BUG: kernel NULL pointer dereference, address: 00000000000000c0
+[    1.248731] RIP: 0010:pci_read_config_byte+0x5/0x40
+[    1.253998] Call Trace:
+[    1.254131]  ? alcor_pci_find_cap_offset.isra.0+0x3a/0x100 [alcor_pci]
+[    1.254476]  alcor_pci_probe+0x169/0x2d5 [alcor_pci]
+
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Co-developed-by: Colin Ian King <colin.king@canonical.com>
+---
+v2: check before calling alcor_pci_find_cap_offset()
+v3: Add comment. Enable the dev_dbg() output when priv->parent_pdev is NULL.
+v4: fix inverted if statement, thanks to Colin <colin.king@canonical.com>
+
+ drivers/misc/cardreader/alcor_pci.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/misc/cardreader/alcor_pci.c b/drivers/misc/cardreader/alcor_pci.c
+index cd402c89189e..de6d44a158bb 100644
+--- a/drivers/misc/cardreader/alcor_pci.c
++++ b/drivers/misc/cardreader/alcor_pci.c
+@@ -139,7 +139,13 @@ static void alcor_pci_init_check_aspm(struct alcor_pci_priv *priv)
+ 	u32 val32;
+ 
+ 	priv->pdev_cap_off    = alcor_pci_find_cap_offset(priv, priv->pdev);
+-	priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
++	/*
++	 * A device might be attached to root complex directly and
++	 * priv->parent_pdev will be NULL. In this case we don't check its
++	 * capability and disable ASPM completely.
++	 */
++	if (priv->parent_pdev)
++		priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
+ 							 priv->parent_pdev);
+ 
+ 	if ((priv->pdev_cap_off == 0) || (priv->parent_cap_off == 0)) {
+-- 
+2.25.1
+
