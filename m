@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908D9387470
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF532387474
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 10:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347603AbhERI4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 04:56:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48234 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241286AbhERI4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 04:56:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D3302AEB9;
-        Tue, 18 May 2021 08:55:22 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DEE9F1F2C6E; Tue, 18 May 2021 10:55:19 +0200 (CEST)
-Date:   Tue, 18 May 2021 10:55:19 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        hare@suse.de, tj@kernel.org, gregkh@linuxfoundation.org,
-        Menglong Dong <dong.menglong@zte.com.cn>, song@kernel.org,
-        neilb@suse.de, Andrew Morton <akpm@linux-foundation.org>,
-        f.fainelli@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        palmerdabbelt@google.com, mcgrof@kernel.org, arnd@arndb.de,
-        wangkefeng.wang@huawei.com, mhiramat@kernel.org,
-        rostedt@goodmis.org, Kees Cook <keescook@chromium.org>,
-        vbabka@suse.cz, pmladek@suse.com,
-        Alexander Potapenko <glider@google.com>,
-        Chris Down <chris@chrisdown.name>, ebiederm@xmission.com,
-        jojing64@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] init/initramfs.c: add a new mount as root file system
-Message-ID: <20210518085519.GA28667@quack2.suse.cz>
-References: <20210517142542.187574-1-dong.menglong@zte.com.cn>
- <20210517151123.GD25760@quack2.suse.cz>
- <CADxym3ZwUQe0mQfcNxf2_kM1VXdqmtUDK076GptcsfktLWLeog@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADxym3ZwUQe0mQfcNxf2_kM1VXdqmtUDK076GptcsfktLWLeog@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1347615AbhERI6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 04:58:00 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:55208 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241286AbhERI5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 04:57:49 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxjcgrgaNg88wYAA--.4224S2;
+        Tue, 18 May 2021 16:56:11 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next] bpf, arm64: Remove redundant switch case about BPF_DIV and BPF_MOD
+Date:   Tue, 18 May 2021 16:56:10 +0800
+Message-Id: <1621328170-17583-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxjcgrgaNg88wYAA--.4224S2
+X-Coremail-Antispam: 1UD129KBjvJXoWrZryfZr43XFy3tF4xWF15Jwb_yoW8Jrykpr
+        1fWrWSkw4kJr1UZFy5G3srX3yakr1vqF4jqFW5t3yrtwsIqry5WF4fKayjkrW3Aryagrs5
+        uFyjvr9Yya4DJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JU4a0PUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 18-05-21 16:30:27, Menglong Dong wrote:
-> Thanks!
-> 
-> Should I resend this patch? Seems that it does not appear
-> on patchwork.
+After commit 96a71005bdcb ("bpf, arm64: remove obsolete exception handling
+from div/mod"), there is no need to check twice about BPF_DIV and BPF_MOD,
+remove the redundant switch case.
 
-I don't think you need to resend the patch. Not sure why it is not in the
-patchwork but relevant maintainers for this area don't use it anyway AFAIK.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/arm64/net/bpf_jit_comp.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-									Honza
-
-> On Mon, May 17, 2021 at 11:11 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > Thanks for the patch! Although you've CCed a wide set of people, I don't
-> > think you've addressed the most relevant ones. For this I'd CC
-> > linux-fsdevel mailing list and Al Viro as a VFS maintainer - added.
-> >
-> >                                                                 Honza
-> >
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 9785026..be873a7 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -485,17 +485,12 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 		break;
+ 	case BPF_ALU | BPF_DIV | BPF_X:
+ 	case BPF_ALU64 | BPF_DIV | BPF_X:
++		emit(A64_UDIV(is64, dst, dst, src), ctx);
++		break;
+ 	case BPF_ALU | BPF_MOD | BPF_X:
+ 	case BPF_ALU64 | BPF_MOD | BPF_X:
+-		switch (BPF_OP(code)) {
+-		case BPF_DIV:
+-			emit(A64_UDIV(is64, dst, dst, src), ctx);
+-			break;
+-		case BPF_MOD:
+-			emit(A64_UDIV(is64, tmp, dst, src), ctx);
+-			emit(A64_MSUB(is64, dst, dst, tmp, src), ctx);
+-			break;
+-		}
++		emit(A64_UDIV(is64, tmp, dst, src), ctx);
++		emit(A64_MSUB(is64, dst, dst, tmp, src), ctx);
+ 		break;
+ 	case BPF_ALU | BPF_LSH | BPF_X:
+ 	case BPF_ALU64 | BPF_LSH | BPF_X:
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.1.0
+
