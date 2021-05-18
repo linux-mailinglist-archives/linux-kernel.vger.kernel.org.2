@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E99386F0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A2D386F17
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244083AbhERBVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 21:21:24 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:44638 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240845AbhERBVQ (ORCPT
+        id S1345533AbhERBW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:22:59 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:45591 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237293AbhERBW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:21:16 -0400
-Received: by mail-ot1-f49.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so7236796otp.11;
-        Mon, 17 May 2021 18:19:58 -0700 (PDT)
+        Mon, 17 May 2021 21:22:57 -0400
+Received: by mail-oi1-f170.google.com with SMTP id w127so4428865oig.12;
+        Mon, 17 May 2021 18:21:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lQyD2GWtj103+jAsSAlVSEacTextBV6NwaSeCGgoqTE=;
-        b=Vb6Wgub8VgkI7us15uf8tJbJ22UASKWfBhb3zs665nT6RrXo6FFC7zBdI9gy7J80HB
-         jp11NWfwqI1cNGtFWwHywHFc0F6xj18sBtcmP79Av+wDNl6vWJmM+cxpy7jZB8EU0aO6
-         +/+cFjYSI2s/pZGR30XmcJEjZDdQ0JYj3fqRC3kRuaWatzXZPfjqjF8CdMAHvu3RJAvt
-         Z1cYJitw9JDm3ad90vjW+QcPSu4v6hiEb0XC7GmXvuLyOyEy7YgwWfa2R/ct7LrAz24h
-         UmkiT5nnfHB1OodN6h/xwrRoxYhfiJZN32yHyfNpn8AH6pgu0ira5yKrbF/aoK8GQR0d
-         JQ5A==
-X-Gm-Message-State: AOAM532wKpu/zYCGOelaVrygQi9bBY1SJkpBaipj+cpl2wZP8ytUGmia
-        14boG/H6ipfrlfaJHxJpyg==
-X-Google-Smtp-Source: ABdhPJx3Cah7HBLH1rOuCHWlRTVK4JcqnkhRVjkCNHaZzTuPfUQzoGwRf3xkCX3W34RT/ftSRl5ITA==
-X-Received: by 2002:a05:6830:16c4:: with SMTP id l4mr2089684otr.93.1621300798603;
-        Mon, 17 May 2021 18:19:58 -0700 (PDT)
+        bh=roK24cWAgMZxvTHg22P9ht1ialJs4hUE+tJxHNLXDAU=;
+        b=GDEHM7pj6XYWNlcQ/89/npoqnGSjWFUHwYA5gzzZfhJXfR3nAav3cB875OFn3eLMzH
+         pw/9QYi19jGbGUeFUa3BbMiBaRo/wXusQisJKf0J8HXgUpiQcH1UuoDfqQBuQkEpJiUd
+         B43eSllT+aqB4t2RRwkvdTRrAld2lYtPozpwbF48iCMtdh0zpXrEE17n9zbbEfgYuz3/
+         4faD6CUZHe2zJFCNnmjS2rBxPU5zB/73Mn0KU82ldAFK2P1en1UeIgZjJf4UbWwSW5F4
+         yDOzFXTRFb6fcZv9yOhOBbxrYXnQw+jtzpxZGZWb5N2Sjj/t+/rcV0gEH7YRUxnAr7Ar
+         r4QA==
+X-Gm-Message-State: AOAM533iwQDMyhS/W+NAnOCRxkn50v9txETPjeSAmoy1oxwmtjiZryGv
+        F4LcjSzg0eq+L4/ZtHKvqJoRA63ZmA==
+X-Google-Smtp-Source: ABdhPJy+zxSGUtb9OL1svdetvQDtijPs5InWuaWndpH+V+4slSRtw2GLe3Sr9rTU4/rLu2vvMr3gSA==
+X-Received: by 2002:a05:6808:b0f:: with SMTP id s15mr1491145oij.58.1621300900304;
+        Mon, 17 May 2021 18:21:40 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a12sm3468072oti.12.2021.05.17.18.19.57
+        by smtp.gmail.com with ESMTPSA id k16sm3486015otp.19.2021.05.17.18.21.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 18:19:58 -0700 (PDT)
-Received: (nullmailer pid 3587505 invoked by uid 1000);
-        Tue, 18 May 2021 01:19:57 -0000
-Date:   Mon, 17 May 2021 20:19:57 -0500
+        Mon, 17 May 2021 18:21:38 -0700 (PDT)
+Received: (nullmailer pid 3590411 invoked by uid 1000);
+        Tue, 18 May 2021 01:21:37 -0000
+Date:   Mon, 17 May 2021 20:21:37 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        john@phrozen.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: gpio: stp: add gphy3 and gphy4
- properties
-Message-ID: <20210518011957.GA3586154@robh.at.kernel.org>
-References: <20210513210340.10466-1-olek2@wp.pl>
- <20210513210340.10466-2-olek2@wp.pl>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     linux-mips@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] dt-bindings: vendor-prefixes: Add an entry for
+ OpenEmbed
+Message-ID: <20210518012137.GA3590381@robh.at.kernel.org>
+References: <20210514051743.15248-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513210340.10466-2-olek2@wp.pl>
+In-Reply-To: <20210514051743.15248-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 11:03:40PM +0200, Aleksander Jan Bajkowski wrote:
-> The xRX300 family has 3 and the xRX330 has 4 gphs. They can also control
-> some pins of the gpio cascade. This patch documents the missing properties.
+On Fri, 14 May 2021 07:17:41 +0200, Oleksij Rempel wrote:
+> Add "openembed" entry for https://www.openembed.com/
 > 
-> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  .../devicetree/bindings/gpio/gpio-stp-xway.yaml  | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
-> index a36acc98898c..beb755edf639 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
-> @@ -84,6 +84,22 @@ properties:
->      minimum: 0x0
->      maximum: 0x7
->  
-> +  lantiq,phy3:
-> +    description:
-> +      The gphy3 core can control 3 bits of the gpio cascade. Available on
-> +      the xRX300 and xRX330 family.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0x0
-> +    maximum: 0x7
-> +
-> +  lantiq,phy4:
 
-You could make these a pattern under patternProperties instead.
-
-> +    description:
-> +      The gphy4 core can control 3 bits of the gpio cascade. Available on
-> +      the xRX330 family.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0x0
-> +    maximum: 0x7
-> +
->    lantiq,rising:
->      description:
->        Use rising instead of falling edge for the shift register.
-> -- 
-> 2.30.2
-> 
+Acked-by: Rob Herring <robh@kernel.org>
