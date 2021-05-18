@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA0D387FD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB93387FDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 20:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351647AbhERSqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 14:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
+        id S1351656AbhERSrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 14:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234553AbhERSqT (ORCPT
+        with ESMTP id S234553AbhERSrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 14:46:19 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3824FC061573;
-        Tue, 18 May 2021 11:45:01 -0700 (PDT)
+        Tue, 18 May 2021 14:47:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF5CC06175F;
+        Tue, 18 May 2021 11:46:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ua0bE7OgkNw1FIpTpThZwhG6pubkRRk1Slp87fusRz4=; b=NA3SzPmkCO8a0bdGHc2cEGZ7jT
-        g21gdb52o1mWEPmWGzwWH/4FP/b2jYHiwW81fIxjPV6eLv+4tNhe752KcwExznsPzcJ7k+8r8neRp
-        Qlvlk+w9izwa2OIz6xee92GXAmAqQ+7N5hGEGbzEMa8glx4M8YujcdUhbGsllcb+Kor6vL/cjU51I
-        QqvX8E8azMbsC1QXvk4C4Q69XlCAL3QXigm32EayYUNhe5+pmMQIIgj9FbDuKACsQcjJinBXiQxmy
-        VAOkUPTxXZhAhZg+XlSg4Oui/Wf0u9NSOFNp8u4gsW/l+VR8b05N3LaZaSLILCxuY5GxNcZJ+WE99
-        gFOJZGIw==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lj4iA-00EtEI-3B; Tue, 18 May 2021 18:44:58 +0000
-Subject: Re: [PATCH] irqchip/irq-omap-intc: fix kernel-doc syntax in file
- header
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, akpm@linux-foundation.org,
-        grandmaster@al2klimov.de, keescook@chromium.org
-References: <20210518182310.14461-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3a5390fb-a9fb-e0da-e923-b2459d403d33@infradead.org>
-Date:   Tue, 18 May 2021 11:44:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nwQB61PCdJJerfmFhe3lzFG5sVzdOBlAtF2vq2SQHdQ=; b=qHrbkPb7HeA1rGif0FSFLD9xDy
+        ytBSCOdjFx16YofUOdk798ddRAaxsnL9kdxiT3FVlw4sAN9LA6xbMTvr54BQm3Lin3GtI3ZMOURQe
+        mQMe9kQQhXBUaR/Zl3VQS9/gcHKZ4D3zKbSJAYyeQLRr6JqisgMwZrFYw3D0/m7tQet+AOOxLGGVO
+        5mFYISrv2hQTzM5YNPZGiDz5U5tsIgh8ilT1KCYkpLx19c9q2t/TGa0Os4kk03+dP5U3Tw5Jr799I
+        kQzleeOuiEWvDh4fW1gS8sutu6za/Q3EknBc7vukfq+UsyOPGNejBr6WkGQ8QENcxUobdxyPu+UK/
+        G6fiNP1Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lj4ii-00EGFe-F9; Tue, 18 May 2021 18:45:42 +0000
+Date:   Tue, 18 May 2021 19:45:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v10 16/33] mm: Add folio_mapcount
+Message-ID: <YKQLTC1/E8+/hzcC@casper.infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-17-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210518182310.14461-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511214735.1836149-17-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 11:23 AM, Aditya Srivastava wrote:
-> 
-> Provide a simple fix by replacing this occurrence with general comment
-> format, i.e. '/*', to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
->  include/linux/irqchip/irq-omap-intc.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+On Tue, May 11, 2021 at 10:47:18PM +0100, Matthew Wilcox (Oracle) wrote:
+> This is the folio equivalent of page_mapcount().
+[...]
+>  
+> +/**
+> + * folio_mapcount - The number of mappings of this folio.
+> + * @folio: The folio.
+> + *
+> + * The result includes the number of times any of the pages in the
+> + * folio are mapped to userspace.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
--- 
-~Randy
+I thought it did, but it doesn't.  It returns the number of times
+the head/base page of this folio is mapped into userspace, which is not
+a terribly useful concept.  I suspect this should call total_mapcount()
+instead.  Looking through the complete set of patches, it's only used
+in debugging code (unaccount_page_cache_page() and dump_page()).
+I'm going to withdraw this patch from the next submission until I've
+had the chance to think about it some more.
 
