@@ -2,185 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7DD387E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB97387E1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 19:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351002AbhERRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 13:02:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50494 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232496AbhERRCS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 13:02:18 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IGYIva111104;
-        Tue, 18 May 2021 13:01:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=PCoxcp5ibyVLV63FLBDq4lpfHqnNx8KVKs7wAk76jCA=;
- b=s/cExPqdOlGdbG7UITyfRKOE+e83OWrU0kV5r148ArTdqNqkbB9eWQeOK90cpW3TuYlH
- tOU4JhMCVr/tCSRnoPxowmG3VV7dAE0fbr8TbcVMQYFHCXf8crzv9P39hm5bJNBzZAtx
- ezjRrubHPNZWIJmODnAVDMCTfR1w2Ymv2akBmBXnz62xnJkRGwcby4Ew9T8EInu9aazg
- hsoHe/BxjVSrhbOzINuVbkNLPbnT/ymyrh4O2yn0od3Y4LCvpFIs520Xt6pYc7ACxknG
- K4w4Czwt9lGmr0pOgQUEaASjVyLgLKzImVcKEhLHJx4YPEGVakV1UHMOLCt8o5hnT1Ol xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mg7s2ppa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 13:01:00 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IGZSOD120686;
-        Tue, 18 May 2021 13:00:59 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mg7s2pkm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 13:00:59 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14IGtWk1026200;
-        Tue, 18 May 2021 17:00:56 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 38j5x89m0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 17:00:56 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14IH0rcB28967168
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 17:00:53 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 081F252079;
-        Tue, 18 May 2021 17:00:53 +0000 (GMT)
-Received: from ibm-vm (unknown [9.145.14.34])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A8AAF52065;
-        Tue, 18 May 2021 17:00:50 +0000 (GMT)
-Date:   Tue, 18 May 2021 19:00:49 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 00/11] KVM: s390: pv: implement lazy destroy
-Message-ID: <20210518190049.7e6e661f@ibm-vm>
-In-Reply-To: <e66400c5-a1b6-c5fe-d715-c08b166a7b54@de.ibm.com>
-References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
-        <20210518170537.58b32ffe.cohuck@redhat.com>
-        <20210518173624.13d043e3@ibm-vm>
-        <20210518180411.4abf837d.cohuck@redhat.com>
-        <20210518181922.52d04c61@ibm-vm>
-        <a38192d5-0868-8e07-0a34-c1615e1997fc@redhat.com>
-        <20210518183131.1e0cf801@ibm-vm>
-        <e66400c5-a1b6-c5fe-d715-c08b166a7b54@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S1351017AbhERRCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 13:02:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232496AbhERRCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 13:02:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68E4B611CE;
+        Tue, 18 May 2021 17:01:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621357289;
+        bh=uB99eMOXVJVNC+us46Cu6NT371ZIqNz7soRcpBC1kn4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iZeX0FS1nrbI0Zmr/w2+0/g6PyC2t3qu/H2AmL0y/JQ03dv0o9axPdeYJ1HGDwTv3
+         d+kXV9XmJsLELGIWmjKuhLw50vF/LXH0Fufc2XVl02ZZ8FDfD1ntqsVDQwOh+HTcrI
+         Qml/FvaCbQW7c07lL49RfosCEc6wIPaTlXDEtv7LBJClzECLmdOKa2mav5ji1kfPhs
+         JOde1VMzFNqRm188+okWQf/f4lyZXbvYDfsyUzttUmkX8AyRia9IzEOG12jSxzS7pd
+         Kqvley3r2K/EB7h48N8QErWSVG0uQytjYjmAK6CmXG8cuoggWMQoq6FUoNaqunBMtX
+         2keGqLkeeD68w==
+Received: by mail-ed1-f49.google.com with SMTP id b17so12098615ede.0;
+        Tue, 18 May 2021 10:01:29 -0700 (PDT)
+X-Gm-Message-State: AOAM533diTIYteIhoRJ4OykscP6+l5WqwwMqQ4Ttk7wmiXFJ1jd2V1Kp
+        pg8jPJMsP7t3Nv3CIh0l3Amq5Exc5ZdFk67JmQ==
+X-Google-Smtp-Source: ABdhPJymiFn+zTZgtyn8O3RdwQYyrhfTFds93sFwydQeVx9T9Yvkhf21nM/szw6yd228g8Fa0obWxgXZZl3w7qUPvgU=
+X-Received: by 2002:aa7:d893:: with SMTP id u19mr8355852edq.258.1621357288051;
+ Tue, 18 May 2021 10:01:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: o7NNWV0vowzARXZ4UsRFtxBVc6NxOltp
-X-Proofpoint-ORIG-GUID: Cy_bc8bftKD4yt5A88wyc_o52gcH1XYS
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_08:2021-05-18,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
- mlxscore=0 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
- impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105180113
+References: <20210518060725.1984-1-zuoqilin1@163.com>
+In-Reply-To: <20210518060725.1984-1-zuoqilin1@163.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 18 May 2021 12:01:15 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJJ6WEbuxWN4hq_OW-hymEP7XfOcJ3p=n=ebZ7TE5N8aw@mail.gmail.com>
+Message-ID: <CAL_JsqJJ6WEbuxWN4hq_OW-hymEP7XfOcJ3p=n=ebZ7TE5N8aw@mail.gmail.com>
+Subject: Re: [PATCH] scripts/dtc: Assign value when defining variables
+To:     zuoqilin1@163.com
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        zuoqilin <zuoqilin@yulong.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 18:55:56 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+On Tue, May 18, 2021 at 1:07 AM <zuoqilin1@163.com> wrote:
+>
+> From: zuoqilin <zuoqilin@yulong.com>
 
-> On 18.05.21 18:31, Claudio Imbrenda wrote:
-> > On Tue, 18 May 2021 18:22:42 +0200
-> > David Hildenbrand <david@redhat.com> wrote:
-> >   
-> >> On 18.05.21 18:19, Claudio Imbrenda wrote:  
-> >>> On Tue, 18 May 2021 18:04:11 +0200
-> >>> Cornelia Huck <cohuck@redhat.com> wrote:
-> >>>      
-> >>>> On Tue, 18 May 2021 17:36:24 +0200
-> >>>> Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
-> >>>>     
-> >>>>> On Tue, 18 May 2021 17:05:37 +0200
-> >>>>> Cornelia Huck <cohuck@redhat.com> wrote:
-> >>>>>         
-> >>>>>> On Mon, 17 May 2021 22:07:47 +0200
-> >>>>>> Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:  
-> >>>>     
-> >>>>>>> This means that the same address space can have memory
-> >>>>>>> belonging to more than one protected guest, although only one
-> >>>>>>> will be running, the others will in fact not even have any
-> >>>>>>> CPUs.  
-> >>>>>>
-> >>>>>> Are those set-aside-but-not-yet-cleaned-up pages still possibly
-> >>>>>> accessible in any way? I would assume that they only belong to
-> >>>>>> the  
-> >>>>>
-> >>>>> in case of reboot: yes, they are still in the address space of
-> >>>>> the guest, and can be swapped if needed
-> >>>>>         
-> >>>>>> 'zombie' guests, and any new or rebooted guest is a new entity
-> >>>>>> that needs to get new pages?  
-> >>>>>
-> >>>>> the rebooted guest (normal or secure) will re-use the same pages
-> >>>>> of the old guest (before or after cleanup, which is the reason
-> >>>>> of patches 3 and 4)  
-> >>>>
-> >>>> Took a look at those patches, makes sense.
-> >>>>     
-> >>>>>
-> >>>>> the KVM guest is not affected in case of reboot, so the
-> >>>>> userspace address space is not touched.  
-> >>>>
-> >>>> 'guest' is a bit ambiguous here -- do you mean the vm here, and
-> >>>> the actual guest above?
-> >>>>     
-> >>>
-> >>> yes this is tricky, because there is the guest OS, which
-> >>> terminates or reboots, then there is the "secure configuration"
-> >>> entity, handled by the Ultravisor, and then the KVM VM
-> >>>
-> >>> when a secure guest reboots, the "secure configuration" is
-> >>> dismantled (in this case, in a deferred way), and the KVM VM (and
-> >>> its memory) is not directly affected
-> >>>
-> >>> what happened before was that the secure configuration was
-> >>> dismantled synchronously, and then re-created.
-> >>>
-> >>> now instead, a new secure configuration is created using the same
-> >>> KVM VM (and thus the same mm), before the old secure configuration
-> >>> has been completely dismantled. hence the same KVM VM can have
-> >>> multiple secure configurations associated, sharing the same
-> >>> address space.
-> >>>
-> >>> of course, only the newest one is actually running, the other ones
-> >>> are "zombies", without CPUs.
-> >>>      
-> >>
-> >> Can a guest trigger a DoS?  
-> > 
-> > I don't see how
-> > 
-> > a guest can fill its memory and then reboot, and then fill its
-> > memory again and then reboot... but that will take time, filling
-> > the memory will itself clean up leftover pages from previous boots.
-> >  
-> 
-> In essence this guest will then synchronously wait for the page to be
-> exported and reimported, correct?
+We don't take patches against the kernel copy of dtc. They need to go
+upstream and to the devicetree-compiler list.
 
-correct
+> When defining variables and assigning values can be done at the same time.
+>
+> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+> ---
+>  scripts/dtc/util.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/scripts/dtc/util.c b/scripts/dtc/util.c
+> index 40274fb..d1f7608 100644
+> --- a/scripts/dtc/util.c
+> +++ b/scripts/dtc/util.c
+> @@ -292,7 +292,7 @@ int utilfdt_write_err(const char *filename, const void *blob)
+>  {
+>         int fd = 1;     /* assume stdout */
+>         int totalsize;
+> -       int offset;
+> +       int offset = 0;
+>         int ret = 0;
+>         const char *ptr = blob;
+>
+> @@ -303,7 +303,6 @@ int utilfdt_write_err(const char *filename, const void *blob)
+>         }
+>
+>         totalsize = fdt_totalsize(blob);
+> -       offset = 0;
 
-> > "normal" reboot loops will be fast, because there won't be much
-> > memory to process
-> > 
-> > I have actually tested mixed reboot/shutdown loops, and the system
-> > behaved as you would expect when under load.  
-> 
-> I guess the memory will continue to be accounted to the memcg?
-> Correct?
+It is possible to exit before this point and the assignment is not
+necessary if you do.
 
-for the reboot case, yes, since the mm is not directly affected.
-for the shutdown case, I'm not sure.
+>
+>         while (offset < totalsize) {
+>                 ret = write(fd, ptr + offset, totalsize - offset);
+> @@ -421,7 +420,7 @@ void NORETURN util_usage(const char *errmsg, const char *synopsis,
+>         const char a_arg[] = "<arg>";
+>         size_t a_arg_len = strlen(a_arg) + 1;
+>         size_t i;
+> -       int optlen;
+> +       int optlen = 0;
+>
+>         fprintf(fp,
+>                 "Usage: %s\n"
+> @@ -429,7 +428,6 @@ void NORETURN util_usage(const char *errmsg, const char *synopsis,
+>                 "Options: -[%s]\n", synopsis, short_opts);
+>
+>         /* prescan the --long opt length to auto-align */
+> -       optlen = 0;
+
+In keeping with doing the assignment as late as possible and just
+before needing it, this was correct as is.
+
+>         for (i = 0; long_opts[i].name; ++i) {
+>                 /* +1 is for space between --opt and help text */
+>                 int l = strlen(long_opts[i].name) + 1;
+> --
+> 1.9.1
+>
+>
