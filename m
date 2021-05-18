@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC10386E5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC299386E65
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345078AbhERAeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:34:11 -0400
-Received: from gateway24.websitewelcome.com ([192.185.50.66]:37529 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345119AbhERAeJ (ORCPT
+        id S1344317AbhERAk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235470AbhERAk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:34:09 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 42676326B
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:32:52 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id infIl1qyA8ElSinfIlVzrA; Mon, 17 May 2021 19:32:52 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=J+ny7KcWHWHIUXMG+TJWF0K4cp8fIowxW6oz98D64vk=; b=bPygefkyDCsddqWESNal7ncvij
-        Py7cIK8xzcH4srnyTyKrfDM7BAILvAr/HigRw/vBJXsrs6yBplxeri0Pb5zixbjmi+CV4tb9e7jgK
-        ZJb5FetDXddNW9uFdtVbmBE0wTlgecjGSOXLEIQxZdeLwyn+cfubMdhfEm5uA63TfJWtQ5RLdI/D3
-        j/rrmMiWVjZEavJbn2u72lcqtXFRXeMynaosFgwxxQE/EIxBOmMZN5wGH9a9JASq/sFMw9zOThsYe
-        NZlRrtKnwQosyGrTLil640ttd2aTqQHhpcZKDtkHU5ZjdxnNm+dd0StfHulOhKJZH71UPGLxiLxCy
-        5sM+l8Vw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53472 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1linfF-002a7c-T7; Mon, 17 May 2021 19:32:49 -0500
-Subject: Re: [PATCH v2][next] afs: Fix fall-through warnings for Clang
-To:     Jeffrey E Altman <jaltman@auristor.com>,
-        "Gustavo A. R. Silva (gustavoars@kernel.org)" <gustavoars@kernel.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210420211615.GA51432@embeddedor>
- <45926d81-cfae-8465-84e6-af76d668c1ef@auristor.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <c143cfde-c761-a19f-deef-2dc61a8b8947@embeddedor.com>
-Date:   Mon, 17 May 2021 19:33:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 20:40:26 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC158C061573;
+        Mon, 17 May 2021 17:39:07 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so581494pjb.2;
+        Mon, 17 May 2021 17:39:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XJERjlzz2JqpiW35y50+LdlSX0FgN6gm7UsIOMCxH9A=;
+        b=XeKcnEwIAG/jlT7UuXSkRXgKn/eA0UPk8FvIvNgMe99vO7rC2Jkful5ErQarQwJJnr
+         n4br+xjc2HCI6mIgAuKGsrWC4xbyUeT/0kqiDUIIKoO9x6JYTEWaXehEcP2cWX4BfC4L
+         HhMvKWnOqgo4a1v9rE9zhQ/6JLDz2+XZy6IgL2Thw3zIUx5t6+6gMp/Y41Turv6j/3LQ
+         o8x+s2ga//Ra3u2TPDpW6iK6YlIjc3+ebLP+YGn8ZSConOBK4rRUoZ6OVMDmxjo8K7lf
+         cy4KPcg8DU0DD251z8cogCRiq1e4QvM7lx0CJpqKqNKbqYCD71wNkPyxVbywL22Pr8nG
+         h3HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XJERjlzz2JqpiW35y50+LdlSX0FgN6gm7UsIOMCxH9A=;
+        b=aHlbbchx7EXvs0P6tVNrLNzfJ5oF4yU+L8rCAh8AOzGbhkZLimdBtrilneWzjoRzoB
+         jRF1Kfbq9OO8Zac3lec8ZDOwgCR303/Trpta+O+/eVJF84uhjuEjqZWVeDiRspu6Y2Ah
+         tIn/3NzYecfL8HP0p00MIkUlt/UuD0GvtYUMLCtTku6Tuj7nktVRNSj6m1eZhyZCQLE/
+         hIuzNBUxTN0X9jxTdp6fboR3XOc/TkMoVqYyrSM8f0pBqZc120EjVubna3VWshz0Pa/B
+         d0NYc7hMoxll81icV80h1ge7q6JGIq/zmExTLIkoCZb8W/R6S5ajxdNijghInT1NhNUj
+         WySA==
+X-Gm-Message-State: AOAM532RCcao97iJYsM6/R+KGZkxUFz2SCh+K2U9xoDvTgujntE5SLj9
+        IWG69CGgg7ztjF5vzT04O/U=
+X-Google-Smtp-Source: ABdhPJwBowksJGQuhUZRWk/iQ7EWmJQSyFcQA9q0auXwUBgVqteIlgHI5UsBOMw1P7h2E9Q5qnJs7A==
+X-Received: by 2002:a17:90a:fa5:: with SMTP id 34mr1938655pjz.113.1621298347440;
+        Mon, 17 May 2021 17:39:07 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id z65sm10940314pfb.13.2021.05.17.17.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 17:39:07 -0700 (PDT)
+Date:   Tue, 18 May 2021 09:38:59 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
+        linux-next@vger.kernel.org, ndesaulniers@google.com,
+        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <20210518003859.GC80297@hyeyoo>
+References: <20210511173448.GA54466@hyeyoo>
+ <20210515210950.GA52841@hyeyoo>
+ <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
+ <YKC9CeAfw3aBmHTU@archlinux-ax161>
 MIME-Version: 1.0
-In-Reply-To: <45926d81-cfae-8465-84e6-af76d668c1ef@auristor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1linfF-002a7c-T7
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53472
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 53
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKC9CeAfw3aBmHTU@archlinux-ax161>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, May 15, 2021 at 11:34:49PM -0700, Nathan Chancellor wrote:
+> This should work I think:
 
+compiled well with clang-10.0.1, clang-11.0.0,
+and gcc-10.2.0 with x86_64 default config.
 
-On 4/21/21 18:03, Jeffrey E Altman wrote:
-> On 4/20/2021 5:16 PM, Gustavo A. R. Silva (gustavoars@kernel.org) wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
->> warnings by explicitly adding multiple fallthrough pseudo-keywords
->> in places where the code is intended to fall through to the next
->> case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> Changes in v2:
->>   - Place blank line after the fallthrough markings, not before.
->>     Link: https://lore.kernel.org/linux-hardening/748935.1606147853@warthog.procyon.org.uk/
-> 
-> This change looks good to me.
-> 
-> Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
+is the condition CONFIG_CLANG_VERSION > 110000,
+not including 110000 it self?
 
-Thanks, Jeffrey.
-
-Could someone take this, please?
-
-Thanks
---
-Gustavo
-
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 9d316aac0aba..1b653266f2aa 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -413,7 +413,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
+>  	if (size <=  16 * 1024 * 1024) return 24;
+>  	if (size <=  32 * 1024 * 1024) return 25;
+>  
+> -	if (size_is_constant)
+> +	if ((IS_ENABLED(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION > 110000) && size_is_constant)
+>  		BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+>  	else
+>  		BUG();
