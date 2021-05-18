@@ -2,107 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AF0387CEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C65387CF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 17:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350466AbhERPzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 11:55:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:55664 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239415AbhERPzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 11:55:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CE366D;
-        Tue, 18 May 2021 08:54:00 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABA893F73B;
-        Tue, 18 May 2021 08:53:58 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] sched/topology: Rework CPU capacity asymmetry detection
-In-Reply-To: <20210518144033.GB3993@e120325.cambridge.arm.com>
-References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com> <1621239831-5870-3-git-send-email-beata.michalska@arm.com> <87mtst1s8m.mognet@arm.com> <20210517131816.GA13965@e120325.cambridge.arm.com> <87k0nx1jtu.mognet@arm.com> <20210518144033.GB3993@e120325.cambridge.arm.com>
-Date:   Tue, 18 May 2021 16:53:54 +0100
-Message-ID: <87bl9811il.mognet@arm.com>
+        id S1350473AbhERPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 11:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350468AbhERPz2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 11:55:28 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40749C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:54:09 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id z24so9896570ioi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 08:54:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sOPjeGVfoUdxyxMmaIKR534ol/sgRMD+2CApIb85FWI=;
+        b=uZ9ZrgULd90pJ20c60zlutZDxiYgz2KMRpQrFP+tc4KCMQMpd0PtyYsFoi0zZqY7ZL
+         rjpnuQdps9gVTl7c9Aqb55/rB3bt8TC+Ce0s1xjFd3IdFQ0awjoCjhCCbYc5j1/BSCzJ
+         BESztBItvfU8v+O0wIQo4l4cEm+Nvhx0nBLfc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sOPjeGVfoUdxyxMmaIKR534ol/sgRMD+2CApIb85FWI=;
+        b=G2E6WRF8ywUm5MohetgQSsMYjfqDN7guwwNUsQ2pw4ymHwLpNqVyCOb44Wk4mZ0TqA
+         SU7x/losh57f9fuJW6a/eR8J0En9GI6n7wlRwUgtGaGv9ziTA8j42pzHzC9ycABvRizn
+         X0ZnLlwKzCl3pvOdfUnTwqnFCkzWZZMfLzzBKQUfBpKbo3GyH0QV1gtGAEBKVqTwwB7+
+         kMtaQP4F/0knfw8VTgmj+juzgWEtdDb6zt6nwjR2bcXPBCaeDbEDXUKl8UE5a9afR23b
+         swQxfkGMEeSQ8E/h6ilyJfd4L+6E0L+D2hRc1tKpC65Ij+y1FJoCAbRtwNQGpxOSjnSo
+         L/pg==
+X-Gm-Message-State: AOAM530NflA9P/AZwOJo4N0NKM0kzL88d/Mw0IpS+p6wfQH1iaPw9PbW
+        PdkbimB9e2WC0Yw7Ums4itvUAw283dG6mxTGnxa6zQ==
+X-Google-Smtp-Source: ABdhPJzURMQ4kvYFWw7AgaAHsJSaRhXQyg1AetYl3k5dAaTEx26ENB19AxNZJIqbobJv00LtqNXnUeimts0DC3FkZbo=
+X-Received: by 2002:a6b:7306:: with SMTP id e6mr4814895ioh.75.1621353248649;
+ Tue, 18 May 2021 08:54:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CAJWu+orW9PA7m_s5LHhQv-bEO0xFq7n+9-fznd79boKkmQUR6g@mail.gmail.com>
+ <YKHvUkxpytzSewEC@boqun-archlinux> <YKMd99hE78xdUkQk@google.com> <YKMlWIPMLFU0vzF6@boqun-archlinux>
+In-Reply-To: <YKMlWIPMLFU0vzF6@boqun-archlinux>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 18 May 2021 11:53:57 -0400
+Message-ID: <CAEXW_YTiL_hsqw9f0fiXWYen8i8R=Uj+eYM8tBaV-K6Hw1CRSQ@mail.gmail.com>
+Subject: Re: Silencing false lockdep warning related to seq lock
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/21 15:40, Beata Michalska wrote:
-> On Mon, May 17, 2021 at 04:06:05PM +0100, Valentin Schneider wrote:
->> On 17/05/21 14:18, Beata Michalska wrote:
->> > On Mon, May 17, 2021 at 01:04:25PM +0100, Valentin Schneider wrote:
->> >> On 17/05/21 09:23, Beata Michalska wrote:
->> >> > +static void asym_cpu_capacity_scan(const struct cpumask *cpu_map)
->> >> > +{
->> >> > +	struct asym_cap_data *entry, *next;
->> >> > +	int cpu;
->> >> >
->> >> > -		for_each_sd_topology(tl) {
->> >> > -			if (tl_id < asym_level)
->> >> > -				goto next_level;
->> >> > +	if (!list_empty(&asym_cap_list))
->> >> > +		list_for_each_entry(entry, &asym_cap_list, link)
->> >> > +			cpumask_clear(entry->cpu_mask);
->> >> >
->> >>
->> >> The topology isn't going to change between domain rebuilds, so why
->> >> recompute the masks? The sched_domain spans are already masked by cpu_map,
->> >> so no need to do this masking twice. I'm thinking this scan should be done
->> >> once against the cpu_possible_mask - kinda like sched_init_numa() done once
->> >> against the possible nodes.
->> >>
->> > This is currently done, as what you have mentioned earlier, the tl->mask
->> > may contain CPUs that are not 'available'. So it makes sure that the masks
->> > kept on  the list are representing only those CPUs that are online.
->> > And it is also needed case all CPUs of given capacity go offline - not to to
->> > lose the full asymmetry that might change because of that ( empty masks are
->> > being removed from the list).
->> >
->> > I could change that and use the CPU mask that represents the online CPUs as
->> > a checkpoint but then it also means additional tracking which items on the
->> > list are actually available at a given point of time.
->> > So if the CPUs masks on the list are to be set once (as you are suggesting)
->> > than it needs additional logic to count the number of available capacities
->> > to decide whether there is a full asymmetry or not.
->> >
->>
->> That should be doable by counting non-empty intersections between each
->> entry->cpumask and the cpu_online_mask in _classify().
->>
->> That said I'm afraid cpufreq module loading forces us to dynamically update
->> those masks, as you've done. The first domain build could see asymmetry
->> without cpufreq loaded, and a later one with cpufreq loaded would need an
->> update. Conversely, as much of a fringe case as it is, we'd have to cope
->> with the cpufreq module being unloaded later on...
->>
->> :(
-> So it got me thinking that maybe we could actually make it more
-> 'update-on-demand' and use the cpufreq policy notifier to trigger the update.
-> I could try to draft smth generic enough to make it ... relatively easy to adapt
-> to different archs case needed.
-> Any thoughts ?
+On Mon, May 17, 2021 at 10:24 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> > [...]
+> > > > After apply Laurent's SPF patchset [1] , we're facing a large number
+> > > > of (seemingly false positive) lockdep reports which are related to
+> > > > circular dependencies with seq locks.
+> > > >
+> > > >  lock(A); write_seqcount(B)
+> > > >   vs.
+> > > > write_seqcount(B); lock(A)
+> > > >
+> > >
+> > > Two questions here:
+> > >
+> > > *   Could you provide the lockdep splats you saw? I wonder whether
+> > >     it's similar to the one mentioned in patch #9[1].
+> >
+> > Sure I have appended them to this email. Here is the tree with Laurent's
+> > patches applied, in case you want to take a look:
+> > https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/heads/chromeos-5.4
+> >
+> > Yes, the splat is similar to the one mentioned in that patch #9, however the
+> > first splat I appended below shows an issue with lockdep false positive -
+> > there is clearly problem with lockdep where it thinks following sequence is
+> > bad, when in fact it is not:
+> >
+> >     init process (skipped some functions):
+> >     exec->
+> >      flush_old_exec->
+> >       exit_mmap ->
+> >         free_pgtables->
+> >           vm_write_begin(vma) // Y: acquires seq lock in write mode
+> >              unlink_anon_vmas // Z: acquires anon_vma->rwsem
+> >
+> >     exec->
+> >     load_elf_binary->
+> >       -> setup_arg_pages
+> >         -> expand_downwards (in the if (grow <=) block)
+> >            mm->page_table_lock // X
+> >            vm_write_begin(vma) // Y: acquires seq lock
+> >
+> >     exec->
+> >      do_execve_file->
+> >        ->get_user_pages
+> >          -> handle_pte_fault
+> >           -> anon_vma_prepare
+> >               -> acquire anon_vma->rwsem  // Z
+> >               -> acquire mm->page_table_lock // X
+> >
+> >     If vm_write_begin ever had to wait, then it could lockup like this if following happened concurrently:
+> >     Acquire->TryToAcquire
+> >     Y->Z
+> >     X->Y
+> >     Z->X
+> >
+> >     But Y can never result in a wait since it is a sequence lock. So this is
+> >     a lockdep false positive.
+> >
+> > >
+> > > *   What keeps write_seqcount(vm_seqcount) serialized? If it's only
+> > >     one lock that serializes the writers, we probably can make it
+> > >     as the nest_lock argument for seqcount_acquire(), and that will
+> > >     help prevent the false positives.
+> >
+> > I think the write seqcount is serialized by the mmap_sem in all the code
+> > paths I audited in Laurent's patchset.
+> >
+> > I am not sure how making it nest_lock argument will help though? The issue is
+> > that lockdep's understanding of seqcount needs to relate seqcount readers to
+>
+> The thing lockdep will not report deadlock for the following sequences:
+>
+>         T1:
+>         lock(A);
+>         lock_nest(B, A);
+>         lock(C);
+>
+>         T2:
+>         lock(A);
+>         lock(C);
+>         lock_nest(B, A);
+>
+> because with the nest_lock, lockdep would know A serializes B, so the
+> following case cannot happen:
+>
+>         CPU 0                   CPU 1
+>         ============            ============
+>         lock_nest(B,A);
+>                                 lock(C);
+>         lock(C);
+>                                 lock_nest(B, A);
+>
+> becaue either CPU 0 or CPU 1 will already hold A, so they are
+> serialized. So nest_lock can solve part of the problem if all the
+> writers of vm_seqcount are serialized somehow.
+>
+> Yes, seqcount writers cannot block each other, however, they are
+> supposed to be seralized with each other, right? So if we have the
+> reason to believe the above two CPUs case can happen, though it's not
+> a deadlock, but it's a data race, right?
+>
+> I think the proper fix here is to annotate vm_seqcount with the correct
+> locks serializing the writers.
 >
 
-The cpufreq policy notifier rebuild is currently an arch_topology.c
-specificity, and perhaps we can consider this as our standing policy: if an
-arch needs a topology rebuild upon X event (which isn't hotplug), it is
-responsible for triggering it itself.
+I agree with you now and that's the best way forward. I will work on
+something like this (unless you already did), thanks Boqun!
 
-There's those sched_energy_update / arch_update_cpu_topology() bools that
-are used to tweak the rebuild behaviour, perhaps you could gate the
-capacity maps rebuild behind arch_update_cpu_topology()?
-
-That way you could build those maps based on a cpu_possible_mask iterator,
-and only rebuild them when the arch requests it (arch_topology already does
-that with the cpufreq notifier). How does it sound?
-
-> ---
-> BR
-> B.
+-Joel
