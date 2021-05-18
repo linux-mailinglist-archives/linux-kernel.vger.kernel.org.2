@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5115838805A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90580388068
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 21:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244207AbhERTPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 15:15:08 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:38295 "EHLO
+        id S1351748AbhERTVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 15:21:13 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:46277 "EHLO
         mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240805AbhERTPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 15:15:04 -0400
+        id S244803AbhERTVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 15:21:11 -0400
 Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
         (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14IJDDRo4008171
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14IJDDRp4008171
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Tue, 18 May 2021 12:13:33 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14IJDDRo4008171
+        Tue, 18 May 2021 12:13:35 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14IJDDRp4008171
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621365214;
-        bh=KCIa/Uo4jzG+ExN9vc+ow3svYGd1O74NW9f3zQXMBIc=;
+        s=2021042801; t=1621365585;
+        bh=p5RX+26hQKFn68BqWdhicYW1IYMibX3gPuHGaPr2Thc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H8xDzSB35CxxBZbPghKZETrb12cRJ7QVBdXWIx/sR98N7n7JEOf8kXqPLRkYJUAUL
-         ZBD2pyKUgRrf0AocvYv2UvcaFXcbrJaAuu1WGTL/QB/xdS2Buov4gHSkom1m2NjTZX
-         rpukeMrXqqN7iy8uoI3egb/67HRLAmVo+52Z5kb5M7guaWhLf6QfZb8WinjTVuoabG
-         3gCpvep81mNZ9LXqe3c+ow663AWaLE+241xjiBPOtEEuNwlJqStTsvwM7A8QAoF8Mx
-         8tiXYS1Jsnj/bPniPVdh8k69DM96Jvz5VsUbXqaBM3EA7R5Abw+KQoktnuL+vTV/CS
-         0jnpJgbDuLFoA==
+        b=M6ZPYRLwguX5TB2iQLl1IvHWmGubcHaOxKdJn3ZCIkRQ2DI0870ZG/tQ7/uZ1g4Cu
+         HRVUiYerD+MgaSGmDgXocWp9gke3vb67sotWZdevQ7ZE0fCRWco3ZbPa/wu8NGOvjD
+         RzLvJUbfmujZfifc9vYqbSzwP3XeP0MfD29pS72ZJb0cPUdzrA4DJ1l+p2XYJA+IEF
+         lPKPAEzgWrC5MIB+G8lRx/enYqlsykVBDBcKVFLEbYRySaFljOxUn8QrulwyJRiT6y
+         cOTimu2T5VwctSirjLorzPi3VQofse3Hx1SMpKAmpqZKaPibNyt4EUG07Z58ArOFfJ
+         naMUitf8fbusg==
 From:   "H. Peter Anvin" <hpa@zytor.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
@@ -34,9 +34,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 2/6] x86/syscall: simplify message reporting in syscall_numbering.c
-Date:   Tue, 18 May 2021 12:12:59 -0700
-Message-Id: <20210518191303.4135296-3-hpa@zytor.com>
+Subject: [PATCH v4 3/6] x86/syscall: add tests under ptrace to syscall_numbering.c
+Date:   Tue, 18 May 2021 12:13:00 -0700
+Message-Id: <20210518191303.4135296-4-hpa@zytor.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210518191303.4135296-1-hpa@zytor.com>
 References: <20210518191303.4135296-1-hpa@zytor.com>
@@ -48,224 +48,398 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-Reduce some boiler plate in printing and indenting messages in
-syscall_numbering.c. This makes it easier to produce clean status
-output.
+Add tests running under ptrace for syscall_numbering_64. ptrace
+stopping on syscall entry and possibly modifying the syscall number
+(regs.orig_rax) or the default return value (regs.rax) can have
+different results that the normal system call path.
 
 Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 ---
- .../testing/selftests/x86/syscall_numbering.c | 102 ++++++++++++------
- 1 file changed, 71 insertions(+), 31 deletions(-)
+ .../testing/selftests/x86/syscall_numbering.c | 244 +++++++++++++++---
+ 1 file changed, 212 insertions(+), 32 deletions(-)
 
 diff --git a/tools/testing/selftests/x86/syscall_numbering.c b/tools/testing/selftests/x86/syscall_numbering.c
-index 7dd86bcbee25..03915cd48cfc 100644
+index 03915cd48cfc..ef618f5ffb3b 100644
 --- a/tools/testing/selftests/x86/syscall_numbering.c
 +++ b/tools/testing/selftests/x86/syscall_numbering.c
-@@ -34,6 +34,33 @@
+@@ -16,6 +16,13 @@
+ #include <string.h>
+ #include <fcntl.h>
+ #include <limits.h>
++#include <signal.h>
++#include <sys/ptrace.h>
++#include <sys/user.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++
++#include <linux/ptrace.h>
  
- static unsigned int nerr = 0;	/* Cumulative error count */
+ /* Common system call numbers */
+ #define SYS_READ	  0
+@@ -32,13 +39,44 @@
+ 
+ #define X32_BIT 0x40000000
+ 
+-static unsigned int nerr = 0;	/* Cumulative error count */
  static int nullfd = -1;		/* File descriptor for /dev/null */
-+static int indent = 0;
+-static int indent = 0;
++static bool with_x32;		/* x32 supported on this kernel? */
 +
-+static inline unsigned int offset(void)
++enum ptrace_pass {
++	PTP_NOTHING,
++	PTP_GETREGS,
++	PTP_WRITEBACK,
++	PTP_FUZZRET,
++	PTP_FUZZHIGH,
++	PTP_INTNUM,
++	PTP_DONE
++};
++
++static const char * const ptrace_pass_name[] =
 +{
-+	return 8+indent*4;
-+}
++	[PTP_NOTHING]	= "just stop, no data read",
++	[PTP_GETREGS]	= "only getregs",
++	[PTP_WRITEBACK]	= "getregs, unmodified setregs",
++	[PTP_FUZZRET]	= "modifying the default return",
++	[PTP_FUZZHIGH]	= "clobbering the top 32 bits",
++	[PTP_INTNUM]	= "sign-extending the syscall number",
++};
 +
-+#define msg(lvl, fmt, ...) printf("%-*s" fmt, offset(), "[" #lvl "]", \
-+                                 ## __VA_ARGS__)
++/*
++ * Shared memory block between tracer and test
++ */
++struct shared {
++	unsigned int nerr;	/* Total error count */
++	unsigned int indent;	/* Message indentation level */
++	enum ptrace_pass ptrace_pass;
++	bool probing_syscall;	/* In probe_syscall() */
++};
++static volatile struct shared *sh;
+ 
+ static inline unsigned int offset(void)
+ {
+-	return 8+indent*4;
++	unsigned int level = sh ? sh->indent : 0;
++	return 8+level*4;
+ }
+ 
+ #define msg(lvl, fmt, ...) printf("%-*s" fmt, offset(), "[" #lvl "]", \
+@@ -48,19 +86,22 @@ static inline unsigned int offset(void)
+ #define info(fmt, ...) msg(INFO, fmt, ## __VA_ARGS__)
+ #define ok(fmt, ...)   msg(OK,   fmt, ## __VA_ARGS__)
+ 
+-#define fail(fmt, ...)					\
+-	do {						\
+-		msg(FAIL, fmt, ## __VA_ARGS__);		\
+-		nerr++;					\
+-	} while (0)
++#define fail(fmt, ...)                                 \
++       do {                                            \
++               msg(FAIL, fmt, ## __VA_ARGS__);         \
++               sh->nerr++;                             \
++       } while (0)
 +
-+#define run(fmt, ...)  msg(RUN,  fmt, ## __VA_ARGS__)
-+#define info(fmt, ...) msg(INFO, fmt, ## __VA_ARGS__)
-+#define ok(fmt, ...)   msg(OK,   fmt, ## __VA_ARGS__)
-+
-+#define fail(fmt, ...)					\
-+	do {						\
-+		msg(FAIL, fmt, ## __VA_ARGS__);		\
-+		nerr++;					\
-+	} while (0)
-+
-+#define crit(fmt, ...)					\
-+	do {						\
-+		indent = 0;				\
-+		msg(FAIL, fmt, ## __VA_ARGS__);		\
-+		msg(SKIP, "Unable to run test\n");	\
-+		exit(71); /* EX_OSERR */		\
-+	} while (0)
++#define crit(fmt, ...)				       \
++       do {                                            \
++               sh->indent = 0;                         \
++               msg(FAIL, fmt, ## __VA_ARGS__);         \
++               msg(SKIP, "Unable to run test\n");      \
++               exit(71); /* EX_OSERR */                \
++       } while (0)
+ 
+-#define crit(fmt, ...)					\
+-	do {						\
+-		indent = 0;				\
+-		msg(FAIL, fmt, ## __VA_ARGS__);		\
+-		msg(SKIP, "Unable to run test\n");	\
+-		exit(71); /* EX_OSERR */		\
+-	} while (0)
++/* Sentinel for ptrace-modified return value */
++#define MODIFIED_BY_PTRACE	-9999
  
  /*
   * Directly invokes the given syscall with nullfd as the first argument
-@@ -91,28 +118,37 @@ static unsigned int _check_for(int msb, int start, int end, long long expect,
+@@ -68,7 +109,7 @@ static inline unsigned int offset(void)
+  * end up intercepting some system calls for some reason, or modify
+  * the system call number itself.
+  */
+-static inline long long probe_syscall(int msb, int lsb)
++static long long probe_syscall(int msb, int lsb)
+ {
+ 	register long long arg1 asm("rdi") = nullfd;
+ 	register long long arg2 asm("rsi") = 0;
+@@ -79,11 +120,21 @@ static inline long long probe_syscall(int msb, int lsb)
+ 	long long nr = ((long long)msb << 32) | (unsigned int)lsb;
+ 	long long ret;
+ 
++	/*
++	 * We pass in an extra copy of the extended system call number
++	 * in %rbx, so we can examine it from the ptrace handler without
++	 * worrying about it being possibly modified. This is to test
++	 * the validity of struct user regs.orig_rax a.k.a.
++	 * struct pt_regs.orig_ax.
++	 */
++	sh->probing_syscall = true;
+ 	asm volatile("syscall"
+ 		     : "=a" (ret)
+-		     : "a" (nr), "r" (arg1), "r" (arg2), "r" (arg3),
++		     : "a" (nr), "b" (nr),
++		       "r" (arg1), "r" (arg2), "r" (arg3),
+ 		       "r" (arg4), "r" (arg5), "r" (arg6)
+ 		     : "rcx", "r11", "memory", "cc");
++	sh->probing_syscall = false;
+ 
+ 	return ret;
+ }
+@@ -118,9 +169,9 @@ static unsigned int _check_for(int msb, int start, int end, long long expect,
  {
  	unsigned int err = 0;
  
-+	indent++;
-+	if (start != end)
-+		indent++;
-+
+-	indent++;
++	sh->indent++;
+ 	if (start != end)
+-		indent++;
++		sh->indent++;
+ 
  	for (int nr = start; nr <= end; nr++) {
  		long long ret = probe_syscall(msb, nr);
- 
- 		if (ret != expect) {
--			printf("[FAIL]\t      %s returned %lld, but it should have returned %s\n",
-+			fail("%s returned %lld, but it should have returned %s\n",
- 			       syscall_str(msb, nr, nr),
- 			       ret, expect_str);
- 			err++;
- 		}
+@@ -134,20 +185,19 @@ static unsigned int _check_for(int msb, int start, int end, long long expect,
  	}
  
-+	if (start != end)
-+		indent--;
-+
+ 	if (start != end)
+-		indent--;
++		sh->indent--;
+ 
  	if (err) {
- 		nerr += err;
+-		nerr += err;
  		if (start != end)
--			printf("[FAIL]\t      %s had %u failure%s\n",
-+			fail("%s had %u failure%s\n",
- 			       syscall_str(msb, start, end),
--			       err, (err == 1) ? "s" : "");
-+			       err, err == 1 ? "s" : "");
+ 			fail("%s had %u failure%s\n",
+-			       syscall_str(msb, start, end),
+-			       err, err == 1 ? "s" : "");
++			     syscall_str(msb, start, end),
++			     err, err == 1 ? "s" : "");
  	} else {
--		printf("[OK]\t      %s returned %s as expected\n",
--		       syscall_str(msb, start, end), expect_str);
-+		ok("%s returned %s as expected\n",
-+		   syscall_str(msb, start, end), expect_str);
+ 		ok("%s returned %s as expected\n",
+ 		   syscall_str(msb, start, end), expect_str);
  	}
  
-+	indent--;
-+
+-	indent--;
++	sh->indent--;
+ 
  	return err;
  }
- 
-@@ -137,35 +173,38 @@ static bool check_enosys(int msb, int nr)
- static bool test_x32(void)
+@@ -174,12 +224,11 @@ static bool test_x32(void)
  {
  	long long ret;
--	long long mypid = getpid();
-+	pid_t mypid = getpid();
-+	bool with_x32;
+ 	pid_t mypid = getpid();
+-	bool with_x32;
  
--	printf("[RUN]\tChecking for x32 by calling x32 getpid()\n");
-+	run("Checking for x32 by calling x32 getpid()\n");
+ 	run("Checking for x32 by calling x32 getpid()\n");
  	ret = probe_syscall(0, SYS_GETPID | X32_BIT);
  
-+	indent++;
+-	indent++;
++	sh->indent++;
  	if (ret == mypid) {
--		printf("[INFO]\t   x32 is supported\n");
--		return true;
-+		info("x32 is supported\n");
-+		with_x32 = true;
- 	} else if (ret == -ENOSYS) {
--		printf("[INFO]\t   x32 is not supported\n");
--		return false;
-+		info("x32 is not supported\n");
-+		with_x32 = false;
+ 		info("x32 is supported\n");
+ 		with_x32 = true;
+@@ -187,15 +236,17 @@ static bool test_x32(void)
+ 		info("x32 is not supported\n");
+ 		with_x32 = false;
  	} else {
--		printf("[FAIL]\t   x32 getpid() returned %lld, but it should have returned either %lld or -ENOSYS\n", ret, mypid);
--		nerr++;
--		return true;	/* Proceed as if... */
-+		fail("x32 getpid() returned %lld, but it should have returned either %lld or -ENOSYS\n", ret, mypid);
-+		with_x32 = false;
+-		fail("x32 getpid() returned %lld, but it should have returned either %lld or -ENOSYS\n", ret, mypid);
++		fail("x32 getpid() returned %lld, but it should have returned either %lld or -ENOSYS\n", ret, (long long)mypid);
+ 		with_x32 = false;
  	}
-+	indent--;
-+	return with_x32;
+-	indent--;
++	sh->indent--;
+ 	return with_x32;
  }
  
  static void test_syscalls_common(int msb)
  {
--	printf("[RUN]\t   Checking some common syscalls as 64 bit\n");
-+	run("Checking some common syscalls as 64 bit\n");
++	enum ptrace_pass pass = sh->ptrace_pass;
++
+ 	run("Checking some common syscalls as 64 bit\n");
  	check_zero(msb, SYS_READ);
  	check_zero(msb, SYS_WRITE);
- 
--	printf("[RUN]\t   Checking some 64-bit only syscalls as 64 bit\n");
-+	run("Checking some 64-bit only syscalls as 64 bit\n");
- 	check_zero(msb, X64_READV);
+@@ -205,7 +256,11 @@ static void test_syscalls_common(int msb)
  	check_zero(msb, X64_WRITEV);
  
--	printf("[RUN]\t   Checking out of range system calls\n");
-+	run("Checking out of range system calls\n");
- 	check_for(msb, -64, -1, -ENOSYS);
+ 	run("Checking out of range system calls\n");
+-	check_for(msb, -64, -1, -ENOSYS);
++	check_for(msb, -64, -2, -ENOSYS);
++	if (pass >= PTP_FUZZRET)
++		check_for(msb, -1, -1, MODIFIED_BY_PTRACE);
++	else
++		check_for(msb, -1, -1, -ENOSYS);
  	check_for(msb, X32_BIT-64, X32_BIT-1, -ENOSYS);
  	check_for(msb, -64-X32_BIT, -1-X32_BIT, -ENOSYS);
-@@ -180,18 +219,18 @@ static void test_syscalls_with_x32(int msb)
- 	 * set.  Calling them without the x32 bit set is
- 	 * nonsense and should not work.
- 	 */
--	printf("[RUN]\t   Checking x32 syscalls as 64 bit\n");
-+	run("Checking x32 syscalls as 64 bit\n");
- 	check_for(msb, 512, 547, -ENOSYS);
- 
--	printf("[RUN]\t   Checking some common syscalls as x32\n");
-+	run("Checking some common syscalls as x32\n");
- 	check_zero(msb, SYS_READ   | X32_BIT);
- 	check_zero(msb, SYS_WRITE  | X32_BIT);
- 
--	printf("[RUN]\t   Checking some x32 syscalls as x32\n");
-+	run("Checking some x32 syscalls as x32\n");
- 	check_zero(msb, X32_READV  | X32_BIT);
- 	check_zero(msb, X32_WRITEV | X32_BIT);
- 
--	printf("[RUN]\t   Checking some 64-bit syscalls as x32\n");
-+	run("Checking some 64-bit syscalls as x32\n");
- 	check_enosys(msb, X64_IOCTL  | X32_BIT);
- 	check_enosys(msb, X64_READV  | X32_BIT);
- 	check_enosys(msb, X64_WRITEV | X32_BIT);
-@@ -199,7 +238,7 @@ static void test_syscalls_with_x32(int msb)
- 
- static void test_syscalls_without_x32(int msb)
- {
--	printf("[RUN]\t  Checking for absence of x32 system calls\n");
-+	run("Checking for absence of x32 system calls\n");
- 	check_for(msb, 0 | X32_BIT, 999 | X32_BIT, -ENOSYS);
- }
- 
-@@ -217,14 +256,18 @@ static void test_syscall_numbering(void)
- 	 */
- 	for (size_t i = 0; i < sizeof(msbs)/sizeof(msbs[0]); i++) {
- 		int msb = msbs[i];
--		printf("[RUN]\tChecking system calls with msb = %d (0x%x)\n",
--		       msb, msb);
-+		run("Checking system calls with msb = %d (0x%x)\n",
-+		    msb, msb);
+ 	check_for(msb, INT_MAX-64, INT_MAX-1, -ENOSYS);
+@@ -248,7 +303,8 @@ static void test_syscall_numbering(void)
+ 		0, 1, -1, X32_BIT-1, X32_BIT, X32_BIT-1, -X32_BIT, INT_MAX,
+ 		INT_MIN, INT_MIN+1
+ 	};
+-	bool with_x32 = test_x32();
 +
-+		indent++;
++	sh->indent++;
+ 
+ 	/*
+ 	 * The MSB is supposed to be ignored, so we loop over a few
+@@ -259,7 +315,7 @@ static void test_syscall_numbering(void)
+ 		run("Checking system calls with msb = %d (0x%x)\n",
+ 		    msb, msb);
+ 
+-		indent++;
++		sh->indent++;
  
  		test_syscalls_common(msb);
  		if (with_x32)
- 			test_syscalls_with_x32(msb);
+@@ -267,12 +323,119 @@ static void test_syscall_numbering(void)
  		else
  			test_syscalls_without_x32(msb);
+ 
+-		indent--;
++		sh->indent--;
++	}
 +
-+		indent--;
++	sh->indent--;
++}
++
++static void syscall_numbering_tracee(void)
++{
++	enum ptrace_pass pass;
++
++	if (ptrace(PTRACE_TRACEME, 0, 0, 0)) {
++		crit("Failed to request tracing\n");
++		return;
++	}
++	raise(SIGSTOP);
++
++	for (sh->ptrace_pass = pass = PTP_NOTHING; pass < PTP_DONE;
++	     sh->ptrace_pass = ++pass) {
++		run("Running tests under ptrace: %s\n", ptrace_pass_name[pass]);
++		test_syscall_numbering();
++	}
++}
++
++static void mess_with_syscall(pid_t testpid, enum ptrace_pass pass)
++{
++	struct user_regs_struct regs;
++
++	sh->probing_syscall = false; /* Do this on entry only */
++
++	/* For these, don't even getregs */
++	if (pass == PTP_NOTHING || pass == PTP_DONE)
++		return;
++
++	ptrace(PTRACE_GETREGS, testpid, NULL, &regs);
++
++	if (regs.orig_rax != regs.rbx) {
++		fail("orig_rax %#llx doesn't match syscall number %#llx\n",
++		     (unsigned long long)regs.orig_rax,
++		     (unsigned long long)regs.rbx);
++	}
++
++	switch (pass) {
++	case PTP_GETREGS:
++		/* Just read, no writeback */
++		return;
++	case PTP_WRITEBACK:
++		/* Write back the same register state verbatim */
++		break;
++	case PTP_FUZZRET:
++		regs.rax = MODIFIED_BY_PTRACE;
++		break;
++	case PTP_FUZZHIGH:
++		regs.rax = MODIFIED_BY_PTRACE;
++		regs.orig_rax = regs.orig_rax | 0xffffffff00000000ULL;
++		break;
++	case PTP_INTNUM:
++		regs.rax = MODIFIED_BY_PTRACE;
++		regs.orig_rax = (int)regs.orig_rax;
++		break;
++	default:
++		crit("invalid ptrace_pass\n");
++		break;
++	}
++
++	ptrace(PTRACE_SETREGS, testpid, NULL, &regs);
++}
++
++static void syscall_numbering_tracer(pid_t testpid)
++{
++	int wstatus;
++
++	do {
++		pid_t wpid = waitpid(testpid, &wstatus, 0);
++		if (wpid < 0 && errno != EINTR)
++			break;
++		if (wpid != testpid)
++			continue;
++		if (!WIFSTOPPED(wstatus))
++			break;	/* Thread exited? */
++
++		if (sh->probing_syscall && WSTOPSIG(wstatus) == SIGTRAP)
++			mess_with_syscall(testpid, sh->ptrace_pass);
++	} while (sh->ptrace_pass != PTP_DONE &&
++		 !ptrace(PTRACE_SYSCALL, testpid, NULL, NULL));
++
++	ptrace(PTRACE_DETACH, testpid, NULL, NULL);
++
++	/* Wait for the child process to terminate */
++	while (waitpid(testpid, &wstatus, 0) != testpid || !WIFEXITED(wstatus))
++		/* wait some more */;
++}
++
++static void test_traced_syscall_numbering(void)
++{
++	pid_t testpid;
++
++	/* Launch the test thread; this thread continues as the tracer thread */
++	testpid = fork();
++
++	if (testpid < 0) {
++		crit("Unable to launch tracer process\n");
++	} else if (testpid == 0) {
++		syscall_numbering_tracee();
++		_exit(0);
++	} else {
++		syscall_numbering_tracer(testpid);
  	}
  }
  
-@@ -241,19 +284,16 @@ int main(void)
- 	 */
- 	nullfd = open("/dev/null", O_RDWR);
- 	if (nullfd < 0) {
--		printf("[FAIL]\tUnable to open /dev/null: %s\n",
--		       strerror(errno));
--		printf("[SKIP]\tCannot execute test\n");
--		return 71;	/* EX_OSERR */
-+		crit("Unable to open /dev/null: %s\n", strerror(errno));
+ int main(void)
+ {
++	unsigned int nerr;
++
+ 	/*
+ 	 * It is quite likely to get a segfault on a failure, so make
+ 	 * sure the message gets out by setting stdout to nonbuffered.
+@@ -287,7 +450,24 @@ int main(void)
+ 		crit("Unable to open /dev/null: %s\n", strerror(errno));
  	}
  
++	/*
++	 * Set up a block of shared memory...
++	 */
++	sh = mmap(NULL, sysconf(_SC_PAGE_SIZE), PROT_READ|PROT_WRITE,
++		  MAP_ANONYMOUS|MAP_SHARED, 0, 0);
++	if (sh == MAP_FAILED) {
++		crit("Unable to allocated shared memory block: %s\n",
++		     strerror(errno));
++	}
++
++	with_x32 = test_x32();
++
++	run("Running tests without ptrace...\n");
  	test_syscall_numbering();
++
++	test_traced_syscall_numbering();
++
++	nerr = sh->nerr;
  	if (!nerr) {
--		printf("[OK]\tAll system calls succeeded or failed as expected\n");
-+		ok("All system calls succeeded or failed as expected\n");
+ 		ok("All system calls succeeded or failed as expected\n");
  		return 0;
- 	} else {
--		printf("[FAIL]\tA total of %u system call%s had incorrect behavior\n",
--		       nerr, nerr != 1 ? "s" : "");
-+		fail("A total of %u system call%s had incorrect behavior\n",
-+		     nerr, nerr != 1 ? "s" : "");
- 		return 1;
- 	}
- }
 -- 
 2.31.1
 
