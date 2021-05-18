@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC17387805
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C561387828
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 13:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348877AbhERLuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 07:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348871AbhERLuM (ORCPT
+        id S1348924AbhERL5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 07:57:47 -0400
+Received: from mail-m121142.qiye.163.com ([115.236.121.142]:19896 "EHLO
+        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240075AbhERL5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 07:50:12 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A9AC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:48:54 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gm21so5357944pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 04:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nDpKt1nEvx/rV8xz3CLdiIIy1PWlTjaS6Ot+fK3HSMg=;
-        b=PNWtRN0i5SS6qUPy6hmb4ayw2vJXw8xPP+uHJTpfYnMcQVWRavF+QZFdhC49fBT5yI
-         SxPR6gfu+YjlkvROQ1nAQ4mzYPeBBjIChg+gMkVbGwef3pL3TTgzhbo+1R3Ykw+JKsXq
-         MqhmdOyYxq0aMkb+TElsGM/j4cCJMvO+6Nd88Oe5FbapQ8ifLOSbLGFFd3rLH3rm2M0Z
-         EJXlj5gf/cTyq8o1Xd1AbRchDAhumQUkIxzBSlwMsAB4xLCOiQSSlUsuytnYaAbOscAm
-         9N+sXeY4SSs1A/ajvyi9kZBE/6XcB6zw1Tm/IuQA3CKhy1qumD1HC3BHcVDcZyZUldzB
-         VHuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nDpKt1nEvx/rV8xz3CLdiIIy1PWlTjaS6Ot+fK3HSMg=;
-        b=jQSJ4cmKQZKpoHZbhn/Ykaf49FSzaE7qEEq5GxcJcEcPH+FckfHVW4STvNaCBX94Xk
-         5ENUhx69lgzvYsZnnWWiQqI5N8n8lIPXYbPioUHcT4nXpR/WxEdEzwzf23o0jJ/x38sO
-         0wks5zDfbnBsA5Xdgn8T8k3LPzz+OUSw14QnK/sOAKULDkwWxmf376hmFVQXj76kzr+5
-         o3jWuo27AadWnJrzuv4b1J8Ls34Qhb1o4OaAItANT+wL2zLfih64Tx507SFjUpnbInzo
-         ZcjXra3BeONohY/CKattEMpQ6cRIyooNDgTJmr4fzL12YRVkLmUDlttwyKu7rCT/I0iO
-         tv0w==
-X-Gm-Message-State: AOAM533npNiAA53tBvCvPI7EJKcq5hqas7JpdZ58PD3vbd6xXGliMWLe
-        u1AJnPR/yrMK1PuXR82fkyFkVw==
-X-Google-Smtp-Source: ABdhPJz3P+LGt0NtDZPXAEP6cw9T5fCA3U+F5kBGefzOFsO5Gi70/dvOUEX9DmfXlG5oVj4sQHwzhw==
-X-Received: by 2002:a17:90a:880c:: with SMTP id s12mr4052199pjn.66.1621338533475;
-        Tue, 18 May 2021 04:48:53 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id ck21sm12864851pjb.24.2021.05.18.04.48.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 04:48:53 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: bd71815: Fix missing include files
-Date:   Tue, 18 May 2021 19:48:43 +0800
-Message-Id: <20210518114843.1495152-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Tue, 18 May 2021 07:57:45 -0400
+X-Greylist: delayed 449 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 07:57:44 EDT
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
+        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id 4069B809CC;
+        Tue, 18 May 2021 19:49:13 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Corentin Labbe <clabbe@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        mjpeg-users@lists.sourceforge.net, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] staging: media: zoran: fix some formatting issues
+Date:   Tue, 18 May 2021 19:49:08 +0800
+Message-Id: <1621338548-12077-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGhoaHlZOQk1DQkkaQ0tCGhlVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        9ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRA6MSo6SD8VSis6DjQRGjUw
+        URYwCjVVSlVKTUlKSEhDTk5IQklKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUJZV1kIAVlBSUlOSTcG
+X-HM-Tid: 0a797f4efcf1b037kuuu4069b809cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include linux/of.h and linux/gpio/consumer.h to fix below errors:
-error: implicit declaration of function ‘of_match_ptr’
-error: implicit declaration of function ‘devm_gpiod_get_from_of_node’
+fixing WARNING: Possible repeated word: 'in' as "in in a VIDIOCSFBUF ioctl",
+limit the number of words per line.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- drivers/regulator/bd71815-regulator.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/staging/media/zoran/zoran_card.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/bd71815-regulator.c b/drivers/regulator/bd71815-regulator.c
-index a4e8d5e36b40..a079efa80092 100644
---- a/drivers/regulator/bd71815-regulator.c
-+++ b/drivers/regulator/bd71815-regulator.c
-@@ -13,6 +13,8 @@
- #include <linux/init.h>
- #include <linux/err.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/regulator/driver.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
+diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
+index dfc60e2..f259585
+--- a/drivers/staging/media/zoran/zoran_card.c
++++ b/drivers/staging/media/zoran/zoran_card.c
+@@ -37,9 +37,10 @@ module_param_array(card, int, NULL, 0444);
+ MODULE_PARM_DESC(card, "Card type");
+ 
+ /*
+- * The video mem address of the video card. The driver has a little database for some videocards
+- * to determine it from there. If your video card is not in there you have either to give it to
+- * the driver as a parameter or set in in a VIDIOCSFBUF ioctl
++ * The video mem address of the video card. The driver has a little database
++ * for some videocards to determine it from there. If your video card is not
++ * in there you have either to give it to the driver as a parameter or set
++ * in a VIDIOCSFBUF ioctl
+  */
+ 
+ static unsigned long vidmem;	/* default = 0 - Video memory base address */
 -- 
-2.25.1
+2.7.4
 
