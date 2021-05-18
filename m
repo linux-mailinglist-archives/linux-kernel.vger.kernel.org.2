@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4C438760D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213C738761E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348353AbhERKIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:08:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:47466 "EHLO foss.arm.com"
+        id S242196AbhERKJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:09:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37960 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348324AbhERKIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:08:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5D7A1FB;
-        Tue, 18 May 2021 03:06:44 -0700 (PDT)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8F3C3F719;
-        Tue, 18 May 2021 03:06:42 -0700 (PDT)
-Subject: Re: [PATCH] mm/debug_vm_pgtable: Ensure THP availability via
- has_transparent_hugepage()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-References: <1621325590-18199-1-git-send-email-anshuman.khandual@arm.com>
- <8b9cb771-8fa1-4fc2-bb45-20673240edd8@csgroup.eu>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <4f1e1a56-2820-cbf4-d5a6-0ed7715afd9b@arm.com>
-Date:   Tue, 18 May 2021 15:37:27 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1348390AbhERKJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:09:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621332481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gigLto3lPv80FBXCxS3AVF3qLiXYEjmKtIPmgS5Cpus=;
+        b=rO1X3eI4OIacPcCVcwRsqXTr7RBYSjw1S9LpAfLKyZFW7yqJTB5gDPbzF+U9Tt1ai2tN3Q
+        JKfht12ARMgFgTtq52DowvkKXf3UiQV9CBdNqcwLR9X3GPBHdhqPg1io7tGbr5bzKIyiMU
+        7AHrYmrt5Gsl7DQ5vh15i/vJ2SvvL28=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CDC14B1F7;
+        Tue, 18 May 2021 10:08:00 +0000 (UTC)
+Date:   Tue, 18 May 2021 12:07:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH resend v2 2/5] mm/madvise: introduce
+ MADV_POPULATE_(READ|WRITE) to prefault page tables
+Message-ID: <YKOR/8LzEaOgCvio@dhcp22.suse.cz>
+References: <20210511081534.3507-1-david@redhat.com>
+ <20210511081534.3507-3-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <8b9cb771-8fa1-4fc2-bb45-20673240edd8@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511081534.3507-3-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[sorry for a long silence on this]
 
+On Tue 11-05-21 10:15:31, David Hildenbrand wrote:
+[...]
 
-On 5/18/21 2:20 PM, Christophe Leroy wrote:
+Thanks for the extensive usecase description. That is certainly useful
+background. I am sorry to bring this up again but I am still not
+convinced that READ/WRITE variant are the best interface.
+ 
+> While the use case for MADV_POPULATE_WRITE is fairly obvious (i.e.,
+> preallocate memory and prefault page tables for VMs), one issue is that
+> whenever we prefault pages writable, the pages have to be marked dirty,
+> because the CPU could dirty them any time. while not a real problem for
+> hugetlbfs or dax/pmem, it can be a problem for shared file mappings: each
+> page will be marked dirty and has to be written back later when evicting.
 > 
-> 
-> Le 18/05/2021 à 10:13, Anshuman Khandual a écrit :
->> On certain platforms, THP support could not just be validated via the build
->> option CONFIG_TRANSPARENT_HUGEPAGE. Instead has_transparent_hugepage() also
->> needs to be called upon to verify THP runtime support. Otherwise the debug
->> test might just run into unusable THP helpers like in the case of a 4K hash
-> 
-> s/might/will/
+> MADV_POPULATE_READ allows for optimizing this scenario: Pre-read a whole
+> mapping from backend storage without marking it dirty, such that eviction
+> won't have to write it back. As discussed above, shared file mappings
+> might require an explciit fallocate() upfront to achieve
+> preallcoation+prepopulation.
 
-Sure, will replace.
+This means that you want to have two different uses depending on the
+underlying mapping type. MADV_POPULATE_READ seems rather weak for
+anonymous/private mappings. Memory backed by zero pages seems rather
+unhelpful as the PF would need to do all the heavy lifting anyway.
+Or is there any actual usecase when this is desirable?
 
-> 
->> config on powerpc platform [1]. This just moves all pfn_pmd() and pfn_pud()
->> after THP runtime validation with has_transparent_hugepage() which prevents
->> the mentioned problem.
->>
->> [1] https://bugzilla.kernel.org/show_bug.cgi?id=213069
->>
->> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
->> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> There should be a Fixes:  tag
+So the split into these two modes seems more like gup interface
+shortcomings bubbling up to the interface. I do expect userspace only
+cares about pre-faulting the address range. No matter what the backing
+storage is. 
 
-Considering pmd_basic_tests() as the earliest test which is being
-impacted here, this actually fixes an earlier fix which tried the
-very same thing but was probably not complete. But it also applies
-to portions of advanced tests which came later on as well, which
-should have taken this problem into account.
-
-Fixes: 787d563b8642 ("mm/debug_vm_pgtable: fix kernel crash by checking for THP support")
-
-> 
->> ---
->> This applies on v5.13-rc2 after the following patches.
->>
->> [1] https://lore.kernel.org/linux-mm/20210419071820.750217-1-liushixin2@huawei.com/
->> [2] https://lore.kernel.org/linux-mm/20210419071820.750217-2-liushixin2@huawei.com/
-> 
-> I can't see any fixes: tag in those patches, and their subject line even targets them to -next. Are they meant to go to 5.13 and stable ?
-> 
-> If not, how do you coordinate between your patch that must go in 5.13 and in stable, and those two patches ? Shouldn't your patch go first and those other patches be rebased on top ?
-
-Right, will rebase this patch on v5.13-rc2 directly without those two
-patches. Hence this can be merged in v5.13 and backported to stable
-if required.
+Or do I still misunderstand all the usecases?
+-- 
+Michal Hocko
+SUSE Labs
