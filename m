@@ -2,135 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96AF386E0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F49E386E14
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344777AbhERAHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:07:48 -0400
-Received: from gateway34.websitewelcome.com ([192.185.149.105]:18681 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344763AbhERAHr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:07:47 -0400
-X-Greylist: delayed 900 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 May 2021 20:07:47 EDT
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id C36FFBF7D6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:06:28 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id inFkl2ueuAEP6inFklfB3e; Mon, 17 May 2021 19:06:28 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=k4sEVLknnruDHNpvaSM+w0j2lvZwEiQryRCoSyKzAtU=; b=EUHY6myuyr28THoBW+A8QZ9WrE
-        zwLvASFA/r9a4pD9OF0Mp8ZUXxRer1beCcK7nCD1OPIfv1Dc9ZvvFvxnYUBHwpHNex9xtxZviSZfg
-        8fKZlzcIdRMu+yfkR6Hvb15SjVj/eYw3w+ApkrBesr11i1XF5c6sHK3dJ+68prRnA2ekWkqcQBnfy
-        xNawyp6G7n07NwtPi/Er//wTLw2C8izlOm7yf1k34xZREK517KR/J2mg51EiYaHs4GlDMq2vfAyyu
-        6XbMtgynGXws3QA2IliXreIYxsHF2a8SNSc4A+e4ZPbQ9fbwyIjBohfZy4CW4Du9cogxpdmPotUL2
-        +mLWfhNw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53386 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1linFh-0028jA-89; Mon, 17 May 2021 19:06:25 -0500
-Subject: Re: [oss-drivers] Re: [PATCH RESEND][next] nfp: Fix fall-through
- warnings for Clang
-To:     Simon Horman <simon.horman@netronome.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, oss-drivers@netronome.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210305094937.GA141307@embeddedor>
- <20210305121949.GF8899@netronome.com>
- <b4fd4c37-ccd6-3cbb-a127-3b2ad9516871@embeddedor.com>
- <20210421093911.GA15091@netronome.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <3c89dd75-64a9-d60b-164c-598cdb4ab2b8@embeddedor.com>
-Date:   Mon, 17 May 2021 19:07:07 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1344804AbhERALx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:11:53 -0400
+Received: from mga05.intel.com ([192.55.52.43]:2844 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240604AbhERALw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 20:11:52 -0400
+IronPort-SDR: 5KEpWdjRzEmb9gZ32ruEJOQLydWNPA5lhSpfJgShEk9vDlOMhJQLb7xSuU4ESwfwJEkWOghJTz
+ x0LEhVQ1FTQA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="286122791"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="286122791"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:10:35 -0700
+IronPort-SDR: A8jUN6nkOvx7gLr3aYu8oN/69r+O0cShgni0HyhSLF8n4CujSGAIK8mLQhfnl995CqxsAUpbea
+ LEf6cPr9RjzQ==
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="438419905"
+Received: from sdayal-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.213.167.196])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 17:10:34 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2-fix 1/1] x86/traps: Add #VE support for TDX guest
+Date:   Mon, 17 May 2021 17:09:57 -0700
+Message-Id: <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+References: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421093911.GA15091@netronome.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1linFh-0028jA-89
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53386
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 12
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-I'm taking this in my -next[1] branch for v5.14.
+Virtualization Exceptions (#VE) are delivered to TDX guests due to
+specific guest actions which may happen in either user space or the kernel:
 
-Thanks
---
-Gustavo
+ * Specific instructions (WBINVD, for example)
+ * Specific MSR accesses
+ * Specific CPUID leaf accesses
+ * Access to TD-shared memory, which includes MMIO
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+In the settings that Linux will run in, virtual exceptions are never
+generated on accesses to normal, TD-private memory that has been
+accepted.
 
-On 4/21/21 04:39, Simon Horman wrote:
-> On Tue, Apr 20, 2021 at 03:23:39PM -0500, Gustavo A. R. Silva wrote:
->> On 3/5/21 06:19, Simon Horman wrote:
->>> On Fri, Mar 05, 2021 at 03:49:37AM -0600, Gustavo A. R. Silva wrote:
->>>> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->>>> by explicitly adding a break statement instead of letting the code fall
->>>> through to the next case.
->>>>
->>>> Link: https://github.com/KSPP/linux/issues/115
->>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>>
->>> Thanks Gustavo,
->>>
->>> this looks good to me.
->>>
->>> Acked-by: Simon Horman <simon.horman@netronome.com>
->>
->> Hi all,
->>
->> Friendly ping: who can take this, please?
-> 
-> Hi Jakub, Hi David,
-> 
-> I'm happy to repost this patch if it would help with your processes.
-> 
->>>> ---
->>>>  drivers/net/ethernet/netronome/nfp/nfp_net_repr.c | 1 +
->>>>  1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_repr.c b/drivers/net/ethernet/netronome/nfp/nfp_net_repr.c
->>>> index b3cabc274121..3b8e675087de 100644
->>>> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_repr.c
->>>> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_repr.c
->>>> @@ -103,6 +103,7 @@ nfp_repr_get_stats64(struct net_device *netdev, struct rtnl_link_stats64 *stats)
->>>>  	case NFP_PORT_PF_PORT:
->>>>  	case NFP_PORT_VF_PORT:
->>>>  		nfp_repr_vnic_get_stats64(repr->port, stats);
->>>> +		break;
->>>>  	default:
->>>>  		break;
->>>>  	}
->>>> -- 
->>>> 2.27.0
->>>>
+The entry paths do not access TD-shared memory, MMIO regions or use
+those specific MSRs, instructions, CPUID leaves that might generate #VE.
+In addition, all interrupts including NMIs are blocked by the hardware
+starting with #VE delivery until TDGETVEINFO is called.  This eliminates
+the chance of a #VE during the syscall gap or paranoid entry paths and
+simplifies #VE handling.
+
+After TDGETVEINFO #VE could happen in theory (e.g. through an NMI),
+although we don't expect it to happen because we don't expect NMIs to
+trigger #VEs. Another case where they could happen is if the #VE
+exception panics, but in this case there are no guarantees on anything
+anyways.
+
+If a guest kernel action which would normally cause a #VE occurs in the
+interrupt-disabled region before TDGETVEINFO, a #DF is delivered to the
+guest which will result in an oops (and should eventually be a panic, as
+we would like to set panic_on_oops to 1 for TDX guests).
+
+Add basic infrastructure to handle any #VE which occurs in the kernel or
+userspace.  Later patches will add handling for specific #VE scenarios.
+
+Convert unhandled #VE's (everything, until later in this series) so that
+they appear just like a #GP by calling ve_raise_fault() directly.
+ve_raise_fault() is similar to #GP handler and is responsible for
+sending SIGSEGV to userspace and cpu die and notifying debuggers and
+other die chain users.  
+
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+
+Changes since v1:
+ * Removed [RFC v2 07/32] x86/traps: Add do_general_protection() helper function.
+ * Instead of resuing #GP handler, defined a custom handler.
+ * Fixed commit log as per review comments.
+
+ arch/x86/include/asm/idtentry.h |  4 ++
+ arch/x86/include/asm/tdx.h      | 20 ++++++++++
+ arch/x86/kernel/idt.c           |  6 +++
+ arch/x86/kernel/tdx.c           | 35 +++++++++++++++++
+ arch/x86/kernel/traps.c         | 70 +++++++++++++++++++++++++++++++++
+ 5 files changed, 135 insertions(+)
+
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 5eb3bdf36a41..41a0732d5f68 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -619,6 +619,10 @@ DECLARE_IDTENTRY_XENCB(X86_TRAP_OTHER,	exc_xen_hypervisor_callback);
+ DECLARE_IDTENTRY_RAW(X86_TRAP_OTHER,	exc_xen_unknown_trap);
+ #endif
+ 
++#ifdef CONFIG_INTEL_TDX_GUEST
++DECLARE_IDTENTRY(X86_TRAP_VE,		exc_virtualization_exception);
++#endif
++
+ /* Device interrupts common/spurious */
+ DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	common_interrupt);
+ #ifdef CONFIG_X86_LOCAL_APIC
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 1d75be21a09b..8ab4067afefc 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -11,6 +11,7 @@
+ #include <linux/types.h>
+ 
+ #define TDINFO			1
++#define TDGETVEINFO		3
+ 
+ struct tdx_module_output {
+ 	u64 rcx;
+@@ -29,6 +30,25 @@ struct tdx_hypercall_output {
+ 	u64 r15;
+ };
+ 
++/*
++ * Used by #VE exception handler to gather the #VE exception
++ * info from the TDX module. This is software only structure
++ * and not related to TDX module/VMM.
++ */
++struct ve_info {
++	u64 exit_reason;
++	u64 exit_qual;
++	u64 gla;
++	u64 gpa;
++	u32 instr_len;
++	u32 instr_info;
++};
++
++unsigned long tdg_get_ve_info(struct ve_info *ve);
++
++int tdg_handle_virtualization_exception(struct pt_regs *regs,
++		struct ve_info *ve);
++
+ /* Common API to check TDX support in decompression and common kernel code. */
+ bool is_tdx_guest(void);
+ 
+diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
+index ee1a283f8e96..546b6b636c7d 100644
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -64,6 +64,9 @@ static const __initconst struct idt_data early_idts[] = {
+ 	 */
+ 	INTG(X86_TRAP_PF,		asm_exc_page_fault),
+ #endif
++#ifdef CONFIG_INTEL_TDX_GUEST
++	INTG(X86_TRAP_VE,		asm_exc_virtualization_exception),
++#endif
+ };
+ 
+ /*
+@@ -87,6 +90,9 @@ static const __initconst struct idt_data def_idts[] = {
+ 	INTG(X86_TRAP_MF,		asm_exc_coprocessor_error),
+ 	INTG(X86_TRAP_AC,		asm_exc_alignment_check),
+ 	INTG(X86_TRAP_XF,		asm_exc_simd_coprocessor_error),
++#ifdef CONFIG_INTEL_TDX_GUEST
++	INTG(X86_TRAP_VE,		asm_exc_virtualization_exception),
++#endif
+ 
+ #ifdef CONFIG_X86_32
+ 	TSKG(X86_TRAP_DF,		GDT_ENTRY_DOUBLEFAULT_TSS),
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 4dfacde05f0c..b5fffbd86331 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -85,6 +85,41 @@ static void tdg_get_info(void)
+ 	td_info.attributes = out.rdx;
+ }
+ 
++unsigned long tdg_get_ve_info(struct ve_info *ve)
++{
++	u64 ret;
++	struct tdx_module_output out = {0};
++
++	/*
++	 * NMIs and machine checks are suppressed. Before this point any
++	 * #VE is fatal. After this point (TDGETVEINFO call), NMIs and
++	 * additional #VEs are permitted (but we don't expect them to
++	 * happen unless you panic).
++	 */
++	ret = __tdx_module_call(TDGETVEINFO, 0, 0, 0, 0, &out);
++
++	ve->exit_reason = out.rcx;
++	ve->exit_qual   = out.rdx;
++	ve->gla         = out.r8;
++	ve->gpa         = out.r9;
++	ve->instr_len   = out.r10 & UINT_MAX;
++	ve->instr_info  = out.r10 >> 32;
++
++	return ret;
++}
++
++int tdg_handle_virtualization_exception(struct pt_regs *regs,
++		struct ve_info *ve)
++{
++	/*
++	 * TODO: Add handler support for various #VE exit
++	 * reasons. It will be added by other patches in
++	 * the series.
++	 */
++	pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
++	return -EFAULT;
++}
++
+ void __init tdx_early_init(void)
+ {
+ 	if (!cpuid_has_tdx_guest())
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 651e3e508959..af8efa2e57ba 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -61,6 +61,7 @@
+ #include <asm/insn.h>
+ #include <asm/insn-eval.h>
+ #include <asm/vdso.h>
++#include <asm/tdx.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <asm/x86_init.h>
+@@ -1137,6 +1138,75 @@ DEFINE_IDTENTRY(exc_device_not_available)
+ 	}
+ }
+ 
++#define VEFSTR "VE fault"
++static void ve_raise_fault(struct pt_regs *regs, long error_code)
++{
++	struct task_struct *tsk = current;
++
++	if (user_mode(regs)) {
++		tsk->thread.error_code = error_code;
++		tsk->thread.trap_nr = X86_TRAP_VE;
++
++		/*
++		 * Not fixing up VDSO exceptions similar to #GP handler
++		 * because we don't expect the VDSO to trigger #VE.
++		 */
++		show_signal(tsk, SIGSEGV, "", VEFSTR, regs, error_code);
++		force_sig(SIGSEGV);
++		return;
++	}
++
++
++	if (fixup_exception(regs, X86_TRAP_VE, error_code, 0))
++		return;
++
++	tsk->thread.error_code = error_code;
++	tsk->thread.trap_nr = X86_TRAP_VE;
++
++	/*
++	 * To be potentially processing a kprobe fault and to trust the result
++	 * from kprobe_running(), we have to be non-preemptible.
++	 */
++	if (!preemptible() &&
++	    kprobe_running() &&
++	    kprobe_fault_handler(regs, X86_TRAP_VE))
++		return;
++
++	notify_die(DIE_GPF, VEFSTR, regs, error_code, X86_TRAP_VE, SIGSEGV);
++
++	die_addr(VEFSTR, regs, error_code, 0);
++}
++
++#ifdef CONFIG_INTEL_TDX_GUEST
++DEFINE_IDTENTRY(exc_virtualization_exception)
++{
++	struct ve_info ve;
++	int ret;
++
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
++
++	/*
++	 * NMIs/Machine-checks/Interrupts will be in a disabled state
++	 * till TDGETVEINFO TDCALL is executed. This prevents #VE
++	 * nesting issue.
++	 */
++	ret = tdg_get_ve_info(&ve);
++
++	cond_local_irq_enable(regs);
++
++	if (!ret)
++		ret = tdg_handle_virtualization_exception(regs, &ve);
++	/*
++	 * If tdg_handle_virtualization_exception() could not process
++	 * it successfully, treat it as #GP(0) and handle it.
++	 */
++	if (ret)
++		ve_raise_fault(regs, 0);
++
++	cond_local_irq_disable(regs);
++}
++#endif
++
+ #ifdef CONFIG_X86_32
+ DEFINE_IDTENTRY_SW(iret_error)
+ {
+-- 
+2.25.1
+
