@@ -2,125 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC51386EB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B9E386EBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 03:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345357AbhERBJO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 May 2021 21:09:14 -0400
-Received: from emcscan.emc.com.tw ([192.72.220.5]:42182 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239795AbhERBJO (ORCPT
+        id S1345375AbhERBJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 21:09:49 -0400
+Received: from gateway23.websitewelcome.com ([192.185.50.107]:43865 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237832AbhERBJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 21:09:14 -0400
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="40764566"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 18 May 2021 09:07:54 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(177985:0:AUTH_RELAY)
-        (envelope-from <johnny.chuang@emc.com.tw>); Tue, 18 May 2021 09:07:54 +0800 (CST)
-Received: from 192.168.55.71
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2473:3:AUTH_LOGIN)
-        (envelope-from <johnny.chuang@emc.com.tw>); Tue, 18 May 2021 09:07:53 +0800 (CST)
-From:   "Johnny.Chuang" <johnny.chuang@emc.com.tw>
-To:     "'Harry Cutts'" <hcutts@chromium.org>,
-        "'Johnny Chuang'" <johnny.chuang.emc@gmail.com>
-Cc:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>,
-        "'Benjamin Tissoires'" <benjamin.tissoires@redhat.com>,
-        "'Peter Hutterer'" <peter.hutterer@who-t.net>,
-        "'lkml'" <linux-kernel@vger.kernel.org>,
-        "'linux-input'" <linux-input@vger.kernel.org>,
-        "'James Chen'" <james.chen@emc.com.tw>,
-        "'Jennifer Tsai'" <jennifer.tsai@emc.com.tw>,
-        "'Paul Liang'" <paul.liang@emc.com.tw>,
-        "'Jeff Chuang'" <jeff.chuang@emc.com.tw>,
-        "'Douglas Anderson'" <dianders@chromium.org>,
-        "'Jingle'" <jingle.wu@emc.com.tw>, "'Paris Yeh'" <pyeh@google.com>,
-        "'sukumar . ghorai'" <sukumar.ghorai@intel.corp-partner.google.com>
-References: <1621295824-12730-1-git-send-email-johnny.chuang.emc@gmail.com> <CA+jURcv-o3g3C6zZhGio7KKtco-b+dGk+vm=3Nj8ps_-yMQRNA@mail.gmail.com>
-In-Reply-To: <CA+jURcv-o3g3C6zZhGio7KKtco-b+dGk+vm=3Nj8ps_-yMQRNA@mail.gmail.com>
-Subject: RE: [PATCH] HID: i2c-hid: Add I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON to optimize timing
-Date:   Tue, 18 May 2021 09:07:53 +0800
-Message-ID: <089701d74b82$3b0c1c00$b1245400$@emc.com.tw>
+        Mon, 17 May 2021 21:09:47 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 6AE9598BF
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 20:08:28 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id ioDjl2OMN8ElSioDjlWWsK; Mon, 17 May 2021 20:08:27 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9W4PZScGBnM9PEHtZk3wkq4HEcWAcp1d4Av336J8J/o=; b=GrxwLzwbJaGYsZn+DODYhFGXL9
+        oCXyyaZxQRRAV29AJwx0SR03wTlu20HF7BywFY9hgQx09Xq99fL8IIm85f9DL96vVjIehVO/ZGe4f
+        iLyEGJxbyY9oL65EbrhYQdWkw543BYZBH2P6We5aNUgPnnUv9guSe6f7rd619/GbOwt0liE0u5elS
+        40fqY8SY+orZsdonQg1+BnpV3HGgiVFaoiNqRh/95abd0OFtkBMMIA0zpeMaKgEV9vTtdelScd76V
+        wPSbC6tJ0BdQQtUx15uBTTHdYAVDxREP2xHZxc6myk80YT4Joi0VeZKsSJDhUh38npUC993cgulyD
+        6WlYD69w==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53620 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lioDg-003AZd-EZ; Mon, 17 May 2021 20:08:24 -0500
+Subject: Re: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
+To:     "Xue, Ying" <Ying.Xue@windriver.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jon Maloy <jmaloy@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "tipc-discussion@lists.sourceforge.net" 
+        <tipc-discussion@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+References: <20210305092504.GA140204@embeddedor>
+ <DM6PR11MB3964D94D53B98CBA9A25892484479@DM6PR11MB3964.namprd11.prod.outlook.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <f56b0e54-35e9-dc42-88ac-878ee3c04a9d@embeddedor.com>
+Date:   Mon, 17 May 2021 20:09:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQKTds7H4vJlViKUoEQ2K8NJpxt9xgIFo9jjqV/oReA=
-Content-Language: zh-tw
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDUwMTBcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy03ODgyODQxOS1iNzc1LTExZWItODY2Mi03YzVjZjg3NDk0NzhcYW1lLXRlc3RcNzg4Mjg0MWItYjc3NS0xMWViLTg2NjItN2M1Y2Y4NzQ5NDc4Ym9keS50eHQiIHN6PSIyNDAyIiB0PSIxMzI2NTc3MzY3MzYyNzYxNTYiIGg9IlpXYng0VXJYT0lKRnp4WmtPdjE1NWpWRk9mOD0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
+In-Reply-To: <DM6PR11MB3964D94D53B98CBA9A25892484479@DM6PR11MB3964.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lioDg-003AZd-EZ
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53620
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 28
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, 17 May 2021 at 16:57, Johnny Chuang
-> <johnny.chuang.emc@gmail.com> wrote:
-> >
-> > There is a hard coding 60ms delay after I2C_HID_PWR_ON commadn.
-> > Elan didn't need the delay, so we add a quirk to reduce boot time and
-> resume time.
-> >
-> > Optimized: eef4016243e9("HID: i2c-hid: Always sleep 60ms after
-> > I2C_HID_PWR_ON commands")
-> 
-> I don't think Optimized: is a valid commit tag, though I'm not sure if it'll cause
-> any problems.
+Hi all,
 
-I will change to Fixed tag at PATCH v2.
+If you don't mind, I'm taking this in my -next[1] branch for v5.14.
 
-> 
-> >
-> > Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
-> > ---
-> >  drivers/hid/i2c-hid/i2c-hid-core.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c
-> > b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > index 9993133..e7ec280 100644
-> > --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> > +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > [...snip...]
-> > @@ -178,6 +179,11 @@ static const struct i2c_hid_quirks {
-> >                  I2C_HID_QUIRK_RESET_ON_RESUME },
-> >         { USB_VENDOR_ID_ITE,
-> I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
-> >                 I2C_HID_QUIRK_BAD_INPUT_SIZE },
-> > +       /*
-> > +        * Optimize boot time and resume time
-> > +        */
-> 
-> This comment is a bit too vague to be useful; maybe state that Elan devices
-> don't need the delay instead, or just remove the comment.
-> 
-> Other than that,
+Thanks
+--
+Gustavo
 
-Okay, I will change to Elan devices don't need the delay at PATCH v2.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
 
+On 4/21/21 09:51, Xue, Ying wrote:
+> This patch looks good to me.
 > 
-> Reviewed-by: Harry Cutts <hcutts@chromium.org>
+> -----Original Message-----
+> From: Gustavo A. R. Silva <gustavoars@kernel.org> 
+> Sent: Friday, March 5, 2021 5:25 PM
+> To: Jon Maloy <jmaloy@redhat.com>; Xue, Ying <Ying.Xue@windriver.com>; David S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org; tipc-discussion@lists.sourceforge.net; linux-kernel@vger.kernel.org; Gustavo A. R. Silva <gustavoars@kernel.org>; linux-hardening@vger.kernel.org
+> Subject: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
 > 
-> > +       { USB_VENDOR_ID_ELAN, HID_ANY_ID,
-> > +                I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON },
-> >         { 0, 0 }
-> >  };
-> >
-> > @@ -427,7 +433,8 @@ static int i2c_hid_set_power(struct i2c_client *client,
-> int power_state)
-> >          * PWR_ON requests. Testing has confirmed that several devices
-> >          * will not work properly without a delay after a PWR_ON
-> request.
-> >          */
-> > -       if (!ret && power_state == I2C_HID_PWR_ON)
-> > +       if (!ret && power_state == I2C_HID_PWR_ON &&
-> > +           !(ihid->quirks &
-> I2C_HID_QUIRK_NO_DELAY_AFTER_PWR_ON))
-> >                 msleep(60);
-> >
-> >         return ret;
-> > --
-> > 2.7.4
-> >
-
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning by explicitly adding a break statement instead of letting the code fall through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  net/tipc/link.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/tipc/link.c b/net/tipc/link.c index 115109259430..bcc426e16725 100644
+> --- a/net/tipc/link.c
+> +++ b/net/tipc/link.c
+> @@ -649,6 +649,7 @@ int tipc_link_fsm_evt(struct tipc_link *l, int evt)
+>  			break;
+>  		case LINK_FAILOVER_BEGIN_EVT:
+>  			l->state = LINK_FAILINGOVER;
+> +			break;
+>  		case LINK_FAILURE_EVT:
+>  		case LINK_RESET_EVT:
+>  		case LINK_ESTABLISH_EVT:
+> --
+> 2.27.0
+> 
