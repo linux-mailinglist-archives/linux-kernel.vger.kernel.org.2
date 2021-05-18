@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE30538829B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E0C38829D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352689AbhERWJS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 May 2021 18:09:18 -0400
-Received: from mga06.intel.com ([134.134.136.31]:39731 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236372AbhERWJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 18:09:17 -0400
-IronPort-SDR: LeH26PNEiWy0Io9lcialYSnNIMNXKXjue3mq8JY6mWP004wroI6Eigu30Jj+GS/ZOaSWqB6jkr
- Z0J/ukMv7M9w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="262058150"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="262058150"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 15:07:39 -0700
-IronPort-SDR: k0jIFLkdusG9zKUDbdmXKcGLn9eDLwGroA23IKUldrDC4H01ulzY5jY+6bNU9bZuEOAw9yNlpS
- 4xcXflT5SlJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="542148207"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga001.fm.intel.com with ESMTP; 18 May 2021 15:07:39 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 18 May 2021 15:07:39 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 18 May 2021 15:07:38 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
- Tue, 18 May 2021 15:07:38 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leonro@nvidia.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: RE: [PATCH rdma-rc v1] RDMA/core: Sanitize WQ state received from the
- userspace
-Thread-Topic: [PATCH rdma-rc v1] RDMA/core: Sanitize WQ state received from
- the userspace
-Thread-Index: AQHXS+WIu57S1D4IoUWORM74T0nFLarpy6QQ
-Date:   Tue, 18 May 2021 22:07:38 +0000
-Message-ID: <b40b9bac4f3e4a628bee17b5b5acc61a@intel.com>
-References: <0433d8013ed3a2ffdd145244651a5edb2afbd75b.1621342527.git.leonro@nvidia.com>
-In-Reply-To: <0433d8013ed3a2ffdd145244651a5edb2afbd75b.1621342527.git.leonro@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1352700AbhERWL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 18:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236372AbhERWLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 18:11:24 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA828C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:10:04 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id i22so15966955lfl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:10:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gUqbTnERfQlA9FpQ+x6IqZG4L4yxkQHhw4MmocVh3QY=;
+        b=FvCnWcb56yKF2FqOXH3Zt3PHvDmR1zyW2n3G+hKP5EhMQW7rFVZI4U3jWIXJZqQV8+
+         h25LGnSllotmJvMZ2v6VTQE5MV7B3pNIYeXytovx3MTovDU4/+WGKw/tEFPuGqf/UR5j
+         +adroXJKxvw81yWGTtfW008KBb8DMGhLA55MmCacHk67+qYcRkqdj0AouS2nkGazv8N/
+         t+kajLJBjCKkZYVZRQhit85CpmGYhfJJYh6fAdq4c98ksq1sWk9U4PhIrACjJRfcoK1Y
+         PWsD7L/AfZ2aO2/3cpCYfepsDHxn7nBJTsNxojGUY9u3HjpKe3fy8kcoEX9oRDIlY/O4
+         9neA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gUqbTnERfQlA9FpQ+x6IqZG4L4yxkQHhw4MmocVh3QY=;
+        b=sivudHaiNFVSohW4NxbNSfZn86E8+wFTosJVjwu43OJWStDzwfx9nxNyeyvz10CUBU
+         fzE2W/iu6KfhIzSDREUVle08gLzsQRwi/Os42uvm83pS1/euAb/7j5+6iu68niggKYdq
+         h2CbfgNqz22kN3d9Ybf6rpUTkCs7EmUsZUbPT8zZgs6iEUvJ8fDd4h0ZRSaHsYGTiXSC
+         4PETQ4AbYCdLuNt3ybbhOaAcDE+boAzO0A5Hw2SByUPynsg/2x4yuailRJ7Oq7K2PiEa
+         nxIXm6VpBkcTztaPgkEMsyg5ZpsXcKA2uJY4TdvTmja1nX8tSsk4rXxEhEPVPPLdppUN
+         XfaQ==
+X-Gm-Message-State: AOAM532hz8pOmWbSWOd8QoKG80mtwaMYfG3lqcUpcAWkG8eaiSws30V5
+        WOI2I2UQ/xjy7eDbZJXBuDzt0xTHxxVwCs3FctYU/6rAryg=
+X-Google-Smtp-Source: ABdhPJydRuX1IKk4wJeCw2SK5Ui/hbSgODD0qlwIJGviqOjSmkaui5IUyWaBsOubTCXqoO91ISfDH+Tgq/NqD7A1IBI=
+X-Received: by 2002:a19:b0b:: with SMTP id 11mr5542481lfl.291.1621375803139;
+ Tue, 18 May 2021 15:10:03 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210518120633.GW12395@shell.armlinux.org.uk> <E1liydQ-0004Po-2c@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1liydQ-0004Po-2c@rmk-PC.armlinux.org.uk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 19 May 2021 00:09:52 +0200
+Message-ID: <CACRpkdYoB9k-cGRCbXJ=WaR_brTm-w4zsYH2Co5h51qJ=yKshw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ARM: change vmalloc_min to be unsigned long
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hailong liu <carver4lio@163.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH rdma-rc v1] RDMA/core: Sanitize WQ state received from the
-> userspace
-> 
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> The mlx4 and mlx5 implemented differently the WQ input checks.
-> Instead of duplicating mlx4 logic in the mlx5, let's prepare the input in the central
-> place.
+On Tue, May 18, 2021 at 2:15 PM Russell King (Oracle)
+<rmk+kernel@armlinux.org.uk> wrote:
 
-Maybe some more verbiage about what the bug was in mlx5 that prompted this patch would
-be good since this an -rc fix.
+> vmalloc_min is currently a void pointer, but everywhere its used
+> contains a cast - either to a void pointer when setting or back to
+> an integer type when being used. Eliminate these casts by changing
+> its type to unsigned long.
+>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Shiraz
+Looks good!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
