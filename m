@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DCF386E49
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAE9386E4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 02:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239721AbhERA0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 20:26:25 -0400
-Received: from gateway23.websitewelcome.com ([192.185.50.107]:40619 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237509AbhERA0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 20:26:25 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 324FE92F5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 19:25:06 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id inXml1j7M8ElSinXmlVs3B; Mon, 17 May 2021 19:25:06 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=17jgeobkFVa1lONgCh3PHoiuxiQYySp4r1X7ZA320/I=; b=gCqIuJE/aNf9EAT1kuQWxDSRs6
-        8apFAREr2OInbd6d8QRxxv3wk/YF0ewMrfEQcALPiGL9XtWK2wacq4JY/XsWfAjcHxUIgCj+eeWEe
-        hcLo1ihouocgkNEIeIUhTo9QT/YENk2OapkB0iXEmhR9VcQ99cV5BHdyi8ynBWyIcsuFzK9Ux/kmA
-        iXP2nLVABM7DlCytE+lqQ+oF9i7qR2eAcHC4NsFSaiGk6ak4krf9B6QLkanKORZZJhCk6bhkPXzMv
-        wXgNdSBguSC9JJMzG+EqfKq79Y74/qbvWD1TDBnAl/wOxgwRNLReyY5WNhQqqSw/RHLzLWHWShSFm
-        m+XBN6aw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53444 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1linXh-002TFl-KX; Mon, 17 May 2021 19:25:01 -0500
-Subject: Re: [PATCH RESEND][next] qlcnic: Fix fall-through warnings for Clang
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Shahed Shaikh <shshaikh@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210305091735.GA139591@embeddedor>
- <9502f47c-4e5c-2406-9cc7-708c90899c9d@embeddedor.com>
-Message-ID: <fccf5380-7898-8a96-be52-a4f6efc64e76@embeddedor.com>
-Date:   Mon, 17 May 2021 19:25:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1344972AbhERA2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 20:28:11 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:58457 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235315AbhERA2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 20:28:10 -0400
+Received: from [IPv6:2601:646:8602:8be1:c569:1cd0:3c83:3a98] ([IPv6:2601:646:8602:8be1:c569:1cd0:3c83:3a98])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14I0QXWv3839931
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Mon, 17 May 2021 17:26:38 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14I0QXWv3839931
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621297598;
+        bh=+KmKCH9+X1GrMfr1BN1l176CssFSpSIwHtCwdbJbrPQ=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=KrJFNZRXuhD/qvYmWRw/WrJsNy/X8RApGB406O4HPveoW1zKtlsuXQ6ZKyhr0jxEi
+         R6nfVL36wX/zFCRmuvdbx4ARXEYIrqFuyy+gvU/JZ5Ld5RbaXu9rS9UneuVRji2DUp
+         CBsAmX/lR/Gv3b6zTPP/pUpBWrHWoeD8l3e3tZVnell8oWPDcFXyyU9n2w9eh7j6Bt
+         3HIFUv/NcVs4xinKG/R8pwbJWTkth3WkP29ymWfbfZ3KwtMPY8oqoTWBi17VjGfQ9+
+         mCe2MKuI+cXPQlzJUgy8OKkd1Db8NmiDf4/EN0Qs95355KdVwqQaAqdbjq4tqMNNfy
+         OUlWZdgoSHo3Q==
+Date:   Mon, 17 May 2021 17:26:22 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YKDPJum3pB/Ma9Gs@gmail.com>
+References: <20210515011015.2707542-1-hpa@zytor.com> <20210515011015.2707542-3-hpa@zytor.com> <YKDPJum3pB/Ma9Gs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9502f47c-4e5c-2406-9cc7-708c90899c9d@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1linXh-002TFl-KX
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53444
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 37
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 2/4] x86/syscall: update and extend selftest syscall_numbering_64
+To:     Ingo Molnar <mingo@kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <516A893A-3436-4693-8960-FCE70C3C0B5E@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Sure=2E I am also working on implementing Andy's request of adding a ptrace=
+r; it will probably take me a few days to clear off the time to do so=2E
 
-I'm taking this in my -next[1] branch for v5.14.
-
-Thanks
---
-Gustavo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
-
-On 4/20/21 15:27, Gustavo A. R. Silva wrote:
-> Hi all,
-> 
-> Friendly ping: who can take this, please?
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> On 3/5/21 03:17, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
->> warnings by explicitly adding a break and a goto statements instead of
->> just letting the code fall through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On May 16, 2021 12:52:06 AM PDT, Ingo Molnar <mingo@kernel=2Eorg> wrote:
+>
+>* H=2E Peter Anvin <hpa@zytor=2Ecom> wrote:
+>
+>> From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom>
+>>=20
+>> Update the syscall_numbering_64 selftest to reflect that a system
+>call
+>> is to be extended from 32 bits=2E Add a mix of tests for valid and
+>> invalid system calls in 64-bit and x32 space=2E
+>>=20
+>> Use an explicit system call instruction, because we cannot know if
+>the
+>> glibc syscall() wrapper intercepts instructions, extends the system
+>> call number independently, or anything similar=2E
+>>=20
+>> Use long long instead of long to make it possible to compile this
+>test
+>> on x32 as well as 64 bits=2E
+>>=20
+>> Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
 >> ---
->>  drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c   | 1 +
->>  drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c | 1 +
->>  2 files changed, 2 insertions(+)
->>
->> diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
->> index bdf15d2a6431..af4c516a9e7c 100644
->> --- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
->> +++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
->> @@ -1390,6 +1390,7 @@ static int qlcnic_process_rcv_ring(struct qlcnic_host_sds_ring *sds_ring, int ma
->>  			break;
->>  		case QLCNIC_RESPONSE_DESC:
->>  			qlcnic_handle_fw_message(desc_cnt, consumer, sds_ring);
->> +			goto skip;
->>  		default:
->>  			goto skip;
->>  		}
->> diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
->> index 96b947fde646..8966f1bcda77 100644
->> --- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
->> +++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
->> @@ -3455,6 +3455,7 @@ qlcnic_fwinit_work(struct work_struct *work)
->>  			adapter->fw_wait_cnt = 0;
->>  			return;
->>  		}
->> +		break;
->>  	case QLCNIC_DEV_FAILED:
->>  		break;
->>  	default:
->>
+>>  =2E=2E=2E/testing/selftests/x86/syscall_numbering=2Ec | 274
+>++++++++++++++----
+>>  1 file changed, 222 insertions(+), 52 deletions(-)
+>
+>Small request: I'd suggest moving this to the first place - so that we
+>can=20
+>easily test before/after effects of (current) patch #1/4=2E
+>
+>Thanks,
+>
+>	Ingo
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
