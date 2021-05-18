@@ -2,149 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5C938831A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A068F38831D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238564AbhERX2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:28:49 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6020 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230352AbhERX2o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:28:44 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14IN48ln032311;
-        Tue, 18 May 2021 19:27:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=szwMXhJStHqamyPt//Gt/3KQhxeXPJVI25+JNBO3flE=;
- b=kh/vnmzzokZZYpplxeO+E9xFFRzY+9xs5Mw+qvwjyls/VVv545/sSgj7d8qeC747pGG/
- eNxu7MDjVcPy7dK9b/lQ1dlpy/563cTwKHgpyNzUVbtPQpZW3rDs01cL/BMcfAi1j55T
- P5IvfcmHpEtloVAJT7YS1xNxnSpt8R+OT18BHUUKk1tAlrb/AViVO24y/We0i6j+Vq9b
- NCRh7fOmVWIQGpFyyhXKdavTL/MIS3QstoLnTM+1jy/ZdYB8G5VGO6zjmIh1TWiYk15a
- 4WiXOCOXw8LwMeLpOKbIBwba0DGSAXfKMY/+TXAP6l0yQ/rEbvP4hoWEwJXiFCwhOhnx ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mpp1rnma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 19:27:24 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14IN5C75042566;
-        Tue, 18 May 2021 19:27:23 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mpp1rnkt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 19:27:23 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14INODP9025658;
-        Tue, 18 May 2021 23:27:21 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 38j5x88y06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 May 2021 23:27:21 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14INRIu044433710
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 May 2021 23:27:18 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 15F73A4051;
-        Tue, 18 May 2021 23:27:18 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3315EA4040;
-        Tue, 18 May 2021 23:27:17 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.17.64])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 18 May 2021 23:27:17 +0000 (GMT)
-Date:   Wed, 19 May 2021 01:27:09 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
- callback
-Message-ID: <20210519012709.3bcc30e7.pasic@linux.ibm.com>
-In-Reply-To: <ca5f1c72-09a3-d270-44a0-bda54c554f67@de.ibm.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
-        <20210512203536.4209c29c.pasic@linux.ibm.com>
-        <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
-        <20210513194541.58d1628a.pasic@linux.ibm.com>
-        <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
-        <20210514021500.60ad2a22.pasic@linux.ibm.com>
-        <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
-        <20210517211030.368ca64b.pasic@linux.ibm.com>
-        <966a60ad-bdde-68d0-ae2f-06121c6ad970@de.ibm.com>
-        <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
-        <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
-        <20210518173351.39646b45.pasic@linux.ibm.com>
-        <ca5f1c72-09a3-d270-44a0-bda54c554f67@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S238640AbhERX3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 19:29:44 -0400
+Received: from mail-eopbgr1410041.outbound.protection.outlook.com ([40.107.141.41]:56384
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230352AbhERX3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 19:29:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FafAel+WyVWniMtD1RGJy7szX6JXNyudkXtmWHXAuP2avu3dZzm++ahFhyzXTxhJF0CzZf3oNTL1bg+hev+o80q6s+OqMlRt7IBunPcA+WnlkwodO1lNi63b37qajxyGv5X2H30Y6Ft1lW+pKTE0S18S6iogLKdKTOmzcAxCp8HbKiuNDQzf7JX8In6DY3sAIkEbb9EfQZPqWCROmSS6NygggKkmBfxTrZGzF+Bd0i3Hk23sfEDW30i5VGpw4ZiCqe/kpthXoKAXRqa2vxUhRZygI8Z3+Y0xF6QmiFq6FlW+jaYD4tNbIjBOv1O2hhXJIZZI8ax2gECNLX01vnQBFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jca7gpM5jq61hUaPufeRsEZ30MHS3g63z6H/2NEarpI=;
+ b=H64z0VJfoibvoJapGpHLppUKlYyDp9TGbRCYgGM0zDwhkVv6471gVXR0ZZ/NTIinVKKYoafb0teSQD8ToPXu/mvQGK4yiisi7IdzoAJGLL5xuYznrA4eqcBBdhYUXrxfbAIoX4yNhMbYcN4Sq+n0Sr+BDqqdX1Sf2KWFmeOye+lX2eXRSpXb8JXm1LF7BvCU0QWzML5AIQylESMGHPL4xAomWDwsjXs4lxCv7HfVn77mYd4KW12aufEXcqf/Bp9AbE9lUMZtoSiy+Xqxh+/Q6kPULxqaMo1m7e1SkvcmfjxAUmshSiUrnWX0z4h1LPNrgBGDZBTbJ1uWSc7EGKlxBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jca7gpM5jq61hUaPufeRsEZ30MHS3g63z6H/2NEarpI=;
+ b=iHc9JRC4pc+QOu62rDIvOsnKoM7/vZuqtEaBCLCwUxvH4yRMxuz6dwMxgiv+Kfq/CeEoEnXPvUhd5PA8l2goXZy/KIn+EyHQt27tefk2DTlQi/wLSTwinEaccZoeVjKw+XVRrDLaMgcycNwO+9rLJYJW9m2ym9fj9a5SPDR+IsQ=
+Received: from TYCPR01MB6637.jpnprd01.prod.outlook.com (2603:1096:400:af::9)
+ by TYCPR01MB5632.jpnprd01.prod.outlook.com (2603:1096:400:47::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Tue, 18 May
+ 2021 23:28:19 +0000
+Received: from TYCPR01MB6637.jpnprd01.prod.outlook.com
+ ([fe80::2c85:38b9:eebe:b58b]) by TYCPR01MB6637.jpnprd01.prod.outlook.com
+ ([fe80::2c85:38b9:eebe:b58b%5]) with mapi id 15.20.4129.033; Tue, 18 May 2021
+ 23:28:19 +0000
+From:   =?iso-2022-jp?B?Tk9NVVJBIEpVTklDSEkoGyRCTG5CPCEhPV8wbBsoQik=?= 
+        <junichi.nomura@nec.com>
+To:     Yang Shi <shy828301@gmail.com>, Shakeel Butt <shakeelb@google.com>
+CC:     =?iso-2022-jp?B?Tk9NVVJBIEpVTklDSEkoGyRCTG5CPCEhPV8wbBsoQik=?= 
+        <junichi.nomura@nec.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: ##freemail## Re: [PATCH] cgroup: disable controllers at parse
+ time
+Thread-Topic: ##freemail## Re: [PATCH] cgroup: disable controllers at parse
+ time
+Thread-Index: AQHXTBGPToDbgm+SQUqGBMSrinA+Jarppv6AgAA714A=
+Date:   Tue, 18 May 2021 23:28:19 +0000
+Message-ID: <dee7912f-c797-963c-909e-4f7681433a32@nec.com>
+References: <20210512201946.2949351-1-shakeelb@google.com>
+ <CALvZod5a_W8P0v7xg0jdh-TLvy4OUYaQkyjBx-1RSTUBo+YQmg@mail.gmail.com>
+ <CAHbLzkqziUEUz-4nxBs4H5z4pZS3y+ceKciKYt8KVN34Gw8egw@mail.gmail.com>
+In-Reply-To: <CAHbLzkqziUEUz-4nxBs4H5z4pZS3y+ceKciKYt8KVN34Gw8egw@mail.gmail.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nec.com; dkim=none (message not signed)
+ header.d=none;nec.com; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.97.77]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fc56bae1-bcae-494c-df19-08d91a549ec6
+x-ms-traffictypediagnostic: TYCPR01MB5632:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYCPR01MB56323FD2B91C624F06210A1A832C9@TYCPR01MB5632.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i7PEq7cB0aGrFi9GZcpaO3KceSivH9wRgvPbyeugR2w6+6QtpiBIlk/tGTPqp2fDL0Bc9CuiMH8jYS+kG4zjrH2oUu/52MNwkJS5cBpe4JUbPnSHcpvFeUuVd7wqVlpbUHU4rqm3LX8TUDFURI75W9qCoVaZfU28OIJiIaTQHBk+JyanYxvYHzQ9r7FUblPzxmFFu84KcR9AbTnRHGH7Q34LKyNN2mVHsjpEmMvpSy3CyMbnKOgeDED93dFNMiEqEokET6Yw+k+YQee9T7LIAUa71V7dx8Z26isW5wy7D6YaF6CQffUIebWm6YKegKWD+20oijNH7j1KdeydElVp7354t+7yITK1/R3fzWc+Gw4UqciXi7v4xzkTO8fci+QtoaFblf8orESc5gmmahwAAib/KLlzFYKGYn9eFxac5xvVEtCa23vxkXw1MHTPO23AEIpnWbfLwwL69ywMuDGJzJI/VaoQ37/NRjfTGlpuw98BXOG6TEx35JEfHhOrwBIv7keagDWaaovSZ+/IUzA6b4Ck/ocgriSDAW/aPzPV/mvXjdS/afTqwClRujSmzWChftqIazg/gGK7kuVUQK6oECqVG7Udz0FYIors/uwiEpMhAOd2k9BUw21K2DnxH9gXc/ZVbITAluGuMN3WURYcN/xa6RQTB/P1V5saQ1NwA5HPBCwwbKb1mv4vpn9QBqWlfZJOOlSPR8eHcrV11E/LdU8Xy7+iaHjDmRmcqv79On4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB6637.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(366004)(478600001)(5660300002)(86362001)(6486002)(31686004)(2906002)(186003)(71200400001)(36756003)(76116006)(4326008)(54906003)(66446008)(8676002)(6512007)(110136005)(83380400001)(122000001)(66556008)(55236004)(2616005)(64756008)(85182001)(966005)(66476007)(316002)(8936002)(6506007)(31696002)(66946007)(26005)(53546011)(38100700002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?UzV0TUYxWVJCbjl1K2lGMjJzY0tGdGhEazlSOCtPVWNxdUR3eVUrUUto?=
+ =?iso-2022-jp?B?Q0xWV2ZxZHZBcTU0eHZmSHA4RXJ1TzV1TXJJbHRLVnl5TE9TdFpBeVAr?=
+ =?iso-2022-jp?B?UUhIcDNyTzRGcHZvMVlKKzhSbHd3T2s0Rk12U0dWSWZ5ckZXbnhyZkZL?=
+ =?iso-2022-jp?B?T2hKMWFNeUEyb2k2Z3NqR3o2NEQzLzRWVFQwbmdNczFqTFVXTWoyZzF2?=
+ =?iso-2022-jp?B?dDNmTUx6cHdNdHRGQmRPbEdoMVR6YzRibTVHczM0dGl3ZXNPckxlT3Ri?=
+ =?iso-2022-jp?B?eEtSeDdlRWZTVWdqeE5Nbys0dVRWTHJBY1Yxb043TldiaXN0emFUd0xq?=
+ =?iso-2022-jp?B?RlhOWVJFTmg3YXhXZEg2bFNLZXhDUTc2K2M3Mm9VempST3VQTk45Sklu?=
+ =?iso-2022-jp?B?RStRVWNlNzJOTUR2WkVmRFNNWFMydXh5ZEFHNGNmK1NJUElhelFoMDlx?=
+ =?iso-2022-jp?B?UFJDN0N6QTlwait4YUQ2NzFaUXVLZmlqTmlreWhjckxFaGQ0U2RHQ2xn?=
+ =?iso-2022-jp?B?RWJTTWNXMEpDV2RPdndSQzVESzZlV0xHdXlHTUZEcG41WjhYdDVXL0Ny?=
+ =?iso-2022-jp?B?ZUZsUk00UlhVQ3dJR3pNaHhXMmltMGNyZXovdVR6clMwdklxTFgybldV?=
+ =?iso-2022-jp?B?RE9vYkhLWmVmWSsvam5qWTRQVHgvb0R5QzdMNVhnNGRJVlJXZUllQlBL?=
+ =?iso-2022-jp?B?WUpuRjNGY3hBYUF3ZUhVTVo0dFNva0FJdEhFZWFNQlczOFIyY0wxYmVY?=
+ =?iso-2022-jp?B?bUhGWS9aRGtnU21ZZ0p3ZS8wV0RQQVRJbmtCMndmVDdQb01qMFpiekpz?=
+ =?iso-2022-jp?B?YlFCaXFxU3lpalhzaDdmendYWDgzaW1VQUkzeXVwUWxWcUpSVjlxN1BQ?=
+ =?iso-2022-jp?B?bnJEZzhlN2FDU0xKY0lwU29MdXdFaU5MWVllYkNkc3pHL1BKTjlsZy9v?=
+ =?iso-2022-jp?B?ZlZxdGs1Qy92QlJIVThoVGduWGk4allFL0dJWGovdkFWZnpKYkVTRjQv?=
+ =?iso-2022-jp?B?OEZiRlVIZU84cjhWMjJ3eUVKYkc0Q2lKVnNCWjVNUnpETVEwelZhcTRx?=
+ =?iso-2022-jp?B?eExlVHI1MVNvdU80N2ZVME5WVlJKSFZNNjB3NlZQTFVQenVFWEJ2UXNw?=
+ =?iso-2022-jp?B?c0FuQ3hhM0RaOXByRU41cHZOTGtubkZ6cE5pd1AxcEZ5bjRoMlhBelY5?=
+ =?iso-2022-jp?B?eFFuTWxVekFKNXZqaHA0SVFNVHRpUStNcFRpNFUxcE5MWStJSlcxRTBO?=
+ =?iso-2022-jp?B?ZTUybHNrM2ZlZ3U0bURUb0tMdFg0bW16Q2lnS05RM2JGcDkvSlV3Mzhi?=
+ =?iso-2022-jp?B?Wmx4d3l3TTdidE96MGpLSTJ6OWFqMHgyaFIvaUR6ckl4M3dMaFg3Z2Ey?=
+ =?iso-2022-jp?B?T2Jad2xmQktGWU1KYS9veW1yM0JrRkRMTFQvV0tUSmtFQkNEc2U3aTEw?=
+ =?iso-2022-jp?B?NW56US80bWNkQmJlUUFFTzk0SzhyZlVCeksxR1h5NGI1cnZwQnZlVmZp?=
+ =?iso-2022-jp?B?VXdhejFLb0NBVzVNaG91NURWNHpReG0rSFJwWEd6NlhOcENtbUtZSTRj?=
+ =?iso-2022-jp?B?YXN4VmxqckYrSDF5ZytFSGQ5NUNMSllQb00xdmJmVEt0VVdYUjBhdGFU?=
+ =?iso-2022-jp?B?NS9SdjJ4V3NoWGhxTGptQmppVXhIaG1xM0lETjgzMkkrQUhSemR1dUxK?=
+ =?iso-2022-jp?B?OER1RHk3eVRpWTdlZXlodTM4RXN0alp0aUwrQzlxWVZFU1Aza1ZHZlY1?=
+ =?iso-2022-jp?B?cmhSSHM5QXdxUWE4b3NjbUZ2ai9yOHRuTUt1Z2FwVFJsdGxWckI0MTl2?=
+ =?iso-2022-jp?B?YW9vQVpvSCtKNUwrb1VaNDJOSUladnRnWm1uKzk2VExYMWVWNER3NTl4?=
+ =?iso-2022-jp?B?M29kTXdpRnd5WEh1bVFKNENWUzJsQjdzSlUyK2hmSHRWQ2JROHpXWUs2?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <7D92BB4160A89548BD440755338749B1@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WYWN-i9ftGId583qop22oN4cL01dFjk2
-X-Proofpoint-ORIG-GUID: fc4uHoZ8JOMCtgybKym1QvvLiAXexPjv
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-18_11:2021-05-18,2021-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- phishscore=0 clxscore=1015 lowpriorityscore=0 suspectscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 priorityscore=1501 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105180159
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6637.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc56bae1-bcae-494c-df19-08d91a549ec6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2021 23:28:19.2178
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 37yaAgQEsQQriFb1HB3VQ3pUW+ISvBLyMShYrZNPEmeY3U/2LEeMmVbfs7CXMq8TLkY+JivjNHx0zLFGH9wumQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB5632
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 19:01:42 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+On 2021/05/19 4:54, Yang Shi wrote:
+> On Tue, May 18, 2021 at 11:13 AM Shakeel Butt <shakeelb@google.com> wrote=
+:
+>>
+>> On Wed, May 12, 2021 at 1:19 PM Shakeel Butt <shakeelb@google.com> wrote=
+:
+>>>
+>>> This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
+>>> too early usage of static_branch_disable()"). The commit 6041186a3258
+>>> ("init: initialize jump labels before command line option parsing") has
+>>> moved the jump_label_init() before parse_args() which has made the
+>>> commit a3e72739b7a7 unnecessary. On the other hand there are
+>>> consequences of disabling the controllers later as there are subsystems
+>>> doing the controller checks for different decisions. One such incident
+>>> is reported [1] regarding the memory controller and its impact on memor=
+y
+>>> reclaim code.
+>>>
+>>> [1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371=
+e4@nec.com
+>>>
+>>> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+>>> Reported-by: NOMURA JUNICHI(=1B$BLnB<!!=3D_0l=1B(B) <junichi.nomura@nec=
+.com>
+>>
+>> Nomura, I think you have already tested this patch, so, can you please
+>> add your tested-by tag?
 
-> On 18.05.21 17:33, Halil Pasic wrote:
-> > On Tue, 18 May 2021 15:59:36 +0200
-> > Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-[..]
-> >>>>
-> >>>> Would it help, if the code in priv.c would read the hook once
-> >>>> and then only work on the copy? We could protect that with rcu
-> >>>> and do a synchronize rcu in vfio_ap_mdev_unset_kvm after
-> >>>> unsetting the pointer?  
-> > 
-> > Unfortunately just "the hook" is ambiguous in this context. We
-> > have kvm->arch.crypto.pqap_hook that is supposed to point to
-> > a struct kvm_s390_module_hook member of struct ap_matrix_mdev
-> > which is also called pqap_hook. And struct kvm_s390_module_hook
-> > has function pointer member named "hook".  
-> 
-> I was referring to the full struct.
-> >   
-> >>>
-> >>> I'll look into this.  
-> >>
-> >> I think it could work. in priv.c use rcu_readlock, save the
-> >> pointer, do the check and call, call rcu_read_unlock.
-> >> In vfio_ap use rcu_assign_pointer to set the pointer and
-> >> after setting it to zero call sychronize_rcu.  
-> > 
-> > In my opinion, we should make the accesses to the
-> > kvm->arch.crypto.pqap_hook pointer properly synchronized. I'm
-> > not sure if that is what you are proposing. How do we usually
-> > do synchronisation on the stuff that lives in kvm->arch?
-> >   
-> 
-> RCU is a method of synchronization. We  make sure that structure
-> pqap_hook is still valid as long as we are inside the rcu read
-> lock. So the idea is: clear pointer, wait until all old readers
-> have finished and the proceed with getting rid of the structure.
+Sure, I have confirmed the problem still occurs with v5.13-rc2 and it
+disappeared with your patch.
 
-Yes I know that RCU is a method of synchronization, but I'm not
-very familiar with it. I'm a little confused by "read the hook
-once and then work on a copy". I guess, I would have to read up
-on the RCU again to get clarity. I intend to brush up my RCU knowledge
-once the patch comes along. I would be glad to have your help when
-reviewing an RCU based solution for this.   
+So,
+Tested-by: Jun'ichi Nomura <junichi.nomura@nec.com>
 
-Regards,
-Halil
+--=20
+Jun'ichi Nomura, NEC Corporation / NEC Solution Innovators, Ltd.=
