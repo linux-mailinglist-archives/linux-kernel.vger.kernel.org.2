@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92E53882E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602D73882E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 00:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244153AbhERWyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 18:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S1352824AbhERWyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 18:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbhERWyA (ORCPT
+        with ESMTP id S235243AbhERWyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 18:54:00 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB01C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:52:40 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id o10so9594544ilm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:52:40 -0700 (PDT)
+        Tue, 18 May 2021 18:54:21 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E56C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:53:02 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id s20so5934925plr.13
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 15:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VdPjVFOepKKLAHhlVWJTnEps7ts8Ggqk33oXCvH8Qg0=;
-        b=AAwtOtwStpGspCRYoj+ALBWv3GyGzkeiS+ET5st1TlwPGsovdZinbqUeJAhw4Dsecb
-         rRpj7Rz1855dWmXVztYSJkLOqyjmNC8/sAOOcXLThDlbj79veqyj8WrgQ4Sq4qVxJ5TB
-         zaMbYIwO7Fm+swT/um0BtYGbugWQiV9x7eHzE=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dotWxrOp8K4nhTYCAIVDd9toWE3lkvpXCMU0xA+uEKo=;
+        b=Vm4hjviMk1po1J7O8GIWHEKhXBGcWvWq5kXlisVEr+ff+cjoXY5DvrT19j0NZkrwcj
+         WRdXPVZgN0v917mQyfqn4DmNd1d4AE6m6wPLz8LaBtcD19BkEI+fibBMuTzwSbxGjnDH
+         ToeOpa2ZMwesm1R9RmpD2vRnrC4uKBTpw9vFpWFLMLjUBUq/FXQk6P7p2kMCy0ibWjxI
+         8AP5/F78/x734XO538iTwEvWKAfLI0NhaUd85N4vf98z58cEQkfRcwUurM0NqjELY/i6
+         pZCd0xAs2HwyU+2Hlz1+nAQ7bvj75HOBGAIwjQ88PiZi1ECkNV9r7sRPs/vszlN7eZdg
+         NZ9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VdPjVFOepKKLAHhlVWJTnEps7ts8Ggqk33oXCvH8Qg0=;
-        b=UOBmOjT0IP2afG/Z1PtVS9TeoLATGarmNTogK/WrJNGFyqAfgIMlV+z2YhuGhlQ2Zo
-         MdNYhWEnKtx+NGSiPXgw+PPfAvhI3T50eqE/7SZk/a+vO80LZ4ZmujJ1quO2LPpq0iwr
-         vF4zYG7sckSonPVonW3AVi8yi8dwku93oTskKrIPyNsiHX0sgnaqM+YrAWlXOwwxwsWd
-         d+Ef2LiL4etpqGTwb18X4317r52pX7iVCR4aU5bWmI/r3pMT8oiReCl7eFSjIUOUf7GW
-         qs8tLRHxXc2/jMaQGY5BVCoafK3uiChlgLFHxqH0h41CM4YYaVfWy3pjUtnZ9PFPNKld
-         uVyA==
-X-Gm-Message-State: AOAM531zUO8+yXLsM2m5yjwjs+WEsybwOPc07bcCyhjh+JRtxz6mWlFL
-        J3yTrBpINvTAUYvy3Wc079bLZg==
-X-Google-Smtp-Source: ABdhPJzD+XDOKCOMiSTOscv3E+3Dq3ehEhKKYFtKkh9GujzXAT7mk/k5c/QA/A6SP56Up7k1mbi6ew==
-X-Received: by 2002:a05:6e02:b29:: with SMTP id e9mr6741205ilu.175.1621378359942;
-        Tue, 18 May 2021 15:52:39 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z3sm9725671ioe.40.2021.05.18.15.52.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 15:52:39 -0700 (PDT)
-Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210518135831.445321364@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <529be936-3c74-94ff-e1a4-016d6c68ba38@linuxfoundation.org>
-Date:   Tue, 18 May 2021 16:52:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dotWxrOp8K4nhTYCAIVDd9toWE3lkvpXCMU0xA+uEKo=;
+        b=EOd4Pm/JIjLesNWqkHQTrn5O5AZO97DgA9D50c0BbDoKiHA7LjaIuxy+MidkvXtLKV
+         ItxiEjfCrLbbjpW+ohBUXSONDsOCyzjUl3jlR0x1VlFlhEGModiLRRFQy8re/+Eydj3G
+         XMk7BW2HN4kZNMliLaP2P8Ovs/YVV+Nm4naddTy9eP7UPMugZxbi31U4K/gdRoYb5/go
+         JRBpGDD0dlF1S+sA09kB8s9bz6zPxEIFVpHx1X9FeMe1Bi+6ayW+B6JB4nGGs6GqOyIL
+         sJpx/yfKOoUkhUmMV6m7p2Zi7EsKK1T8YYL7AKSp9poWshmIMNt17ZYvk8/sXd1/XPkF
+         mgpw==
+X-Gm-Message-State: AOAM532AI+hZ05zzmAfX6mXZtYHr93Z53n+BZMNK+OQ8LAsgN8AjvlCk
+        axe+RkOpYqV/yEiy8Ns5eDJ9xA==
+X-Google-Smtp-Source: ABdhPJwLjao8AmZKDk6HAhx/sRqBwV7F3KweWJZpI0BPD7LL+uKMU+xDSyxXleSc8b7IkUBhycYQmQ==
+X-Received: by 2002:a17:90a:df0a:: with SMTP id gp10mr7756262pjb.27.1621378381944;
+        Tue, 18 May 2021 15:53:01 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id g89sm2661643pjg.30.2021.05.18.15.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 15:53:01 -0700 (PDT)
+Date:   Tue, 18 May 2021 22:52:57 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ilias Stamatis <ilstam@amazon.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, mlevitsk@redhat.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        zamsden@gmail.com, mtosatti@redhat.com, dwmw@amazon.co.uk
+Subject: Re: [PATCH v2 02/10] KVM: X86: Store L1's TSC scaling ratio in
+ 'struct kvm_vcpu_arch'
+Message-ID: <YKRFSaktB4+tgFUH@google.com>
+References: <20210512150945.4591-1-ilstam@amazon.com>
+ <20210512150945.4591-3-ilstam@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20210518135831.445321364@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512150945.4591-3-ilstam@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 7:59 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.5 release.
-> There are 363 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 20 May 2021 13:57:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Wed, May 12, 2021, Ilias Stamatis wrote:
+> Store L1's scaling ratio in that struct like we already do for L1's TSC
 
-Compiled and booted on my test system. No dmesg regressions.
+s/that struct/kvm_vcpu_arch.  Forcing the reader to look at the subject to
+understand the changelog is annoying, especially when it saves all of a handful
+of characters.  E.g. I often read patches without the subject in scope.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> offset. This allows for easy save/restore when we enter and then exit
+> the nested guest.
+> 
+> Signed-off-by: Ilias Stamatis <ilstam@amazon.com>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
 
-thanks,
--- Shuah
+...
 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9b6bca616929..07cf5d7ece38 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2185,6 +2185,7 @@ static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
+>  
+>  	/* Guest TSC same frequency as host TSC? */
+>  	if (!scale) {
+> +		vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+>  		vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+
+Looks like these are always set as a pair, maybe add a helper, e.g.
+
+static void kvm_set_l1_tsc_scaling_ratio(u64 ratio)
+{
+	vcpu->arch.l1_tsc_scaling_ratio = ratio;
+	vcpu->arch.tsc_scaling_ratio = ratio;
+}
+
+>  		return 0;
+>  	}
+> @@ -2211,7 +2212,7 @@ static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
+>  		return -1;
+>  	}
+>  
+> -	vcpu->arch.tsc_scaling_ratio = ratio;
+> +	vcpu->arch.l1_tsc_scaling_ratio = vcpu->arch.tsc_scaling_ratio = ratio;
+>  	return 0;
+>  }
+>  
+> @@ -2223,6 +2224,7 @@ static int kvm_set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz)
+>  	/* tsc_khz can be zero if TSC calibration fails */
+>  	if (user_tsc_khz == 0) {
+>  		/* set tsc_scaling_ratio to a safe value */
+> +		vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+>  		vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+>  		return -1;
+>  	}
+> @@ -2459,7 +2461,7 @@ static inline void adjust_tsc_offset_guest(struct kvm_vcpu *vcpu,
+>  
+>  static inline void adjust_tsc_offset_host(struct kvm_vcpu *vcpu, s64 adjustment)
+>  {
+> -	if (vcpu->arch.tsc_scaling_ratio != kvm_default_tsc_scaling_ratio)
+> +	if (vcpu->arch.l1_tsc_scaling_ratio != kvm_default_tsc_scaling_ratio)
+>  		WARN_ON(adjustment < 0);
+>  	adjustment = kvm_scale_tsc(vcpu, (u64) adjustment);
+>  	adjust_tsc_offset_guest(vcpu, adjustment);
+> -- 
+> 2.17.1
+> 
