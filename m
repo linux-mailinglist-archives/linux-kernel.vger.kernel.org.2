@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EC83871C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456DA3871DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 08:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346623AbhERGWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 02:22:08 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:6255 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346565AbhERGWC (ORCPT
+        id S239876AbhERG20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 02:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234413AbhERG2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 02:22:02 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 17 May 2021 23:20:44 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 17 May 2021 23:20:42 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 18 May 2021 11:50:26 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 727B34B4F; Tue, 18 May 2021 11:50:25 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     mka@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kgunda@codeaurora.org, satya priya <skakit@codeaurora.org>
-Subject: [RESEND PATCH V4 8/8] arm64: dts: qcom: sc7280: Add ADC channel nodes for PMIC temperatures to sc7280-idp
-Date:   Tue, 18 May 2021 11:50:22 +0530
-Message-Id: <1621318822-29332-9-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
-References: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
+        Tue, 18 May 2021 02:28:23 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83376C061573;
+        Mon, 17 May 2021 23:27:05 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 27so4993216pgy.3;
+        Mon, 17 May 2021 23:27:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JQGuujMWoz7ctS+NiJQK1UQkIfCwzUf11oIcBdMR1xU=;
+        b=bvFuriLODXVcIJVOWwh0ck6blpd5vo0EDlg23CefiWifKJTQlpy0mdIbHk6yhpgKwE
+         31MqnHQLqtu+pWemOGZm0ERashP/LKp2ZqVdAP5NFQW4Jd2SVRU1YVbuxCCKFdiYZYGZ
+         5tMlW0T+JI1iOq3hl/6ylGE6u/jdVe4JZ7UITaiSo/TuZOqQLayD9JXMonNdyEZrvHmS
+         w/DTZV/vUqd2p09VddK5/0j8CrfW+oS0oV+cXgiN2y7M2HqriPIl2nFz1jq5QHeK3gtu
+         eE/BeH7ycyTSdTF2E3moSdB/s6HTPCub9O43BjwyA5AmNGBGcLZivytEZu/bZuANxBbT
+         a7iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JQGuujMWoz7ctS+NiJQK1UQkIfCwzUf11oIcBdMR1xU=;
+        b=mCH5r2cTWLAA+tNaC5Uv6I+dCLKkKc8uZhCZyD2ddNTYmaAk3zAyk+S7j5JIMBrgDq
+         HRe1wuEfmYMAjIbKkmEYwbCeOuNPY6BwIfe4qrSaj8nwuZHM9mYwDVQdO7GUa9dNhQmh
+         O8z0JIaekqjcKiVJrxAoJCyPcnBiMLUvqeEaPArD0J68/EeGiShO01c2VI6+HPXEZKXy
+         GpSuWkaIbSAv/hCCCNq86YGsQwoP3HD9e7LVjXEDHK7ZwTHVrFG/osjtBJ3i9z5NAilx
+         XCkTYIZFX+ogjW3BUZfKahOEEgaJ+m8kJviw+yCsQ86AJmd7kMjOjXsLQ2wT6UOBcre2
+         nwBw==
+X-Gm-Message-State: AOAM533lwXZqtjDQDHs4kzWvUQi/qisTbK7l5CnoYfDs0sfmfM050cBz
+        cmBYjFK38rEu3GFkTUWfuVg=
+X-Google-Smtp-Source: ABdhPJz0txRUcgmBn2DhQ0GHOxAIJ8o4YBeACd2LRg54QFreNOFvy/GQeAAwQE5GS1p7OO/w8ciGfg==
+X-Received: by 2002:a63:4a4b:: with SMTP id j11mr3421425pgl.451.1621319224979;
+        Mon, 17 May 2021 23:27:04 -0700 (PDT)
+Received: from varodek.localdomain ([223.179.151.249])
+        by smtp.gmail.com with ESMTPSA id w125sm11105094pfw.214.2021.05.17.23.27.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 23:27:04 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
+Cc:     vaibhavgupta40@gmail.com, Kishon Vijay Abraham <kishon@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Gowtham Tammana <g-tammana@ti.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: ti: k3-am64-main: Enable crypto accelerator
+Date:   Tue, 18 May 2021 11:56:30 +0530
+Message-Id: <20210518062630.144154-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add channel nodes for the on die temperatures of PMICS
-pmk8350, pm8350, pmr735a and pmr735b.
+From: Vaibhav Gupta <v_gupta@ti.com>
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Add the node for SA2UL including the random number generator.
+
+[v_gupta@ti.com: Add address ranges entry in cbass_main]
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Vaibhav Gupta <v_gupta@ti.com>
 ---
-Changes in RESEND V4:
- - As per Matthias comments, changed the commit text.
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 25 ++++++++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am64.dtsi      |  1 +
+ 2 files changed, 26 insertions(+)
 
- arch/arm64/boot/dts/qcom/sc7280-idp.dts | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index f295580..704fb9a 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -7,6 +7,10 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
- #include "sc7280.dtsi"
- #include "pm7325.dtsi"
- #include "pmr735a.dtsi"
-@@ -238,6 +242,32 @@
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index 25b702303637..adbc3c0673f3 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -160,6 +160,31 @@ k3_reset: reset-controller {
+ 		};
  	};
- };
  
-+&pmk8350_vadc {
-+		pm8350_die_temp {
-+			reg = <PM8350_ADC7_DIE_TEMP>;
-+			label = "pm8350_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
++	main_crypto: crypto@40900000 {
++		compatible = "ti,am64-sa2ul";
++		reg = <0x0 0x40900000 0x0 0x1200>;
++		power-domains = <&k3_pds 133 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 133 0>, <&k3_clks 133 1>, <&k3_clks 133 2>;
++		clock-names = "pka_in_clk" , "x1_clk" , "x2_clk";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges = <0x0 0x040900000 0x00 0x040900000 0x0 0x30000>;
 +
-+		pmk8350_die_temp {
-+			reg = <PMK8350_ADC7_DIE_TEMP>;
-+			label = "pmk8350_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
++		status = "okay";
 +
-+		pmr735a_die_temp {
-+			reg = <PMR735A_ADC7_DIE_TEMP>;
-+			label = "pmr735a_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
++		dmas = <&main_pktdma 0xc001 15>, <&main_pktdma 0x4002 15>,
++				<&main_pktdma 0x4003 15>;
++		dma-names = "tx", "rx1", "rx2";
 +
-+		pmr735b_die_temp {
-+			reg = <PMR735B_ADC7_DIE_TEMP>;
-+			label = "pmr735b_die_temp";
-+			qcom,pre-scaling = <1 1>;
++		eip76d_rng: rng@40910000 {
++			compatible = "inside-secure,safexcel-eip76";
++			reg = <0x0 0x40910000 0x0 0x80>;
++			interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&k3_clks 133 2>;
++			clock-names = "x2_clk";
 +		};
-+};
++	};
 +
- &qupv3_id_0 {
- 	status = "okay";
- };
+ 	main_pmx0: pinctrl@f4000 {
+ 		compatible = "pinctrl-single";
+ 		reg = <0x00 0xf4000 0x00 0x2d0>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am64.dtsi b/arch/arm64/boot/dts/ti/k3-am64.dtsi
+index 0ae8c844c482..e2bea44a16c5 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64.dtsi
+@@ -85,6 +85,7 @@ cbass_main: bus@f4000 {
+ 			 <0x00 0x78000000 0x00 0x78000000 0x00 0x00800000>, /* Main R5FSS */
+ 			 <0x06 0x00000000 0x06 0x00000000 0x01 0x00000000>, /* PCIe DAT1 */
+ 			 <0x05 0x00000000 0x05 0x00000000 0x01 0x00000000>, /* FSS0 DAT3 */
++			 <0x00 0x40900000 0x00 0x40900000 0x00 0x00030000>, /* SA2UL */
+ 
+ 			 /* MCU Domain Range */
+ 			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>;
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.31.1
 
