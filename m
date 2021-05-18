@@ -2,108 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3645138817D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BCF38817F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 22:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352178AbhERUjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 16:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236628AbhERUjV (ORCPT
+        id S1352186AbhERUk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 16:40:59 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:34434 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236628AbhERUk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 16:39:21 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D101C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:38:03 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id c17so8300934pfn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 13:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XnFfLl2UDQpNOM7J0sY8oP5lxN10cYtX8CfE86wJNNM=;
-        b=IVXC7MHxCxNopOOvt7tAeBgXJFH0RyS8DSFqqLXSOEhPX+5TlfU5S+QtLh4by8bRE9
-         7f3XNai4ObMWNRBksw2xxEXMXOFkptJftqzvEP2mYdTiHCTf99oB9Lkcl5yBOiFv5hZ7
-         ERbIDimT/pIBZ91j7AvlVsvF2CFa6a0HXYXkL5rpP1yw9Mb+0+61ZLjah9hfeJj6+Nkt
-         i5v2kK6uuGmTkoDSJF3VM2/6mNzUPTubCJBh9dGUDxA63iWTatrek0Zei9qYG6DkKC6b
-         Mqqf4+RlZSX2YcUZqfgFQgNvvNZQe/W4CFek6fEK10LEtDUSLA67dfKjiP7K6qh8um20
-         eKDw==
+        Tue, 18 May 2021 16:40:58 -0400
+Received: by mail-ed1-f53.google.com with SMTP id w12so5046450edx.1;
+        Tue, 18 May 2021 13:39:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XnFfLl2UDQpNOM7J0sY8oP5lxN10cYtX8CfE86wJNNM=;
-        b=Ic8hEOIYXjN17OdKPEGW385sicwp2SrmT80PIdWu9IB3YUdqjuK5kd1+7ieFI/qE+K
-         dU7rbCtwpLAdxg+YqcgkkAodlARg3efTc/cAXvmsI99gMyZHVZK+WdCzcHA9CQgZsI+Q
-         x8rRM/6EvRlqv1T7F4+DyTdvyN3xFdVbK5ozuVBsGBoTkCJeGPKgYEBU0FK/Qrj2IlMp
-         uqsaFW6hRbF700Y4mwvCDzZ3cK8H4Ronb0a4QgNH+IE6+AgHygR8C3n6LvwHHJ38g+zO
-         fvvtor/+Vpwpf7IcNC1oRQmOgrklxjpceBnfR4xp7Fejt8J/quaZib0mhddNLRE20696
-         E+eQ==
-X-Gm-Message-State: AOAM533qK4nDIUoXpfldqLNP3V0R6gFaPtHB+fOkprHcb5HngciwZZPT
-        06qOzfag8OjAQ1pJovPA91lh6Q==
-X-Google-Smtp-Source: ABdhPJzaoZFC7TTpp3zIHhl6P5+Ct/dxTj7G56pZG2S9WMJL6cRav/lZxo83MUBRakgj1WROOHHClA==
-X-Received: by 2002:a63:4f50:: with SMTP id p16mr6820680pgl.245.1621370282951;
-        Tue, 18 May 2021 13:38:02 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id g13sm13521721pfi.18.2021.05.18.13.38.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 13:38:02 -0700 (PDT)
-Date:   Tue, 18 May 2021 20:37:58 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
-Message-ID: <YKQlpuKHb7DFFG8y@google.com>
-References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
- <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
- <43e583a3-ee2b-52d8-5275-e26a6609c126@linux.intel.com>
- <YKP1Xty7EEzHkZ6Y@google.com>
- <8fb0e52c-ed0a-2185-585a-27007c27ed56@linux.intel.com>
- <YKQF08wqTsCQ3qHL@google.com>
- <3a037a43-435b-fc28-63d0-48e543cddfdd@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mbLSlUzjnQi9LF9AztCJB11CoBKrMpAM+VLmKOfWpRM=;
+        b=G1VA/I69KWPHSUwwRbapPd4rw8TIB+ei7cQDX/EzwVOEY9gJ2sJEyFpQO98zRQFtZR
+         6PLmLKpZ2mUBSuPbzR2Za4kcY8FZ1urmPKZL9FkzgcbeanAtyrV4BlF23R/3WQUiA5Tj
+         xwvnEQp+k+P5KCSnJCff2NCIbixzUcUENn/fAATEYOV/Yrjj+Ux3d0c9nvoVOM+Vk0Vq
+         JsNwOAhw3ICTut5WHdudzmJ/9n+OXRH36zHk/FPavBOsDG1jgH4qMZHOELWW7CSQQKfM
+         3zd/be5ALUg8o37qNNcZum7gtMRw+fYjFpJhWQuJIG0QdR6EBsDdjaXjYjkq++UHwmkA
+         0UlA==
+X-Gm-Message-State: AOAM531V3cfBrK3/X2Jb/HRX1s09UsHgb/M5sXfpPMd1N0t/8E9y/LG4
+        nWw66uvvt5+xOss4r5FtoglKpKeNH8N2+Wpeusua3pRoUvs=
+X-Google-Smtp-Source: ABdhPJxw5S0oKG/063Mjks6XP0/hBfpkaOmAgGXCuwZUj6YRAeqLLCfzj0j/MLpmDI18M8ARWsipim5braA8S+9cWSY=
+X-Received: by 2002:a05:6402:358a:: with SMTP id y10mr9252017edc.122.1621370378826;
+ Tue, 18 May 2021 13:39:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a037a43-435b-fc28-63d0-48e543cddfdd@linux.intel.com>
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <8735uxmucw.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <8735uxmucw.ffs@nanos.tec.linutronix.de>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 18 May 2021 16:39:27 -0400
+Message-ID: <CAJvTdK=6B8fXasshqOoMknAt25vWPDW6LVLovOhnmY10ZEdL1Q@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021, Andi Kleen wrote:
-> 
-> On 5/18/2021 11:22 AM, Sean Christopherson wrote:
-> > On Tue, May 18, 2021, Andi Kleen wrote:
-> > > > The extra bytes for .altinstructions is very different than the extra bytes for
-> > > > the code itself.  The .altinstructions section is freed after init, so yes it
-> > > > bloats the kernel size a bit, but the runtime footprint is unaffected by the
-> > > > patching metadata.
-> > > > 
-> > > > IIRC, patching read/write{b,w,l,q}() can be done with 3 bytes of .text overhead.
-> > > > 
-> > > > The other option to explore is to hook/patch IO_COND(), which can be done with
-> > > > neglible overhead because the helpers that use IO_COND() are not inlined.  In a
-> > > > TDX guest, redirecting IO_COND() to a paravirt helper would likely cover the
-> > > > majority of IO/MMIO since virtio-pci exclusively uses the IO_COND() wrappers.
-> > > > And if there are TDX VMMs that want to deploy virtio-mmio, hooking
-> > > > drivers/virtio/virtio_mmio.c directly would be a viable option.
-> > > Yes but what's the point of all that?
-> > Patching IO_COND() is relatively low effort.  With some clever refactoring, I
-> > suspect the net lines of code added would be less than 10.  That seems like a
-> > worthwhile effort to avoid millions of faults over the lifetime of the guest.
-> 
-> AFAIK IO_COND is only for iomap users. But most drivers don't even use
-> iomap. virtio doesn't for example, and that's really the only case we
-> currently care about.
+On Sat, May 8, 2021 at 5:45 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 
-virtio-pci, which is going to used by pretty much all traditional VMs, uses iomap.
-See vp_get(), vp_set(), and all the vp_io{read,write}*() wrappers.
+> Where is #6 which describes the signal interaction?
+
+#6 Per the current ABI, Linux gives signal handlers access to all of
+the hardware architectural state.
+
+#6a Signal Stack is on User Stack
+
+The architectural state is pushed on the user stack in uncompressed
+XSTATE format.
+
+It is established that there exists application code that counts on
+this opaque state being complete so that it can do a user-space
+XRESTORE instead of a sigreturn(2).  (My opinion is that not breaking
+that legacy code is a requirement, and I'm actually shocked this view
+is not unanimous)
+
+If a feature is enabled in XCR0 but is in INIT state, the XSAVE will
+transfer zeros.
+While this is established for AVX-512, we optimize for this case for AMX
+by checking for this scenario and not transferring any data.
+(this optimization, and the self-test for it, is in AMX patch series v5)
+
+The signal hander is empowered to alter everything in XSTATE on the
+signal stack.
+
+Upon sigreturn, the kernel will dutifully XRESTORE the XSTATE.
+
+#6b Applications that allocate and register a dedicated alternate signal stack
+
+Run-time is similar to above, except the user has allocated a
+dedicated signal stack.
+The problem is that the user had to decide this stack's size.
+
+Unfortunately, signal.h ABI contained #define MIN/SIG-STACKSIZE
+(2k/8k) constants, which were:
+a) constant
+b) not updated in decades
+
+The kernel, for its part, also failed to check that an altstack was
+big enough before writing to it.
+
+Indeed, AVX-512 made the 2k constant a lie, which Andy points out is
+ABI breakage.
+This is factual, and there were real programs that broke because of it.
+
+Were AMX to be deployed in this manner without repairing the broken ABI,
+the 8K state would exceed both of these constants, and that would be
+more severe breakage than AVX-512.
+
+glibc 2.34 addressed both the existing and future problem, by updating
+these constants
+to be calculated at run-time.  The run-time calculation can be done
+entirely in glibc,
+or if glibc is running on an updated kernel, it will ask the kernel
+for the size via altvec.
+
+Further, the kernel has been updated to check for alt-stack too-small
+at run-time.
+
+https://lore.kernel.org/lkml/20210518200320.17239-1-chang.seok.bae@intel.com/
+
+I believe that all feedback has been addressed in that patch series,
+and that it is ready for linux-next.
+
+There are still two potential failures on systems that have AVX-512/AMX enabled:
+1. program, re-compiled or not, that hard-codes its own too-small alt-stack
+2. legacy static binary using old signal.h constants to allocate alt-stack.
+
+The kernel will not prohibit these programs from executing, but if they actually
+take a signal, the kernel will SIGSEGV them instead of overflowing their stack.
+
+Len Brown, Intel Open Source Technology Center
