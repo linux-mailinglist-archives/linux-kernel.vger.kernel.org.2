@@ -2,44 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DAB387E01
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B33387E0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 18:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350962AbhERQ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 12:58:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244114AbhERQ6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 12:58:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07FDA61184;
-        Tue, 18 May 2021 16:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621357025;
-        bh=CUB74zhwK+0DPuipOMjuUrdevGC0aj9GsPNaTdXpsms=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=aP4I/vnAbdNBAhjpfXk/I3rmOZ5XVgn2uufx2tihVUlvlzZn74fhykXU09WecuhWp
-         +WFFD+xyYUol5rVehLhY8gO3Yc47dPgIRo74GEfUyWRGddVHLy5xw6lvQXGUoBAroW
-         0hbMAmSoNlHTYlFbjJyYLTzV9WiziVArl2l0AsrHKCrKAykVFNc5H1PQvhsNE3kQpT
-         eHe/WAM72KZdytwxGoBkb+15LbRVIzR3LgcuO65y8a1p+P4d2GUKr+3aQFni3lG4YJ
-         W/e6lANyaNRJOEgOl3lMSCHUP3yhB9MQdF28MCwrJIqDLCr97ebFj6wuBW0n1nscGY
-         MF7D8otLUdZuQ==
-Subject: Re: [RFC PATCH v2 10/11] crypto: x86/aes-kl - Support AES algorithm
- using Key Locker instructions
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, tglx@linutronix.de,
-        mingo@kernel.org, bp@suse.de, x86@kernel.org,
-        herbert@gondor.apana.org.au
-Cc:     dan.j.williams@intel.com, dave.hansen@intel.com,
-        ravi.v.shankar@intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210514201508.27967-1-chang.seok.bae@intel.com>
- <20210514201508.27967-11-chang.seok.bae@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <9e7ba5da-2395-ab5f-2051-4d04dc55f565@kernel.org>
-Date:   Tue, 18 May 2021 09:57:04 -0700
+        id S1351035AbhERQ6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 12:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351023AbhERQ6i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 12:58:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47BCC06138D;
+        Tue, 18 May 2021 09:57:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Uek9W6UDsSluuzmCVIzlQCqVL+k1cBOnDRIUuoXcj4A=; b=Ei1g9cZmY2NJwnl/mfL7fXrMW3
+        2P1vLQcLtVUB51GCSNWZJ1GrNPlayjkdKjjLMfVnwH2veCEvNQm92eZPkgqhfEU8nkmEnG7UPi8PF
+        U4qeuXGaZ69PqTYGYTkjqzsYo3kHWDJ1sfSnkBngbuG3MX6PdPKAI9SfAJs9PIv+Nr7gDdQ5EEv7v
+        S7RuLUUtOJH8pP/AvQmekUoiuJVo/CxMrXcY+W5XFMN52NGOie3QX2sKEAxdTYeuUM5UxfS9wdtdk
+        qH3xCCMnslCfOHxbttNomGTR6AO+YP3oxHX3fHy71rjCFNoRcwo8WLOFu1yKwJA09F1agBLnRr6Fz
+        vJM+qodA==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lj31v-00Ep2t-05; Tue, 18 May 2021 16:57:15 +0000
+Subject: Re: linux-next: Tree for May 18 (drivers/net/dsa/qca8k.c)
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+References: <20210518192729.3131eab0@canb.auug.org.au>
+ <785e9083-174e-5287-8ad0-1b5b842e2282@infradead.org>
+ <20210518164348.vbuxaqg4s3mwzp4e@skbuf>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1e431580-37e5-dc80-8307-eb79125f9b75@infradead.org>
+Date:   Tue, 18 May 2021 09:57:13 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210514201508.27967-11-chang.seok.bae@intel.com>
+In-Reply-To: <20210518164348.vbuxaqg4s3mwzp4e@skbuf>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,43 +56,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 1:15 PM, Chang S. Bae wrote:
-> Key Locker (KL) is Intel's new security feature that protects the AES key
-> at the time of data transformation. New AES SIMD instructions -- as a
-> successor of Intel's AES-NI -- are provided to encode an AES key and
-> reference it for the AES algorithm.
+On 5/18/21 9:43 AM, Vladimir Oltean wrote:
+> Hi Randy,
 > 
-> New instructions support 128/256-bit keys. While it is not desirable to
-> receive any 192-bit key, AES-NI instructions are taken to serve this size.
+> Would something like this work?
 > 
-> New instructions are operational in both 32-/64-bit modes.
+> -----------------------------[ cut here ]-----------------------------
+> From 36c0b3f04ebfa51e52bd1bc2dc447d12d1c6e119 Mon Sep 17 00:00:00 2001
+> From: Vladimir Oltean <olteanv@gmail.com>
+> Date: Tue, 18 May 2021 19:39:18 +0300
+> Subject: [PATCH] net: mdio: provide shim implementation of
+>  devm_of_mdiobus_register
 > 
-> Included are methods for ECB, CBC, CTR, and XTS modes. They are not
-> compatible with other implementations as referencing an encrypted form
-> only.
+> Similar to the way in which of_mdiobus_register() has a fallback to the
+> non-DT based mdiobus_register() when CONFIG_OF is not set, we can create
+> a shim for the device-managed devm_of_mdiobus_register() which calls
+> devm_mdiobus_register() and discards the struct device_node *.
+> 
+> In particular, this solves a build issue with the qca8k DSA driver which
+> uses devm_of_mdiobus_register and can be compiled without CONFIG_OF.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
+> ---
+>  include/linux/of_mdio.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/include/linux/of_mdio.h b/include/linux/of_mdio.h
+> index 2b05e7f7c238..da633d34ab86 100644
+> --- a/include/linux/of_mdio.h
+> +++ b/include/linux/of_mdio.h
+> @@ -72,6 +72,13 @@ static inline int of_mdiobus_register(struct mii_bus *mdio, struct device_node *
+>  	return mdiobus_register(mdio);
+>  }
+>  
+> +static inline int devm_of_mdiobus_register(struct device *dev,
+> +					   struct mii_bus *mdio,
+> +					   struct device_node *np)
+> +{
+> +	return devm_mdiobus_register(dev, mdio);
+> +}
+> +
+>  static inline struct mdio_device *of_mdio_find_device(struct device_node *np)
+>  {
+>  	return NULL;
+> -----------------------------[ cut here ]-----------------------------
+> 
 
-This entire concept is severely problematic.  The nineties are over --
-in 2021, a responsible author of a crypto library will understand,
-document, and preferably prove what security properties it is supposed
-to have.
+Yes, that's all good. Thanks.
 
-Even assuming that Key Locker is used properly and that the wrapping key
-is never compromised, the security properties of Key Locker-ified
-AES-CTR are weak at best.  In particular, all the usual caveats of CTR
-apply, and KL does nothing to mitigate it.  Any attacker who recovers,
-directly or by capture of a plaintext-ciphertext pair, enc_k(0),
-enc_k(1), etc can encrypt and forge any message involving those counter
-values.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-In-kernel support for an AES Key Locker mode needs to document precisely
-what that mode accomplishes and when it should and should not be used.
+-- 
+~Randy
 
-At least AES-XTS *probably* has the property that at attacker who gets
-the contents of main memory once can't decrypt future disk images
-encrypted against the same key.  AES-CTR can't even achieve that.
-
-So far, the only compelling use case for KL that I've seen is full disk
-encryption.  I think it would be nice for the entire process of doing
-that to be worked out.
-
---Andy
