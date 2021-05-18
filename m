@@ -2,210 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40976387B94
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062EF387B9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241676AbhEROqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S241695AbhEROqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239952AbhEROpw (ORCPT
+        with ESMTP id S238109AbhEROqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:45:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F77C061347;
-        Tue, 18 May 2021 07:44:26 -0700 (PDT)
-Date:   Tue, 18 May 2021 14:44:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621349064;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uJ0BhvIIV0OZDeLOAdh3lBJMLJZABQBLFu/hbvufQos=;
-        b=FDSNGnBawEAwTFBxhQcc/rjZ1KQQBgsukMVGi6qd9xFgR1+2ZJdjVwtg6ByOODYkKyAkl7
-        PAzyQBIev4n6AD/MgNCUsjakBFE/4f1H6n7Ew3/VY88CGBaCl2OF0yDdeyTCAfggFQL8rm
-        bK3K0JCYwyFgWabzVUQSI1rcc4/wfeKCFKUiPpSB8vE5iUgRXPqyLu0v6ckKegLSuKowX9
-        yvKhEYqqkx39sx8D0Bc5murL+27/H4XrCbIUFfg6k9lHZ3bC215T4Lr8ZU8w0nhRhSqBIS
-        9nKqROiODupy/oAqAIpYEXEHm1MAzpbUO3oCUiCGl3agXfV105dzDHsvaSx0Mw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621349064;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uJ0BhvIIV0OZDeLOAdh3lBJMLJZABQBLFu/hbvufQos=;
-        b=WV/ZFUppueWSPvA2q1BDn1BLaxtAXuFCoWIyj2OLbw77BicoCqjN3cQJVZhpoAW4lGJ/0S
-        t0smMjAapXbg28Bw==
-From:   "tip-bot2 for Fenghua Yu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/splitlock] Documentation/x86: Add buslock.rst
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210419214958.4035512-2-fenghua.yu@intel.com>
-References: <20210419214958.4035512-2-fenghua.yu@intel.com>
+        Tue, 18 May 2021 10:46:25 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9012CC0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:45:07 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so8843167otp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 07:45:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+I0Y4c5QVZL3j3aPLLsY6yUi9Anm8Xg8tXjxoP3kmaA=;
+        b=DnF+V1u4aXfJZ0oMCAAXVp7EbHLzATcib064zpKEqM8fIX4X69sfv/dY8JiFaYBOfd
+         G7pFWoX7Vl4lFtsb0NaacSygopz/JAtOiei+V//sdhqUKWCYOBBNK4B6/KtpTtQ5yYwj
+         6x2OBaAgKEHrw74FV0O2KRJIQv5eCZIvHQPjm887seB6nt32HOQVcD6PMKgF+4KoDnlU
+         zB8qdF+HVfIskVEK8YYHaKcKHLQYbDTYLHgOOufGWxhlw5uMz7WtdaUoIUAIaSJ1lv+5
+         QQdPTZwc+mm/6260PKrS67+k3Dmr3St/Xyj+aqsBpdXcd/1vCuaQBtd00au1uUFEDdZe
+         9F3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+I0Y4c5QVZL3j3aPLLsY6yUi9Anm8Xg8tXjxoP3kmaA=;
+        b=OYxoUY7UVVAwUAg+5+hm7KKPK3uEvjNr8OAwFkMLg/DKu/P3AeBWcEGVm7rhr3AHxZ
+         IVaaEtyA0RFG6lX5QRZiQN2B7D0X0XuR93B1fiPC764aqcF6GxN+SKsVUrdkujTtH8Yq
+         g0xIJ9Gq4vylg86YsKi+vrO00qTiEVf5F5nLltXJRGJEKsrovDo3KZ78JJubyDtZuS+S
+         Tt4FRCImZC3ULYQvUydhiJ+U1gkyqQjxp0wu9icqKgFxicLiE/KsOO7NZ3a5bXlBnn7a
+         mPbH6AqKM12Po+bQDxhlak9aYi+vkhOQEjKhxfRauVvurrCoKmGLBCKAO0wp1vE9fw2Z
+         tQKQ==
+X-Gm-Message-State: AOAM533NtStq6JVeG/3BhX7NzR4K/dXtsMxSvxDeV63ffmHhWnz29I/9
+        4gw8D5hy8raU91Oo1MoQoMTD+wcSBqCe62a7fKFybw==
+X-Google-Smtp-Source: ABdhPJwU1vhdtj7C21PJReFsn9XQdq26AflNTFKimt9sKly+sQlhEy3C2/XoK/nlnzfDDetaWEyWUhUrTn+I7Si2byU=
+X-Received: by 2002:a9d:4f15:: with SMTP id d21mr4610254otl.155.1621349106931;
+ Tue, 18 May 2021 07:45:06 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162134906278.29796.13820849234959966822.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+ <20210505213731.538612-16-bhupesh.sharma@linaro.org> <7d8bc623-ef12-c7ae-0d12-16b0b1c48ffe@linaro.org>
+In-Reply-To: <7d8bc623-ef12-c7ae-0d12-16b0b1c48ffe@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Tue, 18 May 2021 20:14:56 +0530
+Message-ID: <CAH=2NtxEq4p83EvJYe4cw3krhx0g2TYGFYRSEHc+jQJmBzdsqw@mail.gmail.com>
+Subject: Re: [PATCH v2 15/17] crypto: qce: Defer probing if BAM dma is not yet initialized
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/splitlock branch of tip:
+HI Thara,
 
-Commit-ID:     1897907cca5aa22cdfcdb7fb8f0644a6add0877d
-Gitweb:        https://git.kernel.org/tip/1897907cca5aa22cdfcdb7fb8f0644a6add0877d
-Author:        Fenghua Yu <fenghua.yu@intel.com>
-AuthorDate:    Mon, 19 Apr 2021 21:49:55 
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 18 May 2021 16:39:31 +02:00
+On Mon, 10 May 2021 at 18:52, Thara Gopinath <thara.gopinath@linaro.org> wrote:
+>
+>
+>
+> On 5/5/21 5:37 PM, Bhupesh Sharma wrote:
+> > Since the Qualcomm qce crypto driver needs the BAM dma driver to be
+> > setup first (to allow crypto operations), it makes sense to defer
+> > the qce crypto driver probing in case the BAM dma driver is not yet
+> > probed.
+> >
+> > This fixes the qce probe failure issues when both qce and BMA dma
+> > are compiled as static part of the kernel.
+> >
+> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: David S. Miller <davem@davemloft.net>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: Michael Turquette <mturquette@baylibre.com>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: dmaengine@vger.kernel.org
+> > Cc: linux-clk@vger.kernel.org
+> > Cc: linux-crypto@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: bhupesh.linux@gmail.com
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >   drivers/crypto/qce/core.c  | 4 ++++
+> >   drivers/dma/qcom/bam_dma.c | 7 +++++++
+> >   2 files changed, 11 insertions(+)
+> >
+> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> > index 9a7d7ef94687..3e742e9911fa 100644
+> > --- a/drivers/crypto/qce/core.c
+> > +++ b/drivers/crypto/qce/core.c
+> > @@ -15,6 +15,7 @@
+> >   #include <linux/types.h>
+> >   #include <crypto/algapi.h>
+> >   #include <crypto/internal/hash.h>
+> > +#include <soc/qcom/bam_dma.h>
+> >
+> >   #include "core.h"
+> >   #include "cipher.h"
+> > @@ -201,6 +202,9 @@ static int qce_crypto_probe(struct platform_device *pdev)
+> >                       of_match_device(qce_crypto_of_match, &pdev->dev);
+> >       int ret;
+> >
+> > +     /* qce driver requires BAM dma driver to be setup first */
+> > +     if (!bam_is_probed())
+> > +             return -EPROBE_DEFER;
+>
+> Hi Bhupesh,
+>
+> You don't need this here. qce_dma_request returns -EPROBE_DEFER if the
+> dma controller is not probed yet.
 
-Documentation/x86: Add buslock.rst
+Thanks for the review.
 
-Add buslock.rst to explain bus lock problem and how to detect and
-handle it.
+Yes, we can just use qce_dma_request() return value to return from the
+qce probe() function early, in case the bam dma channels are not
+available yet.
 
-[ tglx: Included it into index.rst and added the missing include ... ]
+I have made the changes in v3 and will post it for review shortly.
 
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lore.kernel.org/r/20210419214958.4035512-2-fenghua.yu@intel.com
+Regards,
+Bhupesh
 
----
- Documentation/x86/buslock.rst | 104 +++++++++++++++++++++++++++++++++-
- Documentation/x86/index.rst   |   1 +-
- 2 files changed, 105 insertions(+)
- create mode 100644 Documentation/x86/buslock.rst
 
-diff --git a/Documentation/x86/buslock.rst b/Documentation/x86/buslock.rst
-new file mode 100644
-index 0000000..159ff6b
---- /dev/null
-+++ b/Documentation/x86/buslock.rst
-@@ -0,0 +1,104 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: <isonum.txt>
-+
-+===============================
-+Bus lock detection and handling
-+===============================
-+
-+:Copyright: |copy| 2021 Intel Corporation
-+:Authors: - Fenghua Yu <fenghua.yu@intel.com>
-+          - Tony Luck <tony.luck@intel.com>
-+
-+Problem
-+=======
-+
-+A split lock is any atomic operation whose operand crosses two cache lines.
-+Since the operand spans two cache lines and the operation must be atomic,
-+the system locks the bus while the CPU accesses the two cache lines.
-+
-+A bus lock is acquired through either split locked access to writeback (WB)
-+memory or any locked access to non-WB memory. This is typically thousands of
-+cycles slower than an atomic operation within a cache line. It also disrupts
-+performance on other cores and brings the whole system to its knees.
-+
-+Detection
-+=========
-+
-+Intel processors may support either or both of the following hardware
-+mechanisms to detect split locks and bus locks.
-+
-+#AC exception for split lock detection
-+--------------------------------------
-+
-+Beginning with the Tremont Atom CPU split lock operations may raise an
-+Alignment Check (#AC) exception when a split lock operation is attemped.
-+
-+#DB exception for bus lock detection
-+------------------------------------
-+
-+Some CPUs have the ability to notify the kernel by an #DB trap after a user
-+instruction acquires a bus lock and is executed. This allows the kernel to
-+terminate the application or to enforce throttling.
-+
-+Software handling
-+=================
-+
-+The kernel #AC and #DB handlers handle bus lock based on the kernel
-+parameter "split_lock_detect". Here is a summary of different options:
-+
-++------------------+----------------------------+-----------------------+
-+|split_lock_detect=|#AC for split lock		|#DB for bus lock	|
-++------------------+----------------------------+-----------------------+
-+|off	  	   |Do nothing			|Do nothing		|
-++------------------+----------------------------+-----------------------+
-+|warn		   |Kernel OOPs			|Warn once per task and |
-+|(default)	   |Warn once per task and	|and continues to run.  |
-+|		   |disable future checking	|			|
-+|		   |When both features are	|			|
-+|		   |supported, warn in #AC	|			|
-++------------------+----------------------------+-----------------------+
-+|fatal		   |Kernel OOPs			|Send SIGBUS to user.	|
-+|		   |Send SIGBUS to user		|			|
-+|		   |When both features are	|			|
-+|		   |supported, fatal in #AC	|			|
-++------------------+----------------------------+-----------------------+
-+
-+Usages
-+======
-+
-+Detecting and handling bus lock may find usages in various areas:
-+
-+It is critical for real time system designers who build consolidated real
-+time systems. These systems run hard real time code on some cores and run
-+"untrusted" user processes on other cores. The hard real time cannot afford
-+to have any bus lock from the untrusted processes to hurt real time
-+performance. To date the designers have been unable to deploy these
-+solutions as they have no way to prevent the "untrusted" user code from
-+generating split lock and bus lock to block the hard real time code to
-+access memory during bus locking.
-+
-+It's also useful for general computing to prevent guests or user
-+applications from slowing down the overall system by executing instructions
-+with bus lock.
-+
-+
-+Guidance
-+========
-+off
-+---
-+
-+Disable checking for split lock and bus lock. This option can be useful if
-+there are legacy applications that trigger these events at a low rate so
-+that mitigation is not needed.
-+
-+warn
-+----
-+
-+A warning is emitted when a bus lock is detected which allows to identify
-+the offending application. This is the default behavior.
-+
-+fatal
-+-----
-+
-+In this case, the bus lock is not tolerated and the process is killed.
-diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
-index 4693e19..0004f5d 100644
---- a/Documentation/x86/index.rst
-+++ b/Documentation/x86/index.rst
-@@ -29,6 +29,7 @@ x86-specific Documentation
-    microcode
-    resctrl
-    tsx_async_abort
-+   buslock
-    usb-legacy-support
-    i386/index
-    x86_64/index
+
+
+
+
+> >
+> >       qce = devm_kzalloc(dev, sizeof(*qce), GFP_KERNEL);
+> >       if (!qce)
+> > diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+> > index 2bc3b7c7ee5a..c854fcc82dbf 100644
+> > --- a/drivers/dma/qcom/bam_dma.c
+> > +++ b/drivers/dma/qcom/bam_dma.c
+> > @@ -935,6 +935,12 @@ static void bam_channel_init(struct bam_device *bdev, struct bam_chan *bchan,
+> >       INIT_LIST_HEAD(&bchan->desc_list);
+> >   }
+> >
+> > +bool bam_is_probed(void)
+> > +{
+> > +     return bam_probed;
+> > +}
+> > +EXPORT_SYMBOL_GPL(bam_is_probed);
+> > +
+> >   static const struct of_device_id bam_of_match[] = {
+> >       { .compatible = "qcom,bam-v1.3.0", .data = &bam_v1_3_reg_info },
+> >       { .compatible = "qcom,bam-v1.4.0", .data = &bam_v1_4_reg_info },
+> > @@ -1084,6 +1090,7 @@ static int bam_dma_probe(struct platform_device *pdev)
+> >       if (ret)
+> >               goto err_unregister_dma;
+> >
+> > +     bam_probed = true;
+> >       if (!bdev->bamclk) {
+> >               pm_runtime_disable(&pdev->dev);
+> >               return 0;
+> >
+>
