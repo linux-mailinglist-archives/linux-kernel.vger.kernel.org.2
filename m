@@ -2,303 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047353881D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3119B3881D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 23:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352359AbhERVJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 17:09:38 -0400
-Received: from mga01.intel.com ([192.55.52.88]:42651 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352353AbhERVJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 17:09:37 -0400
-IronPort-SDR: H4tPuMehza4tlPYpz/gKReQEfK+BxeknrlkanH/bSNqGedaNy0/I9qFJ7uwacLr/IWT+LE6Vjs
- ZKH9Z46Iyr5A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="221881751"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="221881751"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 14:08:19 -0700
-IronPort-SDR: USwaHoHEehAoR4Pv/2YqaKnDUva8Ge4rRjFCLseU2/mzATHKc6n7+Pz7Blo+RWVGWTzxn9sCEn
- yMmbnMMzgh7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="411446688"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 18 May 2021 14:08:17 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lj6wq-0002LJ-VC; Tue, 18 May 2021 21:08:16 +0000
-Date:   Wed, 19 May 2021 05:07:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 58b9d0b9cdddce0a4d54477665dbbec8dc4ae068
-Message-ID: <60a42ca0.sTWcxGRfiMJiwqt9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1352374AbhERVKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 17:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352364AbhERVKN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 17:10:13 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD433C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:08:54 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id x18so4065773pfi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 14:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=As0TR/yrddFM+orjwRplkKxLfSr+Fk7q/h0XC1AzLtU=;
+        b=SvwzTowIitwxvlrfLXr6aaY35NEVx+e4ZfdwpbvQqWQdmZ0XmlFt4r+/OwDLTS3ixV
+         4wir8x9ffSORCYmQSTBh35Mr+Qsifb7N41JJ/dIEjnjKdm7XS5Esz/34a9wzjdGcq8rA
+         ZOjh9tRx/+ICsSvVjOEyCmN60meCbf9/4nftAwx16J5LtG+nI1MC/8eAr9jValMZ4Ben
+         pJy2JPrYvMu5Owg1PZPhSNvgkH8wahfVcXIYvean300D4R8rtqP2JLNUVEIOIIgS6kxy
+         LCV5r1bnfaROwMeBA0ubkfoASHAsNeYb1lVwUkuwvlCgdLFi5txlR8QtXguIShxEvhym
+         Dtdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=As0TR/yrddFM+orjwRplkKxLfSr+Fk7q/h0XC1AzLtU=;
+        b=eOvhWysWWDNVcEWxgsDrZOBs7nzGDPxYbx6UtNFeqvpLp6MXkLbTJ+Q07Y1yNEG/xm
+         /EGoGO7sH4pr20XFcBDf0D3YRu+QgnOUe/eNZnoqM+lr7oF1r/qKv0v3I20G03HavtIH
+         kgHe1E7+80WsM6HKF45I/+uvX1P9P/b0+h2xF+7HbmoQBf3jXhOdnU3Robn7pp73abiv
+         iz7BOuERHynaobixsA+qxDiB8/v12mzKIf9Fyg9zeQvLH6dWaUQnwXhE9Na6ZMq3uEIz
+         ynENL9PhZEfZmiHJlpAZFJEmnQDL42QXHBvxxoj0luS6gE4GXg4Z8HYJHcmbdh67QolC
+         8uLg==
+X-Gm-Message-State: AOAM530Y+DzB9TmOwxIuujuyMoupHFxEpb5mQunk9flXzZUmGwh0PZRC
+        yzUumOdhuGZWNMy//7kRVYaWj6PiIIjJyFEsC9HMxQ==
+X-Google-Smtp-Source: ABdhPJxEv3mBiNJh/sZOxRSO7B98DsBg99cnL4KK2eBVH/QpazNym6OY2FqZTZLs1pbrnb7Nn95OTGD6A7d++rxBq5Q=
+X-Received: by 2002:a63:cc11:: with SMTP id x17mr7059732pgf.159.1621372134140;
+ Tue, 18 May 2021 14:08:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210507213110.155492-1-brendanhiggins@google.com>
+ <20210507213110.155492-5-brendanhiggins@google.com> <CABVgOSnnb=LB2hQOVqarDd3Tv17f7JHHomvSfWeQaFSsH1PD2g@mail.gmail.com>
+In-Reply-To: <CABVgOSnnb=LB2hQOVqarDd3Tv17f7JHHomvSfWeQaFSsH1PD2g@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 18 May 2021 14:08:43 -0700
+Message-ID: <CAFd5g47dqGin2QO_RLZKu93rt_j0xv7Dg1KTCrgYi7bVoaEjKg@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] Documentation: kunit: document support for QEMU in kunit_tool
+To:     David Gow <davidgow@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 58b9d0b9cdddce0a4d54477665dbbec8dc4ae068  Merge branch 'irq/core'
+On Sat, May 15, 2021 at 1:01 AM David Gow <davidgow@google.com> wrote:
+>
+> On Sat, May 8, 2021 at 5:31 AM Brendan Higgins
+> <brendanhiggins@google.com> wrote:
+> >
+> > Document QEMU support, what it does, and how to use it in kunit_tool.
+> >
+> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > ---
+>
+> This is a good start, and probably meets the minimum requirements, but
+> I do have a number of comments and suggestions below.
+>
+> Cheers,
+> -- David
+>
+> >  Documentation/dev-tools/kunit/usage.rst | 37 +++++++++++++++++++++----
+> >  1 file changed, 31 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+> > index 650f99590df57..b74bd7c87cc20 100644
+> > --- a/Documentation/dev-tools/kunit/usage.rst
+> > +++ b/Documentation/dev-tools/kunit/usage.rst
+> > @@ -612,14 +612,39 @@ only things to be aware of when doing so.
+> >  The biggest impediment will likely be that certain KUnit features and
+> >  infrastructure may not support your target environment. For example, at this
+> >  time the KUnit Wrapper (``tools/testing/kunit/kunit.py``) does not work outside
+> > -of UML. Unfortunately, there is no way around this. Using UML (or even just a
+> > -particular architecture) allows us to make a lot of assumptions that make it
+> > -possible to do things which might otherwise be impossible.
+> > +of UML and QEMU. Unfortunately, there is no way around this. Using UML and QEMU
+> > +(or even just a particular architecture) allows us to make a lot of assumptions
+> > +that make it possible to do things which might otherwise be impossible.
+>
+> This is a bit more awkward now, and I don't think gives quite the
+> right impression. Particularly the "Unfortunately, there is no way
+> around this." bit: there's no fundamental reason that someone couldn't
+> implement support for some other emulator (or even a setup which
+> pushed to real hardware and read results over serial), it'd just take
+> a bit of work to implement (like this patch series has done for qemu).
+>
+> Personally, I think it'd be easiest to simplify this section and say
+> that kunit_tool currently only fully supports some architectures, via
+> UML and QEMU.
 
-elapsed time: 940m
+Cool, I will fix that in the next revision.
 
-configs tested: 241
-configs skipped: 3
+> >
+> >  Nevertheless, all core KUnit framework features are fully supported on all
+> > -architectures, and using them is straightforward: all you need to do is to take
+> > -your kunitconfig, your Kconfig options for the tests you would like to run, and
+> > -merge them into whatever config your are using for your platform. That's it!
+> > +architectures, and using them is straightforward: Most popular architectures
+> > +are supported directly in the KUnit Wrapper via QEMU.  Currently, supported
+> > +architectures on QEMU include:
+> > +
+> > +*   i386
+> > +*   x86_64
+> > +*   arm
+> > +*   arm64
+> > +*   alpha
+> > +*   powerpc
+> > +*   riscv
+> > +*   s390
+> > +*   sparc
+> > +
+> > +In order to run KUnit tests on one of these architectures via QEMU with the
+> > +KUnit wrapper, all you need to do is specify the flags ``--arch`` and
+> > +``--cross_compile`` when invoking the KUnit Wrapper. For example, we could run
+> > +the default KUnit tests on ARM in the following manner (assuming we have an ARM
+> > +toolchain installed):
+> > +
+> > +.. code-block:: bash
+> > +
+> > +       tools/testing/kunit/kunit.py run --timeout=60 --jobs=12 --arch=arm --cross_compile=arm-linux-gnueabihf-
+> > +
+>
+> Is it worth also documenting the --qemu_config option here?
+> (Particularly given the restriction on its path?) Or is that something
+> best added to the kunit_tool page?
+>
+> That being said, changes to the kunit_tool page are probably worth
+> adding as a section in the updated page:
+> https://patchwork.kernel.org/project/linux-kselftest/patch/20210417034553.1048895-1-davidgow@google.com/
+>
+> At the very least, it'd be nice to have the new QEMU-related options
+> documented there.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Probably a good idea. However, I will ask Shuah to pick up the
+Documentation changes before I document the new options to avoid
+conflicts.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0219_defconfig
-arm                          moxart_defconfig
-parisc                              defconfig
-openrisc                            defconfig
-m68k                          multi_defconfig
-arm                        spear6xx_defconfig
-mips                           rs90_defconfig
-arm                           omap1_defconfig
-xtensa                       common_defconfig
-microblaze                      mmu_defconfig
-mips                        nlm_xlp_defconfig
-powerpc64                           defconfig
-m68k                          atari_defconfig
-powerpc                     ep8248e_defconfig
-arm                          lpd270_defconfig
-alpha                               defconfig
-arm                       omap2plus_defconfig
-csky                                defconfig
-sh                           se7722_defconfig
-mips                         mpc30x_defconfig
-um                            kunit_defconfig
-powerpc                      makalu_defconfig
-powerpc                 mpc8315_rdb_defconfig
-m68k                          hp300_defconfig
-powerpc                     pq2fads_defconfig
-arc                      axs103_smp_defconfig
-powerpc                    socrates_defconfig
-arm                       imx_v6_v7_defconfig
-arm64                            alldefconfig
-powerpc                 mpc8272_ads_defconfig
-arm                         vf610m4_defconfig
-mips                         cobalt_defconfig
-powerpc                  iss476-smp_defconfig
-arm                          gemini_defconfig
-sh                             espt_defconfig
-sh                        apsh4ad0a_defconfig
-sparc                       sparc32_defconfig
-sh                              ul2_defconfig
-sh                      rts7751r2d1_defconfig
-xtensa                generic_kc705_defconfig
-xtensa                    smp_lx200_defconfig
-i386                                defconfig
-sh                            hp6xx_defconfig
-mips                           ip28_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                      cm5200_defconfig
-arm                           viper_defconfig
-arc                        nsimosci_defconfig
-i386                             alldefconfig
-openrisc                  or1klitex_defconfig
-sh                          kfr2r09_defconfig
-mips                      malta_kvm_defconfig
-arm                             rpc_defconfig
-arm                         lubbock_defconfig
-mips                           ip32_defconfig
-arm                            mps2_defconfig
-mips                           ip22_defconfig
-sh                          urquell_defconfig
-arm                        realview_defconfig
-sh                          rsk7201_defconfig
-mips                     decstation_defconfig
-arc                            hsdk_defconfig
-arm                             ezx_defconfig
-mips                        nlm_xlr_defconfig
-mips                            gpr_defconfig
-mips                        vocore2_defconfig
-ia64                                defconfig
-m68k                       m5249evb_defconfig
-sparc                            alldefconfig
-x86_64                            allnoconfig
-powerpc                     kmeter1_defconfig
-arm                         socfpga_defconfig
-sh                               alldefconfig
-powerpc                   currituck_defconfig
-arm                            dove_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                     rainier_defconfig
-mips                        maltaup_defconfig
-m68k                         amcore_defconfig
-sh                           se7721_defconfig
-m68k                         apollo_defconfig
-arm                           h3600_defconfig
-arm                      footbridge_defconfig
-arm                            hisi_defconfig
-arm                          exynos_defconfig
-arm                       aspeed_g4_defconfig
-sh                          polaris_defconfig
-alpha                            alldefconfig
-openrisc                    or1ksim_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                      acadia_defconfig
-arm                         s3c2410_defconfig
-powerpc                     redwood_defconfig
-mips                  maltasmvp_eva_defconfig
-arm                        multi_v5_defconfig
-mips                           ci20_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                           se7343_defconfig
-arm                          pxa168_defconfig
-arm                         axm55xx_defconfig
-arc                         haps_hs_defconfig
-arm                           u8500_defconfig
-powerpc                         wii_defconfig
-arm                          simpad_defconfig
-powerpc                     tqm8541_defconfig
-mips                        qi_lb60_defconfig
-m68k                           sun3_defconfig
-arm                        clps711x_defconfig
-mips                           mtx1_defconfig
-arm                          ixp4xx_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                        cell_defconfig
-sh                     sh7710voipgw_defconfig
-sh                        sh7785lcr_defconfig
-arm                         nhk8815_defconfig
-nios2                         3c120_defconfig
-parisc                generic-64bit_defconfig
-x86_64                              defconfig
-arm                       multi_v4t_defconfig
-arm                      integrator_defconfig
-mips                     loongson2k_defconfig
-sparc                               defconfig
-arm                          ep93xx_defconfig
-arm                           h5000_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                       aspeed_g5_defconfig
-powerpc                      ppc64e_defconfig
-sh                           se7206_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                       eiger_defconfig
-powerpc                        icon_defconfig
-x86_64                           allyesconfig
-powerpc                       maple_defconfig
-powerpc                     tqm5200_defconfig
-arm                        keystone_defconfig
-mips                       lemote2f_defconfig
-nios2                         10m50_defconfig
-mips                        workpad_defconfig
-sh                          rsk7269_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                      bamboo_defconfig
-powerpc                     mpc83xx_defconfig
-riscv                             allnoconfig
-xtensa                    xip_kc705_defconfig
-m68k                        mvme16x_defconfig
-powerpc                    klondike_defconfig
-powerpc                     tqm8560_defconfig
-microblaze                          defconfig
-sh                          r7785rp_defconfig
-powerpc                 mpc837x_rdb_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210518
-x86_64               randconfig-a004-20210518
-x86_64               randconfig-a005-20210518
-x86_64               randconfig-a001-20210518
-x86_64               randconfig-a002-20210518
-x86_64               randconfig-a006-20210518
-i386                 randconfig-a003-20210518
-i386                 randconfig-a001-20210518
-i386                 randconfig-a005-20210518
-i386                 randconfig-a004-20210518
-i386                 randconfig-a002-20210518
-i386                 randconfig-a006-20210518
-i386                 randconfig-a003-20210519
-i386                 randconfig-a001-20210519
-i386                 randconfig-a005-20210519
-i386                 randconfig-a004-20210519
-i386                 randconfig-a002-20210519
-i386                 randconfig-a006-20210519
-x86_64               randconfig-a012-20210519
-x86_64               randconfig-a015-20210519
-x86_64               randconfig-a013-20210519
-x86_64               randconfig-a011-20210519
-x86_64               randconfig-a016-20210519
-x86_64               randconfig-a014-20210519
-i386                 randconfig-a014-20210519
-i386                 randconfig-a016-20210519
-i386                 randconfig-a011-20210519
-i386                 randconfig-a015-20210519
-i386                 randconfig-a012-20210519
-i386                 randconfig-a013-20210519
-i386                 randconfig-a014-20210518
-i386                 randconfig-a016-20210518
-i386                 randconfig-a011-20210518
-i386                 randconfig-a015-20210518
-i386                 randconfig-a012-20210518
-i386                 randconfig-a013-20210518
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                               allyesconfig
-um                                allnoconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210518
-x86_64               randconfig-b001-20210519
-x86_64               randconfig-a015-20210518
-x86_64               randconfig-a012-20210518
-x86_64               randconfig-a013-20210518
-x86_64               randconfig-a011-20210518
-x86_64               randconfig-a016-20210518
-x86_64               randconfig-a014-20210518
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > +Alternatively, if you want to run your tests on real hardware or in some other
+> > +emulation environment, all you need to do is to take your kunitconfig, your
+> > +Kconfig options for the tests you would like to run, and merge them into
+> > +whatever config your are using for your platform. That's it!
+> >
+> >  For example, let's say you have the following kunitconfig:
+> >
+> > --
+> > 2.31.1.607.g51e8a6a459-goog
+> >
