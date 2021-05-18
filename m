@@ -2,151 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E177387B8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE4A387B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 16:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240617AbhEROpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 10:45:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54460 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237599AbhEROpV (ORCPT
+        id S242383AbhEROqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 10:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239899AbhEROpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 10:45:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621349043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+        Tue, 18 May 2021 10:45:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40927C061346;
+        Tue, 18 May 2021 07:44:25 -0700 (PDT)
+Date:   Tue, 18 May 2021 14:44:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621349063;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PK9785qy152K2v/cWuZE7z93ZB9DyVJp3ViNZm41hmE=;
-        b=asx/ZX8L/3SrtSGDF2S6/2cyQ7xevMBRp/7r9WDCgd2b/VJO4ISxMYrykmJZCNP3T8FeWa
-        8Y799TkMpftQpz1VFtknKTEsogiiorl68AQHEtzycRfBuWm4g44b9UeDFagmsjikEGXLXD
-        EMbLPMzDXup2x9Zet1SRQsDclxpVEGQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-136-maPbbbHOMU2t64xYeg-I1A-1; Tue, 18 May 2021 10:44:00 -0400
-X-MC-Unique: maPbbbHOMU2t64xYeg-I1A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D580B107ACF2;
-        Tue, 18 May 2021 14:43:58 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.193.194])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD9525B4B3;
-        Tue, 18 May 2021 14:43:56 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in use
-Date:   Tue, 18 May 2021 16:43:39 +0200
-Message-Id: <20210518144339.1987982-6-vkuznets@redhat.com>
-In-Reply-To: <20210518144339.1987982-1-vkuznets@redhat.com>
-References: <20210518144339.1987982-1-vkuznets@redhat.com>
+        bh=Bawpa71MGjH1d+7qGXUM/Sq9NhjHZXYhRPUfZ1mfNqw=;
+        b=anyY4xuh+D11A+cc15RvSLgNRerOtjr9sizNydQScHiGKzLh5UD/6JZJ3o+G1807f57Ovh
+        8cDT33ikQ3P/yybB+/CzzpMeuHvsf8pYwOqh4HXwgj4AUM7UTpvy//INwog2YdXKMprf4z
+        PJVf4Qi8+PjoqzY7s54izD1nT2gGAE+PQU6RPYBbZp/bYOcpbKH2s/Fky7Io5dgtofx7Ko
+        rkvRD64kvTqSpBE+K7gC/cjBpmA70Jre57elFQQ/TztsvJFRmjEJ5ZWqEipReXiy8mR/p0
+        5y7MctQZW7DJGeWnoeaOD9R8km3swvc2ayB8JOzDG5eJcX0r0fL5jqR6l2SVyQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621349063;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bawpa71MGjH1d+7qGXUM/Sq9NhjHZXYhRPUfZ1mfNqw=;
+        b=MvH309NktgVZonBW20OwAk5D2xh+z32nRNQ1m52Q/3OF/f4kvq+z1fxwfRTg79Uwz6LevF
+        bq+5medBV4I1kMAw==
+From:   "tip-bot2 for Fenghua Yu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/splitlock] Documentation/admin-guide: Add bus lock ratelimit
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210419214958.4035512-4-fenghua.yu@intel.com>
+References: <20210419214958.4035512-4-fenghua.yu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Message-ID: <162134906161.29796.1181461995523391470.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
-SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
-however, possible to track whether the feature was actually used by the
-guest and only inhibit APICv/AVIC when needed.
+The following commit has been merged into the x86/splitlock branch of tip:
 
-TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
-Windows know that AutoEOI feature should be avoided. While it's up to
-KVM userspace to set the flag, KVM can help a bit by exposing global
-APICv/AVIC enablement: in case APICv/AVIC usage is impossible, AutoEOI
-is still preferred.
+Commit-ID:     9d839c280b64817345c2fa462c0027a9bd742361
+Gitweb:        https://git.kernel.org/tip/9d839c280b64817345c2fa462c0027a9bd742361
+Author:        Fenghua Yu <fenghua.yu@intel.com>
+AuthorDate:    Mon, 19 Apr 2021 21:49:57 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 18 May 2021 16:39:31 +02:00
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Documentation/admin-guide: Add bus lock ratelimit
+
+Since bus lock rate limit changes the split_lock_detect parameter,
+update the documentation for the change.
+
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20210419214958.4035512-4-fenghua.yu@intel.com
+
 ---
- arch/x86/include/asm/kvm_host.h |  3 +++
- arch/x86/kvm/hyperv.c           | 27 +++++++++++++++++++++------
- 2 files changed, 24 insertions(+), 6 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index bf5807d35339..5e03ab4c0e4f 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -936,6 +936,9 @@ struct kvm_hv {
- 	/* How many vCPUs have VP index != vCPU index */
- 	atomic_t num_mismatched_vp_indexes;
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb89dbd..ca94624 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5283,6 +5283,14 @@
+ 				  exception. Default behavior is by #AC if
+ 				  both features are enabled in hardware.
  
-+	/* How many SynICs use 'AutoEOI' feature */
-+	atomic_t synic_auto_eoi_used;
++			ratelimit:N -
++				  Set system wide rate limit to N bus locks
++				  per second for bus lock detection.
++				  0 < N <= 1000.
 +
- 	struct hv_partition_assist_pg *hv_pa_pg;
- 	struct kvm_hv_syndbg hv_syndbg;
- };
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index f98370a39936..89e7d5b99279 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -87,6 +87,10 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
- static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
- 				int vector)
- {
-+	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
-+	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
-+	int auto_eoi_old, auto_eoi_new;
++				  N/A for split lock detection.
 +
- 	if (vector < HV_SYNIC_FIRST_VALID_VECTOR)
- 		return;
- 
-@@ -95,10 +99,25 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
- 	else
- 		__clear_bit(vector, synic->vec_bitmap);
- 
-+	auto_eoi_old = bitmap_weight(synic->auto_eoi_bitmap, 256);
 +
- 	if (synic_has_vector_auto_eoi(synic, vector))
- 		__set_bit(vector, synic->auto_eoi_bitmap);
- 	else
- 		__clear_bit(vector, synic->auto_eoi_bitmap);
-+
-+	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
-+
-+	/* Hyper-V SynIC auto EOI SINTs are not compatible with APICV */
-+	if (!auto_eoi_old && auto_eoi_new) {
-+		if (atomic_inc_return(&hv->synic_auto_eoi_used) == 1)
-+			kvm_request_apicv_update(vcpu->kvm, false,
-+						 APICV_INHIBIT_REASON_HYPERV);
-+	} else if (!auto_eoi_new && auto_eoi_old) {
-+		if (atomic_dec_return(&hv->synic_auto_eoi_used) == 0)
-+			kvm_request_apicv_update(vcpu->kvm, true,
-+						 APICV_INHIBIT_REASON_HYPERV);
-+	}
- }
- 
- static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
-@@ -931,12 +950,6 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
- 
- 	synic = to_hv_synic(vcpu);
- 
--	/*
--	 * Hyper-V SynIC auto EOI SINT's are
--	 * not compatible with APICV, so request
--	 * to deactivate APICV permanently.
--	 */
--	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
- 	synic->active = true;
- 	synic->dont_zero_synic_pages = dont_zero_synic_pages;
- 	synic->control = HV_SYNIC_CONTROL_ENABLE;
-@@ -2198,6 +2211,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
- 				ent->eax |= HV_X64_ENLIGHTENED_VMCS_RECOMMENDED;
- 			if (!cpu_smt_possible())
- 				ent->eax |= HV_X64_NO_NONARCH_CORESHARING;
-+			if (enable_apicv)
-+				ent->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
- 			/*
- 			 * Default number of spinlock retry attempts, matches
- 			 * HyperV 2016.
--- 
-2.31.1
-
+ 			If an #AC exception is hit in the kernel or in
+ 			firmware (i.e. not while executing in user mode)
+ 			the kernel will oops in either "warn" or "fatal"
