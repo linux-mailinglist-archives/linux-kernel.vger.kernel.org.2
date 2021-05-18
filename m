@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBD33879AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEBD3879B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 15:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349478AbhERNQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 09:16:16 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4664 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhERNQP (ORCPT
+        id S1349515AbhERNTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 09:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233079AbhERNTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 09:16:15 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FkxHF2KZ2z16QVj;
-        Tue, 18 May 2021 21:12:09 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 21:14:54 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
- 2021 21:14:54 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <ecree.xilinx@gmail.com>
-Subject: [PATCH net-next] sfc: farch: fix compile warning in efx_farch_dimension_resources()
-Date:   Tue, 18 May 2021 21:17:11 +0800
-Message-ID: <20210518131711.1311363-1-yangyingliang@huawei.com>
+        Tue, 18 May 2021 09:19:52 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1FCC061573;
+        Tue, 18 May 2021 06:18:33 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id b7so909793plg.0;
+        Tue, 18 May 2021 06:18:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=db+i81oaJnqS/hNDj62vMgPodT5DS9VOJUhp6l/b6qc=;
+        b=VBHgtNKexUwXXXOMp4zZcF8Rs7S0TxJ2MPoNFs+lhYCMI7tpE9DLBsebzzgmtYkhZl
+         aLVIW4QuT+5BgYrbcTFIkLdCLXCPJQvM7F+YWMISGVSrSMsaYP9qum+kPoNSNiWezREb
+         kwSfy9BLZbZLxJT7kwpawYCXlfBEgBL0kpNVdej/lF/QARYz4oHVSxQBFkTZTK427wsW
+         TZlWbcClNY5lZ2fENRI2BFvb8lSl3oDLFJp0BQFQSVyFPEHp+gBeqjQxRXli4Ik6JR9n
+         ah3Fs34aIDQGST1kbsFxht4jwdKMy+JcYlJxYVFNTZc8BXkpfxeNAF0v4CvGDLVIl2J6
+         4wqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=db+i81oaJnqS/hNDj62vMgPodT5DS9VOJUhp6l/b6qc=;
+        b=KIyouPbnMOs5/zxTciTkQ2t8OoxnCx9Ao1hOdNK3ggyv+lvmgIcDQOfX8qIH/XTwFF
+         ga+wLGm6DShgEZgwKrruPHiN/HmB34Gt/ZFD6g2TgVtXuQgD0sL/RyTRr91JK/dxOosU
+         R6xh8a6ktlOfDy+kTWD03/pQ8PjddImw0TBUlSUsZVen9QFTZcEnhvwmrRsoUayiFMoJ
+         mbGJWJjOmt/6sYSQm5eCzMsOnLzIcjgmzj2rkthEEIatAXjM5vWVLK8sH+N3q9CCvSS5
+         GDhsyKwrsx4CrnjnG+1/RSqmMI0DmDOxYRmAaxxG1Xtugo8KU5OoXMGHWfCn2TSJ43DG
+         Cu2A==
+X-Gm-Message-State: AOAM5335LabvYArSnglJ2cmwAINUex4zdp7VTSNPPuMO2G/fgOC0Lyk9
+        zmL2rTpCrAxTeLME7yXpI+GHgcR+aE4RbRRNAoY=
+X-Google-Smtp-Source: ABdhPJy1mcOissW029MvyEYLfMk/bt/BpgcFgjlGuUcufWga93NKMgt3dUfL3OA5tjt6pLfS7k6GUA==
+X-Received: by 2002:a17:902:c104:b029:ef:836e:15d6 with SMTP id 4-20020a170902c104b02900ef836e15d6mr4626212pli.39.1621343912730;
+        Tue, 18 May 2021 06:18:32 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id y190sm7776782pfb.69.2021.05.18.06.18.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 06:18:32 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-scsi@vger.kernel.org, linux@armlinux.org.uk,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] scsi: fas216: Use fallthrough pseudo-keyword
+Date:   Tue, 18 May 2021 21:18:23 +0800
+Message-Id: <20210518131823.2586-1-jj251510319013@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following kernel build warning when CONFIG_SFC_SRIOV is disabled:
+Replace /* FALLTHROUGH */ comment with pseudo-keyword macro fallthrough[1]
 
-  drivers/net/ethernet/sfc/farch.c: In function ‘efx_farch_dimension_resources’:
-  drivers/net/ethernet/sfc/farch.c:1671:21: warning: variable ‘buftbl_min’ set but not used [-Wunused-but-set-variable]
-    unsigned vi_count, buftbl_min, total_tx_channels;
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
 ---
- drivers/net/ethernet/sfc/farch.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/scsi/arm/fas216.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/sfc/farch.c b/drivers/net/ethernet/sfc/farch.c
-index 49df02ecee91..0bd879bd73c7 100644
---- a/drivers/net/ethernet/sfc/farch.c
-+++ b/drivers/net/ethernet/sfc/farch.c
-@@ -1668,13 +1668,17 @@ void efx_farch_rx_pull_indir_table(struct efx_nic *efx)
-  */
- void efx_farch_dimension_resources(struct efx_nic *efx, unsigned sram_lim_qw)
- {
--	unsigned vi_count, buftbl_min, total_tx_channels;
-+	unsigned vi_count, total_tx_channels;
+diff --git a/drivers/scsi/arm/fas216.c b/drivers/scsi/arm/fas216.c
+index 2e687ce60753..9402cdce7cc5 100644
+--- a/drivers/scsi/arm/fas216.c
++++ b/drivers/scsi/arm/fas216.c
+@@ -1479,7 +1479,7 @@ static void fas216_busservice_intr(FAS216_Info *info, unsigned int stat, unsigne
  
- #ifdef CONFIG_SFC_SRIOV
-+	unsigned buftbl_min;
- 	struct siena_nic_data *nic_data = efx->nic_data;
- #endif
+ 		if (msgqueue_msglength(&info->scsi.msgs) > 1)
+ 			fas216_cmd(info, CMD_SETATN);
+-		/*FALLTHROUGH*/
++		fallthrough;
  
- 	total_tx_channels = efx->n_tx_channels + efx->n_extra_tx_channels;
-+	vi_count = max(efx->n_channels, total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL);
-+
-+#ifdef CONFIG_SFC_SRIOV
- 	/* Account for the buffer table entries backing the datapath channels
- 	 * and the descriptor caches for those channels.
- 	 */
-@@ -1682,9 +1686,6 @@ void efx_farch_dimension_resources(struct efx_nic *efx, unsigned sram_lim_qw)
- 		       total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL * EFX_MAX_DMAQ_SIZE +
- 		       efx->n_channels * EFX_MAX_EVQ_SIZE)
- 		      * sizeof(efx_qword_t) / EFX_BUF_SIZE);
--	vi_count = max(efx->n_channels, total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL);
--
--#ifdef CONFIG_SFC_SRIOV
- 	if (efx->type->sriov_wanted) {
- 		if (efx->type->sriov_wanted(efx)) {
- 			unsigned vi_dc_entries, buftbl_free;
+ 	/*
+ 	 * Any          -> Message Out
 -- 
 2.25.1
 
