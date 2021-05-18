@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CD038760C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBC9387615
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 12:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348335AbhERKIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 06:08:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35822 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348304AbhERKIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 06:08:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 535AAAEC6;
-        Tue, 18 May 2021 10:06:43 +0000 (UTC)
-Subject: Re: [PATCH v10 18/33] mm/filemap: Add folio_unlock
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-19-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <e3869efd-b4a3-93a2-b510-21142db91603@suse.cz>
+        id S1348357AbhERKIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 06:08:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348340AbhERKIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 06:08:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621332407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dFkmeu2athwSt2LK0RUUi/E/grHFe/dKRRuvCpK8qJo=;
+        b=DvVzlLIiJep/n8KFdyk90AQKKEfVlBjAvuImkvRCnAa+n4SDjle9QfWbVVpmdRDeLPBv2f
+        j0na5zyruwqd0Wm5AYftDDxCVuAB07sAUHDMgs96LVcZ5ESuaDymKgn/uuwpLF6lKa0GSA
+        svnPAxFEKZ30Cr8VG6jmjfXjxMmsgcE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-EamBJhjIPC6cjyhilTupZQ-1; Tue, 18 May 2021 06:06:46 -0400
+X-MC-Unique: EamBJhjIPC6cjyhilTupZQ-1
+Received: by mail-wr1-f71.google.com with SMTP id s7-20020adfc5470000b0290106eef17cbdso5333901wrf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 03:06:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=dFkmeu2athwSt2LK0RUUi/E/grHFe/dKRRuvCpK8qJo=;
+        b=tmsDmqz3CV5qZ7v06l59NJeadIPnWb7KqgNl1KHETZHdvMFkMisbQO8i1mWD1B59GV
+         6MfGrMoT1rl1jz/CCM/Z0dW4/m+PJeaExenaDztD3U+gIvBlac2HURRHeWEPCVhHCJD7
+         h7S/fU72tCBpMsXosifm8agR+2nli7RBDHBffwir8XYhTT57/lgyecKCU1b3Q1PgzhOg
+         4cpBcqKuVI4CitZ1oJZTHKyAR8MbneFcluVtuWPYtN3DOgXMC0RFIg+1CKZIiZO66tpR
+         wfM8WxFG2z7p09/WoAk83UkXdY6lAptssuVvasWHYjUJlicd1k3l01LCoA/2GW3Km+f9
+         yikQ==
+X-Gm-Message-State: AOAM532LJHU4xbFy8tBdI2kNuyoSRPunSNv/jWKpTucmCM2QgE8dmUzq
+        VmE05F1QhONJup/mCCqAEk6VnBQZ+anOjCjYUvMyax9e5I2hf+8uWv7TVvXdPceAqRZ83QIrDeH
+        D2zYNSnCkQzQHVcnOBfhHfjMV
+X-Received: by 2002:a05:6000:1ac5:: with SMTP id i5mr5879840wry.6.1621332405357;
+        Tue, 18 May 2021 03:06:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwiVxI2VqHM3UC3HkCv7YVP9ChZhf/paSvmhTbK/1R/b2aClM7EAkaKYj9OwIH5AzvG3tEX6Q==
+X-Received: by 2002:a05:6000:1ac5:: with SMTP id i5mr5879787wry.6.1621332405164;
+        Tue, 18 May 2021 03:06:45 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64fd.dip0.t-ipconnect.de. [91.12.100.253])
+        by smtp.gmail.com with ESMTPSA id f14sm8395872wry.40.2021.05.18.03.06.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 03:06:44 -0700 (PDT)
+Subject: Re: [PATCH v19 5/8] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20210513184734.29317-1-rppt@kernel.org>
+ <20210513184734.29317-6-rppt@kernel.org>
+ <b625c5d7-bfcc-9e95-1f79-fc8b61498049@redhat.com>
+ <YKDJ1L7XpJRQgSch@kernel.org> <YKOP5x8PPbqzcsdK@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <8e114f09-60e4-2343-1c42-1beaf540c150@redhat.com>
 Date:   Tue, 18 May 2021 12:06:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-19-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YKOP5x8PPbqzcsdK@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> Convert unlock_page() to call folio_unlock().  By using a folio we
-> avoid a call to compound_head().  This shortens the function from 39
-> bytes to 25 and removes 4 instructions on x86-64.  Because we still
-> have unlock_page(), it's a net increase of 24 bytes of text for the
-> kernel as a whole, but any path that uses folio_unlock() will execute
-> 4 fewer instructions.
+On 18.05.21 11:59, Michal Hocko wrote:
+> On Sun 16-05-21 10:29:24, Mike Rapoport wrote:
+>> On Fri, May 14, 2021 at 11:25:43AM +0200, David Hildenbrand wrote:
+> [...]
+>>>> +		if (!page)
+>>>> +			return VM_FAULT_OOM;
+>>>> +
+>>>> +		err = set_direct_map_invalid_noflush(page, 1);
+>>>> +		if (err) {
+>>>> +			put_page(page);
+>>>> +			return vmf_error(err);
+>>>
+>>> Would we want to translate that to a proper VM_FAULT_..., which would most
+>>> probably be VM_FAULT_OOM when we fail to allocate a pagetable?
+>>
+>> That's what vmf_error does, it translates -ESOMETHING to VM_FAULT_XYZ.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  include/linux/pagemap.h |  3 ++-
->  mm/filemap.c            | 27 ++++++++++-----------------
->  mm/folio-compat.c       |  6 ++++++
->  3 files changed, 18 insertions(+), 18 deletions(-)
+> I haven't read through the rest but this has just caught my attention.
+> Is it really reasonable to trigger the oom killer when you cannot
+> invalidate the direct mapping. From a quick look at the code it is quite
+> unlikely to se ENOMEM from that path (it allocates small pages) but this
+> can become quite sublte over time. Shouldn't this simply SIGBUS if it
+> cannot manipulate the direct mapping regardless of the underlying reason
+> for that?
 > 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 1f37d7656955..8dbba0074536 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -643,7 +643,8 @@ extern int __lock_page_killable(struct page *page);
->  extern int __lock_page_async(struct page *page, struct wait_page_queue *wait);
->  extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
->  				unsigned int flags);
-> -extern void unlock_page(struct page *page);
-> +void unlock_page(struct page *page);
-> +void folio_unlock(struct folio *folio);
->  
->  /*
->   * Return true if the page was successfully locked
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 817a47059bd0..e7a6a58d6cd9 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -1435,29 +1435,22 @@ static inline bool clear_bit_unlock_is_negative_byte(long nr, volatile void *mem
->  #endif
->  
->  /**
-> - * unlock_page - unlock a locked page
-> - * @page: the page
-> + * folio_unlock - Unlock a locked folio.
-> + * @folio: The folio.
->   *
-> - * Unlocks the page and wakes up sleepers in wait_on_page_locked().
-> - * Also wakes sleepers in wait_on_page_writeback() because the wakeup
-> - * mechanism between PageLocked pages and PageWriteback pages is shared.
-> - * But that's OK - sleepers in wait_on_page_writeback() just go back to sleep.
-> + * Unlocks the folio and wakes up any thread sleeping on the page lock.
->   *
-> - * Note that this depends on PG_waiters being the sign bit in the byte
-> - * that contains PG_locked - thus the BUILD_BUG_ON(). That allows us to
-> - * clear the PG_locked bit and test PG_waiters at the same time fairly
-> - * portably (architectures that do LL/SC can test any bit, while x86 can
-> - * test the sign bit).
 
-Was it necessary to remove the comments about wait_on_page_writeback() and
-PG_waiters etc?
+OTOH, it means our kernel zones are depleted, so we'd better reclaim 
+somehow ...
 
-> + * Context: May be called from interrupt or process context.  May not be
-> + * called from NMI context.
+-- 
+Thanks,
 
-Where did the NMI part come from?
-
->   */
-> -void unlock_page(struct page *page)
-> +void folio_unlock(struct folio *folio)
->  {
->  	BUILD_BUG_ON(PG_waiters != 7);
-> -	page = compound_head(page);
-> -	VM_BUG_ON_PAGE(!PageLocked(page), page);
-> -	if (clear_bit_unlock_is_negative_byte(PG_locked, &page->flags))
-> -		wake_up_page_bit(page, PG_locked);
-> +	VM_BUG_ON_FOLIO(!folio_locked(folio), folio);
-> +	if (clear_bit_unlock_is_negative_byte(PG_locked, folio_flags(folio, 0)))
-> +		wake_up_page_bit(&folio->page, PG_locked);
->  }
-> -EXPORT_SYMBOL(unlock_page);
-> +EXPORT_SYMBOL(folio_unlock);
->  
->  /**
->   * end_page_private_2 - Clear PG_private_2 and release any waiters
-> diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-> index 5e107aa30a62..91b3d00a92f7 100644
-> --- a/mm/folio-compat.c
-> +++ b/mm/folio-compat.c
-> @@ -11,3 +11,9 @@ struct address_space *page_mapping(struct page *page)
->  	return folio_mapping(page_folio(page));
->  }
->  EXPORT_SYMBOL(page_mapping);
-> +
-> +void unlock_page(struct page *page)
-> +{
-> +	return folio_unlock(page_folio(page));
-> +}
-> +EXPORT_SYMBOL(unlock_page);
-> 
+David / dhildenb
 
