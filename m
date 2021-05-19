@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0090388CCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD48388CD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350749AbhESLa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56502 "EHLO
+        id S1350827AbhESLbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhESLaz (ORCPT
+        with ESMTP id S229554AbhESLbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:30:55 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0C6C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:29:32 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id lg14so19437131ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:29:32 -0700 (PDT)
+        Wed, 19 May 2021 07:31:14 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73E9C06175F;
+        Wed, 19 May 2021 04:29:54 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 10so9692235pfl.1;
+        Wed, 19 May 2021 04:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LC8qtVxdEwMMgytLujeez3/2qAxymscp6HYNZSziD5Y=;
-        b=tbjRnDfF6QQXUhnFCrHPAeUrE+OEw/Myy3ioaox8ON7T5DZq+3Kgh4uIXPbiJU0nIc
-         gmwbhhGMmFgQuPDLUhCUQyCWJn2EIme8NiU+n8VEZqLMnKFBt5/7GkzP9vIR1cMQY63S
-         CpZ3Ko4Ov3jjYaMoCHdtz0b4VgyXcI5m6X0G+yCz0XYH5OjoERKw5WqecKvpmj7dyv3s
-         Qp4qDUzPFgp5YnR1SHBtyoMzqivFqzEuzQ5NrAxE1VTVRNpP8BIJWEraygya7o89urgF
-         qgnv+n4Vm+JeyUGcPXMP4gAEymLnAoYtjUStc3Bw/73BnYXFd8taK3L/cOQpjvDfz3Oo
-         a5MA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gPh7J+iB003pLmJ1JUeofy6Rw9ewvrADCNhDGWuzUcc=;
+        b=LwFIGuuRBzsRMd04iquKjbmcw0WrxmKhrL6qGUuhHon9X6LaXKD/+klrHFqdySYidO
+         KykBHpxPsWLPb+UsX1q/SsubkR+6jp+PIKraPz4EKvF/49Reako+U4/KjO9avkgfhyjE
+         NXpDqfTBAeTY57emA+orgHhfl8UQ9k7N7D7Rvv6yi8vBFRhIWFX7Ki9PqYgh8Q6+uwBw
+         eeJhqyP7HFOaPh8D4/arefGSwXaO7Y7yHym2WYr1hZuKZIUwzRnZkvTSCoEis8QSWZNZ
+         RDpgj7y1KVOHdx+nLaCSCuhTgdwKCrDDugM1cj0PwabG1mLzbYHtQD/ZYlaORbQoXl7f
+         ubYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=LC8qtVxdEwMMgytLujeez3/2qAxymscp6HYNZSziD5Y=;
-        b=ZhjXMcEr/p2NWss/DQFAh6xBaGdrLLXP4/ma/Pqw10/kT2E5Uc0KqZw2jTYvcKXRR0
-         hCsfFvm6Qib/DyZiELOhx9y7BYS/tfYj9YUrSx/BZCqMySja5vaHaKD9ByVYbAQ3/Ww0
-         RJULLliVA+x7oKdbiRw/A87hDxD1ndRmA6o7rOZOJbNI+hjSWlzTD/iLHsp5lqSvC0EA
-         JDGT0jk65oHLW4wggRuQ2BpdumlrBxo3Dkzed3hnCZR2UhKoIdpP/TrTmmix6nAY3gHo
-         D9UkTn7uPAp5F7Kw1PnJJ9FMwdG2PZc9hf9ckz8SG3aXkRcB4w5H0ecQM9tvQBLm0sk1
-         OTVA==
-X-Gm-Message-State: AOAM5312L34IBwwlAWeZfhLCxXSow7Jeavn+5febgjgDQYhRhgVOmZ8s
-        x+S25CMo8Ft08wVqU75XKKcVM6/Uxbo=
-X-Google-Smtp-Source: ABdhPJwnsHAbA766q06N53kcVsO4nPY7oBrPAUYImgzHXc6IvUnkn0rGTW4PTfu+Y4w6KbiTh3+pEw==
-X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr12047472eja.275.1621423771431;
-        Wed, 19 May 2021 04:29:31 -0700 (PDT)
-Received: from gmail.com (563BBFD3.unconfigured.pool.telekom.hu. [86.59.191.211])
-        by smtp.gmail.com with ESMTPSA id k21sm1885861ejp.23.2021.05.19.04.29.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 04:29:30 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 19 May 2021 13:29:29 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/6] x86/syscall: use int for x86-64 system calls
-Message-ID: <YKT2mW0xVZltBOSh@gmail.com>
-References: <20210518191303.4135296-1-hpa@zytor.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gPh7J+iB003pLmJ1JUeofy6Rw9ewvrADCNhDGWuzUcc=;
+        b=Q/zXssv3ysd2fzB3EtOvOEvBwh0cbLxl/JuG1wbAE8KcfMx1UXdzvcdNbmj6U9L27I
+         iYdEVGYc4irXYiVXjs+icZd8+uM1vrU+PgaNBKvpIhRC+D74njZQRGaHvSEiACjl6Gtf
+         cyHJu8m3oY00TrqNvCD4RXmEffOaFwdHzOPPpf5vAJz9IoniLLGFQxT3h1MW/iDVvKi6
+         RD3Kad8R+oswi5neB+6PxgCF2/QLCzieYIGXywrHDW5T/0w7pLmj4icdfl5ZY4V4aq/C
+         Fh2rI7gRlge3/FW6Y2JqxhMDuJE4uVZ+LeD3d8lyJlCGQduxQsZLff1mQWXJzKYiVxsX
+         pnkw==
+X-Gm-Message-State: AOAM533F9kBdx04FNq6g/UcQHU0ovKV7Dv4Hnl8bhRU0QXhCbDekn28b
+        /G9s73qNuWf/8agKkfmw425EbygYjHOMqaAJHUk=
+X-Google-Smtp-Source: ABdhPJyMS595KBDEgY3B5QwcVqHvgA5M48MFso3q1CcWyuni0NSqV3I5CfzVkpnV7dEal1Fk8YRrIyOgVV4qU5qexk4=
+X-Received: by 2002:a63:cd11:: with SMTP id i17mr10325998pgg.74.1621423793952;
+ Wed, 19 May 2021 04:29:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518191303.4135296-1-hpa@zytor.com>
+References: <20210517200002.6316-1-dariobin@libero.it> <20210517200002.6316-2-dariobin@libero.it>
+In-Reply-To: <20210517200002.6316-2-dariobin@libero.it>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 19 May 2021 14:29:37 +0300
+Message-ID: <CAHp75Ve12r5buxv6T=aidQmYq++zwntpMTedRXMe5X4H8dmndg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: core: configure pinmux from pins debug file
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 19, 2021 at 3:58 AM Dario Binacchi <dariobin@libero.it> wrote:
+>
+> The MPUs of some architectures (e.g AM335x) must be in privileged
+> operating mode to write on the pinmux registers. In such cases, where
+> writes will not work from user space, now it can be done from the pins
+> debug file if the platform driver exports the pin_dbg_set() helper among
+> the registered operations.
 
-* H. Peter Anvin <hpa@zytor.com> wrote:
+NAK. Please get into discussion and encourage maintainers to participate.
 
-> From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
-> 
-> This patchset addresses several inconsistencies in the handling of
-> system call numbers in x86-64 (and x32).
+(Esp. taking into account that v2 of this patch is the same as v1)
 
->  arch/x86/entry/common.c                         |  93 +++--
->  arch/x86/entry/entry_64.S                       |   2 +-
->  arch/x86/include/asm/syscall.h                  |   2 +-
->  tools/testing/selftests/x86/syscall_numbering.c | 488 +++++++++++++++++++++---
->  4 files changed, 508 insertions(+), 77 deletions(-)
-
-Thanks Peter - this series is really nice now, and I agree that this 
-inconsistency should be fixed.
-
-Thanks,
-
-	Ingo
-
+-- 
+With Best Regards,
+Andy Shevchenko
