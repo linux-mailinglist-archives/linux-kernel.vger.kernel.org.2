@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91007389264
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C96389276
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354495AbhESPUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53504 "EHLO mail.kernel.org"
+        id S1346572AbhESPXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:23:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36168 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354419AbhESPUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:20:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F9516135A;
-        Wed, 19 May 2021 15:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621437558;
-        bh=ek7ca1h69ksdnof3kTbnE34ns9CTK6Kd0/3Q9dV7oCo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=caGHyOlML+2gJz5Fw3FWG2LVBgVVPhdq+fQJO8AIVBzHI9CeoxCxtzQnbwDzRVtCX
-         H1+0+aeNGnPqNt1eZ9cci+AzZv0P+jxmy0Yk5wjH+3/2nyKk+BfoaWaIkh1bYa6F6s
-         g6ghXC8e9UXw5IjlGtjZVmzy5q/UdrS0gOP+s6qsd/8Avjq9o5kcyHzjgsym9cwrzD
-         +j4NRhxg0pp58AGt15DGVqjhPa2eT/8Tr99gKcffkOzevJ29nXjOQ6FMRX36x/qbyS
-         jiOY4O5Q5sdf9lgIopIWVj8h2fUHCcEfT7SNYvIKGLxe4j8EmxZLVPfvDOttstD4qr
-         /KbpvzrYyhkew==
-Received: by mail-ej1-f51.google.com with SMTP id u21so20462904ejo.13;
-        Wed, 19 May 2021 08:19:17 -0700 (PDT)
-X-Gm-Message-State: AOAM533bSK4sxN5vgGZBSk8qVYe7deyEMjFnVvOeN7cJsbyZEHbKBslo
-        t+1xqIrWRPGW4r4N1PazhIhtETbjqc0hEsGtxQ==
-X-Google-Smtp-Source: ABdhPJzEPDsTeXH9wfUOGmX1QdjLMS8b6BNkCsHTvdukqPqic12xvjdutFYNRM0Nm5ZWgqy3SvkT0ZR9ivjct617yrU=
-X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr2971920ejc.108.1621437556674;
- Wed, 19 May 2021 08:19:16 -0700 (PDT)
+        id S240263AbhESPXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:23:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 78F4FB18F;
+        Wed, 19 May 2021 15:22:29 +0000 (UTC)
+To:     Aaron Tomlin <atomlin@redhat.com>, linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, mhocko@suse.com,
+        linux-kernel@vger.kernel.org
+References: <20210519130609.r3ml6ohb2qsrfq2t@ava.usersys.com>
+ <20210519145014.3220164-1-atomlin@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/page_alloc: bail out on fatal signal during
+ reclaim/compaction retry attempt
+Message-ID: <076e1c68-b4a2-26ea-9538-d88e6da800cc@suse.cz>
+Date:   Wed, 19 May 2021 17:22:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210518165658.12764-1-jbx6244@gmail.com> <20210518165658.12764-2-jbx6244@gmail.com>
-In-Reply-To: <20210518165658.12764-2-jbx6244@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 19 May 2021 10:19:05 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+Re978VJ8-2FV0zM6A0dS-jmsR8hUAV+gQWXgW7BoJtg@mail.gmail.com>
-Message-ID: <CAL_Jsq+Re978VJ8-2FV0zM6A0dS-jmsR8hUAV+gQWXgW7BoJtg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] dt-bindings: phy: convert rockchip-usb-phy.txt to YAML
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     "heiko@sntech.de" <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210519145014.3220164-1-atomlin@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:57 AM Johan Jonker <jbx6244@gmail.com> wrote:
->
-> Current dts files with Rockchip 'usbphy' nodes are manually verified.
-> In order to automate this process rockchip-usb-phy.txt has to be
-> converted to YAML.
->
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->
-> Changed V6
->   remove some #phy-cells
-> ---
->  .../devicetree/bindings/phy/rockchip-usb-phy.txt   | 52 --------------
->  .../devicetree/bindings/phy/rockchip-usb-phy.yaml  | 81 ++++++++++++++++++++++
->  2 files changed, 81 insertions(+), 52 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.txt
->  create mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.yaml
+On 5/19/21 4:50 PM, Aaron Tomlin wrote:
+> It does not make sense to retry compaction when the last known compact
+> result was skipped and a fatal signal is pending.
+> 
+> In the context of try_to_compact_pages(), indeed COMPACT_SKIPPED can be
+> returned; albeit, not every zone, on the zone list, would be considered
+> in the case a fatal signal is found to be pending.
+> Yet, in should_compact_retry(), given the last known compaction result,
+> each zone, on the zone list, can be considered/or checked
+> (see compaction_zonelist_suitable()). For example, if a zone was found
+> to succeed, then reclaim/compaction would be tried again
+> (notwithstanding the above).
+> 
+> This patch ensures that compaction is not needlessly retried when the
+> last known compaction result was skipped and in the unlikely case a
+> fatal signal is found pending. So, OOM is at least attempted.
+> 
+> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hm, indeed, if fatal_signal_pending() is true then try_to_compact_pages() will
+bail out in the for-each-zone loop after trying a single zone and if that zone
+keeps returning COMPACT_SKIPPED, things can get stuck.
+And direct reclaim might see compaction_ready() for another zone and return 1,
+faking the progress.
+So your patch seems to be solving the issue. But maybe we should just do the
+test at the beginning of should_compact_retry() and not specific to
+compaction_needs_reclaim() - if there's a fatal signal, there will be no
+compaction happening, so we should just say not to retry.
+I suppose if the patch fixes your situation where fatal_signal_pending() was
+true, there's hopefully not a more general problem with the retry logic?
+
+> ---
+>  mm/page_alloc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index aaa1655cf682..5f9aac27a1b5 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4268,6 +4268,8 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
+>  	 * to work with, so we retry only if it looks like reclaim can help.
+>  	 */
+>  	if (compaction_needs_reclaim(compact_result)) {
+> +		if (fatal_signal_pending(current))
+> +			goto out;
+>  		ret = compaction_zonelist_suitable(ac, order, alloc_flags);
+>  		goto out;
+>  	}
+> 
+
