@@ -2,580 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E20C388480
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9611F388485
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233780AbhESBl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 21:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhESBl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 21:41:27 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51997C06175F;
-        Tue, 18 May 2021 18:40:08 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D5D4845E;
-        Wed, 19 May 2021 03:40:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1621388407;
-        bh=FWqXeVQWBxL7SB/YXHMNHpj25N4ZWGj8XEhHmo3z7Wg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K/DFZEbKQO13f1nUVt0ERqurYz0sMAqV655tCgLXwruCSY9y2Ox5FOJLZI5Td8JIz
-         dWix9Dry4JkPeRonFBOauG+2v8bTdut7CVCbuSjNBQih/meYYHnKrJVnNGoLmeiKek
-         w3vBJ+3r06CSXpPkEs9JkMZiUgDKiKDHWJE0hEJA=
-Date:   Wed, 19 May 2021 04:40:05 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Roger Quadros <rogerq@ti.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH 4/6] dt-bindings: i2c: Convert i2c-mux bindings to DT
- schema
-Message-ID: <YKRsdeAyNVdcAobD@pendragon.ideasonboard.com>
-References: <20210518232858.1535403-1-robh@kernel.org>
- <20210518232858.1535403-5-robh@kernel.org>
- <YKRsPrFMNg5KY55j@pendragon.ideasonboard.com>
+        id S233965AbhESBnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:43:10 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:39136 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231689AbhESBnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 21:43:08 -0400
+Received: from BC-Mail-Ex20.internal.baidu.com (unknown [172.31.51.14])
+        by Forcepoint Email with ESMTPS id 05DCACB3BDE8AB40D5B9;
+        Wed, 19 May 2021 09:41:38 +0800 (CST)
+Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
+ BC-Mail-Ex20.internal.baidu.com (172.31.51.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.4; Wed, 19 May 2021 09:41:37 +0800
+Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
+ BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2242.008;
+ Wed, 19 May 2021 09:41:37 +0800
+From:   "Chu,Kaiping" <chukaiping@baidu.com>
+To:     Charan Teja Reddy <charante@codeaurora.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "nigupta@nvidia.com" <nigupta@nvidia.com>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
+        "sh_def@163.com" <sh_def@163.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIFYyXSBtbTogY29tcGFjdGlvbjogc3VwcG9ydCB0cmln?=
+ =?gb2312?Q?gering_of_proactive_compaction_by_user?=
+Thread-Topic: [PATCH V2] mm: compaction: support triggering of proactive
+ compaction by user
+Thread-Index: AQHXS+sjJaVDxZPNeEKAMECfwZAe9qrqB1Yg
+Date:   Wed, 19 May 2021 01:41:37 +0000
+Message-ID: <79279be3573542dea0266f8e9d4d5368@baidu.com>
+References: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
+In-Reply-To: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.194.39]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YKRsPrFMNg5KY55j@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-One more comment.
-
-On Wed, May 19, 2021 at 04:39:11AM +0300, Laurent Pinchart wrote:
-> On Tue, May 18, 2021 at 06:28:56PM -0500, Rob Herring wrote:
-> > As some of the example I2C devices don't have schemas yet, change them to
-> > ones that do.
-> > 
-> > Cc: Peter Rosin <peda@axentia.se>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../bindings/i2c/i2c-demux-pinctrl.txt        |   2 +-
-> >  .../devicetree/bindings/i2c/i2c-mux-gpio.txt  |   4 +-
-> >  .../devicetree/bindings/i2c/i2c-mux-gpmux.txt |  99 --------------
-> >  .../bindings/i2c/i2c-mux-gpmux.yaml           | 124 ++++++++++++++++++
-> >  .../bindings/i2c/i2c-mux-ltc4306.txt          |   4 +-
-> >  .../bindings/i2c/i2c-mux-pinctrl.txt          |   4 +-
-> >  .../devicetree/bindings/i2c/i2c-mux-reg.txt   |   4 +-
-> >  .../devicetree/bindings/i2c/i2c-mux.txt       |  73 -----------
-> >  .../devicetree/bindings/i2c/i2c-mux.yaml      |  87 ++++++++++++
-> >  9 files changed, 220 insertions(+), 181 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt
-> >  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux.txt
-> >  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt b/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt
-> > index 81b5d55086fa..86b2e433a969 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt
-> > @@ -27,7 +27,7 @@ Required properties:
-> >  - i2c-bus-name: The name of this bus. Also needed as pinctrl-name for the I2C
-> >  		parents.
-> >  
-> > -Furthermore, I2C mux properties and child nodes. See i2c-mux.txt in this
-> > +Furthermore, I2C mux properties and child nodes. See i2c-mux.yaml in this
-> >  directory.
-> >  
-> >  Example:
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
-> > index 21da3ecbb370..e00d2b9e957a 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
-> > @@ -22,8 +22,8 @@ Required properties:
-> >  - i2c-parent: The phandle of the I2C bus that this multiplexer's master-side
-> >    port is connected to.
-> >  - mux-gpios: list of gpios used to control the muxer
-> > -* Standard I2C mux properties. See i2c-mux.txt in this directory.
-> > -* I2C child bus nodes. See i2c-mux.txt in this directory.
-> > +* Standard I2C mux properties. See i2c-mux.yaml in this directory.
-> > +* I2C child bus nodes. See i2c-mux.yaml in this directory.
-> >  
-> >  Optional properties:
-> >  - idle-state: value to set the muxer to when idle. When no value is
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt
-> > deleted file mode 100644
-> > index 057083a8ba17..000000000000
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt
-> > +++ /dev/null
-> > @@ -1,99 +0,0 @@
-> > -General Purpose I2C Bus Mux
-> > -
-> > -This binding describes an I2C bus multiplexer that uses a mux controller
-> > -from the mux subsystem to route the I2C signals.
-> > -
-> > -                                  .-----.  .-----.
-> > -                                  | dev |  | dev |
-> > -    .------------.                '-----'  '-----'
-> > -    | SoC        |                   |        |
-> > -    |            |          .--------+--------'
-> > -    |   .------. |  .------+    child bus A, on MUX value set to 0
-> > -    |   | I2C  |-|--| Mux  |
-> > -    |   '------' |  '--+---+    child bus B, on MUX value set to 1
-> > -    |   .------. |     |    '----------+--------+--------.
-> > -    |   | MUX- | |     |               |        |        |
-> > -    |   | Ctrl |-|-----+            .-----.  .-----.  .-----.
-> > -    |   '------' |                  | dev |  | dev |  | dev |
-> > -    '------------'                  '-----'  '-----'  '-----'
-> > -
-> > -Required properties:
-> > -- compatible: i2c-mux
-> > -- i2c-parent: The phandle of the I2C bus that this multiplexer's master-side
-> > -  port is connected to.
-> > -- mux-controls: The phandle of the mux controller to use for operating the
-> > -  mux.
-> > -* Standard I2C mux properties. See i2c-mux.txt in this directory.
-> > -* I2C child bus nodes. See i2c-mux.txt in this directory. The sub-bus number
-> > -  is also the mux-controller state described in ../mux/mux-controller.yaml
-> > -
-> > -Optional properties:
-> > -- mux-locked: If present, explicitly allow unrelated I2C transactions on the
-> > -  parent I2C adapter at these times:
-> > -   + during setup of the multiplexer
-> > -   + between setup of the multiplexer and the child bus I2C transaction
-> > -   + between the child bus I2C transaction and releasing of the multiplexer
-> > -   + during releasing of the multiplexer
-> > -  However, I2C transactions to devices behind all I2C multiplexers connected
-> > -  to the same parent adapter that this multiplexer is connected to are blocked
-> > -  for the full duration of the complete multiplexed I2C transaction (i.e.
-> > -  including the times covered by the above list).
-> > -  If mux-locked is not present, the multiplexer is assumed to be parent-locked.
-> > -  This means that no unrelated I2C transactions are allowed on the parent I2C
-> > -  adapter for the complete multiplexed I2C transaction.
-> > -  The properties of mux-locked and parent-locked multiplexers are discussed
-> > -  in more detail in Documentation/i2c/i2c-topology.rst.
-> > -
-> > -For each i2c child node, an I2C child bus will be created. They will
-> > -be numbered based on their order in the device tree.
-> > -
-> > -Whenever an access is made to a device on a child bus, the value set
-> > -in the relevant node's reg property will be set as the state in the
-> > -mux controller.
-> > -
-> > -Example:
-> > -	mux: mux-controller {
-> > -		compatible = "gpio-mux";
-> > -		#mux-control-cells = <0>;
-> > -
-> > -		mux-gpios = <&pioA 0 GPIO_ACTIVE_HIGH>,
-> > -			    <&pioA 1 GPIO_ACTIVE_HIGH>;
-> > -	};
-> > -
-> > -	i2c-mux {
-> > -		compatible = "i2c-mux";
-> > -		mux-locked;
-> > -		i2c-parent = <&i2c1>;
-> > -
-> > -		mux-controls = <&mux>;
-> > -
-> > -		#address-cells = <1>;
-> > -		#size-cells = <0>;
-> > -
-> > -		i2c@1 {
-> > -			reg = <1>;
-> > -			#address-cells = <1>;
-> > -			#size-cells = <0>;
-> > -
-> > -			ssd1307: oled@3c {
-> > -				compatible = "solomon,ssd1307fb-i2c";
-> > -				reg = <0x3c>;
-> > -				pwms = <&pwm 4 3000>;
-> > -				reset-gpios = <&gpio2 7 1>;
-> > -				reset-active-low;
-> > -			};
-> > -		};
-> > -
-> > -		i2c@3 {
-> > -			reg = <3>;
-> > -			#address-cells = <1>;
-> > -			#size-cells = <0>;
-> > -
-> > -			pca9555: pca9555@20 {
-> > -				compatible = "nxp,pca9555";
-> > -				gpio-controller;
-> > -				#gpio-cells = <2>;
-> > -				reg = <0x20>;
-> > -			};
-> > -		};
-> > -	};
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml
-> > new file mode 100644
-> > index 000000000000..3e6ea59aea68
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml
-> > @@ -0,0 +1,124 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/i2c/i2c-mux-gpmux.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: General Purpose I2C Bus Mux
-> > +
-> > +maintainers:
-> > +  - Peter Rosin <peda@axentia.se>
-> > +
-> > +description: |+
-> > +  This binding describes an I2C bus multiplexer that uses a mux controller
-> > +  from the mux subsystem to route the I2C signals.
-> > +
-> > +                                    .-----.  .-----.
-> > +                                    | dev |  | dev |
-> > +      .------------.                '-----'  '-----'
-> > +      | SoC        |                   |        |
-> > +      |            |          .--------+--------'
-> > +      |   .------. |  .------+    child bus A, on MUX value set to 0
-> > +      |   | I2C  |-|--| Mux  |
-> > +      |   '------' |  '--+---+    child bus B, on MUX value set to 1
-> > +      |   .------. |     |    '----------+--------+--------.
-> > +      |   | MUX- | |     |               |        |        |
-> > +      |   | Ctrl |-|-----+            .-----.  .-----.  .-----.
-> > +      |   '------' |                  | dev |  | dev |  | dev |
-> > +      '------------'                  '-----'  '-----'  '-----'
-> > +
-> > +
-> > +
-> > +allOf:
-> > +  - $ref: /schemas/i2c/i2c-mux.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: i2c-mux
-> > +
-> > +  i2c-parent:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description:
-> > +      The phandle of the I2C bus that this multiplexer's master-side port is
-> > +      connected to.
-> > +
-> > +  mux-controls:
-> > +    maxItems: 1
-> > +    description:
-> > +      The mux-controller states are the I2C sub-bus numbers.
-> > +
-> > +  mux-locked:
-> > +    type: boolean
-> > +    description: |
-> > +      Explicitly allow unrelated I2C transactions on the parent I2C adapter at
-> > +      these times:
-> > +       + during setup of the multiplexer
-> > +       + between setup of the multiplexer and the child bus I2C transaction
-> > +       + between the child bus I2C transaction and releasing of the multiplexer
-> > +       + during releasing of the multiplexer
-
-I know it comes from the original .txt file, but '+' is a weird marker
-for a list. Could we replace them with '-' while at it ?
-
-> > +
-> > +      However, I2C transactions to devices behind all I2C multiplexers connected
-> > +      to the same parent adapter that this multiplexer is connected to are blocked
-> > +      for the full duration of the complete multiplexed I2C transaction (i.e.
-> > +      including the times covered by the above list).
-> > +      If mux-locked is not present, the multiplexer is assumed to be parent-locked.
-> > +      This means that no unrelated I2C transactions are allowed on the parent I2C
-> > +      adapter for the complete multiplexed I2C transaction.
-> > +      The properties of mux-locked and parent-locked multiplexers are discussed
-> > +      in more detail in Documentation/i2c/i2c-topology.rst.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - i2c-parent
-> > +  - mux-controls
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +    mux: mux-controller {
-> > +        compatible = "gpio-mux";
-> > +        #mux-control-cells = <0>;
-> > +
-> > +        mux-gpios = <&pioA 0 GPIO_ACTIVE_HIGH>,
-> > +                    <&pioA 1 GPIO_ACTIVE_HIGH>;
-> > +    };
-> > +
-> > +    i2c-mux {
-> > +        compatible = "i2c-mux";
-> > +        mux-locked;
-> > +        i2c-parent = <&i2c1>;
-> > +
-> > +        mux-controls = <&mux>;
-> > +
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        i2c@1 {
-> > +            reg = <1>;
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +
-> > +            gpio@20 {
-> > +                compatible = "nxp,pca9555";
-> > +                gpio-controller;
-> > +                #gpio-cells = <2>;
-> > +                reg = <0x20>;
-> > +            };
-> > +        };
-> > +
-> > +        i2c@3 {
-> > +            reg = <3>;
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +
-> > +            gpio@20 {
-> > +                compatible = "nxp,pca9555";
-> > +                gpio-controller;
-> > +                #gpio-cells = <2>;
-> > +                reg = <0x20>;
-> > +            };
-> > +        };
-> > +    };
-> > +...
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt
-> > index 8b1e49cdce3f..29c4550c9782 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt
-> > @@ -8,8 +8,8 @@ Required Properties:
-> >  
-> >    The following required properties are defined externally:
-> >  
-> > -  - Standard I2C mux properties. See i2c-mux.txt in this directory.
-> > -  - I2C child bus nodes. See i2c-mux.txt in this directory.
-> > +  - Standard I2C mux properties. See i2c-mux.yaml in this directory.
-> > +  - I2C child bus nodes. See i2c-mux.yaml in this directory.
-> >  
-> >  Optional Properties:
-> >  
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt
-> > index 33119a98e144..997a287ed3f6 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt
-> > @@ -28,9 +28,9 @@ Also required are:
-> >  * Standard pinctrl properties that specify the pin mux state for each child
-> >    bus. See ../pinctrl/pinctrl-bindings.txt.
-> >  
-> > -* Standard I2C mux properties. See i2c-mux.txt in this directory.
-> > +* Standard I2C mux properties. See i2c-mux.yaml in this directory.
-> >  
-> > -* I2C child bus nodes. See i2c-mux.txt in this directory.
-> > +* I2C child bus nodes. See i2c-mux.yaml in this directory.
-> >  
-> >  For each named state defined in the pinctrl-names property, an I2C child bus
-> >  will be created. I2C child bus numbers are assigned based on the index into
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt
-> > index de00d7fc450b..b9d9755e4172 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt
-> > @@ -7,8 +7,8 @@ Required properties:
-> >  - compatible: i2c-mux-reg
-> >  - i2c-parent: The phandle of the I2C bus that this multiplexer's master-side
-> >    port is connected to.
-> > -* Standard I2C mux properties. See i2c-mux.txt in this directory.
-> > -* I2C child bus nodes. See i2c-mux.txt in this directory.
-> > +* Standard I2C mux properties. See i2c-mux.yaml in this directory.
-> > +* I2C child bus nodes. See i2c-mux.yaml in this directory.
-> >  
-> >  Optional properties:
-> >  - reg: this pair of <offset size> specifies the register to control the mux.
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux.txt b/Documentation/devicetree/bindings/i2c/i2c-mux.txt
-> > deleted file mode 100644
-> > index b38f58a1c878..000000000000
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux.txt
-> > +++ /dev/null
-> > @@ -1,73 +0,0 @@
-> > -Common i2c bus multiplexer/switch properties.
-> > -
-> > -An i2c bus multiplexer/switch will have several child busses that are
-> > -numbered uniquely in a device dependent manner.  The nodes for an i2c bus
-> > -multiplexer/switch will have one child node for each child bus.
-> > -
-> > -Optional properties:
-> > -- #address-cells = <1>;
-> > -   This property is required if the i2c-mux child node does not exist.
-> > -
-> > -- #size-cells = <0>;
-> > -   This property is required if the i2c-mux child node does not exist.
-> > -
-> > -- i2c-mux
-> > -   For i2c multiplexers/switches that have child nodes that are a mixture
-> > -   of both i2c child busses and other child nodes, the 'i2c-mux' subnode
-> > -   can be used for populating the i2c child busses.  If an 'i2c-mux'
-> > -   subnode is present, only subnodes of this will be considered as i2c
-> > -   child busses.
-> > -
-> > -Required properties for the i2c-mux child node:
-> > -- #address-cells = <1>;
-> > -- #size-cells = <0>;
-> > -
-> > -Required properties for i2c child bus nodes:
-> > -- #address-cells = <1>;
-> > -- #size-cells = <0>;
-> > -- reg : The sub-bus number.
-> > -
-> > -Optional properties for i2c child bus nodes:
-> > -- Other properties specific to the multiplexer/switch hardware.
-> > -- Child nodes conforming to i2c bus binding
-> > -
-> > -
-> > -Example :
-> > -
-> > -	/*
-> > -	   An NXP pca9548 8 channel I2C multiplexer at address 0x70
-> > -	   with two NXP pca8574 GPIO expanders attached, one each to
-> > -	   ports 3 and 4.
-> > -	 */
-> > -
-> > -	mux@70 {
-> > -		compatible = "nxp,pca9548";
-> > -		reg = <0x70>;
-> > -		#address-cells = <1>;
-> > -		#size-cells = <0>;
-> > -
-> > -		i2c@3 {
-> > -			#address-cells = <1>;
-> > -			#size-cells = <0>;
-> > -			reg = <3>;
-> > -
-> > -			gpio1: gpio@38 {
-> > -				compatible = "nxp,pca8574";
-> > -				reg = <0x38>;
-> > -				#gpio-cells = <2>;
-> > -				gpio-controller;
-> > -			};
-> > -		};
-> > -		i2c@4 {
-> > -			#address-cells = <1>;
-> > -			#size-cells = <0>;
-> > -			reg = <4>;
-> > -
-> > -			gpio2: gpio@38 {
-> > -				compatible = "nxp,pca8574";
-> > -				reg = <0x38>;
-> > -				#gpio-cells = <2>;
-> > -				gpio-controller;
-> > -			};
-> > -		};
-> > -	};
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> > new file mode 100644
-> > index 000000000000..3aa4d84a6610
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> > @@ -0,0 +1,87 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/i2c/i2c-mux.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Common i2c bus multiplexer/switch properties.
-> > +
-> > +maintainers:
-> > +  - Peter Rosin <peda@axentia.se>
-> > +
-> > +description: |+
-> > +  An i2c bus multiplexer/switch will have several child busses that are numbered
-> > +  uniquely in a device dependent manner.  The nodes for an i2c bus
-> > +  multiplexer/switch will have one child node for each child bus.
-> > +
-> > +  For i2c multiplexers/switches that have child nodes that are a mixture of both
-> > +  i2c child busses and other child nodes, the 'i2c-mux' subnode can be used for
-> > +  populating the i2c child busses.  If an 'i2c-mux' subnode is present, only
-> > +  subnodes of this will be considered as i2c child busses.
-> 
-> As I understand this, it means that child nodes corresponding to child
-> buses can be either direct children of the I2C mux node, or grouped in a
-> i2c-mux node (the same way we optionally group the 'port' nodes in a
-> 'ports' node). This doesn't seem to be supported by the bindings below.
-> 
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    pattern: '^(i2c-?)?mux'
-> > +
-> > +  '#address-cells':
-> > +    const: 1
-> > +
-> > +  '#size-cells':
-> > +    const: 0
-> > +
-> > +patternProperties:
-> > +  '^i2c@[0-9a-f]+$':
-> > +    $ref: /schemas/i2c/i2c-controller.yaml
-> > +    unevaluatedProperties: false
-> > +
-> > +    properties:
-> > +      reg:
-> > +        description: The mux selector sub-bus number for the child I2C bus.
-> > +        maxItems: 1
-> > +
-> > +additionalProperties: true
-> > +
-> > +examples:
-> > +  - |
-> > +    /*
-> > +       An NXP pca9548 8 channel I2C multiplexer at address 0x70
-> > +       with two NXP pca8574 GPIO expanders attached, one each to
-> > +       ports 3 and 4.
-> 
-> I'd add the missing * while at it.
-> 
-> > +     */
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        i2c-mux@70 {
-> > +            compatible = "nxp,pca9548";
-> > +            reg = <0x70>;
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +
-> > +            i2c@3 {
-> > +                #address-cells = <1>;
-> > +                #size-cells = <0>;
-> > +                reg = <3>;
-> > +
-> > +                gpio@20 {
-> > +                    compatible = "nxp,pca9555";
-> > +                    gpio-controller;
-> > +                    #gpio-cells = <2>;
-> > +                    reg = <0x20>;
-> > +                };
-> > +            };
-> > +            i2c@4 {
-> > +                #address-cells = <1>;
-> > +                #size-cells = <0>;
-> > +                reg = <4>;
-> > +
-> > +                gpio@20 {
-> > +                    compatible = "nxp,pca9555";
-> > +                    gpio-controller;
-> > +                    #gpio-cells = <2>;
-> > +                    reg = <0x20>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> > +...
-
--- 
-Regards,
-
-Laurent Pinchart
+DQoNCj4gLS0tLS3Tyrz+1K28/i0tLS0tDQo+ILeivP7IyzogY2hhcmFudGU9Y29kZWF1cm9yYS5v
+cmdAbWcuY29kZWF1cm9yYS5vcmcNCj4gPGNoYXJhbnRlPWNvZGVhdXJvcmEub3JnQG1nLmNvZGVh
+dXJvcmEub3JnPiC0+rHtIENoYXJhbiBUZWphIFJlZGR5DQo+ILeiy83KsbzkOiAyMDIxxOo11MIx
+OMjVIDIxOjM4DQo+IMrVvP7IyzogYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgbWNncm9mQGtl
+cm5lbC5vcmc7DQo+IGtlZXNjb29rQGNocm9taXVtLm9yZzsgeXphaWtpbkBnb29nbGUuY29tOyB2
+YmFia2FAc3VzZS5jejsNCj4gbmlndXB0YUBudmlkaWEuY29tOyBiaGVAcmVkaGF0LmNvbTsgbWF0
+ZXVzem5vc2VrMEBnbWFpbC5jb207DQo+IHNoX2RlZkAxNjMuY29tOyBpYW1qb29uc29vLmtpbUBs
+Z2UuY29tOyB2aW5tZW5vbkBjb2RlYXVyb3JhLm9yZw0KPiCzrcvNOiBsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnOyBsaW51eC1tbUBrdmFjay5vcmc7DQo+IGxpbnV4LWZzZGV2ZWxAdmdlci5r
+ZXJuZWwub3JnOyBDaGFyYW4gVGVqYSBSZWRkeSA8Y2hhcmFudGVAY29kZWF1cm9yYS5vcmc+DQo+
+INb3zOI6IFtQQVRDSCBWMl0gbW06IGNvbXBhY3Rpb246IHN1cHBvcnQgdHJpZ2dlcmluZyBvZiBw
+cm9hY3RpdmUNCj4gY29tcGFjdGlvbiBieSB1c2VyDQo+IA0KPiBUaGUgcHJvYWN0aXZlIGNvbXBh
+Y3Rpb25bMV0gZ2V0cyB0cmlnZ2VyZWQgZm9yIGV2ZXJ5IDUwMG1zZWMgYW5kIHJ1bg0KPiBjb21w
+YWN0aW9uIG9uIHRoZSBub2RlIGZvciBDT01QQUNUSU9OX0hQQUdFX09SREVSICh1c3VhbGx5IG9y
+ZGVyLTkpDQo+IHBhZ2VzIGJhc2VkIG9uIHRoZSB2YWx1ZSBzZXQgdG8gc3lzY3RsLmNvbXBhY3Rp
+b25fcHJvYWN0aXZlbmVzcy4NCj4gVHJpZ2dlcmluZyB0aGUgY29tcGFjdGlvbiBmb3IgZXZlcnkg
+NTAwbXNlYyBpbiBzZWFyY2ggb2YNCj4gQ09NUEFDVElPTl9IUEFHRV9PUkRFUiBwYWdlcyBpcyBu
+b3QgbmVlZGVkIGZvciBhbGwgYXBwbGljYXRpb25zLA0KPiBlc3BlY2lhbGx5IG9uIHRoZSBlbWJl
+ZGRlZCBzeXN0ZW0gdXNlY2FzZXMgd2hpY2ggbWF5IGhhdmUgZmV3IE1CJ3Mgb2YNCj4gUkFNLiBF
+bmFibGluZyB0aGUgcHJvYWN0aXZlIGNvbXBhY3Rpb24gaW4gaXRzIHN0YXRlIHdpbGwgZW5kdXAg
+aW4gcnVubmluZw0KPiBhbG1vc3QgYWx3YXlzIG9uIHN1Y2ggc3lzdGVtcy4NCj4gDQo+IE90aGVy
+IHNpZGUsIHByb2FjdGl2ZSBjb21wYWN0aW9uIGNhbiBzdGlsbCBiZSB2ZXJ5IG11Y2ggdXNlZnVs
+IGZvciBnZXR0aW5nIGEgc2V0DQo+IG9mIGhpZ2hlciBvcmRlciBwYWdlcyBpbiBzb21lIGNvbnRy
+b2xsYWJsZSBtYW5uZXIoY29udHJvbGxlZCBieSB1c2luZyB0aGUNCj4gc3lzY3RsLmNvbXBhY3Rp
+b25fcHJvYWN0aXZlbmVzcykuIFRodXMgb24gc3lzdGVtcyB3aGVyZSBlbmFibGluZyB0aGUNCj4g
+cHJvYWN0aXZlIGNvbXBhY3Rpb24gYWx3YXlzIG1heSBwcm9vdmUgbm90IHJlcXVpcmVkLCBjYW4g
+dHJpZ2dlciB0aGUgc2FtZQ0KPiBmcm9tIHVzZXIgc3BhY2Ugb24gd3JpdGUgdG8gaXRzIHN5c2N0
+bCBpbnRlcmZhY2UuIEFzIGFuIGV4YW1wbGUsIHNheSBhcHANCj4gbGF1bmNoZXIgZGVjaWRlIHRv
+IGxhdW5jaCB0aGUgbWVtb3J5IGhlYXZ5IGFwcGxpY2F0aW9uIHdoaWNoIGNhbiBiZQ0KPiBsYXVu
+Y2hlZCBmYXN0IGlmIGl0IGdldHMgbW9yZSBoaWdoZXIgb3JkZXIgcGFnZXMgdGh1cyBsYXVuY2hl
+ciBjYW4gcHJlcGFyZSB0aGUNCj4gc3lzdGVtIGluIGFkdmFuY2UgYnkgdHJpZ2dlcmluZyB0aGUg
+cHJvYWN0aXZlIGNvbXBhY3Rpb24gZnJvbSB1c2Vyc3BhY2UuDQo+IA0KPiBUaGlzIHRyaWdnZXJp
+bmcgb2YgcHJvYWN0aXZlIGNvbXBhY3Rpb24gaXMgZG9uZSBvbiBhIHdyaXRlIHRvDQo+IHN5c2N0
+bC5jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3MgYnkgdXNlci4NCg0KSWYgeW91IHdhbnQgdG8gdHJp
+Z2dlciBjb21wYWN0aW9uIGZyb20gdXNlcnNwYWNlLCB5b3UgY2FuIHVzZSAiIGVjaG8gMSA+IC9w
+cm9jL3N5cy92bS9jb21wYWN0X21lbW9yeSIsIHRoZXJlIGlzIG5vIG5lZWQgdG8gYmUgc28gY29t
+cGxleC4NCg0KPiANCj4gWzFdaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
+cm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdD9pDQo+IGQ9ZmFjZGFhOTE3YzRkNWEz
+NzZkMDlkMjU4NjVmNWE4NjNmOTA2MjM0YQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2hhcmFuIFRl
+amEgUmVkZHkgPGNoYXJhbnRlQGNvZGVhdXJvcmEub3JnPg0KPiAtLS0NCj4gY2hhbmdlcyBpbiBW
+MjoNCj4gICAgIC0gcmVtb3ZlIC9wcm9jIGludGVyZmFjZSB0cmlnZ2VyIGZvciBwcm9hY3RpdmUg
+Y29tcGFjdGlvbg0KPiAgICAgLSBJbnRlbnRpb24gaXMgc2FtZSB0aGF0IGFkZCBhIHdheSB0byB0
+cmlnZ2VyIHByb2FjdGl2ZSBjb21wYWN0aW9uIGJ5IHVzZXIuDQo+IA0KPiBjaGFuZ2VzIGluIFYx
+Og0KPiAgICAgLQ0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzE2MTkwOTg2NzgtODUw
+MS0xLWdpdC1zZW5kLWVtYWlsLWNoYXJhbnRlQGNvDQo+IGRlYXVyb3JhLm9yZy8NCj4gDQo+ICBp
+bmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCB8ICAyICsrDQo+ICBpbmNsdWRlL2xpbnV4L21tem9u
+ZS5oICAgICB8ICAxICsNCj4gIGtlcm5lbC9zeXNjdGwuYyAgICAgICAgICAgIHwgIDIgKy0NCj4g
+IG1tL2NvbXBhY3Rpb24uYyAgICAgICAgICAgIHwgMzUNCj4gKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKystLS0NCj4gIDQgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgNCBk
+ZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24u
+aCBiL2luY2x1ZGUvbGludXgvY29tcGFjdGlvbi5oIGluZGV4DQo+IDQyMjE4ODguLjA0ZDVkOWYg
+MTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvY29tcGFjdGlvbi5oDQo+ICsrKyBiL2luY2x1
+ZGUvbGludXgvY29tcGFjdGlvbi5oDQo+IEBAIC04NCw2ICs4NCw4IEBAIHN0YXRpYyBpbmxpbmUg
+dW5zaWduZWQgbG9uZyBjb21wYWN0X2dhcCh1bnNpZ25lZCBpbnQNCj4gb3JkZXIpICBleHRlcm4g
+dW5zaWduZWQgaW50IHN5c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3M7ICBleHRlcm4gaW50
+DQo+IHN5c2N0bF9jb21wYWN0aW9uX2hhbmRsZXIoc3RydWN0IGN0bF90YWJsZSAqdGFibGUsIGlu
+dCB3cml0ZSwNCj4gIAkJCXZvaWQgKmJ1ZmZlciwgc2l6ZV90ICpsZW5ndGgsIGxvZmZfdCAqcHBv
+cyk7DQo+ICtleHRlcm4gaW50IGNvbXBhY3Rpb25fcHJvYWN0aXZlbmVzc19zeXNjdGxfaGFuZGxl
+cihzdHJ1Y3QgY3RsX3RhYmxlICp0YWJsZSwNCj4gKwkJaW50IHdyaXRlLCB2b2lkICpidWZmZXIs
+IHNpemVfdCAqbGVuZ3RoLCBsb2ZmX3QgKnBwb3MpOw0KPiAgZXh0ZXJuIGludCBzeXNjdGxfZXh0
+ZnJhZ190aHJlc2hvbGQ7DQo+ICBleHRlcm4gaW50IHN5c2N0bF9jb21wYWN0X3VuZXZpY3RhYmxl
+X2FsbG93ZWQ7DQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tbXpvbmUuaCBiL2lu
+Y2x1ZGUvbGludXgvbW16b25lLmggaW5kZXgNCj4gMGQ1M2ViYS4uOTQ1NTgwOSAxMDA2NDQNCj4g
+LS0tIGEvaW5jbHVkZS9saW51eC9tbXpvbmUuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L21tem9u
+ZS5oDQo+IEBAIC04MTUsNiArODE1LDcgQEAgdHlwZWRlZiBzdHJ1Y3QgcGdsaXN0X2RhdGEgew0K
+PiAgCWVudW0gem9uZV90eXBlIGtjb21wYWN0ZF9oaWdoZXN0X3pvbmVpZHg7DQo+ICAJd2FpdF9x
+dWV1ZV9oZWFkX3Qga2NvbXBhY3RkX3dhaXQ7DQo+ICAJc3RydWN0IHRhc2tfc3RydWN0ICprY29t
+cGFjdGQ7DQo+ICsJYm9vbCBwcm9hY3RpdmVfY29tcGFjdF90cmlnZ2VyOw0KPiAgI2VuZGlmDQo+
+ICAJLyoNCj4gIAkgKiBUaGlzIGlzIGEgcGVyLW5vZGUgcmVzZXJ2ZSBvZiBwYWdlcyB0aGF0IGFy
+ZSBub3QgYXZhaWxhYmxlIGRpZmYgLS1naXQNCj4gYS9rZXJuZWwvc3lzY3RsLmMgYi9rZXJuZWwv
+c3lzY3RsLmMgaW5kZXggMTRlZGY4NC4uYmVkMmZhZCAxMDA2NDQNCj4gLS0tIGEva2VybmVsL3N5
+c2N0bC5jDQo+ICsrKyBiL2tlcm5lbC9zeXNjdGwuYw0KPiBAQCAtMjg0MCw3ICsyODQwLDcgQEAg
+c3RhdGljIHN0cnVjdCBjdGxfdGFibGUgdm1fdGFibGVbXSA9IHsNCj4gIAkJLmRhdGEJCT0gJnN5
+c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3MsDQo+ICAJCS5tYXhsZW4JCT0gc2l6ZW9mKHN5
+c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3MpLA0KPiAgCQkubW9kZQkJPSAwNjQ0LA0KPiAt
+CQkucHJvY19oYW5kbGVyCT0gcHJvY19kb2ludHZlY19taW5tYXgsDQo+ICsJCS5wcm9jX2hhbmRs
+ZXIJPSBjb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3Nfc3lzY3RsX2hhbmRsZXIsDQo+ICAJCS5leHRy
+YTEJCT0gU1lTQ1RMX1pFUk8sDQo+ICAJCS5leHRyYTIJCT0gJm9uZV9odW5kcmVkLA0KPiAgCX0s
+DQo+IGRpZmYgLS1naXQgYS9tbS9jb21wYWN0aW9uLmMgYi9tbS9jb21wYWN0aW9uLmMgaW5kZXgg
+ODRmZGUyNy4uOTA1NjY5Mw0KPiAxMDA2NDQNCj4gLS0tIGEvbW0vY29tcGFjdGlvbi5jDQo+ICsr
+KyBiL21tL2NvbXBhY3Rpb24uYw0KPiBAQCAtMjcwOCw2ICsyNzA4LDMwIEBAIHN0YXRpYyB2b2lk
+IGNvbXBhY3Rfbm9kZXModm9pZCkNCj4gICAqLw0KPiAgdW5zaWduZWQgaW50IF9fcmVhZF9tb3N0
+bHkgc3lzY3RsX2NvbXBhY3Rpb25fcHJvYWN0aXZlbmVzcyA9IDIwOw0KPiANCj4gK2ludCBjb21w
+YWN0aW9uX3Byb2FjdGl2ZW5lc3Nfc3lzY3RsX2hhbmRsZXIoc3RydWN0IGN0bF90YWJsZSAqdGFi
+bGUsIGludA0KPiB3cml0ZSwNCj4gKwkJdm9pZCAqYnVmZmVyLCBzaXplX3QgKmxlbmd0aCwgbG9m
+Zl90ICpwcG9zKSB7DQo+ICsJaW50IHJjLCBuaWQ7DQo+ICsNCj4gKwlyYyA9IHByb2NfZG9pbnR2
+ZWNfbWlubWF4KHRhYmxlLCB3cml0ZSwgYnVmZmVyLCBsZW5ndGgsIHBwb3MpOw0KPiArCWlmIChy
+YykNCj4gKwkJcmV0dXJuIHJjOw0KPiArDQo+ICsJaWYgKHdyaXRlICYmIHN5c2N0bF9jb21wYWN0
+aW9uX3Byb2FjdGl2ZW5lc3MpIHsNCj4gKwkJZm9yX2VhY2hfb25saW5lX25vZGUobmlkKSB7DQo+
+ICsJCQlwZ19kYXRhX3QgKnBnZGF0ID0gTk9ERV9EQVRBKG5pZCk7DQo+ICsNCj4gKwkJCWlmIChw
+Z2RhdC0+cHJvYWN0aXZlX2NvbXBhY3RfdHJpZ2dlcikNCj4gKwkJCQljb250aW51ZTsNCj4gKw0K
+PiArCQkJcGdkYXQtPnByb2FjdGl2ZV9jb21wYWN0X3RyaWdnZXIgPSB0cnVlOw0KPiArCQkJd2Fr
+ZV91cF9pbnRlcnJ1cHRpYmxlKCZwZ2RhdC0+a2NvbXBhY3RkX3dhaXQpOw0KPiArCQl9DQo+ICsJ
+fQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gIC8qDQo+ICAgKiBUaGlzIGlzIHRo
+ZSBlbnRyeSBwb2ludCBmb3IgY29tcGFjdGluZyBhbGwgbm9kZXMgdmlhDQo+ICAgKiAvcHJvYy9z
+eXMvdm0vY29tcGFjdF9tZW1vcnkNCj4gQEAgLTI3NTIsNyArMjc3Niw4IEBAIHZvaWQgY29tcGFj
+dGlvbl91bnJlZ2lzdGVyX25vZGUoc3RydWN0IG5vZGUNCj4gKm5vZGUpDQo+IA0KPiAgc3RhdGlj
+IGlubGluZSBib29sIGtjb21wYWN0ZF93b3JrX3JlcXVlc3RlZChwZ19kYXRhX3QgKnBnZGF0KSAg
+ew0KPiAtCXJldHVybiBwZ2RhdC0+a2NvbXBhY3RkX21heF9vcmRlciA+IDAgfHwga3RocmVhZF9z
+aG91bGRfc3RvcCgpOw0KPiArCXJldHVybiBwZ2RhdC0+a2NvbXBhY3RkX21heF9vcmRlciA+IDAg
+fHwga3RocmVhZF9zaG91bGRfc3RvcCgpIHx8DQo+ICsJCXBnZGF0LT5wcm9hY3RpdmVfY29tcGFj
+dF90cmlnZ2VyOw0KPiAgfQ0KPiANCj4gIHN0YXRpYyBib29sIGtjb21wYWN0ZF9ub2RlX3N1aXRh
+YmxlKHBnX2RhdGFfdCAqcGdkYXQpIEBAIC0yOTA1LDcNCj4gKzI5MzAsOCBAQCBzdGF0aWMgaW50
+IGtjb21wYWN0ZCh2b2lkICpwKQ0KPiAgCQl0cmFjZV9tbV9jb21wYWN0aW9uX2tjb21wYWN0ZF9z
+bGVlcChwZ2RhdC0+bm9kZV9pZCk7DQo+ICAJCWlmICh3YWl0X2V2ZW50X2ZyZWV6YWJsZV90aW1l
+b3V0KHBnZGF0LT5rY29tcGFjdGRfd2FpdCwNCj4gIAkJCWtjb21wYWN0ZF93b3JrX3JlcXVlc3Rl
+ZChwZ2RhdCksDQo+IC0JCQltc2Vjc190b19qaWZmaWVzKEhQQUdFX0ZSQUdfQ0hFQ0tfSU5URVJW
+QUxfTVNFQykpKSB7DQo+ICsJCQltc2Vjc190b19qaWZmaWVzKEhQQUdFX0ZSQUdfQ0hFQ0tfSU5U
+RVJWQUxfTVNFQykpICYmDQo+ICsJCQkhcGdkYXQtPnByb2FjdGl2ZV9jb21wYWN0X3RyaWdnZXIp
+IHsNCj4gDQo+ICAJCQlwc2lfbWVtc3RhbGxfZW50ZXIoJnBmbGFncyk7DQo+ICAJCQlrY29tcGFj
+dGRfZG9fd29yayhwZ2RhdCk7DQo+IEBAIC0yOTE5LDcgKzI5NDUsNyBAQCBzdGF0aWMgaW50IGtj
+b21wYWN0ZCh2b2lkICpwKQ0KPiANCj4gIAkJCWlmIChwcm9hY3RpdmVfZGVmZXIpIHsNCj4gIAkJ
+CQlwcm9hY3RpdmVfZGVmZXItLTsNCj4gLQkJCQljb250aW51ZTsNCj4gKwkJCQlnb3RvIGxvb3A7
+DQo+ICAJCQl9DQo+ICAJCQlwcmV2X3Njb3JlID0gZnJhZ21lbnRhdGlvbl9zY29yZV9ub2RlKHBn
+ZGF0KTsNCj4gIAkJCXByb2FjdGl2ZV9jb21wYWN0X25vZGUocGdkYXQpOw0KPiBAQCAtMjkzMSw2
+ICsyOTU3LDkgQEAgc3RhdGljIGludCBrY29tcGFjdGQodm9pZCAqcCkNCj4gIAkJCXByb2FjdGl2
+ZV9kZWZlciA9IHNjb3JlIDwgcHJldl9zY29yZSA/DQo+ICAJCQkJCTAgOiAxIDw8IENPTVBBQ1Rf
+TUFYX0RFRkVSX1NISUZUOw0KPiAgCQl9DQo+ICtsb29wOg0KPiArCQlpZiAocGdkYXQtPnByb2Fj
+dGl2ZV9jb21wYWN0X3RyaWdnZXIpDQo+ICsJCQlwZ2RhdC0+cHJvYWN0aXZlX2NvbXBhY3RfdHJp
+Z2dlciA9IGZhbHNlOw0KPiAgCX0NCj4gDQo+ICAJcmV0dXJuIDA7DQo+IC0tDQo+IFFVQUxDT01N
+IElORElBLCBvbiBiZWhhbGYgb2YgUXVhbGNvbW0gSW5ub3ZhdGlvbiBDZW50ZXIsIEluYy4gaXMg
+YQ0KPiBtZW1iZXIgb2YgdGhlIENvZGUgQXVyb3JhIEZvcnVtLCBob3N0ZWQgYnkgVGhlIExpbnV4
+IEZvdW5kYXRpb24NCg0K
