@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A28388D63
+	by mail.lfdr.de (Postfix) with ESMTP id D9660388D64
 	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353045AbhESMCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353047AbhESMCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:02:43 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4F5C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:01:22 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id d11so13722238wrw.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DTl0F3yp42r8Hj6JjZeWk7rdRBuq5rsdsLvB4gVnalA=;
-        b=PNDLiEP3mR0Zdz9Tvm97CMbIjSWSVT2j2gI+KaqNxAfI9OVufIdc69haoYSTswemXG
-         IwfZSqiL1ytBvX548Td3QL1KkFx/rPVXVS3gNKRPjDqPAB8tPMHePzGASZAzKVlLSo9N
-         FnKI0qr3y2EUYg46bQNzWVK8tm+XUCfVafq6XHHM9ULoxqb2ABLj0pnlyLdIkzmtMQK0
-         nA4N7/RzWdFuN7+iX6FXUD8QTbwFFnLSDiKo/o5vnDyWpC09Lv3vl56T8YPcM8rfOaRC
-         y0MqFjYqCMn7gumguRN5t6OWvfY2SbJI83MsS+h5DRjyEjxgAqNCA9KNguIyqZgu96Os
-         4ALA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DTl0F3yp42r8Hj6JjZeWk7rdRBuq5rsdsLvB4gVnalA=;
-        b=Fj9bPYjvTuIssz3PBkZZCKHOUc/N/UPgHsVuuSyIIBH6ORKFS5lEXQbfrf71Xhtkqy
-         KlKIYrCKLbyDJBXHBhagGiKo0imEHY+Hcnv9WhD4WWcEEWzti2LEYYsoRp0C1ZyxxrKv
-         Oib/gv/GlqROni0avs9SwqiNbjf1EEyhP7ZvdaxARKZDD3UnZLo4BaMYS5QMfwQHcvM9
-         +4/GASffK1WR55mp/2obJ1BYAZcc7QwBK2YrsDnkpFoPzJw/uSZ3WU0d++c4gqMR0WF5
-         Nm8nf/6ReNN6te1nald11+3W8VW9f1mG/V9G2Ou4Ns150l0jjZtDeRFC7N0NdTdkTqtb
-         YfCg==
-X-Gm-Message-State: AOAM531BkOcVctBkCAxBogWcc8yO12fh+NA8kVvw9Ta+zjSrghzljb5i
-        UlnBKM08c26T7xB8WieZ8Imkyw==
-X-Google-Smtp-Source: ABdhPJw3phIJj3ZJW7j3BDfv0U37nRSkdLSUimbXSjhW9l+GHM3Xs/G57Z9R43uvGvB0XxQ0EEKZzA==
-X-Received: by 2002:adf:d20a:: with SMTP id j10mr7729779wrh.188.1621425680724;
-        Wed, 19 May 2021 05:01:20 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id y14sm25819485wrr.82.2021.05.19.05.01.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 05:01:20 -0700 (PDT)
-Date:   Wed, 19 May 2021 13:01:18 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/2] mfd: wcd934x: add additional interrupts required for
- MBHC support
-Message-ID: <20210519120118.GG2403908@dell>
-References: <20210510091239.2442-1-srinivas.kandagatla@linaro.org>
- <20210510091239.2442-3-srinivas.kandagatla@linaro.org>
+        id S1353125AbhESMC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:02:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54594 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346290AbhESMCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 08:02:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621425688; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CKCCA4uGoDUr0kdQS1te8hopA2mifUTP8Tl3Ty74AR4=;
+        b=W1WjFsyG8Kx82VA+T2NuXO1036rB9210NOrtUrtxMTnrtGbmZ0c00RrvEG41/PmlkD7IyK
+        HR94/SFnas1sOx3nllsvssdGUglouNBlZQEzkzgAQP4KEUD4Fj/2WAlk3kIVny45rCK6zF
+        YRuBawFFqxF6S0Yi62ZtkXMXJKeSUbw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D1F72AF19;
+        Wed, 19 May 2021 12:01:28 +0000 (UTC)
+Date:   Wed, 19 May 2021 14:01:28 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog: Reliable handling of timestamps
+Message-ID: <YKT+GMZVIiRNIDle@alley>
+References: <20210517140612.222750-1-senozhatsky@chromium.org>
+ <YKPfDQoN5hToB9nk@alley>
+ <YKT55gw+RZfyoFf7@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510091239.2442-3-srinivas.kandagatla@linaro.org>
+In-Reply-To: <YKT55gw+RZfyoFf7@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021, Srinivas Kandagatla wrote:
-
-> WCD934x supports Multi Button Headset control which enable headset detection
-> along with headset button detection.
+On Wed 2021-05-19 13:43:34, Petr Mladek wrote:
+> The commit 9bf3bc949f8aeefeacea4b ("watchdog: cleanup handling of false
+> positives") tried to handle a virtual host stopped by the host a more
+> straightforward and cleaner way.
 > 
-> This patch adds interrupts required for MBHC functionality.
+> But it introduced a risk of false softlockup reports. The virtual host
+> might be stopped at any time, for example between
+> kvm_check_and_clear_guest_paused() and is_softlockup().
+> As a result, is_softlockup() might read the updated jiffies
+> are detects softlockup.
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/mfd/wcd934x.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> Fix all the problems by making the code even more explicit.
 
-Applied, thanks.
+This is my preferred solution. It makes it clear when the various
+values are read and various situations handled.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+In the original code, kvm_check_and_clear_guest_paused() was handled
+partially in the given and partially in the next watchdog_timer_fn()
+invocation.
+
+It would be great to push this patch or at least Sergey's revert
+for 5.13.
+
+Best Regards,
+Petr
