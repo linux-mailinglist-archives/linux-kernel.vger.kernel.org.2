@@ -2,74 +2,571 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D8F388479
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E6C38847D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbhESBiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 21:38:55 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3017 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhESBiy (ORCPT
+        id S233565AbhESBke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:40:34 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33366 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbhESBkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 21:38:54 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlFlJ3QsnzQpcH;
-        Wed, 19 May 2021 09:34:04 +0800 (CST)
-Received: from dggeme703-chm.china.huawei.com (10.1.199.99) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 09:37:34 +0800
-Received: from [10.174.176.110] (10.174.176.110) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 19 May 2021 09:37:33 +0800
-Subject: Re: [PATCH 2/5] mm/swap: remove unused local variable nr_shadows
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210518135352.3705306-1-linmiaohe@huawei.com>
- <20210518135352.3705306-3-linmiaohe@huawei.com>
- <YKPREjo49dP8mW2J@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <3b7bd04e-4995-1bfb-0c42-81bad94fd4a4@huawei.com>
-Date:   Wed, 19 May 2021 09:37:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 18 May 2021 21:40:31 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 74D6145E;
+        Wed, 19 May 2021 03:39:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1621388351;
+        bh=rwX4qIPIdJE45iW+jrXoKz0CfifYBtqPZ7TEUdhLjdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DsJrPmCESQXnNDaU0BUqeHB3wWjPa1gY4a1L2KezblMOCu98GCX7OHsjqo2YEj+KA
+         H4G/oVbaMQ1EapNfFIMJ0R/Zae9yjGzjdn/1mHSaGJgyuWYL81myWryWQ1iXfHQOGE
+         t4Bd8WvRnLeC5RTdON6gmRn3G7ruMDbarkNSvQZ4=
+Date:   Wed, 19 May 2021 04:39:10 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Roger Quadros <rogerq@ti.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH 4/6] dt-bindings: i2c: Convert i2c-mux bindings to DT
+ schema
+Message-ID: <YKRsPrFMNg5KY55j@pendragon.ideasonboard.com>
+References: <20210518232858.1535403-1-robh@kernel.org>
+ <20210518232858.1535403-5-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YKPREjo49dP8mW2J@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.110]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210518232858.1535403-5-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/18 22:37, Matthew Wilcox wrote:
-> On Tue, May 18, 2021 at 09:53:49PM +0800, Miaohe Lin wrote:
->> Since commit 55c653b71e8c ("mm: stop accounting shadow entries"),
->> nr_shadows is not used anymore.
->>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
->> +++ b/mm/swap_state.c
->> @@ -114,7 +114,6 @@ int add_to_swap_cache(struct page *page, swp_entry_t entry,
->>  	SetPageSwapCache(page);
->>  
->>  	do {
->> -		unsigned long nr_shadows = 0;
->>  
-> 
-> Perhaps delete the blank line as well?
+Hi Rob,
 
-Will do. Many thanks for the review.
+Thank you for the patch.
 
+On Tue, May 18, 2021 at 06:28:56PM -0500, Rob Herring wrote:
+> As some of the example I2C devices don't have schemas yet, change them to
+> ones that do.
 > 
-> .
+> Cc: Peter Rosin <peda@axentia.se>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/i2c/i2c-demux-pinctrl.txt        |   2 +-
+>  .../devicetree/bindings/i2c/i2c-mux-gpio.txt  |   4 +-
+>  .../devicetree/bindings/i2c/i2c-mux-gpmux.txt |  99 --------------
+>  .../bindings/i2c/i2c-mux-gpmux.yaml           | 124 ++++++++++++++++++
+>  .../bindings/i2c/i2c-mux-ltc4306.txt          |   4 +-
+>  .../bindings/i2c/i2c-mux-pinctrl.txt          |   4 +-
+>  .../devicetree/bindings/i2c/i2c-mux-reg.txt   |   4 +-
+>  .../devicetree/bindings/i2c/i2c-mux.txt       |  73 -----------
+>  .../devicetree/bindings/i2c/i2c-mux.yaml      |  87 ++++++++++++
+>  9 files changed, 220 insertions(+), 181 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt b/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt
+> index 81b5d55086fa..86b2e433a969 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.txt
+> @@ -27,7 +27,7 @@ Required properties:
+>  - i2c-bus-name: The name of this bus. Also needed as pinctrl-name for the I2C
+>  		parents.
+>  
+> -Furthermore, I2C mux properties and child nodes. See i2c-mux.txt in this
+> +Furthermore, I2C mux properties and child nodes. See i2c-mux.yaml in this
+>  directory.
+>  
+>  Example:
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
+> index 21da3ecbb370..e00d2b9e957a 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
+> @@ -22,8 +22,8 @@ Required properties:
+>  - i2c-parent: The phandle of the I2C bus that this multiplexer's master-side
+>    port is connected to.
+>  - mux-gpios: list of gpios used to control the muxer
+> -* Standard I2C mux properties. See i2c-mux.txt in this directory.
+> -* I2C child bus nodes. See i2c-mux.txt in this directory.
+> +* Standard I2C mux properties. See i2c-mux.yaml in this directory.
+> +* I2C child bus nodes. See i2c-mux.yaml in this directory.
+>  
+>  Optional properties:
+>  - idle-state: value to set the muxer to when idle. When no value is
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt
+> deleted file mode 100644
+> index 057083a8ba17..000000000000
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt
+> +++ /dev/null
+> @@ -1,99 +0,0 @@
+> -General Purpose I2C Bus Mux
+> -
+> -This binding describes an I2C bus multiplexer that uses a mux controller
+> -from the mux subsystem to route the I2C signals.
+> -
+> -                                  .-----.  .-----.
+> -                                  | dev |  | dev |
+> -    .------------.                '-----'  '-----'
+> -    | SoC        |                   |        |
+> -    |            |          .--------+--------'
+> -    |   .------. |  .------+    child bus A, on MUX value set to 0
+> -    |   | I2C  |-|--| Mux  |
+> -    |   '------' |  '--+---+    child bus B, on MUX value set to 1
+> -    |   .------. |     |    '----------+--------+--------.
+> -    |   | MUX- | |     |               |        |        |
+> -    |   | Ctrl |-|-----+            .-----.  .-----.  .-----.
+> -    |   '------' |                  | dev |  | dev |  | dev |
+> -    '------------'                  '-----'  '-----'  '-----'
+> -
+> -Required properties:
+> -- compatible: i2c-mux
+> -- i2c-parent: The phandle of the I2C bus that this multiplexer's master-side
+> -  port is connected to.
+> -- mux-controls: The phandle of the mux controller to use for operating the
+> -  mux.
+> -* Standard I2C mux properties. See i2c-mux.txt in this directory.
+> -* I2C child bus nodes. See i2c-mux.txt in this directory. The sub-bus number
+> -  is also the mux-controller state described in ../mux/mux-controller.yaml
+> -
+> -Optional properties:
+> -- mux-locked: If present, explicitly allow unrelated I2C transactions on the
+> -  parent I2C adapter at these times:
+> -   + during setup of the multiplexer
+> -   + between setup of the multiplexer and the child bus I2C transaction
+> -   + between the child bus I2C transaction and releasing of the multiplexer
+> -   + during releasing of the multiplexer
+> -  However, I2C transactions to devices behind all I2C multiplexers connected
+> -  to the same parent adapter that this multiplexer is connected to are blocked
+> -  for the full duration of the complete multiplexed I2C transaction (i.e.
+> -  including the times covered by the above list).
+> -  If mux-locked is not present, the multiplexer is assumed to be parent-locked.
+> -  This means that no unrelated I2C transactions are allowed on the parent I2C
+> -  adapter for the complete multiplexed I2C transaction.
+> -  The properties of mux-locked and parent-locked multiplexers are discussed
+> -  in more detail in Documentation/i2c/i2c-topology.rst.
+> -
+> -For each i2c child node, an I2C child bus will be created. They will
+> -be numbered based on their order in the device tree.
+> -
+> -Whenever an access is made to a device on a child bus, the value set
+> -in the relevant node's reg property will be set as the state in the
+> -mux controller.
+> -
+> -Example:
+> -	mux: mux-controller {
+> -		compatible = "gpio-mux";
+> -		#mux-control-cells = <0>;
+> -
+> -		mux-gpios = <&pioA 0 GPIO_ACTIVE_HIGH>,
+> -			    <&pioA 1 GPIO_ACTIVE_HIGH>;
+> -	};
+> -
+> -	i2c-mux {
+> -		compatible = "i2c-mux";
+> -		mux-locked;
+> -		i2c-parent = <&i2c1>;
+> -
+> -		mux-controls = <&mux>;
+> -
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		i2c@1 {
+> -			reg = <1>;
+> -			#address-cells = <1>;
+> -			#size-cells = <0>;
+> -
+> -			ssd1307: oled@3c {
+> -				compatible = "solomon,ssd1307fb-i2c";
+> -				reg = <0x3c>;
+> -				pwms = <&pwm 4 3000>;
+> -				reset-gpios = <&gpio2 7 1>;
+> -				reset-active-low;
+> -			};
+> -		};
+> -
+> -		i2c@3 {
+> -			reg = <3>;
+> -			#address-cells = <1>;
+> -			#size-cells = <0>;
+> -
+> -			pca9555: pca9555@20 {
+> -				compatible = "nxp,pca9555";
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x20>;
+> -			};
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml
+> new file mode 100644
+> index 000000000000..3e6ea59aea68
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml
+> @@ -0,0 +1,124 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/i2c-mux-gpmux.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: General Purpose I2C Bus Mux
+> +
+> +maintainers:
+> +  - Peter Rosin <peda@axentia.se>
+> +
+> +description: |+
+> +  This binding describes an I2C bus multiplexer that uses a mux controller
+> +  from the mux subsystem to route the I2C signals.
+> +
+> +                                    .-----.  .-----.
+> +                                    | dev |  | dev |
+> +      .------------.                '-----'  '-----'
+> +      | SoC        |                   |        |
+> +      |            |          .--------+--------'
+> +      |   .------. |  .------+    child bus A, on MUX value set to 0
+> +      |   | I2C  |-|--| Mux  |
+> +      |   '------' |  '--+---+    child bus B, on MUX value set to 1
+> +      |   .------. |     |    '----------+--------+--------.
+> +      |   | MUX- | |     |               |        |        |
+> +      |   | Ctrl |-|-----+            .-----.  .-----.  .-----.
+> +      |   '------' |                  | dev |  | dev |  | dev |
+> +      '------------'                  '-----'  '-----'  '-----'
+> +
+> +
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-mux.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: i2c-mux
+> +
+> +  i2c-parent:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      The phandle of the I2C bus that this multiplexer's master-side port is
+> +      connected to.
+> +
+> +  mux-controls:
+> +    maxItems: 1
+> +    description:
+> +      The mux-controller states are the I2C sub-bus numbers.
+> +
+> +  mux-locked:
+> +    type: boolean
+> +    description: |
+> +      Explicitly allow unrelated I2C transactions on the parent I2C adapter at
+> +      these times:
+> +       + during setup of the multiplexer
+> +       + between setup of the multiplexer and the child bus I2C transaction
+> +       + between the child bus I2C transaction and releasing of the multiplexer
+> +       + during releasing of the multiplexer
+> +
+> +      However, I2C transactions to devices behind all I2C multiplexers connected
+> +      to the same parent adapter that this multiplexer is connected to are blocked
+> +      for the full duration of the complete multiplexed I2C transaction (i.e.
+> +      including the times covered by the above list).
+> +      If mux-locked is not present, the multiplexer is assumed to be parent-locked.
+> +      This means that no unrelated I2C transactions are allowed on the parent I2C
+> +      adapter for the complete multiplexed I2C transaction.
+> +      The properties of mux-locked and parent-locked multiplexers are discussed
+> +      in more detail in Documentation/i2c/i2c-topology.rst.
+> +
+> +required:
+> +  - compatible
+> +  - i2c-parent
+> +  - mux-controls
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    mux: mux-controller {
+> +        compatible = "gpio-mux";
+> +        #mux-control-cells = <0>;
+> +
+> +        mux-gpios = <&pioA 0 GPIO_ACTIVE_HIGH>,
+> +                    <&pioA 1 GPIO_ACTIVE_HIGH>;
+> +    };
+> +
+> +    i2c-mux {
+> +        compatible = "i2c-mux";
+> +        mux-locked;
+> +        i2c-parent = <&i2c1>;
+> +
+> +        mux-controls = <&mux>;
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        i2c@1 {
+> +            reg = <1>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            gpio@20 {
+> +                compatible = "nxp,pca9555";
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +                reg = <0x20>;
+> +            };
+> +        };
+> +
+> +        i2c@3 {
+> +            reg = <3>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            gpio@20 {
+> +                compatible = "nxp,pca9555";
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +                reg = <0x20>;
+> +            };
+> +        };
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt
+> index 8b1e49cdce3f..29c4550c9782 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-ltc4306.txt
+> @@ -8,8 +8,8 @@ Required Properties:
+>  
+>    The following required properties are defined externally:
+>  
+> -  - Standard I2C mux properties. See i2c-mux.txt in this directory.
+> -  - I2C child bus nodes. See i2c-mux.txt in this directory.
+> +  - Standard I2C mux properties. See i2c-mux.yaml in this directory.
+> +  - I2C child bus nodes. See i2c-mux.yaml in this directory.
+>  
+>  Optional Properties:
+>  
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt
+> index 33119a98e144..997a287ed3f6 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-pinctrl.txt
+> @@ -28,9 +28,9 @@ Also required are:
+>  * Standard pinctrl properties that specify the pin mux state for each child
+>    bus. See ../pinctrl/pinctrl-bindings.txt.
+>  
+> -* Standard I2C mux properties. See i2c-mux.txt in this directory.
+> +* Standard I2C mux properties. See i2c-mux.yaml in this directory.
+>  
+> -* I2C child bus nodes. See i2c-mux.txt in this directory.
+> +* I2C child bus nodes. See i2c-mux.yaml in this directory.
+>  
+>  For each named state defined in the pinctrl-names property, an I2C child bus
+>  will be created. I2C child bus numbers are assigned based on the index into
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt
+> index de00d7fc450b..b9d9755e4172 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-reg.txt
+> @@ -7,8 +7,8 @@ Required properties:
+>  - compatible: i2c-mux-reg
+>  - i2c-parent: The phandle of the I2C bus that this multiplexer's master-side
+>    port is connected to.
+> -* Standard I2C mux properties. See i2c-mux.txt in this directory.
+> -* I2C child bus nodes. See i2c-mux.txt in this directory.
+> +* Standard I2C mux properties. See i2c-mux.yaml in this directory.
+> +* I2C child bus nodes. See i2c-mux.yaml in this directory.
+>  
+>  Optional properties:
+>  - reg: this pair of <offset size> specifies the register to control the mux.
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux.txt b/Documentation/devicetree/bindings/i2c/i2c-mux.txt
+> deleted file mode 100644
+> index b38f58a1c878..000000000000
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux.txt
+> +++ /dev/null
+> @@ -1,73 +0,0 @@
+> -Common i2c bus multiplexer/switch properties.
+> -
+> -An i2c bus multiplexer/switch will have several child busses that are
+> -numbered uniquely in a device dependent manner.  The nodes for an i2c bus
+> -multiplexer/switch will have one child node for each child bus.
+> -
+> -Optional properties:
+> -- #address-cells = <1>;
+> -   This property is required if the i2c-mux child node does not exist.
+> -
+> -- #size-cells = <0>;
+> -   This property is required if the i2c-mux child node does not exist.
+> -
+> -- i2c-mux
+> -   For i2c multiplexers/switches that have child nodes that are a mixture
+> -   of both i2c child busses and other child nodes, the 'i2c-mux' subnode
+> -   can be used for populating the i2c child busses.  If an 'i2c-mux'
+> -   subnode is present, only subnodes of this will be considered as i2c
+> -   child busses.
+> -
+> -Required properties for the i2c-mux child node:
+> -- #address-cells = <1>;
+> -- #size-cells = <0>;
+> -
+> -Required properties for i2c child bus nodes:
+> -- #address-cells = <1>;
+> -- #size-cells = <0>;
+> -- reg : The sub-bus number.
+> -
+> -Optional properties for i2c child bus nodes:
+> -- Other properties specific to the multiplexer/switch hardware.
+> -- Child nodes conforming to i2c bus binding
+> -
+> -
+> -Example :
+> -
+> -	/*
+> -	   An NXP pca9548 8 channel I2C multiplexer at address 0x70
+> -	   with two NXP pca8574 GPIO expanders attached, one each to
+> -	   ports 3 and 4.
+> -	 */
+> -
+> -	mux@70 {
+> -		compatible = "nxp,pca9548";
+> -		reg = <0x70>;
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		i2c@3 {
+> -			#address-cells = <1>;
+> -			#size-cells = <0>;
+> -			reg = <3>;
+> -
+> -			gpio1: gpio@38 {
+> -				compatible = "nxp,pca8574";
+> -				reg = <0x38>;
+> -				#gpio-cells = <2>;
+> -				gpio-controller;
+> -			};
+> -		};
+> -		i2c@4 {
+> -			#address-cells = <1>;
+> -			#size-cells = <0>;
+> -			reg = <4>;
+> -
+> -			gpio2: gpio@38 {
+> -				compatible = "nxp,pca8574";
+> -				reg = <0x38>;
+> -				#gpio-cells = <2>;
+> -				gpio-controller;
+> -			};
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> new file mode 100644
+> index 000000000000..3aa4d84a6610
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/i2c-mux.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Common i2c bus multiplexer/switch properties.
+> +
+> +maintainers:
+> +  - Peter Rosin <peda@axentia.se>
+> +
+> +description: |+
+> +  An i2c bus multiplexer/switch will have several child busses that are numbered
+> +  uniquely in a device dependent manner.  The nodes for an i2c bus
+> +  multiplexer/switch will have one child node for each child bus.
+> +
+> +  For i2c multiplexers/switches that have child nodes that are a mixture of both
+> +  i2c child busses and other child nodes, the 'i2c-mux' subnode can be used for
+> +  populating the i2c child busses.  If an 'i2c-mux' subnode is present, only
+> +  subnodes of this will be considered as i2c child busses.
 
+As I understand this, it means that child nodes corresponding to child
+buses can be either direct children of the I2C mux node, or grouped in a
+i2c-mux node (the same way we optionally group the 'port' nodes in a
+'ports' node). This doesn't seem to be supported by the bindings below.
+
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: '^(i2c-?)?mux'
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +patternProperties:
+> +  '^i2c@[0-9a-f]+$':
+> +    $ref: /schemas/i2c/i2c-controller.yaml
+> +    unevaluatedProperties: false
+> +
+> +    properties:
+> +      reg:
+> +        description: The mux selector sub-bus number for the child I2C bus.
+> +        maxItems: 1
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    /*
+> +       An NXP pca9548 8 channel I2C multiplexer at address 0x70
+> +       with two NXP pca8574 GPIO expanders attached, one each to
+> +       ports 3 and 4.
+
+I'd add the missing * while at it.
+
+> +     */
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        i2c-mux@70 {
+> +            compatible = "nxp,pca9548";
+> +            reg = <0x70>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            i2c@3 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <3>;
+> +
+> +                gpio@20 {
+> +                    compatible = "nxp,pca9555";
+> +                    gpio-controller;
+> +                    #gpio-cells = <2>;
+> +                    reg = <0x20>;
+> +                };
+> +            };
+> +            i2c@4 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <4>;
+> +
+> +                gpio@20 {
+> +                    compatible = "nxp,pca9555";
+> +                    gpio-controller;
+> +                    #gpio-cells = <2>;
+> +                    reg = <0x20>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+
+-- 
+Regards,
+
+Laurent Pinchart
