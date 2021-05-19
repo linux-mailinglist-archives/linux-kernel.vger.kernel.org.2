@@ -2,191 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92013898D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18383898D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhESVuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:50:20 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:43852 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhESVuT (ORCPT
+        id S229813AbhESVv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229454AbhESVvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:50:19 -0400
-Received: by mail-ot1-f53.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso2442460otu.10;
-        Wed, 19 May 2021 14:48:57 -0700 (PDT)
+        Wed, 19 May 2021 17:51:25 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E8AC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:50:05 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id h11so13471979ili.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:50:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kTt2FiDL6jKQ9igVcItFQGplYD9kRNczxqmA7iZyLec=;
+        b=gMYMyF8xXR6YyM1Z1ZZZP1i6QZwNpTkUy9te3CL1Gi5sSyEohhxKoI1G7+Ky8Jo2Rp
+         P/hgqo+/iZD1JqtJ6h9pWNvL0OFIIjKGn11knm1c7NVUGiQxFpybt5/SoAzx+5FM0nKe
+         XSIwd7YCn7W8psxOVLwPq8nMDjJNDO6tilezs/YGIQI48Lnsjr/xrmfh7x/x2GSQPF7i
+         jx5w83ML6Y93JBQ2K+IaOHgFK0is81rYAuFPGE04HtsjdQu1laiqsDCAduSY6DXO+TFs
+         6GqBjbJunfoJ3tvy3WSsz0s8WMvIMOUGqMUidv6jkN/nw2RWGU7bWX7ibc+vQ9PjG1oW
+         5z4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DKBY4C70+yMGXVKS4zX8Rv3RkluTwSHLjx9Ijn2Fbu0=;
-        b=Sqn3jgEoo2GcSzPaFRYpBKd2IwR3H4BHhanmIC8vwe+WkPEONg91yJEQtaBrKShGzj
-         wUKB+1BdaxeDq+Nr1l0j5Wmmrtp7KXGkfLC952ItSna7A+9C+vwR26dT3gs7GaAn6dbt
-         eyo0od8n4eh8QlKpAD3H0N6NpW9xiAy135twHq8uwhUvTw8xjm2g7jG4/2T7XUjJ96FF
-         RQBlteJ0kELSSjJ/Ww5jGCJPszZ3lhXF97F0vQSxEy0ntLEpmtOZGmwdSWCqLomY55x/
-         rR8PO9s6vvCilgJwSv1yC229YkS4QIeexHimtRNhiXsHXZjSdufe1E46zG4Zm5taAOnk
-         at3A==
-X-Gm-Message-State: AOAM531xJ/q6r3p0Gl8jrTdGxFymRr0W4RQdrSA4M4GH/hmg+sSfWCam
-        4nfDRdmb30/9qCyyUqwVLg==
-X-Google-Smtp-Source: ABdhPJye89tMFxcBxGyJDTEoGXfkCtFUTPgxthvAlCu61laiKziMZZtdD04ofYvGHcI35GzSfLpUag==
-X-Received: by 2002:a9d:61cb:: with SMTP id h11mr1263447otk.19.1621460937495;
-        Wed, 19 May 2021 14:48:57 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i18sm129061oot.48.2021.05.19.14.48.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 14:48:56 -0700 (PDT)
-Received: (nullmailer pid 3717476 invoked by uid 1000);
-        Wed, 19 May 2021 21:48:55 -0000
-Date:   Wed, 19 May 2021 16:48:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     swboyd@chromium.org, robh+dt@kernel.org, khsieh@codeaurora.org,
-        dianders@chromium.org, freedreno@lists.freedesktop.org,
-        kalyan_t@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, tanmay@codeaurora.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        bjorn.andersson@linaro.org, sean@poorly.run, vinod.koul@linaro.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v16 1/4] dt-bindings: msm: disp: add yaml schemas for DPU
- bindings
-Message-ID: <20210519214855.GA3717420@robh.at.kernel.org>
-References: <1621332225-31918-1-git-send-email-mkrishn@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kTt2FiDL6jKQ9igVcItFQGplYD9kRNczxqmA7iZyLec=;
+        b=dwXFLe9wNuBGlAHIcrWfI+CB7nQJ8/oenlxoteniWd7bW9wKf1Txceoch0M11bL9yv
+         hgigNF52zHe+Ym9xQbnR6af0R2+JQgZDx+tvDKOVE2hrALYj3ijT9XqovisqfYo2lcUY
+         W/DWKb0VUdkcPxPs7kFc0dp4UB3YPwkoaI70oK09Dhx1R+RgngZsINTJW3dbtBMTS+wv
+         NwRZTcjJi4yOoMl2taLjnjT2MYnBTO8CRhDbbJEJJ6x1GDU02vj98gL0j6uVW8vRcC0b
+         Dlo69pzpUwy2UGLw1awJbPAxuNxyO+Q53mIdv7plA53v9B2VACxmrR8c66OfjbCrpzDI
+         aMkA==
+X-Gm-Message-State: AOAM5317pX/F4Wq39QRYW0TRTmlsHtN2fDz6KAIhBptfb0XZKdW1gAsx
+        rPV2tMtsF6Dr1lIy0HkrT2zJ5HvxGj4BtRVCBrzsnQ==
+X-Google-Smtp-Source: ABdhPJwe90hZ9J1kloXU7jdOjRgtGJojwAt07kMzSrx8/hbwmcpx8Zrj4eB4T4bkQGA0Sm+6lw03cJIxkobG3qqh9kw=
+X-Received: by 2002:a05:6e02:13ec:: with SMTP id w12mr1436148ilj.285.1621461004204;
+ Wed, 19 May 2021 14:50:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621332225-31918-1-git-send-email-mkrishn@codeaurora.org>
+References: <20210519200339.829146-1-axelrasmussen@google.com> <20210519200339.829146-4-axelrasmussen@google.com>
+In-Reply-To: <20210519200339.829146-4-axelrasmussen@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 19 May 2021 14:49:53 -0700
+Message-ID: <CANgfPd_WV+8bAHucE=81eFTEEPv5Q-2ZjQ_beKhZyQnt4PX57Q@mail.gmail.com>
+Subject: Re: [PATCH v2 03/10] KVM: selftests: print a message when skipping
+ KVM tests
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 15:33:42 +0530, Krishna Manikandan wrote:
-> MSM Mobile Display Subsystem (MDSS) encapsulates sub-blocks
-> like DPU display controller, DSI etc. Add YAML schema
-> for DPU device tree bindings.
-> 
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> 
-> Changes in v2:
->     - Changed dpu to DPU (Sam Ravnborg)
->     - Fixed indentation issues (Sam Ravnborg)
->     - Added empty line between different properties (Sam Ravnborg)
->     - Replaced reference txt files with  their corresponding
->       yaml files (Sam Ravnborg)
->     - Modified the file to use "|" only when it is
->       necessary (Sam Ravnborg)
-> 
-> Changes in v3:
->     - Corrected the license used (Rob Herring)
->     - Added maxItems for properties (Rob Herring)
->     - Dropped generic descriptions (Rob Herring)
->     - Added ranges property (Rob Herring)
->     - Corrected the indendation (Rob Herring)
->     - Added additionalProperties (Rob Herring)
->     - Split dsi file into two, one for dsi controller
->       and another one for dsi phy per target (Rob Herring)
->     - Corrected description for pinctrl-names (Rob Herring)
->     - Corrected the examples used in yaml file (Rob Herring)
->     - Delete dsi.txt and dpu.txt (Rob Herring)
-> 
-> Changes in v4:
->     - Move schema up by one level (Rob Herring)
->     - Add patternProperties for mdp node (Rob Herring)
->     - Corrected description of some properties (Rob Herring)
-> 
-> Changes in v5:
->     - Correct the indentation (Rob Herring)
->     - Remove unnecessary description from properties (Rob Herring)
->     - Correct the number of interconnect entries (Rob Herring)
->     - Add interconnect names for sc7180 (Rob Herring)
->     - Add description for ports (Rob Herring)
->     - Remove common properties (Rob Herring)
->     - Add unevalutatedProperties (Rob Herring)
->     - Reference existing dsi controller yaml in the common
->       dsi controller file (Rob Herring)
->     - Correct the description of clock names to include only the
->       clocks that are required (Rob Herring)
->     - Remove properties which are already covered under the common
->       binding (Rob Herring)
->     - Add dsi phy supply nodes which are required for sc7180 and
->       sdm845 targets (Rob Herring)
->     - Add type ref for syscon-sfpb (Rob Herring)
-> 
-> Changes in v6:
->     - Fixed errors during dt_binding_check (Rob Herring)
->     - Add maxItems for phys and phys-names (Rob Herring)
->     - Use unevaluatedProperties wherever required (Rob Herring)
->     - Removed interrupt controller from required properties for
->       dsi controller (Rob Herring)
->     - Add constraints for dsi-phy reg-names based on the compatible
->       phy version (Rob Herring)
->     - Add constraints for dsi-phy supply nodes based on the
->       compatible phy version (Rob Herring)
-> 
-> Changes in v7:
->     - Add default value for qcom,mdss-mdp-transfer-time-us (Rob Herring)
->     - Modify the schema for data-lanes (Rob Herring)
->     - Split the phy schema into separate schemas based on
->       the phy version (Rob Herring)
-> 
-> Changes in v8:
->     - Resolve merge conflicts with latest dsi.txt file
->     - Include dp yaml change also in the same series
-> 
-> Changes in v9:
->     - Combine target specific dsi controller yaml files
->       to a single yaml file (Rob Herring)
->     - Combine target specific dsi phy yaml files into a
->       single yaml file (Rob Herring)
->     - Use unevaluatedProperties and additionalProperties
->       wherever required
->     - Remove duplicate properties from common yaml files
-> 
-> Changes in v10:
->     - Split the patch into separate patches for DPU, DSI and
->       PHY (Stephen Boyd)
->     - Drop unnecessary fullstop (Stephen Boyd)
->     - Add newline whereever required (Stephen Boyd)
->     - Add description for clock used (Stephen Boyd)
->     - Modify the description for interconnect entries  (Stephen Boyd)
->     - Drop assigned clock entries as it a generic property (Stephen Boyd)
->     - Correct the definition for interrupts (Stephen Boyd)
->     - Drop clock names from required properties (Stephen Boyd)
->     - Drop labels for display nodes from example (Stephen Boyd)
->     - Drop flags from interrupts entries (Stephen Boyd)
-> 
-> Changes in v11:
->     - Drop maxItems for clocks (Stephen Boyd)
-> 
-> Changes in v12:
->     - Add description for register property (Stephen Boyd)
->     - Add maxItems for interrupts (Stephen Boyd)
->     - Add description for iommus property (Stephen Boyd)
->     - Add description for interconnects (Stephen Boyd)
->     - Change display node name to display_controller (Stephen Boyd)
-> 
-> Changes in v13:
->     - Add maxItems for reg property (Stephen Boyd)
->     - Add ranges property in example (Stephen Boyd)
->     - Modify description for iommus property (Stephen Boyd)
->     - Add Dp bindings for ports in the same patch (Stephen Boyd)
->     - Remove soc from examples and change address and size cells
->       accordingly (Stephen Boyd)
->     - Add reference for ports
-> 
-> Changes in v14:
->     - Modify title for SC7180 and SDM845 yaml files (Stephen Boyd)
->     - Add required list for display-controller node (Stephen Boyd)
-> 
-> Changes in v16:
->     - Add reference for port (Rob Herring)
->     - Make additionalProperties as false (Rob Herring)
-> ---
->  .../bindings/display/msm/dpu-sc7180.yaml           | 228 +++++++++++++++++++++
->  .../bindings/display/msm/dpu-sdm845.yaml           | 212 +++++++++++++++++++
->  .../devicetree/bindings/display/msm/dpu.txt        | 141 -------------
->  3 files changed, 440 insertions(+), 141 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dpu-sdm845.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/msm/dpu.txt
-> 
+On Wed, May 19, 2021 at 1:03 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>
+> Previously, if this check failed, we'd just exit quietly with no output.
+> This can be confusing, so print out a short message indicating why the
+> test is being skipped.
+>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Ben Gardon <bgardon@google.com>
+
+> ---
+>  tools/testing/selftests/kvm/lib/kvm_util.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index f05ca919cccb..0d6ddee429b9 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -53,8 +53,10 @@ int kvm_check_cap(long cap)
+>         int kvm_fd;
+>
+>         kvm_fd = open(KVM_DEV_PATH, O_RDONLY);
+> -       if (kvm_fd < 0)
+> +       if (kvm_fd < 0) {
+> +               print_skip("KVM not available, errno: %d", errno);
+>                 exit(KSFT_SKIP);
+> +       }
+
+This is a wonderful change. I believe this will only be hit if KVM is
+built as a module and that module has not yet been loaded, so this
+message could also suggest that the user check if the KVM / KVM
+arch/vendor specific module has been loaded.
+
+>
+>         ret = ioctl(kvm_fd, KVM_CHECK_EXTENSION, cap);
+>         TEST_ASSERT(ret != -1, "KVM_CHECK_EXTENSION IOCTL failed,\n"
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+>
