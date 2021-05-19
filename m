@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1931F389708
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CC738970A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhESTvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:51:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232256AbhESTva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:51:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3EB75611B0;
-        Wed, 19 May 2021 19:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621453810;
-        bh=rszwbAkPk9ccvnHq47Mvxi0c53lLCYYj20OpAcPxaJ0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JX0z3LuN9sY5TV+rXJcgajBX4/rZpSuNlMZ7+MQL3uK97uzoHVpALKzj6A7w5GcYr
-         F+QBEAMtvZpM9Vl0oxPb0HtOQldXHPCW2ILdNi2hQtkQ6+hQBppiRJn0pD2+KHBYXt
-         73CKgYF2ZESAgdMaZiKYklCHPyCOJ5fh29FLsxjerq26NBCo1s2PcaeddlIFv5JSBx
-         Ebu8wCkw9lL8kKvVJ8cYQUmUBnS1vzYM+9udxLVB4fV4EInrFScIvSa0Yn8R4w2mR0
-         2yxi+QrGvCPy4v/hs2smtykKrdQqffDvl12XOOOGwd9rW0YAOIcacQCQ1dIqUUsW3J
-         GC9W4di3kb22w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3195C60A56;
-        Wed, 19 May 2021 19:50:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232302AbhESTvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:51:48 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:39637 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232256AbhESTvs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 15:51:48 -0400
+Received: by mail-ot1-f47.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so12822010otc.6;
+        Wed, 19 May 2021 12:50:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I1uvTDG2OZUbucg6l58mULhf0aAS9KnjR9rg8Nbg/Jo=;
+        b=KoVkcfXqQwUygUQjd2G5VujP4dycjWH6hc1I6AtUbi2D92ZJiTrhJh1xr5jIb7vpX5
+         /qLmeoSaz2fQW50Q+qKpsZiK6jTdo/LRCUKclUXvCBSGRrZnVCTcmBuDrhqizZN+wPHi
+         RayXq8GN2HwYOn8EruN/PAdk8182KWzttMeVgrxbq7qHjhyGqyyqeNGLAZujl/8qk1/a
+         8P50+jxHJ7xm5NHq9i3QfmlwTts6wyfSPvhmfUFPRb9iheC5+Fh8WrvSB1plgXfZXHS0
+         DdP49jFpC960TX2Tv5Fbryr69nJhr6Hn6n67k6zy6pGwmeTO2X6890cUCQtoe1a3oZWE
+         cGdw==
+X-Gm-Message-State: AOAM532L9s6q2rc9ZMKMQ8spsUgvtfCo8u2/pxHO/gCDwUXnXABS7Tct
+        RTSHZ5YM7Z9dFj8IHZsFYw==
+X-Google-Smtp-Source: ABdhPJwrHVc2P5vLxQ+BR4go+vILSaFqfZHLcQ3INgskiyPhp8eJ8bI+GvqEIxWP2XOunEwh6KIdSA==
+X-Received: by 2002:a9d:644f:: with SMTP id m15mr954049otl.99.1621453826858;
+        Wed, 19 May 2021 12:50:26 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n193sm124169oig.49.2021.05.19.12.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 12:50:25 -0700 (PDT)
+Received: (nullmailer pid 3534510 invoked by uid 1000);
+        Wed, 19 May 2021 19:50:24 -0000
+Date:   Wed, 19 May 2021 14:50:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linus.walleij@linaro.org, ulli.kroll@googlemail.com,
+        linux-arm-kernel@lists.infradead.org, olof@lixom.net
+Subject: Re: [PATCH 2/5] dt-bindings: add vendor prefix for edimax
+Message-ID: <20210519195024.GA3534096@robh.at.kernel.org>
+References: <20210517193205.691147-1-clabbe@baylibre.com>
+ <20210517193205.691147-3-clabbe@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 1/2] dt-bindings: net: nfc: s3fwrn5: Add optional clock
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162145381019.1870.2964109189084564601.git-patchwork-notify@kernel.org>
-Date:   Wed, 19 May 2021 19:50:10 +0000
-References: <20210519091613.7343-1-stephan@gerhold.net>
-In-Reply-To: <20210519091613.7343-1-stephan@gerhold.net>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
-        kuba@kernel.org, k.opasiak@samsung.com, robh+dt@kernel.org,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bongsu.jeon@samsung.com, ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517193205.691147-3-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 19 May 2021 11:16:12 +0200 you wrote:
-> On some systems, S3FWRN5 depends on having an external clock enabled
-> to function correctly. Allow declaring that clock in the device tree.
+On Mon, 17 May 2021 19:32:02 +0000, Corentin Labbe wrote:
+> Add vendor prefix for EDIMAX Technology Co., Ltd (https://www.edimax.com/)
 > 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 > ---
-> Changes in v2: Minor change in commit message only
-> v1: https://lore.kernel.org/netdev/20210518133935.571298-1-stephan@gerhold.net/
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> [...]
 
-Here is the summary with links:
-  - [v2,1/2] dt-bindings: net: nfc: s3fwrn5: Add optional clock
-    https://git.kernel.org/netdev/net-next/c/9cc52f5a533a
-  - [v2,2/2] nfc: s3fwrn5: i2c: Enable optional clock from device tree
-    https://git.kernel.org/netdev/net-next/c/340f42f7ff0b
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Acked-by: Rob Herring <robh@kernel.org>
