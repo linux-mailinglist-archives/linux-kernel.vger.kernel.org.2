@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B338388F63
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC88388F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353748AbhESNoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:44:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhESNow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2D536112F;
-        Wed, 19 May 2021 13:43:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621431812;
-        bh=e5Ou1Wf1l1cSB41OpuLSI6u4W4jDM0imYmUHvUByYGw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=t2o8PCwrAxkbSZcGIZ4nqGRnmeOBTVIZHInA+q5Ty+iTSSpld1yiEpQklSiqKkXCT
-         dVgXF3d2k3VhE8qG3fUacGvbigSIme6TNweMEu+WERkFidcAc95lrCjc0724e8HbYU
-         ijzdfSK6kREcldvO8VRS8svhqKUwK9xXsoX2hvlJh/zoNxxoOftOQfoppjmCQdvLsN
-         EOcspGldbMo1Bexw6TwuMTAixcJK1h9PTOfyM8pxx2m3DRbTZSMGR9sWA/oywHRArL
-         mmWsi4xMlvvIdtx4Ko5kWhfBBWGUPZfZ5Whke3Gwyyh7u0EQ0y+O2jl8pbzJaPB/i5
-         4bK1o8MbqgB2w==
-Received: by mail-ej1-f41.google.com with SMTP id k14so16568836eji.2;
-        Wed, 19 May 2021 06:43:32 -0700 (PDT)
-X-Gm-Message-State: AOAM531KetzHXH6ZIfD4075XCkbhFufL5bDizS86SQoeFQvEIFzrDFVc
-        rqADVbc/zex9wqVR17p2+YZdX1QbluX0ZkP9YQ==
-X-Google-Smtp-Source: ABdhPJxH/lGICnQpzeFewbWAeIwW5++saiskkNC6RUL2H4yoNw1jdP+qO7cZEQ2+dyj9ooceOrwNhG0W2iKlZ4Iahmw=
-X-Received: by 2002:a17:907:78cd:: with SMTP id kv13mr177415ejc.360.1621431811389;
- Wed, 19 May 2021 06:43:31 -0700 (PDT)
+        id S1353759AbhESNr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239757AbhESNrz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:47:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BBFC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 06:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6cgVXjYuC8nAsxdiKYXOmR2kYogLXyfB8N1EBy5OUXY=; b=HaSU3bhw5jnd4qwqpRENnQ93F2
+        yLj8+K0nqAnZ+MvNqAMILNmedsd6NnrvC/ebJ9IMjGxCW1Nwl7ehR6cDiwa/t1g+Hir5NageHI1kn
+        xFk1M8kSTmnYb9g9EFaBkO014Y6XzNPvY9t7OVqg5W9PXBz+G0iTSmvXpg3VXkqe8T9WRMq2dFgXj
+        F/BzzEnedATvDETuEqM/tAdrKX1oBgV0+HDJ7qUwVimFOwyFz09QBSrQB1BjuiF/zaaV635GAiRnC
+        3QBanmjgsg5IBBCBf/qZWGiJY2O6FWWd/Y8FEro/txJDzxZmufmnG2S+ZS15Zu8fSFk6L/6DcKKzu
+        8SrPcmoA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljMUa-00EzH5-SA; Wed, 19 May 2021 13:44:22 +0000
+Date:   Wed, 19 May 2021 14:44:08 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/3] mm/vmalloc: Switch to bulk allocator in
+ __vmalloc_area_node()
+Message-ID: <YKUWKFyLdqTYliwu@infradead.org>
+References: <20210516202056.2120-1-urezki@gmail.com>
+ <20210516202056.2120-3-urezki@gmail.com>
 MIME-Version: 1.0
-References: <20210513151800.1059435-1-dmitry.baryshkov@linaro.org>
-In-Reply-To: <20210513151800.1059435-1-dmitry.baryshkov@linaro.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 19 May 2021 08:43:19 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLtaJ43Y5ySEK5OraScigEO_OD3TMoy6DYFREK7kh=uFg@mail.gmail.com>
-Message-ID: <CAL_JsqLtaJ43Y5ySEK5OraScigEO_OD3TMoy6DYFREK7kh=uFg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: allow checking single device tree file
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210516202056.2120-3-urezki@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 10:18 AM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> Add support for testing single device tree file by running
-> 'make tree.dt.yaml', e.g. 'make ARCH=arm64 qcom/qrb5165-rb5.dt.yaml'.
-> This looks useful for checking idividual changes to dts files.
+> +	if (!page_order) {
+> +		area->nr_pages = alloc_pages_bulk_array_node(
+> +			gfp_mask, node, nr_small_pages, area->pages);
+> +	} else {
+> +		/*
+> +		 * Careful, we allocate and map page_order pages, but tracking is done
+> +		 * per PAGE_SIZE page so as to keep the vm_struct APIs independent of
 
-typo
+Comments over 80 lines are completely unreadable, so please avoid them.
 
-I'd rather not expose .*.dt.yaml as I want to make checking not
-optional and I have some plans of integrating the schema checks into
-dtc which would eliminate .dt.yaml files. Instead, I think %.dtb
-targets should run the checks always.
+> +		 * the physical/mapped size.
+> +		 */
+> +		while (area->nr_pages < nr_small_pages) {
+> +			struct page *page;
+> +			int i;
+> +
+> +			/* Compound pages required for remap_vmalloc_page */
+> +			page = alloc_pages_node(node, gfp_mask | __GFP_COMP, page_order);
+> +			if (unlikely(!page))
+> +				break;
+>  
+> +			for (i = 0; i < (1U << page_order); i++)
+> +				area->pages[area->nr_pages + i] = page + i;
+>  
+> +			if (gfpflags_allow_blocking(gfp_mask))
+> +				cond_resched();
+> +
+> +			area->nr_pages += 1U << page_order;
+> +		}
 
->
-> Cc: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/Makefile b/Makefile
-> index 53d09c414635..b36a3d48eb68 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1383,6 +1383,10 @@ ifneq ($(dtstree),)
->  %.dtbo: include/config/kernel.release scripts_dtc
->         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
->
-> +%.dt.yaml: include/config/kernel.release scripts_dtc
-> +       $(Q)$(MAKE) $(build)=Documentation/devicetree/bindings Documentation/devicetree/bindings/processed-schema.json
+In fact splitting this whole high order allocation logic into a little
+helper would massivel benefit the function by ordering it more logical
+and reducing a level of indentation.
 
-I don't think we should expose this detail (processed-schema.json) to
-the top-level makefile. This will be built if 'dt_binding_check' is a
-dependency with CHECK_DTBS=y set.
+> +	/*
+> +	 * If not enough pages were obtained to accomplish an
+> +	 * allocation request, free them via __vfree() if any.
+> +	 */
+> +	if (area->nr_pages != nr_small_pages) {
+> +		warn_alloc(gfp_mask, NULL,
+> +			"vmalloc size %lu allocation failure: "
+> +			"page order %u allocation failed",
+> +			area->nr_pages * PAGE_SIZE, page_order);
+> +		goto fail;
+> +	}
 
-> +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@ CHECK_DTBS=y
+From reading __alloc_pages_bulk not allocating all pages is something
+that cn happen fairly easily.  Shouldn't we try to allocate the missing
+pages manually and/ore retry here?
 
-CHECK_DTBS here doesn't work. It has to be exported.
+> +
+> +	if (vmap_pages_range(addr, addr + size, prot, area->pages, page_shift) < 0) {
 
-So here's my modified patch (%.dtbo should probably be included too,
-but I'm not yet sure how well the schema checks will work on them):
-
-8<---------------------------------------------------------
-diff --git a/Makefile b/Makefile
-index 53d09c414635..a1e246956d65 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1377,12 +1377,18 @@ endif
-
- ifneq ($(dtstree),)
-
--%.dtb: include/config/kernel.release scripts_dtc
-+%.dtb: %.dt.yaml
-        $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-
- %.dtbo: include/config/kernel.release scripts_dtc
-        $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-
-+ifneq ($(filter %.dtb, $(MAKECMDGOALS)),)
-+export CHECK_DTBS=y
-+endif
-+%.dt.yaml: dt_binding_check include/config/kernel.release scripts_dtc
-+       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-+
+Another pointlessly long line.
