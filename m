@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AF038856A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963B538859C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353084AbhESDiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 23:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353057AbhESDhy (ORCPT
+        id S236825AbhESDlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 23:41:04 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:59288 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353351AbhESDkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 23:37:54 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF11BC06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 20:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=sKHpQcvq+rUPwAULe7dYE5f70g4zQ2kG4rYG08+ZZAU=; b=UqzzuFYfeR7qGqWg3OIyDon2Cb
-        7d2qN4MWvw1SFx/Zvl4yiV3LF50MVRli1Jv6GkqL6VoNmCclw6fO8ih22GTHU5G6zQUqZaJ9cl8XH
-        CrX3IGSgP9nsAJQsdCg+LQaspJSmAbJzygYWHG7l6ccY0oJvBzoX5oxaP604zmBw6t6JbPVhGTLj3
-        n490I3Q4alYbW4QGBZ5WsDt0BJpUzOJeXSuE5hLoc7/OqjGo8wgm3l+ZwDm7H5on/J+CR+M/LbTSX
-        PiyrYLKd3ZqXM3V3pGrj3ZIoCkEBWVPtTd8agYOeOeZuEqt3St5LBS3PRoevS9r311Fkx0C8cXfc1
-        T4ushvNw==;
-Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljD0Y-00F5fR-3m; Wed, 19 May 2021 03:36:30 +0000
-Subject: Re: Am I the only one seeing LKML is lagging badly? Delivering the
- mail ..wondering
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        LinuxKernel <linux-kernel@vger.kernel.org>
-References: <YKR+OFOPDBc4LMtH@ArchLinux>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d2c549e1-9be0-befa-19a7-c68088133d9d@infradead.org>
-Date:   Tue, 18 May 2021 20:36:29 -0700
+        Tue, 18 May 2021 23:40:05 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 36C8B20B7178;
+        Tue, 18 May 2021 20:38:45 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 36C8B20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1621395526;
+        bh=cS3+zNmc37DC/s8oCI8pYDdc4DHyjueyV5ZDuMOy7PQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=MylN2bbW0XXj0O3VEa6/3SW6VVdDKhzlGUN3jF+fu2P0Tx08WPx06fd1F8LvzNP4u
+         mrusjH4DDYTQrP9i1l0rpAMjsy6573LihHmlcdJz39mMdrj4haGJ5Tm3+lpDvdsuKB
+         ZNSsA2q752/yjdoOcaKejRwaT69cBZ7fzY1y/J7E=
+Subject: Re: [RFC PATCH v4 2/2] arm64: Create a list of SYM_CODE functions,
+ blacklist them in the unwinder
+To:     "nobuta.keiya@fujitsu.com" <nobuta.keiya@fujitsu.com>
+Cc:     "broonie@kernel.org" <broonie@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "jthierry@redhat.com" <jthierry@redhat.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210516040018.128105-3-madvenka@linux.microsoft.com>
+ <TY2PR01MB5257FA9C1E94B136E1977790852B9@TY2PR01MB5257.jpnprd01.prod.outlook.com>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <da7baa1f-6ee3-ffa4-0b22-73fdde7657a9@linux.microsoft.com>
+Date:   Tue, 18 May 2021 22:38:44 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YKR+OFOPDBc4LMtH@ArchLinux>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <TY2PR01MB5257FA9C1E94B136E1977790852B9@TY2PR01MB5257.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=iso-2022-jp
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 7:55 PM, Bhaskar Chowdhury wrote:
->  Hey,
+OK. Thanks for the info. I will be more sensitive and change the name
+to something more appropriate.
+
+Madhavan
+
+On 5/18/21 9:06 PM, nobuta.keiya@fujitsu.com wrote:
+> Hi Madhavan,
 > 
->  The mail delivery is happening in snail space. Or is it just me experiencing
->  it??
+>> +static bool unwinder_blacklisted(unsigned long pc)
+>> +{
 > 
->  Almost a day behind in terms of mail delivery!
+> I've heard that the Linux community is currently avoiding the introduction of the
+> term 'blacklist', see:
 > 
->  Thanks,
->  Bhaskar
-
-Hi,
-I don't see it almost one day behind, but on days when
-there are lots of stable patch reviews, I see several hours
-delay.
-
-But I understand that gmail has its own special problems.
-It delays accepting email if an account is receiving "too much"
-mail, so it effectively slows down that account.
-E.g. maybe it thinks that the free account is being used for
-business activity...
-
--- 
-~Randy
-
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=49decddd39e5f6132ccd7d9fdc3d7c470b0061bb
+> 
+> 
+> Thanks & Best Regards,
+> Keiya Nobuta
+> 
