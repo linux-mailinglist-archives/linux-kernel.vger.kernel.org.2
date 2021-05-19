@@ -2,90 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78080388C4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F410E388C53
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344938AbhESLFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242675AbhESLF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:05:29 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2722C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:04:08 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id t206so7071196wmf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=axx61CsVmIC6EJaaQTkzv579XEKU5x1f7Bb8b1HhaGM=;
-        b=nZwPQTaPj58JJxzQ//b0HQl8VLLVDSfVWUobnUNTXtEqF9vZFoAnO0v//Mp9mNjzOU
-         Q4Fmhv8SEOc2a8evXrSh2e1SYzFnVH21poIi1ZuWO10j71fZZE9bcUkFf5ugm9+1fuIb
-         IB4QoJqd+gU7nsRRIPyAx/sFP7WZpSpn+d6tjydy9QDrKigqnE5AWOTfqpRSAb8D0t+0
-         t89ptUm+TNHEFmJM1qowCNTGo/lD5HDaCMnTnEXh88HgADORQw6wvcm9/XNFv6vBuNfI
-         RpzX0EQ9c57noVMiv+QTMKYEEQqrNZ58GWPlNJQYe0avxmMpKd8R6Qo94RtvTkgXfwCf
-         M0Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=axx61CsVmIC6EJaaQTkzv579XEKU5x1f7Bb8b1HhaGM=;
-        b=PIk8YRHgIhqPJp+afR1TWuHwOIvsH1nVU1bLH9Avgl9a1vyqrltUAFqTE+peZaPU18
-         fnoZtCPztZigM6ubwvaJ0qHjkhdYr7mN5wrcvgxWZKrwwoYW468akTsPJZl1RKSTMdaV
-         XyAepgFDHSrXTIJKCkJ4ajKaoR+QeN/75vsvXEPY8fd1vNHV84eC2h/+HwmvTMZ7YgSQ
-         8Xkdo2R/+WdjGdKmYUrnp1cLM+DxxjQTqbwzabtzeNGVIdOGSSe5RbcGVQggrYMhFbXo
-         a916XAVOVP6sGsLYKt0KDT8XUiqyFca+XeJBQInK8Qp8ukppBvO0GMcUnK4hCJ9Z51Ec
-         XeSQ==
-X-Gm-Message-State: AOAM531N//ECfrzwGQ0jBaX7cbUxI58GLThLe3TLkVxKfFr9HO5SfNxc
-        3YeTD6p5npfRnqxRgbjOqUX79w==
-X-Google-Smtp-Source: ABdhPJxsFqWC646GEWfefCF03WphLTde0lovkd+9AitRmiQnugfQHHOO8OLMuPlfkt5Lemgixyb/Pw==
-X-Received: by 2002:a7b:cb04:: with SMTP id u4mr8208294wmj.146.1621422247488;
-        Wed, 19 May 2021 04:04:07 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id a18sm5492863wmb.13.2021.05.19.04.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 04:04:06 -0700 (PDT)
-Date:   Wed, 19 May 2021 12:03:57 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mfd: mt6397: add PMIC keys for MT6358
-Message-ID: <20210519110357.GC2403908@dell>
-References: <20210506094116.638527-1-mkorpershoek@baylibre.com>
- <20210506094116.638527-4-mkorpershoek@baylibre.com>
+        id S1346002AbhESLG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:06:27 -0400
+Received: from mail-dm6nam08on2089.outbound.protection.outlook.com ([40.107.102.89]:28609
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242675AbhESLGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:06:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aehnl+0ofynJeY73r8Ub7PgzHvZ31nKD18YEtDqy9jeCIPLE7xqWMSW3rUeUPmxl34rZkUB1zMe9GyiAgsb1akbp3sTu4khPMhQVcXHScAqFo3CgiHFonEZX3ro4lWzr3LegGt7UzEdIzANb588FwxD+0QmAtfWcy+raj/9MRXzzSurwho4jljsZz6pTGgTPKyjsHEn6bzGg7OI5wHEUL2j5VncBp9OOoAPAZaJpnWw0OBaFDaTp1gY04FO1f1cJGsEAc69Yqn79Y4J6HSox+tcalAe4WYLj22RFSJAuZ8uJjkVWqbM8irLkCj7Ps6Ojulk3i6jnRl/M4oaGsvVdyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1DfRxZ+5VEOIpzSSpe0jdE2XkRnpvc4rL9wNBbngamI=;
+ b=VBpTEplWsYqQKau36j/2i0seWElPlG0DaLism1CwxnyPeDIaiubNv/G71Row3GyP5VTqTuT/9TgrKs54Tj5c0tx44zYzAYCkGShq9nLE2zLqhHvXDfkqgUg9x3P3AdHwP29HRFRRbbBtA6AUULHriMTrKl9vzMSSYTHTNmhYPfH25z3qajwP+Pg/CyViHV6TqZJid/+NVr+7Nj4+70Rpoh72OD+i3M/EjaEhiKTuaZYeupIA8LZ0J9aDCtfVAsVMAj++GXvOds/oLHXsBrkbTbgfhrf+S1C8o9NA1q5JKRAofgLPfDGUKDlUWt8sL1lsP1JGGt/OQJxvQZCqq6uikA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1DfRxZ+5VEOIpzSSpe0jdE2XkRnpvc4rL9wNBbngamI=;
+ b=KU7G1rIDr9p6Y9tLaZff1J/MX0q5HrqKy7mmeAeuWy/TWHKcnyp4u3xX38jjhWM8ZPTv+F/9l8RPJ7k345RvsEU8fwxPCpaUsSDIdvx7NKcmagGlfSpBlck1/3le1Ms3wpC3wyuHSBAy+q08wQCq4U9QwMsoOzOC00IgjqN4OXs+3sVYvuW5nYeNefqYhsxb/JwykuN8uDTS0E7mUQLxVJ7lr36HDzc0BdyZFlmx7he7s7YVVd5UoC2PCMHZsPrBeOdaNcTkBhcOjKdk4Bukb8ZhyToEKtE0rdEhUow5IDjcVrPsV+w/qy4SgAE8vqTFlV3yJKQYqxOezaqpw43xYw==
+Received: from BN9PR03CA0359.namprd03.prod.outlook.com (2603:10b6:408:f6::34)
+ by MN2PR12MB3837.namprd12.prod.outlook.com (2603:10b6:208:166::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Wed, 19 May
+ 2021 11:04:59 +0000
+Received: from BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f6:cafe::94) by BN9PR03CA0359.outlook.office365.com
+ (2603:10b6:408:f6::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
+ Transport; Wed, 19 May 2021 11:04:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT048.mail.protection.outlook.com (10.13.177.117) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Wed, 19 May 2021 11:04:58 +0000
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
+ 2021 11:04:55 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <bskeggs@redhat.com>,
+        <akpm@linux-foundation.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
+        <jglisse@redhat.com>, <hch@infradead.org>, <daniel@ffwll.ch>,
+        <willy@infradead.org>, <bsingharora@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
+Date:   Wed, 19 May 2021 21:04:53 +1000
+Message-ID: <2235357.HsqDk0zIjc@nvdebian>
+In-Reply-To: <YKRRgZmRMdk1vH7A@t490s>
+References: <20210407084238.20443-1-apopple@nvidia.com> <20210518230327.GG1002214@nvidia.com> <YKRRgZmRMdk1vH7A@t490s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506094116.638527-4-mkorpershoek@baylibre.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2b0ef9d4-36e6-4232-7f63-08d91ab5f159
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3837:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB38377842BCD32C537E6DB787DF2B9@MN2PR12MB3837.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kwWuasoXuvWV5NQQVV1oO3hXN0nr0wukMkaxIDB3VyVPC/Ai12Xpx8i5sfyrViXXd6z98upa2pptC69wnyTTJvjT91IBO+rNw/fcM6G2j33IU18j3jYMAFWrADy/fwinsq+A1lMGH2v9gnLHAVfx9wr1DM2CLidZwoWZiWP0hZHOxFK3dV7hPoBndfATVWX+1wOHvd41//p/Rx76EyPyYzURPyuLhjN7539IJ7OQr/6RftmmwnoEmJIYH3na/v8jRGaynx0YECBcAYC4DvK0PBeH0WdKL+u4FzT9c8Ey6hnBfgnNMCqNBX7Nzla97dmXSREiqZNaN4msHEGPtkUqdTyzCwS4l8jb0GausK3Qg5NpB5qPmDpWLIfVJinkydOE80bYu0omH5ezCiNOPHmtX4S5vDSgeuKkCYJoaiLETzR3khGqXcKie3Iop1smQt0DyMk93ieH+75RG29Wknq7RyoTgiBsP9JjyVdLGK9pzWNWZ9Eqs031gdMPuY1mrchwQG2ffLqgwPd+DL9SFUCpC3SKek2X81E7c0YnYEUNSCuwdQKoK1yNoelpMNeaf6UtdXY3u/JOFJYDhoui/wSoa0FyRgY8seVY5kSw+yJJL94sYwwFbfdjG4mkYxDiRcYWYxT+51NQKDtvOIz41NVWEqQlo+SZYr0Rr9IB+XGyLyn9jIkPisdsE9fAjKM9r2U0
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(36840700001)(46966006)(6916009)(70206006)(70586007)(9686003)(7636003)(2906002)(7416002)(83380400001)(36860700001)(8936002)(26005)(186003)(356005)(16526019)(47076005)(82310400003)(336012)(33716001)(478600001)(8676002)(86362001)(4326008)(9576002)(426003)(316002)(36906005)(5660300002)(82740400003)(54906003)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 11:04:58.8403
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b0ef9d4-36e6-4232-7f63-08d91ab5f159
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3837
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 06 May 2021, Mattijs Korpershoek wrote:
-
-> Add compatible strings and interrupts for pmic keys
-> which serves as child device of MFD.
+On Wednesday, 19 May 2021 9:45:05 AM AEST Peter Xu wrote:
+> External email: Use caution opening links or attachments
 > 
-> MT6358 has two interrupts per key: one for press, another one for
-> release (_R)
+> On Tue, May 18, 2021 at 08:03:27PM -0300, Jason Gunthorpe wrote:
+> > Logically during fork all these device exclusive pages should be
+> > reverted back to their CPU pages, write protected and the CPU page PTE
+> > copied to the fork.
+> > 
+> > We should not copy the device exclusive page PTE to the fork. I think
+> > I pointed to this on an earlier rev..
 > 
-> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-> ---
->  drivers/mfd/mt6397-core.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> Agreed.  Though please see the question I posted in the other thread: now I
+> am not very sure whether we'll be able to mark a page as device exclusive
+> if that page has mapcount>1.
+>
+> > We can optimize this into the various variants above, but logically
+> > device exclusive stop existing during fork.
+> 
+> Makes sense, I think that's indeed what this patch did at least for the COW
+> case, so I think Alistair did address that comment.  It's just that I think
+> we need to drop the other !COW case (imho that should correspond to the
+> changes in copy_nonpresent_pte()) in this patch to guarantee it.
 
-Applied, thanks.
+Right. The main change from v7 -> v8 was to remove device exclusive entries on 
+fork instead of copying them. The change in copy_nonpresent_pte() is for the
+!COW case. I think what you are getting at is given exclusive entries are 
+(currently) only supported for PageAnon pages is_cow_mapping() will always be 
+true and therefore the change to copy_nonpresent_pte() can be dropped. That 
+logic seems reasonable so I will change the exclusive case in 
+copy_nonpresent_pte() to a VM_WARN_ON.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> I also hope we don't make copy_pte_range() even more complicated just to do
+> the lock_page() right, so we could fail the fork() if the lock is hard to
+> take.
+
+Failing fork() because we couldn't take a lock doesn't seem like the right 
+approach though, especially as there is already existing code that retries. I 
+get this adds complexity though, so would be happy to take a look at cleaning 
+copy_pte_range() up in future.
+
+> --
+> Peter Xu
+
+
+
+
