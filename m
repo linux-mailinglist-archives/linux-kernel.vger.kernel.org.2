@@ -2,328 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030CB3889AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A893889B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343783AbhESIsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:48:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343696AbhESIsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:48:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 150DA6108D;
-        Wed, 19 May 2021 08:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621414052;
-        bh=2j2hIyUoP74sXthg7WGZh4jxakLphjBmcIcydtC8How=;
-        h=From:To:Cc:Subject:Date:From;
-        b=d4m41YyamzfDM8NpUtzif54Q6EBaNFQ52az2VJ0wdfmGvCA41QIzL2bWLkfimcbtH
-         Q0hcl9DpDE33LMDgc9WaozFTAZpfKvEcyqMKkUlSk+jlhPba8K0OX8yAvkW5jAxq2V
-         V0oEH3/2Moiue+6/QGWSIAy+qAA77NNGBvZ4TDo6ea50Xs5JHTe2s5VGGIH7YtsGGi
-         lzP3DwrAYDOcMiwImhLnt3xjQAvdBxNr/1jniEbsHMlmInLL46Q/jpt6xYG2ZDf8HT
-         s14R8xMGto7Yr8Z6a1HFmIx65k5A8lJHKMGTSXVH2cYypOoolQHV5D1aKq0BjdMK7G
-         eLsB0/RPHHwLQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/mlx5: Take qp type from mlx5_ib_qp
-Date:   Wed, 19 May 2021 11:47:27 +0300
-Message-Id: <b2e16cd65b59cd24fa81c01c7989248da44e58ea.1621413899.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S244206AbhESIuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238703AbhESIuF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:50:05 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39D6C06175F;
+        Wed, 19 May 2021 01:48:46 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id o14-20020a4a384e0000b029020ec48a2358so753219oof.13;
+        Wed, 19 May 2021 01:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FfSUR09C1mHiwJhD3QNYQuarzezJOYlVWsneR6uo6gQ=;
+        b=Jm4Dv6mZdZvRgrowObSeo84niFMzgAfsuB6DzP7V9cHEu7sf9U4BfAsPlqP7hN49aX
+         s+SbN2pfJfyCOLpyIrztipE8q0YpsExXUKldMsaFEfT4zTzmyy199n1fqVJdr/4jvR6s
+         0DqaxSkXRlVbQuIyBuo4c8mMed9fj1V82yIBRoytp61gcALRZBxk3cy67UkFSJ9hzMKd
+         sixgfX5xDIHR9a2Hif2imyyavZmpKlzPOvgKYEloRYJ5BujyF5ZzxmPA6DEw69COZQDX
+         5kQp5Bn29IrbvHEl6RUsUC12TvJ/VEARJ3gLIn/76/CY4mIjtR/zre84vTH/EDN+6nO1
+         2fmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FfSUR09C1mHiwJhD3QNYQuarzezJOYlVWsneR6uo6gQ=;
+        b=QXEOOVak/K2lSI46Rw7rcSxZnPAOsXcpMxz00dUBCYmybGmb/BBQueTCyShjXqbCGk
+         FbaZYP2bp5U/nBXKUwVf6Jl84LjYLfLHbhHIEXm+9a4Qn9Q/MhPWlMN4pxGvL3VeIqdZ
+         M3E1IUx/6/C1RkUSeASK4XxMEQLiZPs6j/r5BWUFuzDN0eDTqOqpWzMAk7c/W4w3ujaf
+         EPEcSF9QU/ewYm2yipFNzVXf53hM/ydsWldou9kXqb8fAg2RBOqjZduGybB+W+q5whab
+         if/i/LDbEbWQZzCM9zNMo2kjjCgdseW0eFgti8jvPpCdoG5/YDAhSWROv4cJ9WGZSg6K
+         L/5Q==
+X-Gm-Message-State: AOAM530EimlUBn21McX8jF8nHgI7rGwOWdohGV8zzeoqjyvFBKlcezTW
+        WD6Wy4wTEToBqLUEJQBOPtP974HHBLkG0IPd2e4=
+X-Google-Smtp-Source: ABdhPJwbehFOzUdzhgvmwhFQguT5fPIJrpKC2NkbqdUm90wAvdYbvDbdEZnp7TCipMhI4QTRIGq/ZMvk8tsPQ7vzTHU=
+X-Received: by 2002:a4a:8311:: with SMTP id f17mr8075257oog.83.1621414126064;
+ Wed, 19 May 2021 01:48:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <6cffd7eebba54ed8acd043d51d212ec1@rohde-schwarz.com>
+ <CAL=kjP0xOQ32xLytyVm9=d+9rnKzV2dW2VJQ6c8MAwTK7rg2Kw@mail.gmail.com> <20210508142947.GB810516@rowland.harvard.edu>
+In-Reply-To: <20210508142947.GB810516@rowland.harvard.edu>
+From:   dave penkler <dpenkler@gmail.com>
+Date:   Wed, 19 May 2021 10:48:29 +0200
+Message-ID: <CAL=kjP1WegRkxuYuKSmvA6rZ1BrC5wE5KvLe0JjjE+wN4up8Xg@mail.gmail.com>
+Subject: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
-
-Change all the places in the mlx5_ib driver to take the
-qp type from the mlx5_ib_qp struct, except the QP initialization
-flow. It will ensure that we check the right QP type also for vendor
-specific QPs.
-
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Followup to 
-https://lore.kernel.org/lkml/6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com
----
- drivers/infiniband/hw/mlx5/cq.c      |  2 +-
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 -
- drivers/infiniband/hw/mlx5/odp.c     |  2 +-
- drivers/infiniband/hw/mlx5/qp.c      | 53 +++++++++++++---------------
- drivers/infiniband/hw/mlx5/wr.c      |  9 +++--
- 5 files changed, 31 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 40f091a523b6..46908a9ab3a9 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -227,7 +227,7 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
- 	wc->dlid_path_bits = cqe->ml_path;
- 	g = (be32_to_cpu(cqe->flags_rqpn) >> 28) & 3;
- 	wc->wc_flags |= g ? IB_WC_GRH : 0;
--	if (unlikely(is_qp1(qp->ibqp.qp_type))) {
-+	if (is_qp1(qp->type)) {
- 		u16 pkey = be32_to_cpu(cqe->pkey) & 0xffff;
- 
- 		ib_find_cached_pkey(&dev->ib_dev, qp->port, pkey,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index bbfed67e6fc9..1db04775bcb6 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -512,7 +512,6 @@ struct mlx5_ib_qp {
- 	/*
- 	 * IB/core doesn't store low-level QP types, so
- 	 * store both MLX and IBTA types in the field below.
--	 * IB_QPT_DRIVER will be break to DCI/DCT subtypes.
- 	 */
- 	enum ib_qp_type		type;
- 	/* A flag to indicate if there's a new counter is configured
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 87fa0b21d28f..3b5ab0051ea1 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -1096,7 +1096,7 @@ static int mlx5_ib_mr_initiator_pfault_handler(
- 	opcode = be32_to_cpu(ctrl->opmod_idx_opcode) &
- 		 MLX5_WQE_CTRL_OPCODE_MASK;
- 
--	if (qp->ibqp.qp_type == IB_QPT_XRC_INI)
-+	if (qp->type == IB_QPT_XRC_INI)
- 		*wqe += sizeof(struct mlx5_wqe_xrc_seg);
- 
- 	if (qp->type == IB_QPT_UD || qp->type == MLX5_IB_QPT_DCI) {
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index becd250388af..af2d717ce5f2 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -3251,7 +3251,7 @@ int mlx5_ib_destroy_qp(struct ib_qp *qp, struct ib_udata *udata)
- 	struct mlx5_ib_dev *dev = to_mdev(qp->device);
- 	struct mlx5_ib_qp *mqp = to_mqp(qp);
- 
--	if (unlikely(qp->qp_type == IB_QPT_GSI))
-+	if (mqp->type == IB_QPT_GSI)
- 		return mlx5_ib_destroy_gsi(mqp);
- 
- 	if (mqp->type == MLX5_IB_QPT_DCT)
-@@ -3290,7 +3290,7 @@ static int set_qpc_atomic_flags(struct mlx5_ib_qp *qp,
- 	if (access_flags & IB_ACCESS_REMOTE_ATOMIC) {
- 		int atomic_mode;
- 
--		atomic_mode = get_atomic_mode(dev, qp->ibqp.qp_type);
-+		atomic_mode = get_atomic_mode(dev, qp->type);
- 		if (atomic_mode < 0)
- 			return -EOPNOTSUPP;
- 
-@@ -3462,10 +3462,10 @@ static int mlx5_set_path(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 
- 		ether_addr_copy(MLX5_ADDR_OF(ads, path, rmac_47_32),
- 				ah->roce.dmac);
--		if ((qp->ibqp.qp_type == IB_QPT_RC ||
--		     qp->ibqp.qp_type == IB_QPT_UC ||
--		     qp->ibqp.qp_type == IB_QPT_XRC_INI ||
--		     qp->ibqp.qp_type == IB_QPT_XRC_TGT) &&
-+		if ((qp->type == IB_QPT_RC ||
-+		     qp->type == IB_QPT_UC ||
-+		     qp->type == IB_QPT_XRC_INI ||
-+		     qp->type == IB_QPT_XRC_TGT) &&
- 		    (grh->sgid_attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP) &&
- 		    (attr_mask & IB_QP_DEST_QPN))
- 			mlx5_set_path_udp_sport(path, ah,
-@@ -3504,7 +3504,7 @@ static int mlx5_set_path(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 		MLX5_SET(ads, path, ack_timeout,
- 			 alt ? attr->alt_timeout : attr->timeout);
- 
--	if ((qp->ibqp.qp_type == IB_QPT_RAW_PACKET) && qp->sq.wqe_cnt)
-+	if ((qp->type == IB_QPT_RAW_PACKET) && qp->sq.wqe_cnt)
- 		return modify_raw_packet_eth_prio(dev->mdev,
- 						  &qp->raw_packet_qp.sq,
- 						  sl & 0xf, qp->ibqp.pd);
-@@ -4084,12 +4084,12 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 	    MLX5_CAP_GEN(dev->mdev, init2_lag_tx_port_affinity))
- 		optpar |= MLX5_QP_OPTPAR_LAG_TX_AFF;
- 
--	if (is_sqp(ibqp->qp_type)) {
-+	if (is_sqp(qp->type)) {
- 		MLX5_SET(qpc, qpc, mtu, IB_MTU_256);
- 		MLX5_SET(qpc, qpc, log_msg_max, 8);
--	} else if ((ibqp->qp_type == IB_QPT_UD &&
-+	} else if ((qp->type == IB_QPT_UD &&
- 		    !(qp->flags & IB_QP_CREATE_SOURCE_QPN)) ||
--		   ibqp->qp_type == MLX5_IB_QPT_REG_UMR) {
-+		   qp->type == MLX5_IB_QPT_REG_UMR) {
- 		MLX5_SET(qpc, qpc, mtu, IB_MTU_4096);
- 		MLX5_SET(qpc, qpc, log_msg_max, 12);
- 	} else if (attr_mask & IB_QP_PATH_MTU) {
-@@ -4115,7 +4115,7 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 
- 	/* todo implement counter_index functionality */
- 
--	if (is_sqp(ibqp->qp_type))
-+	if (is_sqp(qp->type))
- 		MLX5_SET(ads, pri_path, vhca_port_num, qp->port);
- 
- 	if (attr_mask & IB_QP_PORT)
-@@ -4143,7 +4143,7 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 			goto out;
- 	}
- 
--	get_cqs(qp->ibqp.qp_type, qp->ibqp.send_cq, qp->ibqp.recv_cq,
-+	get_cqs(qp->type, qp->ibqp.send_cq, qp->ibqp.recv_cq,
- 		&send_cq, &recv_cq);
- 
- 	MLX5_SET(qpc, qpc, pd, pd ? pd->pdn : to_mpd(dev->devr.p0)->pdn);
-@@ -4222,7 +4222,7 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 	optpar |= ib_mask_to_mlx5_opt(attr_mask);
- 	optpar &= opt_mask[mlx5_cur][mlx5_new][mlx5_st];
- 
--	if (qp->ibqp.qp_type == IB_QPT_RAW_PACKET ||
-+	if (qp->type == IB_QPT_RAW_PACKET ||
- 	    qp->flags & IB_QP_CREATE_SOURCE_QPN) {
- 		struct mlx5_modify_raw_qp_param raw_qp_param = {};
- 
-@@ -4295,7 +4295,7 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 	 * entries and reinitialize the QP.
- 	 */
- 	if (new_state == IB_QPS_RESET &&
--	    !ibqp->uobject && ibqp->qp_type != IB_QPT_XRC_TGT) {
-+	    !ibqp->uobject && qp->type != IB_QPT_XRC_TGT) {
- 		mlx5_ib_cq_clean(recv_cq, base->mqp.qpn,
- 				 ibqp->srq ? to_msrq(ibqp->srq) : NULL);
- 		if (send_cq != recv_cq)
-@@ -4488,13 +4488,12 @@ static int mlx5_ib_modify_dct(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- }
- 
- static bool mlx5_ib_modify_qp_allowed(struct mlx5_ib_dev *dev,
--				      struct mlx5_ib_qp *qp,
--				      enum ib_qp_type qp_type)
-+				      struct mlx5_ib_qp *qp)
- {
- 	if (dev->profile != &raw_eth_profile)
- 		return true;
- 
--	if (qp_type == IB_QPT_RAW_PACKET || qp_type == MLX5_IB_QPT_REG_UMR)
-+	if (qp->type == IB_QPT_RAW_PACKET || qp->type == MLX5_IB_QPT_REG_UMR)
- 		return true;
- 
- 	/* Internal QP used for wc testing, with NOPs in wq */
-@@ -4515,7 +4514,7 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	enum ib_qp_state cur_state, new_state;
- 	int err = -EINVAL;
- 
--	if (!mlx5_ib_modify_qp_allowed(dev, qp, ibqp->qp_type))
-+	if (!mlx5_ib_modify_qp_allowed(dev, qp))
- 		return -EOPNOTSUPP;
- 
- 	if (attr_mask & ~(IB_QP_ATTR_STANDARD_BITS | IB_QP_RATE_LIMIT))
-@@ -4544,11 +4543,10 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 
- 	}
- 
--	if (unlikely(ibqp->qp_type == IB_QPT_GSI))
-+	if (qp->type == IB_QPT_GSI)
- 		return mlx5_ib_gsi_modify_qp(ibqp, attr, attr_mask);
- 
--	qp_type = (unlikely(ibqp->qp_type == MLX5_IB_QPT_HW_GSI)) ? IB_QPT_GSI :
--								    qp->type;
-+	qp_type = (qp->type == MLX5_IB_QPT_HW_GSI) ? IB_QPT_GSI : qp->type;
- 
- 	if (qp_type == MLX5_IB_QPT_DCT)
- 		return mlx5_ib_modify_dct(ibqp, attr, attr_mask, &ucmd, udata);
-@@ -4569,7 +4567,7 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		   !ib_modify_qp_is_ok(cur_state, new_state, qp_type,
- 				       attr_mask)) {
- 		mlx5_ib_dbg(dev, "invalid QP state transition from %d to %d, qp_type %d, attr_mask 0x%x\n",
--			    cur_state, new_state, ibqp->qp_type, attr_mask);
-+			    cur_state, new_state, qp->type, attr_mask);
- 		goto out;
- 	} else if (qp_type == MLX5_IB_QPT_DCI &&
- 		   !modify_dci_qp_is_ok(cur_state, new_state, attr_mask)) {
-@@ -4842,9 +4840,8 @@ static int query_qp_attr(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 	pri_path = MLX5_ADDR_OF(qpc, qpc, primary_address_path);
- 	alt_path = MLX5_ADDR_OF(qpc, qpc, secondary_address_path);
- 
--	if (qp->ibqp.qp_type == IB_QPT_RC || qp->ibqp.qp_type == IB_QPT_UC ||
--	    qp->ibqp.qp_type == IB_QPT_XRC_INI ||
--	    qp->ibqp.qp_type == IB_QPT_XRC_TGT) {
-+	if (qp->type == IB_QPT_RC || qp->type == IB_QPT_UC ||
-+	    qp->type == IB_QPT_XRC_INI || qp->type == IB_QPT_XRC_TGT) {
- 		to_rdma_ah_attr(dev, &qp_attr->ah_attr, pri_path);
- 		to_rdma_ah_attr(dev, &qp_attr->alt_ah_attr, alt_path);
- 		qp_attr->alt_pkey_index = MLX5_GET(ads, alt_path, pkey_index);
-@@ -4937,7 +4934,7 @@ int mlx5_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 	if (ibqp->rwq_ind_tbl)
- 		return -ENOSYS;
- 
--	if (unlikely(ibqp->qp_type == IB_QPT_GSI))
-+	if (qp->type == IB_QPT_GSI)
- 		return mlx5_ib_gsi_query_qp(ibqp, qp_attr, qp_attr_mask,
- 					    qp_init_attr);
- 
-@@ -4951,7 +4948,7 @@ int mlx5_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 
- 	mutex_lock(&qp->mutex);
- 
--	if (qp->ibqp.qp_type == IB_QPT_RAW_PACKET ||
-+	if (qp->type == IB_QPT_RAW_PACKET ||
- 	    qp->flags & IB_QP_CREATE_SOURCE_QPN) {
- 		err = query_raw_packet_qp_state(dev, qp, &raw_packet_qp_state);
- 		if (err)
-@@ -4978,7 +4975,7 @@ int mlx5_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 		qp_attr->cap.max_send_sge = 0;
- 	}
- 
--	qp_init_attr->qp_type = ibqp->qp_type;
-+	qp_init_attr->qp_type = qp->type;
- 	qp_init_attr->recv_cq = ibqp->recv_cq;
- 	qp_init_attr->send_cq = ibqp->send_cq;
- 	qp_init_attr->srq = ibqp->srq;
-diff --git a/drivers/infiniband/hw/mlx5/wr.c b/drivers/infiniband/hw/mlx5/wr.c
-index 34d8d59bbff1..8ea4532c2ed1 100644
---- a/drivers/infiniband/hw/mlx5/wr.c
-+++ b/drivers/infiniband/hw/mlx5/wr.c
-@@ -1312,7 +1312,7 @@ int mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	struct mlx5_wqe_ctrl_seg *ctrl = NULL;  /* compiler warning */
- 	struct mlx5_ib_dev *dev = to_mdev(ibqp->device);
- 	struct mlx5_core_dev *mdev = dev->mdev;
--	struct mlx5_ib_qp *qp;
-+	struct mlx5_ib_qp *qp = to_mqp(ibqp);
- 	struct mlx5_wqe_xrc_seg *xrc;
- 	struct mlx5_bf *bf;
- 	void *cur_edge;
-@@ -1333,10 +1333,9 @@ int mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 		return -EIO;
- 	}
- 
--	if (unlikely(ibqp->qp_type == IB_QPT_GSI))
-+	if (qp->type == IB_QPT_GSI)
- 		return mlx5_ib_gsi_post_send(ibqp, wr, bad_wr);
- 
--	qp = to_mqp(ibqp);
- 	bf = &qp->bf;
- 
- 	spin_lock_irqsave(&qp->sq.lock, flags);
-@@ -1381,7 +1380,7 @@ int mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 			}
- 		}
- 
--		switch (ibqp->qp_type) {
-+		switch (qp->type) {
- 		case IB_QPT_XRC_INI:
- 			xrc = seg;
- 			seg += sizeof(*xrc);
-@@ -1510,7 +1509,7 @@ int mlx5_ib_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
- 		return -EIO;
- 	}
- 
--	if (unlikely(ibqp->qp_type == IB_QPT_GSI))
-+	if (qp->type == IB_QPT_GSI)
- 		return mlx5_ib_gsi_post_recv(ibqp, wr, bad_wr);
- 
- 	spin_lock_irqsave(&qp->rq.lock, flags);
--- 
-2.31.1
-
+On Sat, 8 May 2021 at 16:29, Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Sat, May 08, 2021 at 10:14:41AM +0200, dave penkler wrote:
+> > On Thu, 6 May 2021 at 22:31, Guido Kiener
+> > <Guido.Kiener@rohde-schwarz.com> wrote:
+> > >
+> > > > -----Original Message-----
+> > > > From: Alan Stern
+> > > > Sent: Thursday, May 6, 2021 8:32 PM
+> > > > To: Kiener Guido 14DS1
+> > > >
+> > > > On Thu, May 06, 2021 at 05:44:55PM +0000, Guido Kiener wrote:
+> > > > > > -----Original Message-----
+> > > > > > From: Alan Stern
+> > > > > > Sent: Thursday, May 6, 2021 3:49 PM
+> > > > > > To: Kiener Guido 14DS1 <Guido.Kiener@rohde-schwarz.com>
+> > > > > > >
+> > > > > > > Thanks for your assessment. I agree with the general feeling. I
+> > > > > > > counted about hundred specific usb drivers, so wouldn't it be
+> > > > > > > better to fix the
+> > > > > > problem in some of the host drivers (e.g. urb.c)?
+> > > > > > > We could return an error when calling usb_submit_urb() on an erroneous
+> > > > pipe.
+> > > > > > > I cannot estimate the side effects and we need to check all
+> > > > > > > drivers again how they deal with the error situation. Maybe there
+> > > > > > > are some special driver
+> > > > > > that need a specialized error handling.
+> > > > > > > In this case these drivers could reset the (new?) error flag to
+> > > > > > > allow calling usb_submit_urb() again without error. This could work, isn't it?
+> > > > > >
+> > > > > > That is feasible, although it would be an awkward approach.  As you
+> > > > > > said, the side effects aren't clear.  But it might work.
+> > > > >
+> > > > > Otherwise I see only the other approach to change hundred drivers and
+> > > > > add the cases EPROTO, EILSEQ and ETIME in each callback handler. The
+> > > > > usbtmc driver already respects the EILSEQ and ETIME, and only EPROTO is
+> > > > missing.
+> > > > > The rest should be more a management task.
+> > > > > BTW do you assume it is only a problem for INT pipes or is it also a
+> > > > > problem for isochronous and bulk transfers?
+> > > >
+> > > > All of them.  Control too.
+> > > >
+> > > > > > Will you be able to test patches?
+> > > > >
+> > > > > I only can test the USBTMC function in some different PCs. I do not
+> > > > > have automated regression tests for USB drivers or Linux kernels.
+> > > > > Maybe there is company who could do that.
+> > > >
+> > > > Well then, if I do find time to write a patch, I'll ask you to try it out with the usbtmc
+> > > > driver.
+> > >
+> > > You mean that you will do a patch in urb.c or a host driver? Or just add a line in usbtmc.c?
+> > > Anyhow there is no hurry. On May 20 I will send you a mail if I'm able to
+> > > provoke one of these hardware errors EPROTO, EILSQ, or ETIME. Otherwise
+> > > it doesn't make sense to test it.
+> > >
+> > > -Guido
+> >
+> > EPROTO is a link level issue and needs to be handled by the host driver.
+>
+> Are you referring to the host controller driver, or to the class device
+> driver running on the host?  The host controller driver is responsible
+> for creating the -EPROTO error code in the first place.  The class
+> device driver is responsible for taking an appropriate action in
+> response.
+host controller driver
+>
+> > When the host driver detects a protocol error while processing an URB
+> > it completes the URB with EPROTO status and marks the endpoint as
+> > halted.
+>
+> Not true.  It does not mark the endpoint as halted, not unless it
+> receives a STALL handshake from the device.  A STALL is not a protocol
+> error.
+>
+> > When the class driver resubmits the URB and the if the host driver
+> > finds the endpoint still marked as halted it should return EPIPE
+> > status on the resubmitted URB
+>
+> Irrelevant.
+Not at all. The point is that when an application is talking to an
+instrument over the usbtmc driver, the underlying host controller and
+its driver will detect and silence a babbling endpoint.
+Hence no EPROTO loop will ensue in this case and therefore no changes
+are needed in usbtmc.
+>
+> > When the class driver and usbtmc in particular receives an URB with
+> > EPIPE status it cleans up and does not resubmit.
+> > Can someone from syzbot land please confirm whether usbtmc running on
+> > the xhci host driver causes an RCU stall to be detected ?
+>
+> That is not an easy thing to test, and syzbot is not capable of testing
+> it.  You would need a USB device which could deliberately be set to
+> create a protocol error; I don't know of any devices like that.
+>
+> Alan Stern
