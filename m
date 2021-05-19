@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0149538923A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40045389243
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhESPJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:09:49 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48209 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231361AbhESPJr (ORCPT
+        id S233105AbhESPLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230494AbhESPLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:09:47 -0400
-Received: from callcc.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14JF8Kjh016152
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 11:08:22 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 70A3C420119; Wed, 19 May 2021 11:08:20 -0400 (EDT)
-Date:   Wed, 19 May 2021 11:08:20 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
-Message-ID: <YKUp5BpAwaBREe6d@mit.edu>
-References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
- <YKLXev4cjeRuGRqd@mit.edu>
- <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
- <YKPV6FZWfoUD3bgL@mit.edu>
- <1d43599f-fed1-b37e-a411-2b0f31583991@gmail.com>
+        Wed, 19 May 2021 11:11:48 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B4DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:10:28 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id q5so14400259wrs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=pZTrmzjRk0JsfMU4NJ6gfhJKpkFDNAJqvtFPV6c7aqI=;
+        b=sPbtHp+UyY0QZk3Slfytp2HlLx5k++0LMnr/g/kaaRlHRT625kD3YaS5w2vxJasi6s
+         c3p+6gAW3YGpU3+vzRWDafgfn+rUbUgIDgtOcnFSBpO0YZbIpgx0SZXmxGi4St2tSPMF
+         lQAx3VMVcZapIWxpApznRvFQnbQtdpq/ZaUrva1Z69laBzJkwxYPHxOtduY5dXgr50gp
+         6JMDPnj1ltLmanag9oczTddqe6IInR7gQV4/3O5eWeVZMq2xQq4lmF1lrVqUyJeWM8hQ
+         mJmDVSx1SJTZ851+BDiXZLMTQV0ipWJhnyDZwol3gULGVpnghldw/XlH/y56pLgdyola
+         evCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=pZTrmzjRk0JsfMU4NJ6gfhJKpkFDNAJqvtFPV6c7aqI=;
+        b=gq3kVKXXVUKaf55Oa8LFdhn2sPfeuJJucmd6GAiWa7ntkqfrwGgWIrjwwhr9KQGYfv
+         H0Pggn6bZ9HGGUpJ16dEpq5+CMH65SiQ29q2ljKbLU6zDxjgOc3iC9YQzjegDmjI1EZ3
+         Klqpd3YlMH3PPdPgewZOR8UkHJ4sxNXpiGavS1Nm5uFUfT56J0ga2mJ7yyD+DtA48Tx9
+         pHDPXOvYjZJB2Ry6tKcfTCwEEm2j1vu41dkxgaGqSDRt7JlQC2zRWrU1MCzCjUD84Dq1
+         s+JTLD51lxChsehFS1djKZvKvCwPa7GPrpRoALffHVqSzP+HMjuA04OG1qQ4qmzkvL1u
+         7svQ==
+X-Gm-Message-State: AOAM531SiHNBDUt5aUnFWT33W8Rx02bjsxEZtxE+5XTaFZrNjXanVb7l
+        YUJMER7KYkVX68wqcHRnzUOspA==
+X-Google-Smtp-Source: ABdhPJzuKJrQL7ukPErjV9xAxeYsKK2e9MVgKM+TWHESmAB3zfHQlkZ07BgfBUGY9o+FLk0Oal812Q==
+X-Received: by 2002:a5d:598d:: with SMTP id n13mr15262787wri.38.1621437027253;
+        Wed, 19 May 2021 08:10:27 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id h13sm22758075wml.26.2021.05.19.08.10.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 08:10:26 -0700 (PDT)
+References: <20210517203724.1006254-1-martin.blumenstingl@googlemail.com>
+ <20210517203724.1006254-4-martin.blumenstingl@googlemail.com>
+ <1jo8d81nw3.fsf@starbuckisacylon.baylibre.com>
+ <CAFBinCBREyEp0gj_-ac2OccjSruULPG1m2=L5D7GEA4HoqQqLg@mail.gmail.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-clk@vger.kernel.org, khilman@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RFC v1 3/3] clk: meson: pll: switch to determine_rate
+ for the PLL ops
+In-reply-to: <CAFBinCBREyEp0gj_-ac2OccjSruULPG1m2=L5D7GEA4HoqQqLg@mail.gmail.com>
+Message-ID: <1j1ra2dajh.fsf@starbuckisacylon.baylibre.com>
+Date:   Wed, 19 May 2021 17:10:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d43599f-fed1-b37e-a411-2b0f31583991@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:27:56AM +0800, Wang Jianchao wrote:
-> 
-> We're running ext4 with discard on a nbd device whose backend is storage
-> cluster. The discard can help to free the unused space to storage pool.
-> 
-> And sometimes application delete a lot of data and discard is flooding. 
-> Then we see the jbd2 commit kthread is blocked for a long time. Even
-> move the discard out of jbd2, we still see the write IO of jbd2 log
-> could be blocked. blk-wbt could help to relieve this. Finally the delay
-> is shift to allocation path. But this is better than blocking the page
-> fault path which holds the read mm->mmap_sem.
 
-I'm assuming that the problem is when the application deletes a lot of
-data, the discard flood is causing performance problems on your nbd
-server.  Is that the high level problem that you are trying to solve?
+On Tue 18 May 2021 at 22:17, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
-So if that's the case, I'd suggest a different approach.  First, move
-kmem_cache_free(ext4_free_data_cachep, entry) out of
-ext4_free_data_in_buddy() to its caller, ext4_process_data.  Then if
-discard is enabled, after calling ext4_free_data_in_buddy(), the
-ext4_free_data struct will be detached from rbtree rooted in
-ext4_group_info.bb_free_root, and then we can attach it to a new
-rbtree rooted in ext4_group_info.bb_discard_root.
+> Hi Jerome,
+>
+> On Tue, May 18, 2021 at 9:50 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
+>>
+>>
+>> On Mon 17 May 2021 at 22:37, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+>>
+>> > This increases the maxmium supported frequency on 32-bit systems from
+>> > 2^31 (signed long as used by clk_ops.round_rate, maximum value:
+>> > approx. 2.14GHz) to 2^32 (unsigned long as used by
+>> > clk_ops.determine_rate, maximum value: approx. 4.29GHz).
+>> > On Meson8/8b/8m2 the HDMI PLL and it's OD (post-dividers) are
+>> > capable of running at up to 2.97GHz. So switch the divider
+>> > implementation in clk-regmap to clk_ops.determine_rate to support these
+>> > higher frequencies on 32-bit systems.
+>> >
+>> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>>
+>> Looks good. I see no reason to keep this one as RFC.
+> Great, thanks for checking!
+>
+>> I can take it directly if this is OK with you ?
+> That would be amazing.
+> Obviously no objections from my side :-)
+>
+>
+> Best regards,
+> Martin
 
-This allows the block to be reused as soon the commit is finished
-(allowing for potentially more efficient block allocations), but we
-can now keep track of which blocks would be useful for discarding and
-decouple that from when we release the blocks to be reused.  We can
-now use the pre-existing fstrim kernel thread infrastructure to lock a
-block group, and we can now iterate over the rbtree, and take into
-account which blocks have since become allocated --- since if a block
-has been allocated, there's no need to send a discard for it.
-
-I think this will be more efficient, and will allow us to share more
-of the code for fstrim and the discard-at-runtime model used by "mount
--o discard".  We can also fine-tune how quickly we issue discards; it
-might be that if user has executed "rm -rf" it might actually better
-to wait until the deletes have completed, even if it takes several
-commit intervals, since it might allow us to combine discards if the
-blocks 100-199 and 400-500 are released in one commit, and blocks
-200-399 are released two or three commits later.
-
-Something else I'd urge you to consider is whether it's possible to
-enhance the nbd protocol to add some kind of back-channel notification
-when the shared storage is getting low on space.  In that case, when
-the nbd client code a request from the nbd server indicating, "please
-issue discards if possible", it could either trigger an upcall to
-userspace, which could then issue the fstrim ioctl, which in the case
-where "mount -o discard" is enabled, would accelerate when discards
-took place.
-
-We could then make the fstrim thread normally work on a much slower
-pace, but when there is a signal from the shared storage that space is
-needed, clients could accelerate when they issue discards to free up
-shared space.
-
-Cheers,
-
-						- Ted
-
-P.S.  One other potential thought; if we have established a new
-bb_discard_root rbtree, it *might* actually be beneficial to consider
-using that information in the block allocator.  One of the best way to
-tell an SSD that block is no longer needed is to simply overwrite that
-block.  If we do that, we don't need to send a discard to that block
-any more.
-
-Of course, we still want to keep blocks contiguous since even though
-seeks are free for SSD's, we want to keep large reads contiguous as
-much as possible, and we want to keep the extent tree as compact as
-possible.  But if we have just released a 12k file, and we are writing
-a new 12k file, and don't really care *where* in the block group we
-are writing that file, reusing blocks that had just been freed might
-actually be a good strategy.
-
-That's not something you need to implement in this patch series, but
-it might be an interesting optimization.
+Applied then. Thx
