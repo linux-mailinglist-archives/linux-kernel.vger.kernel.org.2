@@ -2,60 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05B1388B33
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3605A388B36
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347194AbhESJy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:54:57 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52994 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347969AbhESJyt (ORCPT
+        id S1345249AbhESJzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:55:15 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:39693 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245745AbhESJzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:54:49 -0400
-Received: from [222.129.39.165] (helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <aaron.ma@canonical.com>)
-        id 1ljItC-0005Op-D3; Wed, 19 May 2021 09:53:19 +0000
-From:   Aaron Ma <aaron.ma@canonical.com>
-To:     lyude@redhat.com, jani.nikula@intel.com, airlied@linux.ie,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, aaron.ma@canonical.com
-Subject: [PATCH] drm/i915: Force DPCD backlight mode for Samsung 16727 panel
-Date:   Wed, 19 May 2021 17:53:05 +0800
-Message-Id: <20210519095305.47133-1-aaron.ma@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 19 May 2021 05:55:14 -0400
+Received: by mail-oi1-f170.google.com with SMTP id y76so3328460oia.6;
+        Wed, 19 May 2021 02:53:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g+DyMtUq0y9DzdbwtcafdWksxpvx1+4Y3Ho4YYiKmrQ=;
+        b=BFLTb5J+ft6OfKaHc5Y8zfVplKKFKbuYGgnxcGR7AcinhrckJIqzKJ365PTbsOkMju
+         3AEas2m1wlrTfmB6aJgWWx55WiKKDiWQAoryrdGWm5PlH2ocRoYnf5RJMZinvBEIldIx
+         Ato1rWFKitvLQ2KzqOmLe5E78N30ibFJzgTvi33iD5SWUGZ9UpoCzcjbSjZ0E5S36g+W
+         WC6ih7z1atnu63gdHfUO9o08eKEV5jiDUk30Sq3XGhzWjxlSSN0fowMqFYSl5SnZAgOp
+         3Tvf3ZKMNxGMPWDfU2xP/0K8tDnyL7mjtJYU4orbkZom0qDHVc2JSHpNr+LI1wvOeYzb
+         bQug==
+X-Gm-Message-State: AOAM530bTn1DnI4Q4WIFeF5fUYLJn/QD3KrE6zP2fnpmObrvR2ntqfgK
+        WPQuFeqdlEZJnaQ0LAJBw8leOu/T9WClgmL5edE=
+X-Google-Smtp-Source: ABdhPJyj0miVGbThLEUKj90LyKoKmk/mAuEwP6b5nd7j5F0G58MJFxgt9P0Z7DGb0sEswTYPaGoAIOMvkMTH/hNPdxM=
+X-Received: by 2002:aca:4ec5:: with SMTP id c188mr7216076oib.69.1621418034541;
+ Wed, 19 May 2021 02:53:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAJZ5v0iU15F42yGm5etxmMLsDwC=u7p1eT6EoVADnJnV8+S4VA@mail.gmail.com>
+ <20210519030655.2197-1-jhp@endlessos.org>
+In-Reply-To: <20210519030655.2197-1-jhp@endlessos.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 19 May 2021 11:53:43 +0200
+Message-ID: <CAJZ5v0hn6p6_vgb+F1WzLDTB1n-4BchGW4bbY7CS6pswTAc=nA@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: EC: Make more Asus laptops use ECDT _GPE
+To:     Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux@endlessos.org, Chris Chiu <chiu@endlessm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another Samsung OLED panel needs DPCD to get control of backlight.
-Kernel 5.12+ support the backlight via:
-commit: <4a8d79901d5b> ("drm/i915/dp: Enable Intel's HDR backlight interface (only SDR for now)")
-Only make backlight work on lower versions of kernel.
+On Wed, May 19, 2021 at 5:11 AM Jian-Hong Pan <jhp@endlessos.org> wrote:
+>
+> From: Chris Chiu <chris.chiu@canonical.com>
+>
+> More ASUS laptops have the _GPE define in the DSDT table with a
+> different value than the _GPE number in the ECDT.
+>
+> This is causing media keys not working on ASUS X505BA/BP, X542BA/BP
+>
+> Add model info to the quirks list.
+>
+> Signed-off-by: Chris Chiu <chiu@endlessm.com>
 
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3474
-Cc: stable@vger.kernel.org # 5.11-
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
----
- drivers/gpu/drm/drm_dp_helper.c | 1 +
- 1 file changed, 1 insertion(+)
+This has to match the From address.
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 5bd0934004e3..7b91d8a76cd6 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -1960,6 +1960,7 @@ static const struct edid_quirk edid_quirk_list[] = {
- 	{ MFG(0x4d, 0x10), PROD_ID(0xe6, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
- 	{ MFG(0x4c, 0x83), PROD_ID(0x47, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
- 	{ MFG(0x09, 0xe5), PROD_ID(0xde, 0x08), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
-+	{ MFG(0x4c, 0x83), PROD_ID(0x57, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
- };
- 
- #undef MFG
--- 
-2.25.1
+Chris, can the e-mail address in the S-o-b be changed?
 
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> ---
+> v2: Edit the author information with valid email address
+>
+>  drivers/acpi/ec.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+> index 13565629ce0a..e8c5da2b964a 100644
+> --- a/drivers/acpi/ec.c
+> +++ b/drivers/acpi/ec.c
+> @@ -1846,6 +1846,22 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
+>         DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+>         DMI_MATCH(DMI_PRODUCT_NAME, "GL702VMK"),}, NULL},
+>         {
+> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BA", {
+> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> +       DMI_MATCH(DMI_PRODUCT_NAME, "X505BA"),}, NULL},
+> +       {
+> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BP", {
+> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> +       DMI_MATCH(DMI_PRODUCT_NAME, "X505BP"),}, NULL},
+> +       {
+> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BA", {
+> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> +       DMI_MATCH(DMI_PRODUCT_NAME, "X542BA"),}, NULL},
+> +       {
+> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BP", {
+> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> +       DMI_MATCH(DMI_PRODUCT_NAME, "X542BP"),}, NULL},
+> +       {
+>         ec_honor_ecdt_gpe, "ASUS X550VXK", {
+>         DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+>         DMI_MATCH(DMI_PRODUCT_NAME, "X550VXK"),}, NULL},
+> --
+> 2.31.1
+>
