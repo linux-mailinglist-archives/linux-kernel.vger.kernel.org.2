@@ -2,77 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BF03895F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10B33895FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhESS6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 14:58:54 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:47014 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhESS6u (ORCPT
+        id S230196AbhESTBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhESTBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 14:58:50 -0400
-Received: by mail-oi1-f180.google.com with SMTP id x15so14030182oic.13;
-        Wed, 19 May 2021 11:57:29 -0700 (PDT)
+        Wed, 19 May 2021 15:01:19 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4D9C06175F;
+        Wed, 19 May 2021 11:59:58 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id q2so10529963pfh.13;
+        Wed, 19 May 2021 11:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=M073CmbM6OvFOLG+SWp0SNpXEbUxhFfHxxoda72NgXE=;
+        b=Ekc2ScXY1SHvF4H29yTRhgjiTSWV6Cyne34MQrajkIT3p2pu6mu773Qlyr0kpC2NNU
+         P+GJiyNV1K2vRtkjtAhIgI9VHVYmFkAxziAc3YITYD5dCFwhGNrQytvT7wWGVjrLLVt/
+         Z+eGZOsPbQoTabmseviirRgNiL7jb93KoBbw+F8LkLIJVv78TKzBCCrYFTn6M7Wbv/bo
+         0UQmBpP3G5FMrLaiP4lB4mvY0KeluMFddI6VD1W8D7dp8q/8Zp42g/wrvlGw3mxI6q03
+         5p/katWWYvUn05FJWNltsTeqIMenps29TVH4Onz8E4y1A5fSnj1TT7Ka2b9bvOBYDjcG
+         zYkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yw2vBtY21N4yRC0iwxctO/GkBEp9ciC/k8efOzsLdqg=;
-        b=gxjv0NcLQ6jwyzKO8OYz+6SpwkJ1Q1ePFmT900rBidsKHPM2kmI8+BSz+8WCEuta+U
-         r4jHVq3tJY0omIjOfXFHV8lZWz+q1tZHzM+6kTUcL8Qqa0d324w3yikfJNQJHxFFQ3OF
-         ElJC00O7pRMFA7THGt3tz/KZACKNAAuqkhuhPMDtmtkRJSiXdC/02V22t7AoOdWeOe3H
-         N6Vlmcw7J6iJddF17N+N+uRVXjdYus1k8lN0gsJJRZxeIl+IHOsDruQyUr1QcWS9wArx
-         5azU2fDCZXzALn+oEN3oZmuFtZhWAwFhABa72OH2o+0DcUeiajJUkuQP44/cS2gqozJE
-         NxFQ==
-X-Gm-Message-State: AOAM533R9ogQEp99xCoGrO4FTWpQESnyzfER8OT6lSElLr3TsD9p4mUy
-        5r+87WMFRvwF8y0DFT0ZZw==
-X-Google-Smtp-Source: ABdhPJxjtgwDoIGacrl74xC1RxwJzx59AzYCfysoq2ouzuc/SA25XubhO9xhn6KmSWgP8NvlN6PDkg==
-X-Received: by 2002:aca:4dc3:: with SMTP id a186mr644373oib.22.1621450648851;
-        Wed, 19 May 2021 11:57:28 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p127sm98789oig.16.2021.05.19.11.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 11:57:27 -0700 (PDT)
-Received: (nullmailer pid 3453175 invoked by uid 1000);
-        Wed, 19 May 2021 18:57:26 -0000
-Date:   Wed, 19 May 2021 13:57:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Beomho Seo <beomho.seo@samsung.com>, linux-pm@vger.kernel.org,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: power: supply: Add DT schema for
- richtek,rt5033-battery
-Message-ID: <20210519185726.GA3453116@robh.at.kernel.org>
-References: <20210517105113.240379-1-stephan@gerhold.net>
- <20210517105113.240379-2-stephan@gerhold.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=M073CmbM6OvFOLG+SWp0SNpXEbUxhFfHxxoda72NgXE=;
+        b=BsbJr/rM6Oo/8pJ2QMuMyAtmP9Kz5N/EXAfbqRaN54DRaFK8F5zF1Wkc2KK8Hvxs26
+         yU8vrT9GBZmGyw/6FGRMDHRblakWH5SZP+YExTdnd9Ee1j5wyfeP4UHyAzknDmMWNepN
+         WMnHhijYxh4kw5YSzbwB924ro/IRTCx7XN+NKD5usBQqbatT2BGYRi1JFAzTnIgUZY0I
+         EHUrS0So6C/UfdWnp1gH14vYljyjI5XPvq4r8C71z8Q/vXDXvInNZ42TH23xqckR/cML
+         0O1v0C+pvH/WfmaR5tYCpDlU1mnCnRO9spUXGpyJQ6RpVbC5CSBYV8R6ISMdxjxKPIxz
+         HdHA==
+X-Gm-Message-State: AOAM532kBAsNC6l2wuEMFq/te67xj4FRMBkDSRuSOc3duhVyO/YrU2Qt
+        gY235xn1LJSCzcAy4ZiyAsE=
+X-Google-Smtp-Source: ABdhPJyp0yRJO2tDNgGd4CfLo9HXihdjW7DvkJwzlUWA3fY93WK5PBHIJbH2WL1TmMBXCaStbeZwNQ==
+X-Received: by 2002:a65:48c2:: with SMTP id o2mr575344pgs.376.1621450797716;
+        Wed, 19 May 2021 11:59:57 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 63sm140020pfz.26.2021.05.19.11.59.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 11:59:57 -0700 (PDT)
+Subject: Re: [PATCH v7 11/15] dma-direct: Add a new wrapper
+ __dma_direct_free_pages()
+To:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+ <20210518064215.2856977-12-tientzu@chromium.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8c274da9-db90-cb42-c9b2-815ee0c6fca3@gmail.com>
+Date:   Wed, 19 May 2021 11:59:50 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517105113.240379-2-stephan@gerhold.net>
+In-Reply-To: <20210518064215.2856977-12-tientzu@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 12:51:11 +0200, Stephan Gerhold wrote:
-> The RT5033 PMIC provides a simple fuel gauge via I2C.
-> Add a DT schema to describe how to set it up in the device tree.
-> 
-> Note that although RT5033 is a MFD with lots of functionality
-> (also charger, regulator, LEDs, ...) the fuel gauge has a separate
-> I2C bus and is not part of the MFD.
-> 
-> Cc: Beomho Seo <beomho.seo@samsung.com>
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
->  .../power/supply/richtek,rt5033-battery.yaml  | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/richtek,rt5033-battery.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+On 5/17/2021 11:42 PM, Claire Chang wrote:
+> Add a new wrapper __dma_direct_free_pages() that will be useful later
+> for swiotlb_free().
+> 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
