@@ -2,159 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF7F38940C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997D238940F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355388AbhESQqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355366AbhESQqu (ORCPT
+        id S1355407AbhESQsr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 May 2021 12:48:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36727 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231124AbhESQsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:46:50 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF2DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:45:30 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id j75so13653310oih.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n3nslXd1oDD6z2dYKaP2twlQcbfdSGmidNT7OePlUG4=;
-        b=WGm4Ynazm/+VSRaGLZFfQ+wqW8Rr5++iJ695Ek/3bbhik4AClKj5GYpCdUh8UkiHHi
-         eyjurn9ygPiTVsBIPtYAEWjkXkRLc73SeBT2Espv26XwdPbA6X11rm0OPKWcfuDh57zN
-         geAdKtd+ALWfRAw+c6AXdfjJ5AK31jWb2ojc2d418c/jR42A6GmzS9dMbUUM8+Pqn2+C
-         JXOnZeWGZVxzDa10iML0VnB3WvJZBQEi+4qbh+vG4LAent7mib0PQy3b/DPhrbQsXUy1
-         MlIrNYFTTxIuWUjJU6ztDcAXa0KI2hHvyY1U29jz+POWjz8FyWOIqhUyCgbITYX1YI3T
-         VfHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n3nslXd1oDD6z2dYKaP2twlQcbfdSGmidNT7OePlUG4=;
-        b=heDH2TIArvl4FdGAKLLb7xXvSkaShcvm9YAhdQjgXQxW8EiXm4P64FwnwJdCLPJ0aD
-         bdOz3Dtn3zIFajNF78//mJRoPr3kEWYuSLhfUtqCv0MWwlLz+hGvbCypZCJWNckd0H07
-         AZDsvWzDawF0CccCRGXOeXn20Wnbu4qRtoUtT9yNlyWelXsZQmyUdMdTTmwmrzUXMT4k
-         Zo6+wXxMOuTTxfxAvNvQJLEWh+M9rHzn1PJDW5ZovbBIK0+pmC6GkkjH6wVD6GDM2s78
-         rE8hhLFlNPhw/bqR1YvAKR7ckFyv2MHFdWElOFkQm3ANszxsLJuEFokjJMxzDHc39cFC
-         UPzw==
-X-Gm-Message-State: AOAM531Sr6H2cEgFf4/qhSUrvE5PVyqr7RAhUzAArGZk5aXyTazO7hZ2
-        YTKyprXUwNeT408whWoHDCTcYDYb0dpR5DLX0LM=
-X-Google-Smtp-Source: ABdhPJweK6a7acvH1Sgwx5MjDUmmvzL2xv5d173VsMYsXQZDGk/wutf7xjkIJ21vtujBrS/uTGfOCmEdHfxM2IV3/Gs=
-X-Received: by 2002:aca:fc50:: with SMTP id a77mr27090oii.123.1621442729658;
- Wed, 19 May 2021 09:45:29 -0700 (PDT)
+        Wed, 19 May 2021 12:48:41 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1ljPLo-0002HK-NM; Wed, 19 May 2021 16:47:16 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 5F8265FDD5; Wed, 19 May 2021 09:47:14 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 59812A040C;
+        Wed, 19 May 2021 09:47:14 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH 4/4] bond_alb: put all slaves into promisc
+In-reply-to: <20210518210849.1673577-5-jarod@redhat.com>
+References: <20210518210849.1673577-1-jarod@redhat.com> <20210518210849.1673577-5-jarod@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Tue, 18 May 2021 17:08:49 -0400."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-References: <20210519135723.525997-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20210519135723.525997-1-kai.heng.feng@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 19 May 2021 12:45:18 -0400
-Message-ID: <CADnq5_OstgUmLxa4DU2s19m5E1zScKY0Pe=644BvBTp=LAPvJg@mail.gmail.com>
-Subject: Re: [PATCH] vgaarb: Use ACPI HID name to find integrated GPU
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <27877.1621442834.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Wed, 19 May 2021 09:47:14 -0700
+Message-ID: <27878.1621442834@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 9:57 AM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> Commit 3d42f1ddc47a ("vgaarb: Keep adding VGA device in queue") assumes
-> the first device is an integrated GPU. However, on AMD platforms an
-> integrated GPU can have higher PCI device number than a discrete GPU.
->
-> Integrated GPU on ACPI platform generally has _DOD and _DOS method, so
-> use that as predicate to find integrated GPU. If the new strategy
-> doesn't work, fallback to use the first device as boot VGA.
->
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Jarod Wilson <jarod@redhat.com> wrote:
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+>ALB mode bonding can receive on all slaves, so it would seem to make sense
+>that they're all in promisc, unlike other modes that have a primary
+>interface and can only receive on that interface.
 
-Unless there are any other comments, I'll apply it tomorrow.
+	When I first read the subject and this description, I thought
+you meant that all of the alb slaves would be in promisc mode all the
+time, not that enabling promisc on an alb bond would set promisc for all
+slaves (instead of just the primary, the current behavior).
 
-Alex
+	Regardless, since in alb mode the expectation is that all of the
+slaves will be on the same subnet (Ethernet broadcast domain), setting
+all of the bonded interfaces to promisc instead of just one sounds like
+a recipe for duplicate packets, as each would deliver multiple copies of
+all "no longer filtered" traffic.  The bond_should_deliver_exact_match()
+logic will still suppress broadcast and multicast frames to the
+non-primary interface(s), but, e.g., unicast frames flooded to all
+switch ports will be delivered once for each member of the bond.
 
-> ---
->  drivers/gpu/vga/vgaarb.c | 31 ++++++++++++++++++++++++++-----
->  1 file changed, 26 insertions(+), 5 deletions(-)
+	Unless you have a specific use case that this will improve, I
+think this will cause more confusion that it will capture frames that
+would have otherwise been missed.
+
+	-J
+
+>Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+>Cc: Veaceslav Falico <vfalico@gmail.com>
+>Cc: Andy Gospodarek <andy@greyhouse.net>
+>Cc: "David S. Miller" <davem@davemloft.net>
+>Cc: Jakub Kicinski <kuba@kernel.org>
+>Cc: Thomas Davis <tadavis@lbl.gov>
+>Cc: netdev@vger.kernel.org
+>Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>---
+> drivers/net/bonding/bond_main.c | 5 +++--
+> 1 file changed, 3 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/vga/vgaarb.c b/drivers/gpu/vga/vgaarb.c
-> index 5180c5687ee5..949fde433ea2 100644
-> --- a/drivers/gpu/vga/vgaarb.c
-> +++ b/drivers/gpu/vga/vgaarb.c
-> @@ -50,6 +50,7 @@
->  #include <linux/screen_info.h>
->  #include <linux/vt.h>
->  #include <linux/console.h>
-> +#include <linux/acpi.h>
+>diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>index d71e398642fb..93f57ff1c552 100644
+>--- a/drivers/net/bonding/bond_main.c
+>+++ b/drivers/net/bonding/bond_main.c
+>@@ -644,9 +644,10 @@ static int bond_check_dev_link(struct bonding *bond,
+> static int bond_set_promiscuity(struct bonding *bond, int inc)
+> {
+> 	struct list_head *iter;
+>-	int err = 0;
+>+	int mode, err = 0;
+> 
+>-	if (bond_uses_primary(bond)) {
+>+	mode = BOND_MODE(bond);
+>+	if (mode == BOND_MODE_ACTIVEBACKUP || mode == BOND_MODE_TLB) {
+> 		struct slave *curr_active = rtnl_dereference(bond->curr_active_slave);
+> 
+> 		if (curr_active)
+>-- 
+>2.30.2
 >
->  #include <linux/uaccess.h>
->
-> @@ -1450,9 +1451,23 @@ static struct miscdevice vga_arb_device = {
->         MISC_DYNAMIC_MINOR, "vga_arbiter", &vga_arb_device_fops
->  };
->
-> +#if defined(CONFIG_ACPI)
-> +static bool vga_arb_integrated_gpu(struct device *dev)
-> +{
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
-> +
-> +       return adev && !strcmp(acpi_device_hid(adev), ACPI_VIDEO_HID);
-> +}
-> +#else
-> +static bool vga_arb_integrated_gpu(struct device *dev)
-> +{
-> +       return false;
-> +}
-> +#endif
-> +
->  static void __init vga_arb_select_default_device(void)
->  {
-> -       struct pci_dev *pdev;
-> +       struct pci_dev *pdev, *found = NULL;
->         struct vga_device *vgadev;
->
->  #if defined(CONFIG_X86) || defined(CONFIG_IA64)
-> @@ -1505,20 +1520,26 @@ static void __init vga_arb_select_default_device(void)
->  #endif
->
->         if (!vga_default_device()) {
-> -               list_for_each_entry(vgadev, &vga_list, list) {
-> +               list_for_each_entry_reverse(vgadev, &vga_list, list) {
->                         struct device *dev = &vgadev->pdev->dev;
->                         u16 cmd;
->
->                         pdev = vgadev->pdev;
->                         pci_read_config_word(pdev, PCI_COMMAND, &cmd);
->                         if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
-> -                               vgaarb_info(dev, "setting as boot device (VGA legacy resources not available)\n");
-> -                               vga_set_default_device(pdev);
-> -                               break;
-> +                               found = pdev;
-> +                               if (vga_arb_integrated_gpu(dev))
-> +                                       break;
->                         }
->                 }
->         }
->
-> +       if (found) {
-> +               vgaarb_info(&found->dev, "setting as boot device (VGA legacy resources not available)\n");
-> +               vga_set_default_device(found);
-> +               return;
-> +       }
-> +
->         if (!vga_default_device()) {
->                 vgadev = list_first_entry_or_null(&vga_list,
->                                                   struct vga_device, list);
-> --
-> 2.31.1
->
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
