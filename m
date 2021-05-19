@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C865389767
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4969138976A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbhESUFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
+        id S232900AbhESUF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbhESUFQ (ORCPT
+        with ESMTP id S232783AbhESUFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:05:16 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5347AC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:55 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id o6-20020a5b06460000b02905004326697dso19340655ybq.22
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:55 -0700 (PDT)
+        Wed, 19 May 2021 16:05:17 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E13BC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:57 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id u9-20020a05620a4549b02902e956c2a3c8so10626621qkp.20
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=rv0ERumOf71iShog8U1qPBT9mGKIDAJp7FTVCQRkzEM=;
-        b=fjxm0c3dD1xUMPOH3FFURwgbNiEivz+zKgnGl4/ugh7HjstMXcxQ8bZUAehPznuLnj
-         qEEvM0iUCnDrVQu+uQ/+GW7dj/lQBRbabhpF2qFdGEuQLtdhX04acaoxk9vruMAolv04
-         lsGCLIoatDTljSrzUJBKcwpIhnje354lgZQ5Y9Y3ygPBlORSzKwR2d5MMxNsXJbh930v
-         S4XCWQGhr7VQzFk/cSA0mh/MErqNXrih6lLO+2LsKRXj7QEUyHO/jIN2rjJRjnBhVRdD
-         BFbe5UYtR+RdUnQ7mhaIHyn/nJgRkAbDbWb07xv/RCTZmAAQTG9hLBrFkZ1zHtfLfUuB
-         PDGQ==
+        bh=pxqIK5GbpJxk8YmWf75fUOWsmXD3unOxy6kd0FXK5W0=;
+        b=OF22+AuJmQNe/K+Mxj2Nyykz9DEdysYmqL4MHTbZyk0pc3gP2qQWZsA2w09gz8rOYO
+         LTP7/INkbJXUmYFEtweFanIqC3TaJ/wikdkjMvnG7o6x9vIqmye8gYXYCsjrraJjRi3y
+         lwJ+tgY+0PxeBjJQ+7RMSHYQ3QN4uhsHTG4/AVpfxmUnCJsRXDJu90bMPhXULkG68Te0
+         rpZWQIkpWijBi2hvu6GPWgmv5l5kYElaNOYto3MXmKMPMl0YhxvOUuhnliO59NhDqBFm
+         WfESqDv+PTEWG7eMFHtakXyvb1JV2I67IGW/FI4MjRCel6vdxuf8tjaHlBBMs4UO6ula
+         OgfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=rv0ERumOf71iShog8U1qPBT9mGKIDAJp7FTVCQRkzEM=;
-        b=kqv61RkGf6dUavzWa7tl6PInFYf3BFDmZcCIj8DuI1O1iKlJFZrIiggEdeAcw2Ssqn
-         ELzLHWmnOTE7P2jKMC4GQaq7wPHO4KxD8l4DgIaAg+hW/FKgUjxLigoUbdG9IbjIP/Zr
-         eIPbfrExzcg7S750cggJng3bMJlSYs6/42HJ0y27q67GwHeRfBYbx4npATd+aHAAo8Cj
-         PBUMOZWLN5io3nbLFZbdNhiWEzPfx+POD8XvX97C3MoNd7zNd4droafEPueFWwixRv85
-         +wGf7hcXTmVpt7kKisTOjMNdnyG8R8YlzPUyc34cdFTZW7v9zWxTXHc1/L5/+jLY+rWF
-         N47Q==
-X-Gm-Message-State: AOAM530q0hqprCB5x2uM7k/zW4e81cSVBI0Pu4u1ViYpzBzA6qbOtxpr
-        sZ06AJkxTAQj8/yBVIpKM44jfJyBiCEAaYX4l+BM
-X-Google-Smtp-Source: ABdhPJz5N3/pd5VJqKk4JxdwQ8jx0ixZaias40sAlDAIQl0ygf8hg+6TyhmnevLNUFsls+UpU62lIM4s8NmBtaMAzqZk
+        bh=pxqIK5GbpJxk8YmWf75fUOWsmXD3unOxy6kd0FXK5W0=;
+        b=LNpwqEFV7VhtY/MNNSpAOh4JqFlc6XVIm06O4vo+YL1ta9T4or0OGW9Xm7NZXkB26t
+         HTfYZFtDsPJ89zqq9Mj4htxIWKiYaW7lYfwhbPsMEk7JTyt1ASjCw1yv1Aa+1QNHEz9V
+         +dCUvbeNj0t3k3pX9XqsbUvtgirZoWVJTWfNV/fXxoEnSIYwXSsTleOXerKkBb6BvPUO
+         d1l0+eugzfRQbu3lWBRtq4W/+xsxXvY7cFn4mpIxYefuxd6hkyQUE3io1v3Dale1hO9/
+         Sfmo3QFYQp/T9sX806feSAEcb8tdpplQAmX1HJVBz+9ODEUHLaRE7UrjOT9TJl9ZnMtP
+         aPqA==
+X-Gm-Message-State: AOAM533ZHQbypl2sB+sA7EjaVKNJ2FFE3gOxvOuQR0sGkw9ItvxjpB9T
+        xjI/j21+J+1Lc04M92vmrNMq3Bl1BQD+hl1Z1wiH
+X-Google-Smtp-Source: ABdhPJzqaEXTf/Jpwf88eR4yvVct5tPFpLqO1v8Dd9klagumFJxHeJpveSx8v9yl5oUqcEsQyF/npcsmE/YFrkBBHLOT
 X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:7eb5:10bb:834a:d5ec])
- (user=axelrasmussen job=sendgmr) by 2002:a25:6c85:: with SMTP id
- h127mr1798049ybc.460.1621454634548; Wed, 19 May 2021 13:03:54 -0700 (PDT)
-Date:   Wed, 19 May 2021 13:03:32 -0700
+ (user=axelrasmussen job=sendgmr) by 2002:a05:6214:11a3:: with SMTP id
+ u3mr1487447qvv.6.1621454636342; Wed, 19 May 2021 13:03:56 -0700 (PDT)
+Date:   Wed, 19 May 2021 13:03:33 -0700
 In-Reply-To: <20210519200339.829146-1-axelrasmussen@google.com>
-Message-Id: <20210519200339.829146-4-axelrasmussen@google.com>
+Message-Id: <20210519200339.829146-5-axelrasmussen@google.com>
 Mime-Version: 1.0
 References: <20210519200339.829146-1-axelrasmussen@google.com>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v2 03/10] KVM: selftests: print a message when skipping KVM tests
+Subject: [PATCH v2 04/10] KVM: selftests: compute correct demand paging size
 From:   Axel Rasmussen <axelrasmussen@google.com>
 To:     Aaron Lewis <aaronlewis@google.com>,
         Alexander Graf <graf@amazon.com>,
@@ -74,31 +74,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, if this check failed, we'd just exit quietly with no output.
-This can be confusing, so print out a short message indicating why the
-test is being skipped.
+This is a preparatory commit needed before we can use different kinds of
+backing pages for guest memory.
+
+Previously, we used perf_test_args.host_page_size, which is the host's
+native page size (commonly 4K). For VM_MEM_SRC_ANONYMOUS this turns out
+to be okay, but in a follow-up commit we want to allow using different
+kinds of backing memory.
+
+Take VM_MEM_SRC_ANONYMOUS_HUGETLB for example. Without this change, if
+we used that backing page type, when we issued a UFFDIO_COPY ioctl we'd
+only do so with 4K, rather than the full 2M of a backing hugepage. In
+this case, UFFDIO_COPY returns -EINVAL (__mcopy_atomic_hugetlb checks
+the size).
 
 Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 ---
- tools/testing/selftests/kvm/lib/kvm_util.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/testing/selftests/kvm/demand_paging_test.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index f05ca919cccb..0d6ddee429b9 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -53,8 +53,10 @@ int kvm_check_cap(long cap)
- 	int kvm_fd;
+diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+index 601a1df24dd2..94cf047358d5 100644
+--- a/tools/testing/selftests/kvm/demand_paging_test.c
++++ b/tools/testing/selftests/kvm/demand_paging_test.c
+@@ -40,6 +40,7 @@
  
- 	kvm_fd = open(KVM_DEV_PATH, O_RDONLY);
--	if (kvm_fd < 0)
-+	if (kvm_fd < 0) {
-+		print_skip("KVM not available, errno: %d", errno);
- 		exit(KSFT_SKIP);
-+	}
+ static int nr_vcpus = 1;
+ static uint64_t guest_percpu_mem_size = DEFAULT_PER_VCPU_MEM_SIZE;
++static size_t demand_paging_size;
+ static char *guest_data_prototype;
  
- 	ret = ioctl(kvm_fd, KVM_CHECK_EXTENSION, cap);
- 	TEST_ASSERT(ret != -1, "KVM_CHECK_EXTENSION IOCTL failed,\n"
+ static void *vcpu_worker(void *data)
+@@ -85,7 +86,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+ 
+ 	copy.src = (uint64_t)guest_data_prototype;
+ 	copy.dst = addr;
+-	copy.len = perf_test_args.host_page_size;
++	copy.len = demand_paging_size;
+ 	copy.mode = 0;
+ 
+ 	clock_gettime(CLOCK_MONOTONIC, &start);
+@@ -102,7 +103,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+ 	PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
+ 		       timespec_to_ns(ts_diff));
+ 	PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
+-		       perf_test_args.host_page_size, addr, tid);
++		       demand_paging_size, addr, tid);
+ 
+ 	return 0;
+ }
+@@ -261,10 +262,12 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 
+ 	perf_test_args.wr_fract = 1;
+ 
+-	guest_data_prototype = malloc(perf_test_args.host_page_size);
++	demand_paging_size = get_backing_src_pagesz(VM_MEM_SRC_ANONYMOUS);
++
++	guest_data_prototype = malloc(demand_paging_size);
+ 	TEST_ASSERT(guest_data_prototype,
+ 		    "Failed to allocate buffer for guest data pattern");
+-	memset(guest_data_prototype, 0xAB, perf_test_args.host_page_size);
++	memset(guest_data_prototype, 0xAB, demand_paging_size);
+ 
+ 	vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
+ 	TEST_ASSERT(vcpu_threads, "Memory allocation failed");
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
