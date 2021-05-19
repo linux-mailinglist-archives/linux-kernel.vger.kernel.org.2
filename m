@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC16388B43
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB5A388B46
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345268AbhESKDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 06:03:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:57234 "EHLO foss.arm.com"
+        id S1345999AbhESKDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 06:03:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:20757 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230308AbhESKDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 06:03:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B74F3101E;
-        Wed, 19 May 2021 03:01:39 -0700 (PDT)
-Received: from [10.57.66.179] (unknown [10.57.66.179])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E03A3F719;
-        Wed, 19 May 2021 03:01:38 -0700 (PDT)
-Subject: Re: [RFC PATCH v1 0/2] iommu/arm-smmu-v3: Add some parameter check in
- __arm_smmu_tlb_inv_range()
-To:     Kunkun Jiang <jiangkunkun@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     wanghaibin.wang@huawei.com
-References: <20210519094307.3275-1-jiangkunkun@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c577a7cc-8db3-5802-53cb-985f0c7216b3@arm.com>
-Date:   Wed, 19 May 2021 11:01:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1345656AbhESKDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 06:03:53 -0400
+IronPort-SDR: EcEhhBdAIycZqszdXY11av68P44Nvp+LDdkaBG1UPh5Q4YyvAANnvMQDIbEGhX5NUMWX6lE1tV
+ DpiWAoN9zyoA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="286469051"
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="286469051"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 03:02:05 -0700
+IronPort-SDR: IGMfFdNYII17tU+yMvKunDBi+jWnFs1QssOljd6UdCudBWXlmTvpz/0ImTQDnkMK4sRJjeRM9j
+ Ava2F/I3r+jA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="466908517"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 May 2021 03:02:03 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 45CB3BA; Wed, 19 May 2021 13:02:24 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v1 1/1] usb: typec: wcove: Use LE to CPU conversion when accessing msg->header
+Date:   Wed, 19 May 2021 13:02:12 +0300
+Message-Id: <20210519100212.54630-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210519094307.3275-1-jiangkunkun@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-19 10:43, Kunkun Jiang wrote:
-> Hi all,
-> 
-> This set of patches solves some errors when I tested the SMMU nested mode.
-> 
-> Test scenario description:
-> guest kernel: 4KB translation granule
-> host kernel: 16KB translation granule
-> 
-> errors:
-> 1. encountered an endless loop in __arm_smmu_tlb_inv_range because
-> num_pages is 0
-> 2. encountered CERROR_ILL because the fields of TLB invalidation
-> command are as follow: TG = 2, NUM = 0, SCALE = 0, TTL = 0. The
-> combination is exactly the kind of reserved combination pointed
-> out in the SMMUv3 spec(page 143-144, version D.a)
-> 
-> In my opinion, it is more appropriate to add parameter check in
-> __arm_smmu_tlb_inv_range(), although these problems only appeared
-> when I tested the SMMU nested mode. What do you think?
+Sparse is not happy about strict type handling:
+  .../typec/tcpm/tcpm.c:2720:27: warning: restricted __le16 degrades to integer
+  .../typec/tcpm/tcpm.c:2814:32: warning: restricted __le16 degrades to integer
 
-FWIW I think it would be better to fix the caller to not issue broken 
-commands in the first place. The kernel shouldn't do so for itself (and 
-definitely needs fixing if it ever does), so it sounds like the nesting 
-implementation needs to do a bit more validation of what it's passing 
-through.
+Fix this by converting LE to CPU before use.
 
-Robin.
+Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
+Fixes: 64f7c494a3c0 ("typec: tcpm: Add support for sink PPS related messages")
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> This series include patches as below:
-> Patch 1:
-> - align the invalid range with leaf page size upwards when smmu
-> supports RIL
-> 
-> Patch 2:
-> - add a check to standardize granule size when smmu supports RIL
-> 
-> Kunkun Jiang (2):
->    iommu/arm-smmu-v3: Align invalid range with leaf page size upwards
->      when support RIL
->    iommu/arm-smmu-v3: Standardize granule size when support RIL
-> 
->   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 64133e586c64..8fdfd7f65ad7 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -2717,7 +2717,7 @@ static void tcpm_pd_ext_msg_request(struct tcpm_port *port,
+ 	enum pd_ext_msg_type type = pd_header_type_le(msg->header);
+ 	unsigned int data_size = pd_ext_header_data_size_le(msg->ext_msg.header);
+ 
+-	if (!(msg->ext_msg.header & PD_EXT_HDR_CHUNKED)) {
++	if (!(le16_to_cpu(msg->ext_msg.header) & PD_EXT_HDR_CHUNKED)) {
+ 		tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
+ 		tcpm_log(port, "Unchunked extended messages unsupported");
+ 		return;
+@@ -2811,7 +2811,7 @@ static void tcpm_pd_rx_handler(struct kthread_work *work)
+ 				 "Data role mismatch, initiating error recovery");
+ 			tcpm_set_state(port, ERROR_RECOVERY, 0);
+ 		} else {
+-			if (msg->header & PD_HEADER_EXT_HDR)
++			if (le16_to_cpu(msg->header) & PD_HEADER_EXT_HDR)
+ 				tcpm_pd_ext_msg_request(port, msg);
+ 			else if (cnt)
+ 				tcpm_pd_data_request(port, msg);
+-- 
+2.30.2
+
