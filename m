@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C698388BB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D1C388BEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348049AbhESKba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 06:31:30 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:28582 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232734AbhESKb1 (ORCPT
+        id S239434AbhESKrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 06:47:47 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:35202 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhESKrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 06:31:27 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JAR99p027400;
-        Wed, 19 May 2021 10:30:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=h2fVCr69S9gKgle0Yj99XH1mgSWoBLaIIehoa0eLilo=;
- b=fEakcP7qpPvBvMIDb3tVRQkmtsuYDLsTuVYUqcyi0ijLCLvHkUQOPaMoxSi0I+qVmuY+
- Hsi66OQOtBatHPSi0Vez0SlxnhcUpEq7VreSvN3kv4v4l1EwvwH3oLaKS52nhqQuFzHo
- y19RiZzonb2vpDLlKCkv45x4bxBOEgXaY4L2FhFSQAvvb65tiUIxBE1sAxV5JOK/CHMN
- 9WwScyEFUYCxsTsl7wMH1I2NOc1NWf18QE+w2sWgbkyRgVgoy/+Y+gtTJUNTSTewc9lr
- LxC5qBi7oGlrC+/8FkKbjqvlW8/k9FMixnAKwodc+Utv9Jq1AnX+Vq5DM+eKqu5fIob9 Fw== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38kh0h93br-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 10:30:00 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14JATxuF027820;
-        Wed, 19 May 2021 10:29:59 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38mechrmpq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 10:29:59 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14JATwqt027765;
-        Wed, 19 May 2021 10:29:58 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 38mechrmnv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 10:29:58 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14JATuET025817;
-        Wed, 19 May 2021 10:29:56 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 19 May 2021 10:29:55 +0000
-Date:   Wed, 19 May 2021 13:29:47 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Rajat Asthana <thisisrast7@gmail.com>
-Cc:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
-        elder@kernel.org, gregkh@linuxfoundation.org,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] greybus: audio: Fix sparse warning.
-Message-ID: <20210519102947.GU1955@kadam>
-References: <20210519041624.824757-1-thisisrast7@gmail.com>
+        Wed, 19 May 2021 06:47:45 -0400
+X-Greylist: delayed 561 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 May 2021 06:47:44 EDT
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id 02EA444A024D;
+        Wed, 19 May 2021 12:37:03 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519041624.824757-1-thisisrast7@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: nlZpBf70bATXXpto94niN841qxTKtLt7
-X-Proofpoint-ORIG-GUID: nlZpBf70bATXXpto94niN841qxTKtLt7
+Date:   Wed, 19 May 2021 12:37:02 +0200
+From:   Robin van der Gracht <robin@protonic.nl>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 02/17] dt-bindings: auxdisplay: ht16k33: Document Adafruit
+ segment displays
+Reply-To: robin@protonic.nl
+In-Reply-To: <CAMuHMdXN9bPnEjXJUWszS5iwuVLBHJV7c+jhBU1t1EXnAnFYig@mail.gmail.com>
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-3-geert@linux-m68k.org>
+ <fb42abb0e79a57e2aab123468d95ff7e@protonic.nl>
+ <CAMuHMdXN9bPnEjXJUWszS5iwuVLBHJV7c+jhBU1t1EXnAnFYig@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <a5cf3ba594ab7ba36c1f4d5760796625@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:46:24AM +0530, Rajat Asthana wrote:
-> Enforce int type on SNDRV_CTL_ELEM_IFACE_MIXER to fix sparse warning:
-> > warning: restricted snd_ctl_elem_iface_t degrades to integer
+Hi Rob,
+
+On 2021-05-18 16:35, Geert Uytterhoeven wrote:
+> Hoi Robin,
 > 
-> The iface field in the gb_audio_control struct is of type __u8, but the
-> values stored in it are of type int. So on conversion they are degraded.
-> Adding (__force int) will enforce them not to be degraded.
+> On Tue, Mar 23, 2021 at 10:12 AM robin <robin@protonic.nl> wrote:
+>> On 2021-03-22 15:48, Geert Uytterhoeven wrote:
+>> > The Holtek HT16K33 LED controller is not only used for driving
+>> > dot-matrix displays, but also for driving segment displays.
+>> >
+>> > Document compatible values for the Adafruit 7-segment[1] and
+>> > 14-segment[2] FeatherWing expansion boards with red displays.
+>> > According
+>> > to the schematics, all other Adafruit 7-segment and 14-segment display
+>> > backpack and FeatherWing expansion boards (including bare boards and
+>> > boards fitted with displays) are compatible with these two boards.
+>> > Add a "color" property to support the different color variants.
+>> >
+>> > [1] https://www.adafruit.com/product/3108
+>> > [2] https://www.adafruit.com/product/3130
+>> >
+>> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > 
+>> > --- a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+>> > +++ b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+>> > @@ -14,14 +14,23 @@ allOf:
+>> >
+>> >  properties:
+>> >    compatible:
+>> > -    const: holtek,ht16k33
+>> > +    oneOf:
+>> > +      - items:
+>> > +          - const: adafruit,3108  # 0.56" 4-Digit 7-Segment
+>> > FeatherWing Display (Red)
+>> > +          - const: holtek,ht16k33
+>> > +
+>> > +      - items:
+>> > +          - const: adafruit,3130  # 0.54" Quad Alphanumeric
+>> > FeatherWing Display (Red)
+>> > +          - const: holtek,ht16k33
+>> > +
+>> > +      - const: holtek,ht16k33     # Generic 16*8 LED controller with
+>> > dot-matrix display
+>> >
+>> >    reg:
+>> >      maxItems: 1
+>> >
+>> >    refresh-rate-hz:
+>> >      maxItems: 1
+>> > -    description: Display update interval in Hertz
+>> > +    description: Display update interval in Hertz for dot-matrix
+>> > displays
+>> 
+>> The above should be included in patch 16
+> 
+> I disagree: bindings are independent from the driver implementation.
+> 
+>> >    interrupts:
+>> >      maxItems: 1
+>> > @@ -41,10 +50,17 @@ properties:
+>> >      default: 16
+>> >      description: Initial brightness level
+>> >
+>> > +  color: true
+>> > +    description:
+>> > +      Color of the display.  Use one of the LED_COLOR_ID_* prefixed
+>> > definitions
+>> > +      from the header include/dt-bindings/leds/common.h.  The default
+>> > is red.
+>> > +    minimum: 0
+>> > +    maximum: 9
+>> > +    default: 1
+>> > +
+>> 
+>> The above should be included in patch 17
+> 
+> Same here.
 
-The patch is fine, but the commit message is not very great.  This
-patch doesn't "enforce" anything or affect the compiled code at all,
-it just silences a Sparse warning.  Here is a better commit message.
+My thought was that one without the other makes no sense. But if it's common
+practice to create a separate patch for device tree bindings (it's a 
+patch-set
+after all) than that's fine with me.
 
-  Sparse complains that:
+@Rob what do you think?
 
-    warning: restricted snd_ctl_elem_iface_t degrades to integer
+Best regards,
+Met vriendelijke groet,
 
-  I have looked at this code, and the code is fine as-is.  Normally
-  we would frown on using the __force directive to silence Sparse
-  warnings but in this case it's fine.  Case statements can't be
-  made into __bitwise types.  We also can't change the type of
-  "ctl->iface" either because that is part of the user space API.
-
-  So just add a (__force int) to make the warning go away.
-
-regards,
-dan carpenter
-
+Robin van der Gracht
