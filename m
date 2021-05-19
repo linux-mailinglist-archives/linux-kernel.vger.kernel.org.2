@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2FB3891B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9223891B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354648AbhESOqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354578AbhESOpO (ORCPT
+        id S1354666AbhESOqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:46:09 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:49217 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1354360AbhESOpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:45:14 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71FEC06175F;
-        Wed, 19 May 2021 07:43:51 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 62so6414923wmb.3;
-        Wed, 19 May 2021 07:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=UdIoL7xzUohWDYDq39HuAacSmY9Xlky/Lcw5imKunnY=;
-        b=bypUtzusRqUCDyEnGAbj3+UDU44NgRU0P60ZrFOklJXxCmpVZCt6OkEO8ORifHH2pP
-         URtioI2PehZxglQqyWuuQ4bIrxS0ucR36GyP0sW45x5RlfezyHq5AB5PJc3MLrLQzDqG
-         gTgrRzFdb7QDdcoT2TG/blqK05HCS1XA1xH7ZDaasMVm7PQflm19+NmGaoaWj6G4dATb
-         xcNc9yc1K6iV/BpelMAeltNIANcmNsw4x5t/wJJxBxLpZZ42scBNMwGNnNiPJTh9VcZh
-         C8222SaYtjvyY6v6KcaQgYKG/+958BfkJi+ZvNy8xYqLCjR1TZodq+WBBg18TMsjoZfj
-         befw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=UdIoL7xzUohWDYDq39HuAacSmY9Xlky/Lcw5imKunnY=;
-        b=JSshXJUH1ZXXplTdvWRAsGglFaKMFIsFWm0a6Es+J9xkCOloTMpPGoYRuYWDE6nUO+
-         QzUEoGhbivdpFMQACIjopKzTiOja82hWsQPDwCCTvY7j7VSx4iqTlgmzCMS7Ed5nucBS
-         06mqQaaD1Y7lHF2SkjhrFqs4/QbWHS7iXqlb7O1y+m1mdGDLT8AR8DVfwDdAy/FEUIqZ
-         D/0Xhs2rjA+xS4Ex3QvSQusWQwLQ1HPSu2yHxtJSlQThmOf+yjB7yOQjt3t4WCJNR3Fs
-         dt3O/mLaYyZjJnVfol4OG37iuFLzwsd9Aa/P2If31S2k5PEH2KNWboVSzzC3/VO6yxRU
-         WnQg==
-X-Gm-Message-State: AOAM530HOoiue3OHN1hqnFCVwvhS1yJguww4B/TMTqd6tV4OI7TFSoZ4
-        7oR2cpeFZ+DFyjwZEOvYmZ0pUR5gbiI79Q==
-X-Google-Smtp-Source: ABdhPJz8JXxLywSbYWhIdAWUqpIlaTKfvF0Ksh6Av09VAh2O6BKaKMCurHrfnX9tm+BLxs4KSZTELA==
-X-Received: by 2002:a1c:b384:: with SMTP id c126mr11935026wmf.110.1621435430399;
-        Wed, 19 May 2021 07:43:50 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.197])
-        by smtp.gmail.com with ESMTPSA id y6sm4645735wmy.23.2021.05.19.07.43.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:43:50 -0700 (PDT)
-Date:   Wed, 19 May 2021 16:43:48 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     johannes@sipsolutions.net
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: subscription
-Message-ID: <20210519144347.GB1417@agape.jhs>
+        Wed, 19 May 2021 10:45:17 -0400
+Received: (qmail 1166961 invoked by uid 1000); 19 May 2021 10:43:56 -0400
+Date:   Wed, 19 May 2021 10:43:56 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v10 2/5] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20210519144356.GB1165692@rowland.harvard.edu>
+References: <20210511225223.550762-1-mka@chromium.org>
+ <20210511155152.v10.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <YKPz7a68duMyXU5x@google.com>
+ <20210518194511.GA1137841@rowland.harvard.edu>
+ <YKQ0XxhIWaN37HMr@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <YKQ0XxhIWaN37HMr@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+On Tue, May 18, 2021 at 02:40:47PM -0700, Matthias Kaehlcke wrote:
+> 
+> Could you also have a look at "[4/5] usb: host: xhci-plat:
+> Create platform device for onboard hubs in probe()"
+> (https://lore.kernel.org/patchwork/patch/1425453/)? It's a
+> relatively short patch that creates the platform device for
+> the driver from xhci-plat as you suggested in the v4
+> discussion.
 
-I tried two times to subscribe to linux-wireless, but majordomo
-didn't answered yet. May I try again?
+I'm not the maintainer for xhci-related drivers.
 
-thank you,
+However, there is at least one thing about this patch which looks 
+suspicious: Adding the onboard_hub_dev pointer to struct usb_hcd instead 
+of to struct xhci_plat_priv, where it would make a lot more sense.
 
-fabio
+It's also worth mentioning that this approach won't work at all when the 
+onboard hub is not at the top level (its parent isn't the root hub), or 
+when more than one onboard hubs are connected to the same root hub.
+
+Alan Stern
