@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C54B388D6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D351C388D6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353158AbhESME1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhESMEZ (ORCPT
+        id S1353231AbhESME5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:04:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230226AbhESMEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:04:25 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6627C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:03:05 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id z130so7144925wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=o3LfSzRyhixcXxomWmxdvec6SZ9Wlq6bPaub1d1bIoc=;
-        b=o0XEOaE+eJKuweKUIXOFc43Wyun9W11HQto5KxeOYOw2/+wE0TlSYRlFV3o9m8EkDL
-         tI5lH27HOEMfMBivvEWJ/74LnFz14EUOxb8dJVpmno5Sta01pZpcwSPnJS6FzW814wJI
-         TYCpH1ahGdUuciU83vcn8hPhR9ORRU7zUh+QMj7PYfVcKdVplTv1nBc6ocEop/+mFrYD
-         RrEW/qeY5L2RPQvIJieYImD4tlFSJ6DLUA49OLz9wvhTtK4y6XnTCGQ71bPwNWWJT3K/
-         rmEC3iaJWjgx3crpgM1p170ycoi6b3JFNEYikBwYWj11L2MrnU4TtUqtDSJQLFZ19tUn
-         Nz6w==
+        Wed, 19 May 2021 08:04:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621425807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C2tITqJSuYbvq+jsZJ9sBCe2doWKAdm3TnmWMpGg4/0=;
+        b=X4b+gY5c0RjprC3urjmnxWlhElpP3X2SXanYqYKFW/c/zod/1HWrh4K92tXnOgm75QN94p
+        5AsvlZgKmOlpi372sh4MdCGFd0nyaX/j7pe5f1rtPb71IEKgzyebj9SDV8W2G3ynBNd276
+        L0PyYrR+7NwH675X/Az+w+gLV9OGmY0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-Xr5dsVxRO-i-jBNO_fYMDA-1; Wed, 19 May 2021 08:03:26 -0400
+X-MC-Unique: Xr5dsVxRO-i-jBNO_fYMDA-1
+Received: by mail-wm1-f71.google.com with SMTP id n127-20020a1c27850000b02901717a27c785so1448105wmn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:03:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=o3LfSzRyhixcXxomWmxdvec6SZ9Wlq6bPaub1d1bIoc=;
-        b=WkSkOIbS2Gfe9gZCP01OzTai0uxq7KRqiGlxE3zvGawUN/e7YUBcZ5BtHosKO288DE
-         ciecx+cZuuBYS/jyU/cjO8PAwYt0rqjBkwNMiVTELjWbM5UWL4QtAYT4SmOV0Svqyhvs
-         ZdA230hiN630ii93GqEUw14MuS4muJVGPWNFt4/M0FEw/CkXkbbdzspg23xtmG1XeFTu
-         1TugSGJ7WMBfQzt3Yf5wyDNcmm8/X7uaRJPJvNZVV8zk3J0nM40ZQmNXWu2GoXt3Kfgo
-         HK+SFKEgMCpdLqzO2Gh9YwUjyL2PxM3RtFYex/Xrk6LOAxYNCLXL50qHnqsnncpOAzsU
-         0ASA==
-X-Gm-Message-State: AOAM533Q4kxCAHP23ayfkBi+7h9r2z9cXoeGOJtFHmiNw8V9ndMNF0m7
-        f9OPY31o9MaNfT1yQYPZJmPmAbrDESUDrA==
-X-Google-Smtp-Source: ABdhPJzRBm+0qVXy1+H9YSgyw5QH5IXxt9u1AgZ9HHAfUdmS68Kqg3s2zyHluFrzBTI7LUcJPNJh3g==
-X-Received: by 2002:a7b:cc15:: with SMTP id f21mr10759597wmh.86.1621425784317;
-        Wed, 19 May 2021 05:03:04 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id v12sm23736159wru.73.2021.05.19.05.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 05:03:03 -0700 (PDT)
-Date:   Wed, 19 May 2021 13:03:02 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] mfd: Remove software node conditionally and
- locate at right place
-Message-ID: <20210519120302.GH2403908@dell>
-References: <20210510141552.57045-1-andriy.shevchenko@linux.intel.com>
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=C2tITqJSuYbvq+jsZJ9sBCe2doWKAdm3TnmWMpGg4/0=;
+        b=W0E+kLMhEv4w1H2vxpQOexJPYDBONaCEyJiylA0SBws1p+6HrpfCeiJQoaQVHQrRJq
+         bcZ1IpquNh0D6LaR2S4llAr3wIIgAkFYfK7xmbzWJAvmI2RXTFZTPliu+ofisZ8QiolX
+         urrsbJ+dnBIK5fOHf2s702Bd1s8jF/vW1yI3La35/j76pY6w4YS/1GnfZj4xu4yKZnt4
+         IxP9R8tF8JL+6113WpyRCI/Zuqj2+eog9UtQWffRL1wmY/nzEvFRz4XhNdkasqpcV9N5
+         IrRmFfICD19T8WJwvWAEr0RVVtsiO+p4jiUlwOTLqde3AP8vPYGcV9wFChTWgHoRImp4
+         Jk+Q==
+X-Gm-Message-State: AOAM531PiNxGrdpyh2gRXGWn4ylTypz3LxfoQ7OqSvskYlCATmY1XWFF
+        XKvbzL71elesrcdcH/7VgNGDVpiB6wMI/y+duyjkcD6m9JFZTApna11O6pXzuwgyiixd+rCkssT
+        yagFfgDk9CudW3dMRnNGuotIs
+X-Received: by 2002:a05:600c:218c:: with SMTP id e12mr10837515wme.16.1621425805113;
+        Wed, 19 May 2021 05:03:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUbn7Icj3cLTs0K75jizldDb0dn/E0PcCqSEvXVbxyqNjMn+DSAD0c6hFvb3EV1mBLD2Bw+g==
+X-Received: by 2002:a05:600c:218c:: with SMTP id e12mr10837476wme.16.1621425804863;
+        Wed, 19 May 2021 05:03:24 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6694.dip0.t-ipconnect.de. [91.12.102.148])
+        by smtp.gmail.com with ESMTPSA id w25sm20593966wmk.25.2021.05.19.05.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 05:03:24 -0700 (PDT)
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Muchun Song <songmuchun@bytedance.com>, will@kernel.org,
+        akpm@linux-foundation.org, bodeddub@amazon.com, osalvador@suse.de,
+        mike.kravetz@oracle.com, rientjes@google.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com
+References: <20210518091826.36937-1-songmuchun@bytedance.com>
+ <1b9d008a-7544-cc85-5c2f-532b984eb5b5@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] arm64: mm: hugetlb: add support for free vmemmap pages of
+ HugeTLB
+Message-ID: <88114091-fbb2-340d-b69b-a572fa340265@redhat.com>
+Date:   Wed, 19 May 2021 14:03:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <1b9d008a-7544-cc85-5c2f-532b984eb5b5@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510141552.57045-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021, Andy Shevchenko wrote:
+On 19.05.21 13:45, Anshuman Khandual wrote:
+> 
+> 
+> On 5/18/21 2:48 PM, Muchun Song wrote:
+>> The preparation of supporting freeing vmemmap associated with each
+>> HugeTLB page is ready, so we can support this feature for arm64.
+>>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> ---
+>>   arch/arm64/mm/mmu.c | 5 +++++
+>>   fs/Kconfig          | 2 +-
+>>   2 files changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>> index 5d37e461c41f..967b01ce468d 100644
+>> --- a/arch/arm64/mm/mmu.c
+>> +++ b/arch/arm64/mm/mmu.c
+>> @@ -23,6 +23,7 @@
+>>   #include <linux/mm.h>
+>>   #include <linux/vmalloc.h>
+>>   #include <linux/set_memory.h>
+>> +#include <linux/hugetlb.h>
+>>   
+>>   #include <asm/barrier.h>
+>>   #include <asm/cputype.h>
+>> @@ -1134,6 +1135,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+>>   	pmd_t *pmdp;
+>>   
+>>   	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+>> +
+>> +	if (is_hugetlb_free_vmemmap_enabled() && !altmap)
+>> +		return vmemmap_populate_basepages(start, end, node, altmap);
+> 
+> Not considering the fact that this will force the kernel to have only
+> base page size mapping for vmemmap (unless altmap is also requested)
+> which might reduce the performance, it also enables vmemmap mapping to
+> be teared down or build up at runtime which could potentially collide
+> with other kernel page table walkers like ptdump or memory hotremove
+> operation ! How those possible collisions are protected right now ?
 
-> Currently the software node is removed in error case and at ->remove()
-> stage unconditionally, that ruins the symmetry. Besides, in some cases,
-> when mfd_add_device() fails, the device_remove_software_node() call
-> may lead to NULL pointer dereference:
-> 
->   BUG: kernel NULL pointer dereference, address: 00000000
->   ...
->   EIP: strlen+0x12/0x20
->   ...
->   kernfs_name_hash+0x13/0x70
->   kernfs_find_ns+0x32/0xc0
->   kernfs_remove_by_name_ns+0x2a/0x90
->   sysfs_remove_link+0x16/0x30
->   software_node_notify.cold+0x34/0x6b
->   device_remove_software_node+0x5a/0x90
->   mfd_add_device.cold+0x30a/0x427
-> 
-> Fix all these by guarding device_remove_software_node() with a conditional
-> and locating it at the right place.
-> 
-> Fixes: 42e59982917a ("mfd: core: Add support for software nodes")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/mfd/mfd-core.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+Hi Anshuman,
 
-Applied, thanks.
+Memory hotremove is not an issue IIRC. At the time memory is removed, 
+all huge pages either have been migrated away or dissolved; the vmemmap 
+is stable.
+
+vmemmap access (accessing the memmap via a virtual address) itself is 
+not an issue. Manually walking (vmemmap) page tables might behave 
+differently, not sure if ptdump would require any synchronization.
+
+> 
+> Does not this vmemmap operation increase latency for HugeTLB usage ?
+> Should not this runtime enablement also take into account some other
+> qualifying information apart from potential memory save from struct
+> page areas. Just wondering.
+
+That's one of the reasons why it explicitly has to be enabled by an admin.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+
+David / dhildenb
+
