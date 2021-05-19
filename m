@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC893889DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0F93889D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344189AbhESIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60338 "EHLO mail.kernel.org"
+        id S1344247AbhESIxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:53:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343844AbhESIxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343835AbhESIxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 04:53:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB2261363;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7933B613AF;
         Wed, 19 May 2021 08:51:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621414311;
-        bh=iyFVJg+w8mMo6vTmpXBdqeCrOwgNEUQUAQbzViHwUn8=;
+        bh=NlLcWXrsPCb7tI/gIFVfQEynar9Mia2SzKwequY2ueU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/x5izC2ftKUGYv4TMTGjWcCi/uYYC/QXETZrNy2Zzgqs82kmFxcaZGlUsc+H31T2
-         7e4LGiLA4jDRcLr6Z+hIFvpW1XcKYsrnmdN0ZnSHX8vTK0zCbUeaK5Vi7YKKxmaZ6m
-         tuxti06jhZN4M1lcWzdjdpq+ngV6LGFcDiy6psp8QiuJ5UehfrFjxN6z+PWs/fUKZ9
-         QsjAMaMIo1qrkMk0O8XZfIVn/SwUdqHTzlJO7b72F4lP0/lZ8EWz8UmAVTt5rHUgRM
-         /LDTsqexw0YOrax/lsY2uxzAkA4CyNYE8dQhmKMFBiz9G5j4xxlWFcmrTpW6SDT6HG
-         YxzFpHPda4dzA==
+        b=uQoU5ZGEuvW/WJFlzl/H1AqcEsC+CJn/Y5FvFnponFCCdKqHNzRcE/LVnbnEtyqqg
+         FE5/DfRx+V2LZrW0jPBGWQ3ieqyZyahOC6mT0CWaO0q7YvK4YP/0edcLODl3lM5Cxh
+         cGT09gNfEduYBrSA/ByISUgEqjSg2tJLNIf2sm78eGTuJhIDC7gvsE9CnvsKW40EaL
+         Vy4PtIofTMGxThEHORCHbdHSsRbXY0ONWQUeScFV/VUK/yScSn00++0QDdF7OTez1r
+         3M5CwhNIPv2yNEI1JWWQR3IVAp/pEMseud1a0/931NqEoeTsK1dkZyxtDgvEgIicwW
+         vttZemfc2aT8g==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1ljHvh-007gYQ-Mi; Wed, 19 May 2021 10:51:49 +0200
+        id 1ljHvh-007gYU-O0; Wed, 19 May 2021 10:51:49 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 08/10] docs: ABI: sysfs-class-backlight: unify ambient light zone nodes
-Date:   Wed, 19 May 2021 10:51:45 +0200
-Message-Id: <c13c6ebd03cd04a0d15d89018f8d529918fc0a73.1621413933.git.mchehab+huawei@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 09/10] docs: ABI: sysfs-class-led-trigger-pattern: remove repeat duplication
+Date:   Wed, 19 May 2021 10:51:46 +0200
+Message-Id: <394580bd2e007ffb640f97212973a772ed8f0409.1621413933.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1621413933.git.mchehab+huawei@kernel.org>
 References: <cover.1621413933.git.mchehab+huawei@kernel.org>
@@ -47,262 +47,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./scripts/get_abi.pl is warning about duplicated symbol
-definition:
+As reported by scripts/get_abi.pl:
 
-	Warning: /sys/class/backlight/<backlight>/l1_daylight_max is defined 2 times:  ./Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870:4  ./Documentation/ABI/testing/sysfs-class-backlight-adp8860:12
+	Warning: /sys/class/leds/<led>/repeat is defined 2 times:  Documentation/ABI/testing/sysfs-class-led-driver-el15203000:0  Documentation/ABI/testing/sysfs-class-led-trigger-pattern:28
 
-What happens is that 3 drivers use the same pattern to report
-max and dim setting for different ambient light zones.
-
-It should be noticed that the adp8870 doc was missing an
-entry for l1_daylight_dim, which was fixed on this patch.
-
-While the ambient light zone is device-specific, the sysfs
-definition is actually common. So, unify them at:
-
-	Documentation/ABI/testing/sysfs-class-backlight
-
-and use as the contact point, the e-mail reported by
-get_maintainers.pl for the subsystem.
+The definition for the EL15203000 is just a special case of
+the sysfs led class. So, drop it and mentions the possible
+exception at the class definition.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../ABI/testing/sysfs-class-backlight         | 100 ++++++++++++++++++
- .../ABI/testing/sysfs-class-backlight-adp5520 |  31 ------
- .../ABI/testing/sysfs-class-backlight-adp8860 |  37 -------
- .../sysfs-class-backlight-driver-adp8870      |  32 ------
- 4 files changed, 100 insertions(+), 100 deletions(-)
- delete mode 100644 Documentation/ABI/testing/sysfs-class-backlight-adp5520
- delete mode 100644 Documentation/ABI/testing/sysfs-class-backlight-adp8860
- delete mode 100644 Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870
+ .../ABI/testing/sysfs-class-led-driver-el15203000        | 9 ---------
+ .../ABI/testing/sysfs-class-led-trigger-pattern          | 3 +++
+ 2 files changed, 3 insertions(+), 9 deletions(-)
+ delete mode 100644 Documentation/ABI/testing/sysfs-class-led-driver-el15203000
 
-diff --git a/Documentation/ABI/testing/sysfs-class-backlight b/Documentation/ABI/testing/sysfs-class-backlight
-index 1fc86401bf95..c453646b06e2 100644
---- a/Documentation/ABI/testing/sysfs-class-backlight
-+++ b/Documentation/ABI/testing/sysfs-class-backlight
-@@ -84,3 +84,103 @@ Description:
- 		It can be enabled by writing the value stored in
- 		/sys/class/backlight/<backlight>/max_brightness to
- 		/sys/class/backlight/<backlight>/brightness.
-+
-+What:		/sys/class/backlight/<backlight>/<ambient light zone>_max
-+Date:		Sep, 2009
-+KernelVersion:	v2.6.32
-+Contact:	device-drivers-devel@blackfin.uclinux.org
-+Description:
-+		Control the maximum brightness for <ambient light zone>
-+		on this <backlight>. Values are between 0 and 127. This file
-+		will also show the brightness level stored for this
-+		<ambient light zone>.
-+
-+		The <ambient light zone> is device-driver specific:
-+
-+		For ADP5520 and ADP5501, <ambient light zone> can be:
-+
-+		===========  ================================================
-+		Ambient      sysfs entry
-+		light zone
-+		===========  ================================================
-+		daylight     /sys/class/backlight/<backlight>/daylight_max
-+		office       /sys/class/backlight/<backlight>/office_max
-+		dark         /sys/class/backlight/<backlight>/dark_max
-+		===========  ================================================
-+
-+		For ADP8860, <ambient light zone> can be:
-+
-+		===========  ================================================
-+		Ambient      sysfs entry
-+		light zone
-+		===========  ================================================
-+		l1_daylight  /sys/class/backlight/<backlight>/l1_daylight_max
-+		l2_office    /sys/class/backlight/<backlight>/l2_office_max
-+		l3_dark      /sys/class/backlight/<backlight>/l3_dark_max
-+		===========  ================================================
-+
-+		For ADP8870, <ambient light zone> can be:
-+
-+		===========  ================================================
-+		Ambient      sysfs entry
-+		light zone
-+		===========  ================================================
-+		l1_daylight  /sys/class/backlight/<backlight>/l1_daylight_max
-+		l2_bright    /sys/class/backlight/<backlight>/l2_bright_max
-+		l3_office    /sys/class/backlight/<backlight>/l3_office_max
-+		l4_indoor    /sys/class/backlight/<backlight>/l4_indoor_max
-+		l5_dark      /sys/class/backlight/<backlight>/l5_dark_max
-+		===========  ================================================
-+
-+		See also: /sys/class/backlight/<backlight>/ambient_light_zone.
-+
-+What:		/sys/class/backlight/<backlight>/<ambient light zone>_dim
-+Date:		Sep, 2009
-+KernelVersion:	v2.6.32
-+Contact:	device-drivers-devel@blackfin.uclinux.org
-+Description:
-+		Control the dim brightness for <ambient light zone>
-+		on this <backlight>. Values are between 0 and 127, typically
-+		set to 0. Full off when the backlight is disabled.
-+		This file will also show the dim brightness level stored for
-+		this <ambient light zone>.
-+
-+		The <ambient light zone> is device-driver specific:
-+
-+		For ADP5520 and ADP5501, <ambient light zone> can be:
-+
-+		===========  ================================================
-+		Ambient      sysfs entry
-+		light zone
-+		===========  ================================================
-+		daylight     /sys/class/backlight/<backlight>/daylight_dim
-+		office       /sys/class/backlight/<backlight>/office_dim
-+		dark         /sys/class/backlight/<backlight>/dark_dim
-+		===========  ================================================
-+
-+		For ADP8860, <ambient light zone> can be:
-+
-+		===========  ================================================
-+		Ambient      sysfs entry
-+		light zone
-+		===========  ================================================
-+		l1_daylight  /sys/class/backlight/<backlight>/l1_daylight_dim
-+		l2_office    /sys/class/backlight/<backlight>/l2_office_dim
-+		l3_dark      /sys/class/backlight/<backlight>/l3_dark_dim
-+		===========  ================================================
-+
-+		For ADP8870, <ambient light zone> can be:
-+
-+		===========  ================================================
-+		Ambient      sysfs entry
-+		light zone
-+		===========  ================================================
-+		l1_daylight  /sys/class/backlight/<backlight>/l1_daylight_dim
-+		l2_bright    /sys/class/backlight/<backlight>/l2_bright_dim
-+		l3_office    /sys/class/backlight/<backlight>/l3_office_dim
-+		l4_indoor    /sys/class/backlight/<backlight>/l4_indoor_dim
-+		l5_dark      /sys/class/backlight/<backlight>/l5_dark_dim
-+		===========  ================================================
-+
-+		See also: /sys/class/backlight/<backlight>/ambient_light_zone.
-+
-diff --git a/Documentation/ABI/testing/sysfs-class-backlight-adp5520 b/Documentation/ABI/testing/sysfs-class-backlight-adp5520
+diff --git a/Documentation/ABI/testing/sysfs-class-led-driver-el15203000 b/Documentation/ABI/testing/sysfs-class-led-driver-el15203000
 deleted file mode 100644
-index 34b6ebafa210..000000000000
---- a/Documentation/ABI/testing/sysfs-class-backlight-adp5520
+index 04f3ffdc5936..000000000000
+--- a/Documentation/ABI/testing/sysfs-class-led-driver-el15203000
 +++ /dev/null
-@@ -1,31 +0,0 @@
--sysfs interface for analog devices adp5520(01) backlight driver
-----------------------------------------------------------------
--
--The backlight brightness control operates at three different levels for the
--adp5520 and adp5501 devices: daylight (level 1), office (level 2) and dark
--(level 3). By default the brightness operates at the daylight brightness level.
--
--What:		/sys/class/backlight/<backlight>/daylight_max
--What:		/sys/class/backlight/<backlight>/office_max
--What:		/sys/class/backlight/<backlight>/dark_max
--Date:		Sep, 2009
--KernelVersion:	v2.6.32
--Contact:	Michael Hennerich <michael.hennerich@analog.com>
+@@ -1,9 +0,0 @@
+-What:		/sys/class/leds/<led>/repeat
+-Date:		September 2019
+-KernelVersion:	5.5
 -Description:
--		(RW) Maximum current setting for the backlight when brightness
--		is at one of the three levels (daylight, office or dark). This
--		is an input code between 0 and 127, which is transformed to a
--		value between 0 mA and 30 mA using linear or non-linear
--		algorithms.
+-		EL15203000 supports only indefinitely patterns,
+-		so this file should always store -1.
 -
--What:		/sys/class/backlight/<backlight>/daylight_dim
--What:		/sys/class/backlight/<backlight>/office_dim
--What:		/sys/class/backlight/<backlight>/dark_dim
--Date:		Sep, 2009
--KernelVersion:	v2.6.32
--Contact:	Michael Hennerich <michael.hennerich@analog.com>
--Description:
--		(RW) Dim current setting for the backlight when brightness is at
--		one of the three levels (daylight, office or dark). This is an
--		input code between 0 and 127, which is transformed to a value
--		between 0 mA and 30 mA using linear or non-linear algorithms.
-diff --git a/Documentation/ABI/testing/sysfs-class-backlight-adp8860 b/Documentation/ABI/testing/sysfs-class-backlight-adp8860
-deleted file mode 100644
-index 6610ac73f9ba..000000000000
---- a/Documentation/ABI/testing/sysfs-class-backlight-adp8860
-+++ /dev/null
-@@ -1,37 +0,0 @@
--sysfs interface for analog devices adp8860 backlight driver
-------------------------------------------------------------
--
--The backlight brightness control operates at three different levels for the
--adp8860, adp8861 and adp8863 devices: daylight (level 1), office (level 2) and
--dark (level 3). By default the brightness operates at the daylight brightness
--level.
--
--See also /sys/class/backlight/<backlight>/ambient_light_level and
--/sys/class/backlight/<backlight>/ambient_light_zone.
--
--
--What:		/sys/class/backlight/<backlight>/l1_daylight_max
--What:		/sys/class/backlight/<backlight>/l2_office_max
--What:		/sys/class/backlight/<backlight>/l3_dark_max
--Date:		Apr, 2010
--KernelVersion:	v2.6.35
--Contact:	Michael Hennerich <michael.hennerich@analog.com>
--Description:
--		(RW) Maximum current setting for the backlight when brightness
--		is at one of the three levels (daylight, office or dark). This
--		is an input code between 0 and 127, which is transformed to a
--		value between 0 mA and 30 mA using linear or non-linear
--		algorithms.
--
--
--What:		/sys/class/backlight/<backlight>/l1_daylight_dim
--What:		/sys/class/backlight/<backlight>/l2_office_dim
--What:		/sys/class/backlight/<backlight>/l3_dark_dim
--Date:		Apr, 2010
--KernelVersion:	v2.6.35
--Contact:	Michael Hennerich <michael.hennerich@analog.com>
--Description:
--		(RW) Dim current setting for the backlight when brightness is at
--		one of the three levels (daylight, office or dark). This is an
--		input code between 0 and 127, which is transformed to a value
--		between 0 mA and 30 mA using linear or non-linear algorithms.
-diff --git a/Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870 b/Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870
-deleted file mode 100644
-index b08ca912cad4..000000000000
---- a/Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870
-+++ /dev/null
-@@ -1,32 +0,0 @@
--See also /sys/class/backlight/<backlight>/ambient_light_level and
--/sys/class/backlight/<backlight>/ambient_light_zone.
--
--What:		/sys/class/backlight/<backlight>/<ambient light zone>_max
--What:		/sys/class/backlight/<backlight>/l1_daylight_max
--What:		/sys/class/backlight/<backlight>/l2_bright_max
--What:		/sys/class/backlight/<backlight>/l3_office_max
--What:		/sys/class/backlight/<backlight>/l4_indoor_max
--What:		/sys/class/backlight/<backlight>/l5_dark_max
--Date:		May 2011
--KernelVersion:	3.0
--Contact:	device-drivers-devel@blackfin.uclinux.org
--Description:
--		Control the maximum brightness for <ambient light zone>
--		on this <backlight>. Values are between 0 and 127. This file
--		will also show the brightness level stored for this
--		<ambient light zone>.
--
--What:		/sys/class/backlight/<backlight>/<ambient light zone>_dim
--What:		/sys/class/backlight/<backlight>/l2_bright_dim
--What:		/sys/class/backlight/<backlight>/l3_office_dim
--What:		/sys/class/backlight/<backlight>/l4_indoor_dim
--What:		/sys/class/backlight/<backlight>/l5_dark_dim
--Date:		May 2011
--KernelVersion:	3.0
--Contact:	device-drivers-devel@blackfin.uclinux.org
--Description:
--		Control the dim brightness for <ambient light zone>
--		on this <backlight>. Values are between 0 and 127, typically
--		set to 0. Full off when the backlight is disabled.
--		This file will also show the dim brightness level stored for
--		this <ambient light zone>.
+-		For more info, please see:
+-		Documentation/ABI/testing/sysfs-class-led-trigger-pattern
+diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-pattern b/Documentation/ABI/testing/sysfs-class-led-trigger-pattern
+index d91a07767adf..8c57d2780554 100644
+--- a/Documentation/ABI/testing/sysfs-class-led-trigger-pattern
++++ b/Documentation/ABI/testing/sysfs-class-led-trigger-pattern
+@@ -35,3 +35,6 @@ Description:
+ 
+ 		This file will always return the originally written repeat
+ 		number.
++
++		It should be noticed that some leds, like EL15203000 may
++		only support indefinitely patterns, so they always store -1.
 -- 
 2.31.1
 
