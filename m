@@ -2,189 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C286388A61
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E54388A57
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344809AbhESJUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:20:40 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:23341 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238831AbhESJUe (ORCPT
+        id S1344802AbhESJTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344745AbhESJTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:20:34 -0400
-X-Greylist: delayed 65925 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 May 2021 05:20:34 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1621415951; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=d8q2cM/SdFykPpqlHTcxfc7KAPvnhbZ/7n9GhXKcimSZCzspmUEZu1kn4egWQC/m8G
-    Qe3qmsQcSB/EBCxc+LrzqJAviK/njRIDYTuWAeNXTPVd/a4cfIkgWP9sFRW06ehNM0P1
-    mWuKHmfe4h8KuZSjSNrkfeXaxrxdxjmY93Ta2KUZwXXXCWA7XFjOjstONfaynRUB03jf
-    YDnjbNH+eEM14J5f9cApTczMcQasDrr9P3nb6yk6AsaW5+RW6VKocS5KtYqeKd4oVoJW
-    FLR8BOTu+5r3HXr16WHmJvYCXIn/CT2g+dk8INvnQDo8DD/yrzMlOUgmxX7yCYBMyqGo
-    R2XA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1621415951;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=sJxLXx5SYNVClp7C91+GrkUJKz/Io/2j3rLaghi76M4=;
-    b=kZwtgMQPJbXMJX0xT9tswW6d3+73ZCHK1Q5oypmTUOHIKpEIllTGVnTiyY2CvpOIHG
-    amjt1CZf8JsBdVYOWJYoEEL3+xTc/gduqBjL5PD8jKS6lEhDoTvje+MGePhpWm6plnGm
-    k5ra2Mwltp4iunDm2uFtQ9xy0Hm/W83d6K0otut9LKE4eu5eBzQATXiZ7G5FWYipnC4q
-    wKmSUeC7IFYKT95Dc047XVAnjGSGfKIdfeWLcsv8oYkZA0VIqbcFXbtBIqw02vOWHVBg
-    vbw96Uw7fA2RhvAAvrUgv1JVi0zCmWg1STz/1ulcBIeNZnjUgk+TVgDX95F1o7SgLCXz
-    gKvA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1621415951;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=sJxLXx5SYNVClp7C91+GrkUJKz/Io/2j3rLaghi76M4=;
-    b=EKjNdfJARUCiD2/YPy8X30XZvNp/KuocTjIzI/Y33HKUh5TqWlwV5dwGE9YeGLiz17
-    BICcP8lBQbdrXtj2IkG728NJgknHT6cGyAX+l8iZxh1F+7umUyrdVlgSULME/QPdkrEC
-    8MoxoXGIrKCymQZap/wWXmHJjPfTmRYmGzEukeD7YlW1+FKnYxJkPPbQdTeqgi3YYUky
-    xxhITwlJeFYoP4ShXOMkZ78W20hY4RVCkgQXhbot+SNiREAD0u5DZKpJ0vB5SZHHYB+w
-    tagcZ1Q44SX9mf0p8LZGy6zcBHX/mcv2NUKQDdW8TuT80hThMY3sTNYEKS89DUjq7e/x
-    cAig==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4G6NfHcC"
-X-RZG-CLASS-ID: mo00
-Received: from droid..
-    by smtp.strato.de (RZmta 47.26.1 DYNA|AUTH)
-    with ESMTPSA id z041eax4J9JB5aj
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 19 May 2021 11:19:11 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bongsu Jeon <bongsu.jeon@samsung.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v2 2/2] nfc: s3fwrn5: i2c: Enable optional clock from device tree
-Date:   Wed, 19 May 2021 11:16:13 +0200
-Message-Id: <20210519091613.7343-2-stephan@gerhold.net>
+        Wed, 19 May 2021 05:19:08 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6335C061760;
+        Wed, 19 May 2021 02:17:48 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 5844C3FA28;
+        Wed, 19 May 2021 09:17:45 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Jean Delvare <jdelvare@suse.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>, stable@vger.kernel.org
+Subject: [PATCH v2] i2c: i801: Safely share SMBus with BIOS/ACPI
+Date:   Wed, 19 May 2021 18:17:07 +0900
+Message-Id: <20210519091707.7248-1-marcan@marcan.st>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210519091613.7343-1-stephan@gerhold.net>
-References: <20210519091613.7343-1-stephan@gerhold.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-S3FWRN5 depends on a clock input ("XI" pin) to function properly.
-Depending on the hardware configuration this could be an always-on
-oscillator or some external clock that must be explicitly enabled.
+The i801 controller provides a locking mechanism that the OS is supposed
+to use to safely share the SMBus with ACPI AML or other firmware.
 
-So far we assumed that the clock is always-on.
-Make the driver request an (optional) clock from the device tree
-and make sure the clock is running before starting S3FWRN5.
+Previously, Linux attempted to get out of the way of ACPI AML entirely,
+but left the bus locked if it used it before the first AML access. This
+causes AML implementations that *do* attempt to safely share the bus
+to time out if Linux uses it first; notably, this regressed ACPI video
+backlight controls on 2015 iMacs after 01590f361e started instantiating
+SPD EEPROMs on boot.
 
-Note: S3FWRN5 asserts "GPIO2" whenever it needs the clock input to
-function correctly. On some hardware configurations, GPIO2 is
-connected directly to an input pin of the external clock provider
-(e.g. the main PMIC of the SoC). In that case, it can automatically
-AND the clock enable bit and clock request from S3FWRN5 so that
-the clock is actually only enabled when needed.
+The controller does have a proper locking mechanism, so let's use it.
+Since we can't rely on the BIOS doing this properly, we implement
+the following logic:
 
-It is also conceivable that on some other hardware configuration
-S3FWRN5's GPIO2 might be connected as a regular GPIO input
-of the SoC. In that case, follow-up patches could extend the
-driver to request the GPIO, set up an interrupt and only enable
-the clock when requested by S3FWRN5.
+- If ACPI AML uses the bus at all, we make a note and disable power
+  management. The latter matches already existing behavior.
+- When we want to use the bus, we attempt to lock it first. If the
+  locking attempt times out, *and* ACPI hasn't tried to use the bus at
+  all yet, we cautiously go ahead and assume the BIOS forgot to unlock
+  the bus after boot. This preserves existing behavior.
+- We always unlock the bus after a transfer.
+- If ACPI AML tries to use the bus (except trying to lock it) while
+  we're in the middle of a transfer, or after we've determined
+  locking is broken, we know we cannot safely share the bus and give up.
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Upon first usage of SMBus by ACPI AML, if nothing has gone horribly
+wrong so far, users will see:
+
+i801_smbus 0000:00:1f.4: SMBus controller is shared with ACPI AML. This seems safe so far.
+
+If locking the SMBus times out, users will see:
+
+i801_smbus 0000:00:1f.4: BIOS left SMBus locked
+
+And if ACPI AML tries to use the bus concurrently with Linux, or it
+previously used the bus and we failed to subsequently lock it as
+above, the driver will give up and users will get:
+
+i801_smbus 0000:00:1f.4: BIOS uses SMBus unsafely
+i801_smbus 0000:00:1f.4: Driver SMBus register access inhibited
+
+This fixes the regression introduced by 01590f361e, and further allows
+safely sharing the SMBus on 2015 iMacs. Tested by running `i2cdump` in a
+loop while changing backlight levels via the ACPI video device.
+
+v2: Add missing usleep_range() in the lock acquire loop
+
+Fixes: 01590f361e ("i2c: i801: Instantiate SPD EEPROMs automatically")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
-This allows NFC to work properly on the Samsung Galaxy A3/A5 (2015).
+ drivers/i2c/busses/i2c-i801.c | 99 +++++++++++++++++++++++++++++------
+ 1 file changed, 82 insertions(+), 17 deletions(-)
 
-Changes in v2: Rewrite commit message and comment based on discussion
-
-  Note: I tried to explain the setup a bit better but dropped most of
-        the explanations about the exact configuration on the Samsung
-        Galaxy A5. I think the HW-specific details were more confusing
-        than helping. :)
-
-v1: https://lore.kernel.org/netdev/20210518133935.571298-2-stephan@gerhold.net/
----
- drivers/nfc/s3fwrn5/i2c.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-index 897394167522..38b8d6cab593 100644
---- a/drivers/nfc/s3fwrn5/i2c.c
-+++ b/drivers/nfc/s3fwrn5/i2c.c
-@@ -6,6 +6,7 @@
-  * Robert Baldyga <r.baldyga@samsung.com>
-  */
+diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+index 99d446763530..3512df9759cc 100644
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -287,11 +287,18 @@ struct i801_priv {
+ #endif
+ 	struct platform_device *tco_pdev;
  
-+#include <linux/clk.h>
- #include <linux/i2c.h>
- #include <linux/gpio.h>
- #include <linux/delay.h>
-@@ -22,6 +23,7 @@
- struct s3fwrn5_i2c_phy {
- 	struct phy_common common;
- 	struct i2c_client *i2c_dev;
-+	struct clk *clk;
- 
- 	unsigned int irq_skip:1;
- };
-@@ -207,17 +209,40 @@ static int s3fwrn5_i2c_probe(struct i2c_client *client,
- 	if (ret < 0)
- 		return ret;
- 
-+	phy->clk = devm_clk_get_optional(&client->dev, NULL);
-+	if (IS_ERR(phy->clk))
-+		return dev_err_probe(&client->dev, PTR_ERR(phy->clk),
-+				     "failed to get clock\n");
-+
++	/* BIOS left the controller marked busy. */
++	bool inuse_stuck;
+ 	/*
+-	 * If set to true the host controller registers are reserved for
+-	 * ACPI AML use. Protected by acpi_lock.
++	 * If set to true, ACPI AML uses the host controller registers.
++	 * Protected by acpi_lock.
+ 	 */
+-	bool acpi_reserved;
++	bool acpi_usage;
 +	/*
-+	 * S3FWRN5 depends on a clock input ("XI" pin) to function properly.
-+	 * Depending on the hardware configuration this could be an always-on
-+	 * oscillator or some external clock that must be explicitly enabled.
-+	 * Make sure the clock is running before starting S3FWRN5.
++	 * If set to true, ACPI AML uses the host controller registers in an
++	 * unsafe way. Protected by acpi_lock.
 +	 */
-+	ret = clk_prepare_enable(phy->clk);
-+	if (ret < 0) {
-+		dev_err(&client->dev, "failed to enable clock: %d\n", ret);
-+		return ret;
++	bool acpi_unsafe;
+ 	struct mutex acpi_lock;
+ };
+ 
+@@ -856,10 +863,37 @@ static s32 i801_access(struct i2c_adapter *adap, u16 addr,
+ 	int hwpec;
+ 	int block = 0;
+ 	int ret = 0, xact = 0;
++	int timeout = 0;
+ 	struct i801_priv *priv = i2c_get_adapdata(adap);
+ 
++	/*
++	 * The controller provides a bit that implements a mutex mechanism
++	 * between users of the bus. First, try to lock the hardware mutex.
++	 * If this doesn't work, we give up trying to do this, but then
++	 * bail if ACPI uses SMBus at all.
++	 */
++	if (!priv->inuse_stuck) {
++		while (inb_p(SMBHSTSTS(priv)) & SMBHSTSTS_INUSE_STS) {
++			if (++timeout >= MAX_RETRIES) {
++				dev_warn(&priv->pci_dev->dev,
++					 "BIOS left SMBus locked\n");
++				priv->inuse_stuck = true;
++				break;
++			}
++			usleep_range(250, 500);
++		}
 +	}
 +
- 	ret = s3fwrn5_probe(&phy->common.ndev, phy, &phy->i2c_dev->dev,
- 			    &i2c_phy_ops);
- 	if (ret < 0)
--		return ret;
-+		goto disable_clk;
- 
- 	ret = devm_request_threaded_irq(&client->dev, phy->i2c_dev->irq, NULL,
- 		s3fwrn5_i2c_irq_thread_fn, IRQF_ONESHOT,
- 		S3FWRN5_I2C_DRIVER_NAME, phy);
- 	if (ret)
--		s3fwrn5_remove(phy->common.ndev);
-+		goto s3fwrn5_remove;
- 
-+	return 0;
+ 	mutex_lock(&priv->acpi_lock);
+-	if (priv->acpi_reserved) {
++	if (priv->acpi_usage && priv->inuse_stuck && !priv->acpi_unsafe) {
++		priv->acpi_unsafe = true;
 +
-+s3fwrn5_remove:
-+	s3fwrn5_remove(phy->common.ndev);
-+disable_clk:
-+	clk_disable_unprepare(phy->clk);
- 	return ret;
++		dev_warn(&priv->pci_dev->dev, "BIOS uses SMBus unsafely\n");
++		dev_warn(&priv->pci_dev->dev,
++			 "Driver SMBus register access inhibited\n");
++	}
++
++	if (priv->acpi_unsafe) {
+ 		mutex_unlock(&priv->acpi_lock);
+ 		return -EBUSY;
+ 	}
+@@ -980,6 +1014,9 @@ static s32 i801_access(struct i2c_adapter *adap, u16 addr,
+ 	}
+ 
+ out:
++	/* Unlock the SMBus device for use by BIOS/ACPI */
++	outb_p(SMBHSTSTS_INUSE_STS, SMBHSTSTS(priv));
++
+ 	pm_runtime_mark_last_busy(&priv->pci_dev->dev);
+ 	pm_runtime_put_autosuspend(&priv->pci_dev->dev);
+ 	mutex_unlock(&priv->acpi_lock);
+@@ -1638,6 +1675,16 @@ static bool i801_acpi_is_smbus_ioport(const struct i801_priv *priv,
+ 	       address <= pci_resource_end(priv->pci_dev, SMBBAR);
  }
  
-@@ -226,6 +251,7 @@ static int s3fwrn5_i2c_remove(struct i2c_client *client)
- 	struct s3fwrn5_i2c_phy *phy = i2c_get_clientdata(client);
++static acpi_status
++i801_acpi_do_access(u32 function, acpi_physical_address address,
++				u32 bits, u64 *value)
++{
++	if ((function & ACPI_IO_MASK) == ACPI_READ)
++		return acpi_os_read_port(address, (u32 *)value, bits);
++	else
++		return acpi_os_write_port(address, (u32)*value, bits);
++}
++
+ static acpi_status
+ i801_acpi_io_handler(u32 function, acpi_physical_address address, u32 bits,
+ 		     u64 *value, void *handler_context, void *region_context)
+@@ -1647,17 +1694,38 @@ i801_acpi_io_handler(u32 function, acpi_physical_address address, u32 bits,
+ 	acpi_status status;
  
- 	s3fwrn5_remove(phy->common.ndev);
-+	clk_disable_unprepare(phy->clk);
+ 	/*
+-	 * Once BIOS AML code touches the OpRegion we warn and inhibit any
+-	 * further access from the driver itself. This device is now owned
+-	 * by the system firmware.
++	 * Non-i801 accesses pass through.
+ 	 */
+-	mutex_lock(&priv->acpi_lock);
++	if (!i801_acpi_is_smbus_ioport(priv, address))
++		return i801_acpi_do_access(function, address, bits, value);
  
- 	return 0;
+-	if (!priv->acpi_reserved && i801_acpi_is_smbus_ioport(priv, address)) {
+-		priv->acpi_reserved = true;
++	if (!mutex_trylock(&priv->acpi_lock)) {
++		mutex_lock(&priv->acpi_lock);
++		/*
++		 * This better be a read of the status register to acquire
++		 * the lock...
++		 */
++		if (!priv->acpi_unsafe &&
++			!(address == SMBHSTSTS(priv) &&
++			 (function & ACPI_IO_MASK) == ACPI_READ)) {
++			/*
++			 * Uh-oh, ACPI AML is trying to do something with the
++			 * controller without locking it properly.
++			 */
++			priv->acpi_unsafe = true;
++
++			dev_warn(&pdev->dev, "BIOS uses SMBus unsafely\n");
++			dev_warn(&pdev->dev,
++				 "Driver SMBus register access inhibited\n");
++		}
++	}
+ 
+-		dev_warn(&pdev->dev, "BIOS is accessing SMBus registers\n");
+-		dev_warn(&pdev->dev, "Driver SMBus register access inhibited\n");
++	if (!priv->acpi_usage) {
++		priv->acpi_usage = true;
++
++		if (!priv->acpi_unsafe)
++			dev_info(&pdev->dev,
++				 "SMBus controller is shared with ACPI AML. This seems safe so far.\n");
+ 
+ 		/*
+ 		 * BIOS is accessing the host controller so prevent it from
+@@ -1666,10 +1734,7 @@ i801_acpi_io_handler(u32 function, acpi_physical_address address, u32 bits,
+ 		pm_runtime_get_sync(&pdev->dev);
+ 	}
+ 
+-	if ((function & ACPI_IO_MASK) == ACPI_READ)
+-		status = acpi_os_read_port(address, (u32 *)value, bits);
+-	else
+-		status = acpi_os_write_port(address, (u32)*value, bits);
++	status = i801_acpi_do_access(function, address, bits, value);
+ 
+ 	mutex_unlock(&priv->acpi_lock);
+ 
+@@ -1705,7 +1770,7 @@ static void i801_acpi_remove(struct i801_priv *priv)
+ 		ACPI_ADR_SPACE_SYSTEM_IO, i801_acpi_io_handler);
+ 
+ 	mutex_lock(&priv->acpi_lock);
+-	if (priv->acpi_reserved)
++	if (priv->acpi_usage)
+ 		pm_runtime_put(&priv->pci_dev->dev);
+ 	mutex_unlock(&priv->acpi_lock);
  }
 -- 
 2.31.1
