@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27213891EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CD73891ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354813AbhESOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        id S1354824AbhESOwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348657AbhESOvy (ORCPT
+        with ESMTP id S1354821AbhESOwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:51:54 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20933C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:33 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id n2so14408594wrm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:33 -0700 (PDT)
+        Wed, 19 May 2021 10:52:04 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8985FC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:44 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id z17so14311932wrq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Bju2/0eN1crwRy8NW0NKdt4SusccnUyH2kNJFGpO3Gg=;
-        b=BQ0wb+l4eU5E6LXYCwaarjsAw6yPlLu9W6EiabgI+nO22I+6DV/bIxaDS5Kc/NkZ9z
-         g5ArK3rjoggNB6rgNnxcGpn/MDh4rC5iJIQ9ptEO8ZIDJRbQovG88q8caw+Iw6Vo1K/7
-         cT6j1A7d/Eqf0dtlUKxAkQlsICEjFzHrEor1ZLrZez3sN2dN8okRW2WLGn5Q5NeWtXzQ
-         BJOx2fdWrlKwYPfZMPpDbIKMzFHZFm7Y9A1ibD6cMHShxytE94HxUt/iCqnMUXkl7Aev
-         yPWcWLE7bC3e/1CIkS0QDIbZBE0Tuctn6mGNoYgfbMZKEz7pgUAF6QgCLssN+Kyx/SjJ
-         3Zqg==
+        bh=jzOpdXiLDWGUEJF2EPWEV2fpTf3RICa3e5yUqeDdorw=;
+        b=fmjuW1CE4yNWATIkEhIlhyAcIxhBepjY8dpsjmF2trgLwRV+pzo0bH/7HF3nswJyw9
+         tJjev238hlq7nt4aq8KDfWgybqHJQ1sVX3XVwNQYj5WvBXSwPyxY0wwnALzCORKlGvOA
+         E1ZkZLwOqheyT+JGldJiWWmlyqeC/ObjpVEGdcx7Tk4f6iYftuJme720nKySAaPYgLvB
+         UiYDdHFWvYRKcgYI91gMeWNo7XjlgwZ9ZOybn3JdM8O1CQ2VZIyh1Iy1J2f7t6hLOAzg
+         0MEknxvzch90W0UK2WPHLw4NzZkINEn0mpEx+XL8Q4sleiVJ8VSIXtmgadfq6Hv8hoDB
+         gPug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=Bju2/0eN1crwRy8NW0NKdt4SusccnUyH2kNJFGpO3Gg=;
-        b=Xj3ULvG/6B2lLgdEgoyTBQ5s7XqAhvpK79VX1duGM/lbgqcO+9xZcAxup1sgJ3xZRh
-         58NpH9wDAlGpY7/MtyFK+7i3DpU84HmCjL+m0LSvA7gJ54kEU2vHvufGPzP2ga6dhpdD
-         CnMTAVdHDFJeH75s+PdypJbeQMrGh2+6Hu9JCzVZrUqxnbFoSiJnjDZUdbem4YJwERC/
-         IggDgw5cjdmSoIq8hWijOqQlA/vtDalyHk338nUWv9HEuE7pFMTAya6we9A9m8VjaaG5
-         Fd20ZteY64xiH8VH0tg/oP9TPTT7lkhe7omRf5VJHcba5TOjSjMmK87JXC2F1c5NxyVR
-         5wNw==
-X-Gm-Message-State: AOAM5304E1LvUOa18u3c1Iry2rHd1OtFviPQhzKBC0KCP5leUj2okXj7
-        0At0sMAnJAX9iBgXUutjYut3dQ==
-X-Google-Smtp-Source: ABdhPJyiC8K7WnFxsXBX7COv5F4gSgoaz/20+HNO7ys0bYcGX56g68V0qD16NLwnO5bgMXzcNVAHcw==
-X-Received: by 2002:a5d:408f:: with SMTP id o15mr14535482wrp.89.1621435831756;
-        Wed, 19 May 2021 07:50:31 -0700 (PDT)
+        bh=jzOpdXiLDWGUEJF2EPWEV2fpTf3RICa3e5yUqeDdorw=;
+        b=jkZK2E7jNN5i9aMglVPPz5drYlvQSoDg8fuoQ+uXfNpNKVhs0baKAHDbsUTz/RQSK/
+         yUoReW6+k38KKqbzq3iYTpxBrWLOhbDzSX2lPgOEcy8p4I6QQkQw+kOV7dWtKQR9UGzT
+         rOIrJs3ot3jWt1amT995poa+MhrjrAKC2O34WGXkU7+6venEF9So1tqNHO7vztB5j05u
+         BRn4OA2xWfys+n9DTYpJVssnLAbfMmSe4uGDbOxEevjnFDS2bdb7EgOLXwUwcbGTyCcv
+         qKt4ij94NCbphZJtDlcu9BOM1ySmc7NMmxs/toJuzcT8tSllIqWg9EEqHhYTk/69QXGg
+         rOeg==
+X-Gm-Message-State: AOAM533BEOxdbmH5ZfpAU8WdRO8lKDy890QeO6UpvB0Mw62CcOo4mFkn
+        GUaKeH57gI2Z2S/ApeUgVNmzPw==
+X-Google-Smtp-Source: ABdhPJy4j2tptE/O7091QF9VE/9nmRwj16cpS+71mXYwcpZQStXYpsYFrQKNwdyhvJoa0BGQe/yvAg==
+X-Received: by 2002:a5d:534f:: with SMTP id t15mr14628914wrv.206.1621435843140;
+        Wed, 19 May 2021 07:50:43 -0700 (PDT)
 Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id b10sm30501848wrr.27.2021.05.19.07.50.30
+        by smtp.gmail.com with ESMTPSA id d9sm24271551wrx.11.2021.05.19.07.50.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:50:31 -0700 (PDT)
-Date:   Wed, 19 May 2021 15:50:29 +0100
+        Wed, 19 May 2021 07:50:42 -0700 (PDT)
+Date:   Wed, 19 May 2021 15:50:40 +0100
 From:   Lee Jones <lee.jones@linaro.org>
 To:     cy_huang <u0084500@gmail.com>
 Cc:     lgirdwood@gmail.com, broonie@kernel.org,
@@ -58,14 +58,16 @@ Cc:     lgirdwood@gmail.com, broonie@kernel.org,
         dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
         devicetree@vger.kernel.org, cy_huang@richtek.com
-Subject: Re: [PATCH v7 1/4] mfd: rt4831: Adds support for Richtek RT4831
-Message-ID: <20210519145029.GD2549456@dell>
+Subject: Re: [PATCH v7 2/4] backlight: rt4831: Adds DT binding document for
+ Richtek RT4831 backlight
+Message-ID: <20210519145040.GE2549456@dell>
 References: <1621262161-9972-1-git-send-email-u0084500@gmail.com>
+ <1621262161-9972-2-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1621262161-9972-1-git-send-email-u0084500@gmail.com>
+In-Reply-To: <1621262161-9972-2-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,41 +76,20 @@ On Mon, 17 May 2021, cy_huang wrote:
 
 > From: ChiYuan Huang <cy_huang@richtek.com>
 > 
-> This adds support Richtek RT4831 core. It includes four channel WLED driver
-> and Display Bias Voltage outputs.
+> Adds DT binding document for Richtek RT4831 backlight.
 > 
 > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 > ---
-> - Send the patch series for the wrong mail subject.
-> 
-> The RT4831 regulator patches are already on main stream, and can be referred to
-> 9351ab8b0cb6 regulator: rt4831: Adds support for Richtek RT4831 DSV regulator
-> 934b05e81862 regulator: rt4831: Adds DT binding document for Richtek RT4831 DSV regulator
-> 
-> since v6
-> - Respin the date from 2020 to 2021.
-> - Rmove the shutdown routine.
-> - Change the macro OF_MFD_CELL to MFD_CELL_OF.
-> 
-> since v5
-> - Rename file name from rt4831-core.c to rt4831.c
-> - Change RICHTEK_VID to RICHTEK_VENDOR_ID.
-> - Change gpio_desc nameing from 'enable' to 'enable_gpio' in probe.
-> - Change variable 'val' to the meaningful name 'chip_id'.
-> - Refine the error log when vendor id is not matched.
-> - Remove of_match_ptr.
-> 
-> since v2
-> - Refine Kconfig descriptions.
-> - Add copyright.
-> - Refine error logs in probe.
-> - Refine comment lines in remove and shutdown.
+> since v7
+> - Add allOf property refer to common.yaml.
+> - Remove default-brightness/max-brightness description and refer string.
 > ---
->  drivers/mfd/Kconfig  |  10 +++++
->  drivers/mfd/Makefile |   1 +
->  drivers/mfd/rt4831.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 126 insertions(+)
->  create mode 100644 drivers/mfd/rt4831.c
+>  .../leds/backlight/richtek,rt4831-backlight.yaml   | 62 ++++++++++++++++++++++
+>  include/dt-bindings/leds/rt4831-backlight.h        | 23 ++++++++
+>  2 files changed, 85 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/backlight/richtek,rt4831-backlight.yaml
+>  create mode 100644 include/dt-bindings/leds/rt4831-backlight.h
 
 Applied, thanks.
 
