@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6786A3884F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9CB3884EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352916AbhESCtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 22:49:52 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4739 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236512AbhESCtv (ORCPT
+        id S1352863AbhESCtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 22:49:35 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:38650 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237274AbhESCtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 22:49:51 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlHK86mDJzpdwJ;
-        Wed, 19 May 2021 10:45:00 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 10:48:26 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 19
- May 2021 10:48:26 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <michal.simek@xilinx.com>
-CC:     <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] net: xilinx_emaclite: Do not print real IOMEM pointer
-Date:   Wed, 19 May 2021 10:47:04 +0800
-Message-ID: <20210519024704.21228-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+        Tue, 18 May 2021 22:49:33 -0400
+Received: by mail-ot1-f49.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so10502951oth.5;
+        Tue, 18 May 2021 19:48:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Q4LcyG7TR1wlU65C0tMqAS7GQ9Qzklf/Ua5vm6bP0dY=;
+        b=kBf1wdaFlurEs4ItIqW4b39n51OaGMkHtLJMebu0IxJq7Ut57VErSsUG2ImAr0/LkL
+         6oJ7HtYP0dU4rCub5rs/M5BZeycN3Tpzh/yciz5eOModxUNQy1Fl6d/QTFtI0frRoq6O
+         5NMPnUEutkw9rAQlr33955Qx4VKC4hPEuS5OGFA8kvobCVYuTgg8PMPGBZKSf7G5VBLe
+         E79XFtV26uMb2VS6R4Yn/Rfs8gfdZv9dTa66gmsxmqNcvew9aWAckwWYXLXgKfSjGHHp
+         Wxxhs2beVxG36oT6QQ9qCjPrbITriVuHuukEfB89wqAacMQwdCOIAo0tmfCTi9ZOtjOX
+         ODew==
+X-Gm-Message-State: AOAM532ozCSL+wHJ73O5OSfVQa6neqrUXXiWP47mpGA10axUxDnhUB69
+        gDzTddJKsmRmHoW3z88y1A==
+X-Google-Smtp-Source: ABdhPJx3BlvLuylgzd5eRpyEpXh47BO/eHtxDBU1//TMyqLZFNXTI3iRXR5JOdrQYhqAlyt6R2LmPw==
+X-Received: by 2002:a9d:62d0:: with SMTP id z16mr559268otk.180.1621392493120;
+        Tue, 18 May 2021 19:48:13 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x14sm3853076oic.3.2021.05.18.19.48.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 19:48:12 -0700 (PDT)
+Received: (nullmailer pid 1905258 invoked by uid 1000);
+        Wed, 19 May 2021 02:48:11 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Odelu Kukatla <okukatla@codeaurora.org>
+Cc:     elder@linaro.org, bjorn.andersson@linaro.org,
+        seansw@qti.qualcomm.com, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org, devicetree@vger.kernel.org,
+        Georgi Djakov <djakov@kernel.org>,
+        linux-arm-msm@vger.kernel.org, sboyd@kernel.org,
+        sibis@codeaurora.org, Andy Gross <agross@kernel.org>,
+        evgreen@google.com, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm-owner@vger.kernel.org, linux-pm@vger.kernel.org
+In-Reply-To: <1621359242-18641-2-git-send-email-okukatla@codeaurora.org>
+References: <1621359242-18641-1-git-send-email-okukatla@codeaurora.org> <1621359242-18641-2-git-send-email-okukatla@codeaurora.org>
+Subject: Re: [V2 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
+Date:   Tue, 18 May 2021 21:48:11 -0500
+Message-Id: <1621392491.220233.1905257.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Printing kernel pointers is discouraged because they might leak kernel
-memory layout.  This fixes smatch warning:
+On Tue, 18 May 2021 23:04:00 +0530, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+> SoCs.
+> 
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  3 ++-
+>  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 +++++++++-
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+> 
 
-drivers/net/ethernet/xilinx/xilinx_emaclite.c:1191 xemaclite_of_probe() warn:
- argument 4 to %08lX specifier is cast from pointer
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/ethernet/xilinx/xilinx_emaclite.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+yamllint warnings/errors:
 
-diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-index d9d58a7dabee..b06377fe7293 100644
---- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-+++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-@@ -1189,9 +1189,8 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
- 	}
- 
- 	dev_info(dev,
--		 "Xilinx EmacLite at 0x%08lX mapped to 0x%08lX, irq=%d\n",
--		 (unsigned long __force)ndev->mem_start,
--		 (unsigned long __force)lp->base_addr, ndev->irq);
-+		 "Xilinx EmacLite at 0x%08lX mapped to 0x%p, irq=%d\n",
-+		 (unsigned long __force)ndev->mem_start, lp->base_addr, ndev->irq);
- 	return 0;
- 
- error:
--- 
-2.17.1
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.example.dt.yaml: interconnect@17d41000: reg: [[399773696, 5120]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+
+See https://patchwork.ozlabs.org/patch/1480367
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
