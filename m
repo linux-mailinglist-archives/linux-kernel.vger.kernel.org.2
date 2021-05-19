@@ -2,79 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF133892F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907403892F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354778AbhESPtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:49:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59870 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346171AbhESPtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:49:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B7F5AD2D;
-        Wed, 19 May 2021 15:48:14 +0000 (UTC)
-Subject: Re: [PATCH] mm, page_alloc: really disable DEBUG_PAGEALLOC with
- hibernation
-To:     David Hildenbrand <david@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Akinobu Mita <akinobu.mita@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Guilherme Piccoli <gpiccoli@canonical.com>
-References: <20210519152804.27063-1-krzysztof.kozlowski@canonical.com>
- <b0cf875b-6ff5-2b5c-8b3d-6dc6c75b8be8@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <515ca9c5-ba60-5b90-0941-2b3dfe1d61f3@suse.cz>
-Date:   Wed, 19 May 2021 17:48:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S1354978AbhESPui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233708AbhESPuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:50:32 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616C7C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:49:12 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id 69so7275928plc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2fzzsEWGkXSsJ9I1epD5kqjbD+mKgK9dwfaWHAcXTDQ=;
+        b=M/7YvnwM8QrnHOcBf6BuPkQI2Lb25QR+EjsnMO16qcf0iUI/jzn9mIHj9WtBj8QzLR
+         Uc5P42EC+vXNcUuziM5rccL3fKi/gC/hkocKWTgMIplnr8mv82dMe2JtyBtkMUIcLPWz
+         FZpkAuB3muTtwnzLS8NtSiVCIqoMfKrQPXnsdYAhPrqkTB9VjCD4rGdrF3Qey+iGhhnQ
+         W2k3HgHvyBHs5b6NYWKPbqggxk9GF8MQNAjZ019lWUZDTuG23Mm7Avgto8itSwrO+Cz/
+         a6dclhTWdTxIvW6IqVjmWXzmenyrMO9Qr5zEDC/Pb1XUlmJYf5e6gVo9xlAPiq4Cxdn+
+         ZnVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2fzzsEWGkXSsJ9I1epD5kqjbD+mKgK9dwfaWHAcXTDQ=;
+        b=KtZ4d9iN9wgRcQ0qMKL6VZEEF1MH9Rhhx60F3K7VxTOJOHnrbOwCUR6h1S1UpPqD4g
+         tlbK7YJd7KNptMqTthYsE9Il6fVCctU1NfsgEa4Zv2xmyqZTNC84ggKO73l8Tl7fzmCj
+         564uPVO4ofRgIenzGVDO7yf6F6UH0XqV3Nm4J73kQv8N4miaCNzJjbyWZjAcp7WTupDF
+         3Hhox3Czd9fKoCi0s5z13t2g2lotHnh9voucyDtoi4Lb1YcpaP245+Uje1sNPere+G/j
+         XVLRbWHdD0bopZZ4D5Wf10OqTeaacWM80QgqUGJDrVa+Xhj8/gOh3ppgUhIIi1LLoEfV
+         IqHA==
+X-Gm-Message-State: AOAM533k6WODd6PYBEuTkvMt4fVUol7VzflzqQZVdr2J5oZhyrWC7jLX
+        svhiQpX/Xd/2MbvzrWemkb6o37sHZsefIA==
+X-Google-Smtp-Source: ABdhPJwVbtTn69uWgexFTvEV1CdB0wgdLr0bJMiRGRKhHacryVRGqjoMfgRHepnmaf4racrmMWjc1g==
+X-Received: by 2002:a17:902:ea03:b029:ef:adb3:a6ab with SMTP id s3-20020a170902ea03b02900efadb3a6abmr26041plg.47.1621439351706;
+        Wed, 19 May 2021 08:49:11 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id y69sm14317590pfb.162.2021.05.19.08.49.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 08:49:11 -0700 (PDT)
+Date:   Wed, 19 May 2021 15:49:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Stamatis, Ilias" <ilstam@amazon.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "zamsden@gmail.com" <zamsden@gmail.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+Subject: Re: [PATCH v2 07/10] KVM: X86: Move write_l1_tsc_offset() logic to
+ common code and rename it
+Message-ID: <YKUzc4WJlxvyzw5B@google.com>
+References: <20210512150945.4591-1-ilstam@amazon.com>
+ <20210512150945.4591-8-ilstam@amazon.com>
+ <YKRWNaqzo4GVDxHP@google.com>
+ <e9f32ea05762ad8b87b1f8e6821ca2c8a4077bbc.camel@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <b0cf875b-6ff5-2b5c-8b3d-6dc6c75b8be8@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9f32ea05762ad8b87b1f8e6821ca2c8a4077bbc.camel@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 5:30 PM, David Hildenbrand wrote:
-> On 19.05.21 17:28, Krzysztof Kozlowski wrote:
->> The documentation of DEBUG_PAGEALLOC states that it cannot be used with
->> hibernation, however the Kconfig entry would allow it if
->> ARCH_SUPPORTS_DEBUG_PAGEALLOC && !PPC && !SPARC.
->>
->> Fixes: ee3b4290aec0 ("generic debug pagealloc: build fix")
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>   mm/Kconfig.debug | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
->> index 1e73717802f8..0ace5b2a9d04 100644
->> --- a/mm/Kconfig.debug
->> +++ b/mm/Kconfig.debug
->> @@ -11,7 +11,7 @@ config PAGE_EXTENSION
->>   config DEBUG_PAGEALLOC
->>       bool "Debug page memory allocations"
->>       depends on DEBUG_KERNEL
->> -    depends on !HIBERNATION || ARCH_SUPPORTS_DEBUG_PAGEALLOC && !PPC && !SPARC
->> +    depends on !HIBERNATION && ARCH_SUPPORTS_DEBUG_PAGEALLOC && !PPC && !SPARC
->>       select PAGE_POISONING if !ARCH_SUPPORTS_DEBUG_PAGEALLOC
->>       help
->>         Unmap pages from the kernel linear mapping after free_pages().
->>
+On Wed, May 19, 2021, Stamatis, Ilias wrote:
+> On Wed, 2021-05-19 at 00:05 +0000, Sean Christopherson wrote:
+> > On Wed, May 12, 2021, Ilias Stamatis wrote:
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index 1db6cfc2079f..f3ba1be4d5b9 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -2377,8 +2377,23 @@ EXPORT_SYMBOL_GPL(kvm_set_02_tsc_multiplier);
+> > > 
+> > >  static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
+> > >  {
+> > > +     trace_kvm_write_tsc_offset(vcpu->vcpu_id,
+> > > +                                vcpu->arch.l1_tsc_offset,
+> > > +                                offset);
+> > > +
+> > >       vcpu->arch.l1_tsc_offset = offset;
+> > > -     vcpu->arch.tsc_offset = static_call(kvm_x86_write_l1_tsc_offset)(vcpu, offset);
+> > > +     vcpu->arch.tsc_offset = offset;
+> > > +
+> > > +     if (is_guest_mode(vcpu)) {
+> > 
+> > Unnecessary curly braces.
 > 
-> I remember this should be working now, as we temporarily map the pages in the
-> direct map when hibernating?
+> Really? We are supposed to have a 6-lines body without brackets? I'm not
+> opposing, I'm just surprised that that's the coding standard.
 
-Yeah, and if the problem was the page poisoning based implementation/fallback,
-that was also fixed.
+Comments don't (technically) count.  I usually avoid the ambiguity by putting
+the comment above the if statement.  That also helps with indentation, e.g.
 
-The current dependencies come from the unification by ee3b4290aec03
+	/*
+	 * This is a comment.
+	 */
+	if (is_guest_mode(vcpu))
+		kvm_set_02_tsc_offset(vcpu);
 
-The question is if PPC and SPARC still really need to disable hibernation.
+> > > +             /*
+> > > +              * We're here if L1 chose not to trap WRMSR to TSC and
+> > > +              * according to the spec this should set L1's TSC (as opposed
+> > > +              * to setting L1's offset for L2).
+> > > +              */
+> > 
+> > While we're shuffling code, can we improve this comment?  It works for the WRMSR
+> > case, but makes no sense in the context of host TSC adjustments.  It's not at all
+> > clear to me that it's even correct or relevant in those cases.
+> > 
+> 
+> Do you suggest removing it completely or how do you want it to be? I don't
+> mind deleting it.
+
+Heh, I'd happily write the comment, except I have no idea what the logic is in
+the non-WRMSR case.  I do think we need a comment, IMO none of paths that lead
+to changing the TSC offset while L2 is active are obvious.
