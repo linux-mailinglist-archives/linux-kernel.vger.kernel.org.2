@@ -2,210 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A207389940
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C48389942
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhESWZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 18:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESWZU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 18:25:20 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A811C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:24:00 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id k16so14601639ios.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rx88tQCGOYDOoqf7VThCQ35Bbq6JUkOg6xay93bQ/Kw=;
-        b=cJtsAIQZTYB8JoeFmcaGZ/bFe0qN7YpY0zWnmqZxm/fcSJsCbDpYZ/XWiiLdDT5uKF
-         Ne4jDon7qeLtRdpXjMMvc739xZhmuiu89fQtnXT6wuAlsf4FY7EQrC58GQCFgv69IRz9
-         KKROjdz+cb7D/GzNvjHnp/vC6P+hZAxGx2UmSWUBVTzfHX4QLTbqGvtIa2BL4kHUmD+J
-         +eKK7pMHTGWfF46J26oIgrQ0qNrrH8fzUXcsBZeNK0iJofJl11mpUfGX4yYwLrcaqIh7
-         g4MoWKy7ohVlfyeYda+uyOfvXbcYqN8HcCQUOx4OK/St8oYthwgtO0BoYrZgHoaD9SSD
-         T3GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rx88tQCGOYDOoqf7VThCQ35Bbq6JUkOg6xay93bQ/Kw=;
-        b=FQFR2np5oQODejAU1/T7pw3l3bLdEKHHqlgR9Jq5njMTFbLhDx9Nm4VbAxKE9VOxJN
-         3LLOitgRzdkd3qdZ0ekYMP8tAzIrAt+9uRRUToPu6N2mAaTWHV9KrVZCnQSky0hOJcWm
-         mn/3pEyEcXo6vg1HoL3zdoGW+ArNM+loalBbKcrCFN3Yg744SB+1KUOfoOB1/IWrtKdD
-         qoy9NVXpn1hNybXTfvkDaRofEPLMOKdEvQWQ14w2j7gVVrxNjcsjGdBdFLqePbtqjNuT
-         j91vHAtCnLoTB1P3nKjp/Kp8PEJ7EV/ozTRBaLrdVh7iqP9MvTMUQurN1AdD/2kiFGUc
-         7jTg==
-X-Gm-Message-State: AOAM531R7WEXbZiNIyRC2+QfXI9nX7mTuyJOrvj3G/L6Qjld0eY9WSgt
-        FtPCi2ohGEIKU5pNdn+DVx3GsKz3vZjR4anKlAjc8A==
-X-Google-Smtp-Source: ABdhPJwB07EuXP9IYQmcXFl+VPdTAyhI/bnkPf9ED6KUVfUM8W7xcExjG7mz8GGf9CQIdJd8bSFBIlAyCytCSAH4MqM=
-X-Received: by 2002:a05:6602:3427:: with SMTP id n39mr2079015ioz.157.1621463039499;
- Wed, 19 May 2021 15:23:59 -0700 (PDT)
+        id S229762AbhESW0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 18:26:18 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:44641 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhESW0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 18:26:17 -0400
+Received: from [IPv6:2601:646:8602:8be1:9435:8c14:a4d5:681] ([IPv6:2601:646:8602:8be1:9435:8c14:a4d5:681])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14JMOllh4193710
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 19 May 2021 15:24:49 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14JMOllh4193710
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621463089;
+        bh=eYBU9eQoc//DOagRIDo7bdMQ+ey1GFKvUIB5TSfZv3c=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=X+ruoyTv9V9BGIVlyXiHVmMZrIC8mUbqRcgqRrSYLg8Q5cU0C+d/ewdjqseszXMVE
+         SX3yunq7GWGul9Lr77Ac7Fw8GsgukYYIdgOUDi69yYVLtDeCLEcNawy6JBf13RJKu7
+         v/RqBARqfHgMBHTzAVnou0E9My9egICoLDS1CCTruAiM7htcjTsLSb5K+Mlu++PWwM
+         w6KHELTzH6qznwR/elARoMuYMFHqzJbKRpASYEYCaN6jtoE6hzVjiZF20D6xJow8Fm
+         wBHadunNQzJcFkmWT3gBB7bMCqT3VYNA/zyyDyaDafLc/TymkIiOq7HNP9Tc0TylFF
+         ZH0/eE2iISs/A==
+Date:   Wed, 19 May 2021 15:24:37 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <87bl96cqqy.ffs@nanos.tec.linutronix.de>
+References: <20210519212154.511983-1-hpa@zytor.com> <20210519212154.511983-2-hpa@zytor.com> <87bl96cqqy.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210519200339.829146-1-axelrasmussen@google.com>
- <20210519200339.829146-3-axelrasmussen@google.com> <CANgfPd-dF+vWafBC5DsNhf5C0M12+LxRQLhsBM=CzOKTsep+og@mail.gmail.com>
- <CAJHvVcizVoAs+-wOXeO7bc=8c2G3oEC4KSVyPm5E9Z6YMCsvaw@mail.gmail.com>
-In-Reply-To: <CAJHvVcizVoAs+-wOXeO7bc=8c2G3oEC4KSVyPm5E9Z6YMCsvaw@mail.gmail.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 19 May 2021 15:23:49 -0700
-Message-ID: <CANgfPd-GzkFFps4+zRCy6bUn5zA8UTBw97wAvAMkOdKKfxYQEA@mail.gmail.com>
-Subject: Re: [PATCH v2 02/10] KVM: selftests: simplify setup_demand_paging
- error handling
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 1/8] x86/traps: add X86_NR_HW_TRAPS to <asm/trapnr.h>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <E1F71F76-747B-4A22-98A2-5FBF17B83A1A@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 3:14 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+It is not right now, but it will be used in the FRED enabling patchset at t=
+he very least (since the number of exception vectors and FIRST_EXTERNAL_VEC=
+TOR are not necessarily the same anymore=2E)
+
+On May 19, 2021 3:17:57 PM PDT, Thomas Gleixner <tglx@linutronix=2Ede> wro=
+te:
+>On Wed, May 19 2021 at 14:21, H=2E Peter Anvin wrote:
+>> From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom>
+>>
+>> The x86 architecture supports up to 32 trap vectors=2E Add that
+>constant
+>> to <asm/trapnr=2Eh>=2E
 >
-> On Wed, May 19, 2021 at 2:45 PM Ben Gardon <bgardon@google.com> wrote:
-> >
-> > On Wed, May 19, 2021 at 1:03 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > >
-> > > A small cleanup. Our caller writes:
-> > >
-> > >   r = setup_demand_paging(...);
-> > >   if (r < 0) exit(-r);
-> > >
-> > > Since we're just going to exit anyway, instead of returning an error we
-> > > can just re-use TEST_ASSERT. This makes the caller simpler, as well as
-> > > the function itself - no need to write our branches, etc.
-> > >
-> > > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-
-Reviewed-by: Ben Gardon <bgardon@google.com>
-
-> > > ---
-> > >  .../selftests/kvm/demand_paging_test.c        | 51 +++++++------------
-> > >  1 file changed, 19 insertions(+), 32 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
-> > > index 9398ba6ef023..601a1df24dd2 100644
-> > > --- a/tools/testing/selftests/kvm/demand_paging_test.c
-> > > +++ b/tools/testing/selftests/kvm/demand_paging_test.c
-> > > @@ -9,6 +9,8 @@
-> > >
-> > >  #define _GNU_SOURCE /* for pipe2 */
-> > >
-> > > +#include <inttypes.h>
-> > > +#include <stdint.h>
-> >
-> > Why do the includes need to change in this commit? Is it for the PRIu64 below?
+>Where is that actually used?
 >
-> Right, I didn't actually try compiling without these, but inttypes.h
-> defines PRIu64 and stdint.h defines uint64_t. In general I tend to
-> prefer including things like this because we're using their
-> definitions directly, even if we might be picking them up transiently
-> some other way.
-
-Makes sense to me.
-
+>Thanks,
 >
-> >
-> > >  #include <stdio.h>
-> > >  #include <stdlib.h>
-> > >  #include <time.h>
-> > > @@ -198,42 +200,32 @@ static void *uffd_handler_thread_fn(void *arg)
-> > >         return NULL;
-> > >  }
-> > >
-> > > -static int setup_demand_paging(struct kvm_vm *vm,
-> > > -                              pthread_t *uffd_handler_thread, int pipefd,
-> > > -                              useconds_t uffd_delay,
-> > > -                              struct uffd_handler_args *uffd_args,
-> > > -                              void *hva, uint64_t len)
-> > > +static void setup_demand_paging(struct kvm_vm *vm,
-> > > +                               pthread_t *uffd_handler_thread, int pipefd,
-> > > +                               useconds_t uffd_delay,
-> > > +                               struct uffd_handler_args *uffd_args,
-> > > +                               void *hva, uint64_t len)
-> > >  {
-> > >         int uffd;
-> > >         struct uffdio_api uffdio_api;
-> > >         struct uffdio_register uffdio_register;
-> > >
-> > >         uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
-> > > -       if (uffd == -1) {
-> > > -               pr_info("uffd creation failed\n");
-> > > -               return -1;
-> > > -       }
-> > > +       TEST_ASSERT(uffd >= 0, "uffd creation failed, errno: %d", errno);
-> > >
-> > >         uffdio_api.api = UFFD_API;
-> > >         uffdio_api.features = 0;
-> > > -       if (ioctl(uffd, UFFDIO_API, &uffdio_api) == -1) {
-> > > -               pr_info("ioctl uffdio_api failed\n");
-> > > -               return -1;
-> > > -       }
-> > > +       TEST_ASSERT(ioctl(uffd, UFFDIO_API, &uffdio_api) != -1,
-> > > +                   "ioctl UFFDIO_API failed: %" PRIu64,
-> > > +                   (uint64_t)uffdio_api.api);
-> > >
-> > >         uffdio_register.range.start = (uint64_t)hva;
-> > >         uffdio_register.range.len = len;
-> > >         uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-> > > -       if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) == -1) {
-> > > -               pr_info("ioctl uffdio_register failed\n");
-> > > -               return -1;
-> > > -       }
-> > > -
-> > > -       if ((uffdio_register.ioctls & UFFD_API_RANGE_IOCTLS) !=
-> > > -                       UFFD_API_RANGE_IOCTLS) {
-> > > -               pr_info("unexpected userfaultfd ioctl set\n");
-> > > -               return -1;
-> > > -       }
-> > > +       TEST_ASSERT(ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) != -1,
-> > > +                   "ioctl UFFDIO_REGISTER failed");
-> > > +       TEST_ASSERT((uffdio_register.ioctls & UFFD_API_RANGE_IOCTLS) ==
-> > > +                   UFFD_API_RANGE_IOCTLS, "unexpected userfaultfd ioctl set");
-> > >
-> > >         uffd_args->uffd = uffd;
-> > >         uffd_args->pipefd = pipefd;
-> > > @@ -243,8 +235,6 @@ static int setup_demand_paging(struct kvm_vm *vm,
-> > >
-> > >         PER_VCPU_DEBUG("Created uffd thread for HVA range [%p, %p)\n",
-> > >                        hva, hva + len);
-> > > -
-> > > -       return 0;
-> > >  }
-> > >
-> > >  struct test_params {
-> > > @@ -321,13 +311,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-> > >                                   O_CLOEXEC | O_NONBLOCK);
-> > >                         TEST_ASSERT(!r, "Failed to set up pipefd");
-> > >
-> > > -                       r = setup_demand_paging(vm,
-> > > -                                               &uffd_handler_threads[vcpu_id],
-> > > -                                               pipefds[vcpu_id * 2],
-> > > -                                               p->uffd_delay, &uffd_args[vcpu_id],
-> > > -                                               vcpu_hva, vcpu_mem_size);
-> > > -                       if (r < 0)
-> > > -                               exit(-r);
-> > > +                       setup_demand_paging(vm, &uffd_handler_threads[vcpu_id],
-> > > +                                           pipefds[vcpu_id * 2], p->uffd_delay,
-> > > +                                           &uffd_args[vcpu_id], vcpu_hva,
-> > > +                                           vcpu_mem_size);
-> > >                 }
-> > >         }
-> > >
-> > > --
-> > > 2.31.1.751.gd2f1c929bd-goog
-> > >
+>        tglx
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
