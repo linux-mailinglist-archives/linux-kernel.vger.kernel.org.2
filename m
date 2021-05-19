@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D74138931B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D353E38931F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355028AbhESP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:58:25 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24230 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355024AbhESP6X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:58:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621439824; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Q96jpCTD8/QMSDNZK3F6bpyaFamomufPiUhLFO7Q7o8=;
- b=F83IXPIm3sHM1nY6LddurJvodoVP3G+xOAwtfPyt3AuynY7fxJNPyih/vBL/wJpRUUZ/CRxs
- fbMShXZPz5Kv8A/dPIWUzxwnZr90ydbi0Vx47q6VbQ7AO6ECvXHStd1HuPcn9MUxYnckeAEV
- 558XlDcHpku3+MgerSybKG+7KdY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60a5354eb15734c8f9717080 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 15:57:02
- GMT
-Sender: jjohnson=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B78CEC43144; Wed, 19 May 2021 15:57:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jjohnson)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD529C4338A;
-        Wed, 19 May 2021 15:57:00 +0000 (UTC)
+        id S1355019AbhESP7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355043AbhESP7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF4A611BF;
+        Wed, 19 May 2021 15:57:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621439871;
+        bh=CvWgn1TOhKyllL0rp25eLv8GWJAa4SUZ0xSNVCnhHXo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aQbhPO6fh3q+C+P15r2OQnMBA7xmMTrT+lqIyoBuFEqEf/xDj8CDLj22xKvZY2k6S
+         0jQI0+AAyVTWe62kNXqTI6ZxVuLUvIzuS8aqRdjODhXlf63eBa1s0CZyiefwHEGKdH
+         ZZFQOsOzEwqe+CSiRPJF4mQGfpywGus3ysXFsQvk=
+Date:   Wed, 19 May 2021 17:57:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+Cc:     johan@kernel.org, elder@kernel.org, greybus-dev@lists.linaro.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: greybus: fix open parenthesis issue in gbphy.c
+Message-ID: <YKU1fdzyKuwY/IER@kroah.com>
+References: <20210519151851.26006-1-asha.16@itfac.mrt.ac.lk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 19 May 2021 08:57:00 -0700
-From:   Jeff Johnson <jjohnson@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jjohnson=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH v2] b43: don't save dentries for debugfs
-In-Reply-To: <YKUyAoBq/cepglmk@kroah.com>
-References: <20210518163304.3702015-1-gregkh@linuxfoundation.org>
- <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
- <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
- <YKScfFKhxtVqfRkt@kroah.com>
- <2eb3af43025436c0832c8f61fbf519ad@codeaurora.org>
- <YKUyAoBq/cepglmk@kroah.com>
-Message-ID: <48aea7ae33faaafab388e24c3b8eb199@codeaurora.org>
-X-Sender: jjohnson@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519151851.26006-1-asha.16@itfac.mrt.ac.lk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-19 08:42, Greg Kroah-Hartman wrote:
-> On Wed, May 19, 2021 at 08:04:59AM -0700, Jeff Johnson wrote:
->> On 2021-05-18 22:05, Greg Kroah-Hartman wrote:
->> > On Tue, May 18, 2021 at 03:00:44PM -0700, Jeff Johnson wrote:
->> > > On 2021-05-18 12:29, Jeff Johnson wrote:
->> > > Would still like guidance on if there is a recommended way to get a
->> > > dentry not associated with debugfs.
->> >
->> > What do you exactly mean by "not associated with debugfs"?
->> >
->> > And why are you passing a debugfs dentry to relay_open()?  That feels
->> > really wrong and fragile.
->> 
->> I don't know the history but the relay documentation tells us:
->> "If you want a directory structure to contain your relay files,
->> you should create it using the host filesystem’s directory
->> creation function, e.g. debugfs_create_dir()..."
->> 
->> So my guess is that the original implementation followed that
->> advice.  I see 5 clients of this functionality, and all 5 pass a
->> dentry returned from debugfs_create_dir():
->> 
->> drivers/gpu/drm/i915/gt/uc/intel_guc_log.c, line 384
->> drivers/net/wireless/ath/ath10k/spectral.c, line 534
->> drivers/net/wireless/ath/ath11k/spectral.c, line 902
->> drivers/net/wireless/ath/ath9k/common-spectral.c, line 1077
->> kernel/trace/blktrace.c, line 549
+On Wed, May 19, 2021 at 08:48:51PM +0530, F.A.Sulaiman wrote:
+> This fix "Alignment should match open parenthesis" checkpatch error.
 > 
-> Ah, that's just the "parent" dentry for the relayfs file.  That's fine,
-> not a big deal, debugfs will always provide a way for you to get that 
-> if
-> needed.
+> Signed-off-by: "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+> ---
+>  drivers/staging/greybus/gbphy.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
+> index 9fc5c47be9bd..13d319860da5 100644
+> --- a/drivers/staging/greybus/gbphy.c
+> +++ b/drivers/staging/greybus/gbphy.c
+> @@ -27,7 +27,7 @@ struct gbphy_host {
+>  static DEFINE_IDA(gbphy_id);
+>  
+>  static ssize_t protocol_id_show(struct device *dev,
+> -				 struct device_attribute *attr, char *buf)
+> +				struct device_attribute *attr, char *buf)
+>  {
+>  	struct gbphy_device *gbphy_dev = to_gbphy_dev(dev);
+>  
+> @@ -221,7 +221,7 @@ void gb_gbphy_deregister_driver(struct gbphy_driver *driver)
+>  EXPORT_SYMBOL_GPL(gb_gbphy_deregister_driver);
+>  
+>  static struct gbphy_device *gb_gbphy_create_dev(struct gb_bundle *bundle,
+> -				struct greybus_descriptor_cport *cport_desc)
+> +						struct greybus_descriptor_cport *cport_desc)
+>  {
+>  	struct gbphy_device *gbphy_dev;
+>  	int retval;
+> -- 
+> 2.17.1
+> 
+> 
 
-Unless debugfs is disabled, like on Android, which is the real problem 
-I'm
-trying to solve.
+You sent this 3 different times, why?
 
-Jeff
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Please send a new version, a v2, and say what changed from the previous
+one.
+
+thanks,
+
+greg k-h
