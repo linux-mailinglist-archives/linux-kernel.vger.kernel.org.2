@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C593896A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1008F3896B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhEST3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:29:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55356 "EHLO mail.kernel.org"
+        id S232093AbhESTbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:31:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhEST3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:29:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B05376112F;
-        Wed, 19 May 2021 19:28:15 +0000 (UTC)
+        id S232046AbhESTbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 15:31:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BAAC66135F;
+        Wed, 19 May 2021 19:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621452496;
-        bh=Lk3jBXuZ1fbFKB/aRqyOiK+TZ31lR6R/DqCsZCHeyEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q/MjRkDkEUJHWvk6moJrajtdTG8RF0swjf0bCI4Vdb4EmT6ylLtmd0iZsVEWtUaez
-         N0zDtwsciGX9NKoSSWIW9vXCnlFYTucJ041dkBmZ7e1rJTw6V6L9o1eO4NJoZcwYev
-         qS3DSPd1FpvaSI6Sfiz7ZEO3R3iPhp4J4g+F5HAeK6ySmSFrKH3HtotHWnMZnC7Gx6
-         2tqNDQ5LHLPzEaEYmljAv0QvToq85+lyXOSOCfWls5vVeu302LIjsvszYSWAjCNW6K
-         zEJ5dAIT8tkn2H3SmKz0NmdocR/BdTeZ71PtnhnxszAR309iQRJbOn9qXlzHOWKguW
-         DeYimFe9qtJbA==
-Date:   Wed, 19 May 2021 20:27:30 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v4 2/2] arm64: Create a list of SYM_CODE functions,
- blacklist them in the unwinder
-Message-ID: <20210519192730.GI4224@sirena.org.uk>
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210516040018.128105-3-madvenka@linux.microsoft.com>
+        s=k20201202; t=1621452616;
+        bh=JfAU2s45ELoqRxZp7xQz2g0sSLbLmY/ipoKMOmtwuaE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KvBfOyKa9BaUakVwdNcLsNphaz/IN4iRUH/xUwWSuMh0J2zWUNkU4EnS9JAmH828p
+         jjJtO5eAwuVy5Qod+1wAimWRjTOzTVjDbq+sZsv7ZSBnlojdzs/NBKC87LY0olm1nB
+         fWmHHjFxVQg8zXJcKB+Dr0zOX6iNMiSinssbkRJh3lUKgtlA8PWkXYj6GpWdeDfCZg
+         l2cb2wxEMT0RrslTR3qze6lqsbXQL+j/BmZJQkxBkRsE5Qe9BwRPUTAE8BwcUmgdC/
+         NImpxVMivSjId0xPRnCu+qSXkYdpE0yTEnKsJ2XZVTQgmgSOEmb4cM8pw/FPURJnMh
+         bnIUkAY0kN1YA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B013560CD2;
+        Wed, 19 May 2021 19:30:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MPkR1dXiUZqK+927"
-Content-Disposition: inline
-In-Reply-To: <20210516040018.128105-3-madvenka@linux.microsoft.com>
-X-Cookie: There's no time like the pleasant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/5] net: intel: some cleanups
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162145261671.25646.17755422977690306558.git-patchwork-notify@kernel.org>
+Date:   Wed, 19 May 2021 19:30:16 +0000
+References: <1621404885-20075-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1621404885-20075-1-git-send-email-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        lipeng321@huawei.com, tanhuazhong@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
---MPkR1dXiUZqK+927
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat, May 15, 2021 at 11:00:18PM -0500, madvenka@linux.microsoft.com wrot=
-e:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> The unwinder should check if the return PC falls in any function that
-> is considered unreliable from an unwinding perspective. If it does,
-> mark the stack trace unreliable.
+On Wed, 19 May 2021 14:14:40 +0800 you wrote:
+> This patchset adds some cleanups for intel e1000/e1000e ethernet driver.
+> 
+> Hao Chen (5):
+>   net: e1000: remove repeated word "slot" for e1000_main.c
+>   net: e1000: remove repeated words for e1000_hw.c
+>   net: e1000e: remove repeated word "the" for ich8lan.c
+>   net: e1000e: remove repeated word "slot" for netdev.c
+>   net: e1000e: fix misspell word "retreived"
+> 
+> [...]
 
-Other than the naming issue this makes sense to me, I'll try to go
-through the first patch properly in the next few days.
+Here is the summary with links:
+  - [net-next,1/5] net: e1000: remove repeated word "slot" for e1000_main.c
+    https://git.kernel.org/netdev/net-next/c/4b63b27fc59a
+  - [net-next,2/5] net: e1000: remove repeated words for e1000_hw.c
+    https://git.kernel.org/netdev/net-next/c/e77471f1de0d
+  - [net-next,3/5] net: e1000e: remove repeated word "the" for ich8lan.c
+    https://git.kernel.org/netdev/net-next/c/59398afda176
+  - [net-next,4/5] net: e1000e: remove repeated word "slot" for netdev.c
+    https://git.kernel.org/netdev/net-next/c/800b74a57363
+  - [net-next,5/5] net: e1000e: fix misspell word "retreived"
+    https://git.kernel.org/netdev/net-next/c/0d27895bcbb4
 
---MPkR1dXiUZqK+927
-Content-Type: application/pgp-signature; name="signature.asc"
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmClZqEACgkQJNaLcl1U
-h9B77Qf+M9+zHwxJNPl/vKY7Sle87Tgz3CrLIzIALiGlYZoKR6GmoGp1x+pA8XGw
-M/yVldVJE3DfEwBe5mPKLX+35CbSSyoAzAC00+KV66IwxaDbiAIFAMCtDfMh0tCr
-QFaglXXmWV6g4viO/v2+kpFY9PIhmUzyp3VtFFmaVaIdTmRiLx4+1UAGcmqMMopB
-CRIgjuaf0wsvwnXFQNqMxjrCx1ndY3XTHwRkxX5+06b8vUoIsqbZ1kvhNQz/cu39
-DWSn9OE2R1mIFwhG26yeONdeRUGXSYt7AmyRt7lcXX94v4J77FzrWfxJ5WaJPhz1
-MzcC6sZOVksed1e2vOwEpcDz53Y/gg==
-=+c7T
------END PGP SIGNATURE-----
-
---MPkR1dXiUZqK+927--
