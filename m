@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654C83896D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AB93896D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhESTfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbhESTfq (ORCPT
+        id S232143AbhESTkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:40:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232062AbhESTkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:35:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C015FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wr3Ku9b6p1OcKYD36FL40EcvE+r2U3PE5PB9FmNodEs=; b=mPPtsrhsbyPiTB6GtS0B5RkZh6
-        zT101ItlUS3Q3Eh8iqbahWXPa6CgN7YPLjar/KSdVp3ruNo1QXj8C4mugiTz6DhJQHL6MDtkNeMJp
-        QUJaeZxa/pYXMXQ6ALaFbrBJYBGI1wLWEFRLPHrSk8DkdveV3Hl7ps/Ioz2eVF8xtq/An6CZn9zSV
-        tMSw4QxJJp+I2/ll220djhSGcjOjBZwcJANSwqV7iyugpcKbna7VPFp8fuNcISO6VFN0ZtkA+QeO3
-        gD6gI6TDwEuAtOa8EV03B4Y8Gky6P9nRuS8rsoEsc0FQhqUFL6QmGlVAMMRhNAXuopOK2Pn5/RSa9
-        WvFWA4zA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljRwB-00FFDH-TK; Wed, 19 May 2021 19:33:13 +0000
-Date:   Wed, 19 May 2021 20:32:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/page_alloc: bail out on fatal signal during
- reclaim/compaction retry attempt
-Message-ID: <YKVn69o1UizH0kJD@casper.infradead.org>
-References: <20210519192321.3247175-1-atomlin@redhat.com>
+        Wed, 19 May 2021 15:40:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621453122;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wZPRcVky04T7tQVCJRvLuBv8fJWb/0C7aJ+fxVvIb4U=;
+        b=TY8NpufTV+xDYppCkIxoP1F6mWeREwbyj9JdIRT977HKqnj302qsPlytnqgq2z9XOXGHTJ
+        mhZGu8OYUElEG07dOyjFq/i4j8vaZCE5vyVq2HxfWP0PkOq1XInXKJbgr/VE2mGKQq9xEL
+        hBiFeZsvTLOl6o8pfsp+VHR6mT2UIq4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-400-odATvJdsPM2kuPoKXxG97w-1; Wed, 19 May 2021 15:38:39 -0400
+X-MC-Unique: odATvJdsPM2kuPoKXxG97w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C271501F7;
+        Wed, 19 May 2021 19:38:38 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2FA175D6AC;
+        Wed, 19 May 2021 19:38:38 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 84A5B414860B; Wed, 19 May 2021 16:33:19 -0300 (-03)
+Date:   Wed, 19 May 2021 16:33:19 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>, rostedt@goodmis.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, corbet@lwn.net
+Subject: Re: [RFC] trace: Add option for polling ring buffers
+Message-ID: <20210519193319.GC103930@fuller.cnet>
+References: <20210519175755.670876-1-nsaenzju@redhat.com>
+ <YKVT+sQTgNpCR/Gt@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210519192321.3247175-1-atomlin@redhat.com>
+In-Reply-To: <YKVT+sQTgNpCR/Gt@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 08:23:21PM +0100, Aaron Tomlin wrote:
-> +++ b/mm/page_alloc.c
-> @@ -4252,6 +4252,9 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
->  	if (!order)
->  		return false;
->  
-> +	if (fatal_signal_pending(current))
-> +		goto out;
 
-I think 'goto out' will be confusing.  It'll output a tracepoint, which
-isn't going to record that a fatal signal is pending, so it'll cause
-some head scratching for someone looking through the traces.  I
-think we should just return false here and skip the tracepoint.
+Hi Willy,
 
-But I'd defer to someone like Vlastimil or Michal who know this code far
-better than I do.
+On Wed, May 19, 2021 at 07:07:54PM +0100, Matthew Wilcox wrote:
+> On Wed, May 19, 2021 at 07:57:55PM +0200, Nicolas Saenz Julienne wrote:
+> > To minimize trace's effect on isolated CPUs. That is, CPUs were only a
+> > handful or a single, process are allowed to run. Introduce a new trace
+> > option: 'poll-rb'.
+> 
+> maybe this should take a parameter in ms (us?) saying how frequently
+> to poll?  it seems like a reasonable assumption that somebody running in
+> this kind of RT environment would be able to judge how often their
+> monitoring task needs to collect data.
+
++1 (yes please).
+
+> > [1] The IPI, in this case, an irq_work, is needed since trace might run
+> > in NMI context. Which is not suitable for wake-ups.
+> 
+> could we also consider a try-wakeup which would not succeed if in NMI
+> context?  or are there situations where we only gather data in NMI
+> context, and so would never succeed in waking up?  if so, maybe
+> schedule the irq_work every 1000 failures to wake up.
+
+We'd like to reduce overhead on the isolated (as in isolcpus=) CPUs as 
+much as possible (but yes this option was suggested).
 
