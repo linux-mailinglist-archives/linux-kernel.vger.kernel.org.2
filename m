@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4949389A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8E8389A2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhESX4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhESX4e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:56:34 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA9FC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:55:12 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id q7so20335245lfr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zJt4FvOdaHnERK7zPswPmt+3fi+oS0bIfqgJwwAG+cs=;
-        b=J/puEMOqZ8T7DKVZKypmjoPKYZMTdm7d14F3rAgMbCOnsJToM3PxHQae9wcGe0qK+N
-         1GbFwe+U3EFT1xj8JIqlx8z8eybFL2ZwItzst7aaCoYtGmxQv2XXNupjR0xn4X6k3mF2
-         JSvrhlnnPppLwlydiZfepQUHKVhGW31Q5YRRJkK7zmr7AiLoqTsl4Kf8GR9U22edkAIq
-         sAB8UGa/P2IQr/qz6iKBVH4BFfn1cqMKz9p0CQ20QFCV9+8F0FHaMi0jMop5a4HmH2tq
-         ZB89rgPrhEmrOkDDNwkqKd/gDO05zbaYh3+XmoVpQgCol+MpN+jfG1aFoKGKRZe3Phum
-         GxAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zJt4FvOdaHnERK7zPswPmt+3fi+oS0bIfqgJwwAG+cs=;
-        b=L9ysiFNMn0nr2grkS0wFXcnxv+VTOdxcl8mGNl6KqPVEpsklJEYYi+F6ss+9QKoiQL
-         jdvNnWGqbY+bwgiJZQOq2wL+LbRitcrQbtI+BlPi+X7EN8fACTIuoSSxCiWVeTiAx/B9
-         Z+EQuqZypPQnvXkCWcN8ovXPX6DOt4QTiNVHz/0XWFr1UMEtJlBmSGuilfB5ngxfjxq4
-         Y6bBzlADP5Frv0RdagbeiVE/SrRFS2WnrBN62N8u3mYbafIe2ZsTcJQslEzbrkfZUve9
-         kpiNGWyBVbGGAnhkalt39bWA0wU+MYwiSiUH+66KoxvgLA7bE10c1Djf7Yuj1cnJtvte
-         h1rA==
-X-Gm-Message-State: AOAM530JCv9M8RQ+BZSk6jjjyssZO/X60O4KpW2qPB+1jWXSvnQg/7Vu
-        isAPLkL9Ld/Sl1b1RFDhENhhBHoSr7VlsqlvHBiUxA==
-X-Google-Smtp-Source: ABdhPJyfBZRTzjC/9N+poQDvG5+7aOsGGoNjXyeSwTGurMLagNUJVa7/uQRokc6Sj+EI5moCmHs3OO5kaEMwNq7bjU0=
-X-Received: by 2002:a19:b0b:: with SMTP id 11mr1383425lfl.291.1621468510806;
- Wed, 19 May 2021 16:55:10 -0700 (PDT)
+        id S230236AbhESX4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:56:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:59079 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230159AbhESX4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 19:56:46 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FlqW00JSbz9sXH;
+        Thu, 20 May 2021 09:55:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621468524;
+        bh=ffbmhLlUqrP5dt1Od/JLqnNkwNr1qOYgQ/X4GWp/Vd8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oIAYtGR9gPLv82MA9Zdj9XgajeBcUxQ2452giyLJ8yK8B0E1ioDJVERaUPLk1LAO0
+         HTerr8x7vx/MztHiEtsIVqEB8dmbDuoIQQ0vUcyWrryqPhazWLRoEWpp7PNLlvpm1j
+         GtU8lnI6pEH9VlDdbY/UJFnIsniqltUVIcyahpay+OtkuTrmLc/XDKDKoibaZw+J07
+         SqGgQyUjl/Wor65rOguxK1omyhPFNfPwKVIZjAz1il5dKN45VBoIPBL+ChLq/OacOG
+         E6ccr97cJPZlLQO2E4rMJPPK08DGgVOEQ+K38jxEjVxK9XvBFOQTyzWZOOyskdifIM
+         nnqSZsw2dDrcg==
+Date:   Thu, 20 May 2021 09:55:23 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the v4l-dvb-next tree
+Message-ID: <20210520095523.73d2dc94@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210516061425.8757-1-aardelean@deviqon.com>
-In-Reply-To: <20210516061425.8757-1-aardelean@deviqon.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 20 May 2021 01:55:00 +0200
-Message-ID: <CACRpkdb6Y4j0Pq5B+WaHy6akvczc-1foABFSq=uHpUg9=GL1GQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-stmpe: fully use convert probe to device-managed
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        alexandre.torgue@foss.st.com,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/3l9DJysPU0C=h/LTZi2mYSa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 8:14 AM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
+--Sig_/3l9DJysPU0C=h/LTZi2mYSa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> The driver doesn't look like it can be built as a kmod, so leaks cannot
-> happen via a rmmod mechanism.
-> The remove hook was removed via commit 3b52bb960ec6 ("gpio: stmpe: make
-> it explicitly non-modular").
->
-> The IRQ is registered via devm_request_threaded_irq(), making the driver
-> only partially device-managed.
->
-> In any case all resources should be made device-managed, mostly as a good
-> practice. That way at least the unwinding on error is happening in reverse
-> order (as the probe).
->
-> This change also removes platform_set_drvdata() since the information is
-> never retrieved to be used in the driver.
->
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Hi all,
 
-Nice!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+After merging the v4l-dvb-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Yours,
-Linus Walleij
+drivers/staging/media/hantro/hantro_drv.c: In function 'device_run':
+drivers/staging/media/hantro/hantro_drv.c:165:3: error: label 'err_cancel_j=
+ob' used but not defined
+  165 |   goto err_cancel_job;
+      |   ^~~~
+drivers/staging/media/hantro/hantro_drv.c: At top level:
+drivers/staging/media/hantro/hantro_drv.c:168:2: warning: data definition h=
+as no type or storage class
+  168 |  ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->c=
+locks);
+      |  ^~~
+drivers/staging/media/hantro/hantro_drv.c:168:2: error: type defaults to 'i=
+nt' in declaration of 'ret' [-Werror=3Dimplicit-int]
+drivers/staging/media/hantro/hantro_drv.c:168:24: error: 'ctx' undeclared h=
+ere (not in a function)
+  168 |  ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->c=
+locks);
+      |                        ^~~
+drivers/staging/media/hantro/hantro_drv.c:169:2: error: expected identifier=
+ or '(' before 'if'
+  169 |  if (ret)
+      |  ^~
+drivers/staging/media/hantro/hantro_drv.c:172:2: warning: data definition h=
+as no type or storage class
+  172 |  v4l2_m2m_buf_copy_metadata(src, dst, true);
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/staging/media/hantro/hantro_drv.c:172:2: error: type defaults to 'i=
+nt' in declaration of 'v4l2_m2m_buf_copy_metadata' [-Werror=3Dimplicit-int]
+drivers/staging/media/hantro/hantro_drv.c:172:2: warning: parameter names (=
+without types) in function declaration
+drivers/staging/media/hantro/hantro_drv.c:172:2: error: conflicting types f=
+or 'v4l2_m2m_buf_copy_metadata'
+In file included from drivers/staging/media/hantro/hantro_drv.c:23:
+include/media/v4l2-mem2mem.h:830:6: note: previous declaration of 'v4l2_m2m=
+_buf_copy_metadata' was here
+  830 | void v4l2_m2m_buf_copy_metadata(const struct vb2_v4l2_buffer *out_v=
+b,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/staging/media/hantro/hantro_drv.c:174:5: error: expected '=3D', ','=
+, ';', 'asm' or '__attribute__' before '->' token
+  174 |  ctx->codec_ops->run(ctx);
+      |     ^~
+drivers/staging/media/hantro/hantro_drv.c:175:2: error: expected identifier=
+ or '(' before 'return'
+  175 |  return;
+      |  ^~~~~~
+drivers/staging/media/hantro/hantro_drv.c:177:15: error: expected '=3D', ',=
+', ';', 'asm' or '__attribute__' before ':' token
+  177 | err_cancel_job:
+      |               ^
+drivers/staging/media/hantro/hantro_drv.c:179:1: error: expected identifier=
+ or '(' before '}' token
+  179 | }
+      | ^
+
+Caused by commit
+
+  9454974c75dd ("media: hantro: use pm_runtime_resume_and_get()")
+
+I have used the v4l-dvb-next tree from next-20210519 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/3l9DJysPU0C=h/LTZi2mYSa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmClpWsACgkQAVBC80lX
+0GwHwwf/XSgHiZ93CK+/Rgjp+vjAeoIWtLHg3aAVkXloap2zALa51cm4Aon3Glov
+DaYoxI7c+Q/CHiljkM2BRc6PbCVDqkLDE1BgG43G8ecv22+IwyCgDy/1lf+noKvY
+s/Sy5XjCvktxMlt6U97HfdJkknU84eijLOoqS0fU1nWvF7qIW6sotVahsrcipoJC
+Dp1iaJv+RxJo+1ZWr+mZG9hxRSeITM31WifAZdqn3SzsrTiQbJFLdvcZrVk2U7ND
+EQb7ASo+p39fPrUCErr0/od8Ui0pfvpvTcy1OvUvXLHuzy0/Qk9XOhZdWGar+FBn
+ZWKTfRxZLfARGVdeoJVLquUjxpEWNA==
+=gd7a
+-----END PGP SIGNATURE-----
+
+--Sig_/3l9DJysPU0C=h/LTZi2mYSa--
