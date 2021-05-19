@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E773899EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B023899F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhESXgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
+        id S229976AbhESXju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhESXgS (ORCPT
+        with ESMTP id S229465AbhESXjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:36:18 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8A6C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:34:58 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id c17so11010219pfn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:34:58 -0700 (PDT)
+        Wed, 19 May 2021 19:39:49 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9B9C061574;
+        Wed, 19 May 2021 16:38:28 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id y12so11477722qtx.11;
+        Wed, 19 May 2021 16:38:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0uhGbN9Jog+FC96345EUpiT1u57egVRed342Jt8fST8=;
-        b=aNjrMwksMJuvYFFD9/LdGMHZuoi+Hc0znhC9f+npaoSm5w3MayeaWJG6eXJvcA6NZJ
-         uaPpvdRDWylbu1xgU/zSw3sOKjwJz8jDsZ+1eaAbRJCx2i/1ExqzE1sL0dxppSqlrxSE
-         LuPS8udXRtus1CMFPA5nPaK0dAbDt0jCaDkxOFcr+586HowgCccny6ZvTTH7gjRAcJdh
-         Xk6j9ptvFm8FgPQ4uQQPLJExctRKXIJb0balVMkwwwvo4VJSbsPMsio3n2L6xJ1+uPQG
-         YxB1lCOjnvU8Ea7umWsUSpgf3PB/MJ/X6qZDdhQl+ZNN0ag/ggjyn0hVitLJFUlxWI1P
-         emNA==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bYvAq70vcu8d8pGyPATx8ah1ADtc7dJkYhvzYxavXRM=;
+        b=urDEFU40r0UQnF+J6TaOanLO2fjQHBtA3/GRbwzlS4943VmmmR5neFEU/pDMSCTzEr
+         KviGEzqSD5HOuCwBPJrgM7SO/9qIiCctpeYVdStKO+1kbWH+AWwtUx/iaDPDOiIZFPvU
+         XXu+XBy8xO72tp/S1qvkLO28wi4p6xMtjYcvSYoZt6I009yKdDXTezShht1uS+Sm/LPd
+         zuCWwQ9OvjNx1kFeA4/KCeRKxKTq1PEtXCRfssvkxMHOC2qObjuqlLTyrcaNYjLzuKN8
+         V3MBjBoT+6vyhkkNEaxfoRLxevIDL/KgFuFhOrGKmGXnjOIK/1FRmiNt+rqRh2c5VDVp
+         Uqhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0uhGbN9Jog+FC96345EUpiT1u57egVRed342Jt8fST8=;
-        b=p98kIloeANdlb9nj33NAUqCUre2DQ3F+KsGWBfdxn2Yon4D+G8m7sZ0pslXLznF1zZ
-         xYcRqQKmVq/mFSfIj45bvxUlLUKef3gn0Sp+7WFu3rrR4p6Nl7qeJTAZmSn9PbQtZMnE
-         +4lNG0YNJidSdGF2JiJgf2rBbbcnNPLsNmL84ZIwHvvOtYbAKtfc8dDXNu6xaGYk8Um5
-         WzqekUKfzH2RjHFMruDjzz5gY2DTzx5SNkIfkL1VM5qXYEaGjybmiGk4zX6e0uCffYzV
-         uyXTlkpv2JqXXzfvRTpQIcQlB6ZElVD7c73ckz7uBeanksJLtDAAdrP039wM8hXZ1w/N
-         R77Q==
-X-Gm-Message-State: AOAM530EBebqg+5hQLqWzgtBTul6bFjNXlbgv92j/PCjDdX8bwj87obo
-        Jgj65XpYeVbSbJdYZ9Dwf0lPtw==
-X-Google-Smtp-Source: ABdhPJzyX+o4+rlb3VislTtgDMx/Tino+Lh0mid6nqa4cUEX9wG+d1WVZ9TYnbbrx4h4wUs5B92+cg==
-X-Received: by 2002:a63:6e87:: with SMTP id j129mr1610880pgc.45.1621467297929;
-        Wed, 19 May 2021 16:34:57 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id kk7sm5054384pjb.16.2021.05.19.16.34.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 16:34:57 -0700 (PDT)
-Date:   Wed, 19 May 2021 23:34:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        X86 ML <x86@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 00/11] x86: Support Intel Key Locker
-Message-ID: <YKWgnb/OO5TWmer5@google.com>
-References: <20210514201508.27967-1-chang.seok.bae@intel.com>
- <9f556d3b-49d3-5b0b-0d92-126294ea082d@kernel.org>
- <C08CCADB-864B-48E0-89E0-4BF6841771E8@intel.com>
- <247d9a25-f32f-d01b-61ff-b1966e382907@kernel.org>
- <YKP+1cjRWN/IOEpd@google.com>
- <112f7ceb-d699-fc1e-ea5f-89d505e0d6d8@kernel.org>
+        h=x-gm-message-state:sender:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bYvAq70vcu8d8pGyPATx8ah1ADtc7dJkYhvzYxavXRM=;
+        b=iPtb6M4XyiqtwBdkHkJYGULUwZqef8wcLXZdOX6TSGPC4FGrGalFiQynHFMaupNMn0
+         /cOcWK4VkoFiddMu6MtHeZ+QtLhJv4IuE+kiycjoVu9C5Xth14cxkffZPFe5su9krTO8
+         z0+owVYyyW9bBVuagr0RY9Ynj/wtiefILQxZeHN1UlwLwJ71Fe7fxcZft17BLrj3z3Bu
+         t5WfuqLg9vuFFtFLls2QurnzWcrM4DPKbZcR+F7aWpwYFRUlgme/nz6T4PVJk2QHiXmN
+         Ue/3F68Ta5FgjqXrCgH3u+6x3EvX8dpIXqp/lvZb+gwjRAYAgsCtCCq1zh6Ux1k1xsrM
+         pXBQ==
+X-Gm-Message-State: AOAM532qaoYtGq2rN8iTCsFmBZjJr9s9bAU+L9YlAcydjoej5kIZOU1q
+        0Aa8GdEHFKVGPGPIbiVraDX9PFe+nF0=
+X-Google-Smtp-Source: ABdhPJyok6NfBGLUWlzfH3Zyt5VCWBJLx/2nQ+JPl2O9rlgeyxeZ6hg6aoKbg2k7bF2AFK+JaAEJXA==
+X-Received: by 2002:a05:622a:110e:: with SMTP id e14mr2111137qty.283.1621467507706;
+        Wed, 19 May 2021 16:38:27 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h5sm977708qkg.122.2021.05.19.16.38.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 16:38:27 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 1/5] hwmon: (pmbus/pim4328) Add function for reading
+ direct mode coefficients
+To:     Erik Rosen <erik.rosen@metormote.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519201015.83989-1-erik.rosen@metormote.com>
+ <20210519201015.83989-2-erik.rosen@metormote.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <6319f836-b6ea-96d1-bd84-0b859b5196f0@roeck-us.net>
+Date:   Wed, 19 May 2021 16:38:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <112f7ceb-d699-fc1e-ea5f-89d505e0d6d8@kernel.org>
+In-Reply-To: <20210519201015.83989-2-erik.rosen@metormote.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021, Andy Lutomirski wrote:
-> On 5/18/21 10:52 AM, Sean Christopherson wrote:
-> > On Tue, May 18, 2021, Andy Lutomirski wrote:
-> >> On 5/17/21 11:21 AM, Bae, Chang Seok wrote:
-> >>> First of all, there is an RFC series for KVM [2].
-> >>>
-> >>> Each CPU has one internal key state so it needs to reload it between guest and
-> >>> host if both are enabled. The proposed approach enables it exclusively; expose
-> >>> it to guests only when disabled in a host. Then, I guess a guest may enable it.
-> >>
-> >> I read that series.  This is not a good solution.
-> >>
-> >> I can think of at least a few reasonable ways that a host and a guest
-> >> can cooperate to, potentially, make KL useful.
-> >>
-> >> a) Host knows that the guest will never migrate, and guest delegates
-> >> IWKEY management to the host.  The host generates a random key and does
-> >> not permit the guest to use LOADIWKEY.  The guest shares the random key
-> >> with the host.  Of course, this means that a host key handle that leaks
-> >> to a guest can be used within the guest.
-> > 
-> > If the guest and host share a random key, then they also share the key handle.
-> > And that handle+key would also need to be shared across all guests.  I doubt this
-> > option is acceptable on the security front.
-> > 
+On 5/19/21 1:10 PM, Erik Rosen wrote:
+> Add the function pmbus_read_coefficients to pmbus_core to be able to
+> read and decode the coefficients for the direct format for a certain
+> command and read/write direction.
 > 
-> Indeed.  Oddly, SGX has the exact same problem for any scenario in which
-> SGX is used for HSM-like functionality, and people still use SGX.
+> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+> ---
+>   drivers/hwmon/pmbus/pmbus.h      |  4 ++++
+>   drivers/hwmon/pmbus/pmbus_core.c | 38 ++++++++++++++++++++++++++++++++
+>   2 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
+> index 3968924f8533..a131b253ebf9 100644
+> --- a/drivers/hwmon/pmbus/pmbus.h
+> +++ b/drivers/hwmon/pmbus/pmbus.h
+> @@ -499,6 +499,10 @@ int pmbus_get_fan_rate_cached(struct i2c_client *client, int page, int id,
+>   			      enum pmbus_fan_mode mode);
+>   int pmbus_update_fan(struct i2c_client *client, int page, int id,
+>   		     u8 config, u8 mask, u16 command);
+> +int pmbus_read_coefficients(struct i2c_client *client,
+> +			    struct pmbus_driver_info *info,
+> +			    enum pmbus_sensor_classes sensor_class,
+> +			    u8 command, bool for_reading);
+>   struct dentry *pmbus_get_debugfs_dir(struct i2c_client *client);
+>   
+>   #endif /* PMBUS_H */
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index bbd745178147..14d3d3352aac 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -301,6 +301,44 @@ int pmbus_update_fan(struct i2c_client *client, int page, int id,
+>   }
+>   EXPORT_SYMBOL_NS_GPL(pmbus_update_fan, PMBUS);
+>   
+> +/*
+> + * Read the coefficients for direct mode.
+> + */
+> +int pmbus_read_coefficients(struct i2c_client *client,
+> +			    struct pmbus_driver_info *info,
+> +			    enum pmbus_sensor_classes sensor_class,
+> +			    u8 command, bool for_reading)
+> +{
 
-The entire PRM/EPC shares a single key, but SGX doesn't rely on encryption to
-isolate enclaves from other software, including other enclaves.  E.g. Intel could
-ship a CPU with the EPC backed entirely by on-die cache and avoid hardware
-encryption entirely.
+The way the code is written, we never need to read coefficients for writing.
+With that in mind, I don't think the 'for_reading' parameter is necessary.
 
-> However, I suspect that there will be use cases in which exactly one VM
-> is permitted to use KL.  Qubes might want that (any Qubes people around?)
+Guenter
+
+> +	int rv;
+> +	union i2c_smbus_data data;
+> +	s8 R;
+> +	s16 m, b;
+> +
+> +	data.block[0] = 2;
+> +	data.block[1] = command;
+> +	data.block[2] = for_reading ? 0x01 : 0x00;
+> +
+> +	rv = i2c_smbus_xfer(client->adapter, client->addr, client->flags,
+> +			    I2C_SMBUS_WRITE, PMBUS_COEFFICIENTS,
+> +			    I2C_SMBUS_BLOCK_PROC_CALL, &data);
+> +
+> +	if (rv < 0)
+> +		return rv;
+> +
+> +	if (data.block[0] != 5)
+> +		return -EIO;
+> +
+> +	m = data.block[1] | (data.block[2] << 8);
+> +	b = data.block[3] | (data.block[4] << 8);
+> +	R = data.block[5];
+> +	info->m[sensor_class] = m;
+> +	info->b[sensor_class] = b;
+> +	info->R[sensor_class] = R;
+> +
+> +	return rv;
+> +}
+> +EXPORT_SYMBOL_GPL(pmbus_read_coefficients);
+
+EXPORT_SYMBOL_NS_GPL(pmbus_read_coefficients, PMBUS);
+
+> +
+>   int pmbus_read_word_data(struct i2c_client *client, int page, int phase, u8 reg)
+>   {
+>   	int rv;
+> 
+
