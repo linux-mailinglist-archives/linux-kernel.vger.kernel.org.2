@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8C738925E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C762389262
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354553AbhESPTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:19:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354390AbhESPTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:19:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC95611B0;
-        Wed, 19 May 2021 15:17:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621437478;
-        bh=c+IEVTunFe30w7ogB/IAN3huK2t9VfW9QwLl3VpCa08=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nf1qUo57ru5boOQUeQi6aZRa+idhytrYYWQBsMIh0N76Pv9ZELRHmFnK01Xu3q2/6
-         MB6JrKgYdO2D6etejTV1zfK2BJmiS0XNkSz2f+HfWQmH2lc004fqqNkgn/vpcdAAgF
-         qepnKyQZPQrUSk13bwr0+u054K1h6PZmnGuo+Zh2zkmzPOyNdGSEqBqg902bo/Q+o4
-         +TjRt4gILLbdY/OhH1m8VuoRdoR2ZPzdN4r+RvOkNFWEI0NU/nEU0s2OEREzaEpSNC
-         2qBgU0xveUp1R6FzjaCn1u/o4wsne77m8hqm0me9Lp/9gtqqAFkMe4fq13pICszSsR
-         tKh4WJyfdSrlw==
-Received: by mail-ed1-f51.google.com with SMTP id h16so15810444edr.6;
-        Wed, 19 May 2021 08:17:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531Ghrsi5XUJwgjKacreSvjGsN5AlzLL+Zcbf/w9fnzuxAyXSRb8
-        cMVFk1dZKvxA9eDGxtvTDqeMChxNtRs/+aLeHQ==
-X-Google-Smtp-Source: ABdhPJwOYwVtRLx9sKZdict2H1FAMFQvZK2Ew7pbG3fTyjBtHO+tC9tIIgY6UaUnSE+9VfiPaZ5PHom5bkNsTthHsFs=
-X-Received: by 2002:a05:6402:124b:: with SMTP id l11mr15226813edw.137.1621437476871;
- Wed, 19 May 2021 08:17:56 -0700 (PDT)
+        id S1354461AbhESPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231823AbhESPUI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:20:08 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D977C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:18:48 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id w12so8079490edx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2+/4m4rfJ/qusBu6xKLeqSfoq/WhFXeBjZFbets1dms=;
+        b=L1dTZ/cejTl+mgSkbTA6g3xoBK1uVV3OJBQYenHp/RsDHmtHbJH61VtRY/tS2t9i2v
+         6rG/tuZPjwK1A36hZ+ZFrO02elZzCn0m6ck3ZEXouML3ey2StNCu3+0X7DXjif36uQGj
+         1D0bU8X/8Sx9Y+dqTtv51adgzo5SWy1LVnKIN2qg6D6Tc/OTHkw3sQQiyOLnPp+hWGMc
+         CH2HLX/oWClPhnOEH0OiBAtPOukmLfjLyQIR2fApxy0sqctGF0OUvNi3xBcJX4lAXdIG
+         OB3zli27dx9nzBvlk936qedg9Y//j1IiyOMJWaCzkvGJplG6k3DLinY5tU5hP8CldXVc
+         b/nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2+/4m4rfJ/qusBu6xKLeqSfoq/WhFXeBjZFbets1dms=;
+        b=qEDlLgycx3tMZ5zWQxzcnLqvRu6eYx7sTd4WaPIWizgJ9QjgYs3DkHO9QHEvbPy1BF
+         KIUXcGLn0DPck7W29cAQGoKOh4xCt0j+WzUjd2Yqver/xXsSCJUOL0gLZQoGuqsngC2U
+         N7Xr1Ud3PzixL4sA9FqKLl6k8zKOedv8WICSQFKoj2TShTJP0i+/OENJnDEfOXWa44lX
+         a75DCbM6R0F2M5CQqV9G+93IVb3oLBWraYFWzfFIu8U6FWln+NWETpJoFVnwCl8zuNPh
+         OCvC7eHizK4Uu0yy0LiIyLu9h7h7NdXUu8JHDA80ings+rCyuvHju4mLTTX8yux/m9g9
+         K2BQ==
+X-Gm-Message-State: AOAM531WPZ1h4qSpXJ5MqfCYayfkVnevjnECPER4HhJcbva3V5+5+Wen
+        xo4cEXKk3k7vcb9rm+op7guVuUyU1YJD42hljFDi
+X-Google-Smtp-Source: ABdhPJweTp1Zx0DSC45lRP2AIkDyyygfjOr7HW1yUjrFHA4wGjuIWy4HGyTLZRX5S/SFeMSmMrf9Vm79x2hCKHCyc3E=
+X-Received: by 2002:aa7:c349:: with SMTP id j9mr15031390edr.135.1621437526510;
+ Wed, 19 May 2021 08:18:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210512122346.9463-1-jbx6244@gmail.com> <162101023435.2009214.882597722137585064.b4-ty@sntech.de>
-In-Reply-To: <162101023435.2009214.882597722137585064.b4-ty@sntech.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 19 May 2021 10:17:44 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLbumF-x8yAO2C5wTG5cDpVmgFdqADrEDguQ-ZidMj25g@mail.gmail.com>
-Message-ID: <CAL_JsqLbumF-x8yAO2C5wTG5cDpVmgFdqADrEDguQ-ZidMj25g@mail.gmail.com>
-Subject: Re: (subset) [PATCH v5 0/4] convert grf.txt to YAML
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Johan Jonker <jbx6244@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-phy@lists.infradead.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Vinod <vkoul@kernel.org>, Shawn Lin <shawn.lin@rock-chips.com>,
-        David Wu <david.wu@rock-chips.com>,
-        Liang Chen <cl@rock-chips.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Tao Huang <huangtao@rock-chips.com>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Jianqun Xu <jay.xu@rock-chips.com>
+References: <20210519113058.1979817-1-memxor@gmail.com>
+In-Reply-To: <20210519113058.1979817-1-memxor@gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 19 May 2021 11:18:35 -0400
+Message-ID: <CAHC9VhS=PDxx=MzZnGGNLwo-o5Og-HGZe84=+BBtBCZgaGSn4A@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Create io_uring fd with ephemeral inode
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     io-uring@vger.kernel.org, Pavel Emelyanov <xemul@openvz.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:37 AM Heiko Stuebner <heiko@sntech.de> wrote:
+On Wed, May 19, 2021 at 7:37 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Wed, 12 May 2021 14:23:42 +0200, Johan Jonker wrote:
-> > Changed V5:
-> >   changed compatibles for rk3066/rk3188
-> >   add rockchip-usb-phy.yaml
-> >   move and restyle grf nodes rk3066/rk3188
-> >   remove applied patches
-> >
-> > Changed V4:
-> >   revert separate schemas for each 'if' subset
-> >   add additionalProperties
-> >   move properties to top level
-> >
-> > [...]
+> This set converts io_uring to use secure anon_inodes (with a newly allocated
+> non-S_PRIVATE inode) for each individual instance. In addition to allowing LSM
+> modules to enforce policy using the inode context, it also enables
+> checkpoint/restore usecases by allowing mapping the VMA to the open fd in a
+> task. Offset is already available to determine rings mapped per region, so this
+> was the only missing piece in establishing region <-> io_uring instance mapping.
 >
-> Applied, thanks!
->
-> [2/4] dt-bindings: soc: rockchip: convert grf.txt to YAML
->       commit: f2ffa8f9e32d38f5c37e3c61c5b02d434057f3db
+> LSM tie up has been left out of this set for now.
 
-Patch 1 is a dependency of this, so now linux-next is broken.
+This brings to light something I have been trying to resolve for a
+little while now, but I have been finding it difficult to find the
+necessary time due to competing priorities at work and in my personal
+time.  While the patches in this patchset are a necessary dependency,
+there are other issues which remain unresolved but which are now
+public (although the problems were not buried very far in the first
+place).  Further complicating things on my end is that the system with
+my current work-in-progress patchset was taken offline two days ago
+and my office is under renovations :/
 
-> [3/4] ARM: dts: rockchip: move and restyle grf nodes rk3066/rk3188
->       commit: a082a4ba218457fd52256e4357184b58d3fcaa49
-> [4/4] arm64: dts: rename grf-gpio nodename in rk3328.dtsi
->       commit: 19486fe587b8ed17daf87a6419b51e3a65ce565c
->
-> Best regards,
-> --
-> Heiko Stuebner <heiko@sntech.de>
+Give me a day or two to get the patches off that system and I'll post
+them here and we can start the process of kicking around solutions
+that work for everyone.
+
+-- 
+paul moore
+www.paul-moore.com
