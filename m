@@ -2,166 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE86B38898B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AFC38898E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245336AbhESIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:37:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39603 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238704AbhESIhP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:37:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621413356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kBWJsOxt7zpLvOsF815LxI3UC9m1OTmAuh6Ryt/JE9E=;
-        b=aJiLDYoWln0YjONM3y6y9dgHjQC72HonGUEZeonmZDgXI3Z1nI+4Y8ZnOLlJWQiS5M6b1G
-        0aq3Eyuq4P7EsuxdOaMBvUYU4xe1wsIHmxV3QTJUvrYw0fOSRwrgcBY9na8/O1mKrxc0ja
-        xAugJs395DXwAgAU4Zf5GKyHA5UvXGc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-BXnwo6gUP8aqATrSWTbSrA-1; Wed, 19 May 2021 04:35:54 -0400
-X-MC-Unique: BXnwo6gUP8aqATrSWTbSrA-1
-Received: by mail-wr1-f71.google.com with SMTP id j33-20020adf91240000b029010e4009d2ffso6867199wrj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 01:35:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kBWJsOxt7zpLvOsF815LxI3UC9m1OTmAuh6Ryt/JE9E=;
-        b=gWLrkPNFRabDpuzk27zTBGqIud+961l1Hbj5zGBbMWDbbi+acWStMbloNyjNEWMxuf
-         StTgJ3gghIQgX4YS1B2txM48MDCh2hDHBmzilvynTvYJpibunKzn5xYF0xyyPkLkmKo+
-         Bj2s4hSUNp8qbd4PgenKkAmBN8Vei2Knn4rmnJa/k1BcTBLBpJfO81NL1q7j4/npZ6jk
-         5PxtlkMTtw0hxPv+2tiBSqrWn2tLB7HsLOsixKaDACKAQMM0g2kjwNb3in4gfxOHUxnS
-         VYEh0BN/7o6RGlyh6ZJ3M/Gyzj1XhkHFkARYQ1CWTfCECkHmSE71fSeDZJDURC2yJGds
-         QmuA==
-X-Gm-Message-State: AOAM531zEE9Vr0TegL9WUqn+32kB2YdjGZPab3l26G7bckLaIjFhfkAC
-        gaHGYsJ2TifI91jP6cGlTxgqR9+CWJZiWarfyqK6fgfrgw3JOlphL6sH2XXhh/YfQo8XES93CXp
-        rPkJMjVCXxUgkSMi9f3bn8EQG
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr12654209wrq.44.1621413352511;
-        Wed, 19 May 2021 01:35:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwnuhdYturThgXAIn2AgmdXSkMy9No+V7eGDQOMjqtANuqtHMvDVHRKxvBEyVM2mlWEq2nttw==
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr12654194wrq.44.1621413352319;
-        Wed, 19 May 2021 01:35:52 -0700 (PDT)
-Received: from redhat.com ([2a10:800c:1fa6:0:3809:fe0c:bb87:250e])
-        by smtp.gmail.com with ESMTPSA id y2sm5892806wmq.45.2021.05.19.01.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 01:35:51 -0700 (PDT)
-Date:   Wed, 19 May 2021 04:35:48 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Dave Taht <dave.taht@gmail.com>
-Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: virtio_net: BQL?
-Message-ID: <20210519043201-mutt-send-email-mst@kernel.org>
-References: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
- <CAA93jw6LUAnWZj0b5FvefpDKUyd6cajCNLoJ6OKrwbu-V_ffrA@mail.gmail.com>
+        id S245403AbhESIi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:38:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238704AbhESIi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:38:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62252610CD;
+        Wed, 19 May 2021 08:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621413457;
+        bh=42jHPdHTkUweJs1MDa9H85cTfFhXcODaLcoN6NjoWmU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FDuBxRg0lDapNQCSnB3UXjDoYfrb5QiVXYxC6VArfFb19bP41kP7YVKSTjJYeyU9c
+         RHUfNru2A83CvJRZcLCbG3/bqHEyAYcm6NSm3ukJuq0939nAx+Enq02JM32nlhtnoN
+         tGJ/D4A1CGIpqyDjS8oVreSgvf0NpffQs/uHkiNSQRgwBw1FGqOlmP66EncdWADxcB
+         GAh+rZO+GVQMhXsJWV1CK/JeDDMngoC47Ch0rG+YMHkHKmgR7C4ppSuY06N+JgMcue
+         CI6s8xrYM0NZ9O7DtskPzpHOQz0grz3pzCboBQDphtcYmXrTZv31IvARjqq1YQcDfV
+         U8+y9W+PljD/w==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Subject: [PATCH rdma-rc v2] RDMA/core: Sanitize WQ state received from the userspace
+Date:   Wed, 19 May 2021 11:37:31 +0300
+Message-Id: <ac41ad6a81b095b1a8ad453dcf62cf8d3c5da779.1621413310.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA93jw6LUAnWZj0b5FvefpDKUyd6cajCNLoJ6OKrwbu-V_ffrA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:43:43AM -0700, Dave Taht wrote:
-> Not really related to this patch, but is there some reason why virtio
-> has no support for BQL?
+From: Leon Romanovsky <leonro@nvidia.com>
 
-So just so you can try it out, I rebased my old patch.
-XDP is handled incorrectly by it so we shouldn't apply it as is,
-but should be good enough for you to see whether it helps.
-Completely untested!
+The mlx4 and mlx5 implemented differently the WQ input checks.
+Instead of duplicating mlx4 logic in the mlx5, let's prepare
+the input in the central place.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+The mlx5 implementation didn't check for validity of state input.
+It is not real bug because our FW checked that, but still worth to fix.
 
+Fixes: f213c0527210 ("IB/uverbs: Add WQ support")
+Reported-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Changelog:
+v2:
+ * Extended commit message
+v1: https://lore.kernel.org/lkml/0433d8013ed3a2ffdd145244651a5edb2afbd75b.1621342527.git.leonro@nvidia.com
+ * Removed IB_WQS_RESET state checks because it is zero and wq states
+   declared as u32, so can't be less than IB_WQS_RESET.
+v0: https://lore.kernel.org/lkml/932f87b48c07278730c3c760b3a707d6a984b524.1621332736.git.leonro@nvidia.com
+---
+ drivers/infiniband/core/uverbs_cmd.c | 21 +++++++++++++++++++--
+ drivers/infiniband/hw/mlx4/qp.c      |  9 ++-------
+ drivers/infiniband/hw/mlx5/qp.c      |  6 ++----
+ 3 files changed, 23 insertions(+), 13 deletions(-)
 
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 7be93ca01650..4bfb682a20b2 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -556,6 +556,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 			kicks = 1;
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 4f890bff80f8..c6f53d894411 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -3084,12 +3084,29 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
+ 	if (!wq)
+ 		return -EINVAL;
+ 
+-	wq_attr.curr_wq_state = cmd.curr_wq_state;
+-	wq_attr.wq_state = cmd.wq_state;
+ 	if (cmd.attr_mask & IB_WQ_FLAGS) {
+ 		wq_attr.flags = cmd.flags;
+ 		wq_attr.flags_mask = cmd.flags_mask;
  	}
- out:
-+	/* TODO: netdev_tx_completed_queue? */
- 	u64_stats_update_begin(&sq->stats.syncp);
- 	sq->stats.bytes += bytes;
- 	sq->stats.packets += packets;
-@@ -1376,7 +1377,7 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
- 	return stats.packets;
- }
- 
--static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
-+static void free_old_xmit_skbs(struct netdev_queue *txq, struct send_queue *sq, bool in_napi)
- {
- 	unsigned int len;
- 	unsigned int packets = 0;
-@@ -1406,6 +1407,8 @@ static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
- 	if (!packets)
- 		return;
- 
-+	netdev_tx_completed_queue(txq, packets, bytes);
 +
- 	u64_stats_update_begin(&sq->stats.syncp);
- 	sq->stats.bytes += bytes;
- 	sq->stats.packets += packets;
-@@ -1434,7 +1437,7 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
- 
- 	if (__netif_tx_trylock(txq)) {
- 		virtqueue_disable_cb(sq->vq);
--		free_old_xmit_skbs(sq, true);
-+		free_old_xmit_skbs(txq, sq, true);
- 
- 		if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 			netif_tx_wake_queue(txq);
-@@ -1522,7 +1525,7 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 	txq = netdev_get_tx_queue(vi->dev, index);
- 	__netif_tx_lock(txq, raw_smp_processor_id());
- 	virtqueue_disable_cb(sq->vq);
--	free_old_xmit_skbs(sq, true);
-+	free_old_xmit_skbs(txq, sq, true);
- 
- 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 		netif_tx_wake_queue(txq);
-@@ -1606,10 +1609,11 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct netdev_queue *txq = netdev_get_tx_queue(dev, qnum);
- 	bool kick = !netdev_xmit_more();
- 	bool use_napi = sq->napi.weight;
-+	unsigned int bytes = skb->len;
- 
- 	/* Free up any pending old buffers before queueing new ones. */
- 	virtqueue_disable_cb(sq->vq);
--	free_old_xmit_skbs(sq, false);
-+	free_old_xmit_skbs(txq, sq, false);
- 
- 	if (use_napi && kick)
- 		virtqueue_enable_cb_delayed(sq->vq);
-@@ -1638,6 +1642,8 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 		nf_reset_ct(skb);
- 	}
- 
-+	netdev_tx_sent_queue(txq, bytes);
++	if (cmd.attr_mask & IB_WQ_CUR_STATE) {
++		if (cmd.curr_wq_state > IB_WQS_ERR)
++			return -EINVAL;
 +
- 	/* If running out of space, stop queue to avoid getting packets that we
- 	 * are then unable to transmit.
- 	 * An alternative would be to force queuing layer to requeue the skb by
-@@ -1653,7 +1659,7 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 		if (!use_napi &&
- 		    unlikely(!virtqueue_enable_cb_delayed(sq->vq))) {
- 			/* More just got used, free them then recheck. */
--			free_old_xmit_skbs(sq, false);
-+			free_old_xmit_skbs(txq, sq, false);
- 			if (sq->vq->num_free >= 2+MAX_SKB_FRAGS) {
- 				netif_start_subqueue(dev, qnum);
- 				virtqueue_disable_cb(sq->vq);
++		wq_attr.curr_wq_state = cmd.curr_wq_state;
++	} else {
++		wq_attr.curr_wq_state = wq->state;
++	}
++
++	if (cmd.attr_mask & IB_WQ_STATE) {
++		if (cmd.wq_state > IB_WQS_ERR)
++			return -EINVAL;
++
++		wq_attr.wq_state = cmd.wq_state;
++	} else {
++		wq_attr.wq_state = wq_attr.curr_wq_state;
++	}
++
+ 	ret = wq->device->ops.modify_wq(wq, &wq_attr, cmd.attr_mask,
+ 					&attrs->driver_udata);
+ 	rdma_lookup_put_uobject(&wq->uobject->uevent.uobject,
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 92ddbcc00eb2..2ae22bf50016 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -4251,13 +4251,8 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
+ 	if (wq_attr_mask & IB_WQ_FLAGS)
+ 		return -EOPNOTSUPP;
+ 
+-	cur_state = wq_attr_mask & IB_WQ_CUR_STATE ? wq_attr->curr_wq_state :
+-						     ibwq->state;
+-	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
+-
+-	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
+-	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
+-		return -EINVAL;
++	cur_state = wq_attr->curr_wq_state;
++	new_state = wq_attr->wq_state;
+ 
+ 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
+ 		return -EINVAL;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index d984b451c379..becd250388af 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -5483,10 +5483,8 @@ int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
+ 
+ 	rqc = MLX5_ADDR_OF(modify_rq_in, in, ctx);
+ 
+-	curr_wq_state = (wq_attr_mask & IB_WQ_CUR_STATE) ?
+-		wq_attr->curr_wq_state : wq->state;
+-	wq_state = (wq_attr_mask & IB_WQ_STATE) ?
+-		wq_attr->wq_state : curr_wq_state;
++	curr_wq_state = wq_attr->curr_wq_state;
++	wq_state = wq_attr->wq_state;
+ 	if (curr_wq_state == IB_WQS_ERR)
+ 		curr_wq_state = MLX5_RQC_STATE_ERR;
+ 	if (wq_state == IB_WQS_ERR)
+-- 
+2.31.1
 
