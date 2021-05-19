@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD689389225
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BC538922D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348497AbhESPDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242412AbhESPDB (ORCPT
+        id S242412AbhESPG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:06:26 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12666 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233074AbhESPGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:03:01 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5909C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:01:41 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id n2so14448314wrm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=c0+Rd0cN2Kxw3wKjuJyw1Wk3NaAqV4eEJpjpMHxfUv4=;
-        b=kcd3FqRM5X5eqTTvuyfAWPDoWUsD4/bk52rm15XClI+2cg1leIUR+vrZb8DKHOe6VY
-         iyHIvTrO3o+gR8f9WPl2A/EIHVM8YjcxIGtgYEZTxq+nXfjbcW/QVD5xI+8o5GKpimwT
-         3rX4OSoTVYwIBrPreaRPlWF4JA86oGbujIuK6u2i/xvHLO8/BObruVW0yC92P1TohZYa
-         +VA/RNi3hY88h/dvLwhsIW/swdFXWrxAG4P9T3gk7q31a3suE4L+2vT2b1qS126/P9Gm
-         JgaNg0sCOu75FiikrKvhJzQg6XGEjpzPf7D6FIUDUDaLg4taods3VzxYs3q+LMhYv2Kv
-         /GMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=c0+Rd0cN2Kxw3wKjuJyw1Wk3NaAqV4eEJpjpMHxfUv4=;
-        b=DybxJsYGFZDjW6TDNUzsyq7Zd+/WvFSG3sk5MIxTwjRjpvtdiA5waHFZUTvWNSKEG3
-         r9r9XvKBy0EWsLqYrrlCKtCYYPDgsUrMCtSkBR1uqvo2UWXoX8j+Zep3KhtI02ypxBKA
-         mY5o8m0y9VmJTzmQK8WGlm6AOKuctjIT5nTDknLTZ4ljlUszNFA/S1TAcivV3+xUfSif
-         rSHdbTJbO3uQ6AbHisCNCZtGX7sGtQz0qDwObdIb0aCjbwO0s0a7+KM9yTHB4QVVyriT
-         wgzH7zIEwAiYv56R+jXHAGg1oEfLQU3A4nEZxF8amfB2qO0/hzXhYr/OqTeBWmgERrco
-         mJRA==
-X-Gm-Message-State: AOAM531dgwliTVYEsMjsrQ/UC5jpqgL0bhb4SguCipEhAFRHNYPj4iD/
-        OReyoeIhiBnT7c7NVYBZQfFS5g6enF0yVg==
-X-Google-Smtp-Source: ABdhPJy7knz9TUpnkbC+wqZIWQaUoocLsIedqxu7VoxDQCx+5R5XOPgJt/z9xw6/DeDVn71JvZHbeg==
-X-Received: by 2002:adf:eacf:: with SMTP id o15mr1448508wrn.219.1621436500429;
-        Wed, 19 May 2021 08:01:40 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id a23sm9890212wrc.22.2021.05.19.08.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 08:01:40 -0700 (PDT)
-Date:   Wed, 19 May 2021 16:01:38 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 02/17] mfd: axp20x: Allow AXP 806 chips without
- interrupt lines
-Message-ID: <20210519150138.GK2549456@dell>
-References: <20210519104152.21119-1-andre.przywara@arm.com>
- <20210519104152.21119-3-andre.przywara@arm.com>
+        Wed, 19 May 2021 11:06:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621436703; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=mbm/KQC14is0rErwVc62s6au2BQPmhOMig0Vh7EVlik=;
+ b=YG89gierrGnOs6t8cExoJSs8xMPS2R3RzLZEaoDqN+81MO2TSEFmc/Di6sH4TCDlJHJO8qrB
+ mZmEfDUhxFqdD2P4yH4MZQ/9NOl1PYrYwNIR3gMksar883LgCRn+vbyLDNb3+5SxTLXrVeV3
+ Qfc03kXsAI9qX2mi9CzqKyikVGg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60a5291b2bff04e53b2d3be6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 15:04:59
+ GMT
+Sender: jjohnson=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AB02CC4338A; Wed, 19 May 2021 15:04:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jjohnson)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1F866C433D3;
+        Wed, 19 May 2021 15:04:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210519104152.21119-3-andre.przywara@arm.com>
+Date:   Wed, 19 May 2021 08:04:59 -0700
+From:   Jeff Johnson <jjohnson@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jjohnson=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v2] b43: don't save dentries for debugfs
+In-Reply-To: <YKScfFKhxtVqfRkt@kroah.com>
+References: <20210518163304.3702015-1-gregkh@linuxfoundation.org>
+ <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
+ <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
+ <YKScfFKhxtVqfRkt@kroah.com>
+Message-ID: <2eb3af43025436c0832c8f61fbf519ad@codeaurora.org>
+X-Sender: jjohnson@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021, Andre Przywara wrote:
-
-> Currently the AXP chip requires to have its IRQ line connected to some
-> interrupt controller, and will fail probing when this is not the case.
+On 2021-05-18 22:05, Greg Kroah-Hartman wrote:
+> On Tue, May 18, 2021 at 03:00:44PM -0700, Jeff Johnson wrote:
+>> On 2021-05-18 12:29, Jeff Johnson wrote:
+>> Would still like guidance on if there is a recommended way to get a
+>> dentry not associated with debugfs.
 > 
-> On a new Allwinner SoC (H616) there is no NMI pin anymore, and at
-> least one board does not connect the AXP's IRQ pin to anything else,
-> so the interrupt functionality of the AXP chip is simply not available.
+> What do you exactly mean by "not associated with debugfs"?
 > 
-> Check whether the interrupt line number returned by the platform code is
-> valid, before trying to register the irqchip. If not, we skip this
-> registration, to avoid the driver to bail out completely.
-> Also we need to skip the power key functionality, as this relies on
-> a valid IRQ as well.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  drivers/mfd/axp20x.c | 24 +++++++++++++++++-------
->  1 file changed, 17 insertions(+), 7 deletions(-)
+> And why are you passing a debugfs dentry to relay_open()?  That feels
+> really wrong and fragile.
 
-Applied, thanks.
+I don't know the history but the relay documentation tells us:
+"If you want a directory structure to contain your relay files,
+you should create it using the host filesystem’s directory
+creation function, e.g. debugfs_create_dir()..."
 
+So my guess is that the original implementation followed that
+advice.  I see 5 clients of this functionality, and all 5 pass a
+dentry returned from debugfs_create_dir():
+
+drivers/gpu/drm/i915/gt/uc/intel_guc_log.c, line 384
+drivers/net/wireless/ath/ath10k/spectral.c, line 534
+drivers/net/wireless/ath/ath11k/spectral.c, line 902
+drivers/net/wireless/ath/ath9k/common-spectral.c, line 1077
+kernel/trace/blktrace.c, line 549
+
+Jeff
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
