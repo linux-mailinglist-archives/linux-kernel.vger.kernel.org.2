@@ -2,137 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E73A388FB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E839388FBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346740AbhESOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:01:41 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:37055 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231627AbhESOBf (ORCPT
+        id S1346826AbhESODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240179AbhESODQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:01:35 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id D83391ABB;
-        Wed, 19 May 2021 10:00:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 19 May 2021 10:00:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=B
-        nbndRIlPAC3lNeO9HvB61BMifoaS36zuFiF7bSK8+M=; b=SYuHWtQQIXUFRy9jc
-        eIUVW/RWqSETHBJpPO4r+fILVJQS6oiPyXpBBX6kxmDUplHeLRsf3uHf6kw3wOLy
-        K0Q100BPJoIEtBES3ax44LBi4lE42QUeuCxkgYVipYZ+BFOakFSgwIX0G1YJbysF
-        9FT4A8jVM5oqyvNjYX5Tga53ucFL/3/Zf4dc+G3QwCyg4okcWTNfu/Ejasqx0s9a
-        0gMLhGfBUTtVePHH6aaD1n/Z5AlMRE5pXm81tP1GkqdSTTztYwI+BmE/lbxRyqam
-        Xn7P2oFj4xc20VPtSfWV8fPaH9H+WXFLpFTpFoj57LzfBiCF1lBM18M2mobeWa3L
-        Sg5gQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=BnbndRIlPAC3lNeO9HvB61BMifoaS36zuFiF7bSK8
-        +M=; b=VsnZbaYLVkTd+xhU+lKOFvaamQ8+9Xj1x5glGITkpg5n8oCZn5g2x7giz
-        Z6VZsrfITcJSF3nd+znmRYzTKnBUE4mhk8QBz9aevWhZ6928/ksjsJ02lw0Wy5OM
-        250yV/rvgClyJ37V0brRBT61L6LR0hmpFmV/IGqcPrEi4B61XuXethlZIQaOJzCE
-        oXryvP3YaO2qJda0+H+EQoGD08oUJwxiTy/0omyWCpyVfvCmBWdVmFZ7bfGEjJr8
-        yO4tfoEQRMgjB/9DS/z8pml1aoMyid7ZElwoaFFmQGF1MSgBIfZbtysh1e/wV07o
-        3r60NbzeQyXlFuaR7BXOo0+d3YCtQ==
-X-ME-Sender: <xms:7RmlYJovhPjvq_B4bZ5QZ80rvuMt0QzrA_xvTjzxDhcl2H1STJx3UQ>
-    <xme:7RmlYLq8-kisLsC3VO1lY57H9KYhiJtK-2ReB1hj6j_7Xtui0Ea_lfryIZ_gJjl_t
-    mfVLUJqdhdsGtBQnfw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeiledgieelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefuvfhfhffkffgfgggjtgfgsehtke
-    ertddtfeftnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludeitddvkeffge
-    fgueekjeegfeefteelgffhkeffueetieejgeehhfeuffdvnecukfhppeefledrudeggedr
-    geehrddvleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:7RmlYGPPKZeiTr_lJoq2-4DHnr1bdHXJBpkgSFeEh9ZP11VWvhzBfQ>
-    <xmx:7RmlYE6rRzulUAtxJlVBEQ1_9CUBozV_qOD3DM6z4YLERBc39dXGwg>
-    <xmx:7RmlYI7Il21e3jf5MMY3bWBMtzLexT639F7-uAYRCcad0ajPcQM1GQ>
-    <xmx:7hmlYIEZclFlns8CKTfoFuQXFNrw-ge2tXJd2WC5f1JZmzn_ngL7RQ>
-Received: from [192.168.143.245] (unknown [39.144.45.29])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 19 May 2021 10:00:11 -0400 (EDT)
-Subject: Re: [PATCH] arch/mips/boot/compressed/string.c: Fix build warnings
-To:     zhaoxiao <zhaoxiao@uniontech.com>, tsbogend@alpha.franken.de
-Cc:     paul@crapouillou.net, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210519084405.27364-1-zhaoxiao@uniontech.com>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <8d01b52e-6687-a624-6a76-97b4b71d999e@flygoat.com>
-Date:   Wed, 19 May 2021 22:00:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <20210519084405.27364-1-zhaoxiao@uniontech.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Wed, 19 May 2021 10:03:16 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226DAC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:01:56 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id h11so12290164ili.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fatalsyntax-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
+         :message-id:in-reply-to;
+        bh=l0qnOBDAqFxbAl4A/tgruJXdRSPfyXeqpxkVnrjpsLU=;
+        b=BCE33qPApN0PgECWGnTxif8soc0GJNwskBzJc2K+CfySp9KdVw+UmXMVjPygm2rZhM
+         Re+pomhsghUP0srqeVuGY7acL1TKrvkHdrjBNTVKpjCHzdYdFk6e3J1r/7KzIra98cE3
+         Fw/sZdGmTeH04OeqHDJDdybGLBPujMVL12Erac1vWa3kut1MsqhQlaIBbakHUTpUwhym
+         Oh9hwaF5ZTCYygHxsLxT1U4WQI0LrPGJdzAVfAboM8jaySEkr6t2kYgO+3l0Qt43CV6H
+         RPX/EkPXpjOLs/B/c6NkQHtCIt6alzO6DZ96iiBbbBbCZ8NBi0JyXMSt5D0tdd5LEovM
+         /d7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
+         :subject:from:to:date:message-id:in-reply-to;
+        bh=l0qnOBDAqFxbAl4A/tgruJXdRSPfyXeqpxkVnrjpsLU=;
+        b=X3icp7W4nN6XFWKQHalV1CAqm+/EpkvBXVEHm78qBkZxob/GdenG3ySJIM2cG1p8gu
+         STxoCShpHk+oe1EX6FOzecY7kBlLz2lKbMSYJHUWSEWh7DIYHzswp4+ejvuZFKAwueb8
+         2gvkNLqvyKSDBp2iU1B5AIMrJZn9yxG0K4dR/3rNvGFMDb/GDm7UaqrXkdqeQF2czkUg
+         sjmWO43zHqwZE7IRwCIHg+cHXAncnoAk4r0CnkDv7EveNNG6LzCddUTFJf6LNVnKqd8i
+         SV8CNabzvM6La8ikC5xeuD8W/Z0bPaGKB13yuLXZEuDp2p5B8H0Ela2zzC3Q0mSoS/6Y
+         LNaw==
+X-Gm-Message-State: AOAM532rcKqfpmYpDifszZXbqEb+Zg7f9BxnAT3hvqgp9b2J4capnezw
+        rIcpji1vE8AZC1WjyU321GhHeLI5i9wBeR8Yf1qPuA==
+X-Google-Smtp-Source: ABdhPJwfg75GDFB7soifn4UuZUdaLr9R5CyiL2hi51XRrKD29gZA64BPkkDQZlRlbFKjUG2kcnswRw==
+X-Received: by 2002:a05:6e02:2149:: with SMTP id d9mr10978074ilv.162.1621432915377;
+        Wed, 19 May 2021 07:01:55 -0700 (PDT)
+Received: from localhost (2603-6000-ca08-f320-6401-a7ff-fe72-256d.res6.spectrum.com. [2603:6000:ca08:f320:6401:a7ff:fe72:256d])
+        by smtp.gmail.com with ESMTPSA id a6sm6121262ili.21.2021.05.19.07.01.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 07:01:54 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     "Bjorn Helgaas" <helgaas@kernel.org>, <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Alex Williamson" <alex.williamson@redhat.com>
+Subject: Re: [PATCH] pci: add NVMe FLR quirk to the SM951 SSD
+From:   "Robert Straw" <drbawb@fatalsyntax.com>
+To:     "Christoph Hellwig" <hch@infradead.org>
+Date:   Wed, 19 May 2021 07:54:19 -0500
+Message-Id: <CBH8K74TF8IQ.2KUOIGFJ7K8XP@nagato>
+In-Reply-To: <YKTP2GQkLz5jma/q@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed May 19, 2021 at 3:44 AM CDT, Christoph Hellwig wrote:
+> On Sat, May 15, 2021 at 12:20:05PM -0500, Robert Straw wrote:
+> While it doesn't matter here, NVMe 1.1 is very much out of data, being
+> a more than 8 year old specification. The current version is 1.4b,
+> with NVMe 2.0 about to be released.
 
+I can't comment on 2.0, but yes 1.4b has the same aside regarding undefined
+behavior on the SHST field (on p. 50). The only reason I was looking at
+1.1a is because it's specifically listed on the datasheet for the SM951.
+(The device under test.)
 
-ÔÚ 2021/5/19 16:44, zhaoxiao Ð´µÀ:
-> Fixes the following W=1 kernel build warning(s):
-> arch/mips/boot/compressed/string.c:11:7: warning: no previous prototype for 'memcpy' [-Wmissing-prototypes]
->   void *memcpy(void *dest, const void *src, size_t n)
->         ^~~~~~
-> arch/mips/boot/compressed/string.c:22:7: warning: no previous prototype for 'memset' [-Wmissing-prototypes]
->   void *memset(void *s, int c, size_t n)
->         ^~~~~~
-> arch/mips/boot/compressed/string.c:32:15: warning: no previous prototype for 'memmove' [-Wmissing-prototypes]
->   void * __weak memmove(void *dest, const void *src, size_t n)
-Hi Xiao,
+> No, we don't. This is a bug particular to a specific implementation.
+> In fact the whole existing NVMe shutdown before reset quirk is rather
+> broken and dangerous, as it concurrently accesses the NVMe registers
+> with the actual driver, which could be trivially triggered through the
+> sysfs reset attribute.
 
-Are you sure you know what you're doing?
+I'm not exactly clear in what way the nvme driver would  be racing against=
+=20
+vfio-pci here. (a) vfio-pci is the driver bound in this scenario, and (b)
+the vfio-pci driver triggers this quirk by issuing an FLR, which is done=20
+with the device locked. (e.g: vfio_pci.c:499.)
 
-They're supposed to be called by external reference in vmlinuz.
-Marking them static makes no sense.
+In my testing *without this patch* vfio-pci is still bound to the device=20
+for at least 60s after guest shutdown, at which point the FLR times out.
+After this FLR the device is useless w/o a full reboot of the host.=20
+Rebinding it to *either* another guest w/ vfio-pci, or the Linux nvme=20
+driver doesn't matter: as the device can no longer be reconfigured.
 
-Thanks.
+As I understand it: vfio-pci should not blindly issue an FLR to an NVMe cla=
+ss=20
+device w/o obeying the protocol. The protocol seems clear that after a=20
+shutdown CC->EN must transition from 1 to 0. (I would argue the guest OS=20
+leaving the device in this state is the actual violation of the spec. As=20
+I'm unable to change that behavior: having vfio-pci clean up the mess w/=20
+this quirk seems to be an adequate workaround.)
 
-- Jiaxun
->                 ^~~~~~~
->
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
-> ---
->   arch/mips/boot/compressed/string.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
-> index 0b593b709228..d28996509f91 100644
-> --- a/arch/mips/boot/compressed/string.c
-> +++ b/arch/mips/boot/compressed/string.c
-> @@ -8,7 +8,7 @@
->   #include <linux/compiler_attributes.h>
->   #include <linux/types.h>
->   
-> -void *memcpy(void *dest, const void *src, size_t n)
-> +static void *memcpy(void *dest, const void *src, size_t n)
->   {
->   	int i;
->   	const char *s = src;
-> @@ -19,7 +19,7 @@ void *memcpy(void *dest, const void *src, size_t n)
->   	return dest;
->   }
->   
-> -void *memset(void *s, int c, size_t n)
-> +static void *memset(void *s, int c, size_t n)
->   {
->   	int i;
->   	char *ss = s;
-> @@ -29,7 +29,7 @@ void *memset(void *s, int c, size_t n)
->   	return s;
->   }
->   
-> -void * __weak memmove(void *dest, const void *src, size_t n)
-> +static void * __weak memmove(void *dest, const void *src, size_t n)
->   {
->   	unsigned int i;
->   	const char *s = src;
+I am currently testing  a version of this patch that only disables the
+controller if the device has been previously shutdown. I am trying to
+gauge whether this would be preferable to just blanket-disabling these=20
+bugged devices before relinquishing control of them back to the host.
 
+> I'd much rather quirk these broken Samsung drivers to not allow
+> assigning them to VFIO.
+
+I'd much rather keep using my storage devices. I will leave the=20
+quirk limited to these known-bugged devices.
