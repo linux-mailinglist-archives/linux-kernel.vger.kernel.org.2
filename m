@@ -2,121 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1C6388A8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059ED388A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbhESJXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345413AbhESJWd (ORCPT
+        id S1344887AbhESJ0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:26:42 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4744 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344782AbhESJ0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:22:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEBEC061347
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 02:21:13 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ljIO2-0008FI-Vx; Wed, 19 May 2021 11:21:06 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ljIO0-0005od-GC; Wed, 19 May 2021 11:21:04 +0200
-Date:   Wed, 19 May 2021 11:21:04 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Meng.Li@windriver.com
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        pmeerw@pmeerw.net, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH] driver: adc: ltc2497: return directly after reading the
- adc conversion value
-Message-ID: <20210519092104.pntanimcjg6s6fca@pengutronix.de>
-References: <20210512045725.23390-1-Meng.Li@windriver.com>
+        Wed, 19 May 2021 05:26:42 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlS725M0VzpfRm;
+        Wed, 19 May 2021 17:21:50 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 17:25:19 +0800
+Received: from huawei.com (10.44.142.101) by dggema764-chm.china.huawei.com
+ (10.1.198.206) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 19
+ May 2021 17:25:18 +0800
+From:   Jingxian He <hejingxian@huawei.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>, <hpa@zytor.com>
+CC:     <hejie3@huawei.com>, <hewenliang4@huawei.com>,
+        <wuxu.wu@huawei.com>, <hejingxian@huawei.com>
+Subject: [PATCH] rtc: Fix hwclock write fail problem in x86 arch
+Date:   Wed, 19 May 2021 17:23:49 +0800
+Message-ID: <20210519092349.513729-1-hejingxian@huawei.com>
+X-Mailer: git-send-email 2.9.5
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="toqk7euiytahbw7x"
-Content-Disposition: inline
-In-Reply-To: <20210512045725.23390-1-Meng.Li@windriver.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.44.142.101]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When RTC_ALWAYS_BCD is set as 1, the function mc146818_set_time
+ignores the reading value of RTC_CONTROL register,
+and assumes that RTC always operates in binary mode.
 
---toqk7euiytahbw7x
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, the mc146818 development manual says that:
+if !(CMOS_READ(RTC_CONTROL) & 0x04), then
+the rtc time is in binary mode;
+if (CMOS_READ(RTC_CONTROL) & 0x04), then
+the rtc time is in bcd mode.
 
-On Wed, May 12, 2021 at 12:57:25PM +0800, Meng.Li@windriver.com wrote:
-> From: Meng Li <Meng.Li@windriver.com>
->=20
-> When read adc conversion value with below command:
-> cat /sys/.../iio:device0/in_voltage0-voltage1_raw
-> There is an error reported as below:
-> ltc2497 0-0014: i2c transfer failed: -EREMOTEIO
-> This i2c transfer issue is introduced by commit 69548b7c2c4f ("iio:
-> adc: ltc2497: split protocol independent part in a separate module").
-> When extract the common code into ltc2497-core.c, it change the
-> code logic of function ltc2497core_read(). With wrong reading
-> sequence, the action of enable adc channel is sent to chip again
-> during adc channel is in conversion status. In this way, there is
-> no ack from chip, and then cause i2c transfer failed.
-> In order to keep the code logic is the same with original ideal,
-> it is need to return direct after reading the adc conversion value.
->=20
-> Fixes: 69548b7c2c4f ("iio: adc: ltc2497: split protocol independent part =
-in a separate module ")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
-> ---
->  drivers/iio/adc/ltc2497.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/iio/adc/ltc2497.c b/drivers/iio/adc/ltc2497.c
-> index 1adddf5a88a9..fd5a66860a47 100644
-> --- a/drivers/iio/adc/ltc2497.c
-> +++ b/drivers/iio/adc/ltc2497.c
-> @@ -41,6 +41,8 @@ static int ltc2497_result_and_measure(struct ltc2497cor=
-e_driverdata *ddata,
->  		}
-> =20
->  		*val =3D (be32_to_cpu(st->buf) >> 14) - (1 << 17);
-> +
-> +		return ret;
+We use 'hwclock -w' to set the RTC from the system time
+at our x86 machines, and we find that when 
+(CMOS_READ(RTC_CONTROL) & 0x04) is equal to 1,
+'hwclock -w' will fail to set the RTC.
 
-This looks wrong for me. The idea of the function
-ltc2497_result_and_measure is that it reads the result and starts a new
-measurement. I guess the problem is that ltc2497_result_and_measure is
-called to early, not that it does too much.
+We change the RTC_ALWAYS_BCD to 0 to parse the rtc
+time according to the read value of RTC_CONTROL register.
 
-But note I don't have such a system handy to actually debug this any
-more.
+Signed-off-by: Jingxian He <hejingxian@huawei.com>
+Signed-off-by: Jie He <hejie3@huawei.com>
+---
+ arch/x86/include/asm/mc146818rtc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards
-Uwe
+diff --git a/arch/x86/include/asm/mc146818rtc.h b/arch/x86/include/asm/mc146818rtc.h
+index 9719800..63cf0d5 100644
+--- a/arch/x86/include/asm/mc146818rtc.h
++++ b/arch/x86/include/asm/mc146818rtc.h
+@@ -10,7 +10,7 @@
+ 
+ #ifndef RTC_PORT
+ #define RTC_PORT(x)	(0x70 + (x))
+-#define RTC_ALWAYS_BCD	1	/* RTC operates in binary mode */
++#define RTC_ALWAYS_BCD	0
+ #endif
+ 
+ #if defined(CONFIG_X86_32)
+-- 
+2.9.5
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---toqk7euiytahbw7x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCk2H0ACgkQwfwUeK3K
-7AmOowf8C5SX5w3Mlrpv6eP+p8p/f3M5PFSjEPPXpXbkewm9rttFdx8Y694Jc8PE
-Xab6b/KfczMhm0SZqmeBOlRrhD77LayokbT2451gtuVEy3uGzRhjVlCLCq3TY+ND
-YUGV/IUKIr4RhGtWnOacrCLbs4H6wQaTX1Njq2YjTyRlrYNjNiY9b6FUdMmKDWXp
-MBx5WHlM/V+8SR0qx7DlXLmLOKiUA1caoGBxdjXq9rke1AbGystKQUR4UrHPZKA3
-spY+2b8+hQo1z93b6YpF/orHOPzTseecRNevJCo55rh7hhyI/ddrZ0Zg3CyyeG5g
-khwhIDFLaIQ7KdcuIUdoFA0N2DCOvg==
-=eD2f
------END PGP SIGNATURE-----
-
---toqk7euiytahbw7x--
