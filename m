@@ -2,211 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349D6389959
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4193B38995B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhESWbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 18:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
+        id S229455AbhESWdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 18:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhESWbP (ORCPT
+        with ESMTP id S229465AbhESWdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 18:31:15 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E892C06175F;
-        Wed, 19 May 2021 15:29:54 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id a7so3367123qvf.11;
-        Wed, 19 May 2021 15:29:54 -0700 (PDT)
+        Wed, 19 May 2021 18:33:05 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCFFC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:31:44 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so4196582pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GO2bx2JQ9NBxHgPEyfbaqkWN5p0BrrfFolR7teDCTtY=;
-        b=DTPX3UGq+8Lpm2GfNDdPvsLT/kUyb3LHpNhAAL1bSrTtkXT9O7E1khmCMZkGd7dgIy
-         YVEys8VldR/7wDqfUhUFzhmbi31PTClqO3CnrsVZljj410OIRdtFU51ixWvQQIQt+YJW
-         z9pVvybB2MyGHHpF0HtKYDaa0dizpK18kDxq0TXf/mIBL2bDal527cVkJ0Fi03ZQno+b
-         SX22eEvr8EtBCTp7ybDKSombJA5FZRDdfDmgVDc6f8Pkryq+zGflLku4IrGGyrps9fbP
-         1e1r07YAfIQt80M8AXcJZstngiFxeqnlOvdwHdz0G1SINj3WNBtKeLCJPgdtWEMTzjIY
-         eAjQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3Vx7mu6+ZNKXXoJYS7AVN4Z/38zh285y5Q+544/T8iY=;
+        b=XxRkDCdm53sGRGyY2ZYwH7T0AQIXefX6uNKZpOorQU6EQHDGclhTmzcnRR6oEpDkR9
+         hwPcnNL8Se68VX1SNb6obITM1ng2MKcYq5VQR2zlZY9YhMGuM2rCq6YcajdUhwbxUO7Y
+         bK/rEBsN13eh0y/NjU4uawPATIAhV0LA5d+niD5nZhN+5FE9+OuHWhtyWPV/hbb0PmPG
+         +B84rQsB0fU8U+7/wut17hQ+LErazbfphlbqrM3DPC74TDrcpOxxe304ZjkYT7sRhcRV
+         SHb/lli5vqmguWhu5YcbIk0NxcpbotFtdUkZ2s03CqKo5KaDfVGHmW9JxskcnQCqC2Tl
+         S9cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GO2bx2JQ9NBxHgPEyfbaqkWN5p0BrrfFolR7teDCTtY=;
-        b=X5BXJk3xNcI4kIgViXf7ryZi1u61+2h7megIhpZLVcibexLG1nQGgZptS+/9s05ACR
-         2ijwDgGLfCjaiOI52fjS7krhW9ESR+vZV1YQYXRVqokyhBUUanuWkElSl1FsKqLKgpFU
-         XtwDzad2YgFkrDJxdQ0DKx4AQzIioSW87m5LPkcDY2RTqcni38wwbhpSVBXgiiBlin89
-         Ye/JHLNnVB/SzDDFzd7S/efxf/bpVhB3nm/YtxodawIImKf2aEXVyOzk5qMJHH+hogHe
-         7DjVWJkIerN63sR9tbWCcdZEOV0h9+DXfD1gPPbpyWKgwxV1CaTlmrsHNNbtmPNin1DX
-         B5Rg==
-X-Gm-Message-State: AOAM532gMxiei7I4FFOhocvns8tQDlQ7Zi+DzTJyuyMuHVarsflA2nM5
-        /vJd8NSoUWV8V7GH1zHCI5s=
-X-Google-Smtp-Source: ABdhPJzpg9zArdaLOXJZfbxaEJtT1ICH3AZzo7TRuDo35J46VWLlFaSSC1juIWnSooyb48oPYDOWNw==
-X-Received: by 2002:a0c:e34b:: with SMTP id a11mr2146164qvm.24.1621463393373;
-        Wed, 19 May 2021 15:29:53 -0700 (PDT)
-Received: from LuizSampaio-PC.localdomain ([2804:214:8175:da27:c352:bf96:2102:fa64])
-        by smtp.gmail.com with ESMTPSA id d18sm823716qkc.28.2021.05.19.15.29.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3Vx7mu6+ZNKXXoJYS7AVN4Z/38zh285y5Q+544/T8iY=;
+        b=FOIwUuHCRvIOtyAUKYt4rsDMULIWvBFWtKBCn8IWa5kmWpsopL9n6Sm5xA+xR3zjmq
+         yMHj6qQgJvooQjv6HpWX1RDlmPGMIZ/r1X26197eDy+ssvrkdPmyCRVP/IzBqfLe3E4S
+         6yh9HMPSeebH8spjGVAg2WDKFkicYTDPC5V/WEhClgk8OEqRYVy511fR+Ahqtbm5fdic
+         /AUVvfAeH4VqxvVgM+yTGR52iQd+8G3qeHDFPH2UD3YHpwvrUb/Z7Oy0g/1onPN7kXkG
+         BtWe2tL9o7FV5tPlbuPA9h4Uv5fy2Jfx1+uiequqgcOtLU83wv7GwTgt8XaZoVKZ+uza
+         shGg==
+X-Gm-Message-State: AOAM531XbPLqQWYxuUzG4DBe4L7u11DUoMq4wMqA3FTT+bl6psNkmvj1
+        Bt0ldagHPbvL5EYoTBVboUIgug==
+X-Google-Smtp-Source: ABdhPJyVa57WZ7TUt99IukPmtNkvrFPQqB+ptTfQty0q1rI/EXjLODYRKiJfCeImcIvIJxb0mHjLaQ==
+X-Received: by 2002:a17:902:d507:b029:f2:c88c:5b45 with SMTP id b7-20020a170902d507b02900f2c88c5b45mr2080651plg.66.1621463503306;
+        Wed, 19 May 2021 15:31:43 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id ge5sm971996pjb.45.2021.05.19.15.31.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 15:29:53 -0700 (PDT)
-From:   Luiz Sampaio <sampaio.ime@gmail.com>
-To:     zbr@ioremap.net
-Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v8 6/6] w1: ds2438: support for writing to offset register
-Date:   Wed, 19 May 2021 19:30:46 -0300
-Message-Id: <20210519223046.13798-7-sampaio.ime@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210519223046.13798-1-sampaio.ime@gmail.com>
-References: <20210409031533.442123-1-sampaio.ime@gmail.com>
- <20210519223046.13798-1-sampaio.ime@gmail.com>
+        Wed, 19 May 2021 15:31:42 -0700 (PDT)
+Date:   Wed, 19 May 2021 22:31:38 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/8] KVM: Resolve memslot ID via a hash table instead
+ of via a static array
+Message-ID: <YKWRyvyyO5UAHv4U@google.com>
+References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
+ <4a4867419344338e1419436af1e1b0b8f2405517.1621191551.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a4867419344338e1419436af1e1b0b8f2405517.1621191551.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added a sysfs entry to support writing to the offset register on page1.
-This register is used to calibrate the chip canceling offset errors in the
-current ADC. This means that, over time, reading the IAD register will not
-return the correct current measurement, it will have an offset. Writing to
-the offset register if the two's complement of the current register while
-passing zero current to the load will calibrate the measurements. This
-change was tested on real hardware and it was able to calibrate the chip
-correctly.
+On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
+> @@ -356,6 +357,7 @@ static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
+>  #define KVM_MEM_MAX_NR_PAGES ((1UL << 31) - 1)
+>  
+>  struct kvm_memory_slot {
+> +	struct hlist_node id_node;
+>  	gfn_t base_gfn;
+>  	unsigned long npages;
+>  	unsigned long *dirty_bitmap;
+> @@ -458,7 +460,7 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
+>  struct kvm_memslots {
+>  	u64 generation;
+>  	/* The mapping table from slot id to the index in memslots[]. */
+> -	short id_to_index[KVM_MEM_SLOTS_NUM];
+> +	DECLARE_HASHTABLE(id_hash, 7);
 
-Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
----
- .../ABI/stable/sysfs-driver-w1_ds2438         |  7 +++
- Documentation/w1/slaves/w1_ds2438.rst         | 11 ++++-
- drivers/w1/slaves/w1_ds2438.c                 | 49 +++++++++++++++++++
- 3 files changed, 66 insertions(+), 1 deletion(-)
+Is there any specific motivation for using 7 bits?
 
-diff --git a/Documentation/ABI/stable/sysfs-driver-w1_ds2438 b/Documentation/ABI/stable/sysfs-driver-w1_ds2438
-index fa47437c11d9..d2e7681cc287 100644
---- a/Documentation/ABI/stable/sysfs-driver-w1_ds2438
-+++ b/Documentation/ABI/stable/sysfs-driver-w1_ds2438
-@@ -4,3 +4,10 @@ Contact:	Luiz Sampaio <sampaio.ime@gmail.com>
- Description:	read the contents of the page1 of the DS2438
- 		see Documentation/w1/slaves/w1_ds2438.rst for detailed information
- Users:		any user space application which wants to communicate with DS2438
-+
-+What:		/sys/bus/w1/devices/.../offset
-+Date:		April 2021
-+Contact:	Luiz Sampaio <sampaio.ime@gmail.com>
-+Description:	write the contents to the offset register of the DS2438
-+		see Documentation/w1/slaves/w1_ds2438.rst for detailed information
-+Users:		any user space application which wants to communicate with DS2438
-diff --git a/Documentation/w1/slaves/w1_ds2438.rst b/Documentation/w1/slaves/w1_ds2438.rst
-index ac8d0d4b0d0e..5c5573991351 100644
---- a/Documentation/w1/slaves/w1_ds2438.rst
-+++ b/Documentation/w1/slaves/w1_ds2438.rst
-@@ -22,7 +22,7 @@ is also often used in weather stations and applications such as: rain gauge,
- wind speed/direction measuring, humidity sensing, etc.
- 
- Current support is provided through the following sysfs files (all files
--except "iad" are readonly):
-+except "iad" and "offset" are readonly):
- 
- "iad"
- -----
-@@ -52,6 +52,15 @@ Internally when this file is read, the additional CRC byte is also obtained
- from the slave device. If it is correct, the 8 bytes page data are passed
- to userspace, otherwise an I/O error is returned.
- 
-+"offset"
-+-------
-+This file controls the 2-byte Offset Register of the chip.
-+Writing a 2-byte value will change the Offset Register, which changes the
-+current measurement done by the chip. Changing this register to the two's complement
-+of the current register while forcing zero current through the load will calibrate
-+the chip, canceling offset errors in the current ADC.
-+
-+
- "temperature"
- -------------
- Opening and reading this file initiates the CONVERT_T (temperature conversion)
-diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-index 42080ae779f0..01eaa5a17fba 100644
---- a/drivers/w1/slaves/w1_ds2438.c
-+++ b/drivers/w1/slaves/w1_ds2438.c
-@@ -193,6 +193,34 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
- 	return -1;
- }
- 
-+static int w1_ds2438_change_offset_register(struct w1_slave *sl, u8 *value)
-+{
-+	unsigned int retries = W1_DS2438_RETRIES;
-+	u8 w1_buf[9];
-+	u8 w1_page1_buf[DS2438_PAGE_SIZE + 1 /*for CRC*/];
-+
-+	if (w1_ds2438_get_page(sl, 1, w1_page1_buf) == 0) {
-+		memcpy(&w1_buf[2], w1_page1_buf, DS2438_PAGE_SIZE - 1); /* last register reserved */
-+		w1_buf[7] = value[0]; /* change only offset register */
-+		w1_buf[8] = value[1];
-+		while (retries--) {
-+			if (w1_reset_select_slave(sl))
-+				continue;
-+			w1_buf[0] = W1_DS2438_WRITE_SCRATCH;
-+			w1_buf[1] = 0x01; /* write to page 1 */
-+			w1_write_block(sl->master, w1_buf, 9);
-+
-+			if (w1_reset_select_slave(sl))
-+				continue;
-+			w1_buf[0] = W1_DS2438_COPY_SCRATCH;
-+			w1_buf[1] = 0x01;
-+			w1_write_block(sl->master, w1_buf, 2);
-+			return 0;
-+		}
-+	}
-+	return -1;
-+}
-+
- static int w1_ds2438_get_voltage(struct w1_slave *sl,
- 				 int adc_input, uint16_t *voltage)
- {
-@@ -364,6 +392,25 @@ static ssize_t page1_read(struct file *filp, struct kobject *kobj,
- 	return ret;
- }
- 
-+static ssize_t offset_write(struct file *filp, struct kobject *kobj,
-+			    struct bin_attribute *bin_attr, char *buf,
-+			    loff_t off, size_t count)
-+{
-+	struct w1_slave *sl = kobj_to_w1_slave(kobj);
-+	int ret;
-+
-+	mutex_lock(&sl->master->bus_mutex);
-+
-+	if (w1_ds2438_change_offset_register(sl, buf) == 0)
-+		ret = count;
-+	else
-+		ret = -EIO;
-+
-+	mutex_unlock(&sl->master->bus_mutex);
-+
-+	return ret;
-+}
-+
- static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
- 				struct bin_attribute *bin_attr, char *buf,
- 				loff_t off, size_t count)
-@@ -430,6 +477,7 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
- static BIN_ATTR_RW(iad, 0);
- static BIN_ATTR_RO(page0, DS2438_PAGE_SIZE);
- static BIN_ATTR_RO(page1, DS2438_PAGE_SIZE);
-+static BIN_ATTR_WO(offset, 2);
- static BIN_ATTR_RO(temperature, 0/* real length varies */);
- static BIN_ATTR_RO(vad, 0/* real length varies */);
- static BIN_ATTR_RO(vdd, 0/* real length varies */);
-@@ -438,6 +486,7 @@ static struct bin_attribute *w1_ds2438_bin_attrs[] = {
- 	&bin_attr_iad,
- 	&bin_attr_page0,
- 	&bin_attr_page1,
-+	&bin_attr_offset,
- 	&bin_attr_temperature,
- 	&bin_attr_vad,
- 	&bin_attr_vdd,
--- 
-2.30.1
+>  	atomic_t lru_slot;
+>  	int used_slots;
+>  	struct kvm_memory_slot memslots[];
 
+...
+
+> @@ -1097,14 +1095,16 @@ static int kvm_alloc_dirty_bitmap(struct kvm_memory_slot *memslot)
+>  /*
+>   * Delete a memslot by decrementing the number of used slots and shifting all
+>   * other entries in the array forward one spot.
+> + * @memslot is a detached dummy struct with just .id and .as_id filled.
+>   */
+>  static inline void kvm_memslot_delete(struct kvm_memslots *slots,
+>  				      struct kvm_memory_slot *memslot)
+>  {
+>  	struct kvm_memory_slot *mslots = slots->memslots;
+> +	struct kvm_memory_slot *dmemslot = id_to_memslot(slots, memslot->id);
+
+I vote to call these local vars "old", or something along those lines.  dmemslot
+isn't too bad, but mmemslot in the helpers below is far too similar to memslot,
+and using the wrong will cause nasty explosions.
+
+>  	int i;
+>  
+> -	if (WARN_ON(slots->id_to_index[memslot->id] == -1))
+> +	if (WARN_ON(!dmemslot))
+>  		return;
+>  
+>  	slots->used_slots--;
+> @@ -1112,12 +1112,13 @@ static inline void kvm_memslot_delete(struct kvm_memslots *slots,
+>  	if (atomic_read(&slots->lru_slot) >= slots->used_slots)
+>  		atomic_set(&slots->lru_slot, 0);
+>  
+> -	for (i = slots->id_to_index[memslot->id]; i < slots->used_slots; i++) {
+> +	for (i = dmemslot - mslots; i < slots->used_slots; i++) {
+> +		hash_del(&mslots[i].id_node);
+>  		mslots[i] = mslots[i + 1];
+> -		slots->id_to_index[mslots[i].id] = i;
+> +		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
+>  	}
+> +	hash_del(&mslots[i].id_node);
+>  	mslots[i] = *memslot;
+> -	slots->id_to_index[memslot->id] = -1;
+>  }
+>  
+>  /*
+> @@ -1135,31 +1136,41 @@ static inline int kvm_memslot_insert_back(struct kvm_memslots *slots)
+>   * itself is not preserved in the array, i.e. not swapped at this time, only
+>   * its new index into the array is tracked.  Returns the changed memslot's
+>   * current index into the memslots array.
+> + * The memslot at the returned index will not be in @slots->id_hash by then.
+> + * @memslot is a detached struct with desired final data of the changed slot.
+>   */
+>  static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
+>  					    struct kvm_memory_slot *memslot)
+>  {
+>  	struct kvm_memory_slot *mslots = slots->memslots;
+> +	struct kvm_memory_slot *mmemslot = id_to_memslot(slots, memslot->id);
+>  	int i;
+>  
+> -	if (WARN_ON_ONCE(slots->id_to_index[memslot->id] == -1) ||
+> +	if (WARN_ON_ONCE(!mmemslot) ||
+>  	    WARN_ON_ONCE(!slots->used_slots))
+>  		return -1;
+>  
+> +	/*
+> +	 * update_memslots() will unconditionally overwrite and re-add the
+> +	 * target memslot so it has to be removed here firs
+> +	 */
+
+It would be helpful to explain "why" this is necessary.  Something like:
+
+	/*
+	 * The memslot is being moved, delete its previous hash entry; its new
+	 * entry will be added by updated_memslots().  The old entry cannot be
+	 * kept even though its id is unchanged, because the old entry points at
+	 * the memslot in the old instance of memslots.
+	 */
+
+> +	hash_del(&mmemslot->id_node);
+> +
+>  	/*
+>  	 * Move the target memslot backward in the array by shifting existing
+>  	 * memslots with a higher GFN (than the target memslot) towards the
+>  	 * front of the array.
+>  	 */
+> -	for (i = slots->id_to_index[memslot->id]; i < slots->used_slots - 1; i++) {
+> +	for (i = mmemslot - mslots; i < slots->used_slots - 1; i++) {
+>  		if (memslot->base_gfn > mslots[i + 1].base_gfn)
+>  			break;
+>  
+>  		WARN_ON_ONCE(memslot->base_gfn == mslots[i + 1].base_gfn);
+>  
+>  		/* Shift the next memslot forward one and update its index. */
+> +		hash_del(&mslots[i + 1].id_node);
+>  		mslots[i] = mslots[i + 1];
+> -		slots->id_to_index[mslots[i].id] = i;
+> +		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
+>  	}
+>  	return i;
+>  }
+> @@ -1170,6 +1181,10 @@ static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
+>   * is not preserved in the array, i.e. not swapped at this time, only its new
+>   * index into the array is tracked.  Returns the changed memslot's final index
+>   * into the memslots array.
+> + * The memslot at the returned index will not be in @slots->id_hash by then.
+> + * @memslot is a detached struct with desired final data of the new or
+> + * changed slot.
+> + * Assumes that the memslot at @start index is not in @slots->id_hash.
+>   */
+>  static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
+>  					   struct kvm_memory_slot *memslot,
+> @@ -1185,8 +1200,9 @@ static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
+>  		WARN_ON_ONCE(memslot->base_gfn == mslots[i - 1].base_gfn);
+>  
+>  		/* Shift the next memslot back one and update its index. */
+> +		hash_del(&mslots[i - 1].id_node);
+>  		mslots[i] = mslots[i - 1];
+> -		slots->id_to_index[mslots[i].id] = i;
+> +		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
+>  	}
+>  	return i;
+>  }
+> @@ -1231,6 +1247,9 @@ static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
+>   * most likely to be referenced, sorting it to the front of the array was
+>   * advantageous.  The current binary search starts from the middle of the array
+>   * and uses an LRU pointer to improve performance for all memslots and GFNs.
+> + *
+> + * @memslot is a detached struct, not a part of the current or new memslot
+> + * array.
+>   */
+>  static void update_memslots(struct kvm_memslots *slots,
+>  			    struct kvm_memory_slot *memslot,
+> @@ -1247,12 +1266,16 @@ static void update_memslots(struct kvm_memslots *slots,
+>  			i = kvm_memslot_move_backward(slots, memslot);
+>  		i = kvm_memslot_move_forward(slots, memslot, i);
+>  
+> +		if (i < 0)
+> +			return;
+
+Hmm, this is essentially a "fix" to existing code, it should be in a separate
+patch.  And since kvm_memslot_move_forward() can theoretically hit this even if
+kvm_memslot_move_backward() doesn't return -1, i.e. doesn't WARN, what about
+doing WARN_ON_ONCE() here and dropping the WARNs in kvm_memslot_move_backward()?
+It'll be slightly less developer friendly, but anyone that has the unfortunate
+pleasure of breaking and debugging this code is already in for a world of pain.
+
+> +
+>  		/*
+>  		 * Copy the memslot to its new position in memslots and update
+>  		 * its index accordingly.
+>  		 */
+>  		slots->memslots[i] = *memslot;
+> -		slots->id_to_index[memslot->id] = i;
+> +		hash_add(slots->id_hash, &slots->memslots[i].id_node,
+> +			 memslot->id);
+>  	}
+>  }
+>  
+> @@ -1316,6 +1339,7 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
+>  {
+>  	struct kvm_memslots *slots;
+>  	size_t old_size, new_size;
+> +	struct kvm_memory_slot *memslot;
+>  
+>  	old_size = sizeof(struct kvm_memslots) +
+>  		   (sizeof(struct kvm_memory_slot) * old->used_slots);
+> @@ -1326,8 +1350,14 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
+>  		new_size = old_size;
+>  
+>  	slots = kvzalloc(new_size, GFP_KERNEL_ACCOUNT);
+> -	if (likely(slots))
+> -		memcpy(slots, old, old_size);
+> +	if (unlikely(!slots))
+> +		return NULL;
+> +
+> +	memcpy(slots, old, old_size);
+> +
+> +	hash_init(slots->id_hash);
+> +	kvm_for_each_memslot(memslot, slots)
+> +		hash_add(slots->id_hash, &memslot->id_node, memslot->id);
+
+What's the perf penalty if the number of memslots gets large?  I ask because the
+lazy rmap allocation is adding multiple calls to kvm_dup_memslots().
+
+>  	return slots;
+>  }
