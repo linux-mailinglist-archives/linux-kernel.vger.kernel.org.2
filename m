@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F32388637
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EFF38863C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237318AbhESE5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 00:57:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:31958 "EHLO mga02.intel.com"
+        id S238779AbhESE7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 00:59:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233899AbhESE5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 00:57:33 -0400
-IronPort-SDR: l3PdbIXMTLTTAHloFoMWMg6CBasRB9wASDF/ShK3O6vCzi9PYAT3plwyAZwDLgJtngfJF9BGMd
- +LtV/SUSEWHw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="188018222"
-X-IronPort-AV: E=Sophos;i="5.82,311,1613462400"; 
-   d="scan'208";a="188018222"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 21:56:14 -0700
-IronPort-SDR: MWjdBhhnnYyx3rnpRhA4yOtG/fNc/QcDIkcHqNrgPJvBNOQtuzATJHHPYhC2/GcEYWWCg4b7mz
- zkCOsQz4jczQ==
-X-IronPort-AV: E=Sophos;i="5.82,311,1613462400"; 
-   d="scan'208";a="473305424"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 21:56:10 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Xu" <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH] mm: move idle swap cache pages to the tail of LRU after
- COW
-References: <20210519013313.1274454-1-ying.huang@intel.com>
-        <7b2525ba7871e6b8ce3f48cfd2375804a6791a94.camel@surriel.com>
-Date:   Wed, 19 May 2021 12:56:08 +0800
-In-Reply-To: <7b2525ba7871e6b8ce3f48cfd2375804a6791a94.camel@surriel.com> (Rik
-        van Riel's message of "Tue, 18 May 2021 22:12:42 -0400")
-Message-ID: <874kez9v9z.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S229939AbhESE7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 00:59:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6560561355;
+        Wed, 19 May 2021 04:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621400294;
+        bh=sBPi7doTjepZo5AoeX6D/DqrfoxCCmiTbbDfO6A7+1A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tg2fxanYYVeqmsedHZTVahMC53Je13j2qQo6irCgVnD9l6R8hP1VifEKRUxwM2YPf
+         WFdvYQcpyQF7Ff73XO1FgRGZR0+AftflNxfwNilci58q/w6E1SwydNRY6uwOxzMEyF
+         6t74rsmccXGRBh0DVv57nMWSBPWKBOO0ZMymaVQc=
+Date:   Wed, 19 May 2021 06:58:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
+Message-ID: <YKSa48cejI1Lax+/@kroah.com>
+References: <20210519033553.1110536-1-anup.patel@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519033553.1110536-1-anup.patel@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rik van Riel <riel@surriel.com> writes:
+On Wed, May 19, 2021 at 09:05:35AM +0530, Anup Patel wrote:
+> From: Anup Patel <anup@brainfault.org>
+> 
+> This series adds initial KVM RISC-V support. Currently, we are able to boot
+> Linux on RV64/RV32 Guest with multiple VCPUs.
+> 
+> Key aspects of KVM RISC-V added by this series are:
+> 1. No RISC-V specific KVM IOCTL
+> 2. Minimal possible KVM world-switch which touches only GPRs and few CSRs
+> 3. Both RV64 and RV32 host supported
+> 4. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
+> 5. KVM ONE_REG interface for VCPU register access from user-space
+> 6. PLIC emulation is done in user-space
+> 7. Timer and IPI emuation is done in-kernel
+> 8. Both Sv39x4 and Sv48x4 supported for RV64 host
+> 9. MMU notifiers supported
+> 10. Generic dirtylog supported
+> 11. FP lazy save/restore supported
+> 12. SBI v0.1 emulation for KVM Guest available
+> 13. Forward unhandled SBI calls to KVM userspace
+> 14. Hugepage support for Guest/VM
+> 15. IOEVENTFD support for Vhost
+> 
+> Here's a brief TODO list which we will work upon after this series:
+> 1. SBI v0.2 emulation in-kernel
+> 2. SBI v0.2 hart state management emulation in-kernel
+> 3. In-kernel PLIC emulation
+> 4. ..... and more .....
+> 
+> This series can be found in riscv_kvm_v18 branch at:
+> https//github.com/avpatel/linux.git
+> 
+> Our work-in-progress KVMTOOL RISC-V port can be found in riscv_v7 branch
+> at: https//github.com/avpatel/kvmtool.git
+> 
+> The QEMU RISC-V hypervisor emulation is done by Alistair and is available
+> in master branch at: https://git.qemu.org/git/qemu.git
+> 
+> To play around with KVM RISC-V, refer KVM RISC-V wiki at:
+> https://github.com/kvm-riscv/howto/wiki
+> https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-QEMU
+> https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-Spike
+> 
+> Changes since v17:
+>  - Rebased on Linux-5.13-rc2
+>  - Moved to new KVM MMU notifier APIs
+>  - Removed redundant kvm_arch_vcpu_uninit()
+>  - Moved KVM RISC-V sources to drivers/staging for compliance with
+>    Linux RISC-V patch acceptance policy
 
-> On Wed, 2021-05-19 at 09:33 +0800, Huang Ying wrote:
->
->> To test the patch, we used pmbench memory accessing benchmark with
->> working-set larger than available memory on a 2-socket Intel server
->> with a NVMe SSD as swap device.  Test results shows that the pmbench
->> score increases up to 21.8% with the decreased size of swap cache and
->> swapin throughput.
->
-> Nice!
->
->> +++ b/mm/memory.c
->> @@ -3012,6 +3012,11 @@ static vm_fault_t wp_page_copy(struct vm_fault
->> *vmf)
->>  				munlock_vma_page(old_page);
->>  			unlock_page(old_page);
->>  		}
->> +		if (page_copied && PageSwapCache(old_page) &&
->> +		    !page_mapped(old_page) && trylock_page(old_page)) {
->> +			try_to_free_idle_swapcache(old_page);
->> +			unlock_page(old_page);
->> +		}
->
-> That's quite the if condition!
->
-> Would it make sense to move some of the tests, as well
-> as the trylock and unlock into try_to_free_idle_swapcache()
-> itself?
+What is this new "patch acceptance policy" and what does it have to do
+with drivers/staging?
 
-Sure.  Will put trylock/unlock into try_to_free_idle_swapcache() as
-suggested by Linus.
+What does drivers/staging/ have to do with this at all?  Did anyone ask
+the staging maintainer about this?
 
-> Especially considering that page_mapped is already tested
-> in that function, too...
+Not cool, and not something I'm about to take without some very good
+reasons...
 
-The two page_mapped() tests are intended.  The first one is a quick
-check with the page unlocked, the second one is to confirm with the page
-locked.  Because if the page is unlocked, the swap count may be
-transited to map count or vice versa.
-
-Best Regards,
-Huang, Ying
-
+greg k-h
