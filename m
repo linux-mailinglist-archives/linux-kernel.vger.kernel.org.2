@@ -2,242 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7FB38952F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32F8389530
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhESSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 14:19:16 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:45933 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhESSTP (ORCPT
+        id S231348AbhESSVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 14:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230505AbhESSVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 14:19:15 -0400
-Received: by mail-oi1-f177.google.com with SMTP id w127so10123298oig.12;
-        Wed, 19 May 2021 11:17:55 -0700 (PDT)
+        Wed, 19 May 2021 14:21:17 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCD1C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 11:19:56 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id e19so10491903pfv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 11:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=PW4uVNBA3mRHR7tGnDQy6S2ZgHL0fGnS5upoxeLAFS4=;
+        b=LAgQL50DJZ6I9DmMa17MmOp5E9BA+o10kFJrra9ikHEiPJnl7hP3KDysdkzJPCxdO7
+         DNZHH5mef9Uw1FEq/YgnMwDZSXtkBpurEZy40MAUAE7qhAJnlJnsb7eP20CsDOCoFlnp
+         ghGpALsJQ/OuaPCQTkNbDnZfxhiFVZ6pCJbVUb1ZNKi/KgrEPysh+ylJBmltbEFGwF2q
+         K5ru/1URHJN6RxsMaNI+py45qPI0/J/fk7PTJA2ziWIDGsMD/cuuSgd+R7oMoxChfN6i
+         o0ebko7Wmxl1fqf6WZFguy6+GD++rzI0D0k2kMz4GLL40VcRGZE9SAcjuFlgE4XUttmr
+         mjTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xv1R4zIlb2KLbQUXKopKjRzoOj8h7CKz2z712JBWe3w=;
-        b=EgaXy6Cu7bQvmxagGHqwflysuie7rs9FLBph9ZA0uH1mOVh1JVeGfn41IPA8Ky0j3S
-         JH05asCfQRsjNOi4+J2K7gHyV4SuOO3m2cm2LlQ+AucXM+sHrq6d4d+ZqRDwwR6ftaIO
-         K/h77n5EMyh3KhsPCg9m2Yon6QoJ7sNGOCP6uJg6sRvKRfV9CemKTPnLXu+RrtjO3c1F
-         1TtTARcYbss73Rji4Y08wZQ+Ooi3AJJy9V/GgWQEq9IF3DqIk5zAYUVKpsx9VcOOMSVi
-         U4ioolbPvTTqC+WQ4lqaUCEJbiaK6dbI9T9VWS+vqjj44AX1ssF9G9PBlU3oJ6b0o0qq
-         Ef8g==
-X-Gm-Message-State: AOAM531BbH2JG8QI2F1JXZBtOqpX7RJxsXirBogfHlk0w77C5mJiPc3b
-        qH8oM865X3MctghJ4sVxpA==
-X-Google-Smtp-Source: ABdhPJweCrxBmfI0euQsWJqaqU0Wo3NZRqJvXbR8WqVWLvtZoQ0cHrGfSRTFrp4EaRxH8jqEhHYIZg==
-X-Received: by 2002:a54:4690:: with SMTP id k16mr455866oic.57.1621448275201;
-        Wed, 19 May 2021 11:17:55 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y13sm24379oon.32.2021.05.19.11.17.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PW4uVNBA3mRHR7tGnDQy6S2ZgHL0fGnS5upoxeLAFS4=;
+        b=oDySypSTD6np3AB4s4mWHzzCUCH1hLDSL1FeJ4Mvfq5u2GfWESoO8PzSvcyvhyCLhq
+         eXKszWlNFnyb7LCwKtPd838UbyGsO+dv9Xkr6rBDGkcGQaMjtv0I+qJBYxIp8KPNZ6M1
+         vXEiOKA/u3trrzylnTTJpxg5uvni5LOl8An11s4BeAC+L3St5zR78iPbkyf3R7u/mm7U
+         CPMyz7Bz1rkn7omyph/IVEv6jHyjjl5kaLE62Wld2ManHsN56h4u3j70zjsE4z6kRh6J
+         rOsHMgjFAyaxduJ1amX6mUA5w4CAXoaqAuKtNKboVl5ql1IGG0od7YOazHEeO1T6CtUL
+         i4mQ==
+X-Gm-Message-State: AOAM531wqEbOMITVS4mc4n0Qp9JO4FcClU1aXKPy8qbJQ8N23bw0uV6Y
+        8SrEs08HPVca1m1aZOZQtc1v
+X-Google-Smtp-Source: ABdhPJwXcf9yyVLYIrdBHqNyMJx+0WlY19enz6Kx/vmPzEP/3lG3o6ZWg/PgjWn9idU+8IRKMq/cXg==
+X-Received: by 2002:a63:5218:: with SMTP id g24mr384869pgb.309.1621448395848;
+        Wed, 19 May 2021 11:19:55 -0700 (PDT)
+Received: from localhost.localdomain ([2402:4000:11c7:ee12:ddf7:464f:3770:cc69])
+        by smtp.gmail.com with ESMTPSA id 205sm78211pfc.201.2021.05.19.11.19.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 11:17:54 -0700 (PDT)
-Received: (nullmailer pid 3388020 invoked by uid 1000);
-        Wed, 19 May 2021 18:17:53 -0000
-Date:   Wed, 19 May 2021 13:17:53 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dikshita Agarwal <dikshita@codeaurora.org>
-Cc:     andy.gross@linaro.org, david.brown@linaro.org,
-        mark.rutland@arm.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org
-Subject: Re: [RESEND v2] dt-bindings: media: venus: Add sc7280 dt schema
-Message-ID: <20210519181753.GA3375586@robh.at.kernel.org>
-References: <1621318440-12375-1-git-send-email-dikshita@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621318440-12375-1-git-send-email-dikshita@codeaurora.org>
+        Wed, 19 May 2021 11:19:55 -0700 (PDT)
+From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+To:     johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org
+Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+Subject: [PATCH V2] Staging: greybus: fix open parenthesis error in gbphy.c
+Date:   Wed, 19 May 2021 23:49:38 +0530
+Message-Id: <20210519181938.30813-1-asha.16@itfac.mrt.ac.lk>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:44:00AM +0530, Dikshita Agarwal wrote:
-> Add a schema description for the venus video encoder/decoder on the sc7280.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> 
-> changes since v1:
-> - adrressed comments from stanimir.
-> 
-> this patch depends on [1],[2] & [3].
-> ---
->  .../bindings/media/qcom,sc7280-venus.yaml          | 157 +++++++++++++++++++++
->  1 file changed, 157 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> 
-> [1] https://patchwork.kernel.org/project/linux-clk/list/?series=449621
-> [2] https://lkml.org/lkml/2021/4/9/812
-> [3] https://lore.kernel.org/patchwork/project/lkml/list/?series=488429
-> 
-> diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> new file mode 100644
-> index 0000000..32bdb65
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> @@ -0,0 +1,157 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm Venus video encode and decode accelerators
-> +
-> +maintainers:
-> +  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> +
-> +description: |
-> +  The Venus Iris2 IP is a video encode and decode accelerator present
-> +  on Qualcomm platforms
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sc7280-venus
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    minItems: 2
-> +    maxItems: 3
-> +
-> +  power-domain-names:
-> +    minItems: 2
-> +    maxItems: 3
-> +    items:
-> +      - const: venus
-> +      - const: vcodec0
+This patch fix "Alignment should match open parenthesis" checkpatch error.
 
-What about the 3rd power domain name?
+Signed-off-by: "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+---
+ drivers/staging/greybus/gbphy.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +
-> +  clocks:
-> +    maxItems: 5
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: bus
-> +      - const: iface
-> +      - const: vcodec_core
-> +      - const: vcodec_bus
-> +
-> +  iommus:
-> +    maxItems: 2
-> +
-> +  memory-region:
-> +    maxItems: 1
-> +
-> +  interconnects:
-> +    maxItems: 2
-> +
-> +  interconnect-names:
-> +    items:
-> +      - const: cpu-cfg
-> +      - const: video-mem
-> +
-> +  video-decoder:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: venus-decoder
-> +
-> +    required:
-> +      - compatible
-> +
-> +    additionalProperties: false
-> +
-> +  video-encoder:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: venus-encoder
-> +
-> +    required:
-> +      - compatible
-> +
-> +    additionalProperties: false
-> +
-> +  video-firmware:
-> +    type: object
-> +
-> +    description: |
-> +      Firmware subnode is needed when the platform does not
-> +      have TrustZone.
-> +
-> +    properties:
-> +      iommus:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - iommus
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - power-domains
-> +  - power-domain-names
-> +  - clocks
-> +  - clock-names
-> +  - iommus
-> +  - memory-region
-> +  - video-decoder
-> +  - video-encoder
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
-> +
-> +        venus: video-codec@aa00000 {
-> +                compatible = "qcom,sc7280-venus";
-> +                reg = <0x0aa00000 0xd0600>;
-> +                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-> +                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-> +                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-> +                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-> +                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-> +                clock-names = "core", "bus", "iface",
-> +                              "vcodec_core", "vcodec_bus";
-> +
-> +                power-domains = <&videocc MVSC_GDSC>,
-> +                                <&videocc MVS0_GDSC>;
-> +                power-domain-names = "venus", "vcodec0";
-> +
-> +                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>
-> +                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-> +                interconnect-names = "cpu-cfg", "video-mem";
-> +
-> +                iommus = <&apps_smmu 0x2180 0x20>,
-> +                         <&apps_smmu 0x2184 0x20>;
-> +
-> +                memory-region = <&video_mem>;
-> +
-> +                video-decoder {
-> +                        compatible = "venus-decoder";
-> +                };
-> +
-> +                video-encoder {
-> +                        compatible = "venus-encoder";
-> +                };
-> +
-> +                video-firmware {
-> +                        iommus = <&apps_smmu 0x21a2 0x0>;
-> +                };
-> +        };
-> -- 
-> 2.7.4
-> 
+diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
+index 9fc5c47be9bd..13d319860da5 100644
+--- a/drivers/staging/greybus/gbphy.c
++++ b/drivers/staging/greybus/gbphy.c
+@@ -27,7 +27,7 @@ struct gbphy_host {
+ static DEFINE_IDA(gbphy_id);
+ 
+ static ssize_t protocol_id_show(struct device *dev,
+-				 struct device_attribute *attr, char *buf)
++				struct device_attribute *attr, char *buf)
+ {
+ 	struct gbphy_device *gbphy_dev = to_gbphy_dev(dev);
+ 
+@@ -221,7 +221,7 @@ void gb_gbphy_deregister_driver(struct gbphy_driver *driver)
+ EXPORT_SYMBOL_GPL(gb_gbphy_deregister_driver);
+ 
+ static struct gbphy_device *gb_gbphy_create_dev(struct gb_bundle *bundle,
+-				struct greybus_descriptor_cport *cport_desc)
++						struct greybus_descriptor_cport *cport_desc)
+ {
+ 	struct gbphy_device *gbphy_dev;
+ 	int retval;
+-- 
+2.17.1
+
