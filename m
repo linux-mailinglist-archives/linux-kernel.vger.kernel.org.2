@@ -2,115 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184C5388F7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD78388F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345137AbhESNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:52:42 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:12996 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239473AbhESNwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:52:39 -0400
-Date:   Wed, 19 May 2021 13:51:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1621432277;
-        bh=SNNcRVOFVpr35EZL4/N+6W9VvKSlRNMPq2xvss0knNw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=TXaRBf41aHSzJdXeZJS9xYMZ0PEvrSFrt9/P3ojk1QYAkX/XzEDE7EE2lKZONgiDd
-         10Nd//LTgMyya0waxBXer36OT8ZUWIdwh48AqjLje6B9fc9hGKbeba3CQ/bxAm/57w
-         lzLyiG3Nv5f9wFOnFuUQ+PmL3VP5MOAixqLQPhggapq+1W8zRCrgEyHAF/BinfBnRX
-         KjydRyQzaGwAJxOD3xvE4Wf6lMhhoEzsY2iECV0if01hQWwrzmMInfTXlOEtqC63lL
-         rUU2h61ZeiE9ixLyBWLi3l7vs3AT0J2nbKySe4PmSXSPKKb3/JiYE1e03Xz3DuYJg4
-         3/RTkkmgtFBRQ==
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: Re: [PATCH] staging: rtl8723bs: remove if (true) statement
-Message-ID: <20210519135020.wm3qi4gv475hg54b@bryanbrattlof.com>
-In-Reply-To: <20210519133108.GW1955@kadam>
-References: <20210518144335.1677320-1-hello@bryanbrattlof.com> <20210519124438.GA1417@agape.jhs> <20210519132529.GV1955@kadam> <20210519133108.GW1955@kadam>
+        id S1353766AbhESNxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:53:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:40196 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239473AbhESNxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:53:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B5BA31B;
+        Wed, 19 May 2021 06:52:04 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C3DA3F73B;
+        Wed, 19 May 2021 06:52:01 -0700 (PDT)
+Subject: Re: [PATCH v12 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-8-steven.price@arm.com> <87sg2ltexj.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <5c0f6cd7-5f2d-de5b-f057-f3b307cb9416@arm.com>
+Date:   Wed, 19 May 2021 14:51:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <87sg2ltexj.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 04:31:08PM +0300, Dan Carpenter wrote:
-> On Wed, May 19, 2021 at 04:25:29PM +0300, Dan Carpenter wrote:
-> > On Wed, May 19, 2021 at 02:44:38PM +0200, Fabio Aiuto wrote:
-> > > Hi Bryan,
-> > >
-> > > On Tue, May 18, 2021 at 02:45:19PM +0000, Bryan Brattlof wrote:
-> > > > 'if (true) { ... }' will always evaluate to true. Remove it and
-> > > > save a few tabs for somewhere else.
-> > > >
-> > > > Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
-> > > > ---
-> > > >  drivers/staging/rtl8723bs/core/rtw_ap.c | 159 ++++++++++++--------=
-----
-> > > >  1 file changed, 78 insertions(+), 81 deletions(-)
-> > > >
-> > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/stag=
-ing/rtl8723bs/core/rtw_ap.c
-> > > > index 9df4476b2e2d..98b1bec67999 100644
-> > > > --- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-> > > > +++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-> > > > @@ -59,112 +59,109 @@ static void update_BCNTIM(struct adapter *pad=
-apter)
-> > > >
-> > >
-> > > I was wondering why are you using the first patch of a nine patch
-> > > series as a 'cover letter' of an eight patch patchset.
-> > >
-> > > In other words, why putting the In-Reply-To field of all patches subs=
-equent
-> > > to the first one ponting to the first patch itself as a cover letter,
-> > > is it a recommened practice?
-> >
-> > It's fine.  It doesn't matter.  It's not recommended.  I do it normally
-> > if I have to send patches in certain order.  I never write cover letter=
-s
-> > because my patches are all independent bug fixes and not new features.
->
-> Wait, this was just a mistake I think.  It's not a cover letter.  It's
-> not part of the eight patch series but it probably was intended to be as
-> you suggest.
->
-> The patches are basically okay.  Greg applies patches in the order that
-> he recieves them so it should all apply fine.  And if it doesn't Greg
-> will just ask for a resend.  No big deal.
->
+On 17/05/2021 19:04, Marc Zyngier wrote:
+> On Mon, 17 May 2021 13:32:38 +0100,
+> Steven Price <steven.price@arm.com> wrote:
+>>
+>> The VMM may not wish to have it's own mapping of guest memory mapped
+>> with PROT_MTE because this causes problems if the VMM has tag checking
+>> enabled (the guest controls the tags in physical RAM and it's unlikely
+>> the tags are correct for the VMM).
+>>
+>> Instead add a new ioctl which allows the VMM to easily read/write the
+>> tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
+>> while the VMM can still read/write the tags for the purpose of
+>> migration.
+>>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>  arch/arm64/include/uapi/asm/kvm.h | 11 +++++
+>>  arch/arm64/kvm/arm.c              | 69 +++++++++++++++++++++++++++++++
+>>  include/uapi/linux/kvm.h          |  1 +
+>>  3 files changed, 81 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+>> index 24223adae150..b3edde68bc3e 100644
+>> --- a/arch/arm64/include/uapi/asm/kvm.h
+>> +++ b/arch/arm64/include/uapi/asm/kvm.h
+>> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+>>  	__u32 reserved[12];
+>>  };
+>>  
+>> +struct kvm_arm_copy_mte_tags {
+>> +	__u64 guest_ipa;
+>> +	__u64 length;
+>> +	void __user *addr;
+>> +	__u64 flags;
+>> +	__u64 reserved[2];
+>> +};
+>> +
+>> +#define KVM_ARM_TAGS_TO_GUEST		0
+>> +#define KVM_ARM_TAGS_FROM_GUEST		1
+>> +
+>>  /* If you need to interpret the index values, here is the key: */
+>>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
+>>  #define KVM_REG_ARM_COPROC_SHIFT	16
+>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>> index e89a5e275e25..4b6c83beb75d 100644
+>> --- a/arch/arm64/kvm/arm.c
+>> +++ b/arch/arm64/kvm/arm.c
+>> @@ -1309,6 +1309,65 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
+>>  	}
+>>  }
+>>  
+>> +static int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+>> +				      struct kvm_arm_copy_mte_tags *copy_tags)
+>> +{
+>> +	gpa_t guest_ipa = copy_tags->guest_ipa;
+>> +	size_t length = copy_tags->length;
+>> +	void __user *tags = copy_tags->addr;
+>> +	gpa_t gfn;
+>> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
+>> +	int ret = 0;
+>> +
+>> +	if (copy_tags->reserved[0] || copy_tags->reserved[1])
+>> +		return -EINVAL;
+>> +
+>> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
+>> +		return -EINVAL;
+>> +
+>> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
+>> +		return -EINVAL;
+>> +
+>> +	gfn = gpa_to_gfn(guest_ipa);
+>> +
+>> +	mutex_lock(&kvm->slots_lock);
+>> +
+>> +	while (length > 0) {
+>> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
+>> +		void *maddr;
+>> +		unsigned long num_tags = PAGE_SIZE / MTE_GRANULE_SIZE;
+> 
+> nit: this is a compile time constant, make it a #define. This will
+> avoid the confusing overloading of "num_tags" as both an input and an
+> output for the mte_copy_tags-* functions.
 
-Yep this is due to my inexperience with git over email :)
+No problem, I agree my usage of num_tags wasn't very clear.
 
-I wanted to send the patches in order to avoid conflicts when applying
-because they deal with the same area of the file, but didn't feel they
-deserved a cover letter to remove some unused definitions.
+>> +
+>> +		if (is_error_noslot_pfn(pfn)) {
+>> +			ret = -EFAULT;
+>> +			goto out;
+>> +		}
+>> +
+>> +		maddr = page_address(pfn_to_page(pfn));
+>> +
+>> +		if (!write) {
+>> +			num_tags = mte_copy_tags_to_user(tags, maddr, num_tags);
+>> +			kvm_release_pfn_clean(pfn);
+>> +		} else {
+>> +			num_tags = mte_copy_tags_from_user(maddr, tags,
+>> +							   num_tags);
+>> +			kvm_release_pfn_dirty(pfn);
+>> +		}
+>> +
+>> +		if (num_tags != PAGE_SIZE / MTE_GRANULE_SIZE) {
+>> +			ret = -EFAULT;
+>> +			goto out;
+>> +		}
+>> +
+>> +		gfn++;
+>> +		tags += num_tags;
+>> +		length -= PAGE_SIZE;
+>> +	}
+>> +
+>> +out:
+>> +	mutex_unlock(&kvm->slots_lock);
+>> +	return ret;
+>> +}
+>> +
+> 
+> nit again: I'd really prefer it if you moved this to guest.c, where we
+> already have a bunch of the save/restore stuff.
 
-I was using 'git-series' to manage the patch set which generated an
-empty cover letter that I didn't send out. I should have known that
-In-Reply-To would have been set for all the remaining emails.
+Sure - I'll move it across.
 
-Going forward I'll probably just stick with 'git-send-email' and write a
-proper cover letter, especially while I'm still getting used to sending
-patches over email. :)
+Thanks,
 
---
-~Bryan
-
-> regards,
-> dan carpenter
->
-
+Steve
