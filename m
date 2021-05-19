@@ -2,152 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEC63891FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24277389212
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354859AbhESOxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354196AbhESOxM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:53:12 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81D9C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:51:52 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so11981489otg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FTJFgBVyDmUOEWvTRev7q14+qgObUW0H7ne5i0Gbe6Y=;
-        b=S9tVdEtrJGHa2o7lEkJCl4ciWBJIW+7y7XAxPg2JtJRWL8oEtOofCj7Kd+s7C/rIBr
-         X/N8xkmpWtnyWt1DKO7+61sttUWb96XaXea/B1XI7p/WQnRVkFodqInkdzVDOGszpRe4
-         bpJLlyQD9AEUc4m7DCFI/fKCMPXeM+YTcp1d73LC5Eq2i6Zs/OdFoDQ388kT3FuKiZDB
-         dsyJ9WRYzho23HSpVRA74CioM2IFz/p6ya/SE2EPNaHHGbHjx6SKcHx+OuMx087PBb3/
-         MqM61FpRqZKf8ve9BqJGm1gC0KM3eQ3qrqTWLKksOYf2pqrZGeeweNHmboD1YyD6ExZR
-         Wt4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FTJFgBVyDmUOEWvTRev7q14+qgObUW0H7ne5i0Gbe6Y=;
-        b=liHIDUGv55CJv0q5iTgI2Ux7Hs+uu1No+93x/60QExuLFW4WunL7xJ+apYrb4q+BCP
-         C3YB8WXVnBGEUn9jvIL+xwa4iCPKFlAqmZ3BiEqA9JsXQ1XNHsFH6Q8Kzj152G/SIQbT
-         V7eAmrCXWw7Nb+QEFAre0tHlF8D+Q9wyQo9affSH8PBlLxKzjX+f1DDPhdfpTIwMxPrk
-         36/V+kPoEpppeYwcsyLyR5+pD/gThB3ZRLXpjyLkmyYFnkghwS4Ea2YysSZJHc3Nzb96
-         CsUDQaxCT0w3OTSehopxjeizp0jGvEyJPIhOjAKjX419zoA+UBT43NlWjhniNTFCwxMc
-         20pg==
-X-Gm-Message-State: AOAM533602ORejyMjAV1BpvVPMJTjJEWXxzl19x4w1V0RoanIS5GtOSu
-        I3hD1llNvl5aAyYLzjSluVtfdg==
-X-Google-Smtp-Source: ABdhPJzY4rU2tPVJy8SezcMhmTeANCYark26o2ccH2Eo3RpalK98eq0y6YRbfDXggAfXeWgxMe1aUg==
-X-Received: by 2002:a05:6830:1594:: with SMTP id i20mr9168662otr.279.1621435911905;
-        Wed, 19 May 2021 07:51:51 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 67sm4571702otp.68.2021.05.19.07.51.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:51:51 -0700 (PDT)
-Date:   Wed, 19 May 2021 09:51:49 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     abhinavk@codeaurora.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH 0/4] drm/msm/dp: Add support for SC8180x eDP
- controller
-Message-ID: <20210519145149.GX2484@yoga>
-References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
- <40f6aefd3fa341e2bec2060106389be7@codeaurora.org>
+        id S1354921AbhESO5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242805AbhESO5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 10:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F6A5610A8;
+        Wed, 19 May 2021 14:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621436148;
+        bh=ClfjTj6vY4YvufBD/Qb0lGE5WKoSi7Gcm47l5UXBMVk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M4gDaXF3H/efxJL5GQz3p7hVKk/K3AUe3UMy3zSE9YDw5f7AWJd9MFQSKJfRsj3lr
+         NhkAPK4RbzbvVf5Xx8zUG+wd/IEyWwN+7Nq+DxMzvaa+TW32Yd/mt91LGmXTWC8zek
+         oLCu1XELyBoA+Yt6k7zk0eAR44w0WyBMpvhiO6VA=
+Date:   Wed, 19 May 2021 16:55:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hriday Hegde <hridayhegde1999@gmail.com>
+Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
+ 'const' keyword
+Message-ID: <YKUm8tf3bKvCf1YI@kroah.com>
+References: <20210519081958.7223-1-hridayhegde1999@gmail.com>
+ <YKTM8KmXI8bXUSqp@kroah.com>
+ <0ddb894f-f66f-f31b-ef8a-0646e0a99b9f@gmail.com>
+ <YKTfbdFhvM7fbpet@kroah.com>
+ <08cf8110-cf84-8784-c919-eba27474b796@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <40f6aefd3fa341e2bec2060106389be7@codeaurora.org>
+In-Reply-To: <08cf8110-cf84-8784-c919-eba27474b796@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 18 May 22:41 CDT 2021, abhinavk@codeaurora.org wrote:
-
-> Hi Bjorn
+On Wed, May 19, 2021 at 08:06:14PM +0530, Hriday Hegde wrote:
+> On 19-05-2021 15:20, Greg Kroah-Hartman wrote:
+> > A: http://en.wikipedia.org/wiki/Top_post
+> > Q: Were do I find info about this thing called top-posting?
+> > A: Because it messes up the order in which people normally read text.
+> > Q: Why is top-posting such a bad thing?
+> > A: Top-posting.
+> > Q: What is the most annoying thing in e-mail?
+> >
+> > http://daringfireball.net/2007/07/on_top
+> >
+> > On Wed, May 19, 2021 at 03:00:08PM +0530, Hriday Hegde wrote:
+> >> I am not really sure how to do that and how to reflect it in the patch i followed what was taught in the Beginners course and it does not mention building. I know i need to test it out but is running 'patch -p1 < x.patch what i need to do?
+> > That does not build the code you changed, right?
+> >
+> > I'm sure whatever course you took, it did reference the fact that you
+> > need to ensure that your change actually works properly by the very
+> > least being able to be compiled correctly.  Please go over those
+> > instructions again.
+> >
+> > good luck!
+> >
+> > greg k-h
 > 
-> I had a quick glance on the series and before getting to other things wanted
-> to know how you are initializing two different connectors for
-> DP & EDP resp.
+> I am using the A Beginner's Guide to Linux Kernel Development (LFD103) by the linux foundation for this but i cant find any commands to as to build and test , the only way i tried compiling is with a custom Makefile and it didn't work, i've got a few errors so the const keyword might not work here since the variable is being written to.
 > 
-> The connector type for DP should be DRM_MODE_CONNECTOR_DisplayPort and eDP
-> should be DRM_MODE_CONNECTOR_eDP.
-
-As far as I've been able to conclude there is no eDP support in the
-upstream DPU driver; an encoder of type DRM_MODE_ENCODER_TMDS will only
-attach to INTF_DP.
-
-> We need both to be created so that both EDP and DP can be supported
-> concurrently.
 > 
 
-Further more the DP controller driver has a global variable to track
-state and the INTF-picker will always pick the interface of index 0 when
-setting up the DP controller.
+That is correct, when compiling (i.e. building), the compiler shows that
+this is not a correct change.
 
-> Will these changes work for concurrent eDP and DP case?
-> 
+thanks,
 
-The proposed changes are all that I need to get eDP working on my
-sc8180x laptop. But the DPU code does not currently support more than a
-single DP interface - and that has to be on the first INTF_DP that the
-DPU driver knows about.
-
-But this is a limitation we should fix, rather than claiming that you
-can only have one of each. Further more, afaict the sc7280 DP controller
-can do both DP and eDP, so it would make sense not to distinguish the
-interfaces as eDP or DP - just because the product in mind will use eDP.
-
-
-PS. I've currently disabled the eDP interface on my laptop and am
-working on trying to get Type-C DP working. Once that's in place I'd
-need a better INTF/encoder picker - because the current model of just
-picking INTF_DP 0 (or in a sequential fashion) won't work.
-
-Regards,
-Bjorn
-
-> Thanks
-> 
-> Abhinav
-> 
-> On 2021-05-10 21:20, Bjorn Andersson wrote:
-> > The first patch in the series is somewhat unrelated to the support, but
-> > simplifies reasoning and debugging of timing related issues.
-> > 
-> > The second patch introduces support for dealing with different register
-> > block
-> > layouts, which is used in the forth patch to describe the hardware
-> > blocks found
-> > in the SC8180x eDP block.
-> > 
-> > The third patch configures the INTF_CONFIG register, which carries the
-> > configuration for widebus handling. As with the DPU the bootloader
-> > enables
-> > widebus and we need to disable it, or implement support for adjusting
-> > the
-> > timing.
-> > 
-> > Bjorn Andersson (4):
-> >   drm/msm/dp: Simplify the mvid/nvid calculation
-> >   drm/msm/dp: Store each subblock in the io region
-> >   drm/msm/dp: Initialize the INTF_CONFIG register
-> >   drm/msm/dp: Add support for SC8180x eDP
-> > 
-> >  drivers/gpu/drm/msm/dp/dp_catalog.c | 99 +++++++----------------------
-> >  drivers/gpu/drm/msm/dp/dp_display.c |  1 +
-> >  drivers/gpu/drm/msm/dp/dp_parser.c  | 22 +++++++
-> >  drivers/gpu/drm/msm/dp/dp_parser.h  |  8 +++
-> >  4 files changed, 53 insertions(+), 77 deletions(-)
+greg k-h
