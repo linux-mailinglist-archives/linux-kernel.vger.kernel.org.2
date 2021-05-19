@@ -2,141 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0BD388C55
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1759388C5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346072AbhESLHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:07:08 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41234 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242675AbhESLHF (ORCPT
+        id S1346089AbhESLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:09:07 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32990 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240482AbhESLJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:07:05 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 26E141C0B7F; Wed, 19 May 2021 13:05:43 +0200 (CEST)
-Date:   Wed, 19 May 2021 13:05:42 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jafar Akhondali <jafar.akhoondali@gmail.com>, jlee@suse.com,
-        mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: acer-wmi: Add support for Acer Helios 300
- RGB keyboard backlight
-Message-ID: <20210519110542.GA24621@duo.ucw.cz>
-References: <CAMW3L+24ZGowtpURUbjoCoA+eZMF0wDae1izxS+HM2uz1L9Rig@mail.gmail.com>
- <9e455325-d9d6-557d-e9a5-779f59e2af4c@redhat.com>
- <20210519085429.GA2025@bug>
- <e933a326-830c-4df8-eeb0-f8e48a4b9627@redhat.com>
+        Wed, 19 May 2021 07:09:05 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JB4McU175859;
+        Wed, 19 May 2021 07:07:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mgQP3Ox1zUzhqI+jTSjnWTXTwOY6N8NMVBkqvt6iJi4=;
+ b=Ek/Cjvwltmcjr7sM4AGleRPxOaWP17xfCHOt/9R/Xta3oZjAyjxuYRye5uonQ/7F+MwD
+ yFSQRmeklkFuy6gB9CRxCbbxAU5WTITKQ6+kyajSSvZBQiToOM0MRsz+wN40VZXx9vKw
+ Q9XR9duZCdNGqq8plva7mEQbJXqYlF9E+77jIDe8Z7nCuyOPQAL/UpoR08yAfPpj6Sn/
+ ntQmxn1c4fjzjLx1W+ao+J+GgrfP7FdskWJBnlsZECtQ6vD7UCfyrYe7t1sRNa01xtsG
+ DRCgbBMaZy4/J5ciD6qOKHKvN9nTay0UzUCiK3tF5CngarC2nSi7z/EhWwJKuHFmYODT 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38n182gewj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 07:07:30 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JB4lZJ183041;
+        Wed, 19 May 2021 07:07:29 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38n182gevx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 07:07:29 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JAnVTT008925;
+        Wed, 19 May 2021 11:07:28 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 38mceh8c0v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 11:07:27 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JB7Ond29295018
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 11:07:24 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B00CEA4059;
+        Wed, 19 May 2021 11:07:24 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C109A4040;
+        Wed, 19 May 2021 11:07:24 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.46.43])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 19 May 2021 11:07:24 +0000 (GMT)
+Date:   Wed, 19 May 2021 13:07:22 +0200
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on
+ PGTABLE_LEVELS > 2
+Message-ID: <20210519130722.7d255b7f@thinkpad>
+In-Reply-To: <20210517161358.49683f34@thinkpad>
+References: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
+        <a4403be6-5b74-2c86-bc4c-42ae4f0764dc@arm.com>
+        <20210517161358.49683f34@thinkpad>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-In-Reply-To: <e933a326-830c-4df8-eeb0-f8e48a4b9627@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: WWrK9mQA_VGxztucBjuP4reC0yVbWybH
+X-Proofpoint-ORIG-GUID: 8Di_qBcH4nJ6RmCX8ShVo6LLQY9FAAW_
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-19_04:2021-05-19,2021-05-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 bulkscore=0 adultscore=0 clxscore=1015 spamscore=0
+ phishscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105190074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 17 May 2021 16:13:57 +0200
+Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Mon, 17 May 2021 09:45:31 +0530
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+> > 
+> > 
+> > On 5/10/21 10:05 AM, Anshuman Khandual wrote:  
+> > > ARCH_ENABLE_SPLIT_PMD_PTLOCK is irrelevant unless there are two page table
+> > > levels including PMD (also per Documentation/vm/split_page_table_lock.rst).
+> > > Make this dependency explicit on remaining platforms i.e x86 and s390 where
+> > > ARCH_ENABLE_SPLIT_PMD_PTLOCK is subscribed.  
+> 
+> For s390, I don't think this makes a lot of sense. We always have 5 levels
+> defined for PGTABLE_LEVELS, and we would not even compile with any other
+> value, because of the "#error CONFIG_PGTABLE_LEVELS" in include/linux/pgtable.h.
+> 
+> Our pagetable folding also works a bit different than it does on other archs,
+> and we would actually have pmd level entries for 2-level pagetables, so it should
+> all work fine also with PGTABLE_LEVELS == 2 (if it was possible).
+> 
+> In fact, I do not really see why you would need "more than two levels" on any
+> arch, in order to use split PMD locks. Your description also just says
+> "irrelevant unless there are two page table levels", and not "more than two
+> levels", like in Documentation/vm/split_page_table_lock.rst.
+> 
+> Yet, your patch adds checks for "more than", so at least the description
+> seems a bit misleading. I assume that the "more than" has to do with folded
+> PMD on a 2-level system, but the way we fold on s390 I do not see why that
+> should be a problem. Could you please elaborate a bit?
+> 
+> We also have different levels of pagetables for kernel (CONFIG_PGTABLE_LEVELS)
+> and user processes on s390. The latter can have dynamic levels, currently
+> starting with 3, but previously we also had 2 levels for compat tasks e.g.
+> These dynamic levels for user processes are also independent from the
+> CONFIG_PGTABLE_LEVELS used for the kernel pagetable, while the split PMD lock
+> of course also affects user process pagetables, so that would be another
+> reason not to add such a dependency for ARCH_ENABLE_SPLIT_PMD_PTLOCK on s390.
 
-Hi!
-> >>> The Acer helios 300 provides gaming functions WMI that is available in
-> >>> Windows, however this was not implemented in Linux. The process of fi=
-nding
-> >>> the related method was done by decompiling PredatorSense(official Acer
-> >>> gaming functions software for Predator series) and decompiling WQ
-> >>> buffers. This patch provides a gaming interface which will then expos=
-e a
-> >>> character device named "acer-gkbbl". This character device accepts 16
-> >>> bytes long config, which is specific for the backlight method. The
-> >>> meaning of each bytes ordered by bit position is as follows:
-> >>>
-> >>> Bit 0 -> Backlight modes:
-> >>> 1: Breath
-> >>> 2: Neon
-> >>> 3: Wave
-> >>> 4: Shifting
-> >>> 5: Zoom
-> >>> Bit 1 -> Animation Speed: from 1 to 9 ( 1 is slowest, 9 is fastest)
-> >>> Bit 2 -> Brightness from 0 to 100 ( 0 is no backlight, 100 is brighte=
-st)
-> >>> Bit 3 -> Unknown. Wave effect uses 8, other modes must use 0
-> >>> Bit 4 -> Animation Direction:
-> >>> 1: Right-to-Left
-> >>> 2: Left-to-Right
-> >>> Bit 5 -> Red Color Selection
-> >>> Bit 6 -> Green Color Selection
-> >>> Bit 7 -> Blue Color Selection
-> >>> Bit 8 -> Currently unknown, or not used in known model
-> >>> Bit 9 -> Currently unknown, or not used in known model
-> >>> Bit 10 -> Currently unknown, or not used in known model
-> >>> Bit 11 -> Currently unknown, or not used in known model
-> >>> Bit 12 -> Currently unknown, or not used in known model
-> >>> Bit 13 -> Currently unknown, or not used in known model
-> >>> Bit 14 -> Currently unknown, or not used in known model
-> >>> Bit 15 -> Currently unknown, or not used in known model
-> >>>
-> >>> Filling this config is out of scope for the kernel module, and this m=
-odule
-> >>> only acts as an interface.
-> >>>
-> >>> Currently, I'm not sure with the method for communicating with user-s=
-pace,
-> >>> but since leds.h subsystem wouldn't fit for complex actions such as t=
-his
-> >>> complex config, I couldn't find any better method than char dev.
-> >>
-> >> Thank you for your patch, given that there is no existing kernel
-> >> interface which is a good match for the features exported by this
-> >> keyboard I'm fine with just having a raw interface where userspace
-> >> writes GAMING_KBBL_CONFIG_LEN bytes as you suggest.
-> >=20
-> > Keyboard backlight goes through LED interface (so please cc the mailing=
- list) and
-> > no, passing raw bytes to hardware is not an acceptable interface.
-> >=20
-> >> But lets not use a classdev + chardev for this please, you can
-> >> just add a binary write-only sysfs-atrribute under the wmi-dev for
-> >> this with a name like (for example) gaming_kbd_backlight_config
-> >> and then userspace can write to that without needing a class + char
-> >> dev just for this single write.
-> >=20
-> > NAK. We have existing interfaces for this.
->=20
-> I don't think we have existing interfaces for things like wave / zoom /
-> neon effects.  I guess this could use the new CONFIG_LEDS_CLASS_MULTICOLOR
-> API to set the color + overall brightness, combined with a custom sysfs a=
-ttribute
-> under the led_classdev's device's dir for selecting the things for which =
-there
-> is no standard API ?
+Ouch, I guess I was a bit confused here. I thought the split PMD lock
+was part of the struct page for the 4 KB page where the PMD entry is located,
+and therefore, with more than one page, it still would make (a little) sense
+to use it also for 2 pagetable levels.
 
-We do have RGB LEDs, and some of them can do hardware-accelerated
-effects. We do have pattern trigger.
+However, pmd_to_page() always returns the struct page of the first page,
+so there is only one split PMD lock for the whole thing (4 pages for s390).
+Of course that means that with 2 pagetable levels, and only one PMD directory,
+the split PMD lock would be equivalent to the global pagetable lock, and
+therefore not make any sense.
 
-We do have other hardware (Mauro is just trying to merge support) that
-has limited set of effects.
+Maybe you could change the description to also mention "more than two"
+levels?
 
-Yes, some work remains to be done. But no, introducing custom
-interface for this is not acceptable.
+I still do not see a real benefit of the patch, e.g. it does not really
+fix any possible misconfiguration, at least on s390. But it certainly is not
+wrong, and at least it had the benefit of making me aware again of how split
+PMD locks work, so I'll happily add this
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYKTxBgAKCRAw5/Bqldv6
-8sOvAKCELBJTazSe0VLEp//QjVU3Rf/1JwCeKCfuOPK98bBB16Alx6f0fnkZvkE=
-=6gWc
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
+Acked-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com> # s390
