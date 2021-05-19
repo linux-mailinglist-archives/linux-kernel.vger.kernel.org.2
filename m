@@ -2,59 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CF83888EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5908D38895F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243812AbhESIEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:04:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242061AbhESIEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:04:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 503EE611BF;
-        Wed, 19 May 2021 08:02:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621411377;
-        bh=Aeko/3tsOwpiZC8fRlq4sInIE8imT0nQuJbt8oMRw0o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=poO7BaIgO/F38OgxdbSS4K3qO9DvAXNrZONb/1tK7HG35jyxNV78WyO/EeYFOE2tm
-         akRUKx4sNOCpEQa2VnbT19GRbhLK3FidLJ1hskteFESbR80XvYW7dcrwZ7jxNSwQ9x
-         zap2KMvkWeT+ZmvDs05kiBL/ZAx3rTBZKLvXxDdyIsaHvn2Z5T/S0zhC6+B+IIIWMe
-         zaYSinR52s3bjo5KsJ0e4aMzvi33V4jSYS7j3bp/rmOfur9wIgTAmK0xYwtaxmlWj3
-         k2CKeJSNhEM2zrW2zelPXuEEObFlqMNIUSxr6kuXjjKgWGDh3RHJWNapv8Eq+WXjl7
-         jYW639xTs06ag==
-Date:   Wed, 19 May 2021 10:02:53 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Pavel Machek <pavel@ucw.cz>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [PATCH v2 16/17] leds: leds-nuc: add support for changing the
- ethernet type indicator
-Message-ID: <20210519100253.49b155e9@thinkpad>
-In-Reply-To: <792598f4a1a3219b6517057c92559b0f0a95b419.1621349814.git.mchehab+huawei@kernel.org>
-References: <cover.1621349813.git.mchehab+huawei@kernel.org>
-        <792598f4a1a3219b6517057c92559b0f0a95b419.1621349814.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S245058AbhESI2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:28:53 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:46532 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244827AbhESI2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:28:50 -0400
+Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
+        by twspam01.aspeedtech.com with ESMTP id 14J7tLBS034026;
+        Wed, 19 May 2021 15:55:21 +0800 (GMT-8)
+        (envelope-from jamin_lin@aspeedtech.com)
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14J7q2pj033695;
+        Wed, 19 May 2021 15:52:02 +0800 (GMT-8)
+        (envelope-from jamin_lin@aspeedtech.com)
+Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
+ 2021 16:04:38 +0800
+From:   Jamin Lin <jamin_lin@aspeedtech.com>
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "Andrew Jeffery" <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Rayn Chen <rayn_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>
+CC:     <ryan_chen@aspeedtech.com>, <chiawei_wang@aspeedtech.com>,
+        <troy_lee@aspeedtech.com>, <steven_lee@aspeedtech.com>,
+        <jamin_lin@aspeedtech.com>
+Subject: [PATCH 0/3] i2c: aspeed: avoid new registers definition of AST2600
+Date:   Wed, 19 May 2021 16:04:26 +0800
+Message-ID: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14J7q2pj033695
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What possible configurations does this support?
+Jamin Lin (3):
+  i2c: aspeed: avoid new registers definition of AST2600
+  ARM: dts: aspeed: Add node for AST2600 I2C
+  dt-bindings: aspeed-i2c: Convert txt to yaml format
 
-Does this blink on rx/tx activity for a specific ethernet port?
+ .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 89 +++++++++++++++++++
+ .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 ----------
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  8 ++
+ drivers/i2c/busses/i2c-aspeed.c               | 22 +++++
+ 4 files changed, 119 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
 
-There is a work in progress to add support for transparent offloading of
-LED triggers, with the netdev trigger being the first target.
+-- 
+2.17.1
 
-This means that after that is done, you could implement this driver so
-that when netdev trigger is enabled on a supported interface, your
-driver will offload the blinking to the HW.
-
-This should probably also work for HDD activity, but this would need a
-blockdev trigger first...
-
-Marek
