@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3CB388EF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85F7388EFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353619AbhESNYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353607AbhESNY3 (ORCPT
+        id S1353635AbhESNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:24:38 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:52874 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353607AbhESNYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:24:29 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B47AC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 06:23:09 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id y32so9425520pga.11
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 06:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ovai3a0JnkLM5FPEScO4kg8zGFTOg/1nchKtueXaWHE=;
-        b=H8UKa4OGk2nXnJlhwb1FcuImIe0jiq/Jlq1TPGr+1lgTEQ+fnE6dpEqPtAIcT2DIqF
-         yhSlcKl3htU9/L0rrdQil+La/a9PH+06PNYy1dhAu14HuuGjgeh+2y0zZ5ROEG4BiuGS
-         Gpna7xed6+xqtJznsORdWZD0cy4o9mulnj8zQ4IU7Y2i7wGOqvyARaYrL8wbrD7jSd7i
-         /39/hYouNfIfo213y5O9q65oayLISZ0Hi7FELwj0DMXMlj9NQsclEghvc2T7A6mD7evS
-         k6gi4hAQLrom91+bPA7PwYspwiP0KFbcDv48dwAlbFEVnzZopBciNiuhicMmarU9l4xt
-         +tGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ovai3a0JnkLM5FPEScO4kg8zGFTOg/1nchKtueXaWHE=;
-        b=VY2bqe90AWHT9X52K+qGKyAI7E5fG7R+Kya9JJzk5BIPB5QzD8lzJfJGsTqoxkH1cP
-         r2XKqbcWrsVbwtG34u7WJfvk7WJSnC4XWFfdMlJ0okFt7pXlMpQ6nlNtKNMMxmFSCCia
-         YfxiR62qgbuupxPp8jnQuSc58zcgV7av1HtLJDNi/ZKUvL0NTSkzcnLtNJc4ezK9WNZm
-         cEy3HNbvslIwrtAHo1vPeIMo+7s/JBbPVr9WvR0bPr+m+1wRwW+il/R0iC2JnYv8q0Bi
-         5v4lZVbOckslFbQn59EeWC4ilOdcKn9oR72Hm0NsRysaCN8O5Ma1V9nIS+ZhF2fk6CID
-         G4RQ==
-X-Gm-Message-State: AOAM532GpJWh7UpWlWXcuHeJjRn/polNgjh+f2OKMuNdXYvh7QpAfrIO
-        JLhbcUcg7bijL+z4G2k+XGvZSA==
-X-Google-Smtp-Source: ABdhPJzi4vMVoE/89uxc4gUpNsZXKqZSX3bzNWtym/DVb1XXZFYmvOTqwpp7BOcw+y/avPQh9acxUg==
-X-Received: by 2002:aa7:8809:0:b029:2de:3b94:487e with SMTP id c9-20020aa788090000b02902de3b94487emr9118170pfo.33.1621430588910;
-        Wed, 19 May 2021 06:23:08 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id g8sm4325576pju.6.2021.05.19.06.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 06:23:08 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH v2] regulator: Check ramp_delay_table for regulator_set_ramp_delay_regmap
-Date:   Wed, 19 May 2021 21:22:55 +0800
-Message-Id: <20210519132255.1683863-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 19 May 2021 09:24:36 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JDElrk071678;
+        Wed, 19 May 2021 13:23:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=dbAsbTNAyldJwWwMuFtj3r4hxMZRTSguPdcI1GwuH40=;
+ b=QdZz0Hl5nSa/Uidj0tHMSBFSy6gyXsI92GrC9zwpbEnjjedIXACf6npMcVuM007gTY1F
+ 8mFIVNha5mrJu/Da14dcFv3orE/bqo45GEBm107ZSDvd1GtaWIvJ6qegcA7w4dBBBjDf
+ cuIzhjlQIFNq/rnkzOpGuaSpG3Jq6sf5Homqmw1mM6cZKMW/cZ+gR/QQulk9PipE+50I
+ datebS1R4cej8aicCtqS3EpgH0ivUC5fLjSV8MCG1txFk2ZAJmImiAIJMq93QTVAVmVh
+ 3M6oBzrGZ8dODFowUUYiVpydDGxRsWvWRBwT+FBob4kTD2pXMggZVzEDvCuMc6PGva3n hQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 38j68mhgt7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 13:23:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JDGO5S088832;
+        Wed, 19 May 2021 13:23:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38megkfkf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 13:23:13 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14JDI4mH092986;
+        Wed, 19 May 2021 13:23:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 38megkfket-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 13:23:13 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14JDNBf4026975;
+        Wed, 19 May 2021 13:23:12 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 May 2021 06:23:11 -0700
+Date:   Wed, 19 May 2021 16:23:04 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: hso: bail out on interrupt URB allocation
+ failure
+Message-ID: <20210519132304.GD32682@kadam>
+References: <20210519124717.31144-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519124717.31144-1-johan@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: uETD26MYV9CbyQCB8OZIdC9rxmvomalP
+X-Proofpoint-GUID: uETD26MYV9CbyQCB8OZIdC9rxmvomalP
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9988 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 suspectscore=0 clxscore=1015
+ adultscore=0 bulkscore=0 phishscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105190082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return -EINVAL if ramp_delay_table is NULL.
-Also add WARN_ON since the driver code needs fix if this happened.
+On Wed, May 19, 2021 at 02:47:17PM +0200, Johan Hovold wrote:
+> Commit 31db0dbd7244 ("net: hso: check for allocation failure in
+> hso_create_bulk_serial_device()") recently started returning an error
+> when the driver fails to allocate resources for the interrupt endpoint
+> and tiocmget functionality.
+> 
+> For consistency let's bail out from probe also if the URB allocation
+> fails.
+> 
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/net/usb/hso.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+> index 260f850d69eb..b48b2a25210c 100644
+> --- a/drivers/net/usb/hso.c
+> +++ b/drivers/net/usb/hso.c
+> @@ -2635,14 +2635,14 @@ static struct hso_device *hso_create_bulk_serial_device(
+>  		}
+>  
+>  		tiocmget->urb = usb_alloc_urb(0, GFP_KERNEL);
+> -		if (tiocmget->urb) {
+> -			mutex_init(&tiocmget->mutex);
+> -			init_waitqueue_head(&tiocmget->waitq);
+> -		} else
+> -			hso_free_tiomget(serial);
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!  The original code works, but it's so suspicious looking because
+you would think hso_free_tiomget() lead to a use after free later.
 
-diff --git a/drivers/regulator/helpers.c b/drivers/regulator/helpers.c
-index 0e16e31c968f..ad2237a95572 100644
---- a/drivers/regulator/helpers.c
-+++ b/drivers/regulator/helpers.c
-@@ -948,7 +948,7 @@ int regulator_set_ramp_delay_regmap(struct regulator_dev *rdev, int ramp_delay)
- 	int ret;
- 	unsigned int sel;
- 
--	if (!rdev->desc->n_ramp_values)
-+	if (WARN_ON(!rdev->desc->n_ramp_values || !rdev->desc->ramp_delay_table))
- 		return -EINVAL;
- 
- 	ret = find_closest_bigger(ramp_delay, rdev->desc->ramp_delay_table,
--- 
-2.25.1
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
+regards,
+dan carpenter
