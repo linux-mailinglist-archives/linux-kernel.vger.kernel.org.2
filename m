@@ -2,137 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39AD388785
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB7C388783
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbhESG3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:29:41 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:48121 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230037AbhESG3f (ORCPT
+        id S234581AbhESG3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:29:34 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:45764 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhESG3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:29:35 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 7F74B580D37;
-        Wed, 19 May 2021 02:28:15 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute4.internal (MEProxy); Wed, 19 May 2021 02:28:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=ZQqIDNjegD+sDLfm5aGwnybvoXnL4d+
-        m25V093T+MCk=; b=IAlTlTk/SoQiNwmA80MnW0XoVydNXktP3zTa9kv77qM7SDU
-        Irn6xqQH0a0hMTDvR+efIIZSRPp0v6gteRp5OcuJvpRHhEPfTb7fChbCpdXiT8Xd
-        xn1L5DDqLw2+ZcZdk6PT3IFJ27l/AYcgAixUPTD0XUNUaJFcTR7yTWvuDDLCHX/I
-        uSFpQ3bfiBT+aLHixvDsKFByJJTVtPd4IxDe9sQuOMUjGmjoLRXYS2UwKK88+rSK
-        TWhazV/vKiLIA/T78Ne6AY+cga1DPB4MyyMsEnjZHxe4ZseKFJ3bzq0KvvauKDr6
-        c7zfFHJFYOzvS3ezutmLvRs+hNf/yz2D3rt/SMw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ZQqIDN
-        jegD+sDLfm5aGwnybvoXnL4d+m25V093T+MCk=; b=rqUBadeIeBeUvBDi9c+IuK
-        +JmxFjGQXQZChGk6T9WrzEQ7GGw2KY+nU3zwm66tcMfoKkhQyp+rX073hegad+j6
-        VXjiyctLWbjIhCtUEErcNxbvwZSmZ6JcCtHIyrm/XnbImmACIoycZ5dsKVFD58E4
-        XlsCPnNmRiKcRsJUZcRApHm+APZS8JJ5tj1Z32fGsOigUjV9UtN//sfjkvb6zqFH
-        GR1jMlx92bTAiWtE6qPUi2D7i/5mTwtkmIoDA34AyqtmV7vI3at6+ltUxxP1jHIy
-        ShPde321oeSZflusKhcsDCD0HftYbwaEkRsVhMGWszIyeOkarguTkhcSad8cchTQ
-        ==
-X-ME-Sender: <xms:_q-kYKycpXMLw8AQ1PQgAVN52MW9TSzhWR63jWwoJmH2Cg8t1NjM3Q>
-    <xme:_q-kYGRZzObRj1viunLQ2QWCKWXgtag7hBTYcX3luh1EryiiXVCgU_uhIot6SHFOW
-    7l6Wo5T4ejthVH9-w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeikedguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpeduffdtvdevkeffgfetffffueevgeejleeghfffjedthedthfelgfek
-    fefhfeekieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgr
-    uh
-X-ME-Proxy: <xmx:_q-kYMU_4vShvTrxTCNFqHjPWUo9l6y6NCSyQC8LHMinI-8kUxyjOg>
-    <xmx:_q-kYAiRH24iwWvK1nsliTYRPcUKrQ_UngVnEUlz35rPltCXOaFpJg>
-    <xmx:_q-kYMC0YR-rtkOBYc-kexg0WbpyEIyvGuCrp6wTwNbCJMIEZmIvsg>
-    <xmx:_6-kYI2j5O5WLzbC6WAmNZJpbRiVZBhcj9c3AELIlElJIrUer-1jmA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1C47AA0007A; Wed, 19 May 2021 02:28:14 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <2bb7dfc4-a20e-4e3e-8fa5-74ff264c4e44@www.fastmail.com>
-In-Reply-To: <56ec152a-560b-1eed-97e2-c12e4fed171a@kernel.org>
-References: <20210519000704.3661773-1-andrew@aj.id.au>
- <20210519000704.3661773-3-andrew@aj.id.au>
- <56ec152a-560b-1eed-97e2-c12e4fed171a@kernel.org>
-Date:   Wed, 19 May 2021 15:57:47 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Jiri Slaby" <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        jenmin_yuan@aspeedtech.com, "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Milton Miller II" <miltonm@us.ibm.com>
-Subject: Re: [PATCH v2 2/2] serial: 8250: Use BIT(x) for UART_{CAP,BUG}_*
-Content-Type: text/plain
+        Wed, 19 May 2021 02:29:32 -0400
+Received: from localhost (unknown [192.168.167.69])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 6E6ACBA2D7;
+        Wed, 19 May 2021 22:15:07 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [111.207.172.18])
+        by smtp.263.net (postfix) whith ESMTP id P31907T140446896060160S1621405685834478_;
+        Wed, 19 May 2021 14:28:06 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <cb7335d5501908e7aaab17af560893f5>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: linux-mips@vger.kernel.org
+X-RCPT-COUNT: 4
+X-SENDER-IP: 111.207.172.18
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] arch/mips/kernel/asm-offsets.c: Make local functions static
+Date:   Wed, 19 May 2021 14:28:04 +0800
+Message-Id: <20210519062804.30047-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes the following W=1 kernel build warning(s):
+arch/mips/kernel/asm-offsets.c:26:6: warning: no previous prototype for 'output_ptreg_defines' [-Wmissing-prototypes]
+ void output_ptreg_defines(void)
+      ^~~~~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:78:6: warning: no previous prototype for 'output_task_defines' [-Wmissing-prototypes]
+ void output_task_defines(void)
+      ^~~~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:93:6: warning: no previous prototype for 'output_thread_info_defines' [-Wmissing-prototypes]
+ void output_thread_info_defines(void)
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:109:6: warning: no previous prototype for 'output_thread_defines' [-Wmissing-prototypes]
+ void output_thread_defines(void)
+      ^~~~~~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:137:6: warning: no previous prototype for 'output_thread_fpu_defines' [-Wmissing-prototypes]
+ void output_thread_fpu_defines(void)
+      ^~~~~~~~~~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:180:6: warning: no previous prototype for 'output_mm_defines' [-Wmissing-prototypes]
+ void output_mm_defines(void)
+      ^~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:241:6: warning: no previous prototype for 'output_sc_defines' [-Wmissing-prototypes]
+ void output_sc_defines(void)
+      ^~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:254:6: warning: no previous prototype for 'output_signal_defined' [-Wmissing-prototypes]
+ void output_signal_defined(void)
+      ^~~~~~~~~~~~~~~~~~~~~
+arch/mips/kernel/asm-offsets.c:347:6: warning: no previous prototype for 'output_kvm_defines' [-Wmissing-prototypes]
+ void output_kvm_defines(void)
+
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ arch/mips/kernel/asm-offsets.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
+index 5735b2cd6f2a..2dc1ecb12c00 100644
+--- a/arch/mips/kernel/asm-offsets.c
++++ b/arch/mips/kernel/asm-offsets.c
+@@ -23,7 +23,7 @@
+ 
+ #include <linux/kvm_host.h>
+ 
+-void output_ptreg_defines(void)
++static void output_ptreg_defines(void)
+ {
+ 	COMMENT("MIPS pt_regs offsets.");
+ 	OFFSET(PT_R0, pt_regs, regs[0]);
+@@ -75,7 +75,7 @@ void output_ptreg_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_task_defines(void)
++static void output_task_defines(void)
+ {
+ 	COMMENT("MIPS task_struct offsets.");
+ 	OFFSET(TASK_STATE, task_struct, state);
+@@ -90,7 +90,7 @@ void output_task_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_thread_info_defines(void)
++static void output_thread_info_defines(void)
+ {
+ 	COMMENT("MIPS thread_info offsets.");
+ 	OFFSET(TI_TASK, thread_info, task);
+@@ -106,7 +106,7 @@ void output_thread_info_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_thread_defines(void)
++static void output_thread_defines(void)
+ {
+ 	COMMENT("MIPS specific thread_struct offsets.");
+ 	OFFSET(THREAD_REG16, task_struct, thread.reg16);
+@@ -134,7 +134,7 @@ void output_thread_defines(void)
+ }
+ 
+ #ifdef CONFIG_MIPS_FP_SUPPORT
+-void output_thread_fpu_defines(void)
++static void output_thread_fpu_defines(void)
+ {
+ 	OFFSET(THREAD_FPU, task_struct, thread.fpu);
+ 
+@@ -177,7 +177,7 @@ void output_thread_fpu_defines(void)
+ }
+ #endif
+ 
+-void output_mm_defines(void)
++static void output_mm_defines(void)
+ {
+ 	COMMENT("Size of struct page");
+ 	DEFINE(STRUCT_PAGE_SIZE, sizeof(struct page));
+@@ -216,7 +216,7 @@ void output_mm_defines(void)
+ }
+ 
+ #ifdef CONFIG_32BIT
+-void output_sc_defines(void)
++static void output_sc_defines(void)
+ {
+ 	COMMENT("Linux sigcontext offsets.");
+ 	OFFSET(SC_REGS, sigcontext, sc_regs);
+@@ -238,7 +238,7 @@ void output_sc_defines(void)
+ #endif
+ 
+ #ifdef CONFIG_64BIT
+-void output_sc_defines(void)
++static void output_sc_defines(void)
+ {
+ 	COMMENT("Linux sigcontext offsets.");
+ 	OFFSET(SC_REGS, sigcontext, sc_regs);
+@@ -251,7 +251,7 @@ void output_sc_defines(void)
+ }
+ #endif
+ 
+-void output_signal_defined(void)
++static void output_signal_defined(void)
+ {
+ 	COMMENT("Linux signal numbers.");
+ 	DEFINE(_SIGHUP, SIGHUP);
+@@ -344,7 +344,7 @@ void output_pm_defines(void)
+ #endif
+ 
+ #ifdef CONFIG_MIPS_FP_SUPPORT
+-void output_kvm_defines(void)
++static void output_kvm_defines(void)
+ {
+ 	COMMENT(" KVM/MIPS Specific offsets. ");
+ 
+-- 
+2.20.1
 
 
-On Wed, 19 May 2021, at 15:44, Jiri Slaby wrote:
-> On 19. 05. 21, 2:07, Andrew Jeffery wrote:
-> > BIT(x) improves readability and safety with respect to shifts.
-> > 
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> > ---
-> >   drivers/tty/serial/8250/8250.h | 33 +++++++++++++++++----------------
-> >   1 file changed, 17 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
-> > index 34aa2714f3c9..4fbf1088fad8 100644
-> > --- a/drivers/tty/serial/8250/8250.h
-> > +++ b/drivers/tty/serial/8250/8250.h
-> > @@ -7,6 +7,7 @@
-> >    *  Copyright (C) 2001 Russell King.
-> >    */
-> >   
-> > +#include <linux/bitops.h>
-> >   #include <linux/serial_8250.h>
-> >   #include <linux/serial_reg.h>
-> >   #include <linux/dmaengine.h>
-> > @@ -70,25 +71,25 @@ struct serial8250_config {
-> >   	unsigned int	flags;
-> >   };
-> >   
-> > -#define UART_CAP_FIFO	(1 << 8)	/* UART has FIFO */
-> > -#define UART_CAP_EFR	(1 << 9)	/* UART has EFR */
-> > -#define UART_CAP_SLEEP	(1 << 10)	/* UART has IER sleep */
-> > -#define UART_CAP_AFE	(1 << 11)	/* MCR-based hw flow control */
-> > -#define UART_CAP_UUE	(1 << 12)	/* UART needs IER bit 6 set (Xscale) */
-> > -#define UART_CAP_RTOIE	(1 << 13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
-> > -#define UART_CAP_HFIFO	(1 << 14)	/* UART has a "hidden" FIFO */
-> > -#define UART_CAP_RPM	(1 << 15)	/* Runtime PM is active while idle */
-> > -#define UART_CAP_IRDA	(1 << 16)	/* UART supports IrDA line discipline */
-> > -#define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
-> > +#define UART_CAP_FIFO	BIT(8)	/* UART has FIFO */
-> > +#define UART_CAP_EFR	BIT(9)	/* UART has EFR */
-> > +#define UART_CAP_SLEEP	BIT(10)	/* UART has IER sleep */
-> 
-> 
-> Perfect, except the include: BIT is not defined in bitops.h, but in 
-> bits.h (which includes vdso/bits.h). In fact, bitops.h includes bits.h 
-> too, but it's superfluous to include all those bitops.
 
-Maybe the recommendation in the checkpatch documentation should be 
-fixed then?
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/dev-tools/checkpatch.rst?h=v5.13-rc2#n473
-
-I didn't dig through the include maze to optimise my choice.
-
-That said, I will switch to bits.h based on your feedback above.
-
-Thanks,
-
-Andrew
