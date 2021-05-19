@@ -2,169 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46BB389397
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740333893A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355208AbhESQZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:25:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29489 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241786AbhESQZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:25:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621441440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EeHDvehrcAfnCdGLmf+MzWzadCUiTeclwhruqOxSY5g=;
-        b=LK3bSlp8P/p+/ehbuvQH5eH28vrIGXfPXgGZlFETojPwHrw6c9+ICta4f3hwqg8jOJqZLh
-        gMM+zRNkx4W3XAyYbOi/Zm/4famn2FbBaASj6vjxO6aziuvrYVjrG5NAna+gPUyuWeacqc
-        wLA12a4KE9XfXHMJ4qioFpMGyNR8Qto=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-QJ_tusFSOmG0hJA4gUctjQ-1; Wed, 19 May 2021 12:23:58 -0400
-X-MC-Unique: QJ_tusFSOmG0hJA4gUctjQ-1
-Received: by mail-io1-f69.google.com with SMTP id i13-20020a5e9e0d0000b029042f7925649eso9698017ioq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:23:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EeHDvehrcAfnCdGLmf+MzWzadCUiTeclwhruqOxSY5g=;
-        b=pCbWWqhgkK7MhG95C2+izXMeW7ye1PPELM5fQT0N+Lx8VaZpdOn5OmlpK92DMgJLM5
-         4qVSjUESw15CsQ6Cwbuqf39twGuArzu0SG/0JYtXve2o6VQnzgzfbBFazkyxBR0cP66m
-         WVH0bYGRBPvwyYB21g4k7QjTlN2C9r3zc8CQdJmeN1/ZNdZa3tosnn6AAAyeq1h3svCr
-         cCgytm4ReuAQBrtu4h9oTKzRzYvYAR9eu3e6g5aQ9NboaB33M0f5H7uFF0SrtbC/5/2S
-         xF+81aadlJcElBgJI6Nx2kMm7IqTtkwwcQsbQjRP4O6GQM/+rKZn/DLwUbL3+5zX3esh
-         vaTw==
-X-Gm-Message-State: AOAM533lzpa4n1+o6snCa+V5++xqfPRk9R4E4NJu2Zc5vIgwcfgMOgTk
-        L+2r5+mEyVag34a86ujJttDUD9ptnKbpFLkvXHh+i7uxrSt/X7i3PmfvPEGVLXnujIWF0OCXESB
-        /0+ZZv5zERlXIIN4snlH6VQPM
-X-Received: by 2002:a02:ca4b:: with SMTP id i11mr3705683jal.77.1621441437039;
-        Wed, 19 May 2021 09:23:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4fXyp819wDC8aw4NaVd2SSs4uJqkEOZbWavkt4027H+IWg2LXC/+l7i69msPj2CHZvqyLxw==
-X-Received: by 2002:a02:ca4b:: with SMTP id i11mr3705667jal.77.1621441436892;
-        Wed, 19 May 2021 09:23:56 -0700 (PDT)
-Received: from halaneylaptop.redhat.com (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id q13sm31091ilm.82.2021.05.19.09.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 09:23:56 -0700 (PDT)
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH] init/main.c: silence some -Wunused-parameter warnings
-Date:   Wed, 19 May 2021 11:23:41 -0500
-Message-Id: <20210519162341.1275452-1-ahalaney@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S1355242AbhESQ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:26:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:47880 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355209AbhESQ0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:26:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C1BC1480;
+        Wed, 19 May 2021 09:24:44 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DCC03F73D;
+        Wed, 19 May 2021 09:24:42 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+Subject: [PATCH v3 00/24] x86/resctrl: Merge the CDP resources
+Date:   Wed, 19 May 2021 16:24:00 +0000
+Message-Id: <20210519162424.27654-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a bunch of callbacks with unused arguments, go ahead and silence
-those so "make KCFLAGS=-W init/main.o" is a little quieter.
-Here's a little sample:
+Hi folks,
 
-init/main.c:182:43: warning: unused parameter 'str' [-Wunused-parameter]
-static int __init set_reset_devices(char *str)
+Thanks to Reinette comments on v2. The major changes in v3 is a juggling
+of all the commit messages. One patch got merged into its parent, and
+the msr_param range thing got pulled out into its own patch. Otherwise
+changes are noted in the commit messages.
+----
 
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
----
- init/main.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+This series re-folds the resctrl code so the CDP resources (L3CODE et al)
+behaviour is all contained in the filesystem parts, with a minimum amount
+of arch specific code.
 
-diff --git a/init/main.c b/init/main.c
-index eb01e121d2f1..4c26f0ea5073 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -179,7 +179,7 @@ EXPORT_SYMBOL_GPL(static_key_initialized);
- unsigned int reset_devices;
- EXPORT_SYMBOL(reset_devices);
- 
--static int __init set_reset_devices(char *str)
-+static int __init set_reset_devices(char *str __always_unused)
- {
- 	reset_devices = 1;
- 	return 1;
-@@ -229,13 +229,13 @@ static bool __init obsolete_checksetup(char *line)
- unsigned long loops_per_jiffy = (1<<12);
- EXPORT_SYMBOL(loops_per_jiffy);
- 
--static int __init debug_kernel(char *str)
-+static int __init debug_kernel(char *str __always_unused)
- {
- 	console_loglevel = CONSOLE_LOGLEVEL_DEBUG;
- 	return 0;
- }
- 
--static int __init quiet_kernel(char *str)
-+static int __init quiet_kernel(char *str __always_unused)
- {
- 	console_loglevel = CONSOLE_LOGLEVEL_QUIET;
- 	return 0;
-@@ -478,7 +478,7 @@ static void __init setup_boot_config(void)
- 	get_boot_config_from_initrd(NULL, NULL);
- }
- 
--static int __init warn_bootconfig(char *str)
-+static int __init warn_bootconfig(char *str __always_unused)
- {
- 	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
- 	return 0;
-@@ -504,7 +504,8 @@ static void __init repair_env_string(char *param, char *val)
- 
- /* Anything after -- gets handed straight to init. */
- static int __init set_init_arg(char *param, char *val,
--			       const char *unused, void *arg)
-+			       const char *unused __always_unused,
-+			       void *arg __always_unused)
- {
- 	unsigned int i;
- 
-@@ -529,7 +530,8 @@ static int __init set_init_arg(char *param, char *val,
-  * unused parameters (modprobe will find them in /proc/cmdline).
-  */
- static int __init unknown_bootoption(char *param, char *val,
--				     const char *unused, void *arg)
-+				     const char *unused __always_unused,
-+				     void *arg __always_unused)
- {
- 	size_t len = strlen(param);
- 
-@@ -723,7 +725,8 @@ noinline void __ref rest_init(void)
- 
- /* Check for early params. */
- static int __init do_early_param(char *param, char *val,
--				 const char *unused, void *arg)
-+				 const char *unused __always_unused,
-+				 void *arg __always_unused)
- {
- 	const struct obs_kernel_param *p;
- 
-@@ -1301,8 +1304,10 @@ static const char *initcall_level_names[] __initdata = {
- 	"late",
- };
- 
--static int __init ignore_unknown_bootoption(char *param, char *val,
--			       const char *unused, void *arg)
-+static int __init ignore_unknown_bootoption(char *param __always_unused,
-+					    char *val __always_unused,
-+					    const char *unused __always_unused,
-+					    void *arg __always_unused)
- {
- 	return 0;
- }
-@@ -1440,7 +1445,7 @@ void __weak free_initmem(void)
- 	free_initmem_default(POISON_FREE_INITMEM);
- }
- 
--static int __ref kernel_init(void *unused)
-+static int __ref kernel_init(void *unused __always_unused)
- {
- 	int ret;
- 
+Arm have some CPU support for dividing caches into portions, and
+applying bandwidth limits at various points in the SoC. The collective term
+for these features is MPAM: Memory Partitioning and Monitoring.
+
+MPAM is similar enough to Intel RDT, that it should use the defacto linux
+interface: resctrl. This filesystem currently lives under arch/x86, and is
+tightly coupled to the architecture.
+Ultimately, my plan is to split the existing resctrl code up to have an
+arch<->fs abstraction, then move all the bits out to fs/resctrl. From there
+MPAM can be wired up.
+
+x86 might have two resources with cache controls, (L2 and L3) but has
+extra copies for CDP: L{2,3}{CODE,DATA}, which are marked as enabled
+if CDP is enabled for the corresponding cache.
+
+MPAM has an equivalent feature to CDP, but its a property of the CPU,
+not the cache. Resctrl needs to have x86's odd/even behaviour, as that
+its the ABI, but this isn't how the MPAM hardware works. It is entirely
+possible that an in-kernel user of MPAM would not be using CDP, whereas
+resctrl is.
+
+Pretending L3CODE and L3DATA are entirely separate resources is a neat
+trick, but doing this is specific to x86.
+Doing this leaves the arch code in control of various parts of the
+filesystem ABI: the resources names, and the way the schemata are parsed.
+Allowing this stuff to vary between architectures is bad for user space.
+
+This series collapses the CODE/DATA resources, moving all the user-visible
+resctrl ABI into what becomes the filesystem code. CDP becomes the type of
+configuration being applied to a cache. This is done by adding a
+struct resctrl_schema to the parts of resctrl that will move to fs. This
+holds the arch-code resource that is in use for this schema, along with
+other properties like the name, and whether the configuration being applied
+is CODE/DATA/BOTH.
+
+This lets us fold the extra resources out of the arch code so that they
+don't need to be duplicated if the equivalent feature to CDP is missing, or
+implemented in a different way.
+
+
+The first two patches split the resource and domain structs to have an
+arch specific 'hw' portion, and the rest that is visible to resctrl.
+Future series massage the resctrl code so there are no accesses to 'hw'
+structures in the parts of resctrl that will move to fs, providing helpers
+where necessary.
+
+This series adds temporary scaffolding, which it removes a few patches
+later. This is to allow things like the ctrlval arrays and resources to be
+merged separately, which should make is easier to bisect. These things
+are marked temporary, and should all be gone by the end of the series.
+
+This series is a little rough around the monitors, would a fake
+struct resctrl_schema for the monitors simplify things, or be a source
+of bugs?
+
+This series is based on v5.12-rc2, and can be retrieved from:
+git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/resctrl_merge_cdp/v3
+
+v2: https://lore.kernel.org/lkml/20210312175849.8327-1-james.morse@arm.com/
+v1: https://lore.kernel.org/lkml/20201030161120.227225-1-james.morse@arm.com/
+
+Parts were previously posted as an RFC here:
+https://lore.kernel.org/lkml/20200214182947.39194-1-james.morse@arm.com/
+
+James Morse (24):
+  x86/resctrl: Split struct rdt_resource
+  x86/resctrl: Split struct rdt_domain
+  x86/resctrl: Add a separate schema list for resctrl
+  x86/resctrl: Pass the schema in info dir's private pointer
+  x86/resctrl: Label the resources with their configuration type
+  x86/resctrl: Walk the resctrl schema list instead of an arch list
+  x86/resctrl: Store the effective num_closid in the schema
+  x86/resctrl: Add resctrl_arch_get_num_closid()
+  x86/resctrl: Pass the schema to resctrl filesystem functions
+  x86/resctrl: Swizzle rdt_resource and resctrl_schema in
+    pseudo_lock_region
+  x86/resctrl: Move the schemata names into struct resctrl_schema
+  x86/resctrl: Group staged configuration into a separate struct
+  x86/resctrl: Allow different CODE/DATA configurations to be staged
+  x86/resctrl: Rename update_domains() resctrl_arch_update_domains()
+  x86/resctrl: Add a helper to read a closid's configuration
+  x86/resctrl: Add a helper to read/set the CDP configuration
+  x86/resctrl: Pass configuration type to resctrl_arch_get_config()
+  x86/resctrl: Make ctrlval arrays the same size
+  x86/resctrl: Apply offset correction when config is staged
+  x86/resctrl: Calculate the index from the configuration type
+  x86/resctrl: Merge the ctrl_val arrays
+  x86/resctrl: Remove rdt_cdp_peer_get()
+  x86/resctrl: Expand resctrl_arch_update_domains()'s msr_param range
+  x86/resctrl: Merge the CDP resources
+
+ arch/x86/kernel/cpu/resctrl/core.c        | 269 +++++--------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 164 +++++---
+ arch/x86/kernel/cpu/resctrl/internal.h    | 234 ++++-------
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  44 ++-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  12 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 447 ++++++++++++----------
+ include/linux/resctrl.h                   | 182 +++++++++
+ 7 files changed, 758 insertions(+), 594 deletions(-)
+
 -- 
-2.31.1
+2.30.2
 
