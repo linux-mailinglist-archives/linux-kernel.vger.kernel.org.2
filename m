@@ -2,28 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE53F38895D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F990388963
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244955AbhESI2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:28:49 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:46530 "EHLO
+        id S245094AbhESI26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:28:58 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:46536 "EHLO
         twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237950AbhESI2s (ORCPT
+        with ESMTP id S245085AbhESI24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:28:48 -0400
-X-Greylist: delayed 1191 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 May 2021 04:28:47 EDT
+        Wed, 19 May 2021 04:28:56 -0400
 Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 14J7t2qm033984;
-        Wed, 19 May 2021 15:55:02 +0800 (GMT-8)
+        by twspam01.aspeedtech.com with ESMTP id 14J7tY2I034033;
+        Wed, 19 May 2021 15:55:34 +0800 (GMT-8)
         (envelope-from jamin_lin@aspeedtech.com)
 Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14J7q99e033711;
-        Wed, 19 May 2021 15:52:09 +0800 (GMT-8)
+        by twspam01.aspeedtech.com with ESMTP id 14J7qHgr033724;
+        Wed, 19 May 2021 15:52:17 +0800 (GMT-8)
         (envelope-from jamin_lin@aspeedtech.com)
 Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
  (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
- 2021 16:04:46 +0800
+ 2021 16:04:53 +0800
 From:   Jamin Lin <jamin_lin@aspeedtech.com>
 To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
         "Andrew Jeffery" <andrew@aj.id.au>,
@@ -42,9 +41,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
 CC:     <ryan_chen@aspeedtech.com>, <chiawei_wang@aspeedtech.com>,
         <troy_lee@aspeedtech.com>, <steven_lee@aspeedtech.com>,
         <jamin_lin@aspeedtech.com>
-Subject: [PATCH 1/3] i2c: aspeed: avoid new registers definition of AST2600
-Date:   Wed, 19 May 2021 16:04:27 +0800
-Message-ID: <20210519080436.18975-2-jamin_lin@aspeedtech.com>
+Subject: [PATCH 2/3] ARM: dts: aspeed: Add node for AST2600 I2C
+Date:   Wed, 19 May 2021 16:04:28 +0800
+Message-ID: <20210519080436.18975-3-jamin_lin@aspeedtech.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
 References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
@@ -54,69 +53,37 @@ X-Originating-IP: [192.168.100.253]
 X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
  (192.168.0.24)
 X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14J7q99e033711
+X-MAIL: twspam01.aspeedtech.com 14J7qHgr033724
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The register definition between AST2600 A2 and A3 is different.
-This patch avoid new registers definition of AST2600 to use
-this driver. We will submit the path for the new registers
-definition of AST2600.
+Add node to get the global register of i2c for AST2600.
 
 Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
 ---
- drivers/i2c/busses/i2c-aspeed.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/arm/boot/dts/aspeed-g6.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-index 724bf30600d6..007309077d9f 100644
---- a/drivers/i2c/busses/i2c-aspeed.c
-+++ b/drivers/i2c/busses/i2c-aspeed.c
-@@ -19,14 +19,20 @@
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
- #include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/regmap.h>
- #include <linux/reset.h>
- #include <linux/slab.h>
+diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+index f96607b7b4e2..998d55a16c5c 100644
+--- a/arch/arm/boot/dts/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+@@ -674,6 +674,14 @@
+ #include "aspeed-g6-pinctrl.dtsi"
  
-+/* I2C Global Registers */
-+/* 0x0c : I2CG Global Control Register (AST2500)  */
-+#define ASPEED_I2CG_GLOBAL_CTRL_REG			0x0c
+ &i2c {
 +
- /* I2C Register */
- #define ASPEED_I2C_FUN_CTRL_REG				0x00
- #define ASPEED_I2C_AC_TIMING_REG1			0x04
-@@ -973,6 +979,22 @@ static int aspeed_i2c_probe_bus(struct platform_device *pdev)
- 	struct resource *res;
- 	int irq, ret;
- 
-+	if (of_device_is_compatible(pdev->dev.of_node,
-+				    "aspeed,ast2600-i2c-bus")) {
-+		u32 global_ctrl;
-+		struct regmap *gr_regmap;
++	i2c_gr: i2c-global-regs@0 {
++		compatible = "aspeed,ast2600-i2c-global", "syscon";
++		reg = <0x0 0x20>;
++		clocks = <&syscon ASPEED_CLK_APB2>;
++		resets = <&syscon ASPEED_RESET_I2C>;
++	};
 +
-+		gr_regmap = syscon_regmap_lookup_by_compatible("aspeed,ast2600-i2c-global");
-+
-+		if (IS_ERR(gr_regmap)) {
-+			ret = PTR_ERR(gr_regmap);
-+		} else {
-+			regmap_read(gr_regmap, ASPEED_I2CG_GLOBAL_CTRL_REG, &global_ctrl);
-+			if (global_ctrl & BIT(2))
-+				return -EIO;
-+		}
-+	}
-+
- 	bus = devm_kzalloc(&pdev->dev, sizeof(*bus), GFP_KERNEL);
- 	if (!bus)
- 		return -ENOMEM;
+ 	i2c0: i2c-bus@80 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
 -- 
 2.17.1
 
