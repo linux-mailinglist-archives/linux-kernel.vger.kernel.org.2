@@ -2,186 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FEF3893A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CAD38939C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355324AbhESQ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:27:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:48126 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355282AbhESQ0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:26:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75E9D161B;
-        Wed, 19 May 2021 09:25:20 -0700 (PDT)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BA8363F73D;
-        Wed, 19 May 2021 09:25:18 -0700 (PDT)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-Subject: [PATCH v3 07/24] x86/resctrl: Store the effective num_closid in the schema
-Date:   Wed, 19 May 2021 16:24:07 +0000
-Message-Id: <20210519162424.27654-8-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210519162424.27654-1-james.morse@arm.com>
-References: <20210519162424.27654-1-james.morse@arm.com>
+        id S1355230AbhESQZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355220AbhESQZf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:25:35 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCC3C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:24:15 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id h3-20020a05600c3503b0290176f13c7715so3657442wmq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:24:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xDecEJ8FPO187q788YjGGMjJH6kTnQ+F3dKYqIcPUTE=;
+        b=U8NQGKYWIzTHZZjQWZocDtXkC2360rFQbt29YWhB09tKEd6q20740IzNwNf9VYr9ri
+         nbGFTmyu/u/fvP4AgooP27UVva29dYIUZ4Ujh5IWqKkGXFXekjbePnEAAEWg1GKXVW/v
+         hQ6VDGt4dokyV2e/VtaYH5QsRX85vzoEZhhqvLcIPxCgq68hU0+blVeNBNwppH6AkAIU
+         q58eYPkLmNtQTFklZ0hl36MLbq+ZQ2C0PSFIlDwxcce7Gk0Db5RxZb4xsBLRrTcuotox
+         JfByYaV8dUir52DIMD+ANQIFmx2KbEeiceB1XKAxRbrfFMxdTxZu662xUecewI+Z3AV0
+         Q3yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xDecEJ8FPO187q788YjGGMjJH6kTnQ+F3dKYqIcPUTE=;
+        b=sKD6vjI9BrUQzMUXSabuuomRCTg9fJxm8VBJ/5rFv2Zyt18APrNuC7NcSQR0v3aXks
+         JPlij0i2LNQokh1vjzXfdcLjBeoGSG07D3sL3owSocjcl2URX0zaXUS+84DKkMLTKndh
+         8Ptk4hNiSBRfykYumzUH1OXJTGBgXX0uboc3fHuDofl0LilXhnuDeDIwgQRDDkHLrpMl
+         WFTLoe2VledlJkH0hHzxSpwOpzf0ioxe4/Xln87830du40jcGfIH48sYgLjjwASsuo+m
+         dmsxlj1EqtElqFZmp3b1Ks84bLY/HAk0x4OEMB9tE1P7EVH2HOY8ZNmzEh+aBAfaNVL/
+         82kQ==
+X-Gm-Message-State: AOAM531yckOSf1uebvMHrHsLtyiP7aZzGk2cDnHIEw2w8qMXnSLoSJeR
+        1bb3ElFLNcTyOVm4CvjLR59ydeAoZ6GFEw==
+X-Google-Smtp-Source: ABdhPJxBxVZ+GBRsoB7WKm0donupE/x8LTiMFNOKNBnwn090HBIP7REjBBZ/Nddf2jkgWRghlrCV+A==
+X-Received: by 2002:a7b:c154:: with SMTP id z20mr128550wmi.13.1621441454146;
+        Wed, 19 May 2021 09:24:14 -0700 (PDT)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id p10sm24489710wrr.58.2021.05.19.09.24.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 09:24:13 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 2/3] pinctrl: mediatek: don't hardcode mode encoding in common code
+Date:   Wed, 19 May 2021 18:24:07 +0200
+Message-Id: <20210519162409.3755679-2-fparent@baylibre.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210519162409.3755679-1-fparent@baylibre.com>
+References: <20210519162409.3755679-1-fparent@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Struct resctrl_schema holds properties that vary with the style of
-configuration that resctrl applies to a resource. There are already
-two values for the hardware's num_closid, depending on whether the
-architecture presents the L3 or L3CODE/L3DATA resources.
+MT8365 encode the pins mode differently than other
+MTK pinctrl drivers that use the PINCTRL_MTK common code.
 
-As the way CDP changes the number of control groups that resctrl can create
-is part of the user-space interface, it should be managed by the filesystem
-parts of resctrl. This allows the architecture code to only describe the
-value the hardware supports.
+Add 3 new fields in mtk_pinctrl_devdata in order to store how
+pin modes are encoded into the register. At the
+same time update all the pinctrl driver that depends on
+CONFIG_PINCTRL_MTK.
 
-Add num_closid to resctrl_schema. This is the value seen by the filesystem,
-which may be different to the maximum value described by the arch code
-when CDP is enabled.
-These functions operate on the num_closid value that is exposed to
-user-space:
-* rdtgroup_parse_resource()
-* rdtgroup_schemata_show()
-* rdt_num_closids_show()
-* closid_init()
-These are changed to use the schema value instead. schemata_list_create()
-sets this value, and reaches into the architecture specific structure to get
-the value. This will eventually be replaced with a helper.
-
-Reviewed-by: Jamie Iles <jamie@nuviainc.com>
-Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
 ---
-Changes since v2:
- * Expanded kerneldoc comment.
- * Shuffled commit message,
+ drivers/pinctrl/mediatek/pinctrl-mt2701.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mt2712.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mt6397.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mt8127.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mt8135.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mt8167.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mt8173.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mt8516.c     |  3 +++
+ drivers/pinctrl/mediatek/pinctrl-mtk-common.c | 19 +++++++++----------
+ drivers/pinctrl/mediatek/pinctrl-mtk-common.h |  3 +++
+ 10 files changed, 36 insertions(+), 10 deletions(-)
 
-Changes since v1:
- * Added missing : in a comment.
- * Expanded commit message.
- * Reordered patches
----
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  9 +++------
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 13 ++++---------
- include/linux/resctrl.h                   |  4 ++++
- 3 files changed, 11 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index a6f9548a8a59..fcd6ca73ac41 100644
---- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-+++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -286,14 +286,12 @@ int update_domains(struct rdt_resource *r, int closid)
- static int rdtgroup_parse_resource(char *resname, char *tok,
- 				   struct rdtgroup *rdtgrp)
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt2701.c b/drivers/pinctrl/mediatek/pinctrl-mt2701.c
+index df8c6fb12955..37228dd5103e 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt2701.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt2701.c
+@@ -523,6 +523,9 @@ static const struct mtk_pinctrl_devdata mt2701_pinctrl_data = {
+ 	.port_shf = 4,
+ 	.port_mask = 0x1f,
+ 	.port_align = 4,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ 	.eint_hw = {
+ 		.port_mask = 6,
+ 		.ports     = 6,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt2712.c b/drivers/pinctrl/mediatek/pinctrl-mt2712.c
+index 8398d55c01cb..ba35fc6cc138 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt2712.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt2712.c
+@@ -576,6 +576,9 @@ static const struct mtk_pinctrl_devdata mt2712_pinctrl_data = {
+ 	.port_shf = 4,
+ 	.port_mask = 0xf,
+ 	.port_align = 4,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ 	.eint_hw = {
+ 		.port_mask = 0xf,
+ 		.ports     = 8,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt6397.c b/drivers/pinctrl/mediatek/pinctrl-mt6397.c
+index a1914e0e49c7..bc5c3dfcdc76 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt6397.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt6397.c
+@@ -33,6 +33,9 @@ static const struct mtk_pinctrl_devdata mt6397_pinctrl_data = {
+ 	.port_shf = 3,
+ 	.port_mask = 0x3,
+ 	.port_align = 2,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ };
+ 
+ static int mt6397_pinctrl_probe(struct platform_device *pdev)
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8127.c b/drivers/pinctrl/mediatek/pinctrl-mt8127.c
+index 5f05be056309..eaf5c76b14c7 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8127.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8127.c
+@@ -292,6 +292,9 @@ static const struct mtk_pinctrl_devdata mt8127_pinctrl_data = {
+ 	.port_shf = 4,
+ 	.port_mask = 0xf,
+ 	.port_align = 4,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ 	.eint_hw = {
+ 		.port_mask = 7,
+ 		.ports     = 6,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8135.c b/drivers/pinctrl/mediatek/pinctrl-mt8135.c
+index 9ac784c48873..b8f4080aab45 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8135.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8135.c
+@@ -305,6 +305,9 @@ static const struct mtk_pinctrl_devdata mt8135_pinctrl_data = {
+ 	.port_shf = 4,
+ 	.port_mask = 0xf,
+ 	.port_align = 4,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ 	.eint_hw = {
+ 		.port_mask = 7,
+ 		.ports     = 6,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8167.c b/drivers/pinctrl/mediatek/pinctrl-mt8167.c
+index 7b68886bad16..ba12ef795e52 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8167.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8167.c
+@@ -324,6 +324,9 @@ static const struct mtk_pinctrl_devdata mt8167_pinctrl_data = {
+ 	.port_shf = 4,
+ 	.port_mask = 0xf,
+ 	.port_align = 4,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ 	.eint_hw = {
+ 		.port_mask = 7,
+ 		.ports     = 6,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8173.c b/drivers/pinctrl/mediatek/pinctrl-mt8173.c
+index 75e7c0978337..fc99df8a11c6 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8173.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8173.c
+@@ -332,6 +332,9 @@ static const struct mtk_pinctrl_devdata mt8173_pinctrl_data = {
+ 	.port_shf = 4,
+ 	.port_mask = 0xf,
+ 	.port_align = 4,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ 	.eint_hw = {
+ 		.port_mask = 7,
+ 		.ports     = 6,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8516.c b/drivers/pinctrl/mediatek/pinctrl-mt8516.c
+index b375426aa61e..219fb4bc341f 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8516.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8516.c
+@@ -324,6 +324,9 @@ static const struct mtk_pinctrl_devdata mt8516_pinctrl_data = {
+ 	.port_shf = 4,
+ 	.port_mask = 0xf,
+ 	.port_align = 4,
++	.mode_mask = 0xf,
++	.mode_per_reg = 5,
++	.mode_shf = 4,
+ 	.eint_hw = {
+ 		.port_mask = 7,
+ 		.ports     = 6,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+index a02ad10ec6fa..9fe91e11a877 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+@@ -33,7 +33,6 @@
+ #include "mtk-eint.h"
+ #include "pinctrl-mtk-common.h"
+ 
+-#define MAX_GPIO_MODE_PER_REG 5
+ #define GPIO_MODE_BITS        3
+ #define GPIO_MODE_PREFIX "GPIO"
+ 
+@@ -61,7 +60,7 @@ static struct regmap *mtk_get_regmap(struct mtk_pinctrl *pctl,
+ static unsigned int mtk_get_port(struct mtk_pinctrl *pctl, unsigned long pin)
  {
--	struct rdt_hw_resource *hw_res;
- 	struct resctrl_schema *s;
- 	struct rdt_resource *r;
- 
- 	list_for_each_entry(s, &resctrl_schema_all, list) {
- 		r = s->res;
--		hw_res = resctrl_to_arch_res(s->res);
--		if (!strcmp(resname, r->name) && rdtgrp->closid < hw_res->num_closid)
-+		if (!strcmp(resname, r->name) && rdtgrp->closid < s->num_closid)
- 			return parse_line(tok, r, rdtgrp);
- 	}
- 	rdt_last_cmd_printf("Unknown or unsupported resource name '%s'\n", resname);
-@@ -404,7 +402,6 @@ static void show_doms(struct seq_file *s, struct rdt_resource *r, int closid)
- int rdtgroup_schemata_show(struct kernfs_open_file *of,
- 			   struct seq_file *s, void *v)
- {
--	struct rdt_hw_resource *hw_res;
- 	struct resctrl_schema *schema;
- 	struct rdtgroup *rdtgrp;
- 	struct rdt_resource *r;
-@@ -432,8 +429,8 @@ int rdtgroup_schemata_show(struct kernfs_open_file *of,
- 		} else {
- 			closid = rdtgrp->closid;
- 			list_for_each_entry(schema, &resctrl_schema_all, list) {
--				hw_res = resctrl_to_arch_res(schema->res);
--				if (closid < hw_res->num_closid)
-+				r = schema->res;
-+				if (closid < schema->num_closid)
- 					show_doms(s, r, closid);
- 			}
- 		}
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index aad891d691e0..da2e1c3a414e 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -103,15 +103,12 @@ int closids_supported(void)
- 
- static void closid_init(void)
- {
--	struct rdt_hw_resource *hw_res;
- 	struct resctrl_schema *s;
- 	int rdt_min_closid = 32;
- 
- 	/* Compute rdt_min_closid across all resources */
--	list_for_each_entry(s, &resctrl_schema_all, list) {
--		hw_res = resctrl_to_arch_res(s->res);
--		rdt_min_closid = min(rdt_min_closid, hw_res->num_closid);
--	}
-+	list_for_each_entry(s, &resctrl_schema_all, list)
-+		rdt_min_closid = min(rdt_min_closid, s->num_closid);
- 
- 	closid_free_map = BIT_MASK(rdt_min_closid) - 1;
- 
-@@ -849,11 +846,8 @@ static int rdt_num_closids_show(struct kernfs_open_file *of,
- 				struct seq_file *seq, void *v)
- {
- 	struct resctrl_schema *s = of->kn->parent->priv;
--	struct rdt_resource *r = s->res;
--	struct rdt_hw_resource *hw_res;
- 
--	hw_res = resctrl_to_arch_res(r);
--	seq_printf(seq, "%d\n", hw_res->num_closid);
-+	seq_printf(seq, "%u\n", s->num_closid);
- 	return 0;
+ 	/* Different SoC has different mask and port shift. */
+-	return ((pin >> 4) & pctl->devdata->port_mask)
++	return ((pin >> pctl->devdata->mode_shf) & pctl->devdata->port_mask)
+ 			<< pctl->devdata->port_shf;
  }
  
-@@ -2140,6 +2134,7 @@ static int schemata_list_create(void)
+@@ -74,7 +73,7 @@ static int mtk_pmx_gpio_set_direction(struct pinctrl_dev *pctldev,
+ 	struct mtk_pinctrl *pctl = pinctrl_dev_get_drvdata(pctldev);
  
- 		s->res = r;
- 		s->conf_type = resctrl_to_arch_res(r)->conf_type;
-+		s->num_closid = resctrl_to_arch_res(r)->num_closid;
+ 	reg_addr = mtk_get_port(pctl, offset) + pctl->devdata->dir_offset;
+-	bit = BIT(offset & 0xf);
++	bit = BIT(offset & pctl->devdata->mode_mask);
  
- 		INIT_LIST_HEAD(&s->list);
- 		list_add(&s->list, &resctrl_schema_all);
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 3772f365812d..616a66143dbb 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -169,10 +169,14 @@ struct rdt_resource {
-  * @conf_type:	Whether this schema is specific to code/data.
-  * @res:	The resource structure exported by the architecture to describe
-  *		the hardware that is configured by this schema.
-+ * @num_closid:	The number of closid that can be used with this schema. When
-+ *		features like CDP are enabled, this will be lower than the
-+ *		the hwardware supports for the resource.
-  */
- struct resctrl_schema {
- 	struct list_head		list;
- 	enum resctrl_conf_type		conf_type;
- 	struct rdt_resource		*res;
-+	int				num_closid;
+ 	if (pctl->devdata->spec_dir_set)
+ 		pctl->devdata->spec_dir_set(&reg_addr, offset);
+@@ -96,7 +95,7 @@ static void mtk_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+ 	struct mtk_pinctrl *pctl = gpiochip_get_data(chip);
+ 
+ 	reg_addr = mtk_get_port(pctl, offset) + pctl->devdata->dout_offset;
+-	bit = BIT(offset & 0xf);
++	bit = BIT(offset & pctl->devdata->mode_mask);
+ 
+ 	if (value)
+ 		reg_addr = SET_ADDR(reg_addr, pctl);
+@@ -135,7 +134,7 @@ static int mtk_pconf_set_ies_smt(struct mtk_pinctrl *pctl, unsigned pin,
+ 			pin, pctl->devdata->port_align, value, arg);
+ 	}
+ 
+-	bit = BIT(pin & 0xf);
++	bit = BIT(offset & pctl->devdata->mode_mask);
+ 
+ 	if (arg == PIN_CONFIG_INPUT_ENABLE)
+ 		offset = pctl->devdata->ies_offset;
+@@ -311,7 +310,7 @@ static int mtk_pconf_set_pull_select(struct mtk_pinctrl *pctl,
+ 		return -EINVAL;
+ 	}
+ 
+-	bit = BIT(pin & 0xf);
++	bit = BIT(pin & pctl->devdata->mode_mask);
+ 	if (enable)
+ 		reg_pullen = SET_ADDR(mtk_get_port(pctl, pin) +
+ 			pctl->devdata->pullen_offset, pctl);
+@@ -683,11 +682,11 @@ static int mtk_pmx_set_mode(struct pinctrl_dev *pctldev,
+ 		pctl->devdata->spec_pinmux_set(mtk_get_regmap(pctl, pin),
+ 					pin, mode);
+ 
+-	reg_addr = ((pin / MAX_GPIO_MODE_PER_REG) << pctl->devdata->port_shf)
++	reg_addr = ((pin / pctl->devdata->mode_per_reg) << pctl->devdata->port_shf)
+ 			+ pctl->devdata->pinmux_offset;
+ 
+ 	mode &= mask;
+-	bit = pin % MAX_GPIO_MODE_PER_REG;
++	bit = pin % pctl->devdata->mode_per_reg;
+ 	mask <<= (GPIO_MODE_BITS * bit);
+ 	val = (mode << (GPIO_MODE_BITS * bit));
+ 	return regmap_update_bits(mtk_get_regmap(pctl, pin),
+@@ -798,7 +797,7 @@ static int mtk_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+ 	struct mtk_pinctrl *pctl = gpiochip_get_data(chip);
+ 
+ 	reg_addr =  mtk_get_port(pctl, offset) + pctl->devdata->dir_offset;
+-	bit = BIT(offset & 0xf);
++	bit = BIT(offset & pctl->devdata->mode_mask);
+ 
+ 	if (pctl->devdata->spec_dir_set)
+ 		pctl->devdata->spec_dir_set(&reg_addr, offset);
+@@ -820,7 +819,7 @@ static int mtk_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 	reg_addr = mtk_get_port(pctl, offset) +
+ 		pctl->devdata->din_offset;
+ 
+-	bit = BIT(offset & 0xf);
++	bit = BIT(offset & pctl->devdata->mode_mask);
+ 	regmap_read(pctl->regmap1, reg_addr, &read_val);
+ 	return !!(read_val & bit);
+ }
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common.h b/drivers/pinctrl/mediatek/pinctrl-mtk-common.h
+index 69364b56803f..98f27cdc609a 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common.h
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common.h
+@@ -254,6 +254,9 @@ struct mtk_pinctrl_devdata {
+ 	unsigned char  port_align;
+ 	struct mtk_eint_hw eint_hw;
+ 	struct mtk_eint_regs *eint_regs;
++	unsigned int mode_mask;
++	unsigned int mode_per_reg;
++	unsigned int mode_shf;
  };
- #endif /* _RESCTRL_H */
+ 
+ struct mtk_pinctrl {
 -- 
-2.30.2
+2.31.1
 
