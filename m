@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DC6389334
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49001389339
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347076AbhESQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:05:37 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:47621 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245423AbhESQFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:05:35 -0400
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1621440246;
-        bh=HjX1XlOaRqJLsyW2CK3RwmEjpoWJVREThQk49QVY79g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pSaoOsZLSSK4+Z5Py33kpGAnpxsQ88TsVV86OrAler9Qi8Q+/a/IQmZ9sAh+ZkzhB
-         3FiMXSwGbT/tsMqizSvktVCEU34Q2ZuSl6kfwsQw12lY/PhPLOLdz6kl03OgzVo9w1
-         YipaCSdlZARTBl3n4tGjYE+e94gBKWXPf1Mxu2tE=
-To:     linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: input: Add support for Programmable Buttons
-Date:   Wed, 19 May 2021 18:03:49 +0200
-Message-Id: <20210519160349.609690-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <61dcf8c7-2dcb-4173-fbbd-9adf3412edb7@redhat.com>
-References: <61dcf8c7-2dcb-4173-fbbd-9adf3412edb7@redhat.com>
+        id S1355079AbhESQGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241402AbhESQGh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:06:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328A8C06175F;
+        Wed, 19 May 2021 09:05:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xrYJbsm8XBvxi2yJ2qA9P43iIK0MPL7ZBIPpUfmicR0=; b=UFiocZpEd3n0qwbyeyoV48fzYM
+        ZFY9/8N316MM8Ud/2P+STmeC0wK7OTD6v6uAhET6jaNjDWMfkYUdgXHsJiiXNE11Pkz5AdmMI+Nnw
+        ZE25efNjaV+QXKBiyY2q40cvtNPTtOub9gCPwbn2OkVCdy64hM4Sce6UNpRGS2e9DCTE7/n6siwLM
+        ASudhgIGnA9gSqB75xsnb4Lpxy0FVcEgnDL3WuVawFbb8MMXWm1NSr5y80xCKM/cY06qmiGvnfDFd
+        qa24+rJkiM6OdbVbxZFz+8X90INBFbsTS7BQHmsAqClSrfLD9sZrv80eq0a1wwTarWWS9dE7rBIWp
+        HEUAwZLg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljOgr-00F6Rg-0g; Wed, 19 May 2021 16:05:02 +0000
+Date:   Wed, 19 May 2021 17:04:57 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     io-uring@vger.kernel.org, Pavel Emelyanov <xemul@openvz.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Daniel Colascione <dancol@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH  1/2] fs: anon_inodes: export anon_inode_getfile_secure
+ helper
+Message-ID: <YKU3KWn4ZnRSyyFY@infradead.org>
+References: <20210519113058.1979817-1-memxor@gmail.com>
+ <20210519113058.1979817-2-memxor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519113058.1979817-2-memxor@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Weißschuh <thomas@t-8ch.de>
+On Wed, May 19, 2021 at 05:00:56PM +0530, Kumar Kartikeya Dwivedi wrote:
+> This is the non-fd installing analogue of anon_inode_getfd_secure. In
+> addition to allowing LSMs to attach policy to the distinct inode, this
+> is also needed for checkpoint restore of an io_uring instance where a
+> mapped region needs to mapped back to the io_uring fd by CRIU. This is
+> currently not possible as all anon_inodes share a single inode.
 
-Map them to KEY_MACRO# event codes.
+No need to export it, as io_uring can't be built modular.
 
-These buttons are defined by HID as follows:
-"The user defines the function of these buttons to control software
-applications or GUI objects."
+> +struct file *anon_inode_getfile_secure(const char *name,
+> +				       const struct file_operations *fops,
+> +				       void *priv, int flags,
+> +				       const struct inode *context_inode)
+> +{
+> +	return __anon_inode_getfile(name, fops, priv, flags, context_inode, true);
+> +}
+> +EXPORT_SYMBOL_GPL(anon_inode_getfile_secure);
 
-This matches the semantics of the KEY_MACRO# input event codes that
-Linux supports.
-
-Signed-off-by: Thomas Weißschuh <thomas@t-8ch.de>
----
- drivers/hid/hid-debug.c | 11 +++++++++++
- drivers/hid/hid-input.c |  1 +
- 2 files changed, 12 insertions(+)
-
-diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-index 59f8d716d78f..0e76d9b4530a 100644
---- a/drivers/hid/hid-debug.c
-+++ b/drivers/hid/hid-debug.c
-@@ -122,6 +122,7 @@ static const struct hid_usage_entry hid_usage_table[] = {
-   {  9, 0, "Button" },
-   { 10, 0, "Ordinal" },
-   { 12, 0, "Consumer" },
-+      {0, 0x003, "ProgrammableButtons"},
-       {0, 0x238, "HorizontalWheel"},
-   { 13, 0, "Digitizers" },
-     {0, 0x01, "Digitizer"},
-@@ -939,6 +940,16 @@ static const char *keys[KEY_MAX + 1] = {
- 	[KEY_KBDINPUTASSIST_NEXTGROUP] = "KbdInputAssistNextGroup",
- 	[KEY_KBDINPUTASSIST_ACCEPT] = "KbdInputAssistAccept",
- 	[KEY_KBDINPUTASSIST_CANCEL] = "KbdInputAssistCancel",
-+	[KEY_MACRO1] = "Macro1", [KEY_MACRO2] = "Macro2", [KEY_MACRO3] = "Macro3",
-+	[KEY_MACRO4] = "Macro4", [KEY_MACRO5] = "Macro5", [KEY_MACRO6] = "Macro6",
-+	[KEY_MACRO7] = "Macro7", [KEY_MACRO8] = "Macro8", [KEY_MACRO9] = "Macro9",
-+	[KEY_MACRO10] = "Macro10", [KEY_MACRO11] = "Macro11", [KEY_MACRO12] = "Macro12",
-+	[KEY_MACRO13] = "Macro13", [KEY_MACRO14] = "Macro14", [KEY_MACRO15] = "Macro15",
-+	[KEY_MACRO16] = "Macro16", [KEY_MACRO17] = "Macro17", [KEY_MACRO18] = "Macro18",
-+	[KEY_MACRO19] = "Macro19", [KEY_MACRO20] = "Macro20", [KEY_MACRO21] = "Macro21",
-+	[KEY_MACRO22] = "Macro22", [KEY_MACRO23] = "Macro23", [KEY_MACRO24] = "Macro24",
-+	[KEY_MACRO25] = "Macro25", [KEY_MACRO26] = "Macro26", [KEY_MACRO27] = "Macro27",
-+	[KEY_MACRO28] = "Macro28", [KEY_MACRO29] = "Macro29", [KEY_MACRO30] = "Macro30",
- };
- 
- static const char *relatives[REL_MAX + 1] = {
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 18f5e28d475c..7d4dee58d869 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -632,6 +632,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
- 				else
- 					code += BTN_TRIGGER_HAPPY - 0x10;
- 				break;
-+		case HID_CP_CONSUMER_CONTROL: code += KEY_MACRO1; break;
- 		default:
- 			switch (field->physical) {
- 			case HID_GD_MOUSE:
-
-base-commit: efd8929b9eec1cde120abb36d76dd00ff6711023
--- 
-2.31.1
+Please avoid the overly long line here.
 
