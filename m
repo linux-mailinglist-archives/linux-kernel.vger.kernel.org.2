@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ADA3897A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB853897B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhESUOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:14:33 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:56860 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhESUO2 (ORCPT
+        id S232943AbhESUTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:19:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56026 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232038AbhESUTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:14:28 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1F6161C0B82; Wed, 19 May 2021 22:13:07 +0200 (CEST)
-Date:   Wed, 19 May 2021 22:13:05 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Wolfram Sang <wsa@kernel.org>,
-        Bence =?iso-8859-1?B?Q3Pza+Fz?= <bence98@sch.bme.hu>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 041/289] i2c: Add I2C_AQ_NO_REP_START adapter quirk
-Message-ID: <20210519201305.GB14212@amd>
-References: <20210517140305.140529752@linuxfoundation.org>
- <20210517140306.584198139@linuxfoundation.org>
+        Wed, 19 May 2021 16:19:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621455469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FVWmqrHmN8k1tD/caQDTal6fqjCBCOWgYK0fgUgjsDY=;
+        b=eN0SR921tosV+sQbENTFEW4rPtBznTd03V/yCzXKSQu4uJHetf1vwPHDYDbQGpE4/f2+s/
+        EqY9XwImfmhMhp36vqnsnq1Sv8JNMPCk3AvzSa2e973XlDHT2v721Q5aFFyDMBqheO69+H
+        sLpbmPNAQh+AEiiTYa1Sz+ETIOOkCio=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-UZj9Xp51Na-nqOfFUg7axA-1; Wed, 19 May 2021 16:17:46 -0400
+X-MC-Unique: UZj9Xp51Na-nqOfFUg7axA-1
+Received: by mail-wm1-f71.google.com with SMTP id 12-20020a1c010c0000b0290176491efde9so1792679wmb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:17:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FVWmqrHmN8k1tD/caQDTal6fqjCBCOWgYK0fgUgjsDY=;
+        b=E5E4qiexQZCYriIfNZsWql+o6tJ4eDErWTmYoyTzcNQifKok0znhokls0/fFOEo+oq
+         IZSirs61Kh116SIJetyXldz+4HR8HgBIUP6uwl9Yff/2xTqOVPAWnMyI6zOwbudjhnAy
+         KzA/PRROx9+PHM10c2c8cbKAKKPu8lDe4/PkNvKCQhCVlnFqKhsJE51gdge9pbJHspz6
+         ra7ComADCfaJpWmfn76rpio6JCfodzsCm9eZcBe9RDIQFMNNi99YxoCvZV/aLDgyBEkr
+         Ihz2pBA4UDADCI852EioWvZNOTPrKwDy3Gl+WDcsPCTdxrTIG36fiuGiTzNUAcuAMecu
+         83cQ==
+X-Gm-Message-State: AOAM533iPN1yGbDD24cuVVCB0ulb7X/KsE+VQb7u7SPnjYwUYcQejkbW
+        yr9SrLLDTACeVZRBWFTexu5uZMULvTRG73bC+DW2lr5goFaryt2dlffzLaQmahk0HZz1ZmVmx2H
+        x00mE7LB6oICbpotn5KbFcx0=
+X-Received: by 2002:adf:faca:: with SMTP id a10mr701563wrs.9.1621455464693;
+        Wed, 19 May 2021 13:17:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYEc9LRcRWaH8SeBjkhf17hx8NzdqxOG8U3gTeobgD/L+twK8rDMC44kE6H4Bc4EtVflBAeA==
+X-Received: by 2002:adf:faca:: with SMTP id a10mr701551wrs.9.1621455464542;
+        Wed, 19 May 2021 13:17:44 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id p6sm474549wma.4.2021.05.19.13.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 13:17:44 -0700 (PDT)
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] mm/page_alloc: bail out on fatal signal during reclaim/compaction retry attempt
+Date:   Wed, 19 May 2021 21:17:43 +0100
+Message-Id: <20210519201743.3260890-1-atomlin@redhat.com>
+X-Mailer: git-send-email 2.26.3
+In-Reply-To: <YKVn69o1UizH0kJD@casper.infradead.org>
+References: <YKVn69o1UizH0kJD@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="zx4FCpZtqtKETZ7O"
-Content-Disposition: inline
-In-Reply-To: <20210517140306.584198139@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It does not make sense to retry compaction when a fatal signal is
+pending.
 
---zx4FCpZtqtKETZ7O
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In the context of try_to_compact_pages(), indeed COMPACT_SKIPPED can be
+returned; albeit, not every zone, on the zone list, would be considered
+in the case a fatal signal is found to be pending.
+Yet, in should_compact_retry(), given the last known compaction result,
+each zone, on the zone list, can be considered/or checked
+(see compaction_zonelist_suitable()). For example, if a zone was found
+to succeed, then reclaim/compaction would be tried again
+(notwithstanding the above).
 
-On Mon 2021-05-17 15:59:26, Greg Kroah-Hartman wrote:
-> From: Bence Cs=F3k=E1s <bence98@sch.bme.hu>
->=20
-> [ Upstream commit aca01415e076aa96cca0f801f4420ee5c10c660d ]
->=20
-> This quirk signifies that the adapter cannot do a repeated
-> START, it always issues a STOP condition after transfers.
->=20
-> Suggested-by: Wolfram Sang <wsa@kernel.org>
-> Signed-off-by: Bence Cs=F3k=E1s <bence98@sch.bme.hu>
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch ensures that compaction is not needlessly retried
+irrespective of the last known compaction result e.g. if it was skipped,
+in the unlikely case a fatal signal is found pending.
+So, OOM is at least attempted.
 
-Why is this pushed to 5.10 and 4.19? The define is not used anywhere
-AFAICT.
+Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+---
+ mm/page_alloc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Best regards,
-							Pavel
-						=09
-> +++ b/include/linux/i2c.h
-> @@ -687,6 +687,8 @@ struct i2c_adapter_quirks {
-> +/* adapter cannot do repeated START */
-> +#define I2C_AQ_NO_REP_START		BIT(7)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index aaa1655cf682..b317057ac186 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4252,6 +4252,9 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
+ 	if (!order)
+ 		return false;
+ 
++	if (fatal_signal_pending(current))
++		return false;
++
+ 	if (compaction_made_progress(compact_result))
+ 		(*compaction_retries)++;
+ 
+-- 
+2.26.3
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---zx4FCpZtqtKETZ7O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmClcVEACgkQMOfwapXb+vKuwACaAxInM4XGAjXPEdx+0ilIh1gq
-bpYAnjPLbgfaMCiTVemw1FAOCx9eseDJ
-=lw2y
------END PGP SIGNATURE-----
-
---zx4FCpZtqtKETZ7O--
