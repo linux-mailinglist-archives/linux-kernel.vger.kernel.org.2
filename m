@@ -2,135 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2494D3899D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885053899DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhESXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESXaK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:30:10 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FD6C061574;
-        Wed, 19 May 2021 16:28:49 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id i5so7274356qkf.12;
-        Wed, 19 May 2021 16:28:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+sRe31lrHGcUgSFKKGzM5XKzbij36J+nU6GLQsIGJJk=;
-        b=HAOlx4M74XjBWQ8LN2fsuibOmX34Rxz0V7tqxzf7ZIWM+X+lRP/M7KyCNN/h19Q2ze
-         ou41sL+m6NfWT9Y4u75hnp/iUQWwcpgGnc3lU4BxL1BpRf14BKJUseUHnAKYSRbMoIbB
-         8WFQrW9H6mTEzhMJ8n8yJGvDHvomUkP+pmbBM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+sRe31lrHGcUgSFKKGzM5XKzbij36J+nU6GLQsIGJJk=;
-        b=N/oEgRtPDEvJtuXqZsTOSKT2iaWB4aLwls+w3pgOvh0r2XhHq72RMLj/zJSB+d5PMq
-         50i9q8oO6VXX2APcOkE/hZVGUCdABx59Rd+v0NJ8ioXLZHu66ys7sRD2I/Vn8G0Yz7U+
-         OcoiNNCg2rGbnqA++5ZPDqEOzVT0MHJf2kqZtyAk5z7e3bwvOI8+RCukEiS+gq15H/g4
-         WZzABH9nefnpY8lKeV8kvQXihoIHJl/yM3Vnioptwl3eJp/cTk7U6jonI0UmYEvmmubL
-         61OCFbnQeklMIQai5vGdKjGZXf0M6kZqW0mtt6fqqtUvLGAd4rbs+XsUMWRTeZouYokd
-         3s6Q==
-X-Gm-Message-State: AOAM5317/x0bovv9+MbE1wGqK4VmDOwmbrCWJ3lt8smaGrBUUXKPvE6N
-        GXAP9lD6s97JeJAgu4VhN7ICE6jlsRiU6tA/XRw=
-X-Google-Smtp-Source: ABdhPJzs/PNVyZHXiN60/U4ROwriKRalRsyur5ioWhvG9uZxMJo/oQyw0WnlQ0RLEb2ucWzVwat0FQEtGAkFU+vY1FU=
-X-Received: by 2002:a05:620a:704:: with SMTP id 4mr1279089qkc.66.1621466929079;
- Wed, 19 May 2021 16:28:49 -0700 (PDT)
+        id S230094AbhESXa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:30:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhESXa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 19:30:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C209610CB;
+        Wed, 19 May 2021 23:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621466976;
+        bh=6/whUwY1s4s16/hwQLNvUOYLO0zffwSHDrR5vJNwuf4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=EsZr5LTzneA83dV8soI8i3YX1gZa4OsXH7nTfBIa2Wurl5SJkjMmvVrqd7JDOls0f
+         qzdPxPmnG2I300EQdWQAS5FvXbainILuLqQ9uo2veUq7basSqK27CfWHuyPn9RDqYd
+         R9tuk1dIpSdZGVePfweQfRhylsJrdQvha5A+faMw2VMF3K/CaPWrvtz4CqzuOTB6qY
+         NvWbMlWgFZZGEYegPF9YnQ0D4sA+hzLByUZhwQGyVA6ZX8O00CPerDlVfONCAJ7ARK
+         2K2O1Afi7A2lwo0Q3Nu1Y3wB5fpsPuq+Ubibl7QoSKe05k5Ue2mgK49ZGY1ZCa5I+/
+         cj0cD+SNKaiUw==
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+To:     Len Brown <lenb@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic>
+ <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic>
+ <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic>
+ <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic>
+ <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic>
+ <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <8735uxmucw.ffs@nanos.tec.linutronix.de>
+ <CAJvTdK=6B8fXasshqOoMknAt25vWPDW6LVLovOhnmY10ZEdL1Q@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <eebc971a-dc5f-6ae6-c5f7-d303e56212b2@kernel.org>
+Date:   Wed, 19 May 2021 16:29:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210519074934.20712-1-quan@os.amperecomputing.com> <20210519074934.20712-4-quan@os.amperecomputing.com>
-In-Reply-To: <20210519074934.20712-4-quan@os.amperecomputing.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 19 May 2021 23:28:37 +0000
-Message-ID: <CACPK8XeFsuEXeCvG9DC0z+tiri6ptjOFOXe3x+COEZTVqUbVFg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] i2c: aspeed: Fix unhandled Tx done with NAK
-To:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Cc:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c@vger.kernel.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJvTdK=6B8fXasshqOoMknAt25vWPDW6LVLovOhnmY10ZEdL1Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ryan, can you please review this change?
+On 5/18/21 1:39 PM, Len Brown wrote:
+> On Sat, May 8, 2021 at 5:45 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> 
+>> Where is #6 which describes the signal interaction?
+> 
+> #6 Per the current ABI, Linux gives signal handlers access to all of
+> the hardware architectural state.
+> 
+> #6a Signal Stack is on User Stack
+> 
+> The architectural state is pushed on the user stack in uncompressed
+> XSTATE format.
+> 
+> It is established that there exists application code that counts on
+> this opaque state being complete so that it can do a user-space
+> XRESTORE instead of a sigreturn(2).
 
-On Wed, 19 May 2021 at 07:50, Quan Nguyen <quan@os.amperecomputing.com> wrote:
->
-> It is observed that in normal condition, when the last byte sent by
-> slave, the Tx Done with NAK irq will raise.
-> But it is also observed that sometimes master issues next transaction
-> too quick while the slave irq handler is not yet invoked and Tx Done
-> with NAK irq of last byte of previous READ PROCESSED was not ack'ed.
-> This Tx Done with NAK irq is raised together with the Slave Match and
-> Rx Done irq of the next coming transaction from master.
-> Unfortunately, the current slave irq handler handles the Slave Match and
-> Rx Done only in higher priority and ignore the Tx Done with NAK, causing
-> the complain as below:
-> "aspeed-i2c-bus 1e78a040.i2c-bus: irq handled != irq. expected
-> 0x00000086, but was 0x00000084"
->
-> This commit handles this case by emitting a Slave Stop event for the
-> Tx Done with NAK before processing Slave Match and Rx Done for the
-> coming transaction from master.
+Is this established?
 
-It sounds like this patch is independent of the rest of the series,
-and can go in on it's own. Please send it separately to the i2c
-maintainers and add a suitable Fixes line, such as:
+Note that the specific case of a user program doing XRSTOR will work
+just fine if we omit the allocation of non-in-use states from the
+buffer, at least by my reading of the pseudocode.  The case that would
+break is if user code then assumes that it can XSAVE back to the same
+buffer.
 
-  Fixes: f9eb91350bb2 ("i2c: aspeed: added slave support for Aspeed I2C driver")
-
->
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> ---
-> v3:
->   + First introduce in v3 [Quan]
->
->  drivers/i2c/busses/i2c-aspeed.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-> index 724bf30600d6..3fb37c3f23d4 100644
-> --- a/drivers/i2c/busses/i2c-aspeed.c
-> +++ b/drivers/i2c/busses/i2c-aspeed.c
-> @@ -254,6 +254,11 @@ static u32 aspeed_i2c_slave_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
->
->         /* Slave was requested, restart state machine. */
->         if (irq_status & ASPEED_I2CD_INTR_SLAVE_MATCH) {
-
-Can you explain why you need to do this handing inside the SLAVE_MATCH case?
-
-Could you instead move the TX_NAK handling to be above the SLAVE_MATCH case?
-
-> +               if (irq_status & ASPEED_I2CD_INTR_TX_NAK &&
-> +                   bus->slave_state == ASPEED_I2C_SLAVE_READ_PROCESSED) {
-
-Either way, this needs a comment to explain what we're working around.
-
-> +                       irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
-> +                       i2c_slave_event(slave, I2C_SLAVE_STOP, &value);
-> +               }
->                 irq_handled |= ASPEED_I2CD_INTR_SLAVE_MATCH;
->                 bus->slave_state = ASPEED_I2C_SLAVE_START;
->         }
-> --
-> 2.28.0
->
+> (My opinion is that not breaking
+> that legacy code is a requirement, and I'm actually shocked this view
+> is not unanimous)
+> 
+It's pretty unanimous.  But the legacy code that's broken has to
+actually exist for this to apply.
