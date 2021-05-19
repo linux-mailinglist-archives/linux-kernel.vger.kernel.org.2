@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C736388B2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E55388B2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347072AbhESJxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:53:46 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4531 "EHLO
+        id S1346850AbhESJxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:53:38 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4528 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346640AbhESJxg (ORCPT
+        with ESMTP id S1346605AbhESJxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:53:36 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlSkx1mmZzsS4h;
+        Wed, 19 May 2021 05:53:35 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlSkx2jYzzsRD1;
         Wed, 19 May 2021 17:49:29 +0800 (CST)
 Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
  dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
@@ -26,12 +26,11 @@ Received: from localhost.localdomain (10.69.192.56) by
 From:   Qi Liu <liuqi115@huawei.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Frank Li <Frank.li@nxp.com>,
-        Will Deacon <will@kernel.org>,
+CC:     <linuxarm@huawei.com>, Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2 7/9] drivers/perf: Remove redundant macro and functions in  fsl_imx8_ddr_perf.c
-Date:   Wed, 19 May 2021 17:51:57 +0800
-Message-ID: <1621417919-6632-8-git-send-email-liuqi115@huawei.com>
+Subject: [PATCH v2 8/9] drivers/perf: Remove redundant macro and functions in arm_dsu_pmu.c
+Date:   Wed, 19 May 2021 17:51:58 +0800
+Message-ID: <1621417919-6632-9-git-send-email-liuqi115@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1621417919-6632-1-git-send-email-liuqi115@huawei.com>
 References: <1621417919-6632-1-git-send-email-liuqi115@huawei.com>
@@ -45,106 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove IMX8_DDR_PMU_EVENT_ATTR and ddr_pmu_event_show(), as there is
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Remove DSU_EVENT_ATTR and dsu_pmu_sysfs_event_show(), as there is
 a general function for this.
 
-Cc: Frank Li <Frank.li@nxp.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Qi Liu <liuqi115@huawei.com>
 ---
- drivers/perf/fsl_imx8_ddr_perf.c | 80 ++++++++++++++++------------------------
- 1 file changed, 32 insertions(+), 48 deletions(-)
+ drivers/perf/arm_dsu_pmu.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
-index 2bbb931..8f2c4dd 100644
---- a/drivers/perf/fsl_imx8_ddr_perf.c
-+++ b/drivers/perf/fsl_imx8_ddr_perf.c
-@@ -212,55 +212,39 @@ static const struct attribute_group ddr_perf_cpumask_attr_group = {
- 	.attrs = ddr_perf_cpumask_attrs,
- };
+diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+index 196faea..33bb97e 100644
+--- a/drivers/perf/arm_dsu_pmu.c
++++ b/drivers/perf/arm_dsu_pmu.c
+@@ -81,9 +81,6 @@
+ 		}							\
+ 	})[0].attr.attr)
  
--static ssize_t
--ddr_pmu_event_show(struct device *dev, struct device_attribute *attr,
--		   char *page)
--{
--	struct perf_pmu_events_attr *pmu_attr;
+-#define DSU_EVENT_ATTR(_name, _config)		\
+-	DSU_EXT_ATTR(_name, dsu_pmu_sysfs_event_show, (unsigned long)_config)
 -
--	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
--	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
+ #define DSU_FORMAT_ATTR(_name, _config)		\
+ 	DSU_EXT_ATTR(_name, dsu_pmu_sysfs_format_show, (char *)_config)
+ 
+@@ -130,15 +127,6 @@ static inline struct dsu_pmu *to_dsu_pmu(struct pmu *pmu)
+ 	return container_of(pmu, struct dsu_pmu, pmu);
+ }
+ 
+-static ssize_t dsu_pmu_sysfs_event_show(struct device *dev,
+-					struct device_attribute *attr,
+-					char *buf)
+-{
+-	struct dev_ext_attribute *eattr = container_of(attr,
+-					struct dev_ext_attribute, attr);
+-	return sysfs_emit(buf, "event=0x%lx\n", (unsigned long)eattr->var);
 -}
 -
--#define IMX8_DDR_PMU_EVENT_ATTR(_name, _id)				\
--	(&((struct perf_pmu_events_attr[]) {				\
--		{ .attr = __ATTR(_name, 0444, ddr_pmu_event_show, NULL),\
--		  .id = _id, }						\
--	})[0].attr.attr)
--
- static struct attribute *ddr_perf_events_attrs[] = {
--	IMX8_DDR_PMU_EVENT_ATTR(cycles, EVENT_CYCLES_ID),
--	IMX8_DDR_PMU_EVENT_ATTR(selfresh, 0x01),
--	IMX8_DDR_PMU_EVENT_ATTR(read-accesses, 0x04),
--	IMX8_DDR_PMU_EVENT_ATTR(write-accesses, 0x05),
--	IMX8_DDR_PMU_EVENT_ATTR(read-queue-depth, 0x08),
--	IMX8_DDR_PMU_EVENT_ATTR(write-queue-depth, 0x09),
--	IMX8_DDR_PMU_EVENT_ATTR(lp-read-credit-cnt, 0x10),
--	IMX8_DDR_PMU_EVENT_ATTR(hp-read-credit-cnt, 0x11),
--	IMX8_DDR_PMU_EVENT_ATTR(write-credit-cnt, 0x12),
--	IMX8_DDR_PMU_EVENT_ATTR(read-command, 0x20),
--	IMX8_DDR_PMU_EVENT_ATTR(write-command, 0x21),
--	IMX8_DDR_PMU_EVENT_ATTR(read-modify-write-command, 0x22),
--	IMX8_DDR_PMU_EVENT_ATTR(hp-read, 0x23),
--	IMX8_DDR_PMU_EVENT_ATTR(hp-req-nocredit, 0x24),
--	IMX8_DDR_PMU_EVENT_ATTR(hp-xact-credit, 0x25),
--	IMX8_DDR_PMU_EVENT_ATTR(lp-req-nocredit, 0x26),
--	IMX8_DDR_PMU_EVENT_ATTR(lp-xact-credit, 0x27),
--	IMX8_DDR_PMU_EVENT_ATTR(wr-xact-credit, 0x29),
--	IMX8_DDR_PMU_EVENT_ATTR(read-cycles, 0x2a),
--	IMX8_DDR_PMU_EVENT_ATTR(write-cycles, 0x2b),
--	IMX8_DDR_PMU_EVENT_ATTR(read-write-transition, 0x30),
--	IMX8_DDR_PMU_EVENT_ATTR(precharge, 0x31),
--	IMX8_DDR_PMU_EVENT_ATTR(activate, 0x32),
--	IMX8_DDR_PMU_EVENT_ATTR(load-mode, 0x33),
--	IMX8_DDR_PMU_EVENT_ATTR(perf-mwr, 0x34),
--	IMX8_DDR_PMU_EVENT_ATTR(read, 0x35),
--	IMX8_DDR_PMU_EVENT_ATTR(read-activate, 0x36),
--	IMX8_DDR_PMU_EVENT_ATTR(refresh, 0x37),
--	IMX8_DDR_PMU_EVENT_ATTR(write, 0x38),
--	IMX8_DDR_PMU_EVENT_ATTR(raw-hazard, 0x39),
--	IMX8_DDR_PMU_EVENT_ATTR(axid-read, 0x41),
--	IMX8_DDR_PMU_EVENT_ATTR(axid-write, 0x42),
-+	PMU_EVENT_ATTR_ID(cycles, EVENT_CYCLES_ID),
-+	PMU_EVENT_ATTR_ID(selfresh, 0x01),
-+	PMU_EVENT_ATTR_ID(read-accesses, 0x04),
-+	PMU_EVENT_ATTR_ID(write-accesses, 0x05),
-+	PMU_EVENT_ATTR_ID(read-queue-depth, 0x08),
-+	PMU_EVENT_ATTR_ID(write-queue-depth, 0x09),
-+	PMU_EVENT_ATTR_ID(lp-read-credit-cnt, 0x10),
-+	PMU_EVENT_ATTR_ID(hp-read-credit-cnt, 0x11),
-+	PMU_EVENT_ATTR_ID(write-credit-cnt, 0x12),
-+	PMU_EVENT_ATTR_ID(read-command, 0x20),
-+	PMU_EVENT_ATTR_ID(write-command, 0x21),
-+	PMU_EVENT_ATTR_ID(read-modify-write-command, 0x22),
-+	PMU_EVENT_ATTR_ID(hp-read, 0x23),
-+	PMU_EVENT_ATTR_ID(hp-req-nocredit, 0x24),
-+	PMU_EVENT_ATTR_ID(hp-xact-credit, 0x25),
-+	PMU_EVENT_ATTR_ID(lp-req-nocredit, 0x26),
-+	PMU_EVENT_ATTR_ID(lp-xact-credit, 0x27),
-+	PMU_EVENT_ATTR_ID(wr-xact-credit, 0x29),
-+	PMU_EVENT_ATTR_ID(read-cycles, 0x2a),
-+	PMU_EVENT_ATTR_ID(write-cycles, 0x2b),
-+	PMU_EVENT_ATTR_ID(read-write-transition, 0x30),
-+	PMU_EVENT_ATTR_ID(precharge, 0x31),
-+	PMU_EVENT_ATTR_ID(activate, 0x32),
-+	PMU_EVENT_ATTR_ID(load-mode, 0x33),
-+	PMU_EVENT_ATTR_ID(perf-mwr, 0x34),
-+	PMU_EVENT_ATTR_ID(read, 0x35),
-+	PMU_EVENT_ATTR_ID(read-activate, 0x36),
-+	PMU_EVENT_ATTR_ID(refresh, 0x37),
-+	PMU_EVENT_ATTR_ID(write, 0x38),
-+	PMU_EVENT_ATTR_ID(raw-hazard, 0x39),
-+	PMU_EVENT_ATTR_ID(axid-read, 0x41),
-+	PMU_EVENT_ATTR_ID(axid-write, 0x42),
+ static ssize_t dsu_pmu_sysfs_format_show(struct device *dev,
+ 					 struct device_attribute *attr,
+ 					 char *buf)
+@@ -183,14 +171,14 @@ static const struct attribute_group dsu_pmu_format_attr_group = {
+ };
+ 
+ static struct attribute *dsu_pmu_event_attrs[] = {
+-	DSU_EVENT_ATTR(cycles, 0x11),
+-	DSU_EVENT_ATTR(bus_access, 0x19),
+-	DSU_EVENT_ATTR(memory_error, 0x1a),
+-	DSU_EVENT_ATTR(bus_cycles, 0x1d),
+-	DSU_EVENT_ATTR(l3d_cache_allocate, 0x29),
+-	DSU_EVENT_ATTR(l3d_cache_refill, 0x2a),
+-	DSU_EVENT_ATTR(l3d_cache, 0x2b),
+-	DSU_EVENT_ATTR(l3d_cache_wb, 0x2c),
++	PMU_EVENT_ATTR_ID(cycles, 0x11),
++	PMU_EVENT_ATTR_ID(bus_access, 0x19),
++	PMU_EVENT_ATTR_ID(memory_error, 0x1a),
++	PMU_EVENT_ATTR_ID(bus_cycles, 0x1d),
++	PMU_EVENT_ATTR_ID(l3d_cache_allocate, 0x29),
++	PMU_EVENT_ATTR_ID(l3d_cache_refill, 0x2a),
++	PMU_EVENT_ATTR_ID(l3d_cache, 0x2b),
++	PMU_EVENT_ATTR_ID(l3d_cache_wb, 0x2c),
  	NULL,
  };
  
