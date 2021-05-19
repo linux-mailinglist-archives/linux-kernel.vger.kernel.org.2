@@ -2,98 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5D1389409
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF7F38940C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355354AbhESQqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
+        id S1355388AbhESQqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237611AbhESQqR (ORCPT
+        with ESMTP id S1355366AbhESQqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:46:17 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D35C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:44:55 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id u7-20020a259b470000b02904dca50820c2so18620816ybo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:44:55 -0700 (PDT)
+        Wed, 19 May 2021 12:46:50 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF2DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:45:30 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id j75so13653310oih.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=9GW1oyTjD/RMsVNdKnza5MLgPiZ/BeX1RWS+tpjbiYw=;
-        b=BDVB0nUCyWHhJG9O9W1D40kV8iKtFjoFdYa+ougq5w9evBqq/0NdxqL5lC5WbNcCa9
-         CN0IM2jshODOAUP9aON/jRZGz7z8OXqxPmRE4CFjU61ofgtLQJ4upO64S4EMICFPrZ9p
-         ub+SWWPSKbOo2P0EffglejiaT5xtoLrFhNla5FW2SCXLdG7MiIj2aHaHiSXczfCxhvQh
-         i7QJBDu8h87OxtBfQ8LxPYGcAFRu2Tw3fkuIQtMKvXrnvYnDkGCDFiPSNrUKuhExiRIY
-         xVOFdhm4gX8BF6fqXqYmDiJWlPPxx075/bql3xJO+YBj3qPGTJyMhDHJdWAKqV0h4fSQ
-         bZQA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n3nslXd1oDD6z2dYKaP2twlQcbfdSGmidNT7OePlUG4=;
+        b=WGm4Ynazm/+VSRaGLZFfQ+wqW8Rr5++iJ695Ek/3bbhik4AClKj5GYpCdUh8UkiHHi
+         eyjurn9ygPiTVsBIPtYAEWjkXkRLc73SeBT2Espv26XwdPbA6X11rm0OPKWcfuDh57zN
+         geAdKtd+ALWfRAw+c6AXdfjJ5AK31jWb2ojc2d418c/jR42A6GmzS9dMbUUM8+Pqn2+C
+         JXOnZeWGZVxzDa10iML0VnB3WvJZBQEi+4qbh+vG4LAent7mib0PQy3b/DPhrbQsXUy1
+         MlIrNYFTTxIuWUjJU6ztDcAXa0KI2hHvyY1U29jz+POWjz8FyWOIqhUyCgbITYX1YI3T
+         VfHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=9GW1oyTjD/RMsVNdKnza5MLgPiZ/BeX1RWS+tpjbiYw=;
-        b=PDRschHgwl/9YucneqEDprx+uefmNGTd4IsztX0MfP1Yp0LZj7S4CJdkXKrFi9NCJr
-         B/DLTYXUsLDpegq+EU4DtPabxgga5HG6jGU6mws8hPM4kHGq/fVxWxPAlmzjKNOSknPO
-         TGSkzPKk+7js/30tfjaqSG5VIs1KZMA9KTnd2Wuu6hMrnPCN6r8mhjgsI19Y4WX74aYe
-         XAMrqvtEJm7vrFFoKQTJwTjjKH1t3MmR8plZe/IFKcXItDMgnZfgxgQNs/GQMdXdaS5k
-         rl7qmjwv8nilL4PU7nsH9PBIQzydTBHGTyRYEPEUkSxhccSu5/g6YtHupuVXAWuAS250
-         PRXA==
-X-Gm-Message-State: AOAM5303NFa0YMHvbY07xkf/Mm2QSG9+BI1bc763RXpKIhdGnK+tiPc5
-        uaj3n2jEVdEpTaGmZ7Ku1zmArBQPRH/p
-X-Google-Smtp-Source: ABdhPJwmU4oMGnaEsx1vLCYzXTBNQfNfjtpdk2+BGRRV0KGZodP/MA1hPvc7645uVpfpJQcwOWc/S+Ruk8na
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:636:a116:b1fd:c4e8])
- (user=irogers job=sendgmr) by 2002:a25:c646:: with SMTP id
- k67mr597071ybf.137.1621442694952; Wed, 19 May 2021 09:44:54 -0700 (PDT)
-Date:   Wed, 19 May 2021 09:44:47 -0700
-Message-Id: <20210519164447.2672030-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH] perf: Move debug initialization earlier
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n3nslXd1oDD6z2dYKaP2twlQcbfdSGmidNT7OePlUG4=;
+        b=heDH2TIArvl4FdGAKLLb7xXvSkaShcvm9YAhdQjgXQxW8EiXm4P64FwnwJdCLPJ0aD
+         bdOz3Dtn3zIFajNF78//mJRoPr3kEWYuSLhfUtqCv0MWwlLz+hGvbCypZCJWNckd0H07
+         AZDsvWzDawF0CccCRGXOeXn20Wnbu4qRtoUtT9yNlyWelXsZQmyUdMdTTmwmrzUXMT4k
+         Zo6+wXxMOuTTxfxAvNvQJLEWh+M9rHzn1PJDW5ZovbBIK0+pmC6GkkjH6wVD6GDM2s78
+         rE8hhLFlNPhw/bqR1YvAKR7ckFyv2MHFdWElOFkQm3ANszxsLJuEFokjJMxzDHc39cFC
+         UPzw==
+X-Gm-Message-State: AOAM531Sr6H2cEgFf4/qhSUrvE5PVyqr7RAhUzAArGZk5aXyTazO7hZ2
+        YTKyprXUwNeT408whWoHDCTcYDYb0dpR5DLX0LM=
+X-Google-Smtp-Source: ABdhPJweK6a7acvH1Sgwx5MjDUmmvzL2xv5d173VsMYsXQZDGk/wutf7xjkIJ21vtujBrS/uTGfOCmEdHfxM2IV3/Gs=
+X-Received: by 2002:aca:fc50:: with SMTP id a77mr27090oii.123.1621442729658;
+ Wed, 19 May 2021 09:45:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210519135723.525997-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210519135723.525997-1-kai.heng.feng@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 19 May 2021 12:45:18 -0400
+Message-ID: <CADnq5_OstgUmLxa4DU2s19m5E1zScKY0Pe=644BvBTp=LAPvJg@mail.gmail.com>
+Subject: Re: [PATCH] vgaarb: Use ACPI HID name to find integrated GPU
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This avoids segfaults during option handlers that use pr_err. For
-example, "perf --debug nopager list" segfaults before this change.
+On Wed, May 19, 2021 at 9:57 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> Commit 3d42f1ddc47a ("vgaarb: Keep adding VGA device in queue") assumes
+> the first device is an integrated GPU. However, on AMD platforms an
+> integrated GPU can have higher PCI device number than a discrete GPU.
+>
+> Integrated GPU on ACPI platform generally has _DOD and _DOS method, so
+> use that as predicate to find integrated GPU. If the new strategy
+> doesn't work, fallback to use the first device as boot VGA.
+>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Fixes: 8abceacff87d (perf debug: Add debug_set_file function)
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/perf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 
-diff --git a/tools/perf/perf.c b/tools/perf/perf.c
-index 20cb91ef06ff..2f6b67189b42 100644
---- a/tools/perf/perf.c
-+++ b/tools/perf/perf.c
-@@ -443,6 +443,8 @@ int main(int argc, const char **argv)
- 	const char *cmd;
- 	char sbuf[STRERR_BUFSIZE];
- 
-+	perf_debug_setup();
-+
- 	/* libsubcmd init */
- 	exec_cmd_init("perf", PREFIX, PERF_EXEC_PATH, EXEC_PATH_ENVIRONMENT);
- 	pager_init(PERF_PAGER_ENVIRONMENT);
-@@ -531,8 +533,6 @@ int main(int argc, const char **argv)
- 	 */
- 	pthread__block_sigwinch();
- 
--	perf_debug_setup();
--
- 	while (1) {
- 		static int done_help;
- 
--- 
-2.31.1.751.gd2f1c929bd-goog
+Unless there are any other comments, I'll apply it tomorrow.
 
+Alex
+
+> ---
+>  drivers/gpu/vga/vgaarb.c | 31 ++++++++++++++++++++++++++-----
+>  1 file changed, 26 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/vga/vgaarb.c b/drivers/gpu/vga/vgaarb.c
+> index 5180c5687ee5..949fde433ea2 100644
+> --- a/drivers/gpu/vga/vgaarb.c
+> +++ b/drivers/gpu/vga/vgaarb.c
+> @@ -50,6 +50,7 @@
+>  #include <linux/screen_info.h>
+>  #include <linux/vt.h>
+>  #include <linux/console.h>
+> +#include <linux/acpi.h>
+>
+>  #include <linux/uaccess.h>
+>
+> @@ -1450,9 +1451,23 @@ static struct miscdevice vga_arb_device = {
+>         MISC_DYNAMIC_MINOR, "vga_arbiter", &vga_arb_device_fops
+>  };
+>
+> +#if defined(CONFIG_ACPI)
+> +static bool vga_arb_integrated_gpu(struct device *dev)
+> +{
+> +       struct acpi_device *adev = ACPI_COMPANION(dev);
+> +
+> +       return adev && !strcmp(acpi_device_hid(adev), ACPI_VIDEO_HID);
+> +}
+> +#else
+> +static bool vga_arb_integrated_gpu(struct device *dev)
+> +{
+> +       return false;
+> +}
+> +#endif
+> +
+>  static void __init vga_arb_select_default_device(void)
+>  {
+> -       struct pci_dev *pdev;
+> +       struct pci_dev *pdev, *found = NULL;
+>         struct vga_device *vgadev;
+>
+>  #if defined(CONFIG_X86) || defined(CONFIG_IA64)
+> @@ -1505,20 +1520,26 @@ static void __init vga_arb_select_default_device(void)
+>  #endif
+>
+>         if (!vga_default_device()) {
+> -               list_for_each_entry(vgadev, &vga_list, list) {
+> +               list_for_each_entry_reverse(vgadev, &vga_list, list) {
+>                         struct device *dev = &vgadev->pdev->dev;
+>                         u16 cmd;
+>
+>                         pdev = vgadev->pdev;
+>                         pci_read_config_word(pdev, PCI_COMMAND, &cmd);
+>                         if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
+> -                               vgaarb_info(dev, "setting as boot device (VGA legacy resources not available)\n");
+> -                               vga_set_default_device(pdev);
+> -                               break;
+> +                               found = pdev;
+> +                               if (vga_arb_integrated_gpu(dev))
+> +                                       break;
+>                         }
+>                 }
+>         }
+>
+> +       if (found) {
+> +               vgaarb_info(&found->dev, "setting as boot device (VGA legacy resources not available)\n");
+> +               vga_set_default_device(found);
+> +               return;
+> +       }
+> +
+>         if (!vga_default_device()) {
+>                 vgadev = list_first_entry_or_null(&vga_list,
+>                                                   struct vga_device, list);
+> --
+> 2.31.1
+>
