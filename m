@@ -2,311 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF723897D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B2D3897DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhESUYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:24:07 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:37296 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhESUYG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:24:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621455766; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=AYbOgwbChI5rvlsBei4mmaY0nKq1z4ofewnO/Kfy8Xc=; b=jW5/FB/BeYeLimVMMNSQxz29Kaf3+v76eEU5A4jHMDhut/nYi+fTHC6GoLAo2ZNzgivXvSrS
- IzAfZHaAP9ZYU8B0mZ+gj9mqUdY/fiL3kVnDGvmlfcae5wO5dg14FewtUJs4djpw818ZEkfd
- cNZ9RRp9PKLDBYwWEf/4m+zeQuM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60a573922bff04e53b41eb1c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 20:22:42
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71717C4323A; Wed, 19 May 2021 20:22:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C22AC433F1;
-        Wed, 19 May 2021 20:22:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C22AC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-Date:   Wed, 19 May 2021 13:22:33 -0700
-Message-Id: <1621455753-28966-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229519AbhESU1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:27:47 -0400
+Received: from mail-dm6nam12on2047.outbound.protection.outlook.com ([40.107.243.47]:31617
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229379AbhESU1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 16:27:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WXioMTPGtTwPV9fLdCTLt2goC6yXST62jxqkhnTVdruaKCnglxjphERlLDkX/CTKToHFlQAtU0axANTuLJtLB/xEEg7F5Q0FWpheqNLSDDKdpGOPOPOswEWlxYCHzU7NXdOiNlts6TY+9HiUTCU2ExBxK5pzQzCZdje+++rqHH8pGAFZvqRQBgdg9frccOmcdLfjcTSbc51gm5qTktdhhLEPF+DbI2pqlkfsCe+DBio5apa6Sxf55LlLlXavV9iZOtmibt4LaPR5hi9RRx/S9DXy0BUbU50ABVTuvRu/d9shIwf6flfnDjB7iU6yhObPOfI171dzIg7Z9zWvdsgLtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Uyj0To2996qmfdmLAsYQOuyrTHAzkvlvsNy87Qvp3s=;
+ b=l5Y/5JzPS/GUWLJsDFsPGB/JL8jkQA3Dh5fWRdAUzI2TLHhflg0nrmMNISBxjpVOssqzPHyUBZ17FBfS8JfJKhRKoarjB5ins81vu5YQ2AoY8ThqJbzjzWn4mXrDt2Upl8sPPniPvc5gfl+hVIraGR9L2UjTcnba46UygQ3oXvq/xysGci2rAQcpIp1O/BsFKJaJhDZPxu2b24mOggPVRajSXlzWRqU7ZHT09p4sIPdMOtZepfW1QZRfBRqFd6Y5iT4qz7OA+y4Bw5/Ec6odSXqAZi9xJ8CZlh2X1Ynerswv+3oPwRTXqTEgM7sfYoo4P60CU2AxhlPRf3Rlr6ksPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Uyj0To2996qmfdmLAsYQOuyrTHAzkvlvsNy87Qvp3s=;
+ b=S2YcmyLBusZtj8YOJ+USfaaCBQZ+mswwgAok6zUDPSwVZt2UIi7IUT++uWOKYdB1CMFCCEX/yUWDmZLxyxQn2w/xDZptSOOXdMzpAWC5fPz+MJq5tM5aT4S4gsmJkhfsS3BQJrRPke+t35XK8vSO4RBrGTiHoAWwTmjJYcOMOeNBiwC4yQbnv5/usr6sQyNB3n2dk+u2kzo53+PkAy1FXFFtfgXsAyfT20C4KodvQnLH9oKQrGDbzyWLNVoqn3Fto6AqQI+xGCa4UQOgWqxYK0OtAMXZvf1VDdWxocNzpkCZ1bXvi8T+OVXovSLXIatcDZWODHKRvLrmhJlJOuPEgA==
+Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;cornelisnetworks.com; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1338.namprd12.prod.outlook.com (2603:10b6:3:71::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Wed, 19 May
+ 2021 20:26:25 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.033; Wed, 19 May 2021
+ 20:26:25 +0000
+Date:   Wed, 19 May 2021 17:26:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Message-ID: <20210519202623.GU1002214@nvidia.com>
+References: <4237ab8a-a851-ecdf-ec41-4e798a2da156@cornelisnetworks.com>
+ <20210514130247.GA1002214@nvidia.com>
+ <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
+ <20210514143516.GG1002214@nvidia.com>
+ <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
+ <20210514150237.GJ1002214@nvidia.com>
+ <YKTDPm6j29jziSxT@unreal>
+ <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
+ <20210519182941.GQ1002214@nvidia.com>
+ <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR11CA0027.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::32) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR11CA0027.namprd11.prod.outlook.com (2603:10b6:208:23b::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.33 via Frontend Transport; Wed, 19 May 2021 20:26:24 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljSlr-00AtSM-VF; Wed, 19 May 2021 17:26:23 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc68aa2c-d227-44fb-5aa7-08d91b045fbf
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1338:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB13380DC0AD6C50398CE822EFC22B9@DM5PR12MB1338.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gnf1Itk52xXy4Hp9GzXvXwiVAypzA4ZBdjNL5ENQUXPNDvh1SE/PHskdcU20CeQMm50YAFG9dBAJMUVmpYeTOqvb02TcFO9TJk2eNEdhXF/JGo/M7pwF4R7m4x8Kk3d9SBlLQ4m+jAGUhpQVZpwLfo/cnkPdBJoi+z94/SgbD1qlucnaCzDYT0caoQod/bXEB6ykbMuNtSCeS8afREZmIGF/F/OZNMoMMpIaYK1MSJx1nJnQnB9NW/F1Yr8FwPpQ+Mw49PHXD2+YswZy0YpNpuXEeHjoS1KL9VGjotxn3DjZLml/l0RKPT/jbfPqoJNDxcDXH+4gnPAEu1NDzhpQw3mcqNUuPtxvvXrPIIObkXC4NR4PZTHygjRdnZ4Lpr10eLkkx5psZ1ybggLyRxszMrAvERpPEM9s/qiHmjfxvN64gm+5PX2fk3bqH7o3KM9BoBlki/IBff1NGGvnYnRNAYwhOFtLGDH31KIPmFQ3nNzKKw8siT+Ew9m/dh+duUg8zwDBue2mzQZfSYCVbVWil8A/stDtWnI438Vv89vGvzbY7Oh9vmTwaQ3M38QW48520jgivgT17Z4tMs65/lRgMx02knvmEbUwLseSRoQkYW8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(39860400002)(136003)(376002)(26005)(9786002)(2616005)(9746002)(6916009)(8676002)(426003)(186003)(8936002)(86362001)(53546011)(38100700002)(1076003)(54906003)(316002)(478600001)(66946007)(66556008)(66476007)(5660300002)(4326008)(36756003)(83380400001)(33656002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?KoG9Vd9LUpA7ZEu4/odZPkDiPasSVK8VBkmZonBu+umDnRSfQNcIYr6rwLYp?=
+ =?us-ascii?Q?i43SvBQoo6dSEqy6k9vCOSzd/aqhdTvnbLGDX4cxJSn5uSNPjzELv5SATNOB?=
+ =?us-ascii?Q?zdnA/Bm8WaXrEO1kIP4TevIoW9v4dJwb2LaAr7DcEh2QAMArq1qqpHPBKr6g?=
+ =?us-ascii?Q?5Bhp1iDDqdYhHacWchj2QvSM5YBjpExGKllNVD2eA+g9meUj2Iu045/Fvijf?=
+ =?us-ascii?Q?NmOQYMexbPAMHMJ9EfOa0yMBFwkzJO5WFCNC6K/Yc7+BVFxR2Nc5e2aOZKTx?=
+ =?us-ascii?Q?gRTUiH5anYiSdlNowTgjswqUigyZionb5CzE9JgLj9hD/CsQHfi/yMQhaiGb?=
+ =?us-ascii?Q?XbgAtEUlO3bMlVSRiNHR93KQCxUWyfwHNHvQg4dpMfIp/nTF8lwRNhHiE5E7?=
+ =?us-ascii?Q?TzZpUYvEs41ogr9zo3yjzHG7TKKl+CiB66FCNMwTvQSVYiL1DkDQT/sUvqSV?=
+ =?us-ascii?Q?AmUtzUl7VQXOZVM/gZ677sO0nvqS3pN7cBUkGUUbTlrvP+cBRNCDfY9ggRvn?=
+ =?us-ascii?Q?4K/hDOm0MqhJXEemYUfzvanq5L2UXJLx9lKlNt9bLA8tITGHEbyJwPn31CST?=
+ =?us-ascii?Q?uNg1RlwRS9wHuHdBC9wMems39mHZtQHj0IP9SAQXoN9G+DYtq/C18k01Xqbf?=
+ =?us-ascii?Q?SxZ8nLZPmx2IsskBjiisVeDfHRmBt1ow1myi7EuIaRyvu7fcx7ql+crpAlWJ?=
+ =?us-ascii?Q?lq3ccDPUfK0A8YYoYqj64gSnKXPXp8ewYy0B18Vkr9foJmUHJtmyg3MySu7K?=
+ =?us-ascii?Q?tLrewn6zrxPTjb/TxDjL0XNhpWSOS8gJhHvQ4EUIQhQlaznTHn2UhSAZf9Oi?=
+ =?us-ascii?Q?cddpPGsmnUYo03P0p1MVMOq1ZiuiaUEKYqk3Y6kfZyx3KB4+7lHtXwbylD7b?=
+ =?us-ascii?Q?djiig2pllihKzVXS7HdVmxUZXOLUek+3Hjt8HXwEj8ysFM2fhplG7tZVpzY0?=
+ =?us-ascii?Q?gVHYe0kseRtyb5VqfAIyc0PnS/8Ts1xYVuDetyeT5WwMxLdOfXHDuaJZKBoF?=
+ =?us-ascii?Q?ikUR8i+2EakEfiXkjEST5JfY/TU2z96WHOEViYik/EubUllqHzhsp6qs7rHK?=
+ =?us-ascii?Q?qBLSkBNsmodYlLQwPD4/6EMFhLbhrtnrFwFPVplIYS+vdgu1ZjCW0qIM0UU3?=
+ =?us-ascii?Q?XoZBQVrS/OJ3kDmctJPbL+VpJFlkenQ2hCXtGExlkQJrYQS2oUSM+Zyy/hh2?=
+ =?us-ascii?Q?lxFpDlWQIo5V5f22d6kvgfD5wyXmzQlj8Vn+gpCH0SmcyZnbpIKu8p/iXGVW?=
+ =?us-ascii?Q?nSFGjHZPEC4hpnBIDDmTvfH1W8k3to5+CtcRj+HcRTgrdkURBD7XqP1DxIy4?=
+ =?us-ascii?Q?HAQPC13t/+QXK/8I6Fj7CABh?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc68aa2c-d227-44fb-5aa7-08d91b045fbf
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 20:26:25.1100
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8L8p9ffqFtgMrj1LofsBk3cNnOoLUo932zj19dYbMnLx/3ZupUW89Az+5CgMGBHB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1338
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_hpd interrupt should be handled after dongle plugged in and
-before dongle unplugged. Hence irq_hpd interrupt is enabled at
-the end of the plugin handle and disabled at the beginning of
-unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
-handled same as the dongle unplugged which tears down the mainlink
-and disables the phy. This patch fixes this problem by only tearing
-down the mainlink but keeping phy enabled at irq_hpd with
-sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
-handled by setup mainlink only. This patch also set dongle into D3
-(power off) state at end of handling irq_hpd with sink_count = 0.
+On Wed, May 19, 2021 at 03:49:31PM -0400, Dennis Dalessandro wrote:
+> On 5/19/21 2:29 PM, Jason Gunthorpe wrote:
+> > On Wed, May 19, 2021 at 07:56:32AM -0400, Dennis Dalessandro wrote:
+> > 
+> > > Perhaps the code can be enhanced to move more stuff into the driver's own
+> > > structs as Jason points out, but that should happen first. For now I still
+> > > don't understand why the core can't optionally make the allocation per node.
+> > 
+> > Because I think it is wrong in the general case to assign all
+> > allocations to a single node?
+> 
+> If by general case you mean for all drivers, sure, totally agree. We aren't
+> talking about all drivers though, just the particular case of rdmavt.
 
-Changes in v2:
--- add ctrl->phy_Power_count
+I think it is wrong for rdmavt too and your benchmarks have focused on
+a specific case with process/thread affinities that can actually
+benefit from it.
 
-Changes in v3:
--- del ctrl->phy_Power_count
--- add phy_power_off to dp_ctrl_off_link_stream()
+I don't want to encourage other drivers to do the same thing.
 
-Changes in v4:
--- return immediately if clock disable failed at dp_ctrl_off_link_stream()
+The correct thing to do today in 2021 is to use the standard NUMA
+memory policy on already node-affine threads. The memory policy goes
+into the kernel and normal non-_node allocations will obey it. When
+combined with an appropriate node-affine HCA this will work as you are
+expecting right now.
 
-Changes in v5:
--- set dongle to D3 (power off) state at dp_ctrl_off_link_stream()
+However you can't do anything like that while the kernel has the _node
+annotations, that overrides the NUMA memory policy and breaks the
+policy system!
 
-Changes in v6:
--- add Fixes tag
+The *only* reason to override the node behavior in the kernel is if
+the kernel knows with high certainty that allocations are only going
+to be touched by certain CPUs, such as because it knows that the
+allocation is substantially for use in a CPU pinned irq/workqeueue or
+accessed via DMA from a node affine DMA device.
 
-Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and pm_resume")
+None of these seem true for the QP struct.
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_catalog.c |  5 ++--
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 55 +++++++++++++++++++++++++++++++++++
- drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 ++
- drivers/gpu/drm/msm/dp/dp_display.c | 57 +++++++++++++++++++++++++++----------
- 4 files changed, 101 insertions(+), 18 deletions(-)
+Especially since for RDMA all of the above is highly situational. The
+IRQ/WQ processing anything in RDMA should be tied to the comp_vector,
+so without knowing that information you simply can't do anything
+correct at allocation time. 
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index b1a9b1b..f4f53f2 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
- 
- 	u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
- 
--	/* enable HPD interrupts */
-+	/* enable HPD plug and unplug interrupts */
- 	dp_catalog_hpd_config_intr(dp_catalog,
--		DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
--		| DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-+		DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
- 
- 	/* Configure REFTIMER and enable it */
- 	reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 8d59eb9..dbd8943 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1811,6 +1811,61 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
- 	return ret;
- }
- 
-+int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
-+{
-+	struct dp_ctrl_private *ctrl;
-+	struct dp_io *dp_io;
-+	struct phy *phy;
-+	int ret;
-+
-+	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
-+	dp_io = &ctrl->parser->io;
-+	phy = dp_io->phy;
-+
-+	/* set dongle to D3 (power off) mode */
-+	dp_link_psm_config(ctrl->link, &ctrl->panel->link_info, true);
-+
-+	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
-+
-+	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
-+	if (ret) {
-+		DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
-+	if (ret) {
-+		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
-+		return ret;
-+	}
-+
-+	phy_power_off(phy);
-+
-+	/* aux channel down, reinit phy */
-+	phy_exit(phy);
-+	phy_init(phy);
-+
-+	DRM_DEBUG_DP("DP off link/stream done\n");
-+	return ret;
-+}
-+
-+void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
-+{
-+	struct dp_ctrl_private *ctrl;
-+	struct dp_io *dp_io;
-+	struct phy *phy;
-+
-+	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
-+	dp_io = &ctrl->parser->io;
-+	phy = dp_io->phy;
-+
-+	dp_catalog_ctrl_reset(ctrl->catalog);
-+
-+	phy_exit(phy);
-+
-+	DRM_DEBUG_DP("DP off phy done\n");
-+}
-+
- int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
- {
- 	struct dp_ctrl_private *ctrl;
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-index a836bd3..25e4f75 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-@@ -23,6 +23,8 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
- void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
-+int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
-+void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
- void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
- void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0ba71c7..b2a282a 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -337,6 +337,12 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
- 	dp->dp_display.max_pclk_khz = DP_MAX_PIXEL_CLK_KHZ;
- 	dp->dp_display.max_dp_lanes = dp->parser->max_dp_lanes;
- 
-+	/*
-+	 * set sink to normal operation mode -- D0
-+	 * before dpcd read
-+	 */
-+	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
-+
- 	dp_link_reset_phy_params_vx_px(dp->link);
- 	rc = dp_ctrl_on_link(dp->ctrl);
- 	if (rc) {
-@@ -405,11 +411,6 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
- 
- 	dp_display_host_init(dp, false);
- 
--	/*
--	 * set sink to normal operation mode -- D0
--	 * before dpcd read
--	 */
--	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
- 	rc = dp_display_process_hpd_high(dp);
- end:
- 	return rc;
-@@ -570,6 +571,10 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
- 		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
- 	}
- 
-+	/* enable HDP irq_hpd/replug interrupt */
-+	dp_catalog_hpd_config_intr(dp->catalog,
-+		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-+
- 	mutex_unlock(&dp->event_mutex);
- 
- 	/* uevent will complete connection part */
-@@ -619,7 +624,26 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	mutex_lock(&dp->event_mutex);
- 
- 	state = dp->hpd_state;
--	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
-+
-+	/* disable irq_hpd/replug interrupts */
-+	dp_catalog_hpd_config_intr(dp->catalog,
-+		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, false);
-+
-+	/* unplugged, no more irq_hpd handle */
-+	dp_del_event(dp, EV_IRQ_HPD_INT);
-+
-+	if (state == ST_DISCONNECTED) {
-+		/* triggered by irq_hdp with sink_count = 0 */
-+		if (dp->link->sink_count == 0) {
-+			dp_ctrl_off_phy(dp->ctrl);
-+			hpd->hpd_high = 0;
-+			dp->core_initialized = false;
-+		}
-+		mutex_unlock(&dp->event_mutex);
-+		return 0;
-+	}
-+
-+	if (state == ST_DISCONNECT_PENDING) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -633,9 +657,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 
- 	dp->hpd_state = ST_DISCONNECT_PENDING;
- 
--	/* disable HPD plug interrupt until disconnect is done */
--	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK
--				| DP_DP_IRQ_HPD_INT_MASK, false);
-+	/* disable HPD plug interrupts */
-+	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, false);
- 
- 	hpd->hpd_high = 0;
- 
-@@ -652,8 +675,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	reinit_completion(&dp->audio_comp);
- 	dp_display_handle_plugged_change(g_dp_display, false);
- 
--	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
--					DP_DP_IRQ_HPD_INT_MASK, true);
-+	/* enable HDP plug interrupt to prepare for next plugin */
-+	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, true);
- 
- 	/* uevent will complete disconnection part */
- 	mutex_unlock(&dp->event_mutex);
-@@ -684,7 +707,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 
- 	/* irq_hpd can happen at either connected or disconnected state */
- 	state =  dp->hpd_state;
--	if (state == ST_DISPLAY_OFF) {
-+	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -903,9 +926,13 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
- 
- 	dp_display->audio_enabled = false;
- 
--	dp_ctrl_off(dp->ctrl);
--
--	dp->core_initialized = false;
-+	/* triggered by irq_hpd with sink_count = 0 */
-+	if (dp->link->sink_count == 0) {
-+		dp_ctrl_off_link_stream(dp->ctrl);
-+	} else {
-+		dp_ctrl_off(dp->ctrl);
-+		dp->core_initialized = false;
-+	}
- 
- 	dp_display->power_on = false;
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+The idea of allocating every to the HW's node is simply not correct
+design. I will grant you it may have made sense ages ago before the
+NUMA stuff was more completed, but today it does not and you'd be
+better to remove it all and use memory policy properly than insist we
+keep it around forever.
 
+Jason
