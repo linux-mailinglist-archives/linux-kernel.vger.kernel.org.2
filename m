@@ -2,153 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE373894AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820A43894B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhESRgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 13:36:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9776 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229455AbhESRgW (ORCPT
+        id S229807AbhESRgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 13:36:43 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:48100 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhESRgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 13:36:22 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JHYDup107656;
-        Wed, 19 May 2021 13:34:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=PKv7RKLlUzBIixbMZKM5e9HCA0ivzChTFiCUSw8ca9w=;
- b=rVrrf8urS+n5ZyN83dsbYwMM27Wt0X9jp4Bmj7OjOBbOmq6TfyFtg4FAZLc0lU3/NY0a
- 0Ew8JJ+GVDG5g0p9IJi5G0qLjZ/cyiMo5r+y31p4b2d847jpLSiCH+EbUj2+ogXhHOqj
- IYmLUqUmTgcx4NQuKQBsYEtKm+YmXZTJy4IS8vtSShm3Gj+soAb6KgfqspxxghHjolf4
- QpaEhFmbglz20la7qlmXTDxit2OTQkLtZuu5m82kVkzyuQMuL4+UgViLen9jIrfRTykX
- Rke/+7GsVOMP4yGkCpBVWorfbpdE7FZR6tcOJlX7g9T9QyMRtOi1dhW02P5k3z3RvDzy 3Q== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n71q073x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 13:34:38 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JHSvQK008201;
-        Wed, 19 May 2021 17:34:36 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 38m1gv0m0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 17:34:36 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JHYXu111665802
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 17:34:33 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7B81E42041;
-        Wed, 19 May 2021 17:34:33 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 663A74204B;
-        Wed, 19 May 2021 17:34:31 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 19 May 2021 17:34:31 +0000 (GMT)
-Date:   Wed, 19 May 2021 23:04:30 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
- callback
-Message-ID: <20210519173430.GB2633526@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210513073112.GV2633526@linux.vnet.ibm.com>
- <5823f298-6fae-5a73-3ab8-f708d90a7e52@linux.intel.com>
- <20210517104058.GW2633526@linux.vnet.ibm.com>
- <9d493353-7a27-16aa-3e99-c6a07e69de25@linux.intel.com>
- <20210517125727.GX2633526@linux.vnet.ibm.com>
- <27ab234c-b36b-bf7f-52f4-92c1804f8245@linux.intel.com>
- <20210518040024.GY2633526@linux.vnet.ibm.com>
- <ce4eba7e-dc2e-1c67-d04d-579f04c2040b@linux.intel.com>
- <20210518071843.GZ2633526@linux.vnet.ibm.com>
- <32b98350-35e4-7475-2d19-9101f50ecc63@linux.intel.com>
+        Wed, 19 May 2021 13:36:41 -0400
+Received: by mail-io1-f71.google.com with SMTP id s188-20020a6b2cc50000b0290456cc0f2184so1144351ios.14
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 10:35:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=UZHccjix8oNmHRhg4MY5ztlGF7uJvQZGhEY/WEJTmWA=;
+        b=rp/X4okRQs0jzgugHP2Ad5UN5EzNQumFT+oXMn6EkzPbOWmhkukYPdJynRtu/BJ8z0
+         DduoWK8BLRChEBzZVusoZpvU0PUVcToRukKc7hF/Olkm+785+TmgWLqOoIFScjjvASV0
+         1z86iZIGsTaC4AIpcCB/OUUBRZ2uRwHoPy0ZKfFrGLnG3YTFIywfx6D/7fHiQJx6zMIQ
+         UHLBBCfX0+5fxhtMS3UkYcD2kHsfI1qDsHFRfmKg8LgDtlYaC4Gt5NYc8WyH7saXRHrE
+         tXlujcf9kprA2XVVPZ6FZvbSVXwe0zW/1BFgW/abuOUYeKc9IN+08i4ETiQQPAx8AMH7
+         XXdQ==
+X-Gm-Message-State: AOAM530If6M8A+nqlQ0KaupgVxmdmAlaE88oAlUuNz7HT5pfahJ7HKKT
+        b6TfEUB9pXLyP6IJH4jEN8MFYHoJ0WPrGc31vSzu6DxxZvMB
+X-Google-Smtp-Source: ABdhPJx8nIme+6MkuMdV8XSTC3jU4BYJoZreomahlwSDgpBYdZiJB6DjldurwWK0/dGzPp+ku2sAA7L0X+o4m/XAC4FtRnQ5BbQt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <32b98350-35e4-7475-2d19-9101f50ecc63@linux.intel.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fms2HdjF0VzqeuR56lQZFd9hvg-5-_bQ
-X-Proofpoint-ORIG-GUID: fms2HdjF0VzqeuR56lQZFd9hvg-5-_bQ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_09:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 lowpriorityscore=0 phishscore=0 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190107
+X-Received: by 2002:a05:6e02:c5:: with SMTP id r5mr130961ilq.48.1621445720834;
+ Wed, 19 May 2021 10:35:20 -0700 (PDT)
+Date:   Wed, 19 May 2021 10:35:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003687bd05c2b2401d@google.com>
+Subject: [syzbot] BUG: MAX_LOCKDEP_KEYS too low! (2)
+From:   syzbot <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com>
+To:     Jason@zx2c4.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Aubrey Li <aubrey.li@linux.intel.com> [2021-05-19 17:43:55]:
+Hello,
 
-> On 5/18/21 3:18 PM, Srikar Dronamraju wrote:
-> 
-> >>>> This is v3. It looks like hackbench gets better. And netperf still has
-> >>>> some notable changes under 2 x overcommit cases.
-> >>>>
-> >>>
-> >>> Thanks Aubrey for the results. netperf (2X) case does seem to regress.
-> >>> I was actually expecting the results to get better with overcommit.
-> >>> Can you confirm if this was just v3 or with v3 + set_next_idle_core
-> >>> disabled?
-> >>
-> >> Do you mean set_idle_cores(not set_next_idle_core) actually? Gautham's patch
-> >> changed "this" to "target" in set_idle_cores, and I removed it to apply
-> >> v3-2-8-sched-fair-Maintain-the-identity-of-idle-core.patch for tip/sched/core
-> >> commit-id 915a2bc3c6b7.
-> > 
-> > Thats correct,
-> > 
-> > In the 3rd patch, I had introduced set_next_idle_core
-> > which is suppose to set idle_cores in the LLC.
-> > What I suspected was is this one is causing issues in your 48 CPU LLC.
-> > 
-> > I am expecting set_next_idle_core to be spending much time in your scenario.
-> > I was planning for something like the below on top of my patch.
-> > With this we dont look for an idle-core if we already know that we dont find one.
-> > But in the mean while I had asked if you could have dropped the call to
-> > set_next_idle_core.
-> > 
-> 
-> +	if (atomic_read(&sd->shared->nr_busy_cpus) * 2 >=  per_cpu(sd_llc_size, target))
-> +		goto out;
-> 
-> Does this has side effect if waker and wakee are coalesced on a portion of cores?
-> Also, is 2 a SMT2 assumption?
+syzbot found the following issue on:
 
-The above line was just a hack to see if things change by not spending time
-searching for an idle-core. Since you were running on Intel, I had
-hard-coded it to 2.
+HEAD commit:    b81ac784 net: cdc_eem: fix URL to CDC EEM 1.0 spec
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a257c3d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5b86a12e0d1933b5
+dashboard link: https://syzkaller.appspot.com/bug?extid=a70a6358abd2c3f9550f
 
-> 
-> I did a quick testing on this, it looks like the regression of netperf 2x cases are 
-> improved indeed, but hackbench two mid-load cases get worse.
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
 
-In the mid-loaded, case, there was a chance of idle-core being around, Since
-we dont set it to an idle-core or -2, i.e idle-core is set to -1, it may or
-may not get selected.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com
 
-> process-sockets 	group-2 	 1.00 (  5.32)	-18.40 (  7.32)
-> threads-sockets 	group-2 	 1.00 (  5.44)	-20.44 (  4.60)
-> 
-> Thanks,
-> -Aubrey
+BUG: MAX_LOCKDEP_KEYS too low!
+turning off the locking correctness validator.
+CPU: 0 PID: 5917 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ register_lock_class.cold+0x14/0x19 kernel/locking/lockdep.c:1281
+ __lock_acquire+0x102/0x5230 kernel/locking/lockdep.c:4781
+ lock_acquire kernel/locking/lockdep.c:5512 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+ flush_workqueue+0x110/0x13e0 kernel/workqueue.c:2786
+ drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2951
+ destroy_workqueue+0x71/0x800 kernel/workqueue.c:4382
+ alloc_workqueue+0xc40/0xef0 kernel/workqueue.c:4343
+ wg_newlink+0x43d/0x9e0 drivers/net/wireguard/device.c:335
+ __rtnl_newlink+0x1062/0x1710 net/core/rtnetlink.c:3452
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5562
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb25febe188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000005
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
+R13: 00007fff30a5021f R14: 00007fb25febe300 R15: 0000000000022000
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
