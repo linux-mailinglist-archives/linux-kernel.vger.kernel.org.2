@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BF938936B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E359038936E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240493AbhESQP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:15:58 -0400
-Received: from mail02.rohde-schwarz.com ([80.246.32.97]:4883 "EHLO
-        mail02.rohde-schwarz.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240333AbhESQP4 (ORCPT
+        id S1347646AbhESQQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240333AbhESQQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:15:56 -0400
-Received: from amu316.rsint.net (10.0.26.65) by mail-emea.rohde-schwarz.com
- (172.21.64.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.5; Wed, 19 May 2021
- 18:14:23 +0200
-Received: from GMU418.rsint.net ([10.0.230.144])
-          by amu316.rsint.net (Totemo SMTP Server) with SMTP ID 192;
-          Wed, 19 May 2021 18:14:22 +0200 (CEST)
-Received: from GMU001.rsint.net (10.0.2.59) by GMU418.rsint.net (10.0.230.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2242.4; Wed, 19 May
- 2021 18:14:22 +0200
-Received: from GMU006.rsint.net (10.0.2.28) by GMU001.rsint.net (10.0.2.59)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2242.4; Wed, 19
- May 2021 18:14:20 +0200
-Received: from GMU006.rsint.net ([fe80::81e7:6ea1:2437:698b]) by
- GMU006.rsint.net ([fe80::81e7:6ea1:2437:698b%12]) with mapi id
- 15.01.2242.010; Wed, 19 May 2021 18:14:20 +0200
-From:   Guido Kiener <Guido.Kiener@rohde-schwarz.com>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        dave penkler <dpenkler@gmail.com>
-CC:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
-Thread-Topic: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx /ur/
-Thread-Index: AddMydQnpf+UY0qAQvO+sGdBieUd+Q==
-Date:   Wed, 19 May 2021 16:14:20 +0000
-Message-ID: <d673611ca53f42a3a629eb051cabc6eb@rohde-schwarz.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-rus_sensitivity: 10
-hvs-classificationid: 8485d17c-1b45-47c0-b496-903334a11e28
-hvs-prefix: R_S
-x-originating-ip: [10.0.9.40]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 19 May 2021 12:16:32 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955B3C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:15:11 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id c20so20825695ejm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=euUbnNVLGUAionJ86okTP34g0fVZ9JZZ001iCcnhQ1E=;
+        b=IGWvV3g+wI0u33bR8kxu+8pUactwsMA96L8+f7zB4n75FQciRkhL+61FSo22/9u6ye
+         MgtLDx8QRLwTC9VVIaDFu+R/1JjKFkJebO3Xdo0zYdVmRm/1UNRYiO9bc3xAefBg4yZm
+         5iJZdF6y21ZH97BrIB5gPP6AyiXmYJ+rwteattF+udD5mG+8U1BZDiulYnP2e1WFdwG/
+         3jnffxRvg3TCqKEV5KNJ/s4KzTXIYI5g/O0xU+alPCiUwedXMBf0g2wrUSFTlZSWkJu3
+         sxvQCDxSe5aOmz7Zu6Kf+1W1x4B/6FF+ZXsH9bBLXXSBhGWW6O8i7CfbBzDJ5b3BkhV0
+         oBQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=euUbnNVLGUAionJ86okTP34g0fVZ9JZZ001iCcnhQ1E=;
+        b=K7c+Sbc+wXiPsCVd9H+L7ULzv4BcogScxBFJbJ4UlTlD9dAN0c4gy+SYpOsLmAr+rJ
+         5Ac8MaN6/rsMkngXtohqjvjriDJm3Xb9WcPpc0dyVpND1hSwDuBpJq12hUDn9CAYIx/Q
+         k4abIQ7KE6EJyCRE7r/npcFmgpR+PWa28bBMIt69wHp5JAPPGuoDg0sXBetryGSmNOrQ
+         KUDerzhxcB5m168zTOB4CbIpD6hzlTz6G7+H+5opUKWNn6jPPHm5eR1hGaX20jHoTIX8
+         2+o6xdZ1uTf7Cqyw9nq5IoS7+eSkA4JlVKkOo+BkMVHk9sZZyRmY/PJdBvGy8fM84wL4
+         nInQ==
+X-Gm-Message-State: AOAM5318NV8PsOQLhLVLGHPJhMkBrOnw7XhqHImLWyloq6hw9PsNAsjv
+        pZxqU2xMJTvHvkoh03f+Tdi2YrOOyGiB9Qjy5YBncMKXUe5NNQ==
+X-Google-Smtp-Source: ABdhPJzxecr0ezsnx3X0SGG9M891eMwzEBBNQ3xtc6D0ZjqjuFWo5rltqyRGYEXlbXNp9E4BwL8fcJpYWV9QLX4LWzQ=
+X-Received: by 2002:a17:906:17ca:: with SMTP id u10mr13290634eje.124.1621440910179;
+ Wed, 19 May 2021 09:15:10 -0700 (PDT)
 MIME-Version: 1.0
-X-IQAV: YES
-X-GBS-PROC: KF5gH9ulGnv8abbfqGb4GPdB7csXqGJIJgSlDrbLuYoTJfkM0p+NxXaFwTtnAzYxAlc1TIVIPQm7qPURuUExXf+/J1VB5RzfMdXcQRGd2JnaGfc/E7m8OsoVMaIY0Z+m
-X-GBS-PROCJOB: SBChRPJW6y3U+esSqSfPEbGTio5ezKPGjfXBfNkxmX7jpBbHiaQfG4Xm73Ut51dc
+References: <20210518090658.9519-1-amanieu@gmail.com> <20210518090658.9519-9-amanieu@gmail.com>
+ <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
+ <CA+y5pbRiXAF=gobC9sqJmvjVAmihA=O7xcSTkA1f8=QsnZzoEg@mail.gmail.com> <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com>
+In-Reply-To: <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com>
+From:   "Amanieu d'Antras" <amanieu@gmail.com>
+Date:   Wed, 19 May 2021 17:14:33 +0100
+Message-ID: <CA+y5pbRwgpctUOBzzscT9XMN9LM2qraPNg6K6onFcpQaaFDYkQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat syscalls
+To:     Steven Price <steven.price@arm.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBXZWQsIE1heSAxOSwgMjAyMSBhdCAxMDo0ODoyOUFNICswMjAwLCBkYXZlIHBlbmtsZXIg
-d3JvdGU6DQo+ID4gT24gU2F0LCA4IE1heSAyMDIxIGF0IDE2OjI5LCBBbGFuIFN0ZXJuIDxzdGVy
-bkByb3dsYW5kLmhhcnZhcmQuZWR1PiB3cm90ZToNCj4gPiA+DQo+ID4gPiBPbiBTYXQsIE1heSAw
-OCwgMjAyMSBhdCAxMDoxNDo0MUFNICswMjAwLCBkYXZlIHBlbmtsZXIgd3JvdGU6DQo+ID4gPiA+
-IFdoZW4gdGhlIGhvc3QgZHJpdmVyIGRldGVjdHMgYSBwcm90b2NvbCBlcnJvciB3aGlsZSBwcm9j
-ZXNzaW5nIGFuDQo+ID4gPiA+IFVSQiBpdCBjb21wbGV0ZXMgdGhlIFVSQiB3aXRoIEVQUk9UTyBz
-dGF0dXMgYW5kIG1hcmtzIHRoZSBlbmRwb2ludA0KPiA+ID4gPiBhcyBoYWx0ZWQuDQo+ID4gPg0K
-PiA+ID4gTm90IHRydWUuICBJdCBkb2VzIG5vdCBtYXJrIHRoZSBlbmRwb2ludCBhcyBoYWx0ZWQs
-IG5vdCB1bmxlc3MgaXQNCj4gPiA+IHJlY2VpdmVzIGEgU1RBTEwgaGFuZHNoYWtlIGZyb20gdGhl
-IGRldmljZS4gIEEgU1RBTEwgaXMgbm90IGENCj4gPiA+IHByb3RvY29sIGVycm9yLg0KPiA+ID4N
-Cj4gPiA+ID4gV2hlbiB0aGUgY2xhc3MgZHJpdmVyIHJlc3VibWl0cyB0aGUgVVJCIGFuZCB0aGUg
-aWYgdGhlIGhvc3QgZHJpdmVyDQo+ID4gPiA+IGZpbmRzIHRoZSBlbmRwb2ludCBzdGlsbCBtYXJr
-ZWQgYXMgaGFsdGVkIGl0IHNob3VsZCByZXR1cm4gRVBJUEUNCj4gPiA+ID4gc3RhdHVzIG9uIHRo
-ZSByZXN1Ym1pdHRlZCBVUkINCj4gPiA+DQo+ID4gPiBJcnJlbGV2YW50Lg0KPiA+IE5vdCBhdCBh
-bGwuIFRoZSBwb2ludCBpcyB0aGF0IHdoZW4gYW4gYXBwbGljYXRpb24gaXMgdGFsa2luZyB0byBh
-bg0KPiA+IGluc3RydW1lbnQgb3ZlciB0aGUgdXNidG1jIGRyaXZlciwgdGhlIHVuZGVybHlpbmcg
-aG9zdCBjb250cm9sbGVyIGFuZA0KPiA+IGl0cyBkcml2ZXIgd2lsbCBkZXRlY3QgYW5kIHNpbGVu
-Y2UgYSBiYWJibGluZyBlbmRwb2ludC4NCj4gDQo+IE5vLCB0aGV5IHdvbid0LiAgVGhhdCBpcywg
-dGhleSB3aWxsIGRldGVjdCBhIGJhYmJsZSBlcnJvciBhbmQgcmV0dXJuIGFuIGVycm9yIHN0YXR1
-cywgYnV0DQo+IHRoZXkgd29uJ3Qgc2lsZW5jZSB0aGUgZW5kcG9pbnQuICBXaGF0IG1ha2VzIHlv
-dSB0aGluayB0aGV5IHdpbGw/DQoNCk1heWJlIHRoZXJlIGlzIGEgbWlzdW5kZXJzdGFuZGluZy4g
-SSBndWVzcyB0aGF0IERhdmUgd2FudGVkIHRvIHByb3Bvc2U6DQoiRVBST1RPIGlzIGEgbGluayBs
-ZXZlbCBpc3N1ZSBhbmQgbmVlZHMgdG8gYmUgaGFuZGxlZCBieSB0aGUgaG9zdCBkcml2ZXIuDQpX
-aGVuIHRoZSBob3N0IGRyaXZlciBkZXRlY3RzIGEgcHJvdG9jb2wgZXJyb3Igd2hpbGUgcHJvY2Vz
-c2luZyBhbg0KVVJCIGl0IFNIT1VMRCBjb21wbGV0ZSB0aGUgVVJCIHdpdGggRVBST1RPIHN0YXR1
-cyBhbmQgU0hPVUxEIG1hcmsgdGhlIGVuZHBvaW50DQphcyBoYWx0ZWQuIg0KSXMgdGhpcyBhIHJl
-YWxpc3RpYyBmaXggZm9yIGFsbCBob3N0IGRyaXZlcnM/DQoNCi1HdWlkbw0K
+On Wed, May 19, 2021 at 4:30 PM Steven Price <steven.price@arm.com> wrote:
+> Perhaps I'm missing something, but surely some syscalls that would be
+> native on 32 bit will have to be translated by Tango to 64 bit syscalls
+> to do the right thing? E.g. from the previous patch compat sigreturn
+> isn't available.
+
+That's correct.
+
+Tango handles syscalls in 3 different ways:
+- ~20 syscalls are completely emulated in userspace or through 64-bit
+syscalls. E.g. sigaction, sigreturn, clone, exit.
+- Another ~50 syscalls have various forms of pre/post-processing, but
+are otherwise passed on to the kernel compat syscall handler. E.g.
+open, mmap, ptrace.
+- The remaining syscalls are passed on to the kernel compat syscall
+handler directly.
+
+The first group of ~20 syscalls will effectively bypass the
+user-specified seccomp filter: any 64-bit syscalls used to emulate
+them will be whitelisted. I consider this an acceptable limitation to
+Tango's seccomp support since I see no viable way of supporting
+seccomp filtering for these syscalls.
+
+> In those cases to correctly emulate seccomp, isn't Tango is going to
+> have to implement the seccomp filter in user space?
+
+I have not implemented user-mode seccomp emulation because it can
+trivially be bypassed by spawning a 64-bit child process which runs
+outside Tango. Even when spawning another translated process, the
+user-mode filter will not be preserved across an execve.
+
+> I guess the question comes down to how big a hole is
+> syscall_in_tango_whitelist() - if Tango only requires a small set of
+> syscalls then there is still some security benefit, but otherwise this
+> doesn't seem like a particularly big benefit considering you're already
+> going to need the BPF infrastructure in user space.
+
+Currently Tango only whitelists ~50 syscalls, which is small enough to
+provide security benefits and definitely better than not supporting
+seccomp at all.
