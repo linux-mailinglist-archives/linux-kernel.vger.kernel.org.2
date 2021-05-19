@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6AD3891E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F61B3891E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354809AbhESOvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348629AbhESOu5 (ORCPT
+        id S1354804AbhESOvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:51:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56045 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242696AbhESOvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:50:57 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE7AC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:49:37 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id eb9so6894847qvb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b1cKAWledUKzuSk9jerfXLCilJo3n8tNR9Bz+0Q0Vh4=;
-        b=te0/qxL9TcrFvl1dO4HGMr+lXCD26GOdpn+KYDCZbm8ciHnla/km/LauSremC2iJvb
-         Q0LcXNJyQp01XRb+HKV73QLLC75DiZPJwr+WGnlwAfV8+/sQVQLc71Oa0xOLg6NgB3w5
-         zDPzBf2eu3hzSuyyNB4B+vAxQpoy102mdklXqhkU21Zw12cm0KFeZY9gT20JEgZ28lep
-         s4qReOOk35qhBKaENcGMQGApnLlGDLBI9PAKpqePbXEm+BDqFufLJaMJnDj48xoZuGiZ
-         +w/kXclpVAmCEKz8dJf0V0WA86kJAttGVbNRv1G6mqWkbzbslnFdZRzWMekbTZtJ0dzc
-         s4eA==
+        Wed, 19 May 2021 10:51:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621435819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XbWgytZuqM4UIpt46ERdKUKnppPb4ehKqu8JICqxcZw=;
+        b=aokNfZ4IG/Ktj6G7vrTwM3Qqdxbqg2+PvMmEcNWGrU85+dGA9Lavw7bJTwGoRSk6RlvEKR
+        yguVhKHuqH2jbMPofQDfad+v82oMHNv5vMvw00VabvvE1n8OTStNrNxh/CnXRsO3PHXRwh
+        hS4AANn9zufGZZfdOISaZrCt+bngmQY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-gOFriRNSMT2C8hCCAdQVWQ-1; Wed, 19 May 2021 10:50:18 -0400
+X-MC-Unique: gOFriRNSMT2C8hCCAdQVWQ-1
+Received: by mail-wm1-f69.google.com with SMTP id y193-20020a1c32ca0000b029014cbf30c3f2so1613946wmy.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b1cKAWledUKzuSk9jerfXLCilJo3n8tNR9Bz+0Q0Vh4=;
-        b=OG64oWftIf17dZeH53tocOvx6ol6PhxhJyu6KjASQrYQ0DwujK29OKSkU1qGqYWImn
-         dH7gBhP15Wj3G7zOd5fAEGGf/hunyCzSWArtm/iKlVfhbHrIsFGTuuJL+/IcbYenOkKS
-         TgI7yFyRyUSp79ICwKeh4ekjaDril89x25IkeJlxudhPGDgyvRK2BRI0HC9WXM1fJHqI
-         kCDJYScMJEY/+UJ5w4bQwLHKUJyCqCAsnw913gV0dlJE6ENAQHY++jmpqcb8OYk+Iyqp
-         QR9/nBVaIXh4FgEwuHefliIvs4V6UYxxMM3Md2QJwwaZMLdvv6cPtcjgI5/bH6uMshEv
-         PcIg==
-X-Gm-Message-State: AOAM533MqiXsQQzj2Rpc/RTS8IVlH67gCq+wGq1YOAmakPNcZtOA8Ltr
-        lP1H8eVewahZzo7Clj/Tf/u/Ag==
-X-Google-Smtp-Source: ABdhPJzCjYfPDXZjtVIoZuZSY3z3AIvZYlCHTyKWoFxc6mHjeHmiZ4aFQCmZCupvM/XdurrKzdjmgg==
-X-Received: by 2002:a0c:aa1d:: with SMTP id d29mr8663690qvb.47.1621435776189;
-        Wed, 19 May 2021 07:49:36 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:a4dd])
-        by smtp.gmail.com with ESMTPSA id j6sm15214930qti.4.2021.05.19.07.49.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XbWgytZuqM4UIpt46ERdKUKnppPb4ehKqu8JICqxcZw=;
+        b=JZUGoOjkwVsv53g5w3JL0rmwX2AXHFPTOtFfFosR5GyQwD/sfauEd4vSIW2e7iZwLj
+         bHZlbcK5xezqj1du28U2S/FprkHY8v9uXtN5CGtvmwSahWOFG3OpThR75DG9Ba8vS/fm
+         668IBXpH3beddEFJzEqssSDUUCwBkyvRYJiV9dAXqiskMEfT5TF1rnjsLhVnYqEt1A/J
+         3WcW3KWzLbvZBRrHxjvetWasQ7lxHRBQUMDqisb2U5i0v9iBoAlsTNLZ2Gafc9ugbAMt
+         zQH9fBGUW/5/3X1hTXB8RrOlxtn83V8j/0r6fZ8nW93sT6o3bdQKICc40E3vclBwz10+
+         uMAQ==
+X-Gm-Message-State: AOAM533jORh5S47vqF3ZPbvdp3q/jg7qCyZAk4UqFo2anCBvfNCLbOUD
+        /xHSk82AFgrVV8x9vktsSu/SMVLB2A7zWtUo2l3qzZZ+Q7VfcKi+KxT/HM/KE1srYEYUrhQ2eIL
+        lcB/2xX/MfH9o65MuwkS+9u0=
+X-Received: by 2002:a1c:2802:: with SMTP id o2mr11912061wmo.170.1621435816074;
+        Wed, 19 May 2021 07:50:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzExqQtkXDb+lj+03vZaMs1NTWf1irqt+Pmv5JH54/F+aNXZlT2XWkOY11D/CbrLbTwJGBEkw==
+X-Received: by 2002:a1c:2802:: with SMTP id o2mr11912037wmo.170.1621435815874;
+        Wed, 19 May 2021 07:50:15 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id k11sm6021496wmj.1.2021.05.19.07.50.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:49:35 -0700 (PDT)
-Date:   Wed, 19 May 2021 10:49:33 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH] mm: move idle swap cache pages to the tail of LRU after
- COW
-Message-ID: <YKUlfeAiq/vv+dHl@cmpxchg.org>
-References: <20210519013313.1274454-1-ying.huang@intel.com>
+        Wed, 19 May 2021 07:50:15 -0700 (PDT)
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/page_alloc: bail out on fatal signal during reclaim/compaction retry attempt
+Date:   Wed, 19 May 2021 15:50:14 +0100
+Message-Id: <20210519145014.3220164-1-atomlin@redhat.com>
+X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210519130609.r3ml6ohb2qsrfq2t@ava.usersys.com>
+References: <20210519130609.r3ml6ohb2qsrfq2t@ava.usersys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519013313.1274454-1-ying.huang@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:33:13AM +0800, Huang Ying wrote:
-> diff --git a/mm/memory.c b/mm/memory.c
-> index b83f734c4e1d..2b6847f4c03e 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3012,6 +3012,11 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->  				munlock_vma_page(old_page);
->  			unlock_page(old_page);
->  		}
-> +		if (page_copied && PageSwapCache(old_page) &&
-> +		    !page_mapped(old_page) && trylock_page(old_page)) {
-> +			try_to_free_idle_swapcache(old_page);
-> +			unlock_page(old_page);
+It does not make sense to retry compaction when the last known compact
+result was skipped and a fatal signal is pending.
 
-If there are no more swap or pte references, can we just attempt to
-free the page right away, like we do during regular unmap?
+In the context of try_to_compact_pages(), indeed COMPACT_SKIPPED can be
+returned; albeit, not every zone, on the zone list, would be considered
+in the case a fatal signal is found to be pending.
+Yet, in should_compact_retry(), given the last known compaction result,
+each zone, on the zone list, can be considered/or checked
+(see compaction_zonelist_suitable()). For example, if a zone was found
+to succeed, then reclaim/compaction would be tried again
+(notwithstanding the above).
 
-		if (page_copied)
-			free_swap_cache(old_page);
-		put_page(old_page);
+This patch ensures that compaction is not needlessly retried when the
+last known compaction result was skipped and in the unlikely case a
+fatal signal is found pending. So, OOM is at least attempted.
+
+Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+---
+ mm/page_alloc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index aaa1655cf682..5f9aac27a1b5 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4268,6 +4268,8 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
+ 	 * to work with, so we retry only if it looks like reclaim can help.
+ 	 */
+ 	if (compaction_needs_reclaim(compact_result)) {
++		if (fatal_signal_pending(current))
++			goto out;
+ 		ret = compaction_zonelist_suitable(ac, order, alloc_flags);
+ 		goto out;
+ 	}
+-- 
+2.26.3
+
