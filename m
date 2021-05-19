@@ -2,128 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E78388AFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51491388B01
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346312AbhESJr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346200AbhESJrT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:47:19 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E410C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 02:46:00 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ljIm3-0002sd-C5; Wed, 19 May 2021 11:45:55 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ljIm2-0006gD-W3; Wed, 19 May 2021 11:45:54 +0200
-Date:   Wed, 19 May 2021 11:45:54 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: drop irq-flags initialisations
-Message-ID: <20210519094554.57yqutclknjnt4zi@pengutronix.de>
-References: <20210519092541.10137-1-johan@kernel.org>
+        id S1346406AbhESJsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:48:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:56714 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241573AbhESJsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:48:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C22911B3;
+        Wed, 19 May 2021 02:46:53 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F0F8E3F719;
+        Wed, 19 May 2021 02:46:52 -0700 (PDT)
+Date:   Wed, 19 May 2021 10:46:51 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/3] arch_topology: obtain cpu capacity using information
+ from CPPC
+Message-ID: <20210519094651.GA21501@arm.com>
+References: <20210514095339.12979-1-ionela.voinescu@arm.com>
+ <20210514095339.12979-3-ionela.voinescu@arm.com>
+ <3c3f6d32-3560-2c54-beae-36f53d2572e7@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7laz2anpypw64hiq"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210519092541.10137-1-johan@kernel.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <3c3f6d32-3560-2c54-beae-36f53d2572e7@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dietmar,
 
---7laz2anpypw64hiq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Many thanks for the review!
 
-On Wed, May 19, 2021 at 11:25:41AM +0200, Johan Hovold wrote:
-> There's no need to initialise irq-flags variables before saving the
-> interrupt state.
->=20
-> Drop the redundant initialisations from drivers that got this wrong.
->=20
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->  drivers/tty/serial/amba-pl011.c    |  2 +-
->  drivers/tty/serial/imx.c           |  2 +-
->  drivers/tty/serial/omap-serial.c   | 10 +++++-----
->  drivers/tty/serial/serial_core.c   |  4 ++--
->  drivers/tty/serial/st-asc.c        |  2 +-
->  drivers/tty/serial/stm32-usart.c   |  2 +-
->  drivers/tty/serial/xilinx_uartps.c |  8 ++++----
->  7 files changed, 15 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl=
-011.c
-> index 78682c12156a..e14f3378b8a0 100644
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -1062,7 +1062,7 @@ static void pl011_dma_rx_poll(struct timer_list *t)
->  	struct tty_port *port =3D &uap->port.state->port;
->  	struct pl011_dmarx_data *dmarx =3D &uap->dmarx;
->  	struct dma_chan *rxchan =3D uap->dmarx.chan;
-> -	unsigned long flags =3D 0;
-> +	unsigned long flags;
->  	unsigned int dmataken =3D 0;
->  	unsigned int size =3D 0;
->  	struct pl011_sgbuf *sgbuf;
-> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-> index 7d5a8dfa3e91..4b838601cdce 100644
-> --- a/drivers/tty/serial/imx.c
-> +++ b/drivers/tty/serial/imx.c
-> @@ -1975,8 +1975,8 @@ imx_uart_console_write(struct console *co, const ch=
-ar *s, unsigned int count)
->  {
->  	struct imx_port *sport =3D imx_uart_ports[co->index];
->  	struct imx_port_ucrs old_ucr;
-> +	unsigned long flags;
->  	unsigned int ucr1;
-> -	unsigned long flags =3D 0;
->  	int locked =3D 1;
-> =20
->  	if (sport->port.sysrq)
+On Friday 14 May 2021 at 18:16:50 (+0200), Dietmar Eggemann wrote:
+> On 14/05/2021 11:53, Ionela Voinescu wrote:
+> 
+> [...]
+> 
+> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> > index c1179edc0f3b..f710d64f125b 100644
+> > --- a/drivers/base/arch_topology.c
+> > +++ b/drivers/base/arch_topology.c
+> > @@ -291,6 +291,45 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+> >  	return !ret;
+> >  }
+> >  
+> > +#ifdef CONFIG_ACPI_CPPC_LIB
+> > +#include <acpi/cppc_acpi.h>
+> 
+> init_cpu_capacity_cppc() shares a lot of functionality with the existing
+> DT/CPUfreq-based approach (topology_parse_cpu_capacity(),
+> register_cpufreq_notifier(), init_cpu_capacity_callback()). It looks
+> like that the different ways of invocation (two steps per cpu vs. one
+> step for all cpus) makes it hard to restructure the code to create more
+> common bits.
+> 
 
-Apart from changing the order here being unnecessary, the patch looks
-right. Ditto for serial_core.c and xilinx_uartps.c.
-I don't care much though, so
+Yes, I looked at ways to reuse more of the DT-based functionality, but I
+did not find a better way. We reuse the normalization functionality and
+the rebuild of the scheduling domains, but I'm not sure there's room for
+much more, as the rest is specific to each source of capacity
+information, DT+cpufreq or CPPC.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+I also did not want to tie the new CPPC based functionality to cpufreq.
+While the DT-based path needs cpufreq policies initialized as it needs
+information on maximum frequency to obtain capacity, this is not needed
+in the new code. This results in simpler code and ensures support even
+for systems that do not have a cpufreq driver.
 
-Best regards
-Uwe
+> > +void init_cpu_capacity_cppc(void)
+> > +{
+> > +	struct cppc_perf_caps perf_caps;
+> > +	int cpu;
+> > +
+> > +	if (likely(acpi_disabled || !acpi_cpc_valid()))
+> 
+> likely(acpi_disabled) ?
+> 
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+likely (acpi_disabled || !acpi_cpc_valid()) :)
 
---7laz2anpypw64hiq
-Content-Type: application/pgp-signature; name="signature.asc"
+It's "likely" useless, but this function gets called for each CPU from
+acpi_cppc_processor_probe(), but it only continues with setting the
+cpu_scale after all possible CPUs have their _CPC objects populated.
 
------BEGIN PGP SIGNATURE-----
+Therefore it's a lot more likely we return here.
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCk3k8ACgkQwfwUeK3K
-7AlgpAf+LO2ZLVnnSaSfYiY0XG0C7UkYZKBl9jjl62z9SFUCraOqMIusAWYwCDrh
-gQqfhtga0XHdWLTim3K1GVZDRo50hVpK/gOTZvYY9ISD7OvtufGvWZbI4u7SweJl
-AfZVxIJc7SR4vhUERMfHqRrgZsEdacUULDF6CPDo57JA13GMEYV7QzeygEodMmmE
-X/ivcQHkq1ieu01hqPzNm/sNFXN0t/flNrcuGzVDoRSftYBK+lRvvIFQnyv9Ad05
-UUr1uJOU3S6w4LiAUj7g4y+Lx4GS0TKbdYcFqNxFogYskvETPHbJB/HiEjseiFk1
-le4g757IBwmARsUzJT35gwJuzEtDFg==
-=b8qQ
------END PGP SIGNATURE-----
+> > +		return;
+> > +
+> > +	raw_capacity = kcalloc(num_possible_cpus(), sizeof(*raw_capacity),
+> > +			       GFP_KERNEL);
+> > +	if (!raw_capacity)
+> > +		return;
+> > +
+> > +	for_each_possible_cpu(cpu) {
+> > +		if (!cppc_get_perf_caps(cpu, &perf_caps)) {
+> > +			raw_capacity[cpu] = perf_caps.highest_perf;
+> > +			pr_debug("%s: CPU%d cpu_capacity=%u (raw).\n",
+> > +				 __func__, cpu, raw_capacity[cpu]);
+> 
+> There is quite a variety in the layout of the pr_xxx() log messages in
+> this file. Originally the 'cpu_capacity:' was used to indicate that this
+> log is from drivers/base/arch_topology.c. Now the GCC __func__
+> identifier is used. Maybe this can be aligned better? Especially since
+> the functionality used in the existing DT-driven and now in the new
+> CPPC-driven functionality is quite similar. Debugging is so much easier
+> with consistent log strings.
+> 
 
---7laz2anpypw64hiq--
+Right! My intention was to keep the prints relatively similar, but my
+wanting to reduce the line length got the better of me. I'll keep the
+prints consistent.
+
+> 
+> > +		} else {
+> > +			pr_err("%s: CPU%d missing highest performance.\n",
+> > +				 __func__, cpu);
+> > +			pr_err("%s: fallback to 1024 for all CPUs\n",
+> > +				 __func__);
+> > +			goto exit;
+> > +		}
+> > +	}
+> > +
+> > +	topology_normalize_cpu_scale();
+> > +	schedule_work(&update_topology_flags_work);
+> > +	pr_debug("%s: cpu_capacity initialization done\n", __func__);
+> > +
+> > +exit:
+> > +	free_raw_capacity();
+> > +}
+> > +#endif
+> 
+> In case a system has CONFIG_ACPI_CPPC_LIB what does this mean for the
+> DT-based approach via `register_cpufreq_notifier()`?
+> 
+
+CONFIG_ACPI_CPPC_LIB is enabled by default on arm64. This only ensures
+that we have the functionality to parse and work with the ACPI _CPC
+objects and it does not guarantee that ACPI will be used.
+
+> Looks like we rely on:
+> 
+> 376 static int __init register_cpufreq_notifier(void)
+> ...
+> 385         if (!acpi_disabled || ...)
+> 386                 return -EINVAL;
+> 
+> to disable the CPUfreq part of the DT/CPUfreq-based approach on an ACPI
+> system.
+> 
+
+It's both acpi_disabled and raw_capacity that guard the DT path. You
+need both to not use ACPI (therefore using DT) and to have valid
+capacity-dmips-mhz in DT for the cpufreq notifier that will eventually
+populate the cpu_scale variables to be registered.
+
+Thank you,
+Ionela.
+> [...]
