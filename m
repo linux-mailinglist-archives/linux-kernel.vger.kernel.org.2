@@ -2,283 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD259388796
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F8A388797
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235956AbhESGe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhESGe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:34:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C90F8613AA;
-        Wed, 19 May 2021 06:33:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621405988;
-        bh=DsjSl6yBWh1YFEOLeF/4l7RPg+W/ybQ288UPZbcSu78=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Aj9DWes/2u/h2nTLkEPJsRme4HkRERdMUmQgH3Q6Rp0i0+gBei8u/IRvWGayu9O/h
-         YxSwdRWIQEdrK2jrz5p74sJJkN0y0HuZeoTjstQSVsU/G+u2mJ8niYS2ZLjPFBRxn/
-         b2dgYNoqvRsD6+/F9T4dSbyvIq4LDNBRU+0Mxigx44yKcBN7X7t+y5McTMnHkP8Pyf
-         9h5rKAc/o5Sr2ydfHK/bkmJ9/HSiS7p0/owiyu46UvWPwRNLGAbw+jYn5pIxg5jjQX
-         0g8adi6FFyMpdFmezPu1fA0ySeutvYZKzUxUq3288lSEdGKKubIy/xfu0SHEOrmpbt
-         Jya6aWciL7jLg==
-Received: by mail-lf1-f51.google.com with SMTP id x19so17403512lfa.2;
-        Tue, 18 May 2021 23:33:08 -0700 (PDT)
-X-Gm-Message-State: AOAM532oHjJ73fT6NBj8F47U9WucH1e7XMoYVACiUAxU706lcgBdH2m3
-        NJ3bDRDUSzVCUyxddEcgW1p4iJl5SIH9oIzOVnQ=
-X-Google-Smtp-Source: ABdhPJwIFYVRRBikGgC4O2rYg2NsvavLz6Rnauk/tXrxyUlwUwx/kHYxLrjPvZ1W078K0+Y1qEXZd5ppwdDbuJBd+8o=
-X-Received: by 2002:a19:f701:: with SMTP id z1mr7103212lfe.557.1621405987051;
- Tue, 18 May 2021 23:33:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org> <1621400656-25678-4-git-send-email-guoren@kernel.org>
-In-Reply-To: <1621400656-25678-4-git-send-email-guoren@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 19 May 2021 14:32:55 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTQX82y5COejF95pG9vqZYqqwJgq1H4JrGjEMrT7Enmew@mail.gmail.com>
-Message-ID: <CAJF2gTTQX82y5COejF95pG9vqZYqqwJgq1H4JrGjEMrT7Enmew@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/3] riscv: Add SYNC_DMA_FOR_CPU/DEVICE for DMA_COHERENT
-To:     Guo Ren <guoren@kernel.org>, Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        drew@beagleboard.org, Christoph Hellwig <hch@lst.de>,
-        wefu@redhat.com, lazyparser@gmail.com
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S236491AbhESGf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhESGf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 02:35:27 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AB1C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 23:34:08 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id gm21so6800043pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 23:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=lGu0VVk51fONvP7iU9c3NW3ucSj/BYjyWQl2dyiDI9g=;
+        b=DMx1/yIfUgN2/TlIOG9+lSXdRkgQa3VaViBNPsHVsbVnjFeMnU1bWtLlQLhoJnDDDT
+         P7LHGyinFAq5s/jMF3bqKkammFQ6fd/FqHEFmwNNW3WYHGi9l4G8JamD9nGBdxYc+Ut6
+         zY87TxRnDB672+/QVN913L572veYFwEiXGA0Sc1QfXuZr6HOtyHF36fdRG2P8L/4bWCG
+         iPhIs/zoqgdHek4P+8JEnWL7H+ESGnl6sXBUZGx0VjimNN0gaROl1r/VbKCXlcDKOWfM
+         qHx2foFP5Cq0DRwha5OUE+XSjQCzloEgGc5WX8ol3DdSKsJakeekZFSqJBKm3iWwv9EO
+         SXWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lGu0VVk51fONvP7iU9c3NW3ucSj/BYjyWQl2dyiDI9g=;
+        b=WITjiuhHpcUJYrItCZ4rsHt1zapOMT7CVInFqq68z2kDqeUmG/xdCp5ynWozbaU8gL
+         LBgsgIrS8DQhnOXGjfhvCTsPySAVxV8nQ6+hfeJsAeSM/NS+B18a3D4pye1mEkyqMUEv
+         o3eqM/Yc/rUpNsl3W8fxz+bDCjDhQrJQCgjqjdbJ+MGgVHUI5VBRivoFzbDsVD0cbXiE
+         YjZwfA2o4WhThdzsdP0ToyjmI3ukyZ/skKUy2u/ggISbCD8MzG2ZPxcvhOhd7E3Tf7HZ
+         /J7vxmqdV4OmJNwL9gmjoZsrZYAHFpQzDcT+D0qkCNplMllNyDSU+rotsw4IVNFjTizW
+         S2pg==
+X-Gm-Message-State: AOAM530SUFVpwb9LgMsCItzeQekxXIG2p3WTqccJJlzkqIUu4hyy3wog
+        I8qqmXv6aAJ6a4WK3D/GNpE=
+X-Google-Smtp-Source: ABdhPJzk810sFZW7FfTOrU/oYQ9ENf/tnBLDbQ61vjk0kWoYKM3WNo9ESLPr6n5TOBF/R5WdEm8PyQ==
+X-Received: by 2002:a17:902:9685:b029:ef:70fd:a5a2 with SMTP id n5-20020a1709029685b02900ef70fda5a2mr9201212plp.20.1621406047994;
+        Tue, 18 May 2021 23:34:07 -0700 (PDT)
+Received: from Ruifeng.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id y1sm137053pfn.13.2021.05.18.23.34.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 23:34:07 -0700 (PDT)
+From:   Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
+To:     pmladek@suse.com, senozhatsky@chromium.org, rostedt@goodmis.org,
+        john.ogness@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, ruifeng.zhang1@unisoc.com,
+        nianfu.bai@unisoc.com, orson.zhai@unisoc.com
+Subject: [PATCH v1 1/1] printk: always output coreid in caller information
+Date:   Wed, 19 May 2021 14:33:55 +0800
+Message-Id: <20210519063355.5147-1-ruifeng.zhang0110@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 1:05 PM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> To support DMA device in a non-coherent interconnect SOC system,
-> we need the below facilities:
->  - Change a memory region attributes from cacheable to strong.
->    It would be used in DMA descriptors.
->  - Sync the cache with memory before DMA start and after DMA end.
->    It would be used for DMA data transfer buffers.
->
-> This patch enables kernel dma/direct.c coherent infrastructure and
-> a new sbi_ecall API for dma_sync.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Anup Patel <anup.patel@wdc.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Drew Fustini <drew@beagleboard.org>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Wei Fu <wefu@redhat.com>
-> Cc: Wei Wu <lazyparser@gmail.com>
-> ---
->  arch/riscv/Kconfig               |  4 ++++
->  arch/riscv/include/asm/pgtable.h | 13 +++++++++++++
->  arch/riscv/include/asm/sbi.h     | 16 ++++++++++++++++
->  arch/riscv/kernel/sbi.c          | 19 +++++++++++++++++++
->  arch/riscv/mm/Makefile           |  4 ++++
->  arch/riscv/mm/dma-mapping.c      | 41 ++++++++++++++++++++++++++++++++++++++++
->  6 files changed, 97 insertions(+)
->  create mode 100644 arch/riscv/mm/dma-mapping.c
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 632fac5..94a736a 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -20,6 +20,9 @@ config RISCV
->         select ARCH_HAS_DEBUG_VM_PGTABLE
->         select ARCH_HAS_DEBUG_VIRTUAL if MMU
->         select ARCH_HAS_DEBUG_WX
-> +       select ARCH_HAS_DMA_PREP_COHERENT if RISCV_DMA_COHERENT
-> +       select ARCH_HAS_SYNC_DMA_FOR_CPU if RISCV_DMA_COHERENT
-> +       select ARCH_HAS_SYNC_DMA_FOR_DEVICE if RISCV_DMA_COHERENT
->         select ARCH_HAS_FORTIFY_SOURCE
->         select ARCH_HAS_GCOV_PROFILE_ALL
->         select ARCH_HAS_GIGANTIC_PAGE
-> @@ -41,6 +44,7 @@ config RISCV
->         select CLONE_BACKWARDS
->         select CLINT_TIMER if !MMU
->         select COMMON_CLK
-> +       select DMA_DIRECT_REMAP if RISCV_DMA_COHERENT
->         select EDAC_SUPPORT
->         select GENERIC_ARCH_TOPOLOGY if SMP
->         select GENERIC_ATOMIC64 if !64BIT
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index f822f22..8994d58 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -465,6 +465,19 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->         return ptep_test_and_clear_young(vma, address, ptep);
->  }
->
-> +#ifdef CONFIG_RISCV_DMA_COHERENT
-> +#define pgprot_noncached pgprot_noncached
-> +static inline pgprot_t pgprot_noncached(pgprot_t _prot)
-> +{
-> +       unsigned long prot = pgprot_val(_prot);
-> +
-> +       prot &= ~_PAGE_DMA_MASK;
-> +       prot |= _PAGE_DMA_NONCACHE;
-> +
-> +       return __pgprot(prot);
-> +}
-> +#endif
-> +
->  /*
->   * Encode and decode a swap entry
->   *
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 0d42693..08b4244 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -27,6 +27,7 @@ enum sbi_ext_id {
->         SBI_EXT_IPI = 0x735049,
->         SBI_EXT_RFENCE = 0x52464E43,
->         SBI_EXT_HSM = 0x48534D,
-> +       SBI_EXT_DMA = 0xAB150401,
->  };
->
->  enum sbi_ext_base_fid {
-> @@ -37,6 +38,7 @@ enum sbi_ext_base_fid {
->         SBI_EXT_BASE_GET_MVENDORID,
->         SBI_EXT_BASE_GET_MARCHID,
->         SBI_EXT_BASE_GET_MIMPID,
-> +       SBI_EXT_RFENCE_REMOTE_DMA_SYNC,
-Oops ... It's no use. Remove in next version patch.
+From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
 
->  };
->
->  enum sbi_ext_time_fid {
-> @@ -63,6 +65,17 @@ enum sbi_ext_hsm_fid {
->         SBI_EXT_HSM_HART_STATUS,
->  };
->
-> +enum sbi_ext_dma_fid {
-> +       SBI_DMA_SYNC = 0,
-> +};
-> +
-> +enum sbi_dma_sync_data_direction {
-> +       SBI_DMA_BIDIRECTIONAL = 0,
-> +       SBI_DMA_TO_DEVICE = 1,
-> +       SBI_DMA_FROM_DEVICE = 2,
-> +       SBI_DMA_NONE = 3,
-> +};
-> +
->  enum sbi_hsm_hart_status {
->         SBI_HSM_HART_STATUS_STARTED = 0,
->         SBI_HSM_HART_STATUS_STOPPED,
-> @@ -128,6 +141,9 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
->                                 unsigned long size,
->                                 unsigned long asid);
->  int sbi_probe_extension(int ext);
-> +void sbi_dma_sync(unsigned long start,
-> +                 unsigned long size,
-> +                 enum sbi_dma_sync_data_direction dir);
->
->  /* Check if current SBI specification version is 0.1 or not */
->  static inline int sbi_spec_is_0_1(void)
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index 7402a41..ff8e18b 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -521,6 +521,25 @@ int sbi_probe_extension(int extid)
->  }
->  EXPORT_SYMBOL(sbi_probe_extension);
->
-> +void sbi_dma_sync(unsigned long start,
-> +                 unsigned long size,
-> +                 enum sbi_dma_sync_data_direction dir)
-> +{
-> +#if 0
-> +       sbi_ecall(SBI_EXT_DMA, SBI_DMA_SYNC, start, size, dir,
-> +                 0, 0, 0);
-> +#else
-> +       /* Just for try, it should be in sbi ecall and will be removed before merged */
-> +       register unsigned long i asm("a0") = start & ~(L1_CACHE_BYTES - 1);
-> +
-> +       for (; i < (start + size); i += L1_CACHE_BYTES)
-> +               __asm__ __volatile__(".long 0x02b5000b");
-> +
-> +       __asm__ __volatile__(".long 0x01b0000b");
-> +#endif
-> +}
-> +EXPORT_SYMBOL(sbi_dma_sync);
-> +
->  static long __sbi_base_ecall(int fid)
->  {
->         struct sbiret ret;
-> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-> index 7ebaef1..b67d956 100644
-> --- a/arch/riscv/mm/Makefile
-> +++ b/arch/riscv/mm/Makefile
-> @@ -14,6 +14,10 @@ obj-$(CONFIG_MMU) += fault.o pageattr.o
->  obj-y += cacheflush.o
->  obj-y += context.o
->
-> +ifeq ($(CONFIG_RISCV_DMA_COHERENT), y)
-> +obj-y += dma-mapping.o
-> +endif
-> +
->  ifeq ($(CONFIG_MMU),y)
->  obj-$(CONFIG_SMP) += tlbflush.o
->  endif
-> diff --git a/arch/riscv/mm/dma-mapping.c b/arch/riscv/mm/dma-mapping.c
-> new file mode 100644
-> index 00000000..f5db60b
-> --- /dev/null
-> +++ b/arch/riscv/mm/dma-mapping.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/dma-map-ops.h>
-> +#include <asm/sbi.h>
-> +
-> +void arch_dma_prep_coherent(struct page *page, size_t size)
-> +{
-> +       void *ptr = page_address(page);
-> +
-> +       memset(ptr, 0, size);
-> +       sbi_dma_sync(page_to_phys(page), size, SBI_DMA_BIDIRECTIONAL);
-> +}
-> +
-> +void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
-> +               enum dma_data_direction dir)
-> +{
-> +       switch (dir) {
-> +       case DMA_TO_DEVICE:
-> +       case DMA_FROM_DEVICE:
-> +       case DMA_BIDIRECTIONAL:
-> +               sbi_dma_sync(paddr, size, dir);
-> +               break;
-> +       default:
-> +               BUG();
-> +       }
-> +}
-> +
-> +void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
-> +               enum dma_data_direction dir)
-> +{
-> +       switch (dir) {
-> +       case DMA_TO_DEVICE:
-> +               return;
-> +       case DMA_FROM_DEVICE:
-> +       case DMA_BIDIRECTIONAL:
-> +               sbi_dma_sync(paddr, size, dir);
-> +               break;
-> +       default:
-> +               BUG();
-> +       }
-> +}
-> --
-> 2.7.4
->
+Sometimes we want to know which cpu the process is running
+on when the log output, rather than the thread id.  So add
+the processor id output always in the caller information.
 
+caller_id bitmap:
+[63:32] thread_id
+[31]    flags of in thread context
+[30:0]  processor id
 
+About the output format, reserve 5 bits for thread id and
+2 bits for processor id.
+
+e.g.
+Before:
+[    0.000000][    T0] Booting Linux on physical CPU 0x0
+[    0.109338][    T1] smp: Bringing up secondary CPUs ...
+[    0.115831][    T0] CPU1: thread 0, cpu 1, socket 0, mpidr 81000100
+[    0.117051][    T0] CPU2: thread 0, cpu 2, socket 0, mpidr 81000200
+[    0.118207][    T0] CPU3: thread 0, cpu 3, socket 0, mpidr 81000300
+[  114.112319][T25122] binder:
+
+After:
+[    0.000000][     T0:C0] Booting Linux on physical CPU 0x0
+[    0.114549][     T1:C0] smp: Bringing up secondary CPUs ...
+[    0.121377][     T0:C1] CPU1: thread 0, cpu 1, socket 0, mpidr 81000100
+[    0.122606][     T0:C2] CPU2: thread 0, cpu 2, socket 0, mpidr 81000200
+[    0.123758][     T0:C3] CPU3: thread 0, cpu 3, socket 0, mpidr 81000300
+[   43.260158][        C1] Irq_monitor:Irq
+[  112.862589][ T21442:C5] binder:
+
+Signed-off-by: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+---
+ kernel/printk/printk.c            | 36 +++++++++++++++++++++----------
+ kernel/printk/printk_ringbuffer.h |  2 +-
+ 2 files changed, 26 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 421c35571797..8ef4acefce19 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -331,7 +331,7 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+  *   record.info.facility           = 0 (LOG_KERN)
+  *   record.info.flags              = 0
+  *   record.info.level              = 3 (LOG_ERR)
+- *   record.info.caller_id          = 299 (task 299)
++ *   record.info.caller_id          = 1286342705152 ([63:32]=299 [31]=1 [30:0]=0)
+  *   record.info.dev_info.subsystem = "pci" (terminated)
+  *   record.info.dev_info.device    = "+pci:0000:00:01.0" (terminated)
+  *
+@@ -559,10 +559,15 @@ static ssize_t info_print_ext_header(char *buf, size_t size,
+ 	u64 ts_usec = info->ts_nsec;
+ 	char caller[20];
+ #ifdef CONFIG_PRINTK_CALLER
+-	u32 id = info->caller_id;
++	u64 id = info->caller_id;
+ 
+-	snprintf(caller, sizeof(caller), ",caller=%c%u",
+-		 id & 0x80000000 ? 'C' : 'T', id & ~0x80000000);
++	if (id & 0x80000000)
++		snprintf(caller, sizeof(caller), ",caller=T%u:C%u",
++			 (u32)(id >> 32),
++			 (u32)(id & ~0x80000000));
++	else
++		snprintf(caller, sizeof(caller), ",caller=C%u",
++			 (u32)(id & ~0x80000000));
+ #else
+ 	caller[0] = '\0';
+ #endif
+@@ -1273,9 +1278,15 @@ static size_t print_caller(u32 id, char *buf)
+ {
+ 	char caller[12];
+ 
+-	snprintf(caller, sizeof(caller), "%c%u",
+-		 id & 0x80000000 ? 'C' : 'T', id & ~0x80000000);
+-	return sprintf(buf, "[%6s]", caller);
++	if (id & 0x80000000)
++		snprintf(caller, sizeof(caller), "T%u:C%u",
++			 (u32)(id >> 32),
++			 (u32)(id & ~0x80000000));
++	else
++		snprintf(caller, sizeof(caller), "C%u",
++			 (u32)(id & ~0x80000000));
++
++	return sprintf(buf, "[%10s]", caller);
+ }
+ #else
+ #define print_caller(id, buf) 0
+@@ -1954,10 +1965,13 @@ static inline void printk_delay(void)
+ 	}
+ }
+ 
+-static inline u32 printk_caller_id(void)
++static inline u64 printk_caller_id(void)
+ {
+-	return in_task() ? task_pid_nr(current) :
+-		0x80000000 + raw_smp_processor_id();
++	if (in_task())
++		return (u64)task_pid_nr(current) << 32 |
++			0x80000000 + raw_smp_processor_id();
++	else
++		return raw_smp_processor_id();
+ }
+ 
+ /**
+@@ -2036,7 +2050,7 @@ int vprintk_store(int facility, int level,
+ 		  const struct dev_printk_info *dev_info,
+ 		  const char *fmt, va_list args)
+ {
+-	const u32 caller_id = printk_caller_id();
++	const u64 caller_id = printk_caller_id();
+ 	struct prb_reserved_entry e;
+ 	enum log_flags lflags = 0;
+ 	struct printk_record r;
+diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+index 73cc80e01cef..c0a3146c7ac2 100644
+--- a/kernel/printk/printk_ringbuffer.h
++++ b/kernel/printk/printk_ringbuffer.h
+@@ -19,7 +19,7 @@ struct printk_info {
+ 	u8	facility;	/* syslog facility */
+ 	u8	flags:5;	/* internal record flags */
+ 	u8	level:3;	/* syslog level */
+-	u32	caller_id;	/* thread id or processor id */
++	u64	caller_id;      /* thread id or processor id */
+ 
+ 	struct dev_printk_info	dev_info;
+ };
 -- 
-Best Regards
- Guo Ren
+2.17.1
 
-ML: https://lore.kernel.org/linux-csky/
