@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C534738843B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5672938843F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhESBLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 21:11:07 -0400
-Received: from ozlabs.org ([203.11.71.1]:36667 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231322AbhESBLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 21:11:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FlFCD2wYLz9sTD;
-        Wed, 19 May 2021 11:09:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1621386586;
-        bh=UCeiL9QFW+a7PCn8oeEp01d3KWoBysRALLIYZbpvvyE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jNMRRWQ5yquDKv5DX8yudzgOyHyXimeCXk58EnQLYq8E47ViUTgZH9w+5HYVDjLF4
-         mntXHpaeTTUZFgzsBaReFbLJf6trEFog30nCXNXdpx0x1gsPCRGT6CaM37uKpj2hgK
-         QDATBwXulF1TDjeCzpMIxpGOswxnEUEg0uqMjh9RQbKRELZjt+RGu9RH6BUH9Osu6D
-         k4TTNX7Y+eZ1oHS6UxOzZZOmUA3SQ/KhO5pZQ29763NNKcQy77CSQiQgQ4MN1D2gcb
-         MWdS64ItBYLx7Z7q7y6ZBNd9kaZSkMrIfH76llm0HO0lP6OnYKXgK9g/vaiX0fzyJ4
-         wGvrtp4K4Q1NQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Alexandre Ghiti <alex@ghiti.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>, Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH v6 2/3] powerpc: Move script to check relocations at
- compile time in scripts/
-In-Reply-To: <20210518101252.1484465-3-alex@ghiti.fr>
-References: <20210518101252.1484465-1-alex@ghiti.fr>
- <20210518101252.1484465-3-alex@ghiti.fr>
-Date:   Wed, 19 May 2021 11:09:39 +1000
-Message-ID: <877djvjzqk.fsf@mpe.ellerman.id.au>
+        id S231536AbhESBO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhESBOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 21:14:23 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C3BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 18:13:05 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id a8so3275201ioa.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 18:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=MyCbwTGR8WdlGYqZSeyMLC4GasAvLbJRPHlzJQ1aEME=;
+        b=fu+9+8Y4D4ClEazUIUDeR2QSt7GI/XvCYQSlFePLMRMVqpdTQZxSXeFPmvi+UpnV7D
+         GMRWxTy71L0CW6BM0ZNm3LqIyi+ZsKLT+0skU43D62NYgGzUQSHdNbMYuJwALn+o371G
+         8t5o7zsaIVXyatse8pUJ+1AHym+5sbw0NmrPBCH3Iz4pSYMn1ptuV/JrDtSZLhtL8na3
+         Q+kOFWhOBhn3tT1npj0u93iJsiy/q4v1aIzgOF33kT86m2kuOtj3sZ+YJ+i/uUdkiZcg
+         xbD9RehveokoppY5+GO27j80YVXtEoQDYOMF8ZDdfaW8VZgZMYHktsRf5KVQNsEBEndu
+         /UFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=MyCbwTGR8WdlGYqZSeyMLC4GasAvLbJRPHlzJQ1aEME=;
+        b=oGKPYR2zhp5bjAZclUyc5Q2AawL1OdI1wKD/NE8dHvHSSiNy3Ckg5kCIUO8A4IX/AE
+         81UfqJB7zQjO9wyIAfRUYp5twseRCDcMrR+S4VXcezUEvGZuq73yS05uHPF8hNSPY/oF
+         TnmxIanTKz1J7mmcByNutOAt6ls7x9IYGxsQL3PteejiJiTg42nWFLThYxQFA5WdduLe
+         MuIK7/lTQgy2cgS1bHanYxA4vh8Nx+TywFbqTYtiLQKlo+HX27nfXnsuItQMgsvhs8lm
+         NqZp7erxi8D7X9RindfONLoznbImHavUDHoMXVUW2r2pJsC+tUMbPet+1bJCfNcZX5OU
+         KJ3Q==
+X-Gm-Message-State: AOAM533EUnnE4QV2eqeGTzfnRXMV7WRFijW220cg4puV+mbEIv6N0ZC8
+        cTzJ8/uzfMAlUHUCV4C7KDIgxJE5GNq9fE4G6V9jdEzUMJk66g==
+X-Google-Smtp-Source: ABdhPJy01gJC6yg2XrDYiX2cXdlb7cKXwmCHEGlIAKPxesU88ATjME9LjZMCb8Yj7PluaFxdxgvA5cONz4WuCyTTY5k=
+X-Received: by 2002:a02:91c1:: with SMTP id s1mr9325015jag.61.1621386784477;
+ Tue, 18 May 2021 18:13:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+From:   Ammar Faizi <ammarfaizi2@gmail.com>
+Date:   Wed, 19 May 2021 08:12:47 +0700
+Message-ID: <CAFBCWQLBfBCe2SnQi7kOUPbGfj7xeP9vzgYqOKT6bRSFUwdKvw@mail.gmail.com>
+Subject: =?UTF-8?Q?fs=2Fqnx4=2Fdir=2Ec=3A51=3A32=3A_warning=3A_=E2=80=98strnlen=E2=80=99_specifie?=
+        =?UTF-8?Q?d_bound_48_exceeds_source_size_16_=5B=2DWstringop=2Doverread=5D?=
+To:     al@alarsen.net
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexandre Ghiti <alex@ghiti.fr> writes:
-> Relocating kernel at runtime is done very early in the boot process, so
-> it is not convenient to check for relocations there and react in case a
-> relocation was not expected.
->
-> Powerpc architecture has a script that allows to check at compile time
-> for such unexpected relocations: extract the common logic to scripts/
-> so that other architectures can take advantage of it.
->
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> ---
->  arch/powerpc/tools/relocs_check.sh | 18 ++----------------
->  scripts/relocs_check.sh            | 20 ++++++++++++++++++++
->  2 files changed, 22 insertions(+), 16 deletions(-)
->  create mode 100755 scripts/relocs_check.sh
+Hi, Anders Larsen
 
-I'm not sure that script is really big/complicated enough to warrant
-sharing vs just copying, but I don't mind either.
+I found that you're a maintainer:QNX4 FILESYSTEM. So I am reporting this to=
+ you.
+GCC 11 warns =E2=80=98strnlen=E2=80=99 specified bound 48 exceeds source si=
+ze 16.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+  fs/qnx4/dir.c: In function =E2=80=98qnx4_readdir=E2=80=99:
+  fs/qnx4/dir.c:51:32: warning: =E2=80=98strnlen=E2=80=99 specified bound 4=
+8 exceeds
+source size 16 [-Wstringop-overread]
+     51 |                         size =3D strnlen(de->di_fname, size);
+        |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+  In file included from fs/qnx4/qnx4.h:3,
+                   from fs/qnx4/dir.c:16:
+  ./include/uapi/linux/qnx4_fs.h:45:25: note: source object declared here
+     45 |         char            di_fname[QNX4_SHORT_NAME_MAX];
+        |                         ^~~~~~~~
 
-cheers
+I found this warning in commit 8ac91e6c6033ebc12c5c1e4aa171b81a662bd70f
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
 
-> diff --git a/arch/powerpc/tools/relocs_check.sh b/arch/powerpc/tools/relo=
-cs_check.sh
-> index 014e00e74d2b..e367895941ae 100755
-> --- a/arch/powerpc/tools/relocs_check.sh
-> +++ b/arch/powerpc/tools/relocs_check.sh
-> @@ -15,21 +15,8 @@ if [ $# -lt 3 ]; then
->  	exit 1
->  fi
->=20=20
-> -# Have Kbuild supply the path to objdump and nm so we handle cross compi=
-lation.
-> -objdump=3D"$1"
-> -nm=3D"$2"
-> -vmlinux=3D"$3"
-> -
-> -# Remove from the bad relocations those that match an undefined weak sym=
-bol
-> -# which will result in an absolute relocation to 0.
-> -# Weak unresolved symbols are of that form in nm output:
-> -# "                  w _binary__btf_vmlinux_bin_end"
-> -undef_weak_symbols=3D$($nm "$vmlinux" | awk '$1 ~ /w/ { print $2 }')
-> -
->  bad_relocs=3D$(
-> -$objdump -R "$vmlinux" |
-> -	# Only look at relocation lines.
-> -	grep -E '\<R_' |
-> +${srctree}/scripts/relocs_check.sh "$@" |
->  	# These relocations are okay
->  	# On PPC64:
->  	#	R_PPC64_RELATIVE, R_PPC64_NONE
-> @@ -43,8 +30,7 @@ R_PPC_ADDR16_LO
->  R_PPC_ADDR16_HI
->  R_PPC_ADDR16_HA
->  R_PPC_RELATIVE
-> -R_PPC_NONE' |
-> -	([ "$undef_weak_symbols" ] && grep -F -w -v "$undef_weak_symbols" || ca=
-t)
-> +R_PPC_NONE'
->  )
->=20=20
->  if [ -z "$bad_relocs" ]; then
-> diff --git a/scripts/relocs_check.sh b/scripts/relocs_check.sh
-> new file mode 100755
-> index 000000000000..137c660499f3
-> --- /dev/null
-> +++ b/scripts/relocs_check.sh
-> @@ -0,0 +1,20 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +# Get a list of all the relocations, remove from it the relocations
-> +# that are known to be legitimate and return this list to arch specific
-> +# script that will look for suspicious relocations.
-> +
-> +objdump=3D"$1"
-> +nm=3D"$2"
-> +vmlinux=3D"$3"
-> +
-> +# Remove from the possible bad relocations those that match an undefined
-> +#=C2=A0weak symbol which will result in an absolute relocation to 0.
-> +# Weak unresolved symbols are of that form in nm output:
-> +# "                  w _binary__btf_vmlinux_bin_end"
-> +undef_weak_symbols=3D$($nm "$vmlinux" | awk '$1 ~ /w/ { print $2 }')
-> +
-> +$objdump -R "$vmlinux" |
-> +	grep -E '\<R_' |
-> +	([ "$undef_weak_symbols" ] && grep -F -w -v "$undef_weak_symbols" || ca=
-t)
-> --=20
-> 2.30.2
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+  commit 8ac91e6c6033ebc12c5c1e4aa171b81a662bd70f
+  Merge: d07f6ca923ea 54a40fc3a1da
+  Author: Linus Torvalds <torvalds@linux-foundation.org>
+  Date:   Mon May 17 09:55:10 2021 -0700
+
+GCC version detail:
+  ammarfaizi2@integral:~/project/now/linux$ gcc --version
+  gcc (Ubuntu 11.1.0-1ubuntu1~21.04) 11.1.0
+  Copyright (C) 2021 Free Software Foundation, Inc.
+  This is free software; see the source for copying conditions.  There is N=
+O
+  warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOS=
+E.
+
+Regards,
+Ammar Faizi
