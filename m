@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B7538907B
+	by mail.lfdr.de (Postfix) with ESMTP id 8221D38907C
 	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354425AbhESORl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:17:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41054 "EHLO mail.kernel.org"
+        id S1354151AbhESORp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:17:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354117AbhESOQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:16:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98BEE611AE;
-        Wed, 19 May 2021 14:14:45 +0000 (UTC)
+        id S1354129AbhESOQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 10:16:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E70C61363;
+        Wed, 19 May 2021 14:14:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621433687;
-        bh=8S/jBfuQqPw5Y9SjeyOmElG9wuJ/AnCGL+Y38mTgWSw=;
+        s=k20201202; t=1621433690;
+        bh=rRFc0ILonpYJdVr2TDsn36MJ5mLmgIkTfeLqsV9zN18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hTCE1ElGd8RQUsYpH10tZHH8+JrbvHD8gDqQ3oiQsubqDJKdm5uGMtoKd9AG4tcu0
-         F46Nu1C9cdBQvHyH+17uUbdB0KIl7QDKZBPoHUsAoRkhPcUXx4lRPV1afjIhbdKLkJ
-         +TKjoZhXcRPAN2oaldHMhj23eKI753CfmaJcVqGeSCyrVW+PRIqV0nMBCUWC3LNRx2
-         dtJPLCuG60q+NAmamqwgOs6EgZLv8m5tJmF4dVkgiqn/EL7j6AZwxj2qU+YHOleN3B
-         6OXmcc4prO3YituX+8Ap8WhwBXkdVrz2/Cq/UuGRExK5pgPNCleR/oHPSCJ/FqMLZ9
-         NnC8WZrXn5SPg==
+        b=BA6uFoGr6PP2RAvPnkryuSxFifPl/Ue7ySDROfWzKgKQq3GkQKW9rq19ourCeWb3A
+         EVJMLpe52ov/1XQQRzdo/VMfIwHU3UIiKVOc/e0zRsSODYzLbhnNMsgknLdyUdKnJv
+         q4iJsh/+6FOA/smUL0yOT0rWAfbHqgYQ7/UZWFsOziOXkd5aB0b+rDKfw/oX9/s7r+
+         sB+ROfVm0ePvuMaE86faSHvNK6NUa3W5f8n0Znzu2JG7TXH+VqTR9UacVSZVeUQ7XC
+         iIt3V/eHuYSB9QaVMwoY6ly0izSm/TjTkBDb2sD6JCQKoGFKh1fKzEVoVuex31/Pok
+         JvLmqqr6QESjA==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -31,9 +31,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Mike Rapoport <rppt@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 2/3] memblock: align freed memory map on pageblock boundaries with SPARSEMEM
-Date:   Wed, 19 May 2021 17:14:35 +0300
-Message-Id: <20210519141436.11961-3-rppt@kernel.org>
+Subject: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed memory map alignment
+Date:   Wed, 19 May 2021 17:14:36 +0300
+Message-Id: <20210519141436.11961-4-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210519141436.11961-1-rppt@kernel.org>
 References: <20210519141436.11961-1-rppt@kernel.org>
@@ -45,50 +45,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-When CONFIG_SPARSEMEM=y the ranges of the memory map that are freed are not
-aligned to the pageblock boundaries which breaks assumptions about
-homogeneity of the memory map throughout core mm code.
+When unused memory map is freed the preserved part of the memory map is
+extended to match pageblock boundaries because lots of core mm
+functionality relies on homogeneity of the memory map within pageblock
+boundaries.
 
-Make sure that the freed memory map is always aligned on pageblock
-boundaries regardless of the memory model selection.
+Since pfn_valid() is used to check whether there is a valid memory map
+entry for a PFN, make it return true also for PFNs that have memory map
+entries even if there is no actual memory populated there.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- mm/memblock.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arm/mm/init.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 97fa87541b5f..2e25d69739e0 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1941,14 +1941,13 @@ static void __init free_unused_memmap(void)
- 		 * due to SPARSEMEM sections which aren't present.
- 		 */
- 		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
--#else
-+#endif
- 		/*
- 		 * Align down here since many operations in VM subsystem
- 		 * presume that there are no holes in the memory map inside
- 		 * a pageblock
- 		 */
- 		start = round_down(start, pageblock_nr_pages);
--#endif
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 9d4744a632c6..6162a070a410 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -125,11 +125,22 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
+ int pfn_valid(unsigned long pfn)
+ {
+ 	phys_addr_t addr = __pfn_to_phys(pfn);
++	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
  
- 		/*
- 		 * If we had a previous bank, and there is a space
-@@ -1966,8 +1965,10 @@ static void __init free_unused_memmap(void)
- 	}
+ 	if (__phys_to_pfn(addr) != pfn)
+ 		return 0;
  
- #ifdef CONFIG_SPARSEMEM
--	if (!IS_ALIGNED(prev_end, PAGES_PER_SECTION))
-+	if (!IS_ALIGNED(prev_end, PAGES_PER_SECTION)) {
-+		prev_end = ALIGN(end, pageblock_nr_pages);
- 		free_memmap(prev_end, ALIGN(prev_end, PAGES_PER_SECTION));
-+	}
- #endif
+-	return memblock_is_map_memory(addr);
++	/*
++	 * If address less than pageblock_size bytes away from a present
++	 * memory chunk there still will be a memory map entry for it
++	 * because we round freed memory map to the pageblock boundaries.
++	 */
++	if (memblock_overlaps_region(&memblock.memory,
++				     ALIGN_DOWN(addr, pageblock_size),
++				     pageblock_size))
++		return 1;
++
++	return 0;
  }
- 
+ EXPORT_SYMBOL(pfn_valid);
+ #endif
 -- 
 2.28.0
 
