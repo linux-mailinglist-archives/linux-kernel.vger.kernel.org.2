@@ -2,532 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3961D38988D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D16338988F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhESVYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:24:00 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:55613 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhESVXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:23:43 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14JLM1Eg4187848
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Wed, 19 May 2021 14:22:13 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14JLM1Eg4187848
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621459334;
-        bh=iGJc3jET3nC4INCk/m5XShR01PstftKHQAaneFNAeCA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Us+4bLFYmBYpw+pEKtUrjhgZ0P8PfNiGCx3fpi/5EpL/TOAvAF7R54jwxwS5nkkTq
-         f0+UitNsobgXAgv9YY0dBLErOpf9DVMdRDjBcdqtoxq+SLykAje41nMxF58Ge7fA4W
-         N2/FZqg8YvlzGp3O87r57KJ4Lk2rY4bLJkWVtdad8A6NwrVW5tJVrnrwVMQVnJyrzG
-         4NZ0SEWhsL4caxhTcdCMwz60cTC+vA/0lGXCT3JM2o5cml+LipMDo1I1UI+D2dE5G2
-         jYGyXiBoUulASLUp4Yv/vvkBS7V4pBCYv0zViiUaMT48ETzfPPQHoZeecuZbomCwkI
-         f8IwcDsXNgb5g==
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 8/8] x86/irq: merge and functionalize common code in DECLARE/DEFINE_IDTENTRY_*
-Date:   Wed, 19 May 2021 14:21:54 -0700
-Message-Id: <20210519212154.511983-9-hpa@zytor.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210519212154.511983-1-hpa@zytor.com>
-References: <20210519212154.511983-1-hpa@zytor.com>
+        id S229610AbhESVZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:25:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhESVZa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:25:30 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CE8C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:24:10 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m124so10341718pgm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N3dW/ATcWO3PY6v2BY4HSFEQmmBCUs+/OWJJEnN9Srk=;
+        b=CeeodCR0FxrR09xkryZqzSbIZOBk/0Oj2AxolLq4hJHYw2ZUIoRQL800ilJbQlJAvZ
+         DwyjP0YDXa+V4mOt0fb0uPYLnysNRf/IYlZg5rN/trEG2zvIUnulTsI4YLG8iadSTeML
+         pWlhklwtfesO0K05zO+pumkh733cZPEEmfD6Ux4Qp7LC2UlJhqeUejQYKcHlFpwH001j
+         zhPYs1kj5VOTVDUjJUGsD9HHbAj9XPum73dibf2FWrUvc1e7EDjr+dWOEL276oPxQOJq
+         TxMoA9UsZKLAn5/TeaasOkI/PGe8a2a+rhB8p1r9HGUtIjvOKryy4zq/zaj8nxu4QEP0
+         4F+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N3dW/ATcWO3PY6v2BY4HSFEQmmBCUs+/OWJJEnN9Srk=;
+        b=dBWcBh4J4taxpDjlYMCL2jK3bTiqL8r1nMO3C6VjtAR3m49fF92zV0kMFKvmhMEINK
+         A6kJ3eGHi6Q0BaF2sp+ZIRa/1wU2H7dYsq8FxyxiRpYSjUCU9IUGvEq8b0VbUmeAKFsp
+         ZCnZlWUasgiSbaljwgu8qpQDNjHQzxftH5C33zGQGd2mdCHgYxK0bqcETB1GyPqrL2lM
+         7H64kATQRMixg+PYlLOg/aI0N075Ddgc03MP9U6nvcxMc43sLpl7Iy32k2DvSPSSPAK2
+         li9WLX/kH6wnbEWzPliHDbaKnLPk/CGn9P8T55hpwlI3Zd1B/HqpLElsyaemp0z2Yt+B
+         uEZw==
+X-Gm-Message-State: AOAM532UPS0PvCzI2gSq8y5FbVD5TuQbe2K4YxdM/Buquvc46H6giNjj
+        iGtWrVFc3UeBEdNxmcsO7zbyqA==
+X-Google-Smtp-Source: ABdhPJxRutlVEomE7U/WS/VK1S1uDUBga4d3T33UUIYJFrntdjgNVwxYfJHfR58XJi84sCecZe4/bg==
+X-Received: by 2002:a62:d411:0:b029:2b5:fce4:7e64 with SMTP id a17-20020a62d4110000b02902b5fce47e64mr1328219pfh.15.1621459449756;
+        Wed, 19 May 2021 14:24:09 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id x13sm314784pjl.22.2021.05.19.14.24.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 14:24:09 -0700 (PDT)
+Date:   Wed, 19 May 2021 21:24:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/8] KVM: Integrate gfn_to_memslot_approx() into
+ search_memslots()
+Message-ID: <YKWB9bPyyFfo0uhf@google.com>
+References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
+ <b8258ced64a81c7d90320c2921fe08b11eb47362.1621191551.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8258ced64a81c7d90320c2921fe08b11eb47362.1621191551.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
+On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 8895b95b6a22..3c40c7d32f7e 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1091,10 +1091,14 @@ bool kvm_arch_irqfd_allowed(struct kvm *kvm, struct kvm_irqfd *args);
+>   * gfn_to_memslot() itself isn't here as an inline because that would
+>   * bloat other code too much.
+>   *
+> + * With "approx" set returns the memslot also when the address falls
+> + * in a hole. In that case one of the memslots bordering the hole is
+> + * returned.
+> + *
+>   * IMPORTANT: Slots are sorted from highest GFN to lowest GFN!
+>   */
+>  static inline struct kvm_memory_slot *
+> -search_memslots(struct kvm_memslots *slots, gfn_t gfn)
+> +search_memslots(struct kvm_memslots *slots, gfn_t gfn, bool approx)
 
-Move as much of the common code in the _IDTENTRY_ and
-run_*_on_irq_stack() into inline functions instead of macros. A lot of
-them differ only in types and/or the presence or absence of an
-additional argument; the differential amount of code is neglible and
-after bending the types a little bit, they unify nicely.
+An alternative to modifying the PPC code would be to make the existing
+search_memslots() a wrapper to __search_memslots(), with the latter taking
+@approx.
 
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
----
- arch/x86/entry/common.c          |   5 +-
- arch/x86/include/asm/idtentry.h  | 170 +++++++++++++++----------------
- arch/x86/include/asm/irq_stack.h |  73 +++++--------
- arch/x86/kernel/apic/apic.c      |   2 +-
- arch/x86/kernel/irq.c            |   1 +
- arch/x86/kernel/sev-es.c         |   6 +-
- arch/x86/kernel/traps.c          |   2 +-
- 7 files changed, 117 insertions(+), 142 deletions(-)
+We might also want to make this __always_inline to improve the likelihood of the
+compiler optimizing away @approx.  I doubt it matters in practice...
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 7b2542b13ebd..1e46a1a35b20 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -253,7 +253,8 @@ static __always_inline bool get_and_clear_inhcall(void) { return false; }
- static __always_inline void restore_inhcall(bool inhcall) { }
- #endif
- 
--static void __xen_pv_evtchn_do_upcall(struct pt_regs *regs)
-+static void __xen_pv_evtchn_do_upcall(struct pt_regs *regs,
-+				      u32 __dummy __always_unused)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
- 
-@@ -269,7 +270,7 @@ __visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
- 	irqentry_state_t state = irqentry_enter(regs);
- 	bool inhcall;
- 
--	run_sysvec_on_irqstack_cond(__xen_pv_evtchn_do_upcall, regs);
-+	run_on_irqstack_cond(__xen_pv_evtchn_do_upcall, regs, 0);
- 
- 	inhcall = get_and_clear_inhcall();
- 	if (inhcall && !WARN_ON_ONCE(state.exit_rcu)) {
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index c03a18cac78e..3932c770551e 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -11,6 +11,65 @@
- 
- #include <asm/irq_stack.h>
- 
-+/**
-+ * idtentry_call - Common code for non-trivial IDT entry points
-+ * @func:	What should ultimately be called
-+ * @regs:	Pointer to entry struct pt_regs
-+ * @arg:	Extra argument to func (vector, error_code)
-+ * @flush:	If kvm_set_cpu_l1tf_flush_l1d() should be called
-+ * @wrapper:	Wrapper to call func; NULL for just call
-+ */
-+static __always_inline void
-+idtentry_call(irq_func_t func, struct pt_regs *regs, bool flush,
-+	      void (*wrapper)(irq_func_t, struct pt_regs *, u32),
-+	      u32 arg)
-+{
-+	irqentry_state_t state = irqentry_enter(regs);
-+
-+	instrumentation_begin();
-+	if (flush)
-+		kvm_set_cpu_l1tf_flush_l1d();
-+	if (wrapper)
-+		wrapper(func, regs, arg);
-+	else
-+		func(regs, arg);
-+	instrumentation_end();
-+	irqentry_exit(regs, state);
-+}
-+
-+/**
-+ * _DEFINE_IDTENTRY - Common macro for defining idtentries with no argument
-+ * @func:	Function name of the entry point
-+ * @flush:	If wrapper should call kvm_set_cpu_l1tf_flush_l1d()
-+ * @inline_opt: __always_inline or noinline as appropriate for __func
-+ * @wrapper:	Wrapper function for calling __func
-+ *
-+ */
-+#define _DEFINE_IDTENTRY(func, flush, inline_opt, wrapper)		\
-+static inline_opt void __##func(struct pt_regs *regs, u32);		\
-+__visible noinstr void func(struct pt_regs *regs)			\
-+{									\
-+	idtentry_call(__##func, regs, flush, wrapper, 0);		\
-+}									\
-+static inline_opt void							\
-+__##func(struct pt_regs *regs, u32 __dummy __always_unused)
-+
-+/**
-+ * _DEFINE_IDTENTRY_ERRORCODE - Common macro for defining idtentries with argument
-+ * @func:	Function name of the entry point
-+ * @flush:	If wrapper should call kvm_set_cpu_l1tf_flush_l1d()
-+ * @inline_opt: __always_inline or noinline as appropriate for __func
-+ * @wrapper:	Wrapper function for calling __func
-+ *
-+ */
-+#define _DEFINE_IDTENTRY_ERRORCODE(func, flush, inline_opt, wrapper)	\
-+static inline_opt void __##func(struct pt_regs *regs, u32 error_code);	\
-+__visible noinstr void func(struct pt_regs *regs, u32 error_code)	\
-+{									\
-+	idtentry_call(__##func, regs, flush, wrapper, error_code);	\
-+}									\
-+static inline_opt void __##func(struct pt_regs *regs, u32 error_code)
-+
- /**
-  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
-  *		      No error code pushed by hardware
-@@ -45,19 +104,7 @@
-  * which has to run before returning to the low level assembly code.
-  */
- #define DEFINE_IDTENTRY(func)						\
--static __always_inline void __##func(struct pt_regs *regs);		\
--									\
--__visible noinstr void func(struct pt_regs *regs)			\
--{									\
--	irqentry_state_t state = irqentry_enter(regs);			\
--									\
--	instrumentation_begin();					\
--	__##func (regs);						\
--	instrumentation_end();						\
--	irqentry_exit(regs, state);					\
--}									\
--									\
--static __always_inline void __##func(struct pt_regs *regs)
-+	_DEFINE_IDTENTRY(func, false, __always_inline, NULL)
- 
- /* Special case for 32bit IRET 'trap' */
- #define DECLARE_IDTENTRY_SW	DECLARE_IDTENTRY
-@@ -80,7 +127,7 @@ static __always_inline void __##func(struct pt_regs *regs)
- #define DECLARE_IDTENTRY_ERRORCODE(vector, func)			\
- 	asmlinkage void asm_##func(void);				\
- 	asmlinkage void xen_asm_##func(void);				\
--	__visible void func(struct pt_regs *regs, unsigned long error_code)
-+	__visible void func(struct pt_regs *regs, u32 error_code)
- 
- /**
-  * DEFINE_IDTENTRY_ERRORCODE - Emit code for simple IDT entry points
-@@ -90,22 +137,7 @@ static __always_inline void __##func(struct pt_regs *regs)
-  * Same as DEFINE_IDTENTRY, but has an extra error_code argument
-  */
- #define DEFINE_IDTENTRY_ERRORCODE(func)					\
--static __always_inline void __##func(struct pt_regs *regs,		\
--				     unsigned long error_code);		\
--									\
--__visible noinstr void func(struct pt_regs *regs,			\
--			    unsigned long error_code)			\
--{									\
--	irqentry_state_t state = irqentry_enter(regs);			\
--									\
--	instrumentation_begin();					\
--	__##func (regs, error_code);					\
--	instrumentation_end();						\
--	irqentry_exit(regs, state);					\
--}									\
--									\
--static __always_inline void __##func(struct pt_regs *regs,		\
--				     unsigned long error_code)
-+	_DEFINE_IDTENTRY_ERRORCODE(func, false, __always_inline, NULL)
- 
- /**
-  * DECLARE_IDTENTRY_RAW - Declare functions for raw IDT entry points
-@@ -161,7 +193,7 @@ __visible noinstr void func(struct pt_regs *regs)
-  * is required before the enter/exit() helpers are invoked.
-  */
- #define DEFINE_IDTENTRY_RAW_ERRORCODE(func)				\
--__visible noinstr void func(struct pt_regs *regs, unsigned long error_code)
-+__visible noinstr void func(struct pt_regs *regs, u32 error_code)
- 
- /**
-  * DECLARE_IDTENTRY_IRQ - Declare functions for device interrupt IDT entry
-@@ -187,25 +219,11 @@ __visible noinstr void func(struct pt_regs *regs, unsigned long error_code)
-  * has to be done in the function body if necessary.
-  */
- #define DEFINE_IDTENTRY_IRQ(func)					\
--static void __##func(struct pt_regs *regs, u32 vector);			\
--									\
--__visible noinstr void func(struct pt_regs *regs,			\
--			    unsigned long error_code)			\
--{									\
--	irqentry_state_t state = irqentry_enter(regs);			\
--	u32 vector = (u32)(u8)error_code;				\
--									\
--	instrumentation_begin();					\
--	kvm_set_cpu_l1tf_flush_l1d();					\
--	run_irq_on_irqstack_cond(__##func, regs, vector);		\
--	instrumentation_end();						\
--	irqentry_exit(regs, state);					\
--}									\
--									\
--static noinline void __##func(struct pt_regs *regs, u32 vector)
-+	_DEFINE_IDTENTRY_ERRORCODE(func, true, noinline, run_on_irqstack_cond)
- 
- /**
-- * DECLARE_IDTENTRY_SYSVEC - Declare functions for system vector entry points
-+ * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
-+ *		      No error code pushed by hardware
-  * @vector:	Vector number (ignored for C)
-  * @func:	Function name of the entry point
-  *
-@@ -214,9 +232,11 @@ static noinline void __##func(struct pt_regs *regs, u32 vector)
-  * - The XEN PV trap entry point: xen_##func (maybe unused)
-  * - The C handler called from the ASM entry point
-  *
-- * Maps to DECLARE_IDTENTRY().
-+ * Note: This is the C variant of DECLARE_IDTENTRY(). As the name says it
-+ * declares the entry points for usage in C code. There is an ASM variant
-+ * as well which is used to emit the entry stubs in entry_32/64.S.
-  */
--#define DECLARE_IDTENTRY_SYSVEC(vector, func)				\
-+#define DECLARE_IDTENTRY_SYSVEC(vector, func)	\
- 	DECLARE_IDTENTRY(vector, func)
- 
- /**
-@@ -229,20 +249,7 @@ static noinline void __##func(struct pt_regs *regs, u32 vector)
-  * Runs the function on the interrupt stack if the entry hit kernel mode
-  */
- #define DEFINE_IDTENTRY_SYSVEC(func)					\
--static void __##func(struct pt_regs *regs);				\
--									\
--__visible noinstr void func(struct pt_regs *regs)			\
--{									\
--	irqentry_state_t state = irqentry_enter(regs);			\
--									\
--	instrumentation_begin();					\
--	kvm_set_cpu_l1tf_flush_l1d();					\
--	run_sysvec_on_irqstack_cond(__##func, regs);			\
--	instrumentation_end();						\
--	irqentry_exit(regs, state);					\
--}									\
--									\
--static noinline void __##func(struct pt_regs *regs)
-+	_DEFINE_IDTENTRY(func, true, noinline, run_on_irqstack_cond)
- 
- /**
-  * DEFINE_IDTENTRY_SYSVEC_SIMPLE - Emit code for simple system vector IDT
-@@ -255,23 +262,16 @@ static noinline void __##func(struct pt_regs *regs)
-  * Only use for 'empty' vectors like reschedule IPI and KVM posted
-  * interrupt vectors.
-  */
-+static __always_inline void
-+call_sysvec_simple(irq_func_t func, struct pt_regs *regs, u32 arg)
-+{
-+	__irq_enter_raw();
-+	func(regs, arg);
-+	__irq_exit_raw();
-+}
-+
- #define DEFINE_IDTENTRY_SYSVEC_SIMPLE(func)				\
--static __always_inline void __##func(struct pt_regs *regs);		\
--									\
--__visible noinstr void func(struct pt_regs *regs)			\
--{									\
--	irqentry_state_t state = irqentry_enter(regs);			\
--									\
--	instrumentation_begin();					\
--	__irq_enter_raw();						\
--	kvm_set_cpu_l1tf_flush_l1d();					\
--	__##func (regs);						\
--	__irq_exit_raw();						\
--	instrumentation_end();						\
--	irqentry_exit(regs, state);					\
--}									\
--									\
--static __always_inline void __##func(struct pt_regs *regs)
-+	_DEFINE_IDTENTRY(func, true, __always_inline, call_sysvec_simple)
- 
- /**
-  * DECLARE_IDTENTRY_XENCB - Declare functions for XEN HV callback entry point
-@@ -312,8 +312,8 @@ static __always_inline void __##func(struct pt_regs *regs)
-  */
- #define DECLARE_IDTENTRY_VC(vector, func)				\
- 	DECLARE_IDTENTRY_RAW_ERRORCODE(vector, func);			\
--	__visible noinstr void ist_##func(struct pt_regs *regs, unsigned long error_code);	\
--	__visible noinstr void safe_stack_##func(struct pt_regs *regs, unsigned long error_code)
-+	__visible noinstr void ist_##func(struct pt_regs *regs, u32 error_code);	\
-+	__visible noinstr void safe_stack_##func(struct pt_regs *regs, u32 error_code)
- 
- /**
-  * DEFINE_IDTENTRY_IST - Emit code for IST entry points
-@@ -396,8 +396,7 @@ static __always_inline void __##func(struct pt_regs *regs)
-  */
- #define DECLARE_IDTENTRY_DF(vector, func)				\
- 	asmlinkage void asm_##func(void);				\
--	__visible void func(struct pt_regs *regs,			\
--			    unsigned long error_code,			\
-+	__visible void func(struct pt_regs *regs, u32 error_code,	\
- 			    unsigned long address)
- 
- /**
-@@ -408,8 +407,7 @@ static __always_inline void __##func(struct pt_regs *regs)
-  * cr2 in the address argument.
-  */
- #define DEFINE_IDTENTRY_DF(func)					\
--__visible noinstr void func(struct pt_regs *regs,			\
--			    unsigned long error_code,			\
-+__visible noinstr void func(struct pt_regs *regs, u32 error_code,	\
- 			    unsigned long address)
- 
- #endif	/* !CONFIG_X86_64 */
-diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
-index 562854c60808..23d518c06b1d 100644
---- a/arch/x86/include/asm/irq_stack.h
-+++ b/arch/x86/include/asm/irq_stack.h
-@@ -6,6 +6,8 @@
- 
- #include <asm/processor.h>
- 
-+typedef void (*irq_func_t)(struct pt_regs *regs, u32 arg);
-+
- #ifdef CONFIG_X86_64
- 
- /*
-@@ -132,7 +134,7 @@
- }
- 
- /*
-- * Function call sequence for __call_on_irqstack() for system vectors.
-+ * Function call sequence for __call_on_irqstack() for irqs and system vectors.
-  *
-  * Note that irq_enter_rcu() and irq_exit_rcu() do not use the input
-  * mechanism because these functions are global and cannot be optimized out
-@@ -145,27 +147,6 @@
-  * call to idtentry_exit() anyway, it's likely that it does not cause extra
-  * effort for this asm magic.
-  */
--#define ASM_CALL_SYSVEC							\
--	"call irq_enter_rcu				\n"		\
--	"movq	%[arg1], %%rdi				\n"		\
--	"call %P[__func]				\n"		\
--	"call irq_exit_rcu				\n"
--
--#define SYSVEC_CONSTRAINTS	, [arg1] "r" (regs)
--
--#define run_sysvec_on_irqstack_cond(func, regs)				\
--{									\
--	assert_function_type(func, void (*)(struct pt_regs *));		\
--	assert_arg_type(regs, struct pt_regs *);			\
--									\
--	call_on_irqstack_cond(func, regs, ASM_CALL_SYSVEC,		\
--			      SYSVEC_CONSTRAINTS, regs);		\
--}
--
--/*
-- * As in ASM_CALL_SYSVEC above the clobbers force the compiler to store
-- * @regs and @vector in callee saved registers.
-- */
- #define ASM_CALL_IRQ							\
- 	"call irq_enter_rcu				\n"		\
- 	"movq	%[arg1], %%rdi				\n"		\
-@@ -173,16 +154,13 @@
- 	"call %P[__func]				\n"		\
- 	"call irq_exit_rcu				\n"
- 
--#define IRQ_CONSTRAINTS	, [arg1] "r" (regs), [arg2] "r" (vector)
-+#define IRQ_CONSTRAINTS	, [arg1] "r" (regs), [arg2] "r" (arg)
- 
--#define run_irq_on_irqstack_cond(func, regs, vector)			\
--{									\
--	assert_function_type(func, void (*)(struct pt_regs *, u32));	\
--	assert_arg_type(regs, struct pt_regs *);			\
--	assert_arg_type(vector, u32);					\
--									\
--	call_on_irqstack_cond(func, regs, ASM_CALL_IRQ,			\
--			      IRQ_CONSTRAINTS, regs, vector);		\
-+static __always_inline void
-+run_on_irqstack_cond(irq_func_t func, struct pt_regs *regs, u32 arg)
-+{
-+	call_on_irqstack_cond(func, regs, ASM_CALL_IRQ,
-+			      IRQ_CONSTRAINTS, regs, arg);
- }
- 
- #define ASM_CALL_SOFTIRQ						\
-@@ -194,28 +172,25 @@
-  * interrupts are pending to be processed. The interrupt stack cannot be in
-  * use here.
-  */
--#define do_softirq_own_stack()						\
--{									\
--	__this_cpu_write(hardirq_stack_inuse, true);			\
--	call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);		\
--	__this_cpu_write(hardirq_stack_inuse, false);			\
-+static __always_inline void do_softirq_own_stack(void)
-+{
-+	__this_cpu_write(hardirq_stack_inuse, true);
-+	call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);
-+	__this_cpu_write(hardirq_stack_inuse, false);
- }
- 
- #else /* CONFIG_X86_64 */
--/* System vector handlers always run on the stack they interrupted. */
--#define run_sysvec_on_irqstack_cond(func, regs)				\
--{									\
--	irq_enter_rcu();						\
--	func(regs);							\
--	irq_exit_rcu();							\
--}
- 
--/* Switches to the irq stack within func() */
--#define run_irq_on_irqstack_cond(func, regs, vector)			\
--{									\
--	irq_enter_rcu();						\
--	func(regs, vector);						\
--	irq_exit_rcu();							\
-+/*
-+ * System vector handlers always run on the stack they interrupted;
-+ * irqs switch to the irq stack within func().
-+ */
-+static __always_inline void
-+run_on_irqstack_cond(irq_func_t func, struct pt_regs *regs, u32 arg)
-+{
-+	irq_enter_rcu();
-+	func(regs, arg);
-+	irq_exit_rcu();
- }
- 
- #endif /* !CONFIG_X86_64 */
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 4a39fb429f15..64832869e1a1 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2188,7 +2188,7 @@ static noinline void handle_spurious_interrupt(u8 vector)
-  */
- DEFINE_IDTENTRY_IRQ(spurious_interrupt)
- {
--	handle_spurious_interrupt(vector);
-+	handle_spurious_interrupt((u8)error_code);
- }
- 
- DEFINE_IDTENTRY_SYSVEC(sysvec_spurious_apic_interrupt)
-diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-index e28f6a5d14f1..27994818d9b1 100644
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -239,6 +239,7 @@ static __always_inline void handle_irq(struct irq_desc *desc,
-  */
- DEFINE_IDTENTRY_IRQ(common_interrupt)
- {
-+	const u8 vector = error_code;
- 	struct pt_regs *old_regs = set_irq_regs(regs);
- 	struct irq_desc *desc;
- 
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 73873b007838..bdd75b71d0f3 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -1335,15 +1335,15 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
- 		vc_finish_insn(&ctxt);
- 		break;
- 	case ES_UNSUPPORTED:
--		pr_err_ratelimited("Unsupported exit-code 0x%02lx in early #VC exception (IP: 0x%lx)\n",
-+		pr_err_ratelimited("Unsupported exit-code 0x%02x in early #VC exception (IP: 0x%lx)\n",
- 				   error_code, regs->ip);
- 		goto fail;
- 	case ES_VMM_ERROR:
--		pr_err_ratelimited("Failure in communication with VMM (exit-code 0x%02lx IP: 0x%lx)\n",
-+		pr_err_ratelimited("Failure in communication with VMM (exit-code 0x%02x IP: 0x%lx)\n",
- 				   error_code, regs->ip);
- 		goto fail;
- 	case ES_DECODE_FAILED:
--		pr_err_ratelimited("Failed to decode instruction (exit-code 0x%02lx IP: 0x%lx)\n",
-+		pr_err_ratelimited("Failed to decode instruction (exit-code 0x%02x IP: 0x%lx)\n",
- 				   error_code, regs->ip);
- 		goto fail;
- 	case ES_EXCEPTION:
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 853ea7a80806..f5aecbb44bc7 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -461,7 +461,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
- 	}
- #endif
- 
--	pr_emerg("PANIC: double fault, error_code: 0x%lx\n", error_code);
-+	pr_emerg("PANIC: double fault, error_code: 0x%x\n", error_code);
- 	die("double fault", regs, error_code);
- 	panic("Machine halted.");
- 	instrumentation_end();
--- 
-2.31.1
-
+>  {
+>  	int start = 0, end = slots->used_slots;
+>  	int slot = atomic_read(&slots->lru_slot);
+> @@ -1116,19 +1120,22 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn)
+>  			start = slot + 1;
+>  	}
+>  
+> +	if (approx && start >= slots->used_slots)
+> +		return &memslots[slots->used_slots - 1];
+> +
+>  	if (start < slots->used_slots && gfn >= memslots[start].base_gfn &&
+>  	    gfn < memslots[start].base_gfn + memslots[start].npages) {
+>  		atomic_set(&slots->lru_slot, start);
+>  		return &memslots[start];
+>  	}
+>  
+> -	return NULL;
+> +	return approx ? &memslots[start] : NULL;
+>  }
+>  
+>  static inline struct kvm_memory_slot *
+>  __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+>  {
+> -	return search_memslots(slots, gfn);
+> +	return search_memslots(slots, gfn, false);
+>  }
+>  
+>  static inline unsigned long
