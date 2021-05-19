@@ -2,26 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA0D388814
+	by mail.lfdr.de (Postfix) with ESMTP id 652AA388815
 	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239871AbhESHXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:23:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39348 "EHLO mx2.suse.de"
+        id S239996AbhESHXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:23:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39364 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237490AbhESHXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237886AbhESHXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 03:23:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B7B22AFEF;
-        Wed, 19 May 2021 07:21:54 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 010FFAF06;
+        Wed, 19 May 2021 07:21:55 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 2/4] tty/serial: make port of serial8250_register_8250_port const
-Date:   Wed, 19 May 2021 09:21:51 +0200
-Message-Id: <20210519072153.3859-2-jslaby@suse.cz>
+        Jiri Slaby <jslaby@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 3/4] tty: fix kernel-doc for tty_{read,write}
+Date:   Wed, 19 May 2021 09:21:52 +0200
+Message-Id: <20210519072153.3859-3-jslaby@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210519072153.3859-1-jslaby@suse.cz>
 References: <20210519072153.3859-1-jslaby@suse.cz>
@@ -31,51 +32,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the previous patch, we can make port passed to
-serial8250_find_match_or_unused const. And then we can make const also
-port of serial8250_register_8250_port.
+After commits a9cbbb80e3e7 (tty: avoid using vfs_iocb_iter_write() for
+redirected console writes) and dd78b0c483e3 (tty: implement read_iter),
+the tty_read and tty_write kernel-doc comments don't match the code:
+ tty_io.c:931: warning: Function parameter or member 'iocb' not described in 'tty_read'
+ tty_io.c:931: warning: Function parameter or member 'to' not described in 'tty_read'
+ tty_io.c:931: warning: Excess function parameter 'file' description in 'tty_read'
+ tty_io.c:931: warning: Excess function parameter 'buf' description in 'tty_read'
+ tty_io.c:931: warning: Excess function parameter 'count' description in 'tty_read'
+ tty_io.c:931: warning: Excess function parameter 'ppos' description in 'tty_read'
+ tty_io.c:1115: warning: Function parameter or member 'iocb' not described in 'file_tty_write'
+ tty_io.c:1115: warning: Function parameter or member 'from' not described in 'file_tty_write'
+ tty_io.c:1115: warning: expecting prototype for tty_write(). Prototype was for file_tty_write() instead
+
+Fix them to correspond the reality, i.e. the switch from read/write to
+read_iter/write_iter.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- drivers/tty/serial/8250/8250_core.c | 4 ++--
- include/linux/serial_8250.h         | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/tty/tty_io.c | 37 ++++++++++++++++---------------------
+ 1 file changed, 16 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
-index 1082e76c4d37..1ce193daea7f 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -906,7 +906,7 @@ static struct platform_device *serial8250_isa_devs;
-  */
- static DEFINE_MUTEX(serial_mutex);
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 8f9e89715a68..ad64232cecae 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -911,10 +911,8 @@ static int iterate_tty_read(struct tty_ldisc *ld, struct tty_struct *tty,
  
--static struct uart_8250_port *serial8250_find_match_or_unused(struct uart_port *port)
-+static struct uart_8250_port *serial8250_find_match_or_unused(const struct uart_port *port)
- {
- 	int i;
- 
-@@ -971,7 +971,7 @@ static void serial_8250_overrun_backoff_work(struct work_struct *work)
+ /**
+  *	tty_read	-	read method for tty device files
+- *	@file: pointer to tty file
+- *	@buf: user buffer
+- *	@count: size of user buffer
+- *	@ppos: unused
++ *	@iocb: kernel I/O control block
++ *	@to: destination for the data read
   *
-  *	On success the port is ready to use and the line number is returned.
-  */
--int serial8250_register_8250_port(struct uart_8250_port *up)
-+int serial8250_register_8250_port(const struct uart_8250_port *up)
- {
- 	struct uart_8250_port *uart;
- 	int ret = -ENOSPC;
-diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
-index 9e655055112d..5db211f43b29 100644
---- a/include/linux/serial_8250.h
-+++ b/include/linux/serial_8250.h
-@@ -146,7 +146,7 @@ static inline struct uart_8250_port *up_to_u8250p(struct uart_port *up)
- 	return container_of(up, struct uart_8250_port, port);
+  *	Perform the read system call function on this terminal device. Checks
+  *	for hung up devices before calling the line discipline method.
+@@ -1092,23 +1090,6 @@ void tty_write_message(struct tty_struct *tty, char *msg)
+ 	}
  }
  
--int serial8250_register_8250_port(struct uart_8250_port *);
-+int serial8250_register_8250_port(const struct uart_8250_port *);
- void serial8250_unregister_port(int line);
- void serial8250_suspend_port(int line);
- void serial8250_resume_port(int line);
+-
+-/**
+- *	tty_write		-	write method for tty device file
+- *	@file: tty file pointer
+- *	@buf: user data to write
+- *	@count: bytes to write
+- *	@ppos: unused
+- *
+- *	Write data to a tty device via the line discipline.
+- *
+- *	Locking:
+- *		Locks the line discipline as required
+- *		Writes to the tty driver are serialized by the atomic_write_lock
+- *	and are then processed in chunks to the device. The line discipline
+- *	write method will not be invoked in parallel for each device.
+- */
+-
+ static ssize_t file_tty_write(struct file *file, struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	struct tty_struct *tty = file_tty(file);
+@@ -1133,6 +1114,20 @@ static ssize_t file_tty_write(struct file *file, struct kiocb *iocb, struct iov_
+ 	return ret;
+ }
+ 
++/**
++ *	tty_write		-	write method for tty device file
++ *	@iocb: kernel I/O control block
++ *	@from: iov_iter with data to write
++ *
++ *	Write data to a tty device via the line discipline.
++ *
++ *	Locking:
++ *		Locks the line discipline as required
++ *		Writes to the tty driver are serialized by the atomic_write_lock
++ *		and are then processed in chunks to the device. The line
++ *		discipline write method will not be invoked in parallel for
++ *		each device.
++ */
+ static ssize_t tty_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	return file_tty_write(iocb->ki_filp, iocb, from);
 -- 
 2.31.1
 
