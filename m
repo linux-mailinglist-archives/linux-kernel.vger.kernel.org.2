@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15699388659
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3A4388666
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243640AbhESFG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:06:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
+        id S241162AbhESFHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232842AbhESFGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:06:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D0E6135B;
-        Wed, 19 May 2021 05:05:02 +0000 (UTC)
+        id S239033AbhESFHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 01:07:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28B416135B;
+        Wed, 19 May 2021 05:06:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621400703;
-        bh=wYYX9ZqE8MzuuAZRGsD7NWSnysXuKB8JlIKz2SrZG7Y=;
+        s=korg; t=1621400775;
+        bh=FeabjgYqNybppZqqnzHbLi82CaLWP46ifWGb6yUuS6Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jDTLUdYDPOqGsBMcGlgqJPnqMyaL+6ZyGBbXTrwd5gxKE34zpNCuAW3q48aS8oBCE
-         jVXiydajtZ29294JvxkwdUKOzRZV+CreV+bh8Sqqf2YYgUivccXwr1eshu/5M54dld
-         n7oqYbFPbYfTTEIoA6QBTEOQTIwmguh/aG6WnvO0=
-Date:   Wed, 19 May 2021 07:05:00 +0200
+        b=owPRJ8NF3nHj+plPrk07gzFM0TqfRSAX/C21sBfQaEsGWKPfAmgq01nAg0+YWc/rZ
+         jTHUKzHktSI8QizOIRUM0SI/0g42/d0kjkZm82PbkIVaRJhTEJdR3rCWMKUpJd6egv
+         Mfkx5JZhGZG+rlzToHPJsE/j+hv1FgEFb44vtdtE=
+Date:   Wed, 19 May 2021 07:06:11 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jeff Johnson <jjohnson@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jjohnson=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH v2] b43: don't save dentries for debugfs
-Message-ID: <YKScfFKhxtVqfRkt@kroah.com>
-References: <20210518163304.3702015-1-gregkh@linuxfoundation.org>
- <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
- <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v10 2/5] USB: misc: Add onboard_usb_hub driver
+Message-ID: <YKScw3zcnTV5AAA1@kroah.com>
+References: <20210511225223.550762-1-mka@chromium.org>
+ <20210511155152.v10.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <YKPz7a68duMyXU5x@google.com>
+ <20210518194511.GA1137841@rowland.harvard.edu>
+ <YKQ0XxhIWaN37HMr@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
+In-Reply-To: <YKQ0XxhIWaN37HMr@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 03:00:44PM -0700, Jeff Johnson wrote:
-> On 2021-05-18 12:29, Jeff Johnson wrote:
-> > On 2021-05-18 09:33, Greg Kroah-Hartman wrote:
-> > > There is no need to keep around the dentry pointers for the debugfs
-> > > files as they will all be automatically removed when the subdir is
-> > > removed.  So save the space and logic involved in keeping them
-> > > around by
-> > > just getting rid of them entirely.
+On Tue, May 18, 2021 at 02:40:47PM -0700, Matthias Kaehlcke wrote:
+> On Tue, May 18, 2021 at 03:45:11PM -0400, Alan Stern wrote:
+> > On Tue, May 18, 2021 at 10:05:49AM -0700, Matthias Kaehlcke wrote:
+> > > Hi Alan,
 > > > 
-> > > By doing this change, we remove one of the last in-kernel user that
-> > > was
-> > > storing the result of debugfs_create_bool(), so that api can be
-> > > cleaned
-> > > up.
+> > > You seemed to have a generally favorable view of this driver,
+> > > but I haven't heard from you in a while :)
+> > > 
+> > > On v4 expressed a series of suggestions and concerns, which
+> > > should be addressed in this version:
+> > > 
+> > > https://lore.kernel.org/patchwork/patch/1313000/
+> > > https://lore.kernel.org/patchwork/patch/1313001/
+> > > 
+> > > Rob acked the DT binding and the of_platform change. Please let me
+> > > know if the USB part needs any further changes or if you think this
+> > > series is ready to land.
 > > 
-> > Question not about this specific change, but the general concept
-> > of keeping (or not keeping) dentry pointers. In the ath drivers,
-> > as well as in an out-of-tree driver for Android, we keep a
-> > debugfs dentry pointer to use as a param to relay_open().
+> > Those were long and complicated threads, and a lot of the material has
+> > gone out of my brain since last October.  :-(
 > > 
-> > Will we still be able to have a dentry pointer for this purpose?
-> > Or better, is there a recommended way to get a dentry pointer
-> > NOT associated with debugfs at all (which would be ideal for
-> > Android where debugfs is disabled).
+> > Still, at the time when this was first posted I don't remember there
+> > being any big outstanding issues regarding the USB part of the
+> > implementation.  It seemed to be pretty much all in order.
+> > 
+> > You can add:
+> > 
+> > Acked-by: Alan Stern <stern@rowland.harvard.edu>
+> > 
+> > to this patch.  Greg KH may have some thoughts of his own...
 > 
-> Answering one of my questions: The dentry passed to relay_open() comes
-> from debugfs_create_dir() which is expected to return a dentry.
+> Thanks!
 > 
-> Would still like guidance on if there is a recommended way to get a
-> dentry not associated with debugfs.
+> Could you also have a look at "[4/5] usb: host: xhci-plat:
+> Create platform device for onboard hubs in probe()"
+> (https://lore.kernel.org/patchwork/patch/1425453/)? It's a
+> relatively short patch that creates the platform device for
+> the driver from xhci-plat as you suggested in the v4
+> discussion.
+> 
+> Greg, are there any more concerns from your side?
 
-What do you exactly mean by "not associated with debugfs"?
-
-And why are you passing a debugfs dentry to relay_open()?  That feels
-really wrong and fragile.
-
-Ideally I want to get rid of the "raw" dentry that debugfs returns to
-callers, as it has caused odd problems in the past, but that's a very
-long-term project...
-
-thanks,
+Yes, I think there are, but like Alan said, it's been a long time since
+I've looked at this.  I'll review it soon when I get a chance...
 
 greg k-h
