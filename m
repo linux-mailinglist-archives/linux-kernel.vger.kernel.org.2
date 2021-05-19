@@ -2,160 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEF9388E52
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F6C388E55
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353456AbhESMqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237386AbhESMqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:46:52 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03740C06175F;
-        Wed, 19 May 2021 05:45:33 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id g38so17845412ybi.12;
-        Wed, 19 May 2021 05:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jtt1n0eLEl1LiBWRCYz9qpVqUohhN38baHabydz3ycA=;
-        b=NEnDsXCtA1Q9wuBI9XmJzViOobsr3kWfvewlt3fs1skzH1I2LWqW5vPgJNGukWOSnf
-         Jsjz4pmKgAegaSN3iuTLyOQo4XpmEakW0Z/rMqgUYMkHRsOuivqr+xCdYUMA98KO8QMa
-         uQudefXAZw03lyObXywpGpAbOxZXHO4/aldF9qCMQsPMKMHx0aDh3g3QwB+/GCDndUTD
-         n7vIMexAqOffcxD9oSnFV5AGoDoBrjevwa4rTgYXR2UtCY2a2ue52/7wNYvoH6eHjhGS
-         3FOWkdgQPJ9ZnH426Z39D2aunf5XAYK2CUrxiqVlqYbY3/RmWWlR1oEIZwLyYEVY7tV0
-         vCzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jtt1n0eLEl1LiBWRCYz9qpVqUohhN38baHabydz3ycA=;
-        b=ewHoGOtfr5T9sx+7hRhvaI0vs2cuGz9DafKT1HVLgtwzOaWaD8i8tdz2dH8SqBPsxK
-         Kh1e2DtQj5wKyFDVHpZGWpGnt1pqgXDU29wEWjR+O0bgHfjaTp566OgBqTjB5AUF+nF2
-         9m/UUKddoLLEtyCvDSrnU9l89TDrx/CJUKChB8Osx7YJ4ZzcQNsD9/wOoS8P9dkCI0Pu
-         IM2g6RUhBjhuZUPnDUsy28SVAekpVtvTpBWMn91x1YKe9040iVoSS/o/RHoTO2fWEmyK
-         AeNi3O8yND27lPMejF1DRlCbBWyLCNML13MMuwcCLCYKyFvtF1UesZ0EiMynS+Ee/dmv
-         UkfQ==
-X-Gm-Message-State: AOAM530u2Yf1xjxPTMxRm7C7DNxiAIWCwJhLM/3SATzc5ToH7QDi8nYf
-        iB8pPMBDEcyhSj+BAEBcsxFGQ4utAskrcCWWGNM=
-X-Google-Smtp-Source: ABdhPJwMPTCVxlE6gNu2UuKI2B+TaQHhVUaLrY8DYMRGX/iv5HI7su7W5ZPqm8e85CihgSH4tsd9j1Y2SDbOIfNw+PM=
-X-Received: by 2002:a25:1009:: with SMTP id 9mr14973539ybq.386.1621428332190;
- Wed, 19 May 2021 05:45:32 -0700 (PDT)
+        id S1353453AbhESMrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:47:42 -0400
+Received: from mail-co1nam11on2046.outbound.protection.outlook.com ([40.107.220.46]:30627
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233234AbhESMrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 08:47:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N2dXzSSROVBGf/gg5PdP2aR16Jlg4O0Z0idlkLpS7uiEZbjYc5ugk/A5NdgpKrb0PShgywQUIzGgpppYqx9ud0itYos6PnfRNAshfOIsN8MEZ80P7e577X5in1IEdfFdp/4g0GW9z0vfkGZl3kdOiwECr7kv7LSQR4C9qiMFcOodOpf8a7DwhE5iLEUSLdMXj3lmfJCvAYM6ecxN6kiyMPhSplwmXihob/JJB+uIo3Nr146DBrs1bSLMVhhYrfHDuLQonJ0kzVwkc1DH0C2FVRV33GqbiCdhyCXOqhK6u3qup63jx/a3gNPJV1YR39fy27/DQ1wvttwLRYcGwTITDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MFlxzPp4ZOoISWgFQEuzCfaawnMOi6RRAwx/58uZYco=;
+ b=SEyZrZ0MiWMHKtk2XGA+Noi6EDkrbZJ3/dR1T8FZNK/C/X36kh5fnrl3L1B7MGWxxoi4o2iEYnh+QTWy59XWeHLWXTe/vgz/Op09xMEo44pQXSNhxafwn0qzaFjNvZjTpZxt5qSUqmJQb3C9gUXd+fRIxY52tLWzYtXYjDT7m3A9CzR7yjYhU66tzOeoeVaSdnMySf849o04jo0uAydZYFOERa3hs2BpyGlESfdoKghabNV6OecpdpCkXyvsP9yoGK5FoSUQEZ41WiTI9MpmiZAUV5AaGD1Kf3oh+w6l3rVRI69E8bbfd9PdwjCAkoVG0NOUjDaOVz/l3u7bUCY30Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MFlxzPp4ZOoISWgFQEuzCfaawnMOi6RRAwx/58uZYco=;
+ b=QZVBYI+1AqekfNkdMsZqqMrGTHMzgzZ7GTFtlADgZPoCqWdtV5siZWDER34MrjYrsL8Y3XpibRxWBPUMCXfY991je2+c80zl8GudA8Reg3LnnpwuB/DDScgkTvKd4f6S9O4S3AfZNIIvPMADQB5/6HUxf+FlOcrQMTDdg30xH6kbzOEip9z64YpyUMT0pj527PHSAVIU8PckZ8wJ+msBXJgN1wAARUB2kDAxkauQuBz04esmtoEO654ARVwNBEmrjfcHt0m0JR/oUUqaK+1Z8vkirUFJ48jrX/4gdt3pjOE89SVedLkoDviXOoakbkJL66OOP8d/a7WfwjDCtdlRDg==
+Received: from DM3PR14CA0145.namprd14.prod.outlook.com (2603:10b6:0:53::29) by
+ SA0PR12MB4382.namprd12.prod.outlook.com (2603:10b6:806:9a::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.25; Wed, 19 May 2021 12:46:20 +0000
+Received: from DM6NAM11FT016.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:0:53:cafe::d4) by DM3PR14CA0145.outlook.office365.com
+ (2603:10b6:0:53::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.32 via Frontend
+ Transport; Wed, 19 May 2021 12:46:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT016.mail.protection.outlook.com (10.13.173.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Wed, 19 May 2021 12:46:19 +0000
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
+ 2021 12:46:16 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
+        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <jgg@nvidia.com>,
+        <hch@infradead.org>, <daniel@ffwll.ch>, <willy@infradead.org>,
+        <bsingharora@gmail.com>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
+Date:   Wed, 19 May 2021 22:46:14 +1000
+Message-ID: <1911213.F1gzGJjR86@nvdebian>
+In-Reply-To: <YKUDe8Oe4Y+q5Kxx@t490s>
+References: <20210407084238.20443-1-apopple@nvidia.com> <3859486.fHISG1RMxY@nvdebian> <YKUDe8Oe4Y+q5Kxx@t490s>
 MIME-Version: 1.0
-References: <20210511214605.2937099-1-pgwipeout@gmail.com> <YKOB7y/9IptUvo4k@unreal>
- <CAMdYzYrV0T9H1soxSVpQv=jLCR9k9tuJddo1Kw-c3O5GJvg92A@mail.gmail.com>
- <YKTJwscaV1WaK98z@unreal> <cbfecaf2-2991-c79e-ba80-c805d119ac2f@gmail.com> <YKT7bLjzucl/QEo2@unreal>
-In-Reply-To: <YKT7bLjzucl/QEo2@unreal>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 19 May 2021 08:45:21 -0400
-Message-ID: <CAMdYzYpVYuNuYgZp-sNj4QFbgHH+SoFpffbdCNJST2_KZEhSug@mail.gmail.com>
-Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e6eac1a6-cfdf-4c69-cfc9-08d91ac419cf
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4382:
+X-Microsoft-Antispam-PRVS: <SA0PR12MB43821969C28B5B87FCB826B5DF2B9@SA0PR12MB4382.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B8iYKs6BI2yFSmgCpFM/li4zMKsvlxf+M4oqUXkoucxT1CRL7zY/dn8v7Br2aFGbcVJEqWazOH3w2hgsHRMtpyJUfdv8n8XsDD5D2jbPcvcGAAjAq7N9KhfL5GoibgNXCAsULW9Fpvch/b965Wzxxg6a/gnDUxZJ06dr6YPAXoUTZG5aj1+VnmClVK6rtsDDHGENzssTopER2o8dHhqCfAVC0+H+V6juw0YavEomlSpKQZXDZ5SUyH//g+nz7cGOMTBO0VFkuC+7hg4eHhCvc8m+B+ZQSzB3Q58lSJgbuBgHQZTtAQ468AmSs93ib0hrVgQoTSvBVaAzNg+BJcF46CXvBYhzWts4H5NqTug+bxnTf+2J/X1tqIjXicl8IU+8KKpS33CZw2xDqVP1+O16e440VDs6/6MnrVD53PXaIx0TarDqV+7fd7JJ/fZTCpQuxOP67wkDb8tfqr6Itfkjc3ReiBZzSN59x6d2TYQOIKZRI3pM3bhRyWEr+bWmPP9ANzTzUj3juKhnbEA4VRc+4nVxzxv+MXrSICUCBr5JY+mvhcvhLeGrKFiaMnDz+bXodWKju8ToxsrJeUdPI8adfWIW8LFd24553TdrA01mPyNkEuR4T2KuDlWbhkYjcVmMhknyZH2XQ3CwZhnsxsMAEuRe03Z6Q0o2Woye1c0r6CsmP4KJmxpzy19EdI2ahwLKD1WzgJa2xKKxrFFD+Sd3pf/MBfDetqFDSe7zJMZn8FdN9Fxoi11ykU6wlt//eZNhEdJK8PaVeDOCXFV/Tkqffu54a6ZGIBCcdsuugDYFyXeB2+29vzf3Dv7pmQD01ffy
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(396003)(46966006)(36840700001)(70206006)(9576002)(16526019)(83380400001)(316002)(478600001)(8676002)(9686003)(186003)(5660300002)(4326008)(6916009)(70586007)(36906005)(82740400003)(426003)(7416002)(82310400003)(336012)(86362001)(8936002)(54906003)(966005)(7636003)(356005)(2906002)(36860700001)(26005)(47076005)(33716001)(39026012)(60764002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 12:46:19.7438
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6eac1a6-cfdf-4c69-cfc9-08d91ac419cf
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT016.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4382
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 7:50 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, May 19, 2021 at 12:37:43PM +0200, Heiner Kallweit wrote:
-> > On 19.05.2021 10:18, Leon Romanovsky wrote:
-> > > On Tue, May 18, 2021 at 08:20:03PM -0400, Peter Geis wrote:
-> > >> On Tue, May 18, 2021 at 4:59 AM Leon Romanovsky <leon@kernel.org> wr=
-ote:
-> > >>>
-> > >>> On Tue, May 11, 2021 at 05:46:06PM -0400, Peter Geis wrote:
-> > >>>> Add a driver for the Motorcomm yt8511 phy that will be used in the
-> > >>>> production Pine64 rk3566-quartz64 development board.
-> > >>>> It supports gigabit transfer speeds, rgmii, and 125mhz clk output.
-> > >>>>
-> > >>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> > >>>> ---
-> > >>>>  MAINTAINERS                 |  6 +++
-> > >>>>  drivers/net/phy/Kconfig     |  6 +++
-> > >>>>  drivers/net/phy/Makefile    |  1 +
-> > >>>>  drivers/net/phy/motorcomm.c | 85 ++++++++++++++++++++++++++++++++=
-+++++
-> > >>>>  4 files changed, 98 insertions(+)
-> > >>>>  create mode 100644 drivers/net/phy/motorcomm.c
-> > >>>
-> > >>> <...>
-> > >>>
-> > >>>> +static const struct mdio_device_id __maybe_unused motorcomm_tbl[]=
- =3D {
-> > >>>> +     { PHY_ID_MATCH_EXACT(PHY_ID_YT8511) },
-> > >>>> +     { /* sentinal */ }
-> > >>>> +}
-> > >>>
-> > >>> Why is this "__maybe_unused"? This *.c file doesn't have any compil=
-ation option
-> > >>> to compile part of it.
-> > >>>
-> > >>> The "__maybe_unused" is not needed in this case.
-> > >>
-> > >> I was simply following convention, for example the realtek.c,
-> > >> micrel.c, and smsc.c drivers all have this as well.
-> > >
-> > > Maybe they have a reason, but this specific driver doesn't have such.
-> > >
-> >
-> > It's used like this:
-> > MODULE_DEVICE_TABLE(mdio, <mdio_device_id_tbl>);
-> >
-> > And MODULE_DEVICE_TABLE is a no-op if MODULE isn't defined:
-> >
-> > #ifdef MODULE
-> > /* Creates an alias so file2alias.c can find device table. */
-> > #define MODULE_DEVICE_TABLE(type, name)                                =
-       \
-> > extern typeof(name) __mod_##type##__##name##_device_table             \
-> >   __attribute__ ((unused, alias(__stringify(name))))
-> > #else  /* !MODULE */
-> > #define MODULE_DEVICE_TABLE(type, name)
-> > #endif
-> >
-> > In this case the table is unused.
->
-> Do you see compilation warning for such scenario?
+On Wednesday, 19 May 2021 10:24:27 PM AEST Peter Xu wrote:
+> External email: Use caution opening links or attachments
+> 
+> On Wed, May 19, 2021 at 08:49:01PM +1000, Alistair Popple wrote:
+> > On Wednesday, 19 May 2021 7:16:38 AM AEST Peter Xu wrote:
+> > > External email: Use caution opening links or attachments
+> > > 
+> > > 
+> > > On Wed, Apr 07, 2021 at 06:42:35PM +1000, Alistair Popple wrote:
+> > > 
+> > > [...]
+> > > 
+> > > > +static bool try_to_protect(struct page *page, struct mm_struct *mm,
+> > > > +                        unsigned long address, void *arg)
+> > > > +{
+> > > > +     struct ttp_args ttp = {
+> > > > +             .mm = mm,
+> > > > +             .address = address,
+> > > > +             .arg = arg,
+> > > > +             .valid = false,
+> > > > +     };
+> > > > +     struct rmap_walk_control rwc = {
+> > > > +             .rmap_one = try_to_protect_one,
+> > > > +             .done = page_not_mapped,
+> > > > +             .anon_lock = page_lock_anon_vma_read,
+> > > > +             .arg = &ttp,
+> > > > +     };
+> > > > +
+> > > > +     /*
+> > > > +      * Restrict to anonymous pages for now to avoid potential
+> > > > writeback
+> > > > +      * issues.
+> > > > +      */
+> > > > +     if (!PageAnon(page))
+> > > > +             return false;
+> > > > +
+> > > > +     /*
+> > > > +      * During exec, a temporary VMA is setup and later moved.
+> > > > +      * The VMA is moved under the anon_vma lock but not the
+> > > > +      * page tables leading to a race where migration cannot
+> > > > +      * find the migration ptes. Rather than increasing the
+> > > > +      * locking requirements of exec(), migration skips
+> > > > +      * temporary VMAs until after exec() completes.
+> > > > +      */
+> > > > +     if (!PageKsm(page) && PageAnon(page))
+> > > > +             rwc.invalid_vma = invalid_migration_vma;
+> > > > +
+> > > > +     rmap_walk(page, &rwc);
+> > > > +
+> > > > +     return ttp.valid && !page_mapcount(page);
+> > > > +}
+> > > 
+> > > I raised a question in the other thread regarding fork():
+> > > 
+> > > https://lore.kernel.org/lkml/YKQjmtMo+YQGx%2FwZ@t490s/
+> > > 
+> > > While I suddenly noticed that we may have similar issues even if we
+> > > fork()
+> > > before creating the ptes.
+> > > 
+> > > In that case, we may see multiple read-only ptes pointing to the same
+> > > page.
+> > > We will convert all of them into device exclusive read ptes in
+> > > rmap_walk()
+> > > above, however how do we guarantee after all COW done in the parent and
+> > > all
+> > > the childs processes, the device owned page will be returned to the
+> > > parent?
+> > 
+> > I assume you are talking about a fork() followed by a call to
+> > make_device_exclusive()? I think this should be ok because
+> > make_device_exclusive() always calls GUP with FOLL_WRITE both to break COW
+> > and because a device performing atomic operations needs to write to the
+> > page. I suppose a comment here highlighting the need to break COW to
+> > avoid this scenario would be useful though.
+> 
+> Indeed, sorry for the false alarm!  Yes it would be great to mention that
+> too.
 
-The issue you are describing has been fixed since 2010:
+No problem! Thanks for the comments.
 
-commit cf93c94581bab447a5634c6d737c1cf38c080261
-Author: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Date:   Sun Oct 3 23:43:32 2010 +0000
+> --
+> Peter Xu
 
-    net/phy: fix many "defined but unused" warnings
 
-    MODULE_DEVICE_TABLE only expands to something if it's compiled
-    for a module.  So when building-in support for the phys, the
-    mdio_device_id tables are unused.  Marking them with __maybe_unused
-    fixes the following warnings:
 
-There is a strong push to fix all warnings during build, including W=3D1 wa=
-rnings.
-For fun I rebuilt without module support and confirmed that removing
-this does trigger a W=3D1 warning.
 
->
-> Thanks
->
-> >
-> > > Thanks
-> > >
-> > >>
-> > >>>
-> > >>> Thanks
-> >
-> >
