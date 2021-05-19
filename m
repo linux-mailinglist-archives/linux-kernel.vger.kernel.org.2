@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434743894B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB1F3894C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhESRjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 13:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        id S229981AbhESRnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 13:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhESRjl (ORCPT
+        with ESMTP id S229845AbhESRnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 13:39:41 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD80C06175F;
-        Wed, 19 May 2021 10:38:21 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id e15so3428125ybc.10;
-        Wed, 19 May 2021 10:38:21 -0700 (PDT)
+        Wed, 19 May 2021 13:43:18 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83EBC06175F;
+        Wed, 19 May 2021 10:41:57 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id k127so13533174qkc.6;
+        Wed, 19 May 2021 10:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZF+ogBr+ZoCho+MfyFNrLvpNXGoVZjnSZVtBK1HfLnM=;
-        b=Jnl84FYP+jD+w4a1tDV6jB4ZB1sMq+d68AU+urNjDaofLORd3JfBPndb3H92oSxbwQ
-         bMyfZck42SW0NmelcxtD8I3FqCfLYOiOQX05uLyfMQ45qrjvI4qY0qdTJOC0n2PKnULW
-         qz22nhb+dPtZfZNUVjSegnHk533W0MK4yY45P90uj7JXAJ8bOr/yfHw0ymfn2Hu3ui1s
-         hMPCZn3VvyCRBi5EoK1tDiLIDSHiuW3vVvqdJ1QFVvbamuuJEhjYoXeOeKc3m1yz/RoW
-         MoGUQtbmU5yR9LLrXcnwG6ytJ1IUHNWO+a8HJex9Trpwa3jJl4ziDDorIAPIfW2GHssW
-         9lxQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UMV7QsTgPPQWeHZACgAJTLak2uBSFbgGNVbitXpkumY=;
+        b=CTMANwDtXaZ5Sx/ObdGSKt93E1OgGIain6uNRfKCke4FfgEHk2C+3N09zLtXCVtCT5
+         BNts0q2AQgbzRAiCb/yXEL4F6I/lCAidlFy9C4F+tskJRyp2if/dlU+XU+raP+NSN5b2
+         AV1XOOLuMfUzBAsxqbzr5no9uK6oeyjmNuR7oJjgTcOmcmWkNZpD43ITieb95h+t/FZs
+         xsIyes6D2gULmM7mBwVrIDKxQFXtOIf4s+6gDP4CxOUVYii2T+BvKtCfe+mleREsk80k
+         zQOEI50CfXPhC0wH/efwblMLpPXBYN99p+2I/qJo6nRkmpxAZ3c/eFYfi8MinFPCqXHh
+         KQpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZF+ogBr+ZoCho+MfyFNrLvpNXGoVZjnSZVtBK1HfLnM=;
-        b=hWnjodh//AqBzhEPFpYxbLFY6loTlWIIaqMT3X2Co8vAO7Yfxw94iGNxKxqkwAPgrh
-         IDJm3ezR8iuQh978dD++1h7BK8r3bVWV1ecVFah7nQ4oOY/0NKrTOFjspbCaxukjF5q/
-         vEvaGbuJtk91XVtp1/RJNo+Jb9Z8chE18iF4UyqiPXJCNEKVavlQSN7OyBvve/6omydn
-         d00ecRYKv39IbLsROgew+51Da4aV8LTBKMRnQWxoAnYqIGPQCgs6SWDnu+VE74MEGEph
-         zkN5NCqMfp1Vk6jtzSc+mFspPNzU6+qvoPckeLNODGIud/Fe6ph35WyrwOx5cZle+7R9
-         /hJg==
-X-Gm-Message-State: AOAM530LN1334Jv2x4eXK6JI7l8dBFTXevpaHKnyg4lcar6YRpBL96HO
-        mfTvNsUhvLsvWlHfpYrzk/XKFqIUwf9p/oo8O5g=
-X-Google-Smtp-Source: ABdhPJzh1IbUJQsYMdZ46Kg4+03gx0aMuKhhQ4ikI0/VbmB56Z/VPcvCDMnYf9gZal8qtd0dGkyUMqYHT6a6xcqwsZg=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr999463ybz.260.1621445900407;
- Wed, 19 May 2021 10:38:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UMV7QsTgPPQWeHZACgAJTLak2uBSFbgGNVbitXpkumY=;
+        b=WU9EY+iuewhPewynaALD08IxueEvw8rA8HFI1DOIsDeblXXxxdNwObaU5nhoLwwk+m
+         VyDNlvNBqqvfCJLo3Hm6W3EndhUuijuikponpjMP0vGLFV88U1UvsmdouQlZKxM1ve4M
+         mxAqttfjzzOaz/MFXwDeRRIYrvifNEkypSk2BvoileOQh4rj16D14ZlWIV3/Spoah/wG
+         y30k0QOXMlj1kVaCoYBBfS9cUJa4FjKrRArXvfODjXGcyQBsAYYj0tChoHXtDv7zqlrl
+         Nm9Z/CVYSu/MGygTqy9hYCGbMMgZrf0jiRYHQwhNUoN4rALispitDy00M6J3eZMoag4Q
+         86mw==
+X-Gm-Message-State: AOAM5308O04IUbzVu5Q+NGLKYZraRhA604owWTaMADirb/ngvhmzFGrt
+        8R929TEPS1apldFJh+2GN/k=
+X-Google-Smtp-Source: ABdhPJzIFT/6iKFcpgqqZGn/WXeltIuFnyxwyWHx+EoZfc1DaoTOk8qlYPNqJ1+vWpugaseUlQyLRA==
+X-Received: by 2002:a05:620a:4543:: with SMTP id u3mr549497qkp.118.1621446116804;
+        Wed, 19 May 2021 10:41:56 -0700 (PDT)
+Received: from master-laptop.sparksnet ([2601:153:980:85b1:de7c:b0e3:ef92:cf37])
+        by smtp.gmail.com with ESMTPSA id k125sm280021qkf.53.2021.05.19.10.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 10:41:56 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Elaine Zhang <zhangqing@rock-chips.com>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH] clk: rockchip: fix rk3568 cpll clk gate bits
+Date:   Wed, 19 May 2021 13:41:49 -0400
+Message-Id: <20210519174149.3691335-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1621424513.git.asml.silence@gmail.com> <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
-In-Reply-To: <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 19 May 2021 10:38:09 -0700
-Message-ID: <CAEf4BzZU_QySZFHA1J0jr5Fi+gOFFKzTyxrvCUt1_Gn2H6hxLA@mail.gmail.com>
-Subject: Re: [PATCH 18/23] libbpf: support io_uring
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 7:14 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 4181d178ee7b..de5d1508f58e 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -13,6 +13,10 @@
->  #ifndef _GNU_SOURCE
->  #define _GNU_SOURCE
->  #endif
-> +
-> +/* hack, use local headers instead of system-wide */
-> +#include "../../../include/uapi/linux/bpf.h"
-> +
+The cpll clk gate bits had an ordering issue. This led to the loss of
+the boot sdmmc controller when the gmac was shut down with:
+`ip link set eth0 down`
+as the cpll_100m was shut off instead of the cpll_62p5.
+cpll_62p5, cpll_50m, cpll_25m were all off by one with cpll_100m
+misplaced.
 
-libbpf is already using the latest UAPI headers, so you don't need
-this hack. You just haven't synced include/uapi/linux/bpf.h into
-tools/include/uapi/linux/bpf.h
+Fixes: cf911d89c4c5 ("clk: rockchip: add clock controller for rk3568")
 
->  #include <stdlib.h>
->  #include <stdio.h>
->  #include <stdarg.h>
-> @@ -8630,6 +8634,9 @@ static const struct bpf_sec_def section_defs[] = {
->         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
->         BPF_EAPROG_SEC("sk_lookup/",            BPF_PROG_TYPE_SK_LOOKUP,
->                                                 BPF_SK_LOOKUP),
-> +       SEC_DEF("iouring/",                     IOURING),
-> +       SEC_DEF("iouring.s/",                   IOURING,
-> +               .is_sleepable = true),
->  };
->
->  #undef BPF_PROG_SEC_IMPL
-> --
-> 2.31.1
->
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+---
+ drivers/clk/rockchip/clk-rk3568.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/rockchip/clk-rk3568.c b/drivers/clk/rockchip/clk-rk3568.c
+index 946ea2f45bf3..75ca855e720d 100644
+--- a/drivers/clk/rockchip/clk-rk3568.c
++++ b/drivers/clk/rockchip/clk-rk3568.c
+@@ -454,17 +454,17 @@ static struct rockchip_clk_branch rk3568_clk_branches[] __initdata = {
+ 	COMPOSITE_NOMUX(CPLL_125M, "cpll_125m", "cpll", CLK_IGNORE_UNUSED,
+ 			RK3568_CLKSEL_CON(80), 0, 5, DFLAGS,
+ 			RK3568_CLKGATE_CON(35), 10, GFLAGS),
++	COMPOSITE_NOMUX(CPLL_100M, "cpll_100m", "cpll", CLK_IGNORE_UNUSED,
++			RK3568_CLKSEL_CON(82), 0, 5, DFLAGS,
++			RK3568_CLKGATE_CON(35), 11, GFLAGS),
+ 	COMPOSITE_NOMUX(CPLL_62P5M, "cpll_62p5", "cpll", CLK_IGNORE_UNUSED,
+ 			RK3568_CLKSEL_CON(80), 8, 5, DFLAGS,
+-			RK3568_CLKGATE_CON(35), 11, GFLAGS),
++			RK3568_CLKGATE_CON(35), 12, GFLAGS),
+ 	COMPOSITE_NOMUX(CPLL_50M, "cpll_50m", "cpll", CLK_IGNORE_UNUSED,
+ 			RK3568_CLKSEL_CON(81), 0, 5, DFLAGS,
+-			RK3568_CLKGATE_CON(35), 12, GFLAGS),
++			RK3568_CLKGATE_CON(35), 13, GFLAGS),
+ 	COMPOSITE_NOMUX(CPLL_25M, "cpll_25m", "cpll", CLK_IGNORE_UNUSED,
+ 			RK3568_CLKSEL_CON(81), 8, 6, DFLAGS,
+-			RK3568_CLKGATE_CON(35), 13, GFLAGS),
+-	COMPOSITE_NOMUX(CPLL_100M, "cpll_100m", "cpll", CLK_IGNORE_UNUSED,
+-			RK3568_CLKSEL_CON(82), 0, 5, DFLAGS,
+ 			RK3568_CLKGATE_CON(35), 14, GFLAGS),
+ 	COMPOSITE_NOMUX(0, "clk_osc0_div_750k", "xin24m", CLK_IGNORE_UNUSED,
+ 			RK3568_CLKSEL_CON(82), 8, 6, DFLAGS,
+-- 
+2.25.1
+
