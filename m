@@ -2,129 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F25B3894FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B383894FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhESSFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 14:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhESSFi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 14:05:38 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8477DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 11:04:18 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id f6-20020a1c1f060000b0290175ca89f698so3936100wmf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 11:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rGfeJx++iO9RYfUcCMG9BLDyjoPpwJYUjp9mfyv1ihM=;
-        b=NEAfDStc9DOvedcU6BCdRiV8UOOkBhLuwKUUam+wB1CTjEaeRxjLFicSBzJwVpr6OW
-         szQmN5jRsu6uJR51DzlqApvpIpJlzqDsc3igg6P8luM2Hv+yCAdZeBQQ/OQSf7RRLtIN
-         MjY6mmUYIR+O97G/3Vb6/KFCyMi/BHIQTR7+2pTVjUXXrwIOSs45SizX5nDQXWlvkrZA
-         0wjCq4EKpoOoIdjjxU9fxs8jcHeq6BqnFVnjx+OaNYHb7h+TM4BOm5WDpkOPp1mWa5Wq
-         XqA2GvK1d/7BD2sx+VHUP/vlRqkVFM22G5WpBfXLtgrfu2SxfI53rRMlGEry3kMpmWyG
-         zapQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rGfeJx++iO9RYfUcCMG9BLDyjoPpwJYUjp9mfyv1ihM=;
-        b=pAkvQJKg49hmxo3fstDltMrU0j08j7fnL9WMI/KXehEulhbjyD0yVZL5ZU6peLayRu
-         kUxMPdINbOV7089TddIoEG3cY2aC6HLWk8AdohtEtpkwlTX7ucZdntztAdQZ9UXGbF+C
-         xRhD04knM7LT3HZiW05VUvroMPRXTUbUNpnT1uplazCfhG5RWy5/bON4bTnizdnMAd0k
-         hXm9qoxiUD3mQW1CUNZJQKdx2l328vJNJHyaw4y1mflYwBc5/aWzP9bIyxzR5bcT5UgY
-         9w4zefSzdqy/wIRW7l7K/5T91yTyoU5BPJ8JWwmGS2fgAu5LHSyRDrxy2Pqpdqxxm3sS
-         FOWQ==
-X-Gm-Message-State: AOAM5326ymsIn/AdLEcrOW3TdxD4VLghmI0MfPKWfddCkx1vX5eHqoYh
-        5PDdW0NSkEkYWa3EctKUs07AZw==
-X-Google-Smtp-Source: ABdhPJxeGPAdq0VhugQUUTYen/hKPMuk3ywUwrdpqTtKH8oX2TUZUgKtHF78OkvjLqURN7+gd9GmBA==
-X-Received: by 2002:a1c:b306:: with SMTP id c6mr468387wmf.37.1621447457105;
-        Wed, 19 May 2021 11:04:17 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id h10sm133975wrt.3.2021.05.19.11.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 11:04:16 -0700 (PDT)
-Date:   Wed, 19 May 2021 19:04:14 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        dave penkler <dpenkler@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
-Message-ID: <20210519180414.GL2549456@dell>
-References: <d673611ca53f42a3a629eb051cabc6eb@rohde-schwarz.com>
+        id S231129AbhESSGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 14:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230422AbhESSGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 14:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CB30611BF;
+        Wed, 19 May 2021 18:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621447521;
+        bh=NASY69C+zBvwdvepzTOB5c9RXXJiFGKRqJH9Uz62WhM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kPfoXnRVsOUUJQBfC39ecNd9McSVhtfx2MS/Xk6tcyxnvAG53lzz3ENq6fX5cuSim
+         jJkKCh5DOlFja6mnfIVqgrya1xAsm1DUb8XAOx06KlHShpQVtam3rDg+jjC5eXD/UT
+         lcWoXMZUGoej1/PGCYaRNb8i8lAh1u4vhbgYbjxLR+if2NP5kXvo39g+7IQaZw3Ysf
+         IRO6Tz0EnBE41UKaOmiyvtoLshZh1g+MPmCncL1Ll8bud53P348fsxGqnpnY2pRXQi
+         w/UrxP1rq5IUzDt9xztuhHPiS6oD00S+1JxdSK7CLFM2R3S8CL1WQhJuIDDTsgTsjA
+         HOzjcoHeHQBRg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4CFD65C00E8; Wed, 19 May 2021 11:05:21 -0700 (PDT)
+Date:   Wed, 19 May 2021 11:05:21 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ying.huang@intel.com, zhengjun.xing@intel.com, kernel-team@fb.com,
+        neeraju@codeaurora.org, rui.zhang@intel.com
+Subject: Re: [clocksource]  388450c708:  netperf.Throughput_tps -65.1%
+ regression
+Message-ID: <20210519180521.GZ4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210501003247.2448287-4-paulmck@kernel.org>
+ <20210513155515.GB23902@xsang-OptiPlex-9020>
+ <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210514074314.GB5384@shbuild999.sh.intel.com>
+ <20210514174908.GI975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210516063419.GA22111@shbuild999.sh.intel.com>
+ <20210519060902.GE78241@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d673611ca53f42a3a629eb051cabc6eb@rohde-schwarz.com>
+In-Reply-To: <20210519060902.GE78241@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021, Guido Kiener wrote:
-
-> > On Wed, May 19, 2021 at 10:48:29AM +0200, dave penkler wrote:
-> > > On Sat, 8 May 2021 at 16:29, Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > >
-> > > > On Sat, May 08, 2021 at 10:14:41AM +0200, dave penkler wrote:
-> > > > > When the host driver detects a protocol error while processing an
-> > > > > URB it completes the URB with EPROTO status and marks the endpoint
-> > > > > as halted.
-> > > >
-> > > > Not true.  It does not mark the endpoint as halted, not unless it
-> > > > receives a STALL handshake from the device.  A STALL is not a
-> > > > protocol error.
-> > > >
-> > > > > When the class driver resubmits the URB and the if the host driver
-> > > > > finds the endpoint still marked as halted it should return EPIPE
-> > > > > status on the resubmitted URB
-> > > >
-> > > > Irrelevant.
-> > > Not at all. The point is that when an application is talking to an
-> > > instrument over the usbtmc driver, the underlying host controller and
-> > > its driver will detect and silence a babbling endpoint.
+On Wed, May 19, 2021 at 02:09:02PM +0800, Feng Tang wrote:
+> On Sun, May 16, 2021 at 02:34:19PM +0800, Feng Tang wrote:
+> > On Fri, May 14, 2021 at 10:49:08AM -0700, Paul E. McKenney wrote:
+> > > On Fri, May 14, 2021 at 03:43:14PM +0800, Feng Tang wrote:
+> > > > Hi Paul,
+> > > > 
+> > > > On Thu, May 13, 2021 at 10:07:07AM -0700, Paul E. McKenney wrote:
+> > > > > On Thu, May 13, 2021 at 11:55:15PM +0800, kernel test robot wrote:
+> > > > > > 
+> > > > > > 
+> > > > > > Greeting,
+> > > > > > 
+> > > > > > FYI, we noticed a -65.1% regression of netperf.Throughput_tps due to commit:
+> > > > > > 
+> > > > > > 
+> > > > > > commit: 388450c7081ded73432e2b7148c1bb9a0b039963 ("[PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC")
+> > > > > > url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
+> > > > > > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
+> > > > > > 
+> > > > > > in testcase: netperf
+> > > > > > on test machine: 96 threads 2 sockets Ice Lake with 256G memory
+> > > > > > with following parameters:
+> > > > > > 
+> > > > > > 	ip: ipv4
+> > > > > > 	runtime: 300s
+> > > > > > 	nr_threads: 25%
+> > > > > > 	cluster: cs-localhost
+> > > > > > 	test: UDP_RR
+> > > > > > 	cpufreq_governor: performance
+> > > > > > 	ucode: 0xb000280
+> > > > > > 
+> > > > > > test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
+> > > > > > test-url: http://www.netperf.org/netperf/
+> > > > > > 
+> > > > > > 
+> > > > > > 
+> > > > > > If you fix the issue, kindly add following tag
+> > > > > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > > > > 
+> > > > > > 
+> > > > > > also as Feng Tang checked, this is a "unstable clocksource" case.
+> > > > > > attached dmesg FYI.
+> > > > > 
+> > > > > Agreed, given the clock-skew event and the resulting switch to HPET,
+> > > > > performance regressions are expected behavior.
+> > > > > 
+> > > > > That dmesg output does demonstrate the value of Feng Tang's patch!
+> > > > > 
+> > > > > I don't see how to obtain the values of ->mult and ->shift that would
+> > > > > allow me to compute the delta.  So if you don't tell me otherwise, I
+> > > > > will assume that the skew itself was expected on this hardware, perhaps
+> > > > > somehow due to the tpm_tis_status warning immediately preceding the
+> > > > > clock-skew event.  If my assumption is incorrect, please let me know.
+> > > > 
+> > > > I run the case with the debug patch applied, the info is:
+> > > > 
+> > > > [   13.796429] clocksource: timekeeping watchdog on CPU19: Marking clocksource 'tsc' as unstable because the skew is too large:
+> > > > [   13.797413] clocksource:                       'hpet' wd_nesc: 505192062 wd_now: 10657158 wd_last: fac6f97 mask: ffffffff
+> > > > [   13.797413] clocksource:                       'tsc' cs_nsec: 504008008 cs_now: 3445570292aa5 cs_last: 344551f0cad6f mask: ffffffffffffffff
+> > > > [   13.797413] clocksource:                       'tsc' is current clocksource.
+> > > > [   13.797413] tsc: Marking TSC unstable due to clocksource watchdog
+> > > > [   13.844513] clocksource: Checking clocksource tsc synchronization from CPU 50 to CPUs 0-1,12,22,32-33,60,65.
+> > > > [   13.855080] clocksource: Switched to clocksource hpet
+> > > > 
+> > > > So the delta is 1184 us (505192062 - 504008008), and I agree with
+> > > > you that it should be related with the tpm_tis_status warning stuff.
+> > > > 
+> > > > But this re-trigger my old concerns, that if the margins calculated
+> > > > for tsc, hpet are too small?
+> > > 
+> > > If the error really did disturb either tsc or hpet, then we really
+> > > do not have a false positive, and nothing should change (aside from
+> > > perhaps documenting that TPM issues can disturb the clocks, or better
+> > > yet treating that perturbation as a separate bug that should be fixed).
+> > > But if this is yet another way to get a confused measurement, then it
+> > > would be better to work out a way to reject the confusion and keep the
+> > > tighter margins.  I cannot think right off of a way that this could
+> > > cause measurement confusion, but you never know.
 > > 
-> > No, they won't.  That is, they will detect a babble error and return an error status, but
-> > they won't silence the endpoint.  What makes you think they will?
+> > I have no doubt in the correctness of the measuring method, but was
+> > just afraid some platforms which use to 'just work' will be caught :)
+> > 
+> > > So any thoughts on exactly how the tpm_tis_status warning might have
+> > > resulted in the skew?
+> > 
+> > The tpm error message has been reported before, and from google there
+> > were some similar errors, we'll do some further check.
 > 
-> Maybe there is a misunderstanding. I guess that Dave wanted to propose:
-> "EPROTO is a link level issue and needs to be handled by the host driver.
-> When the host driver detects a protocol error while processing an
-> URB it SHOULD complete the URB with EPROTO status and SHOULD mark the endpoint
-> as halted."
-> Is this a realistic fix for all host drivers?
+> Some update on this: further debug shows it is not related to TPM 
+> module, as the 'unstable' still happens even if we disable TPM
+> module in kernel.
 > 
-> -Guido
+> We run this case on another test box of same type but with latest 
+> BIOS and microcode, the tsc freq is correctly calculated and the 
+> 'unstable' error can't be reproduced. And we will check how to 
+> upgrade the test box in 0day.
 
-Guido, would you mind taking a look at your mailer settings please?  I
-now have >=7 threads running through my inbox with the same subject.
-For some reason your mailer is insisting on creating a new one for
-each of your replies.
+So this patch series might have located a real BIOS or firmware bug,
+then?  ;-)
 
-It's also adding odd "re: re: re: ..." prefixes.
-
-TIA
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+							Thanx, Paul
