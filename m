@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A8D388ECC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68BF388EC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346645AbhESNSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:18:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235765AbhESNSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:18:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B090F610CC;
-        Wed, 19 May 2021 13:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621430232;
-        bh=/N7tAx3OswxBYez0nhficTmxmEYvhAU1su9MYCvCXTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NjjKjJjL4Em7Hhtmap0lFl1YHgkrNbVtYY1yOGV0fqvDp3dhZW0SFiELHqrcwxqYg
-         dT0ETnHwzvzlDthA6eaVgrSBEKv8T7sq19PnQ2KnJ5awms0jyDKicTI23M8kOX91mH
-         0J0he9ODrBkR+EJgQ44kRj0JDFOwpncUwiYZdCtV3XqgvfOeaLPbyIXhE3w5Xzx+dy
-         1RaO5Sw4hOq7EnTSOdUTxxcwY1SrZrWJwgf4fAcF7/kbEfgeX7JagLAJsOObnMoIwH
-         3aTIlZhgT7GJ42F1oPtL+znH/y8WnnOQ7zZ+0EPiqHNjFBUbJ2HDsd43S1O9K2bPI5
-         e8Xq773qHejiA==
-Date:   Wed, 19 May 2021 14:16:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: Check ramp_delay_table for
- regulator_set_ramp_delay_regmap
-Message-ID: <20210519131626.GE4224@sirena.org.uk>
-References: <20210519075024.1644990-1-axel.lin@ingics.com>
+        id S1344693AbhESNSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235765AbhESNSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:18:02 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F9CC06175F;
+        Wed, 19 May 2021 06:16:42 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 63C252FA; Wed, 19 May 2021 15:16:39 +0200 (CEST)
+Date:   Wed, 19 May 2021 15:16:38 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     x86@kernel.org, Hyunwook Baek <baekhw@google.com>,
+        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 2/6] x86/sev-es: Forward page-faults which happen during
+ emulation
+Message-ID: <YKUPtrquQyImL3h5@8bytes.org>
+References: <20210512075445.18935-1-joro@8bytes.org>
+ <20210512075445.18935-3-joro@8bytes.org>
+ <YJwQ1xsiDtv3LkBe@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cYtjc4pxslFTELvY"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210519075024.1644990-1-axel.lin@ingics.com>
-X-Cookie: There's no time like the pleasant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YJwQ1xsiDtv3LkBe@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sean,
 
---cYtjc4pxslFTELvY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, May 12, 2021 at 05:31:03PM +0000, Sean Christopherson wrote:
+> This got me looking at the flows that "inject" #PF, and I'm pretty sure there
+> are bugs in __vc_decode_user_insn() + insn_get_effective_ip().
+> 
+> Problem #1: __vc_decode_user_insn() assumes a #PF if insn_fetch_from_user_inatomic()
+> fails, but the majority of failure cases in insn_get_seg_base() are #GPs, not #PF.
+> 
+> 	res = insn_fetch_from_user_inatomic(ctxt->regs, buffer);
+> 	if (!res) {
+> 		ctxt->fi.vector     = X86_TRAP_PF;
+> 		ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
+> 		ctxt->fi.cr2        = ctxt->regs->ip;
+> 		return ES_EXCEPTION;
+> 	}
+> 
+> Problem #2: Using '0' as an error code means a legitimate effective IP of '0'
+> will be misinterpreted as a failure.  Practically speaking, I highly doubt anyone
+> will ever actually run code at address 0, but it's technically possible.  The
+> most robust approach would be to pass a pointer to @ip and return an actual error
+> code.  Using a non-canonical magic value might also work, but that could run afoul
+> of future shenanigans like LAM.
+> 
+> 	ip = insn_get_effective_ip(regs);
+> 	if (!ip)
+> 		return 0;
 
-On Wed, May 19, 2021 at 03:50:24PM +0800, Axel Lin wrote:
+Your observations are all correct. I put some changes onto this
+patch-set to fix these problems.
 
-> +	if (!rdev->desc->n_ramp_values || !rdev->desc->ramp_delay_table) {
-> +		WARN_ON(!rdev->desc->n_ramp_values || !rdev->desc->ramp_delay_table);
+Regards,
 
-You can write "if (WARN_ON(..." there and it'll DTRT, though I'm never
-sure it's great for readability.
-
---cYtjc4pxslFTELvY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmClD6oACgkQJNaLcl1U
-h9C0bgf9Gjdn+dx9h/0a5itgBfbXwSWxqmKIBJz29U8zhmWt/sUtM21Rat05VG/u
-r12bcVn/IIsBZRKL6iyDRopHUQIFh5jfS04TL1nfJIhd78il7bWziIU7YZ5jykKx
-95zI9L7EXEIB8zXvPLNCXGNgpq0STPpmYSvvrsX3V5zYTmbCRWMMIRy9XEwWRKxC
-hj6uWpyaRAxmOdtazvgP2vqknFOHjulbaNZVnS+ubDyRk+JzQSRU45Pf1e0l89n/
-0wYVd4hxRg/QFOSpzq1hDDWPxpEhqu12F8f3uWQEVcJoZ57lpE8vVEtoChRILsto
-cGDWixK2xQU3NDvehZ1z4fz7iLi+rQ==
-=Aswp
------END PGP SIGNATURE-----
-
---cYtjc4pxslFTELvY--
+	Joerg
