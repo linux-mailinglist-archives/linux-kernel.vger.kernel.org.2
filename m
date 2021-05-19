@@ -2,156 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D18388FC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CCB388FC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353783AbhESOFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240179AbhESOEu (ORCPT
+        id S1346915AbhESOF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:05:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56135 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240179AbhESOF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:04:50 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3822DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:03:30 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 10so9978640pfl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kxXfuNlS/xOSvTcuxAtst1GJYgtNU95iIej614YptKs=;
-        b=r0PNqUr8bt4M6wTks4TGgdWKQLfopdZMqazDhkaTlnJX8W5JSMGfuVwAic3ahPYSaO
-         zR2/Dz5YBPe936mUquW0bDzdfgo+mlWOZq1rrCwsaA8kRZIH6uFLlRjNfGamFD7xW8sv
-         SlR0LGHbB9Vx7W7zyq4cCAVnHTiBn8o7RNy81k6TO3ujzL+h/PhVRMT0dC9mM8gXzWvp
-         Agol5vPAIE5XQVQpDw5941uexS5vUdddeV3PyfGyDP2nWG9BjDl8i/UVPE4Xh4eOJKG7
-         BYhE8Cb2+XLL5oFAPMuxMYfYBNhcUyjOSIivSmCoTpz3faHyqd8swb7GG9t4ADDydYBK
-         lSow==
+        Wed, 19 May 2021 10:05:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621433076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q0X6ufyJH5fadmIknxn4nGcWs1xnqbL6wQGkTAtdW1c=;
+        b=Tw8RKgQRCXH+fmkXIrxv+lnkjg+Y1aqhfdZycLors3SXtB9ey72H2FSEA15QtBFt/+IlF3
+        R1XyJO7Cp3tReLJlLHbQCHo5Agiw0KsQ8CaUrG4VXnHM8sn8Z3wJ29NKAFT3e1Xgs7DlU2
+        hUOR2RpO1DWbuVpTmx1jVrMrIRr/Cm4=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-xIAkG71hPs6wsS98J4OlYQ-1; Wed, 19 May 2021 10:04:34 -0400
+X-MC-Unique: xIAkG71hPs6wsS98J4OlYQ-1
+Received: by mail-qt1-f197.google.com with SMTP id o15-20020a05622a138fb02901e0ac29f6b2so9873143qtk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:04:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kxXfuNlS/xOSvTcuxAtst1GJYgtNU95iIej614YptKs=;
-        b=edXWOiDx9WZvGPtSuRYZv1LhemJ5LZLC3bLg7NwbXbpMb1up3DdhjoLyXkqHIMOMxb
-         51SKJ5rmYBUupfKYdzX8zUhIc5vdMf3ly45P/rA7+smsOdd8eKeObAut0Y+gKdWMbip2
-         3vToJ6nMadueO3c7xb1nZUW7/8UBNvf98uh+3GfPRHAbyelGQDQnDO+aOY2I5IfbM/sE
-         WpDD0YfpzM8XNmmIYUlS0W/jhuR1mFnesTtsxjqvSh5NR6cnGIRvu4iw1sA3nRoK3brm
-         ljr6odyoKwraMwPn3QgtHVoUCglqavwOBYNHLrJgVetRF5ErkWeExbn8T0qz2F8vnf2n
-         ZLxQ==
-X-Gm-Message-State: AOAM532zAGpQLR/jfohdjh5A+p7IKyspogj7EMJ/KKfOc8VBN44Eoh+t
-        wzmvcDhHu9FLAGDtnv21q438wA==
-X-Google-Smtp-Source: ABdhPJx2fpDVgc+q9xwFrO9/2LqKSAUWe20sUAPO6MMOiZrzOT2+/DxH2Qlfrd6E3vZtQwzFlCFA6w==
-X-Received: by 2002:a63:ba1b:: with SMTP id k27mr11094416pgf.381.1621433009720;
-        Wed, 19 May 2021 07:03:29 -0700 (PDT)
-Received: from localhost ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id y13sm10107799pgp.16.2021.05.19.07.03.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q0X6ufyJH5fadmIknxn4nGcWs1xnqbL6wQGkTAtdW1c=;
+        b=ku4+pjaIHuV/JoTkfAuCAexG2rcWTCpAd1CBB3k6GVlH1SyvzAv/L0KbjeN7GYtFQS
+         lDWmVB5fyGuKESM9INVeMruuIAXI4dT5OWrq8Q8GuHmC7HamuUDya2AkBBExkVCqYhBF
+         DxlbuUox/V3uckTkaWcUqGh6De861B2Zkv9EWOqn9UQMXPR1eZApG8iVokbHXFSVWwpF
+         XI2I9Z9SgZz3C/aDzZodm2ZFU+/jAIeWLPsWvVkwhpgec4BwDf1XbS8eW2DPUGD7cta0
+         g1fRKEAE3vIj0Q+FID8iUqWWA06TbvG/IO7GcKKNeeDXD2SOus7bcbWrPIQbOoVOVFL9
+         3O6g==
+X-Gm-Message-State: AOAM533xM+vYRHPev2rJ7/UmHSujzPezahWyW30UTcwU+pp7m+a4fnVW
+        uPXqgjaVHJS/Fv6rcf7rm8HvRWa44Z9CD/7PfHHsJsSuRcr9z84MffW/8wntSU8lcC2dDkW6ybN
+        F9PLTJm63xGFiVR4PXemJCX72
+X-Received: by 2002:a05:6214:d87:: with SMTP id e7mr13037374qve.53.1621433074137;
+        Wed, 19 May 2021 07:04:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6J2iQWttFbTggjwn9zrUjjmVN+9VOim38VY5Z448bl6PpUs3xqQHJcSoYTLuhDbSvYY+iNA==
+X-Received: by 2002:a05:6214:d87:: with SMTP id e7mr13037337qve.53.1621433073770;
+        Wed, 19 May 2021 07:04:33 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id b13sm802748qkl.16.2021.05.19.07.04.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:03:29 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 2/2] perf auxtrace: Optimize barriers with load-acquire and store-release
-Date:   Wed, 19 May 2021 22:03:19 +0800
-Message-Id: <20210519140319.1673043-2-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210519140319.1673043-1-leo.yan@linaro.org>
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
+        Wed, 19 May 2021 07:04:33 -0700 (PDT)
+Date:   Wed, 19 May 2021 10:04:32 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
+        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
+        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
+        bsingharora@gmail.com, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
+Message-ID: <YKUa8HZjfFW2Dhb1@t490s>
+References: <20210407084238.20443-1-apopple@nvidia.com>
+ <2235357.HsqDk0zIjc@nvdebian>
+ <YKUBbVuvm5FUJRMl@t490s>
+ <2569629.VzlulnA7BY@nvdebian>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2569629.VzlulnA7BY@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Load-acquire and store-release are one-way permeable barriers, which can
-be used to guarantee the memory ordering between accessing the buffer
-data and the buffer's head / tail.
+On Wed, May 19, 2021 at 11:11:55PM +1000, Alistair Popple wrote:
+> On Wednesday, 19 May 2021 10:15:41 PM AEST Peter Xu wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > On Wed, May 19, 2021 at 09:04:53PM +1000, Alistair Popple wrote:
+> > > Failing fork() because we couldn't take a lock doesn't seem like the right
+> > > approach though, especially as there is already existing code that
+> > > retries. I get this adds complexity though, so would be happy to take a
+> > > look at cleaning copy_pte_range() up in future.
+> > 
+> > Yes, I proposed that as this one won't affect any existing applications
+> > (unlike the existing ones) but only new userspace driver apps that will use
+> > this new atomic feature.
+> > 
+> > IMHO it'll be a pity to add extra complexity and maintainance burden into
+> > fork() if only for keeping the "logical correctness of fork()" however the
+> > code never triggers. If we start with trylock we'll know whether people
+> > will use it, since people will complain with a reason when needed; however
+> > I still doubt whether a sane userspace device driver should fork() within
+> > busy interaction with the device underneath..
+> 
+> I will refrain from commenting on the sanity or otherwise of doing that :-)
+> 
+> Agree such a scenario seems unlikely in practice (and possibly unreasonable). 
+> Keeping the "logical correctness of fork()" still seems worthwhile to me, but 
+> if the added complexity/maintenance burden for an admittedly fairly specific 
+> feature is going to stop progress here I am happy to take the fail fork 
+> approach. I could then possibly fix it up as a future clean up to 
+> copy_pte_range(). Perhaps others have thoughts?
 
-This patch optimizes the memory ordering with the load-acquire and
-store-release barriers.
+Yes, it's more about making this series easier to be accepted, and it'll be
+great to have others' input.
 
-If the load-acquire is not supported by the architectures, it uses the
-existed READ_ONCE() + smp_rmb() pair rather than use the fallback
-definition of smp_load_acquire().  The reason is smp_rmb() is a minor
-improvement than smp_mb() which is called in the fallback macro
-smp_load_acquire().
+Btw, just to mention that I don't even think fail fork() on failed trylock() is
+against "logical correctness of fork()": IMHO it's still 100% correct just like
+most syscalls can return with -EAGAIN, that suggests the userspace to try again
+the syscall, and I hope that also works for fork().  I'd be more than glad to
+be corrected too.
 
-In auxtrace_mmap__write_tail(), updating the tail pointer is removed; if
-the store-release barrier is not supported, it rollbacks to use
-smp_mb() + WRITE_ONCE() pair which is defined in the fallback macro
-smp_store_release() (see include/asm/barrier.h).
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/util/auxtrace.h | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index 8bed284ccc82..f18070f1993f 100644
---- a/tools/perf/util/auxtrace.h
-+++ b/tools/perf/util/auxtrace.h
-@@ -449,16 +449,27 @@ struct auxtrace_cache;
- static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
- {
- 	struct perf_event_mmap_page *pc = mm->userpg;
-+
-+#if defined(__x86_64__) || defined(__aarch64__) || defined(__powerpc64__) || \
-+    defined(__ia64__) || defined(__sparc__) && defined(__arch64__)
-+	return smp_load_acquire(&pc->aux_head);
-+#else
- 	u64 head = READ_ONCE(pc->aux_head);
- 
- 	/* Ensure all reads are done after we read the head */
- 	smp_rmb();
- 	return head;
-+#endif
- }
- 
- static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
- {
- 	struct perf_event_mmap_page *pc = mm->userpg;
-+
-+#if defined(__x86_64__) || defined(__aarch64__) || defined(__powerpc64__) || \
-+    defined(__ia64__) || defined(__sparc__) && defined(__arch64__)
-+	return smp_load_acquire(&pc->aux_head);
-+#else
- #if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
- 	u64 head = READ_ONCE(pc->aux_head);
- #else
-@@ -468,20 +479,20 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
- 	/* Ensure all reads are done after we read the head */
- 	smp_rmb();
- 	return head;
-+#endif
- }
- 
- static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
- {
- 	struct perf_event_mmap_page *pc = mm->userpg;
--#if BITS_PER_LONG != 64 && defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
-+
-+#if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
-+	smp_store_release(&pc->aux_tail, tail);
-+#else
- 	u64 old_tail;
--#endif
- 
- 	/* Ensure all reads are done before we write the tail out */
- 	smp_mb();
--#if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
--	pc->aux_tail = tail;
--#else
- 	do {
- 		old_tail = __sync_val_compare_and_swap(&pc->aux_tail, 0, 0);
- 	} while (!__sync_bool_compare_and_swap(&pc->aux_tail, old_tail, tail));
 -- 
-2.25.1
+Peter Xu
 
