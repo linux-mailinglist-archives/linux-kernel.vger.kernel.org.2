@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307D838988A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE67389886
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhESVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:23:51 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:53715 "EHLO
+        id S229643AbhESVXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:23:44 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:33339 "EHLO
         mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhESVXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229498AbhESVXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 17:23:42 -0400
 Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
         (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14JLM1Ec4187848
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14JLM1Ed4187848
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Wed, 19 May 2021 14:22:11 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14JLM1Ec4187848
+        Wed, 19 May 2021 14:22:12 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14JLM1Ed4187848
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621459331;
-        bh=Fv2QZebBu0cB2A2tFYMv61TmrgL0THnLSibpPqynPjc=;
+        s=2021042801; t=1621459332;
+        bh=XOgTt/mBuEZ+uV89tStLvmmy0bfAE5L/fc5xFERnK2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bqz9K9+Tyu9E5vddTRb6CuuK0m4wvoHxskR1sMSkfiFRuYWkEXgBH8qaawDDfgb+7
-         3ydZbref0r/ijhOKhS3kLV91KOTezNtZd16NqPNwZyGhc8tEJ/cOyETLHx7DdS2GG5
-         Tddg8muAvgywth83sJNPLmYnT41qm4kXaRkvU6Nz+h8lb+ByxgfsqQgc74K5vmWZao
-         8EAgWlIEmpq4DfmY7CaechPbwj0b4Dw1tPdJdIqsfn0Ajb+PdUyIAjtiGtopHdW+9O
-         8/u8kIpmrMF9JekjQzytQPU9plzRrMdEwUnfjxRs4RllqOWQtWPpzPgwKthx20MG8P
-         2ChUccM2pUDwA==
+        b=aH5XZztXrMcSwVNOk3EPWIICT3MlLis4no0kQVBd0JWPHKJGhOflW5Mj394jaAmcZ
+         dz+3L4BoV6eexJNf7Z1XKME0WBnv0ZAbMpJR871Do3YNXHybbsx0533/q29EGVTntB
+         3eMboN16wk9MCXwu21SavlC6tNPjiGwRWknf9DzEKP44+pXrEYcYN2t89GxSDEUSgx
+         Sy/Ybw3rLAnWjGIiRl4vGbPeJehXKIye0uyFp/C0pt1G+ouDmm/NKwtNWz6lTtgtot
+         Y774RJgKeDmx7pq+k8OR/b6XNuyF01+zTNLDANnVOwgfxHANoQzJV3YlMDqoaWzllg
+         Fh/iLSYNZb0YA==
 From:   "H. Peter Anvin" <hpa@zytor.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
@@ -34,9 +34,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 4/8] x86/idt: remove address argument to idt_invalidate()
-Date:   Wed, 19 May 2021 14:21:50 -0700
-Message-Id: <20210519212154.511983-5-hpa@zytor.com>
+Subject: [PATCH v3 5/8] x86/desc: add native_[ig]dt_invalidate() to <asm/desc.h>
+Date:   Wed, 19 May 2021 14:21:51 -0700
+Message-Id: <20210519212154.511983-6-hpa@zytor.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210519212154.511983-1-hpa@zytor.com>
 References: <20210519212154.511983-1-hpa@zytor.com>
@@ -48,78 +48,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-There is no reason to specify any specific address to
-idt_invalidate(). It looks mostly like an artifact of unifying code
-done differently by accident. The most "sensible" address to set here
-is a NULL pointer - virtual address zero, just as a visual marker.
-
-This also makes it possible to mark the struct desc_ptr in
-idt_invalidate() as static const.
+In some places, we want the native forms of descriptor table
+invalidation. Rather than open-coding them, add explicitly native
+functions to invalidate the GDT and IDT.
 
 Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 ---
- arch/x86/include/asm/desc.h        | 2 +-
- arch/x86/kernel/idt.c              | 5 ++---
- arch/x86/kernel/machine_kexec_32.c | 2 +-
- arch/x86/kernel/reboot.c           | 2 +-
- 4 files changed, 5 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/desc.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/arch/x86/include/asm/desc.h b/arch/x86/include/asm/desc.h
-index 476082a83d1c..b8429ae50b71 100644
+index b8429ae50b71..400c17862870 100644
 --- a/arch/x86/include/asm/desc.h
 +++ b/arch/x86/include/asm/desc.h
-@@ -427,6 +427,6 @@ static inline void idt_setup_early_pf(void) { }
- static inline void idt_setup_ist_traps(void) { }
- #endif
- 
--extern void idt_invalidate(void *addr);
-+extern void idt_invalidate(void);
- 
- #endif /* _ASM_X86_DESC_H */
-diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index d552f177eca0..2779f5226dc2 100644
---- a/arch/x86/kernel/idt.c
-+++ b/arch/x86/kernel/idt.c
-@@ -331,11 +331,10 @@ void __init idt_setup_early_handler(void)
- 
- /**
-  * idt_invalidate - Invalidate interrupt descriptor table
-- * @addr:	The virtual address of the 'invalid' IDT
-  */
--void idt_invalidate(void *addr)
-+void idt_invalidate(void)
- {
--	struct desc_ptr idt = { .address = (unsigned long) addr, .size = 0 };
-+	static const struct desc_ptr idt = { .address = 0, .size = 0 };
- 
- 	load_idt(&idt);
+@@ -224,6 +224,26 @@ static inline void store_idt(struct desc_ptr *dtr)
+ 	asm volatile("sidt %0":"=m" (*dtr));
  }
-diff --git a/arch/x86/kernel/machine_kexec_32.c b/arch/x86/kernel/machine_kexec_32.c
-index 64b00b0d7fe8..1e34feebcd5d 100644
---- a/arch/x86/kernel/machine_kexec_32.c
-+++ b/arch/x86/kernel/machine_kexec_32.c
-@@ -232,7 +232,7 @@ void machine_kexec(struct kimage *image)
- 	 * The gdt & idt are now invalid.
- 	 * If you want to load them you must set up your own idt & gdt.
- 	 */
--	idt_invalidate(phys_to_virt(0));
-+	idt_invalidate();
- 	set_gdt(phys_to_virt(0), 0);
  
- 	/* now call it */
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index b29657b76e3f..ebfb91108232 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -669,7 +669,7 @@ static void native_machine_emergency_restart(void)
- 			break;
- 
- 		case BOOT_TRIPLE:
--			idt_invalidate(NULL);
-+			idt_invalidate();
- 			__asm__ __volatile__("int3");
- 
- 			/* We're probably dead after this, but... */
++static inline void native_gdt_invalidate(void)
++{
++	const struct desc_ptr invalid_gdt = {
++		.address = 0,
++		.size = 0
++	};
++
++	native_load_gdt(&invalid_gdt);
++}
++
++static inline void native_idt_invalidate(void)
++{
++	const struct desc_ptr invalid_idt = {
++		.address = 0,
++		.size = 0
++	};
++
++	native_load_idt(&invalid_idt);
++}
++
+ /*
+  * The LTR instruction marks the TSS GDT entry as busy. On 64-bit, the GDT is
+  * a read-only remapping. To prevent a page fault, the GDT is switched to the
 -- 
 2.31.1
 
