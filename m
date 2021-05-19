@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE00438876F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72516388777
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234977AbhESGTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:19:11 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3419 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235347AbhESGTD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:19:03 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FlMzM6gFpzCtWc;
-        Wed, 19 May 2021 14:14:55 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 14:17:42 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 19 May 2021 14:17:42 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <lipeng321@huawei.com>,
-        <tanhuazhong@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 5/5] net: e1000e: fix misspell word "retreived"
-Date:   Wed, 19 May 2021 14:14:45 +0800
-Message-ID: <1621404885-20075-6-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621404885-20075-1-git-send-email-huangguangbin2@huawei.com>
-References: <1621404885-20075-1-git-send-email-huangguangbin2@huawei.com>
+        id S234870AbhESGWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:22:17 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38501 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234472AbhESGWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 02:22:14 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1ljFZV-0001TL-00; Wed, 19 May 2021 08:20:45 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id EA4C8C0F89; Wed, 19 May 2021 08:20:30 +0200 (CEST)
+Date:   Wed, 19 May 2021 08:20:30 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH v5 1/2] gpio: Add support for IDT 79RC3243x GPIO
+ controller
+Message-ID: <20210519062030.GA4308@alpha.franken.de>
+References: <20210514123309.134048-1-tsbogend@alpha.franken.de>
+ <CACRpkdYTor-c2qvE=6YD4A+NmvpLgS3LsOfNpBZ5EdTrDkGgkg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYTor-c2qvE=6YD4A+NmvpLgS3LsOfNpBZ5EdTrDkGgkg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Chen <chenhao288@hisilicon.com>
+On Wed, May 19, 2021 at 01:50:39AM +0200, Linus Walleij wrote:
+> Hi Thomas,
+> 
+> thanks for your patch!
+> 
+> I can see this is starting to look really good.
+> 
+> There is one thing that confuses me:
+> 
+> On Fri, May 14, 2021 at 2:33 PM Thomas Bogendoerfer
+> <tsbogend@alpha.franken.de> wrote:
+> 
+> > IDT 79RC3243x SoCs integrated a gpio controller, which handles up
+> > to 32 gpios. All gpios could be used as an interrupt source.
+> >
+> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > ---
+> > Changes in v5:
+> (...)
+> 
+> > +static int idt_gpio_irq_set_type(struct irq_data *d, unsigned int flow_type)
+> > +{
+> (...)
+> > +       /* hardware only supports level triggered */
+> > +       if (sense == IRQ_TYPE_NONE || (sense & IRQ_TYPE_EDGE_BOTH))
+> > +               return -EINVAL;
+> (...)
+> > +       irq_set_handler_locked(d, handle_level_irq);
+> 
+> But:
+> 
+> > +static void idt_gpio_ack(struct irq_data *d)
+> > +{
+> > +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+> > +       struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
+> > +
+> > +       writel(~BIT(d->hwirq), ctrl->gpio + IDT_GPIO_ISTAT);
+> > +}
+> (...)
+> > +       .irq_ack = idt_gpio_ack,
+> 
+> Correct me if I'm wrong but I thing .irq_ack() is only called
+> from handle_edge_irq ... so never in this case.
 
-There is a misspell word "retreived" in comment, so fix it to "retrieved".
+handle_level_irq() does a mask_ack_irq() and this uses mask_irq() and
+desc->irq_data.chip->irq_ack(), if there is no irq_mask_ack function.
 
-Signed-off-by: Hao Chen <chenhao288@hisilicon.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Can this ACK just be deleted?
 
-diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
-index 1db35b2c7750..0f0efee5fc8e 100644
---- a/drivers/net/ethernet/intel/e1000e/phy.c
-+++ b/drivers/net/ethernet/intel/e1000e/phy.c
-@@ -2978,7 +2978,7 @@ static u32 e1000_get_phy_addr_for_hv_page(u32 page)
-  *  @data: pointer to the data to be read or written
-  *  @read: determines if operation is read or write
-  *
-- *  Reads the PHY register at offset and stores the retreived information
-+ *  Reads the PHY register at offset and stores the retrieved information
-  *  in data.  Assumes semaphore already acquired.  Note that the procedure
-  *  to access these regs uses the address port and data port to read/write.
-  *  These accesses done with PHY address 2 and without using pages.
+no without it interrupts won't go away.
+
+> The code in the ACK callback also looks really weird:
+> write all bits except for the current IRQ into the status
+> register? It's usually the other way around with these
+> things. That really makes me suspect it is unused.
+
+interrupts are acked by writing a 0 to the bit position. I know it's
+unusal...
+
+Thomas.
+
 -- 
-2.8.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
