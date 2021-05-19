@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591F93890A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB243890A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347551AbhESOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:21:03 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39768 "EHLO
+        id S1347390AbhESOVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:21:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39758 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346063AbhESOUz (ORCPT
+        with ESMTP id S242277AbhESOUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 10:20:55 -0400
 Date:   Wed, 19 May 2021 14:19:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621433974;
+        s=2020; t=1621433973;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ESpqIYZeaXjblcpOT4EZw9HNNOx2IyXw7Nb2tL5rhlo=;
-        b=BM1SQcex8wu6oNZ0iHamUv1FkqmGT3e8DZDw1HhbXGhWGLRcOnRW+etCTjDE/aP4XC77vh
-        9jxslVuDuUGvXbmpV1urnP5AN/seBs6pERLSwbLs0brE3MiUrXQtY0514P2QvsEdDSxPZT
-        ZJZA5S5pxcCR2fZn30zyNPKngydJgIBE2O5AbeYLbvfBym8aDJwX2jHNfxll2Du0i2ErWl
-        LecOrwL0b4riPE6MGxVhrdX3Pi7w9fIJWfKrlGxvGWnxMDKURP7L+uDXdDUTGvS3o7CgSg
-        tC4kPwJTfyqUEBZTtv2RK0xLW1JZ2+PzJMchM0KneRSn0dh1KgNLzSwBZQCTUw==
+        bh=6djV3Zce+Ts+Ezz/IoL+M5ZSLpSUnc29wDr3CbJHe5I=;
+        b=Wyy82PWR/bi4fdULjAE6Niha20aFO3vdeE+hsMAwzJWMl0xpCJWEZRn01vOrM1Ob8TZqxz
+        FTHf/PcuaJIov3hGvsmCWsz47leT64Vp+LF8T6zDPH4yVhNnAMq9Lm0SX3iK7vyyC6RYV5
+        /+XJiDWkdcs0+19rTfcqjxe9jMvumGUOuIMnFsiJUVW7y4hiWZ9Jpas6JSdMLy5DoNX94v
+        FkMb1rbvATXyIZIAmmbfNqwXBY7kUlIpNNwdu4VVXZEA3/7hdEsobQrC5ykEg1T966Yybu
+        PalusJG8PcjWzHIoKF3G7xCKNOP2F9sFeUigGGJu7GeBblEi1ttCGcI9uOswgw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621433974;
+        s=2020e; t=1621433973;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ESpqIYZeaXjblcpOT4EZw9HNNOx2IyXw7Nb2tL5rhlo=;
-        b=wXdq7oEc5nFrc3aAqQBKwAGhDVn83iMNEooEySCXh7LdkvvXYH+dxSsE44lOs9/FBfwnka
-        warveEiiOQhnP9Aw==
+        bh=6djV3Zce+Ts+Ezz/IoL+M5ZSLpSUnc29wDr3CbJHe5I=;
+        b=PLzEVDfvUTYH9IU0Ze9xywxp6e/9c1vtebSTtuk4p8fwpjGpykhdY5a0LMBHvHwF6U+mvm
+        cgVYIMdrfrxDHFBQ==
 From:   "tip-bot2 for Chang S. Bae" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+Subject: [tip: x86/fpu] selftest/sigaltstack: Use the AT_MINSIGSTKSZ aux
+ vector if available
 Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
         Borislav Petkov <bp@suse.de>, Len Brown <len.brown@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210518200320.17239-4-chang.seok.bae@intel.com>
-References: <20210518200320.17239-4-chang.seok.bae@intel.com>
+In-Reply-To: <20210518200320.17239-5-chang.seok.bae@intel.com>
+References: <20210518200320.17239-5-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-Message-ID: <162143397291.29796.8808994957174145740.tip-bot2@tip-bot2>
+Message-ID: <162143397250.29796.6163085333055861251.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,180 +60,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     1c33bb0507508af24fd754dd7123bd8e997fab2f
-Gitweb:        https://git.kernel.org/tip/1c33bb0507508af24fd754dd7123bd8e997fab2f
+Commit-ID:     bdf6c8b84a4fa726c382ef6d3518f3ae123a7ebd
+Gitweb:        https://git.kernel.org/tip/bdf6c8b84a4fa726c382ef6d3518f3ae123a7ebd
 Author:        Chang S. Bae <chang.seok.bae@intel.com>
-AuthorDate:    Tue, 18 May 2021 13:03:17 -07:00
+AuthorDate:    Tue, 18 May 2021 13:03:18 -07:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 19 May 2021 12:18:45 +02:00
+CommitterDate: Wed, 19 May 2021 12:38:17 +02:00
 
-x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+selftest/sigaltstack: Use the AT_MINSIGSTKSZ aux vector if available
 
-Historically, signal.h defines MINSIGSTKSZ (2KB) and SIGSTKSZ (8KB), for
-use by all architectures with sigaltstack(2). Over time, the hardware state
-size grew, but these constants did not evolve. Today, literal use of these
-constants on several architectures may result in signal stack overflow, and
-thus user data corruption.
+The SIGSTKSZ constant may not represent enough stack size in some
+architectures as the hardware state size grows.
 
-A few years ago, the ARM team addressed this issue by establishing
-getauxval(AT_MINSIGSTKSZ). This enables the kernel to supply a value
-at runtime that is an appropriate replacement on current and future
-hardware.
-
-Add getauxval(AT_MINSIGSTKSZ) support to x86, analogous to the support
-added for ARM in
-
-  94b07c1f8c39 ("arm64: signal: Report signal frame size to userspace via auxv").
-
-Also, include a documentation to describe x86-specific auxiliary vectors.
+Use getauxval(AT_MINSIGSTKSZ) to increase the stack size.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Acked-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20210518200320.17239-4-chang.seok.bae@intel.com
+Link: https://lkml.kernel.org/r/20210518200320.17239-5-chang.seok.bae@intel.com
 ---
- Documentation/x86/elf_auxvec.rst   | 53 +++++++++++++++++++++++++++++-
- Documentation/x86/index.rst        |  1 +-
- arch/x86/include/asm/elf.h         |  4 ++-
- arch/x86/include/uapi/asm/auxvec.h |  4 +-
- arch/x86/kernel/signal.c           |  5 +++-
- 5 files changed, 65 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/x86/elf_auxvec.rst
+ tools/testing/selftests/sigaltstack/sas.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/x86/elf_auxvec.rst b/Documentation/x86/elf_auxvec.rst
-new file mode 100644
-index 0000000..18e4744
---- /dev/null
-+++ b/Documentation/x86/elf_auxvec.rst
-@@ -0,0 +1,53 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==================================
-+x86-specific ELF Auxiliary Vectors
-+==================================
-+
-+This document describes the semantics of the x86 auxiliary vectors.
-+
-+Introduction
-+============
-+
-+ELF Auxiliary vectors enable the kernel to efficiently provide
-+configuration-specific parameters to userspace. In this example, a program
-+allocates an alternate stack based on the kernel-provided size::
-+
-+   #include <sys/auxv.h>
-+   #include <elf.h>
-+   #include <signal.h>
-+   #include <stdlib.h>
-+   #include <assert.h>
-+   #include <err.h>
-+
-+   #ifndef AT_MINSIGSTKSZ
-+   #define AT_MINSIGSTKSZ	51
-+   #endif
-+
-+   ....
-+   stack_t ss;
-+
-+   ss.ss_sp = malloc(ss.ss_size);
-+   assert(ss.ss_sp);
-+
-+   ss.ss_size = getauxval(AT_MINSIGSTKSZ) + SIGSTKSZ;
-+   ss.ss_flags = 0;
-+
-+   if (sigaltstack(&ss, NULL))
-+        err(1, "sigaltstack");
-+
-+
-+The exposed auxiliary vectors
-+=============================
-+
-+AT_SYSINFO is used for locating the vsyscall entry point.  It is not
-+exported on 64-bit mode.
-+
-+AT_SYSINFO_EHDR is the start address of the page containing the vDSO.
-+
-+AT_MINSIGSTKSZ denotes the minimum stack size required by the kernel to
-+deliver a signal to user-space.  AT_MINSIGSTKSZ comprehends the space
-+consumed by the kernel to accommodate the user context for the current
-+hardware configuration.  It does not comprehend subsequent user-space stack
-+consumption, which must be added by the user.  (e.g. Above, user-space adds
-+SIGSTKSZ to AT_MINSIGSTKSZ.)
-diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
-index 4693e19..d58614d 100644
---- a/Documentation/x86/index.rst
-+++ b/Documentation/x86/index.rst
-@@ -35,3 +35,4 @@ x86-specific Documentation
-    sva
-    sgx
-    features
-+   elf_auxvec
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index 7d75008..29fea18 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -312,6 +312,7 @@ do {									\
- 		NEW_AUX_ENT(AT_SYSINFO,	VDSO_ENTRY);			\
- 		NEW_AUX_ENT(AT_SYSINFO_EHDR, VDSO_CURRENT_BASE);	\
- 	}								\
-+	NEW_AUX_ENT(AT_MINSIGSTKSZ, get_sigframe_size());		\
- } while (0)
+diff --git a/tools/testing/selftests/sigaltstack/sas.c b/tools/testing/selftests/sigaltstack/sas.c
+index 8934a37..c53b070 100644
+--- a/tools/testing/selftests/sigaltstack/sas.c
++++ b/tools/testing/selftests/sigaltstack/sas.c
+@@ -17,6 +17,7 @@
+ #include <string.h>
+ #include <assert.h>
+ #include <errno.h>
++#include <sys/auxv.h>
  
- /*
-@@ -328,6 +329,7 @@ extern unsigned long task_size_32bit(void);
- extern unsigned long task_size_64bit(int full_addr_space);
- extern unsigned long get_mmap_base(int is_legacy);
- extern bool mmap_address_hint_valid(unsigned long addr, unsigned long len);
-+extern unsigned long get_sigframe_size(void);
+ #include "../kselftest.h"
  
- #ifdef CONFIG_X86_32
- 
-@@ -349,6 +351,7 @@ do {									\
- 	if (vdso64_enabled)						\
- 		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
- 			    (unsigned long __force)current->mm->context.vdso); \
-+	NEW_AUX_ENT(AT_MINSIGSTKSZ, get_sigframe_size());		\
- } while (0)
- 
- /* As a historical oddity, the x32 and x86_64 vDSOs are controlled together. */
-@@ -357,6 +360,7 @@ do {									\
- 	if (vdso64_enabled)						\
- 		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
- 			    (unsigned long __force)current->mm->context.vdso); \
-+	NEW_AUX_ENT(AT_MINSIGSTKSZ, get_sigframe_size());		\
- } while (0)
- 
- #define AT_SYSINFO		32
-diff --git a/arch/x86/include/uapi/asm/auxvec.h b/arch/x86/include/uapi/asm/auxvec.h
-index 580e3c5..6beb55b 100644
---- a/arch/x86/include/uapi/asm/auxvec.h
-+++ b/arch/x86/include/uapi/asm/auxvec.h
-@@ -12,9 +12,9 @@
- 
- /* entries in ARCH_DLINFO: */
- #if defined(CONFIG_IA32_EMULATION) || !defined(CONFIG_X86_64)
--# define AT_VECTOR_SIZE_ARCH 2
-+# define AT_VECTOR_SIZE_ARCH 3
- #else /* else it's non-compat x86-64 */
--# define AT_VECTOR_SIZE_ARCH 1
-+# define AT_VECTOR_SIZE_ARCH 2
+@@ -24,6 +25,11 @@
+ #define SS_AUTODISARM  (1U << 31)
  #endif
  
- #endif /* _ASM_X86_AUXVEC_H */
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 689a4b6..86e5386 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -718,6 +718,11 @@ void __init init_sigframe_size(void)
- 	pr_info("max sigframe size: %lu\n", max_frame_size);
- }
- 
-+unsigned long get_sigframe_size(void)
-+{
-+	return max_frame_size;
-+}
++#ifndef AT_MINSIGSTKSZ
++#define AT_MINSIGSTKSZ	51
++#endif
 +
- static inline int is_ia32_compat_frame(struct ksignal *ksig)
- {
- 	return IS_ENABLED(CONFIG_IA32_EMULATION) &&
++static unsigned int stack_size;
+ static void *sstack, *ustack;
+ static ucontext_t uc, sc;
+ static const char *msg = "[OK]\tStack preserved";
+@@ -47,7 +53,7 @@ void my_usr1(int sig, siginfo_t *si, void *u)
+ #endif
+ 
+ 	if (sp < (unsigned long)sstack ||
+-			sp >= (unsigned long)sstack + SIGSTKSZ) {
++			sp >= (unsigned long)sstack + stack_size) {
+ 		ksft_exit_fail_msg("SP is not on sigaltstack\n");
+ 	}
+ 	/* put some data on stack. other sighandler will try to overwrite it */
+@@ -108,6 +114,10 @@ int main(void)
+ 	stack_t stk;
+ 	int err;
+ 
++	/* Make sure more than the required minimum. */
++	stack_size = getauxval(AT_MINSIGSTKSZ) + SIGSTKSZ;
++	ksft_print_msg("[NOTE]\tthe stack size is %lu\n", stack_size);
++
+ 	ksft_print_header();
+ 	ksft_set_plan(3);
+ 
+@@ -117,7 +127,7 @@ int main(void)
+ 	sigaction(SIGUSR1, &act, NULL);
+ 	act.sa_sigaction = my_usr2;
+ 	sigaction(SIGUSR2, &act, NULL);
+-	sstack = mmap(NULL, SIGSTKSZ, PROT_READ | PROT_WRITE,
++	sstack = mmap(NULL, stack_size, PROT_READ | PROT_WRITE,
+ 		      MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+ 	if (sstack == MAP_FAILED) {
+ 		ksft_exit_fail_msg("mmap() - %s\n", strerror(errno));
+@@ -139,7 +149,7 @@ int main(void)
+ 	}
+ 
+ 	stk.ss_sp = sstack;
+-	stk.ss_size = SIGSTKSZ;
++	stk.ss_size = stack_size;
+ 	stk.ss_flags = SS_ONSTACK | SS_AUTODISARM;
+ 	err = sigaltstack(&stk, NULL);
+ 	if (err) {
+@@ -161,7 +171,7 @@ int main(void)
+ 		}
+ 	}
+ 
+-	ustack = mmap(NULL, SIGSTKSZ, PROT_READ | PROT_WRITE,
++	ustack = mmap(NULL, stack_size, PROT_READ | PROT_WRITE,
+ 		      MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+ 	if (ustack == MAP_FAILED) {
+ 		ksft_exit_fail_msg("mmap() - %s\n", strerror(errno));
+@@ -170,7 +180,7 @@ int main(void)
+ 	getcontext(&uc);
+ 	uc.uc_link = NULL;
+ 	uc.uc_stack.ss_sp = ustack;
+-	uc.uc_stack.ss_size = SIGSTKSZ;
++	uc.uc_stack.ss_size = stack_size;
+ 	makecontext(&uc, switch_fn, 0);
+ 	raise(SIGUSR1);
+ 
