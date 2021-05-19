@@ -2,178 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100843899FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31AB389A04
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhESXop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
+        id S230029AbhESXps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESXon (ORCPT
+        with ESMTP id S230027AbhESXpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:44:43 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78163C061574;
-        Wed, 19 May 2021 16:43:21 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id 82so3150720qki.8;
-        Wed, 19 May 2021 16:43:21 -0700 (PDT)
+        Wed, 19 May 2021 19:45:43 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB86C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:22 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id m1so11976668ilg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jZj61H+nZldX9VF8Rk7SoLRZEnhdWQ15nrHYMIdlXL8=;
-        b=hV289Pn1fzt0l5vYzw9Zco9XFbeqr0tKlwl117wL+ReIbVLezHs/xFwIcMKafGIL/r
-         Ceq9AJkQHisWMOwWZVoe+E3BdzypGyKrbGtP5GVg+wjxmevjIE5q30D1Z3rQCTBmbzyl
-         JopSkzzu13aCRFAkE3C3pYN93lb/AFgpuiOcI=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jv6Sw1V79WB30glKJR0nl+lR8QaC1yMGOJy0bSM1IOk=;
+        b=xso1mlTcQ9Dv14e3OE+DJYqggXBIjPgXN6xmP/LaoKgJVJgbLwxNg8InxI4yyoMMxS
+         yO+H72FjhZb8xhR38gAW9MS+/5Euj50lZbKowVrDLGmJwxVlHgWWCS7rdtzgZ5TUE/mC
+         80J6Fq7KvYybfI4CH+JkXJT8taWwgb/ZBWnwvg6RyFGttpmz+bvaCO1zxDLOd+osVnRK
+         sSRZqM7fi24pGf9p+CEi7x1mOt+2sFtU+OHr3sUuEIUROuq4dhh9xLzhj9X7u0omjqu3
+         kj6I789m/lwcY4yMuThGHTlWybkvxydRXrLLCgv+tPYJOZ+ldPC6+na/xsEYpoW7JqT6
+         LinA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jZj61H+nZldX9VF8Rk7SoLRZEnhdWQ15nrHYMIdlXL8=;
-        b=lp61uGh8Hi7ghuYkGlyKVBIBYtXo81zHvu83/yEYPxuGl0V6SC5xvEMDX69NMdeQo+
-         SmTmaWdybKle19AZbz3pHQYb79aGXegDIaoor97qCmBgXUU4VuLU6joIxnBsjKSK0t7E
-         ODq9vHxpJ0LYoP2d1x6vgmZPX6jnGqh1crUM6USvjx88kJKNN2jM9bwyyp/CeDz3X0zx
-         C76Wyfuy1R2O5uan39xGCV9swGTB8zcPje4fNbjS6jZjT4YdBfuLbEb7ECs/eoNwcAc9
-         tb0vX6yNwTOvG8dxaG9mRCnKcYOtRL33pwMtyun17LDB5BwmA9c/1GFVG1WbkrB853mJ
-         TVvw==
-X-Gm-Message-State: AOAM53317Vs6W6Mi4Cra3YLZSRjLWcnefHfKOzOkZHUJObQHc06W0k+D
-        pCKirJrVUlprkdUJjsEUk2zRvFe3E14Tjk+x0gM=
-X-Google-Smtp-Source: ABdhPJyUszWiuobnzOy5L9VplXiMBG9qLzJjbpbR0WfzIFw8cspGiZ3PnAV6tV3oDvUEgCvPn/rTmcBK9mwiyYTq9ws=
-X-Received: by 2002:a05:620a:704:: with SMTP id 4mr1331345qkc.66.1621467800517;
- Wed, 19 May 2021 16:43:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jv6Sw1V79WB30glKJR0nl+lR8QaC1yMGOJy0bSM1IOk=;
+        b=FbVB7uz5RVa9ACiZwejtDctB78qRu0vxiLri8HpZNAEhsda83FOQ3Eru05lQtnw9G5
+         KH/RiGu4H2+E7sk5iIF0TavUuPT7NW+ntEo/F1seI8SaDOdQEGZon9VNsdz3bAGKkYuJ
+         3K22WZKaMBo9IdO+PFwtwJbvUWK4nsDPEhECI22DsdtE9LfMsZUqgTgpNXS59SbZUSir
+         7Z8+DQXRKWN2C+y8/6QSEmVqqQszZlBDegM44dJ9ZHkxUATyVo9BKzIPE1IIsXamsR1H
+         JxnGSmx7C2lngVZch8WtNaTWhOQj/ug0Wdpr/xrwjU2WiMbf2SEDFSojr5KBVT0hy2X1
+         MW8g==
+X-Gm-Message-State: AOAM532dhn/AkawFtLOtjsEP579BwWyGB0dPDjpO9LHb/QB5HgAKugqw
+        uQ7tk66KpqJRWw39TUdCDiF85g==
+X-Google-Smtp-Source: ABdhPJyeXrPCY/hm4zZQqBWVIYv7zfFq0YrOehJN0kGa+hS4iPOLH9Ddqzn7NqV1gKmuJ/FkYYAY2A==
+X-Received: by 2002:a05:6e02:1348:: with SMTP id k8mr1826393ilr.104.1621467861753;
+        Wed, 19 May 2021 16:44:21 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id x13sm945415ilo.11.2021.05.19.16.44.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 16:44:21 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] remoteproc: avoid notification when suspended
+Date:   Wed, 19 May 2021 18:44:17 -0500
+Message-Id: <20210519234418.1196387-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210519074934.20712-1-quan@os.amperecomputing.com> <20210519074934.20712-5-quan@os.amperecomputing.com>
-In-Reply-To: <20210519074934.20712-5-quan@os.amperecomputing.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 19 May 2021 23:43:08 +0000
-Message-ID: <CACPK8XdyQT=cuSr9KBqC0PBkOLgBUBpyz3kZEA3JuOuZsQN_Rw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/7] i2c: aspeed: Acknowledge Tx done w/wo ACK irq late
-To:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c@vger.kernel.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 at 07:50, Quan Nguyen <quan@os.amperecomputing.com> wrote:
->
-> With Tx done w/wo ACK are ack'ed early at beginning of irq handler,
+I added a cover page for this single patch to provide a little more
+explanation about testing.
 
-Is w/wo a typo? If not, please write the full words ("with and without")
+I have verified that, when this patch is applied, the IPA driver
+receives the desired crash notification after the modem has crashed.
+It recovers properly, and functions correctly following the crash.
 
-> it is observed that, usually, the Tx done with Ack irq raises in the
-> READ REQUESTED state. This is unexpected and complaint as below appear:
-> "Unexpected Ack on read request"
->
-> Assumed that Tx done should only be ack'ed once it was truly processed,
-> switch to late ack'ed this two irqs and seen this issue go away through
-> test with AST2500..
+However I have not tested the specific scenario it is intended to
+fix; that is, I have not verified that the crash notification is
+delayed if the crash occurs while the IPA driver is suspended.  If I
+had a reliable way to do this I would have done so, but I do not.
+I can only argue that it *should* work, based on the way the
+freezable system workqueue is designed.
 
-Please read Guneter's commit message
-2be6b47211e17e6c90ead40d24d2a5cc815f2d5c to confirm that your changes
-do not invalidate the fix that they made.  Add them to CC for review.
+My biggest concern about this change is that I don't understand
+other remoteproc users well enough to know what impact this change
+would have on them.  So I am relying on review (and testing if
+possible!) to evaluate that.
 
-Again, this is a fix that is independent of the ssif work. Please send
-it separately with a Fixes line.
+And finally, while this is a very simple (one line) change, if there
+are other suggestions I'd like to hear them.
 
->
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> ---
-> v3:
->   + First introduce in v3 [Quan]
->
->  drivers/i2c/busses/i2c-aspeed.c | 26 ++++++++++++++++++--------
->  1 file changed, 18 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-> index 3fb37c3f23d4..b2e9c8f0ddf7 100644
-> --- a/drivers/i2c/busses/i2c-aspeed.c
-> +++ b/drivers/i2c/busses/i2c-aspeed.c
-> @@ -606,8 +606,12 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
->
->         spin_lock(&bus->lock);
->         irq_received = readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> -       /* Ack all interrupts except for Rx done */
-> -       writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
-> +       /*
-> +        * Ack all interrupts except for Rx done and
-> +        * Tx done with/without ACK
+					-Alex
 
-Nit: this comment can be on one line.
+Alex Elder (1):
+  remoteproc: use freezable workqueue for crash notifications
+
+ drivers/remoteproc/remoteproc_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.27.0
 
 
-> +        */
-> +       writel(irq_received &
-> +              ~(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED_I2CD_INTR_TX_NAK),
->                bus->base + ASPEED_I2C_INTR_STS_REG);
->         readl(bus->base + ASPEED_I2C_INTR_STS_REG);
->         irq_received &= ASPEED_I2CD_INTR_RECV_MASK;
-> @@ -652,12 +656,18 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
->                         "irq handled != irq. expected 0x%08x, but was 0x%08x\n",
->                         irq_received, irq_handled);
->
-> -       /* Ack Rx done */
-> -       if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
-> -               writel(ASPEED_I2CD_INTR_RX_DONE,
-> -                      bus->base + ASPEED_I2C_INTR_STS_REG);
-> -               readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> -       }
-> +       /* Ack Rx done and Tx done with/without ACK */
-> +       /* Note: Re-use irq_handled variable */
-
-I'm not sure what this note means.
-
-> +       irq_handled = 0;
-> +       if (irq_received & ASPEED_I2CD_INTR_RX_DONE)
-> +               irq_handled |= ASPEED_I2CD_INTR_RX_DONE;
-> +       if (irq_received & ASPEED_I2CD_INTR_TX_ACK)
-> +               irq_handled |= ASPEED_I2CD_INTR_TX_ACK;
-> +       if (irq_received & ASPEED_I2CD_INTR_TX_NAK)
-> +               irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
-> +       writel(irq_handled, bus->base + ASPEED_I2C_INTR_STS_REG);
-
-Are you intentionally only acking the bits that are set when we read
-from STS_REG at the start of the handler? If not, we could write this
-instead:
-
-writel(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK |
-ASPEED_I2CD_INTR_TX_NAK,
-        bus->base + ASPEED_I2C_INTR_STS_REG);
-
-If you only want to ack the bits that are set, then do this:
-
-  writel(irq_received &
-            (ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK |
-ASPEED_I2CD_INTR_TX_NAK),
-         bus->base + ASPEED_I2C_INTR_STS_REG);
-
-That way, you can avoid all of the tests.
-
-> +       readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-
-When you move this, please add a comment that reminds us why we do a
-write-then-read (see commit c926c87b8e36dcc0ea5c2a0a0227ed4f32d0516a).
-
-> +
->         spin_unlock(&bus->lock);
->         return irq_remaining ? IRQ_NONE : IRQ_HANDLED;
->  }
-> --
-> 2.28.0
->
