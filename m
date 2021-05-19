@@ -2,150 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1759388C5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49F8388C5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346089AbhESLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:09:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32990 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240482AbhESLJF (ORCPT
+        id S1346103AbhESLKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240482AbhESLKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:09:05 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JB4McU175859;
-        Wed, 19 May 2021 07:07:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=mgQP3Ox1zUzhqI+jTSjnWTXTwOY6N8NMVBkqvt6iJi4=;
- b=Ek/Cjvwltmcjr7sM4AGleRPxOaWP17xfCHOt/9R/Xta3oZjAyjxuYRye5uonQ/7F+MwD
- yFSQRmeklkFuy6gB9CRxCbbxAU5WTITKQ6+kyajSSvZBQiToOM0MRsz+wN40VZXx9vKw
- Q9XR9duZCdNGqq8plva7mEQbJXqYlF9E+77jIDe8Z7nCuyOPQAL/UpoR08yAfPpj6Sn/
- ntQmxn1c4fjzjLx1W+ao+J+GgrfP7FdskWJBnlsZECtQ6vD7UCfyrYe7t1sRNa01xtsG
- DRCgbBMaZy4/J5ciD6qOKHKvN9nTay0UzUCiK3tF5CngarC2nSi7z/EhWwJKuHFmYODT 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n182gewj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 07:07:30 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JB4lZJ183041;
-        Wed, 19 May 2021 07:07:29 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n182gevx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 07:07:29 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JAnVTT008925;
-        Wed, 19 May 2021 11:07:28 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 38mceh8c0v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 11:07:27 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JB7Ond29295018
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 11:07:24 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B00CEA4059;
-        Wed, 19 May 2021 11:07:24 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2C109A4040;
-        Wed, 19 May 2021 11:07:24 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.46.43])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 19 May 2021 11:07:24 +0000 (GMT)
-Date:   Wed, 19 May 2021 13:07:22 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on
- PGTABLE_LEVELS > 2
-Message-ID: <20210519130722.7d255b7f@thinkpad>
-In-Reply-To: <20210517161358.49683f34@thinkpad>
-References: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
-        <a4403be6-5b74-2c86-bc4c-42ae4f0764dc@arm.com>
-        <20210517161358.49683f34@thinkpad>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Wed, 19 May 2021 07:10:40 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EE4C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:09:20 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id 69so6827021plc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=e62NCutqVCKY1HZkBPIYfPXud7+Npfa1OW39gmbpZNw=;
+        b=AqRy7PoVVsGWyaOqAExW+UbJ5G2Hg8v5DwW0yaQa4vR2DJ62ZlwKffibyrBx7d6fdF
+         noszNvJZm3l0ad+gbM9y/fbi8ZYxUIS2pJebrXsod087KBCpm/dHj+CHE7b0FpEdy1+d
+         z4qlFFQ4qLxwVvk4TLd9wKaa9bZEnv7oeKsukZyS+5uFkZhb3QabrzUCGEXGkEFcBaLI
+         2YenGVjj5Y46IJblWrwPHdKCd5Sjbh0BdmEl/XTjMAqFL7p8BJ3G1j+qtXGcs3rkXetg
+         OYYrogimMCxT+Sj4BvaJgp7HTqTEb/MhNU9FfgD7YhHdlX873H7AhdoYIR+9cfYWAfG/
+         YUkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=e62NCutqVCKY1HZkBPIYfPXud7+Npfa1OW39gmbpZNw=;
+        b=q1WfaFCeMmgA9nmCg5jVgAzFKacO+8GlRTr0dt4474Md4uzTxl3QbJ+8AQV3bPAxwA
+         pIFaNkig5wbYo3wxzxu1z4hDVt6MdcD8rC4JXGJFxo7IKfD1kCuIaOrFGYgPrKM1Mno6
+         xKp8i4ZRTDS4hpS6Ut+6LC1Q6wNk2rYezotiKpV8Dt1UFVy2lb4WJ7vtmmc9hjnxoxfl
+         HRuVQy7XeOIVIkPmr3JTvNcriWOkQDcigNx5vF9sdJNPt1wrsdDRoUTKz5agNvkDhRd3
+         zGhHI/hB31dl5b3SmoOYX8JlnuXLkiaH+XFeiZF3/Go40QBWEn/mziNF4cGDqNvLMDdv
+         iFOg==
+X-Gm-Message-State: AOAM531iL5rah6/B+JiIX6rNpRu/d0fy5Nm1MeyFO8JwD0LkldfZ3zPt
+        5jpbqGMlJgqfSmqucoSHZBs=
+X-Google-Smtp-Source: ABdhPJzf5y+PAB13kZ36zpA6LV/PtNoQ5/SsALHEpOBAG8UxoHuBIAaArifwvs7eStDb2yHlpm/PbA==
+X-Received: by 2002:a17:90a:a08c:: with SMTP id r12mr10540431pjp.204.1621422560590;
+        Wed, 19 May 2021 04:09:20 -0700 (PDT)
+Received: from localhost (14-201-155-8.tpgi.com.au. [14.201.155.8])
+        by smtp.gmail.com with ESMTPSA id x13sm990257pfn.43.2021.05.19.04.09.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 04:09:20 -0700 (PDT)
+Date:   Wed, 19 May 2021 21:09:14 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v3 5/6] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Aubrey Li <aubrey.li@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Len Brown <len.brown@intel.com>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Mel Gorman <mgorman@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20210513154909.6385-1-ricardo.neri-calderon@linux.intel.com>
+        <20210513154909.6385-6-ricardo.neri-calderon@linux.intel.com>
+        <YJ5HQR943rSFsLxw@hirez.programming.kicks-ass.net>
+        <20210515021415.GB14212@ranerica-svr.sc.intel.com>
+        <20210518190740.GA15251@ranerica-svr.sc.intel.com>
+        <YKThlA2yZBT2KuvW@hirez.programming.kicks-ass.net>
+In-Reply-To: <YKThlA2yZBT2KuvW@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WWrK9mQA_VGxztucBjuP4reC0yVbWybH
-X-Proofpoint-ORIG-GUID: 8Di_qBcH4nJ6RmCX8ShVo6LLQY9FAAW_
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_04:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 bulkscore=0 adultscore=0 clxscore=1015 spamscore=0
- phishscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190074
+Message-Id: <1621422058.5rx5cxsjqx.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 16:13:57 +0200
-Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
+Excerpts from Peter Zijlstra's message of May 19, 2021 7:59 pm:
+> On Tue, May 18, 2021 at 12:07:40PM -0700, Ricardo Neri wrote:
+>> On Fri, May 14, 2021 at 07:14:15PM -0700, Ricardo Neri wrote:
+>> > On Fri, May 14, 2021 at 11:47:45AM +0200, Peter Zijlstra wrote:
+>=20
+>> > > So I'm thinking that this is a property of having ASYM_PACKING at a =
+core
+>> > > level, rather than some arch special. Wouldn't something like this b=
+e
+>> > > more appropriate?
+>=20
+>> > Thanks Peter for the quick review! This makes sense to me. The only
+>> > reason we proposed arch_asym_check_smt_siblings() is because we were
+>> > about breaking powerpc (I need to study how they set priorities for SM=
+T,
+>> > if applicable). If you think this is not an issue I can post a
+>> > v4 with this update.
+>>=20
+>> As far as I can see, priorities in powerpc are set by the CPU number.
+>> However, I am not sure how CPUs are enumerated? If CPUs in brackets are
+>> SMT sibling, Does an enumeration looks like A) [0, 1], [2, 3] or B) [0, =
+2],
+>> [1, 3]? I guess B is the right answer. Otherwise, both SMT siblings of a
+>> core would need to be busy before a new core is used.
+>>=20
+>> Still, I think the issue described in the cover letter may be
+>> reproducible in powerpc as well. If CPU3 is offlined, and [0, 2] pulled
+>> tasks from [1, -] so that both CPU0 and CPU2 become busy, CPU1 would not=
+ be
+>> able to help since CPU0 has the highest priority.
+>>=20
+>> I am cc'ing the linuxppc list to get some feedback.
+>=20
+> IIRC the concern with Power is that their Cores can go faster if the
+> higher SMT siblings are unused.
+>=20
+> That is, suppose you have an SMT4 Core with only a single active task,
+> then if only SMT0 is used it can reach max performance, but if the
+> active sibling is SMT1 it can not reach max performance, and if the only
+> active sibling is SMT2 it goes slower still.
+>=20
+> So they need to pack the tasks to the lowest SMT siblings, and have the
+> highest SMT siblings idle (where possible) in order to increase
+> performance.
 
-> On Mon, 17 May 2021 09:45:31 +0530
-> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
-> 
-> > 
-> > 
-> > On 5/10/21 10:05 AM, Anshuman Khandual wrote:  
-> > > ARCH_ENABLE_SPLIT_PMD_PTLOCK is irrelevant unless there are two page table
-> > > levels including PMD (also per Documentation/vm/split_page_table_lock.rst).
-> > > Make this dependency explicit on remaining platforms i.e x86 and s390 where
-> > > ARCH_ENABLE_SPLIT_PMD_PTLOCK is subscribed.  
-> 
-> For s390, I don't think this makes a lot of sense. We always have 5 levels
-> defined for PGTABLE_LEVELS, and we would not even compile with any other
-> value, because of the "#error CONFIG_PGTABLE_LEVELS" in include/linux/pgtable.h.
-> 
-> Our pagetable folding also works a bit different than it does on other archs,
-> and we would actually have pmd level entries for 2-level pagetables, so it should
-> all work fine also with PGTABLE_LEVELS == 2 (if it was possible).
-> 
-> In fact, I do not really see why you would need "more than two levels" on any
-> arch, in order to use split PMD locks. Your description also just says
-> "irrelevant unless there are two page table levels", and not "more than two
-> levels", like in Documentation/vm/split_page_table_lock.rst.
-> 
-> Yet, your patch adds checks for "more than", so at least the description
-> seems a bit misleading. I assume that the "more than" has to do with folded
-> PMD on a 2-level system, but the way we fold on s390 I do not see why that
-> should be a problem. Could you please elaborate a bit?
-> 
-> We also have different levels of pagetables for kernel (CONFIG_PGTABLE_LEVELS)
-> and user processes on s390. The latter can have dynamic levels, currently
-> starting with 3, but previously we also had 2 levels for compat tasks e.g.
-> These dynamic levels for user processes are also independent from the
-> CONFIG_PGTABLE_LEVELS used for the kernel pagetable, while the split PMD lock
-> of course also affects user process pagetables, so that would be another
-> reason not to add such a dependency for ARCH_ENABLE_SPLIT_PMD_PTLOCK on s390.
+That's correct.
 
-Ouch, I guess I was a bit confused here. I thought the split PMD lock
-was part of the struct page for the 4 KB page where the PMD entry is located,
-and therefore, with more than one page, it still would make (a little) sense
-to use it also for 2 pagetable levels.
-
-However, pmd_to_page() always returns the struct page of the first page,
-so there is only one split PMD lock for the whole thing (4 pages for s390).
-Of course that means that with 2 pagetable levels, and only one PMD directory,
-the split PMD lock would be equivalent to the global pagetable lock, and
-therefore not make any sense.
-
-Maybe you could change the description to also mention "more than two"
-levels?
-
-I still do not see a real benefit of the patch, e.g. it does not really
-fix any possible misconfiguration, at least on s390. But it certainly is not
-wrong, and at least it had the benefit of making me aware again of how split
-PMD locks work, so I'll happily add this
-
-Acked-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com> # s390
+Thanks,
+Nick
