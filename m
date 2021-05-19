@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1AD3899E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7CC3899E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhESXbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:31:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhESXbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:31:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44CC6611AB;
-        Wed, 19 May 2021 23:30:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621467002;
-        bh=8xvSSE3H35qcDXVWBq8krJ/CkeS4P86f6MpxZY+FQsI=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=pdeWnBCOnInNDm8x6YAc+z9QI+Wu0uGxbXPy3JyYre/HD1tUr1yp6Kj89MZ/+rP4j
-         yP5bCoD92a0n36gX2BAgc3g5ShKUr18Xw+WgAzNI8SNW/Sk5rU/KyTIrmiiul6h1Wg
-         eT0zgg4taZ/bludKSSGnXyBVkQKxorWMOnB8PG4P7W2+I07XYaArz+llvLdH4G+O+N
-         tzQE4mXkQcKNXTuv5CU/EnJ5oulujaPddY2b+jkmjSUcR6D3RjGV/vScxk/7tTfePz
-         k34YWGiA5fjDL/STm/OGEjTDauJfOd+tL9eNhUJyrdSknsk/RRxsjrst6a35PUaLNs
-         FdW6geIgOvIKg==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 550F327C0054;
-        Wed, 19 May 2021 19:30:00 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Wed, 19 May 2021 19:30:00 -0400
-X-ME-Sender: <xms:d5-lYHGmPWDSX8OSBqh8yqRFL6-TU4DGvAAYQa_ollvI-_ZFCfiU8A>
-    <xme:d5-lYEWA6xPYUhC6Dp-0AaIYZd1uBpZsvgq6yetXcps0f_I2zd7eQCGNfT61HZfO0
-    kAZe7T5DnMvIhY_1Hk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddgvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpeegjefghfdtledvfeegfeelvedtgfevkeeugfekffdvveeffeetieeh
-    ueetveekfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:d5-lYJLzfx3n_y0I3zlLOGlU6QQemwxaAQP1RPrT6w3cifmzFy3kXw>
-    <xmx:d5-lYFFNy--_xYr0kWZptyE06O5JxcTVrqCwu81bzB8JH91a3XzhPA>
-    <xmx:d5-lYNV19oH3DOUeibnsJQfgKXqcPYhjwLeW8Zt2oSxUuuDukuwBvA>
-    <xmx:eJ-lYGvA-tXWjlTjhLx2635WhOntheP6f4M6vGlDhqQ6qROmgFpx5OUCrR3ovjulKRgSqQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 155B051C0060; Wed, 19 May 2021 19:29:58 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <86701a5e-87b5-4e73-9b7a-557d8c855f89@www.fastmail.com>
-In-Reply-To: <YJvU+RAvetAPT2XY@zn.tnic>
-References: <cover.1619193043.git.ashish.kalra@amd.com>
- <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
- <YJvU+RAvetAPT2XY@zn.tnic>
-Date:   Wed, 19 May 2021 16:29:37 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Borislav Petkov" <bp@alien8.de>,
-        "Ashish Kalra" <Ashish.Kalra@amd.com>,
-        "Sean Christopherson" <seanjc@google.com>
-Cc:     "Paolo Bonzini" <pbonzini@redhat.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Joerg Roedel" <joro@8bytes.org>, thomas.lendacky@amd.com,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "kvm list" <kvm@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        srutherford@google.com, venu.busireddy@oracle.com,
-        brijesh.singh@amd.com
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_2/4]_mm:_x86:_Invoke_hypercall_when_page_encrypt?=
- =?UTF-8?Q?ion_status_is_changed?=
-Content-Type: text/plain
+        id S230117AbhESXbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230140AbhESXba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 19:31:30 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3735DC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:30:06 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id j10so21579531lfb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TMwUCc4SgPJG97Rkm0aBtlB2yukAmA0ZCOYZxIe8Tck=;
+        b=COFRVP/pO0baQb+7qWHLDz2WLUT5dypjNrj5zUFuYXzUtg6fpKRLlKYbiZzPTITPZc
+         /uUhhjfIhsoNsAMrop863YnjD+LgJVtDBP1KYoIu4ksGcJgGWz+s4WWn3kmvO/XAv0BK
+         OjUUa9da0YUMEgSfNJvNy+ql5y+6om6KV5Dn8le+pTDLe6BKSPKUmTwLt2eqm7lESk3B
+         QnO3uLAlBSJnplIxsPfmtdAsiUJVFs3wuquyVQJXmSJaQ2CdHSUXq2Mye2jrpNtdysXk
+         O4duXcZeyAtbDkRMCeOnacVwo36wilffm5IBrr8bDvT2UfALp70Ae/bNbZX+hYLGS5rx
+         LiCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TMwUCc4SgPJG97Rkm0aBtlB2yukAmA0ZCOYZxIe8Tck=;
+        b=E8A49rz8Ewe0FzQI8Oehq+m0Hp6GwOFy9vwTOlEKzuZSnIKXU9AptJqOKufA0IrFuu
+         ufTOIUqrcHd9vi0hpZ7ufP0Z6z3NGlU4EjWEHQqC+5gLCxvA7s5lH6bv5pU3tG5Oiers
+         T7camS69QYPLNxUfr2K9Mq+jlK3gBRDftMTfUxoRijioG7jY+oeYITRBKaXZbJtX3Mao
+         OsDA0vji6zbo+gyVM+1oR5LL7fbhC7K8tuj6Xmx3QiWww6blmGiKNRi2rlc3+GKxSgeS
+         tZht4dg0yJJD8a3pgy7Wvl6ebBBsk7rUbKuV60YKcfzIxrDDGJUWmTPyRr6yQxUcaUHb
+         WVkw==
+X-Gm-Message-State: AOAM533PYZ+yRPpMhDlMYcYAIJ15CeDvaik7MYHn1jX87u1XyVpVTB93
+        DfSZgaD75g1IY5DGweKCmeDyUji6X5hIFBKr5BR3vm2vUSQ=
+X-Google-Smtp-Source: ABdhPJzJNxbjDTEBFvL1ZTsKRGzbh5UGwMfvAMRXs41Xp0OeG3kf02/POIFVqkoTMyWq2ondcCw8vTGrfxB/0AvMAqE=
+X-Received: by 2002:a19:ef10:: with SMTP id n16mr1030061lfh.649.1621467004538;
+ Wed, 19 May 2021 16:30:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210510194633.11943-1-andriy.shevchenko@linux.intel.com> <20210510194633.11943-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210510194633.11943-2-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 20 May 2021 01:29:53 +0200
+Message-ID: <CACRpkdbox-QS-2TG0U_PMRHT60dxt9HaV-k7cTReDn+uM6-fZw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] bitmap: Make bitmap_remap() and bitmap_bitremap()
+ available to users
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Neeli Srinivas <sneeli@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021, at 6:15 AM, Borislav Petkov wrote:
-> On Fri, Apr 23, 2021 at 03:58:43PM +0000, Ashish Kalra wrote:
-> > +static inline void notify_page_enc_status_changed(unsigned long pfn,
-> > +						  int npages, bool enc)
-> > +{
-> > +	PVOP_VCALL3(mmu.notify_page_enc_status_changed, pfn, npages, enc);
-> > +}
-> 
-> Now the question is whether something like that is needed for TDX, and,
-> if so, could it be shared by both.
+On Mon, May 10, 2021 at 9:46 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-The TDX MapGPA call can fail, and presumably it will fail if the page is not sufficiently quiescent from the host's perspective.  It seems like a mistake to me to have a KVM-specific hypercall for this that cannot cleanly fail.
+> Currently the bitmap_remap() and bitmap_bitremap() are available
+> only for CONFIG_NUMA=y case, while some users may benefit out of it
+> and being independent to NUMA code. Make them available to users
+> by moving out of ifdeffery and exporting for modules.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Neeli Srinivas <sneeli@xilinx.com>
+> Acked-by: Yury Norov <yury.norov@gmail.com>
+
+This series:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
