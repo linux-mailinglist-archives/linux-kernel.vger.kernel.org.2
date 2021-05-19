@@ -2,158 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB08238927C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0F138927B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354706AbhESPYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        id S1354669AbhESPY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346674AbhESPYl (ORCPT
+        with ESMTP id S1346703AbhESPYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:24:41 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3FAC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:23:20 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id b13so6383745pfv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:23:20 -0700 (PDT)
+        Wed, 19 May 2021 11:24:24 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD42C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:23:04 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id l4so20522536ejc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:23:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qd20th7hRcH2q8Nunhpc+31ZIDOCqw3EIS/TwDw4/5s=;
-        b=hrQ2z1MJedI9hhV2DkzXya0LObavlrHaeahHSCDI5cDEQdt8Z791xlEqqNS9mSsoax
-         jYoTsbeTE6KR0NkjofrHUE2OD6bnD2NKzCZ0qk5AiYtjDwTAAylxNAGVoFPsBSxwHBli
-         vrNhUJUUaF2MxrrzjC9Lu9URErZq07UlYBWMMKWmh6vLwfdK0Y1bWBH6/BOWBb6tgKpw
-         ti9QcZvP8ylE7WhnFchZtWnI7afM+cJHzgKDkoGO4MWiZnMU4TmrmO+Hb1pRUO/SUaz4
-         Cpd8gu+5lyikno0EJqjhAd8LPOz0b81l7les/DhfhJaEeoIFpeEifRVxX+8/ZrHPjX7g
-         vNgw==
+        bh=2kcMHiUdBh2RX9lqzPjQo7AnDIczfIylBe4oy/anXE4=;
+        b=Ozr9QX2vejijzqnJiHLv3IEed5XqEa5tCvrp4GWhBWSBVsToH+RmYdiIwm3uQ8Rd1+
+         J9PuijBn2eRbEI1jVMnt5WZfi9ziUoMOy8uc2Q3VD6SCdOC3t9t8qoBn2Q44BZ7jr48e
+         F892B/DS76Lcor5RWCGtbq2A8vth6kTdpxuk/rjirPcFFbSRhoZN8miOTdA1a4gxo1zI
+         Cj8Wp039/MPhSS4QXTAfFJLdQCGuF65cX8GOrtTFFgaoqT21vCWGJW9hqVlc89YiWNgq
+         sj8FkAItA82GtRljXobNcFgKBEJsiwslTzt1OKqLOCeZnCjIHmQN8zEvGocBnYyFVZfL
+         5u+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qd20th7hRcH2q8Nunhpc+31ZIDOCqw3EIS/TwDw4/5s=;
-        b=hpkJnXWQPS3iqY+DZsEKp9LIKCRkh+fUsnVOhF1vnE9ZNtWDvQj2hW/r47UfPjhJKU
-         7iitU79EkTTkjfnJsIB7Z1jUiGe9OyMwv91+oNlPyyRXwQhsHDdeQphsbBX/RN5b6nqR
-         vi5QaNgr624ib5BVwH9QgQ0xPpOudmeTwCDPkwYZ1fjUqPxTl069xxucAnwfeMSoyQQS
-         LffZHLbNozy7hynvdIak0V4/o4SKeem8wwd+MDrz0Ze5N4OxYyB2qRIVofetRWM8EUWp
-         QvAB/oBMd2NyHk9Q3QG3Jx45vGtGZvOAFggNsegVyeu3LUgxODcYkHI654Bdz4yb2PqE
-         ZoUw==
-X-Gm-Message-State: AOAM530QB8A3SB2uKoTW8ULOe97Z2vU91gYdRwsg+B+3jaV5R0cx7sdP
-        B++tENc/IDYfar0J48qwj5NAkFxpPQRj44Xybo6Zvg==
-X-Google-Smtp-Source: ABdhPJx2oArkMo6klT1vMbR7KAuXL96KcBr/xM1HVB2qpd5pMbiuJ1baIg/WKvqauKfLrSAo71zWY00dLxreNi+tfXA=
-X-Received: by 2002:a65:5288:: with SMTP id y8mr11305466pgp.31.1621437800210;
- Wed, 19 May 2021 08:23:20 -0700 (PDT)
+        bh=2kcMHiUdBh2RX9lqzPjQo7AnDIczfIylBe4oy/anXE4=;
+        b=eZCjVOPpkgzjwpjy/HqhgX0RGnRr1vGVflirmEnrPVhMfve/iDypXLvAN96sMiw49Z
+         Hy95NSpUUASPb1xSzYoyxTZ8YL6z6qYlkFYpGcEENmeb7BFJu0Qd2pq86Sup8ifL4UKX
+         BdTUj44wqmqvv/Udg8vWcorlCXWcg65wghJ4epv8leJtIXY76dIwHrK46PYCBiNJUsQk
+         xIFYKfFBzBwI1yxCpE3xxlBB7cEcC0UQ8e/Fb9e9vEGhYlIKHM6/r6bPOzhjNYy9ajQH
+         2al42tgEsc5RiS/pZxgju29qw7YlpTKQ1sdxquH1uJDmlaPJhoA9rqcebZx0bkrTFVFS
+         as0w==
+X-Gm-Message-State: AOAM5305cN1D7JMpS3zXgkpIGKCa+Tkq0b7Ug/QTB+o7FFDt9oJeqhSo
+        NjXeWMQjMgEQArXN6AounNzZLdo2lerzD0eTdUbd
+X-Google-Smtp-Source: ABdhPJyfh/Fy9DHSztbus3l4CzHOkkEYqRjXK6/08Yh4J+xdsoExgFRhQ+pqMygupCb94lvG9QjZu3YfmHF5IUWHWmE=
+X-Received: by 2002:a17:906:840c:: with SMTP id n12mr13191151ejx.431.1621437782490;
+ Wed, 19 May 2021 08:23:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518091826.36937-1-songmuchun@bytedance.com>
- <5ae7a4be-dfd5-faf6-a75c-a2adf5a344b2@arm.com> <CAMZfGtVJrnQ6Nb25CON3WupOx-K3BFzQ2t546r0xsT45vZD+4w@mail.gmail.com>
-In-Reply-To: <CAMZfGtVJrnQ6Nb25CON3WupOx-K3BFzQ2t546r0xsT45vZD+4w@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 19 May 2021 23:22:44 +0800
-Message-ID: <CAMZfGtWpu=pDqn2WZ4QPTevvHmjMaXg8oN8rh1KCDXwievzNrw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] arm64: mm: hugetlb: add support for free
- vmemmap pages of HugeTLB
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com
+References: <20210519113058.1979817-1-memxor@gmail.com> <20210519113058.1979817-2-memxor@gmail.com>
+In-Reply-To: <20210519113058.1979817-2-memxor@gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 19 May 2021 11:22:51 -0400
+Message-ID: <CAHC9VhTBcCJ1TfvB-HbzrByroeqfFE-SF_REik9PDSdqmJbuYA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] fs: anon_inodes: export anon_inode_getfile_secure helper
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     io-uring@vger.kernel.org, Pavel Emelyanov <xemul@openvz.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:43 PM Muchun Song <songmuchun@bytedance.com> wrote:
+On Wed, May 19, 2021 at 7:37 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Wed, May 19, 2021 at 8:35 PM Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
-> >
-> >
-> > On 5/18/21 2:48 PM, Muchun Song wrote:
-> > > The preparation of supporting freeing vmemmap associated with each
-> > > HugeTLB page is ready, so we can support this feature for arm64.
-> > >
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > ---
-> > >  arch/arm64/mm/mmu.c | 5 +++++
-> > >  fs/Kconfig          | 2 +-
-> > >  2 files changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> > > index 5d37e461c41f..967b01ce468d 100644
-> > > --- a/arch/arm64/mm/mmu.c
-> > > +++ b/arch/arm64/mm/mmu.c
-> > > @@ -23,6 +23,7 @@
-> > >  #include <linux/mm.h>
-> > >  #include <linux/vmalloc.h>
-> > >  #include <linux/set_memory.h>
-> > > +#include <linux/hugetlb.h>
-> > >
-> > >  #include <asm/barrier.h>
-> > >  #include <asm/cputype.h>
-> > > @@ -1134,6 +1135,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
-> > >       pmd_t *pmdp;
-> > >
-> > >       WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
-> > > +
-> > > +     if (is_hugetlb_free_vmemmap_enabled() && !altmap)
-> > > +             return vmemmap_populate_basepages(start, end, node, altmap);
-> > > +
-> > >       do {
-> > >               next = pmd_addr_end(addr, end);
-> > >
-> > > diff --git a/fs/Kconfig b/fs/Kconfig
-> > > index 6ce6fdac00a3..02c2d3bf1cb8 100644
-> > > --- a/fs/Kconfig
-> > > +++ b/fs/Kconfig
-> > > @@ -242,7 +242,7 @@ config HUGETLB_PAGE
-> > >
-> > >  config HUGETLB_PAGE_FREE_VMEMMAP
-> > >       def_bool HUGETLB_PAGE
-> > > -     depends on X86_64
-> > > +     depends on X86_64 || ARM64
-> > >       depends on SPARSEMEM_VMEMMAP
-> > >
-> > >  config MEMFD_CREATE
-> > >
-> >
-> > How does this interact with HugeTLB migration as such which might iterate
-> > over individual constituent struct pages (overriding the same struct page
-> > for all tail pages when this feature is enabled). A simple test involving
-> > madvise(ptr, size, MADV_SOFT_OFFLINE) fails on various HugeTLB page sizes,
-> > with this patch applied. Although I have not debugged this any further.
+> This is the non-fd installing analogue of anon_inode_getfd_secure. In
+> addition to allowing LSMs to attach policy to the distinct inode, this
+> is also needed for checkpoint restore of an io_uring instance where a
+> mapped region needs to mapped back to the io_uring fd by CRIU. This is
+> currently not possible as all anon_inodes share a single inode.
 >
-> It is weird. Actually, I didn't change the behaviour of the page migration.
-> This feature is default off. If you want to enable this feature, you can pass
-> "hugetlb_free_vmemmap=on" to the boot cmdline. Do you mean that the
-> success rate of page migration will decrease when you enable this feature?
-> The rate will increase if disbale. Right?
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  fs/anon_inodes.c            | 9 +++++++++
+>  include/linux/anon_inodes.h | 4 ++++
+>  2 files changed, 13 insertions(+)
 
-I have done the test and found the issue. Because unmap_and_move_huge_page
-always returns -EBUSY. I will look into this issue in depth. Thanks for your
-report.
+[NOTE: dropping dancol@google as that email is bouncy]
 
-The return point is as below:
+> diff --git a/fs/anon_inodes.c b/fs/anon_inodes.c
+> index a280156138ed..37032786b211 100644
+> --- a/fs/anon_inodes.c
+> +++ b/fs/anon_inodes.c
+> @@ -148,6 +148,15 @@ struct file *anon_inode_getfile(const char *name,
+>  }
+>  EXPORT_SYMBOL_GPL(anon_inode_getfile);
 
-if (page_private(hpage) && !page_mapping(hpage)) {
-        rc = -EBUSY;
-        goto out_unlock;
-}
+This function should have a comment block at the top similar to
+anon_inode_getfile(); in fact you can likely copy-n-paste the bulk of
+it to use as a start.
 
->
-> Thanks.
->
->
-> >
-> > Soft offlining pfn 0x101c00 at process virtual address 0xffff7fa00000
-> > soft offline: 0x101c00: hugepage migration failed 1, type bfffc0000010006
-> >               (referenced|uptodate|head|node=0|zone=2|lastcpupid=0xffff)
-> >
+If you don't want to bother respinning, I've got this exact patch
+(+comments) in my patchset that I'll post later and I'm happy to
+give/share credit if that is important to you.
+
+> +struct file *anon_inode_getfile_secure(const char *name,
+> +                                      const struct file_operations *fops,
+> +                                      void *priv, int flags,
+> +                                      const struct inode *context_inode)
+> +{
+> +       return __anon_inode_getfile(name, fops, priv, flags, context_inode, true);
+> +}
+> +EXPORT_SYMBOL_GPL(anon_inode_getfile_secure);
+
+-- 
+paul moore
+www.paul-moore.com
