@@ -2,137 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F04388EAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0982A388EB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346480AbhESNNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:13:23 -0400
-Received: from mail-dm6nam11on2045.outbound.protection.outlook.com ([40.107.223.45]:29669
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346503AbhESNNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:13:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GdJE79JpFnYW8ID2u1XX4avM+GtKcg7orgwOazsq4ehxC49P/1wP4u2STBs3diY4NBEz9af72ZK5zP9QEQ8pTkubSWr6eXj68NxfuaMMUuH1lXmSU+B+xetSYmxXUExOvLXQSi6Xd3op+4WQfUW63QXLCcfG1Dfh+fnTl4P2P4YIJQIagw6MAnVlY3NEYZC35/xSm7Nfrh+usfdpCxxCxL7iQ+ZX6fHVlV8Ut1hVUwZX51nYPSQ5UX80km6IoFbtUPXyCral/DuzxoCs1Z9T+cPgBvFWzVEYsDydmquCnaI0iH4TEORFsMhIwLb3ZWaUxlBW7IEVeCoHR5x7N+1jNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0uoknZbjGAYWkMqjYvXJe1jcU3yiTsCf/UaNR3x7LbU=;
- b=c8D7r9iIbPlVvMkse1kUJ+dw2KZBiXS5oWFBa+pX/LELXMfsU98ysa0Xg9ndoSb9p0LkCxQvxsQSmb97cUuYMPy1iyM5TNjaUobrrPmGDVZLHecovLpFqRBoE0opuQGbwBIrYwUyOSd5bXPtQzYOzdDxwVzZgE7uw6IkEYGISVmKijpUSLWbhbdV5n3/jFsq+9VR40zlRlJgnXSwoIgKTx8MgeQ1tJqDJ0n9kLKXpN1hutkCFKBVagptJys5z2ajjoHVU8V7dxQ32CLcc4EFu7R2kwJ0qQbCdN/S9GWbqfFOfxsd8si0LDz2jMMykZQO7rjSlhjvWVFT/4jvfcm8WA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0uoknZbjGAYWkMqjYvXJe1jcU3yiTsCf/UaNR3x7LbU=;
- b=io5fHVE5OHMBOBbf0/cq3PYkQE2piUfZVimedZZI75XpfdX16KRZPbknZXB++NPjXBDG4uoiVnbAQoM4u4vx3/eVGkSWl+Rf7oRCkvUknpnSWaBaI4Xt6J0jbvz2AVUG6r+j41YDjByL6ROyOrjj6NSUmEPQzovUiNlfAY2/lOTu31tL3Z20kjPccOzC3xdVVh0W79h7b4/nAkcufiiTI1ZCK1HZkc3QRaIVns0y1CY2XxOIW0RB+IWGt5H4dozGQUiebM7K8lMQq3tNCt1d9XE/A2Wt+alKm1rIO/bRt6iCxqoMzS1hpsDCZxRKAmZHTLAsX25l+F8+LCkeKSKQVQ==
-Received: from DS7PR03CA0157.namprd03.prod.outlook.com (2603:10b6:5:3b2::12)
- by MN2PR12MB4813.namprd12.prod.outlook.com (2603:10b6:208:1bb::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Wed, 19 May
- 2021 13:12:01 +0000
-Received: from DM6NAM11FT063.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b2:cafe::eb) by DS7PR03CA0157.outlook.office365.com
- (2603:10b6:5:3b2::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.31 via Frontend
- Transport; Wed, 19 May 2021 13:12:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT063.mail.protection.outlook.com (10.13.172.219) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Wed, 19 May 2021 13:12:00 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
- 2021 13:11:57 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <bskeggs@redhat.com>,
-        <akpm@linux-foundation.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, <hch@infradead.org>, <daniel@ffwll.ch>,
-        <willy@infradead.org>, <bsingharora@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
-Date:   Wed, 19 May 2021 23:11:55 +1000
-Message-ID: <2569629.VzlulnA7BY@nvdebian>
-In-Reply-To: <YKUBbVuvm5FUJRMl@t490s>
-References: <20210407084238.20443-1-apopple@nvidia.com> <2235357.HsqDk0zIjc@nvdebian> <YKUBbVuvm5FUJRMl@t490s>
+        id S1353547AbhESNNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:13:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49369 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353541AbhESNN3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:13:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621429929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=awY+ia0X5V2PMZw9CViuEIoYymBZhpNSbICZiHEMEkA=;
+        b=J5/iJCbTTIdOm6icSqplIn/NyP6jeGL1jWJfPDB++j+XafGY+4etryt9EPHJdvuKTlMlJR
+        SOKCUoxr8xo5z9uWpp9kU57umlquJG2ceYrzXL3DnEVHXN9ZRayAT4YkSvHnHxtk9CL6Q8
+        qcx1638a7SBvgifPeliD7+Rb5ZIefVw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-8CuZ5eHpN0S2QZ_UJocz0Q-1; Wed, 19 May 2021 09:12:08 -0400
+X-MC-Unique: 8CuZ5eHpN0S2QZ_UJocz0Q-1
+Received: by mail-ed1-f71.google.com with SMTP id q18-20020a50cc920000b029038cf491864cso7635540edi.14
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 06:12:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=awY+ia0X5V2PMZw9CViuEIoYymBZhpNSbICZiHEMEkA=;
+        b=qHC55UejnMeuBd+JS3iN3vJCo2ahVRYO4RLH1XygOEAye+ekPJ3VXjm0pKoVgq+Wi7
+         N2+0aGGPwZRCbAPDvz4YEMq8byI6PMjLv6+lpoowXR6dM+wCdctsWZW9d1FQMEKhEWdz
+         q5cWBi0qVEto839D/mbK/Fn/SdTQU9WvvKag+jI6YlWf7KhJ9nO9TPP48V/svk5nyQzR
+         AJpOpx4BQ/YJWZ9Mdc3gAAV5ilI4HvQ/pJTyw66n7zn29S+8ZJZF7d/C1EQTerUi/fdu
+         HBcdD5nVHPkQnDCfCatSnliu4v58mvh29PnzMCX1r4d+wogrgLH1uhy281IlJKgCXGLx
+         e/Hw==
+X-Gm-Message-State: AOAM531UsqhW5omliPDw6w2fDCX88ORdjQZlf61E9lafDPTsjCDLtSWd
+        jtpnvaMX9OVxa2r6l1aRLv2a3MDuFT/aF5jD2YLe8Pws+HNqx0+Qw7ypbHP6y4rHVcdqz7Vxf2M
+        veaYJJr5quRcf7dZXY68m7wpG
+X-Received: by 2002:a17:906:b756:: with SMTP id fx22mr11371744ejb.224.1621429925104;
+        Wed, 19 May 2021 06:12:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4QPnJBz6QHSbvlK/Q6gDbHpU3S4O+QF/UVRC62KeVjtb2wygYm4JwdKvbkKoVzgZhshK5/w==
+X-Received: by 2002:a17:906:b756:: with SMTP id fx22mr11371673ejb.224.1621429924213;
+        Wed, 19 May 2021 06:12:04 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id c3sm16426470edn.16.2021.05.19.06.12.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 06:12:03 -0700 (PDT)
+Subject: Re: [PATCH] platform/surface: dtx: Fix poll function
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20210513134437.2431022-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <bed4b8ed-c183-00ee-a832-2f25a4392888@redhat.com>
+Date:   Wed, 19 May 2021 15:12:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2dfe2fa5-c08a-45ec-dc52-08d91ac7b06d
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4813:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB48131A696F2BF70CC10A783EDF2B9@MN2PR12MB4813.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Z4tdDNENPPeeQgW1+xvJPcp1KfSSs/nC8L2EJiw/ILX7k4XWuqAoiPBFMfjDQdWZR+JZZarZ+NgsVNqohy+r+QutIvva3z6V3BkVoAPFNBVpx3o9ddUfzAZABNeief0e1KXnnAHcEdTiGfmfmcVGK7xPoJ1FWwqFN/Mk1e9bBcwhHgIKSn7RG0ww5hfMVJRbL7xC8m6zz4X7iiqGeJzAGmg6i8rvJxQggn7XA7jl773n4+fFRXuUH+fNbRoSz0xXQyT5wGkOai0lEB3fom6h3HwsP0MRCs2KX9RabYSlVt+Zssk0pwPWCapE+UBXkNx+LOs8/BAjDXoaiyKspwBE/pKNf/1iEKMwxPIgwupbRGLyD6PAmDKzqNAQOKJxGJ912pvqY65Mb+S3dhrfe49dD+ZNhsDDdxCv7S96I/INFJyLxyfIxRf5AuOslCRqIf7heE2Ruwf5OFo7aL1Q6iHZJMwbBslP4Xw3e56Orwbr0Y/Op/1cIbxo4PXkr0BBEJTSKbNbTunsUVMe8o1+A27y/fq5CNagjCaT6LoD2JCOCmXSUqYQ4SA7PzXIp2DIctqTEI9Jtn8dhkVvNIeGnkN9AvYZPVmaMZP+M8QZEC3T5G3vQ7l6bPLkkQelIaDCH6v7fvUQ0UAZThxd50dl8IrGybnfiMPNekXU77j0IlrBycrZkWg1IGwhJQOPmnMawkfT
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(396003)(376002)(36840700001)(46966006)(33716001)(7636003)(82740400003)(5660300002)(36860700001)(356005)(316002)(36906005)(83380400001)(9686003)(47076005)(86362001)(478600001)(2906002)(336012)(9576002)(8676002)(26005)(8936002)(186003)(16526019)(7416002)(82310400003)(426003)(70206006)(54906003)(6916009)(70586007)(4326008)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 13:12:00.9280
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dfe2fa5-c08a-45ec-dc52-08d91ac7b06d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT063.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4813
+In-Reply-To: <20210513134437.2431022-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 19 May 2021 10:15:41 PM AEST Peter Xu wrote:
-> External email: Use caution opening links or attachments
+Hi,
+
+On 5/13/21 3:44 PM, Maximilian Luz wrote:
+> The poll function should not return -ERESTARTSYS.
 > 
-> On Wed, May 19, 2021 at 09:04:53PM +1000, Alistair Popple wrote:
-> > Failing fork() because we couldn't take a lock doesn't seem like the right
-> > approach though, especially as there is already existing code that
-> > retries. I get this adds complexity though, so would be happy to take a
-> > look at cleaning copy_pte_range() up in future.
+> Furthermore, locking in this function is completely unnecessary. The
+> ddev->lock protects access to the main device and controller (ddev->dev
+> and ddev->ctrl), ensuring that both are and remain valid while being
+> accessed by clients. Both are, however, never accessed in the poll
+> function. The shutdown test (via atomic bit flags) be safely done
+> without locking, so drop locking here entirely.
 > 
-> Yes, I proposed that as this one won't affect any existing applications
-> (unlike the existing ones) but only new userspace driver apps that will use
-> this new atomic feature.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 1d609992832e ("platform/surface: Add DTX driver> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+I will also include this in the next pdx86-fixes pull-req for 5.13.
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+> ---
+>  drivers/platform/surface/surface_dtx.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 > 
-> IMHO it'll be a pity to add extra complexity and maintainance burden into
-> fork() if only for keeping the "logical correctness of fork()" however the
-> code never triggers. If we start with trylock we'll know whether people
-> will use it, since people will complain with a reason when needed; however
-> I still doubt whether a sane userspace device driver should fork() within
-> busy interaction with the device underneath..
-
-I will refrain from commenting on the sanity or otherwise of doing that :-)
-
-Agree such a scenario seems unlikely in practice (and possibly unreasonable). 
-Keeping the "logical correctness of fork()" still seems worthwhile to me, but 
-if the added complexity/maintenance burden for an admittedly fairly specific 
-feature is going to stop progress here I am happy to take the fail fork 
-approach. I could then possibly fix it up as a future clean up to 
-copy_pte_range(). Perhaps others have thoughts?
-
-> In all cases, please still consider to keep them in copy_nonpresent_pte()
-> (and if to rework, separating patches would be great).
->
-> Thanks,
+> diff --git a/drivers/platform/surface/surface_dtx.c b/drivers/platform/surface/surface_dtx.c
+> index 63ce587e79e3..5d9b758a99bb 100644
+> --- a/drivers/platform/surface/surface_dtx.c
+> +++ b/drivers/platform/surface/surface_dtx.c
+> @@ -527,20 +527,14 @@ static __poll_t surface_dtx_poll(struct file *file, struct poll_table_struct *pt
+>  	struct sdtx_client *client = file->private_data;
+>  	__poll_t events = 0;
+>  
+> -	if (down_read_killable(&client->ddev->lock))
+> -		return -ERESTARTSYS;
+> -
+> -	if (test_bit(SDTX_DEVICE_SHUTDOWN_BIT, &client->ddev->flags)) {
+> -		up_read(&client->ddev->lock);
+> +	if (test_bit(SDTX_DEVICE_SHUTDOWN_BIT, &client->ddev->flags))
+>  		return EPOLLHUP | EPOLLERR;
+> -	}
+>  
+>  	poll_wait(file, &client->ddev->waitq, pt);
+>  
+>  	if (!kfifo_is_empty(&client->buffer))
+>  		events |= EPOLLIN | EPOLLRDNORM;
+>  
+> -	up_read(&client->ddev->lock);
+>  	return events;
+>  }
+>  
 > 
-> --
-> Peter Xu
-
-
-
 
