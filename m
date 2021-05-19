@@ -2,210 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB474388825
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB93A388835
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240295AbhESH2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:28:39 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3421 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239548AbhESH2e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:28:34 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FlPWZ0sgQzCs92;
-        Wed, 19 May 2021 15:24:26 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 15:27:12 +0800
-Received: from code-website.localdomain (10.175.127.227) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 15:27:12 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <paul@paul-moore.com>
-CC:     <netdev@vger.kernel.org>, <zhangjinhao2@huawei.com>,
-        <yuehaibing@huawei.com>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] netlabel: remove unused parameter in netlbl_netlink_auditinfo()
-Date:   Wed, 19 May 2021 15:34:38 +0800
-Message-ID: <20210519073438.3805430-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+        id S240401AbhESHdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:33:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:50850 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240198AbhESHdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 03:33:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5046ED1;
+        Wed, 19 May 2021 00:32:29 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.79.253])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3ED303F73D;
+        Wed, 19 May 2021 00:32:26 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] mm/thp: Make ALLOC_SPLIT_PTLOCKS dependent on USE_SPLIT_PTE_PTLOCKS
+Date:   Wed, 19 May 2021 13:03:06 +0530
+Message-Id: <1621409586-5555-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-loginuid/sessionid/secid have been read from 'current' instead of struct
-netlink_skb_parms, the parameter 'skb' seems no longer needed.
+Split ptlocks need not be defined and allocated unless they are being used.
+ALLOC_SPLIT_PTLOCKS is inherently dependent on USE_SPLIT_PTE_PTLOCKS. This
+just makes it explicit and clear. While here drop the spinlock_t element
+from the struct page when USE_SPLIT_PTE_PTLOCKS is not enabled.
 
-Fixes: c53fa1ed92cd ("netlink: kill loginuid/sessionid/sid members from struct netlink_skb_parms")
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- net/netlabel/netlabel_calipso.c   |  4 ++--
- net/netlabel/netlabel_cipso_v4.c  |  4 ++--
- net/netlabel/netlabel_mgmt.c      |  8 ++++----
- net/netlabel/netlabel_unlabeled.c | 10 +++++-----
- net/netlabel/netlabel_user.h      |  4 +---
- 5 files changed, 14 insertions(+), 16 deletions(-)
+This applies on v5.13-rc2.
 
-diff --git a/net/netlabel/netlabel_calipso.c b/net/netlabel/netlabel_calipso.c
-index f28c8947c730..91a19c3ea1a3 100644
---- a/net/netlabel/netlabel_calipso.c
-+++ b/net/netlabel/netlabel_calipso.c
-@@ -105,7 +105,7 @@ static int netlbl_calipso_add(struct sk_buff *skb, struct genl_info *info)
- 	    !info->attrs[NLBL_CALIPSO_A_MTYPE])
- 		return -EINVAL;
+Changes in V2:
+
+- Dropped spinlock_t element from struct page
+
+Changes in V1:
+
+https://lore.kernel.org/linux-mm/1620618390-9999-1-git-send-email-anshuman.khandual@arm.com/
+
+ include/linux/mm_types.h      | 2 ++
+ include/linux/mm_types_task.h | 5 +++++
+ mm/memory.c                   | 2 +-
+ 3 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 5aacc1c10a45..a0fd851c0a0c 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -152,10 +152,12 @@ struct page {
+ 				struct mm_struct *pt_mm; /* x86 pgds only */
+ 				atomic_t pt_frag_refcount; /* powerpc */
+ 			};
++#if USE_SPLIT_PTE_PTLOCKS
+ #if ALLOC_SPLIT_PTLOCKS
+ 			spinlock_t *ptl;
+ #else
+ 			spinlock_t ptl;
++#endif
+ #endif
+ 		};
+ 		struct {	/* ZONE_DEVICE pages */
+diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
+index c1bc6731125c..1b222f8039d1 100644
+--- a/include/linux/mm_types_task.h
++++ b/include/linux/mm_types_task.h
+@@ -22,7 +22,12 @@
+ #define USE_SPLIT_PTE_PTLOCKS	(NR_CPUS >= CONFIG_SPLIT_PTLOCK_CPUS)
+ #define USE_SPLIT_PMD_PTLOCKS	(USE_SPLIT_PTE_PTLOCKS && \
+ 		IS_ENABLED(CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK))
++
++#if USE_SPLIT_PTE_PTLOCKS
+ #define ALLOC_SPLIT_PTLOCKS	(SPINLOCK_SIZE > BITS_PER_LONG/8)
++#else
++#define ALLOC_SPLIT_PTLOCKS	0
++#endif
  
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 	switch (nla_get_u32(info->attrs[NLBL_CALIPSO_A_MTYPE])) {
- 	case CALIPSO_MAP_PASS:
- 		ret_val = netlbl_calipso_add_pass(info, &audit_info);
-@@ -287,7 +287,7 @@ static int netlbl_calipso_remove(struct sk_buff *skb, struct genl_info *info)
- 	if (!info->attrs[NLBL_CALIPSO_A_DOI])
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 	cb_arg.doi = nla_get_u32(info->attrs[NLBL_CALIPSO_A_DOI]);
- 	cb_arg.audit_info = &audit_info;
- 	ret_val = netlbl_domhsh_walk(&skip_bkt, &skip_chain,
-diff --git a/net/netlabel/netlabel_cipso_v4.c b/net/netlabel/netlabel_cipso_v4.c
-index 4f50a64315cf..baf235721c43 100644
---- a/net/netlabel/netlabel_cipso_v4.c
-+++ b/net/netlabel/netlabel_cipso_v4.c
-@@ -410,7 +410,7 @@ static int netlbl_cipsov4_add(struct sk_buff *skb, struct genl_info *info)
- 	    !info->attrs[NLBL_CIPSOV4_A_MTYPE])
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 	switch (nla_get_u32(info->attrs[NLBL_CIPSOV4_A_MTYPE])) {
- 	case CIPSO_V4_MAP_TRANS:
- 		ret_val = netlbl_cipsov4_add_std(info, &audit_info);
-@@ -709,7 +709,7 @@ static int netlbl_cipsov4_remove(struct sk_buff *skb, struct genl_info *info)
- 	if (!info->attrs[NLBL_CIPSOV4_A_DOI])
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 	cb_arg.doi = nla_get_u32(info->attrs[NLBL_CIPSOV4_A_DOI]);
- 	cb_arg.audit_info = &audit_info;
- 	ret_val = netlbl_domhsh_walk(&skip_bkt, &skip_chain,
-diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
-index ca52f5085989..e664ab990941 100644
---- a/net/netlabel/netlabel_mgmt.c
-+++ b/net/netlabel/netlabel_mgmt.c
-@@ -434,7 +434,7 @@ static int netlbl_mgmt_add(struct sk_buff *skb, struct genl_info *info)
- 	     (info->attrs[NLBL_MGMT_A_IPV6MASK] != NULL)))
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 
- 	return netlbl_mgmt_add_common(info, &audit_info);
+ /*
+  * The per task VMA cache array:
+diff --git a/mm/memory.c b/mm/memory.c
+index 730daa00952b..9c3b63f11aee 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5250,7 +5250,7 @@ long copy_huge_page_from_user(struct page *dst_page,
  }
-@@ -457,7 +457,7 @@ static int netlbl_mgmt_remove(struct sk_buff *skb, struct genl_info *info)
- 	if (!info->attrs[NLBL_MGMT_A_DOMAIN])
- 		return -EINVAL;
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE || CONFIG_HUGETLBFS */
  
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
+-#if USE_SPLIT_PTE_PTLOCKS && ALLOC_SPLIT_PTLOCKS
++#if ALLOC_SPLIT_PTLOCKS
  
- 	domain = nla_data(info->attrs[NLBL_MGMT_A_DOMAIN]);
- 	return netlbl_domhsh_remove(domain, AF_UNSPEC, &audit_info);
-@@ -557,7 +557,7 @@ static int netlbl_mgmt_adddef(struct sk_buff *skb, struct genl_info *info)
- 	     (info->attrs[NLBL_MGMT_A_IPV6MASK] != NULL)))
- 		return -EINVAL;
+ static struct kmem_cache *page_ptl_cachep;
  
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 
- 	return netlbl_mgmt_add_common(info, &audit_info);
- }
-@@ -576,7 +576,7 @@ static int netlbl_mgmt_removedef(struct sk_buff *skb, struct genl_info *info)
- {
- 	struct netlbl_audit audit_info;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 
- 	return netlbl_domhsh_remove_default(AF_UNSPEC, &audit_info);
- }
-diff --git a/net/netlabel/netlabel_unlabeled.c b/net/netlabel/netlabel_unlabeled.c
-index 3e6ac9b790b1..2483df0bbd7c 100644
---- a/net/netlabel/netlabel_unlabeled.c
-+++ b/net/netlabel/netlabel_unlabeled.c
-@@ -814,7 +814,7 @@ static int netlbl_unlabel_accept(struct sk_buff *skb, struct genl_info *info)
- 	if (info->attrs[NLBL_UNLABEL_A_ACPTFLG]) {
- 		value = nla_get_u8(info->attrs[NLBL_UNLABEL_A_ACPTFLG]);
- 		if (value == 1 || value == 0) {
--			netlbl_netlink_auditinfo(skb, &audit_info);
-+			netlbl_netlink_auditinfo(&audit_info);
- 			netlbl_unlabel_acceptflg_set(value, &audit_info);
- 			return 0;
- 		}
-@@ -897,7 +897,7 @@ static int netlbl_unlabel_staticadd(struct sk_buff *skb,
- 	       !info->attrs[NLBL_UNLABEL_A_IPV6MASK])))
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 
- 	ret_val = netlbl_unlabel_addrinfo_get(info, &addr, &mask, &addr_len);
- 	if (ret_val != 0)
-@@ -947,7 +947,7 @@ static int netlbl_unlabel_staticadddef(struct sk_buff *skb,
- 	       !info->attrs[NLBL_UNLABEL_A_IPV6MASK])))
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 
- 	ret_val = netlbl_unlabel_addrinfo_get(info, &addr, &mask, &addr_len);
- 	if (ret_val != 0)
-@@ -994,7 +994,7 @@ static int netlbl_unlabel_staticremove(struct sk_buff *skb,
- 	       !info->attrs[NLBL_UNLABEL_A_IPV6MASK])))
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 
- 	ret_val = netlbl_unlabel_addrinfo_get(info, &addr, &mask, &addr_len);
- 	if (ret_val != 0)
-@@ -1034,7 +1034,7 @@ static int netlbl_unlabel_staticremovedef(struct sk_buff *skb,
- 	       !info->attrs[NLBL_UNLABEL_A_IPV6MASK])))
- 		return -EINVAL;
- 
--	netlbl_netlink_auditinfo(skb, &audit_info);
-+	netlbl_netlink_auditinfo(&audit_info);
- 
- 	ret_val = netlbl_unlabel_addrinfo_get(info, &addr, &mask, &addr_len);
- 	if (ret_val != 0)
-diff --git a/net/netlabel/netlabel_user.h b/net/netlabel/netlabel_user.h
-index b9ba8112b3c5..6190cbf94bf0 100644
---- a/net/netlabel/netlabel_user.h
-+++ b/net/netlabel/netlabel_user.h
-@@ -28,11 +28,9 @@
- 
- /**
-  * netlbl_netlink_auditinfo - Fetch the audit information from a NETLINK msg
-- * @skb: the packet
-  * @audit_info: NetLabel audit information
-  */
--static inline void netlbl_netlink_auditinfo(struct sk_buff *skb,
--					    struct netlbl_audit *audit_info)
-+static inline void netlbl_netlink_auditinfo(struct netlbl_audit *audit_info)
- {
- 	security_task_getsecid_subj(current, &audit_info->secid);
- 	audit_info->loginuid = audit_get_loginuid(current);
 -- 
-2.17.1
+2.20.1
 
