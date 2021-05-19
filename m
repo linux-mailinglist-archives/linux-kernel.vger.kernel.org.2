@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AB93886E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0361B3886DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237951AbhESFrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245129AbhESFnQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:43:16 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCEDC0612A4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:37:19 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id d24so11837039ios.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m16P8W12BKtEz5Sc0o7ZQfhgwcZLYGTm5U/XmQyeo8s=;
-        b=Khx1Dmmkgi2W/J6i9Pe1HK3PhiIOcB7SLliild/sLSX2F+qlQQLSL1/9e8yaNnQUjA
-         ZGLW8gB2lGeHD3rzWeXKRjl4ImQk1kFOIghQvT3vHFtEhYfiwOS4cfC11lHDO4K2lzBC
-         7voRhgdVGfkzNqOd2fS24euIwE06JjRun8EmRDJUmLU6mRKSay9paxa+Nc/9T+P4EVCD
-         BktNEqTKLZ4Ir5MvN7CPRXFdp1FuN0/KsZoaojjU61Ell2ptb+aI46DQtsnknpSNn+yO
-         SJNSeWGkFSob4OWs+CIUuZGVpY8bC5uqP3t1VHpHpG4/SYCqO8esECe5iygPDl2vaOMq
-         epzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m16P8W12BKtEz5Sc0o7ZQfhgwcZLYGTm5U/XmQyeo8s=;
-        b=Qd+dqqY2OXa14i5mcMEMy44u0+UUGfVflPOG4+2IbQoTdpbc1v15rn4TqGS8ydwj8+
-         1QtNNPf4Y6lNVpJSQSC9OzPQwNNtlzT9eoKDVAxwjKO/7E2Ii5FaIwB7FiTm0sro5XHN
-         GwQc+8tp62+xitVpx1ZoF+6Ph4KKnvF8rsQXcMjUcqN8/+ohxZraAaOkjZT9osrY9N0T
-         1uv5eexe6VaZeXhGYLgfOB3RR0dXf1f4kn13DbxSvgfRvJ+JGQMQxETNNHeDppK2AjiZ
-         uoK5mnQ3I+TOcdkBB3JPdmE8GErzi1QidjMxmrgXCftDbQXdWQ0y5qoeSRKon0QqacOc
-         8ulw==
-X-Gm-Message-State: AOAM53087n+lrWo2GlowWl+KztGkIzV5BGCcNza2NBqDViP2AG5hSHk2
-        I125J0m13PJoz34cE+oQ5S1dh3MT425qhok7deTH7Q==
-X-Google-Smtp-Source: ABdhPJxh9mqdez+8Y/0OTSjsMgTMU/mgX7RCSZx6WUJ0BdnaOokbJ7S2xmS1sQMmIKVMsG/w7BmqjYlFJ/Bd/rL6xf4=
-X-Received: by 2002:a05:6638:2594:: with SMTP id s20mr10758186jat.140.1621402638614;
- Tue, 18 May 2021 22:37:18 -0700 (PDT)
+        id S237076AbhESFnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:43:53 -0400
+Received: from first.geanix.com ([116.203.34.67]:49378 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345018AbhESFiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 01:38:54 -0400
+Received: from [192.168.64.199] (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id 00271468010;
+        Wed, 19 May 2021 05:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1621402637; bh=5bJTRIEGZKGTs+SrBoeiU/TKFA8eRT3CF1vLgc9jO2s=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=VgNjrXqKjVUoUjI3n8/QoX0/geCwka07Vx5TGg8DXVWxg8A+jt1cRIg21C2sa1lbU
+         HumkM1pHvbkHkgRF+pYn1zOcwpCTlINJ5ZqzujZ822+86jIyKxnoG5fhSdDmB1Y1c6
+         nwVkvytgRe5puT+l9u7jhhC8pACBGvAwQTP/it3nnNviYJCAbBsy2KiHTx193zh9CC
+         ZyUTJ84EXdFRsXIb/jj9f0gNrU/bh5OHp6MWRhPFirRBPMnV7ziip80neKMFDtQ9rE
+         qfub7N9UiwKbL2NRwz6EYFUSVjSYH5jI2rT9/fSmFu3RR151xGaE7LTa3NDfKQD6B8
+         Lb3SUXTOKJ0Eg==
+Subject: Re: [PATCH] iio: accel: fxls8962af: conditionally compile
+ fxls8962af_i2c_raw_read_errata3()
+To:     trix@redhat.com, jic23@kernel.org, lars@metafoo.de,
+        andy.shevchenko@gmail.com
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210518234828.1930387-1-trix@redhat.com>
+From:   Sean Nyekjaer <sean@geanix.com>
+Message-ID: <a3329058-2b2d-415a-5d2a-0bdf2f97d23d@geanix.com>
+Date:   Wed, 19 May 2021 07:37:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
- <20210513132051.31465-1-ggherdovich@suse.cz> <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
- <CAJZ5v0g5_BY3DCi=VxqkRh+TYPS5nkJ-J96EzPVrc975uiWf3Q@mail.gmail.com> <be4d7573a33a1d515fab5e6368ef33dee5a06187.camel@suse.cz>
-In-Reply-To: <be4d7573a33a1d515fab5e6368ef33dee5a06187.camel@suse.cz>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Tue, 18 May 2021 22:37:10 -0700
-Message-ID: <CAAYoRsXN9fxieCYXppU2N+VnXL-4Ydx43U6AuJWhTFLitcbSfg@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support in
- no-HWP mode
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210518234828.1930387-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        URIBL_BLOCKED autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 4:33 AM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
-> On Mon, 2021-05-17 at 17:26 +0200, Rafael J. Wysocki wrote:
-> > On Fri, May 14, 2021 at 5:31 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > > Hi All,
-> > >
-> > > Can I on-board to this patch or do you want me to submit another?
-> >
-> > Please send another one.
->
-> Hello Rafael, Doug,
->
-> I can resend a series with two patches, one adding ICELAKE_X and the
-> second adding COMETLAKE to the intel_pstate_cpu_ids array.
-> I'll prepare it.
+On 19/05/2021 01.48, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> The build is failing with this link error
+> ld: fxls8962af-core.o: in function `fxls8962af_fifo_transfer':
+> fxls8962af-core.c: undefined reference to `i2c_verify_client'
+> 
+> This is needed for the i2c variant, not the spi variant. So
+> conditionally compile based on CONFIG_FXLS8962AF_I2C.
+> 
+Fixes: 68068fad0e1c ("iio: accel: fxls8962af: fix errata bug E3 - I2C burst reads")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+> ---
+>  drivers/iio/accel/fxls8962af-core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/iio/accel/fxls8962af-core.c b/drivers/iio/accel/fxls8962af-core.c
+> index 9fe5a18a605cc..b6d833e2058c8 100644
+> --- a/drivers/iio/accel/fxls8962af-core.c
+> +++ b/drivers/iio/accel/fxls8962af-core.c
+> @@ -624,6 +624,7 @@ static const struct iio_buffer_setup_ops fxls8962af_buffer_ops = {
+>  	.postdisable = fxls8962af_buffer_postdisable,
+>  };
+>  
+> +#if IS_ENABLED(CONFIG_FXLS8962AF_I2C)
+>  static int fxls8962af_i2c_raw_read_errata3(struct fxls8962af_data *data,
+>  					   u16 *buffer, int samples,
+>  					   int sample_length)
+> @@ -639,6 +640,7 @@ static int fxls8962af_i2c_raw_read_errata3(struct fxls8962af_data *data,
+>  
+>  	return ret;
+>  }
+> +#endif
+>  
+>  static int fxls8962af_fifo_transfer(struct fxls8962af_data *data,
+>  				    u16 *buffer, int samples)
+> @@ -648,6 +650,7 @@ static int fxls8962af_fifo_transfer(struct fxls8962af_data *data,
+>  	int total_length = samples * sample_length;
+>  	int ret;
+>  
+> +#if IS_ENABLED(CONFIG_FXLS8962AF_I2C)
+>  	if (i2c_verify_client(dev))
+>  		/*
+>  		 * Due to errata bug:
+> @@ -657,6 +660,7 @@ static int fxls8962af_fifo_transfer(struct fxls8962af_data *data,
+>  		ret = fxls8962af_i2c_raw_read_errata3(data, buffer, samples,
+>  						      sample_length);
+>  	else
+> +#endif
+>  		ret = regmap_raw_read(data->regmap, FXLS8962AF_BUF_X_LSB, buffer,
+>  				      total_length);
+>  
+> 
 
-That is very nice of you. Thanks.
-
-... Doug
