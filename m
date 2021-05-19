@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25566388F6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C89388F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353754AbhESNpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:45:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239919AbhESNpo (ORCPT
+        id S1353771AbhESNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:49:35 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:47234 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346639AbhESNtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:45:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621431864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LJSW7Dy9FR3zafoPH+EoEEnX0R29tbOmjGmAjRdxKk0=;
-        b=etwHp+8QLZoTr8OfIdo46La3+xN4q0rpf0QxbiFu8pHyoggejMXsBL5AiEbSkh+DOYo2Af
-        VWMF0uPZUO52a1aSAm0yG4u2tc8BnHwPO7hUZLY3CUing/cTHox7wJGCdisiERbMpAmu+D
-        IEbeZUsPYUKVJZcsePXw7UjjSF5Z35E=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-1HUnwwPsMfGb6x1JPK9EKw-1; Wed, 19 May 2021 09:44:21 -0400
-X-MC-Unique: 1HUnwwPsMfGb6x1JPK9EKw-1
-Received: by mail-wr1-f71.google.com with SMTP id 22-20020adf82960000b02901115ae2f734so7184008wrc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 06:44:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LJSW7Dy9FR3zafoPH+EoEEnX0R29tbOmjGmAjRdxKk0=;
-        b=O5YYkRVKl5LR3xLr5GFZXRqhJMQu6TZKJgBwScXYkZK7NfYnZ55l/kWVAvDMHVZc5S
-         1Gzjs6dw1XMVMxAiCVx+NokYzbyrGH0IPWwFKSrhbr+eMOCVWlfr822bMc8/H6vHN3LZ
-         Z45hi1Xsk3g6Y/IQJN9GsxJsj2BPqg+pkYIXaULJ/rR3wFVGNaIjAB73p1X4Jrc1J4mU
-         9WHQwj52sx7jYGHiVbboKKU5M7pi0gKItyPzvuiKKaHG1GnSZHJNombGReX/praEe5Hr
-         hBcHBG73FRPqihBgIOOGj6+IGhClKx4kZ6SzWqvP9Tz8r2rXe+C27m2RTmngp6/Nj38I
-         1rHw==
-X-Gm-Message-State: AOAM531Cf+xNkOYAKA3MKRryHCeColDhKHvLmHgJrrbisqkDYLvLE63K
-        3UYEzy5wKcfaHY+pmn7wvVpokbqUAhBpF0367cqSo9895Jd03KkryAueNGmYOdHYXPGb1+DX2ab
-        18udXRikA8I6xDz2hs7aY0YVy
-X-Received: by 2002:a5d:6285:: with SMTP id k5mr14778072wru.50.1621431860366;
-        Wed, 19 May 2021 06:44:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPny7uEtz/zZyoiwC9xBSb3weeyHOxeLbadHaxRJN/jHDXuBqP+gHrGOxsnOJ2kyJxeU9ong==
-X-Received: by 2002:a5d:6285:: with SMTP id k5mr14778052wru.50.1621431860200;
-        Wed, 19 May 2021 06:44:20 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g5sm11409775wmi.8.2021.05.19.06.44.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 06:44:19 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
- status is changed
-To:     Ashish Kalra <ashish.kalra@amd.com>,
-        Steve Rutherford <srutherford@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1619193043.git.ashish.kalra@amd.com>
- <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
- <YJvU+RAvetAPT2XY@zn.tnic> <20210513043441.GA28019@ashkalra_ubuntu_server>
- <YJ4n2Ypmq/7U1znM@zn.tnic> <7ac12a36-5886-cb07-cc77-a96daa76b854@redhat.com>
- <20210514090523.GA21627@ashkalra_ubuntu_server> <YJ5EKPLA9WluUdFG@zn.tnic>
- <20210514100519.GA21705@ashkalra_ubuntu_server>
- <CABayD+e9NHytm5RA7MakRq5EqPJ+U11jWkEFpJKSqm0otBidaQ@mail.gmail.com>
- <20210519120642.GA19235@ashkalra_ubuntu_server>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a4766cb8-be69-03d3-6320-55c10bdc1672@redhat.com>
-Date:   Wed, 19 May 2021 15:44:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 19 May 2021 09:49:33 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JDlbAw014603;
+        Wed, 19 May 2021 13:48:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=hKkNxCeeV5ubpGYC5anEExFajr09TOQeCeuI5eLF1o4=;
+ b=A/Xbe/NVcYXOIrDxMrZWCozalfL5ZEIhjjmTyWWw8Y+k0TwGBetos9sf1WpKICsHij5K
+ E/C4AYE1lheqGgZqsAEBcfzAG5RZ0PX2mMvRw1qcVe6KIqN7PPdDt+Y4Hqv7WwYuGnET
+ Tz3ks1F47fco/bTLVbBp8b86BkO6iCA3DJ5hDD9hiEGBOs3cZv1fFpCeimWoLP1D19wX
+ UC62I6Ach7H5S5rIZDQOcq5XSpjyj2F7CS3JG/+IuhSrs4JncuMLmb1n7e4EOsETpBiT
+ 0AoatHSLYrAEbSFwOsOagoeB+HmrjcGQp5EN9AVT/AuyZFkrhgDwUfjzcX0pR/Wg6oWD XA== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38n3dg009s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 13:48:07 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14JDm7ac158894;
+        Wed, 19 May 2021 13:48:07 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38mecj8e3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 13:48:07 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14JDm6Vc158734;
+        Wed, 19 May 2021 13:48:06 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 38mecj8e1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 13:48:06 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14JDm4KQ014423;
+        Wed, 19 May 2021 13:48:04 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 May 2021 13:48:03 +0000
+Date:   Wed, 19 May 2021 16:47:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Rajat Asthana <thisisrast7@gmail.com>
+Cc:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
+        elder@kernel.org, gregkh@linuxfoundation.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] greybus: audio: Fix sparse warning.
+Message-ID: <20210519134754.GX1955@kadam>
+References: <20210519102947.GU1955@kadam>
+ <20210519134119.848055-1-thisisrast7@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210519120642.GA19235@ashkalra_ubuntu_server>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519134119.848055-1-thisisrast7@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: vZy0g9eCQSCm3l-us7NV6EPpx2knZUYd
+X-Proofpoint-GUID: vZy0g9eCQSCm3l-us7NV6EPpx2knZUYd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/21 14:06, Ashish Kalra wrote:
-> Now these buffers have very short life and only used for immediate I/O
-> and then freed, so they may not be of major concern for SEV
-> migration ?
+On Wed, May 19, 2021 at 07:11:19PM +0530, Rajat Asthana wrote:
+> Sparse complains that:
+>    warning: restricted send_ctl_elem_iface_t degrades to integer.
+> 
+> I have looked at this code, and the code is fine as-is. Normally we
+> would frown on using the __force directive to silence Sparse warnings
+> but in this case it's fine. Case statements can't be made into __bitwise
+> types. We also can't change the type of "ctl->iface" either because that
+> is part of the user space API.
+> 
+> So just add a (__force int) to make the warning go away.
+> 
+> Signed-off-by: Rajat Asthana <thisisrast7@gmail.com>
+> ---
+> Changes in v2:
+>     - Update the commit message.
 
-Well, they are a concern because they do break migration.  But it may be 
-indeed good enough to just have a WARN ("bad things may happen and you 
-get to keep both pieces") and not disable future migration.
+Thanks!
 
-A BUG must always be avoided unless you're sure that something *worse* 
-will happen in the future, e.g. a BUG is acceptable if you have detected 
-a use-after-free or a dangling pointer.  This is not the case.
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Paolo
-
-> So disabling migration for failure of address lookup or mapping failures
-> on such pages will really be an overkill.
-> Might be in favor of Steve's thoughts above of doing a BUG() here
-> instead.
+regards,
+dan carpenter
 
