@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85F7388EFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05135388EFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353635AbhESNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:24:38 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:52874 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353607AbhESNYg (ORCPT
+        id S1353613AbhESN0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:26:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49988 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346776AbhESN0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:24:36 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JDElrk071678;
-        Wed, 19 May 2021 13:23:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=dbAsbTNAyldJwWwMuFtj3r4hxMZRTSguPdcI1GwuH40=;
- b=QdZz0Hl5nSa/Uidj0tHMSBFSy6gyXsI92GrC9zwpbEnjjedIXACf6npMcVuM007gTY1F
- 8mFIVNha5mrJu/Da14dcFv3orE/bqo45GEBm107ZSDvd1GtaWIvJ6qegcA7w4dBBBjDf
- cuIzhjlQIFNq/rnkzOpGuaSpG3Jq6sf5Homqmw1mM6cZKMW/cZ+gR/QQulk9PipE+50I
- datebS1R4cej8aicCtqS3EpgH0ivUC5fLjSV8MCG1txFk2ZAJmImiAIJMq93QTVAVmVh
- 3M6oBzrGZ8dODFowUUYiVpydDGxRsWvWRBwT+FBob4kTD2pXMggZVzEDvCuMc6PGva3n hQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 38j68mhgt7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 13:23:14 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JDGO5S088832;
-        Wed, 19 May 2021 13:23:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38megkfkf7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 13:23:13 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14JDI4mH092986;
-        Wed, 19 May 2021 13:23:13 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 38megkfket-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 13:23:13 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14JDNBf4026975;
-        Wed, 19 May 2021 13:23:12 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 19 May 2021 06:23:11 -0700
-Date:   Wed, 19 May 2021 16:23:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: hso: bail out on interrupt URB allocation
- failure
-Message-ID: <20210519132304.GD32682@kadam>
-References: <20210519124717.31144-1-johan@kernel.org>
+        Wed, 19 May 2021 09:26:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621430695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=16KIXcLIzR+yi2apZnjd4cBLdoyY5/Ko/J5OyvcRvAA=;
+        b=Mtg93eI6SlJp19sD8G1LbCPhc/vxfjT+i+/u4XdOhTBaO1s+Df4kio7KLNeVMzLjKuZeOr
+        suQT7+HDcwWhHb8auEzfD2F4pPMOQaHm94BN8J1S7QyqVUlUzSFp+w3YBk1XhiF+hmXitG
+        gIqV60pD7Z1q2oQ6S6mke4CUReVwMxE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-igFhf4oYO8mtiQBoF2dp3A-1; Wed, 19 May 2021 09:24:53 -0400
+X-MC-Unique: igFhf4oYO8mtiQBoF2dp3A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CDE78015C6;
+        Wed, 19 May 2021 13:24:52 +0000 (UTC)
+Received: from krava (unknown [10.40.195.153])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B769E1A868;
+        Wed, 19 May 2021 13:24:50 +0000 (UTC)
+Date:   Wed, 19 May 2021 15:24:49 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Denys Zagorui <dzagorui@cisco.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org
+Subject: Re: [PATCH v5 1/3] perf report: compile tips.txt in perf binary
+Message-ID: <YKURoStYXwQ3FnxI@krava>
+References: <20210517084604.2895-1-dzagorui@cisco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210519124717.31144-1-johan@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: uETD26MYV9CbyQCB8OZIdC9rxmvomalP
-X-Proofpoint-GUID: uETD26MYV9CbyQCB8OZIdC9rxmvomalP
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9988 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 suspectscore=0 clxscore=1015
- adultscore=0 bulkscore=0 phishscore=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190082
+In-Reply-To: <20210517084604.2895-1-dzagorui@cisco.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 02:47:17PM +0200, Johan Hovold wrote:
-> Commit 31db0dbd7244 ("net: hso: check for allocation failure in
-> hso_create_bulk_serial_device()") recently started returning an error
-> when the driver fails to allocate resources for the interrupt endpoint
-> and tiocmget functionality.
-> 
-> For consistency let's bail out from probe also if the URB allocation
-> fails.
-> 
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->  drivers/net/usb/hso.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
-> index 260f850d69eb..b48b2a25210c 100644
-> --- a/drivers/net/usb/hso.c
-> +++ b/drivers/net/usb/hso.c
-> @@ -2635,14 +2635,14 @@ static struct hso_device *hso_create_bulk_serial_device(
->  		}
+On Mon, May 17, 2021 at 01:46:02AM -0700, Denys Zagorui wrote:
+
+SNIP
+
+>  	return hist_browser(rep->session->evlist, help, NULL, rep->min_percent);
+>  }
 >  
->  		tiocmget->urb = usb_alloc_urb(0, GFP_KERNEL);
-> -		if (tiocmget->urb) {
-> -			mutex_init(&tiocmget->mutex);
-> -			init_waitqueue_head(&tiocmget->waitq);
-> -		} else
-> -			hso_free_tiomget(serial);
+> +#define MAX_TIPS        60
+> +
+> +static const char *perf_tip(void)
+> +{
+> +	char *str[MAX_TIPS];
+> +	int i = 0;
+> +
+> +	_binary_Documentation_tips_txt_start[_binary_Documentation_tips_txt_end -
+> +		_binary_Documentation_tips_txt_start - 1] = 0;
+> +
+> +	str[i] = strtok(_binary_Documentation_tips_txt_start, "\n");
+> +	if (!str[i])
+> +		return "Tips cannot be found!";
+> +
+> +	i++;
+> +
+> +	while (i < MAX_TIPS) {
+> +		str[i] = strtok(NULL, "\n");
+> +		if (!str[i])
+> +			break;
+> +		i++;
+> +	}
+> +
+> +	return str[random() % i];
 
-Thanks!  The original code works, but it's so suspicious looking because
-you would think hso_free_tiomget() lead to a use after free later.
+that still does not solve that we set MAX_TIPS and have
+no way of checking that's still valid
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+how about something like below (completely untested):
 
-regards,
-dan carpenter
+
+static const char *perf_tip(void)
+{
+       char *start = _binary_Documentation_tips_txt_start;
+       char *tok, *tmp, *prev;
+       int pick, size;
+
+       size = _binary_Documentation_tips_txt_end - start;
+       pick = random() % size;
+
+       _binary_Documentation_tips_txt_start[size - 1] = 0;
+
+       for (tok = strtok_r(start, "\n", &tmp); tok;
+            tok = strtok_r(NULL, "\n", &tmp)) {
+               if (pick < (tok - start))
+                       return prev;
+               prev = tok;
+       }
+
+       return prev;
+}
+
+this way you wouldn't need array with MAX_TIPS defined
+
+jirka
+
