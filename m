@@ -2,115 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B025389343
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CFE38932E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355099AbhESQKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:10:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9804 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1355077AbhESQK1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:10:27 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JG3YY3110958;
-        Wed, 19 May 2021 12:09:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=FerZx/uTchInXOVU0A9WUtnnuDKz8NXTOuSSaJV5mA4=;
- b=i4mk/IUHF91hw4sPR2m3dwN88pqvS5N6oU+NFJSpOfDPqcvJCYIAUWKp6oFTuDTmKFpo
- 45K9qBi43qEvqzXO6Qr99lyy+pZKqsPYzY1jaR2AVTRMH8iMsmrPRuOlKTjCLzuV5RcP
- 092btpBmn7cmQLPTsI5/lDfYoORpPF+EQ0qyKSYQjgW2NK+md36rb/D7XNrWT7HjJ1tu
- wyvDpYOLRwMpcF+auz1dI1zF9IOqq34eYF5EYLimIVm3ntEn7OKo9Pg6AERKHiI0fFRk
- aYyoHPF8QBQ9lIP/xZFdpDHH+Nf1jpKo7LD5vGgHLYwHeDrdRZ8l7NWyk7t8qjid8vF9 6A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n23ks3nm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 12:09:06 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JG3uKj112314;
-        Wed, 19 May 2021 12:09:06 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n23ks36b-12
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 12:09:06 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JFN4w8021700;
-        Wed, 19 May 2021 15:39:26 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma05wdc.us.ibm.com with ESMTP id 38j7tb7gvp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 15:39:26 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JFdPQ32622200
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 15:39:25 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AFA95AC06F;
-        Wed, 19 May 2021 15:39:25 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4837EAC060;
-        Wed, 19 May 2021 15:39:25 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 19 May 2021 15:39:25 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        Tony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH v3 0/2] s390/vfio-ap: fix memory leak in mdev remove callback
-Date:   Wed, 19 May 2021 11:39:19 -0400
-Message-Id: <20210519153921.804887-1-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
+        id S1355062AbhESQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:03:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:56959 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346574AbhESQC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:02:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621440096; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=f3esNVJWkyreSf7lUucLsVmFEpcwPaQNQn4DlkwCpPk=;
+ b=ib51Cixrc97uvU3/jgQwHjeZPYQVprHkZNDgHzH2qnsgk9O5NNrhkdP7+W516IInDyVE/kO2
+ A3XlGImg1O6eOoO3vILyGe8nXevkrRYskMtCZhL6jpoXUL4YVlAFmwfR5b/EdjO47oG16Vwc
+ SSbs2DvciNmxYR2bY1bqH+eUvfA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60a5363fb15734c8f97708f2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 16:01:03
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 08D2AC4323A; Wed, 19 May 2021 16:01:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34CC2C433F1;
+        Wed, 19 May 2021 16:01:02 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fZEG-dCKVoxtOFLHsdrHzZRctdoO1MYP
-X-Proofpoint-ORIG-GUID: kyPXA9Y6HiIBQyxj4_H1W4zvCoFjpKoL
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_07:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=806 spamscore=0 bulkscore=0 impostorscore=0 mlxscore=0
- adultscore=0 suspectscore=0 clxscore=1015 phishscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190098
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 19 May 2021 09:01:02 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
+ correctly
+In-Reply-To: <CAE-0n53VUr=f=PKnO5HhXZ3BAG_mNBwmQrfQPxHvxLZPDReA+g@mail.gmail.com>
+References: <1621013713-6860-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n53VUr=f=PKnO5HhXZ3BAG_mNBwmQrfQPxHvxLZPDReA+g@mail.gmail.com>
+Message-ID: <c1a3ced9ac4682bae310712a11576322@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes a memory leak in the mdev remove callback when invoked while the
-mdev is in use by a KVM guest. Instead of returning -EBUSY from the
-callback, a full cleanup of the resources allocated to the mdev is
-performed because regardless of the value returned from the function, the
-mdev is removed from sysfs.
+On 2021-05-18 14:42, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-05-14 10:35:13)
+>> irq_hpd interrupt should be handled after dongle plugged in and
+>> before dongle unplugged. Hence irq_hpd interrupt is enabled at
+>> the end of the plugin handle and disabled at the beginning of
+>> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
+>> handled same as the dongle unplugged which tears down the mainlink
+>> and disables the phy. This patch fixes this problem by only tearing
+>> down the mainlink but keeping phy enabled at irq_hpd with
+>> sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
+>> handled by setup mainlink only.
+>> 
+>> Changes in v2:
+>> -- add ctrl->phy_Power_count
+>> 
+>> Changes in v3:
+>> -- del ctrl->phy_Power_count
+>> -- add phy_power_off to dp_ctrl_off_link_stream()
+>> 
+>> Changes in v4:
+>> -- return immediately if clock disable failed at 
+>> dp_ctrl_off_link_stream()
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> 
+> I think we want some Fixes tag. Not sure what it would be though.
+> 
+> I also noticed that if I plug and unplug the HDMI cable from my apple
+> dongle that I see this error message
+> 
+>   [drm:dp_display_usbpd_attention_cb] *ERROR* Disconnected, no
+> DP_LINK_STATUS_UPDATED
 
-The cleanup of resources allocated to the mdev may coincide with the 
-interception of the PQAP(AQIC) instruction in which case data needed to
-handle the interception may get removed. A patch is included in this series
-to synchronize access to resources needed by the interception handler to
-protect against invalid memory accesses.
+> *ERROR* Disconnected, no DP_LINK_STATUS_UPDATED <== this is caused by 
+> dongle generate the second
+irq_hpd with sink_count = 0 after first first irq_hpd with sink_count = 
+0. The fix is you have
+set dongle to D3 (power off) state after first irq_pd with sink_count = 
+0 handled.
+I have a patch fix this problem. I will merge and re submit for review.
 
-Change log:
-v2 -> v3:
---------
-* Added a patch to control access to the PQAP(AQIC) hook using RCU
-
-v1 -> v2:
---------
-* Call vfio_ap_mdev_unset_kvm() function from the remove callback instead
-  of merely clearing the guest's APCB.
-
-Tony Krowiak (2):
-  s390/vfio-ap: fix memory leak in mdev remove callback
-  s390/vfio-ap: control access to PQAP(AQIC) interception handler
-
- arch/s390/include/asm/kvm_host.h  |  1 +
- arch/s390/kvm/priv.c              | 47 +++++++++++++---------
- drivers/s390/crypto/vfio_ap_ops.c | 67 +++++++++++++++++++++----------
- 3 files changed, 75 insertions(+), 40 deletions(-)
-
--- 
-2.30.2
-
+> which looks like the irq_hpd comes in while I'm disconnecting the HDMI
+> cable but the hpd_state is ST_DISCONNECTED. The state is set to
+> ST_DISCONNECTED in msm_dp_display_disable() so it seems that userspace
+> has turned off the external display, and then the kthread runs for the
+> irq_hpd but it's too late.
+> 
+> Something is missing from this patch then to properly disable the
+> IRQ_HPD interrupt before telling userspace that the external display is
+> disconnected. Shouldn't we be toggling the irq enable bits from the
+> hardirq context when we figure out what it is? The logic would be
+> 
+>  in_hardirq() {
+> 
+>    if (hpd high)
+>       enable_irq_hpd(); // Probably this can be delayed to the kthread
+> after enabling the link
+> 
+>    if (hpd_low)
+>       disable_irq_hpd(); // But this certainly cannot be in the kthread
+> 
+>    else if (irq_hpd) // Notice the else-if so that if hpd is low we
+> don't even try to handle irq_hpd if it came in at the same time
+>       handle_irq_hpd();
+>  }
+> 
+> Because we can't really mess with the irq controls in the kthread when
+> hpd goes low, it will be too late. For all we know, the kthread could
+> run seconds later, after an irq_hpd has come bouncing in at the same
+> time and pushed an irq_hpd handling event onto the kthread.
