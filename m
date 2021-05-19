@@ -2,149 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02965388E96
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F14E388E99
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353551AbhESNEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:04:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18426 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1353522AbhESNEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:04:45 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JCYBlF174725;
-        Wed, 19 May 2021 09:03:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Bye5/QniodtXW6xYCVVzbJ1fGPnRgHTjLSGU4xaiM3Y=;
- b=Bk0ph4cYqA4Uv/ok9cQbqnU2nqhljtyKs8FjEDN/vQgdxizXy03Ddxok0PFG8ZQX0b5B
- 6xjMfYAp723kMsUwcIt3M6yJ/351Pn4ljfquXrnFXQzlDHoe1LjZyitV649EosB8KwPS
- fdgW2TKwI5i5D+4EPR+BTJGosxD0v3hWRyBAU7txncrurv078Lkc1cQ9N0k+9KOKbrzW
- 1lOlgZ/DQDF86Z9E3qqVMBqpvZxHnkixD47MS5j2wThO+vcDjFFfjubc53QhgC+OXLPe
- X7FmJVCbRoMPsK+Tm1lGyvCqmy4gVeYa84u4SwX6hTmJ2Rp1p8iLmCglwkLSrS/WYuGv Tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38n2aq9rw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 09:03:20 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JCYcui175949;
-        Wed, 19 May 2021 09:03:19 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38n2aq9rvf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 09:03:19 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JCnrX7006953;
-        Wed, 19 May 2021 13:03:17 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma01fra.de.ibm.com with ESMTP id 38m1gv0htf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 13:03:17 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JD2lY433423762
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 13:02:47 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E9E842041;
-        Wed, 19 May 2021 13:03:15 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DCE2E4203F;
-        Wed, 19 May 2021 13:03:14 +0000 (GMT)
-Received: from localhost (unknown [9.171.63.142])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 19 May 2021 13:03:14 +0000 (GMT)
-Date:   Wed, 19 May 2021 15:03:13 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Miroslav Benes <mbenes@suse.cz>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] instrumentation.h: Avoid using inline asm operand
- modifiers
-Message-ID: <patch-2.thread-1a26be.git-1a26be80cb18.your-ad-here.call-01621428935-ext-2104@work.hours>
-References: <cover.thread-1a26be.your-ad-here.call-01621428935-ext-2104@work.hours>
+        id S240991AbhESNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:05:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:37284 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239957AbhESNFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:05:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0043ED1;
+        Wed, 19 May 2021 06:04:31 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F9E13F73B;
+        Wed, 19 May 2021 06:04:29 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+Subject: Re: [PATCH v12 5/8] arm64: kvm: Save/restore MTE registers
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-6-steven.price@arm.com> <87v97hth3i.wl-maz@kernel.org>
+Message-ID: <097f5f5e-b287-3c9e-1f11-e0212601ddd2@arm.com>
+Date:   Wed, 19 May 2021 14:04:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <87v97hth3i.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.thread-1a26be.your-ad-here.call-01621428935-ext-2104@work.hours>
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: gBtgN-4g-b53kk4lWiEhC57jwvVKaLWm
-X-Proofpoint-ORIG-GUID: mTpJqCpw1xZnBBKkIPF-KTTjezxFRvnT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_05:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- clxscore=1015 malwarescore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190079
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The expansion of instrumentation_begin/instrumentation_end on s390 will
-result in a compiler error if the __COUNTER__ value is high enough.
-For example with "i" (154) the "%c0" operand of annotate_reachable
-will be expanded to -102:
+On 17/05/2021 18:17, Marc Zyngier wrote:
+> On Mon, 17 May 2021 13:32:36 +0100,
+> Steven Price <steven.price@arm.com> wrote:
+>>
+>> Define the new system registers that MTE introduces and context switch
+>> them. The MTE feature is still hidden from the ID register as it isn't
+>> supported in a VM yet.
+>>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>  arch/arm64/include/asm/kvm_host.h          |  6 ++
+>>  arch/arm64/include/asm/kvm_mte.h           | 66 ++++++++++++++++++++++
+>>  arch/arm64/include/asm/sysreg.h            |  3 +-
+>>  arch/arm64/kernel/asm-offsets.c            |  3 +
+>>  arch/arm64/kvm/hyp/entry.S                 |  7 +++
+>>  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 +++++++
+>>  arch/arm64/kvm/sys_regs.c                  | 22 ++++++--
+>>  7 files changed, 123 insertions(+), 5 deletions(-)
+>>  create mode 100644 arch/arm64/include/asm/kvm_mte.h
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>> index afaa5333f0e4..309e36cc1b42 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -208,6 +208,12 @@ enum vcpu_sysreg {
+>>  	CNTP_CVAL_EL0,
+>>  	CNTP_CTL_EL0,
+>>  
+>> +	/* Memory Tagging Extension registers */
+>> +	RGSR_EL1,	/* Random Allocation Tag Seed Register */
+>> +	GCR_EL1,	/* Tag Control Register */
+>> +	TFSR_EL1,	/* Tag Fault Status Register (EL1) */
+>> +	TFSRE0_EL1,	/* Tag Fault Status Register (EL0) */
+>> +
+>>  	/* 32bit specific registers. Keep them at the end of the range */
+>>  	DACR32_EL2,	/* Domain Access Control Register */
+>>  	IFSR32_EL2,	/* Instruction Fault Status Register */
+>> diff --git a/arch/arm64/include/asm/kvm_mte.h b/arch/arm64/include/asm/kvm_mte.h
+>> new file mode 100644
+>> index 000000000000..6541c7d6ce06
+>> --- /dev/null
+>> +++ b/arch/arm64/include/asm/kvm_mte.h
+>> @@ -0,0 +1,66 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * Copyright (C) 2020 ARM Ltd.
+>> + */
+>> +#ifndef __ASM_KVM_MTE_H
+>> +#define __ASM_KVM_MTE_H
+>> +
+>> +#ifdef __ASSEMBLY__
+>> +
+>> +#include <asm/sysreg.h>
+>> +
+>> +#ifdef CONFIG_ARM64_MTE
+>> +
+>> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+>> +alternative_if_not ARM64_MTE
+>> +	b	.L__skip_switch\@
+>> +alternative_else_nop_endif
+>> +	mrs	\reg1, hcr_el2
+>> +	and	\reg1, \reg1, #(HCR_ATA)
+>> +	cbz	\reg1, .L__skip_switch\@
+>> +
+>> +	mrs_s	\reg1, SYS_RGSR_EL1
+>> +	str	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+>> +	mrs_s	\reg1, SYS_GCR_EL1
+>> +	str	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+>> +
+>> +	ldr	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+>> +	msr_s	SYS_RGSR_EL1, \reg1
+>> +	ldr	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+>> +	msr_s	SYS_GCR_EL1, \reg1
+>> +
+>> +.L__skip_switch\@:
+>> +.endm
+>> +
+>> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+>> +alternative_if_not ARM64_MTE
+>> +	b	.L__skip_switch\@
+>> +alternative_else_nop_endif
+>> +	mrs	\reg1, hcr_el2
+>> +	and	\reg1, \reg1, #(HCR_ATA)
+>> +	cbz	\reg1, .L__skip_switch\@
+>> +
+>> +	mrs_s	\reg1, SYS_RGSR_EL1
+>> +	str	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+>> +	mrs_s	\reg1, SYS_GCR_EL1
+>> +	str	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+>> +
+>> +	ldr	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+>> +	msr_s	SYS_RGSR_EL1, \reg1
+>> +	ldr	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+>> +	msr_s	SYS_GCR_EL1, \reg1
+> 
+> What is the rational for not having any synchronisation here? It is
+> quite uncommon to allocate memory at EL2, but VHE can perform all kind
+> of tricks.
 
-        -102:
-        .pushsection .discard.instr_begin
-        .long -102b - .
-        .popsection
+I don't follow. This is part of the __guest_exit path and there's an ISB
+at the end of that - is that not sufficient? I don't see any possibility
+for allocating memory before that. What am I missing?
 
-This is a quirk of the gcc backend for s390, it interprets the %c0
-as a signed byte value. Avoid using operand modifiers in this case
-by simply converting __COUNTER__ to string, with the same result,
-but in an arch assembler independent way.
+>> +
+>> +.L__skip_switch\@:
+>> +.endm
+>> +
+>> +#else /* CONFIG_ARM64_MTE */
+>> +
+>> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+>> +.endm
+>> +
+>> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+>> +.endm
+>> +
+>> +#endif /* CONFIG_ARM64_MTE */
+>> +#endif /* __ASSEMBLY__ */
+>> +#endif /* __ASM_KVM_MTE_H */
+>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+>> index 65d15700a168..347ccac2341e 100644
+>> --- a/arch/arm64/include/asm/sysreg.h
+>> +++ b/arch/arm64/include/asm/sysreg.h
+>> @@ -651,7 +651,8 @@
+>>  
+>>  #define INIT_SCTLR_EL2_MMU_ON						\
+>>  	(SCTLR_ELx_M  | SCTLR_ELx_C | SCTLR_ELx_SA | SCTLR_ELx_I |	\
+>> -	 SCTLR_ELx_IESB | SCTLR_ELx_WXN | ENDIAN_SET_EL2 | SCTLR_EL2_RES1)
+>> +	 SCTLR_ELx_IESB | SCTLR_ELx_WXN | ENDIAN_SET_EL2 |		\
+>> +	 SCTLR_ELx_ITFSB | SCTLR_EL2_RES1)
+>>  
+>>  #define INIT_SCTLR_EL2_MMU_OFF \
+>>  	(SCTLR_EL2_RES1 | ENDIAN_SET_EL2)
+>> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+>> index 0cb34ccb6e73..6b489a8462f0 100644
+>> --- a/arch/arm64/kernel/asm-offsets.c
+>> +++ b/arch/arm64/kernel/asm-offsets.c
+>> @@ -111,6 +111,9 @@ int main(void)
+>>    DEFINE(VCPU_WORKAROUND_FLAGS,	offsetof(struct kvm_vcpu, arch.workaround_flags));
+>>    DEFINE(VCPU_HCR_EL2,		offsetof(struct kvm_vcpu, arch.hcr_el2));
+>>    DEFINE(CPU_USER_PT_REGS,	offsetof(struct kvm_cpu_context, regs));
+>> +  DEFINE(CPU_RGSR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[RGSR_EL1]));
+>> +  DEFINE(CPU_GCR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[GCR_EL1]));
+>> +  DEFINE(CPU_TFSRE0_EL1,	offsetof(struct kvm_cpu_context, sys_regs[TFSRE0_EL1]));
+> 
+> TFSRE0_EL1 is never accessed from assembly code. Leftover from a
+> previous version?
 
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
- include/linux/instrumentation.h | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+Indeed, I will drop it.
 
-diff --git a/include/linux/instrumentation.h b/include/linux/instrumentation.h
-index 93e2ad67fc10..fa2cd8c63dcc 100644
---- a/include/linux/instrumentation.h
-+++ b/include/linux/instrumentation.h
-@@ -4,13 +4,16 @@
- 
- #if defined(CONFIG_DEBUG_ENTRY) && defined(CONFIG_STACK_VALIDATION)
- 
-+#include <linux/stringify.h>
-+
- /* Begin/end of an instrumentation safe region */
--#define instrumentation_begin() ({					\
--	asm volatile("%c0: nop\n\t"						\
-+#define __instrumentation_begin(c) ({					\
-+	asm volatile(__stringify(c) ": nop\n\t"				\
- 		     ".pushsection .discard.instr_begin\n\t"		\
--		     ".long %c0b - .\n\t"				\
--		     ".popsection\n\t" : : "i" (__COUNTER__));		\
-+		     ".long " __stringify(c) "b - .\n\t"		\
-+		     ".popsection\n\t");				\
- })
-+#define instrumentation_begin() __instrumentation_begin(__COUNTER__)
- 
- /*
-  * Because instrumentation_{begin,end}() can nest, objtool validation considers
-@@ -43,12 +46,13 @@
-  * To avoid this, have _end() be a NOP instruction, this ensures it will be
-  * part of the condition block and does not escape.
-  */
--#define instrumentation_end() ({					\
--	asm volatile("%c0: nop\n\t"					\
-+#define __instrumentation_end(c) ({					\
-+	asm volatile(__stringify(c) ": nop\n\t"				\
- 		     ".pushsection .discard.instr_end\n\t"		\
--		     ".long %c0b - .\n\t"				\
--		     ".popsection\n\t" : : "i" (__COUNTER__));		\
-+		     ".long " __stringify(c) "b - .\n\t"		\
-+		     ".popsection\n\t");				\
- })
-+#define instrumentation_end() __instrumentation_end(__COUNTER__)
- #else
- # define instrumentation_begin()	do { } while(0)
- # define instrumentation_end()		do { } while(0)
--- 
-2.25.4
+>>    DEFINE(CPU_APIAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIAKEYLO_EL1]));
+>>    DEFINE(CPU_APIBKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIBKEYLO_EL1]));
+>>    DEFINE(CPU_APDAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APDAKEYLO_EL1]));
+>> diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
+>> index e831d3dfd50d..435346ea1504 100644
+>> --- a/arch/arm64/kvm/hyp/entry.S
+>> +++ b/arch/arm64/kvm/hyp/entry.S
+>> @@ -13,6 +13,7 @@
+>>  #include <asm/kvm_arm.h>
+>>  #include <asm/kvm_asm.h>
+>>  #include <asm/kvm_mmu.h>
+>> +#include <asm/kvm_mte.h>
+>>  #include <asm/kvm_ptrauth.h>
+>>  
+>>  	.text
+>> @@ -51,6 +52,9 @@ alternative_else_nop_endif
+>>  
+>>  	add	x29, x0, #VCPU_CONTEXT
+>>  
+>> +	// mte_switch_to_guest(g_ctxt, h_ctxt, tmp1)
+>> +	mte_switch_to_guest x29, x1, x2
+>> +
+>>  	// Macro ptrauth_switch_to_guest format:
+>>  	// 	ptrauth_switch_to_guest(guest cxt, tmp1, tmp2, tmp3)
+>>  	// The below macro to restore guest keys is not implemented in C code
+>> @@ -142,6 +146,9 @@ SYM_INNER_LABEL(__guest_exit, SYM_L_GLOBAL)
+>>  	// when this feature is enabled for kernel code.
+>>  	ptrauth_switch_to_hyp x1, x2, x3, x4, x5
+>>  
+>> +	// mte_switch_to_hyp(g_ctxt, h_ctxt, reg1)
+>> +	mte_switch_to_hyp x1, x2, x3
+>> +
+>>  	// Restore hyp's sp_el0
+>>  	restore_sp_el0 x2, x3
+>>  
+>> diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>> index cce43bfe158f..de7e14c862e6 100644
+>> --- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>> +++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>> @@ -14,6 +14,7 @@
+>>  #include <asm/kvm_asm.h>
+>>  #include <asm/kvm_emulate.h>
+>>  #include <asm/kvm_hyp.h>
+>> +#include <asm/kvm_mmu.h>
+>>  
+>>  static inline void __sysreg_save_common_state(struct kvm_cpu_context *ctxt)
+>>  {
+>> @@ -26,6 +27,16 @@ static inline void __sysreg_save_user_state(struct kvm_cpu_context *ctxt)
+>>  	ctxt_sys_reg(ctxt, TPIDRRO_EL0)	= read_sysreg(tpidrro_el0);
+>>  }
+>>  
+>> +static inline bool ctxt_has_mte(struct kvm_cpu_context *ctxt)
+>> +{
+>> +	struct kvm_vcpu *vcpu = ctxt->__hyp_running_vcpu;
+>> +
+>> +	if (!vcpu)
+>> +		vcpu = container_of(ctxt, struct kvm_vcpu, arch.ctxt);
+>> +
+>> +	return kvm_has_mte(kern_hyp_va(vcpu->kvm));
+>> +}
+>> +
+>>  static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+>>  {
+>>  	ctxt_sys_reg(ctxt, CSSELR_EL1)	= read_sysreg(csselr_el1);
+>> @@ -46,6 +57,11 @@ static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+>>  	ctxt_sys_reg(ctxt, PAR_EL1)	= read_sysreg_par();
+>>  	ctxt_sys_reg(ctxt, TPIDR_EL1)	= read_sysreg(tpidr_el1);
+>>  
+>> +	if (ctxt_has_mte(ctxt)) {
+>> +		ctxt_sys_reg(ctxt, TFSR_EL1) = read_sysreg_el1(SYS_TFSR);
+>> +		ctxt_sys_reg(ctxt, TFSRE0_EL1) = read_sysreg_s(SYS_TFSRE0_EL1);
+>> +	}
+> 
+> I remember suggesting that this is slightly heavier than necessary.
+> 
+> On nVHE, TFSRE0_EL1 could be moved to load/put, as we never run
+> userspace with a vcpu loaded. The same holds of course for VHE, but we
+> also can move TFSR_EL1 to load/put, as the host uses TFSR_EL2.
+> 
+> Do you see any issue with that?
+
+The comment[1] I made before was:
+
+  For TFSR_EL1 + VHE I believe it is synchronised only on vcpu_load/put -
+  __sysreg_save_el1_state() is called from kvm_vcpu_load_sysregs_vhe().
+
+  TFSRE0_EL1 potentially could be improved. I have to admit I was unsure
+  if it should be in __sysreg_save_user_state() instead. However AFAICT
+  that is called at the same time as __sysreg_save_el1_state() and there's
+  no optimisation for nVHE. And given it's an _EL1 register this seemed
+  like the logic place.
+
+  Am I missing something here? Potentially there are other registers to be
+  optimised (TPIDRRO_EL0 looks like a possiblity), but IMHO that doesn't
+  belong in this series.
+
+For VHE TFSR_EL1 is already only saved/restored on load/put
+(__sysreg_save_el1_state() is called from kvm_vcpu_put_sysregs_vhe()).
+
+TFSRE0_EL1 could be moved, but I'm not sure where it should live as I
+mentioned above.
+
+[1] https://lore.kernel.org/kvmarm/b16b65b5-d27f-7f86-fe0c-38a951e7d3ae@arm.com/
+
+Thanks,
+
+Steve
+
+>> +
+>>  	ctxt_sys_reg(ctxt, SP_EL1)	= read_sysreg(sp_el1);
+>>  	ctxt_sys_reg(ctxt, ELR_EL1)	= read_sysreg_el1(SYS_ELR);
+>>  	ctxt_sys_reg(ctxt, SPSR_EL1)	= read_sysreg_el1(SYS_SPSR);
+>> @@ -107,6 +123,11 @@ static inline void __sysreg_restore_el1_state(struct kvm_cpu_context *ctxt)
+>>  	write_sysreg(ctxt_sys_reg(ctxt, PAR_EL1),	par_el1);
+>>  	write_sysreg(ctxt_sys_reg(ctxt, TPIDR_EL1),	tpidr_el1);
+>>  
+>> +	if (ctxt_has_mte(ctxt)) {
+>> +		write_sysreg_el1(ctxt_sys_reg(ctxt, TFSR_EL1), SYS_TFSR);
+>> +		write_sysreg_s(ctxt_sys_reg(ctxt, TFSRE0_EL1), SYS_TFSRE0_EL1);
+>> +	}
+>> +
+>>  	if (!has_vhe() &&
+>>  	    cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT) &&
+>>  	    ctxt->__hyp_running_vcpu) {
+>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+>> index 24a844cb79ca..88adbc2286f2 100644
+>> --- a/arch/arm64/kvm/sys_regs.c
+>> +++ b/arch/arm64/kvm/sys_regs.c
+>> @@ -1305,6 +1305,20 @@ static bool access_ccsidr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
+>>  	return true;
+>>  }
+>>  
+>> +static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
+>> +				   const struct sys_reg_desc *rd)
+>> +{
+>> +	return REG_HIDDEN;
+>> +}
+>> +
+>> +#define MTE_REG(name) {				\
+>> +	SYS_DESC(SYS_##name),			\
+>> +	.access = undef_access,			\
+>> +	.reset = reset_unknown,			\
+>> +	.reg = name,				\
+>> +	.visibility = mte_visibility,		\
+>> +}
+>> +
+>>  /* sys_reg_desc initialiser for known cpufeature ID registers */
+>>  #define ID_SANITISED(name) {			\
+>>  	SYS_DESC(SYS_##name),			\
+>> @@ -1473,8 +1487,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>>  	{ SYS_DESC(SYS_ACTLR_EL1), access_actlr, reset_actlr, ACTLR_EL1 },
+>>  	{ SYS_DESC(SYS_CPACR_EL1), NULL, reset_val, CPACR_EL1, 0 },
+>>  
+>> -	{ SYS_DESC(SYS_RGSR_EL1), undef_access },
+>> -	{ SYS_DESC(SYS_GCR_EL1), undef_access },
+>> +	MTE_REG(RGSR_EL1),
+>> +	MTE_REG(GCR_EL1),
+>>  
+>>  	{ SYS_DESC(SYS_ZCR_EL1), NULL, reset_val, ZCR_EL1, 0, .visibility = sve_visibility },
+>>  	{ SYS_DESC(SYS_TRFCR_EL1), undef_access },
+>> @@ -1501,8 +1515,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>>  	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
+>>  	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
+>>  
+>> -	{ SYS_DESC(SYS_TFSR_EL1), undef_access },
+>> -	{ SYS_DESC(SYS_TFSRE0_EL1), undef_access },
+>> +	MTE_REG(TFSR_EL1),
+>> +	MTE_REG(TFSRE0_EL1),
+>>  
+>>  	{ SYS_DESC(SYS_FAR_EL1), access_vm_reg, reset_unknown, FAR_EL1 },
+>>  	{ SYS_DESC(SYS_PAR_EL1), NULL, reset_unknown, PAR_EL1 },
+> 
+> Thanks,
+> 
+> 	M.
+> 
+
