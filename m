@@ -2,47 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9EB388A54
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC88388A88
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344703AbhESJS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343716AbhESJSz (ORCPT
+        id S1345295AbhESJWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:22:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3422 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345147AbhESJWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:18:55 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1797C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 02:17:35 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=57332)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe-C@an-je.eu>)
-        id 1ljIKb-0008BD-2I
-        for linux-kernel@vger.kernel.org; Wed, 19 May 2021 11:17:33 +0200
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe-C@an-je.eu>
-Subject: Fair Pay
-To:     linux-kernel@vger.kernel.org
-Message-ID: <b9b044a6-ae43-aef0-f965-48652260cfe5@an-je.eu>
-Date:   Wed, 19 May 2021 11:17:23 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 19 May 2021 05:22:03 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FlS2S0wFVzCv61;
+        Wed, 19 May 2021 17:17:52 +0800 (CST)
+Received: from dggeml751-chm.china.huawei.com (10.1.199.150) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 17:20:38 +0800
+Received: from huawei.com (10.44.142.101) by dggeml751-chm.china.huawei.com
+ (10.1.199.150) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 19
+ May 2021 17:20:38 +0800
+From:   Sang Yan <sangyan@huawei.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>, <hpa@zytor.com>
+CC:     <hejie3@huawei.com>, <hewenliang4@huawei.com>,
+        <wuxu.wu@huawei.com>, <hejingxian@huawei.com>
+Subject: [PATCH] rtc: Fix hwclock write fail problem in x86 arch
+Date:   Wed, 19 May 2021 17:19:08 +0800
+Message-ID: <20210519091908.513593-1-sangyan@huawei.com>
+X-Mailer: git-send-email 2.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.44.142.101]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeml751-chm.china.huawei.com (10.1.199.150)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fair Pay project now renamed to (Sigma) OS also.
-Sigma being Creekstead River as referred in Unix, now for Available 
-Source version.
+From: Jingxian He <hejingxian@huawei.com>
 
-We see also the romans translating The Quran in history, Latin script is 
-  based on this, however removing the roman gods, it becomes Lam script, 
-and the quranic translation rules it is based on.
+When RTC_ALWAYS_BCD is set as 1, the function mc146818_set_time
+ignores the reading value of RTC_CONTROL register,
+and assumes that RTC always operates in binary mode.
 
-Serenity,
-Ywe Cærlyn
-https://an-je.eu/
+However, the mc146818 development manual says that:
+if !(CMOS_READ(RTC_CONTROL) & 0x04), then
+the rtc time is in binary mode;
+if (CMOS_READ(RTC_CONTROL) & 0x04), then
+the rtc time is in bcd mode.
+
+We use 'hwclock -w' to set the RTC from the system time
+at our x86 machines, and we find that when 
+(CMOS_READ(RTC_CONTROL) & 0x04) is equal to 1,
+'hwclock -w' will fail to set the RTC.
+
+We change the RTC_ALWAYS_BCD to 0 to parse the rtc
+time according to the read value of RTC_CONTROL register.
+
+Signed-off-by: Jingxian He <hejingxian@huawei.com>
+Signed-off-by: Jie He <hejie3@huawei.com>
+---
+ arch/x86/include/asm/mc146818rtc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/mc146818rtc.h b/arch/x86/include/asm/mc146818rtc.h
+index 9719800..63cf0d5 100644
+--- a/arch/x86/include/asm/mc146818rtc.h
++++ b/arch/x86/include/asm/mc146818rtc.h
+@@ -10,7 +10,7 @@
+ 
+ #ifndef RTC_PORT
+ #define RTC_PORT(x)	(0x70 + (x))
+-#define RTC_ALWAYS_BCD	1	/* RTC operates in binary mode */
++#define RTC_ALWAYS_BCD	0
+ #endif
+ 
+ #if defined(CONFIG_X86_32)
+-- 
+2.9.5
+
