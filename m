@@ -2,231 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C73D3896FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18271389703
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhESTua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232212AbhESTu2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:50:28 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05AEC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:49:07 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id c13so6262726qvx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x553GgwQKaofcNpaBiACRQKsb0OQqbXpuDWI9o8R+5o=;
-        b=U2JOCePyF9dZ1bAQjvBXDA2RVqSJKE5ggujFUiWY6ZL1Csp7DB2UoVUu4gLSoaUqsI
-         o3XVqKkCW8Yc50rKjUXDy2p5DrY4kBclF02LosDjULEBVOYxE2pPKaSy/rHxOBV7mqGe
-         WcEWN0QynP53FeyLp/H3s7YUzRl1mxqRKhn3Q8wj33fZdtuUzScdp6JkSc+2aJBARGjn
-         sTzoeTtyVm/WlmOEwg3DxV321RqlzK8Rdzu2tQ0TkUC5FlEDeOEgrK61yLp3d3n9SO7l
-         1H3pXKr0/UiCyqnPPpDJ4TaHjmX1W0TkWX/773/IdGkTYKt6hQOUudqp7ToOeC+QGzLl
-         VGAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x553GgwQKaofcNpaBiACRQKsb0OQqbXpuDWI9o8R+5o=;
-        b=s8D/XC1NIv1Sg8/LN9cRXDNSSRyiN6ugUOJmA31LBQeuPg7tnCpcvVftPC5cT+oqDK
-         5MsZN9tzAZ/z6w49p8Y/+yiK6CyvnJrlT/kRn4/mGsUXAGV4lDTCK8hZ05hu+KytvXJZ
-         dF2gy1wzOzTQkRo80Z7WyA8c17EcOrV0vF6ftlwEI4/7kkvyXd44yV7iQgvXiS/gD4uL
-         BGff9QMVWE2ooSkGrYuf7HH9IlK7CFaTBqGBtP1E25JLXlnuZH4AgMNda6CH6w8GrtCa
-         yhS2mR42vh8wmUMmVXhX2p5DDJ16sFnxBsj5nhbDSQustBwidfG59JGp3lxUtnsFh0qn
-         67dg==
-X-Gm-Message-State: AOAM530g8rukIeixvPAGkIaUgJdptbB+ngOCi2FVtFwmVPFQe9HjzTym
-        0xCVe/aGN0Mk5bddj0v0DgQrCJEfEctUsfDOT6JOrA==
-X-Google-Smtp-Source: ABdhPJyBY3kKYWcls4L2Vfe7GKCY8SDCqG2snzu+sRtfz1Lp2Jexzz+rhM9XdRkDpl+n8C0HPHxtJeX6kFmDYVk2cmE=
-X-Received: by 2002:a0c:f883:: with SMTP id u3mr1179641qvn.44.1621453746524;
- Wed, 19 May 2021 12:49:06 -0700 (PDT)
+        id S232258AbhESTu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:50:59 -0400
+Received: from mail-bn7nam10on2098.outbound.protection.outlook.com ([40.107.92.98]:7232
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232212AbhESTu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 15:50:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JIj+43p+3B1lLShOLzEwANkqBNrrEFQaeYDHn94+Cr61zwzdZwm0qG//OIOBIlUiD196GUVLIOWjEsV7ppE6P+L2Xd7rqLdLuMO912sN053mnOGU42m2Z+NTcGJm5C2t04WAWq5qcHeBspvdaytURfCJVr1GkBzPe4Bd0jcH9miM4PNCJlVxSDXUEPMVyCoDoXL+/P4sTLLubscWf60cyqMTBAd6PLtUa4aJkyv3AVucIquCxBNtN/nkR/Uv5wFE4Nfc+YjaF1LhDoQ9Sozxk8k78vcDEHh2zOPXb+tG/5MKQ5Ab8useB9ct69Zh2Ntt9hsWRmFGw9E6YbV+d42AHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=stNzeLGzdlGRzz9VQV8bVWY5wpoq9KgEOYFAgOHNtfk=;
+ b=VW0a1IFWbJD3KSw32uOj4RTbfhHdWCbXgJTTCg/iyhtIBzLuSlA7vWSig3w3CYY806CoUakeUDrgCPGPddnuw6rkIHynOA3chAd0G49jaiUli/bTvN1U3veVbdH2YFEOIo9ZmdiHc224vlca1cl6WN/sqoWaA22SSeHOflEfWh4e1wvgEOi+SnxgmfDw0Zf7sAX62OJpvfnwi20+lP1lVsQuzv1K2gcdv5vNgDgSiLKL6O3Z1dRucoLWKblhrVoPeJY7qS7tcQH6fF5o1xMjo9CYk2ND7o/mlEcMon1R0YeWpt6cDCd2SUKv9ie1gDWXUcQb/45r8ShqOqh7xQUbNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=stNzeLGzdlGRzz9VQV8bVWY5wpoq9KgEOYFAgOHNtfk=;
+ b=fHjQdWOxItzYcjZndRLu+tX28KNfprkXCPd7bPh3+bumUw7P9uKs1EMroFvAi+zFh2oNI1VqGdmzQ8JLIa+q3txeQ0AYJw6/5tUK0VIgsDoOif6m4xip90Wr3t0ATNHRtRpdcK3ImFzTq9pRBlo/6Dh5sIlMqhRmjTKFGTM7huyvJpeUugMcBwE4IT5+DkiZfuNIFK3TICYtndB+/qF//4E9xoUGzs523OdZLt3IXKfK6ljVNuAmZZYdYbvy0rwB+0zAqxt4E5dwAQxLjcFMDBTSEkXs6+Ga4BDN1mJXZ1T5ug9ypfq5VOLo0iV/Ih9+bPqTT3dmjvrzGyLwrxHAWA==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ PH0PR01MB6360.prod.exchangelabs.com (2603:10b6:510:d::19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.28; Wed, 19 May 2021 19:49:35 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::b43d:7749:62fa:2488]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::b43d:7749:62fa:2488%7]) with mapi id 15.20.4129.033; Wed, 19 May 2021
+ 19:49:34 +0000
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
+ <20210513191551.GT1002214@nvidia.com>
+ <4237ab8a-a851-ecdf-ec41-4e798a2da156@cornelisnetworks.com>
+ <20210514130247.GA1002214@nvidia.com>
+ <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
+ <20210514143516.GG1002214@nvidia.com>
+ <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
+ <20210514150237.GJ1002214@nvidia.com> <YKTDPm6j29jziSxT@unreal>
+ <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
+ <20210519182941.GQ1002214@nvidia.com>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
+Date:   Wed, 19 May 2021 15:49:31 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
+In-Reply-To: <20210519182941.GQ1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [24.154.216.5]
+X-ClientProxiedBy: MN2PR08CA0023.namprd08.prod.outlook.com
+ (2603:10b6:208:239::28) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
 MIME-Version: 1.0
-References: <0000000000003687bd05c2b2401d@google.com>
-In-Reply-To: <0000000000003687bd05c2b2401d@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 19 May 2021 21:48:55 +0200
-Message-ID: <CACT4Y+YJDGFN4q-aTPritnjjHEXiFovOm9eO6Ay4xC1YOa5z3w@mail.gmail.com>
-Subject: Re: [syzbot] BUG: MAX_LOCKDEP_KEYS too low! (2)
-To:     syzbot <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        WireGuard mailing list <wireguard@lists.zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Denniss-MacBook-Pro.local (24.154.216.5) by MN2PR08CA0023.namprd08.prod.outlook.com (2603:10b6:208:239::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.32 via Frontend Transport; Wed, 19 May 2021 19:49:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0c0bb6aa-f1c8-4e6c-a1cd-08d91aff39ed
+X-MS-TrafficTypeDiagnostic: PH0PR01MB6360:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR01MB6360E158E125FBEE4EEAB6C0F42B9@PH0PR01MB6360.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QUwdSjRTaM4w69wTpPWjnWLiDbP65vnhTLAbeQH/KtH/wwAKcyVWolpqpBrsix4RWvXKJoTsl61WQ2XT8b5PAwclh/OLC8A2NufkKsEQIOewcr2ksKMp528AjCOQUuiax+Q/WQqSkteBm9Zt2Zm80pdw0ad+hcqg6SBelCSjqgKCwq77uPPvOczffysanL9kIMyGqNyRRfDD5j09lXsG5CVHC7/ffKrIbBZlr59JQmVxbKOidzEfQyzj4tycdghLH6AK1NfgTc8wC2CmNit98+0IhgSlhOkNgDYmF68xfrzIxTR3R65VTLPe1ruSf6qiWlPWLD1cm5lINcEv26U2CWZ2TMb+IvY/IjRrRe6Qmir6nCFX8ZIjDGMJt7brnTNSXp27azlQKgHb8LXTQoBjPe76lA2W5UvJlf31InJlxTfsZ0XVJeo/Tu5bfGt/7VcpaVIN9AVqoEP8x1NGmptR6y0Nqzf5sIH/mFRbncFZhdwiiOYleJwcWRYch9JOj18+BG5OMVbZGQm09E4MT9jhCpuV9wOGtIbYvjwhdBkiBmbWM3A3h5TaWaSlrQ0Nee1mn8R9UqlP7n3unIUlDHL/tQl9g5JFewqS5zsrHfMYJ7pzIi+YB++/wlnT3oO2CRXsGCSDPXGooD4oUKshi7dy8ZJaXi82rQx6icePHQLQny52rtHRHfl/Rjwg3G2ClBM3SBFyZEk9EABjS73zG85lhG0KSyH5pmbdBGaxrTMV6ns=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39830400003)(366004)(346002)(136003)(66946007)(6916009)(316002)(66556008)(52116002)(66476007)(54906003)(6486002)(2616005)(956004)(44832011)(6506007)(478600001)(186003)(8676002)(4326008)(26005)(4744005)(16526019)(6512007)(2906002)(8936002)(31686004)(86362001)(38350700002)(38100700002)(5660300002)(31696002)(53546011)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?blY0N3lQc1RVL2FPQ0NHanI3Rno5VVN5RnM1d3dXSmFzTVdPYTlaNDhZTVRU?=
+ =?utf-8?B?TzRCbENEeEFpN0wyenR2TDlLSUFKYzNjQnlMcDBUNm54THMvcDVKK3VHMUxk?=
+ =?utf-8?B?b09QUmlRbHdWSmZLRGFSU0g2MjVVR0VlcVExQzNacm1jZGNlYkZZcDZNY1pr?=
+ =?utf-8?B?bkpCWFdjSkQxbXRaQzh6RDc3QW5Rdk1HODVXbzZQVWdlOHBEMk1lR0NBTGlX?=
+ =?utf-8?B?Z3o3b1ptSDVycUdQck5vdjRhUnhwOU1VL0tPZElxWFExNjhjT3RtZmVCZHVV?=
+ =?utf-8?B?NUZJWmo2cEtyaW9DMG5pUUFZVmdadmIxaGJlbDVJVVlrc0pHa2dJdnR3UVRx?=
+ =?utf-8?B?dnNKNTlFN0h3bWlVWUt1WTV2RjZZVTMxTnBWb2JmZGV6blRGMmdsQVhLOGtw?=
+ =?utf-8?B?cE9iZ0lmT0RVQ1ZNNVV2QkFETURWRkc3WGhtYTRlNVRnYWw5ZTIyVG5QWk90?=
+ =?utf-8?B?OHQwSTBWL05TVUpVN0x4QnhPQUV5VVJBTWVDdjFsUWErTUZQeWd0WHJPUUVV?=
+ =?utf-8?B?VEtCK3hacFc5S0t4ditKd0Q1U1F5TCtyQm4xMWFVaUVpUzY3d1lrc2NYZVhh?=
+ =?utf-8?B?c2RHUWtMb1VzV1d4dG81V3dDYWg3ZU5KOE5kd0xmNHhtMkZBVXFzYVdzd1pT?=
+ =?utf-8?B?NVpjUSsxR2E4VVNkcFZIanVjVXYxUGxnY3l5djBadTZ2MTduODVTNG50KzhF?=
+ =?utf-8?B?YmRoeHNJR1FkTGdyY3liWXZaTEdrdUU4dVRmNmFteC9pMmgzNlQ1Y3NZWnJx?=
+ =?utf-8?B?SkNKbWRVRkR3Uk9ZVDc4Z1B0TUxiSFVGY1R2cUdDbnVaS0V3L0Q0a1F4dmlv?=
+ =?utf-8?B?RG9qbXJOVnladG5hMGpORUlNYnI5elhLNXNqdkx2VHIyQzVjK2VKZG9oNENo?=
+ =?utf-8?B?QkNvOXd5alNwdWJKS3dGRjJZVys0SUxZVFQvVkNJdnVkQkRVT1VNeVpYYVZQ?=
+ =?utf-8?B?UFRvWDI2SHBuRHRjSW9oQklCKytLWEJ1WTEyQ09hMm9ybktRNllKUnRhaGVI?=
+ =?utf-8?B?N2JTb3pyNDdwOUtaSzBjODQwaVZnK09UOWhTRElERkQrYWhtZGVEOG1DWGlt?=
+ =?utf-8?B?NnZtU1FjTWtKdkVIamhRVHNydzRFZnVRU1djZjVTRWp3R2UvVVRkdDF0bXVv?=
+ =?utf-8?B?NC9ZajVWWm0vN1IyUWE2cDdrUENWZDNzRHNMdTNqeEFJSHpJZC80clBDQnV5?=
+ =?utf-8?B?bnZPTE9NQXYxWVFEcmVaTUdLc0F2dDVXYUFkRzdTOGh4T2NhajFheDFQL2Fa?=
+ =?utf-8?B?RUxIRmozNktqRDFjK0J6d0FJYkNpeGdTKzZLdnhsTnJvdXduL0E0cDljemdG?=
+ =?utf-8?B?WS9iSEw5RCsvNEprWmZnWXhrbVdkSU9rcXhkZ3lDbWlNQmJBbUxkT1Q1OGRS?=
+ =?utf-8?B?N25TdTR1SEM4T21vZC9uN25FV0ZzT08zd0RlOGxmTGd0eTBCWndOZlZsNVBL?=
+ =?utf-8?B?V0c0TEhNWmd0TkJFQkdKWUVLV1BQaTF0eTRrbWRsNkx1RkJDaXAxc1FoUVoy?=
+ =?utf-8?B?YlFKTHhpeWFGN3Z5Mkk3WlNPdmowalg1bHBTaUM4Smk0ZkNtazB4UkhlSnM4?=
+ =?utf-8?B?bkhReGR5M1R4b01CVDVyejFWR3J1RXVNSkMwdUZObHl0VDFFTWNZWWRmZnRw?=
+ =?utf-8?B?VWQwUWlHdVhGY2JuU2RYREVIeEV1Ti9nemJqRjVOUTJqN1RKL3RYU295ZjAr?=
+ =?utf-8?B?THNMdWlZQmVLdXRBWnVFVzdwcDVOOFdEVFdDMjNycFVwMVpFVk5KU2MyUUYr?=
+ =?utf-8?Q?9aSAWD4UPivArHfnYibWWnjmWZzpszmZDfrTFF+?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c0bb6aa-f1c8-4e6c-a1cd-08d91aff39ed
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 19:49:34.5222
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w0RhtAU29PcggMVos6YUaph7CHKdE8H+1iJs4b4S2joaCBREsplielr+tzEi1HlUMb/eR9Bi+ivYMpcl0N77okkltjJu8/OJS6euv50zTfP8TexEDXYLygn5ukpuNBKr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6360
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 7:35 PM syzbot
-<syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    b81ac784 net: cdc_eem: fix URL to CDC EEM 1.0 spec
-> git tree:       net
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15a257c3d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5b86a12e0d1933b5
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a70a6358abd2c3f9550f
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com
->
-> BUG: MAX_LOCKDEP_KEYS too low!
+On 5/19/21 2:29 PM, Jason Gunthorpe wrote:
+> On Wed, May 19, 2021 at 07:56:32AM -0400, Dennis Dalessandro wrote:
+> 
+>> Perhaps the code can be enhanced to move more stuff into the driver's own
+>> structs as Jason points out, but that should happen first. For now I still
+>> don't understand why the core can't optionally make the allocation per node.
+> 
+> Because I think it is wrong in the general case to assign all
+> allocations to a single node?
 
+If by general case you mean for all drivers, sure, totally agree. We 
+aren't talking about all drivers though, just the particular case of rdmavt.
 
-What config controls this? I don't see "MAX_LOCKDEP_KEYS too low" in
-any of the config descriptions...
-Here is what syzbot used:
-
-CONFIG_LOCKDEP=y
-CONFIG_LOCKDEP_BITS=16
-CONFIG_LOCKDEP_CHAINS_BITS=17
-CONFIG_LOCKDEP_STACK_TRACE_BITS=20
-CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
-CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
-
-We already bumped most of these.
-The log contains dump of the lockdep debug files, is there any offender?
-
-Also looking at the log I noticed a memory safety bug in lockdep implementation:
-
-[ 2023.605505][ T6807]
-==================================================================
-[ 2023.613589][ T6807] BUG: KASAN: global-out-of-bounds in
-print_name+0x1b0/0x1d0
-[ 2023.624553][ T6807] Read of size 8 at addr ffffffff90225cb0 by task cat/6807
-[ 2023.631765][ T6807]
-[ 2023.634096][ T6807] CPU: 1 PID: 6807 Comm: cat Not tainted
-5.12.0-syzkaller #0
-[ 2023.641488][ T6807] Hardware name: Google Google Compute
-Engine/Google Compute Engine, BIOS Google 01/01/2011
-[ 2023.651745][ T6807] Call Trace:
-[ 2023.655031][ T6807]  dump_stack+0x141/0x1d7
-[ 2023.659375][ T6807]  ? print_name+0x1b0/0x1d0
-[ 2023.663890][ T6807]  print_address_description.constprop.0.cold+0x5/0x2f8
-[ 2023.670895][ T6807]  ? print_name+0x1b0/0x1d0
-[ 2023.675413][ T6807]  ? print_name+0x1b0/0x1d0
-[ 2023.679948][ T6807]  kasan_report.cold+0x7c/0xd8
-[ 2023.684725][ T6807]  ? print_name+0x1b0/0x1d0
-[ 2023.689248][ T6807]  print_name+0x1b0/0x1d0
-[ 2023.694196][ T6807]  ? lockdep_stats_show+0xa20/0xa20
-[ 2023.699940][ T6807]  ? seq_file_path+0x30/0x30
-[ 2023.704721][ T6807]  ? mutex_lock_io_nested+0xf70/0xf70
-[ 2023.710118][ T6807]  ? lock_acquire+0x58a/0x740
-[ 2023.715156][ T6807]  ? kasan_unpoison+0x3c/0x60
-[ 2023.719843][ T6807]  lc_show+0x10a/0x210
-[ 2023.723924][ T6807]  seq_read_iter+0xb66/0x1220
-[ 2023.728617][ T6807]  proc_reg_read_iter+0x1fb/0x2d0
-[ 2023.733651][ T6807]  new_sync_read+0x41e/0x6e0
-[ 2023.738272][ T6807]  ? ksys_lseek+0x1b0/0x1b0
-[ 2023.742784][ T6807]  ? lock_acquire+0x58a/0x740
-[ 2023.747563][ T6807]  vfs_read+0x35c/0x570
-[ 2023.751737][ T6807]  ksys_read+0x12d/0x250
-[ 2023.756003][ T6807]  ? vfs_write+0xa30/0xa30
-[ 2023.760429][ T6807]  ? syscall_enter_from_user_mode+0x27/0x70
-[ 2023.766335][ T6807]  do_syscall_64+0x3a/0xb0
-[ 2023.770764][ T6807]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 2023.776685][ T6807] RIP: 0033:0x7f99856e2910
-[ 2023.781104][ T6807] Code: b6 fe ff ff 48 8d 3d 0f be 08 00 48 83 ec
-08 e8 06 db 01 00 66 0f 1f 44 00 00 83 3d f9 2d 2c 00 00 75 10 b8 00
-00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 de 9b 01 00
-48 89 04 24
-[ 2023.800719][ T6807] RSP: 002b:00007ffee7328628 EFLAGS: 00000246
-ORIG_RAX: 0000000000000000
-[ 2023.809169][ T6807] RAX: ffffffffffffffda RBX: 0000000000020000
-RCX: 00007f99856e2910
-[ 2023.817150][ T6807] RDX: 0000000000020000 RSI: 0000564290b2a000
-RDI: 0000000000000003
-[ 2023.825123][ T6807] RBP: 0000564290b2a000 R08: 0000000000000003
-R09: 0000000000021010
-[ 2023.833107][ T6807] R10: 0000000000000002 R11: 0000000000000246
-R12: 0000564290b2a000
-[ 2023.841091][ T6807] R13: 0000000000000003 R14: 0000000000020000
-R15: 0000000000001000
-[ 2023.849074][ T6807]
-[ 2023.851408][ T6807] The buggy address belongs to the variable:
-[ 2023.857388][ T6807]  lock_classes_in_use+0x410/0x420
-[ 2023.862510][ T6807]
-[ 2023.864826][ T6807] Memory state around the buggy address:
-[ 2023.870450][ T6807]  ffffffff90225b80: 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00
-[ 2023.878511][ T6807]  ffffffff90225c00: 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00
-[ 2023.886572][ T6807] >ffffffff90225c80: 00 00 00 00 f9 f9 f9 f9 00
-00 00 00 00 00 00 00
-[ 2023.894628][ T6807]                                      ^
-[ 2023.900256][ T6807]  ffffffff90225d00: 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00
-[ 2023.908317][ T6807]  ffffffff90225d80: 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00
-[ 2023.916377][ T6807]
-==================================================================
-
-
-
-
-
-> turning off the locking correctness validator.
-> CPU: 0 PID: 5917 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  register_lock_class.cold+0x14/0x19 kernel/locking/lockdep.c:1281
->  __lock_acquire+0x102/0x5230 kernel/locking/lockdep.c:4781
->  lock_acquire kernel/locking/lockdep.c:5512 [inline]
->  lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
->  flush_workqueue+0x110/0x13e0 kernel/workqueue.c:2786
->  drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2951
->  destroy_workqueue+0x71/0x800 kernel/workqueue.c:4382
->  alloc_workqueue+0xc40/0xef0 kernel/workqueue.c:4343
->  wg_newlink+0x43d/0x9e0 drivers/net/wireguard/device.c:335
->  __rtnl_newlink+0x1062/0x1710 net/core/rtnetlink.c:3452
->  rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
->  rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5562
->  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:674
->  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
->  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x4665d9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fb25febe188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 00000000004665d9
-> RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000005
-> RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
-> R13: 00007fff30a5021f R14: 00007fb25febe300 R15: 0000000000022000
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000003687bd05c2b2401d%40google.com.
+-Denny
