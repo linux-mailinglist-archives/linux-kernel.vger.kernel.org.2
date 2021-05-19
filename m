@@ -2,492 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F113893C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569253893CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347276AbhESQaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:30:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60204 "EHLO
+        id S1347336AbhESQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:32:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30662 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241726AbhESQav (ORCPT
+        by vger.kernel.org with ESMTP id S241726AbhESQcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:30:51 -0400
+        Wed, 19 May 2021 12:32:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621441770;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qJtDLlDXwe0jDO6K7LmJzdYylygG0izQy+g0Z5oiEqk=;
-        b=AHph1WBz+gczDbLrCnVjtWf2cVz4X4jcH1GHY76apVDxllScQXu42KTTQd0GR0tnfmsjS6
-        BNgmwukRdrPK/tYb/I4boOxkWhyS4luwMMyaMLjizYjqqRpKhupADV+SQwu5C1Ko1QLRAH
-        VF35ukmlRyKNQvXPuuqfSJ7wo0lDIS0=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-y8o37LuvNkG_1h33kDJToQ-1; Wed, 19 May 2021 12:29:29 -0400
-X-MC-Unique: y8o37LuvNkG_1h33kDJToQ-1
-Received: by mail-qt1-f197.google.com with SMTP id r1-20020ac85c810000b02901fa9798cdb5so3929785qta.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:29:29 -0700 (PDT)
+        s=mimecast20190719; t=1621441863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DTIBsxfcmpbiGvB6/oqS+BCqPAr0GPYXwX6i6OwUXu8=;
+        b=fs1/BWOz1fEiai/z/E/h1/cqcRl5OObmQOIKaKgnyNuPGmboRrEGSxWZCZu2lJBHOkBHBA
+        kbZAumKZZHr08nlzfwC/ZOJ4Fs2ZGF3o/3+o6lmuhFYn3jXFZ2niNptMzBMWtTEVKlVC5Y
+        XdgrsS9jew1Hg/tXQSSbEWFdYJS/OXE=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-0I-jOBNoNMaqakKeugkhog-1; Wed, 19 May 2021 12:31:02 -0400
+X-MC-Unique: 0I-jOBNoNMaqakKeugkhog-1
+Received: by mail-qk1-f198.google.com with SMTP id d15-20020a05620a136fb02902e9e93c69c8so10175709qkl.23
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:31:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:organization:user-agent:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qJtDLlDXwe0jDO6K7LmJzdYylygG0izQy+g0Z5oiEqk=;
-        b=iNHQdwQZLaplPQpNbnLJD4s2rRvbDOlPShifBmOPGmrt+36EGj8tpyCEP2WDQKN+jp
-         Xe0fg+gAwfSYOhpCyDwjXK9VWf9DRuE6HT/Gij8V3wZvSMRuvwZBs9ctbVd0ufpWDvmx
-         kYJZs/iKCcNWfzO7drUll4yRtgv5g3otZM/rtOyJQ2uz5lHR7I1OBSGGEp9Q0GjykIut
-         xXHcTZnm9zZNdiba7ApYGz/NihnRKTuPuIymjqjABydQrrYPcGnQw8Ml5COqsu08pFJA
-         aoqsM7LEHpzs292yMucVX3nILZQIkhZ4qR6bRnLYBZqKtq+d2iaDkpt6pfJINSjIp53l
-         p6Nw==
-X-Gm-Message-State: AOAM530AGSkQHQXgEa8Iz0gejkdTqDcaig+ZH/29PXDdUxVFoa/PNszf
-        fXEw+gns69U4bYOb0Grkg3mEeIDpMzqnq2doyV9JdXIaJTPQFRsNuqbJVgUrjv0DSyxR5ZzwQcO
-        xEPAL6uRmhZS2nvdCarwMCrGk
-X-Received: by 2002:ac8:68d:: with SMTP id f13mr275834qth.300.1621441768696;
-        Wed, 19 May 2021 09:29:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxzuSbd+/+V/r1bfO2MEHwJ7W8tOgaM9COTAagrNd9ZedZVz9qft8cdHe0I9O2SqKyyNxHA/g==
-X-Received: by 2002:ac8:68d:: with SMTP id f13mr275814qth.300.1621441768444;
-        Wed, 19 May 2021 09:29:28 -0700 (PDT)
-Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id s123sm143955qkf.1.2021.05.19.09.29.27
+        bh=DTIBsxfcmpbiGvB6/oqS+BCqPAr0GPYXwX6i6OwUXu8=;
+        b=DmBtivORPgxJzBF7W/qMtvjk9Utj3YcB5w4k44520XSsRLEiZ/r2BEyXgI+5LPNOx9
+         DJITUjNtYO9pusJy8uPehyNRzbSpqeeBOBpFhB8yJiOw+X33nfXa+q5nMg2HNnkDNqYa
+         BkqC76e3mMXmBw8PWfA34ATaE0tGamyQayCbgFjob/imRIVyrHNKoBPoyMPViJhFwWsn
+         HwA0biuA5DUhqQVMoNLq2kiB/5J82qPrMUyHyGEjBEf/3hpsRlaOvgJhQzW2HE5bT3UE
+         ZzcbmY0fgzkt+Unhq9J01YyWfe92n+EogzrVE1SkTWL2UD7538Xs1hAe4hy17KrZB2Nn
+         TljQ==
+X-Gm-Message-State: AOAM5309VMx+YvWo+TJzo6Zyra89qCQX5mqwlKBxX9WWKqYh/5KhkQJs
+        OW46eWwY58ppS9+fBX7Pz4awfcwfOklsBY4HMrNBURrYS9axxvPHU5jHkEHmvhAcPlRxg7DuaBV
+        qSdVmKhtbE+UIRiP4gUOEM9Wf
+X-Received: by 2002:a37:ae86:: with SMTP id x128mr120639qke.427.1621441861587;
+        Wed, 19 May 2021 09:31:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyBDO/tdIzDTtrmY8uL8MiiJzfxzrZi8/LESSihIP4aUK6JgfnB0vNj/ZF4iZSBIj0X30ZwmA==
+X-Received: by 2002:a37:ae86:: with SMTP id x128mr120601qke.427.1621441861183;
+        Wed, 19 May 2021 09:31:01 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a14sm1442263qtp.74.2021.05.19.09.30.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 09:29:28 -0700 (PDT)
-Message-ID: <335506d3ac3111d28bc3371b256ae9b28f40dbf9.camel@redhat.com>
-Subject: Re: [PATCH v4 1/3] drm/dp_mst: Add self-tests for up requests
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Sam McNally <sammc@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Date:   Wed, 19 May 2021 12:29:27 -0400
-In-Reply-To: <CAJqEsoDAm6YAiEOqVFcojLEP10rQ9FbfeBHLkUN5KxwTw6j2LA@mail.gmail.com>
-References: <20210518223508.v4.1.I6f50a7996687318ba298c24a3663c8be7dd432c7@changeid>
-         <faee62cc5308ded52538c5bab8d47cd1d01e42c2.camel@redhat.com>
-         <CAJqEsoDAm6YAiEOqVFcojLEP10rQ9FbfeBHLkUN5KxwTw6j2LA@mail.gmail.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 19 May 2021 09:31:00 -0700 (PDT)
+From:   trix@redhat.com
+To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
+        michal.simek@xilinx.com
+Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] fpga: fix spelling mistakes
+Date:   Wed, 19 May 2021 09:30:56 -0700
+Message-Id: <20210519163056.1966690-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-05-19 at 13:51 +1000, Sam McNally wrote:
-> On Wed, 19 May 2021 at 08:01, Lyude Paul <lyude@redhat.com> wrote:
-> > 
-> > Looks like these tests might still need to be fixed up a bit:
-> > 
-> > [   34.785042]  (null): [drm:drm_dp_sideband_parse_req [drm_kms_helper]]
-> > connection status reply parse length fail 2 1
-> > [   34.785082]  (null): [drm:drm_dp_sideband_parse_req [drm_kms_helper]]
-> > resource status reply parse length fail 2 1
-> > [   34.785114]  (null): [drm:drm_dp_sideband_parse_req [drm_kms_helper]]
-> > sink event notify parse length fail 2 1
-> > [   34.785146]  (null): [drm] *ERROR* Got unknown request 0x23
-> > (REMOTE_I2C_WRITE)
-> > 
-> 
-> Those are expected parse failures - testing that parse rejects
-> messages that are too short or are unsupported. I'll set the mock
-> device name to make this clearer in the next version, producing
-> logging like:
-> [   25.163682]  [drm_dp_mst_helper] expected parse failure:
-> [drm:drm_dp_sideband_parse_req] connection status reply parse length
-> fail 2 1
-> [   25.163706]  [drm_dp_mst_helper] expected parse failure:
-> [drm:drm_dp_sideband_parse_req] resource status reply parse length
-> fail 2 1
-> [   25.163719]  [drm_dp_mst_helper] expected parse failure:
-> [drm:drm_dp_sideband_parse_req] sink event notify parse length fail 2
-> 1
-> [   25.163730]  [drm_dp_mst_helper] expected parse failure: [drm]
-> *ERROR* Got unknown request 0x23 (REMOTE_I2C_WRITE)
-> 
+From: Tom Rix <trix@redhat.com>
 
-sgtm
+Run the fpga subsystem through aspell.
 
-> > 
-> > On Tue, 2021-05-18 at 22:35 +1000, Sam McNally wrote:
-> > Up requests are decoded by drm_dp_sideband_parse_req(), which operates
-> > on a drm_dp_sideband_msg_rx, unlike down requests. Expand the existing
-> > self-test helper sideband_msg_req_encode_decode() to copy the message
-> > contents and length from a drm_dp_sideband_msg_tx to
-> > drm_dp_sideband_msg_rx and use the parse function under test in place of
-> > decode.
-> > 
-> > Add support for currently-supported up requests to
-> > drm_dp_dump_sideband_msg_req_body(); add support to
-> > drm_dp_encode_sideband_req() to allow encoding for the self-tests.
-> > 
-> > Add self-tests for CONNECTION_STATUS_NOTIFY and RESOURCE_STATUS_NOTIFY.
-> > 
-> > Signed-off-by: Sam McNally <sammc@chromium.org>
-> > ---
-> > 
-> > Changes in v4:
-> > - New in v4
-> > 
-> >  drivers/gpu/drm/drm_dp_mst_topology.c         |  54 ++++++-
-> >  .../gpu/drm/drm_dp_mst_topology_internal.h    |   4 +
-> >  .../drm/selftests/test-drm_dp_mst_helper.c    | 147 ++++++++++++++++--
-> >  3 files changed, 190 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c
-> > b/drivers/gpu/drm/drm_dp_mst_topology.c
-> > index 54604633e65c..573f39a3dc16 100644
-> > --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> > +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> > @@ -442,6 +442,37 @@ drm_dp_encode_sideband_req(const struct
-> > drm_dp_sideband_msg_req_body *req,
-> >                 idx++;
-> >                 }
-> >                 break;
-> > +       case DP_CONNECTION_STATUS_NOTIFY: {
-> > +               const struct drm_dp_connection_status_notify *msg;
-> > +
-> > +               msg = &req->u.conn_stat;
-> > +               buf[idx] = (msg->port_number & 0xf) << 4;
-> > +               idx++;
-> > +               memcpy(&raw->msg[idx], msg->guid, 16);
-> > +               idx += 16;
-> > +               raw->msg[idx] = 0;
-> > +               raw->msg[idx] |= msg->legacy_device_plug_status ? BIT(6) :
-> > 0;
-> > +               raw->msg[idx] |= msg->displayport_device_plug_status ?
-> > BIT(5) :
-> > 0;
-> > +               raw->msg[idx] |= msg->message_capability_status ? BIT(4) :
-> > 0;
-> > +               raw->msg[idx] |= msg->input_port ? BIT(3) : 0;
-> > +               raw->msg[idx] |= FIELD_PREP(GENMASK(2, 0), msg-
-> > > peer_device_type);
-> > +               idx++;
-> > +               break;
-> > +       }
-> > +       case DP_RESOURCE_STATUS_NOTIFY: {
-> > +               const struct drm_dp_resource_status_notify *msg;
-> > +
-> > +               msg = &req->u.resource_stat;
-> > +               buf[idx] = (msg->port_number & 0xf) << 4;
-> > +               idx++;
-> > +               memcpy(&raw->msg[idx], msg->guid, 16);
-> > +               idx += 16;
-> > +               buf[idx] = (msg->available_pbn & 0xff00) >> 8;
-> > +               idx++;
-> > +               buf[idx] = (msg->available_pbn & 0xff);
-> > +               idx++;
-> > +               break;
-> > +       }
-> >         }
-> >         raw->cur_len = idx;
-> >  }
-> > @@ -672,6 +703,22 @@ drm_dp_dump_sideband_msg_req_body(const struct
-> > drm_dp_sideband_msg_req_body *req
-> >                   req->u.enc_status.stream_behavior,
-> >                   req->u.enc_status.valid_stream_behavior);
-> >                 break;
-> > +       case DP_CONNECTION_STATUS_NOTIFY:
-> > +               P("port=%d guid=%*ph legacy=%d displayport=%d messaging=%d
-> > input=%d peer_type=%d",
-> > +                 req->u.conn_stat.port_number,
-> > +                 (int)ARRAY_SIZE(req->u.conn_stat.guid), req-
-> > >u.conn_stat.guid,
-> > +                 req->u.conn_stat.legacy_device_plug_status,
-> > +                 req->u.conn_stat.displayport_device_plug_status,
-> > +                 req->u.conn_stat.message_capability_status,
-> > +                 req->u.conn_stat.input_port,
-> > +                 req->u.conn_stat.peer_device_type);
-> > +               break;
-> > +       case DP_RESOURCE_STATUS_NOTIFY:
-> > +               P("port=%d guid=%*ph pbn=%d",
-> > +                 req->u.resource_stat.port_number,
-> > +                 (int)ARRAY_SIZE(req->u.resource_stat.guid), req-
-> > > u.resource_stat.guid,
-> > +                 req->u.resource_stat.available_pbn);
-> > +               break;
-> >         default:
-> >                 P("???\n");
-> >                 break;
-> > @@ -1116,9 +1163,9 @@ static bool
-> > drm_dp_sideband_parse_resource_status_notify(const struct drm_dp_mst
-> >         return false;
-> >  }
-> > 
-> > -static bool drm_dp_sideband_parse_req(const struct drm_dp_mst_topology_mgr
-> > *mgr,
-> > -                                     struct drm_dp_sideband_msg_rx *raw,
-> > -                                     struct drm_dp_sideband_msg_req_body
-> > *msg)
-> > +bool drm_dp_sideband_parse_req(const struct drm_dp_mst_topology_mgr *mgr,
-> > +                              struct drm_dp_sideband_msg_rx *raw,
-> > +                              struct drm_dp_sideband_msg_req_body *msg)
-> >  {
-> >         memset(msg, 0, sizeof(*msg));
-> >         msg->req_type = (raw->msg[0] & 0x7f);
-> > @@ -1134,6 +1181,7 @@ static bool drm_dp_sideband_parse_req(const struct
-> > drm_dp_mst_topology_mgr *mgr,
-> >                 return false;
-> >         }
-> >  }
-> > +EXPORT_SYMBOL_FOR_TESTS_ONLY(drm_dp_sideband_parse_req);
-> > 
-> >  static void build_dpcd_write(struct drm_dp_sideband_msg_tx *msg,
-> >                              u8 port_num, u32 offset, u8 num_bytes, u8
-> > *bytes)
-> > diff --git a/drivers/gpu/drm/drm_dp_mst_topology_internal.h
-> > b/drivers/gpu/drm/drm_dp_mst_topology_internal.h
-> > index eeda9a61c657..0356a2e0dba1 100644
-> > --- a/drivers/gpu/drm/drm_dp_mst_topology_internal.h
-> > +++ b/drivers/gpu/drm/drm_dp_mst_topology_internal.h
-> > @@ -21,4 +21,8 @@ void
-> >  drm_dp_dump_sideband_msg_req_body(const struct drm_dp_sideband_msg_req_body
-> > *req,
-> >                                   int indent, struct drm_printer *printer);
-> > 
-> > +bool
-> > +drm_dp_sideband_parse_req(const struct drm_dp_mst_topology_mgr *mgr,
-> > +                         struct drm_dp_sideband_msg_rx *raw,
-> > +                         struct drm_dp_sideband_msg_req_body *msg);
-> >  #endif /* !_DRM_DP_MST_HELPER_INTERNAL_H_ */
-> > diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> > b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> > index 6b4759ed6bfd..22aaedc63aec 100644
-> > --- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> > +++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> > @@ -13,6 +13,10 @@
-> >  #include "../drm_dp_mst_topology_internal.h"
-> >  #include "test-drm_modeset_common.h"
-> > 
-> > +static void mock_release(struct device *dev)
-> > +{
-> > +}
-> > +
-> >  int igt_dp_mst_calc_pbn_mode(void *ignored)
-> >  {
-> >         int pbn, i;
-> > @@ -120,27 +124,59 @@ sideband_msg_req_equal(const struct
-> > drm_dp_sideband_msg_req_body *in,
-> >  static bool
-> >  sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
-> >  {
-> > -       struct drm_dp_sideband_msg_req_body *out;
-> > +       struct drm_dp_sideband_msg_req_body *out = NULL;
-> >         struct drm_printer p = drm_err_printer(PREFIX_STR);
-> > -       struct drm_dp_sideband_msg_tx *txmsg;
-> > +       struct drm_dp_sideband_msg_tx *txmsg = NULL;
-> > +       struct drm_dp_sideband_msg_rx *rxmsg = NULL;
-> > +       struct drm_dp_mst_topology_mgr *mgr = NULL;
-> >         int i, ret;
-> > -       bool result = true;
-> > +       bool result = false;
-> > 
-> >         out = kzalloc(sizeof(*out), GFP_KERNEL);
-> >         if (!out)
-> > -               return false;
-> > +               goto out;
-> > 
-> >         txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
-> >         if (!txmsg)
-> > -               return false;
-> > +               goto out;
-> > 
-> > -       drm_dp_encode_sideband_req(in, txmsg);
-> > -       ret = drm_dp_decode_sideband_req(txmsg, out);
-> > -       if (ret < 0) {
-> > -               drm_printf(&p, "Failed to decode sideband request: %d\n",
-> > -                          ret);
-> > -               result = false;
-> > +       rxmsg = kzalloc(sizeof(*rxmsg), GFP_KERNEL);
-> > +       if (!rxmsg)
-> >                 goto out;
-> > +
-> > +       mgr = kzalloc(sizeof(*mgr), GFP_KERNEL);
-> > +       if (!mgr)
-> > +               goto out;
-> > +
-> > +       mgr->dev = kzalloc(sizeof(*mgr->dev), GFP_KERNEL);
-> > +       if (!mgr->dev)
-> > +               goto out;
-> > +
-> > +       mgr->dev->dev = kzalloc(sizeof(*mgr->dev->dev), GFP_KERNEL);
-> > +       if (!mgr->dev->dev)
-> > +               goto out;
-> > +
-> > +       mgr->dev->dev->release = mock_release;
-> > +       device_initialize(mgr->dev->dev);
-> > +
-> > +       drm_dp_encode_sideband_req(in, txmsg);
-> > +       switch (in->req_type) {
-> > +       case DP_CONNECTION_STATUS_NOTIFY:
-> > +       case DP_RESOURCE_STATUS_NOTIFY:
-> > +               memcpy(&rxmsg->msg, txmsg->msg, ARRAY_SIZE(rxmsg->msg));
-> > +               rxmsg->curlen = txmsg->cur_len;
-> > +               if (!drm_dp_sideband_parse_req(mgr, rxmsg, out)) {
-> > +                       drm_printf(&p, "Failed to decode sideband
-> > request\n");
-> > +                       goto out;
-> > +               }
-> > +               break;
-> > +       default:
-> > +               ret = drm_dp_decode_sideband_req(txmsg, out);
-> > +               if (ret < 0) {
-> > +                       drm_printf(&p, "Failed to decode sideband request:
-> > %d\n", ret);
-> > +                       goto out;
-> > +               }
-> > +               break;
-> >         }
-> > 
-> >         if (!sideband_msg_req_equal(in, out)) {
-> > @@ -148,9 +184,9 @@ sideband_msg_req_encode_decode(struct
-> > drm_dp_sideband_msg_req_body *in)
-> >                 drm_dp_dump_sideband_msg_req_body(in, 1, &p);
-> >                 drm_printf(&p, "Got:\n");
-> >                 drm_dp_dump_sideband_msg_req_body(out, 1, &p);
-> > -               result = false;
-> >                 goto out;
-> >         }
-> > +       result = true;
-> > 
-> >         switch (in->req_type) {
-> >         case DP_REMOTE_DPCD_WRITE:
-> > @@ -171,6 +207,65 @@ sideband_msg_req_encode_decode(struct
-> > drm_dp_sideband_msg_req_body *in)
-> >  out:
-> >         kfree(out);
-> >         kfree(txmsg);
-> > +       kfree(rxmsg);
-> > +       if (mgr) {
-> > +               if (mgr->dev) {
-> > +                       put_device(mgr->dev->dev);
-> > +                       kfree(mgr->dev);
-> > +               }
-> > +               kfree(mgr);
-> > +       }
-> > +       return result;
-> > +}
-> > +
-> > +static bool
-> > +sideband_msg_req_parse(int req_type)
-> > +{
-> > +       struct drm_dp_sideband_msg_req_body *out = NULL;
-> > +       struct drm_printer p = drm_err_printer(PREFIX_STR);
-> > +       struct drm_dp_sideband_msg_rx *rxmsg = NULL;
-> > +       struct drm_dp_mst_topology_mgr *mgr = NULL;
-> > +       bool result = false;
-> > +
-> > +       out = kzalloc(sizeof(*out), GFP_KERNEL);
-> > +       if (!out)
-> > +               goto out;
-> > +
-> > +       rxmsg = kzalloc(sizeof(*rxmsg), GFP_KERNEL);
-> > +       if (!rxmsg)
-> > +               goto out;
-> > +
-> > +       mgr = kzalloc(sizeof(*mgr), GFP_KERNEL);
-> > +       if (!mgr)
-> > +               goto out;
-> > +
-> > +       mgr->dev = kzalloc(sizeof(*mgr->dev), GFP_KERNEL);
-> > +       if (!mgr->dev)
-> > +               goto out;
-> > +
-> > +       mgr->dev->dev = kzalloc(sizeof(*mgr->dev->dev), GFP_KERNEL);
-> > +       if (!mgr->dev->dev)
-> > +               goto out;
-> > +
-> > +       mgr->dev->dev->release = mock_release;
-> > +       device_initialize(mgr->dev->dev);
-> > +
-> > +       rxmsg->curlen = 1;
-> > +       rxmsg->msg[0] = req_type & 0x7f;
-> > +       if (drm_dp_sideband_parse_req(mgr, rxmsg, out))
-> > +               drm_printf(&p, "Unexpectedly decoded invalid sideband
-> > request\n");
-> > +       else
-> > +               result = true;
-> > +out:
-> > +       kfree(out);
-> > +       kfree(rxmsg);
-> > +       if (mgr) {
-> > +               if (mgr->dev) {
-> > +                       put_device(mgr->dev->dev);
-> > +                       kfree(mgr->dev);
-> > +               }
-> > +               kfree(mgr);
-> > +       }
-> >         return result;
-> >  }
-> > 
-> > @@ -268,6 +363,34 @@ int igt_dp_mst_sideband_msg_req_decode(void *unused)
-> >         in.u.enc_status.valid_stream_behavior = 1;
-> >         DO_TEST();
-> > 
-> > +       in.req_type = DP_CONNECTION_STATUS_NOTIFY;
-> > +       in.u.conn_stat.port_number = 0xf;
-> > +       get_random_bytes(in.u.conn_stat.guid, sizeof(in.u.conn_stat.guid));
-> > +       in.u.conn_stat.legacy_device_plug_status = 1;
-> > +       in.u.conn_stat.displayport_device_plug_status = 0;
-> > +       in.u.conn_stat.message_capability_status = 0;
-> > +       in.u.conn_stat.input_port = 0;
-> > +       in.u.conn_stat.peer_device_type = 7;
-> > +       DO_TEST();
-> > +       in.u.conn_stat.displayport_device_plug_status = 1;
-> > +       DO_TEST();
-> > +       in.u.conn_stat.message_capability_status = 1;
-> > +       DO_TEST();
-> > +       in.u.conn_stat.input_port = 1;
-> > +       DO_TEST();
-> > +
-> > +       in.req_type = DP_RESOURCE_STATUS_NOTIFY;
-> > +       in.u.resource_stat.port_number = 0xf;
-> > +       get_random_bytes(in.u.resource_stat.guid,
-> > sizeof(in.u.resource_stat.guid));
-> > +       in.u.resource_stat.available_pbn = 0xcdef;
-> > +       DO_TEST();
-> > +
-> > +#undef DO_TEST
-> > +#define DO_TEST(req_type) FAIL_ON(!sideband_msg_req_parse(req_type))
-> > +       DO_TEST(DP_CONNECTION_STATUS_NOTIFY);
-> > +       DO_TEST(DP_RESOURCE_STATUS_NOTIFY);
-> > +
-> > +       DO_TEST(DP_REMOTE_I2C_WRITE);
-> >  #undef DO_TEST
-> >         return 0;
-> >  }
-> > 
-> > --
-> > Sincerely,
-> >    Lyude Paul (she/her)
-> >    Software Engineer at Red Hat
-> > 
-> > Note: I deal with a lot of emails and have a lot of bugs on my plate. If
-> > you've
-> > asked me a question, are waiting for a review/merge on a patch, etc. and I
-> > haven't responded in a while, please feel free to send me another email to
-> > check
-> > on my status. I don't bite!
-> > 
-> 
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ Documentation/fpga/dfl.rst    | 4 ++--
+ drivers/fpga/altera-cvp.c     | 2 +-
+ drivers/fpga/dfl-fme-pr.c     | 2 +-
+ drivers/fpga/dfl-n3000-nios.c | 2 +-
+ drivers/fpga/dfl.h            | 2 +-
+ drivers/fpga/fpga-bridge.c    | 4 ++--
+ drivers/fpga/zynq-fpga.c      | 6 +++---
+ include/linux/fpga/fpga-mgr.h | 2 +-
+ 8 files changed, 12 insertions(+), 12 deletions(-)
 
+diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
+index f3a1223f2517e..ccc33f199df2a 100644
+--- a/Documentation/fpga/dfl.rst
++++ b/Documentation/fpga/dfl.rst
+@@ -10,7 +10,7 @@ Authors:
+ - Xu Yilun <yilun.xu@intel.com>
+ 
+ The Device Feature List (DFL) FPGA framework (and drivers according to
+-this framework) hides the very details of low layer hardwares and provides
++this framework) hides the very details of low layer hardware and provides
+ unified interfaces to userspace. Applications could use these interfaces to
+ configure, enumerate, open and access FPGA accelerators on platforms which
+ implement the DFL in the device memory. Besides this, the DFL framework
+@@ -205,7 +205,7 @@ given Device Feature Lists and create platform devices for feature devices
+ also abstracts operations for the private features and exposes common ops to
+ feature device drivers.
+ 
+-The FPGA DFL Device could be different hardwares, e.g. PCIe device, platform
++The FPGA DFL Device could be different hardware, e.g. PCIe device, platform
+ device and etc. Its driver module is always loaded first once the device is
+ created by the system. This driver plays an infrastructural role in the
+ driver architecture. It locates the DFLs in the device memory, handles them
+diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
+index 4e0edb60bfba6..ccf4546eff297 100644
+--- a/drivers/fpga/altera-cvp.c
++++ b/drivers/fpga/altera-cvp.c
+@@ -346,7 +346,7 @@ static int altera_cvp_write_init(struct fpga_manager *mgr,
+ 	}
+ 
+ 	if (val & VSE_CVP_STATUS_CFG_RDY) {
+-		dev_warn(&mgr->dev, "CvP already started, teardown first\n");
++		dev_warn(&mgr->dev, "CvP already started, tear down first\n");
+ 		ret = altera_cvp_teardown(mgr, info);
+ 		if (ret)
+ 			return ret;
+diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
+index 1194c0e850e07..d61ce9a188792 100644
+--- a/drivers/fpga/dfl-fme-pr.c
++++ b/drivers/fpga/dfl-fme-pr.c
+@@ -148,7 +148,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
+ 
+ 	/*
+ 	 * it allows userspace to reset the PR region's logic by disabling and
+-	 * reenabling the bridge to clear things out between accleration runs.
++	 * reenabling the bridge to clear things out between acceleration runs.
+ 	 * so no need to hold the bridges after partial reconfiguration.
+ 	 */
+ 	if (region->get_bridges)
+diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
+index 7a95366f6516f..9ddf1d1d392f3 100644
+--- a/drivers/fpga/dfl-n3000-nios.c
++++ b/drivers/fpga/dfl-n3000-nios.c
+@@ -461,7 +461,7 @@ static int n3000_nios_poll_stat_timeout(void __iomem *base, u64 *v)
+ 	 * We don't use the time based timeout here for performance.
+ 	 *
+ 	 * The regbus read/write is on the critical path of Intel PAC N3000
+-	 * image programing. The time based timeout checking will add too much
++	 * image programming. The time based timeout checking will add too much
+ 	 * overhead on it. Usually the state changes in 1 or 2 loops on the
+ 	 * test server, and we set 10000 times loop here for safety.
+ 	 */
+diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+index 2b82c96ba56c7..dac9c3d45e6c3 100644
+--- a/drivers/fpga/dfl.h
++++ b/drivers/fpga/dfl.h
+@@ -232,7 +232,7 @@ struct dfl_feature_irq_ctx {
+  * @id: sub feature id.
+  * @resource_index: each sub feature has one mmio resource for its registers.
+  *		    this index is used to find its mmio resource from the
+- *		    feature dev (platform device)'s reources.
++ *		    feature dev (platform device)'s resources.
+  * @ioaddr: mapped mmio resource address.
+  * @irq_ctx: interrupt context list.
+  * @nr_irqs: number of interrupt contexts.
+diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+index 6510c7803a784..d31eec32eb426 100644
+--- a/drivers/fpga/fpga-bridge.c
++++ b/drivers/fpga/fpga-bridge.c
+@@ -230,7 +230,7 @@ EXPORT_SYMBOL_GPL(fpga_bridges_put);
+  *
+  * Get an exclusive reference to the bridge and and it to the list.
+  *
+- * Return 0 for success, error code from of_fpga_bridge_get() othewise.
++ * Return 0 for success, error code from of_fpga_bridge_get() otherwise.
+  */
+ int of_fpga_bridge_get_to_list(struct device_node *np,
+ 			       struct fpga_image_info *info,
+@@ -260,7 +260,7 @@ EXPORT_SYMBOL_GPL(of_fpga_bridge_get_to_list);
+  *
+  * Get an exclusive reference to the bridge and and it to the list.
+  *
+- * Return 0 for success, error code from fpga_bridge_get() othewise.
++ * Return 0 for success, error code from fpga_bridge_get() otherwise.
+  */
+ int fpga_bridge_get_to_list(struct device *dev,
+ 			    struct fpga_image_info *info,
+diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/zynq-fpga.c
+index 07fa8d9ec6750..9b75bd4f93d8e 100644
+--- a/drivers/fpga/zynq-fpga.c
++++ b/drivers/fpga/zynq-fpga.c
+@@ -192,7 +192,7 @@ static void zynq_step_dma(struct zynq_fpga_priv *priv)
+ 
+ 	/* Once the first transfer is queued we can turn on the ISR, future
+ 	 * calls to zynq_step_dma will happen from the ISR context. The
+-	 * dma_lock spinlock guarentees this handover is done coherently, the
++	 * dma_lock spinlock guarantees this handover is done coherently, the
+ 	 * ISR enable is put at the end to avoid another CPU spinning in the
+ 	 * ISR on this lock.
+ 	 */
+@@ -267,7 +267,7 @@ static int zynq_fpga_ops_write_init(struct fpga_manager *mgr,
+ 		ctrl = zynq_fpga_read(priv, CTRL_OFFSET);
+ 		if (!(ctrl & CTRL_SEC_EN_MASK)) {
+ 			dev_err(&mgr->dev,
+-				"System not secure, can't use crypted bitstreams\n");
++				"System not secure, can't use encrypted bitstreams\n");
+ 			err = -EINVAL;
+ 			goto out_err;
+ 		}
+@@ -344,7 +344,7 @@ static int zynq_fpga_ops_write_init(struct fpga_manager *mgr,
+ 
+ 	/* set configuration register with following options:
+ 	 * - enable PCAP interface
+-	 * - set throughput for maximum speed (if bistream not crypted)
++	 * - set throughput for maximum speed (if bistream not encrypted)
+ 	 * - set CPU in user mode
+ 	 */
+ 	ctrl = zynq_fpga_read(priv, CTRL_OFFSET);
+diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+index 2bc3030a69e54..3a32b8e201857 100644
+--- a/include/linux/fpga/fpga-mgr.h
++++ b/include/linux/fpga/fpga-mgr.h
+@@ -110,7 +110,7 @@ struct fpga_image_info {
+  * @initial_header_size: Maximum number of bytes that should be passed into write_init
+  * @state: returns an enum value of the FPGA's state
+  * @status: returns status of the FPGA, including reconfiguration error code
+- * @write_init: prepare the FPGA to receive confuration data
++ * @write_init: prepare the FPGA to receive configuration data
+  * @write: write count bytes of configuration data to the FPGA
+  * @write_sg: write the scatter list of configuration data to the FPGA
+  * @write_complete: set FPGA to operating state after writing is done
 -- 
-Sincerely,
-   Lyude Paul (she/her)
-   Software Engineer at Red Hat
-   
-Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
-asked me a question, are waiting for a review/merge on a patch, etc. and I
-haven't responded in a while, please feel free to send me another email to check
-on my status. I don't bite!
+2.26.3
 
