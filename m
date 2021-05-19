@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52423885E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D39388617
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353262AbhESESX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 00:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhESESW (ORCPT
+        id S1353276AbhESEdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 00:33:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2977 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232007AbhESEdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 00:18:22 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798DDC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:17:03 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v14so5797480pgi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0xBAmlGmAhkNvMdsddqA/yKphvAVlxqJKNJ9NsTJMkQ=;
-        b=htk8OOx/vusfyShmWu8F4zdFd56n888Iy1H+c5O0xWAcU9BiGsSIqilCcnrG+/tRGu
-         8+hZdO77kAA4wAqGkUVdiNQQmjcm//lpUNgHoC5L9mqQgvEn3JwUAP33rtTmHrChMql+
-         FQECDi9ohd/daGZqbq2Bq6rmOUdZRjmpYss2zdx86PMBcILnc74hWLhEui6P/lFmCXXi
-         B/S6l0aAaBwi2MJwBpAk5onvpS9uQ9wB8nNZYaj0xoHRr4hodsIbw9uxR3zUpEGlR6l7
-         TpXEoFWahreZavOJDnliGf6ZOtnBFxYrGLk79k+YnjXZ/qRv6ncwZpV3mc+Q4f9ucRfk
-         Qh7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0xBAmlGmAhkNvMdsddqA/yKphvAVlxqJKNJ9NsTJMkQ=;
-        b=J1XNtE+JWgaYK0ZXaMEZ3Cl+9btHNv7z6h7UjPt5IQNzVqbCE7tE7QcxD9zgIt7nQs
-         XcWAvXXg7EaJfzyUBkAhWyhltEU032jeC0VnEd89+tM04NWyngvtbVAxX+7wyp2cfVwY
-         P5E0LlvJP5hi3PC042QqKimNRU/jkoQrq/3zmwLF0/0cJDaHhggSiMV7VaoOXnDOHE8B
-         ZS/B16pFXqDj2nEYEhYfpxEtBM9cKZogFW+RhrZ7RGD7TU6zQ+Jwy4wMYm88wYzVSJIO
-         cVe9WBNSADFYHPQam10G/hh1vTATIJks3fu0Yv2Ay/23yijv240SGu8LGCK/iMKJ0PEd
-         BnyQ==
-X-Gm-Message-State: AOAM531UNSSkgdJjgNK2LXmW38ddUhaAXXtW71a3IcUcvaonuVZyzPGp
-        gZvZ1twCzE9q+NpCSVvEzSs=
-X-Google-Smtp-Source: ABdhPJyuQ3XeIA/Rnm+1ljTooR6LDM5UoElLgzIApmc6Q9q3m1pBZjg6RNlV0xP2PKY+k8qTWfp3Sw==
-X-Received: by 2002:a65:668c:: with SMTP id b12mr8765066pgw.212.1621397823065;
-        Tue, 18 May 2021 21:17:03 -0700 (PDT)
-Received: from novachrono.domain.name ([106.214.255.120])
-        by smtp.gmail.com with ESMTPSA id b1sm15231500pgf.84.2021.05.18.21.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 21:17:02 -0700 (PDT)
-From:   Rajat Asthana <thisisrast7@gmail.com>
-To:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
-        elder@kernel.org, gregkh@linuxfoundation.org
-Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Rajat Asthana <thisisrast7@gmail.com>
-Subject: [PATCH] greybus: audio: Fix sparse warning.
-Date:   Wed, 19 May 2021 09:46:24 +0530
-Message-Id: <20210519041624.824757-1-thisisrast7@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 19 May 2021 00:33:40 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FlKdm1mzzzCst2;
+        Wed, 19 May 2021 12:29:32 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 12:32:18 +0800
+Received: from [10.174.179.189] (10.174.179.189) by
+ dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 12:32:18 +0800
+Subject: Re: [PATCH] nvmet: fix memory leak on nvmet_alloc_ctrl()
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "kbusch@kernel.org" <kbusch@kernel.org>
+CC:     "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+        "amit.engel@dell.com" <amit.engel@dell.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linfeilong@huawei.com" <linfeilong@huawei.com>
+References: <1621327598-542045-1-git-send-email-wubo40@huawei.com>
+ <BYAPR04MB4965E8D55C4349EC01EF61FB862C9@BYAPR04MB4965.namprd04.prod.outlook.com>
+From:   Wu Bo <wubo40@huawei.com>
+Message-ID: <ead259ae-2955-1fda-7deb-6262fdc21ecf@huawei.com>
+Date:   Wed, 19 May 2021 12:32:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR04MB4965E8D55C4349EC01EF61FB862C9@BYAPR04MB4965.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.189]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enforce int type on SNDRV_CTL_ELEM_IFACE_MIXER to fix sparse warning:
-> warning: restricted snd_ctl_elem_iface_t degrades to integer
+On 2021/5/19 4:27, Chaitanya Kulkarni wrote:
+> On 5/18/21 01:21, Wu Bo wrote:
+>> From: Wu Bo <wubo40@huawei.com>
+>>
+>> When cntlid_min is greater than cntlid_max,
+>> goto wrong label, should be goto out_free_sqs
+>> label. Otherwise there is a memory leak problem
+>> on the nvmet_alloc_ctrl function().
+>>
+>> Fixes: 94a39d61f80f ("nvmet: make ctrl-id configurable")
+>> Fixes: 6d65aeab7bf6e ("nvmet: remove unused ctrl->cqs")
+>> Signed-off-by: Wu Bo <wubo40@huawei.com>
+>> ---
+> 
+> Looks good, except commit message could be better :-
+> 
+> When cntlid_min is greater than cntlid_max, goto wrong label, should be
+> goto out_free_sqs label. Otherwise there is a memory leak problem on the
+> nvmet_alloc_ctrl function().
+> 
+> Fixes: 94a39d61f80f ("nvmet: make ctrl-id configurable")
+> Fixes: 6d65aeab7bf6 ("nvmet: remove unused ctrl->cqs")
+> Signed-off-by: Wu Bo <wubo40@huawei.com>
+> 
+> 
+> with above :-
 
-The iface field in the gb_audio_control struct is of type __u8, but the
-values stored in it are of type int. So on conversion they are degraded.
-Adding (__force int) will enforce them not to be degraded.
+Thanks for your review. I will make the commit message better.
+and I found the nvmet-loop has a similar issue,
+will send patch series soon.
 
-Signed-off-by: Rajat Asthana <thisisrast7@gmail.com>
----
- drivers/staging/greybus/audio_topology.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
-index 1fc7727ab7be..1e613d42d823 100644
---- a/drivers/staging/greybus/audio_topology.c
-+++ b/drivers/staging/greybus/audio_topology.c
-@@ -676,7 +676,7 @@ static int gbaudio_tplg_create_kcontrol(struct gbaudio_module_info *gb,
- 	struct gbaudio_ctl_pvt *ctldata;
- 
- 	switch (ctl->iface) {
--	case SNDRV_CTL_ELEM_IFACE_MIXER:
-+	case (__force int)SNDRV_CTL_ELEM_IFACE_MIXER:
- 		switch (ctl->info.type) {
- 		case GB_AUDIO_CTL_ELEM_TYPE_ENUMERATED:
- 			ret = gbaudio_tplg_create_enum_kctl(gb, kctl, ctl);
-@@ -903,7 +903,7 @@ static int gbaudio_tplg_create_wcontrol(struct gbaudio_module_info *gb,
- 	int ret;
- 
- 	switch (ctl->iface) {
--	case SNDRV_CTL_ELEM_IFACE_MIXER:
-+	case (__force int)SNDRV_CTL_ELEM_IFACE_MIXER:
- 		switch (ctl->info.type) {
- 		case GB_AUDIO_CTL_ELEM_TYPE_ENUMERATED:
- 			ret = gbaudio_tplg_create_enum_ctl(gb, kctl, ctl);
--- 
-2.31.1
+Thanks,
+Wu Bo
+> 
+> Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+> 
+> 
+> .
+> 
 
