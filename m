@@ -2,96 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746813896FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C73D3896FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhESTtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:49:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232212AbhESTtx (ORCPT
+        id S232235AbhESTua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232212AbhESTu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:49:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621453713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8/USwElDF6oj5/aVhPUN8/jUy5vgh63dDs+ZspH7HI=;
-        b=glVi1EL0p49Uv73zTyAciufUO18VszD5dRU1NYq9q+beOTj603FWUR2G7Da3EJirBuOVMo
-        YydgbwkU0Tr7F8oUAFfYmPzndchcfJbYfxiK9j9abGB2EXPSlE8JtAq/5OleY5+slsvgVK
-        nH1SIG2uErmtfeE/hxSv1nIsRcGX0Go=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-173-kDviJu_KOeC7lGiQF49XVA-1; Wed, 19 May 2021 15:48:31 -0400
-X-MC-Unique: kDviJu_KOeC7lGiQF49XVA-1
-Received: by mail-wr1-f70.google.com with SMTP id 93-20020adf80e60000b0290106fab45006so7602224wrl.20
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:48:31 -0700 (PDT)
+        Wed, 19 May 2021 15:50:28 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05AEC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:49:07 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id c13so6262726qvx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x553GgwQKaofcNpaBiACRQKsb0OQqbXpuDWI9o8R+5o=;
+        b=U2JOCePyF9dZ1bAQjvBXDA2RVqSJKE5ggujFUiWY6ZL1Csp7DB2UoVUu4gLSoaUqsI
+         o3XVqKkCW8Yc50rKjUXDy2p5DrY4kBclF02LosDjULEBVOYxE2pPKaSy/rHxOBV7mqGe
+         WcEWN0QynP53FeyLp/H3s7YUzRl1mxqRKhn3Q8wj33fZdtuUzScdp6JkSc+2aJBARGjn
+         sTzoeTtyVm/WlmOEwg3DxV321RqlzK8Rdzu2tQ0TkUC5FlEDeOEgrK61yLp3d3n9SO7l
+         1H3pXKr0/UiCyqnPPpDJ4TaHjmX1W0TkWX/773/IdGkTYKt6hQOUudqp7ToOeC+QGzLl
+         VGAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l8/USwElDF6oj5/aVhPUN8/jUy5vgh63dDs+ZspH7HI=;
-        b=qA0BAtcu1sjd2jAuqmZmPV7/RGKftQe8cpZ2f8HEFh1feN7f+2SlDjboCDFHXcDJbb
-         mypeLkcGRpfxog1iqyEirtdxPdQc1KueBWAdeGSgZwnWRvbgvMbGNBRAMVyYRPGtEEl3
-         bBIkZ6D/47/8OR3CQyjIwv/60gwyShApn4IwZIg4nmoAex//S2gjuP/J9P7mp6TXDbP2
-         mDttgQHBdwPGQeheGLzSXHR3o6/D/Vw6jnUJoCSHkBerH94AonL21EwMNlWGP1TCFXFo
-         LAQL3rQRGcyqXXsqKa7IgNKbXM9KaLnvn1fCxDn2u+GHCw6ugz5F0/IiN635EugRq0Fz
-         dBzg==
-X-Gm-Message-State: AOAM53014ZIoxEoTvsJPDwm06vXVdRrSccpRBNokIQf9UMhNRwfz6zv5
-        3V9R5/cpwwFHUIJL9OosFFQlNfQkWdmzt6J3MpFsufihKQTnmBlOuKEHvZGcFtqW6v4h+4Di/sF
-        vNKqNu64P5XeT2zYrQL1dDvk=
-X-Received: by 2002:a1c:e156:: with SMTP id y83mr722847wmg.89.1621453710316;
-        Wed, 19 May 2021 12:48:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy3ab8RbkH5w4sabhmqxCp0dpZ3QX7ubr6x9WwGVuiP/WtqOKaUqk1cpJRCsR9S4Dvrp4ch8w==
-X-Received: by 2002:a1c:e156:: with SMTP id y83mr722841wmg.89.1621453710154;
-        Wed, 19 May 2021 12:48:30 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id r11sm440744wrp.46.2021.05.19.12.48.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 12:48:29 -0700 (PDT)
-Date:   Wed, 19 May 2021 20:48:29 +0100
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/page_alloc: bail out on fatal signal during
- reclaim/compaction retry attempt
-Message-ID: <20210519194829.sess6lhfzlmccpdu@ava.usersys.com>
-X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
-X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
-References: <20210519192321.3247175-1-atomlin@redhat.com>
- <YKVn69o1UizH0kJD@casper.infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x553GgwQKaofcNpaBiACRQKsb0OQqbXpuDWI9o8R+5o=;
+        b=s8D/XC1NIv1Sg8/LN9cRXDNSSRyiN6ugUOJmA31LBQeuPg7tnCpcvVftPC5cT+oqDK
+         5MsZN9tzAZ/z6w49p8Y/+yiK6CyvnJrlT/kRn4/mGsUXAGV4lDTCK8hZ05hu+KytvXJZ
+         dF2gy1wzOzTQkRo80Z7WyA8c17EcOrV0vF6ftlwEI4/7kkvyXd44yV7iQgvXiS/gD4uL
+         BGff9QMVWE2ooSkGrYuf7HH9IlK7CFaTBqGBtP1E25JLXlnuZH4AgMNda6CH6w8GrtCa
+         yhS2mR42vh8wmUMmVXhX2p5DDJ16sFnxBsj5nhbDSQustBwidfG59JGp3lxUtnsFh0qn
+         67dg==
+X-Gm-Message-State: AOAM530g8rukIeixvPAGkIaUgJdptbB+ngOCi2FVtFwmVPFQe9HjzTym
+        0xCVe/aGN0Mk5bddj0v0DgQrCJEfEctUsfDOT6JOrA==
+X-Google-Smtp-Source: ABdhPJyBY3kKYWcls4L2Vfe7GKCY8SDCqG2snzu+sRtfz1Lp2Jexzz+rhM9XdRkDpl+n8C0HPHxtJeX6kFmDYVk2cmE=
+X-Received: by 2002:a0c:f883:: with SMTP id u3mr1179641qvn.44.1621453746524;
+ Wed, 19 May 2021 12:49:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YKVn69o1UizH0kJD@casper.infradead.org>
+References: <0000000000003687bd05c2b2401d@google.com>
+In-Reply-To: <0000000000003687bd05c2b2401d@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 19 May 2021 21:48:55 +0200
+Message-ID: <CACT4Y+YJDGFN4q-aTPritnjjHEXiFovOm9eO6Ay4xC1YOa5z3w@mail.gmail.com>
+Subject: Re: [syzbot] BUG: MAX_LOCKDEP_KEYS too low! (2)
+To:     syzbot <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        WireGuard mailing list <wireguard@lists.zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-05-19 20:32 +0100, Matthew Wilcox wrote:
-> On Wed, May 19, 2021 at 08:23:21PM +0100, Aaron Tomlin wrote:
-> > +++ b/mm/page_alloc.c
-> > @@ -4252,6 +4252,9 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
-> >  	if (!order)
-> >  		return false;
-> >  
-> > +	if (fatal_signal_pending(current))
-> > +		goto out;
-> 
-> I think 'goto out' will be confusing.  It'll output a tracepoint, which
-> isn't going to record that a fatal signal is pending, so it'll cause
-> some head scratching for someone looking through the traces.  I
-> think we should just return false here and skip the tracepoint.
+On Wed, May 19, 2021 at 7:35 PM syzbot
+<syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    b81ac784 net: cdc_eem: fix URL to CDC EEM 1.0 spec
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15a257c3d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5b86a12e0d1933b5
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a70a6358abd2c3f9550f
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com
+>
+> BUG: MAX_LOCKDEP_KEYS too low!
 
-I agree. Having said this, I do plan to send a patch to illustrate why
-compaction should not retry to avoid possible confusion. Nevertheless, I am
-happy to modify as per your request.
+
+What config controls this? I don't see "MAX_LOCKDEP_KEYS too low" in
+any of the config descriptions...
+Here is what syzbot used:
+
+CONFIG_LOCKDEP=y
+CONFIG_LOCKDEP_BITS=16
+CONFIG_LOCKDEP_CHAINS_BITS=17
+CONFIG_LOCKDEP_STACK_TRACE_BITS=20
+CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
+CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
+
+We already bumped most of these.
+The log contains dump of the lockdep debug files, is there any offender?
+
+Also looking at the log I noticed a memory safety bug in lockdep implementation:
+
+[ 2023.605505][ T6807]
+==================================================================
+[ 2023.613589][ T6807] BUG: KASAN: global-out-of-bounds in
+print_name+0x1b0/0x1d0
+[ 2023.624553][ T6807] Read of size 8 at addr ffffffff90225cb0 by task cat/6807
+[ 2023.631765][ T6807]
+[ 2023.634096][ T6807] CPU: 1 PID: 6807 Comm: cat Not tainted
+5.12.0-syzkaller #0
+[ 2023.641488][ T6807] Hardware name: Google Google Compute
+Engine/Google Compute Engine, BIOS Google 01/01/2011
+[ 2023.651745][ T6807] Call Trace:
+[ 2023.655031][ T6807]  dump_stack+0x141/0x1d7
+[ 2023.659375][ T6807]  ? print_name+0x1b0/0x1d0
+[ 2023.663890][ T6807]  print_address_description.constprop.0.cold+0x5/0x2f8
+[ 2023.670895][ T6807]  ? print_name+0x1b0/0x1d0
+[ 2023.675413][ T6807]  ? print_name+0x1b0/0x1d0
+[ 2023.679948][ T6807]  kasan_report.cold+0x7c/0xd8
+[ 2023.684725][ T6807]  ? print_name+0x1b0/0x1d0
+[ 2023.689248][ T6807]  print_name+0x1b0/0x1d0
+[ 2023.694196][ T6807]  ? lockdep_stats_show+0xa20/0xa20
+[ 2023.699940][ T6807]  ? seq_file_path+0x30/0x30
+[ 2023.704721][ T6807]  ? mutex_lock_io_nested+0xf70/0xf70
+[ 2023.710118][ T6807]  ? lock_acquire+0x58a/0x740
+[ 2023.715156][ T6807]  ? kasan_unpoison+0x3c/0x60
+[ 2023.719843][ T6807]  lc_show+0x10a/0x210
+[ 2023.723924][ T6807]  seq_read_iter+0xb66/0x1220
+[ 2023.728617][ T6807]  proc_reg_read_iter+0x1fb/0x2d0
+[ 2023.733651][ T6807]  new_sync_read+0x41e/0x6e0
+[ 2023.738272][ T6807]  ? ksys_lseek+0x1b0/0x1b0
+[ 2023.742784][ T6807]  ? lock_acquire+0x58a/0x740
+[ 2023.747563][ T6807]  vfs_read+0x35c/0x570
+[ 2023.751737][ T6807]  ksys_read+0x12d/0x250
+[ 2023.756003][ T6807]  ? vfs_write+0xa30/0xa30
+[ 2023.760429][ T6807]  ? syscall_enter_from_user_mode+0x27/0x70
+[ 2023.766335][ T6807]  do_syscall_64+0x3a/0xb0
+[ 2023.770764][ T6807]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 2023.776685][ T6807] RIP: 0033:0x7f99856e2910
+[ 2023.781104][ T6807] Code: b6 fe ff ff 48 8d 3d 0f be 08 00 48 83 ec
+08 e8 06 db 01 00 66 0f 1f 44 00 00 83 3d f9 2d 2c 00 00 75 10 b8 00
+00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 de 9b 01 00
+48 89 04 24
+[ 2023.800719][ T6807] RSP: 002b:00007ffee7328628 EFLAGS: 00000246
+ORIG_RAX: 0000000000000000
+[ 2023.809169][ T6807] RAX: ffffffffffffffda RBX: 0000000000020000
+RCX: 00007f99856e2910
+[ 2023.817150][ T6807] RDX: 0000000000020000 RSI: 0000564290b2a000
+RDI: 0000000000000003
+[ 2023.825123][ T6807] RBP: 0000564290b2a000 R08: 0000000000000003
+R09: 0000000000021010
+[ 2023.833107][ T6807] R10: 0000000000000002 R11: 0000000000000246
+R12: 0000564290b2a000
+[ 2023.841091][ T6807] R13: 0000000000000003 R14: 0000000000020000
+R15: 0000000000001000
+[ 2023.849074][ T6807]
+[ 2023.851408][ T6807] The buggy address belongs to the variable:
+[ 2023.857388][ T6807]  lock_classes_in_use+0x410/0x420
+[ 2023.862510][ T6807]
+[ 2023.864826][ T6807] Memory state around the buggy address:
+[ 2023.870450][ T6807]  ffffffff90225b80: 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00
+[ 2023.878511][ T6807]  ffffffff90225c00: 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00
+[ 2023.886572][ T6807] >ffffffff90225c80: 00 00 00 00 f9 f9 f9 f9 00
+00 00 00 00 00 00 00
+[ 2023.894628][ T6807]                                      ^
+[ 2023.900256][ T6807]  ffffffff90225d00: 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00
+[ 2023.908317][ T6807]  ffffffff90225d80: 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00
+[ 2023.916377][ T6807]
+==================================================================
 
 
-Kind regards,
 
--- 
-Aaron Tomlin
 
+
+> turning off the locking correctness validator.
+> CPU: 0 PID: 5917 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  register_lock_class.cold+0x14/0x19 kernel/locking/lockdep.c:1281
+>  __lock_acquire+0x102/0x5230 kernel/locking/lockdep.c:4781
+>  lock_acquire kernel/locking/lockdep.c:5512 [inline]
+>  lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+>  flush_workqueue+0x110/0x13e0 kernel/workqueue.c:2786
+>  drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2951
+>  destroy_workqueue+0x71/0x800 kernel/workqueue.c:4382
+>  alloc_workqueue+0xc40/0xef0 kernel/workqueue.c:4343
+>  wg_newlink+0x43d/0x9e0 drivers/net/wireguard/device.c:335
+>  __rtnl_newlink+0x1062/0x1710 net/core/rtnetlink.c:3452
+>  rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+>  rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5562
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+>  sock_sendmsg_nosec net/socket.c:654 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:674
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fb25febe188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000005
+> RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
+> R13: 00007fff30a5021f R14: 00007fb25febe300 R15: 0000000000022000
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000003687bd05c2b2401d%40google.com.
