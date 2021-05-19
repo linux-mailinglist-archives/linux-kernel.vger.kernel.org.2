@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49780388F00
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819F8388F07
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353654AbhESN0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346776AbhESN0p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:26:45 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F44C06175F;
-        Wed, 19 May 2021 06:25:26 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id y36so1461936ybi.11;
-        Wed, 19 May 2021 06:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o2yairP/6+4RZbe6rYEI6uszDalPkfCMP4sSPLox2S8=;
-        b=l5Gk/KyYYvUiKXrzrrmbsWIiffFuywfT1DgM8rWwRicXZEJy58+UEmZBxkOmvWV2dF
-         S14emLbK/ie0LUk6xP6+IOGx3vMrfN9oIZh1qNZnZqgCYiSKD548ewBFl6Yr68NGOpze
-         xG1dslTjMR4D2E8Jxb+sxEWsU499RNHL7C8xK2ZC4d5ILEE2twduRgHfV9dcUmXGXVfl
-         KeWOOKrvRpri+5vnpP4HC1R4OXdhqZPfdqbE/8XusDEjn+/g7KA8oX66ZDPS2qTuWIL9
-         8OjZxetlHsmGBcfGtlW7GzNbVrghX1dlPPVaRL+oUw4M9k8IB8OaxMXKrEo4c2kAv4jY
-         9M9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o2yairP/6+4RZbe6rYEI6uszDalPkfCMP4sSPLox2S8=;
-        b=VyQXaQH7eyTIoO4bbOJV1481vMWqSqG7tbpbaMeTfN4PkGnxrml6hAGKT8yViG4arn
-         +y43k79BC6794apIoJgV/ao/hVvqitlF94u9Yh0DDosS5DohevKU08lkiDuVat8Ox3U+
-         H9aNTsA6X2lUBs0xCvtAR3eSsGMXGrnOtVF6KSSHt/F+dz2m04V6cd+CFLn//nA3V7Qk
-         Q4dyXoGDmQTI3Fdezda/T1Embjg2Z4wFNEkgDCPkdLl1el9VQbLxT91mBPsclD28DUVw
-         adVjCgbTDWFZTzgsrnMIjYypuj0AkSJ+KouHyYc9EEriMMsv1FvxKZiDG6lrwmf3SKPp
-         klZg==
-X-Gm-Message-State: AOAM532vnuWR17zh8hNGKfNXP/X9gW9vHAM8nWz0LTuwFd+PBrmGMXFR
-        GGMBkkLRFbc9+5zjNC5WAW8m2eFATHu3hH0Khig=
-X-Google-Smtp-Source: ABdhPJw5dEV+YDa0vQ81zp7UOcVw5DeMMldZfG5bLMxhDK5cja9cxmWrozmWJ2xs19D20lpyzxJ9tPxk9qauONXvt+I=
-X-Received: by 2002:a25:3c87:: with SMTP id j129mr634113yba.141.1621430725641;
- Wed, 19 May 2021 06:25:25 -0700 (PDT)
+        id S1353666AbhESN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:27:32 -0400
+Received: from www.zeus03.de ([194.117.254.33]:51234 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353660AbhESN12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:27:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=D4WTcDSnFA5CD6imsXF4T5RU9Bl
+        RhYKlVSgW61z0jYA=; b=E/gBYmjhyzzAegIXyLarHyk6myV2BewRfPIeqJ2tvzu
+        L7MiP/YORhFU44P2Yh7xqysTBVN3qnar8yMfr7kb+nGicZTrYI5uYX8t56wgW5aR
+        u+/cXrbxPRyYGeztwlM5FbhCULcDezLnJs6UkwsIC39KrQus746iaryOeTOtiIaQ
+        =
+Received: (qmail 3334756 invoked from network); 19 May 2021 15:26:07 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 19 May 2021 15:26:07 +0200
+X-UD-Smtp-Session: l3s3148p1@3WfhxK7CNMwgAwDPXwaBAEltFu20ukzh
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ulrich Hecht <ulrich.hecht+renesas@gmail.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Subject: [RFC PATCH v2 0/1] gpio: add simple logic analyzer using polling
+Date:   Wed, 19 May 2021 15:25:27 +0200
+Message-Id: <20210519132528.4394-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210511214605.2937099-1-pgwipeout@gmail.com> <YKOB7y/9IptUvo4k@unreal>
- <CAMdYzYrV0T9H1soxSVpQv=jLCR9k9tuJddo1Kw-c3O5GJvg92A@mail.gmail.com>
- <YKTJwscaV1WaK98z@unreal> <cbfecaf2-2991-c79e-ba80-c805d119ac2f@gmail.com>
- <YKT7bLjzucl/QEo2@unreal> <CAMdYzYpVYuNuYgZp-sNj4QFbgHH+SoFpffbdCNJST2_KZEhSug@mail.gmail.com>
- <YKUK8hBImIUFV35I@unreal> <20210519131512.GA30436@shell.armlinux.org.uk>
-In-Reply-To: <20210519131512.GA30436@shell.armlinux.org.uk>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 19 May 2021 09:25:14 -0400
-Message-ID: <CAMdYzYpgVda9D2scNZMFmA_+xFf1p9-T-NpDmnOKeAFWHnsfHg@mail.gmail.com>
-Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 9:15 AM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Wed, May 19, 2021 at 03:56:18PM +0300, Leon Romanovsky wrote:
-> > I'm sorry that I continue to ask, but is net/phy/* usable without MODULE?
->
-> Simple answer: it is.
+The bravery continues with the second RFC for the in-kernel logic
+analyzer based on GPIO polling with local irqs disabled. Besides the
+driver, there is also a script which isolates a CPU to achieve the best
+possible result. I am aware of the latency limitations. However, the
+intention is only for debugging. Especially for remote debugging and to
+get a first impression, this has already been useful. Documentation is
+within the patch, to get a better idea what this is all about.
 
-As far as I can tell, so correct me if I'm wrong, MODULE_DEVICE_TABLE
-is what permits the module system to automatically load the correct
-module for the device.
+Changes since RFC v1:
 
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+* moved from misc/ to gpio/. Thanks to Linus and Bartosz for offering a
+  home for this
+* renamed from "simple logic analyzer" to "sloppy logic analyzer"
+  everywhere to make its limitations crystal clear
+* moved the parser for trigger data from the kernel into the script.
+  Much cleaner kernel code but passing binary data now. We'll see...
+* all gpios now must be named. This removes ugly fallback code and
+  allows to use generic device properties instead of OF properties only.
+* added and updated documentation
+* triggers are also now checked at sample speed, not full speed
+* replaced pr_* printouts with dev_*
+* removed bashisms in the script (tested with bash, dash, and busybox
+  ash)
+* depends on EXPERT now
+* small bugfixes, refactoring, cleanups all around
+
+Thanks to Andy, Linus, Randy, and Ulrich for suggestions and testing.
+
+A branch with preparation for the Renesas Salvator-XS boards is here:
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/gpio-logic-analyzer-v2
+
+The documentation is also available online on the elinux wiki:
+https://elinux.org/Kernel_GPIO_Logic_analyzer
+
+Looking forward to comments and especially further tests with different
+use cases than mine. I have looked enough at the code, fresh view would
+really help. And still, if somebody has a pointer how to detect if a
+task was requested to be killed (while irqs and preemption are
+disabled), I'd appreciate that to avoid the currently unkillable
+sub-process.
+
+All the best,
+
+   Wolfram
+
+Wolfram Sang (1):
+  misc: add sloppy logic analyzer using polling
+
+ .../dev-tools/gpio-sloppy-logic-analyzer.rst  |  72 ++++
+ Documentation/dev-tools/index.rst             |   1 +
+ drivers/gpio/Kconfig                          |  17 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-sloppy-logic-analyzer.c     | 317 ++++++++++++++++++
+ tools/gpio/gpio-sloppy-logic-analyzer         | 200 +++++++++++
+ 6 files changed, 608 insertions(+)
+ create mode 100644 Documentation/dev-tools/gpio-sloppy-logic-analyzer.rst
+ create mode 100644 drivers/gpio/gpio-sloppy-logic-analyzer.c
+ create mode 100755 tools/gpio/gpio-sloppy-logic-analyzer
+
+-- 
+2.30.2
+
