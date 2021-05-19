@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8372E389319
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D74138931B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355018AbhESP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346960AbhESP6Q (ORCPT
+        id S1355028AbhESP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:58:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24230 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355024AbhESP6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:58:16 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226A9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:56:56 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id k19so10200816pfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Ewak3FTzWtebTNxoU2UtRKv4KOXoJSP/mAhC0k4hkGM=;
-        b=hkd5bEswK+JxcSDlikju+ubqHI1xgQN8FMkYsn7Vos/ojbGpOVlnVRo46fJcopr+2/
-         dZoWgvHogx/isb9Pbvj5zLSOPJqa0tZErbp9pINkN634jI7lLNYngeljfYeCHA1cZ5f1
-         n5i2TpmPC7pERnWWD/VGE6/UcA3SGhtph8kshiQz9fVQFfna3U2Ogd/y99NyOJA6FiDe
-         H9PF1MjWBY6NcbJNa5GV3defOCr2B7Fb4xWYSq4fo5uALRhXLPsedBLvz8vAmPjeaZRP
-         87SAZk9cQqNYZJQd2B5ND5UOS+FRU32J0ZMQ3A0uuUcfKSkWDrEjTBNMrxFHb7N+CtoN
-         hKaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Ewak3FTzWtebTNxoU2UtRKv4KOXoJSP/mAhC0k4hkGM=;
-        b=DiauEHwWRLHvQoF+TK2tCDgCkcu4FUIp1vi8J5YhTjSjEeBsYcF5koEJ92ppgTEg27
-         LLOR0leTTEBhR3iWOYfOhtB7yWOsDATOF0iDM2HCtBZDZBwMlVVGHncbskLQSp3VQ8VZ
-         GfQg8yicVnMYOlzVz1mmsFZEFQHUoL9qGpUlxok3sGZA0F3YARs9+N6pVYEgyvOhuDdT
-         RlR0fgLFefrW+UkYFMY4LwVRAjZkNcS4dtFtwrDg9NZpRLOPqBZUvXfAH8+IQTASDSQM
-         4AWczLFn66+WR9rKA9UXTkmQxVuyqKfHjNI9VGvlK1snzXY0zpzSSZb0zGbJG7A2ZPP4
-         qw5A==
-X-Gm-Message-State: AOAM532Ph0/Ii59pUdNMguq96oRGFDd8Ptz2Ycng3aL7TUT7sUrF6AT3
-        Ww+87PJNzXfNrfSQa3Ha4Zs=
-X-Google-Smtp-Source: ABdhPJw9825Sqsf9H9wHD5H3DXvyJJo/Vpqnzgh5AFQb9O1AmveZhjrk2GjlrBvHahxN3M2cunyddg==
-X-Received: by 2002:aa7:97ad:0:b029:2e0:26a8:8da5 with SMTP id d13-20020aa797ad0000b02902e026a88da5mr2154968pfq.37.1621439815488;
-        Wed, 19 May 2021 08:56:55 -0700 (PDT)
-Received: from [192.168.1.2] ([103.196.78.23])
-        by smtp.gmail.com with ESMTPSA id u21sm14568714pfm.89.2021.05.19.08.56.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 08:56:54 -0700 (PDT)
-Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
- 'const' keyword
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?Q?Arve_Hj=c3=b8nnev=c3=a5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-References: <20210519081958.7223-1-hridayhegde1999@gmail.com>
- <YKTM8KmXI8bXUSqp@kroah.com> <0ddb894f-f66f-f31b-ef8a-0646e0a99b9f@gmail.com>
- <YKTfbdFhvM7fbpet@kroah.com> <08cf8110-cf84-8784-c919-eba27474b796@gmail.com>
- <YKUm8tf3bKvCf1YI@kroah.com>
-From:   Hriday Hegde <hridayhegde1999@gmail.com>
-Message-ID: <3d382048-17d5-e933-7c5e-1af7de218a16@gmail.com>
-Date:   Wed, 19 May 2021 21:26:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Wed, 19 May 2021 11:58:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621439824; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Q96jpCTD8/QMSDNZK3F6bpyaFamomufPiUhLFO7Q7o8=;
+ b=F83IXPIm3sHM1nY6LddurJvodoVP3G+xOAwtfPyt3AuynY7fxJNPyih/vBL/wJpRUUZ/CRxs
+ fbMShXZPz5Kv8A/dPIWUzxwnZr90ydbi0Vx47q6VbQ7AO6ECvXHStd1HuPcn9MUxYnckeAEV
+ 558XlDcHpku3+MgerSybKG+7KdY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60a5354eb15734c8f9717080 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 15:57:02
+ GMT
+Sender: jjohnson=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B78CEC43144; Wed, 19 May 2021 15:57:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jjohnson)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD529C4338A;
+        Wed, 19 May 2021 15:57:00 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YKUm8tf3bKvCf1YI@kroah.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 19 May 2021 08:57:00 -0700
+From:   Jeff Johnson <jjohnson@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jjohnson=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v2] b43: don't save dentries for debugfs
+In-Reply-To: <YKUyAoBq/cepglmk@kroah.com>
+References: <20210518163304.3702015-1-gregkh@linuxfoundation.org>
+ <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
+ <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
+ <YKScfFKhxtVqfRkt@kroah.com>
+ <2eb3af43025436c0832c8f61fbf519ad@codeaurora.org>
+ <YKUyAoBq/cepglmk@kroah.com>
+Message-ID: <48aea7ae33faaafab388e24c3b8eb199@codeaurora.org>
+X-Sender: jjohnson@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-05-2021 20:25, Greg Kroah-Hartman wrote:
-> On Wed, May 19, 2021 at 08:06:14PM +0530, Hriday Hegde wrote:
->> On 19-05-2021 15:20, Greg Kroah-Hartman wrote:
->>> A: http://en.wikipedia.org/wiki/Top_post
->>> Q: Were do I find info about this thing called top-posting?
->>> A: Because it messes up the order in which people normally read text.
->>> Q: Why is top-posting such a bad thing?
->>> A: Top-posting.
->>> Q: What is the most annoying thing in e-mail?
->>>
->>> http://daringfireball.net/2007/07/on_top
->>>
->>> On Wed, May 19, 2021 at 03:00:08PM +0530, Hriday Hegde wrote:
->>>> I am not really sure how to do that and how to reflect it in the patch i followed what was taught in the Beginners course and it does not mention building. I know i need to test it out but is running 'patch -p1 < x.patch what i need to do?
->>> That does not build the code you changed, right?
->>>
->>> I'm sure whatever course you took, it did reference the fact that you
->>> need to ensure that your change actually works properly by the very
->>> least being able to be compiled correctly.  Please go over those
->>> instructions again.
->>>
->>> good luck!
->>>
->>> greg k-h
->> I am using the A Beginner's Guide to Linux Kernel Development (LFD103) by the linux foundation for this but i cant find any commands to as to build and test , the only way i tried compiling is with a custom Makefile and it didn't work, i've got a few errors so the const keyword might not work here since the variable is being written to.
->>
->>
-> That is correct, when compiling (i.e. building), the compiler shows that
-> this is not a correct change.
->
-> thanks,
->
-> greg k-h
-Oh ok will work with something else.
+On 2021-05-19 08:42, Greg Kroah-Hartman wrote:
+> On Wed, May 19, 2021 at 08:04:59AM -0700, Jeff Johnson wrote:
+>> On 2021-05-18 22:05, Greg Kroah-Hartman wrote:
+>> > On Tue, May 18, 2021 at 03:00:44PM -0700, Jeff Johnson wrote:
+>> > > On 2021-05-18 12:29, Jeff Johnson wrote:
+>> > > Would still like guidance on if there is a recommended way to get a
+>> > > dentry not associated with debugfs.
+>> >
+>> > What do you exactly mean by "not associated with debugfs"?
+>> >
+>> > And why are you passing a debugfs dentry to relay_open()?  That feels
+>> > really wrong and fragile.
+>> 
+>> I don't know the history but the relay documentation tells us:
+>> "If you want a directory structure to contain your relay files,
+>> you should create it using the host filesystem’s directory
+>> creation function, e.g. debugfs_create_dir()..."
+>> 
+>> So my guess is that the original implementation followed that
+>> advice.  I see 5 clients of this functionality, and all 5 pass a
+>> dentry returned from debugfs_create_dir():
+>> 
+>> drivers/gpu/drm/i915/gt/uc/intel_guc_log.c, line 384
+>> drivers/net/wireless/ath/ath10k/spectral.c, line 534
+>> drivers/net/wireless/ath/ath11k/spectral.c, line 902
+>> drivers/net/wireless/ath/ath9k/common-spectral.c, line 1077
+>> kernel/trace/blktrace.c, line 549
+> 
+> Ah, that's just the "parent" dentry for the relayfs file.  That's fine,
+> not a big deal, debugfs will always provide a way for you to get that 
+> if
+> needed.
 
-Thanks.
+Unless debugfs is disabled, like on Android, which is the real problem 
+I'm
+trying to solve.
 
+Jeff
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
