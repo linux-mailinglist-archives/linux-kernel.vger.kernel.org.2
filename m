@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E9E388AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15199388AA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345286AbhESJ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57242 "EHLO
+        id S1345368AbhESJbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhESJ3z (ORCPT
+        with ESMTP id S229668AbhESJbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:29:55 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFC4C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 02:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m8Igu3htSBogxAvGoObQUNHWPrJawCttblVwJwn5eC4=; b=UmlvbKUCxdjY+gqGIWpsADx16I
-        mpgzzyOxEGZJ8DCURV/bhPNZHCnghuHUB4nSGaxzKKnipuxU0SyYuJiYz8CXpE4TbsrAMyKVuFG3h
-        ZS+xwutoRyOMKC8xNHL+uS/3Ta9psr464cNUa7Dv/I/k58fgko5SY72dGac96nCtspPGDu5WAKzi4
-        vwPHqCnhEq2NJaYNUztyBFUeppxQac1hUQXjSznwR9v/hhOA8Bhm3buTEaC7f0XUmtRp8H7ikgS4O
-        2u1FSKFjnku958ZwmUnlNHyA95e4XznBdEqWx0leZda83UEzGWaKSrr/jkfJith3snVhv0Kvp7z6r
-        WbzM6Ldw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljIV3-003Rn7-U7; Wed, 19 May 2021 09:28:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 141683001DB;
-        Wed, 19 May 2021 11:28:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EE80B304D8983; Wed, 19 May 2021 11:28:20 +0200 (CEST)
-Date:   Wed, 19 May 2021 11:28:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "hasegawa-hitomi@fujitsu.com" <hasegawa-hitomi@fujitsu.com>
-Cc:     "'mingo@kernel.org'" <mingo@kernel.org>,
-        "'fweisbec@gmail.com'" <fweisbec@gmail.com>,
-        "'tglx@linutronix.de'" <tglx@linutronix.de>,
-        "'juri.lelli@redhat.com'" <juri.lelli@redhat.com>,
-        "'vincent.guittot@linaro.org'" <vincent.guittot@linaro.org>,
-        "'dietmar.eggemann@arm.com'" <dietmar.eggemann@arm.com>,
-        "'rostedt@goodmis.org'" <rostedt@goodmis.org>,
-        "'bsegall@google.com'" <bsegall@google.com>,
-        "'mgorman@suse.de'" <mgorman@suse.de>,
-        "'bristot@redhat.com'" <bristot@redhat.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: Re: Utime and stime are less when getrusage (RUSAGE_THREAD) is
- executed on a tickless CPU.
-Message-ID: <YKTaNJ7r/sHnwb5W@hirez.programming.kicks-ass.net>
-References: <OSBPR01MB21837C8931D90AE55AF4A955EB529@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <OSBPR01MB2183384B29F6291EB7C0BB81EB2C9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKN5cQpFSdsgBlBU@hirez.programming.kicks-ass.net>
- <OSBPR01MB21835E55331FCAE6F75E8332EB2B9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
+        Wed, 19 May 2021 05:31:35 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6843BC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 02:30:16 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id g18so7820440pfr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 02:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=1GASlDyaGEqbt4zHelakmZp77xcr7uR+7KhR+EY5YCI=;
+        b=Jf+NbjHcI3Bk8n3ZcgUVIFZoGAcO2Hqy/cQ1OqrFlIN4jSWweQEmBYRdj+M+0jZMBs
+         hN4mpnCPNTJa+0SolRtC6LBonCtQf1tIIrSzPN25Pn1S8Fpx/H5zVeuyDtrp56yUf02y
+         7AE8QkbrwyuUABzBLi6lRE4eQgiZyXD+3ONxyyNFIvwHkbpom4qNucJA7GgU3fB8pblq
+         M+YekG9WeYm9nUsbZkp6r/vqqhL+6gZuuOi52U49Y96Sa96dmp0Q0MY66U9N0tMEqP/R
+         QhIbG5O8hiB6hiQ4SiUG0dH2rK7f286crJcFZezTTBxwNcsRupn3heGMXzVWIV6rfiJ7
+         vkOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=1GASlDyaGEqbt4zHelakmZp77xcr7uR+7KhR+EY5YCI=;
+        b=hXJRZd8ZX6SYVzOk9OmC2djWibw2mUhWAm9bm0GbJdmUyduVgq4ESIgMA6X9SS8wpH
+         EJKcTJubDaoFQij0Vug6wC6oVIN4KhnDuN0HqHCHCOW9IxISeAYiuirDs9y08lGIeSlV
+         EVLWxPFQ0wzocRiG3HCDlZtwcq3Y/so6qyevZE5EcaMJAfMjz6RKgZZzGANUh9UABs7x
+         FqER/1/mLU4i6YWas9NzXa5+jQuQyLWKadKpRK3FhJJcLe69nu6oeq6tvVXDCca5vMVG
+         ADVmgUCdtdrZWM/TlpmBABzhExpXDB0KdGy2mcRmsA/xxHi3j9A5DnfY0x5PNVjU7KDH
+         YSmg==
+X-Gm-Message-State: AOAM531fb1QARMCixXu+jqYqAbfI0BPYguoxKwWJaaP4fQZBISXtDJBw
+        yE2XCjaorZAXywvq2QZJ6liwwmQjFbm2gSys
+X-Google-Smtp-Source: ABdhPJw9GKsc0sSBVVTDwO3wD9KybBzmYvrkeC8jYw8CaUKASCSxk6ZGwxCL9HfbZf8QGz2MzsqK2w==
+X-Received: by 2002:a62:541:0:b029:2dc:9e95:95cc with SMTP id 62-20020a6205410000b02902dc9e9595ccmr9799344pff.79.1621416615762;
+        Wed, 19 May 2021 02:30:15 -0700 (PDT)
+Received: from [192.168.1.2] ([103.196.78.23])
+        by smtp.gmail.com with ESMTPSA id o4sm14925324pjf.9.2021.05.19.02.30.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 02:30:15 -0700 (PDT)
+Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
+ 'const' keyword
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     =?UTF-8?Q?Arve_Hj=c3=b8nnev=c3=a5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+References: <20210519081958.7223-1-hridayhegde1999@gmail.com>
+ <YKTM8KmXI8bXUSqp@kroah.com>
+From:   Hriday Hegde <hridayhegde1999@gmail.com>
+Message-ID: <0ddb894f-f66f-f31b-ef8a-0646e0a99b9f@gmail.com>
+Date:   Wed, 19 May 2021 15:00:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
+In-Reply-To: <YKTM8KmXI8bXUSqp@kroah.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:24:58AM +0200, Peter Zijlstra wrote:
-> On Wed, May 19, 2021 at 06:30:36AM +0000, hasegawa-hitomi@fujitsu.com wrote:
-> > Hi Ingo, Peter, Juri, and Vincent.
-> > 
-> > 
-> > > Your email is malformed.
-> > 
-> > I'm sorry. I was sent in the wrong format. I correct it and resend.
-> > Thank you, Peter, for pointing this out.
-> > 
-> > 
-> > I found that when I run getrusage(RUSAGE_THREAD) on a tickless CPU,
-> > the utime and stime I get are less than the actual time, unlike when I run
-> > getrusage(RUSAGE_SELF) on a single thread.
-> > This problem seems to be caused by the fact that se.sum_exec_runtime is not
-> > updated just before getting the information from 'current'.
-> > In the current implementation, task_cputime_adjusted() calls task_cputime() to
-> > get the 'current' utime and stime, then calls cputime_adjust() to adjust the
-> > sum of utime and stime to be equal to cputime.sum_exec_runtime. On a tickless
-> > CPU, sum_exec_runtime is not updated periodically, so there seems to be a
-> > discrepancy with the actual time.
-> > Therefore, I think I should include a process to update se.sum_exec_runtime
-> > just before getting the information from 'current' (as in other processes
-> > except RUSAGE_THREAD). I'm thinking of the following improvement.
-> > 
-> > @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
-> >         if (who == RUSAGE_THREAD) {
-> > +               task_sched_runtime(current);
-> >                 task_cputime_adjusted(current, &utime, &stime);
-> > 
-> > Is there any possible problem with this?
-> 
-> Would be superfluous for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
-> architectures at the very least.
-> 
-> It also doesn't help any of the other callers, like for example procfs.
-> 
-> Something like the below ought to work and fix all variants I think. But
-> it does make the call significantly more expensive.
-> 
-> Looking at thread_group_cputime() that already does something like this,
-> but that's also susceptible to a variant of this very same issue; since
-> it doesn't call it unconditionally, nor on all tasks, so if current
-> isn't part of the threadgroup and/or another task is on a nohz_full cpu,
-> things will go wobbly again.
-> 
-> There's a note about syscall performance there, so clearly someone seems
-> to care about that aspect of things, but it does suck for nohz_full.
-> 
-> Frederic, didn't we have remote ticks that should help with this stuff?
-> 
-> And mostly I think the trade-off here is that if you run on nohz_full,
-> you're not expected to go do syscalls anyway (because they're sodding
-> expensive) and hence the accuracy of these sort of things is mostly
-> irrelevant.
-> 
-> So it might be the use-case is just fundamentally bonkers and we
-> shouldn't really bother fixing this.
-> 
-> Anyway?
+I am not really sure how to do that and how to reflect it in the patch i followed what was taught in the Beginners course and it does not mention building. I know i need to test it out but is running 'patch -p1 < x.patch what i need to do?
 
-Typing be hard... that should 'obviously' be reading: Anyone?
-
-> 
-> ---
-> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-> index 872e481d5098..620871c8e4f8 100644
-> --- a/kernel/sched/cputime.c
-> +++ b/kernel/sched/cputime.c
-> @@ -612,7 +612,7 @@ void cputime_adjust(struct task_cputime *curr, struct prev_cputime *prev,
->  void task_cputime_adjusted(struct task_struct *p, u64 *ut, u64 *st)
->  {
->  	struct task_cputime cputime = {
-> -		.sum_exec_runtime = p->se.sum_exec_runtime,
-> +		.sum_exec_runtime = task_sched_runtime(p),
->  	};
->  
->  	task_cputime(p, &cputime.utime, &cputime.stime);
+On 19-05-2021 14:01, Greg Kroah-Hartman wrote:
+> On Wed, May 19, 2021 at 01:19:58AM -0700, Hriday Hegde wrote:
+>> Fixing following warnings found by checkpatch.pl
+>> WARNING: struct file_operations should normally be const
+>> 380: FILE: drivers/staging/android/ashmem.c:380:
+>> +	static struct file_operations vmfile_fops;
+>>
+>> Signed-off-by: Hriday Hegde <hridayhegde1999@gmail.com>
+>> ---
+>>  drivers/staging/android/ashmem.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+>> index 8ee4320a5dc6..8ff2794b08e3 100644
+>> --- a/drivers/staging/android/ashmem.c
+>> +++ b/drivers/staging/android/ashmem.c
+>> @@ -377,7 +377,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
+>>  
+>>  static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+>>  {
+>> -	static struct file_operations vmfile_fops;
+>> +	static const struct file_operations vmfile_fops;
+>>  	struct ashmem_area *asma = file->private_data;
+>>  	int ret = 0;
+>>  
+>> -- 
+>> 2.25.1
+>>
+>>
+> Any reason why you didn't build your change before submitting this
+> patch?
+>
+> thanks,
+>
+> greg k-h
