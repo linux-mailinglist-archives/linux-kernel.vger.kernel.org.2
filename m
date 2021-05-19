@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE054388914
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625EB388918
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243973AbhESIKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243292AbhESIKW (ORCPT
+        id S244115AbhESIK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:10:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37414 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244133AbhESIK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:10:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF6DC061760;
-        Wed, 19 May 2021 01:09:02 -0700 (PDT)
-Date:   Wed, 19 May 2021 08:09:00 -0000
+        Wed, 19 May 2021 04:10:26 -0400
+Date:   Wed, 19 May 2021 08:09:05 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621411741;
+        s=2020; t=1621411745;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ymD3Xd0Q56rVJqY1+dmNgamOmiGSxh5HDJ14KAGp/Uo=;
-        b=UqdeRqEK/cXEdaRrM5dM1Ati5KtdfAePEVrFufquNKCHivjRcvnhpHohfb8i3busR7V06s
-        STq1U/9JPN1VblqHR7tBK1eDfaEl0yEOzBk49hmcbF5C9ln7CH14xW+jAqDefBAcESw89A
-        TvYQtAXg5udwwJ+Q4MkAnbmao09xcUJIR1zS0RL/ON8BrbcJtkmlgvC7ObToDAJK3rjr6I
-        ge4tp2S5NeVY6/AC8GBO5ZDcTGbjt6thv8m0OSiMo7XrH6S/vSzcV8U+TFz52Q+TvmEzzs
-        6CbgqAROLm0ujYkJFiBXmTQVLToJZCkYnuFi1DY0xBywDL2G58XKIw/wKMFAFw==
+        bh=h5Qsd/F+VqmPWBMWt83rgzwUkiV6FlxZI3HClVmccF0=;
+        b=w+K6kdYKuIMn5S7bykwCR7v/bIBcTJaNI/jSSMmqGAx0VDmcfCJwRGhafBunOehJZONboa
+        y4yEpas+j7oAnK8m+DcAwObDYWOatF3zozlYJXO0GXOghURR9ANs83lD75zKljeBeJr81G
+        OKQF5fl1lw2WIPxd414JcrIjfEOGPZ9+bT23DhQxXah+2sM0kE1Ogcw/JklwBhJxlTiMAu
+        zqRoryEbkh0z3FHZIHPi2rF+tf0t+qn7VqYFHp89dwJltikEL9Ne3LHdIct4PcppynxgRx
+        Fj5UzFaIBZo/ktpjNz3nkdVFjEuDDFzu2gnAGGDWDXyBD0H2x0rJ+oJL0+FZnw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621411741;
+        s=2020e; t=1621411745;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ymD3Xd0Q56rVJqY1+dmNgamOmiGSxh5HDJ14KAGp/Uo=;
-        b=bdKCc9O3Vtf8dI0JBuBxG+DVVuUgPWgSJFS1P8Gy5HBQzka8Tei+moYfRlOabirvSotNML
-        UR3LR45lfqH6oiBw==
-From:   "tip-bot2 for Leo Yan" <tip-bot2@linutronix.de>
+        bh=h5Qsd/F+VqmPWBMWt83rgzwUkiV6FlxZI3HClVmccF0=;
+        b=CtrJ9a+lVdieft1nBlX+EPoxjMLt8ttZvahNH3tB2Hv19R8Ht9MvgfpkKpK8wbs/FCBL8o
+        YQtsLz5Ax3WJGyAw==
+From:   "tip-bot2 for Qais Yousef" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/lockdep: Correct calling tracepoints
-Cc:     Leo Yan <leo.yan@linaro.org>,
+Subject: [tip: sched/core] sched/uclamp: Fix locking around cpu_util_update_eff()
+Cc:     Quentin Perret <qperret@google.com>,
+        Qais Yousef <qais.yousef@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210512120937.90211-1-leo.yan@linaro.org>
-References: <20210512120937.90211-1-leo.yan@linaro.org>
+In-Reply-To: <20210510145032.1934078-3-qais.yousef@arm.com>
+References: <20210510145032.1934078-3-qais.yousef@arm.com>
 MIME-Version: 1.0
-Message-ID: <162141174033.29796.3524122325407732983.tip-bot2@tip-bot2>
+Message-ID: <162141174507.29796.8324781220827965808.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,57 +57,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     89e70d5c583c55088faa2201d397ee30a15704aa
-Gitweb:        https://git.kernel.org/tip/89e70d5c583c55088faa2201d397ee30a15704aa
-Author:        Leo Yan <leo.yan@linaro.org>
-AuthorDate:    Wed, 12 May 2021 20:09:37 +08:00
+Commit-ID:     b837122e297fd0429555243c16ac3c341c39a7f5
+Gitweb:        https://git.kernel.org/tip/b837122e297fd0429555243c16ac3c341c39a7f5
+Author:        Qais Yousef <qais.yousef@arm.com>
+AuthorDate:    Mon, 10 May 2021 15:50:32 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 18 May 2021 12:53:50 +02:00
+CommitterDate: Tue, 18 May 2021 12:53:54 +02:00
 
-locking/lockdep: Correct calling tracepoints
+sched/uclamp: Fix locking around cpu_util_update_eff()
 
-The commit eb1f00237aca ("lockdep,trace: Expose tracepoints") reverses
-tracepoints for lock_contended() and lock_acquired(), thus the ftrace
-log shows the wrong locking sequence that "acquired" event is prior to
-"contended" event:
+cpu_cgroup_css_online() calls cpu_util_update_eff() without holding the
+uclamp_mutex or rcu_read_lock() like other call sites, which is
+a mistake.
 
-  <idle>-0       [001] d.s3 20803.501685: lock_acquire: 0000000008b91ab4 &sg_policy->update_lock
-  <idle>-0       [001] d.s3 20803.501686: lock_acquired: 0000000008b91ab4 &sg_policy->update_lock
-  <idle>-0       [001] d.s3 20803.501689: lock_contended: 0000000008b91ab4 &sg_policy->update_lock
-  <idle>-0       [001] d.s3 20803.501690: lock_release: 0000000008b91ab4 &sg_policy->update_lock
+The uclamp_mutex is required to protect against concurrent reads and
+writes that could update the cgroup hierarchy.
 
-This patch fixes calling tracepoints for lock_contended() and
-lock_acquired().
+The rcu_read_lock() is required to traverse the cgroup data structures
+in cpu_util_update_eff().
 
-Fixes: eb1f00237aca ("lockdep,trace: Expose tracepoints")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Surround the caller with the required locks and add some asserts to
+better document the dependency in cpu_util_update_eff().
+
+Fixes: 7226017ad37a ("sched/uclamp: Fix a bug in propagating uclamp value in new cgroups")
+Reported-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210512120937.90211-1-leo.yan@linaro.org
+Link: https://lkml.kernel.org/r/20210510145032.1934078-3-qais.yousef@arm.com
 ---
- kernel/locking/lockdep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 48d736a..7641bd4 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5736,7 +5736,7 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
- {
- 	unsigned long flags;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f97eb73..3ec420c 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9507,7 +9507,11 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
  
--	trace_lock_acquired(lock, ip);
-+	trace_lock_contended(lock, ip);
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+ 	/* Propagate the effective uclamp value for the new group */
++	mutex_lock(&uclamp_mutex);
++	rcu_read_lock();
+ 	cpu_util_update_eff(css);
++	rcu_read_unlock();
++	mutex_unlock(&uclamp_mutex);
+ #endif
  
- 	if (unlikely(!lock_stat || !lockdep_enabled()))
- 		return;
-@@ -5754,7 +5754,7 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
- {
- 	unsigned long flags;
+ 	return 0;
+@@ -9597,6 +9601,9 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
+ 	enum uclamp_id clamp_id;
+ 	unsigned int clamps;
  
--	trace_lock_contended(lock, ip);
-+	trace_lock_acquired(lock, ip);
- 
- 	if (unlikely(!lock_stat || !lockdep_enabled()))
- 		return;
++	lockdep_assert_held(&uclamp_mutex);
++	SCHED_WARN_ON(!rcu_read_lock_held());
++
+ 	css_for_each_descendant_pre(css, top_css) {
+ 		uc_parent = css_tg(css)->parent
+ 			? css_tg(css)->parent->uclamp : NULL;
