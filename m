@@ -2,112 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E839388FBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10567388FBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346826AbhESODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240179AbhESODQ (ORCPT
+        id S1346811AbhESOCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:02:51 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:59772 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240179AbhESOCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:03:16 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226DAC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:01:56 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id h11so12290164ili.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fatalsyntax-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
-         :message-id:in-reply-to;
-        bh=l0qnOBDAqFxbAl4A/tgruJXdRSPfyXeqpxkVnrjpsLU=;
-        b=BCE33qPApN0PgECWGnTxif8soc0GJNwskBzJc2K+CfySp9KdVw+UmXMVjPygm2rZhM
-         Re+pomhsghUP0srqeVuGY7acL1TKrvkHdrjBNTVKpjCHzdYdFk6e3J1r/7KzIra98cE3
-         Fw/sZdGmTeH04OeqHDJDdybGLBPujMVL12Erac1vWa3kut1MsqhQlaIBbakHUTpUwhym
-         Oh9hwaF5ZTCYygHxsLxT1U4WQI0LrPGJdzAVfAboM8jaySEkr6t2kYgO+3l0Qt43CV6H
-         RPX/EkPXpjOLs/B/c6NkQHtCIt6alzO6DZ96iiBbbBbCZ8NBi0JyXMSt5D0tdd5LEovM
-         /d7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
-         :subject:from:to:date:message-id:in-reply-to;
-        bh=l0qnOBDAqFxbAl4A/tgruJXdRSPfyXeqpxkVnrjpsLU=;
-        b=X3icp7W4nN6XFWKQHalV1CAqm+/EpkvBXVEHm78qBkZxob/GdenG3ySJIM2cG1p8gu
-         STxoCShpHk+oe1EX6FOzecY7kBlLz2lKbMSYJHUWSEWh7DIYHzswp4+ejvuZFKAwueb8
-         2gvkNLqvyKSDBp2iU1B5AIMrJZn9yxG0K4dR/3rNvGFMDb/GDm7UaqrXkdqeQF2czkUg
-         sjmWO43zHqwZE7IRwCIHg+cHXAncnoAk4r0CnkDv7EveNNG6LzCddUTFJf6LNVnKqd8i
-         SV8CNabzvM6La8ikC5xeuD8W/Z0bPaGKB13yuLXZEuDp2p5B8H0Ela2zzC3Q0mSoS/6Y
-         LNaw==
-X-Gm-Message-State: AOAM532rcKqfpmYpDifszZXbqEb+Zg7f9BxnAT3hvqgp9b2J4capnezw
-        rIcpji1vE8AZC1WjyU321GhHeLI5i9wBeR8Yf1qPuA==
-X-Google-Smtp-Source: ABdhPJwfg75GDFB7soifn4UuZUdaLr9R5CyiL2hi51XRrKD29gZA64BPkkDQZlRlbFKjUG2kcnswRw==
-X-Received: by 2002:a05:6e02:2149:: with SMTP id d9mr10978074ilv.162.1621432915377;
-        Wed, 19 May 2021 07:01:55 -0700 (PDT)
-Received: from localhost (2603-6000-ca08-f320-6401-a7ff-fe72-256d.res6.spectrum.com. [2603:6000:ca08:f320:6401:a7ff:fe72:256d])
-        by smtp.gmail.com with ESMTPSA id a6sm6121262ili.21.2021.05.19.07.01.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 07:01:54 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     "Bjorn Helgaas" <helgaas@kernel.org>, <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Alex Williamson" <alex.williamson@redhat.com>
-Subject: Re: [PATCH] pci: add NVMe FLR quirk to the SM951 SSD
-From:   "Robert Straw" <drbawb@fatalsyntax.com>
-To:     "Christoph Hellwig" <hch@infradead.org>
-Date:   Wed, 19 May 2021 07:54:19 -0500
-Message-Id: <CBH8K74TF8IQ.2KUOIGFJ7K8XP@nagato>
-In-Reply-To: <YKTP2GQkLz5jma/q@infradead.org>
+        Wed, 19 May 2021 10:02:45 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 14JE154Y031398;
+        Wed, 19 May 2021 17:01:05 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
+        id C615D63A19; Wed, 19 May 2021 17:01:11 +0300 (IDT)
+From:   amirmizi6@gmail.com
+To:     Eyal.Cohen@nuvoton.com, jarkko@kernel.org, peterhuewe@gmx.de,
+        jgg@ziepe.ca
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
+        Amir Mizinski <amirmizi6@gmail.com>
+Subject: [PATCH v2] add longer timeout for verify signature command
+Date:   Wed, 19 May 2021 17:00:58 +0300
+Message-Id: <20210519140059.85919-1-amirmizi6@gmail.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed May 19, 2021 at 3:44 AM CDT, Christoph Hellwig wrote:
-> On Sat, May 15, 2021 at 12:20:05PM -0500, Robert Straw wrote:
-> While it doesn't matter here, NVMe 1.1 is very much out of data, being
-> a more than 8 year old specification. The current version is 1.4b,
-> with NVMe 2.0 about to be released.
+From: Amir Mizinski <amirmizi6@gmail.com>
 
-I can't comment on 2.0, but yes 1.4b has the same aside regarding undefined
-behavior on the SHST field (on p. 50). The only reason I was looking at
-1.1a is because it's specifically listed on the datasheet for the SM951.
-(The device under test.)
+while testing TPM2_CC_VERIFY_SIGNATURE with usage of RSA 3070-bit keys i
+encountered a timeout error. it seems current values do not support this case
+as described in ptp 1.05 6.5.1.3:
+https://trustedcomputinggroup.org/wp-content/uploads/PC_Client_Specific-Platform_TPM_Profile_for-PTP_2p0-v1p05p_r14_pub.pdf
 
-> No, we don't. This is a bug particular to a specific implementation.
-> In fact the whole existing NVMe shutdown before reset quirk is rather
-> broken and dangerous, as it concurrently accesses the NVMe registers
-> with the actual driver, which could be trivially triggered through the
-> sysfs reset attribute.
+The patch was tested on Raspberry-Pie 3, using Nuvoton NPCT75X TPM.
 
-I'm not exactly clear in what way the nvme driver would  be racing against=
-=20
-vfio-pci here. (a) vfio-pci is the driver bound in this scenario, and (b)
-the vfio-pci driver triggers this quirk by issuing an FLR, which is done=20
-with the device locked. (e.g: vfio_pci.c:499.)
+Changes since version 1:
+-"tpm2: add longer timout for verify signature command"
+                - Fixed and extended commit description.
+Addressed comments from:
+ - Jarkko Sakkinen: https://lore.kernel.org/patchwork/patch/1424664/
 
-In my testing *without this patch* vfio-pci is still bound to the device=20
-for at least 60s after guest shutdown, at which point the FLR times out.
-After this FLR the device is useless w/o a full reboot of the host.=20
-Rebinding it to *either* another guest w/ vfio-pci, or the Linux nvme=20
-driver doesn't matter: as the device can no longer be reconfigured.
+Amir Mizinski (1):
+  tpm2: add longer timeout for verify signature command
 
-As I understand it: vfio-pci should not blindly issue an FLR to an NVMe cla=
-ss=20
-device w/o obeying the protocol. The protocol seems clear that after a=20
-shutdown CC->EN must transition from 1 to 0. (I would argue the guest OS=20
-leaving the device in this state is the actual violation of the spec. As=20
-I'm unable to change that behavior: having vfio-pci clean up the mess w/=20
-this quirk seems to be an adequate workaround.)
+ drivers/char/tpm/tpm2-cmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I am currently testing  a version of this patch that only disables the
-controller if the device has been previously shutdown. I am trying to
-gauge whether this would be preferable to just blanket-disabling these=20
-bugged devices before relinquishing control of them back to the host.
+-- 
+2.7.4
 
-> I'd much rather quirk these broken Samsung drivers to not allow
-> assigning them to VFIO.
-
-I'd much rather keep using my storage devices. I will leave the=20
-quirk limited to these known-bugged devices.
