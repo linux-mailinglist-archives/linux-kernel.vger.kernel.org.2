@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E905A3894F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680D63894F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhESSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 14:01:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230148AbhESSBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 14:01:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 20C4461355;
-        Wed, 19 May 2021 18:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621447210;
-        bh=CK3dPcPkjHmRlidzM6ynNYCsg5H2ja+kLbvpqxITUKc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BzXZ2Prc7b1Na3+WzH5irOwv2MAy7iBrErcPfFVZgPtC9H4Kh1XoJuxjxEdqFABH4
-         w7de9AnBrJsMdCUwn8vxJAY4ENB407DMi/frwbl6JtZTHgO11XwFcTXAWJPHNuj46T
-         rfdNJ34cv5XbzMsD9/LV6l0JWVYJdr3qScCRWurrl2gyv2YFPFs9Oco89pb4wSX5oz
-         3MGfdX+AKe8e86neT/KvVkSsVBPgAQfNM040X7hrr254mfSyVX5qXa+bO2etdwek/9
-         AvqkwQUCLTKIRaGRavE4WtTSNktUuYW8YYlRUBijWOHiuQ9iiCqP5JqBKN8uo9HCTY
-         +fMnqQPR0Uzcw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 145E060A0D;
-        Wed, 19 May 2021 18:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230433AbhESSEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 14:04:36 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44162 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhESSEf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 14:04:35 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14JI38kt105931;
+        Wed, 19 May 2021 13:03:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621447388;
+        bh=qEAoTagAYs24UhGH26uRmjZCwpHp+mDCczMSu52fcDc=;
+        h=From:To:CC:Subject:Date;
+        b=nA/V6DmGjr3QAfJDL1rU98ZojfUyss1nMHlRWgtPXpVilJ9ef0vGEdQhKlkzx09gp
+         dzDmFLWNr7gzvR3WCTRu3CIUTjzOm/LlmCwj5Edgmp11wfYTyV9w5fym2lTCwbHpWB
+         B4oIoIzHl/GoPDTKR40i5b7slfyDcD92IGj/Y2TQ=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14JI38LC053290
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 19 May 2021 13:03:08 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 19
+ May 2021 13:03:08 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 19 May 2021 13:03:08 -0500
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14JI38LT091512;
+        Wed, 19 May 2021 13:03:08 -0500
+Received: from localhost ([10.250.32.40])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 14JI384r104523;
+        Wed, 19 May 2021 13:03:08 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH 0/2] Minor remoteproc cleanups
+Date:   Wed, 19 May 2021 13:03:02 -0500
+Message-ID: <20210519180304.23563-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Make some symbols static
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162144721007.17992.14944688848279969975.git-patchwork-notify@kernel.org>
-Date:   Wed, 19 May 2021 18:00:10 +0000
-References: <20210519064116.240536-1-pulehui@huawei.com>
-In-Reply-To: <20210519064116.240536-1-pulehui@huawei.com>
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Bjorn, Mathieu,
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+The following series is minor document related cleanups. Some
+of the warnings look to be very old, and these are not functional
+issues, so I am not expecting these to be -stable content, and so
+I did not split or add any Fixes: tags.
 
-On Wed, 19 May 2021 14:41:16 +0800 you wrote:
-> The sparse tool complains as follows:
-> 
-> kernel/bpf/syscall.c:4567:29: warning:
->  symbol 'bpf_sys_bpf_proto' was not declared. Should it be static?
-> kernel/bpf/syscall.c:4592:29: warning:
->  symbol 'bpf_sys_close_proto' was not declared. Should it be static?
-> 
-> [...]
+Patch 1 fixes a warning when building remoteproc core files with W=1,
+and Patch 2 fixes all the existing kernel-doc warnings.
 
-Here is the summary with links:
-  - [bpf-next] bpf: Make some symbols static
-    https://git.kernel.org/bpf/bpf-next/c/3a2daa724864
+Patches are on top of v5.13-rc1.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+regards
+Suman
 
+Suman Anna (2):
+  remoteproc: Add kernel-doc comment for is_iomem
+  remoteproc: Fix various kernel-doc warnings
+
+ drivers/remoteproc/remoteproc_core.c       | 45 +++++++++++++------
+ drivers/remoteproc/remoteproc_elf_loader.c | 12 ++++--
+ drivers/remoteproc/remoteproc_virtio.c     |  6 ++-
+ include/linux/remoteproc.h                 | 50 ++++++++++++----------
+ 4 files changed, 70 insertions(+), 43 deletions(-)
+
+-- 
+2.30.1
 
