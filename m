@@ -2,236 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F433898C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B35E3898C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhESVq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:46:56 -0400
-Received: from mga07.intel.com ([134.134.136.100]:42286 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229454AbhESVq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:46:56 -0400
-IronPort-SDR: NrBl+DYBsGBRrfOlVtx0YygyDpdT8nZMzmimfPq0KLsfyeXgkJAB+DDX2XFqoMXLXUnQRDYhyO
- fWfHJViGGKTQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="265000451"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="265000451"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 14:45:35 -0700
-IronPort-SDR: jv4ytjVXhS1/Nc4TP/t68KB5QQc1vDHMA7zs9G5/8/yVfNhd0G7Sv/MVO8RMOAvO4ZbKCRhmX8
- eOGyi+iWCQig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="473686653"
-Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 19 May 2021 14:45:34 -0700
-Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ljU0T-0000Gj-PF; Wed, 19 May 2021 21:45:33 +0000
-Date:   Thu, 20 May 2021 05:45:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/nohz] BUILD SUCCESS
- 09fe880ed7a160ebbffb84a0a9096a075e314d2f
-Message-ID: <60a586e3.v/xT3YL3d1h38Z04%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229755AbhESVrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhESVrN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:47:13 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD66C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:45:53 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id j30so13478730ila.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n+MU5sQJyoUxoQR/RnPtWo1DwBMH6gtnYsN37Ax0beM=;
+        b=mBB+1FV4MtxiRwkKsGVfbsWWHrOfVTntJlUTN9QLTf0cSwRZbYx+7h3P6X8QYdpN8q
+         7MCCd8bs7mIuFt72Sk0WYO+mQtl7EX3g1hutzP7YrzBWI16poLAGSlY2Sy10GNTDMhUH
+         CSya8+hnrmxugrw+xoi7htTIgtRknQUluubWU5LrdLH/pJBHFAULg1EJpMIXbfo1gA66
+         +qiUZSo/q/WKEDMKXNMv9MROhXmHzRtHogMhehD9sr7BgLRuaJMNLtAJl2jAL3sAftFU
+         8680Qmhs7/Mny5vfG+ypQUIvMZgcYHIUADYFgHqpxb/fJlORQb/79jpooKWO0oSbMMDM
+         ENSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n+MU5sQJyoUxoQR/RnPtWo1DwBMH6gtnYsN37Ax0beM=;
+        b=OzVgTz1VSQ5sIGVR4pUYqrvQQ3ezCf4OxHWOE5FKDVheQt5pLRUMHx93dbWdSGvQl2
+         oowdrMCaKe9smbE4hcas8v3hTf4FX8yf75+fneGUvADv9se9DhDUdDvVgOobOQcSjhzA
+         5Kb4eQow18ETWo/BTxvvvwPxgfaFrXAxShR9inUbybd38YCST2osvhFdmuwFAHxGI7Gl
+         q1exbtw8vCNb2N7/N5siJeXE98ZugrQbRtZKVFFonziWQmQvvpXLZMNAzg2p7WDPIu7m
+         bN0tzKzZW9XcsHngStap3yjGc2bpoyhc3J63tAwtpZucaN6WJoUavwWkC4w8PhHCw0cU
+         Cuww==
+X-Gm-Message-State: AOAM532rrNwmbEqJ69fesKd4oLO3kxFafqVqKUaxLt2mOc2T42XnfjHh
+        2pBV9Z/B9wcIWp/EoCBoVPozeKFnk5MGkFi+IenO/g==
+X-Google-Smtp-Source: ABdhPJwktiwv3aU3KIGOoAvcgktQDDuH4nFS8fhYrPFwZd7Y9gtC5QSUysygH3xucU9DUmNGWpTOWf5S7oPJkeW1Fa4=
+X-Received: by 2002:a05:6e02:13ec:: with SMTP id w12mr1414415ilj.285.1621460752580;
+ Wed, 19 May 2021 14:45:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210519200339.829146-1-axelrasmussen@google.com> <20210519200339.829146-3-axelrasmussen@google.com>
+In-Reply-To: <20210519200339.829146-3-axelrasmussen@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 19 May 2021 14:45:41 -0700
+Message-ID: <CANgfPd-dF+vWafBC5DsNhf5C0M12+LxRQLhsBM=CzOKTsep+og@mail.gmail.com>
+Subject: Re: [PATCH v2 02/10] KVM: selftests: simplify setup_demand_paging
+ error handling
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/nohz
-branch HEAD: 09fe880ed7a160ebbffb84a0a9096a075e314d2f  MAINTAINERS: Add myself as context tracking maintainer
+On Wed, May 19, 2021 at 1:03 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>
+> A small cleanup. Our caller writes:
+>
+>   r = setup_demand_paging(...);
+>   if (r < 0) exit(-r);
+>
+> Since we're just going to exit anyway, instead of returning an error we
+> can just re-use TEST_ASSERT. This makes the caller simpler, as well as
+> the function itself - no need to write our branches, etc.
+>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  .../selftests/kvm/demand_paging_test.c        | 51 +++++++------------
+>  1 file changed, 19 insertions(+), 32 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> index 9398ba6ef023..601a1df24dd2 100644
+> --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> @@ -9,6 +9,8 @@
+>
+>  #define _GNU_SOURCE /* for pipe2 */
+>
+> +#include <inttypes.h>
+> +#include <stdint.h>
 
-elapsed time: 722m
+Why do the includes need to change in this commit? Is it for the PRIu64 below?
 
-configs tested: 174
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                       m5249evb_defconfig
-powerpc                     pseries_defconfig
-arm                     am200epdkit_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                          rsk7269_defconfig
-arm64                            alldefconfig
-arm                        trizeps4_defconfig
-arc                        nsimosci_defconfig
-arm                         socfpga_defconfig
-arm                         bcm2835_defconfig
-arc                            hsdk_defconfig
-powerpc                        icon_defconfig
-arm                         shannon_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      pasemi_defconfig
-mips                        qi_lb60_defconfig
-arm                          badge4_defconfig
-sh                           se7724_defconfig
-mips                    maltaup_xpa_defconfig
-i386                                defconfig
-arm                        magician_defconfig
-sparc                       sparc32_defconfig
-mips                      loongson3_defconfig
-mips                           ip27_defconfig
-sh                          rsk7264_defconfig
-ia64                                defconfig
-arm                          pcm027_defconfig
-m68k                          sun3x_defconfig
-arc                          axs103_defconfig
-mips                         tb0287_defconfig
-sh                               allmodconfig
-powerpc                 canyonlands_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                    adder875_defconfig
-ia64                          tiger_defconfig
-powerpc                mpc7448_hpc2_defconfig
-riscv                            allyesconfig
-arm                             pxa_defconfig
-sh                          kfr2r09_defconfig
-mips                           jazz_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                            hp6xx_defconfig
-powerpc                      pcm030_defconfig
-mips                     cu1000-neo_defconfig
-mips                            gpr_defconfig
-arm                         s3c2410_defconfig
-arm                        spear3xx_defconfig
-mips                             allyesconfig
-m68k                        mvme147_defconfig
-mips                         cobalt_defconfig
-arm                        clps711x_defconfig
-sh                          sdk7786_defconfig
-sh                          r7785rp_defconfig
-powerpc                     asp8347_defconfig
-arc                     nsimosci_hs_defconfig
-sh                           se7705_defconfig
-s390                             alldefconfig
-mips                         tb0226_defconfig
-m68k                          multi_defconfig
-powerpc                   bluestone_defconfig
-sh                         ap325rxa_defconfig
-openrisc                            defconfig
-mips                           xway_defconfig
-openrisc                    or1ksim_defconfig
-mips                         tb0219_defconfig
-xtensa                  cadence_csp_defconfig
-arm                       mainstone_defconfig
-m68k                        m5307c3_defconfig
-arm                       netwinder_defconfig
-powerpc                       ppc64_defconfig
-mips                   sb1250_swarm_defconfig
-arc                      axs103_smp_defconfig
-arm                           h3600_defconfig
-ia64                        generic_defconfig
-arm                            hisi_defconfig
-powerpc                      ppc40x_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8272_ads_defconfig
-s390                             allyesconfig
-powerpc                   currituck_defconfig
-powerpc                     mpc5200_defconfig
-xtensa                    xip_kc705_defconfig
-mips                         bigsur_defconfig
-m68k                             allyesconfig
-x86_64                           allyesconfig
-m68k                         amcore_defconfig
-arm                          ep93xx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arc                     haps_hs_smp_defconfig
-powerpc                     powernv_defconfig
-sh                        apsh4ad0a_defconfig
-arm                           viper_defconfig
-powerpc                          allyesconfig
-powerpc                 mpc837x_mds_defconfig
-arc                              allyesconfig
-powerpc                      ep88xc_defconfig
-arm                             mxs_defconfig
-powerpc                        fsp2_defconfig
-powerpc                     tqm8540_defconfig
-ia64                      gensparse_defconfig
-arc                        vdk_hs38_defconfig
-sh                          rsk7203_defconfig
-sh                        edosk7760_defconfig
-powerpc                      arches_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210519
-i386                 randconfig-a001-20210519
-i386                 randconfig-a005-20210519
-i386                 randconfig-a004-20210519
-i386                 randconfig-a002-20210519
-i386                 randconfig-a006-20210519
-x86_64               randconfig-a012-20210519
-x86_64               randconfig-a015-20210519
-x86_64               randconfig-a013-20210519
-x86_64               randconfig-a011-20210519
-x86_64               randconfig-a016-20210519
-x86_64               randconfig-a014-20210519
-i386                 randconfig-a014-20210519
-i386                 randconfig-a016-20210519
-i386                 randconfig-a011-20210519
-i386                 randconfig-a015-20210519
-i386                 randconfig-a012-20210519
-i386                 randconfig-a013-20210519
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210519
-x86_64               randconfig-a003-20210519
-x86_64               randconfig-a004-20210519
-x86_64               randconfig-a005-20210519
-x86_64               randconfig-a001-20210519
-x86_64               randconfig-a002-20210519
-x86_64               randconfig-a006-20210519
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <time.h>
+> @@ -198,42 +200,32 @@ static void *uffd_handler_thread_fn(void *arg)
+>         return NULL;
+>  }
+>
+> -static int setup_demand_paging(struct kvm_vm *vm,
+> -                              pthread_t *uffd_handler_thread, int pipefd,
+> -                              useconds_t uffd_delay,
+> -                              struct uffd_handler_args *uffd_args,
+> -                              void *hva, uint64_t len)
+> +static void setup_demand_paging(struct kvm_vm *vm,
+> +                               pthread_t *uffd_handler_thread, int pipefd,
+> +                               useconds_t uffd_delay,
+> +                               struct uffd_handler_args *uffd_args,
+> +                               void *hva, uint64_t len)
+>  {
+>         int uffd;
+>         struct uffdio_api uffdio_api;
+>         struct uffdio_register uffdio_register;
+>
+>         uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
+> -       if (uffd == -1) {
+> -               pr_info("uffd creation failed\n");
+> -               return -1;
+> -       }
+> +       TEST_ASSERT(uffd >= 0, "uffd creation failed, errno: %d", errno);
+>
+>         uffdio_api.api = UFFD_API;
+>         uffdio_api.features = 0;
+> -       if (ioctl(uffd, UFFDIO_API, &uffdio_api) == -1) {
+> -               pr_info("ioctl uffdio_api failed\n");
+> -               return -1;
+> -       }
+> +       TEST_ASSERT(ioctl(uffd, UFFDIO_API, &uffdio_api) != -1,
+> +                   "ioctl UFFDIO_API failed: %" PRIu64,
+> +                   (uint64_t)uffdio_api.api);
+>
+>         uffdio_register.range.start = (uint64_t)hva;
+>         uffdio_register.range.len = len;
+>         uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
+> -       if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) == -1) {
+> -               pr_info("ioctl uffdio_register failed\n");
+> -               return -1;
+> -       }
+> -
+> -       if ((uffdio_register.ioctls & UFFD_API_RANGE_IOCTLS) !=
+> -                       UFFD_API_RANGE_IOCTLS) {
+> -               pr_info("unexpected userfaultfd ioctl set\n");
+> -               return -1;
+> -       }
+> +       TEST_ASSERT(ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) != -1,
+> +                   "ioctl UFFDIO_REGISTER failed");
+> +       TEST_ASSERT((uffdio_register.ioctls & UFFD_API_RANGE_IOCTLS) ==
+> +                   UFFD_API_RANGE_IOCTLS, "unexpected userfaultfd ioctl set");
+>
+>         uffd_args->uffd = uffd;
+>         uffd_args->pipefd = pipefd;
+> @@ -243,8 +235,6 @@ static int setup_demand_paging(struct kvm_vm *vm,
+>
+>         PER_VCPU_DEBUG("Created uffd thread for HVA range [%p, %p)\n",
+>                        hva, hva + len);
+> -
+> -       return 0;
+>  }
+>
+>  struct test_params {
+> @@ -321,13 +311,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>                                   O_CLOEXEC | O_NONBLOCK);
+>                         TEST_ASSERT(!r, "Failed to set up pipefd");
+>
+> -                       r = setup_demand_paging(vm,
+> -                                               &uffd_handler_threads[vcpu_id],
+> -                                               pipefds[vcpu_id * 2],
+> -                                               p->uffd_delay, &uffd_args[vcpu_id],
+> -                                               vcpu_hva, vcpu_mem_size);
+> -                       if (r < 0)
+> -                               exit(-r);
+> +                       setup_demand_paging(vm, &uffd_handler_threads[vcpu_id],
+> +                                           pipefds[vcpu_id * 2], p->uffd_delay,
+> +                                           &uffd_args[vcpu_id], vcpu_hva,
+> +                                           vcpu_mem_size);
+>                 }
+>         }
+>
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+>
