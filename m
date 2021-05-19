@@ -2,90 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8377388DF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7301F388DF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351815AbhESMZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351953AbhESMZX (ORCPT
+        id S1346403AbhESMZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:25:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36609 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351910AbhESMZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:25:23 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDD6C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:24:02 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id j14so12074426wrq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:24:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Qmzj5sXb0dQGIp3IEqGvuU1Z+vJnbjFyzmJBniDVjRY=;
-        b=wO9Fjndg3DsMOveXObNUhI/yN79ZZF6/0upv0Dkfj3WkTKw7wX30M394CafYendJ1n
-         5qeCk2cbOIHr5nVytq8ZFa38S7TOjl7cvYGsIIZYmNei5JfE7xF/p5THZhMKnQbucd2D
-         YSh13zo4fhx4a/Rt3+qKbLlKvQkfTO/aQYP6rbLSP5CUCzW4kffN0TobaHX6f9LMZuWR
-         iPW2iKqXHG35T+7kSlM+hQdbYWsxgDJv/cF15mtr4XN6xYpDMJbZtCpwEYqodCz5URRb
-         Mj0yJTEkMC+cEwpr8DybUMogfvjVMz+T4nv2cvSvMAvBLFqLKtC+nzXiJ6Ru9M4XL3mq
-         QhhA==
+        Wed, 19 May 2021 08:25:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621427070;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B6+GMlwrRYCIhKlucQm0d4pBq6rNn427lZR0x1Dlm1U=;
+        b=EbYoSluzMNhbEpOumzUwtHyuMIzBpVC//0qSDZmlKC8tYpvcrH6roPskLn/KRzJGCBaWY3
+        K/Dv6yOpLAOFtwJI3xqxGOxK/4y8UCIUr1uqg+zZpPAmjdK8ZaJdr2QPqEFxtzIFVYnfBY
+        IfTWUQIxVulS/Vqinxa6HFQ1CaFMg4A=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-txb02T3zOZSyFBBSShzJKg-1; Wed, 19 May 2021 08:24:29 -0400
+X-MC-Unique: txb02T3zOZSyFBBSShzJKg-1
+Received: by mail-qk1-f200.google.com with SMTP id n2-20020a37a4020000b02902e9aef597f7so9609541qke.21
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:24:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Qmzj5sXb0dQGIp3IEqGvuU1Z+vJnbjFyzmJBniDVjRY=;
-        b=cHMy/YM3Jv1Uida+oLcIVmNkldQCDrhKCO6o9xuze8mK4FUmEPcjHwJ/KOwVnXQ0Tb
-         HXpUKAZBAyHDGfwt2G9nX9KhJBGB+D1cWFSTyYl3DFPK7lfrk5iYopn3pmwWYSglZ2wM
-         p0Bf679jf9FpcDDPbXInmXDjdxuhCw8kf/9/wrsK0cI/DDFaPAfxiO0+fbzjnQtIg4Jo
-         t0smuE0DR4VBzdJyiYDb1B8eIBkd/LwgYVYbo4d/j0GL1yBjuLt7qjKTKsNiUhNNqB9i
-         Ipxxy8Bq+JW3GkV5zJup85i0YNQxZrg8b/ASEaZ+q5TBjEf0kjcJb2EqYriJBKCN02zD
-         Szpg==
-X-Gm-Message-State: AOAM533QNllOy6Mf/WBN/PY8mSZY1lsWr3ZBSwci54uVgqO35IVErqwN
-        +SHOttNyH2uwuj29ZskoAk9sfg==
-X-Google-Smtp-Source: ABdhPJxsaaoyh3v42GGp2jx2R71stELQyc5iAP9FqL9RmKf4o2XjMTUiclQ29lbfFLfXGQ+B5ufxWw==
-X-Received: by 2002:a5d:4d92:: with SMTP id b18mr7614957wru.167.1621427041422;
-        Wed, 19 May 2021 05:24:01 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id x11sm24810477wrl.13.2021.05.19.05.24.00
+         :mime-version:content-disposition:in-reply-to;
+        bh=B6+GMlwrRYCIhKlucQm0d4pBq6rNn427lZR0x1Dlm1U=;
+        b=f+l+IoY0B3l66xp0OIvffyF0RgJ9S5z2BFxV2lj6JgL+0GXpNaG/9/oZg2ek3AabfH
+         h96PO5uP0hgx6iAPtr1MIx0PgermZtMrB8y+TaGhOI4zcD18Kezfke6vM6OfTYeF1XAj
+         /zhDJ4N4YWOdrrRCyYbx8mFNCiSx/wZgPdxfi68sBsiEbwebY7btfpux8lT6HryECjmj
+         q013W/xjl9npWoaNrTg+U1Be+2h946a4gxxDxZY43VkYX5+LlXdIFP9MMegXIdHSmWnN
+         ytddjgvFJeYPcr4QJtdbYhv2H70/VdMhi9ZrDtA7D9eqfentMuA63Bh0cMsbLi9Pq9ZW
+         AZ3Q==
+X-Gm-Message-State: AOAM533GB5Qe7lqstdzU8EDjj3+hGrX1pU3wDqWKKeK3gCwGcbZHevt2
+        XJVgTmafxEQ8IP2s+yeVwCWex7TXY2FLhrvll0Lctdv7v1l6/YWLLmNG29bFe/FZ0Kz6CA5gVAB
+        Zu68qDBsaGM1Y2n5vEv30PQ3H
+X-Received: by 2002:ac8:4b74:: with SMTP id g20mr11134569qts.196.1621427068811;
+        Wed, 19 May 2021 05:24:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfYWS/dsuPCr9XZO07LTE6R21Hbq/UdkcASCcx2KQMguWwavSEob3mks8rwF1tmkFnKYSzdA==
+X-Received: by 2002:ac8:4b74:: with SMTP id g20mr11134560qts.196.1621427068562;
+        Wed, 19 May 2021 05:24:28 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id m4sm15981169qtg.21.2021.05.19.05.24.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 05:24:01 -0700 (PDT)
-Date:   Wed, 19 May 2021 13:23:59 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     support.opensource@diasemi.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH -next] mfd: da9052/stmpe: Add and modify
- MODULE_DEVICE_TABLE
-Message-ID: <20210519122359.GA2415519@dell>
-References: <1620801226-18474-1-git-send-email-zou_wei@huawei.com>
+        Wed, 19 May 2021 05:24:28 -0700 (PDT)
+Date:   Wed, 19 May 2021 08:24:27 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
+        bskeggs@redhat.com, akpm@linux-foundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, jhubbard@nvidia.com,
+        rcampbell@nvidia.com, jglisse@redhat.com, jgg@nvidia.com,
+        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
+        bsingharora@gmail.com, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
+Message-ID: <YKUDe8Oe4Y+q5Kxx@t490s>
+References: <20210407084238.20443-1-apopple@nvidia.com>
+ <20210407084238.20443-6-apopple@nvidia.com>
+ <YKQutvAa3NlgGaMm@t490s>
+ <3859486.fHISG1RMxY@nvdebian>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1620801226-18474-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <3859486.fHISG1RMxY@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021, Zou Wei wrote:
-
-> This patch adds/modifies MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
+On Wed, May 19, 2021 at 08:49:01PM +1000, Alistair Popple wrote:
+> On Wednesday, 19 May 2021 7:16:38 AM AEST Peter Xu wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Wed, Apr 07, 2021 at 06:42:35PM +1000, Alistair Popple wrote:
+> > 
+> > [...]
+> > 
+> > > +static bool try_to_protect(struct page *page, struct mm_struct *mm,
+> > > +                        unsigned long address, void *arg)
+> > > +{
+> > > +     struct ttp_args ttp = {
+> > > +             .mm = mm,
+> > > +             .address = address,
+> > > +             .arg = arg,
+> > > +             .valid = false,
+> > > +     };
+> > > +     struct rmap_walk_control rwc = {
+> > > +             .rmap_one = try_to_protect_one,
+> > > +             .done = page_not_mapped,
+> > > +             .anon_lock = page_lock_anon_vma_read,
+> > > +             .arg = &ttp,
+> > > +     };
+> > > +
+> > > +     /*
+> > > +      * Restrict to anonymous pages for now to avoid potential writeback
+> > > +      * issues.
+> > > +      */
+> > > +     if (!PageAnon(page))
+> > > +             return false;
+> > > +
+> > > +     /*
+> > > +      * During exec, a temporary VMA is setup and later moved.
+> > > +      * The VMA is moved under the anon_vma lock but not the
+> > > +      * page tables leading to a race where migration cannot
+> > > +      * find the migration ptes. Rather than increasing the
+> > > +      * locking requirements of exec(), migration skips
+> > > +      * temporary VMAs until after exec() completes.
+> > > +      */
+> > > +     if (!PageKsm(page) && PageAnon(page))
+> > > +             rwc.invalid_vma = invalid_migration_vma;
+> > > +
+> > > +     rmap_walk(page, &rwc);
+> > > +
+> > > +     return ttp.valid && !page_mapcount(page);
+> > > +}
+> > 
+> > I raised a question in the other thread regarding fork():
+> > 
+> > https://lore.kernel.org/lkml/YKQjmtMo+YQGx%2FwZ@t490s/
+> > 
+> > While I suddenly noticed that we may have similar issues even if we fork()
+> > before creating the ptes.
+> > 
+> > In that case, we may see multiple read-only ptes pointing to the same page. 
+> > We will convert all of them into device exclusive read ptes in rmap_walk()
+> > above, however how do we guarantee after all COW done in the parent and all
+> > the childs processes, the device owned page will be returned to the parent?
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/mfd/da9052-i2c.c | 1 +
->  drivers/mfd/stmpe-i2c.c  | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
+> I assume you are talking about a fork() followed by a call to 
+> make_device_exclusive()? I think this should be ok because 
+> make_device_exclusive() always calls GUP with FOLL_WRITE both to break COW and 
+> because a device performing atomic operations needs to write to the page. I 
+> suppose a comment here highlighting the need to break COW to avoid this 
+> scenario would be useful though.
 
-Applied, thanks.
+Indeed, sorry for the false alarm!  Yes it would be great to mention that too.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Peter Xu
+
