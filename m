@@ -2,226 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569253893CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AC03893D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347336AbhESQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:32:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30662 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241726AbhESQcX (ORCPT
+        id S1347332AbhESQgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346964AbhESQgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:32:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621441863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DTIBsxfcmpbiGvB6/oqS+BCqPAr0GPYXwX6i6OwUXu8=;
-        b=fs1/BWOz1fEiai/z/E/h1/cqcRl5OObmQOIKaKgnyNuPGmboRrEGSxWZCZu2lJBHOkBHBA
-        kbZAumKZZHr08nlzfwC/ZOJ4Fs2ZGF3o/3+o6lmuhFYn3jXFZ2niNptMzBMWtTEVKlVC5Y
-        XdgrsS9jew1Hg/tXQSSbEWFdYJS/OXE=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-0I-jOBNoNMaqakKeugkhog-1; Wed, 19 May 2021 12:31:02 -0400
-X-MC-Unique: 0I-jOBNoNMaqakKeugkhog-1
-Received: by mail-qk1-f198.google.com with SMTP id d15-20020a05620a136fb02902e9e93c69c8so10175709qkl.23
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:31:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DTIBsxfcmpbiGvB6/oqS+BCqPAr0GPYXwX6i6OwUXu8=;
-        b=DmBtivORPgxJzBF7W/qMtvjk9Utj3YcB5w4k44520XSsRLEiZ/r2BEyXgI+5LPNOx9
-         DJITUjNtYO9pusJy8uPehyNRzbSpqeeBOBpFhB8yJiOw+X33nfXa+q5nMg2HNnkDNqYa
-         BkqC76e3mMXmBw8PWfA34ATaE0tGamyQayCbgFjob/imRIVyrHNKoBPoyMPViJhFwWsn
-         HwA0biuA5DUhqQVMoNLq2kiB/5J82qPrMUyHyGEjBEf/3hpsRlaOvgJhQzW2HE5bT3UE
-         ZzcbmY0fgzkt+Unhq9J01YyWfe92n+EogzrVE1SkTWL2UD7538Xs1hAe4hy17KrZB2Nn
-         TljQ==
-X-Gm-Message-State: AOAM5309VMx+YvWo+TJzo6Zyra89qCQX5mqwlKBxX9WWKqYh/5KhkQJs
-        OW46eWwY58ppS9+fBX7Pz4awfcwfOklsBY4HMrNBURrYS9axxvPHU5jHkEHmvhAcPlRxg7DuaBV
-        qSdVmKhtbE+UIRiP4gUOEM9Wf
-X-Received: by 2002:a37:ae86:: with SMTP id x128mr120639qke.427.1621441861587;
-        Wed, 19 May 2021 09:31:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyBDO/tdIzDTtrmY8uL8MiiJzfxzrZi8/LESSihIP4aUK6JgfnB0vNj/ZF4iZSBIj0X30ZwmA==
-X-Received: by 2002:a37:ae86:: with SMTP id x128mr120601qke.427.1621441861183;
-        Wed, 19 May 2021 09:31:01 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a14sm1442263qtp.74.2021.05.19.09.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 09:31:00 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
-        michal.simek@xilinx.com
-Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] fpga: fix spelling mistakes
-Date:   Wed, 19 May 2021 09:30:56 -0700
-Message-Id: <20210519163056.1966690-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        Wed, 19 May 2021 12:36:38 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 60381C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=I7EF5DgYXK5CNIBTo0gfJuvE3joYDduH2y
+        ARUBRK5ps=; b=AUwfohXp0nzurU67e9OW4h+PY/fKPYE9lviT5s+v9ZRa0PFYxt
+        uZFDr4079SUrpkhhjkpjXeAMVNGN/HFzI1mrkTQRTB8canXoeRfEdLbZaV4UL5fU
+        IJCuUsG2q4I+kj6QA5CuX9k4SrsgUa8a3ppsfPdOboQq6gEcwwcqxziMs=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnbZkTPqVgof8DAQ--.63533S2;
+        Thu, 20 May 2021 00:34:27 +0800 (CST)
+Date:   Thu, 20 May 2021 00:29:09 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] riscv: Map the kernel with correct permissions the
+ first time
+Message-ID: <20210520002909.0b699b2b@xhacker>
+In-Reply-To: <20210518152134.1772653-1-alex@ghiti.fr>
+References: <20210518152134.1772653-1-alex@ghiti.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBnbZkTPqVgof8DAQ--.63533S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF1Duw4fJr17uFy8JFWUJwb_yoW3Kr4fpF
+        W8Jrn8ZFWYqFykWrW7CryY9ryfJwn3Ja4aqF17CrykWFnrCF4Fvrn0ga9FqryDAayvqF4f
+        Aay0kws3uwsrtFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUySb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC2
+        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+        0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
+        vaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+        6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07beAp5UUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, 18 May 2021 17:21:34 +0200
+Alexandre Ghiti <alex@ghiti.fr> wrote:
 
-Run the fpga subsystem through aspell.
+> For 64b kernels, we map all the kernel with write and execute permissions
+> and afterwards remove writability from text and executability from data.
+> 
+> For 32b kernels, the kernel mapping resides in the linear mapping, so we
+> map all the linear mapping as writable and executable and afterwards we
+> remove those properties for unused memory and kernel mapping as
+> described above.
+> 
+> Change this behavior to directly map the kernel with correct permissions
+> and avoid going through the whole mapping to fix the permissions.
+> 
+> At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
+> ("riscv: Move kernel mapping outside of linear mapping") as reported
+> here https://github.com/starfive-tech/linux/issues/17.
+> 
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> ---
+> 
+> This patchset was tested on:
+> 
+> * kernel:
+> - rv32 with CONFIG_STRICT_KERNEL_RWX: OK
+> - rv32 without CONFIG_STRICT_KERNEL_RWX: OK
+> - rv64 with CONFIG_STRICT_KERNEL_RWX: OK
+> - rv64 without CONFIG_STRICT_KERNEL_RWX: OK
+> 
+> * xipkernel:
+> - rv32: build only
+> - rv64: OK
+> 
+>  arch/riscv/include/asm/set_memory.h |  2 -
+>  arch/riscv/kernel/setup.c           |  1 -
+>  arch/riscv/mm/init.c                | 80 ++++++++++++++---------------
+>  3 files changed, 38 insertions(+), 45 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+> index 086f757e8ba3..70154f012791 100644
+> --- a/arch/riscv/include/asm/set_memory.h
+> +++ b/arch/riscv/include/asm/set_memory.h
+> @@ -16,13 +16,11 @@ int set_memory_rw(unsigned long addr, int numpages);
+>  int set_memory_x(unsigned long addr, int numpages);
+>  int set_memory_nx(unsigned long addr, int numpages);
+>  int set_memory_rw_nx(unsigned long addr, int numpages);
+> -void protect_kernel_text_data(void);
+>  #else
+>  static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
+>  static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
+>  static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
+>  static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
+> -static inline void protect_kernel_text_data(void) {}
+>  static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
+>  #endif
+>  
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index 03901d3a8b02..1eb50e512056 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -292,7 +292,6 @@ void __init setup_arch(char **cmdline_p)
+>  	sbi_init();
+>  
+>  	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
+> -		protect_kernel_text_data();
+>  		protect_kernel_linear_mapping_text_rodata();
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- Documentation/fpga/dfl.rst    | 4 ++--
- drivers/fpga/altera-cvp.c     | 2 +-
- drivers/fpga/dfl-fme-pr.c     | 2 +-
- drivers/fpga/dfl-n3000-nios.c | 2 +-
- drivers/fpga/dfl.h            | 2 +-
- drivers/fpga/fpga-bridge.c    | 4 ++--
- drivers/fpga/zynq-fpga.c      | 6 +++---
- include/linux/fpga/fpga-mgr.h | 2 +-
- 8 files changed, 12 insertions(+), 12 deletions(-)
+If we extend the idea a bit, I.E create the correct permission for alias line
+mapping at the first time, we can remove protect_kernel_linear_mapping_text_rodata()
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index f3a1223f2517e..ccc33f199df2a 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -10,7 +10,7 @@ Authors:
- - Xu Yilun <yilun.xu@intel.com>
- 
- The Device Feature List (DFL) FPGA framework (and drivers according to
--this framework) hides the very details of low layer hardwares and provides
-+this framework) hides the very details of low layer hardware and provides
- unified interfaces to userspace. Applications could use these interfaces to
- configure, enumerate, open and access FPGA accelerators on platforms which
- implement the DFL in the device memory. Besides this, the DFL framework
-@@ -205,7 +205,7 @@ given Device Feature Lists and create platform devices for feature devices
- also abstracts operations for the private features and exposes common ops to
- feature device drivers.
- 
--The FPGA DFL Device could be different hardwares, e.g. PCIe device, platform
-+The FPGA DFL Device could be different hardware, e.g. PCIe device, platform
- device and etc. Its driver module is always loaded first once the device is
- created by the system. This driver plays an infrastructural role in the
- driver architecture. It locates the DFLs in the device memory, handles them
-diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
-index 4e0edb60bfba6..ccf4546eff297 100644
---- a/drivers/fpga/altera-cvp.c
-+++ b/drivers/fpga/altera-cvp.c
-@@ -346,7 +346,7 @@ static int altera_cvp_write_init(struct fpga_manager *mgr,
- 	}
- 
- 	if (val & VSE_CVP_STATUS_CFG_RDY) {
--		dev_warn(&mgr->dev, "CvP already started, teardown first\n");
-+		dev_warn(&mgr->dev, "CvP already started, tear down first\n");
- 		ret = altera_cvp_teardown(mgr, info);
- 		if (ret)
- 			return ret;
-diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
-index 1194c0e850e07..d61ce9a188792 100644
---- a/drivers/fpga/dfl-fme-pr.c
-+++ b/drivers/fpga/dfl-fme-pr.c
-@@ -148,7 +148,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
- 
- 	/*
- 	 * it allows userspace to reset the PR region's logic by disabling and
--	 * reenabling the bridge to clear things out between accleration runs.
-+	 * reenabling the bridge to clear things out between acceleration runs.
- 	 * so no need to hold the bridges after partial reconfiguration.
- 	 */
- 	if (region->get_bridges)
-diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
-index 7a95366f6516f..9ddf1d1d392f3 100644
---- a/drivers/fpga/dfl-n3000-nios.c
-+++ b/drivers/fpga/dfl-n3000-nios.c
-@@ -461,7 +461,7 @@ static int n3000_nios_poll_stat_timeout(void __iomem *base, u64 *v)
- 	 * We don't use the time based timeout here for performance.
- 	 *
- 	 * The regbus read/write is on the critical path of Intel PAC N3000
--	 * image programing. The time based timeout checking will add too much
-+	 * image programming. The time based timeout checking will add too much
- 	 * overhead on it. Usually the state changes in 1 or 2 loops on the
- 	 * test server, and we set 10000 times loop here for safety.
- 	 */
-diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-index 2b82c96ba56c7..dac9c3d45e6c3 100644
---- a/drivers/fpga/dfl.h
-+++ b/drivers/fpga/dfl.h
-@@ -232,7 +232,7 @@ struct dfl_feature_irq_ctx {
-  * @id: sub feature id.
-  * @resource_index: each sub feature has one mmio resource for its registers.
-  *		    this index is used to find its mmio resource from the
-- *		    feature dev (platform device)'s reources.
-+ *		    feature dev (platform device)'s resources.
-  * @ioaddr: mapped mmio resource address.
-  * @irq_ctx: interrupt context list.
-  * @nr_irqs: number of interrupt contexts.
-diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
-index 6510c7803a784..d31eec32eb426 100644
---- a/drivers/fpga/fpga-bridge.c
-+++ b/drivers/fpga/fpga-bridge.c
-@@ -230,7 +230,7 @@ EXPORT_SYMBOL_GPL(fpga_bridges_put);
-  *
-  * Get an exclusive reference to the bridge and and it to the list.
-  *
-- * Return 0 for success, error code from of_fpga_bridge_get() othewise.
-+ * Return 0 for success, error code from of_fpga_bridge_get() otherwise.
-  */
- int of_fpga_bridge_get_to_list(struct device_node *np,
- 			       struct fpga_image_info *info,
-@@ -260,7 +260,7 @@ EXPORT_SYMBOL_GPL(of_fpga_bridge_get_to_list);
-  *
-  * Get an exclusive reference to the bridge and and it to the list.
-  *
-- * Return 0 for success, error code from fpga_bridge_get() othewise.
-+ * Return 0 for success, error code from fpga_bridge_get() otherwise.
-  */
- int fpga_bridge_get_to_list(struct device *dev,
- 			    struct fpga_image_info *info,
-diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/zynq-fpga.c
-index 07fa8d9ec6750..9b75bd4f93d8e 100644
---- a/drivers/fpga/zynq-fpga.c
-+++ b/drivers/fpga/zynq-fpga.c
-@@ -192,7 +192,7 @@ static void zynq_step_dma(struct zynq_fpga_priv *priv)
- 
- 	/* Once the first transfer is queued we can turn on the ISR, future
- 	 * calls to zynq_step_dma will happen from the ISR context. The
--	 * dma_lock spinlock guarentees this handover is done coherently, the
-+	 * dma_lock spinlock guarantees this handover is done coherently, the
- 	 * ISR enable is put at the end to avoid another CPU spinning in the
- 	 * ISR on this lock.
- 	 */
-@@ -267,7 +267,7 @@ static int zynq_fpga_ops_write_init(struct fpga_manager *mgr,
- 		ctrl = zynq_fpga_read(priv, CTRL_OFFSET);
- 		if (!(ctrl & CTRL_SEC_EN_MASK)) {
- 			dev_err(&mgr->dev,
--				"System not secure, can't use crypted bitstreams\n");
-+				"System not secure, can't use encrypted bitstreams\n");
- 			err = -EINVAL;
- 			goto out_err;
- 		}
-@@ -344,7 +344,7 @@ static int zynq_fpga_ops_write_init(struct fpga_manager *mgr,
- 
- 	/* set configuration register with following options:
- 	 * - enable PCAP interface
--	 * - set throughput for maximum speed (if bistream not crypted)
-+	 * - set throughput for maximum speed (if bistream not encrypted)
- 	 * - set CPU in user mode
- 	 */
- 	ctrl = zynq_fpga_read(priv, CTRL_OFFSET);
-diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
-index 2bc3030a69e54..3a32b8e201857 100644
---- a/include/linux/fpga/fpga-mgr.h
-+++ b/include/linux/fpga/fpga-mgr.h
-@@ -110,7 +110,7 @@ struct fpga_image_info {
-  * @initial_header_size: Maximum number of bytes that should be passed into write_init
-  * @state: returns an enum value of the FPGA's state
-  * @status: returns status of the FPGA, including reconfiguration error code
-- * @write_init: prepare the FPGA to receive confuration data
-+ * @write_init: prepare the FPGA to receive configuration data
-  * @write: write count bytes of configuration data to the FPGA
-  * @write_sg: write the scatter list of configuration data to the FPGA
-  * @write_complete: set FPGA to operating state after writing is done
--- 
-2.26.3
+PS: No matter whether it's fine to extend, the set_memory_nx() calling in
+protect_kernel_linear_mapping_text_rodata() is not necessary since the linear
+mapping for 64bit is NX from the beginning.
+
+>  	}
+>  
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 4faf8bd157ea..92b3184420a2 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -436,6 +436,36 @@ asmlinkage void __init __copy_data(void)
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_STRICT_KERNEL_RWX
+> +#define is_text_va(va)		({								\
+> +		unsigned long _va = va;								\
+> +		(_va < (unsigned long)__init_data_begin && _va >= (unsigned long)_start);	\
+> +	})
+
+It's better if is_text_va() is a inline function
+
+> +
+> +static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
+
+I'm not sure whether it's necessary to put __init marker to inline functions
+There are such issues in current riscv code, I planed to cook one patch
+to remove __init from inline functions.
+
+
+> +{
+> +	return is_text_va(va) ? PAGE_KERNEL_READ_EXEC : PAGE_KERNEL;
+
+if we extend the idea, then here we may return PAGE_KERNEL_READ, PAGE_KERNEL
+and PAGE_KERNEL_READ_EXEC correspondingly.
+
+Thanks
+
+> +}
+> +
+> +void mark_rodata_ro(void)
+> +{
+> +	unsigned long rodata_start = (unsigned long)__start_rodata;
+> +	unsigned long data_start = (unsigned long)_data;
+> +
+> +	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+> +
+> +	debug_checkwx();
+> +}
+> +#else
+> +static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
+> +{
+> +	if (IS_ENABLED(CONFIG_32BIT))
+> +		return PAGE_KERNEL_EXEC;
+> +
+> +	return (va < kernel_virt_addr) ? PAGE_KERNEL : PAGE_KERNEL_EXEC;
+> +}
+> +#endif
+> +
+>  /*
+>   * setup_vm() is called from head.S with MMU-off.
+>   *
+> @@ -465,7 +495,8 @@ uintptr_t xiprom, xiprom_sz;
+>  #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
+>  #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
+>  
+> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
+> +					    __always_unused bool early)
+>  {
+>  	uintptr_t va, end_va;
+>  
+> @@ -484,7 +515,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>  				   map_size, PAGE_KERNEL);
+>  }
+>  #else
+> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
+>  {
+>  	uintptr_t va, end_va;
+>  
+> @@ -492,7 +523,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>  	for (va = kernel_virt_addr; va < end_va; va += map_size)
+>  		create_pgd_mapping(pgdir, va,
+>  				   load_pa + (va - kernel_virt_addr),
+> -				   map_size, PAGE_KERNEL_EXEC);
+> +				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_kernel_va(va));
+>  }
+>  #endif
+>  
+> @@ -569,7 +600,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  	 * us to reach paging_init(). We map all memory banks later
+>  	 * in setup_vm_final() below.
+>  	 */
+> -	create_kernel_page_table(early_pg_dir, map_size);
+> +	create_kernel_page_table(early_pg_dir, map_size, true);
+>  
+>  #ifndef __PAGETABLE_PMD_FOLDED
+>  	/* Setup early PMD for DTB */
+> @@ -693,21 +724,15 @@ static void __init setup_vm_final(void)
+>  		map_size = best_map_size(start, end - start);
+>  		for (pa = start; pa < end; pa += map_size) {
+>  			va = (uintptr_t)__va(pa);
+> -			create_pgd_mapping(swapper_pg_dir, va, pa,
+> -					   map_size,
+> -#ifdef CONFIG_64BIT
+> -					   PAGE_KERNEL
+> -#else
+> -					   PAGE_KERNEL_EXEC
+> -#endif
+> -					);
+>  
+> +			create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
+> +					   pgprot_from_kernel_va(va));
+>  		}
+>  	}
+>  
+>  #ifdef CONFIG_64BIT
+>  	/* Map the kernel */
+> -	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
+> +	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
+>  #endif
+>  
+>  	/* Clear fixmap PTE and PMD mappings */
+> @@ -738,35 +763,6 @@ static inline void setup_vm_final(void)
+>  }
+>  #endif /* CONFIG_MMU */
+>  
+> -#ifdef CONFIG_STRICT_KERNEL_RWX
+> -void __init protect_kernel_text_data(void)
+> -{
+> -	unsigned long text_start = (unsigned long)_start;
+> -	unsigned long init_text_start = (unsigned long)__init_text_begin;
+> -	unsigned long init_data_start = (unsigned long)__init_data_begin;
+> -	unsigned long rodata_start = (unsigned long)__start_rodata;
+> -	unsigned long data_start = (unsigned long)_data;
+> -	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
+> -
+> -	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
+> -	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
+> -	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
+> -	/* rodata section is marked readonly in mark_rodata_ro */
+> -	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+> -	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
+> -}
+> -
+> -void mark_rodata_ro(void)
+> -{
+> -	unsigned long rodata_start = (unsigned long)__start_rodata;
+> -	unsigned long data_start = (unsigned long)_data;
+> -
+> -	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+> -
+> -	debug_checkwx();
+> -}
+> -#endif
+> -
+>  #ifdef CONFIG_KEXEC_CORE
+>  /*
+>   * reserve_crashkernel() - reserves memory for crash kernel
+
 
