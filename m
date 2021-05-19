@@ -2,107 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A90389A33
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BE7389A2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhESX5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhESX5e (ORCPT
+        id S230214AbhESX4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:56:40 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:35586 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230192AbhESX4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:57:34 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE41C061574;
-        Wed, 19 May 2021 16:56:12 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id q15so10569909pgg.12;
-        Wed, 19 May 2021 16:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JNMQiBUZJXJ3UxQ2xkL0KPsN3/Hv3HAfTP43B6QlmJU=;
-        b=DqHxukMa5VU3tYERMgbbJuvKGXE07lSus/5TqPuBWlszSptPZs13grMg70c47berPu
-         7Fl0s/OMldkxDA0bRdymTTAA+npmKYYIGCRfSfPAjvfKtKW2Sl2hii41oep87ZU/Up/S
-         ZQKqcjwxDFOYXda+UprCLyyfv7IVT95/IBDIDRxc0174nF7MAvUc/oYfNaXeW3QGeknN
-         ACYTO3wqBhympTZ8ygIHDpzk6kFfAeaGhh6cpaVdAXp0OmGiKHx1oIRdXr+NXrqifJJ/
-         x4EQ9VT1z4+hXehnx82w4zxqi1a7Bzj4ztjbENar+5ObIBJWrl3h7Ofiq/xPaWgzmCWI
-         U+Pw==
+        Wed, 19 May 2021 19:56:35 -0400
+Received: by mail-oi1-f182.google.com with SMTP id v22so14768302oic.2;
+        Wed, 19 May 2021 16:55:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JNMQiBUZJXJ3UxQ2xkL0KPsN3/Hv3HAfTP43B6QlmJU=;
-        b=sAOAjgvupJtBkGLoa+bF2iOIaXQzrIuuN7zBZAxove07VA2aqZDsoUPN/uwb2FyKvA
-         HLXpihRXctbbMKF6JqA6MGE8I/heXa8vw7IsqAhlXIcCpxIJdmt6OKzucgdEU2uoYsWP
-         i0FoYo4irPOIbAmHhuEr+Uwu4vte9KmAtrviu1f+pQ5OtYx5ARbuFr3ljW2BDiQ+Q9ms
-         wWuhpcmTJHL7nn/YIQS+CRIJrm4KuBdOik6poiUzttToNkBB6MO8nGJxrw4CM6ZFJV8t
-         paMnaFMwHvBaujVlxw67kbcxO5duslaucpye0JaVRsKQtuVCSMv9TBWrDriv3AOr4lHW
-         tYYA==
-X-Gm-Message-State: AOAM531/9RDKqY8ZnRMiZUyl9+Gi6U7pv89b1vRfdOF/xm2jcyFqobo0
-        QyDyn5ec4u0m7d35R9yt4Gw=
-X-Google-Smtp-Source: ABdhPJwN0cRMlSFzgP6WkzbRtqX6a6E7f8eUcAFNhAfjm5HJfya2n6REMjACn4roKy9Ne+kBxShXng==
-X-Received: by 2002:a63:36c1:: with SMTP id d184mr1672616pga.47.1621468572051;
-        Wed, 19 May 2021 16:56:12 -0700 (PDT)
-Received: from localhost.localdomain ([94.140.8.39])
-        by smtp.googlemail.com with ESMTPSA id z12sm397670pfk.45.2021.05.19.16.56.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XzJtZgK1H/5xjeQJaiKS1v1HDO3VL37NAXKpynjn5Xg=;
+        b=pNbHMlYfYOxTBdLxjtnsQuk3O9P9yU+ASnqkTkLiQnLGIkWkd5azKZvqxRZ+55xzdC
+         rB1qyuNsKM0EFRxHjhrmaaTgdnOooWbhy1WBOCkvmHcWsgmusONsybZWWBOWLdD7Ti1P
+         sPFRoXARIMqjjQXQeT+yzgbxceex8+rDKAoY4gUzE9VTj3gXd8V1FnmTEsSox1BwakoY
+         J7ZUCKzC3u750v6avVcl5wsSkDFZMdycXYptQ3bZQXsSmB9CFwWVFPv0ViVQcnXheI3b
+         4XbzmJHLEeBaXQO8rUy4f7p6m2an7s+aQU83TOdQxCzb2KPCLCJDjtCYgPp0qeVqh6DB
+         PGRw==
+X-Gm-Message-State: AOAM5302ygu7PFw9veeYs6ZsjbYRG3JLmTb7gztyfvkDpZYPpIt1wrSd
+        R/igCG7+oCWpJKsfSNX7QQ==
+X-Google-Smtp-Source: ABdhPJwfyiI6bLQxODhV52EzLe6i6OomkP63escY33YOfKsdPEuPMlmDEqQElPoFpt0WnHkiY6ywzw==
+X-Received: by 2002:a54:4411:: with SMTP id k17mr1323323oiw.66.1621468514597;
+        Wed, 19 May 2021 16:55:14 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y7sm273535oto.60.2021.05.19.16.54.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 16:56:11 -0700 (PDT)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, sdonthineni@nvidia.com
-Subject: [PATCH RESEND v2 7/7] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
-Date:   Thu, 20 May 2021 05:24:26 +0530
-Message-Id: <20210519235426.99728-8-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210519235426.99728-1-ameynarkhede03@gmail.com>
-References: <20210519235426.99728-1-ameynarkhede03@gmail.com>
+        Wed, 19 May 2021 16:55:11 -0700 (PDT)
+Received: (nullmailer pid 3909826 invoked by uid 1000);
+        Wed, 19 May 2021 23:54:54 -0000
+Date:   Wed, 19 May 2021 18:54:54 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     broonie@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+Subject: Re: [PATCH v6 1/9] ASoC: dt-bindings: wcd938x: add bindings for
+ wcd938x
+Message-ID: <20210519235454.GA3752127@robh.at.kernel.org>
+References: <20210518143759.16837-1-srinivas.kandagatla@linaro.org>
+ <20210518143759.16837-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518143759.16837-2-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shanker Donthineni <sdonthineni () nvidia ! com>
+On Tue, May 18, 2021 at 03:37:51PM +0100, Srinivas Kandagatla wrote:
+> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+> connected over SoundWire. This device has two SoundWire device RX and
+> TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+> 7 x TX diff inputs, 8 DMICs, MBHC.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../bindings/sound/qcom,wcd938x.yaml          | 148 ++++++++++++++++++
+>  1 file changed, 148 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+> new file mode 100644
+> index 000000000000..b04c5e90e283
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+> @@ -0,0 +1,148 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/qcom,wcd938x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bindings for Qualcomm WCD9380/WCD9385 Audio Codec
+> +
+> +maintainers:
+> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +
+> +description: |
+> +  Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC.
+> +  It has RX and TX Soundwire slave devices.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,wcd9380-codec
+> +      - qcom,wcd9385-codec
+> +
+> +  reset-gpios:
+> +    description: GPIO spec for reset line to use
+> +    maxItems: 1
+> +
+> +  vdd-buck-supply:
+> +    description: A reference to the 1.8V buck supply
+> +
+> +  vdd-rxtx-supply:
+> +    description: A reference to the 1.8V rx supply
+> +
+> +  vdd-io-supply:
+> +    description: A reference to the 1.8V I/O supply
+> +
+> +  qcom,tx-device:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
 
-On select platforms, some Nvidia GPU devices do not work with SBR.
-Triggering SBR would leave the device inoperable for the current
-system boot. It requires a system hard-reboot to get the GPU device
-back to normal operating condition post-SBR. For the affected
-devices, enable NO_BUS_RESET quirk to fix the issue.
+Only 1 and no args, so just 'phandle'.
 
-This issue will be fixed in the next generation of hardware.
+> +    maxItems: 1
 
-Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
----
- drivers/pci/quirks.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+And drop this.
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 8f47d139c..ceec67342 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3558,6 +3558,18 @@ static void quirk_no_bus_reset(struct pci_dev *dev)
- 	dev->dev_flags |= PCI_DEV_FLAGS_NO_BUS_RESET;
- }
- 
-+/*
-+ * Some Nvidia GPU devices do not work with bus reset, SBR needs to be
-+ * prevented for those affected devices.
-+ */
-+static void quirk_nvidia_no_bus_reset(struct pci_dev *dev)
-+{
-+	if ((dev->device & 0xffc0) == 0x2340)
-+		quirk_no_bus_reset(dev);
-+}
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
-+			 quirk_nvidia_no_bus_reset);
-+
- /*
-  * Some Atheros AR9xxx and QCA988x chips do not behave after a bus reset.
-  * The device will throw a Link Down error on AER-capable systems and
--- 
-2.31.1
+> +    description: A reference to Soundwire tx device phandle
+> +
+> +  qcom,rx-device:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    maxItems: 1
 
+And here.
+
+With that,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +    description: A reference to Soundwire rx device phandle
+> +
+> +  qcom,micbias1-microvolt:
+> +    description: micbias1 voltage
+> +    minimum: 1800000
+> +    maximum: 2850000
+> +
+> +  qcom,micbias2-microvolt:
+> +    description: micbias2 voltage
+> +    minimum: 1800000
+> +    maximum: 2850000
+> +
+> +  qcom,micbias3-microvolt:
+> +    description: micbias3 voltage
+> +    minimum: 1800000
+> +    maximum: 2850000
+> +
+> +  qcom,micbias4-microvolt:
+> +    description: micbias4 voltage
+> +    minimum: 1800000
+> +    maximum: 2850000
+> +
+> +  qcom,hphl-jack-type-normally-closed:
+> +    description: Indicates that HPHL jack switch type is normally closed
+> +    type: boolean
+> +
+> +  qcom,ground-jack-type-normally-closed:
+> +    description: Indicates that Headset Ground switch type is normally closed
+> +    type: boolean
+> +
+> +  qcom,mbhc-headset-vthreshold-microvolt:
+> +    description: Voltage threshold value for headset detection
+> +    minimum: 0
+> +    maximum: 2850000
+> +
+> +  qcom,mbhc-headphone-vthreshold-microvolt:
+> +    description: Voltage threshold value for headphone detection
+> +    minimum: 0
+> +    maximum: 2850000
+> +
+> +  qcom,mbhc-buttons-vthreshold-microvolt:
+> +    description:
+> +      Array of 8 Voltage threshold values corresponding to headset
+> +      button0 - button7
+> +    minItems: 8
+> +    maxItems: 8
+> +
+> +  '#sound-dai-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reset-gpios
+> +  - qcom,tx-device
+> +  - qcom,rx-device
+> +  - qcom,micbias1-microvolt
+> +  - qcom,micbias2-microvolt
+> +  - qcom,micbias3-microvolt
+> +  - qcom,micbias4-microvolt
+> +  - "#sound-dai-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    codec {
+> +        compatible = "qcom,wcd9380-codec";
+> +        reset-gpios = <&tlmm 32 0>;
+> +        #sound-dai-cells = <1>;
+> +        qcom,tx-device = <&wcd938x_tx>;
+> +        qcom,rx-device = <&wcd938x_rx>;
+> +        qcom,micbias1-microvolt = <1800000>;
+> +        qcom,micbias2-microvolt = <1800000>;
+> +        qcom,micbias3-microvolt = <1800000>;
+> +        qcom,micbias4-microvolt = <1800000>;
+> +        qcom,hphl-jack-type-normally-closed;
+> +        qcom,ground-jack-type-normally-closed;
+> +        qcom,mbhc-buttons-vthreshold-microvolt = <75000 150000 237000 500000 500000 500000 500000 500000>;
+> +        qcom,mbhc-headphone-vthreshold-microvolt = <50000>;
+> +    };
+> +
+> +    /* ... */
+> +
+> +    soundwire@3210000 {
+> +        #address-cells = <2>;
+> +        #size-cells = <0>;
+> +        reg = <0x03210000 0x2000>;
+> +        wcd938x_rx: codec@0,4 {
+> +            compatible = "sdw20217010d00";
+> +            reg  = <0 4>;
+> +            qcom,rx-port-mapping = <1 2 3 4 5>;
+> +        };
+> +    };
+> +
+> +    soundwire@3230000 {
+> +        #address-cells = <2>;
+> +        #size-cells = <0>;
+> +        reg = <0x03230000 0x2000>;
+> +        wcd938x_tx: codec@0,3 {
+> +            compatible = "sdw20217010d00";
+> +            reg  = <0 3>;
+> +            qcom,tx-port-mapping = <2 3 4 5>;
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.21.0
+> 
