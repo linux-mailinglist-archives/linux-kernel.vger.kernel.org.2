@@ -2,220 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF668388FC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CF5388FF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353795AbhESOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:06:02 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:44671 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240179AbhESOGA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:06:00 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 705911AF5;
-        Wed, 19 May 2021 10:04:40 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 19 May 2021 10:04:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=A
-        X1KyNTr3f6ACIFrlzPJ/39X6FbXJDzADF33t6t89Y0=; b=SxapN2vNZH7Iurzl/
-        TNXOE3oW+hwphm+73bhGB+lMRLDKRvS1Odip8IX2awCHjw8pBJZ+Y6HsblLoQ2rT
-        7on1lhdeVcqGud5pZU8t0SVtCM49v3KW+rFgJOEmsK/mvh8rmilgyVj78xNr2Daz
-        V+YL9y3ml5++rKHmA1aXlIVrRZe8dmJa8B7IFVHtGUIy0fwXFSQg6Ujd1wQuqEOz
-        KW9xT5CLok9MImr2RBnY+faIVZRPWw96pSCzFD0MMTOqx/zlgSDtDje1LxW4ziH9
-        gUAjxx1AgPT2wFw1N3cUHeTegnS6oifz2mfGRDjbp33LFmwB9XosoXOGJO59txAT
-        I0WGA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=AX1KyNTr3f6ACIFrlzPJ/39X6FbXJDzADF33t6t89
-        Y0=; b=mDFcChx21o7hBaZmALBQYqjrHnjsdszJ6hpZWFXM9j+m0uIz2FfRY+sM3
-        W3rTppczTSovJcDs+e2+DdD73yv0Ed1pgrmfPR+SN+MY3/nFAc/ocOsFY8gr3rHL
-        J2xiwqnyEXMOfp+VqiB53kCBBUkqO8znArm9Euu0fzBAKBC2DiT8dvKNCzxLHm73
-        fsqtU9/fyzvrm1Cjt/uOmxKt10EfkbWv46NxJgfmPOFZwD9ZVWx8hwnCNPRwBa1V
-        qR3dM0CDh+UEjbrowJCJShJU+pvQbKHOw0o12oqZX9p9SLUh7A5JXSba1HOnbDq0
-        p7rM6LxgIQeXWGu9+4bu50KBl/58w==
-X-ME-Sender: <xms:9xqlYI1RJ-w1_d4o7ZAYvALsEQzBsjkLODOEQDgAJLvqw99xmDLIcA>
-    <xme:9xqlYDGD9Jvl8gvhzDTbuaNZd5X0NdUOy6HXPqSzpDStU-_xf5EO5u04qEG5383aL
-    XoB8AaKnspDAlgnGEM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeiledgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefuvfhfhffkffgfgggjtgfgsehtke
-    ertddtfeftnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepheettdefjedtudeuud
-    evgfejheefieeltdettdduheejkeekleefgeekueegtdeinecuffhomhgrihhnpehinhhs
-    ihguvghlihhnuhiguggvvhdrnhgvthenucfkphepfeelrddugeegrdeghedrvdelnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhn
-    rdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:9xqlYA46hnsV4D0enYURe7U63lT0XxjTApFN3IBE2RtXJlIPKrru6Q>
-    <xmx:9xqlYB24Gh48Y_I4naYzhSB5dDpI_iE3-TMA2PqQktSNh19qk-EErQ>
-    <xmx:9xqlYLE2yu93isqBbDg5GSqk6PbnvwoXdpwAJyDSgMsrQHg-Ct1pig>
-    <xmx:-BqlYBPKUzSWLvGXfrYd_ZQCu1Fvc63nV_3FoaDumytSMmsZ4NBgbw>
-Received: from [192.168.143.245] (unknown [39.144.45.29])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 19 May 2021 10:04:37 -0400 (EDT)
-Subject: Re: [PATCH] arch/mips/kernel/asm-offsets.c: Make local functions
- static
-To:     zhaoxiao <zhaoxiao@uniontech.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de
-References: <20210519062804.30047-1-zhaoxiao@uniontech.com>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <8223a6cd-ff3b-d105-0a95-30d5a4d1194e@flygoat.com>
-Date:   Wed, 19 May 2021 22:04:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S1347103AbhESOLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:11:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:41372 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347040AbhESOK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 10:10:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3F6431B;
+        Wed, 19 May 2021 07:09:37 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F3503F73B;
+        Wed, 19 May 2021 07:09:35 -0700 (PDT)
+Subject: Re: [PATCH v12 8/8] KVM: arm64: Document MTE capability and ioctl
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-9-steven.price@arm.com> <87r1i5teou.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <3b4cca00-e81d-322e-6f65-4d0850aac5a5@arm.com>
+Date:   Wed, 19 May 2021 15:09:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210519062804.30047-1-zhaoxiao@uniontech.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <87r1i5teou.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17/05/2021 19:09, Marc Zyngier wrote:
+> On Mon, 17 May 2021 13:32:39 +0100,
+> Steven Price <steven.price@arm.com> wrote:
+>>
+>> A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
+>> granting a guest access to the tags, and provides a mechanism for the
+>> VMM to enable it.
+>>
+>> A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
+>> access the tags of a guest without having to maintain a PROT_MTE mapping
+>> in userspace. The above capability gates access to the ioctl.
+>>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>  Documentation/virt/kvm/api.rst | 53 ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 53 insertions(+)
+>>
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index 22d077562149..a31661b870ba 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -5034,6 +5034,40 @@ see KVM_XEN_VCPU_SET_ATTR above.
+>>  The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
+>>  with the KVM_XEN_VCPU_GET_ATTR ioctl.
+>>  
+>> +4.130 KVM_ARM_MTE_COPY_TAGS
+>> +---------------------------
+>> +
+>> +:Capability: KVM_CAP_ARM_MTE
+>> +:Architectures: arm64
+>> +:Type: vm ioctl
+>> +:Parameters: struct kvm_arm_copy_mte_tags
+>> +:Returns: 0 on success, < 0 on error
+>> +
+>> +::
+>> +
+>> +  struct kvm_arm_copy_mte_tags {
+>> +	__u64 guest_ipa;
+>> +	__u64 length;
+>> +	union {
+>> +		void __user *addr;
+>> +		__u64 padding;
+>> +	};
+>> +	__u64 flags;
+>> +	__u64 reserved[2];
+>> +  };
+> 
+> This doesn't exactly match the structure in the previous patch :-(.
 
+:( I knew there was a reason I didn't include it in the documentation
+for the first 9 versions... I'll fix this up, thanks for spotting it.
 
-ÔÚ 2021/5/19 14:28, zhaoxiao Ð´µÀ:
-> Fixes the following W=1 kernel build warning(s):
-> arch/mips/kernel/asm-offsets.c:26:6: warning: no previous prototype for 'output_ptreg_defines' [-Wmissing-prototypes]
->   void output_ptreg_defines(void)
->        ^~~~~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:78:6: warning: no previous prototype for 'output_task_defines' [-Wmissing-prototypes]
->   void output_task_defines(void)
->        ^~~~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:93:6: warning: no previous prototype for 'output_thread_info_defines' [-Wmissing-prototypes]
->   void output_thread_info_defines(void)
->        ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:109:6: warning: no previous prototype for 'output_thread_defines' [-Wmissing-prototypes]
->   void output_thread_defines(void)
->        ^~~~~~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:137:6: warning: no previous prototype for 'output_thread_fpu_defines' [-Wmissing-prototypes]
->   void output_thread_fpu_defines(void)
->        ^~~~~~~~~~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:180:6: warning: no previous prototype for 'output_mm_defines' [-Wmissing-prototypes]
->   void output_mm_defines(void)
->        ^~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:241:6: warning: no previous prototype for 'output_sc_defines' [-Wmissing-prototypes]
->   void output_sc_defines(void)
->        ^~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:254:6: warning: no previous prototype for 'output_signal_defined' [-Wmissing-prototypes]
->   void output_signal_defined(void)
->        ^~~~~~~~~~~~~~~~~~~~~
-> arch/mips/kernel/asm-offsets.c:347:6: warning: no previous prototype for 'output_kvm_defines' [-Wmissing-prototypes]
->   void output_kvm_defines(void)
+>> +
+>> +Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
+>> +``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
+>> +fieldmust point to a buffer which the tags will be copied to or from.
+>> +
+>> +``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
+>> +``KVM_ARM_TAGS_FROM_GUEST``.
+>> +
+>> +The size of the buffer to store the tags is ``(length / MTE_GRANULE_SIZE)``
+> 
+> Should we add a UAPI definition for MTE_GRANULE_SIZE?
 
-The same... they're supposed to be used by asm-offset generator.
-If you don't understand how it works there is an article[1] in Chinese.
+I wasn't sure whether to export this or not. The ioctl is based around
+the existing ptrace interface (PTRACE_{PEEK,POKE}MTETAGS) which doesn't
+expose a UAPI definition. Admittedly the documentation there also just
+says "16-byte granule" rather than MTE_GRANULE_SIZE.
 
-You may try __used attribute to bypass these warning.
+So I'll just remove the reference to MTE_GRANULE_SIZE in the
+documentation unless you feel that we should have a UAPI definition.
 
-Thanks.
+>> +bytes (i.e. 1/16th of the corresponding size). Each byte contains a single tag
+>> +value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
+>> +``PTRACE_POKEMTETAGS``.
+>> +
+>>  5. The kvm_run structure
+>>  ========================
+>>  
+>> @@ -6362,6 +6396,25 @@ default.
+>>  
+>>  See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
+>>  
+>> +7.26 KVM_CAP_ARM_MTE
+>> +--------------------
+>> +
+>> +:Architectures: arm64
+>> +:Parameters: none
+>> +
+>> +This capability indicates that KVM (and the hardware) supports exposing the
+>> +Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
+>> +VMM before the guest will be granted access.
+>> +
+>> +When enabled the guest is able to access tags associated with any memory given
+>> +to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
+>> +that the tags are maintained during swap or hibernation of the host; however
+>> +the VMM needs to manually save/restore the tags as appropriate if the VM is
+>> +migrated.
+>> +
+>> +When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
+>> +perform a bulk copy of tags to/from the guest.
+>> +
+> 
+> Missing limitation to AArch64 guests.
 
-[1]: https://insidelinuxdev.net/article/a030fi.html
+As mentioned previously it's not technically limited to AArch64, but
+I'll expand this to make it clear that MTE isn't usable from a AArch32 VCPU.
 
-- Jiaxun
->
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
-> ---
->   arch/mips/kernel/asm-offsets.c | 20 ++++++++++----------
->   1 file changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
-> index 5735b2cd6f2a..2dc1ecb12c00 100644
-> --- a/arch/mips/kernel/asm-offsets.c
-> +++ b/arch/mips/kernel/asm-offsets.c
-> @@ -23,7 +23,7 @@
->   
->   #include <linux/kvm_host.h>
->   
-> -void output_ptreg_defines(void)
-> +static void output_ptreg_defines(void)
->   {
->   	COMMENT("MIPS pt_regs offsets.");
->   	OFFSET(PT_R0, pt_regs, regs[0]);
-> @@ -75,7 +75,7 @@ void output_ptreg_defines(void)
->   	BLANK();
->   }
->   
-> -void output_task_defines(void)
-> +static void output_task_defines(void)
->   {
->   	COMMENT("MIPS task_struct offsets.");
->   	OFFSET(TASK_STATE, task_struct, state);
-> @@ -90,7 +90,7 @@ void output_task_defines(void)
->   	BLANK();
->   }
->   
-> -void output_thread_info_defines(void)
-> +static void output_thread_info_defines(void)
->   {
->   	COMMENT("MIPS thread_info offsets.");
->   	OFFSET(TI_TASK, thread_info, task);
-> @@ -106,7 +106,7 @@ void output_thread_info_defines(void)
->   	BLANK();
->   }
->   
-> -void output_thread_defines(void)
-> +static void output_thread_defines(void)
->   {
->   	COMMENT("MIPS specific thread_struct offsets.");
->   	OFFSET(THREAD_REG16, task_struct, thread.reg16);
-> @@ -134,7 +134,7 @@ void output_thread_defines(void)
->   }
->   
->   #ifdef CONFIG_MIPS_FP_SUPPORT
-> -void output_thread_fpu_defines(void)
-> +static void output_thread_fpu_defines(void)
->   {
->   	OFFSET(THREAD_FPU, task_struct, thread.fpu);
->   
-> @@ -177,7 +177,7 @@ void output_thread_fpu_defines(void)
->   }
->   #endif
->   
-> -void output_mm_defines(void)
-> +static void output_mm_defines(void)
->   {
->   	COMMENT("Size of struct page");
->   	DEFINE(STRUCT_PAGE_SIZE, sizeof(struct page));
-> @@ -216,7 +216,7 @@ void output_mm_defines(void)
->   }
->   
->   #ifdef CONFIG_32BIT
-> -void output_sc_defines(void)
-> +static void output_sc_defines(void)
->   {
->   	COMMENT("Linux sigcontext offsets.");
->   	OFFSET(SC_REGS, sigcontext, sc_regs);
-> @@ -238,7 +238,7 @@ void output_sc_defines(void)
->   #endif
->   
->   #ifdef CONFIG_64BIT
-> -void output_sc_defines(void)
-> +static void output_sc_defines(void)
->   {
->   	COMMENT("Linux sigcontext offsets.");
->   	OFFSET(SC_REGS, sigcontext, sc_regs);
-> @@ -251,7 +251,7 @@ void output_sc_defines(void)
->   }
->   #endif
->   
-> -void output_signal_defined(void)
-> +static void output_signal_defined(void)
->   {
->   	COMMENT("Linux signal numbers.");
->   	DEFINE(_SIGHUP, SIGHUP);
-> @@ -344,7 +344,7 @@ void output_pm_defines(void)
->   #endif
->   
->   #ifdef CONFIG_MIPS_FP_SUPPORT
-> -void output_kvm_defines(void)
-> +static void output_kvm_defines(void)
->   {
->   	COMMENT(" KVM/MIPS Specific offsets. ");
->   
+Thanks,
 
+Steve
