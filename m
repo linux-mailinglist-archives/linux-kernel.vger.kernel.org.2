@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8B53884E7
+	by mail.lfdr.de (Postfix) with ESMTP id 243303884E6
 	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237344AbhESCr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 22:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237317AbhESCry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237334AbhESCry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 18 May 2021 22:47:54 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925CBC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 19:46:35 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 6so8396083pgk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 19:46:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3oKf702PEbD0KgHhqbOOlCx3u4B7PMOfRt+UxLAg7G8=;
-        b=DahOTgTUjM1KUUHRUvQbkfghT7XtTaeR1ZD8p+YUtUmYNg3rK1uKrPiyZc+vKyshFQ
-         CjRg1ccugRwRw5P4GMqx2celpfFUSO7M7ordUkGM5KK/v/0WuHnkoQ2rMyo5R7eheO3v
-         jTgmQRkS4G4ISSRyPK/NhRZS71pqmAjfQqDWkuSTRBqM3krlbEOp1+OKc0uv061wBv7y
-         FAhG+QzGTqycf3jSoAWruoOqYSMgU/9dSJLI/MyG0R5ZdwLzEyrYh3nK/f5m6iJiTh51
-         wZEYaCFVHm9LtYn0IGdKaNCj0hfwvtHOysJ2KBr+TnZewhqvK9Kv9iJ/YNbz1EGKMqC/
-         iBGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3oKf702PEbD0KgHhqbOOlCx3u4B7PMOfRt+UxLAg7G8=;
-        b=KBaqnow+7ZmdkVJepK0RnQ9P8yqVQ+/nHRPHDsA7qG4zRJEst5EQlHnEc5mZBwbRPQ
-         pj5xrk8/IeRcCbBaK4FePZ1FCo/Np3hXTiBikWkagV+OgwqcrIV50D/Akb3n1ooU7ICJ
-         IjqkmdbCb3o/F3EreFtfc6fmvDaTpxwCKdhs6uQzj/U+g1dc9SQU3Y0TeUaBgqW4OU71
-         RkwNt3N9Vd1aZkgJxUjbr+t/+4k9YzNAbOajKjzujVeHyej9XoNtc73RD3RCaIjNSQr/
-         5jGSvcMihA79BL/EMM55UabYj+T6jh+Q+Cfi0zDof1Z3HGYUNY+w1CUucLRJWhoK1N3U
-         Zt8Q==
-X-Gm-Message-State: AOAM531Wv9N97PYwojAwRXsCYMYuLZvwjIJ8bWDb8xQcj31UVRVgphzG
-        TP9EQKAbcFJXUc1f1qfnx9vQSL4tzdJcNdRpsR2nog==
-X-Google-Smtp-Source: ABdhPJwh1S1YjqxpZ8b/6I4sMVGYr8Hl+pSnoVcWipGGK/3QdtG6o06lxtCcQyuYS/BfPh9GDOTmyMf5O2ZhB4uEtQY=
-X-Received: by 2002:a05:6a00:2493:b029:2c4:b6dd:d389 with SMTP id
- c19-20020a056a002493b02902c4b6ddd389mr8454656pfv.2.1621392394921; Tue, 18 May
- 2021 19:46:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210518200910.29912-1-wenhui@gwmail.gwu.edu>
-In-Reply-To: <20210518200910.29912-1-wenhui@gwmail.gwu.edu>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 19 May 2021 10:45:59 +0800
-Message-ID: <CAMZfGtUOaeWS870RoU93PVqritd2hR6bWBzuH2uWfxYh5pmp6Q@mail.gmail.com>
-Subject: Re: [External] [PATCH v2] memcontrol: use flexible-array member
-To:     wenhuizhang <wenhui@gwmail.gwu.edu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:51281 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236919AbhESCrw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 22:47:52 -0400
+X-UUID: 9c12430aa253475d82c9b523ee16cf0d-20210519
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VEzORXZXTvU7eYTmk77wtpcjmjFnCZQDk56FWp8DxdI=;
+        b=Odq3teru8Qo22puSd6vNUrfgLCgCWjekKUPuhAe0x2hZ5j1YqoQ8mzvTrfN9eKBE2Sc5gShzfGIhM1dKTt6Ge28pHVQSp4WuuiaH1ikyKQh9qrn8QbN8nxsB7D4pFJN3FpYh89yJzvEAR9o5UwRwyF7tqIKjqDFTotnjFUI6kS8=;
+X-UUID: 9c12430aa253475d82c9b523ee16cf0d-20210519
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1246951111; Wed, 19 May 2021 10:46:30 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
+ 2021 10:46:18 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 19 May 2021 10:46:18 +0800
+Message-ID: <1621392378.22329.5.camel@mhfsdcap03>
+Subject: Re: [PATCH] phy: phy-mtk-tphy: Fix some resource leaks in
+ mtk_phy_init()
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <lkp@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>,
+        Heiko Stuebner <heiko@sntech.de>, <kbuild@lists.01.org>
+Date:   Wed, 19 May 2021 10:46:18 +0800
+In-Reply-To: <1621257600-15046-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1621257600-15046-1-git-send-email-yangtiezhu@loongson.cn>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 384A46F9F68EB2F10770BDD73B9B15BC7D398B264992835F51000680BDA137352000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 4:09 AM wenhuizhang <wenhui@gwmail.gwu.edu> wrote:
->
-> Change depracated zero-length-and-one-element-arrays into flexible
+T24gTW9uLCAyMDIxLTA1LTE3IGF0IDIxOjIwICswODAwLCBUaWV6aHUgWWFuZyB3cm90ZToNCj4g
+VXNlIGNsa19kaXNhYmxlX3VucHJlcGFyZSgpIGluIHRoZSBlcnJvciBwYXRoIG9mIG10a19waHlf
+aW5pdCgpIHRvIGZpeA0KPiBzb21lIHJlc291cmNlIGxlYWtzLg0KPiANCj4gRml4ZXM6IGNkNGVj
+NGIwM2RjMSAoInBoeTogcGh5LW10NjV4eC11c2IzOiBhZGQgbWVkaWF0ZWsgZGlyZWN0b3J5IGFu
+ZCByZW5hbWUgZmlsZSIpDQpObyBuZWVkIGFkZCBGaXhlcyB0YWcsIHRoZXJlIGlzIG5vIGRhX3Jl
+Zl9jbGsgd2hlbiBhcHBseSB0aGlzIHBhdGNoLA0KDQo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVz
+dCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gUmVwb3J0ZWQtYnk6IERhbiBDYXJwZW50ZXIgPGRh
+bi5jYXJwZW50ZXJAb3JhY2xlLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogVGllemh1IFlhbmcgPHlh
+bmd0aWV6aHVAbG9vbmdzb24uY24+DQo+IC0tLQ0KPiAgZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5
+LW10ay10cGh5LmMgfCAyICsrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay10cGh5LmMgYi9k
+cml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0KPiBpbmRleCBjZGJjYzQ5Li43MzFj
+NDgzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0K
+PiArKysgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0KPiBAQCAtOTQ5LDYg
+Kzk0OSw4IEBAIHN0YXRpYyBpbnQgbXRrX3BoeV9pbml0KHN0cnVjdCBwaHkgKnBoeSkNCj4gIAkJ
+YnJlYWs7DQo+ICAJZGVmYXVsdDoNCj4gIAkJZGV2X2Vycih0cGh5LT5kZXYsICJpbmNvbXBhdGli
+bGUgUEhZIHR5cGVcbiIpOw0KPiArCQljbGtfZGlzYWJsZV91bnByZXBhcmUoaW5zdGFuY2UtPnJl
+Zl9jbGspOw0KPiArCQljbGtfZGlzYWJsZV91bnByZXBhcmUoaW5zdGFuY2UtPmRhX3JlZl9jbGsp
+Ow0KPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gIAl9DQo+ICANCmFmdGVyIHJlbW92aW5nIEZpeGVz
+IHRhZywgDQpSZXZpZXdlZC1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsu
+Y29tPg0KDQpUaGFua3MNCg0K
 
-s/depracated/deprecated/g
-
-> array member.Zero-length and one-element arrays detected by Lukas's CodeChecker.
-> Zero/one element arrays causes undefined behaviours if sizeof() used.
-
-s/causes/cause/g
-
->
-> Signed-off-by: wenhuizhang <wenhui@gwmail.gwu.edu>
-
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-
-Thanks.
