@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D8C38950F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E59389512
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhESSLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 14:11:42 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41704 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhESSLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 14:11:38 -0400
-Received: from zn.tnic (p200300ec2f0c020044d5f4cdafdb3fab.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:200:44d5:f4cd:afdb:3fab])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5BE581EC04DE;
-        Wed, 19 May 2021 20:10:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621447816;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Kmnk3HRb3cmXxIvZwaL4Yb+pBm6cxLnt2meHDxXrqsM=;
-        b=TwMVUgsb6IXeVBZzA6d5aIhwEuci3CpWN6/cdOkZQyGtLUAzYw4RKdPvGNXcuIU6QknbQE
-        blXQ5U8G76V6aHPP8i0Lk7VoyusBNhIFKA7FWrMplro0XkfH2rUpKn1fzY2R/5xB7GG1gy
-        yLMfKTZuUJSPwmUwo+E1+IYdMLiMf/4=
-Date:   Wed, 19 May 2021 20:10:11 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        id S231240AbhESSMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 14:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhESSML (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 14:12:11 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B5CC06175F;
+        Wed, 19 May 2021 11:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=hzUyJaz9d9LlBSmG5SweaF0Q+mql8ulPw1IIhQXoQvc=; b=gNKcfrXN6So0jsgE5nFvcgSNVg
+        MxdM5VRg/o5wH82oegHXOyn38JseVneyE8CjWlbX/WLdIVCNWZgnrxj0IF7++BYH1n203jaMu7kWV
+        69QdiqTd6eqcGF1L+4JOkc5UpVT1E1l53QbJf3lBUutbatbi7MOS1q3z0Nh4FZ/IN7lgpf7I1k+Gg
+        hKSHB2bdtgZOeHWTgEB5wQ7MTpquXiIVP5NkN961qkMKc/GxK7QzkNmepIlgES/BceIO2wRSa2GjY
+        n2kt4UHnrtvyjoFcIz9CCFaLNVk9TmqL5TsME+MlD37Qz+7EfsyiNAXN5CnnqwMb8qPMCST+DQ/pT
+        jSLYSb5Q==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljQee-00FgUa-7q; Wed, 19 May 2021 18:10:48 +0000
+Subject: Re: [RFC PATCH 01/16] rv: Add Runtime Verification (RV) interface
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Kate Carcia <kcarcia@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v26 26/30] ELF: Introduce arch_setup_elf_property()
-Message-ID: <YKVUgzJ0MVNBgjDd@zn.tnic>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-27-yu-cheng.yu@intel.com>
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Gabriele Paoloni <gabriele.paoloni@intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>, linux-doc@vger.kernel.org
+References: <cover.1621414942.git.bristot@redhat.com>
+ <ad69b06e9e3a5ec9ad2a49d290b719a96dcc471e.1621414942.git.bristot@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <90c917eb-f0a8-3ef5-b63d-d88c1f6919a1@infradead.org>
+Date:   Wed, 19 May 2021 11:10:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <ad69b06e9e3a5ec9ad2a49d290b719a96dcc471e.1621414942.git.bristot@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210427204315.24153-27-yu-cheng.yu@intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:43:11PM -0700, Yu-cheng Yu wrote:
-> @@ -1951,6 +1951,8 @@ config X86_SHADOW_STACK
->  	depends on AS_WRUSS
->  	depends on ARCH_HAS_SHADOW_STACK
->  	select ARCH_USES_HIGH_VMA_FLAGS
-> +	select ARCH_USE_GNU_PROPERTY
-> +	select ARCH_BINFMT_ELF_STATE
-		^^^^^^^^
+On 5/19/21 4:36 AM, Daniel Bristot de Oliveira wrote:
+> diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+> new file mode 100644
+> index 000000000000..e8e65cfc7959
+> --- /dev/null
+> +++ b/kernel/trace/rv/Kconfig
+> @@ -0,0 +1,13 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +menuconfig RV
+> +	bool "Runtime Verification"
+> +	depends on TRACING
+> +	default y if DEBUG_KERNEL
 
-What's that for? Isn't ARCH_USE_GNU_PROPERTY enough?
+No need for default y. There are other reasons to use DEBUG_KERNEL
+without wanting RV turned on.
 
-> +int arch_setup_elf_property(struct arch_elf_state *state)
-> +{
-> +	int r = 0;
-> +
-> +	if (!IS_ENABLED(CONFIG_X86_SHADOW_STACK))
-> +		return r;
-> +
-> +	memset(&current->thread.cet, 0, sizeof(struct cet_status));
-> +
-> +	if (static_cpu_has(X86_FEATURE_SHSTK)) {
+> +	help
+> +	  Enable the kernel runtime verification infrastructure. RV is a
+> +	  lightweight (yet rigorous) method that complements classical
+> +	  exhaustive verification techniques (such as model checking and
+> +	  theorem proving). RV works by analyzing the trace of the system's
+> +	  actual execution, comparing it against a formal specification of
+> +	  the system behavior.
 
-	cpu_feature_enabled
-
-> +		if (state->gnu_property & GNU_PROPERTY_X86_FEATURE_1_SHSTK)
-> +			r = shstk_setup();
-> +	}
-> +
-> +	return r;
-> +}
-> +#endif
-
-...
-
-> diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-> index 30f68b42eeb5..24ba55ba8278 100644
-> --- a/include/uapi/linux/elf.h
-> +++ b/include/uapi/linux/elf.h
-> @@ -455,4 +455,13 @@ typedef struct elf64_note {
->  /* Bits for GNU_PROPERTY_AARCH64_FEATURE_1_BTI */
->  #define GNU_PROPERTY_AARCH64_FEATURE_1_BTI	(1U << 0)
->  
-> +/* .note.gnu.property types for x86: */
-> +#define GNU_PROPERTY_X86_FEATURE_1_AND		0xc0000002
-
-Why not 0xc0000001? ARM64 is 0xc0000000...
+And in the cover/patch 00:
+tlrd:
+should be
+tl;dr:
+or at least
+tldr:
+:)
 
 -- 
-Regards/Gruss,
-    Boris.
+~Randy
 
-https://people.kernel.org/tglx/notes-about-netiquette
