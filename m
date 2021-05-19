@@ -2,115 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1503890B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E685B3890B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347340AbhESOWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:22:09 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38642 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241909AbhESOWG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:22:06 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JEFO1d101869;
-        Wed, 19 May 2021 14:20:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=NWXJTdpag0NA3Z5nBPPluFxqdVryRh9BEHtOH6qDsdw=;
- b=MZHROyt0Bb1+DBlsr2p1DXCUw8+PO3qHUFz5V9FIy2hSTU8BealhEaWVSdXQydQivnC7
- vtHvV8mqwP6M3mcvuIPoLEZ8Q/L1pfBQmOGkU8DyFhtWXhqzANRXLybIrHBSdfMmv101
- HERBOJdB7NgY8YOCwfSpHndzxMEyF1Tdf7f70WpAat5/xW097tQtZthD7OeHj+JoNxRp
- /+OiczBQShqrMUWi70if2HwnzFnLTJtFeahif20bUIAxrb54yLy+IYaVAQBLh71YmR6x
- Kdpp5xV/tS9OiwCRtgmuzaKZohKHiEcV1RxDaGUbqYCx9NuEdaDAzUSp0G0ZSpNRczN8 Kw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 38j6xnhp6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 14:20:38 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JEEYMm026477;
-        Wed, 19 May 2021 14:20:38 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38n490r567-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 14:20:38 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14JEKbKF038131;
-        Wed, 19 May 2021 14:20:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 38n490r55y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 14:20:37 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14JEKaX2006668;
-        Wed, 19 May 2021 14:20:36 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 19 May 2021 14:20:35 +0000
-Date:   Wed, 19 May 2021 17:20:27 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jacek Danecki <jacek.danecki@intel.com>,
-        James Bottomley <JBottomley@parallels.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] scsi: libsas: use _safe() loop in sas_resume_port()
-Message-ID: <YKUeq6gwfGcvvhty@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518082855.GB32682@kadam>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: eiWzx_JHoZsIUKMcKgdqTGrepn9ltPPr
-X-Proofpoint-ORIG-GUID: eiWzx_JHoZsIUKMcKgdqTGrepn9ltPPr
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9988 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190089
+        id S240926AbhESOWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:22:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39538 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241978AbhESOWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 10:22:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1002BAFB1;
+        Wed, 19 May 2021 14:20:45 +0000 (UTC)
+Date:   Wed, 19 May 2021 16:20:44 +0200
+Message-ID: <s5hfsyiiz43.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        David Henningsson <coding@diwic.se>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: rawmidi: fix incorrect array bounds check on clock_names
+In-Reply-To: <20210519105424.55221-1-colin.king@canonical.com>
+References: <20210519105424.55221-1-colin.king@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If sas_notify_lldd_dev_found() fails then this code calls:
+On Wed, 19 May 2021 12:54:24 +0200,
+Colin King wrote:
+> 
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The array bounds check on clock_names is currently checking the size
+> of the entire array rather than the number of elements in the array
+> leading to a potential array bounds read error. Fix this by using
+> the ARRAY_SIZE macro instead of sizeof.
+> 
+> Addresses-Coverity: ("Out-of-bounds read")
+> Fixes: 08fdced60ca0 ("ALSA: rawmidi: Add framing mode")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-	sas_unregister_dev(port, dev);
+Thanks, applied.
 
-which removes "dev", our list iterator, from the list.  This could
-lead to an endless loop.  We need to use list_for_each_entry_safe().
 
-Fixes: 303694eeee5e ("[SCSI] libsas: suspend / resume support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/scsi/libsas/sas_port.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/libsas/sas_port.c b/drivers/scsi/libsas/sas_port.c
-index 19cf418928fa..e3d03d744713 100644
---- a/drivers/scsi/libsas/sas_port.c
-+++ b/drivers/scsi/libsas/sas_port.c
-@@ -25,7 +25,7 @@ static bool phy_is_wideport_member(struct asd_sas_port *port, struct asd_sas_phy
- 
- static void sas_resume_port(struct asd_sas_phy *phy)
- {
--	struct domain_device *dev;
-+	struct domain_device *dev, *n;
- 	struct asd_sas_port *port = phy->port;
- 	struct sas_ha_struct *sas_ha = phy->ha;
- 	struct sas_internal *si = to_sas_internal(sas_ha->core.shost->transportt);
-@@ -44,7 +44,7 @@ static void sas_resume_port(struct asd_sas_phy *phy)
- 	 * 1/ presume every device came back
- 	 * 2/ force the next revalidation to check all expander phys
- 	 */
--	list_for_each_entry(dev, &port->dev_list, dev_list_node) {
-+	list_for_each_entry_safe(dev, n, &port->dev_list, dev_list_node) {
- 		int i, rc;
- 
- 		rc = sas_notify_lldd_dev_found(dev);
--- 
-2.30.2
-
+Takashi
