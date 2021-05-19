@@ -2,47 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433A838934F
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4E6389350
 	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355136AbhESQMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:12:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54128 "EHLO mail.kernel.org"
+        id S1355150AbhESQMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:12:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240705AbhESQMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:12:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6CA061355;
-        Wed, 19 May 2021 16:11:10 +0000 (UTC)
+        id S1355135AbhESQMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:12:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00E0B6135A;
+        Wed, 19 May 2021 16:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621440671;
-        bh=xTy/Z0GXKhDJm4r3n9vxQVK4GxEQwjIqEQe1+BWxNFo=;
+        s=k20201202; t=1621440676;
+        bh=5Z2EkaMzIYpeGUT62HgHaddi7bvGhthOk/v+yW7+/10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=riazGgZJNcaxswy0wwNdiqqBW25ua7bRFFnVlyeWKAjCHsIsJo0/NM0nxi0sCMie9
-         1if8H8ifExM7aOxY3SFcnnVEAdJ5Y2HrRG+2xQBWMEisAhwQTB/G2bbe0eiXDI37w6
-         sGm5EcVd9sZqu41Rrh8L8xSh2srTaHqMdMa/8zDvLD2RV83DWc4S4FO3amjSVZ7SdC
-         ZOtOgKr80SvnOyKU4tYDw9K9ahwa1XxosJHA3RNcQNnje40rFFopMDBAWPB6V/8dDS
-         N2oC8gSRFCWM3TXIbNRhEpH37kb6EtBI4ABKwPqa22jkngb7q0RpoUbGknSRVo8hMv
-         l7QgDupOuFvEQ==
+        b=YRfTV5p+1y7+MAObTjKCrRdDlIj8YnB+EyixBLNMaj16Ts9vXv0oxE8p1RIiZeRbR
+         EZ3lHTfTgKeLGv0XVPprXAX3MY0MJrZoChe3TY9xBc5kumfP5bzZOXA/RbGh8eCyxk
+         fiUwyer3vv2zCGWoxw4eimVy/VSfkOeXjgCLHWUI3HM1SNrfjALdEk3ZuhdneOlErD
+         5y2lsorCZKYbNpwMQB8YVqWSBIKbCb1LKltrLS28ioAF2IW3ZN2Uz+/vWyqG21R7T0
+         92rICEXxlJQEbsJSH5juE9Eco+dBfLAnIHX1jjsXAUq9OLFPIMrSh8BRu2fd8iZg3X
+         TCZuhMIbY6dbw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Sander Vanheule <sander@svanheule.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        devicetree@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        linux-leds@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: Re: (subset) [PATCH v2 0/7] RTL8231 GPIO expander support
-Date:   Wed, 19 May 2021 17:10:13 +0100
-Message-Id: <162144031656.37163.14427082237323398944.b4-ty@kernel.org>
+To:     jbrunet@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
+Date:   Wed, 19 May 2021 17:10:15 +0100
+Message-Id: <162144027316.37060.16685114129646097481.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1621279162.git.sander@svanheule.net>
-References: <cover.1620735871.git.sander@svanheule.net> <cover.1621279162.git.sander@svanheule.net>
+In-Reply-To: <20210429170147.3615883-1-narmstrong@baylibre.com>
+References: <20210429170147.3615883-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -50,32 +41,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 21:28:02 +0200, Sander Vanheule wrote:
-> The RTL8231 GPIO and LED expander can be configured for use as an MDIO or SMI
-> bus device. Currently only the MDIO mode is supported, although SMI mode
-> support should be fairly straightforward, once an SMI bus driver is available.
+On Thu, 29 Apr 2021 19:01:47 +0200, Neil Armstrong wrote:
+> This adds support for the TOACODEC found in Amlogic SM1 SoCs.
 > 
-> Provided features by the RTL8231:
->   - Up to 37 GPIOs
->     - Configurable drive strength: 8mA or 4mA (currently unsupported)
->     - Input debouncing on high GPIOs (currently unsupported)
->   - Up to 88 LEDs in multiple scan matrix groups
->     - On, off, or one of six toggling intervals
->     - "single-color mode": 2×36 single color LEDs + 8 bi-color LEDs
->     - "bi-color mode": (12 + 2×6) bi-color LEDs + 24 single color LEDs
->   - Up to one PWM output (currently unsupported)
->     - Fixed duty cycle, 8 selectable frequencies (1.2kHz - 4.8kHz)
-> 
-> [...]
+> The bits are shifted for more selection of clock sources, so this only
+> maps the same support for G12A to the SM1 bits.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/7] regmap: Add MDIO bus support
-      commit: 1f89d2fe16072a74b34bdb895160910091427891
+[1/1] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
+      commit: 7487238c5f530b418745ce134d1b0a7fba3a0d8d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
