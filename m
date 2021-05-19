@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E35388B05
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4F7388B11
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbhESJuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:50:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:56788 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231150AbhESJuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:50:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 102BE101E;
-        Wed, 19 May 2021 02:48:47 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3B263F719;
-        Wed, 19 May 2021 02:48:46 -0700 (PDT)
-Date:   Wed, 19 May 2021 10:48:45 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] arm64, topology: enable use of
- init_cpu_capacity_cppc()
-Message-ID: <20210519094845.GB21501@arm.com>
-References: <20210514095339.12979-1-ionela.voinescu@arm.com>
- <20210514095339.12979-4-ionela.voinescu@arm.com>
- <97b515ea-3daa-5252-ca6b-1acacb0e5ade@arm.com>
+        id S238059AbhESJvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:51:23 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4746 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232373AbhESJvK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:51:10 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlSgF5bJfzpfPd;
+        Wed, 19 May 2021 17:46:17 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 17:49:47 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 19 May 2021 17:49:46 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangshaokun@hisilicon.com>
+Subject: [PATCH v4 0/2] drivers/perf: hisi: Add support for PCIe PMU
+Date:   Wed, 19 May 2021 17:48:59 +0800
+Message-ID: <1621417741-5229-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97b515ea-3daa-5252-ca6b-1acacb0e5ade@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 14 May 2021 at 18:17:00 (+0200), Dietmar Eggemann wrote:
-> On 14/05/2021 11:53, Ionela Voinescu wrote:
-> 
-> [...]
-> 
-> > +#ifdef CONFIG_ACPI_CPPC_LIB
-> > +#define arch_init_invariance_cppc init_cpu_capacity_cppc
-> > +#endif
-> 
-> The prefix `topology_` was meant to indicate that those functions come
-> from drivers/base/arch_topology.c. You probably refrained from it since
-> 
-> topology_init_cpu_capacity_cppc()
-> 
-> is a pretty long function name ... Still more consistent though.
-> 
+This patchset adds support for HiSilicon PCIe Performance Monitoring
+Unit(PMU). It is a PCIe Root Complex integrated End Point(RCiEP) device
+added on Hip09. Each PCIe Core has a PMU RCiEP to monitor multi root
+ports and all Endpoints downstream these root ports.
 
-I'll rename it, thanks!
+HiSilicon PCIe PMU is supported to collect performance data of PCIe bus,
+such as: bandwidth, latency etc.
 
-Ionela.
+This patchset is based on 5.13-rc1. 
 
-> [...]
-> 
+Changes since v3:
+- Fix some warnings when build under 32bits architecture.
+- Address the comments from John.
+- Link: https://lore.kernel.org/linux-arm-kernel/1618490885-44612-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v2:
+- Address the comments from John.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617959157-22956-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v1:
+- Drop the internal Reviewed-by tag.
+- Fix some build warnings when W=1.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617788943-52722-1-git-send-email-liuqi115@huawei.com/
+
+Qi Liu (2):
+  docs: perf: Add description for HiSilicon PCIe PMU driver
+  drivers/perf: hisi: Add driver for HiSilicon PCIe PMU
+
+ Documentation/admin-guide/perf/hisi-pcie-pmu.rst |  104 +++
+ MAINTAINERS                                      |    6 +
+ drivers/perf/Kconfig                             |    2 +
+ drivers/perf/Makefile                            |    1 +
+ drivers/perf/pci/Kconfig                         |   16 +
+ drivers/perf/pci/Makefile                        |    2 +
+ drivers/perf/pci/hisilicon/Makefile              |    3 +
+ drivers/perf/pci/hisilicon/hisi_pcie_pmu.c       | 1016 ++++++++++++++++++++++
+ include/linux/cpuhotplug.h                       |    1 +
+ 9 files changed, 1151 insertions(+)
+ create mode 100644 Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+ create mode 100644 drivers/perf/pci/Kconfig
+ create mode 100644 drivers/perf/pci/Makefile
+ create mode 100644 drivers/perf/pci/hisilicon/Makefile
+ create mode 100644 drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+
+-- 
+2.7.4
+
