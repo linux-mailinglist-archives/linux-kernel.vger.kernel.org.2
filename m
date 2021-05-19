@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D1A3886B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9596338868A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345089AbhESFim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:38:42 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3020 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243122AbhESFgD (ORCPT
+        id S240057AbhESFc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239595AbhESFcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:36:03 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlM0r2f3dzNyr4;
-        Wed, 19 May 2021 13:31:08 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 13:34:38 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 19 May 2021 13:34:37 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Hui Tang <tanghui20@huawei.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 13/20] net: seeq: remove leading spaces before tabs
-Date:   Wed, 19 May 2021 13:30:46 +0800
-Message-ID: <1621402253-27200-14-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621402253-27200-1-git-send-email-tanghui20@huawei.com>
-References: <1621402253-27200-1-git-send-email-tanghui20@huawei.com>
+        Wed, 19 May 2021 01:32:23 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560E3C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:31:03 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 27so7338465pgy.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DnmuvHtt1deacPj+Snj8/pH1mY4iAhMVnQylVRRVpd4=;
+        b=YOYmwA+DVk1bcQT6/IoU5pCTF3kHLLxBFH9sLDHox2JEITBzlViWyoldStr+ZDARZJ
+         jun3TazxYuYvkvEZlOX/H5atpgG6E+5WJ/DMSWdYCQ6DV/WU3ZsqDUikxOiVpaezO0Hd
+         LqCqFsm2XEtqeEaTz+hqdLrSHKVFOP1i3FwGbpcfUnydUJpHhfc+sMHuybhReOc5yHRY
+         JgAwh5VhnWI/srdEtdRwqPclPGfnlceW/cqUFUZsXEiJsxkAxD7iSpYhlLbumBj04vKX
+         Ew91emGCyayOoZi0ap3xiGBS5W4NFCXUUhKdhysToqZjwk+kDkT+rWzY/RTbAppEFIm5
+         faCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DnmuvHtt1deacPj+Snj8/pH1mY4iAhMVnQylVRRVpd4=;
+        b=n6sTqm40nXubKCZWmH8qsXQAAOgIriohmURa4lFe9kSznr6meripu8W4t5Xul4SbAE
+         sWE0bHyzxkQWunlmFAfeEs+vBBlPnrvscfmLsE7yn0QUeMm6ti3LBLPkTGSbKtHltWJ7
+         wXk6JOTNnPlVNrU0AWVrS9xpeQffDtIcTJMUEBLYCPmrKZbr+IB904DGcu6uL7TAmnQv
+         blBcR/p5hD0dBBpKS+ZcOwsROZwj38AWc4XI2ocsxiWcSCZ74dNYF+WNsNxzViSj3vfC
+         tVk3GkmI+FStG1VzpoOftOx5AgrtkhZSSol74y40OSAEF1vWfOP96RkqEPOmBbgTtsE2
+         ZcjQ==
+X-Gm-Message-State: AOAM531kxvkkMeZDFOh1GIQB0KJ4COHhWiHTULgdh8nKDduXx1L4fSXL
+        jI8aYUmIJgUZKjaZxAi572sY1KOCNDByA4kamZONXQ==
+X-Google-Smtp-Source: ABdhPJyY8L1qAcYiWqdvUh7sucWMbUwzJ1wGxlGFjyzvD2pl6+Tt+mOnsWwgi3N8b7qFkA8bMEkFqAE2EQrtmOaQOik=
+X-Received: by 2002:a63:4f50:: with SMTP id p16mr9103143pgl.40.1621402262794;
+ Tue, 18 May 2021 22:31:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggemi760-chm.china.huawei.com (10.1.198.146)
-X-CFilter-Loop: Reflected
+References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-4-seanjc@google.com>
+In-Reply-To: <20210424004645.3950558-4-seanjc@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Tue, 18 May 2021 22:30:46 -0700
+Message-ID: <CAAeT=FyD1ueKWW9h9TBwr_WJNmpb0=9z6rrsyP0u3T=g8UNNfw@mail.gmail.com>
+Subject: Re: [PATCH 03/43] KVM: SVM: Require exact CPUID.0x1 match when
+ stuffing EDX at INIT
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a few leading spaces before tabs and remove it by running the
-following commard:
+On Fri, Apr 23, 2021 at 5:47 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Do not allow an inexact CPUID "match" when querying the guest's CPUID.0x1
+> to stuff EDX during INIT.  In the common case, where the guest CPU model
+> is an AMD variant, allowing an inexact match is a nop since KVM doesn't
+> emulate Intel's goofy "out-of-range" logic for AMD and Hygon.  If the
+> vCPU model happens to be an Intel variant, an inexact match is possible
+> if and only if the max CPUID leaf is precisely '0'. Aside from the fact
+> that there's probably no CPU in existence with a single CPUID leaf, if
+> the max CPUID leaf is '0', that means that CPUID.0.EAX is '0', and thus
+> an inexact match for CPUID.0x1.EAX will also yield '0'.
+>
+> So, with lots of twisty logic, no functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-	$ find . -name '*.c' | xargs sed -r -i 's/^[ ]+\t/\t/'
-	$ find . -name '*.h' | xargs sed -r -i 's/^[ ]+\t/\t/'
-
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/net/ethernet/seeq/ether3.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/seeq/ether3.c b/drivers/net/ethernet/seeq/ether3.c
-index 65c9883..16a4cba 100644
---- a/drivers/net/ethernet/seeq/ether3.c
-+++ b/drivers/net/ethernet/seeq/ether3.c
-@@ -617,7 +617,7 @@ if (next_ptr < RX_START || next_ptr >= RX_END) {
-  break;
- }
- 		/*
-- 		 * ignore our own packets...
-+		 * ignore our own packets...
- 	 	 */
- 		if (!(*(unsigned long *)&dev->dev_addr[0] ^ *(unsigned long *)&addrs[2+6]) &&
- 		    !(*(unsigned short *)&dev->dev_addr[4] ^ *(unsigned short *)&addrs[2+10])) {
-@@ -672,7 +672,7 @@ if (next_ptr < RX_START || next_ptr >= RX_END) {
- 	 */
- 	if (!(ether3_inw(REG_STATUS) & STAT_RXON)) {
- 		dev->stats.rx_dropped++;
--    		ether3_outw(next_ptr, REG_RECVPTR);
-+		ether3_outw(next_ptr, REG_RECVPTR);
- 		ether3_outw(priv(dev)->regs.command | CMD_RXON, REG_COMMAND);
- 	}
- 
-@@ -690,11 +690,11 @@ static void ether3_tx(struct net_device *dev)
- 	do {
- 	    	unsigned long status;
- 
--    		/*
-+		/*
- 	    	 * Read the packet header
--    		 */
-+		 */
- 	    	ether3_setbuffer(dev, buffer_read, tx_tail * 0x600);
--    		status = ether3_readlong(dev);
-+		status = ether3_readlong(dev);
- 
- 		/*
- 		 * Check to see if this packet has been transmitted
--- 
-2.8.1
-
+Reviewed-by: Reiji Watanabe <reijiw@google.com>
