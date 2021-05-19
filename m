@@ -2,172 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5FE389322
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAFE389325
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347042AbhESQAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:00:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35237 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347104AbhESQAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:00:09 -0400
-Received: from mail-qk1-f198.google.com ([209.85.222.198])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1ljOau-0007C3-9U
-        for linux-kernel@vger.kernel.org; Wed, 19 May 2021 15:58:48 +0000
-Received: by mail-qk1-f198.google.com with SMTP id d18-20020a05620a2052b02902eabc6fa35eso10097930qka.17
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:58:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pyV2d2Dm7FbLW6jpU1vNqIjLufpoIxq3GNUEX32r3y8=;
-        b=Q9Wvn7d+0mg5FhLcMFVSESCyAXhZ5WhRON6X5DpzWRDc0a1pmoTN/iPL1qYMP/dmvW
-         Xc+zYzUt1QONEXTSmiz6aAWlGhMIx4PElfvi7ltXJgkoq4xZli//k+3q8r1dg31UKKsk
-         HOmGmV45jEAaAeiSL9KBUT1oE+cQRG/DlBBUACiT5IzuUrNB0Q0YyRucG/BFJvDxvQfg
-         xL+RPJlYOCWZM9v79MmJZyF0gHzWLoNJxpiu7rq66v8kttf4WIv/cdYb3/+49wO69SiH
-         o0f7iPA3WZ6lWhy1vsw3JwGGQk6m9ih0ocsYNs8ZJHfE3lgKKayPBxkczqnlKEf2lYN5
-         1SPA==
-X-Gm-Message-State: AOAM533IBmsgvT3j2MUJdSNZXxoALWMiKNiaMan2uK4rhO3irJ7v5DMd
-        pwCqo4yXpyXqtlUzESZ7T7Q9eNaSifZzQFtKkyaaAK4qYIV9nf0x5QNBon4/iFlgEjsFl4L+2gM
-        h0AHjwQ6cwLsPbpVfjtHl1vVQjMzWeBo0KittCoqqEw==
-X-Received: by 2002:ac8:7303:: with SMTP id x3mr66811qto.271.1621439927339;
-        Wed, 19 May 2021 08:58:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxKfWZ9Hkx87AFnUL08UP+63a3AXZ8GTgf1NHuUoE14S1QmoHmuzXJprpkAAEkUZ/aGGa1tA==
-X-Received: by 2002:ac8:7303:: with SMTP id x3mr66800qto.271.1621439927143;
-        Wed, 19 May 2021 08:58:47 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id r62sm46061qkc.128.2021.05.19.08.58.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 08:58:46 -0700 (PDT)
-Subject: Re: [linux-nfc] Re: [PATCH 2/2] nfc: s3fwrn5: i2c: Enable optional
- clock from device tree
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Bongsu Jeon <bongsu.jeon@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20210518133935.571298-1-stephan@gerhold.net>
- <20210518133935.571298-2-stephan@gerhold.net>
- <ac04821e-359d-aaaa-7e07-280156f64036@canonical.com>
- <YKPWgSnz7STV4u+c@gerhold.net>
- <8b14159f-dca9-a213-031f-83ab2b3840a4@canonical.com>
- <YKTHXzUhcYa5YJIs@gerhold.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <10b3a50e-877c-d5b1-3e35-e5dff4ef53d8@canonical.com>
-Date:   Wed, 19 May 2021 11:58:38 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1355059AbhESQA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:00:28 -0400
+Received: from mga17.intel.com ([192.55.52.151]:12728 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355046AbhESQA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:00:27 -0400
+IronPort-SDR: tPMrkotKm0z4TRyFCowZd5jXu9Nlb9LZ7sAGEhWg/qLbYzOMyGDxrLyAPIbsW/I7G2J4doXZff
+ WEPaIIBJ2u1w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="181287198"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="181287198"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:59:07 -0700
+IronPort-SDR: KX8HN55gRTtx1o223ApTBGDmY2sO0VGE12XpbWwCDLvJo67fCrndXXVSCfEWxzBSlIKQApyUK7
+ M+JT5Sqj8Q4A==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="474683001"
+Received: from mconrado-mobl1.amr.corp.intel.com (HELO [10.209.83.57]) ([10.209.83.57])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:59:06 -0700
+Subject: Re: [RFC v2 29/32] x86/tdx: Add helper to do MapGPA TDVMALL
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <7d43f57c3b178a905ef2505cef5313844c497984.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <d139d180-9be7-3f7e-22db-d39fd09dfcb5@intel.com>
+Date:   Wed, 19 May 2021 08:59:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YKTHXzUhcYa5YJIs@gerhold.net>
+In-Reply-To: <7d43f57c3b178a905ef2505cef5313844c497984.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/2021 04:07, Stephan Gerhold wrote:
-> On Tue, May 18, 2021 at 11:25:55AM -0400, Krzysztof Kozlowski wrote:
->> On 18/05/2021 11:00, Stephan Gerhold wrote:
->>> On Tue, May 18, 2021 at 10:30:43AM -0400, Krzysztof Kozlowski wrote:
->>>> On 18/05/2021 09:39, Stephan Gerhold wrote:
->>>>> s3fwrn5 has a NFC_CLK_REQ output GPIO, which is asserted whenever
->>>>> the clock is needed for the current operation. This GPIO can be either
->>>>> connected directly to the clock provider, or must be monitored by
->>>>> this driver.
->>>>>
->>>>> As an example for the first case, on many Qualcomm devices the
->>>>> NFC clock is provided by the main PMIC. The clock can be either
->>>>> permanently enabled (clocks = <&rpmcc RPM_SMD_BB_CLK2>) or enabled
->>>>> only when requested through a special input pin on the PMIC
->>>>> (clocks = <&rpmcc RPM_SMD_BB_CLK2_PIN>).
->>>>>
->>>>> On the Samsung Galaxy A3/A5 (2015, Qualcomm MSM8916) this mechanism
->>>>> is used with S3FWRN5's NFC_CLK_REQ output GPIO to enable the clock
->>>>> only when necessary. However, to make that work the s3fwrn5 driver
->>>>> must keep the RPM_SMD_BB_CLK2_PIN clock enabled.
->>>>
->>>> This contradicts the code. You wrote that pin should be kept enabled
->>>> (somehow... by driver? by it's firmware?) but your code requests the
->>>> clock from provider.
->>>>
->>>
->>> Yeah, I see how that's a bit confusing. Let me try to explain it a bit
->>> better. So the Samsung Galaxy A5 (2015) has a "S3FWRN5XS1-YF30", some
->>> variant of S3FWRN5 I guess. That S3FWRN5 has a "XI" and "XO" pin in the
->>> schematics. "XO" seems to be floating, but "XI" goes to "BB_CLK2"
->>> on PM8916 (the main PMIC).
->>>
->>> Then, there is "GPIO2/NFC_CLK_REQ" on the S3FWRN5. This goes to
->>> GPIO_2_NFC_CLK_REQ on PM8916. (Note: I'm talking about two different
->>> GPIO2 here, one on S3FWRN5 and one on PM8916, they just happen to have
->>> the same number...)
->>>
->>> So in other words, S3FWRN5 gets some clock from BB_CLK2 on PM8916,
->>> and can tell PM8916 that it needs the clock via GPIO2/NFC_CLK_REQ.
->>>
->>> Now the confusing part is that the rpmcc/clk-smd-rpm driver has two
->>> clocks that represent BB_CLK2 (see include/dt-bindings/clock/qcom,rpmcc.h):
->>>
->>>   - RPM_SMD_BB_CLK2
->>>   - RPM_SMD_BB_CLK2_PIN
->>>
->>> (There are also *_CLK2_A variants but they are even more confusing
->>>  and not needed here...)
->>>
->>> Those end up in different register settings in PM8916. There is one bit
->>> to permanently enable BB_CLK2 (= RPM_SMD_BB_CLK2), and one bit to enable
->>> BB_CLK2 based on the status of GPIO_2_NFC_CLK_REQ on PM8916
->>> (= RPM_SMD_BB_CLK2_PIN).
->>>
->>> So there is indeed some kind of "AND" inside PM8916 (the register bit
->>> and "NFC_CLK_REQ" input pin). To make that "AND" work I need to make
->>> some driver (here: the s3fwrn5 driver) enable the clock so the register
->>> bit in PM8916 gets set.
->>
->> Thanks for the explanation, it sounds good. The GPIO2 (or how you call
->> it NFC_CLK_REQ) on S3FWRN5 looks like non-configurable from Linux point
->> of view. Probably the device firmware plays with it always or at least
->> handles it in an unknown way for us.
->>
+On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 > 
-> FWIW, I was looking at some more s3fwrn5 code yesterday and came
-> across this (in s3fwrn5_nci_rf_configure()):
-> 
-> 	/* Set default clock configuration for external crystal */
-> 	fw_cfg.clk_type = 0x01;
-> 	fw_cfg.clk_speed = 0xff;
-> 	fw_cfg.clk_req = 0xff;
-> 	ret = nci_prop_cmd(info->ndev, NCI_PROP_FW_CFG,
-> 		sizeof(fw_cfg), (__u8 *)&fw_cfg);
-> 	if (ret < 0)
-> 		goto out;
-> 
-> It does look quite suspiciously like that configures how s3fwrn5 expects
-> the clock and possibly (fw_cfg.clk_req?) how GPIO2 behaves. But it's not
-> particularly useful without some documentation for the magic numbers.
+> MapGPA TDVMCALL requests the host VMM to map a GPA range as private or
+> shared memory mappings. Shared GPA mappings can be used for
+> communication beteen TD guest and host VMM, for example for
+> paravirtualized IO.
 
-Right, without documentation of FW protocol there is not much we can
-deduct here. There is no proof even that the comment matches actual code.
+As usual, I hate the changelog.  This appears to just be regurgitating
+the spec.
 
-Dear Bongsu,
-Maybe you could share some details about clock selection?
+Is this just for part of converting an existing mapping between private
+and shared?  If so, please say that.
 
-> 
-> Personally, I just skip all firmware/RF configuration (which works thanks
-> to commit 4fb7b98c7be3 ("nfc: s3fwrn5: skip the NFC bootloader mode")).
-> That way, S3FWRN5 just continues using the proper configuration
-> that was loaded by the vendor drivers at some point. :)
+> The new helper tdx_map_gpa() provides access to the operation.
 
-But isn't that configuration lost after power off?
+<sigh>  You got your own name wrong. It's tdg_map_gpa() in the patch.
 
+BTW, I agree with Sean on this one: "tdg" is a horrible prefix.  You
+just proved Sean's point by mistyping it.  *EVERYONE* is going to rpeat
+that mistake: tdg -> tdx.
 
-Best regards,
-Krzysztof
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> index dc80cf7f7d08..4789798d7737 100644
+> --- a/arch/x86/include/asm/tdx.h
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -7,6 +7,11 @@
+>  
+>  #ifndef __ASSEMBLY__
+>  
+> +enum tdx_map_type {
+> +	TDX_MAP_PRIVATE,
+> +	TDX_MAP_SHARED,
+> +};
+
+I like the enum, but please call out that this is a software construct,
+not a part of any hardware or VMM ABI.
+
+>  #ifdef CONFIG_INTEL_TDX_GUEST
+>  
+>  #include <asm/cpufeature.h>
+> @@ -112,6 +117,8 @@ unsigned short tdg_inw(unsigned short port);
+>  unsigned int tdg_inl(unsigned short port);
+>  
+>  extern phys_addr_t tdg_shared_mask(void);
+> +extern int tdg_map_gpa(phys_addr_t gpa, int numpages,
+> +		       enum tdx_map_type map_type);
+>  
+>  #else // !CONFIG_INTEL_TDX_GUEST
+>  
+> @@ -155,6 +162,12 @@ static inline phys_addr_t tdg_shared_mask(void)
+>  {
+>  	return 0;
+>  }
+> +
+> +static inline int tdg_map_gpa(phys_addr_t gpa, int numpages,
+> +			      enum tdx_map_type map_type)
+> +{
+> +	return -ENODEV;
+> +}
+
+FWIW, you could probably get away with just inlining tdg_map_gpa():
+
+static inline int tdg_map_gpa(phys_addr_t gpa, int numpages, ...
+{
+	u64 ret;
+
+	if (!IS_ENABLED(CONFIG_INTEL_TDX_GUEST))
+		return -ENODEV;
+
+	if (map_type == TDX_MAP_SHARED)
+		gpa |= tdg_shared_mask();
+
+	ret = tdvmcall(TDVMCALL_MAP_GPA, gpa, ...
+
+	return ret ? -EIO : 0;
+}
+
+Then you don't have three copies of the function signature that can get
+out of sync.
+
+>  #endif /* CONFIG_INTEL_TDX_GUEST */
+>  #endif /* __ASSEMBLY__ */
+>  #endif /* _ASM_X86_TDX_H */
+> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+> index 7e391cd7aa2b..074136473011 100644
+> --- a/arch/x86/kernel/tdx.c
+> +++ b/arch/x86/kernel/tdx.c
+> @@ -15,6 +15,8 @@
+>  #include "tdx-kvm.c"
+>  #endif
+>  
+> +#define TDVMCALL_MAP_GPA	0x10001
+> +
+>  static struct {
+>  	unsigned int gpa_width;
+>  	unsigned long attributes;
+> @@ -98,6 +100,17 @@ static void tdg_get_info(void)
+>  	physical_mask &= ~tdg_shared_mask();
+>  }
+>  
+> +int tdg_map_gpa(phys_addr_t gpa, int numpages, enum tdx_map_type map_type)
+> +{
+> +	u64 ret;
+> +
+> +	if (map_type == TDX_MAP_SHARED)
+> +		gpa |= tdg_shared_mask();
+> +
+> +	ret = tdvmcall(TDVMCALL_MAP_GPA, gpa, PAGE_SIZE * numpages, 0, 0);
+> +	return ret ? -EIO : 0;
+> +}
+
+The naming Intel chose here is nasty.  This doesn't "map" anything.  It
+modifies an existing mapping from what I can tell.  We could name it
+much better than the spec, perhaps:
+
+	tdx_hcall_gpa_intent()
+
+BTW, all of these hypercalls need a consistent prefix.
+
+It also needs a comment:
+
+	/*
+	 * Inform the VMM of the guest's intent for this physical page:
+	 * shared with the VMM or private to the guest.  The VMM is
+	 * expected to change its mapping of the page in response.
+	 *
+	 * Note: shared->private conversions require further guest
+	 * action to accept the page.
+	 */
+
+The intent here is important.  It makes it clear that this function
+really only plays a role in the conversion process.
