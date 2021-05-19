@@ -2,182 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9611F388485
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EAA388489
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233965AbhESBnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 21:43:10 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:39136 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231689AbhESBnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 21:43:08 -0400
-Received: from BC-Mail-Ex20.internal.baidu.com (unknown [172.31.51.14])
-        by Forcepoint Email with ESMTPS id 05DCACB3BDE8AB40D5B9;
-        Wed, 19 May 2021 09:41:38 +0800 (CST)
-Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
- BC-Mail-Ex20.internal.baidu.com (172.31.51.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Wed, 19 May 2021 09:41:37 +0800
-Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
- BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2242.008;
- Wed, 19 May 2021 09:41:37 +0800
-From:   "Chu,Kaiping" <chukaiping@baidu.com>
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "nigupta@nvidia.com" <nigupta@nvidia.com>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
-        "sh_def@163.com" <sh_def@163.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIFYyXSBtbTogY29tcGFjdGlvbjogc3VwcG9ydCB0cmln?=
- =?gb2312?Q?gering_of_proactive_compaction_by_user?=
-Thread-Topic: [PATCH V2] mm: compaction: support triggering of proactive
- compaction by user
-Thread-Index: AQHXS+sjJaVDxZPNeEKAMECfwZAe9qrqB1Yg
-Date:   Wed, 19 May 2021 01:41:37 +0000
-Message-ID: <79279be3573542dea0266f8e9d4d5368@baidu.com>
-References: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
-In-Reply-To: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.194.39]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S234048AbhESBp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:45:58 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4665 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233971AbhESBp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 21:45:57 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlFwG6qXCz1BNqp;
+        Wed, 19 May 2021 09:41:50 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 09:44:36 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 09:44:35 +0800
+Subject: Re: [PATCH v6 00/16] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     "Xu, Like" <like.xu@intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <609FA2B7.7030801@huawei.com>
+ <868a0ed9-d4a5-c135-811e-a3420b7913ac@linux.intel.com>
+ <60A3B1DC.7000002@huawei.com>
+ <a65c8556-4eac-b8db-8aa4-98229f47fc8d@intel.com>
+CC:     Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, <weijiang.yang@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>, <ak@linux.intel.com>,
+        <wei.w.wang@intel.com>, <eranian@google.com>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <kvm@vger.kernel.org>, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        Like Xu <like.xu@linux.intel.com>
+From:   Liuxiangdong <liuxiangdong5@huawei.com>
+Message-ID: <60A46D78.3000205@huawei.com>
+Date:   Wed, 19 May 2021 09:44:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
+In-Reply-To: <a65c8556-4eac-b8db-8aa4-98229f47fc8d@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS3Tyrz+1K28/i0tLS0tDQo+ILeivP7IyzogY2hhcmFudGU9Y29kZWF1cm9yYS5v
-cmdAbWcuY29kZWF1cm9yYS5vcmcNCj4gPGNoYXJhbnRlPWNvZGVhdXJvcmEub3JnQG1nLmNvZGVh
-dXJvcmEub3JnPiC0+rHtIENoYXJhbiBUZWphIFJlZGR5DQo+ILeiy83KsbzkOiAyMDIxxOo11MIx
-OMjVIDIxOjM4DQo+IMrVvP7IyzogYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgbWNncm9mQGtl
-cm5lbC5vcmc7DQo+IGtlZXNjb29rQGNocm9taXVtLm9yZzsgeXphaWtpbkBnb29nbGUuY29tOyB2
-YmFia2FAc3VzZS5jejsNCj4gbmlndXB0YUBudmlkaWEuY29tOyBiaGVAcmVkaGF0LmNvbTsgbWF0
-ZXVzem5vc2VrMEBnbWFpbC5jb207DQo+IHNoX2RlZkAxNjMuY29tOyBpYW1qb29uc29vLmtpbUBs
-Z2UuY29tOyB2aW5tZW5vbkBjb2RlYXVyb3JhLm9yZw0KPiCzrcvNOiBsaW51eC1rZXJuZWxAdmdl
-ci5rZXJuZWwub3JnOyBsaW51eC1tbUBrdmFjay5vcmc7DQo+IGxpbnV4LWZzZGV2ZWxAdmdlci5r
-ZXJuZWwub3JnOyBDaGFyYW4gVGVqYSBSZWRkeSA8Y2hhcmFudGVAY29kZWF1cm9yYS5vcmc+DQo+
-INb3zOI6IFtQQVRDSCBWMl0gbW06IGNvbXBhY3Rpb246IHN1cHBvcnQgdHJpZ2dlcmluZyBvZiBw
-cm9hY3RpdmUNCj4gY29tcGFjdGlvbiBieSB1c2VyDQo+IA0KPiBUaGUgcHJvYWN0aXZlIGNvbXBh
-Y3Rpb25bMV0gZ2V0cyB0cmlnZ2VyZWQgZm9yIGV2ZXJ5IDUwMG1zZWMgYW5kIHJ1bg0KPiBjb21w
-YWN0aW9uIG9uIHRoZSBub2RlIGZvciBDT01QQUNUSU9OX0hQQUdFX09SREVSICh1c3VhbGx5IG9y
-ZGVyLTkpDQo+IHBhZ2VzIGJhc2VkIG9uIHRoZSB2YWx1ZSBzZXQgdG8gc3lzY3RsLmNvbXBhY3Rp
-b25fcHJvYWN0aXZlbmVzcy4NCj4gVHJpZ2dlcmluZyB0aGUgY29tcGFjdGlvbiBmb3IgZXZlcnkg
-NTAwbXNlYyBpbiBzZWFyY2ggb2YNCj4gQ09NUEFDVElPTl9IUEFHRV9PUkRFUiBwYWdlcyBpcyBu
-b3QgbmVlZGVkIGZvciBhbGwgYXBwbGljYXRpb25zLA0KPiBlc3BlY2lhbGx5IG9uIHRoZSBlbWJl
-ZGRlZCBzeXN0ZW0gdXNlY2FzZXMgd2hpY2ggbWF5IGhhdmUgZmV3IE1CJ3Mgb2YNCj4gUkFNLiBF
-bmFibGluZyB0aGUgcHJvYWN0aXZlIGNvbXBhY3Rpb24gaW4gaXRzIHN0YXRlIHdpbGwgZW5kdXAg
-aW4gcnVubmluZw0KPiBhbG1vc3QgYWx3YXlzIG9uIHN1Y2ggc3lzdGVtcy4NCj4gDQo+IE90aGVy
-IHNpZGUsIHByb2FjdGl2ZSBjb21wYWN0aW9uIGNhbiBzdGlsbCBiZSB2ZXJ5IG11Y2ggdXNlZnVs
-IGZvciBnZXR0aW5nIGEgc2V0DQo+IG9mIGhpZ2hlciBvcmRlciBwYWdlcyBpbiBzb21lIGNvbnRy
-b2xsYWJsZSBtYW5uZXIoY29udHJvbGxlZCBieSB1c2luZyB0aGUNCj4gc3lzY3RsLmNvbXBhY3Rp
-b25fcHJvYWN0aXZlbmVzcykuIFRodXMgb24gc3lzdGVtcyB3aGVyZSBlbmFibGluZyB0aGUNCj4g
-cHJvYWN0aXZlIGNvbXBhY3Rpb24gYWx3YXlzIG1heSBwcm9vdmUgbm90IHJlcXVpcmVkLCBjYW4g
-dHJpZ2dlciB0aGUgc2FtZQ0KPiBmcm9tIHVzZXIgc3BhY2Ugb24gd3JpdGUgdG8gaXRzIHN5c2N0
-bCBpbnRlcmZhY2UuIEFzIGFuIGV4YW1wbGUsIHNheSBhcHANCj4gbGF1bmNoZXIgZGVjaWRlIHRv
-IGxhdW5jaCB0aGUgbWVtb3J5IGhlYXZ5IGFwcGxpY2F0aW9uIHdoaWNoIGNhbiBiZQ0KPiBsYXVu
-Y2hlZCBmYXN0IGlmIGl0IGdldHMgbW9yZSBoaWdoZXIgb3JkZXIgcGFnZXMgdGh1cyBsYXVuY2hl
-ciBjYW4gcHJlcGFyZSB0aGUNCj4gc3lzdGVtIGluIGFkdmFuY2UgYnkgdHJpZ2dlcmluZyB0aGUg
-cHJvYWN0aXZlIGNvbXBhY3Rpb24gZnJvbSB1c2Vyc3BhY2UuDQo+IA0KPiBUaGlzIHRyaWdnZXJp
-bmcgb2YgcHJvYWN0aXZlIGNvbXBhY3Rpb24gaXMgZG9uZSBvbiBhIHdyaXRlIHRvDQo+IHN5c2N0
-bC5jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3MgYnkgdXNlci4NCg0KSWYgeW91IHdhbnQgdG8gdHJp
-Z2dlciBjb21wYWN0aW9uIGZyb20gdXNlcnNwYWNlLCB5b3UgY2FuIHVzZSAiIGVjaG8gMSA+IC9w
-cm9jL3N5cy92bS9jb21wYWN0X21lbW9yeSIsIHRoZXJlIGlzIG5vIG5lZWQgdG8gYmUgc28gY29t
-cGxleC4NCg0KPiANCj4gWzFdaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
-cm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdD9pDQo+IGQ9ZmFjZGFhOTE3YzRkNWEz
-NzZkMDlkMjU4NjVmNWE4NjNmOTA2MjM0YQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2hhcmFuIFRl
-amEgUmVkZHkgPGNoYXJhbnRlQGNvZGVhdXJvcmEub3JnPg0KPiAtLS0NCj4gY2hhbmdlcyBpbiBW
-MjoNCj4gICAgIC0gcmVtb3ZlIC9wcm9jIGludGVyZmFjZSB0cmlnZ2VyIGZvciBwcm9hY3RpdmUg
-Y29tcGFjdGlvbg0KPiAgICAgLSBJbnRlbnRpb24gaXMgc2FtZSB0aGF0IGFkZCBhIHdheSB0byB0
-cmlnZ2VyIHByb2FjdGl2ZSBjb21wYWN0aW9uIGJ5IHVzZXIuDQo+IA0KPiBjaGFuZ2VzIGluIFYx
-Og0KPiAgICAgLQ0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzE2MTkwOTg2NzgtODUw
-MS0xLWdpdC1zZW5kLWVtYWlsLWNoYXJhbnRlQGNvDQo+IGRlYXVyb3JhLm9yZy8NCj4gDQo+ICBp
-bmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCB8ICAyICsrDQo+ICBpbmNsdWRlL2xpbnV4L21tem9u
-ZS5oICAgICB8ICAxICsNCj4gIGtlcm5lbC9zeXNjdGwuYyAgICAgICAgICAgIHwgIDIgKy0NCj4g
-IG1tL2NvbXBhY3Rpb24uYyAgICAgICAgICAgIHwgMzUNCj4gKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKystLS0NCj4gIDQgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgNCBk
-ZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24u
-aCBiL2luY2x1ZGUvbGludXgvY29tcGFjdGlvbi5oIGluZGV4DQo+IDQyMjE4ODguLjA0ZDVkOWYg
-MTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvY29tcGFjdGlvbi5oDQo+ICsrKyBiL2luY2x1
-ZGUvbGludXgvY29tcGFjdGlvbi5oDQo+IEBAIC04NCw2ICs4NCw4IEBAIHN0YXRpYyBpbmxpbmUg
-dW5zaWduZWQgbG9uZyBjb21wYWN0X2dhcCh1bnNpZ25lZCBpbnQNCj4gb3JkZXIpICBleHRlcm4g
-dW5zaWduZWQgaW50IHN5c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3M7ICBleHRlcm4gaW50
-DQo+IHN5c2N0bF9jb21wYWN0aW9uX2hhbmRsZXIoc3RydWN0IGN0bF90YWJsZSAqdGFibGUsIGlu
-dCB3cml0ZSwNCj4gIAkJCXZvaWQgKmJ1ZmZlciwgc2l6ZV90ICpsZW5ndGgsIGxvZmZfdCAqcHBv
-cyk7DQo+ICtleHRlcm4gaW50IGNvbXBhY3Rpb25fcHJvYWN0aXZlbmVzc19zeXNjdGxfaGFuZGxl
-cihzdHJ1Y3QgY3RsX3RhYmxlICp0YWJsZSwNCj4gKwkJaW50IHdyaXRlLCB2b2lkICpidWZmZXIs
-IHNpemVfdCAqbGVuZ3RoLCBsb2ZmX3QgKnBwb3MpOw0KPiAgZXh0ZXJuIGludCBzeXNjdGxfZXh0
-ZnJhZ190aHJlc2hvbGQ7DQo+ICBleHRlcm4gaW50IHN5c2N0bF9jb21wYWN0X3VuZXZpY3RhYmxl
-X2FsbG93ZWQ7DQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tbXpvbmUuaCBiL2lu
-Y2x1ZGUvbGludXgvbW16b25lLmggaW5kZXgNCj4gMGQ1M2ViYS4uOTQ1NTgwOSAxMDA2NDQNCj4g
-LS0tIGEvaW5jbHVkZS9saW51eC9tbXpvbmUuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L21tem9u
-ZS5oDQo+IEBAIC04MTUsNiArODE1LDcgQEAgdHlwZWRlZiBzdHJ1Y3QgcGdsaXN0X2RhdGEgew0K
-PiAgCWVudW0gem9uZV90eXBlIGtjb21wYWN0ZF9oaWdoZXN0X3pvbmVpZHg7DQo+ICAJd2FpdF9x
-dWV1ZV9oZWFkX3Qga2NvbXBhY3RkX3dhaXQ7DQo+ICAJc3RydWN0IHRhc2tfc3RydWN0ICprY29t
-cGFjdGQ7DQo+ICsJYm9vbCBwcm9hY3RpdmVfY29tcGFjdF90cmlnZ2VyOw0KPiAgI2VuZGlmDQo+
-ICAJLyoNCj4gIAkgKiBUaGlzIGlzIGEgcGVyLW5vZGUgcmVzZXJ2ZSBvZiBwYWdlcyB0aGF0IGFy
-ZSBub3QgYXZhaWxhYmxlIGRpZmYgLS1naXQNCj4gYS9rZXJuZWwvc3lzY3RsLmMgYi9rZXJuZWwv
-c3lzY3RsLmMgaW5kZXggMTRlZGY4NC4uYmVkMmZhZCAxMDA2NDQNCj4gLS0tIGEva2VybmVsL3N5
-c2N0bC5jDQo+ICsrKyBiL2tlcm5lbC9zeXNjdGwuYw0KPiBAQCAtMjg0MCw3ICsyODQwLDcgQEAg
-c3RhdGljIHN0cnVjdCBjdGxfdGFibGUgdm1fdGFibGVbXSA9IHsNCj4gIAkJLmRhdGEJCT0gJnN5
-c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3MsDQo+ICAJCS5tYXhsZW4JCT0gc2l6ZW9mKHN5
-c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3MpLA0KPiAgCQkubW9kZQkJPSAwNjQ0LA0KPiAt
-CQkucHJvY19oYW5kbGVyCT0gcHJvY19kb2ludHZlY19taW5tYXgsDQo+ICsJCS5wcm9jX2hhbmRs
-ZXIJPSBjb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3Nfc3lzY3RsX2hhbmRsZXIsDQo+ICAJCS5leHRy
-YTEJCT0gU1lTQ1RMX1pFUk8sDQo+ICAJCS5leHRyYTIJCT0gJm9uZV9odW5kcmVkLA0KPiAgCX0s
-DQo+IGRpZmYgLS1naXQgYS9tbS9jb21wYWN0aW9uLmMgYi9tbS9jb21wYWN0aW9uLmMgaW5kZXgg
-ODRmZGUyNy4uOTA1NjY5Mw0KPiAxMDA2NDQNCj4gLS0tIGEvbW0vY29tcGFjdGlvbi5jDQo+ICsr
-KyBiL21tL2NvbXBhY3Rpb24uYw0KPiBAQCAtMjcwOCw2ICsyNzA4LDMwIEBAIHN0YXRpYyB2b2lk
-IGNvbXBhY3Rfbm9kZXModm9pZCkNCj4gICAqLw0KPiAgdW5zaWduZWQgaW50IF9fcmVhZF9tb3N0
-bHkgc3lzY3RsX2NvbXBhY3Rpb25fcHJvYWN0aXZlbmVzcyA9IDIwOw0KPiANCj4gK2ludCBjb21w
-YWN0aW9uX3Byb2FjdGl2ZW5lc3Nfc3lzY3RsX2hhbmRsZXIoc3RydWN0IGN0bF90YWJsZSAqdGFi
-bGUsIGludA0KPiB3cml0ZSwNCj4gKwkJdm9pZCAqYnVmZmVyLCBzaXplX3QgKmxlbmd0aCwgbG9m
-Zl90ICpwcG9zKSB7DQo+ICsJaW50IHJjLCBuaWQ7DQo+ICsNCj4gKwlyYyA9IHByb2NfZG9pbnR2
-ZWNfbWlubWF4KHRhYmxlLCB3cml0ZSwgYnVmZmVyLCBsZW5ndGgsIHBwb3MpOw0KPiArCWlmIChy
-YykNCj4gKwkJcmV0dXJuIHJjOw0KPiArDQo+ICsJaWYgKHdyaXRlICYmIHN5c2N0bF9jb21wYWN0
-aW9uX3Byb2FjdGl2ZW5lc3MpIHsNCj4gKwkJZm9yX2VhY2hfb25saW5lX25vZGUobmlkKSB7DQo+
-ICsJCQlwZ19kYXRhX3QgKnBnZGF0ID0gTk9ERV9EQVRBKG5pZCk7DQo+ICsNCj4gKwkJCWlmIChw
-Z2RhdC0+cHJvYWN0aXZlX2NvbXBhY3RfdHJpZ2dlcikNCj4gKwkJCQljb250aW51ZTsNCj4gKw0K
-PiArCQkJcGdkYXQtPnByb2FjdGl2ZV9jb21wYWN0X3RyaWdnZXIgPSB0cnVlOw0KPiArCQkJd2Fr
-ZV91cF9pbnRlcnJ1cHRpYmxlKCZwZ2RhdC0+a2NvbXBhY3RkX3dhaXQpOw0KPiArCQl9DQo+ICsJ
-fQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gIC8qDQo+ICAgKiBUaGlzIGlzIHRo
-ZSBlbnRyeSBwb2ludCBmb3IgY29tcGFjdGluZyBhbGwgbm9kZXMgdmlhDQo+ICAgKiAvcHJvYy9z
-eXMvdm0vY29tcGFjdF9tZW1vcnkNCj4gQEAgLTI3NTIsNyArMjc3Niw4IEBAIHZvaWQgY29tcGFj
-dGlvbl91bnJlZ2lzdGVyX25vZGUoc3RydWN0IG5vZGUNCj4gKm5vZGUpDQo+IA0KPiAgc3RhdGlj
-IGlubGluZSBib29sIGtjb21wYWN0ZF93b3JrX3JlcXVlc3RlZChwZ19kYXRhX3QgKnBnZGF0KSAg
-ew0KPiAtCXJldHVybiBwZ2RhdC0+a2NvbXBhY3RkX21heF9vcmRlciA+IDAgfHwga3RocmVhZF9z
-aG91bGRfc3RvcCgpOw0KPiArCXJldHVybiBwZ2RhdC0+a2NvbXBhY3RkX21heF9vcmRlciA+IDAg
-fHwga3RocmVhZF9zaG91bGRfc3RvcCgpIHx8DQo+ICsJCXBnZGF0LT5wcm9hY3RpdmVfY29tcGFj
-dF90cmlnZ2VyOw0KPiAgfQ0KPiANCj4gIHN0YXRpYyBib29sIGtjb21wYWN0ZF9ub2RlX3N1aXRh
-YmxlKHBnX2RhdGFfdCAqcGdkYXQpIEBAIC0yOTA1LDcNCj4gKzI5MzAsOCBAQCBzdGF0aWMgaW50
-IGtjb21wYWN0ZCh2b2lkICpwKQ0KPiAgCQl0cmFjZV9tbV9jb21wYWN0aW9uX2tjb21wYWN0ZF9z
-bGVlcChwZ2RhdC0+bm9kZV9pZCk7DQo+ICAJCWlmICh3YWl0X2V2ZW50X2ZyZWV6YWJsZV90aW1l
-b3V0KHBnZGF0LT5rY29tcGFjdGRfd2FpdCwNCj4gIAkJCWtjb21wYWN0ZF93b3JrX3JlcXVlc3Rl
-ZChwZ2RhdCksDQo+IC0JCQltc2Vjc190b19qaWZmaWVzKEhQQUdFX0ZSQUdfQ0hFQ0tfSU5URVJW
-QUxfTVNFQykpKSB7DQo+ICsJCQltc2Vjc190b19qaWZmaWVzKEhQQUdFX0ZSQUdfQ0hFQ0tfSU5U
-RVJWQUxfTVNFQykpICYmDQo+ICsJCQkhcGdkYXQtPnByb2FjdGl2ZV9jb21wYWN0X3RyaWdnZXIp
-IHsNCj4gDQo+ICAJCQlwc2lfbWVtc3RhbGxfZW50ZXIoJnBmbGFncyk7DQo+ICAJCQlrY29tcGFj
-dGRfZG9fd29yayhwZ2RhdCk7DQo+IEBAIC0yOTE5LDcgKzI5NDUsNyBAQCBzdGF0aWMgaW50IGtj
-b21wYWN0ZCh2b2lkICpwKQ0KPiANCj4gIAkJCWlmIChwcm9hY3RpdmVfZGVmZXIpIHsNCj4gIAkJ
-CQlwcm9hY3RpdmVfZGVmZXItLTsNCj4gLQkJCQljb250aW51ZTsNCj4gKwkJCQlnb3RvIGxvb3A7
-DQo+ICAJCQl9DQo+ICAJCQlwcmV2X3Njb3JlID0gZnJhZ21lbnRhdGlvbl9zY29yZV9ub2RlKHBn
-ZGF0KTsNCj4gIAkJCXByb2FjdGl2ZV9jb21wYWN0X25vZGUocGdkYXQpOw0KPiBAQCAtMjkzMSw2
-ICsyOTU3LDkgQEAgc3RhdGljIGludCBrY29tcGFjdGQodm9pZCAqcCkNCj4gIAkJCXByb2FjdGl2
-ZV9kZWZlciA9IHNjb3JlIDwgcHJldl9zY29yZSA/DQo+ICAJCQkJCTAgOiAxIDw8IENPTVBBQ1Rf
-TUFYX0RFRkVSX1NISUZUOw0KPiAgCQl9DQo+ICtsb29wOg0KPiArCQlpZiAocGdkYXQtPnByb2Fj
-dGl2ZV9jb21wYWN0X3RyaWdnZXIpDQo+ICsJCQlwZ2RhdC0+cHJvYWN0aXZlX2NvbXBhY3RfdHJp
-Z2dlciA9IGZhbHNlOw0KPiAgCX0NCj4gDQo+ICAJcmV0dXJuIDA7DQo+IC0tDQo+IFFVQUxDT01N
-IElORElBLCBvbiBiZWhhbGYgb2YgUXVhbGNvbW0gSW5ub3ZhdGlvbiBDZW50ZXIsIEluYy4gaXMg
-YQ0KPiBtZW1iZXIgb2YgdGhlIENvZGUgQXVyb3JhIEZvcnVtLCBob3N0ZWQgYnkgVGhlIExpbnV4
-IEZvdW5kYXRpb24NCg0K
+
+
+On 2021/5/18 20:40, Xu, Like wrote:
+> On 2021/5/18 20:23, Liuxiangdong wrote:
+>>
+>>
+>> On 2021/5/17 14:38, Like Xu wrote:
+>>> Hi xiangdong,
+>>>
+>>> On 2021/5/15 18:30, Liuxiangdong wrote:
+>>>>
+>>>>
+>>>> On 2021/5/11 10:41, Like Xu wrote:
+>>>>> A new kernel cycle has begun, and this version looks promising.
+>>>>>
+>>>>> The guest Precise Event Based Sampling (PEBS) feature can provide
+>>>>> an architectural state of the instruction executed after the guest
+>>>>> instruction that exactly caused the event. It needs new hardware
+>>>>> facility only available on Intel Ice Lake Server platforms. This
+>>>>> patch set enables the basic PEBS feature for KVM guests on ICX.
+>>>>>
+>>>>> We can use PEBS feature on the Linux guest like native:
+>>>>>
+>>>>>    # perf record -e instructions:ppp ./br_instr a
+>>>>>    # perf record -c 100000 -e instructions:pp ./br_instr a
+>>>>
+>>>> Hi, Like.
+>>>> Has the qemu patch been modified?
+>>>>
+>>>> https://lore.kernel.org/kvm/f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com/ 
+>>>> ?
+>>>
+>>> I think the qemu part still works based on
+>>> 609d7596524ab204ccd71ef42c9eee4c7c338ea4 (tag: v6.0.0).
+>>>
+>>
+>> Yes. I applied these two qemu patches to qemu v6.0.0 and this kvm 
+>> patches set to latest kvm tree.
+>>
+>> I can see pebs flags in Guest(linux 5.11) on the IceLake( Model: 106  
+>> Model name: Intel(R) Xeon(R) Platinum 8378A CPU),
+>> and i can use PEBS like this.
+>>
+>>     #perf record -e instructions:pp
+>>
+>> It can work normally.
+>>
+>> But  there is no sampling when i use "perf record -e events:pp" or 
+>> just "perf record" in guest
+>> unless i delete patch 09 and patch 13 from this kvm patches set.
+>>
+>>
+>
+> With patch 9 and 13, does the basic counter sampling still work ?
+> You may retry w/ "echo 0 > /proc/sys/kernel/watchdog" on the host and 
+> guest.
+>
+
+In fact, I didn't use "echo 0 > /proc/sys/kernel/watchdog" when I tried 
+PEBS patches V3 on Icelake.
+Why should we use it now?  What does it have to do with sampling?
+
+Thanks!
+
+>> Have you tried "perf record -e events:pp" in this patches set? Does 
+>> it work normally?
+>
+> All my PEBS testcases passed. You may dump guest msr traces from your 
+> testcase with me.
+>
+>>
+>>
+>>
+>> Thanks!
+>> Xiangdong Liu
+>>
+>>
+>>
+>>> When the LBR qemu patch receives the ACK from the maintainer,
+>>> I will submit PBES qemu support because their changes are very similar.
+>>>
+>>> Please help review this version and
+>>> feel free to add your comments or "Reviewed-by".
+>>>
+>>> Thanks,
+>>> Like Xu
+>>>
+>>>>
+>>>>
+>>>>> To emulate guest PEBS facility for the above perf usages,
+>>>>> we need to implement 2 code paths:
+>>>>>
+>>>>> 1) Fast path
+>>>>>
+>>>>> This is when the host assigned physical PMC has an identical index as
+>>>>> the virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+>>>>> This path is used in most common use cases.
+>>>>>
+>>>>> 2) Slow path
+>>>>>
+>>>>> This is when the host assigned physical PMC has a different index
+>>>>> from the virtual PMC (e.g. using physical PMC1 to emulate virtual 
+>>>>> PMC0)
+>>>>> In this case, KVM needs to rewrite the PEBS records to change the
+>>>>> applicable counter indexes to the virtual PMC indexes, which would
+>>>>> otherwise contain the physical counter index written by PEBS 
+>>>>> facility,
+>>>>> and switch the counter reset values to the offset corresponding to
+>>>>> the physical counter indexes in the DS data structure.
+>>>>>
+>>>>> The previous version [0] enables both fast path and slow path, which
+>>>>> seems a bit more complex as the first step. In this patchset, we want
+>>>>> to start with the fast path to get the basic guest PEBS enabled while
+>>>>> keeping the slow path disabled. More focused discussion on the slow
+>>>>> path [1] is planned to be put to another patchset in the next step.
+>>>>>
+>>>>> Compared to later versions in subsequent steps, the functionality
+>>>>> to support host-guest PEBS both enabled and the functionality to
+>>>>> emulate guest PEBS when the counter is cross-mapped are missing
+>>>>> in this patch set (neither of these are typical scenarios).
+>>>>>
+>>>>> With the basic support, the guest can retrieve the correct PEBS
+>>>>> information from its own PEBS records on the Ice Lake servers.
+>>>>> And we expect it should work when migrating to another Ice Lake
+>>>>> and no regression about host perf is expected.
+>>>>>
+>>>>> Here are the results of pebs test from guest/host for same workload:
+>>>>>
+>>>>> perf report on guest:
+>>>>> # Samples: 2K of event 'instructions:ppp', # Event count 
+>>>>> (approx.): 1473377250
+>>>>> # Overhead  Command   Shared Object      Symbol
+>>>>>    57.74%  br_instr  br_instr           [.] lfsr_cond
+>>>>>    41.40%  br_instr  br_instr           [.] cmp_end
+>>>>>     0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
+>>>>>
+>>>>> perf report on host:
+>>>>> # Samples: 2K of event 'instructions:ppp', # Event count 
+>>>>> (approx.): 1462721386
+>>>>> # Overhead  Command   Shared Object     Symbol
+>>>>>    57.90%  br_instr  br_instr          [.] lfsr_cond
+>>>>>    41.95%  br_instr  br_instr          [.] cmp_end
+>>>>>     0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
+>>>>>     Conclusion: the profiling results on the guest are similar 
+>>>>> tothat on the host.
+>>>>>
+>>>>> A minimum guest kernel version may be v5.4 or a backport version
+>>>>> support Icelake server PEBS.
+>>>>>
+>>>>> Please check more details in each commit and feel free to comment.
+>>>>>
+>>>>> Previous:
+>>>>> https://lore.kernel.org/kvm/20210415032016.166201-1-like.xu@linux.intel.com/ 
+>>>>>
+>>>>>
+>>>>> [0] 
+>>>>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
+>>>>> [1] 
+>>>>> https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/ 
+>>>>>
+>>>>>
+>>>>> V5 -> V6 Changelog:
+>>>>> - Rebased on the latest kvm/queue tree;
+>>>>> - Fix a git rebase issue (Liuxiangdong);
+>>>>> - Adjust the patch sequence 06/07 for bisection (Liuxiangdong);
+>>>>>
+>>>>> Like Xu (16):
+>>>>>    perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
+>>>>>    perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
+>>>>>    perf/x86/core: Pass "struct kvm_pmu *" to determine the guest 
+>>>>> values
+>>>>>    KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is 
+>>>>> enabled
+>>>>>    KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
+>>>>>    KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+>>>>>    KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
+>>>>>    KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
+>>>>>    KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support 
+>>>>> adaptive PEBS
+>>>>>    KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is 
+>>>>> enabled
+>>>>>    KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR 
+>>>>> counter
+>>>>>    KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
+>>>>>    KVM: x86/pmu: Disable guest PEBS temporarily in two rare 
+>>>>> situations
+>>>>>    KVM: x86/pmu: Add kvm_pmu_cap to optimize 
+>>>>> perf_get_x86_pmu_capability
+>>>>>    KVM: x86/cpuid: Refactor host/guest CPU model consistency check
+>>>>>    KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+>>>>>
+>>>>>   arch/x86/events/core.c            |   5 +-
+>>>>>   arch/x86/events/intel/core.c      | 129 
+>>>>> ++++++++++++++++++++++++------
+>>>>>   arch/x86/events/perf_event.h      |   5 +-
+>>>>>   arch/x86/include/asm/kvm_host.h   |  16 ++++
+>>>>>   arch/x86/include/asm/msr-index.h  |   6 ++
+>>>>>   arch/x86/include/asm/perf_event.h |   5 +-
+>>>>>   arch/x86/kvm/cpuid.c              |  24 ++----
+>>>>>   arch/x86/kvm/cpuid.h              |   5 ++
+>>>>>   arch/x86/kvm/pmu.c                |  50 +++++++++---
+>>>>>   arch/x86/kvm/pmu.h                |  38 +++++++++
+>>>>>   arch/x86/kvm/vmx/capabilities.h   |  26 ++++--
+>>>>>   arch/x86/kvm/vmx/pmu_intel.c      | 115 +++++++++++++++++++++-----
+>>>>>   arch/x86/kvm/vmx/vmx.c            |  24 +++++-
+>>>>>   arch/x86/kvm/vmx/vmx.h            |   2 +-
+>>>>>   arch/x86/kvm/x86.c                |  14 ++--
+>>>>>   15 files changed, 368 insertions(+), 96 deletions(-)
+>>>>>
+>>>
+>>
+>
+
