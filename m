@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B673892DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF133892F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbhESPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:45:04 -0400
-Received: from mga07.intel.com ([134.134.136.100]:11908 "EHLO mga07.intel.com"
+        id S1354778AbhESPtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:49:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59870 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354959AbhESPo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:44:59 -0400
-IronPort-SDR: wSs0/kPjMkpT0b/zT50ZkadCgwBc4ZUsvxMNqbAz+rYiOz6ZFr1c/BOlkiEpq62qxDJuipnzfy
- M3yMhJl9YFaA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="264923355"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="264923355"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:43:39 -0700
-IronPort-SDR: Rq6mGhGWq0ocMcxjGSwqTjh0L6uzNef5+zlx/xUruW8mle889BFq5V15MgpXgpVzGdaiT+Qbx5
- b8/+T5xnypYQ==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="395307475"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:43:39 -0700
-Date:   Wed, 19 May 2021 08:46:08 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210519084608.3d498169@jacob-builder>
-In-Reply-To: <20210517143758.GP1002214@nvidia.com>
-References: <20210513173303.GL1002214@nvidia.com>
-        <20210513185349.GA801495@agluck-desk2.amr.corp.intel.com>
-        <20210513190040.GR1002214@nvidia.com>
-        <e9dd39aa8a144c23beffa5ca58936385@intel.com>
-        <20210513192014.GU1002214@nvidia.com>
-        <20210513124621.01421173@jacob-builder>
-        <20210513195749.GA801830@agluck-desk2.amr.corp.intel.com>
-        <20210513132251.0ff89b90@jacob-builder>
-        <20210513223122.GV1002214@nvidia.com>
-        <20210513164028.6e2d6e59@jacob-builder>
-        <20210517143758.GP1002214@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1346171AbhESPtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:49:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B7F5AD2D;
+        Wed, 19 May 2021 15:48:14 +0000 (UTC)
+Subject: Re: [PATCH] mm, page_alloc: really disable DEBUG_PAGEALLOC with
+ hibernation
+To:     David Hildenbrand <david@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Guilherme Piccoli <gpiccoli@canonical.com>
+References: <20210519152804.27063-1-krzysztof.kozlowski@canonical.com>
+ <b0cf875b-6ff5-2b5c-8b3d-6dc6c75b8be8@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <515ca9c5-ba60-5b90-0941-2b3dfe1d61f3@suse.cz>
+Date:   Wed, 19 May 2021 17:48:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <b0cf875b-6ff5-2b5c-8b3d-6dc6c75b8be8@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On 5/19/21 5:30 PM, David Hildenbrand wrote:
+> On 19.05.21 17:28, Krzysztof Kozlowski wrote:
+>> The documentation of DEBUG_PAGEALLOC states that it cannot be used with
+>> hibernation, however the Kconfig entry would allow it if
+>> ARCH_SUPPORTS_DEBUG_PAGEALLOC && !PPC && !SPARC.
+>>
+>> Fixes: ee3b4290aec0 ("generic debug pagealloc: build fix")
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+>>   mm/Kconfig.debug | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
+>> index 1e73717802f8..0ace5b2a9d04 100644
+>> --- a/mm/Kconfig.debug
+>> +++ b/mm/Kconfig.debug
+>> @@ -11,7 +11,7 @@ config PAGE_EXTENSION
+>>   config DEBUG_PAGEALLOC
+>>       bool "Debug page memory allocations"
+>>       depends on DEBUG_KERNEL
+>> -    depends on !HIBERNATION || ARCH_SUPPORTS_DEBUG_PAGEALLOC && !PPC && !SPARC
+>> +    depends on !HIBERNATION && ARCH_SUPPORTS_DEBUG_PAGEALLOC && !PPC && !SPARC
+>>       select PAGE_POISONING if !ARCH_SUPPORTS_DEBUG_PAGEALLOC
+>>       help
+>>         Unmap pages from the kernel linear mapping after free_pages().
+>>
+> 
+> I remember this should be working now, as we temporarily map the pages in the
+> direct map when hibernating?
 
-On Mon, 17 May 2021 11:37:58 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+Yeah, and if the problem was the page poisoning based implementation/fallback,
+that was also fixed.
 
-> On Thu, May 13, 2021 at 04:40:28PM -0700, Jacob Pan wrote:
-> 
-> > Looks like we are converging. Let me summarize the takeaways:
-> > 1. Remove IOMMU_SVA_BIND_SUPERVISOR flag from this patch, in fact there
-> > will be no flags at all for iommu_sva_bind_device()
-> > 2. Remove all supervisor SVA related vt-d, idxd code.
-> > 3. Create API iommu_setup_system_pasid_direct_map(option_flag)
-> > 	if (option_flag == 1)
-> > 		iommu_domain_alloc(IOMMU_DOMAIN_DMA);
-> > 	if (option_flag == 2)
-> > 		iommu_domain_alloc(IOMMU_DOMAIN_DIRECT); //new domain
-> > type? setup IOMMU page tables mirroring the direct map
-> > 4. Create API iommu_enable_dev_direct_map(struct dev, &pasid, &option)
-> > 	- Drivers call this API to get the system PASID and which
-> > option is available on the system PASID
-> > 	- mark device as PASID only, perhaps a new flag in struct
-> > 	device->dev_iommu->pasid_only = 1
-> > 5. DMA API IOMMU vendor ops will take action based on the pasid_only
-> > flag to decide if the mapping is for system PASID page tables.
-> > 
-> > Does it make sense?  
-> 
-> I think you will run into trouble with that approach when you get to
-> patches..
-> 
-> For 'option 1' what you want is an API that is 'give me a PASID that
-> is equivalent to the RID'.
-> 
-> Then all the DMA API operations map IO page tables to both RID and
-> PASID access. For the direct mode the PASID and RID will both point at
-> the shared all physical memory IO page table.
-> 
-> Otherwise the DMA API won't care if the device is using RID or PASID,
-> if it needs to map a range it does it to the shared IO page table and
-> flushes both the RID and PASID based caches.
-> 
-> Then the driver will use the normal DMA API with its normal struct
-> pci_device and simply tell the HW to do DMA TLP's with the returned
-> PASID.
-> 
-> For 'option 2' it should be a completely different API family.
-> 
-Make sense, thanks for the suggestions.
+The current dependencies come from the unification by ee3b4290aec03
 
-> Jason
-
-
-Thanks,
-
-Jacob
+The question is if PPC and SPARC still really need to disable hibernation.
