@@ -2,97 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EB5389714
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87497389718
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhESTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S232376AbhESTz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbhESTyb (ORCPT
+        with ESMTP id S232233AbhESTzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:54:31 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA54C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:53:11 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id h6so13242620ila.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:53:11 -0700 (PDT)
+        Wed, 19 May 2021 15:55:25 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32630C06175F;
+        Wed, 19 May 2021 12:54:05 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d78so9784858pfd.10;
+        Wed, 19 May 2021 12:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xnd1I+ZG+p2xZfCRtzpcp/ESI8qGAqiQnNJLNfwMGAw=;
-        b=FOAstcFqxm5gMlrrmJeGQxNCe9+od1LRKLR8F7/t4K0pcuuzTJuMpORb2SqN7HryaA
-         lRLKvsxIcHLPzZYLXOFgzxaU+zdms5iH9FIVR84dtjZofnHRR27OmU684HkJIzUc0uTs
-         807ofQUcHjysLchT48CYfb+M87AWNoZxVqkH8=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MtQ4QMhacvE9H697yKg0y9WJKH5vHDX0jMNB3TsvZ9o=;
+        b=S0UM1lWBkkf82jL6M7fA49r7YTKmTpx7zKqy7ldM6w9vJVlyp/hQVK77dcOqzSLam3
+         eoO5zwTQe473xrVELi14OzFRRbu/p/27hbFUuszc5xcpMTyovdjwXR5zq6uI2Yh3/t/L
+         MnEacxFW//l2K0vQeH1COzzXPoDymmPTWdpVUXh1G4nxpwFx35++lfUip0BfKzKTZraD
+         MST9uNUUAVlRBXQu1JKMsiVIodhc6cuObdvsQN630CMPPgCahBOysFT8qsSx+dYvkCdK
+         85fLZXOyTDSKZQZtPpfgQMTbl60GpzNXhU7jeNsCWW/l9yqxdnJX19tHV7LrgIwAS4bq
+         WMfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xnd1I+ZG+p2xZfCRtzpcp/ESI8qGAqiQnNJLNfwMGAw=;
-        b=j0n64izo2VzED7Jan7Iv9LaGvDyQq3oMJFYq1asyYyZjKtpho1pC25uaSX2iD2qI5A
-         I0Bl0mVBl7DZ6kPYpzZRmKjRzLFfdA5/D/oIfWW0wLPDSzIsHou+woVn5CKL+PCVZ0aE
-         olsCFS94pqNpxKfw1xLdVLjRHOrZqc285rs+URUzBZXK2GTFYJPbRZCgg9o6SXOXF9Tx
-         Rk+ZDB/D+0GvXqIdwk3S1+lhnaNHgejSijvxF93eyIO0V2h+6C8zieSp32Awf6A50Vdh
-         yYj+ln6LKxbUEWP8hTkyqKA8x6o4avMl8YRXWvmrq/OIUY4WyXk6G2s1I4cL1sZZAZ+T
-         y2gA==
-X-Gm-Message-State: AOAM532Fl/SrLXg4K1giKET2+b4sASYPwtup6LwhdsLWw+hSY5Ka5IYp
-        S63rzghpuDBuD0FBdUplPqJRH+cw9fLnaDcK
-X-Google-Smtp-Source: ABdhPJzySBp1/n9I0djhR7BYsNQdwVhF3x0meWR8KHdioxICxxPdj/J739UNVX45BP0D7DOUAhfZzg==
-X-Received: by 2002:a92:6b02:: with SMTP id g2mr720527ilc.23.1621453990981;
-        Wed, 19 May 2021 12:53:10 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id f10sm542923ioc.10.2021.05.19.12.53.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 12:53:10 -0700 (PDT)
-Subject: Re: [PATCH] staging: greybus: spi: add blank line after variable
- declaration
-To:     Philippe Dixon <philippesdixon@gmail.com>, vireshk@kernel.org
-Cc:     rmfrfs@gmail.com, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210519193938.GA7131@ubuntu>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <7694715e-41b9-08e2-68f5-0fd57223a3ab@ieee.org>
-Date:   Wed, 19 May 2021 14:53:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=MtQ4QMhacvE9H697yKg0y9WJKH5vHDX0jMNB3TsvZ9o=;
+        b=te4ueGQlvEgyNurtJ2DXNKwj/UGkKLvMw0/2sr1fyiwI1PDigVay/mWcFg3asPhb5e
+         9J263gVC6jBtulqu2y7P6oWz9ZIZjY8qg7pVGBJ6pPe3lZe8mVWThbkCCIUI1EqoX1CJ
+         55SjJzcTwfy3Y6mbd8LqSY4A+WZlGPG8fh7ZPy+04tJvz6LMthpUZQ6YEDblD6KxJKFU
+         Bhpxmoo8L61QwnBtPlUcEjgMNK3VjursyUx0YMim7xrQ7NofJ1J7oJOAOvD0Mu52+AeE
+         pCUTK0aiCaQxzRdj3ajwiR/Pt+tldkxjJMispqZa7w8sIea7r5RZgTs8lImBRnZDQtqI
+         oAZQ==
+X-Gm-Message-State: AOAM532SxJ4xlijQpOyhlx1sFPSv+pSCuuq/6oSMeQ60L8jWQBm2NZQg
+        kxdwYmPhsfLhGprboygxpRY=
+X-Google-Smtp-Source: ABdhPJzBxRP23Pq0cpLunctYV2Hn1cAIk8pa4ioVC58rqmLCwMBhoZAZ0ifxvKm+0wGwx1LZaXT2Hw==
+X-Received: by 2002:a63:af0f:: with SMTP id w15mr766296pge.295.1621454044551;
+        Wed, 19 May 2021 12:54:04 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:4102:f4c7:9246:e6c4])
+        by smtp.gmail.com with ESMTPSA id a18sm159568pgg.51.2021.05.19.12.54.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 12:54:04 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 19 May 2021 12:54:02 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YKVs2pSiTaRSQljC@google.com>
+References: <20210423011108.11988-1-mcgrof@kernel.org>
+ <20210423011108.11988-2-mcgrof@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210519193938.GA7131@ubuntu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423011108.11988-2-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 2:39 PM, Philippe Dixon wrote:
-> This patch fixes the following checkpatch.pl warning:
+On Fri, Apr 23, 2021 at 01:11:05AM +0000, Luis Chamberlain wrote:
+> Provide a simple state machine to fix races with driver exit where we
+> remove the CPU multistate callbacks and re-initialization / creation of
+> new per CPU instances which should be managed by these callbacks.
 > 
-> WARNING: Missing a blank line after declarations
+> The zram driver makes use of cpu hotplug multistate support, whereby it
+> associates a struct zcomp per CPU. Each struct zcomp represents a
+> compression algorithm in charge of managing compression streams per CPU.
+> Although a compiled zram driver only supports a fixed set of compression
+> algorithms, each zram device gets a struct zcomp allocated per CPU. The
+> "multi" in CPU hotplug multstate refers to these per cpu struct zcomp
+> instances. Each of these will have the CPU hotplug callback called for
+> it on CPU plug / unplug. The kernel's CPU hotplug multistate keeps a
+> linked list of these different structures so that it will iterate over
+> them on CPU transitions.
 > 
-> Signed-off-by: Philippe Dixon <philippesdixon@gmail.com>
-
-Looks good.
-
-Reviewed-by: Alex Elder <elder@linaro.org>
-
-> ---
->   drivers/staging/greybus/spilib.c | 1 +
->   1 file changed, 1 insertion(+)
+> By default at driver initialization we will create just one zram device
+> (num_devices=1) and a zcomp structure then set for the now default
+> lzo-rle comrpession algorithm. At driver removal we first remove each
+> zram device, and so we destroy the associated struct zcomp per CPU. But
+> since we expose sysfs attributes to create new devices or reset / initialize
+> existing zram devices, we can easily end up re-initializing a struct zcomp
+> for a zram device before the exit routine of the module removes the cpu
+> hotplug callback. When this happens the kernel's CPU hotplug will detect
+> that at least one instance (struct zcomp for us) exists. This can happen
+> in the following situation:
 > 
-> diff --git a/drivers/staging/greybus/spilib.c b/drivers/staging/greybus/spilib.c
-> index 30655153df6a..ad0700a0bb81 100644
-> --- a/drivers/staging/greybus/spilib.c
-> +++ b/drivers/staging/greybus/spilib.c
-> @@ -246,6 +246,7 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
->   	xfer = spi->first_xfer;
->   	while (msg->state != GB_SPI_STATE_OP_DONE) {
->   		int xfer_delay;
-> +
->   		if (xfer == spi->last_xfer)
->   			xfer_len = spi->last_xfer_size;
->   		else
+> CPU 1                            CPU 2
 > 
-
+> class_unregister(...);
+> idr_for_each(...);
+> zram_debugfs_destroy();
+>                                 disksize_store(...);
+> idr_destroy(...);
+> unregister_blkdev(...);
+> cpuhp_remove_multi_state(...);
+> 
+> The warning comes up on cpuhp_remove_multi_state() when it sees that the
+> state for CPUHP_ZCOMP_PREPARE does not have an empty instance linked list.
+> In this case, that a struct zcom still exists, the driver allowed its
+> creation per CPU even though we could have just freed them per CPU
+> though a call on another CPU, and we are then later trying to remove the
+> hotplug callback.
+> 
+> Fix all this by providing a zram initialization boolean
+> protected the the shared in the driver zram_index_mutex,
+> which we can use to annotate when sysfs attributes are
+> safe to use or not -- once the driver is properly initialized.
+> When the driver is going down we also are sure to not let
+> userspace muck with attributes which may affect each per cpu
+> struct zcomp.
+> 
+> This also fixes a series of possible memory leaks. The
+> crashes and memory leaks can easily be caused by issuing
+> the zram02.sh script from the LTP project [0] in a loop
+> in two separate windows:
+> 
+>   cd testcases/kernel/device-drivers/zram
+>   while true; do PATH=$PATH:$PWD:$PWD/../../../lib/ ./zram02.sh; done
+> 
+> You end up with a splat as follows:
+> 
+> kernel: zram: Removed device: zram0
+> kernel: zram: Added device: zram0
+> kernel: zram0: detected capacity change from 0 to 209715200
+> kernel: Adding 104857596k swap on /dev/zram0.  Priority:-2 extents:1 across:104857596k SSFS
+> kernel: zram0: detected capacitky change from 209715200 to 0
+> kernel: zram0: detected capacity change from 0 to 209715200
+> kernel: ------------[ cut here ]------------
+> kernel: Error: Removing state 63 which has instances left.
+> kernel: WARNING: CPU: 7 PID: 70457 at kernel/cpu.c:2069 __cpuhp_remove_state_cpuslocked+0xf9/0x100
+> kernel: Modules linked in: zram(E-) zsmalloc(E) <etc>
+> kernel: CPU: 7 PID: 70457 Comm: rmmod Tainted: G            E     5.12.0-rc1-next-20210304 #3
+> kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> kernel: RIP: 0010:__cpuhp_remove_state_cpuslocked+0xf9/0x100
+> kernel: Code: <etc>
+> kernel: RSP: 0018:ffffa800c139be98 EFLAGS: 00010282
+> kernel: RAX: 0000000000000000 RBX: ffffffff9083db58 RCX: ffff9609f7dd86d8
+> kernel: RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff9609f7dd86d0
+> kernel: RBP: 0000000000000000i R08: 0000000000000000 R09: ffffa800c139bcb8
+> kernel: R10: ffffa800c139bcb0 R11: ffffffff908bea40 R12: 000000000000003f
+> kernel: R13: 00000000000009d8 R14: 0000000000000000 R15: 0000000000000000
+> kernel: FS: 00007f1b075a7540(0000) GS:ffff9609f7dc0000(0000) knlGS:0000000000000000
+> kernel: CS:  0010 DS: 0000 ES 0000 CR0: 0000000080050033
+> kernel: CR2: 00007f1b07610490 CR3: 00000001bd04e000 CR4: 0000000000350ee0
+> kernel: Call Trace:
+> kernel: __cpuhp_remove_state+0x2e/0x80
+> kernel: __do_sys_delete_module+0x190/0x2a0
+> kernel:  do_syscall_64+0x33/0x80
+> kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> The "Error: Removing state 63 which has instances left" refers
+> to the zram per CPU struc zcomp instances left.
+> 
+> [0] https://github.com/linux-test-project/ltp.git
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
