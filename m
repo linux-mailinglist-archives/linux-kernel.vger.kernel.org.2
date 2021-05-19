@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FF8388B50
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916BD388B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346991AbhESKFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 06:05:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:57186 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345316AbhESKFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 06:05:02 -0400
-IronPort-SDR: SBB+5Ik55u2tfs1Ugkdte7qJezIKjs4qb/OodgryoTPfom0asPNaq+qr4nESwmJSNPr624sl7V
- zyVa1NDV/7xQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="181216117"
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="181216117"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 03:03:41 -0700
-IronPort-SDR: DhOPIM/ZlkzZVDt5F+OwtTcPQAL3DsmsgokwmTihC+HXQEjgwFW5WOM0lHUWTlam2fP9aUMnP/
- udtSrSKc5owg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="474333312"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 19 May 2021 03:03:39 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 028FFBA; Wed, 19 May 2021 13:04:00 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v2 1/1] usb: typec: tcpm: Use LE to CPU conversion when accessing msg->header
-Date:   Wed, 19 May 2021 13:03:58 +0300
-Message-Id: <20210519100358.64018-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S1347188AbhESKLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 06:11:02 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33504 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233957AbhESKLA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 06:11:00 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JA4uXW023620;
+        Wed, 19 May 2021 10:09:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=zBxKpOYS45AX71H4cYakK7LXHH18jWUsDqxQrdJXAR0=;
+ b=K8ul7kEHuALw5FaN/VHvkegZRr36gm/BT8MWQb1D8Q8hGZ8jICCgGu42Ay7bUFEOhXJB
+ wc9yi4+M0WQdUvtM5+kGIW6zy69LBVNkvSXbFdsFLX8z87Sv9/I4s8aKpqYFvyBhXXlX
+ qIBJAg4aGm52RiCDFuRiye3vGoyefzQXFq86bMG4SvqRYE7MsnNUs9BmepJW6Rnr6dWt
+ /+fH40EHZoF8Qk8wyEk0+yJAUpI6qbehXVKwbsexRtt80IU5sgP1SFvQQ0/rXnqute9Z
+ nXBgO6m23tXiFQOwam/+vwEHGc2Cf6Usy5p5jcVcswfRuliR6Oj/LrsKIwbkDY5CVClf Uw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 38j68mh1xd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 10:09:29 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JA6QUf061734;
+        Wed, 19 May 2021 10:09:28 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38megkbcy4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 10:09:28 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14JA9RFQ066617;
+        Wed, 19 May 2021 10:09:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 38megkbcxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 10:09:27 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14JA9NDS010801;
+        Wed, 19 May 2021 10:09:23 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 May 2021 03:09:23 -0700
+Date:   Wed, 19 May 2021 13:09:12 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v18 11/18] RISC-V: KVM: Implement MMU notifiers
+Message-ID: <20210519100912.GR1955@kadam>
+References: <20210519033553.1110536-1-anup.patel@wdc.com>
+ <20210519033553.1110536-12-anup.patel@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519033553.1110536-12-anup.patel@wdc.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: XBFAJf2Ps2UQMzPRlazN4Iwzcsdu9E1e
+X-Proofpoint-GUID: XBFAJf2Ps2UQMzPRlazN4Iwzcsdu9E1e
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9988 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 suspectscore=0 clxscore=1015
+ adultscore=0 bulkscore=0 phishscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105190071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse is not happy about strict type handling:
-  .../typec/tcpm/tcpm.c:2720:27: warning: restricted __le16 degrades to integer
-  .../typec/tcpm/tcpm.c:2814:32: warning: restricted __le16 degrades to integer
+On Wed, May 19, 2021 at 09:05:46AM +0530, Anup Patel wrote:
+>  int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+>  			 struct kvm_memory_slot *memslot,
+>  			 gpa_t gpa, unsigned long hva, bool is_write)
+> @@ -569,7 +643,7 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+>  	struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
+>  	bool logging = (memslot->dirty_bitmap &&
+>  			!(memslot->flags & KVM_MEM_READONLY)) ? true : false;
+> -	unsigned long vma_pagesize;
+> +	unsigned long vma_pagesize, mmu_seq;
+>  
+>  	mmap_read_lock(current->mm);
+>  
+> @@ -608,6 +682,8 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+>  		return ret;
+>  	}
+>  
+> +	mmu_seq = kvm->mmu_notifier_seq;
+> +
+>  	hfn = gfn_to_pfn_prot(kvm, gfn, is_write, &writeable);
+>  	if (hfn == KVM_PFN_ERR_HWPOISON) {
+>  		send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
+> @@ -626,6 +702,9 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+>  
+>  	spin_lock(&kvm->mmu_lock);
+>  
+> +	if (mmu_notifier_retry(kvm, mmu_seq))
+> +		goto out_unlock;
 
-Fix this by converting LE to CPU before use.
+Do we need an error code here or is it a success path?  You would
+expect from the name that mmu_notifier_retry() would retry something
+and return an error code, but it's actually a boolean function.
 
-Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
-Fixes: 64f7c494a3c0 ("typec: tcpm: Add support for sink PPS related messages")
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed subject prefix
- drivers/usb/typec/tcpm/tcpm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+regards,
+dan carpenter
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 64133e586c64..8fdfd7f65ad7 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -2717,7 +2717,7 @@ static void tcpm_pd_ext_msg_request(struct tcpm_port *port,
- 	enum pd_ext_msg_type type = pd_header_type_le(msg->header);
- 	unsigned int data_size = pd_ext_header_data_size_le(msg->ext_msg.header);
- 
--	if (!(msg->ext_msg.header & PD_EXT_HDR_CHUNKED)) {
-+	if (!(le16_to_cpu(msg->ext_msg.header) & PD_EXT_HDR_CHUNKED)) {
- 		tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
- 		tcpm_log(port, "Unchunked extended messages unsupported");
- 		return;
-@@ -2811,7 +2811,7 @@ static void tcpm_pd_rx_handler(struct kthread_work *work)
- 				 "Data role mismatch, initiating error recovery");
- 			tcpm_set_state(port, ERROR_RECOVERY, 0);
- 		} else {
--			if (msg->header & PD_HEADER_EXT_HDR)
-+			if (le16_to_cpu(msg->header) & PD_HEADER_EXT_HDR)
- 				tcpm_pd_ext_msg_request(port, msg);
- 			else if (cnt)
- 				tcpm_pd_data_request(port, msg);
--- 
-2.30.2
+> +
+>  	if (writeable) {
+>  		kvm_set_pfn_dirty(hfn);
+>  		mark_page_dirty(kvm, gfn);
+> @@ -639,6 +718,7 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+>  	if (ret)
+>  		kvm_err("Failed to map in stage2\n");
+>  
+> +out_unlock:
+>  	spin_unlock(&kvm->mmu_lock);
+>  	kvm_set_pfn_accessed(hfn);
+>  	kvm_release_pfn_clean(hfn);
 
