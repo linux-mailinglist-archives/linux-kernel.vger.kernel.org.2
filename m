@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EEA3889F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5F03889F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344099AbhESI4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:56:43 -0400
-Received: from mga18.intel.com ([134.134.136.126]:22692 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238728AbhESI4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:56:38 -0400
-IronPort-SDR: hN7xVaLZ1onLVLFHOVnDPi13fRQ84mB675Q+/WxL28dZkglWVcBtoH8R7ItH1eyXa3cSOxdowd
- b1OpdXcTDNMA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="188336043"
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="188336043"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 01:55:18 -0700
-IronPort-SDR: v9/MsFE4cc7o27b+cWhtxhaTCe948D1EswZbDBokaesYNBtVsPM8TWHCk1Lla4Ojgi/25gjKpf
- o2hOHXxYayZg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="474309943"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 19 May 2021 01:55:16 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 30BA612F; Wed, 19 May 2021 11:55:38 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v1 1/1] usb: typec: wcove: Use LE to CPU conversion when accessing msg->header
-Date:   Wed, 19 May 2021 11:55:34 +0300
-Message-Id: <20210519085534.48732-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S241465AbhESI5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:57:49 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51161 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235189AbhESI5s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:57:48 -0400
+Received: from mail-ed1-f70.google.com ([209.85.208.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <juerg.haefliger@canonical.com>)
+        id 1ljI0C-00042O-3h
+        for linux-kernel@vger.kernel.org; Wed, 19 May 2021 08:56:28 +0000
+Received: by mail-ed1-f70.google.com with SMTP id cn20-20020a0564020cb4b029038d0b0e183fso7286556edb.22
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 01:56:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1OkZMVyIQ2WOlWNtNqHDsNx22TsqpoXEJAz21DvSQeI=;
+        b=TyR7IUHm/NhVlI7vRRHQHWfsHrzyKAI+aQv3pQW7x7ORS7w8Wms4WDZVLzz/hX5cbv
+         NuSpfnHmSNg+MCl/Ot5Bv+03P7Vn+89dqTwfSLm2Tt6l5uvIPn4NApGoFHonkWjMq6x9
+         cdY+DC/rI6TFzx28cQPhfxUzCH5h2616CI+NlUKWnvBounLYYeTZXs9OsjeV1ywwuQ/v
+         nniDfJq4CGd6QCh4EC5nOt+ceF9hzQ/0peSRooBrGTaiOhdjNm9KR60ka0f+v8oCc5LP
+         kFBWIuZa3UzZ9auw7k5h0YDZNAXHdh8ffXes0LiiJa1oUwSLlhrotxxxVOQXOsCQ47OX
+         TUdQ==
+X-Gm-Message-State: AOAM5322kqKSRnxz7GmiwsmJ6PqW/p5GLfS+Lg+XzTeI73/wIpPcAw7t
+        rW0EIqwfJLhIHCZSxNHte/AaMZoLjKGNLMfGFuhDjbvgZHKMk7rekr3YztJBBGuYqoTLUIwfKme
+        1YPTDwYeZrtveM8fvPotU/esAkmqeLUAsxDdTvH241Q==
+X-Received: by 2002:a05:6402:54e:: with SMTP id i14mr13083493edx.289.1621414587903;
+        Wed, 19 May 2021 01:56:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzeYj2vl0hXB1PffsjwF3w9SjOcnrL7e5EIu40SnqdTjjE0LlWM8FyO34chxeBRqF6tY1VHw==
+X-Received: by 2002:a05:6402:54e:: with SMTP id i14mr13083486edx.289.1621414587762;
+        Wed, 19 May 2021 01:56:27 -0700 (PDT)
+Received: from gollum.fritz.box ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id l28sm1364816edc.29.2021.05.19.01.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 01:56:27 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Subject: [PATCH v2 0/3] block: Cleanup Kconfigs
+Date:   Wed, 19 May 2021 10:56:12 +0200
+Message-Id: <20210519085615.12101-1-juergh@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As LKP noticed the Sparse is not happy about strict type handling:
-   .../typec/tcpm/wcove.c:380:50: sparse:     expected unsigned short [usertype] header
-   .../typec/tcpm/wcove.c:380:50: sparse:     got restricted __le16 const [usertype] header
+Move BLK_CGROUP from init/Kconfig to block/Kconfig per Christoph Hellwig's
+request and cleanup various whitespace issues:
+  - Replace multi spaces with a tab
+  - Make the help text indentation 1 tab + 2 spaces
 
-Fix this by switching to use pd_header_cnt_le() instead of pd_header_cnt()
-in the affected code.
+v2:
+  - Move BLK_CGROUP from init/ to block/.
+  - Cleanup the other block Kconfig files.
 
-Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/usb/typec/tcpm/wcove.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1: https://lore.kernel.org/lkml/20210516145731.61253-1-juergh@canonical.com/
 
-diff --git a/drivers/usb/typec/tcpm/wcove.c b/drivers/usb/typec/tcpm/wcove.c
-index 79ae63950050..5d125339687a 100644
---- a/drivers/usb/typec/tcpm/wcove.c
-+++ b/drivers/usb/typec/tcpm/wcove.c
-@@ -378,7 +378,7 @@ static int wcove_pd_transmit(struct tcpc_dev *tcpc,
- 		const u8 *data = (void *)msg;
- 		int i;
- 
--		for (i = 0; i < pd_header_cnt(msg->header) * 4 + 2; i++) {
-+		for (i = 0; i < pd_header_cnt_le(msg->header) * 4 + 2; i++) {
- 			ret = regmap_write(wcove->regmap, USBC_TX_DATA + i,
- 					   data[i]);
- 			if (ret)
+Juerg Haefliger (3):
+  init/Kconfig: Move BLK_CGROUP to block/Kconfig
+  block/Kconfig: Whitespace and indentation cleanups
+  block/Kconfig.iosched: Whitespace and indentation cleanups
+
+ block/Kconfig         | 155 ++++++++++++++++++++++++------------------
+ block/Kconfig.iosched |  27 ++++----
+ init/Kconfig          |  22 ------
+ 3 files changed, 102 insertions(+), 102 deletions(-)
+
 -- 
-2.30.2
+2.27.0
 
