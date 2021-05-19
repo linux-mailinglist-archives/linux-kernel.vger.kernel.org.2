@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5F8388E2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D81388E2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353412AbhESMhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236585AbhESMg7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:36:59 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480E6C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:35:38 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so3230338wmf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Y06vGdT7AQw6M4ZhpKji87og+cjxY+tkZexuVa+ZoG4=;
-        b=jedgLjhU+jYdGWkBJjREpVz8Epa64b2E0r26n3C9IkindLezudF1M2vGf+qJkHPwUw
-         oLpRqo5vgEKHjR61wueSA4IdZtD7f1E9MA14Sw5HUywUYxmdbakLtdpcsT7sLx7e5vKS
-         e/wQBMGUd0HhPRKf0attdUvLB4ioA/KxMA6cF5JSnn40KoUsZghis4atbZ+WdEbpa95R
-         BSChsQSUL63XHK1rOuNzrTg1+H7dOJ5uUytu7CDrF8m+LdsmezVDoAP+P+TSBycawRmZ
-         p1A0tu5VAMEMH8vlAS0xrelLDsWznfkvXWyEHOKDqgshm5uFt9OihQe17sy/npvzpT2z
-         5bJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Y06vGdT7AQw6M4ZhpKji87og+cjxY+tkZexuVa+ZoG4=;
-        b=sGwM+O1MUq9R/yl7f9psjecA0cmt7+ZW4c1TitWTetc4pSYeCoyQ803uCvS03M592u
-         l/oo1DoFSnJT29dUZ6aJWryJDElmC4hBF+xn8jlm7LCMMMYDCUVaRd8RwhLOgxb2Ry9V
-         gsAkVt7ES5x7NYeUj3n14lhU+mA75399N5ncyw12XdEMKrrr7IOJTjaNFcLCkblHwKIG
-         yLeFAKjMK+cJP9XmNRGtU+8F7oUUZaWgKjJVcvntfYqoyLyTjWuyjrMXHAZg4i9u1uNN
-         5WH1P+ka4q3AC9jArG4rstyNiOD48C1+c9UoguacCRFVv+pOwfEHhXpqPDA5205AMt3P
-         OEvw==
-X-Gm-Message-State: AOAM532Uo+nwWfubG7GbyH1YpXzwoYC+i1ImfN9xSaqEiu/COGd0KHOv
-        F9ytYHLlGo2scXHb/Bb1wQryGQ==
-X-Google-Smtp-Source: ABdhPJyZrzJbg1BoZs327JjPOVbrj6yyB6CtRKk7wrTf0N0Rjv4goRayAA5SnYYzC8KCLsIDaC7zdQ==
-X-Received: by 2002:a7b:c052:: with SMTP id u18mr10929801wmc.105.1621427736921;
+        id S241133AbhESMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:37:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:35750 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353396AbhESMhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 08:37:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 803D5101E;
+        Wed, 19 May 2021 05:35:41 -0700 (PDT)
+Received: from [10.163.79.253] (unknown [10.163.79.253])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33E683F73B;
         Wed, 19 May 2021 05:35:36 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id b10sm29997220wrr.27.2021.05.19.05.35.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 05:35:36 -0700 (PDT)
-Date:   Wed, 19 May 2021 13:35:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Immutable branch between MFD, GPIO and Regulator due for
- the v5.14 merge window
-Message-ID: <20210519123534.GD2415519@dell>
-References: <20210219223910.1831-1-luca@lucaceresoli.net>
+Subject: Re: [PATCH] arm64: mm: hugetlb: add support for free vmemmap pages of
+ HugeTLB
+To:     Muchun Song <songmuchun@bytedance.com>, will@kernel.org,
+        akpm@linux-foundation.org, david@redhat.com, bodeddub@amazon.com,
+        osalvador@suse.de, mike.kravetz@oracle.com, rientjes@google.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com
+References: <20210518091826.36937-1-songmuchun@bytedance.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <5ae7a4be-dfd5-faf6-a75c-a2adf5a344b2@arm.com>
+Date:   Wed, 19 May 2021 18:06:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210518091826.36937-1-songmuchun@bytedance.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210219223910.1831-1-luca@lucaceresoli.net>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enjoy!
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+On 5/18/21 2:48 PM, Muchun Song wrote:
+> The preparation of supporting freeing vmemmap associated with each
+> HugeTLB page is ready, so we can support this feature for arm64.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  arch/arm64/mm/mmu.c | 5 +++++
+>  fs/Kconfig          | 2 +-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 5d37e461c41f..967b01ce468d 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/mm.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/set_memory.h>
+> +#include <linux/hugetlb.h>
+>  
+>  #include <asm/barrier.h>
+>  #include <asm/cputype.h>
+> @@ -1134,6 +1135,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+>  	pmd_t *pmdp;
+>  
+>  	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+> +
+> +	if (is_hugetlb_free_vmemmap_enabled() && !altmap)
+> +		return vmemmap_populate_basepages(start, end, node, altmap);
+> +
+>  	do {
+>  		next = pmd_addr_end(addr, end);
+>  
+> diff --git a/fs/Kconfig b/fs/Kconfig
+> index 6ce6fdac00a3..02c2d3bf1cb8 100644
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -242,7 +242,7 @@ config HUGETLB_PAGE
+>  
+>  config HUGETLB_PAGE_FREE_VMEMMAP
+>  	def_bool HUGETLB_PAGE
+> -	depends on X86_64
+> +	depends on X86_64 || ARM64
+>  	depends on SPARSEMEM_VMEMMAP
+>  
+>  config MEMFD_CREATE
+> 
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+How does this interact with HugeTLB migration as such which might iterate
+over individual constituent struct pages (overriding the same struct page
+for all tail pages when this feature is enabled). A simple test involving
+madvise(ptr, size, MADV_SOFT_OFFLINE) fails on various HugeTLB page sizes,
+with this patch applied. Although I have not debugged this any further.
 
-are available in the Git repository at:
+Soft offlining pfn 0x101c00 at process virtual address 0xffff7fa00000
+soft offline: 0x101c00: hugepage migration failed 1, type bfffc0000010006 
+              (referenced|uptodate|head|node=0|zone=2|lastcpupid=0xffff)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tb-mfd-gpio-regulator-v5.14
-
-for you to fetch changes up to 5258f7eed42f4565d065726fd82d3430dd618a68:
-
-  mfd: lp87565: Move LP87565_regulator_id to .c file (2021-05-19 13:34:00 +0100)
-
-----------------------------------------------------------------
-Immutable branch between MFD, GPIO and Regulator due for the v5.14 merge window
-
-----------------------------------------------------------------
-Luca Ceresoli (2):
-      mfd: lp87565: Fix typo in define names
-      mfd: lp87565: Move LP87565_regulator_id to .c file
-
- drivers/gpio/gpio-lp87565.c           |  6 +++---
- drivers/regulator/lp87565-regulator.c | 11 ++++++++++
- include/linux/mfd/lp87565.h           | 39 +++++++++++++----------------------
- 3 files changed, 28 insertions(+), 28 deletions(-)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
