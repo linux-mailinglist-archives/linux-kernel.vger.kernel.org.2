@@ -2,438 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154D13899FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100843899FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhESXmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
+        id S230013AbhESXop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESXmG (ORCPT
+        with ESMTP id S229465AbhESXon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:42:06 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E581C061574;
-        Wed, 19 May 2021 16:40:46 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id q10so14533409qkc.5;
-        Wed, 19 May 2021 16:40:46 -0700 (PDT)
+        Wed, 19 May 2021 19:44:43 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78163C061574;
+        Wed, 19 May 2021 16:43:21 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id 82so3150720qki.8;
+        Wed, 19 May 2021 16:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k+Jana+OgwRA+yzJ6tu/kACb1sjb5Qp5Fk12gS1wgHg=;
-        b=n5PlmCzXYCbDXyscq7hnMb25N+Go235LgsyLBrTIj06aaiQYR23cJoxYAGaDz0RsAu
-         DnHwQDVhxswMMLDWijDolXkCbyNF44TytSJWn9gqFXqyThV2fIHfzFxv0HXVYagrfTx7
-         fxotYuUcoyHcG+XUR1jns5Km8DFPJuWRUGvpJ6+WIwxIA6m8EUrQCxgZ1cZMUI6sONnQ
-         r/zbK4bM7iS+r68IYAl+/pPtnfhq3GMWI+UTFOsaj5dpJESUIBhzWszxI7HsjhtXCkZ2
-         ZgB+nCjnj9M4ZsBktwgdjOhUuW1W/syzGlLUnwDsObZYP5qHLOOwCetpwMEFo91hlqz1
-         RfWA==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jZj61H+nZldX9VF8Rk7SoLRZEnhdWQ15nrHYMIdlXL8=;
+        b=hV289Pn1fzt0l5vYzw9Zco9XFbeqr0tKlwl117wL+ReIbVLezHs/xFwIcMKafGIL/r
+         Ceq9AJkQHisWMOwWZVoe+E3BdzypGyKrbGtP5GVg+wjxmevjIE5q30D1Z3rQCTBmbzyl
+         JopSkzzu13aCRFAkE3C3pYN93lb/AFgpuiOcI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k+Jana+OgwRA+yzJ6tu/kACb1sjb5Qp5Fk12gS1wgHg=;
-        b=WyZFgphFsuAtW5VnuHE7LofTlloEKNflDIDAxXg3oDj3HG41VBojWUjCUQe1ZpQrD7
-         B/go49Bjqfhhwf52IACW+ck6f/T98vsjyfrO/Yc0XdzEvTJV/J8iA0J/MXDtXaOtQF+k
-         jUgphxMBGs+bF1HTrCovVS8EvUaABoNP3ahtzHrz7ZUxNLCFR+c7eAk3SHXF6dgrsE30
-         Gk67Jq4euznJ6oXKLlhKde5U0H4e61kNTyTWF8UrjLvAfBUsxOY0Q0E2eImIvlHEro0X
-         SR491MrwwHEHJ1jsk+2uA9Zx6yUTnN7615rKkcEhqIWxCodEGGhaU46BYgsZWE5EpVvH
-         0+KQ==
-X-Gm-Message-State: AOAM533BgxcgjVZYYmeYsjK/d2OzpP7b4WyXnCpJUwLV6bHs9E3C6N8V
-        HdsEOKZqVBHkWo0uV0FE4Di1O7y/PAc=
-X-Google-Smtp-Source: ABdhPJwRjfG5UP6wcLjlKiMM0qj2vGWF8vdYzcIEB+04DleGNf0bzMHZg88OFqLD9sNw04e6QX7tiQ==
-X-Received: by 2002:a37:8185:: with SMTP id c127mr2038736qkd.477.1621467645117;
-        Wed, 19 May 2021 16:40:45 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x21sm693058qtr.31.2021.05.19.16.40.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 16:40:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 4/5] hwmon: (pmbus/pim4328) Add PMBus driver for PIM4006,
- PIM4328 and PIM4820
-To:     Erik Rosen <erik.rosen@metormote.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210519201015.83989-1-erik.rosen@metormote.com>
- <20210519201015.83989-5-erik.rosen@metormote.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <671cd7d2-9ef4-6ee0-8753-2fc5b969ed35@roeck-us.net>
-Date:   Wed, 19 May 2021 16:40:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jZj61H+nZldX9VF8Rk7SoLRZEnhdWQ15nrHYMIdlXL8=;
+        b=lp61uGh8Hi7ghuYkGlyKVBIBYtXo81zHvu83/yEYPxuGl0V6SC5xvEMDX69NMdeQo+
+         SmTmaWdybKle19AZbz3pHQYb79aGXegDIaoor97qCmBgXUU4VuLU6joIxnBsjKSK0t7E
+         ODq9vHxpJ0LYoP2d1x6vgmZPX6jnGqh1crUM6USvjx88kJKNN2jM9bwyyp/CeDz3X0zx
+         C76Wyfuy1R2O5uan39xGCV9swGTB8zcPje4fNbjS6jZjT4YdBfuLbEb7ECs/eoNwcAc9
+         tb0vX6yNwTOvG8dxaG9mRCnKcYOtRL33pwMtyun17LDB5BwmA9c/1GFVG1WbkrB853mJ
+         TVvw==
+X-Gm-Message-State: AOAM53317Vs6W6Mi4Cra3YLZSRjLWcnefHfKOzOkZHUJObQHc06W0k+D
+        pCKirJrVUlprkdUJjsEUk2zRvFe3E14Tjk+x0gM=
+X-Google-Smtp-Source: ABdhPJyUszWiuobnzOy5L9VplXiMBG9qLzJjbpbR0WfzIFw8cspGiZ3PnAV6tV3oDvUEgCvPn/rTmcBK9mwiyYTq9ws=
+X-Received: by 2002:a05:620a:704:: with SMTP id 4mr1331345qkc.66.1621467800517;
+ Wed, 19 May 2021 16:43:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210519201015.83989-5-erik.rosen@metormote.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210519074934.20712-1-quan@os.amperecomputing.com> <20210519074934.20712-5-quan@os.amperecomputing.com>
+In-Reply-To: <20210519074934.20712-5-quan@os.amperecomputing.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 19 May 2021 23:43:08 +0000
+Message-ID: <CACPK8XdyQT=cuSr9KBqC0PBkOLgBUBpyz3kZEA3JuOuZsQN_Rw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] i2c: aspeed: Acknowledge Tx done w/wo ACK irq late
+To:     Quan Nguyen <quan@os.amperecomputing.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        openipmi-developer@lists.sourceforge.net,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c@vger.kernel.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 1:10 PM, Erik Rosen wrote:
-> Add hardware monitoring support for Flex power interface modules PIM4006,
-> PIM4328 and PIM4820.
-> 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+On Wed, 19 May 2021 at 07:50, Quan Nguyen <quan@os.amperecomputing.com> wrote:
+>
+> With Tx done w/wo ACK are ack'ed early at beginning of irq handler,
+
+Is w/wo a typo? If not, please write the full words ("with and without")
+
+> it is observed that, usually, the Tx done with Ack irq raises in the
+> READ REQUESTED state. This is unexpected and complaint as below appear:
+> "Unexpected Ack on read request"
+>
+> Assumed that Tx done should only be ack'ed once it was truly processed,
+> switch to late ack'ed this two irqs and seen this issue go away through
+> test with AST2500..
+
+Please read Guneter's commit message
+2be6b47211e17e6c90ead40d24d2a5cc815f2d5c to confirm that your changes
+do not invalidate the fix that they made.  Add them to CC for review.
+
+Again, this is a fix that is independent of the ssif work. Please send
+it separately with a Fixes line.
+
+>
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
 > ---
->   drivers/hwmon/pmbus/Kconfig   |   9 +
->   drivers/hwmon/pmbus/Makefile  |   1 +
->   drivers/hwmon/pmbus/pim4328.c | 310 ++++++++++++++++++++++++++++++++++
->   3 files changed, 320 insertions(+)
->   create mode 100644 drivers/hwmon/pmbus/pim4328.c
-> 
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index 37a5c39784fa..001527c71269 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -257,6 +257,15 @@ config SENSORS_MP2975
->   	  This driver can also be built as a module. If so, the module will
->   	  be called mp2975.
->   
-> +config SENSORS_PIM4328
-> +	tristate "Flex PIM4328 and compatibles"
-> +	help
-> +	  If you say yes here you get hardware monitoring support for Flex
-> +	  PIM4328, PIM4820 and PIM4006 Power Interface Modules.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called pim4328.
-> +
->   config SENSORS_PM6764TR
->   	tristate "ST PM6764TR"
->   	help
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index f8dcc27cd56a..2a12397535ba 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -39,3 +39,4 @@ obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
->   obj-$(CONFIG_SENSORS_UCD9200)	+= ucd9200.o
->   obj-$(CONFIG_SENSORS_XDPE122)	+= xdpe12284.o
->   obj-$(CONFIG_SENSORS_ZL6100)	+= zl6100.o
-> +obj-$(CONFIG_SENSORS_PIM4328)   += pim4328.o
-> diff --git a/drivers/hwmon/pmbus/pim4328.c b/drivers/hwmon/pmbus/pim4328.c
-> new file mode 100644
-> index 000000000000..b9aa4f76f6cd
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/pim4328.c
-> @@ -0,0 +1,310 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Hardware monitoring driver for PIM4006, PIM4328 and PIM4820
-> + *
-> + * Copyright (c) 2021 Flextronics International Sweden AB
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/init.h>
-> +#include <linux/err.h>
-> +#include <linux/slab.h>
-> +#include <linux/i2c.h>
-> +#include <linux/pmbus.h>
+> v3:
+>   + First introduce in v3 [Quan]
+>
+>  drivers/i2c/busses/i2c-aspeed.c | 26 ++++++++++++++++++--------
+>  1 file changed, 18 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+> index 3fb37c3f23d4..b2e9c8f0ddf7 100644
+> --- a/drivers/i2c/busses/i2c-aspeed.c
+> +++ b/drivers/i2c/busses/i2c-aspeed.c
+> @@ -606,8 +606,12 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
+>
+>         spin_lock(&bus->lock);
+>         irq_received = readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> -       /* Ack all interrupts except for Rx done */
+> -       writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
+> +       /*
+> +        * Ack all interrupts except for Rx done and
+> +        * Tx done with/without ACK
 
-Alphabetic include file order, please.
+Nit: this comment can be on one line.
 
-> +#include "pmbus.h"
-> +
-> +enum chips { pim4006, pim4328, pim4820 };
-> +
-> +struct pim4328_data {
-> +	enum chips id;
-> +	struct pmbus_driver_info info;
-> +};
-> +
-> +#define to_pim4328_data(x)  container_of(x, struct pim4328_data, info)
-> +
-> +/* PIM4006 and PIM4328 */
-> +#define PIM4328_MFR_READ_VINA		0xd3
-> +#define PIM4328_MFR_READ_VINB		0xd4
-> +
-> +/* PIM4006 */
-> +#define PIM4328_MFR_READ_IINA		0xd6
-> +#define PIM4328_MFR_READ_IINB		0xd7
-> +#define PIM4328_MFR_FET_CHECKSTATUS     0xd9
-> +
-> +/* PIM4328 */
-> +#define PIM4328_MFR_STATUS_BITS		0xd5
-> +
-> +/* PIM4820 */
-> +#define PIM4328_MFR_READ_STATUS		0xd0
-> +
-> +static const struct i2c_device_id pim4328_id[] = {
-> +	{"bmr455", pim4328},
-> +	{"pim4006", pim4006},
-> +	{"pim4106", pim4006},
-> +	{"pim4206", pim4006},
-> +	{"pim4306", pim4006},
-> +	{"pim4328", pim4328},
-> +	{"pim4406", pim4006},
-> +	{"pim4820", pim4820},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(i2c, pim4328_id);
-> +
-> +static int pim4328_read_word_data(struct i2c_client *client, int page,
-> +				  int phase, int reg)
-> +{
-> +	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-> +	struct pim4328_data *data = to_pim4328_data(info);
-> +	int ret, status;
-> +
-> +	if (page > 0)
-> +		return -ENXIO;
-> +
-> +	switch (reg) {
-> +	case PMBUS_STATUS_WORD:
-> +		ret = pmbus_read_byte_data(client, page, PMBUS_STATUS_BYTE);
-> +		if (ret >= 0) {
-> +			if (data->id == pim4006) {
-> +				status = pmbus_read_word_data(client, page, 0xff,
-> +							      PIM4328_MFR_FET_CHECKSTATUS);
-> +				if (status > 0) {
-> +					if (status & 0x0630) /* Input UV */
-> +						ret |= 0x08;
-> +				}
-> +			} else if (data->id == pim4328) {
-> +				status = pmbus_read_byte_data(client, page,
-> +							      PIM4328_MFR_STATUS_BITS);
-> +				if (status > 0) {
-> +					if (status & 0x04) /* Input UV */
-> +						ret |= 0x08;
-> +					if (status & 0x40) /* Output UV */
-> +						ret |= 0x80;
-> +				}
-> +			} else if (data->id == pim4820) {
-> +				status = pmbus_read_byte_data(client, page,
-> +							      PIM4328_MFR_READ_STATUS);
-> +				if (status > 0) {
-> +					if (status & 0x05) /* Input OV or OC */
-> +						ret |= 0x2001;
-> +					if (status & 0x1a) /* Input UV */
-> +						ret |= 0x2008;
-> +					if (status & 0x40) /* OT */
-> +						ret |= 0x0004;
-> +				}
-> +			}
-> +		}
-> +		break;
-> +	case PMBUS_READ_VIN:
-> +		if (phase != 0xff) {
-> +			ret = pmbus_read_word_data(client, page, phase,
-> +						   phase == 0 ? PIM4328_MFR_READ_VINA
-> +							      : PIM4328_MFR_READ_VINB);
-> +		} else {
-> +			ret = -ENODATA;
-> +		}
-> +		break;
-> +	case PMBUS_READ_IIN:
-> +		if (phase != 0xff) {
-> +			ret = pmbus_read_word_data(client, page, phase,
-> +						   phase == 0 ? PIM4328_MFR_READ_IINA
-> +							      : PIM4328_MFR_READ_IINB);
-> +		} else {
-> +			ret = -ENODATA;
-> +		}
-> +		break;
-> +	default:
-> +		ret = -ENODATA;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int pim4328_read_byte_data(struct i2c_client *client, int page, int reg)
-> +{
-> +	int ret;
-> +
-> +	if (page > 0)
-> +		return -ENXIO;
-> +
-> +	switch (reg) {
-> +	case PMBUS_STATUS_BYTE:
-> +		ret = pim4328_read_word_data(client, page, 0xff, PMBUS_STATUS_WORD);
-> +		if (ret > 0)
-> +			ret &= 0xff;
-> +		break;
 
-Doesn't the core take care of that ?
+> +        */
+> +       writel(irq_received &
+> +              ~(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED_I2CD_INTR_TX_NAK),
+>                bus->base + ASPEED_I2C_INTR_STS_REG);
+>         readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+>         irq_received &= ASPEED_I2CD_INTR_RECV_MASK;
+> @@ -652,12 +656,18 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
+>                         "irq handled != irq. expected 0x%08x, but was 0x%08x\n",
+>                         irq_received, irq_handled);
+>
+> -       /* Ack Rx done */
+> -       if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
+> -               writel(ASPEED_I2CD_INTR_RX_DONE,
+> -                      bus->base + ASPEED_I2C_INTR_STS_REG);
+> -               readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> -       }
+> +       /* Ack Rx done and Tx done with/without ACK */
+> +       /* Note: Re-use irq_handled variable */
 
-> +	default:
-> +		ret = -ENODATA;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int pim4328_probe(struct i2c_client *client)
-> +{
-> +	int status;
-> +	u8 device_id[I2C_SMBUS_BLOCK_MAX + 1];
-> +	const struct i2c_device_id *mid;
-> +	struct pim4328_data *data;
-> +	struct pmbus_driver_info *info;
-> +	struct pmbus_platform_data *pdata;
-> +	struct device *dev = &client->dev;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_READ_BYTE_DATA
-> +				     | I2C_FUNC_SMBUS_BLOCK_DATA))
-> +		return -ENODEV;
-> +
-> +	data = devm_kzalloc(&client->dev, sizeof(struct pim4328_data),
-> +			    GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	status = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, device_id);
-> +	if (status < 0) {
-> +		dev_err(&client->dev, "Failed to read Manufacturer Model\n");
-> +		return status;
-> +	}
-> +	for (mid = pim4328_id; mid->name[0]; mid++) {
-> +		if (!strncasecmp(mid->name, device_id, strlen(mid->name)))
-> +			break;
-> +	}
-> +	if (!mid->name[0]) {
-> +		dev_err(&client->dev, "Unsupported device\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	if (strcmp(client->name, mid->name) != 0)
-> +		dev_notice(&client->dev,
-> +			   "Device mismatch: Configured %s, detected %s\n",
-> +			   client->name, mid->name);
-> +
-> +	data->id = mid->driver_data;
-> +
-> +	if (data->id == pim4328 || data->id == pim4820)
-> +		if (!i2c_check_functionality(client->adapter,
-> +					     I2C_FUNC_SMBUS_BLOCK_PROC_CALL))
-> +			return -ENODEV;
-> +
-> +	info = &data->info;
-> +	info->pages = 1;
-> +	info->read_byte_data = pim4328_read_byte_data;
-> +	info->read_word_data = pim4328_read_word_data;
-> +
-> +	switch (data->id) {
-> +	case pim4006:
-> +		info->phases[0] = 2;
-> +		info->func[0] = PMBUS_PHASE_VIRTUAL | PMBUS_HAVE_VIN
-> +			| PMBUS_HAVE_TEMP | PMBUS_HAVE_IOUT;
-> +		info->pfunc[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN;
-> +		info->pfunc[1] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN;
-> +		break;
-> +	case pim4328:
-> +		info->phases[0] = 2;
-> +		info->func[0] = PMBUS_PHASE_VIRTUAL
-> +			| PMBUS_HAVE_VCAP | PMBUS_HAVE_VIN
-> +			| PMBUS_HAVE_TEMP | PMBUS_HAVE_IOUT;
-> +		info->pfunc[0] = PMBUS_HAVE_VIN;
-> +		info->pfunc[1] = PMBUS_HAVE_VIN;
-> +		info->format[PSC_VOLTAGE_IN] = direct;
-> +		info->format[PSC_VOLTAGE_OUT] = direct;
-> +		info->format[PSC_TEMPERATURE] = direct;
-> +		info->format[PSC_CURRENT_OUT] = direct;
-> +		break;
-> +	case pim4820:
-> +		info->func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_TEMP
-> +			| PMBUS_HAVE_IIN;
-> +		info->format[PSC_VOLTAGE_IN] = direct;
-> +		info->format[PSC_TEMPERATURE] = direct;
-> +		info->format[PSC_CURRENT_IN] = direct;
-> +		break;
-> +	default:
-> +		return -ENODEV;
-> +	}
-> +
-> +	if (info->func[0] & PMBUS_HAVE_VCAP &&
-> +	    info->format[PSC_VOLTAGE_OUT] == direct) {
-> +		status = pmbus_read_coefficients(client, info,
-> +						 PSC_VOLTAGE_OUT,
-> +						 PMBUS_READ_VCAP,
-> +						 true);
-> +		if (status < 0) {
-> +			dev_err(&client->dev,
-> +				"Failed to read coefficients for PMBUS_READ_VCAP\n");
-> +			return status;
-> +		}
-> +	}
-> +	if (info->func[0] & PMBUS_HAVE_VIN &&
-> +	    info->format[PSC_VOLTAGE_IN] == direct) {
-> +		status = pmbus_read_coefficients(client, info,
-> +						 PSC_VOLTAGE_IN,
-> +						 PMBUS_READ_VIN,
-> +						 true);
-> +		if (status < 0) {
-> +			dev_err(&client->dev,
-> +				"Failed to read coefficients for PMBUS_READ_VIN\n");
-> +			return status;
-> +		}
-> +	}
-> +	if (info->func[0] & PMBUS_HAVE_IIN &&
-> +	    info->format[PSC_CURRENT_IN] == direct) {
-> +		status = pmbus_read_coefficients(client, info,
-> +						 PSC_CURRENT_IN,
-> +						 PMBUS_READ_IIN,
-> +						 true);
-> +		if (status < 0) {
-> +			dev_err(&client->dev,
-> +				"Failed to read coefficients for PMBUS_READ_IIN\n");
-> +			return status;
-> +		}
-> +	}
-> +	if (info->func[0] & PMBUS_HAVE_IOUT &&
-> +	    info->format[PSC_CURRENT_OUT] == direct) {
-> +		status = pmbus_read_coefficients(client, info,
-> +						 PSC_CURRENT_OUT,
-> +						 PMBUS_READ_IOUT,
-> +						 true);
-> +		if (status < 0) {
-> +			dev_err(&client->dev,
-> +				"Failed to read coefficients for PMBUS_READ_IOUT\n");
-> +			return status;
-> +		}
-> +	}
-> +	if (info->func[0] & PMBUS_HAVE_TEMP &&
-> +	    info->format[PSC_TEMPERATURE] == direct) {
-> +		status = pmbus_read_coefficients(client, info,
-> +						 PSC_TEMPERATURE,
-> +						 PMBUS_READ_TEMPERATURE_1,
-> +						 true);
-> +		if (status < 0) {
-> +			dev_err(&client->dev,
-> +				"Failed to read coefficients for PMBUS_READ_TEMPERATURE_1\n");
-> +			return status;
-> +		}
-> +	}
-> +
-> +	pdata = devm_kzalloc(dev, sizeof(struct pmbus_platform_data),
-> +			     GFP_KERNEL);
-> +	if (!pdata)
-> +		return -ENOMEM;
-> +
-> +	pdata->flags = PMBUS_NO_CAPABILITY | PMBUS_NO_WRITE_PROTECT;
-> +	dev->platform_data = pdata;
-> +
-> +	return pmbus_do_probe(client, info);
-> +}
-> +
-> +static struct i2c_driver pim4328_driver = {
-> +	.driver = {
-> +		   .name = "pim4328",
-> +		   },
-> +	.probe_new = pim4328_probe,
-> +	.id_table = pim4328_id,
-> +};
-> +
-> +module_i2c_driver(pim4328_driver);
-> +
-> +MODULE_AUTHOR("Erik Rosen <erik.rosen@metormote.com>");
-> +MODULE_DESCRIPTION("PMBus driver for PIM4006, PIM4328, PIM4820 power interface modules");
-> +MODULE_LICENSE("GPL");
-> +MODULE_IMPORT_NS(PMBUS);
-> 
+I'm not sure what this note means.
 
+> +       irq_handled = 0;
+> +       if (irq_received & ASPEED_I2CD_INTR_RX_DONE)
+> +               irq_handled |= ASPEED_I2CD_INTR_RX_DONE;
+> +       if (irq_received & ASPEED_I2CD_INTR_TX_ACK)
+> +               irq_handled |= ASPEED_I2CD_INTR_TX_ACK;
+> +       if (irq_received & ASPEED_I2CD_INTR_TX_NAK)
+> +               irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
+> +       writel(irq_handled, bus->base + ASPEED_I2C_INTR_STS_REG);
+
+Are you intentionally only acking the bits that are set when we read
+from STS_REG at the start of the handler? If not, we could write this
+instead:
+
+writel(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK |
+ASPEED_I2CD_INTR_TX_NAK,
+        bus->base + ASPEED_I2C_INTR_STS_REG);
+
+If you only want to ack the bits that are set, then do this:
+
+  writel(irq_received &
+            (ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK |
+ASPEED_I2CD_INTR_TX_NAK),
+         bus->base + ASPEED_I2C_INTR_STS_REG);
+
+That way, you can avoid all of the tests.
+
+> +       readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+
+When you move this, please add a comment that reminds us why we do a
+write-then-read (see commit c926c87b8e36dcc0ea5c2a0a0227ed4f32d0516a).
+
+> +
+>         spin_unlock(&bus->lock);
+>         return irq_remaining ? IRQ_NONE : IRQ_HANDLED;
+>  }
+> --
+> 2.28.0
+>
