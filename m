@@ -2,94 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC4B38894A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2041D388945
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244958AbhESIXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:23:13 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3038 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241235AbhESIXL (ORCPT
+        id S244893AbhESIWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:22:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37562 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244822AbhESIWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:23:11 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FlQlB6DTzzmXG3;
-        Wed, 19 May 2021 16:19:34 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 16:21:50 +0800
-Received: from [10.47.24.60] (10.47.24.60) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 19 May
- 2021 09:21:48 +0100
-Subject: Re: [bug report] Memory leak from acpi_ev_install_space_handler()
-To:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        chenxiang <chenxiang66@hisilicon.com>
-References: <845f6ef8-d2a7-e491-8405-9526e4ba277a@huawei.com>
- <CAJZ5v0gRm+jsd1KtLtSgT=4pc9oab=EtW=zqBuKjHLJ=ZcUkiA@mail.gmail.com>
- <752f16ed-29e3-840e-dc53-6fed24d73861@huawei.com>
- <MWHPR11MB1599342DCB12AEA5B7DD0D54F02C9@MWHPR11MB1599.namprd11.prod.outlook.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <3ab18796-f8b5-9498-a31a-5dfd21059ebb@huawei.com>
-Date:   Wed, 19 May 2021 09:20:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 19 May 2021 04:22:44 -0400
+Date:   Wed, 19 May 2021 08:21:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621412483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8f7a7DljQW0or64tcdOkNMMQv6TTDBN/VTQLd19TF1g=;
+        b=bmbaduFZfXoRDbYbWGl5Ki0L49jzPn8k70LvjBCCKNmSzBOQd6577gMjUOnMQZ+DpKoURy
+        EO8krVPXGYrlp3AyO5gPUyQJgQ2ZWuRzxL/F3dBMP9Yi2XcqWK3X/FwL0Vo1G9Vb/WI+9h
+        uF9kEdWKOqPdjp4XHu/mPuFW6yCUYSJy3dD/pktZ1hARI9/h0e8dJkcMzom/Lg5ThhzKYR
+        3wO3Xvr31qo7+JVealx2itn16YVadjJWCoVRC4rgr/XnzGuXhv/7R2qh5XL4Ngm41fctgb
+        xvKbE1GQMo8II3trzJSpIQi/ulVyUVtGBsXNDhdw4LaKKeIHRrjCpoQZ8NBgkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621412483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8f7a7DljQW0or64tcdOkNMMQv6TTDBN/VTQLd19TF1g=;
+        b=TjqCzY39VmWc/Yn4yHTYFzqBHuamO1nZr5MfHHD5EU1ZgQSMu3y22G0yh0+6jTv4NwvaCf
+        WsT1xAcaEETXfDBw==
+From:   "tip-bot2 for Alexander Antonov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel/uncore: Enable I/O stacks to IIO PMON
+ mapping on ICX
+Cc:     Alexander Antonov <alexander.antonov@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210426131614.16205-4-alexander.antonov@linux.intel.com>
+References: <20210426131614.16205-4-alexander.antonov@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1599342DCB12AEA5B7DD0D54F02C9@MWHPR11MB1599.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Message-ID: <162141248257.29796.14197860640156141997.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.24.60]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/2021 22:48, Kaneda, Erik wrote:
-> Hi John,
-> 
->> I don't mind looking further if requested.
-> Someone else reported this as well. 
+The following commit has been merged into the perf/core branch of tip:
 
-I noticed. By chance, it was my close colleague Xiang Chen.
+Commit-ID:     10337e95e04c9bcd15d9bf5b26f194c92c13da56
+Gitweb:        https://git.kernel.org/tip/10337e95e04c9bcd15d9bf5b26f194c92c13da56
+Author:        Alexander Antonov <alexander.antonov@linux.intel.com>
+AuthorDate:    Mon, 26 Apr 2021 16:16:14 +03:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 18 May 2021 12:53:57 +02:00
 
-Could you try the patch below? I think it might help fix this issue..
+perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on ICX
 
-It looks like the same problem, and you provided the same solution, so 
-we can look to test it.
+This patch enables I/O stacks to IIO PMON mapping on Icelake server.
 
-Thanks
+Mapping of IDs in SAD_CONTROL_CFG notation to IDs in PMON notation for
+Icelake server:
 
-> 
-> Thanks,
-> Erik
-> 
-> diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c
-> index 624a26794d55..e5ba9795ec69 100644
-> --- a/drivers/acpi/acpica/utdelete.c
-> +++ b/drivers/acpi/acpica/utdelete.c
-> @@ -285,6 +285,14 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
->                  }
->                  break;
-> 
-> +       case ACPI_TYPE_LOCAL_ADDRESS_HANDLER:
-> +
-> +               ACPI_DEBUG_PRINT((ACPI_DB_ALLOCATIONS,
-> +                                 "***** Address handler %p\n", object));
-> +
-> +               acpi_os_delete_mutex(object->address_space.context_mutex);
-> +               break;
-> +
->          default:
-> 
->                  break;
-> 
+Stack Name         | CBDMA/DMI | PCIe_1 | PCIe_2 | PCIe_3 | PCIe_4 | PCIe_5
+SAD_CONTROL_CFG ID |     0     |    1   |    2   |    3   |    4   |    5
+PMON ID            |     5     |    0   |    1   |    2   |    3   |    4
 
+I/O stacks to IIO PMON mapping is exposed through attributes
+/sys/devices/uncore_iio_<pmu_idx>/dieX, where dieX is file which holds
+"Segment:Root Bus" for PCIe root port which can be monitored by that
+IIO PMON block. Example for 2-S Icelake server:
+
+==> /sys/devices/uncore_iio_0/die0 <==
+0000:16
+==> /sys/devices/uncore_iio_0/die1 <==
+0000:97
+==> /sys/devices/uncore_iio_1/die0 <==
+0000:30
+==> /sys/devices/uncore_iio_1/die1 <==
+0000:b0
+==> /sys/devices/uncore_iio_3/die0 <==
+0000:4a
+==> /sys/devices/uncore_iio_3/die1 <==
+0000:c9
+==> /sys/devices/uncore_iio_4/die0 <==
+0000:64
+==> /sys/devices/uncore_iio_4/die1 <==
+0000:e2
+==> /sys/devices/uncore_iio_5/die0 <==
+0000:00
+==> /sys/devices/uncore_iio_5/die1 <==
+0000:80
+
+Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210426131614.16205-4-alexander.antonov@linux.intel.com
+---
+ arch/x86/events/intel/uncore_snbep.c | 51 +++++++++++++++++++++++++++-
+ 1 file changed, 51 insertions(+)
+
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index b50c946..7622762 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -5041,6 +5041,53 @@ static struct event_constraint icx_uncore_iio_constraints[] = {
+ 	EVENT_CONSTRAINT_END
+ };
+ 
++static umode_t
++icx_iio_mapping_visible(struct kobject *kobj, struct attribute *attr, int die)
++{
++	/* Root bus 0x00 is valid only for pmu_idx = 5. */
++	return pmu_iio_mapping_visible(kobj, attr, die, 5);
++}
++
++static struct attribute_group icx_iio_mapping_group = {
++	.is_visible	= icx_iio_mapping_visible,
++};
++
++static const struct attribute_group *icx_iio_attr_update[] = {
++	&icx_iio_mapping_group,
++	NULL,
++};
++
++/*
++ * ICX has a static mapping of stack IDs from SAD_CONTROL_CFG notation to PMON
++ */
++enum {
++	ICX_PCIE1_PMON_ID,
++	ICX_PCIE2_PMON_ID,
++	ICX_PCIE3_PMON_ID,
++	ICX_PCIE4_PMON_ID,
++	ICX_PCIE5_PMON_ID,
++	ICX_CBDMA_DMI_PMON_ID
++};
++
++static u8 icx_sad_pmon_mapping[] = {
++	ICX_CBDMA_DMI_PMON_ID,
++	ICX_PCIE1_PMON_ID,
++	ICX_PCIE2_PMON_ID,
++	ICX_PCIE3_PMON_ID,
++	ICX_PCIE4_PMON_ID,
++	ICX_PCIE5_PMON_ID,
++};
++
++static int icx_iio_get_topology(struct intel_uncore_type *type)
++{
++	return sad_cfg_iio_topology(type, icx_sad_pmon_mapping);
++}
++
++static int icx_iio_set_mapping(struct intel_uncore_type *type)
++{
++	return pmu_iio_set_mapping(type, &icx_iio_mapping_group);
++}
++
+ static struct intel_uncore_type icx_uncore_iio = {
+ 	.name			= "iio",
+ 	.num_counters		= 4,
+@@ -5055,6 +5102,10 @@ static struct intel_uncore_type icx_uncore_iio = {
+ 	.constraints		= icx_uncore_iio_constraints,
+ 	.ops			= &skx_uncore_iio_ops,
+ 	.format_group		= &snr_uncore_iio_format_group,
++	.attr_update		= icx_iio_attr_update,
++	.get_topology		= icx_iio_get_topology,
++	.set_mapping		= icx_iio_set_mapping,
++	.cleanup_mapping	= skx_iio_cleanup_mapping,
+ };
+ 
+ static struct intel_uncore_type icx_uncore_irp = {
