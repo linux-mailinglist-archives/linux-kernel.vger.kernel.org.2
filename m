@@ -2,209 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F10388CAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4907388CB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350300AbhESLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:24:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11700 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350285AbhESLYY (ORCPT
+        id S1346587AbhESLZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:25:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350381AbhESLYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:24:24 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JB4Nw9053448;
-        Wed, 19 May 2021 07:23:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=baaD/EhyUIsH+7SWKLJhgTMHX6iZgwqB6kMSnQ5gIoQ=;
- b=NwghN8WyjqSRCbUrVxL+z53mOos9pN81qHCGBK3fZIQfBjNCtxuykz7a8Q6zMRDpyd7R
- IHVesq3PkOXzEZTq0dj0LSbZPTg8s4I6YmE9pkxmbJJ+0kIDYGU34dgb+S7WqW8464af
- PUVdEEtnZqWscz9FnPz/VVVQ2SWV0uY8EkrrBQH4HuW8JUvrfazROuiUIB3la/q93vcb
- AbhNATjTc4MGlMXnLSp1D3mMRU8SSM615ClEsw4jxARPMRJfP/xKo1bt1GxzhlgfJvkO
- ALWPtmZTXNxret8HqU7FxE2Axh7TBuEOTkrqR0fo6pPoNnG50XlcRibroBApasU1ZgzF hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n1dp8j77-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 07:23:03 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JB4ql3059504;
-        Wed, 19 May 2021 07:23:02 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n1dp8j6j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 07:23:02 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JBDMg5017214;
-        Wed, 19 May 2021 11:23:00 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 38j5x8a281-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 11:23:00 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JBMv3Q32178546
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 11:22:57 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 62FB852050;
-        Wed, 19 May 2021 11:22:57 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.89.97])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id DA6505204E;
-        Wed, 19 May 2021 11:22:56 +0000 (GMT)
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
- <20210512203536.4209c29c.pasic@linux.ibm.com>
- <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
- <20210513194541.58d1628a.pasic@linux.ibm.com>
- <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
- <20210514021500.60ad2a22.pasic@linux.ibm.com>
- <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
- <20210517211030.368ca64b.pasic@linux.ibm.com>
- <966a60ad-bdde-68d0-ae2f-06121c6ad970@de.ibm.com>
- <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
- <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
- <20210518173351.39646b45.pasic@linux.ibm.com>
- <ca5f1c72-09a3-d270-44a0-bda54c554f67@de.ibm.com>
- <20210519012709.3bcc30e7.pasic@linux.ibm.com>
- <250189ed-bded-5261-d8f3-f75787be7aeb@de.ibm.com>
-Message-ID: <9c2b4711-5a26-15b0-8651-67a88bf12270@de.ibm.com>
-Date:   Wed, 19 May 2021 13:22:56 +0200
+        Wed, 19 May 2021 07:24:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621423394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bKAEh1z/d5nDiV4o1C6pzw2U33MXtuo+4PcFDKB1npc=;
+        b=c0Yci4Gi8mswHVh3aSNcjuZ0K2t+J7KXEzKA44EMENgohEIO3xBa40kADewBKpnocygtow
+        uCD0St/E28t5i2y7vbKJZ4tdPGV0CHCuMHUFaw+bt8HdExqWEr5TBHyVDMY5fIaTEqTDjP
+        t4mYQmBD1UnfJO96UDZ3N0p4/sZpjEM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-ycwr0C8ENTWIVfkLSbfDOw-1; Wed, 19 May 2021 07:23:12 -0400
+X-MC-Unique: ycwr0C8ENTWIVfkLSbfDOw-1
+Received: by mail-ej1-f69.google.com with SMTP id p5-20020a17090653c5b02903db1cfa514dso349816ejo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:23:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bKAEh1z/d5nDiV4o1C6pzw2U33MXtuo+4PcFDKB1npc=;
+        b=j+qzt2Mo3WYUR3Vsp2ufVNQve/ET1Mhv2aoIPj61ChIE+pCTODXmsILztiTLVJmZlp
+         4mLgU1tp7B829nZyNFWOmPinvLfbVZIv68P9GSmOlnHNr7qquKztrRBVS7We5CGNBMLy
+         Ip++/h0LezhsLusvv/AqaTmBmpSbxXHLJuIike/RM901HpOtbSNkghPibm/d5MkUdfBa
+         ISUca/gSHIfs344hVmEAnUyF4SEiA31bdTBOL/ZxlRHdRUGOFjYezUtsBOQJwf1KZi3L
+         dGiWVoaiYkYS2LttUWYk+XbfkRw1gYYh59ng4cQ6ikRntN/hfrz6Rb/lb1+DRsDvVGEr
+         TZqQ==
+X-Gm-Message-State: AOAM530encr5S6cE2nSIA6R8HQie0aL8ni7fVSrAx/fCvjTA2ynrna7P
+        Tzea2IECYROdatHWFz2tGodzORNp5ib5TmMmz0xTVm6JHmU4NHy8z8UWbdy93dSTldTBGChB+rE
+        vHJ/gQA3sHmubJiBgQKD4kIcY+cuRC+VNlGbj4dFI4DrTz9ME7pDE5XpcvKRoXgzPezaRjVKqUX
+        6S
+X-Received: by 2002:a17:906:4c54:: with SMTP id d20mr12249825ejw.513.1621423391305;
+        Wed, 19 May 2021 04:23:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAi8o1sKevYe1sIY7/X8jq2Iq3OcSUFcAZep5m3xnlVBab6lPvM+v5zy672zJHynsNx4Rgrw==
+X-Received: by 2002:a17:906:4c54:: with SMTP id d20mr12249805ejw.513.1621423391006;
+        Wed, 19 May 2021 04:23:11 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id v12sm16226265edb.81.2021.05.19.04.23.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 04:23:10 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: acer-wmi: Add support for Acer Helios 300
+ RGB keyboard backlight
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jafar Akhondali <jafar.akhoondali@gmail.com>, jlee@suse.com,
+        mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <CAMW3L+24ZGowtpURUbjoCoA+eZMF0wDae1izxS+HM2uz1L9Rig@mail.gmail.com>
+ <9e455325-d9d6-557d-e9a5-779f59e2af4c@redhat.com> <20210519085429.GA2025@bug>
+ <e933a326-830c-4df8-eeb0-f8e48a4b9627@redhat.com>
+ <20210519110542.GA24621@duo.ucw.cz>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ae8c476a-25dc-758d-7031-c5030b975bb4@redhat.com>
+Date:   Wed, 19 May 2021 13:23:09 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <250189ed-bded-5261-d8f3-f75787be7aeb@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210519110542.GA24621@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: xxaakWftAy8zKw8lKZVH8cQw3sCx2q8P
-X-Proofpoint-GUID: QoBPMHmXFpOuLNdYjKH9o9kB4IFtivgq
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_04:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 clxscore=1015 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190074
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 19.05.21 10:17, Christian Borntraeger wrote:
-> 
-> 
-> On 19.05.21 01:27, Halil Pasic wrote:
->> On Tue, 18 May 2021 19:01:42 +0200
->> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->>
->>> On 18.05.21 17:33, Halil Pasic wrote:
->>>> On Tue, 18 May 2021 15:59:36 +0200
->>>> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->> [..]
->>>>>>>
->>>>>>> Would it help, if the code in priv.c would read the hook once
->>>>>>> and then only work on the copy? We could protect that with rcu
->>>>>>> and do a synchronize rcu in vfio_ap_mdev_unset_kvm after
->>>>>>> unsetting the pointer?
->>>>
->>>> Unfortunately just "the hook" is ambiguous in this context. We
->>>> have kvm->arch.crypto.pqap_hook that is supposed to point to
->>>> a struct kvm_s390_module_hook member of struct ap_matrix_mdev
->>>> which is also called pqap_hook. And struct kvm_s390_module_hook
->>>> has function pointer member named "hook".
->>>
->>> I was referring to the full struct.
->>>>>>
->>>>>> I'll look into this.
+On 5/19/21 1:05 PM, Pavel Machek wrote:
+> Hi!
+>>>>> The Acer helios 300 provides gaming functions WMI that is available in
+>>>>> Windows, however this was not implemented in Linux. The process of finding
+>>>>> the related method was done by decompiling PredatorSense(official Acer
+>>>>> gaming functions software for Predator series) and decompiling WQ
+>>>>> buffers. This patch provides a gaming interface which will then expose a
+>>>>> character device named "acer-gkbbl". This character device accepts 16
+>>>>> bytes long config, which is specific for the backlight method. The
+>>>>> meaning of each bytes ordered by bit position is as follows:
 >>>>>
->>>>> I think it could work. in priv.c use rcu_readlock, save the
->>>>> pointer, do the check and call, call rcu_read_unlock.
->>>>> In vfio_ap use rcu_assign_pointer to set the pointer and
->>>>> after setting it to zero call sychronize_rcu.
+>>>>> Bit 0 -> Backlight modes:
+>>>>> 1: Breath
+>>>>> 2: Neon
+>>>>> 3: Wave
+>>>>> 4: Shifting
+>>>>> 5: Zoom
+>>>>> Bit 1 -> Animation Speed: from 1 to 9 ( 1 is slowest, 9 is fastest)
+>>>>> Bit 2 -> Brightness from 0 to 100 ( 0 is no backlight, 100 is brightest)
+>>>>> Bit 3 -> Unknown. Wave effect uses 8, other modes must use 0
+>>>>> Bit 4 -> Animation Direction:
+>>>>> 1: Right-to-Left
+>>>>> 2: Left-to-Right
+>>>>> Bit 5 -> Red Color Selection
+>>>>> Bit 6 -> Green Color Selection
+>>>>> Bit 7 -> Blue Color Selection
+>>>>> Bit 8 -> Currently unknown, or not used in known model
+>>>>> Bit 9 -> Currently unknown, or not used in known model
+>>>>> Bit 10 -> Currently unknown, or not used in known model
+>>>>> Bit 11 -> Currently unknown, or not used in known model
+>>>>> Bit 12 -> Currently unknown, or not used in known model
+>>>>> Bit 13 -> Currently unknown, or not used in known model
+>>>>> Bit 14 -> Currently unknown, or not used in known model
+>>>>> Bit 15 -> Currently unknown, or not used in known model
+>>>>>
+>>>>> Filling this config is out of scope for the kernel module, and this module
+>>>>> only acts as an interface.
+>>>>>
+>>>>> Currently, I'm not sure with the method for communicating with user-space,
+>>>>> but since leds.h subsystem wouldn't fit for complex actions such as this
+>>>>> complex config, I couldn't find any better method than char dev.
 >>>>
->>>> In my opinion, we should make the accesses to the
->>>> kvm->arch.crypto.pqap_hook pointer properly synchronized. I'm
->>>> not sure if that is what you are proposing. How do we usually
->>>> do synchronisation on the stuff that lives in kvm->arch?
+>>>> Thank you for your patch, given that there is no existing kernel
+>>>> interface which is a good match for the features exported by this
+>>>> keyboard I'm fine with just having a raw interface where userspace
+>>>> writes GAMING_KBBL_CONFIG_LEN bytes as you suggest.
 >>>
->>> RCU is a method of synchronization. We  make sure that structure
->>> pqap_hook is still valid as long as we are inside the rcu read
->>> lock. So the idea is: clear pointer, wait until all old readers
->>> have finished and the proceed with getting rid of the structure.
+>>> Keyboard backlight goes through LED interface (so please cc the mailing list) and
+>>> no, passing raw bytes to hardware is not an acceptable interface.
+>>>
+>>>> But lets not use a classdev + chardev for this please, you can
+>>>> just add a binary write-only sysfs-atrribute under the wmi-dev for
+>>>> this with a name like (for example) gaming_kbd_backlight_config
+>>>> and then userspace can write to that without needing a class + char
+>>>> dev just for this single write.
+>>>
+>>> NAK. We have existing interfaces for this.
 >>
->> Yes I know that RCU is a method of synchronization, but I'm not
->> very familiar with it. I'm a little confused by "read the hook
->> once and then work on a copy". I guess, I would have to read up
->> on the RCU again to get clarity. I intend to brush up my RCU knowledge
->> once the patch comes along. I would be glad to have your help when
->> reviewing an RCU based solution for this.
+>> I don't think we have existing interfaces for things like wave / zoom /
+>> neon effects.  I guess this could use the new CONFIG_LEDS_CLASS_MULTICOLOR
+>> API to set the color + overall brightness, combined with a custom sysfs attribute
+>> under the led_classdev's device's dir for selecting the things for which there
+>> is no standard API ?
 > 
-> Just had a quick look. Its not trivial, as the hook function itself
-> takes a mutex and an rcu section must not sleep. Will have a deeper
-> look.
+> We do have RGB LEDs, and some of them can do hardware-accelerated
+> effects. We do have pattern trigger.
+> 
+> We do have other hardware (Mauro is just trying to merge support) that
+> has limited set of effects.
 
+Can you provide a link to the patches from Mauro, those might be
+helpful for Jafar to take a look at to get some idea how he can
+implement this using the LED API.
 
-As a quick hack something like this could work. The whole locking is pretty
-complicated and this makes it even more complex so we might want to do
-a cleanup/locking rework later on.
+Regards,
 
+Hans
 
-index 9928f785c677..fde6e02aab54 100644
---- a/arch/s390/kvm/priv.c
-+++ b/arch/s390/kvm/priv.c
-@@ -609,6 +609,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
-   */
-  static int handle_pqap(struct kvm_vcpu *vcpu)
-  {
-+       struct kvm_s390_module_hook *pqap_hook;
-         struct ap_queue_status status = {};
-         unsigned long reg0;
-         int ret;
-@@ -657,14 +658,21 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
-          * Verify that the hook callback is registered, lock the owner
-          * and call the hook.
-          */
--       if (vcpu->kvm->arch.crypto.pqap_hook) {
--               if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-+       rcu_read_lock();
-+       pqap_hook = rcu_dereference(vcpu->kvm->arch.crypto.pqap_hook);
-+       if (pqap_hook) {
-+               if (!try_module_get(pqap_hook->owner)) {
-+                       rcu_read_unlock();
-                         return -EOPNOTSUPP;
--               ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
--               module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-+               }
-+               rcu_read_unlock();
-+               ret = pqap_hook->hook(vcpu);
-+               module_put(pqap_hook->owner);
-                 if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
-                         kvm_s390_set_psw_cc(vcpu, 3);
-                 return ret;
-+       } else {
-+               rcu_read_unlock();
-         }
-         /*
-          * A vfio_driver must register a hook.
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index f90c9103dac2..a7124abd6aed 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1194,6 +1194,7 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-                 mutex_lock(&matrix_dev->lock);
-                 vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-                 matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-+               synchronize_rcu();
-                 kvm_put_kvm(matrix_mdev->kvm);
-                 matrix_mdev->kvm = NULL;
-                 matrix_mdev->kvm_busy = false;
