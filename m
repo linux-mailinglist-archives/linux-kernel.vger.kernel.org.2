@@ -2,305 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CCB3894B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6493D3894B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhESRhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 13:37:45 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:38877 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhESRhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 13:37:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621445783; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=T5uQ8fbPK8aH1MVuVCxBKG7xOpj6UgRTWDkmlrf7WdY=; b=rZ4N1f14Q8prD5lRCHisj83yQMGptWBNzhR6CXqRswRB1Z9yVKFqrW4nARH/LgHxjg51mTRR
- /4BXQh8I/1MF+HXM1v5zfIR57XeVCi5VPHxzsImRuwUASfRYGoxXYo/y10Akp7SzfYy+5O41
- AAzdufu7J0zjH3ewV0R3/TSh5/I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60a54c79b15734c8f9e7b5f4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 17:35:52
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1C308C43143; Wed, 19 May 2021 17:35:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E1FEFC4338A;
-        Wed, 19 May 2021 17:35:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E1FEFC4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-Date:   Wed, 19 May 2021 10:35:42 -0700
-Message-Id: <1621445742-16505-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229915AbhESRhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 13:37:07 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:46621 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229589AbhESRhF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 13:37:05 -0400
+Received: (qmail 1174008 invoked by uid 1000); 19 May 2021 13:35:45 -0400
+Date:   Wed, 19 May 2021 13:35:45 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>
+Cc:     dave penkler <dpenkler@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
+Message-ID: <20210519173545.GA1173157@rowland.harvard.edu>
+References: <d673611ca53f42a3a629eb051cabc6eb@rohde-schwarz.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d673611ca53f42a3a629eb051cabc6eb@rohde-schwarz.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_hpd interrupt should be handled after dongle plugged in and
-before dongle unplugged. Hence irq_hpd interrupt is enabled at
-the end of the plugin handle and disabled at the beginning of
-unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
-handled same as the dongle unplugged which tears down the mainlink
-and disables the phy. This patch fixes this problem by only tearing
-down the mainlink but keeping phy enabled at irq_hpd with
-sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
-handled by setup mainlink only. This patch also set dongle into D3
-(power off) state at end of handling irq_hpd with sink_count = 0.
+On Wed, May 19, 2021 at 04:14:20PM +0000, Guido Kiener wrote:
+> > On Wed, May 19, 2021 at 10:48:29AM +0200, dave penkler wrote:
+> > > On Sat, 8 May 2021 at 16:29, Alan Stern <stern@rowland.harvard.edu> wrote:
+> > > >
+> > > > On Sat, May 08, 2021 at 10:14:41AM +0200, dave penkler wrote:
+> > > > > When the host driver detects a protocol error while processing an
+> > > > > URB it completes the URB with EPROTO status and marks the endpoint
+> > > > > as halted.
+> > > >
+> > > > Not true.  It does not mark the endpoint as halted, not unless it
+> > > > receives a STALL handshake from the device.  A STALL is not a
+> > > > protocol error.
+> > > >
+> > > > > When the class driver resubmits the URB and the if the host driver
+> > > > > finds the endpoint still marked as halted it should return EPIPE
+> > > > > status on the resubmitted URB
+> > > >
+> > > > Irrelevant.
+> > > Not at all. The point is that when an application is talking to an
+> > > instrument over the usbtmc driver, the underlying host controller and
+> > > its driver will detect and silence a babbling endpoint.
+> > 
+> > No, they won't.  That is, they will detect a babble error and return an error status, but
+> > they won't silence the endpoint.  What makes you think they will?
+> 
+> Maybe there is a misunderstanding. I guess that Dave wanted to propose:
+> "EPROTO is a link level issue and needs to be handled by the host driver.
+> When the host driver detects a protocol error while processing an
+> URB it SHOULD complete the URB with EPROTO status
 
-Changes in v2:
--- add ctrl->phy_Power_count
+The host controller drivers _do_ complete URBs with -EPROTO (or similar) 
+status when a link-level error occurs...
 
-Changes in v3:
--- del ctrl->phy_Power_count
--- add phy_power_off to dp_ctrl_off_link_stream()
+> and SHOULD mark the endpoint
+> as halted."
 
-Changes in v4:
--- return immediately if clock disable failed at dp_ctrl_off_link_stream()
+but they don't mark the endpoint as halted.  Even if they did, it 
+wouldn't fix anything because the kernel allows URBs to be submitted to 
+halted endpoints.  In fact, it doesn't even keep track of which 
+endpoints are or are not halted.
 
-Changes in v5:
--- set dongle to D3 (power off) state at dp_ctrl_off_link_stream()
+> Is this a realistic fix for all host drivers?
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_catalog.c |  5 ++--
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 55 +++++++++++++++++++++++++++++++++++
- drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 ++
- drivers/gpu/drm/msm/dp/dp_display.c | 57 +++++++++++++++++++++++++++----------
- 4 files changed, 101 insertions(+), 18 deletions(-)
+No, it isn't.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index b1a9b1b..f4f53f2 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
- 
- 	u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
- 
--	/* enable HPD interrupts */
-+	/* enable HPD plug and unplug interrupts */
- 	dp_catalog_hpd_config_intr(dp_catalog,
--		DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
--		| DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-+		DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
- 
- 	/* Configure REFTIMER and enable it */
- 	reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 8d59eb9..dbd8943 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1811,6 +1811,61 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
- 	return ret;
- }
- 
-+int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
-+{
-+	struct dp_ctrl_private *ctrl;
-+	struct dp_io *dp_io;
-+	struct phy *phy;
-+	int ret;
-+
-+	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
-+	dp_io = &ctrl->parser->io;
-+	phy = dp_io->phy;
-+
-+	/* set dongle to D3 (power off) mode */
-+	dp_link_psm_config(ctrl->link, &ctrl->panel->link_info, true);
-+
-+	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
-+
-+	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
-+	if (ret) {
-+		DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
-+	if (ret) {
-+		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
-+		return ret;
-+	}
-+
-+	phy_power_off(phy);
-+
-+	/* aux channel down, reinit phy */
-+	phy_exit(phy);
-+	phy_init(phy);
-+
-+	DRM_DEBUG_DP("DP off link/stream done\n");
-+	return ret;
-+}
-+
-+void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
-+{
-+	struct dp_ctrl_private *ctrl;
-+	struct dp_io *dp_io;
-+	struct phy *phy;
-+
-+	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
-+	dp_io = &ctrl->parser->io;
-+	phy = dp_io->phy;
-+
-+	dp_catalog_ctrl_reset(ctrl->catalog);
-+
-+	phy_exit(phy);
-+
-+	DRM_DEBUG_DP("DP off phy done\n");
-+}
-+
- int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
- {
- 	struct dp_ctrl_private *ctrl;
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-index a836bd3..25e4f75 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-@@ -23,6 +23,8 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
- void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
-+int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
-+void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
- void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
- void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0ba71c7..b2a282a 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -337,6 +337,12 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
- 	dp->dp_display.max_pclk_khz = DP_MAX_PIXEL_CLK_KHZ;
- 	dp->dp_display.max_dp_lanes = dp->parser->max_dp_lanes;
- 
-+	/*
-+	 * set sink to normal operation mode -- D0
-+	 * before dpcd read
-+	 */
-+	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
-+
- 	dp_link_reset_phy_params_vx_px(dp->link);
- 	rc = dp_ctrl_on_link(dp->ctrl);
- 	if (rc) {
-@@ -405,11 +411,6 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
- 
- 	dp_display_host_init(dp, false);
- 
--	/*
--	 * set sink to normal operation mode -- D0
--	 * before dpcd read
--	 */
--	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
- 	rc = dp_display_process_hpd_high(dp);
- end:
- 	return rc;
-@@ -570,6 +571,10 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
- 		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
- 	}
- 
-+	/* enable HDP irq_hpd/replug interrupt */
-+	dp_catalog_hpd_config_intr(dp->catalog,
-+		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-+
- 	mutex_unlock(&dp->event_mutex);
- 
- 	/* uevent will complete connection part */
-@@ -619,7 +624,26 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	mutex_lock(&dp->event_mutex);
- 
- 	state = dp->hpd_state;
--	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
-+
-+	/* disable irq_hpd/replug interrupts */
-+	dp_catalog_hpd_config_intr(dp->catalog,
-+		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, false);
-+
-+	/* unplugged, no more irq_hpd handle */
-+	dp_del_event(dp, EV_IRQ_HPD_INT);
-+
-+	if (state == ST_DISCONNECTED) {
-+		/* triggered by irq_hdp with sink_count = 0 */
-+		if (dp->link->sink_count == 0) {
-+			dp_ctrl_off_phy(dp->ctrl);
-+			hpd->hpd_high = 0;
-+			dp->core_initialized = false;
-+		}
-+		mutex_unlock(&dp->event_mutex);
-+		return 0;
-+	}
-+
-+	if (state == ST_DISCONNECT_PENDING) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -633,9 +657,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 
- 	dp->hpd_state = ST_DISCONNECT_PENDING;
- 
--	/* disable HPD plug interrupt until disconnect is done */
--	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK
--				| DP_DP_IRQ_HPD_INT_MASK, false);
-+	/* disable HPD plug interrupts */
-+	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, false);
- 
- 	hpd->hpd_high = 0;
- 
-@@ -652,8 +675,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	reinit_completion(&dp->audio_comp);
- 	dp_display_handle_plugged_change(g_dp_display, false);
- 
--	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
--					DP_DP_IRQ_HPD_INT_MASK, true);
-+	/* enable HDP plug interrupt to prepare for next plugin */
-+	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, true);
- 
- 	/* uevent will complete disconnection part */
- 	mutex_unlock(&dp->event_mutex);
-@@ -684,7 +707,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 
- 	/* irq_hpd can happen at either connected or disconnected state */
- 	state =  dp->hpd_state;
--	if (state == ST_DISPLAY_OFF) {
-+	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -903,9 +926,13 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
- 
- 	dp_display->audio_enabled = false;
- 
--	dp_ctrl_off(dp->ctrl);
--
--	dp->core_initialized = false;
-+	/* triggered by irq_hpd with sink_count = 0 */
-+	if (dp->link->sink_count == 0) {
-+		dp_ctrl_off_link_stream(dp->ctrl);
-+	} else {
-+		dp_ctrl_off(dp->ctrl);
-+		dp->core_initialized = false;
-+	}
- 
- 	dp_display->power_on = false;
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+An endpoint shouldn't be marked as halted unless it really is halted.  
+Otherwise a driver might be tempted to clear the Halt feature, and 
+some devices do not like to receive a Clear-Halt request for an endpoint 
+that isn't halted.
 
+What we could do is what you suggested earlier: Note the fact that the 
+endpoint is in some sort of fault condition and disallow further 
+communication with the endpoint until the fault condition has been 
+cleared.  (It isn't entirely obvious exactly what actions should clear 
+such a fault...  I guess resetting or re-enabling the endpoint, or 
+resetting the entire device.)
+
+Alan Stern
