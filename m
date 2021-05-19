@@ -2,142 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0F8389222
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DF1389224
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241621AbhESPBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhESPBf (ORCPT
+        id S1347805AbhESPCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:02:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42374 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229808AbhESPCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:01:35 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4A3C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:00:14 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id z17so14344497wrq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dj8HjSEltSQ35S7lmqYwXgvlOZsZ7TUYX+opBuqrwQ0=;
-        b=R1n+hnWZMqTitIFXwbfVQ+YhfCV4/jiA4aTdTrIIWZMidDFv/lwN+44qBOrmGWbzIs
-         1+6+zj/Gb5hgDcOPLWc8/7yDb2pW+aBmkMgWKa0iTwQ6LuxH1yvpSa4XuF3rdQw8B/cX
-         gcd4UXyolgpMBpMnvVO8rSN4z2247vhNL99/Tfqu5NVEmQ49SUOd1y+/GrY9yQpCAVQ5
-         G37f8Y5spuR5WdglPbdsBnzYLMOo3lcsNGYodYUgUJxmhBmGgV/4KdklpBrz/mKr+kmL
-         dA6eWMU3/D4sX2HqD6zljX7/bOpOF8Qx2N2jc6h3lEIeIczsnyCkb4fNXCzwNXZ5DAIY
-         Nj8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dj8HjSEltSQ35S7lmqYwXgvlOZsZ7TUYX+opBuqrwQ0=;
-        b=sZUcBRRs1Cfnq0WRwAXOIjdRCtcqEZ9LGw93I7DWkpw9zUY6Qu5fI9KSpg0bydD+Va
-         JzT/SrknjeZpafPYJWxVJIXARhD0QShjj+w58NPgPahN7DeqvjHxorxXPPYM0fN2euAt
-         ZJGG5XSXQsaM9JTfgog2lJhQvCoxZw0LZgMUe0s6dUDB3Hetyy3XWE7/4r/RWy8ZndHL
-         3phvOm1ZUfi3Y4f8KOMGWn1lMvdTnJb1/6Xx7Ta9E98uuRwM/BpTHy8LIexdxc7NKX6t
-         f9ZzeSEmWDOilUxo9vPrhcs9DVGs5dpPvI+LNlrXud/J/S4q5E/TMjUigfoGkNj+zE6F
-         clmg==
-X-Gm-Message-State: AOAM5309mgpqb1CBer3IJct2mEqrj1h7ReHlsHV1ynKc5KP494Kh9weB
-        GYvCn2VH/wdDhTVQA4Q34uzfFQ==
-X-Google-Smtp-Source: ABdhPJwVqW1ph9IN2a5+C7Xz683XbVd7eoenA9J/Cjz971MWwgqtmzEOqzq7xSc3x8z11Kn3/z5CWg==
-X-Received: by 2002:a5d:618f:: with SMTP id j15mr14795053wru.273.1621436413251;
-        Wed, 19 May 2021 08:00:13 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id x2sm11239703wmj.3.2021.05.19.08.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 08:00:12 -0700 (PDT)
-Date:   Wed, 19 May 2021 16:00:10 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Roger Quadros <rogerq@ti.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH 1/6] dt-bindings: mfd: ti,j721e-system-controller: Fix
- mux node errors
-Message-ID: <20210519150010.GJ2549456@dell>
-References: <20210518232858.1535403-1-robh@kernel.org>
- <20210518232858.1535403-2-robh@kernel.org>
+        Wed, 19 May 2021 11:02:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621436460; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=638YVhE9uQAJ1yHYklSQlB/9IUMfzjqyYCUeaH69iag=; b=JagaSfnkfQ7IWmr0l4qgdRu8x4H6iFM0y4gP0dgOR6tCA36b6k9mbpIA54VX39mpzViyvbq6
+ 8C0yDowShSJ1+/y4LzkZrA75YnI25K4aMS7X8ZymEs2ZzC942zjemcmlO0jvSkuKDUdYu6Kp
+ lSUxj2Zs+HfqMfEahQyODAmJsNI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60a52809063320cd1387e32f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 15:00:25
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9CA42C43146; Wed, 19 May 2021 15:00:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 14244C433D3;
+        Wed, 19 May 2021 15:00:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 14244C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Thomas =?utf-8?Q?Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Serge Belyshev <belyshev@depni.sinp.msu.ru>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        regressions@lists.linux.dev
+Subject: Re: [i915] b12d691ea5: kernel_BUG_at_mm/memory.c
+References: <20210519024322.GA29704@xsang-OptiPlex-9020>
+        <CAHk-=whcr5M=4Mz2ydu4XtxTL_34WkXPnmFmA4f8r+ELXDC6hg@mail.gmail.com>
+        <20210519133330.GA14452@lst.de>
+Date:   Wed, 19 May 2021 18:00:14 +0300
+In-Reply-To: <20210519133330.GA14452@lst.de> (Christoph Hellwig's message of
+        "Wed, 19 May 2021 15:33:30 +0200")
+Message-ID: <87y2ca6a69.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210518232858.1535403-2-robh@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021, Rob Herring wrote:
+Christoph Hellwig <hch@lst.de> writes:
 
-> The ti,j721e-system-controller binding does not follow the standard mux
-> controller node name 'mux-controller' and the example is incomplete. Fix
-> these to avoid schema errors before the mux controller binding is
-> converted to schema.
-> 
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Roger Quadros <rogerq@ti.com>
+> On Tue, May 18, 2021 at 04:58:31PM -1000, Linus Torvalds wrote:
+>> On Tue, May 18, 2021 at 4:26 PM kernel test robot <oliver.sang@intel.com> wrote:
+>> >
+>> > commit: b12d691ea5e01db42ccf3b4207e57cb3ce7cfe91 ("i915: fix remap_io_sg to verify the pgprot")
+>> > [...]
+>> > [  778.550996] kernel BUG at mm/memory.c:2183!
+>> > [ 778.559015] RIP: 0010:remap_pfn_range_notrack
+>> > (kbuild/src/consumer/mm/memory.c:2183
+>> > kbuild/src/consumer/mm/memory.c:2211
+>> > kbuild/src/consumer/mm/memory.c:2233
+>> > kbuild/src/consumer/mm/memory.c:2255
+>> > kbuild/src/consumer/mm/memory.c:2311)
+>> > [  778.688951] remap_pfn_range (kbuild/src/consumer/mm/memory.c:2342)
+>> > [  778.692700] remap_io_sg (kbuild/src/consumer/drivers/gpu/drm/i915/i915_mm.c:71) i915
+>> 
+>> Yeah, so that BUG_ON() checks that theer isn't any old mapping there.
+>> 
+>> You can't just remap over an old one, but it does seem like that is
+>> exactly what commit b12d691ea5e0 ("i915: fix remap_io_sg to verify the
+>> pgprot") ends up doing.
+>> 
+>> So the code used to just do "apply_to_page_range()", which admittedly
+>> was odd too. But it didn't mind having old mappings and re-applying
+>> something over them.
+>> 
+>> Converting it to use remap_pfn_range() does look better, but it kind
+>> of depends on it ever being done *once*. But the caller seems to very
+>> much remap the whole vmsa at fault time, so...
+>> 
+>> I don't know what the right thing to do here is, because I don't know
+>> the invalidation logic and when faults happen.
+>> 
+>> I see that there is another thread about different issues on the
+>> intel-gfx list. Adding a few people to this kernel test robot thread
+>> too.
+>> 
+>> I'd be inclined to revert the commits as "not ready yet", but it would
+>> be better if somebody can go "yeah, this should be done properly like
+>> X".
+>
+> I think reverting just this commit for now is the best thing.
 
-Would one of the original authors be kind enough to review please?
+Yes, please revert it if there's no quick fix. On my Dell XPS 13 9310
+laptop (with Debian 10) X won't start until I revert commit
+b12d691ea5e0, so this is a major issue.
 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../mfd/ti,j721e-system-controller.yaml       | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> index 19fcf59fd2fe..272832e9f8f2 100644
-> --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> @@ -43,12 +43,10 @@ properties:
->  
->  patternProperties:
->    # Optional children
-> -  "^serdes-ln-ctrl@[0-9a-f]+$":
-> +  "^mux-controller@[0-9a-f]+$":
->      type: object
-> -    description: |
-> -      This is the SERDES lane control mux. It should follow the bindings
-> -      specified in
-> -      Documentation/devicetree/bindings/mux/reg-mux.txt
-> +    description:
-> +      This is the SERDES lane control mux.
->  
->  required:
->    - compatible
-> @@ -68,9 +66,18 @@ examples:
->          #size-cells = <1>;
->          ranges;
->  
-> -        serdes_ln_ctrl: serdes-ln-ctrl@4080 {
-> +        serdes_ln_ctrl: mux-controller@4080 {
->              compatible = "mmio-mux";
->              reg = <0x00004080 0x50>;
-> +
-> +            #mux-control-cells = <1>;
-> +            mux-reg-masks =
-> +                <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
-> +                <0x4090 0x3>, <0x4094 0x3>, /* SERDES1 lane0/1 select */
-> +                <0x40a0 0x3>, <0x40a4 0x3>, /* SERDES2 lane0/1 select */
-> +                <0x40b0 0x3>, <0x40b4 0x3>, /* SERDES3 lane0/1 select */
-> +                <0x40c0 0x3>, <0x40c4 0x3>, <0x40c8 0x3>, <0x40cc 0x3>;
-> +                /* SERDES4 lane0/1/2/3 select */
->          };
->      };
->  ...
+Also adding the new regressions list, as this is an i915 regression
+introduced in v5.13-rc1.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
