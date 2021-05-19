@@ -2,125 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D55D38953A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C29389544
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhESSXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 14:23:47 -0400
-Received: from mail-bn7nam10on2042.outbound.protection.outlook.com ([40.107.92.42]:11888
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231349AbhESSXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 14:23:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U0Frhwukiu/rMzlkxtst4mQl5wqjw3qLFjCZf1dmNImmwS/MWmfGgvWDHcA89CYC/PO4l7PCCujSHAxpvCmlc5ZbOxD3IeXNTH4p3Yxa5wZGhDNHtYn15Gv5q1+nU9P79PU+MRPM/6W9d32r57NJVFP2penvAcbOJ2CxUstVrvLymGD+zT9PLxtB4xNJgT2CSc8mImUWPaTKtHg6aptwqDJosGvUkbzZIHBYQ+M8nejclHFP0WdL7CyDUHAVLTzwQJhXMSWDhijti7QhGOC7Toan6bm5OfaVRt6ex6y0EcpKIKlC7d2kKkFom0TzNiaODpAY30I0whw3nAcUb2aJ9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kO7pCP740fRExmQvDnzPPEZUyD6luv8naiZ1rnK0xKg=;
- b=dDiLVibGze3VFIihUuInm7j5hOXtSHEx7RODbjMDQgWCVhfs9GDBGXniSA+IAuxRK5DlAbkcVy95sWgRIDHRGTC2nBjU+0CgwIdAbNhvZK7/rvuQ/je0Ls0KK2OsPPwCMU6z1IedA9QyTC2uCU3BVliiA6qUOnpczWRKwXTRe+vBr4WhwFiRJlaxjATuWqmbpX224dQl6cSlFLrqn9kqe6Dp4QgLRvedYJ1J0DnR/iIm1L6m32LR8UFejpnWLY6Ibh9DNw3QsjdHXXevnviyrSpCT10B89ovDLXo+KvNUiHCcvdy5Kvzz7VkSb9X6RzEtvW74WVmrtmVy58GfC7pEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kO7pCP740fRExmQvDnzPPEZUyD6luv8naiZ1rnK0xKg=;
- b=HcMT+t3s7v7/f8ur1kElfMLkuwIvXbmgmK2R0Y6n9pfNY7e8MA4flmHrHqK8NNzatapka72EEGLOw3cn8xLhmXc0QNSftANA+I57NbsisagbdnUmH+Q9P+VVGmafcwEYWybWSXZm044WDQAm+Zz5JTC1dslTrJhcq4zv8AYgE3zZNmX/nZ6KtCFaqxmE2D8tf2Zb2kRwsTYkplKAyWEfWNz1r6pnhQLPNAvA5iTAKjhOqmBzzmz64SuWqom/Mqw7T4fGyhwQWTDtKlGUDv2Mcge8hvGJLdUI+UhzNpxxxNj6y6bIk5FA+B7i3jatBEoDeachBVRf9vgf1NJhXyKTjw==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1148.namprd12.prod.outlook.com (2603:10b6:3:74::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Wed, 19 May
- 2021 18:22:24 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.033; Wed, 19 May 2021
- 18:22:24 +0000
-Date:   Wed, 19 May 2021 15:22:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Fix query DCT via DEVX
-Message-ID: <20210519182223.GA2577268@nvidia.com>
-References: <6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR19CA0024.namprd19.prod.outlook.com
- (2603:10b6:208:178::37) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231441AbhESS1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 14:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230062AbhESS1b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 14:27:31 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D49C06175F;
+        Wed, 19 May 2021 11:26:11 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id k14so17886137eji.2;
+        Wed, 19 May 2021 11:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eYCxITyk+mk4AUTz8nuEyzSBN6pUkGqdMoN9h/d6AUE=;
+        b=uDU95HCW5Qxy8VJOwJvwjdYXBniziRNUCJwn9ULD+mtVcf7wYeECcFP9kEW6lMYiqK
+         JI8jbZV1zNr/DhC43/txPUaZDBOlhFtOcc3ih8nBnkf5I1NWFFFCdUmMgQjss5ECubCC
+         spmLgq6bDWGQIfYHPJV37x5v+NAvRNpr95XJf8LHj7mkxMz5w0T+gNwHFmzh24k6s2Iy
+         qpZYOeHKi485gABYWsnlotZHGwiHlQAeQ4TFWOJYC3zOIeEwKFxmFqvmjyr7i/6xWZp+
+         ZPR6nfRqoHVTS8bsiFX8YV3cmNnhDeLvcm8beX2/c0rrPsDxOeppzmlA4OJTi9hWEJMy
+         U9Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eYCxITyk+mk4AUTz8nuEyzSBN6pUkGqdMoN9h/d6AUE=;
+        b=tB18/2j/jew2lUQDOHVwBkwatolMCV4vA1/yJyms94yIW5xBcU7FKfwJ5Wkk+eZv/M
+         8i7gh/nOGoL00/h9wOy4MncgIyi7O7fn+uRGdJ+TZk9dbRVKhgx9UtQPvF0GK6+goVM8
+         637LUik1VG5s+08JolILGrKn7PWRWNLEzT+0WEHIEwabdCzidafQkl/BG0R+pwqzu/eR
+         q23SLKdOPliYemi4+4odvbXISIF/fLdTA5fVqK0WqTUDL/e3XjI49R+AiE9azymWt6B6
+         Q6JFxKIbzlV4XAua4ALiv5Lp5LwMQb9gm15SEMUmov5xrtXvY/THHhjOJy8FRNgdE4Pp
+         GTqQ==
+X-Gm-Message-State: AOAM533PaNaNw9fvisNfrhigwfvlv7krEeQsW3bws4zBZ2PKcCZW22MS
+        VD/MQUn8LZLcy6c2ChgpReurUlzj/S8=
+X-Google-Smtp-Source: ABdhPJxgUEjPkhULuMBxFAsG87dtJb8Gw0PbOWW/r4V4fZKj8KjnoPLTaB02KXnScf0EAoAAeLEBRg==
+X-Received: by 2002:a17:906:2a08:: with SMTP id j8mr433226eje.483.1621448769291;
+        Wed, 19 May 2021 11:26:09 -0700 (PDT)
+Received: from localhost.localdomain.Home ([151.32.52.155])
+        by smtp.gmail.com with ESMTPSA id c3sm299843edn.16.2021.05.19.11.26.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 11:26:08 -0700 (PDT)
+From:   Stefano De Venuto <stefano.devenuto99@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, rostedt@goodmis.org,
+        y.karadz@gmail.com,
+        Stefano De Venuto <stefano.devenuto99@gmail.com>,
+        Dario Faggioli <dfaggioli@suse.com>
+Subject: [PATCH] Move VMEnter and VMExit tracepoints closer to the actual event
+Date:   Wed, 19 May 2021 20:23:03 +0200
+Message-Id: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR19CA0024.namprd19.prod.outlook.com (2603:10b6:208:178::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.33 via Frontend Transport; Wed, 19 May 2021 18:22:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljQpr-00AoTM-3p; Wed, 19 May 2021 15:22:23 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13f2fb15-eef2-4d8b-5f25-08d91af30caa
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1148:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1148C3C33313411A65FD3F69C22B9@DM5PR12MB1148.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lbSmJEV+e2hho3kLOl9nyOVCOGlmR8yIPFYKBaWDqZ+wYApqgUinE1jNZCfCjcWM02Oxn0WCiER/2UFfQ0suKoB8e6ZuCPyduw8r2vFZT4HZNyq4Qwf9Q/us75hGrsNZmIXrIFjxmILVlluxzxj5MXaVZdJb3JFO8nMtam5rYKJkowazwsKZAjba8WiOn5/KbCAg5oET3YZtJblU/x2MxhLltMMFGQCdIKKvwURemZZyL12MlqYzpZReEWZvllyTbUyQlpny0b1d/v0YsBlmlbeX1xB0bzWUWZR5FaHztV8tjrVwGDyV4LDM6OZH5C3YgsDccPN2aisSrfvkXCswJkYZb1iGr8lyc2bHB1WShZkRRTuyI4/QxRrOCK3WFtW4dkch1I20PnP1Z2ntgm2v4Kjl0ADsCtdKqtX5PdU9W3YznP0XcgmZpLn3A8eyYvP72/l/r5hHR9gB+jPeig4Gkw+eRsLh4Y6722bzXsDjmXQvh4KTAN7WrXfbbQFM866BAkuAejvRKj4HOeTnO9a0aRbKNEW/cA3Rz7NBje9WboDZfgX8NlWr8B7pd9I3CXinGYG16BXOWippmhbvyH1do5rqYhHFFaHkm4Eecj0UCqc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(366004)(376002)(39860400002)(86362001)(66556008)(2616005)(426003)(36756003)(66476007)(83380400001)(66946007)(478600001)(107886003)(4326008)(9746002)(8936002)(26005)(9786002)(1076003)(4744005)(8676002)(33656002)(5660300002)(38100700002)(6916009)(2906002)(54906003)(186003)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?DHHNC6YVlEnzBZ/2e7WZoNEhUP9qfG4F3yoW4k06Q5vzhCfpbsWBeaqPStUJ?=
- =?us-ascii?Q?luClO8p1nmXlwkSV+ikZZ/6xXuOa31bq4iPZFmrt+31+aiDwNT/+wQu3fQi8?=
- =?us-ascii?Q?J+JBOiYbMMaptMug4WMcMkznqxtlf1KnOJ1OETue4STbX+YxUdk6HGqlQuzQ?=
- =?us-ascii?Q?yb8dw1Ttv9mV+Z8heMWG8iW2nLlnkfJNMJEEhPtk8Y/BG7rQ0Lt5cwc5h7NU?=
- =?us-ascii?Q?pNu2HjyTZpFM4hyFillZ9k4pJJSusx/ah94m7UV9hgOXU92I7VM4omSowuH1?=
- =?us-ascii?Q?a5URlpCFGdxgOmwJ/oFQNTJaLLh+O5gjKAPZX4bhw15jtoY+PxXgCN5t9PAe?=
- =?us-ascii?Q?hr98jKq0qp6Rxm8eJcAE99VJE7j7LlGQ377INxIbwzSsuBLsqP8vfeLp3v0i?=
- =?us-ascii?Q?HWBib1zMnWVm/YSqVmZVNyZPWKmEHzsJWia6nC2hUvVli/F5hXs1W+hLARbZ?=
- =?us-ascii?Q?5Kqv1kCJaVZ12G/LcLxMcwRCBOe0/F46NwdhxdzZgJq6f6dwkVjhFQzDVetU?=
- =?us-ascii?Q?j9M10aY0EXhYxG1PsKXzTg2Sh2TdtSv5w2yLzNrtHEN+xlpiKHzzwQ3+ObLZ?=
- =?us-ascii?Q?5y0nza5e8QTUoq/4LbQP3vRv7L+VEbEozHSby6WKyIIKNPPMdLDI+UZECj3r?=
- =?us-ascii?Q?wpV6VEBdehQ3opyOwX4bkJorE15XOC+O0c7pq88jtyYxI2DS07Ej31V7Kb6G?=
- =?us-ascii?Q?5Wr+RU9YRJzao6EsgpDpVmGc6iJXc8C+uklqwGhcCib4bRIDlaglazMSD9qe?=
- =?us-ascii?Q?/IWk8wWaa/8PCEau+uQMUUoJVYUQA1YC+TuOFxxoiRTFWY03tWRR78mi3/Dt?=
- =?us-ascii?Q?uxfYWeo1dXW4w8BkItpHF3xYFSyjdp9LNWLSBSyqbgebqSzberUKqJvZ6XYt?=
- =?us-ascii?Q?iB83DI+/Y5arGNft2wvUAtTrZlZ97KqDB5EqbFqTQJMuUd2i1j8QJSwA/Rs2?=
- =?us-ascii?Q?9mawrBkyF6dkcDWC8ubP8da6oKhzDTZLbw5CvmOC0wqs7ayny38b9LpubGW4?=
- =?us-ascii?Q?mcuRnWp74AuFhM4V9F+OI1NUeZcnyyLyWM5FF5G5RfpoJ466ogZ9/+tTHLub?=
- =?us-ascii?Q?+qhG2+QBAr6QCYNcg1b8BFe+zw9ae63Iz1nAk+OBL0H0XnW1U/vvYebpI/Yx?=
- =?us-ascii?Q?gOJonmI/qedSnmABPEl6+dj70BzUnvPmgjK7x39rLTG1nrOUMO3MP4rqY6Lh?=
- =?us-ascii?Q?Qjnp9zNP7qEZhsVRbfyWjP6fdWuDVxfcBLtncyE4b+8WAsfZJKTHgb6zLM8Z?=
- =?us-ascii?Q?2UNrzJJMnLhVeRgC1AXHtoM7Z3EfTGP2GrXojtzByQdxjv8VZqi9zxWNsovy?=
- =?us-ascii?Q?br25zPjB9OvnUgBqDgdGpsCC?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13f2fb15-eef2-4d8b-5f25-08d91af30caa
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 18:22:24.2872
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1XqSLnCD3KYiPhWTNNfLjQeBiPDDuL637lLlZ1kj3Q5l+yVVdK8XG3iw6WQsGff9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1148
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:41:32AM +0300, Leon Romanovsky wrote:
-> From: Maor Gottlieb <maorg@nvidia.com>
-> 
-> When executing DEVX command to query QP object, we need to take
-> the QP type from the mlx5_ib_qp struct which hold the driver specific
-> QP types as well, such as DC.
-> 
-> Fixes: 34613eb1d2ad ("IB/mlx5: Enable modify and query verbs objects via DEVX")
-> Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
-> Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/mlx5/devx.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+The kvm_entry and kvm_exit tracepoints are still quite far from the
+actual VMEnters/VMExits. This means that in a trace we can find host
+events after a kvm_entry event and before a kvm_exit one, as in this
+example:
 
-Applied to for-rc, thanks
+           trace.dat:  CPU 0/KVM-4594  [001]  2.167191: kvm_entry:
+           trace.dat:  CPU 0/KVM-4594  [001]  2.167192: write_msr: 48, value 0
+           trace.dat:  CPU 0/KVM-4594  [001]  2.167192: rcu_utilization: Start context switch
+           trace.dat:  CPU 0/KVM-4594  [001]  2.167192: rcu_utilization: End context switch
+trace-tumbleweed.dat:     <idle>-0     [000]  2.167196: hrtimer_cancel:
+trace-tumbleweed.dat:     <idle>-0     [000]  2.167197: hrtimer_expire_entry:
+trace-tumbleweed.dat:     <idle>-0     [000]  2.167201: hrtimer_expire_exit:
+trace-tumbleweed.dat:     <idle>-0     [000]  2.167201: hrtimer_start:
+           trace.dat:  CPU 0/KVM-4594  [001]  2.167203: read_msr: 48, value 0
+           trace.dat:  CPU 0/KVM-4594  [001]  2.167203: write_msr: 48, value 4
+           trace.dat:  CPU 0/KVM-4594  [001]  2.167204: kvm_exit: 
 
-Jason
+This patch moves the tracepoints closer to the events, for both Intel
+and AMD, so that a combined host-guest trace will offer a more
+realistic representation of what is really happening, as shown here:
+
+           trace.dat:  CPU 0/KVM-2553  [000]  2.190290: write_msr: 48, value 0
+           trace.dat:  CPU 0/KVM-2553  [000]  2.190290: rcu_utilization: Start context switch
+           trace.dat:  CPU 0/KVM-2553  [000]  2.190290: rcu_utilization: End context switch
+           trace.dat:  CPU 0/KVM-2553  [000]  2.190290: kvm_entry:
+trace-tumbleweed.dat:     <idle>-0     [000]  2.190290: write_msr:
+trace-tumbleweed.dat:     <idle>-0     [000]  2.190290: cpu_idle:
+           trace.dat:  CPU 0/KVM-2553  [000]  2.190291: kvm_exit:
+           trace.dat:  CPU 0/KVM-2553  [000]  2.190291: read_msr: 48, value 0
+           trace.dat:  CPU 0/KVM-2553  [000]  2.190291: write_msr: 48, value 4 
+
+Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
+Signed-off-by: Dario Faggioli <dfaggioli@suse.com>
+---
+ arch/x86/kvm/svm/svm.c |  8 ++++----
+ arch/x86/kvm/vmx/vmx.c | 10 +++++-----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 05eca131eaf2..c77d4866e239 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3275,8 +3275,6 @@ static int handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+ 	struct kvm_run *kvm_run = vcpu->run;
+ 	u32 exit_code = svm->vmcb->control.exit_code;
+ 
+-	trace_kvm_exit(exit_code, vcpu, KVM_ISA_SVM);
+-
+ 	/* SEV-ES guests must use the CR write traps to track CR registers. */
+ 	if (!sev_es_guest(vcpu->kvm)) {
+ 		if (!svm_is_intercept(svm, INTERCEPT_CR0_WRITE))
+@@ -3707,6 +3705,8 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu)
+ 
+ 	kvm_guest_enter_irqoff();
+ 
++	trace_kvm_entry(vcpu);
++
+ 	if (sev_es_guest(vcpu->kvm)) {
+ 		__svm_sev_es_vcpu_run(vmcb_pa);
+ 	} else {
+@@ -3725,6 +3725,8 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu)
+ 		vmload(__sme_page_pa(sd->save_area));
+ 	}
+ 
++	trace_kvm_exit(svm->vmcb->control.exit_code, vcpu, KVM_ISA_SVM);
++
+ 	kvm_guest_exit_irqoff();
+ }
+ 
+@@ -3732,8 +3734,6 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 
+-	trace_kvm_entry(vcpu);
+-
+ 	svm->vmcb->save.rax = vcpu->arch.regs[VCPU_REGS_RAX];
+ 	svm->vmcb->save.rsp = vcpu->arch.regs[VCPU_REGS_RSP];
+ 	svm->vmcb->save.rip = vcpu->arch.regs[VCPU_REGS_RIP];
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 4bceb5ca3a89..33c732101b83 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6661,6 +6661,8 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+ {
+ 	kvm_guest_enter_irqoff();
+ 
++	trace_kvm_entry(vcpu);
++
+ 	/* L1D Flush includes CPU buffer clear to mitigate MDS */
+ 	if (static_branch_unlikely(&vmx_l1d_should_flush))
+ 		vmx_l1d_flush(vcpu);
+@@ -6675,6 +6677,9 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+ 
+ 	vcpu->arch.cr2 = native_read_cr2();
+ 
++	vmx->exit_reason.full = vmcs_read32(VM_EXIT_REASON);
++	trace_kvm_exit(vmx->exit_reason.full, vcpu, KVM_ISA_VMX);
++
+ 	kvm_guest_exit_irqoff();
+ }
+ 
+@@ -6693,8 +6698,6 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+ 	if (vmx->emulation_required)
+ 		return EXIT_FASTPATH_NONE;
+ 
+-	trace_kvm_entry(vcpu);
+-
+ 	if (vmx->ple_window_dirty) {
+ 		vmx->ple_window_dirty = false;
+ 		vmcs_write32(PLE_WINDOW, vmx->ple_window);
+@@ -6814,15 +6817,12 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+ 		return EXIT_FASTPATH_NONE;
+ 	}
+ 
+-	vmx->exit_reason.full = vmcs_read32(VM_EXIT_REASON);
+ 	if (unlikely((u16)vmx->exit_reason.basic == EXIT_REASON_MCE_DURING_VMENTRY))
+ 		kvm_machine_check();
+ 
+ 	if (likely(!vmx->exit_reason.failed_vmentry))
+ 		vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+ 
+-	trace_kvm_exit(vmx->exit_reason.full, vcpu, KVM_ISA_VMX);
+-
+ 	if (unlikely(vmx->exit_reason.failed_vmentry))
+ 		return EXIT_FASTPATH_NONE;
+ 
+-- 
+2.31.1
+
