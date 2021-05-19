@@ -2,255 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3861389877
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A895738987B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhESVS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:18:57 -0400
-Received: from mga05.intel.com ([192.55.52.43]:12225 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhESVS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:18:56 -0400
-IronPort-SDR: 7T3G1xbYyvpG2AkmnmnNCK6oC9fGOB/4vPQ1Lpzvq0FBF0grNtnZhwR2C+p1gYkMOQyBY8Ie+y
- 76bUTk5gYLEw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="286606791"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="286606791"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 14:17:35 -0700
-IronPort-SDR: /cHM+M13Z+9SlODRl3cQUQ/gkHzyeNrqRUY0mfjE+bHTsElMmxwYSPVWem+ROzDCeaco5FbnGX
- MajIN5PsomLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="467365122"
-Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 19 May 2021 14:17:33 -0700
-Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ljTZM-0000G9-QB; Wed, 19 May 2021 21:17:32 +0000
-Date:   Thu, 20 May 2021 05:16:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- 006ae1970a8cde1d3e92da69b324d12880133a13
-Message-ID: <60a5804b.DDrf6nh7Xg1C+7/t%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229863AbhESVUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229454AbhESVUJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:20:09 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD3EC06175F;
+        Wed, 19 May 2021 14:18:48 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id b25so14502539oic.0;
+        Wed, 19 May 2021 14:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZOtbChdXBxToRMqf8wzHNBcmP1hef8N7fN7VXXJvh1Y=;
+        b=N5OruzcxQbm+vUoqVTRqVuicCog8Zs33FaA8Llj1zwCKiPRUjTDnOnZPwcL/G7PqaH
+         hY+2JMVaMgoQsRX1yyZotg85j3qeM/sdn7jcSQutmf+rtn4nXPCHk2Jo4pY9BjWBC8Er
+         XnQ3S6t3r/HhqpwdRxVxnDSwCUxE4RhX0r2eJGanSWSDNI9c3e9vgQ15rP0WuVmdLAoJ
+         S1K7BY94iiqa0QxvvwEtJZ/bsaZTMmKT8Ki7UCLnL6fweeWxhgk8O+w5uy+eCKKXw17K
+         Wbw7pAZutdZvAWDK4rKp5luyfKEYXuwfX4OvVQXmkQ22OUjzTmbTIfK6wh/cjCBLz1q7
+         /+UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZOtbChdXBxToRMqf8wzHNBcmP1hef8N7fN7VXXJvh1Y=;
+        b=m1+K0Uw2cz0kJOBNdfSAWA5pLxcOrZnLe2yfrSFsNFo1z4o76Al6qbXzhDbsIratq/
+         f75WSjw2BA8PTN28agPIRXvxpBh1uwbeMgzopwiY3RT4Frb6DVHRNIrJEh/PfV7ydG6P
+         gF+vgPmp86/NxiVwKk6ZJkJ1wK8kT02feDqSh8HvoNT64BmPCAp/o9DkAavxpHd3PCKW
+         QBttofjJshVaPfINtzbLo5LqL1drarcPqXOmkFuKr8X4PHOJ3DlnJd4dcHcnt5+wj1ir
+         o6/vQkju1w5MbAc+Vckk7OdxKEls87fh30fqugDmtmZ7FC7iTMQIbVTXchVmggARkDc/
+         81uQ==
+X-Gm-Message-State: AOAM531mglt8WZF1vLy9HWVaXzeLam67scP+38D3fLrNyVdiE6koDItd
+        GeW2k27a8qhHjm3HQkgFjCYvQUSDey/aWle27zWWDmypLlLqow==
+X-Google-Smtp-Source: ABdhPJz1LlSO20IL+T0lzkoFL38bGJpk72JRf/c6uyVWtY3eQX3RwkRwLhFkXZodu7j+8xJMO565zx0A5kREfIOLVuU=
+X-Received: by 2002:aca:b5c4:: with SMTP id e187mr924572oif.149.1621459126929;
+ Wed, 19 May 2021 14:18:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com> <20210519203628.GA254894@bjorn-Precision-5520>
+In-Reply-To: <20210519203628.GA254894@bjorn-Precision-5520>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 19 May 2021 23:18:36 +0200
+Message-ID: <CAMhs-H-7Ocjp6JLKcS9_hMn77H=st8JBdLXgxc+yYiypFTjrvQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] MIPS: ralink: pci: driver for Pcie controller in
+ MT7621 SoCs
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: 006ae1970a8cde1d3e92da69b324d12880133a13  Merge branch 'irq/affinity' into irq/core
+Hi Bjorn,
 
-elapsed time: 725m
+On Wed, May 19, 2021 at 10:36 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Sat, May 15, 2021 at 02:40:51PM +0200, Sergio Paracuellos wrote:
+> > MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+> > with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link.
+> > Topology is as follows:
+> >
+> >                           MT7621 PCIe HOST Topology
+> >
+> >                                    .-------.
+> >                                    |       |
+> >                                    |  CPU  |
+> >                                    |       |
+> >                                    '-------'
+> >                                        |
+> >                                        |
+> >                                        |
+> >                                        v
+> >                               .------------------.
+> >                   .-----------|  HOST/PCI Bridge |------------.
+> >                   |           '------------------'            |     Type1
+> >          BUS0     |                     |                     |    Access
+> >                   v                     v                     v    On Bus0
+> >           .-------------.        .-------------.       .-------------.
+> >           | VIRTUAL P2P |        | VIRTUAL P2P |       | VIRTUAL P2P |
+> >           |    BUS0     |        |    BUS0     |       |    BUS0     |
+> >           |    DEV0     |        |    DEV1     |       |    DEV2     |
+> >           '-------------'        '-------------'       '-------------'
+> >     Type0        |          Type0       |         Type0       |
+> >    Access   BUS1 |         Access   BUS2|        Access   BUS3|
+> >    On Bus1       v         On Bus2      v        On Bus3      v
+> >            .----------.           .----------.          .----------.
+> >            | Device 0 |           | Device 0 |          | Device 0 |
+> >            |  Func 0  |           |  Func 0  |          |  Func 0  |
+> >            '----------'           '----------'          '----------'
+> >
+> > This driver has been very long time in staging and I have been cleaning
+> > it from its first versions where there was code kaos and PCI_LEGACY support.
+> > Original code came probably from openWRT based on mediatek's SDK code. There
+> > is no documentation at all about the mt7621 PCI subsystem.
+> > I have been cleaning it targeting mt7621 SoC which is the one I use in
+> > my GNUBee PC1 board and HiLink HLK-MT7621A evaluation board.
+> >
+> > Now I think is clean enough to be moved into 'arch/mips/pci'.
+> >
+> > This driver also uses already mainlined pci phy driver located in
+> > 'drivers/phy/ralink/phy-mt7621-pci.c'. There are two instances of
+> > the phy being the first one dual ported for pci0 and pci1, and the
+> > second one not dual ported dedicated to pci2. Because of writing twice
+> > some phy registers of the dual-ported one sometimes become in not
+> > confident boot cycles we have to take care of this when device link
+> > is checked here in controller driver. We power on the dual ported-phy
+> > if there is something connected in pcie0 or pcie1. In the same manner
+> > we have to properly disable it only if nothing is connected in of both
+> > pcie0 and pci1 slots.
+> >
+> > Another thing that must be mentioned is that this driver uses IO
+> > in physical address 0x001e160000. IO_SPACE_LIMIT for MIPS is 0xffff
+> > so some generic PCI functions (like of_pci_range_to_resource) won't
+> > work and the resource ranges part for IO is set manually.
+> >
+> > I had already sent binding documentation to be reviewed but I am
+> > include also here with the driver itself and this cover letter
+> > to make easy review process.
+> >
+> > Best regards,
+> >     Sergio Paracuellos
+> >
+> > Sergio Paracuellos (4):
+> >   dt-bindings: mt7621-pci: PCIe binding documentation for MT7621 SoCs
+> >   MIPS: pci: Add driver for MT7621 PCIe controller
+> >   staging: mt7621-pci: remove driver from staging
+>
+> Generally it's better if the move can be done in one commit instead of
+> an add followed by a remove.
 
-configs tested: 193
-configs skipped: 3
+I have no problem at all to just move the driver instead of add and
+remove. But it is easier to review initially in this way. No other
+reason but this one. So, if after review is ok, we can just move this
+in the way you are pointing out here.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>
+> I see there are a bunch of MIPS PCI controller drivers in
+> arch/mips/pci/, so I see the argument for putting this one there as
+> well.
+>
+> But most of the similar drivers are in drivers/pci/controller/, where
+> I think it's easier to keep them up to date with changes in the PCI
+> core.  Have you considered putting this one there?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7269_defconfig
-arm64                            alldefconfig
-arm                        trizeps4_defconfig
-arc                        nsimosci_defconfig
-arm                         shannon_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      pasemi_defconfig
-powerpc                     powernv_defconfig
-mips                        qi_lb60_defconfig
-arm                          badge4_defconfig
-sh                           se7724_defconfig
-mips                    maltaup_xpa_defconfig
-i386                                defconfig
-arm                        magician_defconfig
-sparc                       sparc32_defconfig
-mips                      loongson3_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                       bvme6000_defconfig
-m68k                       m5275evb_defconfig
-h8300                            alldefconfig
-mips                           ip27_defconfig
-sh                          rsk7264_defconfig
-ia64                                defconfig
-arm                          pcm027_defconfig
-m68k                          sun3x_defconfig
-arc                          axs103_defconfig
-mips                         tb0287_defconfig
-powerpc                 canyonlands_defconfig
-sh                               allmodconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                    adder875_defconfig
-ia64                          tiger_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                             pxa_defconfig
-sh                          kfr2r09_defconfig
-mips                           jazz_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                            hp6xx_defconfig
-powerpc                      pcm030_defconfig
-mips                     cu1000-neo_defconfig
-mips                            gpr_defconfig
-arm                         s3c2410_defconfig
-arm                        spear3xx_defconfig
-powerpc                      arches_defconfig
-mips                          malta_defconfig
-powerpc                  storcenter_defconfig
-powerpc                       ppc64_defconfig
-mips                     cu1830-neo_defconfig
-arm                        shmobile_defconfig
-arm                         vf610m4_defconfig
-mips                             allyesconfig
-m68k                        mvme147_defconfig
-mips                         cobalt_defconfig
-arm                        clps711x_defconfig
-sh                          sdk7786_defconfig
-sh                          r7785rp_defconfig
-powerpc                     asp8347_defconfig
-arc                     nsimosci_hs_defconfig
-sh                           se7705_defconfig
-s390                             alldefconfig
-mips                         tb0226_defconfig
-m68k                          multi_defconfig
-arm                       omap2plus_defconfig
-arm                             ezx_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                   bluestone_defconfig
-mips                         tb0219_defconfig
-mips                           xway_defconfig
-xtensa                  cadence_csp_defconfig
-arm                       mainstone_defconfig
-m68k                        m5307c3_defconfig
-s390                             allyesconfig
-arm                       netwinder_defconfig
-mips                   sb1250_swarm_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                   currituck_defconfig
-powerpc                     mpc5200_defconfig
-xtensa                    xip_kc705_defconfig
-mips                         bigsur_defconfig
-m68k                             allyesconfig
-x86_64                           allyesconfig
-m68k                         amcore_defconfig
-arm                          ep93xx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                ecovec24-romimage_defconfig
-arm                       cns3420vb_defconfig
-powerpc                      ppc6xx_defconfig
-arc                           tb10x_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     tqm8541_defconfig
-arc                              alldefconfig
-powerpc                      ppc40x_defconfig
-powerpc                 mpc834x_mds_defconfig
-arc                     haps_hs_smp_defconfig
-sh                        apsh4ad0a_defconfig
-arm                           viper_defconfig
-mips                      bmips_stb_defconfig
-sh                             espt_defconfig
-arm                        mvebu_v7_defconfig
-sh                            shmin_defconfig
-arm                         lpc18xx_defconfig
-powerpc                      cm5200_defconfig
-powerpc                     rainier_defconfig
-mips                          rb532_defconfig
-arm                          ixp4xx_defconfig
-powerpc                          allyesconfig
-powerpc                 mpc837x_mds_defconfig
-m68k                           sun3_defconfig
-sh                           se7712_defconfig
-powerpc                     taishan_defconfig
-sh                        dreamcast_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                      ep88xc_defconfig
-arm                             mxs_defconfig
-powerpc                        fsp2_defconfig
-powerpc                     tqm8540_defconfig
-ia64                      gensparse_defconfig
-arc                              allyesconfig
-arc                        vdk_hs38_defconfig
-sh                          rsk7203_defconfig
-sh                        edosk7760_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210519
-i386                 randconfig-a001-20210519
-i386                 randconfig-a005-20210519
-i386                 randconfig-a004-20210519
-i386                 randconfig-a002-20210519
-i386                 randconfig-a006-20210519
-x86_64               randconfig-a012-20210519
-x86_64               randconfig-a015-20210519
-x86_64               randconfig-a013-20210519
-x86_64               randconfig-a011-20210519
-x86_64               randconfig-a016-20210519
-x86_64               randconfig-a014-20210519
-i386                 randconfig-a014-20210519
-i386                 randconfig-a016-20210519
-i386                 randconfig-a011-20210519
-i386                 randconfig-a015-20210519
-i386                 randconfig-a012-20210519
-i386                 randconfig-a013-20210519
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Most pci drivers in 'arch/mips/pci' are still using PCI_LEGACY stuff.
+In contrast mt7621-pci is using current pci generic apis but even most
+of the code is generic enough, there is one remaining thing which
+depends on mips architecture which is the iocu region configuration
+which must be done in the driver itself. This is the only reason to
+move this driver into 'arch/mips/pci' instead of
+'drivers/pci/controller/'. So... I am all ears to listen to
+suggestions for the proper place for this driver. Thomas, do you have
+any thoughts on this?
 
-clang tested configs:
-x86_64               randconfig-b001-20210519
-x86_64               randconfig-a003-20210519
-x86_64               randconfig-a004-20210519
-x86_64               randconfig-a005-20210519
-x86_64               randconfig-a001-20210519
-x86_64               randconfig-a002-20210519
-x86_64               randconfig-a006-20210519
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+    Sergio Paracuellos
+>
+> >   MAINTAINERS: add myself as maintainer of the MT7621 PCI controller
+> >     driver
+> >
+> >  .../bindings/pci/mediatek,mt7621-pci.yaml     | 149 ++++++++++++++++++
+> >  MAINTAINERS                                   |   6 +
+> >  arch/mips/pci/Makefile                        |   1 +
+> >  .../mt7621-pci => arch/mips/pci}/pci-mt7621.c |   0
+> >  arch/mips/ralink/Kconfig                      |   9 +-
+> >  drivers/staging/Kconfig                       |   2 -
+> >  drivers/staging/Makefile                      |   1 -
+> >  drivers/staging/mt7621-pci/Kconfig            |   8 -
+> >  drivers/staging/mt7621-pci/Makefile           |   2 -
+> >  drivers/staging/mt7621-pci/TODO               |   4 -
+> >  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 ------------
+> >  11 files changed, 164 insertions(+), 122 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> >  rename {drivers/staging/mt7621-pci => arch/mips/pci}/pci-mt7621.c (100%)
+> >  delete mode 100644 drivers/staging/mt7621-pci/Kconfig
+> >  delete mode 100644 drivers/staging/mt7621-pci/Makefile
+> >  delete mode 100644 drivers/staging/mt7621-pci/TODO
+> >  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> >
+> > --
+> > 2.25.1
