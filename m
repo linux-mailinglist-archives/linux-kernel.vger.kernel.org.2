@@ -2,85 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E313388C6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D88388C72
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346234AbhESLNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:13:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45052 "EHLO mx2.suse.de"
+        id S1346227AbhESLPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:15:33 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:58564 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346209AbhESLNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:13:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A573AAF3E;
-        Wed, 19 May 2021 11:12:10 +0000 (UTC)
-Date:   Wed, 19 May 2021 13:12:02 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     James Feeney <james@nurealm.net>
-Cc:     linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: linux 5.12 - fails to boot - soft lockup - CPU#0 stuck for 23s!
- - RIP smp_call_function_single
-Message-ID: <YKTygvN0QNlExEQP@zn.tnic>
-References: <8a9599b2-f4fe-af9b-90f5-af39c315ec2f@nurealm.net>
- <YKIqDdFNaXYd39wz@zn.tnic>
- <1876afbe-a167-2be5-3690-846700eeb76c@nurealm.net>
+        id S240394AbhESLPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:15:32 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 084F5A003F;
+        Wed, 19 May 2021 13:14:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 084F5A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1621422848; bh=wew+NugOgMPA2bBfXTyTXyYcqOob/svN5eI50XpSaI8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Z09uzpWc26dvXYSPW4FgXK2fPwXcv/UcQNYn0xe/yioFWAlvWePv3MfDKeppn/B9L
+         r4fOkgZUlqDHcYBl93dwby9AYRaexbqTJyM/aw97Y9V8MM5BNjm8WEdg4nS1epjzpi
+         vlJ4kuwy92Uau3rauWxsuX/J7nTS6DqPm9fXYVR8=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Wed, 19 May 2021 13:13:53 +0200 (CEST)
+Subject: Re: Question about Tegra UCMs
+To:     Dmitry Osipenko <digetx@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+References: <20210518001356.19227-1-digetx@gmail.com>
+ <20210518001356.19227-3-digetx@gmail.com>
+ <20210518180949.GA949047@robh.at.kernel.org>
+ <20210518183455.GE4358@sirena.org.uk>
+ <92cef674-c454-e08c-b44d-d8c08b1e8ccf@gmail.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <562efe35-dd91-12a0-96a5-b8f4f34ea153@perex.cz>
+Date:   Wed, 19 May 2021 13:13:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <92cef674-c454-e08c-b44d-d8c08b1e8ccf@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1876afbe-a167-2be5-3690-846700eeb76c@nurealm.net>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 09:58:46PM -0600, James Feeney wrote:
-> Hmm - I am naively supposing that "the bisect is the bisect". No
-> matter what commit initiates a problem, it's still a problem. It would
-> be useful to investigate, and introspect the calling functions in the
-> Call Trace. No?
+Dne 19. 05. 21 v 0:31 Dmitry Osipenko napsal(a):
+> Mark, could you please help me to understand the UCM naming scheme that ALSA uses..
+> 
+> About a year ago I tried to complain to Jaroslav Kysela in a comment to the UCM change [1] that it should be breaking the naming scheme of Tegra UCMs, but haven't got a meaningful reply and moved on to other things.
+> 
+> [1] https://github.com/alsa-project/alsa-ucm-conf/commit/8ff2d50745efbb6959324f672460e413f0b618b8
 
-I'd like to know that the source you're looking at is the same source
-I'm looking at.
+I'm sorry about that, but it's better to create a tracked ticket (issue or
+pull request).
 
-And yes, AFAIK, Arch kernels are simply the upstream kernels but
-still...
+> Today I noticed that the naming scheme changed again and I still don't understand what to do about it.
+> 
+> I have two devices:
+> 
+>  1. Acer Picasso tablet that uses "Acer Iconia Tab A500 WM8903" for the card model name.
+> 
+>  2. Google Nexus 7 that uses "ASUS Google Nexus 7 ALC5642".
+> 
+> Previously UCMs were picked up by pulseaudio from these paths:
+> 
+>  1. /usr/share/alsa/ucm2/Acer Iconia Tab A500 WM8903/
+>  2. /usr/share/alsa/ucm2/ASUS Google Nexus 7 ALC5642/
+> 
+> Now the lookup paths are changed to:
+> 
+>  1. /usr/share/alsa/ucm2/Acer_Iconia_Tab/
+>  2. /usr/share/alsa/ucm2/ASUS_Google_Nex/
 
-> Attached:
-> bootlog.7bb39313cd62
-> bootlog.4f432e8bb15b
->
-> The later with the "soft lockup" repeating four times. The kernel
-> command line has loglevel=5 and console=ttyS0,115200.
+Yes, it's based on the driver name (which is incorrectly set /or not set/ in
+your case).
 
-Those are not the full boot messages - they should look like
-dmesglog.7bb39313cd62 but probably you cannot log into the box after the
-softlockup happens to dump them. That's why I meant to try the serial
-connection...
+Lookup paths (with description):
 
-Anyway, let's start somewhere.
+https://github.com/alsa-project/alsa-ucm-conf/blob/master/ucm2/ucm.conf
 
-1. Take a pristine 5.12 upstream kernel from git, build it using your
-bisectconfig and try booting it with
+The latest scheme is even different - lookups were moved to ucm2/conf.d with
+redirection to the more descriptive layered configuration tree structure, so
+the other developers can immediately identify the hardware which is
+configured. See Qualcomm examples. The long card names does not help us so much.
 
-debug ignore_loglevel log_buf_len=16M no_console_suspend systemd.log_target=null console=ttyS0,115200 console=tty0
+> Strace shows that pulseaudio searches UCMs only at these paths.
+> 
+> The output of /proc/asound/cards:
+> 
+>  0 [WM8903         ]: Acer_Iconia_Tab - Acer Iconia Tab A500 WM8903
+>                       Acer Iconia Tab A500 WM8903
+> 
+>  0 [ALC5642        ]: ASUS_Google_Nex - ASUS Google Nexus 7 ALC5642
+>                       ASUS Google Nexus 7 ALC5642
 
-on the kernel command line. Then save a full dmesg, if you can. If you
-ocan catch ot ver serial, then that would be awesomer.
+Fields are explained in:
 
-2. Use the exact same kernel but this time disable
+https://github.com/alsa-project/alsa-ucm-conf/blob/master/ucm2/README.md
 
-CONFIG_X86_THERMAL_VECTOR
+> Is there anything on the kernel side that I could change to get a working naming scheme? If yes, I may try to do something about it in the v2, thanks in advance.
 
-in its .config and do the same thing.
+Try to set a meaningful driver name (usually the code handling the ASoC card
+creation). It should be very close to the kernel module name (but more user
+friendly). The current code for your hardware use the auto-generated driver
+name from the ALSA long name.
 
-Send me both dmesg files then.
+Then try to reuse the existing configs - for example your Nexus 7 config has
+many blocks from codecs/rt5640/* .
 
-Thx.
+Anyway, create a PR so we can discuss the details.
+
+					Jaroslav
 
 -- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
