@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D72938989D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9997338989F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhESVe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        id S229798AbhESVfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhESVe5 (ORCPT
+        with ESMTP id S229748AbhESVfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:34:57 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C819C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:33:37 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id k3-20020a170902f283b02900f0d51a7a1cso6545705plc.22
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:33:37 -0700 (PDT)
+        Wed, 19 May 2021 17:35:06 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A40AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:33:45 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d78so9959953pfd.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:33:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=cOO+IbBZ9Kvoj3lhh1iacoy/r2F7rXeqm3ad3wDL1+A=;
-        b=QL5KNau84Zofl1F+WtBRi/h47IQG2BL/RYC3SXQIq8xmnlbfB/ewUwBlTapbQE7zHe
-         Xcwtm20YrEqg6Jw+ks9JiYc/AvXhD6zw/Qb+yL2WI0sedjOTEidDHjZqi1/FjsIbDtuF
-         laNuORopKhlB75G8MLsO4mBBh4tNZ7ImWLXA+Y5IxVsTQFJGdF/O8IuIKPGTnVXAIdrt
-         NQr6lXNAkGvRL5uXT8Z+QYudZPPXLbG5c9Bwg6e6njIFG7sFyDTVPhaqaPSkQuG+YuEF
-         JOTX2jersLEu18Zums9wfZDXuuKBieLTu1/JGIn0g9e/NVa1jaNWDZi1umQM0Jjv7AVn
-         1VuQ==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oP8gkx8lBe4tFadnN1llHaYQNEqC1BdffwyrrrWEirY=;
+        b=u7y1pYsrsONhi35thtT4sCU3kSP8eoObVlvB5VfQxPAQZMuSl+KUsG0H8Pw7ydtp12
+         DRMKqvoMKkMX5/jW0t1WiVj1H0Z5Vx2/jMLnkM0S4btHP2fq4CA1qteSns00Fwa54O17
+         7eu+COmp/BigfWKj1RuQO4+ZaAXmcoSezVniVvcVbljBupgj8OSvBCANOkLPUdLpQpnt
+         i8qu4EeoeBqrTN3USqY6aa8fHseZvb+KQhshIzC0zEm6QhhitNeBsZxSfNEikxGPZXaV
+         uR0Be5QwwM54fp/2toy7F7bAOpSYJHZMI4phLn1c7MWaxRHzbslxR+FWWytYkGkVqG0B
+         +CcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=cOO+IbBZ9Kvoj3lhh1iacoy/r2F7rXeqm3ad3wDL1+A=;
-        b=cyOD+O/ggVEUlOZX+5IquVPH85TB46QrledHsPYIVxo2DtwTsLVunJ3h/9Cuf8quC1
-         945v84x2XUL/F7JwNK0HD1kLi47VYGKVaYjuvckb223lqzUjqOChJ6Xj0x1NBX3u465r
-         uGK9Zjj6EK2V+SO8/1+DtWVu6gNeoGOm0Yq69ixtbLgJyX+PnjJKnGgCE4LutAlsygzP
-         bjj2px8JLNM/DYy5wFzAyllwCX4cVC9V+t3ugEEOWx9pj/206fa1+cqdTvJqPfZ8y0uu
-         NFaTiCzlUwnBV1dumhJWNR8oj4oOWUNBTh7+DwPB5/zx1iJUp399mV2jpRi/aS08Q88S
-         Sscw==
-X-Gm-Message-State: AOAM5307/8V+xoy78tTu8p4BHwpZJlaenvtaNZQYaCZfqd2g+NxgBsIB
-        4w+UyTMgN0ZWnQOyY1OSkfCDVThKuFr5vw==
-X-Google-Smtp-Source: ABdhPJwfEtI2Tb/Dbt51r4gCfKogUfwd+BTKpwkLXh2ttiFh3LhfopdSyM6m4UCPTJFHBUEee/JNnaiFwdUeNw==
-X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a62:30c2:0:b029:289:116c:ec81 with SMTP
- id w185-20020a6230c20000b0290289116cec81mr1112723pfw.42.1621460016669; Wed,
- 19 May 2021 14:33:36 -0700 (PDT)
-Date:   Wed, 19 May 2021 21:33:33 +0000
-Message-Id: <20210519213333.3947830-1-dmatlack@google.com>
-Mime-Version: 1.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=oP8gkx8lBe4tFadnN1llHaYQNEqC1BdffwyrrrWEirY=;
+        b=tzcn8nF1TKpff9E004XHU7Viaug7la265WEjKw0pWjnkVGx9hqp11wLrWSj8FbmNa3
+         pVURzfpcvf6bn7qFDi2E3ksQojHs/VbaDmduJ8+NWi2g1Mys4WR5qWWTXstiLebUpUrJ
+         xsgJ+eNfhMqtRcQXsCPK36UigMaz8+Bgd1miDQHNZngCMy082YB5OE1DqNRkKDkgQxIQ
+         cAVn7wAQJM/QoXS+cU/uD1BNrBVE7FEHM9s5VsUGJXxq6Uf/CwU2lGgAKcgYDX9Yi534
+         P5wn99HkJLxQVpGRRxvy63kW7/g9EmvGIGj1UepgHi/a1EgjBNjyIH7q2+Ld9Q4AoAqo
+         c36g==
+X-Gm-Message-State: AOAM5323XZ554FEOF1faySvIvPOkxb+8o6hs3W5T4DVSQtgNEkZwuJua
+        mdNwbRTVHbTKVIPeUsKfc18=
+X-Google-Smtp-Source: ABdhPJw17dse/s5N6mmJmO3jjluXMyq5kxrCUDIerwZkvctMy0+GdVeA8EBeO2DKelkE5c6voVaOSA==
+X-Received: by 2002:a62:8013:0:b029:2de:93c6:1358 with SMTP id j19-20020a6280130000b02902de93c61358mr1125885pfd.55.1621460025088;
+        Wed, 19 May 2021 14:33:45 -0700 (PDT)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:4102:f4c7:9246:e6c4])
+        by smtp.gmail.com with ESMTPSA id q24sm248773pgb.19.2021.05.19.14.33.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 14:33:44 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        John Dias <joaodias@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Minchan Kim <minchan@kernel.org>
+Subject: [PATCH] mm: page_alloc: dump migrate-failed pages only at -EBUSY
+Date:   Wed, 19 May 2021 14:33:41 -0700
+Message-Id: <20210519213341.2620708-1-minchan@kernel.org>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH] selftests: Add .gitignore for nci test suite
-From:   David Matlack <dmatlack@google.com>
-To:     netdev@vger.kernel.org, linux-nfc@lists.01.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
-        Shuah Khan <shuah@kernel.org>,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building the nci test suite produces a binary, nci_dev, that git then
-tries to track. Add a .gitignore file to tell git to ignore this binary.
+alloc_contig_dump_pages aims for helping debugging page migration
+failure by page refcount mismatch or something else of page itself
+from migration handler function. However, in -ENOMEM case, there is
+nothing to get clue from page descriptor information so just
+dump pages only when -EBUSY happens.
 
-Signed-off-by: David Matlack <dmatlack@google.com>
+Signed-off-by: Minchan Kim <minchan@kernel.org>
 ---
- tools/testing/selftests/nci/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 tools/testing/selftests/nci/.gitignore
+ mm/page_alloc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/nci/.gitignore b/tools/testing/selftests/nci/.gitignore
-new file mode 100644
-index 000000000000..448eeb4590fc
---- /dev/null
-+++ b/tools/testing/selftests/nci/.gitignore
-@@ -0,0 +1 @@
-+/nci_dev
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3100fcb08500..c0a2971dc755 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8760,7 +8760,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 
+ 	lru_cache_enable();
+ 	if (ret < 0) {
+-		alloc_contig_dump_pages(&cc->migratepages);
++		if (ret == -EBUSY)
++			alloc_contig_dump_pages(&cc->migratepages);
+ 		putback_movable_pages(&cc->migratepages);
+ 		return ret;
+ 	}
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
