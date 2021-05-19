@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED05389193
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70B638918A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354554AbhESOlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
+        id S1354317AbhESOl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354466AbhESOlL (ORCPT
+        with ESMTP id S1354428AbhESOlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:41:11 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FEAC061348
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:39:19 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id v14so6872735pgi.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:39:19 -0700 (PDT)
+        Wed, 19 May 2021 10:41:03 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74737C06138E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:39:09 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id p20so15918261ljj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:39:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ha/LaDJaWqJqGFUOZ/CIIY7Ny0kkYMvLA61pIJyDFZ0=;
-        b=WLOYc+Zws2OfLaWguoyIkyA1m4y1KdTsBz7yZ364G202kFhg5Cz8wae1i/DUrnQHh1
-         HBeM5YDGHk7LZ98IXVwaHuqR6OYbgMNOt9yY43rqwglS9/2svFr72RgIxvfI7HyIe0vc
-         gBjIwofSIcAXXCjfK7daf+hKjL/Ov9zRgQVvNfI+sW2xNj+oUyJk2cHZDPRxC9d7PyLj
-         AjUBTsoIlgPuTpoNBp/SqFHUBY4G59V5KiNlfdFPX2sWdvG/ykFt3dJY4iHLokwCDR4T
-         VGAL6RoKhXBZn6TUmJxWyNrcHT2Nsxa/gVWl+XiW3yAWyOwzHT03zZTVDjnTVJUYKxxW
-         ez+A==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Nc6CsOmLYlYhosQDHmPH7JIfTt0CJg9Ts/YiX/jQHwY=;
+        b=HgA1pDo4XeJYXNKY/iAMwblUWkBN77xsngRBcrzHq/iE8eRT2HRRgc686wcHtnVpan
+         HZ4AKQuxDcR+0mTInQCOuhqbINIHOD9G8LpebL7znluHF9OiwJr/le986aBiNxpxkxE5
+         sQVwBPPSFOKgRF1dwWf6jHve9KfSQZYLZiBitx8/LFExcIxFSECkV4R8pmZMK/OKX1vj
+         mTqf5DCtP2ivd5R1BYfI95LmItjedS3frHGqMcNtcnFW+Jc8J6sUiH0yEL15LODlfoBw
+         f3PD5/5fb5yyqDeVFXGdv91WgajlbJirXxjzXXboi1pGFt9PfuYvJgD5s+FrcvrA94rX
+         IpSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ha/LaDJaWqJqGFUOZ/CIIY7Ny0kkYMvLA61pIJyDFZ0=;
-        b=uR/0SYEW2LAPlho/cym95UtZYaH3AtGyRMgiit3sCntzJtcktFigatVqy1PE+p9orx
-         PWBDauLxPAejRygec/tLFjcIW6Jn3aVDQpvYvIFZyeEIr4YuJYWWkX1RXPhd2UjEjlK8
-         PhYlP1N/I+7LYEHt93gr6NO0n/7d2n2C7LlZeitmi0ewt9pSV0ehHiObxaQTeA+ycjUN
-         pxN8+AoDamm0o8PbxrPxmkInwoq9+RB0zqSMVpsLG/Bjg7EUeYVoJzSluTcZy00KYXSS
-         XhrxJbz/6zc5zg8OgIkM6pubR8s9aHduyhcS33AjXl+sGp9q8Kd1GMuFQTwCJdXDs78V
-         z1hA==
-X-Gm-Message-State: AOAM532+fmuhsIOvH8znPOyJXn9ynkRGs+YYjvRGrrkrlqCHc3IjByy7
-        xUnrntpODZWqIoYhEenel9qvFg==
-X-Google-Smtp-Source: ABdhPJy6oYXhdskz+Yn8nt3Y0Tv5dRWI5TVs9gHJNz0N7OYXa/C/ddOSJ9Mb0VgSbzLMrAfiYCZtuQ==
-X-Received: by 2002:aa7:8588:0:b029:28e:dfa1:e31a with SMTP id w8-20020aa785880000b029028edfa1e31amr10952488pfn.77.1621435158778;
-        Wed, 19 May 2021 07:39:18 -0700 (PDT)
-Received: from localhost.localdomain.name ([122.177.135.250])
-        by smtp.gmail.com with ESMTPSA id o24sm9239515pgl.55.2021.05.19.07.39.12
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Nc6CsOmLYlYhosQDHmPH7JIfTt0CJg9Ts/YiX/jQHwY=;
+        b=MNwFhCEdMWQSHBu8H7nfnifDhpzVEOpNCEMiw3pBKXr9qVVXS9ffRNbuZ/RkJkaV3o
+         YW21MHaykTqEVtwusot//6MCf4HIHjNxznGs8X2i+ObMs/Kjpkxo21gokIFZz9D1IWFQ
+         qkVvMnOK8gcKvi94Q9q39xsLvaGc4cKctlz5mY54e6trr7/lTe1yX5/8G0lxb2dIhk7Z
+         ETENhRh/QT8xlfWEmyWCepI1/fEM6C2EfxNN/7Gb1yMLTPq5FmsxHqNqHxU9DBnuobQD
+         IY8nt+bb5dq7U86/gu39C7jL+r3N5lM3LEj1PQH830VD4vkLP0guBH0U4+gh+JS3oVzD
+         XBAw==
+X-Gm-Message-State: AOAM530Y/ughdZWIAErHq3DEq7dijf8V87FcicBCTAZ4ZnxAKeBW0OlJ
+        TFX2zRdoM+tW0R5QixCpQr4=
+X-Google-Smtp-Source: ABdhPJwE/Sq+JLDSB8vi2c8j5QBIicU2jCY0aUPL5ychSGfim18/GS5+IjIi9qEou+22wg5pyItXBA==
+X-Received: by 2002:a2e:6c1a:: with SMTP id h26mr9434973ljc.478.1621435143358;
+        Wed, 19 May 2021 07:39:03 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id m4sm3698096ljc.20.2021.05.19.07.39.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:39:18 -0700 (PDT)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     bhupesh.sharma@linaro.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: [PATCH v3 17/17] arm64/dts: qcom: sm8250: Add dt entries to support crypto engine.
-Date:   Wed, 19 May 2021 20:07:00 +0530
-Message-Id: <20210519143700.27392-18-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210519143700.27392-1-bhupesh.sharma@linaro.org>
-References: <20210519143700.27392-1-bhupesh.sharma@linaro.org>
+        Wed, 19 May 2021 07:39:02 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 19 May 2021 16:39:00 +0200
+To:     Christoph Hellwig <hch@infradead.org>, Mel Gorman <mgorman@suse.de>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/3] mm/vmalloc: Switch to bulk allocator in
+ __vmalloc_area_node()
+Message-ID: <20210519143900.GA2262@pc638.lan>
+References: <20210516202056.2120-1-urezki@gmail.com>
+ <20210516202056.2120-3-urezki@gmail.com>
+ <YKUWKFyLdqTYliwu@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKUWKFyLdqTYliwu@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add crypto engine (CE) and CE BAM related nodes and definitions to
-"sm8250.dtsi".
+On Wed, May 19, 2021 at 02:44:08PM +0100, Christoph Hellwig wrote:
+> > +	if (!page_order) {
+> > +		area->nr_pages = alloc_pages_bulk_array_node(
+> > +			gfp_mask, node, nr_small_pages, area->pages);
+> > +	} else {
+> > +		/*
+> > +		 * Careful, we allocate and map page_order pages, but tracking is done
+> > +		 * per PAGE_SIZE page so as to keep the vm_struct APIs independent of
+> 
+> Comments over 80 lines are completely unreadable, so please avoid them.
+> 
+That i can fix by separate patch.
 
-Cc: Thara Gopinath <thara.gopinath@linaro.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: dmaengine@vger.kernel.org
-Cc: linux-clk@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: bhupesh.linux@gmail.com
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+> > +		 * the physical/mapped size.
+> > +		 */
+> > +		while (area->nr_pages < nr_small_pages) {
+> > +			struct page *page;
+> > +			int i;
+> > +
+> > +			/* Compound pages required for remap_vmalloc_page */
+> > +			page = alloc_pages_node(node, gfp_mask | __GFP_COMP, page_order);
+> > +			if (unlikely(!page))
+> > +				break;
+> >  
+> > +			for (i = 0; i < (1U << page_order); i++)
+> > +				area->pages[area->nr_pages + i] = page + i;
+> >  
+> > +			if (gfpflags_allow_blocking(gfp_mask))
+> > +				cond_resched();
+> > +
+> > +			area->nr_pages += 1U << page_order;
+> > +		}
+> 
+> In fact splitting this whole high order allocation logic into a little
+> helper would massivel benefit the function by ordering it more logical
+> and reducing a level of indentation.
+> 
+I can put it into separate function. Actually i was thinking about it.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 4c0de12aaba6..6700d609a7b8 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -3796,6 +3796,34 @@ cpufreq_hw: cpufreq@18591000 {
- 
- 			#freq-domain-cells = <1>;
- 		};
-+
-+		cryptobam: dma@1dc4000 {
-+			compatible = "qcom,bam-v1.7.0";
-+			reg = <0 0x01dc4000 0 0x24000>;
-+			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			qcom,ee = <0>;
-+			qcom,controlled-remotely = <1>;
-+			iommus = <&apps_smmu 0x584 0x0011>,
-+				 <&apps_smmu 0x586 0x0011>,
-+				 <&apps_smmu 0x594 0x0011>,
-+				 <&apps_smmu 0x596 0x0011>;
-+			interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 &mc_virt SLAVE_EBI_CH0>;
-+			interconnect-names = "memory";
-+		};
-+
-+		crypto: crypto@1dfa000 {
-+			compatible = "qcom,sm8250-qce";
-+			reg = <0 0x01dfa000 0 0x6000>;
-+			dmas = <&cryptobam 4>, <&cryptobam 5>;
-+			dma-names = "rx", "tx";
-+			iommus = <&apps_smmu 0x584 0x0011>,
-+				 <&apps_smmu 0x586 0x0011>,
-+				 <&apps_smmu 0x594 0x0011>,
-+				 <&apps_smmu 0x596 0x0011>;
-+			interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 &mc_virt SLAVE_EBI_CH0>;
-+			interconnect-names = "memory";
-+		};
- 	};
- 
- 	timer {
--- 
-2.31.1
+> > +	/*
+> > +	 * If not enough pages were obtained to accomplish an
+> > +	 * allocation request, free them via __vfree() if any.
+> > +	 */
+> > +	if (area->nr_pages != nr_small_pages) {
+> > +		warn_alloc(gfp_mask, NULL,
+> > +			"vmalloc size %lu allocation failure: "
+> > +			"page order %u allocation failed",
+> > +			area->nr_pages * PAGE_SIZE, page_order);
+> > +		goto fail;
+> > +	}
+> 
+> From reading __alloc_pages_bulk not allocating all pages is something
+> that cn happen fairly easily.  Shouldn't we try to allocate the missing
+> pages manually and/ore retry here?
+> 
+It is a good point. The bulk-allocator, as i see, only tries to access
+to pcp-list and falls-back to a single allocator once it fails, so the
+array may not be fully populated.
 
+In that case probably it makes sense to manually populate it using
+single page allocator.
+
+Mel, could you please also comment on it?
+
+> > +
+> > +	if (vmap_pages_range(addr, addr + size, prot, area->pages, page_shift) < 0) {
+> 
+> Another pointlessly long line.
+Yep. Will fix it by a separate patch. Actually the checkpatch.pl also
+complains on splitting the text like below:
+
+    warn_alloc(gfp_mask, NULL,
+        "vmalloc size %lu allocation failure: "
+        "page order %u allocation failed",
+        area->nr_pages * PAGE_SIZE, page_order);
+
+
+Thanks for the comments!
+
+--
+Vlad Rezki
