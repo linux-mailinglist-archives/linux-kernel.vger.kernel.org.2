@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFF938924F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23711389253
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243060AbhESPNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        id S1354322AbhESPOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234445AbhESPNn (ORCPT
+        with ESMTP id S233577AbhESPOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:13:43 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866CCC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:12:20 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id s123-20020a3777810000b02902e9adec2313so10053797qkc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:12:20 -0700 (PDT)
+        Wed, 19 May 2021 11:14:37 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E5CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:13:16 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m190so9688340pga.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:13:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=oO5AKNsRSSnrJptTZQeQrJnBbvbH66aYrmljzYTwDeI=;
-        b=tCLCiIrH8w8VmA+arhHU+ywzOryvrr+CesPIkyIa1DbBDY4l7ECqELkC3a/R0GCkgn
-         oswgIt9bgSOYmog9+Ru2dxq+QEZ0QlLgdW/izDaTHQ6+OdorG9TCpXRG6rruxGsl1klc
-         SuolBqr71uYITu+hACVPX8+MDqpM/zrMs0U4rkMUbCGdmIOklzcvF9iuPiCyyPnqVMVS
-         yI9240QC28FiCnKPk2lkU2BRgcyOb6Wtp9m+TJoTd/Ab/0zUqnxhzV3CgfReePDy+xWL
-         3IfO5lUoZHaRXJt055x/z8QJ2WHwlcQIoVKnvBO7yKLMAeRoY4Qv51+HbakH+udR15LR
-         7Icw==
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=p1U+oAmLN15Il7adctUFj5XirLGOy/razNk7lJyJFbo=;
+        b=n40THdRfAoBafaZbp00vGauvtDhhN41cyBhmX8LROnMMA2m4ryRmfFtwciXVPn2wEG
+         JZMzcViWQpO/rxkeJqvd/yRjxqy+ERr9O/Rinc84y8DQ4yeX3Mpue3T2IiUJT4nyMEEX
+         x859Z7VW1AeD8g+3niJPNx353nqxBt7Iv6z+dMhi5MxWU/eo3vrCswTLPh4/WqI0ju6F
+         ISRZzhrXQaFwphhLhD0KkRg6gOIC62kqWBCQ+FVHCkYnN4x7vY/JzqNO3dn7sws50CGx
+         wXbhgI/tNTxNoTTev1Eici2LlWqZP+c40KOH248Az9A46p1UmMtRbKdLHkvaU4CTBOcD
+         nZJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=oO5AKNsRSSnrJptTZQeQrJnBbvbH66aYrmljzYTwDeI=;
-        b=Js4wqyYJtx4WhkhfCeG3KgritOQnfdWaPoyQHY/TuO6uT2+otcyvpa5JGC9wKTwcBT
-         zXTnSsodDhyeF8kFU34pf4WWoLtRjUG4pHBKYdIXdpKlHfBTGNdPvrEPzZ6MKpWMmH61
-         1XdztbltjqJR88YSTe0YfRmh2sVZppl+y2WVd4ZBHrC7yt7G/e9H2klc11I08ZywhPi/
-         I9uBKxm/hBW1of+BXKpbYb286Yk1UG4G+QLli8B4pQDNYAvtv2ka4/u4RxGZ8n2buKnf
-         cMLPUPK3cWwMWuJbQ+w7e9sJrW8N6Z4huVdwUpAuUc9lJN59rodM+zdJRsosDShkPOdE
-         2p7Q==
-X-Gm-Message-State: AOAM533KBpHHKuVemNj2vVmvy08z1zzyRwW0H4DBTH/tiV0q7BF62XoN
-        1cRXTA4o3gQcWkOQ/g4249xf7uW5Vfvm
-X-Google-Smtp-Source: ABdhPJzA/kKG/MEzQLWxdX0i5sLjbYnvy9r6NmZGAqzO2NWb0EEu69DIMNoUCj2Q9OY9vkinfT9OrWVh8tdd
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:636:a116:b1fd:c4e8])
- (user=irogers job=sendgmr) by 2002:a0c:e601:: with SMTP id
- z1mr14019739qvm.62.1621437139616; Wed, 19 May 2021 08:12:19 -0700 (PDT)
-Date:   Wed, 19 May 2021 08:12:13 -0700
-Message-Id: <20210519151213.2643570-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH] perf test: Test 2 libpfm4 error cases
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=p1U+oAmLN15Il7adctUFj5XirLGOy/razNk7lJyJFbo=;
+        b=a7SWwgiRHsNkgRw7XM5kej04WB0JTp/nhBlE1WJHwutaX0Ms/ai7IS5dX1CDW6Lov2
+         ayFKcBeD8lChOrKbDcU2OceWOPdV+hRKnNA/IoGLHnYoKVRt3p0Nlheo8okOUJ0pAC6N
+         /C3kDKGgGnmjgTaAXAMq+TAQV3xY9kuMtpvkn3zIcKUoYJGXf+mYZPutf8x3k9RPwaNC
+         ++tQFXqqTisf88Ms/wuEtSQcJBIMYArxf1KdPK6+8VqfwjsVPevSfkm+HCRgZTqpIFtM
+         lOaz2RUOWHQkkKPIFKf64rZ31rBzOIj2wFCuDFHRXYE7BEU9jSe/240y7cRmpst5vT8J
+         shag==
+X-Gm-Message-State: AOAM531n8rP9wA3HCzEPuRDwfslyGYP8/UJ797xECTwW7+rQV8b7+Iwh
+        d7dJEabXsqQUyJHAlPYK15RuZsU0RJaSRP5jfw==
+X-Google-Smtp-Source: ABdhPJy/Myxcy7bbgNjO9/KwP0pk3uC5ShQibLxNRwLOs5F4vzS/w4fcBWkjdNPZmN3wbPescTZr+g==
+X-Received: by 2002:a65:6a44:: with SMTP id o4mr11269699pgu.145.1621437196050;
+        Wed, 19 May 2021 08:13:16 -0700 (PDT)
+Received: from localhost.localdomain ([2402:4000:11ca:dcec:9f88:85c9:3532:e27b])
+        by smtp.gmail.com with ESMTPSA id n23sm2408025pff.93.2021.05.19.08.13.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 08:13:15 -0700 (PDT)
+From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+To:     ash15.sulaiman@gmail.com, johan@kernel.org, elder@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Staging: greybus: fix open parenthesis issue in gbphy.c
+Date:   Wed, 19 May 2021 20:42:58 +0530
+Message-Id: <20210519151258.25845-1-asha.16@itfac.mrt.ac.lk>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Proposed in:
-https://lore.kernel.org/lkml/20210517140931.2559364-1-tmricht@linux.ibm.com/
+This fix "Alignment should match open parenthesis" checkpatch
+ error.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
 ---
- tools/perf/tests/pfm.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/staging/greybus/gbphy.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
-index d4b0ef74defc..acd50944f6af 100644
---- a/tools/perf/tests/pfm.c
-+++ b/tools/perf/tests/pfm.c
-@@ -155,6 +155,16 @@ static int test__pfm_group(void)
- 			.nr_events = 3,
- 			.nr_groups = 1,
- 		},
-+		{
-+			.events = "instructions}",
-+			.nr_events = 1,
-+			.nr_groups = 0,
-+		},
-+		{
-+			.events = "{{instructions}}",
-+			.nr_events = 0,
-+			.nr_groups = 0,
-+		},
- 	};
+diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
+index 9fc5c47be9bd..13d319860da5 100644
+--- a/drivers/staging/greybus/gbphy.c
++++ b/drivers/staging/greybus/gbphy.c
+@@ -27,7 +27,7 @@ struct gbphy_host {
+ static DEFINE_IDA(gbphy_id);
  
- 	for (i = 0; i < ARRAY_SIZE(table); i++) {
+ static ssize_t protocol_id_show(struct device *dev,
+-				 struct device_attribute *attr, char *buf)
++				struct device_attribute *attr, char *buf)
+ {
+ 	struct gbphy_device *gbphy_dev = to_gbphy_dev(dev);
+ 
+@@ -221,7 +221,7 @@ void gb_gbphy_deregister_driver(struct gbphy_driver *driver)
+ EXPORT_SYMBOL_GPL(gb_gbphy_deregister_driver);
+ 
+ static struct gbphy_device *gb_gbphy_create_dev(struct gb_bundle *bundle,
+-				struct greybus_descriptor_cport *cport_desc)
++						struct greybus_descriptor_cport *cport_desc)
+ {
+ 	struct gbphy_device *gbphy_dev;
+ 	int retval;
 -- 
-2.31.1.751.gd2f1c929bd-goog
+2.17.1
 
