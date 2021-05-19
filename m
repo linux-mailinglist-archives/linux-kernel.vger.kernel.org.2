@@ -2,175 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00335389728
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4CE38972F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbhEST74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        id S232487AbhESUCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232458AbhEST7y (ORCPT
+        with ESMTP id S232463AbhESUCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:59:54 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB2AC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:58:34 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id e15so1046056plh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:58:34 -0700 (PDT)
+        Wed, 19 May 2021 16:02:32 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CAFC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:01:11 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id t3so16733106edc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=j5nrfmcF93AKRgieL57ZADJtNONxgrPmJG86D6uJFj4=;
-        b=SO21Jy/1gMSCHCoovzZ45WTy76Hy7+vgbq0ShV9jDL1liNPLWyjF5M75F14keRkJP1
-         Is1Fdp5HWchYoHA8kvOCkZDALx3mp3YjHKOOhnUmPYQt2p7ZVQJl18E7Sbfb1bWZCicX
-         GAyYpyr+adzDEteRVkaTzDbL2Im9W/iMRDdUlWg1YuK0+nahq0YnW8XddHLL9woFUcrj
-         Jtcq1+RSkIV9DQvqBFMKqk+UdS+lmIF1r3c+4Q3Ng/C7C0zoccWU48HcZ5Kxa4v/qwLC
-         MVPL2atl7AkILaS/4n9fEeYK8ZjWO1QCL3QfIGuSJMJgcO3NqhTBADNJ0BCO4p6JST7U
-         ihKg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OlxoSwTyBGcIB+AvV2WfDn1g1Sf/3pWsJB/YRZB8SB8=;
+        b=1dh0Q+cxVbEWRDmbm9CbH3FmdqIYJe8AQBGdaFSXXRTRAU50YTKYucb5bSElHQPTK1
+         Lv7Cc8hcGY8Leks6KtL54P+GEsSL7ZzHs9Ys03+8y7Uo6LGzaBH5et1EMJpA6MqboF7d
+         dzbjjXf0OOlXr3SgohVT+LZCuju7dgik6T+NVkiwR70FiBTjiTMyz6gW86PcTkuD2EIM
+         SUYq4mZmDjcOp/FALakgTnus6G9wyiTUGTq7mi1Hq+k1Z6akiGnqyz6b58BCCLoRnfRV
+         qsfACgNRDDs2QVQDf+3Tj3FfouX4mQcV45NPfvFPUl3SuhuIeA92MXc+/xVPADipFOwb
+         W8og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=j5nrfmcF93AKRgieL57ZADJtNONxgrPmJG86D6uJFj4=;
-        b=HPlJL1cgQ3XaMZg9cQd7TLVqw4AdG9h7P4l/qOLNMBNqxuPH7Ufqo+bBjPnLlvzLTm
-         b5MBqEcUONUyoVZruO6mKH8cnBo2W7Ar1lt5BEC+CoHpa19zAbnKgjG0Jj7+9a+jrm0J
-         Y0ygDTpcYNZrk0hD+rTytNtIFsEvYx3Qp7Wtgem+6OALtOV+UqTSHV1mjN3mAUvUHgc0
-         M6RhlrQSDs7ZCy/R5L6YrRtmWbeYniCmuLGmzB45akVZMosQlcTDwWOgIweVEhCij7IO
-         CVL4CXsGZEtDID3k31N8j04Ucg9mA6AMBFhYn6U1+5DlSB873ngLT3749+MSjM++sLOR
-         juSg==
-X-Gm-Message-State: AOAM532/PAx/HOeXW2+CPHwpK293IjK/88cXNZ/ukQPS1HlDSQOKpvsy
-        VEIH1dhaPPhOMrbDHq18DrrR2A==
-X-Google-Smtp-Source: ABdhPJyzhx1FtKRNVT6lwCbyTf/m5HXdEAfJf2CsHerYKwPsWe5O63zA+6yN8pqyQtfqiKgNNeE92Q==
-X-Received: by 2002:a17:90a:a10a:: with SMTP id s10mr668570pjp.59.1621454313950;
-        Wed, 19 May 2021 12:58:33 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c134sm192434pfb.135.2021.05.19.12.58.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 12:58:33 -0700 (PDT)
-Date:   Wed, 19 May 2021 19:58:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Reiji Watanabe <reijiw@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 29/43] KVM: SVM: Tweak order of cr0/cr4/efer writes at
- RESET/INIT
-Message-ID: <YKVt5XVIQMUCUIHd@google.com>
-References: <20210424004645.3950558-1-seanjc@google.com>
- <20210424004645.3950558-30-seanjc@google.com>
- <CAAeT=FzpUBXpzuCT3eD=3sRnV14OYLA+28Eo7YFioC+vc=xVsA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OlxoSwTyBGcIB+AvV2WfDn1g1Sf/3pWsJB/YRZB8SB8=;
+        b=DouZZGJGm8xFiPQOTF0S0m5iNq3TrH7S0Rta6sXPmhPPiW9TkibSLOO/qZNZy3XOyY
+         OSRanoIbcX5RqW7NZjrVy1u/YbampAd6Pz7QgUFUei9NYRWrN9wx4QNDm8R6TQHuIjlo
+         OayXpgDR3T51dU7lmcuSxb4zuwav96bdOhzJrXipP9pFOkFjlCxmqwFZ5X6tltbnzkvQ
+         e5Uj39Ls7ABcY1z7x00PyO0Fqc2QEcYoqt7mV1XFYr0PlNf6eIZgIt0mnIlE/tp+hB2F
+         dhNGHbLn2h7hHmi0Iid3ZirESaZzJBYWD+rfqCKCAE5dDKFTNLCzbWmemuvIvwsawUIf
+         urJQ==
+X-Gm-Message-State: AOAM532y8fhbXooHCO5E8A6wn7paXxDOMM7Jp/zlWY9hknMXWUnBI088
+        UFFDBEyQppozCxVkLIx+oeKeiX+50ZMBGY3dSV1+CxHlU0/mIw==
+X-Google-Smtp-Source: ABdhPJwBYagjUpaXpLq5SIcAJYpu2toyEqzEY8kfw4+9XLQVZ7jpoX+ib07aWV6cm4nAhKDYGUb4FOrk3VOFKfJnE30=
+X-Received: by 2002:a05:6402:128f:: with SMTP id w15mr808464edv.354.1621454470538;
+ Wed, 19 May 2021 13:01:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAeT=FzpUBXpzuCT3eD=3sRnV14OYLA+28Eo7YFioC+vc=xVsA@mail.gmail.com>
+References: <20210415232610.603273-3-ben.widawsky@intel.com> <20210415232750.604112-1-ben.widawsky@intel.com>
+In-Reply-To: <20210415232750.604112-1-ben.widawsky@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 19 May 2021 13:01:00 -0700
+Message-ID: <CAPcyv4jRm5Xw650GPUWOjAJ8sDQfOZ3yq2gMpVGho39eawLXrg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] cxl/mem: Demarcate vendor specific capability IDs
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021, Reiji Watanabe wrote:
-> > @@ -1204,18 +1204,13 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
-> >         init_sys_seg(&save->ldtr, SEG_TYPE_LDT);
-> >         init_sys_seg(&save->tr, SEG_TYPE_BUSY_TSS16);
-> >
-> > +       svm_set_cr0(vcpu, X86_CR0_NW | X86_CR0_CD | X86_CR0_ET);
-> >         svm_set_cr4(vcpu, 0);
-> >         svm_set_efer(vcpu, 0);
-> >         save->dr6 = 0xffff0ff0;
-> >         kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
-> >         vcpu->arch.regs[VCPU_REGS_RIP] = 0x0000fff0;
-> >
-> > -       /*
-> > -        * svm_set_cr0() sets PG and WP and clears NW and CD on save->cr0.
-> > -        * It also updates the guest-visible cr0 value.
-> > -        */
-> > -       svm_set_cr0(vcpu, X86_CR0_NW | X86_CR0_CD | X86_CR0_ET);
-> 
-> AMD's APM Vol2 (Table 14-1 in Revision 3.37) says CR0 After INIT will be:
-> 
->    CD and NW are unchanged
->    Bit 4 (reserved) = 1
->    All others = 0
-> 
-> (CR0 will be 0x60000010 after RESET)
-> 
-> So, it looks the CR0 value that init_vmcb() sets could be
-> different from what is indicated in the APM for INIT.
-> 
-> BTW, Intel's SDM (April 2021 version) says CR0 for Power up/Reset/INIT
-> will be 0x60000010 with the following note.
-> -------------------------------------------------
-> The CD and NW flags are unchanged,
-> bit 4 is set to 1, all other bits are cleared.
-> -------------------------------------------------
-> The note is attached as '2' to all Power up/Reset/INIT cases
-> looking at the SDM.  I would guess it is erroneous that
-> the note is attached to Power up/Reset though.
+On Thu, Apr 15, 2021 at 4:27 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> Vendor capabilities occupy 0x8000 to 0xFFFF according to CXL 2.0 spec
+> 8.2.8.2.1 CXL Device Capabilities. While they are not defined by the
+> spec, they are allowed and not "unknown". Call this detail out in the
+> logs to let users easily distinguish the difference.
+>
+> v2: Should be greater than or equal to (Ben)
+>
+> Fixes: 8adaf747c9f0b ("cxl/mem: Find device capabilities")
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  drivers/cxl/mem.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index c05617b0ba4b..28c7c29567b3 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -939,7 +939,10 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+>                         cxlm->memdev_regs = register_block;
+>                         break;
+>                 default:
+> -                       dev_dbg(dev, "Unknown cap ID: %x (0x%x)\n", cap_id, offset);
+> +                       if (cap_id >= 0x8000)
+> +                               dev_dbg(dev, "Vendor cap ID: %x (0x%x)\n", cap_id, offset);
+> +                       else
+> +                               dev_dbg(dev, "Unknown cap ID: %x (0x%x)\n", cap_id, offset);
 
-Agreed.  I'll double check that CD and NW are preserved by hardware on INIT,
-and will also ping Intel folks to fix the POWER-UP and RESET footnote.
+This wants the same %#x fixup that Vishal noted on patch2 [1], and I
+think it would be useful to clarify that the second number is indeed
+an offset: "Unknown cap_id: %#x offset: %#x\n"
 
-Hah!  Reading through that section yet again, there's another SDM bug.  It
-contradicts itself with respect to the TLBs after INIT.
-
-  9.1 INITIALIZATION OVERVIEW: 
-    The major difference is that during an INIT, the internal caches, MSRs,
-    MTRRs, and x87 FPU state are left unchanged (although, the TLBs and BTB
-    are invalidated as with a hardware reset)
-
-while Table 9-1 says:
-
-  Register                    Power up    Reset      INIT
-  Data and Code Cache, TLBs:  Invalid[6]  Invalid[6] Unchanged
-
-I'm pretty sure that Intel CPUs are supposed to flush the TLB, i.e. Tabel 9-1 is
-wrong.  Back in my Intel validation days, I remember being involved in a Core2
-bug that manifested as a triple fault after INIT due to global TLB entries not
-being flushed.  Looks like that wasn't fixed:
-
-https://www.intel.com/content/dam/support/us/en/documents/processors/mobile/celeron/sb/320121.pdf
-
-  AZ28. INIT Does Not Clear Global Entries in the TLB
-  Problem: INIT may not flush a TLB entry when:
-    • The processor is in protected mode with paging enabled and the page global enable
-      flag is set (PGE bit of CR4 register)
-    • G bit for the page table entry is set
-    • TLB entry is present in TLB when INIT occurs
-    • Software may encounter unexpected page fault or incorrect address translation due
-      to a TLB entry erroneously left in TLB after INIT.
-
-  Workaround: Write to CR3, CR4 (setting bits PSE, PGE or PAE) or CR0 (setting
-              bits PG or PE) registers before writing to memory early in BIOS
-	      code to clear all the global entries from TLB.
-	      
-  Status: For the steppings affected, see the Summary Tables of Changes.
-
-AMD's APM also appears to contradict itself, though that depends on one's
-interpretation of "external intialization".  Like the SDM, its table states that
-the TLBs are not flushed on INIT:
-
-  Table 14-1. Initial Processor State
-
-  Processor Resource         Value after RESET      Value after INIT
-  Instruction and Data TLBs  Invalidated            Unchanged
-
-but a blurb later on says:
-
-  5.5.3 TLB Management
-
-  Implicit Invalidations. The following operations cause the entire TLB to be
-  invalidated, including global pages:
-
-    • External initialization of the processor.
-
-
-All in all, that means KVM also has a bug in the form of a missing guest TLB
-flush on INIT, at least for VMX and probably for SVM.  I'll add a patch to flush
-the guest TLBs on INIT irrespective of vendor.  Even if AMD CPUs don't flush the
-TLB, I see no reason to bank on all guests being paranoid enough to flush the
-TLB immediately after INIT.
+[1]: http://lore.kernel.org/r/40063fe52fcaa066a42d352b13128b6762277542.camel@intel.com
