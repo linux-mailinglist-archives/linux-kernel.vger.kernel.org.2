@@ -2,66 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE324389649
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91973389657
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhESTLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:11:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47660 "EHLO mail.kernel.org"
+        id S230391AbhESTOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:14:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47110 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229736AbhESTL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:11:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C682C6135A;
-        Wed, 19 May 2021 19:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621451409;
-        bh=PYT8jjEyoFWiAiSZLbz5154TfdZP8R6YBwmPK8+Q7H0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EAo8vX8hmPLM7YXvTaqX5DpleR4E/kxePL9QhukOqbtj0VrMG/neXrOSZivS4vS6Q
-         ySp+KRX46cOtnKxK9+h8OIaTWsK1lpQI7HckLGZOpigjWvVMq6XIGwXWzVY9Wd3z4X
-         sCAyER9XW4zN6tUQ3CSfkz6sqCPY4432f2VEcaeuBy5AXQQKaflcVAK5Flr1NISBJZ
-         T9AHe0YrOQfBSOVkaCyUQJO1GjSODG/gKKjn5aFUxV7I7UGRf9R0F96T4uvrW2B2sH
-         KDQz781pSaUsUfiKVweked9IQjJtYoDcDA+cVv5mNkFUpqzDgdSv757hN8bGCMrjDi
-         6lNTz3D/O03Rg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BA2B760A2C;
-        Wed, 19 May 2021 19:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229505AbhESTOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 15:14:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 88F15AFAB;
+        Wed, 19 May 2021 19:13:10 +0000 (UTC)
+Date:   Wed, 19 May 2021 21:13:08 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Hyunwook Baek <baekhw@google.com>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 5/8] x86/sev-es: Leave NMI-mode before sending signals
+Message-ID: <YKVjRJmva/Y2EHPZ@suse.de>
+References: <20210519135251.30093-1-joro@8bytes.org>
+ <20210519135251.30093-6-joro@8bytes.org>
+ <20210519175450.GF21560@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] tun: use DEVICE_ATTR_RO macro
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162145140975.13987.1726694497643123002.git-patchwork-notify@kernel.org>
-Date:   Wed, 19 May 2021 19:10:09 +0000
-References: <20210519023850.256-1-yuehaibing@huawei.com>
-In-Reply-To: <20210519023850.256-1-yuehaibing@huawei.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519175450.GF21560@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Peter,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+thanks for your review.
 
-On Wed, 19 May 2021 10:38:50 +0800 you wrote:
-> Use DEVICE_ATTR_RO helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
+On Wed, May 19, 2021 at 07:54:50PM +0200, Peter Zijlstra wrote:
+> On Wed, May 19, 2021 at 03:52:48PM +0200, Joerg Roedel wrote:
+> > --- a/arch/x86/kernel/sev.c
+> > +++ b/arch/x86/kernel/sev.c
+> > @@ -1343,9 +1343,10 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
+> >  		return;
+> >  	}
+> >  
+> > +	instrumentation_begin();
+> > +
+> >  	irq_state = irqentry_nmi_enter(regs);
+> >  	lockdep_assert_irqs_disabled();
+> > -	instrumentation_begin();
+> >  
+> >  	/*
+> >  	 * This is invoked through an interrupt gate, so IRQs are disabled. The
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/net/tun.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> That's just plain wrong. No instrumentation is allowed before you enter
+> the exception context.
 
-Here is the summary with links:
-  - [net-next] tun: use DEVICE_ATTR_RO macro
-    https://git.kernel.org/netdev/net-next/c/bc6d076daa8c
+Okay.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> > +	irqentry_nmi_exit(regs, irq_state);
+> > +
+> 
+> And this is wrong too; because at this point the handler doesn't run in
+> _any_ context anymore, certainly not one you can call regular C code
+> from.
 
+The #VC handler is at this point not running on the IST stack anymore,
+but on the stack it came from or on the task stack. So my believe was
+that at this point it inherits the context it came from (just like the
+page-fault handler). But I also don't fully understand the context
+tracking, so is my assumption wrong?
+
+Regards,
+
+	Joerg
 
