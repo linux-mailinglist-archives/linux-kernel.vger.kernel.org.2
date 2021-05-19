@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3ACB389705
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1931F389708
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhESTvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232212AbhESTvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:51:19 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5954CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:49:59 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id t206so7916788wmf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=dBR1ACxX8ozNV3HsE9ZlSRZc1ztK6/YtkWvvTEMGRdg=;
-        b=djhZs0lYBOr43nj2LBBdz4RwnLUru8AFLz2jZitdye2EUCr+ir8qe4gII+Aee3lp3q
-         zdyJ9XzkjrIx3iWrRpUKO4lZh+7n9jIn77uprwnbYpsldLEsRiEzCt1JCyvg92jZKNWw
-         /vECJglenJEz5WHoJI2uqqQ5uXps48ki1cc3Gn7Q87mXa+l9TLkkN9fl6OVGeCM8FTTe
-         zYYwuxJd35vZfYGrVXbRdOlGft/oTYPI3Tio6cPQgGHw/4rHBmwYCSQVqgr3iiRGKpZL
-         absn4skDQXwcItnXhkHtJ1RCgpgACgwozY6NUPtN4E0kNhwdb6NJ9FSXcUnhZk2naYYM
-         hYMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=dBR1ACxX8ozNV3HsE9ZlSRZc1ztK6/YtkWvvTEMGRdg=;
-        b=BHgaB1SrwrV0kSjq5OYtzrZs2dsMIVKvUq0S+lOdp2BlhyTCqusLfq4Sr3j223ifUk
-         pwxB0j7x3o0DQbVQ301FFtolEG48NI5EdyflkKKEVi7pYhwCQ5RqtStv4+A9l5+12K3j
-         5KsxFXzfQjhYoC5FkJvkyWs8+iPPb3bpXB6oCLnRXo8Sycw9P6l61u9SRLy8i56so3ZE
-         vZZV/W80O+RJl7Xd4djCG4yKUaV2l1HuACqY6YOon2e9srcoNDTvXPMC/js1tpCjqTBo
-         NtGBDoHR30WE2fUBCHxmFZzOtWMmO+UbX9QIoQ8CABC2ZQUFbcmgEZ9oG279iU2ne7BZ
-         3kuQ==
-X-Gm-Message-State: AOAM530Z9AZQ92p4ZrYLk6YH9vLpRFbJF2ujBDZmp25o0Z6XP6eyXpsP
-        /W/5geuBWUFCokNNZIJaq18ZiNnXhOjkc0zUp/U=
-X-Google-Smtp-Source: ABdhPJz4Yr2nRarFwYKYl+Gl3HBCAquwQE1gorY+rqw1xHlRtqaWbzS9JU+foqHTjdN8C/gqlP203xBS+gCN9V0CTjM=
-X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr782690wmq.154.1621453797944;
- Wed, 19 May 2021 12:49:57 -0700 (PDT)
+        id S232295AbhESTvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232256AbhESTva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 15:51:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3EB75611B0;
+        Wed, 19 May 2021 19:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621453810;
+        bh=rszwbAkPk9ccvnHq47Mvxi0c53lLCYYj20OpAcPxaJ0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JX0z3LuN9sY5TV+rXJcgajBX4/rZpSuNlMZ7+MQL3uK97uzoHVpALKzj6A7w5GcYr
+         F+QBEAMtvZpM9Vl0oxPb0HtOQldXHPCW2ILdNi2hQtkQ6+hQBppiRJn0pD2+KHBYXt
+         73CKgYF2ZESAgdMaZiKYklCHPyCOJ5fh29FLsxjerq26NBCo1s2PcaeddlIFv5JSBx
+         Ebu8wCkw9lL8kKvVJ8cYQUmUBnS1vzYM+9udxLVB4fV4EInrFScIvSa0Yn8R4w2mR0
+         2yxi+QrGvCPy4v/hs2smtykKrdQqffDvl12XOOOGwd9rW0YAOIcacQCQ1dIqUUsW3J
+         GC9W4di3kb22w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3195C60A56;
+        Wed, 19 May 2021 19:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:a7b:c38c:0:0:0:0:0 with HTTP; Wed, 19 May 2021 12:49:57
- -0700 (PDT)
-Reply-To: westernunion6979805@gmail.com
-From:   amos ben <ab8914535@gmail.com>
-Date:   Wed, 19 May 2021 19:49:57 +0000
-Message-ID: <CAM8k14DBq2ON__z2wT3Mz6Z+Ds+eDYOwbRwOi0M-NijbdzzJaQ@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 1/2] dt-bindings: net: nfc: s3fwrn5: Add optional clock
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162145381019.1870.2964109189084564601.git-patchwork-notify@kernel.org>
+Date:   Wed, 19 May 2021 19:50:10 +0000
+References: <20210519091613.7343-1-stephan@gerhold.net>
+In-Reply-To: <20210519091613.7343-1-stephan@gerhold.net>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
+        kuba@kernel.org, k.opasiak@samsung.com, robh+dt@kernel.org,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bongsu.jeon@samsung.com, ~postmarketos/upstreaming@lists.sr.ht
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention,
+Hello:
 
-We have deposited your fund ($800.000) with the BSIC Bank Plc after
-our finally meeting regarding your ATM CARD, All you will do is to
-contact BSIC Bank director Mr Emmanuel Sylvester E-mail:(
-westernunion6979805@gmail.com) he will give you direction on how you
-will be receiving your ATM CARD. Remember to send him your Full
-information to avoid wrong delivery such as,
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Receiver's Name_______________
-Address: ________________
-Country: ____________
-Phone Number: _____________
+On Wed, 19 May 2021 11:16:12 +0200 you wrote:
+> On some systems, S3FWRN5 depends on having an external clock enabled
+> to function correctly. Allow declaring that clock in the device tree.
+> 
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+> Changes in v2: Minor change in commit message only
+> v1: https://lore.kernel.org/netdev/20210518133935.571298-1-stephan@gerhold.net/
+> 
+> [...]
 
-Though, BSIC Bank you will receive your ATM CARD so contact Mr
-Emmanuel Sylvester as soon as you receive this email and tell him to
-show you the way you will receive your ATM CARD.
+Here is the summary with links:
+  - [v2,1/2] dt-bindings: net: nfc: s3fwrn5: Add optional clock
+    https://git.kernel.org/netdev/net-next/c/9cc52f5a533a
+  - [v2,2/2] nfc: s3fwrn5: i2c: Enable optional clock from device tree
+    https://git.kernel.org/netdev/net-next/c/340f42f7ff0b
 
-Best Regards.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
