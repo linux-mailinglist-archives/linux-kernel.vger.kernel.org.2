@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243303884E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2B33884E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237334AbhESCry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 22:47:54 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:51281 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236919AbhESCrw (ORCPT
+        id S237272AbhESCrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 22:47:53 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:39751 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235114AbhESCrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 22:47:52 -0400
-X-UUID: 9c12430aa253475d82c9b523ee16cf0d-20210519
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VEzORXZXTvU7eYTmk77wtpcjmjFnCZQDk56FWp8DxdI=;
-        b=Odq3teru8Qo22puSd6vNUrfgLCgCWjekKUPuhAe0x2hZ5j1YqoQ8mzvTrfN9eKBE2Sc5gShzfGIhM1dKTt6Ge28pHVQSp4WuuiaH1ikyKQh9qrn8QbN8nxsB7D4pFJN3FpYh89yJzvEAR9o5UwRwyF7tqIKjqDFTotnjFUI6kS8=;
-X-UUID: 9c12430aa253475d82c9b523ee16cf0d-20210519
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1246951111; Wed, 19 May 2021 10:46:30 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
- 2021 10:46:18 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 19 May 2021 10:46:18 +0800
-Message-ID: <1621392378.22329.5.camel@mhfsdcap03>
-Subject: Re: [PATCH] phy: phy-mtk-tphy: Fix some resource leaks in
- mtk_phy_init()
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <lkp@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>,
-        Heiko Stuebner <heiko@sntech.de>, <kbuild@lists.01.org>
-Date:   Wed, 19 May 2021 10:46:18 +0800
-In-Reply-To: <1621257600-15046-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1621257600-15046-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 18 May 2021 22:47:51 -0400
+Received: by mail-ot1-f54.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so10500158otc.6;
+        Tue, 18 May 2021 19:46:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NdESKQMh43nC6JZr8BTSQsMvdc5KFh0MQVjejGwQt0Y=;
+        b=tTjqqI56+FxdySyFkRVJgZLE2yZ2PIlGAKXp2uiMMe7r+KTwYfj5ETqzbAHh4Ntwzo
+         6xEItnDMmlY0vkYqkCDReb7jcm3rZF6T9CRkUad9zKfnsaLBkadKQAxz3kVsz8pRb8jH
+         AaJQ1oYW4EVwKdPQh440aF6CzwnG4omyCyh4ml2M1tNrOEokuUv1DpFvDINu75kBgMNR
+         dE5+jno7qEIOP8/9EC2Neojj69q+WM+jxoIMYqDbYG1OyaDLK5sF15Lryow131n6xdxg
+         otfxYSkZXJLsODaNAgkcRwGVRDSuuyI+iBtCwnjOr3UQVYpO3EwmIIxEaR7MaNmQX0jr
+         gtKw==
+X-Gm-Message-State: AOAM533gaee76CxuHO+H9L4wYkm4+2b97trUgyNPlBhRtDehL7tlOyB6
+        4BwqEZyd/UcIfe22nLt3XlZYALQcxA==
+X-Google-Smtp-Source: ABdhPJyLtwLU5cVvUUA+7JfBr/dF1/lkXauFhjIqpLcKY7qXxLRlJUKcALQm7of52aoqdd3FZ6HNqA==
+X-Received: by 2002:a05:6830:1df0:: with SMTP id b16mr6692001otj.40.1621392392035;
+        Tue, 18 May 2021 19:46:32 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id x11sm4268909otr.36.2021.05.18.19.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 19:46:31 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Subject: [PATCH] dt-bindings: mmc: Drop the "sdhci" compatible example
+Date:   Tue, 18 May 2021 21:46:30 -0500
+Message-Id: <20210519024630.1902477-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 384A46F9F68EB2F10770BDD73B9B15BC7D398B264992835F51000680BDA137352000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA1LTE3IGF0IDIxOjIwICswODAwLCBUaWV6aHUgWWFuZyB3cm90ZToNCj4g
-VXNlIGNsa19kaXNhYmxlX3VucHJlcGFyZSgpIGluIHRoZSBlcnJvciBwYXRoIG9mIG10a19waHlf
-aW5pdCgpIHRvIGZpeA0KPiBzb21lIHJlc291cmNlIGxlYWtzLg0KPiANCj4gRml4ZXM6IGNkNGVj
-NGIwM2RjMSAoInBoeTogcGh5LW10NjV4eC11c2IzOiBhZGQgbWVkaWF0ZWsgZGlyZWN0b3J5IGFu
-ZCByZW5hbWUgZmlsZSIpDQpObyBuZWVkIGFkZCBGaXhlcyB0YWcsIHRoZXJlIGlzIG5vIGRhX3Jl
-Zl9jbGsgd2hlbiBhcHBseSB0aGlzIHBhdGNoLA0KDQo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVz
-dCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gUmVwb3J0ZWQtYnk6IERhbiBDYXJwZW50ZXIgPGRh
-bi5jYXJwZW50ZXJAb3JhY2xlLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogVGllemh1IFlhbmcgPHlh
-bmd0aWV6aHVAbG9vbmdzb24uY24+DQo+IC0tLQ0KPiAgZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5
-LW10ay10cGh5LmMgfCAyICsrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay10cGh5LmMgYi9k
-cml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0KPiBpbmRleCBjZGJjYzQ5Li43MzFj
-NDgzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0K
-PiArKysgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYw0KPiBAQCAtOTQ5LDYg
-Kzk0OSw4IEBAIHN0YXRpYyBpbnQgbXRrX3BoeV9pbml0KHN0cnVjdCBwaHkgKnBoeSkNCj4gIAkJ
-YnJlYWs7DQo+ICAJZGVmYXVsdDoNCj4gIAkJZGV2X2Vycih0cGh5LT5kZXYsICJpbmNvbXBhdGli
-bGUgUEhZIHR5cGVcbiIpOw0KPiArCQljbGtfZGlzYWJsZV91bnByZXBhcmUoaW5zdGFuY2UtPnJl
-Zl9jbGspOw0KPiArCQljbGtfZGlzYWJsZV91bnByZXBhcmUoaW5zdGFuY2UtPmRhX3JlZl9jbGsp
-Ow0KPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gIAl9DQo+ICANCmFmdGVyIHJlbW92aW5nIEZpeGVz
-IHRhZywgDQpSZXZpZXdlZC1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsu
-Y29tPg0KDQpUaGFua3MNCg0K
+The "sdhci" compatible is not documented though used as a fallback in a
+few cases. It is also not supported by a Linux driver. Just remove the
+example as part of ridding examples of undocumented bindings.
+
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: linux-mmc@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/mmc/mmc-controller.yaml  | 16 ----------------
+ 1 file changed, 16 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+index e141330c1114..6bf97cdd9507 100644
+--- a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
++++ b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+@@ -357,22 +357,6 @@ dependencies:
+ additionalProperties: true
+ 
+ examples:
+-  - |
+-    mmc@ab000000 {
+-        compatible = "sdhci";
+-        reg = <0xab000000 0x200>;
+-        interrupts = <23>;
+-        bus-width = <4>;
+-        cd-gpios = <&gpio 69 0>;
+-        cd-inverted;
+-        wp-gpios = <&gpio 70 0>;
+-        max-frequency = <50000000>;
+-        keep-power-in-suspend;
+-        wakeup-source;
+-        mmc-pwrseq = <&sdhci0_pwrseq>;
+-        clk-phase-sd-hs = <63>, <72>;
+-    };
+-
+   - |
+     mmc3: mmc@1c12000 {
+         #address-cells = <1>;
+-- 
+2.27.0
 
