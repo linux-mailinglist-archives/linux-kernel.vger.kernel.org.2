@@ -2,145 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6389E389710
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB12389713
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbhESTxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
+        id S232336AbhESTyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbhESTxj (ORCPT
+        with ESMTP id S232246AbhESTyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:53:39 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A92FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:52:19 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id a4so2171035ljd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:52:19 -0700 (PDT)
+        Wed, 19 May 2021 15:54:12 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339ECC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:52:51 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id j12so2316110vsq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ACFRqWVclL3GjOA8uYfDIKSmoewur8fyl+9CJwIkoV8=;
-        b=Q+8/nv//kl1pdXF2NhiGsxHdk4rC3fFr4ALonC6Rmxa9A8gb7poO0Yc0lWakFVYdbM
-         0XNxUpqc9RBK08WDB5gPFqYnBPNGmzskFzZUZTWs/K/+eIPBFMTEm9Z3waJiTPoFnjpj
-         3uSPCjQrHOjbVPYdf2vZWZS0R/6g++zsm2gMPT3CnN1M1vOeHL/Ke/96pIOFYiEknddt
-         i9jn17hBlHR52/3XVhA/h4ACvkQg5bM9WnSKH4majixMjTxOaXj+z3B3DOa3dEIfv9Ff
-         rnrIXG8vrLgm4M2XyLEzrb1fb4stdP0y7Prcw7TMn5Kt9YXYa7hqaA5nQjI2rUkK4cNG
-         uprA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SVSoUhFkNVU1wGDCrOEIUWeMZbbqgNel6ArZ5B6BHME=;
+        b=j02T5iH/g5OOJT+qVHaMYNg3RoPC1IDqKx39RRzdSiwkV1p59kLzicfMf6q5Ei2GJI
+         cVyPAoDWT1w6RFW2J6NWxdN8fAJjbiiaq3kMjni9oaKat7Y8FDAbqimnVqBHT+Xtac4n
+         AQryv0hNLkHLrfYbVs1hTrFgix/eqx9ivJkzd40LM+d8piUt8bXvPz6r6dMOC5JADamA
+         Vk4+3D8bpwPKYXUUp+SR2ORtN++HlijTUgAPbA2elleeVyR5rQ63RCfGPBgKo7e9Z/yV
+         AjOob1HpwEg/7CE2TxmKsqZZrpy1yaEJFGUczUDXQknDSWjgllEz17zCunoKwpCUFhaC
+         BPeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ACFRqWVclL3GjOA8uYfDIKSmoewur8fyl+9CJwIkoV8=;
-        b=hcC0hY0wu5UElJyNVKUKIGWMYB7e1pZg9aANjibQuf8Y6uVyfFkQHjRBK17h0Pev8V
-         sfa81e0+nufnbqhwqSNnfr07lpy3PcFP9lG3mfNBvA19pLQduUa+QdQqObT8kHH0A10m
-         2FJuE5DQCB1dmPihFuc/c3eiG6PwWZp205ZSyMiYfRcI+TZE0WkhV3XoI4Z+muhZ+0NQ
-         qIy1pGaxD8AJYuU3yNpKEh+BW4JH6Zf/Q5ZE/TTL7fOiP8pPkGSGYetZHTP2jM9s7/rQ
-         JtLAJKNSYQHK02GpjANgYCLAP7PxPoTl6Yyy8jqO8/yL05j+ETVBZ2WepelvO9N93CWq
-         KhaA==
-X-Gm-Message-State: AOAM533jVwSVxB+2qrmKp+CeJHge2N0+xo9KSl+X5hFxzq6Dtc1ceQwY
-        gv01as7jgSYQhhTGY4xbFzc=
-X-Google-Smtp-Source: ABdhPJz4FAQ7eD8Hkdy/RsERUEH3+kGYwCs1uFu+jRqFvHHUoxYnpxMPkw3bWJHwDDb1PJB248BHKg==
-X-Received: by 2002:a2e:9615:: with SMTP id v21mr604137ljh.184.1621453937422;
-        Wed, 19 May 2021 12:52:17 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m4sm23745ljo.127.2021.05.19.12.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 12:52:17 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 19 May 2021 21:52:14 +0200
-To:     Mel Gorman <mgorman@suse.de>, Christoph Hellwig <hch@infradead.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/3] mm/vmalloc: Switch to bulk allocator in
- __vmalloc_area_node()
-Message-ID: <20210519195214.GA2343@pc638.lan>
-References: <20210516202056.2120-1-urezki@gmail.com>
- <20210516202056.2120-3-urezki@gmail.com>
- <YKUWKFyLdqTYliwu@infradead.org>
- <20210519143900.GA2262@pc638.lan>
- <20210519155630.GD3672@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SVSoUhFkNVU1wGDCrOEIUWeMZbbqgNel6ArZ5B6BHME=;
+        b=Lr9qxwW7o/1OPDfMx27+FgwRQ71Ok//TY98xYpJtyp/nrvo4LyIFtxU7R4iY6tn4kP
+         mHYZmnJzsFlDQlj6lEPgFJ25+YeJgxq8XVDd5EUC/GmmkLkNVv59LcAzSkUFq6Ao2ozS
+         Y8VnxFpCTnC1Ra94256Ze8qslZKGH1KqZvo6iCqyYXLytJbVTUKFh3qgn2KfnYhBDQSk
+         qMMc5d9UiDnG/LY+raP5+s4DYzqeczs656JInB0JkzyVxvxMOjduUP1V9Z3M/vkSHiR4
+         RqYw6kHd+L8P4P06F9liIb5q9UA2Zevng3miWNt+ubwDmrFxQfgflODQnZ43x9Sbq0yf
+         DaSw==
+X-Gm-Message-State: AOAM532KOxL/ZpxmRPihDdDefy/aPFleNFV6uQ1BcNnSHEIFmCY5Gsh1
+        BYrisZoXdJpEFcfRgnPaVIBQOpQvGx7PhbcJaW7V8Q==
+X-Google-Smtp-Source: ABdhPJxxoWS3DTZv/NUY1sMiill0r2SxFo+/QHsrv0FtFmIaOP1OH4+BDNxiNuZytI/FAQXMJfYgTt07UaJhe43EgaI=
+X-Received: by 2002:a05:6102:7d8:: with SMTP id y24mr935834vsg.2.1621453968723;
+ Wed, 19 May 2021 12:52:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519155630.GD3672@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210517235546.3038875-1-eugenis@google.com> <20210518174439.GA28491@arm.com>
+ <CAMn1gO5TmJZ4M4EyQ60VMc2-acUZSYkaB9M0C9kOv_dXQe54Ug@mail.gmail.com> <20210519181225.GF21619@arm.com>
+In-Reply-To: <20210519181225.GF21619@arm.com>
+From:   Evgenii Stepanov <eugenis@google.com>
+Date:   Wed, 19 May 2021 12:52:36 -0700
+Message-ID: <CAFKCwrjH1FEKqeQyKxXacQVk_034NCtsF+rAwTvb4jZwK7a+nA@mail.gmail.com>
+Subject: Re: [PATCH v3] kasan: speed up mte_set_mem_tag_range
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Peter Collingbourne <pcc@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, May 19, 2021 at 04:39:00PM +0200, Uladzislau Rezki wrote:
-> > > > +	/*
-> > > > +	 * If not enough pages were obtained to accomplish an
-> > > > +	 * allocation request, free them via __vfree() if any.
-> > > > +	 */
-> > > > +	if (area->nr_pages != nr_small_pages) {
-> > > > +		warn_alloc(gfp_mask, NULL,
-> > > > +			"vmalloc size %lu allocation failure: "
-> > > > +			"page order %u allocation failed",
-> > > > +			area->nr_pages * PAGE_SIZE, page_order);
-> > > > +		goto fail;
-> > > > +	}
-> > > 
-> > > From reading __alloc_pages_bulk not allocating all pages is something
-> > > that cn happen fairly easily.  Shouldn't we try to allocate the missing
-> > > pages manually and/ore retry here?
-> > > 
+On Wed, May 19, 2021 at 11:13 AM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Tue, May 18, 2021 at 11:11:52AM -0700, Peter Collingbourne wrote:
+> > On Tue, May 18, 2021 at 10:44 AM Catalin Marinas
+> > <catalin.marinas@arm.com> wrote:
+> > > If we want to get the best performance out of this, we should look at
+> > > the memset implementation and do something similar. In principle it's
+> > > not that far from a memzero, though depending on the microarchitecture
+> > > it may behave slightly differently.
 > >
-> > It is a good point. The bulk-allocator, as i see, only tries to access
-> > to pcp-list and falls-back to a single allocator once it fails, so the
-> > array may not be fully populated.
-> > 
-> 
-> Partially correct. It does allocate via the pcp-list but the pcp-list will
-> be refilled if it's empty so if the bulk allocator returns fewer pages
-> than requested, it may be due to hitting watermarks or the local zone is
-> depleted. It does not take any special action to correct the situation
-> or stall e.g.  wake kswapd, enter direct reclaim, allocate from a remote
-> node etc.
-> 
-> If no pages were allocated, it'll try allocate at least one page via a
-> single allocation request in case the bulk failure would push the zone
-> over the watermark but 1 page does not. That path as a side-effect would
-> also wake kswapd.
-> 
-OK. A single page allocator can enter a slow path i mean direct reclaim,
-etc to adjust watermarks.
+> > For Scudo I compared our storeTags implementation linked above against
+> > __mtag_tag_zero_region from the arm-optimized-routines repository
+> > (which I think is basically an improved version of that memset
+> > implementation rewritten to use STG and DC GZVA), and our
+> > implementation performed better on the hardware that we have access
+> > to.
+>
+> That's the advantage of having hardware early ;).
+>
+> > > Anyway, before that I wonder if we wrote all this in C + inline asm
+> > > (three while loops or maybe two and some goto), what's the performance
+> > > difference? It has the advantage of being easier to maintain even if we
+> > > used some C macros to generate gva/gzva variants.
+> >
+> > I'm not sure I agree that it will be easier to maintain. Due to the
+> > number of "unusual" instructions required here it seems more readable
+> > to have the code in pure assembly than to require readers to switch
+> > contexts between C and asm. If we did move it to inline asm then I
+> > think it should basically be a large blob of asm like the Scudo code
+> > that I linked.
+>
+> I was definitely not thinking of a big asm block, that's even less
+> readable than separate .S file. It's more like adding dedicated macros
+> for single STG or DC GVA uses and using them in while loops.
 
-> > In that case probably it makes sense to manually populate it using
-> > single page allocator.
-> > 
-> > Mel, could you please also comment on it?
-> > 
-> 
-> It is by design because it's unknown if callers can recover or if so,
-> how they want to recover and the primary intent behind the bulk allocator
-> was speed. In the case of network, it only wants some pages quickly so as
-> long as it gets 1, it makes progress. For the sunrpc user, it's willing
-> to wait and retry. For vmalloc, I'm unsure what a suitable recovery path
-> should be as I do not have a good handle on workloads that are sensitive
-> to vmalloc performance. The obvious option would be to loop and allocate
-> single pages with alloc_pages_node understanding that the additional
-> pages may take longer to allocate.
-> 
-I got it. At least we should fall-back for a single allocator, that is how
-we used to allocate before(now it is for high-order pages). If it also fails
-to obtain a page we are done.
+I've got a C version with 4 single-instruction asm blocks, and it
+looks pretty nice. The assembly is almost identical to the hand
+written variant, and performance is 3% better, presumably because of
+the inlining. Also, the C version allows more potential optimizations,
+like specialization on the value of "init" - which is not happening
+right now because it is not constant in any of the callers.
 
-Basically a single-page allocator is more permissive so it is a higher
-chance to success. Therefore a fallback to it makes sense.
+I'll upload a v4 shortly.
 
-Thanks.
-
---
-Vlad Rezki
+>
+> Anyway, let's see a better commented .S implementation first. Given that
+> tagging is very sensitive to the performance of this function, we'd
+> probably benefit from a (few percent I suspect) perf improvement with
+> the hand-coded assembly.
+>
+> --
+> Catalin
