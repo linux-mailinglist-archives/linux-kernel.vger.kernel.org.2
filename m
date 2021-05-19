@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CAD388998
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BF5388999
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245677AbhESInB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245627AbhESIm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:42:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A64D60C3D;
-        Wed, 19 May 2021 08:41:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621413698;
-        bh=NHzva1BedRTQo1ZiYTLnCiPM+iMIZVRQCHVWgn+Qbcc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ql7y2bn4qw1rsWiv5Yi4fr6ZOknDNpCuPHlvIBxASQZgF3AF8Klb50z1jHQ+6Tyze
-         qAHiv00NHCIE1QFMjyTI801rjj+/EPg/Uy3hPjr6YDWkWLdkTBCmHiALmkG6goZAMR
-         oJSIXltBbsbh3pRB71xD1VDgFklffzv7SUACTLSuGn6U0LyL9EsPkeJWWdvsax0+SM
-         TvP0ELY4bfT8ncXxWmM18Fckwd1km69f5P6ZxroWontEuuKDDza/UZYTQndYjxvmoJ
-         itRIavZFsyHw328I4fu6YPQSMV8MRTbNEDlUIRILuWNPgpiobyA+6N+zn3uKIQJLE5
-         VgOwI+2UJiPig==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Fix query DCT via DEVX
-Date:   Wed, 19 May 2021 11:41:32 +0300
-Message-Id: <6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S1343508AbhESInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:43:14 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3024 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245683AbhESInH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:43:07 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlR8m48phzQpWf;
+        Wed, 19 May 2021 16:38:16 +0800 (CST)
+Received: from dggeme703-chm.china.huawei.com (10.1.199.99) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 16:41:46 +0800
+Received: from [10.174.176.110] (10.174.176.110) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 19 May 2021 16:41:45 +0800
+Subject: Re: [Question] Is there a race window between __anon_vma_prepare()
+ with page_lock_anon_vma_read() ?
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     Linux-MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>
+References: <726b53ca-f8a5-c8cb-d704-bcd656afa68e@huawei.com>
+Message-ID: <6da23315-a00e-4b30-68f4-828b2f66dd47@huawei.com>
+Date:   Wed, 19 May 2021 16:41:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <726b53ca-f8a5-c8cb-d704-bcd656afa68e@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.110]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+On 2021/5/14 17:16, Miaohe Lin wrote:
+> Hi all,
+> I am investigating the rmap code, and I found the below possible race window:
+> 
+> CPU 1								CPU 2
+> -----								-----
+> page_lock_anon_vma_read
+>   rcu_read_lock
+>   /* We assume anon_vam == root_anon_vma in this case. */
+>   root_anon_vma = READ_ONCE(anon_vma->root);
+>   root_anon_vma is *released* somewhere unfortunately.
+>   down_read_trylock(&root_anon_vma->rwsem)
+> 								__anon_vma_prepare
+> 								  anon_vma_alloc
+> 								    root_anon_vma is *allocated* here.
+> 								    init_rwsem(&anon_vma->rwsem);
+>   !page_mapped(page)
+>     up_read(&root_anon_vma->rwsem); -- *Oops!*
+> 
+> root_anon_vma->rwsem is reinitialized after locked. And reinitialized anon_vma->rwsem will be
+> unlocked without lock first.
+> 
+> I think this could happen due to the subtle SLAB_TYPESAFE_BY_RCU. But only can occur when anon_vma
+> is root anon_vma or they won't operate on the same rwsem.
+> Is this will really happen or Am I miss something ? Any reply would be very grateful.
+> Many Thanks! :)
 
-When executing DEVX command to query QP object, we need to take
-the QP type from the mlx5_ib_qp struct which hold the driver specific
-QP types as well, such as DC.
+Any reply would be very grateful.
+Many thanks!
 
-Fixes: 34613eb1d2ad ("IB/mlx5: Enable modify and query verbs objects via DEVX")
-Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/devx.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 72a0828388de..53dc67e16d03 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -630,9 +630,8 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
- 	case UVERBS_OBJECT_QP:
- 	{
- 		struct mlx5_ib_qp *qp = to_mqp(uobj->object);
--		enum ib_qp_type	qp_type = qp->ibqp.qp_type;
- 
--		if (qp_type == IB_QPT_RAW_PACKET ||
-+		if (qp->type == IB_QPT_RAW_PACKET ||
- 		    (qp->flags & IB_QP_CREATE_SOURCE_QPN)) {
- 			struct mlx5_ib_raw_packet_qp *raw_packet_qp =
- 							 &qp->raw_packet_qp;
-@@ -649,10 +648,9 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
- 					       sq->tisn) == obj_id);
- 		}
- 
--		if (qp_type == MLX5_IB_QPT_DCT)
-+		if (qp->type == MLX5_IB_QPT_DCT)
- 			return get_enc_obj_id(MLX5_CMD_OP_CREATE_DCT,
- 					      qp->dct.mdct.mqp.qpn) == obj_id;
--
- 		return get_enc_obj_id(MLX5_CMD_OP_CREATE_QP,
- 				      qp->ibqp.qp_num) == obj_id;
- 	}
--- 
-2.31.1
+> 
 
