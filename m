@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C31388765
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D9A38876A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234940AbhESGPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:15:41 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:40783 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbhESGPh (ORCPT
+        id S236331AbhESGTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:19:04 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3034 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231191AbhESGTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:15:37 -0400
-Received: by mail-wr1-f45.google.com with SMTP id z17so12614173wrq.7;
-        Tue, 18 May 2021 23:14:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eM8EQdorm7mWG5o19XHqVGANwvQx7NCTQwR5Sava/sg=;
-        b=RM4jwaeYbBUIgNQDlRxeqj0JO9OTU+py8tLHT5SdBYgIsVfsKiRp5xWEKnbtsCllar
-         EsRVpzhKWtjX8ozcjMSp3eRltO1nUK17pKwEuzS5g7Vur8w75f5EpDzWy269+s77Y0qr
-         Omr6bzGkFiwd/n3i0HcYowdjkvIdbs4P90a2iZbdBkfqh6fz4Hzkc0t5Xpv8o60YX1WI
-         WDIrTZtkJTyIDmZsV/oPg92nKfbWixfUwSG6RtuDwYHEnIG527HVA6Ahe0IV61prULXT
-         H4E92ZAd5Zp+7A6lo/ypYcsGZe2lMVN5EGISRvRr1iGEAbeoJ+LjPfi6Q+910po81sZE
-         7VOg==
-X-Gm-Message-State: AOAM533BvLlyey/kSa8gYPD7I2W5NC8ER0sL9Mrb9WABsykXD8CMgjPH
-        TJjh7HevO4nyjhj/Yah3URw=
-X-Google-Smtp-Source: ABdhPJz6iPXnZ1bVZfGhblaiVWq7jqmsaA0sDVHC70vQOG+pEbSsL5Jmu31ST2PpHeuV1k01nEMjiA==
-X-Received: by 2002:adf:f9ce:: with SMTP id w14mr12479031wrr.387.1621404857559;
-        Tue, 18 May 2021 23:14:17 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id i1sm13181697wrp.51.2021.05.18.23.14.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 23:14:17 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] serial: 8250: Use BIT(x) for UART_{CAP,BUG}_*
-To:     Andrew Jeffery <andrew@aj.id.au>, linux-serial@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, joel@jms.id.au,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        jenmin_yuan@aspeedtech.com, ryan_chen@aspeedtech.com,
-        miltonm@us.ibm.com
-References: <20210519000704.3661773-1-andrew@aj.id.au>
- <20210519000704.3661773-3-andrew@aj.id.au>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <56ec152a-560b-1eed-97e2-c12e4fed171a@kernel.org>
-Date:   Wed, 19 May 2021 08:14:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 19 May 2021 02:19:02 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FlMzx4pPFzmXG5;
+        Wed, 19 May 2021 14:15:25 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 14:17:41 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 19 May 2021 14:17:41 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <intel-wired-lan@lists.osuosl.org>, <lipeng321@huawei.com>,
+        <tanhuazhong@huawei.com>, <huangguangbin2@huawei.com>
+Subject: [PATCH net-next 0/5] net: intel: some cleanups
+Date:   Wed, 19 May 2021 14:14:40 +0800
+Message-ID: <1621404885-20075-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210519000704.3661773-3-andrew@aj.id.au>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19. 05. 21, 2:07, Andrew Jeffery wrote:
-> BIT(x) improves readability and safety with respect to shifts.
-> 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->   drivers/tty/serial/8250/8250.h | 33 +++++++++++++++++----------------
->   1 file changed, 17 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
-> index 34aa2714f3c9..4fbf1088fad8 100644
-> --- a/drivers/tty/serial/8250/8250.h
-> +++ b/drivers/tty/serial/8250/8250.h
-> @@ -7,6 +7,7 @@
->    *  Copyright (C) 2001 Russell King.
->    */
->   
-> +#include <linux/bitops.h>
->   #include <linux/serial_8250.h>
->   #include <linux/serial_reg.h>
->   #include <linux/dmaengine.h>
-> @@ -70,25 +71,25 @@ struct serial8250_config {
->   	unsigned int	flags;
->   };
->   
-> -#define UART_CAP_FIFO	(1 << 8)	/* UART has FIFO */
-> -#define UART_CAP_EFR	(1 << 9)	/* UART has EFR */
-> -#define UART_CAP_SLEEP	(1 << 10)	/* UART has IER sleep */
-> -#define UART_CAP_AFE	(1 << 11)	/* MCR-based hw flow control */
-> -#define UART_CAP_UUE	(1 << 12)	/* UART needs IER bit 6 set (Xscale) */
-> -#define UART_CAP_RTOIE	(1 << 13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
-> -#define UART_CAP_HFIFO	(1 << 14)	/* UART has a "hidden" FIFO */
-> -#define UART_CAP_RPM	(1 << 15)	/* Runtime PM is active while idle */
-> -#define UART_CAP_IRDA	(1 << 16)	/* UART supports IrDA line discipline */
-> -#define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
-> +#define UART_CAP_FIFO	BIT(8)	/* UART has FIFO */
-> +#define UART_CAP_EFR	BIT(9)	/* UART has EFR */
-> +#define UART_CAP_SLEEP	BIT(10)	/* UART has IER sleep */
+This patchset adds some cleanups for intel e1000/e1000e ethernet driver.
 
+Hao Chen (5):
+  net: e1000: remove repeated word "slot" for e1000_main.c
+  net: e1000: remove repeated words for e1000_hw.c
+  net: e1000e: remove repeated word "the" for ich8lan.c
+  net: e1000e: remove repeated word "slot" for netdev.c
+  net: e1000e: fix misspell word "retreived"
 
-Perfect, except the include: BIT is not defined in bitops.h, but in 
-bits.h (which includes vdso/bits.h). In fact, bitops.h includes bits.h 
-too, but it's superfluous to include all those bitops.
+ drivers/net/ethernet/intel/e1000/e1000_hw.c   | 4 ++--
+ drivers/net/ethernet/intel/e1000/e1000_main.c | 2 +-
+ drivers/net/ethernet/intel/e1000e/ich8lan.c   | 2 +-
+ drivers/net/ethernet/intel/e1000e/netdev.c    | 2 +-
+ drivers/net/ethernet/intel/e1000e/phy.c       | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-thanks,
 -- 
--- 
-js
-suse labs
+2.8.1
+
