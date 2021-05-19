@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E359038936E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C1638937B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347646AbhESQQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240333AbhESQQc (ORCPT
+        id S1355167AbhESQTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:19:22 -0400
+Received: from gateway31.websitewelcome.com ([192.185.143.35]:12888 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345746AbhESQTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:16:32 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955B3C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:15:11 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id c20so20825695ejm.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=euUbnNVLGUAionJ86okTP34g0fVZ9JZZ001iCcnhQ1E=;
-        b=IGWvV3g+wI0u33bR8kxu+8pUactwsMA96L8+f7zB4n75FQciRkhL+61FSo22/9u6ye
-         MgtLDx8QRLwTC9VVIaDFu+R/1JjKFkJebO3Xdo0zYdVmRm/1UNRYiO9bc3xAefBg4yZm
-         5iJZdF6y21ZH97BrIB5gPP6AyiXmYJ+rwteattF+udD5mG+8U1BZDiulYnP2e1WFdwG/
-         3jnffxRvg3TCqKEV5KNJ/s4KzTXIYI5g/O0xU+alPCiUwedXMBf0g2wrUSFTlZSWkJu3
-         sxvQCDxSe5aOmz7Zu6Kf+1W1x4B/6FF+ZXsH9bBLXXSBhGWW6O8i7CfbBzDJ5b3BkhV0
-         oBQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=euUbnNVLGUAionJ86okTP34g0fVZ9JZZ001iCcnhQ1E=;
-        b=K7c+Sbc+wXiPsCVd9H+L7ULzv4BcogScxBFJbJ4UlTlD9dAN0c4gy+SYpOsLmAr+rJ
-         5Ac8MaN6/rsMkngXtohqjvjriDJm3Xb9WcPpc0dyVpND1hSwDuBpJq12hUDn9CAYIx/Q
-         k4abIQ7KE6EJyCRE7r/npcFmgpR+PWa28bBMIt69wHp5JAPPGuoDg0sXBetryGSmNOrQ
-         KUDerzhxcB5m168zTOB4CbIpD6hzlTz6G7+H+5opUKWNn6jPPHm5eR1hGaX20jHoTIX8
-         2+o6xdZ1uTf7Cqyw9nq5IoS7+eSkA4JlVKkOo+BkMVHk9sZZyRmY/PJdBvGy8fM84wL4
-         nInQ==
-X-Gm-Message-State: AOAM5318NV8PsOQLhLVLGHPJhMkBrOnw7XhqHImLWyloq6hw9PsNAsjv
-        pZxqU2xMJTvHvkoh03f+Tdi2YrOOyGiB9Qjy5YBncMKXUe5NNQ==
-X-Google-Smtp-Source: ABdhPJzxecr0ezsnx3X0SGG9M891eMwzEBBNQ3xtc6D0ZjqjuFWo5rltqyRGYEXlbXNp9E4BwL8fcJpYWV9QLX4LWzQ=
-X-Received: by 2002:a17:906:17ca:: with SMTP id u10mr13290634eje.124.1621440910179;
- Wed, 19 May 2021 09:15:10 -0700 (PDT)
+        Wed, 19 May 2021 12:19:20 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id C1A68F8EF1C
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 11:14:36 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id jOqClu7BYFRe9jOqClsLFh; Wed, 19 May 2021 11:14:36 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=bvCWAHbH8eGnG7CPvvzIAg7IGUzCsPOMwFSTobGjWiU=; b=Rx84nMv42tFkR3Co7w5iE2qvMj
+        wAGTqUuD0Uy+NuAohCnoVYVdF/yZ3WcjfQch3T9Qt6/Fsa9YPOmDI1/3IqFNQ856Q3/FzAeb40K9a
+        pcKpyWPJnY6Xmrp9qje9aoSmZ6bfYQOJqr2xdgoP9hNhNOYiKm7RO6EI4fTFWtzDqqANkaJRmo1QC
+        5BAToZa/2UfWG3frC6xu4BQacGxrdyDcG6h+r+VkbEfno7NqzNfxurK0qLC7SDf57WmxEVFsLMLfT
+        JnKtcshN1Hjnt1mKPoyF8I97NNh6k69k/DRyYxY7WSZr9APy11ObGsOvPJmbHcDt4iSQ/nb4sAt+R
+        mwPiIxZQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:60144 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1ljOq9-000Ug6-83; Wed, 19 May 2021 11:14:33 -0500
+Subject: Re: [PATCH][next] media: venus: hfi_msgs.h: Replace one-element
+ arrays with flexible-array members
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210211001044.GA69612@embeddedor>
+ <bf31beab-dc36-23e9-757f-9729be59f7b2@embeddedor.com>
+ <de8538ad-48d8-7a3c-af4f-ab31ee2da761@linaro.org>
+ <f63824ee-fc8b-25cf-f3c2-c7b3947b8076@embeddedor.com>
+ <64aa38bc-62b2-79d9-156f-74a09f11f871@linaro.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <d4c57054-5708-fcd3-dd9d-fb26c40f6355@embeddedor.com>
+Date:   Wed, 19 May 2021 11:15:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210518090658.9519-1-amanieu@gmail.com> <20210518090658.9519-9-amanieu@gmail.com>
- <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
- <CA+y5pbRiXAF=gobC9sqJmvjVAmihA=O7xcSTkA1f8=QsnZzoEg@mail.gmail.com> <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com>
-In-Reply-To: <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com>
-From:   "Amanieu d'Antras" <amanieu@gmail.com>
-Date:   Wed, 19 May 2021 17:14:33 +0100
-Message-ID: <CA+y5pbRwgpctUOBzzscT9XMN9LM2qraPNg6K6onFcpQaaFDYkQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat syscalls
-To:     Steven Price <steven.price@arm.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Laight <David.Laight@aculab.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <64aa38bc-62b2-79d9-156f-74a09f11f871@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1ljOq9-000Ug6-83
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:60144
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 8
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 4:30 PM Steven Price <steven.price@arm.com> wrote:
-> Perhaps I'm missing something, but surely some syscalls that would be
-> native on 32 bit will have to be translated by Tango to 64 bit syscalls
-> to do the right thing? E.g. from the previous patch compat sigreturn
-> isn't available.
+Hi Stanimir,
 
-That's correct.
+On 5/17/21 06:01, Stanimir Varbanov wrote:
 
-Tango handles syscalls in 3 different ways:
-- ~20 syscalls are completely emulated in userspace or through 64-bit
-syscalls. E.g. sigaction, sigreturn, clone, exit.
-- Another ~50 syscalls have various forms of pre/post-processing, but
-are otherwise passed on to the kernel compat syscall handler. E.g.
-open, mmap, ptrace.
-- The remaining syscalls are passed on to the kernel compat syscall
-handler directly.
+>>> This one introduces regressions, so I cannot take it. It needs some more
+>>> work.
+>>
+>> Please, share with me the errors or warnings you see with this. So, I can
+>> have an idea of what is going on. Unfortunately, I don't have access to the
+>> test suite or hardware to test this.
+> 
+> I guess it needs more debugging, but the simple answer is that the
+> driver refuse to start streaming with this patch.
 
-The first group of ~20 syscalls will effectively bypass the
-user-specified seccomp filter: any 64-bit syscalls used to emulate
-them will be whitelisted. I consider this an acceptable limitation to
-Tango's seccomp support since I see no viable way of supporting
-seccomp filtering for these syscalls.
+I see. Please, share with me the details about your test setup. Are you using
+qemu or actual hardware for this?
 
-> In those cases to correctly emulate seccomp, isn't Tango is going to
-> have to implement the seccomp filter in user space?
+Please, also help me by sending me your .config file and dmesg output, as well.
+So, I can try to debug this.
 
-I have not implemented user-mode seccomp emulation because it can
-trivially be bypassed by spawning a 64-bit child process which runs
-outside Tango. Even when spawning another translated process, the
-user-mode filter will not be preserved across an execve.
-
-> I guess the question comes down to how big a hole is
-> syscall_in_tango_whitelist() - if Tango only requires a small set of
-> syscalls then there is still some security benefit, but otherwise this
-> doesn't seem like a particularly big benefit considering you're already
-> going to need the BPF infrastructure in user space.
-
-Currently Tango only whitelists ~50 syscalls, which is small enough to
-provide security benefits and definitely better than not supporting
-seccomp at all.
+Thanks!
+--
+Gustavo
