@@ -2,150 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5EC3883DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02FE3883E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239083AbhESApi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 20:45:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234097AbhESApg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 20:45:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621385057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YwTV7Kjj6RrOTTD0I2CX5CsxsnrWqAGskz6Ldbn+/74=;
-        b=RS0RNR4bDnHEOBFwj+nl3ddPEEmaaAHi0sy/D371KwVKffmY44TDSCRAntcAyJhPqrdYPT
-        uMMD7K6M9QHFN+73dQg7ZFVerRPMEvnHEu+hi6tfs/6SZbU+Ivo8Vp0nbCM4hCBrEr2d99
-        E/zH6Ipbynhh9GRsvaaezgnjbWpRVw4=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-136-YQfHGrdEPrm_H5L3n5yqaw-1; Tue, 18 May 2021 20:44:15 -0400
-X-MC-Unique: YQfHGrdEPrm_H5L3n5yqaw-1
-Received: by mail-qv1-f71.google.com with SMTP id e2-20020ad442a20000b02901f3586a14easo1329046qvr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 17:44:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YwTV7Kjj6RrOTTD0I2CX5CsxsnrWqAGskz6Ldbn+/74=;
-        b=qty+8LSk3VKE5ebBfJETpzY6ayPZp3oIiA84LFUeIuVwRdyazEmetXhnRMf+wJA/L/
-         B4LjoOn5yzia0/r2zMowTpr1tOr7R39E7Z0EZvE/XHGhVC3KY86uITTm3L9hgadToo47
-         aB7fYNkrjLSGah09InNccR1CZR7/SP/1zcCfWzbhsjgTs+ATwwL0BgNHc20hE+MFIYgD
-         aN6T3Kn71HeBZTgiX0ZQJ5mLnwFwMXnd9O5H8pWs00a6C/BsYaXrsymMmdCo78o6OONo
-         4WB+8LvuK/mlaFk1s3gLC6g3O7Sa9v4GDC9xxFuvh6lfa046I0tSF6hD2pk6AhqzQ9wL
-         Aoag==
-X-Gm-Message-State: AOAM532r/oeViyMe6KIcTIvBge9eSFnZ+nh3wBBrMFPh1bnigoP2DsCn
-        ixlwRVulozfi9fmLSjbbz77B0iqXMZ+P7EcKog+8FExy+4NXjeTqVOgDE2mmXem9O2TeT+59vDt
-        xXZRL9q4+QJnRkO8fgd904Sbo
-X-Received: by 2002:ac8:57d3:: with SMTP id w19mr7985512qta.75.1621385054693;
-        Tue, 18 May 2021 17:44:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/Q1QiH+3hhEaWnwd9y0dfF8Sdg6/iOfxvq1qK25qepn9oxe5obi9OdahD47I+lnDGQNYZ4A==
-X-Received: by 2002:ac8:57d3:: with SMTP id w19mr7985479qta.75.1621385054364;
-        Tue, 18 May 2021 17:44:14 -0700 (PDT)
-Received: from treble ([68.52.236.68])
-        by smtp.gmail.com with ESMTPSA id k2sm12508513qtg.68.2021.05.18.17.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 17:44:14 -0700 (PDT)
-Date:   Tue, 18 May 2021 19:44:11 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        willy@infradead.org, masahiroy@kernel.org, michal.lkml@markovi.net
-Subject: Re: [tip: objtool/core] jump_label, x86: Allow short NOPs
-Message-ID: <20210519004411.xpx4i6qcnfpyyrbj@treble>
-References: <20210506194158.216763632@infradead.org>
- <162082558708.29796.10992563428983424866.tip-bot2@tip-bot2>
- <20210518195004.GD21560@worktop.programming.kicks-ass.net>
- <20210518202443.GA48949@worktop.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210518202443.GA48949@worktop.programming.kicks-ass.net>
+        id S239808AbhESApp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 20:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240106AbhESApn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 20:45:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D59F6135B;
+        Wed, 19 May 2021 00:44:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1621385064;
+        bh=TaIIw0YYtenqp7/hfp+Brr2pi7x+J7tKiTwiGcf4BXo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OWqlmtzTKs7bvcu6OsrPtdFoycSizT0julGnQ1nL89UDOP47oOx68Qc7/VuYXRLHl
+         PNVwvj+VZTjuZY29zaA8iT4YqSTgqnpaEgh3VOC71g9NKcI8TaUUyHgG2IXdNHcZ/n
+         vJFCM+BcjPVeDtUlkhRioxH5rtQ7jgaUQXdaR9z4=
+Date:   Tue, 18 May 2021 17:44:22 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v20 4/7] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-Id: <20210518174422.399ad118a051fe4c5b11d7ba@linux-foundation.org>
+In-Reply-To: <20210518072034.31572-5-rppt@kernel.org>
+References: <20210518072034.31572-1-rppt@kernel.org>
+        <20210518072034.31572-5-rppt@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 10:24:43PM +0200, Peter Zijlstra wrote:
-> OK, willy followed up on IRC, and it turns out there's a kbuild
-> dependency missing; then objtool changes we don't rebuild:
+On Tue, 18 May 2021 10:20:31 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
->   arch/x86/entry/vdso/vma.o
+> Introduce "memfd_secret" system call with the ability to create memory
+> areas visible only in the context of the owning process and not mapped not
+> only to other processes but in the kernel page tables as well.
 > 
-> even though we should, this led to an unpatched 2 byte jump-label and
-> things went sideways. I'm not sure I understand the whole build
-> machinery well enough to know where to begin chasing this.
-> 
-> Now, this file is mighty magical, due to:
-> 
-> arch/x86/entry/vdso/Makefile:OBJECT_FILES_NON_STANDARD  := y
-> arch/x86/entry/vdso/Makefile:OBJECT_FILES_NON_STANDARD_vma.o    := n
-> 
-> Maybe that's related.
+> ...
+>
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -901,4 +901,9 @@ config KMAP_LOCAL
+>  # struct io_mapping based helper.  Selected by drivers that need them
+>  config IO_MAPPING
+>  	bool
+> +
+> +config SECRETMEM
+> +	def_bool ARCH_HAS_SET_DIRECT_MAP && !EMBEDDED
+> +	select STRICT_DEVMEM
+> +
+>  endmenu
 
-I'm not exactly thrilled that objtool now has the power to easily brick
-a system :-/  Is it really worth it?
+WARNING: unmet direct dependencies detected for STRICT_DEVMEM
+  Depends on [n]: MMU [=y] && DEVMEM [=n] && (ARCH_HAS_DEVMEM_IS_ALLOWED [=y] || GENERIC_LIB_DEVMEM_IS_ALLOWED [=n])
+  Selected by [y]:
+  - SECRETMEM [=y]
 
-Anyway, here's one way to fix it.  Maybe Masahiro has a better idea.
+so I went back to the v19 version, with
 
-From f88b208677953bc445db08ac46b6e4259217bb8a Mon Sep 17 00:00:00 2001
-Message-Id: <f88b208677953bc445db08ac46b6e4259217bb8a.1621384807.git.jpoimboe@redhat.com>
-From: Josh Poimboeuf <jpoimboe@redhat.com>
-Date: Tue, 18 May 2021 18:59:15 -0500
-Subject: [PATCH] kbuild: Fix objtool dependency for
- 'OBJECT_FILES_NON_STANDARD_<obj> := n'
-
-"OBJECT_FILES_NON_STANDARD_vma.o := n" has a dependency bug.  When
-objtool source is updated, the affected object doesn't get re-analyzed
-by objtool.
-
-Peter's new variable-sized jump label feature relies on objtool
-rewriting the object file.  Otherwise the system can fail to boot.  That
-effectively upgrades this minor dependency issue to a major bug.
-
-The problem is that variables in prerequisites are expanded early,
-during the read-in phase.  The '$(objtool_dep)' variable indirectly uses
-'$@', which isn't yet available when the target prerequisites are
-evaluated.
-
-Use '.SECONDEXPANSION:' which causes '$(objtool_dep)' to be expanded in
-a later phase, after the target-specific '$@' variable has been defined.
-
-Fixes: b9ab5ebb14ec ("objtool: Add CONFIG_STACK_VALIDATION option")
-Fixes: ab3257042c26 ("jump_label, x86: Allow short NOPs")
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- scripts/Makefile.build | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 949f723efe53..34d257653fb4 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -268,7 +268,8 @@ define rule_as_o_S
- endef
+--- a/mm/Kconfig~mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas-fix
++++ a/mm/Kconfig
+@@ -907,6 +907,5 @@ config IO_MAPPING
  
- # Built-in and composite module parts
--$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
-+.SECONDEXPANSION:
-+$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
- 	$(call if_changed_rule,cc_o_c)
- 	$(call cmd,force_checksrc)
+ config SECRETMEM
+ 	def_bool ARCH_HAS_SET_DIRECT_MAP && !EMBEDDED
+-	select STRICT_DEVMEM
  
-@@ -349,7 +350,7 @@ cmd_modversions_S =								\
- 	fi
- endif
- 
--$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
-+$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
- 	$(call if_changed_rule,as_o_S)
- 
- targets += $(filter-out $(subdir-builtin), $(real-obj-y))
--- 
-2.31.1
+ endmenu
+_
 
