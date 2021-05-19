@@ -2,91 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD3F3888AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897FC3888C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243683AbhESHwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243226AbhESHwD (ORCPT
+        id S237664AbhESHz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:55:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49660 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234405AbhESHz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:52:03 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644C0C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:50:44 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso2365433pjq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SHfnoSjpeSA7P7SyDHgJJjYJgXT2xogBrtIgLEZ6Eo4=;
-        b=TJ4pSjtkJLRPEOmhgq92BMOrkvLx9ljoeW5Gdhau68hkiDWzWM0SPRdo6TyP4v+7Q/
-         4oLNy/grrZInGPuqplAvyXeSlFF2/iC+65ZxnmKPj/EdYzJjZi//Inc8HDXpY0MH6PbA
-         bB6wbCkUUCVMiNjhDiD9ZBKiTUn6SLmKRx4glIxQasg/kf5WZ3yVLPP4qpqL9Cimg93L
-         G3upToea1gC2ZAezzPfTEJWaNe4/4xWTOoCPRxtRfXn2XYl15b7u+TIlQnkNR1scTkAV
-         xJd6eiR7ag68jjc4pGrYOJ+J3BmnRCLIyqWOH3p9G7KkcLzf3lHWj9eAmA2gp3sk2Fqq
-         CZ5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SHfnoSjpeSA7P7SyDHgJJjYJgXT2xogBrtIgLEZ6Eo4=;
-        b=nCwgm1khqt5Vql+HemsFdNYTx+czpgXotRIpnKr7uBf5ZBlTusFOHLrJLJDvdsO/AV
-         nWEHj0pvtz/k1tBEdEVA1OEfxa1y+8bd9QwNCHRkloVr7tYsWYMts6M9tU/sUWM0uKOc
-         MJRXqBH7fTEgihIGF+li1HG0bpCUetsH94MZlp2JYa6v8MQxJSB7f7tW9EjCmi4pXM01
-         uyn3RRg/ZmEdYhE1dNwBbDWk8LSTs/TNd7Mfh8FLnPK74WE7u4V/mjR0N6EPWoqFLzgp
-         ty0q81xQ0/WQ9Z0l7GBfNX3kb+4qc+dTYjRbHc41er7kHmhEQUhZ5/SNB4QSgusnp/KW
-         /+ZQ==
-X-Gm-Message-State: AOAM531IRhju1Cl7QW+wNC58HgZF63NUdze0JqAms4iHPpQ3HWTvfk5z
-        5WFVAqMQRyLjUqra+XJW62qn4Mk3+sosked6
-X-Google-Smtp-Source: ABdhPJwYek/LvJhQOnxnJQ/2HyjTJZjZcY2ALVu2ceS7vspxyOc84gCSTPj8GxnlwW5Ebf1xmroLVw==
-X-Received: by 2002:a17:902:7281:b029:ea:afe2:b356 with SMTP id d1-20020a1709027281b02900eaafe2b356mr9629734pll.16.1621410643809;
-        Wed, 19 May 2021 00:50:43 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id t1sm14301560pjo.33.2021.05.19.00.50.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 00:50:43 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: Check ramp_delay_table for regulator_set_ramp_delay_regmap
-Date:   Wed, 19 May 2021 15:50:24 +0800
-Message-Id: <20210519075024.1644990-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 19 May 2021 03:55:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621410878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XYFydkW4BqXlHKa4p4FwrA6eAmuVAjJCF7Qyahr9GmY=;
+        b=QJEW4L4pOyvtNQzwvW/AHhCh9pN8z9Fg2PHTkWZuovRvsWbF75uLN01trdOZuGDnHCTuf/
+        14ExfI2lAuuD6KfM0CfYdezJI8Xalb5Xx85rv6VDOwBzYQQ0yPOVEOPk0V0+fycTg1F27s
+        jOhpDhcDZz2C76NFSAZPHtPdnFOapec=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-MMVt3iRcPgis97wVaVfnyQ-1; Wed, 19 May 2021 03:54:36 -0400
+X-MC-Unique: MMVt3iRcPgis97wVaVfnyQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36A5D800D62;
+        Wed, 19 May 2021 07:54:35 +0000 (UTC)
+Received: from T590 (ovpn-12-143.pek2.redhat.com [10.72.12.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA95D2ED6C;
+        Wed, 19 May 2021 07:54:23 +0000 (UTC)
+Date:   Wed, 19 May 2021 15:54:18 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Prasanna Kalever <pkalever@redhat.com>
+Cc:     Prasanna Kumar Kalever <prasanna.kalever@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        nbd@other.debian.org, Josef Bacik <josef@toxicpanda.com>,
+        axboe@kernel.dk, Ilya Dryomov <idryomov@redhat.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>
+Subject: Re: [PATCH] nbd: provide a way for userspace processes to identify
+ device backends
+Message-ID: <YKTEKmDdKZKTMKYS@T590>
+References: <20210429102828.31248-1-prasanna.kalever@redhat.com>
+ <YKMKdHPFCNhR1SXx@T590>
+ <CANwsLLH0HyZ-VGPMc+VmuLivG1fiZHnSqUyLx3UWb76ZMCgYSg@mail.gmail.com>
+ <YKOHuNd0Kp+lcQHY@T590>
+ <CANwsLLE6FK3eCmDwQ+7ghwFx0Hi1KDr6TaiKX1VW2Yt+5xe+WA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANwsLLE6FK3eCmDwQ+7ghwFx0Hi1KDr6TaiKX1VW2Yt+5xe+WA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return -EINVAL if ramp_delay_table is NULL.
-Also add WARN_ON since the driver code needs fix if this happened.
+On Tue, May 18, 2021 at 03:19:37PM +0530, Prasanna Kalever wrote:
+> On Tue, May 18, 2021 at 2:54 PM Ming Lei <ming.lei@redhat.com> wrote:
+> >
+> > On Tue, May 18, 2021 at 01:22:19PM +0530, Prasanna Kalever wrote:
+> > > On Tue, May 18, 2021 at 6:00 AM Ming Lei <ming.lei@redhat.com> wrote:
+> > > >
+> > > > Hello Prasanna,
+> > > >
+> > > > On Thu, Apr 29, 2021 at 03:58:28PM +0530, Prasanna Kumar Kalever wrote:
+> > > > > Problem:
+> > > > > On reconfigure of device, there is no way to defend if the backend
+> > > > > storage is matching with the initial backend storage.
+> > > > >
+> > > > > Say, if an initial connect request for backend "pool1/image1" got
+> > > > > mapped to /dev/nbd0 and the userspace process is terminated. A next
+> > > > > reconfigure request within NBD_ATTR_DEAD_CONN_TIMEOUT is allowed to
+> > > > > use /dev/nbd0 for a different backend "pool1/image2"
+> > > > >
+> > > > > For example, an operation like below could be dangerous:
+> > > >
+> > >
+> > > Hello Ming,
+> > >
+> > > > Can you explain a bit why it is dangerous?
+> > >
+> > > Yes, sure. Please check the below comments inline,
+> > >
+> > > >
+> > > > >
+> > > > > $ sudo rbd-nbd map --try-netlink rbd-pool/ext4-image
+> > > > > /dev/nbd0
+> > > > > $ sudo blkid /dev/nbd0
+> > > > > /dev/nbd0: UUID="bfc444b4-64b1-418f-8b36-6e0d170cfc04" TYPE="ext4"
+> > >
+> > > On Map the rbd-nbd attempting to send NBD_CMD_CONNECT, for backend
+> > > 'rbd-pool/ext4-image'. Post which kernel will allocate a new device
+> > > say /dev/nbd0 for backend file rbd-pool/ext4-image (format:
+> > > <pool>/<backendfile>)
+> > >
+> > > > > $ sudo pkill -9 rbd-nbd
+> > >
+> > > Assume normally or abnormally the userspace process (rbd-nbd here) is
+> > > terminated, but then as per the settings the device /dev/nbd0 is not
+> > > returned immediately, the kernel will wait for the
+> > > NBD_ATTR_DEAD_CONN_TIMEOUT to expire.
+> > >
+> > > At this point two things could be possible:
+> > > 1. if there is a reconfigure request from userspace within the timeout
+> > > then the kernel might reassign the same device /dev/nbd0.
+> > > 2. if the timeout has expired, then the device will be relieved.
+> > >
+> > > > > $ sudo rbd-nbd attach --try-netlink --device /dev/nbd0 rbd-pool/xfs-image
+> > > > > /dev/nbd0
+> > > > > $ sudo blkid /dev/nbd0
+> > > > > /dev/nbd0: UUID="d29bf343-6570-4069-a9ea-2fa156ced908" TYPE="xfs"
+> > >
+> > > On attach the rbd-nbd attempt to send NBD_CMD_RECONFIGURE, after which
+> > > the kernel will assign '--device /dev/nbd0' to specified backend.
+> > >
+> > > But there is a chance that userspace processes might accidentally send
+> > > NBD_CMD_RECONFIGURE claiming for /dev/nbd0 for a different backend
+> > > (rbd-pool/xfs-image instead of original rbd-pool/ext4-image).
+> > > Currently, there is no mechanism to verify if the backend provided
+> > > later with attach(NBD_CMD_RECONFIGURE) is matching with the one
+> > > provided originally with map(NBD_CMD_CONNECT) before granting for a
+> > > attach or reconfigure.
+> > >
+> > > For example in the above-explained scenario:
+> > > Assume EXT4 on rbd-pool/ext4-image was mounted, after attach (Note:
+> > > device /dev/nbd0 is reconfigured to a different backend file) XFS on
+> > > rbd-pool/xfs-image would get corrupted. If there was an application
+> > > using /dev/nbd0 directly (as a raw block volume), it wouldn't be happy
+> > > either.
+> >
+> > OK, got it. If I understand correctly, what you need is to not allow
+> > reconfigure if the nbd disk is mounted, right?
+> 
+> Excuse me, not exactly. Mount was one example scenario to showcase why
+> allowing attaching without any validation could be dangerous.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/helpers.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+If nbd has exclusive owner, it shouldn't be reconfigured, which
+can be respected in kernel side only, see loop_configure().
 
-diff --git a/drivers/regulator/helpers.c b/drivers/regulator/helpers.c
-index 0e16e31c968f..1e61fec4636e 100644
---- a/drivers/regulator/helpers.c
-+++ b/drivers/regulator/helpers.c
-@@ -948,8 +948,10 @@ int regulator_set_ramp_delay_regmap(struct regulator_dev *rdev, int ramp_delay)
- 	int ret;
- 	unsigned int sel;
- 
--	if (!rdev->desc->n_ramp_values)
-+	if (!rdev->desc->n_ramp_values || !rdev->desc->ramp_delay_table) {
-+		WARN_ON(!rdev->desc->n_ramp_values || !rdev->desc->ramp_delay_table);
- 		return -EINVAL;
-+	}
- 
- 	ret = find_closest_bigger(ramp_delay, rdev->desc->ramp_delay_table,
- 				  rdev->desc->n_ramp_values, &sel);
--- 
-2.25.1
+Not all application can provide NBD_ATTR_BACKEND_IDENTIFIER, so
+claiming in nbd_genl_reconfigure() is still needed, IMO.
+
+> Basically, we want a way to check and verify if the backend specified
+> at map time and backend specified at attach(reconfigure) time are
+> matching for a given device, only if they are matching proceed to
+> attach else fail.
+> 
+> >
+> > >
+> > > > >
+> > > > > Solution:
+> > > > > Provide a way for userspace processes to keep some metadata to identify
+> > > > > between the device and the backend, so that when a reconfigure request is
+> > > > > made, we can compare and avoid such dangerous operations.
+> > > > >
+> > > > > With this solution, as part of the initial connect request, backend
+> > > > > path can be stored in the sysfs per device config, so that on a reconfigure
+> > > > > request it's easy to check if the backend path matches with the initial
+> > > > > connect backend path.
+> > > > >
+> > > > > Please note, ioctl interface to nbd will not have these changes, as there
+> > > > > won't be any reconfigure.
+> > > >
+> > > > BTW, loop has similar issue, and patch of 'block: add a sequence number to disks'
+> > > > is added for addressing this issue, what do you think of that generic
+> > > > approach wrt. this nbd's issue? such as used the exposed sysfs sequence number
+> > > > for addressing this issue?
+> > > >
+> > > > https://lore.kernel.org/linux-block/YH81n34d2G3C4Re+@gardel-login/#r
+> > >
+> > > If I understand the changes and the background of the fix correctly, I
+> > > think with that fix author is trying to monotonically increase the seq
+> > > number and add it to the disk on every single device map/attach and
+> > > expose it through the sysfs, which will help the userspace processes
+> > > further to correlate events for particular and specific devices that
+> > > reuse the same loop device.
+> > >
+> > > Coming back to my changes:
+> > > I think here with this fix, we are trying to solve a different
+> > > problem. The fix with this patch accepts a cookie or a backend string
+> > > (could be file-path or whatever id userspace choose to provide) from
+> > > userspace at the time of map and stores it in the sysfs
+> > > /sys/block/nbdX/backend path and persists it until unmap is issued on
+> > > the device (meaning that identity stays throughout the life cycle of
+> > > that device, no matter how many detach and attaches happen).
+> >
+> > Your solution needs change from userspace side, so it isn't flexible.
+> >
+> > > If there
+> > > is a detach request in between (not unmap) then on the next attach
+> > > (reconfigure request to reuse the same device) the stored
+> > > cookie/UUID/backend-string will stand as a reference to verify if the
+> > > newly passed backend is matching with the actual backend passed at map
+> > > time to avoid any misconfigurations by accident and to safely proceed
+> > > with attach.
+> >
+> > We can avoid reconfigure if the nbd disk is opened exclusively, such as
+> > mount, please see if the following patch can solve your problem:
+> 
+> IMHO, we should almost never allow reconfigure/reattaching a given
+> device with a different backend (except in cases like live migration,
+> which the application should take care of), and not just when nbd disk
+> is opened exclusively.
+> 
+> When an attach (reconfigure) is issued, Its application's logic to
+> provide the same matching cookie (or device-string or a uuid) so that
+> kernel can validate it with /sys/block/nbdX/backend and continue
+> safely to attach and reassign the device back.
+
+Your patch looks fine, but only new application can benefit from it, and
+we still need to avoid reconfigure if the disk is opened exclusively for
+old applications. Anyway:
+
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+
+
+
+Thanks,
+Ming
 
