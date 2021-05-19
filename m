@@ -2,78 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963B538859C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A4538859E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236825AbhESDlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 23:41:04 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:59288 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353351AbhESDkF (ORCPT
+        id S238877AbhESDnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 23:43:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42357 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235999AbhESDnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 23:40:05 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 36C8B20B7178;
-        Tue, 18 May 2021 20:38:45 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 36C8B20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1621395526;
-        bh=cS3+zNmc37DC/s8oCI8pYDdc4DHyjueyV5ZDuMOy7PQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=MylN2bbW0XXj0O3VEa6/3SW6VVdDKhzlGUN3jF+fu2P0Tx08WPx06fd1F8LvzNP4u
-         mrusjH4DDYTQrP9i1l0rpAMjsy6573LihHmlcdJz39mMdrj4haGJ5Tm3+lpDvdsuKB
-         ZNSsA2q752/yjdoOcaKejRwaT69cBZ7fzY1y/J7E=
-Subject: Re: [RFC PATCH v4 2/2] arm64: Create a list of SYM_CODE functions,
- blacklist them in the unwinder
-To:     "nobuta.keiya@fujitsu.com" <nobuta.keiya@fujitsu.com>
-Cc:     "broonie@kernel.org" <broonie@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "jthierry@redhat.com" <jthierry@redhat.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210516040018.128105-3-madvenka@linux.microsoft.com>
- <TY2PR01MB5257FA9C1E94B136E1977790852B9@TY2PR01MB5257.jpnprd01.prod.outlook.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <da7baa1f-6ee3-ffa4-0b22-73fdde7657a9@linux.microsoft.com>
-Date:   Tue, 18 May 2021 22:38:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 18 May 2021 23:43:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621395704; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WqoS9E4WNEnuTzuu8mBefr5gA3kuqZaXEvJiKfOXllI=;
+ b=W/jlcN3KTQStc44Xatp1XOvyPSgoVAIO9NG6IMOI/8xZukPYljAWdaJwaMYQNR3UVokpv1vy
+ rESJxVtwHf1badhwKELNoMFk3wYN4mIOZTJYKKLbkbU80UCBja0sCISg/eErYDMtbAbkLIW0
+ oaBW7KhLVJCRuA+TF5VF2W9aALg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60a488f65f788b52a5821881 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 03:41:42
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B9D5AC4360C; Wed, 19 May 2021 03:41:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA3C2C433F1;
+        Wed, 19 May 2021 03:41:41 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <TY2PR01MB5257FA9C1E94B136E1977790852B9@TY2PR01MB5257.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 May 2021 20:41:41 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH 0/4] drm/msm/dp: Add support for SC8180x eDP
+ controller
+In-Reply-To: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+Message-ID: <40f6aefd3fa341e2bec2060106389be7@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK. Thanks for the info. I will be more sensitive and change the name
-to something more appropriate.
+Hi Bjorn
 
-Madhavan
+I had a quick glance on the series and before getting to other things 
+wanted to know how you are initializing two different connectors for
+DP & EDP resp.
 
-On 5/18/21 9:06 PM, nobuta.keiya@fujitsu.com wrote:
-> Hi Madhavan,
+The connector type for DP should be DRM_MODE_CONNECTOR_DisplayPort and 
+eDP should be DRM_MODE_CONNECTOR_eDP.
+We need both to be created so that both EDP and DP can be supported 
+concurrently.
+
+Will these changes work for concurrent eDP and DP case?
+
+Thanks
+
+Abhinav
+
+On 2021-05-10 21:20, Bjorn Andersson wrote:
+> The first patch in the series is somewhat unrelated to the support, but
+> simplifies reasoning and debugging of timing related issues.
 > 
->> +static bool unwinder_blacklisted(unsigned long pc)
->> +{
+> The second patch introduces support for dealing with different register 
+> block
+> layouts, which is used in the forth patch to describe the hardware 
+> blocks found
+> in the SC8180x eDP block.
 > 
-> I've heard that the Linux community is currently avoiding the introduction of the
-> term 'blacklist', see:
+> The third patch configures the INTF_CONFIG register, which carries the
+> configuration for widebus handling. As with the DPU the bootloader 
+> enables
+> widebus and we need to disable it, or implement support for adjusting 
+> the
+> timing.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=49decddd39e5f6132ccd7d9fdc3d7c470b0061bb
+> Bjorn Andersson (4):
+>   drm/msm/dp: Simplify the mvid/nvid calculation
+>   drm/msm/dp: Store each subblock in the io region
+>   drm/msm/dp: Initialize the INTF_CONFIG register
+>   drm/msm/dp: Add support for SC8180x eDP
 > 
-> 
-> Thanks & Best Regards,
-> Keiya Nobuta
-> 
+>  drivers/gpu/drm/msm/dp/dp_catalog.c | 99 +++++++----------------------
+>  drivers/gpu/drm/msm/dp/dp_display.c |  1 +
+>  drivers/gpu/drm/msm/dp/dp_parser.c  | 22 +++++++
+>  drivers/gpu/drm/msm/dp/dp_parser.h  |  8 +++
+>  4 files changed, 53 insertions(+), 77 deletions(-)
