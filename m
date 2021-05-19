@@ -2,177 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443043890FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0637A3890FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347828AbhESOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:34:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34028 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S240748AbhESOeS (ORCPT
+        id S242327AbhESOd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241065AbhESOd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:34:18 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JEGqUx130080;
-        Wed, 19 May 2021 10:32:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=y/O3yzKmZ5S/nF30qtkhN4pFKCGjmMbwXJWy7EalH7Y=;
- b=dxLkg4t3xTxmgQ0/oc64iowxGb3YTxZjRh94jqw32U5yrHZStR/2kN+uG3ma+lQ6j257
- zUgscK0rcp/Rph72b9OtmpcwJFa/hEdhE6B7+N6SC/QHLr0pwfIFkO8fn3KwAc1jthBl
- emWGdAbvP1g3voCrGxY6v119KtK0ip4GQwzJ4mh7F1QjMF4W0d7BiGZK6/OSIXUUI4OC
- OfrdM2faa7lZ2OhsQO4fXs9FX6TS+QKYRyFhlAoIYlfshsdE8fAADv0SB+Gkvowl5qgq
- qQibZdrXzljPaPLY1ToODx6zuYjLRoXEubIHLtLHFNS1NwEoFQhawTgURGRimH6KlNOw 5A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38n4a48f72-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 10:32:34 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JEHhVr131996;
-        Wed, 19 May 2021 10:32:34 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38n4a48f62-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 10:32:33 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JEWWBw006834;
-        Wed, 19 May 2021 14:32:32 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 38j5jgt634-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 14:32:32 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JEWT5e31850820
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 14:32:29 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C38DBA4060;
-        Wed, 19 May 2021 14:32:29 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDF2DA4064;
-        Wed, 19 May 2021 14:32:26 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.6.141])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 19 May 2021 14:32:26 +0000 (GMT)
-Message-ID: <fdb42621e7145ce81a34840cbcf0914874c78913.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/3] Add additional MOK vars
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Cc:     dhowells@redhat.com, dwmw2@infradead.org,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, jarkko@kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        torvalds@linux-foundation.org, serge@hallyn.com,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        glin@suse.com
-Date:   Wed, 19 May 2021 10:32:26 -0400
-In-Reply-To: <20210517225714.498032-1-eric.snowberg@oracle.com>
-References: <20210517225714.498032-1-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Uz0m6BshD-Whk-r4KS0C61M6yjtaS8ZK
-X-Proofpoint-GUID: Dvfcj28MJQ7usNP2HwRzr5tcZDczTIye
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_06:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 phishscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=999 impostorscore=0 mlxscore=0 bulkscore=0 spamscore=0
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105190084
+        Wed, 19 May 2021 10:33:56 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B7AC06175F;
+        Wed, 19 May 2021 07:32:36 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c02005c05f05746ddc21b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:200:5c05:f057:46dd:c21b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DB3631EC01FC;
+        Wed, 19 May 2021 16:32:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621434755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=62y0wNyrSc/25znfXEpsvHi1tEFtNUnwiQQfcY25kw0=;
+        b=Znkqca52vq1NdY81Yn1Yflwurb7kxEBdT4Ew0HI2DtGleCyxZliwpZGLmVer1Q1zJb8nMU
+        5WjnbQU5a9RYwDcHCmnJ9FO44eeNFv81LPalwdVn7T0AlAwBwVbHuI8fqo3ngvHYUDXLjD
+        Zn3KvgHYFhatJN7jOlSqEFHW2NchBPE=
+Date:   Wed, 19 May 2021 16:32:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH 00/25] AMD MCA Address Translation Updates
+Message-ID: <YKUhfe42ExwVJVp4@zn.tnic>
+References: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
+ <YKJoICQzD/o7ZPBp@zn.tnic>
+ <20210519035207.GA8913@aus-x-yghannam.amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210519035207.GA8913@aus-x-yghannam.amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Tue, May 18, 2021 at 11:52:07PM -0400, Yazen Ghannam wrote:
+> I think this is a good idea. The only hang up is that we should be using
+> the output of this function, i.e. the systeme physical address, when
+> handling memory errors in the MCE notifier blocks. But I have an idea
+> where we can handle this. I can send that as a follow up series, if
+> that's okay.
 
-On Mon, 2021-05-17 at 18:57 -0400, Eric Snowberg wrote:
-> This series is being sent as an RFC. I am looking for feedback; if
-> adding additional MOK variables would be an acceptable solution to help
-> downstream Linux distros solve some of the problems we are facing?
-> 
-> Currently, pre-boot keys are not trusted within the Linux boundary [1].
-> Pre-boot keys include UEFI Secure Boot DB keys and MOKList keys. These
-> keys are loaded into the platform keyring and can only be used for kexec.
-> If an end-user wants to use their own key within the Linux trust
-> boundary, they must either compile it into the kernel themselves or use
-> the insert-sys-cert script. Both options present a problem. Many
-> end-users do not want to compile their own kernels. With the
-> insert-sys-cert option, there are missing upstream changes [2].  Also,
-> with the insert-sys-cert option, the end-user must re-sign their kernel
-> again with their own key, and then insert that key into the MOK db.
-> Another problem with insert-sys-cert is that only a single key can be
-> inserted into a compressed kernel.
-> 
-> Having the ability to insert a key into the Linux trust boundary opens
-> up various possibilities.  The end-user can use a pre-built kernel and
-> sign their own kernel modules.  It also opens up the ability for an
-> end-user to more easily use digital signature based IMA-appraisal.  To
-> get a key into the ima keyring, it must be signed by a key within the
-> Linux trust boundary.
-> 
-> Downstream Linux distros try to have a single signed kernel for each
-> architecture.  Each end-user may use this kernel in entirely different
-> ways.  Some downstream kernels have chosen to always trust platform keys
-> within the Linux trust boundary.  In addition, most downstream kernels
-> do not have an easy way for an end-user to use digital signature based
-> IMA-appraisal.
-> 
-> This series adds two new MOK variables to shim. The first variable
-> allows the end-user to decide if they want to trust keys contained
-> within the platform keyring within the Linux trust boundary. By default,
-> nothing changes; platform keys are not trusted within the Linux kernel.
-> They are only trusted after the end-user makes the decision themself.
-> The end-user would set this through mokutil using a new --trust-platform
-> option [3]. This would work similar to how the kernel uses MOK variables
-> to enable/disable signature validation as well as use/ignore the db.
-> 
-> The second MOK variable allows a downstream Linux distro to make
-> better use of the IMA architecture specific Secure Boot policy.  This
-> IMA policy is enabled whenever Secure Boot is enabled.  By default, this 
-> new MOK variable is not defined.  This causes the IMA architecture 
-> specific Secure Boot policy to be disabled.  Since this changes the 
-> current behavior, it is placed behind a new Kconfig option.  Kernels
-> built with IMA_UEFI_ARCH_POLICY enabled would  allow the end-user
-> to enable this through mokutil using a new --ima-sb-enable option [3].
-> This gives the downstream Linux distro the capability to offer the
-> IMA architecture specific Secure Boot policy option, while giving
-> the end-user the ability to decide if they want to use it.
-> 
-> I have included links to both the mokutil [3] and shim [4] changes I
-> made to support this new functionality.
-> 
-> Thank you and looking forward to hearing your reviews.
+Yeah, so frankly I'm not happy with all this clumsy plugging we do
+with notifiers and then amd_register_ecc_decoder() which is called in
+mce_amd.c to be used in amd64_edac.c which finally logs it.
 
-This patch set addresses two very different issues - allowing keys on
-the platform keyring to be trusted for things other than verifying the
-kexec kernel image signature, overwriting the arch specific IMA secure
-boot policy rules.  The only common denominator is basing those
-decisions on UEFI variables, which has been previously suggested and
-rejected.  The threat model hasn't changed.
+What I'd like to see is mce_amd.c still decoding all kinds of errors and
+additionally amd64_edac continues processing only the DRAM errors.
 
-The desire for allowing a single local CA key to be loaded onto a
-trusted keyring is understandable.  A local CA key can be used to sign
-certificates, allowing them to be loaded onto the IMA keyring.  What is
-the need for multiple keys? 
+> One other issue is what if a user doesn't want to use amd64_edac_mod?
 
-Making an exception for using a UEFI key for anything other than
-verifying the kexec kernel image, can not be based solely on UEFI
-variables, but should require some form of kernel
-agreement/confirmation.  If/when a safe mechanism for identifying a
-single local CA key is defined, the certificate should be loaded
-directly onto the secondary keyring, not linked to the platform
-keyring.
+Then she/he doesn't get DRAM errors mapped to a DIMM - simple.
 
-The system owner can enable/disable secure boot.  Disabling the arch
-secure boot IMA policy rules is not needed.  However, another mechanism
-for enabling them would be acceptable.
+> This is more of a user preference and/or configuration issue. Maybe the
+> module loads, but an uninterested user can tell EDAC to not log errors,
+> etc.? Or should the translation code live in its own module?
 
-thanks,
+No need. Translation is part of EDAC so if you don't load it, you don't
+get the functionality.
 
-Mimi
+> So for version 2, I have 1) Add a glossary of terms, and 2) Move
+> everything to EDAC. Any other comments?
 
+None at the moment - I'll do a deeper review with v2.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
