@@ -2,165 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BE33891C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2FB3891B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348480AbhESOrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:47:04 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:35235 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241563AbhESOqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:46:36 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FlbGQ3Zwxz9sXF;
-        Wed, 19 May 2021 16:43:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LBpnI5RB1c27; Wed, 19 May 2021 16:43:42 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FlbGN3vqyz9sWx;
-        Wed, 19 May 2021 16:43:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 56FC18B7F5;
-        Wed, 19 May 2021 16:43:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id b_yDbiJvFMr9; Wed, 19 May 2021 16:43:40 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0D8EC8B7E0;
-        Wed, 19 May 2021 16:43:40 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id DE31B64C3A; Wed, 19 May 2021 14:43:39 +0000 (UTC)
-Message-Id: <ee2dedcaaf3fe176e68498018632767d02639d03.1621435024.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1621435024.git.christophe.leroy@csgroup.eu>
-References: <cover.1621435024.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 12/12] powerpc/optprobes: use PPC_RAW_ macros
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        naveen.n.rao@linux.vnet.ibm.com, jniethe5@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 19 May 2021 14:43:39 +0000 (UTC)
+        id S1354648AbhESOqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354578AbhESOpO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 10:45:14 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71FEC06175F;
+        Wed, 19 May 2021 07:43:51 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 62so6414923wmb.3;
+        Wed, 19 May 2021 07:43:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=UdIoL7xzUohWDYDq39HuAacSmY9Xlky/Lcw5imKunnY=;
+        b=bypUtzusRqUCDyEnGAbj3+UDU44NgRU0P60ZrFOklJXxCmpVZCt6OkEO8ORifHH2pP
+         URtioI2PehZxglQqyWuuQ4bIrxS0ucR36GyP0sW45x5RlfezyHq5AB5PJc3MLrLQzDqG
+         gTgrRzFdb7QDdcoT2TG/blqK05HCS1XA1xH7ZDaasMVm7PQflm19+NmGaoaWj6G4dATb
+         xcNc9yc1K6iV/BpelMAeltNIANcmNsw4x5t/wJJxBxLpZZ42scBNMwGNnNiPJTh9VcZh
+         C8222SaYtjvyY6v6KcaQgYKG/+958BfkJi+ZvNy8xYqLCjR1TZodq+WBBg18TMsjoZfj
+         befw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=UdIoL7xzUohWDYDq39HuAacSmY9Xlky/Lcw5imKunnY=;
+        b=JSshXJUH1ZXXplTdvWRAsGglFaKMFIsFWm0a6Es+J9xkCOloTMpPGoYRuYWDE6nUO+
+         QzUEoGhbivdpFMQACIjopKzTiOja82hWsQPDwCCTvY7j7VSx4iqTlgmzCMS7Ed5nucBS
+         06mqQaaD1Y7lHF2SkjhrFqs4/QbWHS7iXqlb7O1y+m1mdGDLT8AR8DVfwDdAy/FEUIqZ
+         D/0Xhs2rjA+xS4Ex3QvSQusWQwLQ1HPSu2yHxtJSlQThmOf+yjB7yOQjt3t4WCJNR3Fs
+         dt3O/mLaYyZjJnVfol4OG37iuFLzwsd9Aa/P2If31S2k5PEH2KNWboVSzzC3/VO6yxRU
+         WnQg==
+X-Gm-Message-State: AOAM530HOoiue3OHN1hqnFCVwvhS1yJguww4B/TMTqd6tV4OI7TFSoZ4
+        7oR2cpeFZ+DFyjwZEOvYmZ0pUR5gbiI79Q==
+X-Google-Smtp-Source: ABdhPJz8JXxLywSbYWhIdAWUqpIlaTKfvF0Ksh6Av09VAh2O6BKaKMCurHrfnX9tm+BLxs4KSZTELA==
+X-Received: by 2002:a1c:b384:: with SMTP id c126mr11935026wmf.110.1621435430399;
+        Wed, 19 May 2021 07:43:50 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.197])
+        by smtp.gmail.com with ESMTPSA id y6sm4645735wmy.23.2021.05.19.07.43.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 07:43:50 -0700 (PDT)
+Date:   Wed, 19 May 2021 16:43:48 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     johannes@sipsolutions.net
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: subscription
+Message-ID: <20210519144347.GB1417@agape.jhs>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use PPC_RAW_ macros to simplify the code.
+Hello all,
 
-And use PPC_LO/PPC_HI instead of IMM_L/IMM_H which are for
-internal use inside ppc-opcode.h
+I tried two times to subscribe to linux-wireless, but majordomo
+didn't answered yet. May I try again?
 
-Those macros are self explanatory, comments can go as well.
+thank you,
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/ppc-opcode.h | 11 ++++----
- arch/powerpc/kernel/optprobes.c       | 39 +++++----------------------
- 2 files changed, 12 insertions(+), 38 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include/asm/ppc-opcode.h
-index ac41776661e9..87802e8073e6 100644
---- a/arch/powerpc/include/asm/ppc-opcode.h
-+++ b/arch/powerpc/include/asm/ppc-opcode.h
-@@ -261,9 +261,6 @@
- #define PPC_INST_BCTR			0x4e800420
- #define PPC_INST_BCTRL			0x4e800421
- #define PPC_INST_DIVD			0x7c0003d2
--#define PPC_INST_RLDICR			0x78000004
--#define PPC_INST_ORI			0x60000000
--#define PPC_INST_ORIS			0x64000000
- #define PPC_INST_BRANCH			0x48000000
- #define PPC_INST_BL			0x48000001
- #define PPC_INST_BRANCH_COND		0x40800000
-@@ -323,6 +320,8 @@
- #define PPC_LO(v)	((v) & 0xffff)
- #define PPC_HI(v)	(((v) >> 16) & 0xffff)
- #define PPC_HA(v)	PPC_HI((v) + 0x8000)
-+#define PPC_HIGHER(v)	(((v) >> 32) & 0xffff)
-+#define PPC_HIGHEST(v)	(((v) >> 48) & 0xffff)
- 
- /*
-  * Only use the larx hint bit on 64bit CPUs. e500v1/v2 based CPUs will treat a
-@@ -499,8 +498,8 @@
- #define PPC_RAW_AND_DOT(d, a, b)	(0x7c000039 | ___PPC_RA(d) | ___PPC_RS(a) | ___PPC_RB(b))
- #define PPC_RAW_OR(d, a, b)		(0x7c000378 | ___PPC_RA(d) | ___PPC_RS(a) | ___PPC_RB(b))
- #define PPC_RAW_MR(d, a)		PPC_RAW_OR(d, a, a)
--#define PPC_RAW_ORI(d, a, i)		(PPC_INST_ORI | ___PPC_RA(d) | ___PPC_RS(a) | IMM_L(i))
--#define PPC_RAW_ORIS(d, a, i)		(PPC_INST_ORIS | ___PPC_RA(d) | ___PPC_RS(a) | IMM_L(i))
-+#define PPC_RAW_ORI(d, a, i)		(0x60000000 | ___PPC_RA(d) | ___PPC_RS(a) | IMM_L(i))
-+#define PPC_RAW_ORIS(d, a, i)		(0x64000000 | ___PPC_RA(d) | ___PPC_RS(a) | IMM_L(i))
- #define PPC_RAW_NOR(d, a, b)		(0x7c0000f8 | ___PPC_RA(d) | ___PPC_RS(a) | ___PPC_RB(b))
- #define PPC_RAW_XOR(d, a, b)		(0x7c000278 | ___PPC_RA(d) | ___PPC_RS(a) | ___PPC_RB(b))
- #define PPC_RAW_XORI(d, a, i)		(0x68000000 | ___PPC_RA(d) | ___PPC_RS(a) | IMM_L(i))
-@@ -519,7 +518,7 @@
- 					(0x54000001 | ___PPC_RA(d) | ___PPC_RS(a) | __PPC_SH(i) | __PPC_MB(mb) | __PPC_ME(me))
- #define PPC_RAW_RLWIMI(d, a, i, mb, me) (0x50000000 | ___PPC_RA(d) | ___PPC_RS(a) | __PPC_SH(i) | __PPC_MB(mb) | __PPC_ME(me))
- #define PPC_RAW_RLDICL(d, a, i, mb)     (0x78000000 | ___PPC_RA(d) | ___PPC_RS(a) | __PPC_SH64(i) | __PPC_MB64(mb))
--#define PPC_RAW_RLDICR(d, a, i, me)     (PPC_INST_RLDICR | ___PPC_RA(d) | ___PPC_RS(a) | __PPC_SH64(i) | __PPC_ME64(me))
-+#define PPC_RAW_RLDICR(d, a, i, me)     (0x78000004 | ___PPC_RA(d) | ___PPC_RS(a) | __PPC_SH64(i) | __PPC_ME64(me))
- 
- /* slwi = rlwinm Rx, Ry, n, 0, 31-n */
- #define PPC_RAW_SLWI(d, a, i)		PPC_RAW_RLWINM(d, a, i, 0, 31-(i))
-diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
-index 9c1c8de8c06d..1488d4e9b34d 100644
---- a/arch/powerpc/kernel/optprobes.c
-+++ b/arch/powerpc/kernel/optprobes.c
-@@ -137,10 +137,8 @@ void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
- 
- static void patch_imm32_load_insns(unsigned long val, int reg, kprobe_opcode_t *addr)
- {
--	patch_instruction(addr, ppc_inst(PPC_RAW_LIS(reg, IMM_H(val))));
--	addr++;
--
--	patch_instruction(addr, ppc_inst(PPC_RAW_ORI(reg, reg, IMM_L(val))));
-+	patch_instruction(addr++, ppc_inst(PPC_RAW_LIS(reg, PPC_HI(val))));
-+	patch_instruction(addr, ppc_inst(PPC_RAW_ORI(reg, reg, PPC_LO(val))));
- }
- 
- /*
-@@ -149,34 +147,11 @@ static void patch_imm32_load_insns(unsigned long val, int reg, kprobe_opcode_t *
-  */
- static void patch_imm64_load_insns(unsigned long long val, int reg, kprobe_opcode_t *addr)
- {
--	/* lis reg,(op)@highest */
--	patch_instruction(addr,
--			  ppc_inst(PPC_INST_ADDIS | ___PPC_RT(reg) |
--				   ((val >> 48) & 0xffff)));
--	addr++;
--
--	/* ori reg,reg,(op)@higher */
--	patch_instruction(addr,
--			  ppc_inst(PPC_INST_ORI | ___PPC_RA(reg) |
--				   ___PPC_RS(reg) | ((val >> 32) & 0xffff)));
--	addr++;
--
--	/* rldicr reg,reg,32,31 */
--	patch_instruction(addr,
--			  ppc_inst(PPC_INST_RLDICR | ___PPC_RA(reg) |
--				   ___PPC_RS(reg) | __PPC_SH64(32) | __PPC_ME64(31)));
--	addr++;
--
--	/* oris reg,reg,(op)@h */
--	patch_instruction(addr,
--			  ppc_inst(PPC_INST_ORIS | ___PPC_RA(reg) |
--				   ___PPC_RS(reg) | ((val >> 16) & 0xffff)));
--	addr++;
--
--	/* ori reg,reg,(op)@l */
--	patch_instruction(addr,
--			  ppc_inst(PPC_INST_ORI | ___PPC_RA(reg) |
--				   ___PPC_RS(reg) | (val & 0xffff)));
-+	patch_instruction(addr++, ppc_inst(PPC_RAW_LIS(reg, PPC_HIGHEST(val))));
-+	patch_instruction(addr++, ppc_inst(PPC_RAW_ORI(reg, reg, PPC_HIGHER(val))));
-+	patch_instruction(addr++, ppc_inst(PPC_RAW_SLDI(reg, reg, 32)));
-+	patch_instruction(addr++, ppc_inst(PPC_RAW_ORIS(reg, reg, PPC_HI(val))));
-+	patch_instruction(addr, ppc_inst(PPC_RAW_ORI(reg, reg, PPC_LO(val))));
- }
- 
- static void patch_imm_load_insns(unsigned long val, int reg, kprobe_opcode_t *addr)
--- 
-2.25.0
-
+fabio
