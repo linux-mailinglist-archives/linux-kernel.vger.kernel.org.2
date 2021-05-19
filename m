@@ -2,159 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70B638918A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C852138919A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354317AbhESOl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        id S1354498AbhESOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354428AbhESOlD (ORCPT
+        with ESMTP id S1354378AbhESOm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:41:03 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74737C06138E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:39:09 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id p20so15918261ljj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:39:09 -0700 (PDT)
+        Wed, 19 May 2021 10:42:29 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EBDC061344;
+        Wed, 19 May 2021 07:40:14 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id o127so7428706wmo.4;
+        Wed, 19 May 2021 07:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Nc6CsOmLYlYhosQDHmPH7JIfTt0CJg9Ts/YiX/jQHwY=;
-        b=HgA1pDo4XeJYXNKY/iAMwblUWkBN77xsngRBcrzHq/iE8eRT2HRRgc686wcHtnVpan
-         HZ4AKQuxDcR+0mTInQCOuhqbINIHOD9G8LpebL7znluHF9OiwJr/le986aBiNxpxkxE5
-         sQVwBPPSFOKgRF1dwWf6jHve9KfSQZYLZiBitx8/LFExcIxFSECkV4R8pmZMK/OKX1vj
-         mTqf5DCtP2ivd5R1BYfI95LmItjedS3frHGqMcNtcnFW+Jc8J6sUiH0yEL15LODlfoBw
-         f3PD5/5fb5yyqDeVFXGdv91WgajlbJirXxjzXXboi1pGFt9PfuYvJgD5s+FrcvrA94rX
-         IpSw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=siaJh1nJto0dvvaAdmUW7enGPuoUcB3Nw0RE+elDk1k=;
+        b=jRXKUH0Av6zCrqKxBYUpKT23DI6Npf84WcrCXYVFpMV5Guj0UuRPinoBMyjG0ostyY
+         pAyEEAdXDmaU9YRtpRGsdtZsoIg8843cJCjOTYzzio6Csr7WCUiAD8l2jCI/uH4NkyZR
+         SacOCSRGsZ89pr55EcZ/NprKnI/YNkeIOfRAdcKeo0wLISGNPuGjXFS9Wcl/KG4zqqNI
+         Bdj7uzAadbiwThYFGKiZ75d0GgzanLmfaj7sOkW1w100fxY0Eq/N5nq6cqW6+CC0KTTS
+         P/guD4qaDpu0rZqAYcT/9EaS0IlxOCldVBtdbQwBJBxW5j76p74hVt+qaLaHHNZrylHv
+         YImw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Nc6CsOmLYlYhosQDHmPH7JIfTt0CJg9Ts/YiX/jQHwY=;
-        b=MNwFhCEdMWQSHBu8H7nfnifDhpzVEOpNCEMiw3pBKXr9qVVXS9ffRNbuZ/RkJkaV3o
-         YW21MHaykTqEVtwusot//6MCf4HIHjNxznGs8X2i+ObMs/Kjpkxo21gokIFZz9D1IWFQ
-         qkVvMnOK8gcKvi94Q9q39xsLvaGc4cKctlz5mY54e6trr7/lTe1yX5/8G0lxb2dIhk7Z
-         ETENhRh/QT8xlfWEmyWCepI1/fEM6C2EfxNN/7Gb1yMLTPq5FmsxHqNqHxU9DBnuobQD
-         IY8nt+bb5dq7U86/gu39C7jL+r3N5lM3LEj1PQH830VD4vkLP0guBH0U4+gh+JS3oVzD
-         XBAw==
-X-Gm-Message-State: AOAM530Y/ughdZWIAErHq3DEq7dijf8V87FcicBCTAZ4ZnxAKeBW0OlJ
-        TFX2zRdoM+tW0R5QixCpQr4=
-X-Google-Smtp-Source: ABdhPJwE/Sq+JLDSB8vi2c8j5QBIicU2jCY0aUPL5ychSGfim18/GS5+IjIi9qEou+22wg5pyItXBA==
-X-Received: by 2002:a2e:6c1a:: with SMTP id h26mr9434973ljc.478.1621435143358;
-        Wed, 19 May 2021 07:39:03 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m4sm3698096ljc.20.2021.05.19.07.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:39:02 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 19 May 2021 16:39:00 +0200
-To:     Christoph Hellwig <hch@infradead.org>, Mel Gorman <mgorman@suse.de>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/3] mm/vmalloc: Switch to bulk allocator in
- __vmalloc_area_node()
-Message-ID: <20210519143900.GA2262@pc638.lan>
-References: <20210516202056.2120-1-urezki@gmail.com>
- <20210516202056.2120-3-urezki@gmail.com>
- <YKUWKFyLdqTYliwu@infradead.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=siaJh1nJto0dvvaAdmUW7enGPuoUcB3Nw0RE+elDk1k=;
+        b=ErFDHWByyK39OHmPVcqaYecDGdY3h1cx4U3svs+hIga5DxofzJWZks/llOorYRy0IK
+         fwZ/utvdPn2VpcTyMf9c41rijLExbPa6J8XuDJv9rF26Quqpglihu6oLg8JIaLCNCA9P
+         CFgxTpOYcW8FDQE6smlIVSC3tQKRkF8IdxcGAfPtK15zU0Fkzuxg18nKZCa9ACFOf1/1
+         V0GoCl7DXDBiHVTkkaXABqtqpkco80y/x3KZXpJutjAWrlsfcBiF9Vl9j6wt0v5vHyF2
+         Q5GQE2TkSE142sYG+5Ojm/VKzZASKEJBryQVZaN0pDtHJRZQQf/YjEJxCoMImKhWLZtI
+         0Rpw==
+X-Gm-Message-State: AOAM531/rokksPkw8Mr7TlbX4Z9U9xtFB7Pwj88ZJfsDIk+SoL2dbUTD
+        Q9mz/r6IeLMvWorhquwmUDM=
+X-Google-Smtp-Source: ABdhPJwdJiFzJ+4ZODRYgIGP8E8Bc6SiwRkbRDYhVBB0dAPgfsAZXVk6g52y7I6k3mhs/CUZVNrdKA==
+X-Received: by 2002:a1c:3186:: with SMTP id x128mr10902659wmx.167.1621435213427;
+        Wed, 19 May 2021 07:40:13 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id x13sm15788624wro.31.2021.05.19.07.40.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 07:40:12 -0700 (PDT)
+Subject: Re: [PATCH -next resend] sfc: farch: fix compile warning in
+ efx_farch_dimension_resources()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net
+References: <20210519021136.1638370-1-yangyingliang@huawei.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <d90bd556-efd0-1b75-7708-7217fe490cf2@gmail.com>
+Date:   Wed, 19 May 2021 15:40:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKUWKFyLdqTYliwu@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210519021136.1638370-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 02:44:08PM +0100, Christoph Hellwig wrote:
-> > +	if (!page_order) {
-> > +		area->nr_pages = alloc_pages_bulk_array_node(
-> > +			gfp_mask, node, nr_small_pages, area->pages);
-> > +	} else {
-> > +		/*
-> > +		 * Careful, we allocate and map page_order pages, but tracking is done
-> > +		 * per PAGE_SIZE page so as to keep the vm_struct APIs independent of
+On 19/05/2021 03:11, Yang Yingliang wrote:
+> Fix the following kernel build warning when CONFIG_SFC_SRIOV is disabled:
 > 
-> Comments over 80 lines are completely unreadable, so please avoid them.
+>   drivers/net/ethernet/sfc/farch.c: In function ‘efx_farch_dimension_resources’:
+>   drivers/net/ethernet/sfc/farch.c:1671:21: warning: variable ‘buftbl_min’ set but not used [-Wunused-but-set-variable]
+>     unsigned vi_count, buftbl_min, total_tx_channels;
 > 
-That i can fix by separate patch.
-
-> > +		 * the physical/mapped size.
-> > +		 */
-> > +		while (area->nr_pages < nr_small_pages) {
-> > +			struct page *page;
-> > +			int i;
-> > +
-> > +			/* Compound pages required for remap_vmalloc_page */
-> > +			page = alloc_pages_node(node, gfp_mask | __GFP_COMP, page_order);
-> > +			if (unlikely(!page))
-> > +				break;
-> >  
-> > +			for (i = 0; i < (1U << page_order); i++)
-> > +				area->pages[area->nr_pages + i] = page + i;
-> >  
-> > +			if (gfpflags_allow_blocking(gfp_mask))
-> > +				cond_resched();
-> > +
-> > +			area->nr_pages += 1U << page_order;
-> > +		}
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/net/ethernet/sfc/farch.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> In fact splitting this whole high order allocation logic into a little
-> helper would massivel benefit the function by ordering it more logical
-> and reducing a level of indentation.
+> diff --git a/drivers/net/ethernet/sfc/farch.c b/drivers/net/ethernet/sfc/farch.c
+> index 49df02ecee91..6048b08b89ec 100644
+> --- a/drivers/net/ethernet/sfc/farch.c
+> +++ b/drivers/net/ethernet/sfc/farch.c
+> @@ -1668,13 +1668,17 @@ void efx_farch_rx_pull_indir_table(struct efx_nic *efx)
+>   */
+>  void efx_farch_dimension_resources(struct efx_nic *efx, unsigned sram_lim_qw)
+>  {
+> -	unsigned vi_count, buftbl_min, total_tx_channels;
+> +	unsigned vi_count, total_tx_channels;
+>  
+>  #ifdef CONFIG_SFC_SRIOV
+>  	struct siena_nic_data *nic_data = efx->nic_data;
+> +	unsigned buftbl_min;
+>  #endif
+As I said the first time you sent this:
+Reverse xmas tree is messed up here, please fix.
+Apart from that, LGTM.
+
+-ed
+
+>  
+>  	total_tx_channels = efx->n_tx_channels + efx->n_extra_tx_channels;
+> +	vi_count = max(efx->n_channels, total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL);
+> +
+> +#ifdef CONFIG_SFC_SRIOV
+>  	/* Account for the buffer table entries backing the datapath channels
+>  	 * and the descriptor caches for those channels.
+>  	 */
+> @@ -1682,9 +1686,6 @@ void efx_farch_dimension_resources(struct efx_nic *efx, unsigned sram_lim_qw)
+>  		       total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL * EFX_MAX_DMAQ_SIZE +
+>  		       efx->n_channels * EFX_MAX_EVQ_SIZE)
+>  		      * sizeof(efx_qword_t) / EFX_BUF_SIZE);
+> -	vi_count = max(efx->n_channels, total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL);
+> -
+> -#ifdef CONFIG_SFC_SRIOV
+>  	if (efx->type->sriov_wanted) {
+>  		if (efx->type->sriov_wanted(efx)) {
+>  			unsigned vi_dc_entries, buftbl_free;
 > 
-I can put it into separate function. Actually i was thinking about it.
 
-> > +	/*
-> > +	 * If not enough pages were obtained to accomplish an
-> > +	 * allocation request, free them via __vfree() if any.
-> > +	 */
-> > +	if (area->nr_pages != nr_small_pages) {
-> > +		warn_alloc(gfp_mask, NULL,
-> > +			"vmalloc size %lu allocation failure: "
-> > +			"page order %u allocation failed",
-> > +			area->nr_pages * PAGE_SIZE, page_order);
-> > +		goto fail;
-> > +	}
-> 
-> From reading __alloc_pages_bulk not allocating all pages is something
-> that cn happen fairly easily.  Shouldn't we try to allocate the missing
-> pages manually and/ore retry here?
-> 
-It is a good point. The bulk-allocator, as i see, only tries to access
-to pcp-list and falls-back to a single allocator once it fails, so the
-array may not be fully populated.
-
-In that case probably it makes sense to manually populate it using
-single page allocator.
-
-Mel, could you please also comment on it?
-
-> > +
-> > +	if (vmap_pages_range(addr, addr + size, prot, area->pages, page_shift) < 0) {
-> 
-> Another pointlessly long line.
-Yep. Will fix it by a separate patch. Actually the checkpatch.pl also
-complains on splitting the text like below:
-
-    warn_alloc(gfp_mask, NULL,
-        "vmalloc size %lu allocation failure: "
-        "page order %u allocation failed",
-        area->nr_pages * PAGE_SIZE, page_order);
-
-
-Thanks for the comments!
-
---
-Vlad Rezki
