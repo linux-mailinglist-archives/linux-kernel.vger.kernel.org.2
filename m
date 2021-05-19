@@ -2,82 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34ED389852
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B73389855
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhESVCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:02:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhESVCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:02:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01BEC613AC;
-        Wed, 19 May 2021 21:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621458079;
-        bh=HPUf+kT+bmoTegnVvAKxBai2Dzy2bgMgMG0NwDVdbFo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p52lxAzjRDlRk5H0cyupEgyG/s/wvmz1DOwXKgHig0/8Zbmjj1RH8iXq0oLDikz/c
-         OKyaxKpyZ2rIFZoozBsnpmuFub5QaJ57mfzHjC39xx9H0rq+1cbtR/mk+OkZXhqbb7
-         PN9WliBDpU7vcUDntXmxGgaAQDgbWAMG8QC/Xqg6xt3yA8V1nP+DrBLO01g0HICZJt
-         yvNl7RHiiymtILIkIf3Ar6s0Jq5zqXTCpUYEf+mhgMCB5sTc9qQnItCrn7eiB23MgS
-         46xEd0nOaBa8WbAL6kPv5lPgOnBReodEyPZvaJmKUhMrWElXyeymO7OZBsT9smRGuf
-         +OantGSRz9p+Q==
-Received: by mail-wm1-f44.google.com with SMTP id h3-20020a05600c3503b0290176f13c7715so4013991wmq.5;
-        Wed, 19 May 2021 14:01:18 -0700 (PDT)
-X-Gm-Message-State: AOAM530hKy6nvNB+KFLKIHq1sI+YcQAUx+akndUxcxSpFLbySOsJECh3
-        jA5HkCFE/l6NPrYDi9mkNgPNhwaos/2YT2EDpYE=
-X-Google-Smtp-Source: ABdhPJy8Jqwz5h6db1cg71p7uKoZ7HogbtRdnpq9dbBSg0UgdCTCX6yhxlQHb/+HU1db+XwapikKwx/NJqqXjPyM4bI=
-X-Received: by 2002:a7b:c344:: with SMTP id l4mr960591wmj.120.1621458077519;
- Wed, 19 May 2021 14:01:17 -0700 (PDT)
+        id S229797AbhESVEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:04:39 -0400
+Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84]:20761 "EHLO
+        fgw23-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229578AbhESVEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:04:37 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
+        id a0466097-b8e5-11eb-8ccd-005056bdfda7;
+        Thu, 20 May 2021 00:03:15 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Subject: [PATCH v1 1/1] ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
+Date:   Thu, 20 May 2021 00:02:53 +0300
+Message-Id: <20210519210253.3578025-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210517203343.3941777-1-arnd@kernel.org> <20210517203343.3941777-5-arnd@kernel.org>
- <87h7iycvlo.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87h7iycvlo.ffs@nanos.tec.linutronix.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 19 May 2021 23:00:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
-Message-ID: <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] compat: remove some compat entry points
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:33 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Mon, May 17 2021 at 22:33, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > These are all handled correctly when calling the native
-> > system call entry point, so remove the special cases.
-> >  arch/x86/entry/syscall_x32.c              |  2 ++
-> >  arch/x86/entry/syscalls/syscall_32.tbl    |  6 ++--
-> >  arch/x86/entry/syscalls/syscall_64.tbl    |  4 +--
->
-> That conflicts with
->
->   https://lore.kernel.org/lkml/20210517073815.97426-1-masahiroy@kernel.org/
->
-> which I'm picking up. We have more changes in that area coming in.
+Currently it's possible to iterate over the dangling pointer in case the device
+suddenly disappears. This may happen becase callers put it at the end of a loop.
 
-Ok, thanks for the heads-up. I'll try a merge or rebase to see how this can be
-handled. If both the drivers/net and drivers/media get picked up for 5.14, maybe
-the rebased patches can go through -mm on top, along with the final
-removal of compat_alloc_user_space()/copy_in_user(). If not, I suppose these
-four patches can also wait another release.
+Instead, let's move that call inside acpi_dev_get_next_match_dev().
 
-       Arnd
+Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
+Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev() and helper macro")
+Cc: Daniel Scally <djrscally@gmail.com>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ drivers/acpi/utils.c                       | 5 +----
+ drivers/media/pci/intel/ipu3/cio2-bridge.c | 8 +++-----
+ include/acpi/acpi_bus.h                    | 5 -----
+ 3 files changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index 3b54b8fd7396..ccfc484dbffd 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -846,10 +846,6 @@ EXPORT_SYMBOL(acpi_dev_present);
+  * Return the next match of ACPI device if another matching device was present
+  * at the moment of invocation, or NULL otherwise.
+  *
+- * FIXME: The function does not tolerate the sudden disappearance of @adev, e.g.
+- * in the case of a hotplug event. That said, the caller should ensure that
+- * this will never happen.
+- *
+  * The caller is responsible for invoking acpi_dev_put() on the returned device.
+  *
+  * See additional information in acpi_dev_present() as well.
+@@ -866,6 +862,7 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const cha
+ 	match.hrv = hrv;
+ 
+ 	dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
++	acpi_dev_put(adev);
+ 	return dev ? to_acpi_device(dev) : NULL;
+ }
+ EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
+diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+index e8511787c1e4..477417261b6e 100644
+--- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
++++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+@@ -178,13 +178,11 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
+ 
+ 		if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+ 			dev_err(&cio2->dev, "Exceeded available CIO2 ports\n");
+-			cio2_bridge_unregister_sensors(bridge);
+ 			ret = -EINVAL;
+-			goto err_out;
++			goto err_put_adev;
+ 		}
+ 
+ 		sensor = &bridge->sensors[bridge->n_sensors];
+-		sensor->adev = adev;
+ 		strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
+ 
+ 		ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
+@@ -214,6 +212,7 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
+ 			goto err_free_swnodes;
+ 		}
+ 
++		sensor->adev = acpi_dev_get(adev);
+ 		adev->fwnode.secondary = fwnode;
+ 
+ 		dev_info(&cio2->dev, "Found supported sensor %s\n",
+@@ -227,8 +226,7 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
+ err_free_swnodes:
+ 	software_node_unregister_nodes(sensor->swnodes);
+ err_put_adev:
+-	acpi_dev_put(sensor->adev);
+-err_out:
++	acpi_dev_put(adev);
+ 	return ret;
+ }
+ 
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 3a82faac5767..bff6a11bb21f 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -698,11 +698,6 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
+  * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+  *
+  * The caller is responsible for invoking acpi_dev_put() on the returned device.
+- *
+- * FIXME: Due to above requirement there is a window that may invalidate @adev
+- * and next iteration will use a dangling pointer, e.g. in the case of a
+- * hotplug event. That said, the caller should ensure that this will never
+- * happen.
+  */
+ #define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
+ 	for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);	\
+-- 
+2.31.1
+
