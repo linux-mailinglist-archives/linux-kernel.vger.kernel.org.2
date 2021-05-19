@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BE33886F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255813886F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245184AbhESFsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
+        id S1345242AbhESFv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348866AbhESFpa (ORCPT
+        with ESMTP id S1348977AbhESFrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:45:30 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E54C061342
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:41:57 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id ot16so4824119pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:41:57 -0700 (PDT)
+        Wed, 19 May 2021 01:47:01 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A1AC06175F;
+        Tue, 18 May 2021 22:45:29 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id 69so6384246plc.5;
+        Tue, 18 May 2021 22:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Ao//7r1KFld4qVZ1tXpzzorSlFP6vtsPLPVYqG20G0=;
-        b=DigzqK4GdOu/HgdltA+7CkfEWC3DDrxUDEut8nZl4w7mYY+abYcumxMRYwNdPazlcQ
-         hZwdeOoqQCRyH/IJVIbx7u5JsEQp3koYrSAcUu4Bs7dqaOGtc85ogx64GdzwfXAiYg4y
-         gHaRXNUYM7ssVx4xi/bK+U1B5bubY4WMmSDxEsoVgO4TJ0eN+sHUkahea23M1/XXuigN
-         4nY3uekDRNR/xaeR049tVB1HXhOihgQFOwE4TY8QnVdMGtkYOCLTJ5OBybaqnjV7MCAq
-         Qnooo2JEOMCg0CrikKZi9PPskMSLvrWWhPdRQfoQvl1Nwfz4AZSdTsiBAhHBNguFGjv+
-         L1yg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pquk/6hS/kUBJI6wBupcpd3wsozPl6QCwcSHApqiotk=;
+        b=ENeG+u/QDIj3yLynV5fnIKjU6rM5P0avKoBg32VlDitUUL5U82jg/an64kRFgM1MYG
+         Uy9t1H9FMdFRl23tKwkQcYbAr/zx8Kh+dDm634HIYMx5zC4ieU8si62IXGgqv+jVMHF2
+         JBoO9xjQKkkJB811cCdTUzAlecsMm1uFb89cj3qGSusufyRmWb+k9GOVAb3EVxsVGMNk
+         MrHnZRz92N9T2MNyzJuxMtbYO0jlW9xt8YClXEa2z3m3G8t9Ve0OZrqydndiVdBdZghs
+         rqPMFjJ4EXSi/4OANxgZbbPAMjEFPxhPB+km0GoYN7Pr1+WXVJ08I4mWsReudW37tdum
+         4tHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Ao//7r1KFld4qVZ1tXpzzorSlFP6vtsPLPVYqG20G0=;
-        b=pnLH9PQ4+jB465f4tMUKWCpn1kXJb95KtnmsQV4Zl6fJRMqZgYj4vwVB7Y97cYlQos
-         0BHGh0jWcgwNZb7p6Fv/iGJMAJ2Xern8x33cCgP6hK1WYJLLAsM93zb76YwEjzEfAqhT
-         iOCj4zXB8zP2NCjCVntUKkXYNP+XTi5l0rCvsjgiCH/c7iT2eENYydzEQ6zVF4p2PMZX
-         qFyEJ9wAWtSfCCgKnkSJDF120Fx9uLIGRQzdAp98vaPVIY3Jq7NpKmpzE7HAm5LpH8JL
-         GrsbAl/RMgo/S9gtgNz9888Ze114A2ilcMbwrAcOLh7/UZuElSN2iZlMzK5LUgb+F9E6
-         YwyA==
-X-Gm-Message-State: AOAM530Q0unYlag9YlbPjhdeSRirQSv5xImcLpEG9v8v+YT8aZekKaxY
-        YNWHzqRhvzbzOhFtxbD2eNMpEhJ5liadzA1uFOmo2A==
-X-Google-Smtp-Source: ABdhPJymSSPRYI+9qpROTR12WK1J8yU5xK+sJWHNGj0HyH48UspUw6MPn6/2+CPKH19SOJ8VF/J6MwGzb5tcOSmG0co=
-X-Received: by 2002:a17:90b:1185:: with SMTP id gk5mr5813526pjb.168.1621402917077;
- Tue, 18 May 2021 22:41:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pquk/6hS/kUBJI6wBupcpd3wsozPl6QCwcSHApqiotk=;
+        b=V6sDLWyywS+a11SV/0sRRA71NN7nnORRim7KBCIkqe8J355cjTrmQDOHY7yfICiBSp
+         M0JOQsSunwDOf1xTl/otodiDKpBmxjHZnQLwKyska2vdjOKwpOVBeuT3Xu0RTAVv+z9N
+         cDyqsiUjROesWMAj2GMHvo97h+WNwfUtgGf3W6tlTqxczUun0ds4DskJ+Yopn1UhtF+t
+         loKE0vKXhx+/Nqo5DV7j2PQlQqk4953SO6eygGcQLiezMRTn2pojpEbFGDVKUNaDkNea
+         80Ki0xXuu+/YaAyhxV0UbNqjYdHD3kUUcVYOfpO0dSahCk7pCdBmm40HjycspS1nhpP1
+         UHyg==
+X-Gm-Message-State: AOAM531PI+iJNJaIIOl/4Eq8JIfMbGMU0oOyS75ZOsJIiQkXWuqR+lC/
+        UJDnszrMK4XU9Toi8DPhnMw=
+X-Google-Smtp-Source: ABdhPJwIZetjExWTrutypj0XOq4ZwZHyExdbv++iELUXKniiahVsR+rkwa37vfSuUUY7aPdwOyvnZw==
+X-Received: by 2002:a17:90a:1b45:: with SMTP id q63mr9851522pjq.195.1621403129164;
+        Tue, 18 May 2021 22:45:29 -0700 (PDT)
+Received: from hyeyoo ([121.135.181.35])
+        by smtp.gmail.com with ESMTPSA id n30sm14487343pgd.8.2021.05.18.22.45.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 22:45:28 -0700 (PDT)
+Date:   Wed, 19 May 2021 14:45:20 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Nathan Chancellor <nathan@kernel.org>, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
+        linux-next@vger.kernel.org, ndesaulniers@google.com,
+        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <20210519054520.GB26916@hyeyoo>
+References: <20210511173448.GA54466@hyeyoo>
+ <20210515210950.GA52841@hyeyoo>
+ <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
+ <YKC9CeAfw3aBmHTU@archlinux-ax161>
+ <20210518003859.GC80297@hyeyoo>
+ <a1287a21-bcbb-77ed-c88d-f5890b785213@kernel.org>
+ <71416382-2e4c-5e03-df9c-265fda41c2de@suse.cz>
+ <20210518111814.GA114501@hyeyoo>
+ <aa74a894-8b39-b1c9-cfe8-2fcf879b7624@suse.cz>
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-5-seanjc@google.com>
-In-Reply-To: <20210424004645.3950558-5-seanjc@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Tue, 18 May 2021 22:41:40 -0700
-Message-ID: <CAAeT=FzCs5GUC448TmNoUeG_mrB0VR6riop11A-3bfk2PUvrxw@mail.gmail.com>
-Subject: Re: [PATCH 04/43] KVM: SVM: Fall back to KVM's hardcoded value for
- EDX at RESET/INIT
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa74a894-8b39-b1c9-cfe8-2fcf879b7624@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 5:47 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> At vCPU RESET/INIT (mostly RESET), stuff EDX with KVM's hardcoded,
-> default Family-Model-Stepping ID of 0x600 if CPUID.0x1 isn't defined.
-> At RESET, the CPUID lookup is guaranteed to "miss" because KVM emulates
-> RESET before exposing the vCPU to userspace, i.e. userspace can't
-> possibly have done set the vCPU's CPUID model, and thus KVM will always
-> write '0'.  At INIT, using 0x600 is less bad than using '0'.
->
-> While initializing EDX to '0' is _extremely_ unlikely to be noticed by
-> the guest, let alone break the guest, and can be overridden by
-> userspace for the RESET case, using 0x600 is preferable as it will allow
-> consolidating the relevant VMX and SVM RESET/INIT logic in the future.
-> And, digging through old specs suggests that neither Intel nor AMD have
-> ever shipped a CPU that initialized EDX to '0' at RESET.
->
-> Regarding 0x600 as KVM's default Family, it is a sane default and in
-> many ways the most appropriate.  Prior to the 386 implementations, DX
-> was undefined at RESET.  With the 386, 486, 586/P5, and 686/P6/Athlon,
-> both Intel and AMD set EDX to 3, 4, 5, and 6 respectively.  AMD switched
-> to using '15' as its primary Family with the introduction of AMD64, but
-> Intel has continued using '6' for the last few decades.
->
-> So, '6' is a valid Family for both Intel and AMD CPUs, is compatible
-> with both 32-bit and 64-bit CPUs (albeit not a perfect fit for 64-bit
-> AMD), and of the common Families (3 - 6), is the best fit with respect to
-> KVM's virtual CPU model.  E.g. prior to the P6, Intel CPUs did not have a
-> STI window.  Modern operating systems, Linux included, rely on the STI
-> window, e.g. for "safe halt", and KVM unconditionally assumes the virtual
-> CPU has an STI window.  Thus enumerating a Family ID of 3, 4, or 5 would
-> be provably wrong.
->
-> Opportunistically remove a stale comment.
->
-> Fixes: 66f7b72e1171 ("KVM: x86: Make register state after reset conform to specification")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Tue, May 18, 2021 at 01:34:07PM +0200, Vlastimil Babka wrote:
+> On 5/18/21 1:18 PM, Hyeonggon Yoo wrote:
+> > On Tue, May 18, 2021 at 11:28:17AM +0200, Vlastimil Babka wrote:
+> >> On 5/18/21 2:43 AM, Nathan Chancellor wrote:
+> >> > On 5/17/2021 5:38 PM, Hyeonggon Yoo wrote:
+> >> >> On Sat, May 15, 2021 at 11:34:49PM -0700, Nathan Chancellor wrote:
+> >> >>> This should work I think:
+> >> >>
+> >> >> compiled well with clang-10.0.1, clang-11.0.0,
+> >> >> and gcc-10.2.0 with x86_64 default config.
+> >> >>
+> >> >> is the condition CONFIG_CLANG_VERSION > 110000,
+> >> >> not including 110000 it self?
+> >> 
+> >> Good spot.
+> > 
+> > Thanks!
+> > 
+> >> > Ah sorry, that should definitely be >= :(
+> >> > 
+> >> > That is what I get for writing an email that late... in reality, it probably
+> >> > won't matter due to the availability of 11.0.1 and 11.1.0 but it should
+> >> > absolutely be changed.
+> >> > 
+> >> > I have not given Nick's patch a go yet but would something like this be
+> >> > acceptable?
+> >> 
+> >> Yes.
+> > 
+> > You mean Nick's patch to added with Nathan's code?
+> 
+> No, I thought Nathan was asking about his own proposal. I don't think Nick's
+> patch that adds 26 index solves the issue. Nathan's proposal fixed with '>=' is OK.
 
-Reviewed-by: Reiji Watanabe <reijiw@google.com>
+Ah, Okay! I sent the patch.
+
+Thanks,
+Hyeonggon
