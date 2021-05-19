@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18383898D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9643898E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhESVv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S229736AbhESVxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhESVvZ (ORCPT
+        with ESMTP id S229455AbhESVxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:51:25 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E8AC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:50:05 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id h11so13471979ili.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:50:04 -0700 (PDT)
+        Wed, 19 May 2021 17:53:12 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66B8C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:51:52 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id k16so14530748ios.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:51:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kTt2FiDL6jKQ9igVcItFQGplYD9kRNczxqmA7iZyLec=;
-        b=gMYMyF8xXR6YyM1Z1ZZZP1i6QZwNpTkUy9te3CL1Gi5sSyEohhxKoI1G7+Ky8Jo2Rp
-         P/hgqo+/iZD1JqtJ6h9pWNvL0OFIIjKGn11knm1c7NVUGiQxFpybt5/SoAzx+5FM0nKe
-         XSIwd7YCn7W8psxOVLwPq8nMDjJNDO6tilezs/YGIQI48Lnsjr/xrmfh7x/x2GSQPF7i
-         jx5w83ML6Y93JBQ2K+IaOHgFK0is81rYAuFPGE04HtsjdQu1laiqsDCAduSY6DXO+TFs
-         6GqBjbJunfoJ3tvy3WSsz0s8WMvIMOUGqMUidv6jkN/nw2RWGU7bWX7ibc+vQ9PjG1oW
-         5z4g==
+        bh=AD8S0PqRt8X2YnzWzcDJwsZW0R7LolCe/WFdyfKGfyk=;
+        b=aWy/rO3R605QtBWXxqhKXcOIv+kLNJlvLjJsFqzQ3CmFBp0qEFCoM2XAqW1gdRzpY2
+         stjWL8mY3lLwNoEmzXZRxyku0NAUnIjLY2NjnVX6MtBZwtKXa5YagGCfzpVyDop6HOrO
+         q4sHNqlV2gA6I5MRWTN/jKkZu34zF3+Ik4LeChg4vWA+2Y39GNRpMRUMJH7UNhKIHlrA
+         JsJyug0IHVqCuBEvF3YO0IbE66oU7RXVTasZldLU8sPxIuKdTDvFtATG5PUMpl10j7Z1
+         hHq/DRgxfBDUn1QeqX+rmXcyITXpOXVpkn0H2gHi+bnMZEpQFw40VfiR8w95Qlf85sKN
+         KxAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kTt2FiDL6jKQ9igVcItFQGplYD9kRNczxqmA7iZyLec=;
-        b=dwXFLe9wNuBGlAHIcrWfI+CB7nQJ8/oenlxoteniWd7bW9wKf1Txceoch0M11bL9yv
-         hgigNF52zHe+Ym9xQbnR6af0R2+JQgZDx+tvDKOVE2hrALYj3ijT9XqovisqfYo2lcUY
-         W/DWKb0VUdkcPxPs7kFc0dp4UB3YPwkoaI70oK09Dhx1R+RgngZsINTJW3dbtBMTS+wv
-         NwRZTcjJi4yOoMl2taLjnjT2MYnBTO8CRhDbbJEJJ6x1GDU02vj98gL0j6uVW8vRcC0b
-         Dlo69pzpUwy2UGLw1awJbPAxuNxyO+Q53mIdv7plA53v9B2VACxmrR8c66OfjbCrpzDI
-         aMkA==
-X-Gm-Message-State: AOAM5317pX/F4Wq39QRYW0TRTmlsHtN2fDz6KAIhBptfb0XZKdW1gAsx
-        rPV2tMtsF6Dr1lIy0HkrT2zJ5HvxGj4BtRVCBrzsnQ==
-X-Google-Smtp-Source: ABdhPJwe90hZ9J1kloXU7jdOjRgtGJojwAt07kMzSrx8/hbwmcpx8Zrj4eB4T4bkQGA0Sm+6lw03cJIxkobG3qqh9kw=
-X-Received: by 2002:a05:6e02:13ec:: with SMTP id w12mr1436148ilj.285.1621461004204;
- Wed, 19 May 2021 14:50:04 -0700 (PDT)
+        bh=AD8S0PqRt8X2YnzWzcDJwsZW0R7LolCe/WFdyfKGfyk=;
+        b=uAMYCOyoDW5NPv1tGuBo8nrkQM0F5uBYzGXz23S5Rf7BeDnNotKRuycOPQUm9k/KcY
+         Eu3ldxmMk+5LU5j3BunzjO4jtLgYxm50qHR3ZlYESRjW4ggDUqYlFTY8MsUI5S42+ygu
+         keRTPUqypAFZmQs1iHYVerflVt5aE81tou47ivsrWE5sGEnc4G+tBp9xhtcEamnwLF6y
+         OZRxaH+yFaiRlJBydLXfH5pauuYLFISOPXWPrpATkGepaL6EUPwRL1woOuEtUbj/Lyrc
+         8fkM2iJk2bx2bUFvVAzrTCnadWqhjHKGq4SNYiFv1pX7z9iRzN3ELBxUVBzDUhNJBj0Z
+         +peg==
+X-Gm-Message-State: AOAM533/vMDrwfHYChOrVkjKCAN48B1BfClDeJWzzSaoVjkO8cvczW4d
+        lJYZuMRzgAev0x9OARoQfJ0bFERCjdfQ0aHjNnAJOQ==
+X-Google-Smtp-Source: ABdhPJwQ/2kUTShiGx6TGIHaO461D4Z/lIu9p2sC3GCPcycwt4PJ/6HPCNbnNp2z40yoOOuAG80DXCuMwXS5/5oEx1Q=
+X-Received: by 2002:a05:6638:124b:: with SMTP id o11mr1610166jas.4.1621461111941;
+ Wed, 19 May 2021 14:51:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210519200339.829146-1-axelrasmussen@google.com> <20210519200339.829146-4-axelrasmussen@google.com>
-In-Reply-To: <20210519200339.829146-4-axelrasmussen@google.com>
+References: <20210519200339.829146-1-axelrasmussen@google.com> <20210519200339.829146-5-axelrasmussen@google.com>
+In-Reply-To: <20210519200339.829146-5-axelrasmussen@google.com>
 From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 19 May 2021 14:49:53 -0700
-Message-ID: <CANgfPd_WV+8bAHucE=81eFTEEPv5Q-2ZjQ_beKhZyQnt4PX57Q@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] KVM: selftests: print a message when skipping
- KVM tests
+Date:   Wed, 19 May 2021 14:51:41 -0700
+Message-ID: <CANgfPd_X7YWubJENyb5pSLjUUmUzgqcwpL2GHjyePrrQFs0pyg@mail.gmail.com>
+Subject: Re: [PATCH v2 04/10] KVM: selftests: compute correct demand paging size
 To:     Axel Rasmussen <axelrasmussen@google.com>
 Cc:     Aaron Lewis <aaronlewis@google.com>,
         Alexander Graf <graf@amazon.com>,
@@ -74,40 +73,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, May 19, 2021 at 1:03 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
 >
-> Previously, if this check failed, we'd just exit quietly with no output.
-> This can be confusing, so print out a short message indicating why the
-> test is being skipped.
+> This is a preparatory commit needed before we can use different kinds of
+> backing pages for guest memory.
+>
+> Previously, we used perf_test_args.host_page_size, which is the host's
+> native page size (commonly 4K). For VM_MEM_SRC_ANONYMOUS this turns out
+> to be okay, but in a follow-up commit we want to allow using different
+> kinds of backing memory.
+>
+> Take VM_MEM_SRC_ANONYMOUS_HUGETLB for example. Without this change, if
+> we used that backing page type, when we issued a UFFDIO_COPY ioctl we'd
+> only do so with 4K, rather than the full 2M of a backing hugepage. In
+> this case, UFFDIO_COPY returns -EINVAL (__mcopy_atomic_hugetlb checks
+> the size).
 >
 > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
 Reviewed-by: Ben Gardon <bgardon@google.com>
 
 > ---
->  tools/testing/selftests/kvm/lib/kvm_util.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  tools/testing/selftests/kvm/demand_paging_test.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 >
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index f05ca919cccb..0d6ddee429b9 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -53,8 +53,10 @@ int kvm_check_cap(long cap)
->         int kvm_fd;
+> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> index 601a1df24dd2..94cf047358d5 100644
+> --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> @@ -40,6 +40,7 @@
 >
->         kvm_fd = open(KVM_DEV_PATH, O_RDONLY);
-> -       if (kvm_fd < 0)
-> +       if (kvm_fd < 0) {
-> +               print_skip("KVM not available, errno: %d", errno);
->                 exit(KSFT_SKIP);
-> +       }
-
-This is a wonderful change. I believe this will only be hit if KVM is
-built as a module and that module has not yet been loaded, so this
-message could also suggest that the user check if the KVM / KVM
-arch/vendor specific module has been loaded.
-
+>  static int nr_vcpus = 1;
+>  static uint64_t guest_percpu_mem_size = DEFAULT_PER_VCPU_MEM_SIZE;
+> +static size_t demand_paging_size;
+>  static char *guest_data_prototype;
 >
->         ret = ioctl(kvm_fd, KVM_CHECK_EXTENSION, cap);
->         TEST_ASSERT(ret != -1, "KVM_CHECK_EXTENSION IOCTL failed,\n"
+>  static void *vcpu_worker(void *data)
+> @@ -85,7 +86,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+>
+>         copy.src = (uint64_t)guest_data_prototype;
+>         copy.dst = addr;
+> -       copy.len = perf_test_args.host_page_size;
+> +       copy.len = demand_paging_size;
+>         copy.mode = 0;
+>
+>         clock_gettime(CLOCK_MONOTONIC, &start);
+> @@ -102,7 +103,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+>         PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
+>                        timespec_to_ns(ts_diff));
+>         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
+> -                      perf_test_args.host_page_size, addr, tid);
+> +                      demand_paging_size, addr, tid);
+>
+>         return 0;
+>  }
+> @@ -261,10 +262,12 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>
+>         perf_test_args.wr_fract = 1;
+>
+> -       guest_data_prototype = malloc(perf_test_args.host_page_size);
+> +       demand_paging_size = get_backing_src_pagesz(VM_MEM_SRC_ANONYMOUS);
+> +
+> +       guest_data_prototype = malloc(demand_paging_size);
+>         TEST_ASSERT(guest_data_prototype,
+>                     "Failed to allocate buffer for guest data pattern");
+> -       memset(guest_data_prototype, 0xAB, perf_test_args.host_page_size);
+> +       memset(guest_data_prototype, 0xAB, demand_paging_size);
+>
+>         vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
+>         TEST_ASSERT(vcpu_threads, "Memory allocation failed");
 > --
 > 2.31.1.751.gd2f1c929bd-goog
 >
