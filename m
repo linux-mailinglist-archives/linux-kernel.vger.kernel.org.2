@@ -2,166 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A08938866E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CD8388677
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237420AbhESFLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhESFLs (ORCPT
+        id S238348AbhESFXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:23:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62526 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229598AbhESFXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:11:48 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B86C061761
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:10:27 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id i17so12484640wrq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=euUNmfdra3fw2767TBroA6MJ91YZAjLv3gkDPjRiyS4=;
-        b=Zti7viSDHb0VTJftg3BPlW8ti+9QLDu9Xm7Yuq0CCaDfNVh6YVDf4YCUULjLTTGsGi
-         R1DWHJ/IGB4/xZji/+Kmxkn7Ut0h48a9LUaXZmEXtV3uecqh2Ave3mBhZ1iW+y/ghhC3
-         RjxfEb9aAI9waxiOiWBz+x9Xwn7Pg4bShrDhbcYUNn8YaTPlRC/G9POIPXYeG5kZzDoi
-         e7tyARNKu5qPxBQ8uEIfyMeHaT+AUN/COoiK8qgqUbRyv/mpwUwAzDfeBOd0AxYbDcXo
-         H6W9ppBsMXoACuavlTXfTcptSGl+tmDqfqQOLWDjAPSKjqVzn0MvKJPY/dYqbWhh1eqG
-         iS2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=euUNmfdra3fw2767TBroA6MJ91YZAjLv3gkDPjRiyS4=;
-        b=i4mWHaESQGaWY1abktPL/+Tjzzqqc3HGPxZ7kyKwZgLrwDPLz0ji9CW1UUXJTLa5Qh
-         clZNF6KwzZuwSxeNxyEXCiqpAYcN8tlYGKBL89yXskhgOmow36hOr9pcn1XdJDrL3wPp
-         Fkyarif7ISoISUwwEQBB1LJt5Dn87H3Cc8fFNB6wymY5v/IzffNKLr4rvpP7ffTH+NLc
-         mqSp1vHe+WsTehMN5VzaC1Hi7Kbw3fw1zhj+Ss1X3P8qZ2DMDmB3FullxKi5VMg5nVQD
-         6xoS2VbPeUubJNeayMdI8h3O8XgOoO0/OqAN2rnO0Wk9PgnK5rtbmPozKZwKKBjHO+0x
-         ZmdQ==
-X-Gm-Message-State: AOAM530h/R5OKGJuLlK9LWPtFGY7YC0Y3PqVk+2jm0q6xysqkcg54YEg
-        Dg9FhwmjI7eJ/Z+ewWprO5vZMDkuOARf0H1L7LKNng==
-X-Google-Smtp-Source: ABdhPJwa9Izmvx4WFIO6ko25EtfKdaY6XBgGq19Jcwm/KSSHQqpdTPyHjpR2GyhcJfmWcB9WwWyGSBKXyEBwweCxC3w=
-X-Received: by 2002:adf:ffd2:: with SMTP id x18mr12055209wrs.144.1621401025109;
- Tue, 18 May 2021 22:10:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210519033553.1110536-1-anup.patel@wdc.com> <YKSa48cejI1Lax+/@kroah.com>
-In-Reply-To: <YKSa48cejI1Lax+/@kroah.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 19 May 2021 10:40:13 +0530
-Message-ID: <CAAhSdy18qySXbUdrEsUe-KtbtuEoYrys0TcmsV2UkEA2=7UQzw@mail.gmail.com>
-Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-doc@vger.kernel.org,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 19 May 2021 01:23:03 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14J54Iv3034025;
+        Wed, 19 May 2021 01:21:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=5tT4m8BqaOgTlUX17i6bD4OUl0fgHC5fsgEB2sipC8k=;
+ b=rT2R0ZhOwwNyVUH4JEKgyH7jMrYuBo87l3wdJjyID58sFBdYx9MYTkrsEpFYtfsnx/rH
+ tw2c6LTf2W37FWmRpz22/0Nz1N1Nc1K31a/j3RYL0Q5ftbF9j3xmeK1RDkT3DII/m+Er
+ TmS/kkEQX7bI3QOx5nuDbFXxvr+5CaHdTU0Llewo3CNJglkmJrbytZOybId26oqXZmKv
+ h4ww8l6i4G+GujmOKkaXLcKbN7s4eIbzB+Wlif4WhEs+bOhlsXQNREvTJiqJyiN9TqTv
+ sGEzyE+6zm3BBE6KrYPHVyDWnXXOF5sASd+5pAuETDhl1sTm0GsoEb9jF5F65yh8JSbT 3w== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38mu7fsm14-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 01:21:17 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14J5IVt2014696;
+        Wed, 19 May 2021 05:20:25 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma03wdc.us.ibm.com with ESMTP id 38j5x9cg31-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 05:20:25 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14J5KOF322479180
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 05:20:24 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9063C6A05F;
+        Wed, 19 May 2021 05:20:24 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63CF46A05A;
+        Wed, 19 May 2021 05:20:23 +0000 (GMT)
+Received: from [9.65.90.43] (unknown [9.65.90.43])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Wed, 19 May 2021 05:20:23 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH net-next] ibmveth: fix kobj_to_dev.cocci warnings
+From:   Lijun Pan <ljp@linux.vnet.ibm.com>
+In-Reply-To: <20210519022849.12752-1-yuehaibing@huawei.com>
+Date:   Wed, 19 May 2021 00:20:22 -0500
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        Cristobal Forno <cforno12@linux.ibm.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, dwilder@us.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <276F94E7-2DFB-47EF-91F7-6CDA69A4009F@linux.vnet.ibm.com>
+References: <20210519022849.12752-1-yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kOdqaP7ZGXu33XGnyGSMNvikZLFvFqgD
+X-Proofpoint-ORIG-GUID: kOdqaP7ZGXu33XGnyGSMNvikZLFvFqgD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-19_01:2021-05-18,2021-05-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105190038
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:28 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, May 19, 2021 at 09:05:35AM +0530, Anup Patel wrote:
-> > From: Anup Patel <anup@brainfault.org>
-> >
-> > This series adds initial KVM RISC-V support. Currently, we are able to boot
-> > Linux on RV64/RV32 Guest with multiple VCPUs.
-> >
-> > Key aspects of KVM RISC-V added by this series are:
-> > 1. No RISC-V specific KVM IOCTL
-> > 2. Minimal possible KVM world-switch which touches only GPRs and few CSRs
-> > 3. Both RV64 and RV32 host supported
-> > 4. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
-> > 5. KVM ONE_REG interface for VCPU register access from user-space
-> > 6. PLIC emulation is done in user-space
-> > 7. Timer and IPI emuation is done in-kernel
-> > 8. Both Sv39x4 and Sv48x4 supported for RV64 host
-> > 9. MMU notifiers supported
-> > 10. Generic dirtylog supported
-> > 11. FP lazy save/restore supported
-> > 12. SBI v0.1 emulation for KVM Guest available
-> > 13. Forward unhandled SBI calls to KVM userspace
-> > 14. Hugepage support for Guest/VM
-> > 15. IOEVENTFD support for Vhost
-> >
-> > Here's a brief TODO list which we will work upon after this series:
-> > 1. SBI v0.2 emulation in-kernel
-> > 2. SBI v0.2 hart state management emulation in-kernel
-> > 3. In-kernel PLIC emulation
-> > 4. ..... and more .....
-> >
-> > This series can be found in riscv_kvm_v18 branch at:
-> > https//github.com/avpatel/linux.git
-> >
-> > Our work-in-progress KVMTOOL RISC-V port can be found in riscv_v7 branch
-> > at: https//github.com/avpatel/kvmtool.git
-> >
-> > The QEMU RISC-V hypervisor emulation is done by Alistair and is available
-> > in master branch at: https://git.qemu.org/git/qemu.git
-> >
-> > To play around with KVM RISC-V, refer KVM RISC-V wiki at:
-> > https://github.com/kvm-riscv/howto/wiki
-> > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-QEMU
-> > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-Spike
-> >
-> > Changes since v17:
-> >  - Rebased on Linux-5.13-rc2
-> >  - Moved to new KVM MMU notifier APIs
-> >  - Removed redundant kvm_arch_vcpu_uninit()
-> >  - Moved KVM RISC-V sources to drivers/staging for compliance with
-> >    Linux RISC-V patch acceptance policy
->
-> What is this new "patch acceptance policy" and what does it have to do
-> with drivers/staging?
 
-The Linux RISC-V patch acceptance policy is here:
-Documentation/riscv/patch-acceptance.rst
 
-As-per this policy, the Linux RISC-V maintainers will only accept
-patches for frozen/ratified RISC-V extensions. Basically, it links the
-Linux RISC-V development process with the RISC-V foundation
-process which is painfully slow.
+> On May 18, 2021, at 9:28 PM, YueHaibing <yuehaibing@huawei.com> wrote:
+>=20
+> Use kobj_to_dev() instead of container_of()
+>=20
+> Generated by: scripts/coccinelle/api/kobj_to_dev.cocci
+>=20
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
 
-The KVM RISC-V patches have been sitting on the lists for almost
-2 years now. The requirements for freezing RISC-V H-extension
-(hypervisor extension) keeps changing and we are not clear when
-it will be frozen. In fact, quite a few people have already implemented
-RISC-V H-extension in hardware as well and KVM RISC-V works
-on real HW as well.
+Acked-by: Lijun Pan <lijunp213@gmail.com>
 
-Rationale of moving KVM RISC-V to drivers/staging is to continue
-KVM RISC-V development without breaking the Linux RISC-V patch
-acceptance policy until RISC-V H-extension is frozen. Once, RISC-V
-H-extension is frozen we will move KVM RISC-V back to arch/riscv
-(like other architectures).
 
->
-> What does drivers/staging/ have to do with this at all?  Did anyone ask
-> the staging maintainer about this?
+> drivers/net/ethernet/ibm/ibmveth.c | 3 +--
+> 1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/ibm/ibmveth.c =
+b/drivers/net/ethernet/ibm/ibmveth.c
+> index 7fea9ae60f13..bc67a7ee872b 100644
+> --- a/drivers/net/ethernet/ibm/ibmveth.c
+> +++ b/drivers/net/ethernet/ibm/ibmveth.c
+> @@ -1799,8 +1799,7 @@ static ssize_t veth_pool_store(struct kobject =
+*kobj, struct attribute *attr,
+> 	struct ibmveth_buff_pool *pool =3D container_of(kobj,
+> 						      struct =
+ibmveth_buff_pool,
+> 						      kobj);
+> -	struct net_device *netdev =3D dev_get_drvdata(
+> -	    container_of(kobj->parent, struct device, kobj));
+> +	struct net_device *netdev =3D =
+dev_get_drvdata(kobj_to_dev(kobj->parent));
+> 	struct ibmveth_adapter *adapter =3D netdev_priv(netdev);
+> 	long value =3D simple_strtol(buf, NULL, 10);
+> 	long rc;
+> --=20
+> 2.17.1
+>=20
 
-Yes, Paolo (KVM maintainer) suggested having KVM RISC-V under
-drivers/staging until RISC-V H-extension is frozen and continue the
-KVM RISC-V development from there.
-
->
-> Not cool, and not something I'm about to take without some very good
-> reasons...
-
-Regards,
-Anup
