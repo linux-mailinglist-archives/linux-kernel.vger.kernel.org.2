@@ -2,94 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC4D388F61
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B338388F63
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344107AbhESNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhESNo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:44:27 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C63C06175F;
-        Wed, 19 May 2021 06:43:07 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4FlYwS5pxlzQk2f;
-        Wed, 19 May 2021 15:43:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:message-id:from:from:date:date:received; s=
-        mail20150812; t=1621431781; bh=ttyp6Kk2R+cQvSwEK9gUMWNVesKTXEtq6
-        3Ecj0gG628=; b=jNMbvS5zlIqNhiW7xX59wDM5+pEDaSy3vkRNXVJSnOj+/kekc
-        E7E8h07sptnZ7NZPIUu6i7bh77dQUkOIsLWfn1ZzMo2MSyXEcT4iBGj8W6yT4BaG
-        ceGn6Q0h9qWEPIHsm484xkTe5acPGPqgYeeh7PV7xeH7V60Qky2je/tMtZryCDcU
-        fZHEHKSlyL0iqd5nHjuNIgcusT//JZ/gd/IqmmoUPVExivS7dKSd5J8fjoebw0O3
-        nHNczq3hQPi0XxpaxvcXbTldZCTIic58ko6f5v98ZEIrmXwqNkTTpUF4gmjmxYb9
-        4t6EFuT7//o3IqOiXNRAWgg2omgYG8ssMZKvg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1621431782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mI0z5gEoJ9LMp+eu981apD+8Gp8qyGV4NzJEqk+besc=;
-        b=TjVwTDPL5dDMJ5wC+6YRth3e8Z2VMI78iHIqTIpVwc37kYfAn1XNjlV0flUBs149tuZVBg
-        BsZhUcH7XjqdMDnUxGmTp3tAUYyZJH/o+VSBdTmgfBKhxXalTAvzpaTLfbOtnmQO0qCeiq
-        Tsv5986777QOorS/PPiyTcMl993+lX+pYe6BWpVGPImpV9M4uv0ai4hSJMCCXftiKF/rvu
-        mU92HivnLQAXnIuCQIgMS2eFkdXNDU8385zg3TMFLqwJxMhswDtqPhRk+hRl4BK/1sA3vk
-        PJS6lsuZAXFpFFrcY5pmZe6+397wswo8HobouB2fEPR5c09LbWLsxHkznlBDjg==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
-        with ESMTP id CL_zuBgb40is; Wed, 19 May 2021 15:43:01 +0200 (CEST)
-Date:   Wed, 19 May 2021 15:43:01 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "almaz.alexandrovich@paragon-software.com" 
-        <almaz.alexandrovich@paragon-software.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>
-Message-ID: <212218590.13874.1621431781547@office.mailbox.org>
-Subject: [PATCH] fs/ntfs3: make ntfs3 compile with clang-12
+        id S1353748AbhESNoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:44:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229531AbhESNow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:44:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2D536112F;
+        Wed, 19 May 2021 13:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621431812;
+        bh=e5Ou1Wf1l1cSB41OpuLSI6u4W4jDM0imYmUHvUByYGw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t2o8PCwrAxkbSZcGIZ4nqGRnmeOBTVIZHInA+q5Ty+iTSSpld1yiEpQklSiqKkXCT
+         dVgXF3d2k3VhE8qG3fUacGvbigSIme6TNweMEu+WERkFidcAc95lrCjc0724e8HbYU
+         ijzdfSK6kREcldvO8VRS8svhqKUwK9xXsoX2hvlJh/zoNxxoOftOQfoppjmCQdvLsN
+         EOcspGldbMo1Bexw6TwuMTAixcJK1h9PTOfyM8pxx2m3DRbTZSMGR9sWA/oywHRArL
+         mmWsi4xMlvvIdtx4Ko5kWhfBBWGUPZfZ5Whke3Gwyyh7u0EQ0y+O2jl8pbzJaPB/i5
+         4bK1o8MbqgB2w==
+Received: by mail-ej1-f41.google.com with SMTP id k14so16568836eji.2;
+        Wed, 19 May 2021 06:43:32 -0700 (PDT)
+X-Gm-Message-State: AOAM531KetzHXH6ZIfD4075XCkbhFufL5bDizS86SQoeFQvEIFzrDFVc
+        rqADVbc/zex9wqVR17p2+YZdX1QbluX0ZkP9YQ==
+X-Google-Smtp-Source: ABdhPJxH/lGICnQpzeFewbWAeIwW5++saiskkNC6RUL2H4yoNw1jdP+qO7cZEQ2+dyj9ooceOrwNhG0W2iKlZ4Iahmw=
+X-Received: by 2002:a17:907:78cd:: with SMTP id kv13mr177415ejc.360.1621431811389;
+ Wed, 19 May 2021 06:43:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -0.58 / 15.00 / 15.00
-X-Rspamd-Queue-Id: CD0EB1822
-X-Rspamd-UID: aeddd9
+References: <20210513151800.1059435-1-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210513151800.1059435-1-dmitry.baryshkov@linaro.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 19 May 2021 08:43:19 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLtaJ43Y5ySEK5OraScigEO_OD3TMoy6DYFREK7kh=uFg@mail.gmail.com>
+Message-ID: <CAL_JsqLtaJ43Y5ySEK5OraScigEO_OD3TMoy6DYFREK7kh=uFg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: allow checking single device tree file
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the ccflags in the fs/ntfs3 Makefile are for gcc only.
-Replace them with clang alternatives if necessary.
+On Thu, May 13, 2021 at 10:18 AM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> Add support for testing single device tree file by running
+> 'make tree.dt.yaml', e.g. 'make ARCH=arm64 qcom/qrb5165-rb5.dt.yaml'.
+> This looks useful for checking idividual changes to dts files.
 
-Signed-off-by: Tor Vic <torvic9@mailbox.org>
----
- fs/ntfs3/Makefile | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletions(-)
+typo
 
-diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-index b06a06cc0..dae144033 100644
---- a/fs/ntfs3/Makefile
-+++ b/fs/ntfs3/Makefile
-@@ -4,7 +4,9 @@
- #
- 
- # to check robot warnings
--ccflags-y += -Wunused-but-set-variable -Wold-style-declaration -Wint-to-pointer-cast
-+ccflags-y += -Wint-to-pointer-cast \
-+	$(call cc-option,-Wunused-but-set-variable,-Wunused-const-variable) \
-+	$(call cc-option,-Wold-style-declaration,-Wout-of-line-declaration)
- 
- obj-$(CONFIG_NTFS3_FS) += ntfs3.o
- 
--- 
-2.31.1
+I'd rather not expose .*.dt.yaml as I want to make checking not
+optional and I have some plans of integrating the schema checks into
+dtc which would eliminate .dt.yaml files. Instead, I think %.dtb
+targets should run the checks always.
+
+>
+> Cc: Rob Herring <robh@kernel.org>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  Makefile | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Makefile b/Makefile
+> index 53d09c414635..b36a3d48eb68 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1383,6 +1383,10 @@ ifneq ($(dtstree),)
+>  %.dtbo: include/config/kernel.release scripts_dtc
+>         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+>
+> +%.dt.yaml: include/config/kernel.release scripts_dtc
+> +       $(Q)$(MAKE) $(build)=Documentation/devicetree/bindings Documentation/devicetree/bindings/processed-schema.json
+
+I don't think we should expose this detail (processed-schema.json) to
+the top-level makefile. This will be built if 'dt_binding_check' is a
+dependency with CHECK_DTBS=y set.
+
+> +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@ CHECK_DTBS=y
+
+CHECK_DTBS here doesn't work. It has to be exported.
+
+So here's my modified patch (%.dtbo should probably be included too,
+but I'm not yet sure how well the schema checks will work on them):
+
+8<---------------------------------------------------------
+diff --git a/Makefile b/Makefile
+index 53d09c414635..a1e246956d65 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1377,12 +1377,18 @@ endif
+
+ ifneq ($(dtstree),)
+
+-%.dtb: include/config/kernel.release scripts_dtc
++%.dtb: %.dt.yaml
+        $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+
+ %.dtbo: include/config/kernel.release scripts_dtc
+        $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+
++ifneq ($(filter %.dtb, $(MAKECMDGOALS)),)
++export CHECK_DTBS=y
++endif
++%.dt.yaml: dt_binding_check include/config/kernel.release scripts_dtc
++       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
++
