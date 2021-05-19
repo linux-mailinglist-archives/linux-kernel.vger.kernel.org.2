@@ -2,248 +2,569 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810A73892B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F00A3892AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354903AbhESPdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241453AbhESPdb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:33:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32121C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ou5uvPPkq3LxjAbOzolZRT6zjPS/wj+utxll/2Chyf8=; b=BulcEXuXvt/icavt7ywcpRMpW2
-        SLHuhaLFlDRbyjrTUT3E7/D3xBwNu7H92/5MYvBaKs8tL4CVb40P+TTR/12TkIvEvFE4COMMtz5k0
-        1K1IFsMgAJMDUh9AKsPKMn18Z8T2jNN/BOi+OjMcgvcxJwv26CqH8ZriZR344lrxRJZGv3FFd+FLY
-        Rxmkf4HRNM4bgOWrbIFdU8JAZct0bos6hivW1PpArHL2kggQpMcB8Ph0gt4rqbK2EV/Ik3kuvo+BP
-        7mRLPU+ndjkFKK9u9wGA/QF/J5WHi1JqhXpYEEUScm1qNYHnFw6Q+eWeeK3QM3AhEoMILTEyHfKDM
-        Pq/ShtbA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljOAA-00F4yn-88; Wed, 19 May 2021 15:31:29 +0000
-Date:   Wed, 19 May 2021 16:31:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        lkft-triage@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Oliver Sang <oliver.sang@intel.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>, x86@kernel.org
-Subject: Re: BUG: unable to handle page fault for address - EIP:
- __kmap_local_page_prot
-Message-ID: <YKUvPhhvudOv6aP3@casper.infradead.org>
-References: <CA+G9fYtAbUGO9oAtL8eZ9Pu-_a1wx3y8Tk=pDO3Fh3dEwoRGWg@mail.gmail.com>
+        id S1354275AbhESPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:32:42 -0400
+Received: from mga04.intel.com ([192.55.52.120]:54243 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241696AbhESPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:32:41 -0400
+IronPort-SDR: U0Nkv0uaQ4gzOrPo2cF6yKmcqQxwkHta7oWRLjr7fTQqjI2UD81aCFgaC0xPT8IM9NriK3l/fG
+ h7QQMyUQRGWA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="199050838"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="199050838"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:31:21 -0700
+IronPort-SDR: LjiY8rlHPVYBwQnPaFSypEvmCp3gjxuP/r2ataxaEPxnWLGI5HFBaa5QJXINBGYoQ64ySZDlM6
+ Gcy3IZ1sSHjA==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="474670949"
+Received: from mconrado-mobl1.amr.corp.intel.com (HELO [10.209.83.57]) ([10.209.83.57])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:31:20 -0700
+Subject: Re: [RFC v2-fix-v1 1/1] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <3a7c0bba-cc43-e4ba-f7fe-43c8627c2fc2@intel.com>
+ <20210519055842.2048957-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <568d2929-f366-e3be-96f9-0bfa91991ef2@intel.com>
+Date:   Wed, 19 May 2021 08:31:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYtAbUGO9oAtL8eZ9Pu-_a1wx3y8Tk=pDO3Fh3dEwoRGWg@mail.gmail.com>
+In-Reply-To: <20210519055842.2048957-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/18/21 10:58 PM, Kuppuswamy Sathyanarayanan wrote:
+> Guests communicate with VMMs with hypercalls. Historically, these
+> are implemented using instructions that are known to cause VMEXITs
+> like vmcall, vmlaunch, etc. However, with TDX, VMEXITs no longer
+> expose guest state to the host.  This prevents the old hypercall
+> mechanisms from working. So to communicate with VMM, TDX
+> specification defines a new instruction called "tdcall".
+> 
+> In TDX based VM, since VMM is an untrusted entity, a intermediary
 
-I think this is an i386 specific issue.  It shouldn't even have PUDs,
-right?  This is a CONFIG_HIGHMEM4G=y kernel, so it uses PGDs, PMDs and
-PTEs.
+"In a TDX-based VM..."
 
-On Wed, May 19, 2021 at 08:38:19PM +0530, Naresh Kamboju wrote:
-> While running LTP mm test suite on i386 kernel the following warning and BUG
-> reported on linux next 5.13.0-rc2-next-20210519.
+> layer (TDX module) exists between host and guest to facilitate the
+> secure communication. And "tdcall" instruction  is used by the guest
+> to request services from TDX module. And a variant of "tdcall"
+> instruction (with specific arguments as defined by GHCI) is used by
+> the guest to request services from  VMM via the TDX module.
+
+I'd just say:
+
+	TDX guests communicate with the TDX module and with the VMM
+	using a new instruction: TDCALL.
+
+The rest of that is noise.
+
+> Implement common helper functions to communicate with the TDX Module
+> and VMM (using TDCALL instruction).
+>    
+> __tdx_hypercall()    - function can be used to request services from
+> 		       the VMM.
+> __tdx_module_call()  - function can be used to communicate with the
+> 		       TDX Module.
+
+s/function can be used to//
+
+> Also define two additional wrappers, tdx_hypercall() and
+> tdx_hypercall_out_r11() to cover common use cases of
+> __tdx_hypercall() function. Since each use case of
+> __tdx_module_call() is different, we don't need such wrappers for it.
 > 
-> The warning is not regression, We have been noticing these warnings often on
-> i386 but kernel BUG: looks to be a new crash.
+> Implement __tdx_module_call() and __tdx_hypercall() helper functions
+> in assembly.
 > 
->  ------------[ cut here ]------------
-> [  696.876399] WARNING: CPU: 1 PID: 24493 at mm/mremap.c:314
-> move_page_tables+0x18d/0x6e0
-> [  696.884319] Modules linked in: x86_pkg_temp_thermal
-> 05.c:78: TPASS: [  696.889246] CPU: 1 PID: 24493 Comm: true Not
-> tainted 5.13.0-rc2-next-20210519 #1
-> [  696.898018] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> 2.2 05/23/2018
-> [  696.905462] EIP: move_page_tables+0x18d/0x6e0
-> still alive.
-> ks[  696.909865] Code: 40 20 8b 40 24 89 c1 01 d9 0f 84 36 04 00 00 8b
-> 55 08 c1 ea 16 8d 04 90 85 c0 0f 84 e5 02 00 00 80 7d bb 00 0f 85 23
-> 04 00 00 <0f> 0b 80 7d bb 00 0f 84 f7 fe ff ff 8b 45 c8 e8 1f fe ff ff
-> e9 ea
-> [  696.929986] EAX: c28a5bf8 EBX: 00000bfc ECX: c28a5bfc EDX: 000002fe
-> [  696.936323] ESI: c0000000 EDI: bfc00000 EBP: c86ffe14 ESP: c86ffda8
-> m05.c:78: TPASS:[  696.942614] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS:
-> 0068 EFLAGS: 00010246
-> [  696.950777] CR0: 80050033 CR2: b7e13b50 CR3: 028a5000 CR4: 003506d0
-> [  696.957043] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [  696.963310] DR6: fffe0ff0 DR7: 00000400
-> [  696.967148] Call Trace:
-> [  696.969594]  setup_arg_pages+0x28c/0x380
->  still alive.
-> k[  696.973563]  ? get_random_u32+0x35/0x80
-> [  696.978779]  ? trace_hardirqs_off+0x2f/0xc0
-> sm05.c:78: TPASS[  696.983006]  ? trace_hardirqs_on+0x2d/0xc0
-> [  696.988484]  ? _raw_spin_unlock_irqrestore+0x18/0x20
-> [  696.993467]  ? get_random_u32+0x4e/0x80
-> [  696.997385]  load_elf_binary+0x31e/0x11c0
-> [  697.001452]  ? security_file_permission+0x97/0x170
-> [  697.006277]  ? kernel_read+0x31/0x40
-> [  697.009907]  bprm_execve+0x233/0x5f0
-> [  697.013541]  do_execveat_common+0x129/0x150
-> [  697.017725]  __ia32_sys_execve+0x28/0x30
-> [  697.021650]  __do_fast_syscall_32+0x4c/0xc0
-> [  697.025835]  do_fast_syscall_32+0x29/0x60
-> [  697.029850]  do_SYSENTER_32+0x15/0x20
-> [  697.033516]  entry_SYSENTER_32+0x98/0xe7
-> [  697.037441] EIP: 0xb7f12549
-> [  697.040243] Code: Unable to access opcode bytes at RIP 0xb7f1251f.
-> : still alive.
-> [  697.046462] EAX: ffffffda EBX: bfd72c00 ECX: 0806b460 EDX: bfd72e54
-> [  697.054106] ESI: 0805af94 EDI: bfd72c09 EBP: bfd72cc8 ESP: bfd72bd8
-> [  697.060425] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 007b EFLAGS: 00000296
-> [  697.067210] ---[ end trace 7b789866f6f48389 ]---
-> [  697.071832] ------------[ cut here ]------------
+> Rationale behind choosing to use assembly over inline assembly are,
 > 
-> ...
-> ksm05.c:78: TPASS: still alive.
+> 1. Since the number of lines of instructions (with comments) in
+> __tdx_hypercall() implementation is over 70, using inline assembly
+> to implement it will make it hard to read.
+>    
+> 2. Also, since many registers (R8-R15, R[A-D]X)) will be used in
+> TDCALL operation, if all these registers are included in in-line
+> assembly constraints, some of the older compilers may not
+> be able to meet this requirement.
+
+Was this "older compiler" argument really the reason?
+
+> Also, just like syscalls, not all TDVMCALL/TDCALLs use cases need to
+> use the same set of argument registers. The implementation here picks
+> the current worst-case scenario for TDCALL (4 registers). For TDCALLs
+> with fewer than 4 arguments, there will end up being a few superfluous
+> (cheap) instructions.  But, this approach maximizes code reuse. The
+> same argument applies to __tdx_hypercall() function as well.
 > 
-> [  699.637408] BUG: unable to handle page fault for address: f752b000
-> [  699.644091] #PF: supervisor read access in kernel mode
-> [  699.649222] #PF: error_code(0x0000) - not-present page
-> [  699.654357] *pde = 01106067 *pte = 00000000
-> [  699.658666] Oops: 0000 [#1] SMP
-> [  699.661806] CPU: 1 PID: 24636 Comm: true Tainted: G        W
->  5.13.0-rc2-next-20210519 #1
-> [  699.670583] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> 2.2 05/23/2018
-> [  699.677966] EIP: __kmap_local_page_prot+0x6/0x40
-> [  699.682614] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-> 8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-> 26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-> ff ff
-> [  699.701371] EAX: f752b000 EBX: 00000004 ECX: bf400000 EDX: 00000163
-> [  699.707640] ESI: f752b000 EDI: c86ffecc EBP: c86ffe60 ESP: c86ffe00
-> [  699.713897] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-> [  699.720676] CR0: 80050033 CR2: f752b000 CR3: 028a5000 CR4: 003506d0
-> [  699.726934] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [  699.733197] DR6: fffe0ff0 DR7: 00000400
-> [  699.737027] Call Trace:
-> [  699.739474]  ? unmap_page_range+0x154/0x690
-> [  699.743658]  unmap_single_vma+0x61/0xc0
-> [  699.747489]  unmap_vmas+0x6f/0xf0
-> [  699.750800]  exit_mmap+0x71/0x1c0
-> [  699.754110]  mmput+0x57/0x100
-> [  699.757075]  do_exit+0x2da/0x9e0
-> [  699.760306]  ? syscall_trace_enter.isra.0+0x148/0x1b0
-> [  699.765372]  do_group_exit+0x36/0x90
-> [  699.768955]  __ia32_sys_exit_group+0x15/0x20
-> [  699.773220]  __do_fast_syscall_32+0x4c/0xc0
-> [  699.777405]  do_fast_syscall_32+0x29/0x60
-> [  699.781409]  do_SYSENTER_32+0x15/0x20
-> [  699.785066]  entry_SYSENTER_32+0x98/0xe7
-> [  699.788984] EIP: 0x1ff58549
-> [  699.791774] Code: Unable to access opcode bytes at RIP 0x1ff5851f.
-> [  699.797945] EAX: ffffffda EBX: 00000000 ECX: 00000001 EDX: 00000000
-> [  699.804202] ESI: 1ff471f0 EDI: 1ff493fc EBP: 00000000 ESP: bf1ff3cc
-> [  699.810458] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 007b EFLAGS: 00000296
-> [  699.817236] Modules linked in: x86_pkg_temp_thermal
-> [  699.822115] CR2: 00000000f752b000
-> [  699.825426] ---[ end trace 7b789866f6f4838b ]---
-> [  699.830036] EIP: __kmap_local_page_prot+0x6/0x40
-> [  699.834655] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-> 8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-> 26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-> ff ff
-> [  699.853401] EAX: f752b000 EBX: 00000004 ECX: bf400000 EDX: 00000163
-> [  699.859658] ESI: f752b000 EDI: c86ffecc EBP: c86ffe60 ESP: c86ffe00
-> [  699.865915] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-> [  699.872690] CR0: 80050033 CR2: f752b000 CR3: 028a5000 CR4: 003506d0
-> [  699.878948] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [  699.885207] DR6: fffe0ff0 DR7: 00000400
-> [  699.889036] Fixing recursive fault but reboot is needed!
+> Current implementation of __tdx_hypercall() includes error handling
+> (ud2 on failure case) in assembly function instead of doing it in C
+> wrapper function. The reason behind this choice is, when adding support
+> for in/out instructions (refer to patch titled "x86/tdx: Handle port
+> I/O" in this series), we use alternative_io() to substitute in/out
+> instruction with  __tdx_hypercall() calls. So use of C wrappers is not
+> trivial in this case because the input parameters will be in the wrong
+> registers and it's tricky to include proper buffer code to make this
+> happen.
 > 
-> ksm05.c:78: TPASS: still alive.
-> ..
-> [ 1599.651922] BUG: unable to handle page fault for address: f7d64000
-> [ 1599.658959] #PF: supervisor read access in kernel mode
-> [ 1599.664088] #PF: error_code(0x0000) - not-present page
-> [ 1599.669219] *pde = 00000000
-> [ 1599.672097] Oops: 0000 [#2] SMP
-> [ 1599.675236] CPU: 3 PID: 24646 Comm: thp02 Tainted: G      D W
->   5.13.0-rc2-next-20210519 #1
-> [ 1599.684102] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> 2.2 05/23/2018
-> [ 1599.691485] EIP: __kmap_local_page_prot+0x6/0x40
-> [ 1599.696102] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-> 8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-> 26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-> ff ff
-> [ 1599.714840] EAX: f7d64000 EBX: b5800000 ECX: b5800000 EDX: 00000163
-> [ 1599.721097] ESI: f7d64000 EDI: c1a5decc EBP: c1a5de60 ESP: c1a5de00
-> [ 1599.727354] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-> [ 1599.734132] CR0: 80050033 CR2: f7d64000 CR3: 19fce000 CR4: 003506d0
-> [ 1599.740387] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [ 1599.746646] DR6: fffe0ff0 DR7: 00000400
-> [ 1599.750477] Call Trace:
-> [ 1599.752919]  ? unmap_page_range+0x154/0x690
-> [ 1599.757096]  unmap_single_vma+0x61/0xc0
-> [ 1599.760929]  unmap_vmas+0x6f/0xf0
-> [ 1599.764246]  exit_mmap+0x71/0x1c0
-> [ 1599.767558]  mmput+0x57/0x100
-> [ 1599.770531]  do_exit+0x2da/0x9e0
-> [ 1599.773763]  ? syscall_trace_enter.isra.0+0x148/0x1b0
-> [ 1599.778815]  do_group_exit+0x36/0x90
-> [ 1599.782393]  __ia32_sys_exit_group+0x15/0x20
-> [ 1599.786659]  __do_fast_syscall_32+0x4c/0xc0
-> [ 1599.790845]  do_fast_syscall_32+0x29/0x60
-> [ 1599.794857]  do_SYSENTER_32+0x15/0x20
-> [ 1599.798513]  entry_SYSENTER_32+0x98/0xe7
-> [ 1599.802441] EIP: 0xb7fa6549
-> [ 1599.805237] Code: Unable to access opcode bytes at RIP 0xb7fa651f.
-> [ 1599.811408] EAX: ffffffda EBX: 00000002 ECX: 00000000 EDX: bfff8660
-> [ 1599.817665] ESI: b7f761f0 EDI: b7f783fc EBP: 00000000 ESP: bfff866c
-> [ 1599.823922] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 007b EFLAGS: 00000296
-> [ 1599.830702] Modules linked in: x86_pkg_temp_thermal
-> [ 1599.835579] CR2: 00000000f7d64000
-> [ 1599.838890] ---[ end trace 7b789866f6f4838c ]---
-> [ 1599.843499] EIP: __kmap_local_page_prot+0x6/0x40
-> [ 1599.848111] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-> 8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-> 26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-> ff ff
-> [ 1599.866849] EAX: f752b000 EBX: 00000004 ECX: bf400000 EDX: 00000163
-> [ 1599.873114] ESI: f752b000 EDI: c86ffecc EBP: c86ffe60 ESP: c86ffe00
-> [ 1599.879369] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-> [ 1599.886148] CR0: 80050033 CR2: f7d64000 CR3: 19fce000 CR4: 003506d0
-> [ 1599.892404] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [ 1599.898661] DR6: fffe0ff0 DR7: 00000400
-> [ 1599.902493] Fixing recursive fault but reboot is needed!
-> O: mremap (0xb6c00000-0xb7bff000) to (0xb5800000-0xb67ff000)
-> thp02.c:84: TBROK: mremap bug
+> For registers used by TDCALL instruction, please check TDX GHCI
+> specification, sec 2.4 and 3.
 > 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
 > 
-> Links:
-> https://lkft.validation.linaro.org/scheduler/job/2742412#L8838
-> 
-> Step to reproduce:
-> ------------------
-> # cd /opt/ltp
-> # ./runltp -f mm
-> 
-> metadata:
->   git branch: master
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git commit: 9f24705effef8c3b9eca00d70594ef7e0364a6da
->   git describe: next-20210519
->   make_kernelversion: 5.13.0-rc2
->   kernel-config: https://builds.tuxbuild.com/1sk6bnicwdtrZQO2wqfaMdsZO5z/config
-> 
-> -- 
-> Linaro LKFT
-> https://lkft.linaro.org
-> 
+> Originally-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+For what it's worth, that changelog really starts to ramble after the
+"rationale" part.
+
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> index 69af72d08d3d..211b9d66b1b1 100644
+> --- a/arch/x86/include/asm/tdx.h
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -8,12 +8,50 @@
+>  #ifdef CONFIG_INTEL_TDX_GUEST
+>  
+>  #include <asm/cpufeature.h>
+> +#include <linux/types.h>
+> +
+> +/*
+> + * Used in __tdx_module_call() helper function to gather the
+> + * output registers values of TDCALL instruction when requesting
+
+There's something wrong in this sentence.  This needs to be "output
+register values" or "output regisers' values".
+
+> + * services from the TDX module. This is software only structure
+> + * and not related to TDX module/VMM.
+> + */
+> +struct tdx_module_output {
+> +	u64 rcx;
+> +	u64 rdx;
+> +	u64 r8;
+> +	u64 r9;
+> +	u64 r10;
+> +	u64 r11;
+> +};
+> +
+> +/*
+> + * Used in __tdx_hypercall() helper function to gather the
+> + * output registers values of TDCALL instruction when requesting
+> + * services from the VMM. This is software only structure
+> + * and not related to TDX module/VMM.
+> + */
+> +struct tdx_hypercall_output {
+> +	u64 r11;
+> +	u64 r12;
+> +	u64 r13;
+> +	u64 r14;
+> +	u64 r15;
+> +};
+>  
+>  /* Common API to check TDX support in decompression and common kernel code. */
+>  bool is_tdx_guest(void);
+>  
+>  void __init tdx_early_init(void);
+>  
+> +/* Helper function used to communicate with the TDX module */
+> +u64 __tdx_module_call(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
+> +		      struct tdx_module_output *out);
+> +
+> +/* Helper function used to request services from VMM */
+> +u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
+> +		    struct tdx_hypercall_output *out);
+> +
+>  #else // !CONFIG_INTEL_TDX_GUEST
+>  
+>  static inline bool is_tdx_guest(void)
+> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+> index ea111bf50691..7966c10ea8d1 100644
+> --- a/arch/x86/kernel/Makefile
+> +++ b/arch/x86/kernel/Makefile
+> @@ -127,7 +127,7 @@ obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
+>  obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
+>  
+>  obj-$(CONFIG_JAILHOUSE_GUEST)	+= jailhouse.o
+> -obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx.o
+> +obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdcall.o tdx.o
+>  
+>  obj-$(CONFIG_EISA)		+= eisa.o
+>  obj-$(CONFIG_PCSPKR_PLATFORM)	+= pcspeaker.o
+> diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+> index 60b9f42ce3c1..e6b3bb983992 100644
+> --- a/arch/x86/kernel/asm-offsets.c
+> +++ b/arch/x86/kernel/asm-offsets.c
+> @@ -23,6 +23,10 @@
+>  #include <xen/interface/xen.h>
+>  #endif
+>  
+> +#ifdef CONFIG_INTEL_TDX_GUEST
+> +#include <asm/tdx.h>
+> +#endif
+> +
+>  #ifdef CONFIG_X86_32
+>  # include "asm-offsets_32.c"
+>  #else
+> @@ -75,6 +79,24 @@ static void __used common(void)
+>  	OFFSET(XEN_vcpu_info_arch_cr2, vcpu_info, arch.cr2);
+>  #endif
+>  
+> +#ifdef CONFIG_INTEL_TDX_GUEST
+> +	BLANK();
+> +	/* Offset for fields in tdcall_output */
+> +	OFFSET(TDX_MODULE_rcx, tdx_module_output, rcx);
+> +	OFFSET(TDX_MODULE_rdx, tdx_module_output, rdx);
+> +	OFFSET(TDX_MODULE_r8,  tdx_module_output, r8);
+> +	OFFSET(TDX_MODULE_r9,  tdx_module_output, r9);
+> +	OFFSET(TDX_MODULE_r10, tdx_module_output, r10);
+> +	OFFSET(TDX_MODULE_r11, tdx_module_output, r11);
+> +
+> +	/* Offset for fields in tdvmcall_output */
+> +	OFFSET(TDX_HYPERCALL_r11, tdx_hypercall_output, r11);
+> +	OFFSET(TDX_HYPERCALL_r12, tdx_hypercall_output, r12);
+> +	OFFSET(TDX_HYPERCALL_r13, tdx_hypercall_output, r13);
+> +	OFFSET(TDX_HYPERCALL_r14, tdx_hypercall_output, r14);
+> +	OFFSET(TDX_HYPERCALL_r15, tdx_hypercall_output, r15);
+> +#endif
+> +
+>  	BLANK();
+>  	OFFSET(BP_scratch, boot_params, scratch);
+>  	OFFSET(BP_secure_boot, boot_params, secure_boot);
+> diff --git a/arch/x86/kernel/tdcall.S b/arch/x86/kernel/tdcall.S
+> new file mode 100644
+> index 000000000000..a67c595e4169
+> --- /dev/null
+> +++ b/arch/x86/kernel/tdcall.S
+> @@ -0,0 +1,222 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#include <asm/asm-offsets.h>
+> +#include <asm/asm.h>
+> +#include <asm/frame.h>
+> +#include <asm/unwind_hints.h>
+> +
+> +#include <linux/linkage.h>
+> +#include <linux/bits.h>
+> +
+> +#define TDG_R10		BIT(10)
+> +#define TDG_R11		BIT(11)
+> +#define TDG_R12		BIT(12)
+> +#define TDG_R13		BIT(13)
+> +#define TDG_R14		BIT(14)
+> +#define TDG_R15		BIT(15)
+> +
+> +/*
+> + * Expose registers R10-R15 to VMM. It is passed via RCX register
+> + * to the TDX Module, which will be used by the TDX module to
+> + * identify the list of registers exposed to VMM. Each bit in this
+> + * mask represents a register ID. You can find the bit field details
+> + * in TDX GHCI specification.
+> + */
+> +#define TDVMCALL_EXPOSE_REGS_MASK	( TDG_R10 | TDG_R11 | \
+> +					  TDG_R12 | TDG_R13 | \
+> +					  TDG_R14 | TDG_R15 )
+> +
+> +/*
+> + * TDX guests use the TDCALL instruction to make requests to the
+> + * TDX module and hypercalls to the VMM. It is supported in
+> + * Binutils >= 2.36.
+> + */
+> +#define tdcall .byte 0x66,0x0f,0x01,0xcc
+> +
+> +/*
+> + * __tdx_module_call()  - Helper function used by TDX guests to request
+> + * services from the TDX module (does not include VMM services).
+> + *
+> + * This function serves as a wrapper to move user call arguments to the
+> + * correct registers as specified by "tdcall" ABI and shares it with the
+> + * TDX module.  And if the "tdcall" operation is successful and a valid
+
+It's frequently taught to never start a sentence with "And" in formal
+writing.  You use it fairly frequently.  Simply removing it increase
+readability, IMNHO.
+
+> + * "struct tdx_module_output" pointer is available (in "out" argument),
+> + * output from the TDX module is saved to the memory specified in the
+> + * "out" pointer. Also the status of the "tdcall" operation is returned
+> + * back to the user as a function return value.
+> + *
+> + * @fn  (RDI)		- TDCALL Leaf ID,    moved to RAX
+> + * @rcx (RSI)		- Input parameter 1, moved to RCX
+> + * @rdx (RDX)		- Input parameter 2, moved to RDX
+> + * @r8  (RCX)		- Input parameter 3, moved to R8
+> + * @r9  (R8)		- Input parameter 4, moved to R9
+> + *
+> + * @out (R9)		- struct tdx_module_output pointer
+> + *			  stored temporarily in R12 (not
+> + * 			  shared with the TDX module)
+> + *
+> + * Return status of tdcall via RAX.
+> + *
+> + * NOTE: This function should not be used for TDX hypercall
+> + *       use cases.
+> + */
+> +SYM_FUNC_START(__tdx_module_call)
+> +	FRAME_BEGIN
+> +
+> +	/*
+> +	 * R12 will be used as temporary storage for
+> +	 * struct tdx_module_output pointer. You can
+> +	 * find struct tdx_module_output details in
+> +	 * arch/x86/include/asm/tdx.h. Also note that
+> +	 * registers R12-R15 are not used by TDCALL
+> +	 * services supported by this helper function.
+> +	 */
+> +	push %r12	/* Callee saved, so preserve it */
+> +	mov %r9,  %r12 	/* Move output pointer to R12 */
+> +
+> +	/* Mangle function call ABI into TDCALL ABI: */
+> +	mov %rdi, %rax	/* Move TDCALL Leaf ID to RAX */
+> +	mov %r8,  %r9	/* Move input 4 to R9 */
+> +	mov %rcx, %r8	/* Move input 3 to R8 */
+> +	mov %rsi, %rcx	/* Move input 1 to RCX */
+> +	/* Leave input param 2 in RDX */
+> +
+> +	tdcall
+> +
+> +	/* Check for TDCALL success: 0 - Successful, otherwise failed */
+> +	test %rax, %rax
+> +	jnz 1f
+> +
+> +	/* Check for TDCALL output struct != NULL */
+> +	test %r12, %r12
+> +	jz 1f
+> +
+> +	/* Copy TDCALL result registers to output struct: */
+> +	movq %rcx, TDX_MODULE_rcx(%r12)
+> +	movq %rdx, TDX_MODULE_rdx(%r12)
+> +	movq %r8,  TDX_MODULE_r8(%r12)
+> +	movq %r9,  TDX_MODULE_r9(%r12)
+> +	movq %r10, TDX_MODULE_r10(%r12)
+> +	movq %r11, TDX_MODULE_r11(%r12)
+> +1:
+> +	pop %r12 /* Restore the state of R12 register */
+> +
+> +	FRAME_END
+> +	ret
+> +SYM_FUNC_END(__tdx_module_call)
+> +
+> +/*
+> + * do_tdx_hypercall()  - Helper function used by TDX guests to request
+> + * services from the VMM. All requests are made via the TDX module
+> + * using "TDCALL" instruction.
+> + *
+> + * This function is created to contain common between vendor specific
+
+This sentence seems wrong.  Common... what?
+
+> + * and standard type tdx hypercalls. So the caller of this function had
+
+Please capitalize "tdx" consistently.
+
+> + * to set the TDVMCALL type in the R10 register before calling it.
+
+> + * This function serves as a wrapper to move user call arguments to the
+> + * correct registers as specified by "tdcall" ABI and shares it with VMM
+> + * via the TDX module. And if the "tdcall" operation is successful and a
+> + * valid "struct tdx_hypercall_output" pointer is available (in "out"
+> + * argument), output from the VMM is saved to the memory specified in the
+> + * "out" pointer. 
+> + *
+> + * @fn  (RDI)		- TDVMCALL function, moved to R11
+> + * @r12 (RSI)		- Input parameter 1, moved to R12
+> + * @r13 (RDX)		- Input parameter 2, moved to R13
+> + * @r14 (RCX)		- Input parameter 3, moved to R14
+> + * @r15 (R8)		- Input parameter 4, moved to R15
+> + *
+> + * @out (R9)		- struct tdx_hypercall_output pointer
+> + *
+> + * On successful completion, return TDX hypercall error code.
+> + * If the "tdcall" operation fails, panic.
+> + *
+> + */
+
+This sounds scary.  Can you try to differentate a hypercall failure from
+a "tdcall" failure?
+
+Actually, I think that's done OK below.  Just remove this mention of
+panic().
+
+> +SYM_FUNC_START_LOCAL(do_tdx_hypercall)
+> +	/* Save non-volatile GPRs that are exposed to the VMM. */
+> +	push %r15
+> +	push %r14
+> +	push %r13
+> +	push %r12
+> +
+> +	/* Leave hypercall output pointer in R9, it's not clobbered by VMM */
+> +
+> +	/* Mangle function call ABI into TDCALL ABI: */
+> +	xor %eax, %eax /* Move TDCALL leaf ID (TDVMCALL (0)) to RAX */
+> +	mov %rdi, %r11 /* Move TDVMCALL function id to R11 */
+> +	mov %rsi, %r12 /* Move input 1 to R12 */
+> +	mov %rdx, %r13 /* Move input 2 to R13 */
+> +	mov %rcx, %r14 /* Move input 1 to R14 */
+> +	mov %r8,  %r15 /* Move input 1 to R15 */
+> +	/* Caller of do_tdx_hypercall() will set TDVMCALL type in R10 */
+> +
+> +	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
+> +
+> +	tdcall
+> +
+> +	/*
+> +	 * Check for TDCALL success: 0 - Successful, otherwise failed.
+> +	 * If failed, there is an issue with TDX Module which is fatal
+> +	 * for the guest. So panic. Also note that RAX is controlled
+> +	 * only by the TDX module and not exposed to VMM.
+> +	 */
+
+I'd probably just say:
+
+	/*
+	 * Non-zero RAX values indicate a failure of TDCALL itself.
+	 * Panic for those.  This value is unrelated to the hypercall
+	 * result in R10.
+	 */
+
+> +	test %rax, %rax
+> +	jnz 2f
+> +
+> +	/* Move hypercall error code to RAX to return to user */
+> +	mov %r10, %rax
+> +
+> +	/* Check for hypercall success: 0 - Successful, otherwise failed */
+> +	test %rax, %rax
+> +	jnz 1f
+> +
+> +	/* Check for hypercall output struct != NULL */
+
+This is a great example of a comment that's not using its space widely.
+ If you're reading this, you *KNOW* that it's checking for NULL.  But
+what does that *MEAN*?
+
+Wh not:
+
+	/* Check if caller provided an output struct */
+
+> +	test %r9, %r9
+> +	jz 1f
+> +
+> +	/* Copy hypercall result registers to output struct: */
+> +	movq %r11, TDX_HYPERCALL_r11(%r9)
+> +	movq %r12, TDX_HYPERCALL_r12(%r9)
+> +	movq %r13, TDX_HYPERCALL_r13(%r9)
+> +	movq %r14, TDX_HYPERCALL_r14(%r9)
+> +	movq %r15, TDX_HYPERCALL_r15(%r9)
+> +1:
+> +	/*
+> +	 * Zero out registers exposed to the VMM to avoid
+> +	 * speculative execution with VMM-controlled values.
+> +	 */
+
+You can even say:
+
+	This needs to include all registers present in
+	TDVMCALL_EXPOSE_REGS_MASK
+
+> +	xor %r10d, %r10d
+> +	xor %r11d, %r11d
+> +	xor %r12d, %r12d
+> +	xor %r13d, %r13d
+> +	xor %r14d, %r14d
+> +	xor %r15d, %r15d
+> +
+> +	/* Restore non-volatile GPRs that are exposed to the VMM. */
+> +	pop %r12
+> +	pop %r13
+> +	pop %r14
+> +	pop %r15
+> +
+> +	ret
+> +2:
+> +	ud2
+> +SYM_FUNC_END(do_tdx_hypercall)
+> +
+> +/*
+> + * Helper function for for standard type of TDVMCALLs. This assembly
+> + * wrapper lets us reuse do_tdvmcall() for standard type of hypercalls
+> + * (R10 is set as zero).
+> + */
+
+Remember, no "us", "we" in changelogs or comments.
+
+> +SYM_FUNC_START(__tdx_hypercall)
+> +	FRAME_BEGIN
+> +	/*
+> +	 * R10 is not part of the function call ABI, but it is a part
+> +	 * of the TDVMCALL ABI. So set it 0 for standard type TDVMCALL
+> +	 * before making call to the do_tdx_hypercall().
+> +	 */
+> +	xor %r10, %r10
+> +	call do_tdx_hypercall
+> +	FRAME_END
+> +	retq
+> +SYM_FUNC_END(__tdx_hypercall)
+
+The rest of it is fine.  Probably just one more rev to beef up the
+comments and changelogs.
