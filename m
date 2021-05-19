@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C63388B12
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE288388B18
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345029AbhESJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:52:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhESJv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:51:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1702F610A1;
-        Wed, 19 May 2021 09:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621417839;
-        bh=Zts2inRHfLvIsBj9OZbQasOMtlHs9BYNosUCPvJ1T9c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lYx5pQzSxMqlaV8n0fR1kTWwv5EhEQefeSz2rziMjzcxQNLbWn4jD+hWN/8EWHLWd
-         n5bl0IcnAsu8Mv8wbXUMWLT+JJdge/Yr18/iJzNyl3vRj65MEme1AvMqc3GSyd7l2d
-         Y8on9YDWJdxB7D8K+gQF3BCa7J/kVa+WUNW1p/ks=
-Date:   Wed, 19 May 2021 11:50:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hriday Hegde <hridayhegde1999@gmail.com>
-Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
- 'const' keyword
-Message-ID: <YKTfbdFhvM7fbpet@kroah.com>
-References: <20210519081958.7223-1-hridayhegde1999@gmail.com>
- <YKTM8KmXI8bXUSqp@kroah.com>
- <0ddb894f-f66f-f31b-ef8a-0646e0a99b9f@gmail.com>
+        id S1346393AbhESJwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:52:22 -0400
+Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:41936 "EHLO
+        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241573AbhESJwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:52:11 -0400
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+        id 3896BF40627; Wed, 19 May 2021 11:50:46 +0200 (CEST)
+From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
+Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        Ash Logan <ash@heyquark.com>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.ne@posteo.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] nvmem: nintendo-otp: Add new driver for the Wii and Wii U OTP
+Date:   Wed, 19 May 2021 11:50:40 +0200
+Message-Id: <20210519095044.4109-1-linkmauve@linkmauve.fr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ddb894f-f66f-f31b-ef8a-0646e0a99b9f@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+The OTP is a read-only memory area which contains various keys and
+signatures used to decrypt, encrypt or verify various pieces of storage.
 
-http://daringfireball.net/2007/07/on_top
+Its size depends on the console, it is 128 bytes on the Wii and
+1024 bytes on the Wii U (split into eight 128 bytes banks).
 
-On Wed, May 19, 2021 at 03:00:08PM +0530, Hriday Hegde wrote:
-> I am not really sure how to do that and how to reflect it in the patch i followed what was taught in the Beginners course and it does not mention building. I know i need to test it out but is running 'patch -p1 < x.patch what i need to do?
+It can be used directly by writing into one register and reading from
+the other one, without any additional synchronisation.
 
-That does not build the code you changed, right?
+This series has only been tested on the Wii U so far, using the
+downstream 4.19 branch from linux-wiiu[1], but it should also work on
+the Wii on mainline.
 
-I'm sure whatever course you took, it did reference the fact that you
-need to ensure that your change actually works properly by the very
-least being able to be compiled correctly.  Please go over those
-instructions again.
+[1] https://gitlab.com/linux-wiiu/linux-wiiu
 
-good luck!
+Changes since v1:
+- Fixed the commit messages so they can be accepted by other email
+  servers, sorry about that.
 
-greg k-h
+Emmanuel Gil Peyrot (4):
+  nvmem: nintendo-otp: Add new driver for the Wii and Wii U OTP
+  dt-bindings: nintendo-otp: Document the Wii and Wii U OTP support
+  powerpc: wii.dts: Expose the OTP on this platform
+  powerpc: wii_defconfig: Enable OTP by default
+
+ .../bindings/nvmem/nintendo-otp.txt           |  14 +++
+ arch/powerpc/boot/dts/wii.dts                 |   5 +
+ arch/powerpc/configs/wii_defconfig            |   1 +
+ drivers/nvmem/Kconfig                         |  11 ++
+ drivers/nvmem/Makefile                        |   2 +
+ drivers/nvmem/nintendo-otp.c                  | 115 ++++++++++++++++++
+ 6 files changed, 148 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/nintendo-otp.txt
+ create mode 100644 drivers/nvmem/nintendo-otp.c
+
+-- 
+2.31.1
+
