@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48486389A05
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFF0389A07
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhESXpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:45:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
+        id S230145AbhESXpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhESXpp (ORCPT
+        with ESMTP id S230062AbhESXps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:45:45 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36247C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:23 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id z1so13750262ils.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:23 -0700 (PDT)
+        Wed, 19 May 2021 19:45:48 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D76C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:27 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id k15so10553780pgb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LCdgtGfkQfQ2xiEsdMvS0PIoc20H6B3EmKM9hdGtoGQ=;
-        b=Um191sUE8wviv5tV9+5ho7cueuYtAhf0iSGEfDRq70ZIBtOptQz7MQwiB1w8l8lrln
-         D3fif6v0nAKzElKZQAY0k44tLS44i5DqsO49Qia5UMJjMy/IIBGZgwARBu0AL1zQupUC
-         dM24ubmHCCNlb9fOG/em2zKeCq29v4ihL7f+jUTZbPLKaQNhjyxOLJ2gJGlCRG6GXtCv
-         jnWjZpXiQJ7X9im9oKHoVQBVg6ih7wbBbEz7FJjw8Hu2y5KRFcR+ntx0WXQ7km3JJVkg
-         WBWNeMDE3epGIJ7iijLxVP0sYF9ihDnt2nYWpqjLB6KQqSF9wJdo72qS2VPDtqktuKJw
-         ONmg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nZuNfGfiKyXKRGv3YKg4ctxDIT6bECxQ0f3JGFBP+Jc=;
+        b=Sgx3LcjYq6ETYEDY47hsYdaRrCnGN5F+wvbCKhFTmXMWw0u20UAbMuFGPG9jqIUIDU
+         P7xy6mX2t46w8BN7ogPNyFnieYyRV1A5wNHWtckVTaOalBCdY2k7i8vqSzUaeIOv1HJm
+         SdhnOlnT85Ku+HNVywQC6S0Q0CSpGbSV0jji0h4u0H9ZZUbw2Oc2PaGvP3QqVTLp8v0a
+         ndubfFE0z+CIhyCbHHksip7jVF0c4qS1bEXgLcb/8gbO/zaMys9Od89i9374vQ0nkfkK
+         fpPfQX8A8bK+ARVFMCi1+CZ1hnIlV089tUlC1ZxUt4UrYtf3X/fOG88O+/RFSOPkzxu2
+         UgYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LCdgtGfkQfQ2xiEsdMvS0PIoc20H6B3EmKM9hdGtoGQ=;
-        b=QFekSrmRTXzbpyW1wwWrJDBRsl5a1uQyLufKgJY17urCvw5dRjbn8adLFUHUzix+fo
-         Rkz6+CDk5k4LzV2yS+QJWMUk/PuYzs/f9Trr9tsbDCZJFJWBohDTTxf/5oAXtnH9U9VD
-         SEMZuz1H60hjK7kvv/sJeE5HYvGUBLwYrpDeswVQgcVxjDQOS+tiTBNdmHy1Al+ucEj+
-         Zw+sU4X26disS8I1OmNelNoTjSggpFx+//qHClXL/JSeW12B8nbqBkyC7r9+ZnGeusb2
-         D1pwrTQIHcQ3LHqh+uj3AMvHHwbDW1TUMOHWW5taxKrZizatB/08beN82IWQ9ON/Wtyn
-         Lsqw==
-X-Gm-Message-State: AOAM530jiTeZDF38P9IXarnB+6+EiZgR+cjMQ1TcdPUa+/8VYE3Lp+5Y
-        yIhZ5Pu/FCXlRhqlEzM7CJsKwrDmym4Bk7EV
-X-Google-Smtp-Source: ABdhPJyzmaFrXpsB+XS2iA9xRJwgZtwlZrDE5XUSfCUA20y1LRpb0dlfMD6zoNDtyFyg4mfxtlw0NQ==
-X-Received: by 2002:a92:130a:: with SMTP id 10mr1824777ilt.159.1621467862588;
-        Wed, 19 May 2021 16:44:22 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id x13sm945415ilo.11.2021.05.19.16.44.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nZuNfGfiKyXKRGv3YKg4ctxDIT6bECxQ0f3JGFBP+Jc=;
+        b=OnbJ3Ra3VtKbdo/OozVmodeW8WrwnpCp59vvOGkCxDfNPP+OOx3fiGZAeCx8XtlE4p
+         5TFhMt7QQL51ReyfGIxf42DBolb5WQO8XUmlzn+F7hnN7l6xWbs+HjF/P3cGmfAAIfKf
+         N82q6SUdYHsZfySMTnMIFhNURUsWOgptsPe/ph1m4kn8un0o+F7lwhHCyejlE7Dwl26M
+         bnj0MK4XS7kjYpVZUJysQfsSUdwoaMwbpT1xulIXKT8In3EVDCLRvRQqcR/WUiKAM6UN
+         rtrVGI8Stv6Ah3/LQ+wcgmTsg5lQBLs3icuxU3OdRJeBZvTwEZr8OjKTr8LMLhNbLp7R
+         i7mw==
+X-Gm-Message-State: AOAM532r1NVcdjy0ASbhdAx7sVNfimt1LvBqWl/bX257R31huTNztmcA
+        M0ILGNw5pI25G2u3dh8ApBES5g==
+X-Google-Smtp-Source: ABdhPJxDvzU0EhqoO2ANcJc4uzxhDerfang0h/wnVFWCCixnjLqJ1xzPwQO0cV2EkX0CMe3MbW7o5Q==
+X-Received: by 2002:a63:ba03:: with SMTP id k3mr1612845pgf.81.1621467867151;
+        Wed, 19 May 2021 16:44:27 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id v14sm364605pgl.86.2021.05.19.16.44.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 16:44:22 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] remoteproc: use freezable workqueue for crash notifications
-Date:   Wed, 19 May 2021 18:44:18 -0500
-Message-Id: <20210519234418.1196387-2-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210519234418.1196387-1-elder@linaro.org>
-References: <20210519234418.1196387-1-elder@linaro.org>
+        Wed, 19 May 2021 16:44:26 -0700 (PDT)
+Date:   Wed, 19 May 2021 23:44:22 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Ashish Kalra <Ashish.Kalra@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        thomas.lendacky@amd.com, the arch/x86 maintainers <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        srutherford@google.com, venu.busireddy@oracle.com,
+        brijesh.singh@amd.com
+Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
+ status is changed
+Message-ID: <YKWi1iR4weMzpeC2@google.com>
+References: <cover.1619193043.git.ashish.kalra@amd.com>
+ <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
+ <YJvU+RAvetAPT2XY@zn.tnic>
+ <86701a5e-87b5-4e73-9b7a-557d8c855f89@www.fastmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <86701a5e-87b5-4e73-9b7a-557d8c855f89@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a remoteproc has crashed, rproc_report_crash() is called to
-handle whatever recovery is desired.  This can happen at almost any
-time, often triggered by an interrupt, though it can also be
-initiated by a write to debugfs file remoteproc/remoteproc*/crash.
+On Wed, May 19, 2021, Andy Lutomirski wrote:
+> On Wed, May 12, 2021, at 6:15 AM, Borislav Petkov wrote:
+> > On Fri, Apr 23, 2021 at 03:58:43PM +0000, Ashish Kalra wrote:
+> > > +static inline void notify_page_enc_status_changed(unsigned long pfn,
+> > > +						  int npages, bool enc)
+> > > +{
+> > > +	PVOP_VCALL3(mmu.notify_page_enc_status_changed, pfn, npages, enc);
+> > > +}
+> > 
+> > Now the question is whether something like that is needed for TDX, and,
+> > if so, could it be shared by both.
+> 
+> The TDX MapGPA call can fail, and presumably it will fail if the page is not
+> sufficiently quiescent from the host's perspective.
 
-When a crash is reported, the crash handler worker is scheduled to
-run (rproc_crash_handler_work()).  One thing that worker does is
-call rproc_trigger_recovery(), which calls rproc_stop().  That calls
-the ->stop method for any remoteproc subdevices before making the
-remote processor go offline.
+Barring a guest bug, e.g. requesting a completely non-existent page, MapGPA
+shouldn't fail.  The example in the the GHCI:
 
-The Q6V5 modem remoteproc driver implements an SSR subdevice that
-notifies registered drivers when the modem changes operational state
-(prepare, started, stop/crash, unprepared).  The IPA driver
-registers to receive these notifications.
+  Invalid operand – for example, the GPA may be already mapped as a shared page.
 
-With that as context, I'll now describe the problem.
+makes no sense to me.  An already-mapped page would be an -EBUSY style error,
+not an invalid operand, and IIRC, I explicitly lobbied against allowing the VMM
+to return "try again" precisely because it's impossible for the guest to handle
+in a sane manner.  If the physical page is in a state that requires stalling the
+vCPU, then the VMM is supposed to do exactly that, not punt the problem to the
+guest.
 
-There was a situation in which buggy modem firmware led to a modem
-crash very soon after system (AP) resume had begun.  The crash caused
-a remoteproc SSR crash notification to be sent to the IPA driver.
-The problem was that, although system resume had begun, it had not
-yet completed, and the IPA driver was still in a suspended state.
+Maybe we should get stronger language into the GHCI?
 
-This scenario could happen to any driver that registers for these
-SSR notifications, because they are delivered without knowledge of
-the (suspend) state of registered recipient drivers.
-
-This patch offers a simple fix for this, by having the crash
-handling worker function run on the system freezable workqueue.
-This workqueue does not operate if user space is frozen (for
-suspend).  As a result, the SSR subdevice only delivers its
-crash notification when the system is fully operational (i.e.,
-neither suspended nor in suspend/resume transition).
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/remoteproc/remoteproc_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 39cf44cb08035..6bedf2d2af239 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2724,8 +2724,8 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
- 	dev_err(&rproc->dev, "crash detected in %s: type %s\n",
- 		rproc->name, rproc_crash_to_string(type));
- 
--	/* create a new task to handle the error */
--	schedule_work(&rproc->crash_handler);
-+	/* Have a worker handle the error; ensure system is not suspended */
-+	queue_work(system_freezable_wq, &rproc->crash_handler);
- }
- EXPORT_SYMBOL(rproc_report_crash);
- 
--- 
-2.27.0
-
+> It seems like a mistake to me to have a KVM-specific hypercall for this that
+> cannot cleanly fail.
