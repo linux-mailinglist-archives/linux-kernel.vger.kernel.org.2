@@ -2,141 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A252389992
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B686A389995
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhESXGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:06:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11158 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhESXGK (ORCPT
+        id S229932AbhESXIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhESXII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:06:10 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JN4GCd186042;
-        Wed, 19 May 2021 19:04:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=3oZoJnV+ZwIQFmrVajD07gyKVPdr10L1fejTAMNd/gE=;
- b=Fwan1k7o3TbAS/PIMYVXNHs4lmNEamPgOAfcnUzFErXpa/ZKAuotca71sWvPhhGvGomP
- oAyyo/pMasX2oMCq/M8MPEvAs+EK4+u5QY+rhBaBGCN8DtUfwHyUYzf9iDOHWJKKRZUZ
- +vlSY5q2L6ihxZS5qXKvbV4z3f4b8E1C4xKhH0Wz4sZR0qEfYXk2tYXntYixvJbmZrwl
- V+y1sI95QtboysmBexV5q6h91AqNJwvb3FKom6s94yLfybLzaTaTwJ9NoWF3RzIamSPv
- ug/Rgj8ElZshBF0gq8BWt95cQt5F7wCH9Vh0wfiy8Wwy907iVZN/6ENrjp+XDBbWNHpi 1A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38nbr58bw3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 19:04:49 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JN4Oxg186580;
-        Wed, 19 May 2021 19:04:48 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38nbr58bvt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 19:04:48 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JN3wVu007466;
-        Wed, 19 May 2021 23:04:48 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 38j5x9ugmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 23:04:47 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JN4lre11994078
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 23:04:47 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 10C40AC060;
-        Wed, 19 May 2021 23:04:47 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72455AC05F;
-        Wed, 19 May 2021 23:04:46 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 19 May 2021 23:04:46 +0000 (GMT)
-Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com
-References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
- <20210519153921.804887-3-akrowiak@linux.ibm.com>
- <20210519161610.GO1002214@nvidia.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <8c93c29a-e223-ac9a-5b54-7329587084c9@linux.ibm.com>
-Date:   Wed, 19 May 2021 19:04:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 19 May 2021 19:08:08 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3465C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:06:46 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id a4so2674600ljd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jwk0saAKOxxux1qLucTjT7RVUUV0SrqEWvSDUW8ts5s=;
+        b=b4urCb4opB54xSjva7L2H57Jbu48k96U331P316PVRjEdePqn9pQtL38RCqXXfwwTg
+         M7WaUampS0T6oF+Nh0Y6etHwfIbeFbAMkgd6r2H+CQ1m3Hui7gPuoFuL2yHxdXfZu5/N
+         5aTknzhPLs3O3IGgRg+qiCZb7GOBJh+UNu4kfY8dRzxpcoK2GblbePyp5XxppIGTWVrz
+         2T4Ju9PlCeiLbBVhPIA+CrrL4oYFpLDpOMOfBUy61inJs8Si6oL2ay/jybH4gZX3yCYW
+         yWRlIowiss/ADAI2og7lUtuDea0Ch0rCVZl9kWsqEJDFmxAc6yunyitFB1h96vDobdma
+         LCaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jwk0saAKOxxux1qLucTjT7RVUUV0SrqEWvSDUW8ts5s=;
+        b=cn5ecnHYhwJeG5njAvGQR0kiZK/0pvdnXMV2CdC7hm+JlNWhlZYRrLHeSBKR+mBpiG
+         MO5EjQIG5s35uFw+J7Qbezz4bnUBrJL3t3QCYBWWMBf89q/2Sp/+g6iIfhrLs1jEUki8
+         GUTymZRob9OOnTZgEiZBMP0RuY6BZA9I136FqzEKZmXBD/A0s505W8EX54KZLrC2Tkiz
+         jzZkUhPHW6FqYrvBkcTSUeYKo7UGaI/+AbotqTMnwateUxZE1SmDkGyiJqbRLJ/ALVho
+         6O9hLM4VQ7aIkIo2lSxfuI8POQa0GsPjUq0Np5Rxi75CGDQrYyanUvgGkaKijBQtEv8W
+         0gEA==
+X-Gm-Message-State: AOAM531RqAtTJiJeysRkK2tbSc6utFvIqVKq+if+ivSc6FrfS077yCp/
+        kSEzbPKIE/IAF2rDzsUxo/HWoUX/oQkupPXb+0q0tA==
+X-Google-Smtp-Source: ABdhPJylqqYaO0m7SAS9trWbWvqpRQsbqTFEQBjRkjumnO4TwW0FwkUKpoVF6sDI6C3TqVp06SXSsIya5drVjSk12Pg=
+X-Received: by 2002:a2e:6e13:: with SMTP id j19mr1048011ljc.116.1621465604566;
+ Wed, 19 May 2021 16:06:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210519161610.GO1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: k0r9BPM-w5013gCD3UgRqdiTrOWkMx0w
-X-Proofpoint-ORIG-GUID: ofqubM1AXwJBUkRUos-iPykRpiaaiN9a
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_10:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=940 mlxscore=0
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- malwarescore=0 impostorscore=0 clxscore=1015 spamscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190143
+References: <212218590.13874.1621431781547@office.mailbox.org>
+In-Reply-To: <212218590.13874.1621431781547@office.mailbox.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 19 May 2021 16:06:33 -0700
+Message-ID: <CAKwvOd=Z1ia4ZufDbRsEUkumwkz15TtSb2V1aBT7SN8w86RKYw@mail.gmail.com>
+Subject: Re: [PATCH] fs/ntfs3: make ntfs3 compile with clang-12
+To:     torvic9@mailbox.org
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "almaz.alexandrovich@paragon-software.com" 
+        <almaz.alexandrovich@paragon-software.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/19/21 12:16 PM, Jason Gunthorpe wrote:
-> On Wed, May 19, 2021 at 11:39:21AM -0400, Tony Krowiak wrote:
+On Wed, May 19, 2021 at 6:43 AM <torvic9@mailbox.org> wrote:
 >
->> @@ -287,13 +289,17 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->>   	if (!(vcpu->arch.sie_block->eca & ECA_AIV))
->>   		return -EOPNOTSUPP;
->>   
->> -	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
->> -	mutex_lock(&matrix_dev->lock);
->> +	rcu_read_lock();
->> +	pqap_module_hook = rcu_dereference(vcpu->kvm->arch.crypto.pqap_hook);
->> +	if (!pqap_module_hook) {
->> +		rcu_read_unlock();
->> +		goto set_status;
->> +	}
->>   
->> -	if (!vcpu->kvm->arch.crypto.pqap_hook)
->> -		goto out_unlock;
->> -	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
->> -				   struct ap_matrix_mdev, pqap_hook);
->> +	matrix_mdev = pqap_module_hook->data;
->> +	rcu_read_unlock();
->> +	mutex_lock(&matrix_dev->lock);
-> The matrix_mdev pointer was extracted from the pqap_module_hook,
-> but now there is nothing protecting it since the rcu was dropped and
-> it gets freed in vfio_ap_mdev_remove.
-
-Therein lies the rub. We can't hold the rcu_read_lock across the
-entire time that the interception is being processed because of
-wait conditions in the interception handler. Regardless of whether
-the pointer to the matrix_mdev is retrieved as the container of
-or extracted from the pqap_hook, there is nothing protecting it
-and there appears to be no way to do so using RCU.
+> Some of the ccflags in the fs/ntfs3 Makefile are for gcc only.
+> Replace them with clang alternatives if necessary.
 >
-> And, again, module locking doesn't prevent vfio_ap_mdev_remove() from
-> being called. None of these patches should be combining module locking
-> with RCU.
+> Signed-off-by: Tor Vic <torvic9@mailbox.org>
 
-Is there any other way besides user interaction with the mdev's
-sysfs remove interface for the remove callback to get invoked?
-If I try to remove the mdev using the sysfs interface while the
-mdev fd is still open by the guest, the remove hangs until the
-fd is closed. That being the case, the mdev release callback
-will get invoked prior to the remove callback being invoked which
-renders this whole debate moot. What am I missing here?
+Thanks for the patch. +clang-built-linux; please make sure to cc the
+lists from ./scripts/get_maintainer.pl <patch file>.  It should
+recommend our mailing list of the words clang or llvm appear anywhere
+in the patch file. This helps spread around the review burden.
+
+> ---
+>  fs/ntfs3/Makefile | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletions(-)
+>
+> diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
+> index b06a06cc0..dae144033 100644
+> --- a/fs/ntfs3/Makefile
+> +++ b/fs/ntfs3/Makefile
+> @@ -4,7 +4,9 @@
+>  #
+>
+>  # to check robot warnings
+> -ccflags-y += -Wunused-but-set-variable -Wold-style-declaration -Wint-to-pointer-cast
+> +ccflags-y += -Wint-to-pointer-cast \
+> +       $(call cc-option,-Wunused-but-set-variable,-Wunused-const-variable) \
+> +       $(call cc-option,-Wold-style-declaration,-Wout-of-line-declaration)
+
+I think it would be better to leave off the second parameter of both
+of these, which is the fallback.
 
 >
-> Jason
+>  obj-$(CONFIG_NTFS3_FS) += ntfs3.o
+>
+> --
+> 2.31.1
 
+-- 
+Thanks,
+~Nick Desaulniers
