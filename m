@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8221D38907C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA01E38907E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354151AbhESORp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:17:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41100 "EHLO mail.kernel.org"
+        id S1354190AbhESORw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 May 2021 10:17:52 -0400
+Received: from aposti.net ([89.234.176.197]:60920 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354129AbhESOQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:16:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E70C61363;
-        Wed, 19 May 2021 14:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621433690;
-        bh=rRFc0ILonpYJdVr2TDsn36MJ5mLmgIkTfeLqsV9zN18=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BA6uFoGr6PP2RAvPnkryuSxFifPl/Ue7ySDROfWzKgKQq3GkQKW9rq19ourCeWb3A
-         EVJMLpe52ov/1XQQRzdo/VMfIwHU3UIiKVOc/e0zRsSODYzLbhnNMsgknLdyUdKnJv
-         q4iJsh/+6FOA/smUL0yOT0rWAfbHqgYQ7/UZWFsOziOXkd5aB0b+rDKfw/oX9/s7r+
-         sB+ROfVm0ePvuMaE86faSHvNK6NUa3W5f8n0Znzu2JG7TXH+VqTR9UacVSZVeUQ7XC
-         iIt3V/eHuYSB9QaVMwoY6ly0izSm/TjTkBDb2sD6JCQKoGFKh1fKzEVoVuex31/Pok
-         JvLmqqr6QESjA==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed memory map alignment
-Date:   Wed, 19 May 2021 17:14:36 +0300
-Message-Id: <20210519141436.11961-4-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210519141436.11961-1-rppt@kernel.org>
-References: <20210519141436.11961-1-rppt@kernel.org>
+        id S1354180AbhESOQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 10:16:27 -0400
+Date:   Wed, 19 May 2021 15:14:47 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] arch/mips/boot/compressed/string.c: Fix build warnings
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     zhaoxiao <zhaoxiao@uniontech.com>, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <N8YCTQ.J6CD851ZEGJ73@crapouillou.net>
+In-Reply-To: <8d01b52e-6687-a624-6a76-97b4b71d999e@flygoat.com>
+References: <20210519084405.27364-1-zhaoxiao@uniontech.com>
+        <8d01b52e-6687-a624-6a76-97b4b71d999e@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi,
 
-When unused memory map is freed the preserved part of the memory map is
-extended to match pageblock boundaries because lots of core mm
-functionality relies on homogeneity of the memory map within pageblock
-boundaries.
+Le mer., mai 19 2021 at 22:00:07 +0800, Jiaxun Yang 
+<jiaxun.yang@flygoat.com> a écrit :
+> 
+> 
+> 在 2021/5/19 16:44, zhaoxiao 写道:
+>> Fixes the following W=1 kernel build warning(s):
+>> arch/mips/boot/compressed/string.c:11:7: warning: no previous 
+>> prototype for 'memcpy' [-Wmissing-prototypes]
+>>   void *memcpy(void *dest, const void *src, size_t n)
+>>         ^~~~~~
+>> arch/mips/boot/compressed/string.c:22:7: warning: no previous 
+>> prototype for 'memset' [-Wmissing-prototypes]
+>>   void *memset(void *s, int c, size_t n)
+>>         ^~~~~~
+>> arch/mips/boot/compressed/string.c:32:15: warning: no previous 
+>> prototype for 'memmove' [-Wmissing-prototypes]
+>>   void * __weak memmove(void *dest, const void *src, size_t n)
+> Hi Xiao,
+> 
+> Are you sure you know what you're doing?
+> 
+> They're supposed to be called by external reference in vmlinuz.
+> Marking them static makes no sense.
 
-Since pfn_valid() is used to check whether there is a valid memory map
-entry for a PFN, make it return true also for PFNs that have memory map
-entries even if there is no actual memory populated there.
+I was wondering that too.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/arm/mm/init.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+I suppose including <asm/string.h> should be enough to fix the warnings.
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 9d4744a632c6..6162a070a410 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -125,11 +125,22 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
- int pfn_valid(unsigned long pfn)
- {
- 	phys_addr_t addr = __pfn_to_phys(pfn);
-+	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
- 
- 	if (__phys_to_pfn(addr) != pfn)
- 		return 0;
- 
--	return memblock_is_map_memory(addr);
-+	/*
-+	 * If address less than pageblock_size bytes away from a present
-+	 * memory chunk there still will be a memory map entry for it
-+	 * because we round freed memory map to the pageblock boundaries.
-+	 */
-+	if (memblock_overlaps_region(&memblock.memory,
-+				     ALIGN_DOWN(addr, pageblock_size),
-+				     pageblock_size))
-+		return 1;
-+
-+	return 0;
- }
- EXPORT_SYMBOL(pfn_valid);
- #endif
--- 
-2.28.0
+Cheers,
+-Paul
+
+>>                 ^~~~~~~
+>> 
+>> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+>> ---
+>>   arch/mips/boot/compressed/string.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/arch/mips/boot/compressed/string.c 
+>> b/arch/mips/boot/compressed/string.c
+>> index 0b593b709228..d28996509f91 100644
+>> --- a/arch/mips/boot/compressed/string.c
+>> +++ b/arch/mips/boot/compressed/string.c
+>> @@ -8,7 +8,7 @@
+>>   #include <linux/compiler_attributes.h>
+>>   #include <linux/types.h>
+>>   -void *memcpy(void *dest, const void *src, size_t n)
+>> +static void *memcpy(void *dest, const void *src, size_t n)
+>>   {
+>>   	int i;
+>>   	const char *s = src;
+>> @@ -19,7 +19,7 @@ void *memcpy(void *dest, const void *src, size_t n)
+>>   	return dest;
+>>   }
+>>   -void *memset(void *s, int c, size_t n)
+>> +static void *memset(void *s, int c, size_t n)
+>>   {
+>>   	int i;
+>>   	char *ss = s;
+>> @@ -29,7 +29,7 @@ void *memset(void *s, int c, size_t n)
+>>   	return s;
+>>   }
+>>   -void * __weak memmove(void *dest, const void *src, size_t n)
+>> +static void * __weak memmove(void *dest, const void *src, size_t n)
+>>   {
+>>   	unsigned int i;
+>>   	const char *s = src;
+> 
+
 
