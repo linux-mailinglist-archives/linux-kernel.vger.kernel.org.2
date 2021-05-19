@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484533886A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35033886D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243372AbhESFhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S237558AbhESFnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240379AbhESFft (ORCPT
+        with ESMTP id S242639AbhESFhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:35:49 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4AEC061344
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:34:27 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id v13so6358648ple.9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:34:27 -0700 (PDT)
+        Wed, 19 May 2021 01:37:21 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0B5C06134C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:35:11 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id f22so744117pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:35:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BvCMRttPf/TJqIxdmSUmQm/huvf1KSvWFJ4QU8dhZnk=;
-        b=CV3ss4X4zAfCIAxywB9c5q8IlVUT1MajJkdkgC6I1ntnX9+2t276blstc5JZXkrArs
-         yG6PXbxxCaQ0iHrRO2CTgoomX4v1YH1TnxgirKjmSoB7LwA38t8GXd0yxCpGO+jhizJY
-         PCF7+9P80QUYBMoNxT667Bq5uW5JSS98qs6K+3tU79MJ7ztOWwNCN1aL3lBTvIxK8BRi
-         dFSxrAvLrdEYdHAsJTz4u1zb1PKZXrbXOPwhtXvEdHbVYsqHgiMf1tfFpDKsdjwxFi9U
-         U0rHSGwE7UjiFSnHUbE2LatX+hxDXvouahNkVFQCUdb8bE6cOGB45YagFvOLcXi2IFbm
-         oULA==
+        bh=ZnXQTZd4YFiMxjzLc+WeIPzH5Cugof+bDJeafEZszhA=;
+        b=OWZHAZGSoROkzO2D07Qx34Q2pTN/VV2QPYjA6sI+a5Mzw19NU6NO1dGrrvlKE6jE/A
+         f357jaHElfq3C8/Q5Li3LkEkQdZvPxtRHUJIJ8qR5wwUvrEH6w1fAdA//kgPzaCbGVwP
+         qHZpdC89rPPqrRdX0NaV/a2hndUrexpx1e8A0omE5npzPx+TdVnEMHbfh6xpmATIt9SD
+         z0ZUhz+Fxe0LTo5EckuZuaRNv661aK7wGkNcmTyw3/Cp6zR8c3bJ0HO8+P048SMQQDHg
+         SlorePs2V97iUM+6qysZMOk6R+En8+SnbwZWwu3TRCKQFyGXvtPRs6YjzijP7hmBFv/s
+         JmqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BvCMRttPf/TJqIxdmSUmQm/huvf1KSvWFJ4QU8dhZnk=;
-        b=EI9VEMiPl/vWlypSx6UtKS5S9aS3TpEMZtH53nPzLWI7CNeTbHh26HsEBN5VpJezpQ
-         E1Jv7X0ioy63wPJRk+Bi9akSbwHFD78hcNtDPNQQVxiVKKk2myEj+OfwCkTqskTGfS6h
-         Hmly0x89Nrk8yEE9Kz0m2d/beAdsLdOrWDpO2FeridsiOm+cc40BtcdpafouAWMa+TtF
-         pV6RBbuubBd38QzUcPl0lMk55c3c5OSIN4A4orCHfhWCctIsSAz14Ld6sMw32RAbjLFh
-         AIgWaDI6M4JU0D6EjtUzk1deoUy3W0NtaN/a85oCrIElhPV4AUwPSFH9DKvz1x+qTdOr
-         PO9A==
-X-Gm-Message-State: AOAM532LVnQJfQE5k/CM9CGmJI416EdlQ4orBMf5T2n8VUucS37vuv8V
-        M+fTSuvfTY2SkBkGnfCJD7Vk74DHAmzs/85OYL7Iig==
-X-Google-Smtp-Source: ABdhPJyo4fL8c9W5UWz7sAEOga5ZdnbLPesZtp5YMsbclajiI+GYH9FAyRMTx+a8zYcjrPDC8/Fb/X6r2ucNAVseJIg=
-X-Received: by 2002:a17:90a:6f06:: with SMTP id d6mr9677207pjk.216.1621402466801;
- Tue, 18 May 2021 22:34:26 -0700 (PDT)
+        bh=ZnXQTZd4YFiMxjzLc+WeIPzH5Cugof+bDJeafEZszhA=;
+        b=pnKl3mOFbp1lKjVraBJ5hm7OU5fm/bsH1OloFxtQW5xqTOHkMerT31eQqTGAQLZAkc
+         GsD/qyW28hu3A5YnUyNoTRZHQmtci7V1EKTGQsHzr7pr1i7OPFTVSlLb6p61zysA3FiM
+         I22kIBtyCcwmYohKPlrNhrXSlAZOIAU5LIS0g5jEFe62iZG5g04h+IYbHx6NRF+/U0j4
+         OJGumnnJh7UcBWefb5LOiGCTPjhX22TfjitQjkHeygc9duh2zFv3JKRS+Xiai6NMQJGw
+         TPAKYUSUIdqvjK5lqosehCUVMljjhqkkw2amfdNvYycGCHN32DYf5yvmH5Hu9A78Sgkh
+         x/8A==
+X-Gm-Message-State: AOAM533TMJtb+yM7X+7CzEQeBJ3V5HUKu3OWcPc+z1pJ6qhvApPmZmpM
+        qHpYQKNR8m/jKjw5KqVZU3k/+cTBkj9wY1Gjr/6Ysg==
+X-Google-Smtp-Source: ABdhPJxRVRGQRmTOrx5g0fwZQ40vUC2OtgTmQ1h1QHlPsnFidYfsegpgCrqjFWNAVWbiD7CLjNy9sS0H5nOMl+lOapE=
+X-Received: by 2002:aa7:8c59:0:b029:28e:9093:cd4d with SMTP id
+ e25-20020aa78c590000b029028e9093cd4dmr8891246pfd.25.1621402510627; Tue, 18
+ May 2021 22:35:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-21-seanjc@google.com>
-In-Reply-To: <20210424004645.3950558-21-seanjc@google.com>
+References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-23-seanjc@google.com>
+In-Reply-To: <20210424004645.3950558-23-seanjc@google.com>
 From:   Reiji Watanabe <reijiw@google.com>
-Date:   Tue, 18 May 2021 22:34:11 -0700
-Message-ID: <CAAeT=FzHOCDH3-vZWOx798x6pGekCgjD8w1m8xPbrPh-ddR+vA@mail.gmail.com>
-Subject: Re: [PATCH 20/43] KVM: SVM: Don't bother writing vmcb->save.rip at
- vCPU RESET/INIT
+Date:   Tue, 18 May 2021 22:34:54 -0700
+Message-ID: <CAAeT=FzLMNr3QtTjchzvr9QStaQPJaQNvaqHGzfsRpp5fOBSEg@mail.gmail.com>
+Subject: Re: [PATCH 22/43] KVM: VMX: Remove direct write to vcpu->arch.cr0
+ during vCPU RESET/INIT
 To:     Sean Christopherson <seanjc@google.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
@@ -66,10 +67,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Apr 23, 2021 at 5:51 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> Remove unnecessary initialization of vmcb->save.rip during vCPU RESET/INIT,
-> as svm_vcpu_run() unconditionally propagates VCPU_REGS_RIP to save.rip.
+> Remove a bogus write to vcpu->arch.cr0 that immediately precedes
+> vmx_set_cr0() during vCPU RESET/INIT.  For RESET, this is a nop since
+> the "old" CR0 value is meaningless.  But for INIT, if the vCPU is coming
+> from paging enabled mode, crushing vcpu->arch.cr0 will cause the various
+> is_paging() checks in vmx_set_cr0() to get false negatives.
 >
-> No true functional change intended.
+> For the exit_lmode() case, the false negative is benign as vmx_set_efer()
+> is called immediately after vmx_set_cr0().
+>
+> For EPT without unrestricted guest, the false negative will cause KVM to
+> unnecessarily run with CR3 load/store exiting.  But again, this is
+> benign, albeit sub-optimal.
 >
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
 
