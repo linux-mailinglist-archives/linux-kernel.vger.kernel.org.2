@@ -2,158 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C75389850
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34ED389852
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhESVCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhESVCS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:02:18 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B291C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:00:57 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 27so9017928pgy.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8fPkrJZl4xbjKZWSb4LautfbTP6fpPHvxZUlNFpdvSA=;
-        b=wCA+ul9992t4Z3RZZg7u/sCLnlCW1UpUlXad2PEtqU7sXx/IpINVWngj3nGutMGJSM
-         DyOznK2ZiHYjYqGw6jCarfrR/HPvBbZMG06mpWvqewKGFovKCO+wl3aNaJCz+9mzzNJI
-         UHYeVGSB+LmxV9XDidTKfTS/9e9V9o1scQdbUAcivKUkN4rb45ZFLenLJLiNWKU4Fu9W
-         /RWKbyu3hA+jGi/ErLBE8GyqbXE1hmgWycS7xieAiJg8nruu8TXAO6h0BT2o9xki7RCx
-         ce0kPdRUCD0VWcmxZeZsZknMp1uqHWioYiZwh5PzpF2m83LrONvnHU9lm7lLbzhVXIc7
-         3xRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8fPkrJZl4xbjKZWSb4LautfbTP6fpPHvxZUlNFpdvSA=;
-        b=FXsLZpshlzFMhAAUWjDt2LIlBYEzwawS0hsZU/oQgfO7WkXbMqIjUlBCaGTT+UzXiN
-         qZGprttTjrakqtkBR07308vorUWWAPwfRRAccxIzbW3bt/Lc2Xsld2FMvSy+PRewvKZ6
-         61P3sYM5zbOUESgvq3CCTcysRnvRl4igHXZPXBBysIxGg/hWtAhtFWx7tEyF9ys7jxPA
-         30Z1k1b1k0vlpZXCMgiF1giNQm1FBoseGg4e7p/TSjT46IltCtGkoTHsrQ8gSBIxvjLP
-         92qsgvraQsNXsmXrshZVrOsiYMNnU/hiE35r2MyTZDTCt6rb3YtrxNoTrVaiWA47gcea
-         Ghlg==
-X-Gm-Message-State: AOAM531E8mgTRPwYY9/dfGo7y0iHDHoLzopdgjiisJYIGSJo1JXbWIcj
-        JWfEy9EYltDOezQSkVbz4icSRg==
-X-Google-Smtp-Source: ABdhPJy0Bnrx+iCOczdDbABKesxv6ntU9siwPKi1NgqUCXqUrNZZfXMKKBMKmXgXn85/O4dnm1j3yA==
-X-Received: by 2002:a63:5060:: with SMTP id q32mr1088180pgl.32.1621458056727;
-        Wed, 19 May 2021 14:00:56 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id e7sm251429pfl.171.2021.05.19.14.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 14:00:56 -0700 (PDT)
-Date:   Wed, 19 May 2021 21:00:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/8] KVM: x86: Cache total page count to avoid
- traversing the memslot array
-Message-ID: <YKV8hHDS489g9JBS@google.com>
-References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
- <eb1c881ce814705c83813f02a1a13ced96f1b1d1.1621191551.git.maciej.szmigiero@oracle.com>
+        id S229786AbhESVCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:02:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhESVCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:02:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01BEC613AC;
+        Wed, 19 May 2021 21:01:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621458079;
+        bh=HPUf+kT+bmoTegnVvAKxBai2Dzy2bgMgMG0NwDVdbFo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p52lxAzjRDlRk5H0cyupEgyG/s/wvmz1DOwXKgHig0/8Zbmjj1RH8iXq0oLDikz/c
+         OKyaxKpyZ2rIFZoozBsnpmuFub5QaJ57mfzHjC39xx9H0rq+1cbtR/mk+OkZXhqbb7
+         PN9WliBDpU7vcUDntXmxGgaAQDgbWAMG8QC/Xqg6xt3yA8V1nP+DrBLO01g0HICZJt
+         yvNl7RHiiymtILIkIf3Ar6s0Jq5zqXTCpUYEf+mhgMCB5sTc9qQnItCrn7eiB23MgS
+         46xEd0nOaBa8WbAL6kPv5lPgOnBReodEyPZvaJmKUhMrWElXyeymO7OZBsT9smRGuf
+         +OantGSRz9p+Q==
+Received: by mail-wm1-f44.google.com with SMTP id h3-20020a05600c3503b0290176f13c7715so4013991wmq.5;
+        Wed, 19 May 2021 14:01:18 -0700 (PDT)
+X-Gm-Message-State: AOAM530hKy6nvNB+KFLKIHq1sI+YcQAUx+akndUxcxSpFLbySOsJECh3
+        jA5HkCFE/l6NPrYDi9mkNgPNhwaos/2YT2EDpYE=
+X-Google-Smtp-Source: ABdhPJy8Jqwz5h6db1cg71p7uKoZ7HogbtRdnpq9dbBSg0UgdCTCX6yhxlQHb/+HU1db+XwapikKwx/NJqqXjPyM4bI=
+X-Received: by 2002:a7b:c344:: with SMTP id l4mr960591wmj.120.1621458077519;
+ Wed, 19 May 2021 14:01:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb1c881ce814705c83813f02a1a13ced96f1b1d1.1621191551.git.maciej.szmigiero@oracle.com>
+References: <20210517203343.3941777-1-arnd@kernel.org> <20210517203343.3941777-5-arnd@kernel.org>
+ <87h7iycvlo.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87h7iycvlo.ffs@nanos.tec.linutronix.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 19 May 2021 23:00:04 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
+Message-ID: <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] compat: remove some compat entry points
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> 
-> There is no point in recalculating from scratch the total number of pages
-> in all memslots each time a memslot is created or deleted.
-> 
-> Just cache the value and update it accordingly on each such operation so
-> the code doesn't need to traverse the whole memslot array each time.
-> 
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> ---
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 5bd550eaf683..8c7738b75393 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11112,9 +11112,21 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
->  				const struct kvm_memory_slot *new,
->  				enum kvm_mr_change change)
->  {
-> -	if (!kvm->arch.n_requested_mmu_pages)
-> -		kvm_mmu_change_mmu_pages(kvm,
-> -				kvm_mmu_calculate_default_mmu_pages(kvm));
-> +	if (change == KVM_MR_CREATE)
-> +		kvm->arch.n_memslots_pages += new->npages;
-> +	else if (change == KVM_MR_DELETE) {
-> +		WARN_ON(kvm->arch.n_memslots_pages < old->npages);
+On Wed, May 19, 2021 at 10:33 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Mon, May 17 2021 at 22:33, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > These are all handled correctly when calling the native
+> > system call entry point, so remove the special cases.
+> >  arch/x86/entry/syscall_x32.c              |  2 ++
+> >  arch/x86/entry/syscalls/syscall_32.tbl    |  6 ++--
+> >  arch/x86/entry/syscalls/syscall_64.tbl    |  4 +--
+>
+> That conflicts with
+>
+>   https://lore.kernel.org/lkml/20210517073815.97426-1-masahiroy@kernel.org/
+>
+> which I'm picking up. We have more changes in that area coming in.
 
-Heh, so I think this WARN can be triggered at will by userspace on 32-bit KVM by
-causing the running count to wrap.  KVM artificially caps the size of a single
-memslot at ((1UL << 31) - 1), but userspace could create multiple gigantic slots
-to overflow arch.n_memslots_pages.
+Ok, thanks for the heads-up. I'll try a merge or rebase to see how this can be
+handled. If both the drivers/net and drivers/media get picked up for 5.14, maybe
+the rebased patches can go through -mm on top, along with the final
+removal of compat_alloc_user_space()/copy_in_user(). If not, I suppose these
+four patches can also wait another release.
 
-I _think_ changing it to a u64 would fix the problem since KVM forbids overlapping
-memslots in the GPA space.
-
-Also, what about moving the check-and-WARN to prepare_memory_region() so that
-KVM can error out if the check fails?  Doesn't really matter, but an explicit
-error for userspace is preferable to underflowing the number of pages and getting
-weird MMU errors/behavior down the line.
-
-> +		kvm->arch.n_memslots_pages -= old->npages;
-> +	}
-> +
-> +	if (!kvm->arch.n_requested_mmu_pages) {
-
-If we're going to bother caching the number of pages then we should also skip
-the update when the number pages isn't changing, e.g.
-
-	if (change == KVM_MR_CREATE || change == KVM_MR_DELETE) {
-		if (change == KVM_MR_CREATE)
-			kvm->arch.n_memslots_pages += new->npages;
-		else
-			kvm->arch.n_memslots_pages -= old->npages;
-
-		if (!kvm->arch.n_requested_mmu_pages) {
-			unsigned long nr_mmu_pages;
-
-			nr_mmu_pages = kvm->arch.n_memslots_pages *
-				       KVM_PERMILLE_MMU_PAGES / 1000;
-			nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
-			kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
-		}
-	}
-
-> +		unsigned long nr_mmu_pages;
-> +
-> +		nr_mmu_pages = kvm->arch.n_memslots_pages *
-> +			       KVM_PERMILLE_MMU_PAGES / 1000;
-> +		nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
-> +		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
-> +	}
->  
->  	/*
->  	 * FIXME: const-ify all uses of struct kvm_memory_slot.
+       Arnd
