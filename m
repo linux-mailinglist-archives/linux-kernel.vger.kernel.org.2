@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4726B3893CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628603893D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347515AbhESQdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
+        id S1347676AbhESQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241726AbhESQdN (ORCPT
+        with ESMTP id S1347548AbhESQdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:33:13 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CF9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:31:52 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id b12so9127344ljp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:31:52 -0700 (PDT)
+        Wed, 19 May 2021 12:33:37 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703B7C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:32:17 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id y14so12602164wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:32:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nZLJNKKc9VMDuwm5nqmO6Jk46MY22hPJLYhiTwehgjY=;
-        b=BNo+5FL4MivuGXFJyBkyugMfiR2R6b/DtPSISTGhZNn4jxyVfn/H1Bhhfies2dDfMC
-         HS84WMm9VY40kL6qVL0Hio+ns0+CoOCx6ZliKWYhjgK7jiyiwDBzY5ZryuWAa/ES2tv2
-         j8iTrJhzTO8SCATTMs8IBSRU33TSJL2dOxGLU=
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=/kRF+2EHxjIXcYwxp+VA+flXrKrf+D+9tOODi/MubSI=;
+        b=X/7NE43VESjEESZ6BRitT4Nf0btI2iu8vwilepLZIh6FMm0rNcbkg0XPZ9JRwIJEQz
+         KN8Eue+MCa8L22RdPzYSjCoDN7qevxqICHe+azgWzfmhad/Twj4tJzqNbQaMj3xK6vQZ
+         Noqk3zstNpqgSD0fkeLE9ulz962bermNreVbUk8ipQhyB2Eh04pK9p0ZzgpMsJJi/ZaX
+         32QbrmZ9HEvLOc0NCr+5ssV88N2SxCrATNF+gdQlymYI+RuSBNcRAvejZ/KihcWy6DJO
+         J83U6/KU+ZLBZrwzWHizQxc+3nGs1doPKSfJzad1bW8nZ33yjp46OjRSqgElwjDlzAhD
+         yANQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nZLJNKKc9VMDuwm5nqmO6Jk46MY22hPJLYhiTwehgjY=;
-        b=ueDNQcXcMz1MdHMSGtIw9AfAroTFYBWRlLhixizYOah/ctj3eBZ4lNI65vt0OrwKMe
-         0tV5eN++MbqvLhfcn1eVPaRkPhnPz7hOCLM957jB1x6QQPrbQNTZ/gyY9hIbGBsdU1n1
-         FLFh1pbrLd4qyTe6yJfPaubdLqOkYUgjVj+TyJNXGnQ8+ISsZT1VEYhQQk9zPIBVd8CX
-         FX9VNIx8FJMBk46tjcmQgLh9k5h/zRmq2e2FkynCZ1FFfkPnkQrTTBYZrJQljSvhkooW
-         o//07cgTMP2BAHD3TCL3QkxDhg+eVRPHe88dpvYYfayBF3iHQzIJCWrhBKLGLejmmLA4
-         /RFg==
-X-Gm-Message-State: AOAM531b+RS2h/WVTsza8q7TqQVFf2VER8LV8V4utFn2rIPhAT5VQcmq
-        KvzFD2XvzBY0S+ti48EhOXsjMatRnQc5YyWNGdk=
-X-Google-Smtp-Source: ABdhPJz6vk9v6eiZX5WKd7hymnpY5oi4rudp+mVyg/jWA/zCtLKc5nhfGFYxZnNG+CouZEHox55inQ==
-X-Received: by 2002:a05:651c:511:: with SMTP id o17mr113751ljp.14.1621441911076;
-        Wed, 19 May 2021 09:31:51 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id n8sm18480lfe.48.2021.05.19.09.31.48
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=/kRF+2EHxjIXcYwxp+VA+flXrKrf+D+9tOODi/MubSI=;
+        b=F9voq9c7746EyWMC+q0hVR7XtTYsPZkSBGlzcjOGu/aafJDXnQ+kmi5w3vi8AOjWJ+
+         O1hLmn/Ybq+ITh8LqH15IZs/H3xy6787qmK9GJkNRs1TPRV9qoMQECS2ZHrwMNOJL83/
+         HwVfj4moQ+8Aa3IerNsMnZOz3O1gBOJlZExmDzOMfxjJA+IiDk+tlgiJb3qoyaQ717Sm
+         YqqC8BESBcf4DvdrsxP+r+0QvgdIn9bLhuZQRvTMFNZrMGP4tWEFc5FqIGz057A2T0GQ
+         Lp/q1pO4yNphbVGcDJW/E5OP/2CnTw/8MBtTXxze/JueMhXcQP/rsqjZ71j3VLhcyW8u
+         CFBA==
+X-Gm-Message-State: AOAM531R9y2v4bLnDG6U9TErdR9e8LbI4A2vDbG0W9p3gqjZMvauDHx3
+        NiGgVQixFGDz1LJbVYvXbBGjnnvdWCesKw==
+X-Google-Smtp-Source: ABdhPJxJwZWSmYRSdlEVnbDJiu2TKcA8ouMxEaaJ1IojTrfCuEQC0EoeR7+XHv14wZ2UY94Zp5vmYg==
+X-Received: by 2002:a05:6000:1147:: with SMTP id d7mr15924809wrx.302.1621441935847;
+        Wed, 19 May 2021 09:32:15 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f38:4600:e5dc:6577:6b94:e9e7? (p200300ea8f384600e5dc65776b94e9e7.dip0.t-ipconnect.de. [2003:ea:8f38:4600:e5dc:6577:6b94:e9e7])
+        by smtp.googlemail.com with ESMTPSA id u8sm5926002wmq.29.2021.05.19.09.32.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 09:31:49 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id a2so19985692lfc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:31:48 -0700 (PDT)
-X-Received: by 2002:a05:6512:36c5:: with SMTP id e5mr244603lfs.41.1621441907825;
- Wed, 19 May 2021 09:31:47 -0700 (PDT)
+        Wed, 19 May 2021 09:32:15 -0700 (PDT)
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH 0/2] eeprom: ee1004: Let device core handle attribute eeprom
+Message-ID: <66e9f6e5-fdee-6963-6131-228c69705350@gmail.com>
+Date:   Wed, 19 May 2021 18:32:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210519024322.GA29704@xsang-OptiPlex-9020> <CAHk-=whcr5M=4Mz2ydu4XtxTL_34WkXPnmFmA4f8r+ELXDC6hg@mail.gmail.com>
- <20210519133330.GA14452@lst.de> <87y2ca6a69.fsf@tynnyri.adurom.net> <CAHk-=wgYqF3bffW0EPmVTUFcoV0jXECu-A_dyWZ0ZwUwhCHi+A@mail.gmail.com>
-In-Reply-To: <CAHk-=wgYqF3bffW0EPmVTUFcoV0jXECu-A_dyWZ0ZwUwhCHi+A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 19 May 2021 06:31:31 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wgEZrsY9tsyC=+2sXVVuBDiZDTSMxt-X5LgwvSQqs_a6w@mail.gmail.com>
-Message-ID: <CAHk-=wgEZrsY9tsyC=+2sXVVuBDiZDTSMxt-X5LgwvSQqs_a6w@mail.gmail.com>
-Subject: Re: [i915] b12d691ea5: kernel_BUG_at_mm/memory.c
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Serge Belyshev <belyshev@depni.sinp.msu.ru>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 6:11 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, May 19, 2021 at 5:00 AM Kalle Valo <kvalo@codeaurora.org> wrote:
-> >
-> > Christoph Hellwig <hch@lst.de> writes:
-> >
-> > > On Tue, May 18, 2021 at 04:58:31PM -1000, Linus Torvalds wrote:
-> > >>
-> > >> I'd be inclined to revert the commits as "not ready yet", but it would
-> > >> be better if somebody can go "yeah, this should be done properly like
-> > >> X".
-> > >
-> > > I think reverting just this commit for now is the best thing.
-> >
-> > Yes, please revert it if there's no quick fix. On my Dell XPS 13 9310
-> > laptop (with Debian 10) X won't start until I revert commit
-> > b12d691ea5e0, so this is a major issue.
->
-> Reverted.
+Instead of creating/removing the attribute ourselves, just declare the
+attribute and let the device core handle it. This allows to simplify
+the code.
 
-Oh, and Christoph - there were a couple of preparatory patches before
-that one. They all looked syntactic to me, but it might be best to
-check that reverting just this one commit is ok?
+Heiner Kallweit (2):
+  sysfs: Add helper BIN_ATTRIBUTE_GROUPS
+  eeprom: ee1004: Let device core handle attribute eeprom
 
-                   Linus
+ drivers/misc/eeprom/ee1004.c | 26 +++++++++-----------------
+ include/linux/sysfs.h        |  6 ++++++
+ 2 files changed, 15 insertions(+), 17 deletions(-)
+
+-- 
+2.31.1
+
