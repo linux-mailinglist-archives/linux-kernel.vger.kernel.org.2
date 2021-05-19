@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D774D3889A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2FB3889A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343617AbhESIpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:45:38 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:33310 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343589AbhESIph (ORCPT
+        id S1343651AbhESIqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343625AbhESIqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:45:37 -0400
-Received: from localhost (unknown [192.168.167.139])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 530FDAC85B;
-        Wed, 19 May 2021 16:44:08 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P23404T140628100904704S1621413847650280_;
-        Wed, 19 May 2021 16:44:08 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <0496d28cf825df5af05f8635364a7ba2>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tsbogend@alpha.franken.de
-X-RCPT-COUNT: 5
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tsbogend@alpha.franken.de
-Cc:     paul@crapouillou.net, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] arch/mips/boot/compressed/string.c: Fix build warnings
-Date:   Wed, 19 May 2021 16:44:05 +0800
-Message-Id: <20210519084405.27364-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 19 May 2021 04:46:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBC2C06175F;
+        Wed, 19 May 2021 01:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=i4kTadda4oBt3afddYxcQHXtH210DToQIegrKDmu7Qs=; b=KayoCEogTLKFg5jrVgTEnTOVfZ
+        hb8/pRDvfaaqQHvTUh4wopMGPdhivz06WHgnbV72RvjsaXV+6cm6cFH9oW+SDqiZl4ZWVxv4T1lj0
+        CGk0x5+2pozw6bB+QbibCPFBLp9JSsxfVtUTv/EfK2GQdpAPkA/iYAjFGnKCeJQuUVJeZCJmDXa30
+        NLfXWuByzbVnzcOHnp5UqctgfTHdBHG2jOvp2H1gBpF96nPXsXh2RZKqj/coj841wT7xsNEel7S3m
+        nZ29e8D7ZPJNlG1996IoXbZc+8PU17eJvSUGAxKGrkljO99EBmA2NPiA31SK9awmPEjSoai5TU7YL
+        3d52UGgQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljHoG-00Em7l-Ci; Wed, 19 May 2021 08:44:21 +0000
+Date:   Wed, 19 May 2021 09:44:08 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Robert Straw <drbawb@fatalsyntax.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH] pci: add NVMe FLR quirk to the SM951 SSD
+Message-ID: <YKTP2GQkLz5jma/q@infradead.org>
+References: <20210430205105.GA683965@bjorn-Precision-5520>
+ <CBDZPI1DXKMS.88UVUXVIGC5V@nagato>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CBDZPI1DXKMS.88UVUXVIGC5V@nagato>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
-arch/mips/boot/compressed/string.c:11:7: warning: no previous prototype for 'memcpy' [-Wmissing-prototypes]
- void *memcpy(void *dest, const void *src, size_t n)
-       ^~~~~~
-arch/mips/boot/compressed/string.c:22:7: warning: no previous prototype for 'memset' [-Wmissing-prototypes]
- void *memset(void *s, int c, size_t n)
-       ^~~~~~
-arch/mips/boot/compressed/string.c:32:15: warning: no previous prototype for 'memmove' [-Wmissing-prototypes]
- void * __weak memmove(void *dest, const void *src, size_t n)
-               ^~~~~~~
+On Sat, May 15, 2021 at 12:20:05PM -0500, Robert Straw wrote:
+> On page 40, sec 3.1.6 of the NVMe 1.1 spec, the documentation on SHST 
+> states the following:
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- arch/mips/boot/compressed/string.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+While it doesn't matter here, NVMe 1.1 is very much out of data, being
+a more than 8 year old specification.  The current version is 1.4b,
+with NVMe 2.0 about to be released.
 
-diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
-index 0b593b709228..d28996509f91 100644
---- a/arch/mips/boot/compressed/string.c
-+++ b/arch/mips/boot/compressed/string.c
-@@ -8,7 +8,7 @@
- #include <linux/compiler_attributes.h>
- #include <linux/types.h>
- 
--void *memcpy(void *dest, const void *src, size_t n)
-+static void *memcpy(void *dest, const void *src, size_t n)
- {
- 	int i;
- 	const char *s = src;
-@@ -19,7 +19,7 @@ void *memcpy(void *dest, const void *src, size_t n)
- 	return dest;
- }
- 
--void *memset(void *s, int c, size_t n)
-+static void *memset(void *s, int c, size_t n)
- {
- 	int i;
- 	char *ss = s;
-@@ -29,7 +29,7 @@ void *memset(void *s, int c, size_t n)
- 	return s;
- }
- 
--void * __weak memmove(void *dest, const void *src, size_t n)
-+static void * __weak memmove(void *dest, const void *src, size_t n)
- {
- 	unsigned int i;
- 	const char *s = src;
--- 
-2.20.1
+> Knowing this I would suspect we'd actually want to treat most NVMe
+> drives in this manner *if the kernel sees the SHN/SHST has been set
+> prior.* Perhaps other NVMe devices are more tolerant of not doing this?
 
+No, we don't.  This is a bug particular to a specific implementation.
+In fact the whole existing NVMe shutdown before reset quirk is rather
+broken and dangerous, as it concurrently accesses the NVMe registers
+with the actual driver, which could be trivially triggered through the
+sysfs reset attribute.
 
-
+I'd much rather quirk these broken Samsung drivers to not allow
+assigning them to VFIO.
