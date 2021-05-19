@@ -2,244 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C136389997
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C123899A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhESXIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
+        id S230059AbhESXJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESXIa (ORCPT
+        with ESMTP id S229681AbhESXJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:08:30 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C8AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:07:09 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so4379994pjt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:07:09 -0700 (PDT)
+        Wed, 19 May 2021 19:09:10 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E48C061574;
+        Wed, 19 May 2021 16:07:49 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t11so8129336pjm.0;
+        Wed, 19 May 2021 16:07:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=RyfmXcmpiPf29zi7Cou4H0ygilUNz1aN0mITS576Vy8=;
-        b=p5kMLOk18AUGUrUrS4DlS27GN3nypoHJTs+FtdrccTagn+H1860CPR39MOF6TjlTqU
-         SDMnN0WGV3oOSuEt2l1EIvQkhZwCuHWhur6mLeTCa46lcJHHs9HMCPUnEB+P9bj89pmk
-         T3F8+5or506sH8OOj63imrYap+w2KjNxgoKFeDDQdT2HjvsRxPggXk1L6+OkqacbZO05
-         o1jmT9rJ6a1z0x2IGCR6kKG46wfSxu/bUHRgHR5cubhhsc+NyFIkf7K9ID0nHZ1hliCx
-         7DPIwq38FBONTOArY4n2qKTZ/kc+BtO7l2S2ifYuA2N2hRHPtfoO0cY7C4T7lwMt4sCr
-         57ig==
+        bh=JJgI804V8+GisJoccWZ4H8urJEjP8SBVK3/sos6whD8=;
+        b=tcLT0NM08so9FI4OpB4PBLbarrM0gozK9gJI1dMvCwosgAtgs61t/k2zSPMa+DLd9G
+         Wt51eYZA5c1hDgB+X22uyirdRZ6NRRKdp1LlHFF06HBCB4KWs6AwUBlyRRsE42aoIHen
+         Az9D+nZx3KPKaaHrS802VKokCTbKI0LLWPhVG5m7erZP2WY0l9deUrPGrRBEg4/Sdz8M
+         UXltfIMC137PDWre8aiEwP0j8T5J+G/jnBkIsdER8KBLvW3/LLrfVMlaUj0mhAr7RFbq
+         KBv6iXbcSV/mg65MlVgphABPe1KvRXqGgT7+VektzAqP5e+r1pjmN2ldGmtIt5CYxD2I
+         /WbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RyfmXcmpiPf29zi7Cou4H0ygilUNz1aN0mITS576Vy8=;
-        b=ubUf36vJOUI8tqvzV5f70SbpZAFuwdM8jeNgiVuPvi5FzDllpaKFikNnsEpGnDO7+X
-         VRysQgWrM5kBJlMvw40J+cw23cTM/2qp1B5Z5D9vQNZ0gGSSmgkgBjKn5miF5Z4G2/Ox
-         l7eVysKCgQ/Qs8H7WkiAYO9NjtHkYcYxAQ8VNM7ZoAx0Gx/TyNsOD8jVBIf/ibwRE3eG
-         5FQCqD5YEbNLcSiSD6unQZMM9Ey2VFVWi1ADLz+qBG6mVOr47QOsnhV3rQi5DOtV4uaf
-         1EhOo3jCcsMwclRtERJpV0Og1FubpgIgDa/p2+/e5XcKP6bINPLDlXnWHCP+CIOOxY17
-         /OmQ==
-X-Gm-Message-State: AOAM530lBNx/U4useCKnoBx6Wr8N/cRPsqcfmA6KEfPZ36Y5jorW34Cd
-        In48BF6w3aztMNWI4L+5MsRQEQ==
-X-Google-Smtp-Source: ABdhPJxjoEmuhKpbT9CNsCXuUywm9ANtXixVppamuWzDYfOBD0teEaYiYmjSMSTgmIlvJzEcGHYpfg==
-X-Received: by 2002:a17:90a:8816:: with SMTP id s22mr1733707pjn.25.1621465628405;
-        Wed, 19 May 2021 16:07:08 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id l67sm340936pgl.18.2021.05.19.16.07.07
+        bh=JJgI804V8+GisJoccWZ4H8urJEjP8SBVK3/sos6whD8=;
+        b=mAJraDOGX0mTn0pCIW2WtCYy619WiMP4VLS2dG26tu4hfJwSsJJmCjOBBgElt7jhjw
+         0VEPYRAF54ClX/nKoPFfjZ0wv/K1zHhgW9FlRtgq9u8BY84bmOrUdfVsFX0Te2QinMmL
+         Q2XsGgIM96j0b8spYlvYSA2sD2EQqoxYOyH8yCIrOSMYQ74bt9UkShSuzxa/2OnCUlTm
+         R5GPK4dD2ddxzTFKQpzutRJlAoaksdJIrQsc7qPxbyhBSAMXP2icZVp0ad/WRzxtq+Ko
+         zao+Gskkjy69E++VamuqxPF20Im0zMdPaLB7skO/iGFSk6u0OtE6/RwE7LvIxjxafVde
+         cn0Q==
+X-Gm-Message-State: AOAM532PQMfjph5Z0kjsnw501KYtQvnJAIUOvb+dFxpJOBmXObVbv1T3
+        DGvIHy7WEAM174P9NxaUQMI=
+X-Google-Smtp-Source: ABdhPJwZ2IBT3ZwppVgbY5fgBPeqRoLVCsB5V+J33sJycwrmIrkomAm3UGaIfZVqCPWYa/+QxNWgOw==
+X-Received: by 2002:a17:90a:c285:: with SMTP id f5mr1763196pjt.221.1621465669105;
+        Wed, 19 May 2021 16:07:49 -0700 (PDT)
+Received: from localhost ([2409:4063:4c14:9209:2c39:fff0:5625:d9ad])
+        by smtp.gmail.com with ESMTPSA id r13sm333417pfl.191.2021.05.19.16.07.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 16:07:07 -0700 (PDT)
-Date:   Wed, 19 May 2021 23:07:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/8] KVM: Introduce memslots hva tree
-Message-ID: <YKWaFwgMNSaQQuQP@google.com>
-References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
- <cf1695b3e1ba495a4d23cbdc66e0fa9b7b535cc3.1621191551.git.maciej.szmigiero@oracle.com>
+        Wed, 19 May 2021 16:07:48 -0700 (PDT)
+Date:   Thu, 20 May 2021 04:37:10 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     io-uring@vger.kernel.org, Pavel Emelyanov <xemul@openvz.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] fs: anon_inodes: export anon_inode_getfile_secure
+ helper
+Message-ID: <20210519230710.k3hzomsr27onevhf@apollo>
+References: <20210519113058.1979817-1-memxor@gmail.com>
+ <20210519113058.1979817-2-memxor@gmail.com>
+ <CAHC9VhTBcCJ1TfvB-HbzrByroeqfFE-SF_REik9PDSdqmJbuYA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cf1695b3e1ba495a4d23cbdc66e0fa9b7b535cc3.1621191551.git.maciej.szmigiero@oracle.com>
+In-Reply-To: <CAHC9VhTBcCJ1TfvB-HbzrByroeqfFE-SF_REik9PDSdqmJbuYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nit: something like "KVM: Use interval tree to do fast hva lookup in memslots"
-would be more helpful when perusing the shortlogs.  Stating that a tree is being
-added doesn't provide any hint as to why, or even the what is somewhat unclear.
+On Wed, May 19, 2021 at 08:52:51PM IST, Paul Moore wrote:
+> On Wed, May 19, 2021 at 7:37 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > This is the non-fd installing analogue of anon_inode_getfd_secure. In
+> > addition to allowing LSMs to attach policy to the distinct inode, this
+> > is also needed for checkpoint restore of an io_uring instance where a
+> > mapped region needs to mapped back to the io_uring fd by CRIU. This is
+> > currently not possible as all anon_inodes share a single inode.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  fs/anon_inodes.c            | 9 +++++++++
+> >  include/linux/anon_inodes.h | 4 ++++
+> >  2 files changed, 13 insertions(+)
+>
+> [NOTE: dropping dancol@google as that email is bouncy]
+>
+> > diff --git a/fs/anon_inodes.c b/fs/anon_inodes.c
+> > index a280156138ed..37032786b211 100644
+> > --- a/fs/anon_inodes.c
+> > +++ b/fs/anon_inodes.c
+> > @@ -148,6 +148,15 @@ struct file *anon_inode_getfile(const char *name,
+> >  }
+> >  EXPORT_SYMBOL_GPL(anon_inode_getfile);
+>
+> This function should have a comment block at the top similar to
+> anon_inode_getfile(); in fact you can likely copy-n-paste the bulk of
+> it to use as a start.
+>
+> If you don't want to bother respinning, I've got this exact patch
+> (+comments) in my patchset that I'll post later and I'm happy to
+> give/share credit if that is important to you.
+>
 
-On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> 
-> The current memslots implementation only allows quick binary search by gfn,
-> quick lookup by hva is not possible - the implementation has to do a linear
-> scan of the whole memslots array, even though the operation being performed
-> might apply just to a single memslot.
-> 
-> This significantly hurts performance of per-hva operations with higher
-> memslot counts.
-> 
-> Since hva ranges can overlap between memslots an interval tree is needed
-> for tracking them.
-> 
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> ---
+That'd be great; no credit is fine :). Please CC me when you post it.
 
-...
+> > +struct file *anon_inode_getfile_secure(const char *name,
+> > +                                      const struct file_operations *fops,
+> > +                                      void *priv, int flags,
+> > +                                      const struct inode *context_inode)
+> > +{
+> > +       return __anon_inode_getfile(name, fops, priv, flags, context_inode, true);
+> > +}
+> > +EXPORT_SYMBOL_GPL(anon_inode_getfile_secure);
+>
+> --
+> paul moore
+> www.paul-moore.com
 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index d3a35646dfd8..f59847b6e9b3 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -27,6 +27,7 @@
->  #include <linux/rcuwait.h>
->  #include <linux/refcount.h>
->  #include <linux/nospec.h>
-> +#include <linux/interval_tree.h>
->  #include <linux/hashtable.h>
->  #include <asm/signal.h>
->  
-> @@ -358,6 +359,7 @@ static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
->  
->  struct kvm_memory_slot {
->  	struct hlist_node id_node;
-> +	struct interval_tree_node hva_node;
->  	gfn_t base_gfn;
->  	unsigned long npages;
->  	unsigned long *dirty_bitmap;
-> @@ -459,6 +461,7 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
->   */
->  struct kvm_memslots {
->  	u64 generation;
-> +	struct rb_root_cached hva_tree;
->  	/* The mapping table from slot id to the index in memslots[]. */
->  	DECLARE_HASHTABLE(id_hash, 7);
->  	atomic_t lru_slot;
-> @@ -679,6 +682,11 @@ static inline struct kvm_memslots *kvm_vcpu_memslots(struct kvm_vcpu *vcpu)
->  	return __kvm_memslots(vcpu->kvm, as_id);
->  }
->  
-> +#define kvm_for_each_hva_range_memslot(node, slots, start, last)	     \
-
-kvm_for_each_memslot_in_range()?  Or kvm_for_each_memslot_in_hva_range()?
-
-Please add a comment about whether start is inclusive or exclusive.
-
-I'd also be in favor of hiding this in kvm_main.c, just above the MMU notifier
-usage.  It'd be nice to discourage arch code from adding lookups that more than
-likely belong in generic code.
-
-> +	for (node = interval_tree_iter_first(&slots->hva_tree, start, last); \
-> +	     node;							     \
-> +	     node = interval_tree_iter_next(node, start, last))	     \
-> +
->  static inline
->  struct kvm_memory_slot *id_to_memslot(struct kvm_memslots *slots, int id)
->  {
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 50f9bc9bb1e0..a55309432c9a 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -488,6 +488,9 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
->  	struct kvm_memslots *slots;
->  	int i, idx;
->  
-> +	if (range->end == range->start || WARN_ON(range->end < range->staart))
-
-I'm pretty sure both of these are WARNable offenses, i.e. they can be combined.
-It'd also be a good idea to use WARN_ON_ONCE(); if a caller does manage to
-trigger this, odds are good it will get spammed.
-
-Also, does interval_tree_iter_first() explode if given bad inputs?  If not, I'd
-probably say just omit this entirely.  If it does explode, it might be a good idea
-to work the sanity check into the macro, even if the macro is hidden here.
-
-> +		return 0;
-> +
->  	/* A null handler is allowed if and only if on_lock() is provided. */
->  	if (WARN_ON_ONCE(IS_KVM_NULL_FN(range->on_lock) &&
->  			 IS_KVM_NULL_FN(range->handler)))
-> @@ -507,15 +510,18 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
->  	}
->  
->  	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +		struct interval_tree_node *node;
-> +
->  		slots = __kvm_memslots(kvm, i);
-> -		kvm_for_each_memslot(slot, slots) {
-> +		kvm_for_each_hva_range_memslot(node, slots,
-> +					       range->start, range->end - 1) {
->  			unsigned long hva_start, hva_end;
->  
-> +			slot = container_of(node, struct kvm_memory_slot,
-> +					    hva_node);
-
-Eh, let that poke out.  The 80 limit is more of a guideline.
-
->  			hva_start = max(range->start, slot->userspace_addr);
->  			hva_end = min(range->end, slot->userspace_addr +
->  						  (slot->npages << PAGE_SHIFT));
-> -			if (hva_start >= hva_end)
-> -				continue;
->  
->  			/*
->  			 * To optimize for the likely case where the address
-> @@ -787,6 +793,7 @@ static struct kvm_memslots *kvm_alloc_memslots(void)
->  	if (!slots)
->  		return NULL;
->  
-> +	slots->hva_tree = RB_ROOT_CACHED;
->  	hash_init(slots->id_hash);
->  
->  	return slots;
-> @@ -1113,10 +1120,14 @@ static inline void kvm_memslot_delete(struct kvm_memslots *slots,
->  		atomic_set(&slots->lru_slot, 0);
->  
->  	for (i = dmemslot - mslots; i < slots->used_slots; i++) {
-> +		interval_tree_remove(&mslots[i].hva_node, &slots->hva_tree);
->  		hash_del(&mslots[i].id_node);
-
-I think it would make sense to add helpers for these?  Not sure I like the names,
-but it would certainly dedup the code a bit.
-
-static void kvm_memslot_remove(struct kvm_memslots *slots,
-			       struct kvm_memslot *memslot)
-{
-	interval_tree_remove(&memslot->hva_node, &slots->hva_tree);
-	hash_del(&memslot->id_node);
-}
-
-static void kvm_memslot_insert(struct kvm_memslots *slots,
-			       struct kvm_memslot *memslot)
-{
-	interval_tree_insert(&memslot->hva_node, &slots->hva_tree);
-	hash_add(slots->id_hash, &memslot->id_node, memslot->id);
-}
-
-> +
->  		mslots[i] = mslots[i + 1];
-> +		interval_tree_insert(&mslots[i].hva_node, &slots->hva_tree);
->  		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
->  	}
-> +	interval_tree_remove(&mslots[i].hva_node, &slots->hva_tree);
->  	hash_del(&mslots[i].id_node);
->  	mslots[i] = *memslot;
->  }
+--
+Kartikeya
