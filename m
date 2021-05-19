@@ -2,138 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763E2388F18
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B863388F1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353694AbhESNaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:30:06 -0400
-Received: from mail-co1nam11on2081.outbound.protection.outlook.com ([40.107.220.81]:35936
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239739AbhESNaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:30:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XQHQ39hWwBktipV7TcC2G2roVTSgoSTr4J+3iBSCCORKOoMlSNhYqKcnCH7rj6E3fdUmQLNbDMKtvOapSxSqm87npjh0j6is/dQSPVAJdXYnI/g7ofJwOMzCrquCHFQbpBFDIrZo305Fl8OfdjZr54hVptaFxOEQ8R/RIO1UdAL+qVTUVRS4y2ets+WvO/bD2GZ8m2Lr25wjQCq4ZVBbEdYbdLsTwcsdMqDijravjppf11DF/nh+eJe0E5tjAAoR6v2cUUcJYxmKm9h3zn/hLWuaKE4YcwMCT27BvvoGOz4tqIzDT4SWH4kzZHtUjDWfktOxz0QOOiMqSFbFZfqB8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gIXrrVoT7xnB18TlBrA+vGXv0bpN7Vl+C68QPq3kaAQ=;
- b=eul/VpfoyqXSKtGQR2KyVXNEsJQ+ypaO0B2HN9bwPY4JMAN2PmHbwhcxkuqbbyNqdVRvEZGX+Y5J2gb5fMRnJ6hI1czHcS0lxkW/rmg1phTP+ERcNptBzfipkdB6mKIiUe7BnK0tssQgkuj+gv73LR5qH48oktoowXZPC5nL1wak8GKdJq5vQfXUZU5K2N86mYJeIHuYYPaJ0fmmXnCfn7saf91cdRNJNb5/zYv2uM0Iujq5K7EqOMJ1d/T5UwGeXAVKG2jzvcG5kPFejzzNe0MV9e6I3NQO/xGHyZwSIVQIn4RohIVLplULjNxP1OJi7zC5Xhce5bQGYms+W02fgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gIXrrVoT7xnB18TlBrA+vGXv0bpN7Vl+C68QPq3kaAQ=;
- b=leA8ktJqAzXf2X5uHXjVKr0Tm0dpzDoAYJ42LOE0fBpbiq5rPx6VUi3XC1acScygP6QVrzTwu1SU15evxRIiNuKUNcqEw4x3QeV3RRBh2pD9Lr0YrlK3JAC4JC/kZ3AEuyEwXJJdV3RSJIL6TIfSXsWVN1q9I2piWDVe53s6y85nQJ2mdjeF4ex7VFAl8fV//F+dSGkw8WIM6Uun1LOcwJZaXhLKkP2CRWlOOq23IES84EmA++Qx/gGWjPxjt7SDFoEZsbA3dYycqMC06WNeGHmQ4fY7YGvf2DijMo1DHcvmptR1rh+FfaCMu+1aXV/ZFVtdS7yJQ7usXFok0yXqBg==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4009.namprd12.prod.outlook.com (2603:10b6:5:1cd::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Wed, 19 May
- 2021 13:28:44 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.033; Wed, 19 May 2021
- 13:28:44 +0000
-Date:   Wed, 19 May 2021 10:28:42 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
-        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
-        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
-        bsingharora@gmail.com, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
-Message-ID: <20210519132842.GJ1002214@nvidia.com>
-References: <20210407084238.20443-6-apopple@nvidia.com>
- <YKMhorngO2DVrxac@t490s>
- <47694715.suB6H4Uo8R@nvdebian>
- <YKP5Dj4Q/riGGc43@t490s>
- <20210518173334.GE1002214@nvidia.com>
- <YKQBACJCjsxeM3ro@t490s>
- <20210518194509.GF1002214@nvidia.com>
- <YKQjmtMo+YQGx/wZ@t490s>
- <20210518230327.GG1002214@nvidia.com>
- <YKRRgZmRMdk1vH7A@t490s>
+        id S1353698AbhESNap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239739AbhESNao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:30:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B1F160FF2;
+        Wed, 19 May 2021 13:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621430964;
+        bh=JQuIFikX2LB0ssFXoz9KKfQObi9t6NSh4izYf1JqYPo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ROx8QG94DaNgkkz8Ej/A++v7hVd9fcUYHXMfqjcfmL0wZ+alrDZ2yB3+yPMw2V53z
+         4PTXuiiCzu0waWHptWKfgdrYUkGVXyQ3bH44wJgFyUYE/eMT9vZJrsoQesQw5ltCC4
+         tZunPFXdVZgq4upcW2Lf3h5X5SpVRz5C7XvrvOIN45vvhoZ6vDZfZGuVe1xJK9U9Ev
+         6JE6WottHC9Bu6XV7RK1vvBLAq7F3Wlh9STltRH80TvNZMoxOu2Tx2o+Fk85Gc73y+
+         uC1oHJpo12pyN4u19Iu0gZ9xTDafk79NuIErmU2e/shAkfmSRiUICD0D3AoK9e0x3v
+         Rwq8bstTBnL5Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3655240DC6; Wed, 19 May 2021 10:29:21 -0300 (-03)
+Date:   Wed, 19 May 2021 10:29:21 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>, svens@linux.ibm.com,
+        Vasily Gorbik <gor@linux.ibm.com>, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH] perf test: Test libpfm4 support (63) reports error
+Message-ID: <YKUSseBM+IW4tphS@kernel.org>
+References: <20210517140931.2559364-1-tmricht@linux.ibm.com>
+ <CAP-5=fV-2J1rxHAaGv_GwFzY-mAKKogEvQf1A87PUvZxT7wzUQ@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKRRgZmRMdk1vH7A@t490s>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR01CA0050.prod.exchangelabs.com (2603:10b6:208:23f::19)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR01CA0050.prod.exchangelabs.com (2603:10b6:208:23f::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.32 via Frontend Transport; Wed, 19 May 2021 13:28:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljMFe-00AiBe-GF; Wed, 19 May 2021 10:28:42 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 51402c4a-818c-42d9-7ebc-08d91aca0614
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4009:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4009985A1F1C7C655D046DB3C22B9@DM6PR12MB4009.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uK7b7/gne5+gH8pDassTi/nGiPGU8vv5qjsEnFpCglKnSRmgdPF3Img6mQldQaI3kzkUgligeAV9gDW4ekG/IHYSpD8Oo1o+Dvw43EOa8Wlo8VyN6nCPw7Hkg0+nZZmBEZBqy08kwBpdvb/zl0MCW9OAhGRD/2NquQBoD7MpX1cxQWy7FoHdO3qxyCeaNzWO4Od3j82B7O7AaFkCxkvB/P8erGUoTGVKRHNiM9YGpOm0/p3Zd9r4GvquHs3LIfskI0WJ5/q/HW3tKPXxLwKL2Q5s2iSyWzxRMN5dHPe2oHNLJVrAZIaXYr2xKAQENFW/0dybaYFP0SkDT0xSFbyCL1B2doLVBkNMSDYl5D2jG3bOPt7Zzc/W2Be/bwlkpJLToMpG6NE7ODHdinHHhRa64F5F3M7/iVl//3ss88XqUnGARHsyzxgpNWQJUlNJogebK6jLGwWcOHLvQsQkquEsYOYeudkdqrhsQHDWI06SFJEYJgeUN5BAqvu1ak48My8XWEx77/Dnz4KRPpsnVULWDVkVaDgISqCtEsdFqqRJRyYN2pMEy3ZcMI3KJowg4y253OhmEWGb1OJp1Xdx99uloe2uR/xFAhV4MDgIEYkD3Fg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(39860400002)(396003)(7416002)(38100700002)(8676002)(9746002)(9786002)(478600001)(8936002)(2906002)(186003)(86362001)(26005)(54906003)(66946007)(66476007)(6916009)(316002)(1076003)(5660300002)(36756003)(33656002)(4744005)(426003)(2616005)(66556008)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ShX1+RtbSmyhnUT/Thz17PmmI5w2jnNyQ5gokaWj/tfM5uehd+vuKS5yDsSG?=
- =?us-ascii?Q?OiIj0j/oj0ojbSylpCyNWUcqDI5fAr9F3XxcVPD3pa9fXDlierKy5AwnDeUA?=
- =?us-ascii?Q?oRXtzqy+xRnAQplEBsm08yMmm9zAW7n3l6nDUsqeb4ongYaKN+O/6yPcrKvs?=
- =?us-ascii?Q?iDsTQjW9BnvpmiRBX5NPZLfrc/VWMOyXRQEMb8T/Mpw/+gdb1ECYOfl3dYw3?=
- =?us-ascii?Q?r7oSQzEmWSo/Zw4WszUaC0PaHFFhII/MZ9/FIeBwnanUfcec4pYDr60DpGHY?=
- =?us-ascii?Q?byVj5cbWKJpaXi1U5/rqP54Q7yQB9jyTC/1BTUOHFP1I2l4zoLP/dTuQk/pb?=
- =?us-ascii?Q?RBOEUiyEbin8Q6TsYR12lmclD2s6bhanj8UCXMsI9Ov+ZkYJDV+iNg30kQ9a?=
- =?us-ascii?Q?2MEl86RtH9jgWtcdhhuHA0TRUl7382Cn/XpYnMuvNRBW+vwBoriJRkmCjuQK?=
- =?us-ascii?Q?bNn2kgkG2WWTq94o/9bN8i2PiRjnbVKlGo+J5yEKEMXK8tYC8girSvCGWt3k?=
- =?us-ascii?Q?sf9qKSkigbj3ENnKJBKOK92tAOVB+8T/qeXSt2h1wycHLR3HvSj1KuHsKsN9?=
- =?us-ascii?Q?d+WC/hcs3udO85yaBOAHWYx5TfV7EDGXgFzoS9OVg2v98XpBks0s1C5uXMzC?=
- =?us-ascii?Q?amt0zVEgYpIBzczbo7Y5SCMhTQJsuJuaTIHqvV4eo4CTVOFCRidtKM4OvCJl?=
- =?us-ascii?Q?jweTSibwdypfdCHndNfYOcxt6oKQhaN/t96i3viFKgoUdx1YpyQITvWXfHhu?=
- =?us-ascii?Q?cR8NKpTxOHUhUUooZ1i0Q6Ck6QoG/AlWHW7HniJbrGBcn7aLB7updiTZi5UY?=
- =?us-ascii?Q?W+TKXwSSYJfw6ZGr6CfNs841K9Q90NHfXbuWVRGMc8em2AJhOUoM8e9txvQy?=
- =?us-ascii?Q?9kaaFf8RMgRO54XDt495wfPFxxfBFmuRzB8m1vRC4aVEoBJ3PLFp7nGWbMTQ?=
- =?us-ascii?Q?nn9VrW1p5TyIhepNPEvm8XCM2YR6vC4KaQIyEHVZpALufAGCJxROb8ddx+QO?=
- =?us-ascii?Q?yRe5g7oH2unlzWSxf0IlzsV/EveXs9/PbMkssfNhkLPuUie+qfiwMswKaFCy?=
- =?us-ascii?Q?CBXiQJqKIVuRYp6l5Mj3OImdldGAfpZ5X6/umTyj2EanB6S0fJLCxY1Mb17y?=
- =?us-ascii?Q?fVbyyCD0CGA8UBL4tbbY6bgf9DLW2PvF4veB7i8jPCU7Vs2NoQZKLNMWroYd?=
- =?us-ascii?Q?gogrgGz0wX4NlrLR2nGfpgoAeflfY9sMk5imzVK7Po4nsIcal26Z2tDD+VC2?=
- =?us-ascii?Q?GHV60/mAiei38bt24d8WH/Ml4umTm3v0CYW3MyXMnKfsUK4JHyRasPDd621N?=
- =?us-ascii?Q?Cl20lHabUfv/w05A06HZd//H?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51402c4a-818c-42d9-7ebc-08d91aca0614
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 13:28:43.9397
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BWUJnu65MOFz8vJg7aBCytyzxzKCp7KP1onUZ+J9OPS9POvPEpZ0CsErjHlafNVQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4009
+In-Reply-To: <CAP-5=fV-2J1rxHAaGv_GwFzY-mAKKogEvQf1A87PUvZxT7wzUQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 07:45:05PM -0400, Peter Xu wrote:
-> On Tue, May 18, 2021 at 08:03:27PM -0300, Jason Gunthorpe wrote:
-> > Logically during fork all these device exclusive pages should be
-> > reverted back to their CPU pages, write protected and the CPU page PTE
-> > copied to the fork.
-> > 
-> > We should not copy the device exclusive page PTE to the fork. I think
-> > I pointed to this on an earlier rev..
+Em Tue, May 18, 2021 at 04:30:35PM -0700, Ian Rogers escreveu:
+> On Mon, May 17, 2021 at 7:12 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
+> >
+> > Compiling perf with make LIBPFM4=1 includes libpfm support and
+> > enables test case 63 'Test libpfm4 support'. This test reports an error
+> > on all platforms for subtest 63.2 'test groups of --pfm-events'.
+> > The reported error message is 'nested event groups not supported'
 > 
-> Agreed.  Though please see the question I posted in the other thread: now I am
-> not very sure whether we'll be able to mark a page as device exclusive if that
-> page has mapcount>1.
+> The parsing test checks broken and working strings and so errors are
+> always going to be reported, but agreed this error is wrong.
+> 
+> >  # ./perf test -F 63
+> >  63: Test libpfm4 support                                            :
+> >  63.1: test of individual --pfm-events                               :
+> >  Error:
+> >  failed to parse event stereolab : event not found
+> >  Error:
+> >  failed to parse event stereolab,instructions : event not found
+> >  Error:
+> >  failed to parse event instructions,stereolab : event not found
+> >   Ok
+> >  63.2: test groups of --pfm-events                                   :
+> >  Error:
+> >  nested event groups not supported    <------ Error message here
+> >  Error:
+> >  failed to parse event {stereolab} : event not found
+> >  Error:
+> >  failed to parse event {instructions,cycles},{instructions,stereolab} :\
+> >          event not found
+> >  Ok
+> >  #
+> >
+> > This patch addresses the error message 'nested event groups not supported'.
+> > The root cause is function parse_libpfm_events_option() which parses the
+> > event string '{},{instructions}' and can not handle a leading empty
+> > group notation '{},...'.
+> >
+> > The code detects the first (empty) group indicator '{' but does not
+> > terminate group processing on the following group closing character '}'.
+> > So when the second group indicator '{' is detected, the code assumes
+> > a nested group and returns an error.
+> >
+> > With the error message fixed, also change the expected event number to
+> > one for the test case to succeed.
+> >
+> > While at it also fix a memory leak. In good case the function does not
+> > free the duplicated string given as first parameter.
+> >
+> > Output after:
+> >  # ./perf test -F 63
+> >  63: Test libpfm4 support                                            :
+> >  63.1: test of individual --pfm-events                               :
+> >  Error:
+> >  failed to parse event stereolab : event not found
+> >  Error:
+> >  failed to parse event stereolab,instructions : event not found
+> >  Error:
+> >  failed to parse event instructions,stereolab : event not found
+> >   Ok
+> >  63.2: test groups of --pfm-events                                   :
+> >  Error:
+> >  failed to parse event {stereolab} : event not found
+> >  Error:
+> >  failed to parse event {instructions,cycles},{instructions,stereolab} : \
+> >          event not found
+> >   Ok
+> >  #
+> > Error message 'nested event groups not supported' is gone.
+> 
+> Acked-By: Ian Rogers <irogers@google.com>
+> 
+> I wonder if we should add some coverage for the error cases to the pfm
+> test with something like the following.
 
-IMHO it is similar to write protect done by filesystems on shared
-mappings - all VMAs with a copy of the CPU page have to get switched
-to the device exclusive PTE. This is why the rmap stuff is involved in
-the migration helpers
+Yeah, agreed, please consider sending a patch for that.
 
-Jason
+Thanks, applied.
+
+- Arnaldo
+ 
+> Thanks,
+> Ian
+> 
+> --- a/tools/perf/tests/pfm.c
+> +++ b/tools/perf/tests/pfm.c
+> @@ -155,6 +155,16 @@ static int test__pfm_group(void)
+>                         .nr_events = 3,
+>                         .nr_groups = 1,
+>                 },
+> +               {
+> +                       .events = "instructions}",
+> +                       .nr_events = 1,
+> +                       .nr_groups = 0,
+> +               },
+> +               {
+> +                       .events = "{{instructions}}",
+> +                       .nr_events = 0,
+> +                       .nr_groups = 0,
+> +               },
+>         };
+> 
+>         for (i = 0; i < ARRAY_SIZE(table); i++) {
+> 
+> > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> > Acked-By: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> > ---
+> >  tools/perf/tests/pfm.c |  4 ++--
+> >  tools/perf/util/pfm.c  | 11 ++++++++++-
+> >  2 files changed, 12 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
+> > index 76a53126efdf..d4b0ef74defc 100644
+> > --- a/tools/perf/tests/pfm.c
+> > +++ b/tools/perf/tests/pfm.c
+> > @@ -131,8 +131,8 @@ static int test__pfm_group(void)
+> >                 },
+> >                 {
+> >                         .events = "{},{instructions}",
+> > -                       .nr_events = 0,
+> > -                       .nr_groups = 0,
+> > +                       .nr_events = 1,
+> > +                       .nr_groups = 1,
+> >                 },
+> >                 {
+> >                         .events = "{instructions},{instructions}",
+> > diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
+> > index d735acb6c29c..6eef6dfeaa57 100644
+> > --- a/tools/perf/util/pfm.c
+> > +++ b/tools/perf/util/pfm.c
+> > @@ -62,8 +62,16 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+> >                 }
+> >
+> >                 /* no event */
+> > -               if (*q == '\0')
+> > +               if (*q == '\0') {
+> > +                       if (*sep == '}') {
+> > +                               if (grp_evt < 0) {
+> > +                                       ui__error("cannot close a non-existing event group\n");
+> > +                                       goto error;
+> > +                               }
+> > +                               grp_evt--;
+> > +                       }
+> >                         continue;
+> > +               }
+> >
+> >                 memset(&attr, 0, sizeof(attr));
+> >                 event_attr_init(&attr);
+> > @@ -107,6 +115,7 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+> >                         grp_evt = -1;
+> >                 }
+> >         }
+> > +       free(p_orig);
+> >         return 0;
+> >  error:
+> >         free(p_orig);
+> > --
+> > 2.31.1
+> >
+
+-- 
+
+- Arnaldo
