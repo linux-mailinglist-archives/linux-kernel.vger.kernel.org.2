@@ -2,144 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AFC38898E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CE6388994
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245403AbhESIi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:38:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238704AbhESIi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:38:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62252610CD;
-        Wed, 19 May 2021 08:37:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621413457;
-        bh=42jHPdHTkUweJs1MDa9H85cTfFhXcODaLcoN6NjoWmU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FDuBxRg0lDapNQCSnB3UXjDoYfrb5QiVXYxC6VArfFb19bP41kP7YVKSTjJYeyU9c
-         RHUfNru2A83CvJRZcLCbG3/bqHEyAYcm6NSm3ukJuq0939nAx+Enq02JM32nlhtnoN
-         tGJ/D4A1CGIpqyDjS8oVreSgvf0NpffQs/uHkiNSQRgwBw1FGqOlmP66EncdWADxcB
-         GAh+rZO+GVQMhXsJWV1CK/JeDDMngoC47Ch0rG+YMHkHKmgR7C4ppSuY06N+JgMcue
-         CI6s8xrYM0NZ9O7DtskPzpHOQz0grz3pzCboBQDphtcYmXrTZv31IvARjqq1YQcDfV
-         U8+y9W+PljD/w==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Subject: [PATCH rdma-rc v2] RDMA/core: Sanitize WQ state received from the userspace
-Date:   Wed, 19 May 2021 11:37:31 +0300
-Message-Id: <ac41ad6a81b095b1a8ad453dcf62cf8d3c5da779.1621413310.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S245605AbhESImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:42:05 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:50722 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245518AbhESImE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:42:04 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14J8e0ZI015483;
+        Wed, 19 May 2021 08:40:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=/mZiErNBoyzN3umssfH3gOPEDtVZgaX6Jvuu78Gwv2I=;
+ b=HoGCojdDEW/wA8l97yac42ps/7wadpyHLAEM/yr6/qNo4eD57XG2Uc+SRwB2dMeU4oU9
+ L6KZyBX36NNKITAKGoyXz45jCxdloAPSLsI3fDjaK2vcDOEW3RBRe0rFhPrxgtRYQzyA
+ 7YUPxS8pj7EgFY1eJ0J/8fvtigiwZPggDU0DbhQPccNvFjW7Voe/z7n+va21xP3QUfJY
+ NDFJskEA4MxRCYJAcoyZXq6tFeZSLgvKMRZV1TP5d57XRkhCOgCCrS+IUhMmFxqC/x93
+ BTDJuBd1al01eNAPIgAAQck7g0Iuu79liIdhmITH67JOo2Bl9m7if8AKGm6sewsFZJkN yQ== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38kh0h91x9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 08:40:41 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14J8eexw119045;
+        Wed, 19 May 2021 08:40:40 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 38msw18cjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 08:40:40 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14J8edVP119032;
+        Wed, 19 May 2021 08:40:39 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 38msw18cjg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 08:40:39 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14J8eXex015950;
+        Wed, 19 May 2021 08:40:33 GMT
+Received: from mwanda (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 May 2021 01:40:32 -0700
+Date:   Wed, 19 May 2021 11:40:27 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     ztong0001@gmail.com
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: re: [PATCH v3] misc: alcor_pci: fix null-ptr-deref when there is no
+ PCI bridge
+Message-ID: <YKTO+xuM/Ly+8Vwf@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513040732.1310159-1-ztong0001@gmail.com>
+X-Proofpoint-GUID: SbxvM9rnKVsbnX_j00taO6xd2JIsvsxq
+X-Proofpoint-ORIG-GUID: SbxvM9rnKVsbnX_j00taO6xd2JIsvsxq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hello Tong Zhang,
 
-The mlx4 and mlx5 implemented differently the WQ input checks.
-Instead of duplicating mlx4 logic in the mlx5, let's prepare
-the input in the central place.
+This is a semi-automatic email about new static checker warnings.
 
-The mlx5 implementation didn't check for validity of state input.
-It is not real bug because our FW checked that, but still worth to fix.
+The patch 3ce3e45cc333: "misc: alcor_pci: fix null-ptr-deref when
+there is no PCI bridge" from May 13, 2021, leads to the following
+Smatch complaint:
 
-Fixes: f213c0527210 ("IB/uverbs: Add WQ support")
-Reported-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Changelog:
-v2:
- * Extended commit message
-v1: https://lore.kernel.org/lkml/0433d8013ed3a2ffdd145244651a5edb2afbd75b.1621342527.git.leonro@nvidia.com
- * Removed IB_WQS_RESET state checks because it is zero and wq states
-   declared as u32, so can't be less than IB_WQS_RESET.
-v0: https://lore.kernel.org/lkml/932f87b48c07278730c3c760b3a707d6a984b524.1621332736.git.leonro@nvidia.com
----
- drivers/infiniband/core/uverbs_cmd.c | 21 +++++++++++++++++++--
- drivers/infiniband/hw/mlx4/qp.c      |  9 ++-------
- drivers/infiniband/hw/mlx5/qp.c      |  6 ++----
- 3 files changed, 23 insertions(+), 13 deletions(-)
+    drivers/misc/cardreader/alcor_pci.c:149 alcor_pci_init_check_aspm()
+    error: we previously assumed 'priv->parent_pdev' could be null (see line 147)
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 4f890bff80f8..c6f53d894411 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -3084,12 +3084,29 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
- 	if (!wq)
- 		return -EINVAL;
- 
--	wq_attr.curr_wq_state = cmd.curr_wq_state;
--	wq_attr.wq_state = cmd.wq_state;
- 	if (cmd.attr_mask & IB_WQ_FLAGS) {
- 		wq_attr.flags = cmd.flags;
- 		wq_attr.flags_mask = cmd.flags_mask;
- 	}
-+
-+	if (cmd.attr_mask & IB_WQ_CUR_STATE) {
-+		if (cmd.curr_wq_state > IB_WQS_ERR)
-+			return -EINVAL;
-+
-+		wq_attr.curr_wq_state = cmd.curr_wq_state;
-+	} else {
-+		wq_attr.curr_wq_state = wq->state;
-+	}
-+
-+	if (cmd.attr_mask & IB_WQ_STATE) {
-+		if (cmd.wq_state > IB_WQS_ERR)
-+			return -EINVAL;
-+
-+		wq_attr.wq_state = cmd.wq_state;
-+	} else {
-+		wq_attr.wq_state = wq_attr.curr_wq_state;
-+	}
-+
- 	ret = wq->device->ops.modify_wq(wq, &wq_attr, cmd.attr_mask,
- 					&attrs->driver_udata);
- 	rdma_lookup_put_uobject(&wq->uobject->uevent.uobject,
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 92ddbcc00eb2..2ae22bf50016 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -4251,13 +4251,8 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
- 	if (wq_attr_mask & IB_WQ_FLAGS)
- 		return -EOPNOTSUPP;
- 
--	cur_state = wq_attr_mask & IB_WQ_CUR_STATE ? wq_attr->curr_wq_state :
--						     ibwq->state;
--	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
--
--	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
--	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
--		return -EINVAL;
-+	cur_state = wq_attr->curr_wq_state;
-+	new_state = wq_attr->wq_state;
- 
- 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
- 		return -EINVAL;
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index d984b451c379..becd250388af 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -5483,10 +5483,8 @@ int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
- 
- 	rqc = MLX5_ADDR_OF(modify_rq_in, in, ctx);
- 
--	curr_wq_state = (wq_attr_mask & IB_WQ_CUR_STATE) ?
--		wq_attr->curr_wq_state : wq->state;
--	wq_state = (wq_attr_mask & IB_WQ_STATE) ?
--		wq_attr->wq_state : curr_wq_state;
-+	curr_wq_state = wq_attr->curr_wq_state;
-+	wq_state = wq_attr->wq_state;
- 	if (curr_wq_state == IB_WQS_ERR)
- 		curr_wq_state = MLX5_RQC_STATE_ERR;
- 	if (wq_state == IB_WQS_ERR)
--- 
-2.31.1
+drivers/misc/cardreader/alcor_pci.c
+   142          /*
+   143           * A device might be attached to root complex directly and
+   144           * priv->parent_pdev will be NULL. In this case we don't check its
+   145           * capability and disable ASPM completely.
+   146           */
+   147		if (!priv->parent_pdev)
+                    ^^^^^^^^^^^^^^^^^^
 
+   148			priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
+   149								 priv->parent_pdev);
+                                                                 ^^^^^^^^^^^^^^^^^^
+It will just crash inside the function call.  Is the if statement
+reversed?
+
+   150	
+   151		if ((priv->pdev_cap_off == 0) || (priv->parent_cap_off == 0)) {
+
+regards,
+dan carpenter
