@@ -2,71 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5784F388760
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C31388765
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhESGNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236026AbhESGNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:13:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDC5E611AE;
-        Wed, 19 May 2021 06:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621404722;
-        bh=aliJ2A5IaLQl1kaFJpcVaP8FxOlUquhNHY8hfbwV5oQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G9DZR23da4IjsoJ/mtAo2AxCyf5GDW2IBuWal8rsvRSUyw0YGESWBWY9765O/zFUq
-         OnqbcN7Xothn9+c0LxanS4KEHJFBdg7HNlH5a7rdHiMyBlCUh1DDhbKVBx2ZPl5z1T
-         SPuWPJT/TmE2An9xwQXLbCq/JmtSIpzY2dTaSpllQnS2hujMM2i0xiKWOKGhum8cAE
-         nde1rhH/lYw62U5AeKtUbRnV2sD44ZCQlwXr0e2I6VYgukoTamidjdhgzrnudauYJq
-         zKyF21Fnyqd+NpIXsFzM0lCvqPJA8PaZOHLV+Mezrqm25c8acZlF3PHChGjmJjsBgX
-         RoQPiT48pGerA==
-Received: by mail-lf1-f48.google.com with SMTP id r5so17302623lfr.5;
-        Tue, 18 May 2021 23:12:01 -0700 (PDT)
-X-Gm-Message-State: AOAM531Kza4MirKSLL9NDNC/gyXKxLuhTPRUa2L3IAFnorgqCxK9UHE7
-        howoEg+vvtgW3cVCNRdxzSi9vW6qjH4z7A94IRg=
-X-Google-Smtp-Source: ABdhPJxlGj9xlx+dM6z1cg/1XfTAYuNHni/4fS0DrteOYCWlgF9XOUG9wrp/nkdsQ6fjglLfVBF0odXgygjFL2krD6E=
-X-Received: by 2002:ac2:5493:: with SMTP id t19mr7293363lfk.346.1621404720345;
- Tue, 18 May 2021 23:12:00 -0700 (PDT)
+        id S234940AbhESGPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:15:41 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:40783 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231191AbhESGPh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 02:15:37 -0400
+Received: by mail-wr1-f45.google.com with SMTP id z17so12614173wrq.7;
+        Tue, 18 May 2021 23:14:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eM8EQdorm7mWG5o19XHqVGANwvQx7NCTQwR5Sava/sg=;
+        b=RM4jwaeYbBUIgNQDlRxeqj0JO9OTU+py8tLHT5SdBYgIsVfsKiRp5xWEKnbtsCllar
+         EsRVpzhKWtjX8ozcjMSp3eRltO1nUK17pKwEuzS5g7Vur8w75f5EpDzWy269+s77Y0qr
+         Omr6bzGkFiwd/n3i0HcYowdjkvIdbs4P90a2iZbdBkfqh6fz4Hzkc0t5Xpv8o60YX1WI
+         WDIrTZtkJTyIDmZsV/oPg92nKfbWixfUwSG6RtuDwYHEnIG527HVA6Ahe0IV61prULXT
+         H4E92ZAd5Zp+7A6lo/ypYcsGZe2lMVN5EGISRvRr1iGEAbeoJ+LjPfi6Q+910po81sZE
+         7VOg==
+X-Gm-Message-State: AOAM533BvLlyey/kSa8gYPD7I2W5NC8ER0sL9Mrb9WABsykXD8CMgjPH
+        TJjh7HevO4nyjhj/Yah3URw=
+X-Google-Smtp-Source: ABdhPJz6iPXnZ1bVZfGhblaiVWq7jqmsaA0sDVHC70vQOG+pEbSsL5Jmu31ST2PpHeuV1k01nEMjiA==
+X-Received: by 2002:adf:f9ce:: with SMTP id w14mr12479031wrr.387.1621404857559;
+        Tue, 18 May 2021 23:14:17 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id i1sm13181697wrp.51.2021.05.18.23.14.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 23:14:17 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] serial: 8250: Use BIT(x) for UART_{CAP,BUG}_*
+To:     Andrew Jeffery <andrew@aj.id.au>, linux-serial@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, joel@jms.id.au,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        jenmin_yuan@aspeedtech.com, ryan_chen@aspeedtech.com,
+        miltonm@us.ibm.com
+References: <20210519000704.3661773-1-andrew@aj.id.au>
+ <20210519000704.3661773-3-andrew@aj.id.au>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <56ec152a-560b-1eed-97e2-c12e4fed171a@kernel.org>
+Date:   Wed, 19 May 2021 08:14:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de> <CAJF2gTR5838=Uwc5P6Xs=G7vk80k0yqWcSsNe0OFcwc9sDBBHg@mail.gmail.com>
- <20210519060617.GA28397@lst.de>
-In-Reply-To: <20210519060617.GA28397@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 19 May 2021 14:11:48 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSd273ZuRpgFZK-UKA=LgDHGEVrWdN8admScta-mF-Hvw@mail.gmail.com>
-Message-ID: <CAJF2gTSd273ZuRpgFZK-UKA=LgDHGEVrWdN8admScta-mF-Hvw@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        drew@beagleboard.org, wefu@redhat.com, lazyparser@gmail.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210519000704.3661773-3-andrew@aj.id.au>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 2:06 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
-> > Since the existing RISC-V ISA cannot solve this problem, it is better
-> > to provide some configuration for the SOC vendor to customize.
->
-> We've been talking about this problem for close to five years.  So no,
-> if you don't manage to get the feature into the ISA it can't be
-> supported.
+On 19. 05. 21, 2:07, Andrew Jeffery wrote:
+> BIT(x) improves readability and safety with respect to shifts.
+> 
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+>   drivers/tty/serial/8250/8250.h | 33 +++++++++++++++++----------------
+>   1 file changed, 17 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+> index 34aa2714f3c9..4fbf1088fad8 100644
+> --- a/drivers/tty/serial/8250/8250.h
+> +++ b/drivers/tty/serial/8250/8250.h
+> @@ -7,6 +7,7 @@
+>    *  Copyright (C) 2001 Russell King.
+>    */
+>   
+> +#include <linux/bitops.h>
+>   #include <linux/serial_8250.h>
+>   #include <linux/serial_reg.h>
+>   #include <linux/dmaengine.h>
+> @@ -70,25 +71,25 @@ struct serial8250_config {
+>   	unsigned int	flags;
+>   };
+>   
+> -#define UART_CAP_FIFO	(1 << 8)	/* UART has FIFO */
+> -#define UART_CAP_EFR	(1 << 9)	/* UART has EFR */
+> -#define UART_CAP_SLEEP	(1 << 10)	/* UART has IER sleep */
+> -#define UART_CAP_AFE	(1 << 11)	/* MCR-based hw flow control */
+> -#define UART_CAP_UUE	(1 << 12)	/* UART needs IER bit 6 set (Xscale) */
+> -#define UART_CAP_RTOIE	(1 << 13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
+> -#define UART_CAP_HFIFO	(1 << 14)	/* UART has a "hidden" FIFO */
+> -#define UART_CAP_RPM	(1 << 15)	/* Runtime PM is active while idle */
+> -#define UART_CAP_IRDA	(1 << 16)	/* UART supports IrDA line discipline */
+> -#define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
+> +#define UART_CAP_FIFO	BIT(8)	/* UART has FIFO */
+> +#define UART_CAP_EFR	BIT(9)	/* UART has EFR */
+> +#define UART_CAP_SLEEP	BIT(10)	/* UART has IER sleep */
 
-arch/riscv/errata/ is also defined in riscv ISA?
 
+Perfect, except the include: BIT is not defined in bitops.h, but in 
+bits.h (which includes vdso/bits.h). In fact, bitops.h includes bits.h 
+too, but it's superfluous to include all those bitops.
+
+thanks,
 -- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+-- 
+js
+suse labs
