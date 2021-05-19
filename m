@@ -2,83 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8519E388A4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47583388A4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344778AbhESJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:13:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344696AbhESJNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:13:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D68860FE4;
-        Wed, 19 May 2021 09:11:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621415507;
-        bh=F6pKKwIPBcGczYtJtMS3QwrOVGxIOQ49Ne5ddiNdoQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YPWTM2Jajqu2pS1nhf07dzYZsb28GkWZ8eHPPpoITbmcmJRkJu/qEIVsXgFdzxVIk
-         nDnFdHx/AkdE1ykcy7Xg6RF4Qs6QyRICAWII2boOl50TuyrMPWEPy9NRD/NOI2LV9b
-         DWVXT0wpwvsUWjNdjjEMzBDYONjxxyoIPBnU+kcnjLIBbV966Q2HJA2FE/GIh94Re+
-         umILgRMr/4kJ9qUhvdutmEFS8/Omjso2O2LTL2eEw5OWPOE3/cHoAkQi6DICpKWYCy
-         9Fm08M7qdnJLsqAHHZ0tD1kOjNnxUlgx7Jev4zU25qrH2NL+RZ+fck8/CxT7hn/toH
-         EotcbMHlvti1Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1ljIF0-0002ST-QX; Wed, 19 May 2021 11:11:46 +0200
-Date:   Wed, 19 May 2021 11:11:46 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 29/35] USB: serial: digi_acceleport, simplify
- digi_chars_in_buffer
-Message-ID: <YKTWUmYkC/qfrLh0@hovoldconsulting.com>
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <20210505091928.22010-30-jslaby@suse.cz>
+        id S1344258AbhESJQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:16:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38018 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343716AbhESJQA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:16:00 -0400
+Date:   Wed, 19 May 2021 09:14:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621415679;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iJ1wPPW53XVoYNCT4k9QipBLpHO3waN6/h9gYQTSugg=;
+        b=uIkq5h0zqWmPhAbeXaxJSv7y4U1Tbo1oq32NEI1Nf7fPoFIVHdxauwZKHOmCnPpUknFkf+
+        XUwAetyfwXpEDEFC4t97VgqeqL5GIGC8rvvTNkhnViNAiEYNja3Em6sV40draj7zOcK17N
+        +QpiuHj1D98udBZ17HxrSK0Sv2Y1hp+6Ob3tC/4QJFVYfVZFJikW/DZeXt9emxrx4W+9O3
+        mIGM2rMDrFl0xu14uwHuA/j/BXCep9xQBh3Hws/uicNU6mAB1r4bsn4fUgHe1FL/1UVXX7
+        irbMyJObD6C/Ux9Bq3qw6LlR+iMTmIvpbmA7708YPsZ+QO5/OBPcUNaFsXDqEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621415679;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iJ1wPPW53XVoYNCT4k9QipBLpHO3waN6/h9gYQTSugg=;
+        b=VgeN71BQZrPVKiSqMAkDbqH1FWT9Xc8HtAXE1qS/aD5nP83ypPcK+mra1Yrg989SmGhgh2
+        AGopWoo6gAMUAOCw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq: Export affinity setter for modules
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210518093117.968251441@linutronix.de>
+References: <20210518093117.968251441@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505091928.22010-30-jslaby@suse.cz>
+Message-ID: <162141567899.29796.14597202201574630212.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 11:19:22AM +0200, Jiri Slaby wrote:
-> "if"'s true branch in digi_chars_in_buffer returns. So there is no need
-> for "else" and indented code. Remove this else and shift the code to the
-> left.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: linux-usb@vger.kernel.org
-> ---
->  drivers/usb/serial/digi_acceleport.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/digi_acceleport.c b/drivers/usb/serial/digi_acceleport.c
-> index 19ee8191647c..0c4d611621c2 100644
-> --- a/drivers/usb/serial/digi_acceleport.c
-> +++ b/drivers/usb/serial/digi_acceleport.c
-> @@ -1050,12 +1050,11 @@ static unsigned int digi_chars_in_buffer(struct tty_struct *tty)
->  			priv->dp_port_num, port->bulk_out_size - 2);
->  		/* return(port->bulk_out_size - 2); */
->  		return 256;
-> -	} else {
-> -		dev_dbg(&port->dev, "digi_chars_in_buffer: port=%d, chars=%d\n",
-> -			priv->dp_port_num, priv->dp_out_buf_len);
-> -		return priv->dp_out_buf_len;
->  	}
->  
-> +	dev_dbg(&port->dev, "digi_chars_in_buffer: port=%d, chars=%d\n",
-> +		priv->dp_port_num, priv->dp_out_buf_len);
-> +	return priv->dp_out_buf_len;
->  }
+The following commit has been merged into the irq/core branch of tip:
 
-This doesn't look like much of an improvement so I'm dropping this one.
+Commit-ID:     4d80d6ca5d77fde9880da8466e5b64f250e5bf82
+Gitweb:        https://git.kernel.org/tip/4d80d6ca5d77fde9880da8466e5b64f250e5bf82
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 18 May 2021 11:17:26 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 19 May 2021 11:01:51 +02:00
 
-If we want to clean this up we should use a common exit path for both
-branches. I'll send a couple of patches to address this and a related
-issue.
+genirq: Export affinity setter for modules
 
-Johan
+Perf modules abuse irq_set_affinity_hint() to set the affinity of system
+PMU interrupts just because irq_set_affinity() was not exported.
+
+The fact that irq_set_affinity_hint() actually sets the affinity is a
+non-documented side effect and the name is clearly saying it's a hint.
+
+To clean this up, export the real affinity setter.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/20210518093117.968251441@linutronix.de
+---
+ include/linux/interrupt.h | 35 ++---------------------------------
+ kernel/irq/manage.c       | 33 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 34 insertions(+), 34 deletions(-)
+
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 4777850..35a3742 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -319,39 +319,8 @@ struct irq_affinity_desc {
+ 
+ extern cpumask_var_t irq_default_affinity;
+ 
+-/* Internal implementation. Use the helpers below */
+-extern int __irq_set_affinity(unsigned int irq, const struct cpumask *cpumask,
+-			      bool force);
+-
+-/**
+- * irq_set_affinity - Set the irq affinity of a given irq
+- * @irq:	Interrupt to set affinity
+- * @cpumask:	cpumask
+- *
+- * Fails if cpumask does not contain an online CPU
+- */
+-static inline int
+-irq_set_affinity(unsigned int irq, const struct cpumask *cpumask)
+-{
+-	return __irq_set_affinity(irq, cpumask, false);
+-}
+-
+-/**
+- * irq_force_affinity - Force the irq affinity of a given irq
+- * @irq:	Interrupt to set affinity
+- * @cpumask:	cpumask
+- *
+- * Same as irq_set_affinity, but without checking the mask against
+- * online cpus.
+- *
+- * Solely for low level cpu hotplug code, where we need to make per
+- * cpu interrupts affine before the cpu becomes online.
+- */
+-static inline int
+-irq_force_affinity(unsigned int irq, const struct cpumask *cpumask)
+-{
+-	return __irq_set_affinity(irq, cpumask, true);
+-}
++extern int irq_set_affinity(unsigned int irq, const struct cpumask *cpumask);
++extern int irq_force_affinity(unsigned int irq, const struct cpumask *cpumask);
+ 
+ extern int irq_can_set_affinity(unsigned int irq);
+ extern int irq_select_affinity(unsigned int irq);
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 4c14356..a847dd2 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -441,7 +441,8 @@ out_unlock:
+ 	return ret;
+ }
+ 
+-int __irq_set_affinity(unsigned int irq, const struct cpumask *mask, bool force)
++static int __irq_set_affinity(unsigned int irq, const struct cpumask *mask,
++			      bool force)
+ {
+ 	struct irq_desc *desc = irq_to_desc(irq);
+ 	unsigned long flags;
+@@ -456,6 +457,36 @@ int __irq_set_affinity(unsigned int irq, const struct cpumask *mask, bool force)
+ 	return ret;
+ }
+ 
++/**
++ * irq_set_affinity - Set the irq affinity of a given irq
++ * @irq:	Interrupt to set affinity
++ * @cpumask:	cpumask
++ *
++ * Fails if cpumask does not contain an online CPU
++ */
++int irq_set_affinity(unsigned int irq, const struct cpumask *cpumask)
++{
++	return __irq_set_affinity(irq, cpumask, false);
++}
++EXPORT_SYMBOL_GPL(irq_set_affinity);
++
++/**
++ * irq_force_affinity - Force the irq affinity of a given irq
++ * @irq:	Interrupt to set affinity
++ * @cpumask:	cpumask
++ *
++ * Same as irq_set_affinity, but without checking the mask against
++ * online cpus.
++ *
++ * Solely for low level cpu hotplug code, where we need to make per
++ * cpu interrupts affine before the cpu becomes online.
++ */
++int irq_force_affinity(unsigned int irq, const struct cpumask *cpumask)
++{
++	return __irq_set_affinity(irq, cpumask, true);
++}
++EXPORT_SYMBOL_GPL(irq_force_affinity);
++
+ int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+ {
+ 	unsigned long flags;
