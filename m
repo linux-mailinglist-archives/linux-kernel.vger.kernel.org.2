@@ -2,202 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A895738987B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5393338987C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhESVUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhESVUJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:20:09 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD3EC06175F;
-        Wed, 19 May 2021 14:18:48 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id b25so14502539oic.0;
-        Wed, 19 May 2021 14:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZOtbChdXBxToRMqf8wzHNBcmP1hef8N7fN7VXXJvh1Y=;
-        b=N5OruzcxQbm+vUoqVTRqVuicCog8Zs33FaA8Llj1zwCKiPRUjTDnOnZPwcL/G7PqaH
-         hY+2JMVaMgoQsRX1yyZotg85j3qeM/sdn7jcSQutmf+rtn4nXPCHk2Jo4pY9BjWBC8Er
-         XnQ3S6t3r/HhqpwdRxVxnDSwCUxE4RhX0r2eJGanSWSDNI9c3e9vgQ15rP0WuVmdLAoJ
-         S1K7BY94iiqa0QxvvwEtJZ/bsaZTMmKT8Ki7UCLnL6fweeWxhgk8O+w5uy+eCKKXw17K
-         Wbw7pAZutdZvAWDK4rKp5luyfKEYXuwfX4OvVQXmkQ22OUjzTmbTIfK6wh/cjCBLz1q7
-         /+UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZOtbChdXBxToRMqf8wzHNBcmP1hef8N7fN7VXXJvh1Y=;
-        b=m1+K0Uw2cz0kJOBNdfSAWA5pLxcOrZnLe2yfrSFsNFo1z4o76Al6qbXzhDbsIratq/
-         f75WSjw2BA8PTN28agPIRXvxpBh1uwbeMgzopwiY3RT4Frb6DVHRNIrJEh/PfV7ydG6P
-         gF+vgPmp86/NxiVwKk6ZJkJ1wK8kT02feDqSh8HvoNT64BmPCAp/o9DkAavxpHd3PCKW
-         QBttofjJshVaPfINtzbLo5LqL1drarcPqXOmkFuKr8X4PHOJ3DlnJd4dcHcnt5+wj1ir
-         o6/vQkju1w5MbAc+Vckk7OdxKEls87fh30fqugDmtmZ7FC7iTMQIbVTXchVmggARkDc/
-         81uQ==
-X-Gm-Message-State: AOAM531mglt8WZF1vLy9HWVaXzeLam67scP+38D3fLrNyVdiE6koDItd
-        GeW2k27a8qhHjm3HQkgFjCYvQUSDey/aWle27zWWDmypLlLqow==
-X-Google-Smtp-Source: ABdhPJz1LlSO20IL+T0lzkoFL38bGJpk72JRf/c6uyVWtY3eQX3RwkRwLhFkXZodu7j+8xJMO565zx0A5kREfIOLVuU=
-X-Received: by 2002:aca:b5c4:: with SMTP id e187mr924572oif.149.1621459126929;
- Wed, 19 May 2021 14:18:46 -0700 (PDT)
+        id S229896AbhESVUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:20:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46576 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229454AbhESVUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:20:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EB8C0B1F6;
+        Wed, 19 May 2021 21:18:54 +0000 (UTC)
+Date:   Wed, 19 May 2021 23:18:47 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     James Feeney <james@nurealm.net>
+Cc:     linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: linux 5.12 - fails to boot - soft lockup - CPU#0 stuck for 23s!
+ - RIP smp_call_function_single
+Message-ID: <YKWAt1zLM2vfv4Sp@zn.tnic>
+References: <8a9599b2-f4fe-af9b-90f5-af39c315ec2f@nurealm.net>
+ <YKIqDdFNaXYd39wz@zn.tnic>
+ <1876afbe-a167-2be5-3690-846700eeb76c@nurealm.net>
+ <YKTygvN0QNlExEQP@zn.tnic>
+ <984ee4ab-6e6b-cb0e-a4f1-ce2951994b1d@nurealm.net>
 MIME-Version: 1.0
-References: <20210515124055.22225-1-sergio.paracuellos@gmail.com> <20210519203628.GA254894@bjorn-Precision-5520>
-In-Reply-To: <20210519203628.GA254894@bjorn-Precision-5520>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 19 May 2021 23:18:36 +0200
-Message-ID: <CAMhs-H-7Ocjp6JLKcS9_hMn77H=st8JBdLXgxc+yYiypFTjrvQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] MIPS: ralink: pci: driver for Pcie controller in
- MT7621 SoCs
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-staging@lists.linux.dev,
-        Greg KH <gregkh@linuxfoundation.org>,
-        NeilBrown <neil@brown.name>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <984ee4ab-6e6b-cb0e-a4f1-ce2951994b1d@nurealm.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Wed, May 19, 2021 at 02:03:05PM -0600, James Feeney wrote:
+> I had to ask, and got this answer:
+> 
+> ====
+> The sources contain commits on top of upstream releases. This is why the tags contain -arch1 etc. For example, see https://git.archlinux.org/linux.git/log/?h=v5.11.16-arch1 , which adds 6 commits on top of the upstream "Linux 5.11.16" release, while https://git.archlinux.org/linux.git/log/?h=v5.12-arch1 only contains the long-standing "unprivileged_userns_clone" patch and the version number change, making it essentially vanilla.
+> ====
+> 
+> There are no additional kernel patches in the build.
 
-On Wed, May 19, 2021 at 10:36 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Sat, May 15, 2021 at 02:40:51PM +0200, Sergio Paracuellos wrote:
-> > MediaTek MT7621 PCIe subsys supports single Root complex (RC)
-> > with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link.
-> > Topology is as follows:
-> >
-> >                           MT7621 PCIe HOST Topology
-> >
-> >                                    .-------.
-> >                                    |       |
-> >                                    |  CPU  |
-> >                                    |       |
-> >                                    '-------'
-> >                                        |
-> >                                        |
-> >                                        |
-> >                                        v
-> >                               .------------------.
-> >                   .-----------|  HOST/PCI Bridge |------------.
-> >                   |           '------------------'            |     Type1
-> >          BUS0     |                     |                     |    Access
-> >                   v                     v                     v    On Bus0
-> >           .-------------.        .-------------.       .-------------.
-> >           | VIRTUAL P2P |        | VIRTUAL P2P |       | VIRTUAL P2P |
-> >           |    BUS0     |        |    BUS0     |       |    BUS0     |
-> >           |    DEV0     |        |    DEV1     |       |    DEV2     |
-> >           '-------------'        '-------------'       '-------------'
-> >     Type0        |          Type0       |         Type0       |
-> >    Access   BUS1 |         Access   BUS2|        Access   BUS3|
-> >    On Bus1       v         On Bus2      v        On Bus3      v
-> >            .----------.           .----------.          .----------.
-> >            | Device 0 |           | Device 0 |          | Device 0 |
-> >            |  Func 0  |           |  Func 0  |          |  Func 0  |
-> >            '----------'           '----------'          '----------'
-> >
-> > This driver has been very long time in staging and I have been cleaning
-> > it from its first versions where there was code kaos and PCI_LEGACY support.
-> > Original code came probably from openWRT based on mediatek's SDK code. There
-> > is no documentation at all about the mt7621 PCI subsystem.
-> > I have been cleaning it targeting mt7621 SoC which is the one I use in
-> > my GNUBee PC1 board and HiLink HLK-MT7621A evaluation board.
-> >
-> > Now I think is clean enough to be moved into 'arch/mips/pci'.
-> >
-> > This driver also uses already mainlined pci phy driver located in
-> > 'drivers/phy/ralink/phy-mt7621-pci.c'. There are two instances of
-> > the phy being the first one dual ported for pci0 and pci1, and the
-> > second one not dual ported dedicated to pci2. Because of writing twice
-> > some phy registers of the dual-ported one sometimes become in not
-> > confident boot cycles we have to take care of this when device link
-> > is checked here in controller driver. We power on the dual ported-phy
-> > if there is something connected in pcie0 or pcie1. In the same manner
-> > we have to properly disable it only if nothing is connected in of both
-> > pcie0 and pci1 slots.
-> >
-> > Another thing that must be mentioned is that this driver uses IO
-> > in physical address 0x001e160000. IO_SPACE_LIMIT for MIPS is 0xffff
-> > so some generic PCI functions (like of_pci_range_to_resource) won't
-> > work and the resource ranges part for IO is set manually.
-> >
-> > I had already sent binding documentation to be reviewed but I am
-> > include also here with the driver itself and this cover letter
-> > to make easy review process.
-> >
-> > Best regards,
-> >     Sergio Paracuellos
-> >
-> > Sergio Paracuellos (4):
-> >   dt-bindings: mt7621-pci: PCIe binding documentation for MT7621 SoCs
-> >   MIPS: pci: Add driver for MT7621 PCIe controller
-> >   staging: mt7621-pci: remove driver from staging
->
-> Generally it's better if the move can be done in one commit instead of
-> an add followed by a remove.
+Yeah, ok, let's say you're running pretty much an upstream kernel.
 
-I have no problem at all to just move the driver instead of add and
-remove. But it is easier to review initially in this way. No other
-reason but this one. So, if after review is ok, we can just move this
-in the way you are pointing out here.
+> These boots are consecutive and are all from the same stock 5.12.0 kernel.
 
->
-> I see there are a bunch of MIPS PCI controller drivers in
-> arch/mips/pci/, so I see the argument for putting this one there as
-> well.
->
-> But most of the similar drivers are in drivers/pci/controller/, where
-> I think it's easier to keep them up to date with changes in the PCI
-> core.  Have you considered putting this one there?
+Yeah, that's weird. Box seems to boot fine in some cases. There's
 
-Most pci drivers in 'arch/mips/pci' are still using PCI_LEGACY stuff.
-In contrast mt7621-pci is using current pci generic apis but even most
-of the code is generic enough, there is one remaining thing which
-depends on mips architecture which is the iocu region configuration
-which must be done in the driver itself. This is the only reason to
-move this driver into 'arch/mips/pci' instead of
-'drivers/pci/controller/'. So... I am all ears to listen to
-suggestions for the proper place for this driver. Thomas, do you have
-any thoughts on this?
+[   26.864040] ACPI: OSL: Resource conflict; ACPI support missing from driver?
+[   26.874541] ACPI: OSL: Resource conflict: System may be unstable or behave erratically
 
-Thanks,
-    Sergio Paracuellos
->
-> >   MAINTAINERS: add myself as maintainer of the MT7621 PCI controller
-> >     driver
-> >
-> >  .../bindings/pci/mediatek,mt7621-pci.yaml     | 149 ++++++++++++++++++
-> >  MAINTAINERS                                   |   6 +
-> >  arch/mips/pci/Makefile                        |   1 +
-> >  .../mt7621-pci => arch/mips/pci}/pci-mt7621.c |   0
-> >  arch/mips/ralink/Kconfig                      |   9 +-
-> >  drivers/staging/Kconfig                       |   2 -
-> >  drivers/staging/Makefile                      |   1 -
-> >  drivers/staging/mt7621-pci/Kconfig            |   8 -
-> >  drivers/staging/mt7621-pci/Makefile           |   2 -
-> >  drivers/staging/mt7621-pci/TODO               |   4 -
-> >  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 ------------
-> >  11 files changed, 164 insertions(+), 122 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-> >  rename {drivers/staging/mt7621-pci => arch/mips/pci}/pci-mt7621.c (100%)
-> >  delete mode 100644 drivers/staging/mt7621-pci/Kconfig
-> >  delete mode 100644 drivers/staging/mt7621-pci/Makefile
-> >  delete mode 100644 drivers/staging/mt7621-pci/TODO
-> >  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
-> >
-> > --
-> > 2.25.1
+Dunno how relevant this is - it probably has been the case since forever. 
+
+> $ make menuconfig
+> ...
+> 
+> This config option is not listed and is not changeable:
+
+Bah, sorry about that. Use this small hunk ontop so that you can disable
+it in menuconfig:
+
+---
+diff --git a/drivers/thermal/intel/Kconfig b/drivers/thermal/intel/Kconfig
+index ce4f59213c7a..8c1376a20b54 100644
+--- a/drivers/thermal/intel/Kconfig
++++ b/drivers/thermal/intel/Kconfig
+@@ -9,7 +9,8 @@ config INTEL_POWERCLAMP
+ 	  user interface is exposed via generic thermal framework.
+ 
+ config X86_THERMAL_VECTOR
+-	def_bool y
++	tristate "X86 thermal vector"
++	default y
+ 	depends on X86 && CPU_SUP_INTEL && X86_LOCAL_APIC
+ 
+ config X86_PKG_TEMP_THERMAL
+---
+
+and with it ontop, boot it the aforementioned way.
+
+And then pls build 5.11 which doesn't have the therm_throt patch - I'd
+like to see if that therm_throt thing is even loading. Because I don't
+see something like:
+
+[    0.302411] mce: CPU0: Thermal monitoring enabled (TM2)
+
+in your dmesg. Could be some detection failure due to the change when
+those happen. Althouth they shouldn't but who knows.
+
+I have a similar box as yours:
+
+[    0.305858] smpboot: CPU0: Intel(R) Pentium(R) Dual  CPU  E2180  @ 2.00GHz (family: 0x6, model: 0xf, stepping: 0xd)
+
+a bit newer stepping and AFAIR, it boots fine but I'll try your .config
+there to check just in case.
+
+Thx.
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
