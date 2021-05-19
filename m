@@ -2,564 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FCB3893BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51433893B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355482AbhESQ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:28:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:48406 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355366AbhESQ1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:27:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61285175A;
-        Wed, 19 May 2021 09:26:02 -0700 (PDT)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1AB63F73D;
-        Wed, 19 May 2021 09:26:00 -0700 (PDT)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-Subject: [PATCH v3 24/24] x86/resctrl: Merge the CDP resources
-Date:   Wed, 19 May 2021 16:24:24 +0000
-Message-Id: <20210519162424.27654-25-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210519162424.27654-1-james.morse@arm.com>
-References: <20210519162424.27654-1-james.morse@arm.com>
+        id S1355352AbhESQ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355321AbhESQ1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:27:15 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAFBC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:25:54 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id h4so14632343wrt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h9ACoFyscr2mGx2hv7BWBvdkBNtd8ng9Fu2si46cdq4=;
+        b=byisdwD/i5u3WtSKYw+sYWGk0u8xFD4aI4NdDxMw+ffgIcjDqEhv7ahv61jA6USQgk
+         jm9vALBRIHhaWHsrnl4alI9tjghWi/KDqej7GJsI+Kh4+CiH0JVQT0LCLcEZJlSVxSxX
+         jj3JoW++94xEI/00y2L7l5sdQNlHQsyE9iBR37drGXa3B+/DmIvmUTXJqrKzGH3GoeOw
+         XAMQ1MECR83nnQKSRbgV7bTxboQM9oo/dUiqmRqnU1zBiQl1kBpBniegFK6NnaUyMYJs
+         dGv3epgWNZMUAMRxznt6TtyULLsjNPeZZZZRIBCFCcBlAEE6+cO/T9jXmsp2Z9ceZfa7
+         EZ7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h9ACoFyscr2mGx2hv7BWBvdkBNtd8ng9Fu2si46cdq4=;
+        b=e2wPAxl/vs/hLM3t9uHQ5YKOhhhmFZ0zkdcFmNET2sdpyfW1P4ehaWAyPerw5uBPKK
+         ExsoJNAyLpHoHgVc6jgZQMazxKgK0NRWHGYJR0idcCO0lYzAXDTL9Ns8dntXJ68grUL/
+         ri/jdxYf5hkvPJ6spViM0wyQsYQ7Oic7k2semmFYOw6pYIGAKUrNbSQflb1FivqTrl5x
+         euXMOd2mrJgqW1ECclvFwcd0MHvk3Ak5CO31KaszEGrj8vyKMbczO4q9Gk9zFXndLKT/
+         4ZyuSGGAvlJCPJVvKSQ0R7663ZbAnuo1mKFyIUDMR8kaowBr6pzDaG1avl2H06fyVx8b
+         mJIA==
+X-Gm-Message-State: AOAM531xZBxAMiCBftBWo/6hOhhXjZGqU4hv8JFqfu5oFJCYanvUmDhd
+        N07WqLsDP2TTbecam5Iz+fYJtg==
+X-Google-Smtp-Source: ABdhPJwr3K6AGuoWpHTQgaEA3SUgfH1bxgCXJJ3IVhKq00yPr1NJM+0gcq90Ro1URVdiivdA8wZX8A==
+X-Received: by 2002:adf:e411:: with SMTP id g17mr15445759wrm.402.1621441553089;
+        Wed, 19 May 2021 09:25:53 -0700 (PDT)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id k205sm5827724wmf.13.2021.05.19.09.25.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 09:25:52 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] cpufreq: mediatek: add support for mt8365
+Date:   Wed, 19 May 2021 18:25:50 +0200
+Message-Id: <20210519162550.3757832-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrl uses struct rdt_resource to describe the available hardware
-resources. The domains of the CDP aliases share a single ctrl_val[]
-array. The only differences between the struct rdt_hw_resource
-aliases is the name and conf_type.
+Add compatible stirng for MediaTek MT8365 SoC. Add also the
+compatible in the blacklist of the cpufreq-dt-platdev driver.
 
-The name from struct rdt_hw_resource is visible to user-space. To
-support another architecture, as many user-visible details should be
-handled in the filesystem parts of the code that is common to all
-architectures. The name and conf_type go together.
-
-Remove conf_type and the CDP aliases. When CDP is supported and
-enabled, schemata_list_create() can create two schema using the
-single resource, generating the CODE/DATA suffix to the schema
-name itself.
-This allows the alloc_ctrlval_array() and complications around free()ing
-the ctrl_val arrays to be removed.
-
-Reviewed-by: Jamie Iles <jamie@nuviainc.com>
-Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
 ---
-Changes since v2:
- * Removed stray conf_type that remained in the arch specific struct
- * Shuffled commit message,
+ drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+ drivers/cpufreq/mediatek-cpufreq.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
-Changes since v1:
- * rdt_get_cdp_config() is kept for its comment.
----
- arch/x86/kernel/cpu/resctrl/core.c     | 177 ++-----------------------
- arch/x86/kernel/cpu/resctrl/internal.h |   6 -
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 122 +++++++++--------
- 3 files changed, 75 insertions(+), 230 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 94cfc72beccf..daaa326e5a25 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -62,7 +62,6 @@ mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m,
- struct rdt_hw_resource rdt_resources_all[] = {
- 	[RDT_RESOURCE_L3] =
- 	{
--		.conf_type			= CDP_NONE,
- 		.resctrl = {
- 			.rid			= RDT_RESOURCE_L3,
- 			.name			= "L3",
-@@ -78,45 +77,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.msr_base		= MSR_IA32_L3_CBM_BASE,
- 		.msr_update		= cat_wrmsr,
- 	},
--	[RDT_RESOURCE_L3DATA] =
--	{
--		.conf_type			= CDP_DATA,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L3DATA,
--			.name			= "L3DATA",
--			.cache_level		= 3,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L3DATA),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L3_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
--	[RDT_RESOURCE_L3CODE] =
--	{
--		.conf_type			= CDP_CODE,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L3CODE,
--			.name			= "L3CODE",
--			.cache_level		= 3,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L3CODE),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L3_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
- 	[RDT_RESOURCE_L2] =
- 	{
--		.conf_type			= CDP_NONE,
- 		.resctrl = {
- 			.rid			= RDT_RESOURCE_L2,
- 			.name			= "L2",
-@@ -132,45 +94,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.msr_base		= MSR_IA32_L2_CBM_BASE,
- 		.msr_update		= cat_wrmsr,
- 	},
--	[RDT_RESOURCE_L2DATA] =
--	{
--		.conf_type			= CDP_DATA,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L2DATA,
--			.name			= "L2DATA",
--			.cache_level		= 2,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L2DATA),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L2_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
--	[RDT_RESOURCE_L2CODE] =
--	{
--		.conf_type			= CDP_CODE,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L2CODE,
--			.name			= "L2CODE",
--			.cache_level		= 2,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L2CODE),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L2_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
- 	[RDT_RESOURCE_MBA] =
- 	{
--		.conf_type			= CDP_NONE,
- 		.resctrl = {
- 			.rid			= RDT_RESOURCE_MBA,
- 			.name			= "MB",
-@@ -339,40 +264,24 @@ static void rdt_get_cache_alloc_cfg(int idx, struct rdt_resource *r)
- 	r->alloc_enabled = true;
- }
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index 5e07065ec22f..d6fd821e3f5a 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -126,6 +126,7 @@ static const struct of_device_id blacklist[] __initconst = {
+ 	{ .compatible = "mediatek,mt8173", },
+ 	{ .compatible = "mediatek,mt8176", },
+ 	{ .compatible = "mediatek,mt8183", },
++	{ .compatible = "mediatek,mt8365", },
+ 	{ .compatible = "mediatek,mt8516", },
  
--static void rdt_get_cdp_config(int level, int type)
-+static void rdt_get_cdp_config(int level)
- {
--	struct rdt_resource *r_l = &rdt_resources_all[level].resctrl;
--	struct rdt_hw_resource *hw_res_l = resctrl_to_arch_res(r_l);
--	struct rdt_resource *r = &rdt_resources_all[type].resctrl;
--	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
--
--	hw_res->num_closid = hw_res_l->num_closid;
--	r->cache.cbm_len = r_l->cache.cbm_len;
--	r->default_ctrl = r_l->default_ctrl;
--	r->cache.shareable_bits = r_l->cache.shareable_bits;
--	r->data_width = (r->cache.cbm_len + 3) / 4;
--	r->alloc_capable = true;
- 	/*
- 	 * By default, CDP is disabled. CDP can be enabled by mount parameter
- 	 * "cdp" during resctrl file system mount time.
- 	 */
--	r->alloc_enabled = false;
- 	rdt_resources_all[level].cdp_enabled = false;
--	rdt_resources_all[type].cdp_enabled = false;
- 	rdt_resources_all[level].cdp_capable = true;
--	rdt_resources_all[type].cdp_capable = true;
- }
+ 	{ .compatible = "nvidia,tegra20", },
+diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
+index f2e491b25b07..87019d5a9547 100644
+--- a/drivers/cpufreq/mediatek-cpufreq.c
++++ b/drivers/cpufreq/mediatek-cpufreq.c
+@@ -537,6 +537,7 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
+ 	{ .compatible = "mediatek,mt8173", },
+ 	{ .compatible = "mediatek,mt8176", },
+ 	{ .compatible = "mediatek,mt8183", },
++	{ .compatible = "mediatek,mt8365", },
+ 	{ .compatible = "mediatek,mt8516", },
  
- static void rdt_get_cdp_l3_config(void)
- {
--	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA);
--	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3CODE);
-+	rdt_get_cdp_config(RDT_RESOURCE_L3);
- }
- 
- static void rdt_get_cdp_l2_config(void)
- {
--	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA);
--	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2CODE);
-+	rdt_get_cdp_config(RDT_RESOURCE_L2);
- }
- 
- static void
-@@ -509,58 +418,6 @@ void setup_default_ctrlval(struct rdt_resource *r, u32 *dc, u32 *dm)
- 	}
- }
- 
--static u32 *alloc_ctrlval_array(struct rdt_resource *r, struct rdt_domain *d,
--				bool mba_sc)
--{
--	/* these are for the underlying hardware, they may not match r/d */
--	struct rdt_domain *underlying_domain;
--	struct rdt_hw_resource *hw_res;
--	struct rdt_hw_domain *hw_dom;
--	bool remapped;
--
--	switch (r->rid) {
--	case RDT_RESOURCE_L3DATA:
--	case RDT_RESOURCE_L3CODE:
--		hw_res = &rdt_resources_all[RDT_RESOURCE_L3];
--		remapped = true;
--		break;
--	case RDT_RESOURCE_L2DATA:
--	case RDT_RESOURCE_L2CODE:
--		hw_res = &rdt_resources_all[RDT_RESOURCE_L2];
--		remapped = true;
--		break;
--	default:
--		hw_res = resctrl_to_arch_res(r);
--		remapped = false;
--	}
--
--
--	/*
--	 * If we changed the resource, we need to search for the underlying
--	 * domain. Doing this for all resources would make it tricky to add the
--	 * first resource, as domains aren't added to a resource list until
--	 * after the ctrlval arrays have been allocated.
--	 */
--	if (remapped)
--		underlying_domain = rdt_find_domain(&hw_res->resctrl, d->id,
--						    NULL);
--	else
--		underlying_domain = d;
--	hw_dom = resctrl_to_arch_dom(underlying_domain);
--
--	if (mba_sc) {
--		if (hw_dom->mbps_val)
--			return hw_dom->mbps_val;
--		return kmalloc_array(hw_res->num_closid,
--				     sizeof(*hw_dom->mbps_val), GFP_KERNEL);
--	} else {
--		if (hw_dom->ctrl_val)
--			return hw_dom->ctrl_val;
--		return kmalloc_array(hw_res->num_closid,
--				     sizeof(*hw_dom->ctrl_val), GFP_KERNEL);
--	}
--}
--
- static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
- {
- 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
-@@ -568,11 +425,13 @@ static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
- 	struct msr_param m;
- 	u32 *dc, *dm;
- 
--	dc = alloc_ctrlval_array(r, d, false);
-+	dc = kmalloc_array(hw_res->num_closid, sizeof(*hw_dom->ctrl_val),
-+			   GFP_KERNEL);
- 	if (!dc)
- 		return -ENOMEM;
- 
--	dm = alloc_ctrlval_array(r, d, true);
-+	dm = kmalloc_array(hw_res->num_closid, sizeof(*hw_dom->mbps_val),
-+			   GFP_KERNEL);
- 	if (!dm) {
- 		kfree(dc);
- 		return -ENOMEM;
-@@ -731,14 +590,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- 		if (d->plr)
- 			d->plr->d = NULL;
- 
--		/* temporary: these four don't have a unique ctrlval array */
--		if ((r->rid != RDT_RESOURCE_L3CODE) &&
--		    (r->rid != RDT_RESOURCE_L3DATA) &&
--		    (r->rid != RDT_RESOURCE_L2CODE) &&
--		    (r->rid != RDT_RESOURCE_L2DATA)) {
--			kfree(hw_dom->ctrl_val);
--			kfree(hw_dom->mbps_val);
--		}
-+		kfree(hw_dom->ctrl_val);
-+		kfree(hw_dom->mbps_val);
- 		bitmap_free(d->rmid_busy_llc);
- 		kfree(d->mbm_total);
- 		kfree(d->mbm_local);
-@@ -1011,11 +864,7 @@ static __init void rdt_init_res_defs_intel(void)
- 		hw_res = resctrl_to_arch_res(r);
- 
- 		if (r->rid == RDT_RESOURCE_L3 ||
--		    r->rid == RDT_RESOURCE_L3DATA ||
--		    r->rid == RDT_RESOURCE_L3CODE ||
--		    r->rid == RDT_RESOURCE_L2 ||
--		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE) {
-+		    r->rid == RDT_RESOURCE_L2) {
- 			r->cache.arch_has_sparse_bitmaps = false;
- 			r->cache.arch_has_empty_bitmaps = false;
- 			r->cache.arch_has_per_cpu_cfg = false;
-@@ -1035,11 +884,7 @@ static __init void rdt_init_res_defs_amd(void)
- 		hw_res = resctrl_to_arch_res(r);
- 
- 		if (r->rid == RDT_RESOURCE_L3 ||
--		    r->rid == RDT_RESOURCE_L3DATA ||
--		    r->rid == RDT_RESOURCE_L3CODE ||
--		    r->rid == RDT_RESOURCE_L2 ||
--		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE) {
-+		    r->rid == RDT_RESOURCE_L2) {
- 			r->cache.arch_has_sparse_bitmaps = true;
- 			r->cache.arch_has_empty_bitmaps = true;
- 			r->cache.arch_has_per_cpu_cfg = true;
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index d963a45e7aec..3ff37c7df5b4 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -364,7 +364,6 @@ struct rdt_parse_data {
- 
- /**
-  * struct rdt_hw_resource - arch private attributes of a resctrl resource
-- * @conf_type:		The type that should be used when configuring. temporary
-  * @resctrl:		Attributes of the resource used directly by resctrl.
-  * @num_closid:		Maximum number of closid this hardware can support,
-  * 			regardless of CDP. This is exposed via
-@@ -383,7 +382,6 @@ struct rdt_parse_data {
-  * msr_update and msr_base.
-  */
- struct rdt_hw_resource {
--	enum resctrl_conf_type	conf_type;
- 	struct rdt_resource	resctrl;
- 	u32			num_closid;
- 	unsigned int		msr_base;
-@@ -415,11 +413,7 @@ extern struct dentry *debugfs_resctrl;
- 
- enum resctrl_res_level {
- 	RDT_RESOURCE_L3,
--	RDT_RESOURCE_L3DATA,
--	RDT_RESOURCE_L3CODE,
- 	RDT_RESOURCE_L2,
--	RDT_RESOURCE_L2DATA,
--	RDT_RESOURCE_L2CODE,
- 	RDT_RESOURCE_MBA,
- 
- 	/* Must be the last */
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index cdf21deafd2a..4bb44713c4ac 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1880,10 +1880,10 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
- 	if (!hw_res->cdp_capable)
- 		return;
- 
--	if (r == &rdt_resources_all[RDT_RESOURCE_L2DATA].resctrl)
-+	if (r->rid == RDT_RESOURCE_L2)
- 		l2_qos_cfg_update(&hw_res->cdp_enabled);
- 
--	if (r == &rdt_resources_all[RDT_RESOURCE_L3DATA].resctrl)
-+	if (r->rid == RDT_RESOURCE_L3)
- 		l3_qos_cfg_update(&hw_res->cdp_enabled);
- }
- 
-@@ -1912,68 +1912,42 @@ static int set_mba_sc(bool mba_sc)
- 	return 0;
- }
- 
--static int cdp_enable(int level, int data_type, int code_type)
-+static int cdp_enable(int level)
- {
--	struct rdt_resource *r_ldata = &rdt_resources_all[data_type].resctrl;
--	struct rdt_resource *r_lcode = &rdt_resources_all[code_type].resctrl;
- 	struct rdt_resource *r_l = &rdt_resources_all[level].resctrl;
- 	int ret;
- 
--	if (!r_l->alloc_capable || !r_ldata->alloc_capable ||
--	    !r_lcode->alloc_capable)
-+	if (!r_l->alloc_capable)
- 		return -EINVAL;
- 
- 	ret = set_cache_qos_cfg(level, true);
--	if (!ret) {
--		r_l->alloc_enabled = false;
--		r_ldata->alloc_enabled = true;
--		r_lcode->alloc_enabled = true;
-+	if (!ret)
- 		rdt_resources_all[level].cdp_enabled = true;
--		rdt_resources_all[data_type].cdp_enabled = true;
--		rdt_resources_all[code_type].cdp_enabled = true;
--	}
-+
- 	return ret;
- }
- 
--static void cdp_disable(int level, int data_type, int code_type)
-+static void cdp_disable(int level)
- {
- 	struct rdt_hw_resource *r_hw = &rdt_resources_all[level];
--	struct rdt_resource *r = &r_hw->resctrl;
--
--	r->alloc_enabled = r->alloc_capable;
- 
- 	if (r_hw->cdp_enabled) {
--		rdt_resources_all[data_type].resctrl.alloc_enabled = false;
--		rdt_resources_all[code_type].resctrl.alloc_enabled = false;
- 		set_cache_qos_cfg(level, false);
- 		r_hw->cdp_enabled = false;
--		rdt_resources_all[data_type].cdp_enabled = false;
--		rdt_resources_all[code_type].cdp_enabled = false;
- 	}
- }
- 
- int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
- {
- 	struct rdt_hw_resource *hw_res = &rdt_resources_all[l];
--	enum resctrl_res_level code_type, data_type;
- 
- 	if (!hw_res->cdp_capable)
- 		return -EINVAL;
- 
--	if (l == RDT_RESOURCE_L3) {
--		code_type = RDT_RESOURCE_L3CODE;
--		data_type = RDT_RESOURCE_L3DATA;
--	} else if (l == RDT_RESOURCE_L2) {
--		code_type = RDT_RESOURCE_L2CODE;
--		data_type = RDT_RESOURCE_L2DATA;
--	} else {
--		return -EINVAL;
--	}
--
- 	if (enable)
--		return cdp_enable(l, data_type, code_type);
-+		return cdp_enable(l);
- 
--	cdp_disable(l, data_type, code_type);
-+	cdp_disable(l);
- 
- 	return 0;
- }
-@@ -2072,40 +2046,72 @@ static int rdt_enable_ctx(struct rdt_fs_context *ctx)
- 	return ret;
- }
- 
--static int schemata_list_create(void)
-+static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type)
- {
- 	struct resctrl_schema *s;
--	struct rdt_resource *r;
-+	const char *suffix = "";
- 	int ret, cl;
- 
--	for_each_alloc_enabled_rdt_resource(r) {
--		s = kzalloc(sizeof(*s), GFP_KERNEL);
--		if (!s)
--			return -ENOMEM;
--
--		s->res = r;
--		s->conf_type = resctrl_to_arch_res(r)->conf_type;
--		s->num_closid = resctrl_arch_get_num_closid(r);
--		if (resctrl_arch_get_cdp_enabled(r->rid))
--			s->num_closid /= 2;
--
--		ret = snprintf(s->name, sizeof(s->name), r->name);
--		if (ret >= sizeof(s->name)) {
--			kfree(s);
--			return -EINVAL;
--		}
-+	s = kzalloc(sizeof(*s), GFP_KERNEL);
-+	if (!s)
-+		return -ENOMEM;
- 
--		cl = strlen(s->name);
--		if (cl > max_name_width)
--			max_name_width = cl;
-+	s->res = r;
-+	s->num_closid = resctrl_arch_get_num_closid(r);
-+	if (resctrl_arch_get_cdp_enabled(r->rid))
-+		s->num_closid /= 2;
- 
--		INIT_LIST_HEAD(&s->list);
--		list_add(&s->list, &resctrl_schema_all);
-+	s->conf_type = type;
-+	switch (type) {
-+	case CDP_CODE:
-+		suffix = "CODE";
-+		break;
-+	case CDP_DATA:
-+		suffix = "DATA";
-+		break;
-+	case CDP_NONE:
-+		suffix = "";
-+		break;
- 	}
- 
-+	ret = snprintf(s->name, sizeof(s->name), "%s%s", r->name, suffix);
-+	if (ret >= sizeof(s->name)) {
-+		kfree(s);
-+		return -EINVAL;
-+	}
-+
-+	cl = strlen(s->name);
-+	if (cl > max_name_width)
-+		max_name_width = cl;
-+
-+	INIT_LIST_HEAD(&s->list);
-+	list_add(&s->list, &resctrl_schema_all);
-+
- 	return 0;
- }
- 
-+static int schemata_list_create(void)
-+{
-+	struct rdt_resource *r;
-+	int ret = 0;
-+
-+	for_each_alloc_enabled_rdt_resource(r) {
-+		if (resctrl_arch_get_cdp_enabled(r->rid)) {
-+			ret = schemata_list_add(r, CDP_CODE);
-+			if (ret)
-+				break;
-+
-+			ret = schemata_list_add(r, CDP_DATA);
-+		} else
-+			ret = schemata_list_add(r, CDP_NONE);
-+
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
- static void schemata_list_destroy(void)
- {
- 	struct resctrl_schema *s, *tmp;
+ 	{ }
 -- 
-2.30.2
+2.31.1
 
