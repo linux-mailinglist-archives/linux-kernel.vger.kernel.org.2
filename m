@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F61B3891E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27213891EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354804AbhESOvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:51:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56045 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242696AbhESOvj (ORCPT
+        id S1354813AbhESOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348657AbhESOvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:51:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621435819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XbWgytZuqM4UIpt46ERdKUKnppPb4ehKqu8JICqxcZw=;
-        b=aokNfZ4IG/Ktj6G7vrTwM3Qqdxbqg2+PvMmEcNWGrU85+dGA9Lavw7bJTwGoRSk6RlvEKR
-        yguVhKHuqH2jbMPofQDfad+v82oMHNv5vMvw00VabvvE1n8OTStNrNxh/CnXRsO3PHXRwh
-        hS4AANn9zufGZZfdOISaZrCt+bngmQY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-gOFriRNSMT2C8hCCAdQVWQ-1; Wed, 19 May 2021 10:50:18 -0400
-X-MC-Unique: gOFriRNSMT2C8hCCAdQVWQ-1
-Received: by mail-wm1-f69.google.com with SMTP id y193-20020a1c32ca0000b029014cbf30c3f2so1613946wmy.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:18 -0700 (PDT)
+        Wed, 19 May 2021 10:51:54 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20933C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:33 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id n2so14408594wrm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Bju2/0eN1crwRy8NW0NKdt4SusccnUyH2kNJFGpO3Gg=;
+        b=BQ0wb+l4eU5E6LXYCwaarjsAw6yPlLu9W6EiabgI+nO22I+6DV/bIxaDS5Kc/NkZ9z
+         g5ArK3rjoggNB6rgNnxcGpn/MDh4rC5iJIQ9ptEO8ZIDJRbQovG88q8caw+Iw6Vo1K/7
+         cT6j1A7d/Eqf0dtlUKxAkQlsICEjFzHrEor1ZLrZez3sN2dN8okRW2WLGn5Q5NeWtXzQ
+         BJOx2fdWrlKwYPfZMPpDbIKMzFHZFm7Y9A1ibD6cMHShxytE94HxUt/iCqnMUXkl7Aev
+         yPWcWLE7bC3e/1CIkS0QDIbZBE0Tuctn6mGNoYgfbMZKEz7pgUAF6QgCLssN+Kyx/SjJ
+         3Zqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XbWgytZuqM4UIpt46ERdKUKnppPb4ehKqu8JICqxcZw=;
-        b=JZUGoOjkwVsv53g5w3JL0rmwX2AXHFPTOtFfFosR5GyQwD/sfauEd4vSIW2e7iZwLj
-         bHZlbcK5xezqj1du28U2S/FprkHY8v9uXtN5CGtvmwSahWOFG3OpThR75DG9Ba8vS/fm
-         668IBXpH3beddEFJzEqssSDUUCwBkyvRYJiV9dAXqiskMEfT5TF1rnjsLhVnYqEt1A/J
-         3WcW3KWzLbvZBRrHxjvetWasQ7lxHRBQUMDqisb2U5i0v9iBoAlsTNLZ2Gafc9ugbAMt
-         zQH9fBGUW/5/3X1hTXB8RrOlxtn83V8j/0r6fZ8nW93sT6o3bdQKICc40E3vclBwz10+
-         uMAQ==
-X-Gm-Message-State: AOAM533jORh5S47vqF3ZPbvdp3q/jg7qCyZAk4UqFo2anCBvfNCLbOUD
-        /xHSk82AFgrVV8x9vktsSu/SMVLB2A7zWtUo2l3qzZZ+Q7VfcKi+KxT/HM/KE1srYEYUrhQ2eIL
-        lcB/2xX/MfH9o65MuwkS+9u0=
-X-Received: by 2002:a1c:2802:: with SMTP id o2mr11912061wmo.170.1621435816074;
-        Wed, 19 May 2021 07:50:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzExqQtkXDb+lj+03vZaMs1NTWf1irqt+Pmv5JH54/F+aNXZlT2XWkOY11D/CbrLbTwJGBEkw==
-X-Received: by 2002:a1c:2802:: with SMTP id o2mr11912037wmo.170.1621435815874;
-        Wed, 19 May 2021 07:50:15 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id k11sm6021496wmj.1.2021.05.19.07.50.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Bju2/0eN1crwRy8NW0NKdt4SusccnUyH2kNJFGpO3Gg=;
+        b=Xj3ULvG/6B2lLgdEgoyTBQ5s7XqAhvpK79VX1duGM/lbgqcO+9xZcAxup1sgJ3xZRh
+         58NpH9wDAlGpY7/MtyFK+7i3DpU84HmCjL+m0LSvA7gJ54kEU2vHvufGPzP2ga6dhpdD
+         CnMTAVdHDFJeH75s+PdypJbeQMrGh2+6Hu9JCzVZrUqxnbFoSiJnjDZUdbem4YJwERC/
+         IggDgw5cjdmSoIq8hWijOqQlA/vtDalyHk338nUWv9HEuE7pFMTAya6we9A9m8VjaaG5
+         Fd20ZteY64xiH8VH0tg/oP9TPTT7lkhe7omRf5VJHcba5TOjSjMmK87JXC2F1c5NxyVR
+         5wNw==
+X-Gm-Message-State: AOAM5304E1LvUOa18u3c1Iry2rHd1OtFviPQhzKBC0KCP5leUj2okXj7
+        0At0sMAnJAX9iBgXUutjYut3dQ==
+X-Google-Smtp-Source: ABdhPJyiC8K7WnFxsXBX7COv5F4gSgoaz/20+HNO7ys0bYcGX56g68V0qD16NLwnO5bgMXzcNVAHcw==
+X-Received: by 2002:a5d:408f:: with SMTP id o15mr14535482wrp.89.1621435831756;
+        Wed, 19 May 2021 07:50:31 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id b10sm30501848wrr.27.2021.05.19.07.50.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:50:15 -0700 (PDT)
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/page_alloc: bail out on fatal signal during reclaim/compaction retry attempt
-Date:   Wed, 19 May 2021 15:50:14 +0100
-Message-Id: <20210519145014.3220164-1-atomlin@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210519130609.r3ml6ohb2qsrfq2t@ava.usersys.com>
-References: <20210519130609.r3ml6ohb2qsrfq2t@ava.usersys.com>
+        Wed, 19 May 2021 07:50:31 -0700 (PDT)
+Date:   Wed, 19 May 2021 15:50:29 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        daniel.thompson@linaro.org, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com, pavel@ucw.cz, robh+dt@kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, cy_huang@richtek.com
+Subject: Re: [PATCH v7 1/4] mfd: rt4831: Adds support for Richtek RT4831
+Message-ID: <20210519145029.GD2549456@dell>
+References: <1621262161-9972-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1621262161-9972-1-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It does not make sense to retry compaction when the last known compact
-result was skipped and a fatal signal is pending.
+On Mon, 17 May 2021, cy_huang wrote:
 
-In the context of try_to_compact_pages(), indeed COMPACT_SKIPPED can be
-returned; albeit, not every zone, on the zone list, would be considered
-in the case a fatal signal is found to be pending.
-Yet, in should_compact_retry(), given the last known compaction result,
-each zone, on the zone list, can be considered/or checked
-(see compaction_zonelist_suitable()). For example, if a zone was found
-to succeed, then reclaim/compaction would be tried again
-(notwithstanding the above).
+> From: ChiYuan Huang <cy_huang@richtek.com>
+> 
+> This adds support Richtek RT4831 core. It includes four channel WLED driver
+> and Display Bias Voltage outputs.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> ---
+> - Send the patch series for the wrong mail subject.
+> 
+> The RT4831 regulator patches are already on main stream, and can be referred to
+> 9351ab8b0cb6 regulator: rt4831: Adds support for Richtek RT4831 DSV regulator
+> 934b05e81862 regulator: rt4831: Adds DT binding document for Richtek RT4831 DSV regulator
+> 
+> since v6
+> - Respin the date from 2020 to 2021.
+> - Rmove the shutdown routine.
+> - Change the macro OF_MFD_CELL to MFD_CELL_OF.
+> 
+> since v5
+> - Rename file name from rt4831-core.c to rt4831.c
+> - Change RICHTEK_VID to RICHTEK_VENDOR_ID.
+> - Change gpio_desc nameing from 'enable' to 'enable_gpio' in probe.
+> - Change variable 'val' to the meaningful name 'chip_id'.
+> - Refine the error log when vendor id is not matched.
+> - Remove of_match_ptr.
+> 
+> since v2
+> - Refine Kconfig descriptions.
+> - Add copyright.
+> - Refine error logs in probe.
+> - Refine comment lines in remove and shutdown.
+> ---
+>  drivers/mfd/Kconfig  |  10 +++++
+>  drivers/mfd/Makefile |   1 +
+>  drivers/mfd/rt4831.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 126 insertions(+)
+>  create mode 100644 drivers/mfd/rt4831.c
 
-This patch ensures that compaction is not needlessly retried when the
-last known compaction result was skipped and in the unlikely case a
-fatal signal is found pending. So, OOM is at least attempted.
+Applied, thanks.
 
-Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
----
- mm/page_alloc.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index aaa1655cf682..5f9aac27a1b5 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4268,6 +4268,8 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
- 	 * to work with, so we retry only if it looks like reclaim can help.
- 	 */
- 	if (compaction_needs_reclaim(compact_result)) {
-+		if (fatal_signal_pending(current))
-+			goto out;
- 		ret = compaction_zonelist_suitable(ac, order, alloc_flags);
- 		goto out;
- 	}
 -- 
-2.26.3
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
