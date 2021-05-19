@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67423388B39
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F77388B3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347240AbhESJz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:55:29 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:34724 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245745AbhESJzY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:55:24 -0400
-Received: by mail-ua1-f53.google.com with SMTP id x1so3721494uau.1;
-        Wed, 19 May 2021 02:54:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gvr46UuP/aK1hvdWUxVGtDfsF8ud4ousl9JTfPPOif0=;
-        b=p+zANF9XY5zG5BIdAtRAjyTyBdFWiGUEpYfrHZYkO/EgpRpGWpu+irpLgOC2zby3J9
-         4ajOHQGu0U81QTvLbOrCqyQewtsFDgmWwnWL1N/flY53vh9LWZHAZ+O/2FMVUCm5hXLS
-         GSt2YviG+Z/DmHS8FdapBkXQh37XpdxMFRpYhnNV5uhsDfTtCCNVS1FxuCFjvKiSZbhs
-         y9Rxay1F8qDFvSfua88mHtvSnqv15I6zlSwi9gOogcJsG6MOZw1b+in3nZFYeHmCwMi1
-         mt3wKTNj47HCrKLujSdCX8WB2g+eGTVlJ+C36sTybr7Hds03zAlAi3Kj1oyTcE7rfs16
-         fc3g==
-X-Gm-Message-State: AOAM530hS4mGbsCGHKrrCCWNQiExtPujElgNuMVnfzwgMm2KQFN7lKcA
-        W0PT9NV9o5KZ6lquchrg4L7elZq4OSL+/7DM5Uo=
-X-Google-Smtp-Source: ABdhPJxQeHn6vy6se+92JGjupVPtNrd9RHNFzUY140wdZNDAlJ5Rg2eg8vPbVYUEqYCgsh7Ls2X9pNQOobSI3duXejY=
-X-Received: by 2002:ab0:2242:: with SMTP id z2mr8817879uan.58.1621418043172;
- Wed, 19 May 2021 02:54:03 -0700 (PDT)
+        id S1345581AbhESJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:57:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239269AbhESJ5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:57:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 863CD610A1;
+        Wed, 19 May 2021 09:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621418179;
+        bh=sZokVnqgg00yP4zqIdHOGtJNBrDhc7J4zbJvv0Ja+io=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GYQJtAh0WaKxA6miEevGbUjT/mk3FvnIDKg/CajqjoSahOznMEGHCRzfEIrcVsIgw
+         jVonLhDVI3iO2i3b48e+LZgxHdDKmIXzTZmGy8LtB+vutYxuwIPD3D0SfNma2Dy8bH
+         fIaAfkbRt74xUeORaRxWYpDorVwd4ufaJvtD42xpkC7PBMC6VvqF0GH+RRw5BS9Y9F
+         V/XLOyj7zDVj9SRnU2xFjKcCjHrJhnvUImDYRi1Ao/BOX9t7RGebtf4046niW1Mxzw
+         6jRAK7SIiwi+H/pR2F0wkuhdZKh7EXx+LRh+Cy2bMyX9b9vO+N7Fcdjv0axjqcDG8o
+         QNbVDBUWvjxFg==
+Received: by mail-wr1-f53.google.com with SMTP id a4so13364466wrr.2;
+        Wed, 19 May 2021 02:56:19 -0700 (PDT)
+X-Gm-Message-State: AOAM531dYy8s1uPLEIP3jP1WMmCoOn6IeJm4Iq2/B6YOHtnmza8eUHk5
+        pvFhIrr7F+ECAsC+KvifBVO/8I6Bbyc2hrszHeQ=
+X-Google-Smtp-Source: ABdhPJxirDRKmtA1WHZsh+96IOOD39lg70KHdjcBxrpwvP9eC7gAvKJhLCHII5pv2yoe8aJ74qHdnQpI6dkT/Ni7pnk=
+X-Received: by 2002:adf:e589:: with SMTP id l9mr13892459wrm.361.1621418178204;
+ Wed, 19 May 2021 02:56:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210106113730.k5qveshjgcd57kgx@runtux.com> <20210106113929.fizyg6fcsmsntkiy@runtux.com>
- <CANiq72=Cfv=Qo2fs+HDjUc8pV37mL326SDS5JpGotUfHLwK_rQ@mail.gmail.com>
- <CAMuHMdUW3U6DVkHp3xiHFzvRUDJ1FwTNCnBWp5LCuDGxhds9wg@mail.gmail.com>
- <CANiq72mCFwYnbynQgwNGTt0mzo_rMrnQfpinz6DrPttFxUpyNQ@mail.gmail.com>
- <20210517152035.GA2581887@robh.at.kernel.org> <20210519090047.e63d2im5vgskqpcs@runtux.com>
-In-Reply-To: <20210519090047.e63d2im5vgskqpcs@runtux.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 19 May 2021 11:53:51 +0200
-Message-ID: <CAMuHMdV80XUo5ihXUkogCikGA4H71Ada9w=9W9d9d1zdgrw0uA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] auxdisplay: Add I2C gpio expander example
-To:     Ralf Schlatterbeck <rsc@runtux.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Lars Poeschel <poeschel@lemonage.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
+References: <20210517203343.3941777-1-arnd@kernel.org> <20210517203343.3941777-2-arnd@kernel.org>
+ <m1bl982m8c.fsf@fess.ebiederm.org> <CAK8P3a27_z8zk6j5W4n+u3g2e90v-h+3AbaTZ6YjCQ0B7AbJaA@mail.gmail.com>
+ <CAK8P3a277VggQbBnXUzpwP7TKMj-S_z6rDMYYxfjyQmzGJdpCA@mail.gmail.com> <m1y2cbzmnw.fsf@fess.ebiederm.org>
+In-Reply-To: <m1y2cbzmnw.fsf@fess.ebiederm.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 19 May 2021 11:55:05 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2kjF5v9OyNL+8m_855xqjcW3MWfRrigmWirAaEk1O6nw@mail.gmail.com>
+Message-ID: <CAK8P3a2kjF5v9OyNL+8m_855xqjcW3MWfRrigmWirAaEk1O6nw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] kexec: simplify compat_sys_kexec_load
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ralf,
-
-On Wed, May 19, 2021 at 11:00 AM Ralf Schlatterbeck <rsc@runtux.com> wrote:
-> On Mon, May 17, 2021 at 10:20:35AM -0500, Rob Herring wrote:
-> > Now it warns in linux-next:
-> >
-> > Documentation/devicetree/bindings/auxdisplay/hit,hd44780.example.dts:52.18-62.11: Warning (unit_address_vs_reg): /example-1/i2c@2000: node has a unit name, but no reg or ranges property
+On Wed, May 19, 2021 at 12:45 AM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+> Arnd Bergmann <arnd@kernel.org> writes:
+> > On Tue, May 18, 2021 at 4:05 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >> On Tue, May 18, 2021 at 3:41 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> [I'm the author of that patch]
-> Can someone point me to the documentation of how to check a single
-> example against the dt schemata? I think I had that figured out how to
-> run the dt-checks over the whole tree in january but didn't bother with
-> warnings since the whole devtree was riddled with warnings at the time.
+> I think something like the untested diff below is enough to get rid of
+> compat_alloc_user cleanly.
+>
+> Certainly it should be enough to give any idea what I am thinking.
 
-It's much better in v5.13-rc2.
+Yes, that looks sufficient to me. I had started a slightly different
+approach by trying
+to move the kimage_alloc_init() into the top-level entry points to
+avoid the extra
+kmalloc, but that got rather complicated, and your patch is simpler overall.
 
-> Docs on how to quickly check for warnings/errors would help me a lot. My
-> naive usage of dt-validate on an example yields a traceback, I've opened
-> a report on github because I think that even with gross mis-usage the
-> tool shouldn't traceback...
+The allocation could still be combined with kexec_load_check() into a new
+function to reduce the number of duplicate lines, but if you think the current
+version is ok, then I'll leave this part as it is.
 
-make dt_binding_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+I've fixed a duplicate kfree() and some whitespace damage, and rebased the
+rest of my series on top of this to give it a spin on the build test boxes.
+I'll send a v4 series once I have made sure there are no build-time regressions.
 
-That still runs some checks on all files, unless you apply
-https://lore.kernel.org/linux-devicetree/20210309112148.2309116-1-geert+renesas@glider.be/
-first
+Can I add your Signed-off-by for the patch?
+Is there a set of tests I should run on it?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Arnd
