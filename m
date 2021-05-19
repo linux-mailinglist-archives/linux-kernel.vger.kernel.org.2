@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDFE388E6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4E3388E73
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346566AbhESM5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:57:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232671AbhESM5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:57:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0EAA6124C;
-        Wed, 19 May 2021 12:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621428982;
-        bh=uHLg5icCC3xpZyJI1+jRahgAtowPa/rbAim0BxR6NR8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pCNyEIxV9y1+0VGujexB6B/CDIPzVD7OZ2RN9jpzcgqUbSqVs+425K63NnxyeOLiW
-         qroY126NCh4zhx0dBonpOioJ4PUpLAtkTx/MuCYzEE/vgSK+FJLumLjCbLsAK3ngtb
-         krIDkJgejF5SVLTmDqZGp85NLbINqcabNg4YyxjCS6IA5KodCRWo4m6J2rEOQBvdfy
-         COwpEt0BJLSbTDVM2q+BcT5CYUkCnt1q7+H61v5J+0+4RQCLvUX6VapzcjN7y9XWsF
-         zBSYjeg+0RX8+U8hfz8qVTrO8CC0BOTlux96NksmCBL5/jBLEhSaWz94k1TLcs+2l6
-         gYaUSm3zE1CiA==
-Date:   Wed, 19 May 2021 15:56:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
-Message-ID: <YKUK8hBImIUFV35I@unreal>
-References: <20210511214605.2937099-1-pgwipeout@gmail.com>
- <YKOB7y/9IptUvo4k@unreal>
- <CAMdYzYrV0T9H1soxSVpQv=jLCR9k9tuJddo1Kw-c3O5GJvg92A@mail.gmail.com>
- <YKTJwscaV1WaK98z@unreal>
- <cbfecaf2-2991-c79e-ba80-c805d119ac2f@gmail.com>
- <YKT7bLjzucl/QEo2@unreal>
- <CAMdYzYpVYuNuYgZp-sNj4QFbgHH+SoFpffbdCNJST2_KZEhSug@mail.gmail.com>
+        id S1353492AbhESM7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232671AbhESM7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 08:59:04 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F22C06175F;
+        Wed, 19 May 2021 05:57:45 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 124so243083qkh.10;
+        Wed, 19 May 2021 05:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aipg9oIDAuCQSbPEUtZjOrYb0WaeP7Y8nbKSRmG50Bc=;
+        b=Pa4ogUhOF7OBZJ6ZHNl0MgR59SkKIlnoGrDNn/lcOBGbuPpPz34+2AOEpjE6KcRep0
+         3rhPml2WgX1tHOgnE1NyFZrFzIlt51EJmUSsfjrkf10trdA60D+Zcz73YlqdI0rdL3D0
+         KrGwfkNaKB0U/YzFPmg3WUmOjWMfEjOBenyI3ohJ8Lx3B0u5X/nxD0NtpdaB9371Y0md
+         dCOkLqkLT/f7QItk5bUjTi6/SI7VFvvOngKItIaipenTMH6IuuHpoeOaIaVv7YRKCb5q
+         /YNW293ujFUdLxhJ07r8jesWtFVEBcPP9Nu7eWr+ikxPxIpnIJhQQ8mwpXU3mKa6ib6s
+         AOpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=aipg9oIDAuCQSbPEUtZjOrYb0WaeP7Y8nbKSRmG50Bc=;
+        b=aitEj7gaMK7SlQFHyL4ZJqICAwNKQ8/sAH8Lajw2UpHAEgDNDm2hvNEGfuZgUfSXZL
+         HF1NM1kZiMEB/drVjZMKQPhtzjqojO97eKKQIPJunGa7Q5rAQa4T26kAxV9j+ihMuYnu
+         rtmhDLYJzbjg9FbQms9XTW/oJgVmNFGucR7LFXvV72Kvsn8/N3RzDKMbQCdlBYRiP1XI
+         zz5W5anZx81TjtZfM3JIZ0EE1bwd7IyAxauDTCiAQc1wiKtuWBbS6kwFcz8H7b3BneO1
+         ZW9XJP8HMu5joxpXGamBK0jbnAXRl7kmLU4lfgt2RVhWmNx23M8p2LuenJ+vMyxUM9X2
+         eGrw==
+X-Gm-Message-State: AOAM531KaiNXRANXgkNXuWTshkUt3O6hLowmUpJIOR2SnLM1OUcBhIzh
+        Uq/3tjjYpriObzEYbYfcPDI=
+X-Google-Smtp-Source: ABdhPJzaymXiwmNRUJ76y5xNhS+pauWT0YHJrip4/vT9Q++zTymq3niN2b7yOKjYqwJx982fyC8aoA==
+X-Received: by 2002:ae9:c016:: with SMTP id u22mr11911036qkk.114.1621429063845;
+        Wed, 19 May 2021 05:57:43 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d11sm15252598qke.61.2021.05.19.05.57.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 05:57:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 19 May 2021 05:57:41 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     cl@rock-chips.com
+Cc:     heiko@sntech.de, robh+dt@kernel.org, jagan@amarulasolutions.com,
+        wens@csie.org, uwe@kleine-koenig.org, mail@david-bauer.net,
+        jbx6244@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        wim@linux-watchdog.org, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: Re: [PATCH v4 04/10] dt-bindings: watchdog: dw-wdt: add description
+ for rk3568
+Message-ID: <20210519125741.GA2241939@roeck-us.net>
+References: <20210429081151.17558-1-cl@rock-chips.com>
+ <20210429081151.17558-5-cl@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMdYzYpVYuNuYgZp-sNj4QFbgHH+SoFpffbdCNJST2_KZEhSug@mail.gmail.com>
+In-Reply-To: <20210429081151.17558-5-cl@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 08:45:21AM -0400, Peter Geis wrote:
-> On Wed, May 19, 2021 at 7:50 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Wed, May 19, 2021 at 12:37:43PM +0200, Heiner Kallweit wrote:
-> > > On 19.05.2021 10:18, Leon Romanovsky wrote:
-> > > > On Tue, May 18, 2021 at 08:20:03PM -0400, Peter Geis wrote:
-> > > >> On Tue, May 18, 2021 at 4:59 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >>>
-> > > >>> On Tue, May 11, 2021 at 05:46:06PM -0400, Peter Geis wrote:
-> > > >>>> Add a driver for the Motorcomm yt8511 phy that will be used in the
-> > > >>>> production Pine64 rk3566-quartz64 development board.
-> > > >>>> It supports gigabit transfer speeds, rgmii, and 125mhz clk output.
-> > > >>>>
-> > > >>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> > > >>>> ---
-> > > >>>>  MAINTAINERS                 |  6 +++
-> > > >>>>  drivers/net/phy/Kconfig     |  6 +++
-> > > >>>>  drivers/net/phy/Makefile    |  1 +
-> > > >>>>  drivers/net/phy/motorcomm.c | 85 +++++++++++++++++++++++++++++++++++++
-> > > >>>>  4 files changed, 98 insertions(+)
-> > > >>>>  create mode 100644 drivers/net/phy/motorcomm.c
-> > > >>>
-> > > >>> <...>
-> > > >>>
-> > > >>>> +static const struct mdio_device_id __maybe_unused motorcomm_tbl[] = {
-> > > >>>> +     { PHY_ID_MATCH_EXACT(PHY_ID_YT8511) },
-> > > >>>> +     { /* sentinal */ }
-> > > >>>> +}
-> > > >>>
-> > > >>> Why is this "__maybe_unused"? This *.c file doesn't have any compilation option
-> > > >>> to compile part of it.
-> > > >>>
-> > > >>> The "__maybe_unused" is not needed in this case.
-> > > >>
-> > > >> I was simply following convention, for example the realtek.c,
-> > > >> micrel.c, and smsc.c drivers all have this as well.
-> > > >
-> > > > Maybe they have a reason, but this specific driver doesn't have such.
-> > > >
-> > >
-> > > It's used like this:
-> > > MODULE_DEVICE_TABLE(mdio, <mdio_device_id_tbl>);
-> > >
-> > > And MODULE_DEVICE_TABLE is a no-op if MODULE isn't defined:
-> > >
-> > > #ifdef MODULE
-> > > /* Creates an alias so file2alias.c can find device table. */
-> > > #define MODULE_DEVICE_TABLE(type, name)                                       \
-> > > extern typeof(name) __mod_##type##__##name##_device_table             \
-> > >   __attribute__ ((unused, alias(__stringify(name))))
-> > > #else  /* !MODULE */
-> > > #define MODULE_DEVICE_TABLE(type, name)
-> > > #endif
-> > >
-> > > In this case the table is unused.
-> >
-> > Do you see compilation warning for such scenario?
+On Thu, Apr 29, 2021 at 04:11:45PM +0800, cl@rock-chips.com wrote:
+> From: Liang Chen <cl@rock-chips.com>
 > 
-> The issue you are describing has been fixed since 2010:
+> add "rockchip,rk3568-wdt", "snps,dw-wdt" for watchdog nodes on
+> a rk3568 platform to snps,dw-wdt.yaml.
 > 
-> commit cf93c94581bab447a5634c6d737c1cf38c080261
-> Author: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Date:   Sun Oct 3 23:43:32 2010 +0000
-> 
->     net/phy: fix many "defined but unused" warnings
-> 
->     MODULE_DEVICE_TABLE only expands to something if it's compiled
->     for a module.  So when building-in support for the phys, the
->     mdio_device_id tables are unused.  Marking them with __maybe_unused
->     fixes the following warnings:
-> 
-> There is a strong push to fix all warnings during build, including W=1 warnings.
-> For fun I rebuilt without module support and confirmed that removing
-> this does trigger a W=1 warning.
+> Signed-off-by: Liang Chen <cl@rock-chips.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-I'm sorry that I continue to ask, but is net/phy/* usable without MODULE?
-If not, the better fix is to require it in Kconfig instead of fixing all drivers.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks for your answers.
-
+> ---
+>  Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> >
-> > Thanks
-> >
-> > >
-> > > > Thanks
-> > > >
-> > > >>
-> > > >>>
-> > > >>> Thanks
-> > >
-> > >
+> diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> index b58596b1831d..6461eb4f4a27 100644
+> --- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> @@ -27,6 +27,7 @@ properties:
+>                - rockchip,rk3328-wdt
+>                - rockchip,rk3368-wdt
+>                - rockchip,rk3399-wdt
+> +              - rockchip,rk3568-wdt
+>                - rockchip,rv1108-wdt
+>            - const: snps,dw-wdt
+>  
