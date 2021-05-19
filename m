@@ -2,104 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B686A389995
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C136389997
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhESXIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
+        id S229969AbhESXIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESXII (ORCPT
+        with ESMTP id S229465AbhESXIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:08:08 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3465C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:06:46 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a4so2674600ljd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:06:46 -0700 (PDT)
+        Wed, 19 May 2021 19:08:30 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C8AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:07:09 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so4379994pjt.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jwk0saAKOxxux1qLucTjT7RVUUV0SrqEWvSDUW8ts5s=;
-        b=b4urCb4opB54xSjva7L2H57Jbu48k96U331P316PVRjEdePqn9pQtL38RCqXXfwwTg
-         M7WaUampS0T6oF+Nh0Y6etHwfIbeFbAMkgd6r2H+CQ1m3Hui7gPuoFuL2yHxdXfZu5/N
-         5aTknzhPLs3O3IGgRg+qiCZb7GOBJh+UNu4kfY8dRzxpcoK2GblbePyp5XxppIGTWVrz
-         2T4Ju9PlCeiLbBVhPIA+CrrL4oYFpLDpOMOfBUy61inJs8Si6oL2ay/jybH4gZX3yCYW
-         yWRlIowiss/ADAI2og7lUtuDea0Ch0rCVZl9kWsqEJDFmxAc6yunyitFB1h96vDobdma
-         LCaQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RyfmXcmpiPf29zi7Cou4H0ygilUNz1aN0mITS576Vy8=;
+        b=p5kMLOk18AUGUrUrS4DlS27GN3nypoHJTs+FtdrccTagn+H1860CPR39MOF6TjlTqU
+         SDMnN0WGV3oOSuEt2l1EIvQkhZwCuHWhur6mLeTCa46lcJHHs9HMCPUnEB+P9bj89pmk
+         T3F8+5or506sH8OOj63imrYap+w2KjNxgoKFeDDQdT2HjvsRxPggXk1L6+OkqacbZO05
+         o1jmT9rJ6a1z0x2IGCR6kKG46wfSxu/bUHRgHR5cubhhsc+NyFIkf7K9ID0nHZ1hliCx
+         7DPIwq38FBONTOArY4n2qKTZ/kc+BtO7l2S2ifYuA2N2hRHPtfoO0cY7C4T7lwMt4sCr
+         57ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jwk0saAKOxxux1qLucTjT7RVUUV0SrqEWvSDUW8ts5s=;
-        b=cn5ecnHYhwJeG5njAvGQR0kiZK/0pvdnXMV2CdC7hm+JlNWhlZYRrLHeSBKR+mBpiG
-         MO5EjQIG5s35uFw+J7Qbezz4bnUBrJL3t3QCYBWWMBf89q/2Sp/+g6iIfhrLs1jEUki8
-         GUTymZRob9OOnTZgEiZBMP0RuY6BZA9I136FqzEKZmXBD/A0s505W8EX54KZLrC2Tkiz
-         jzZkUhPHW6FqYrvBkcTSUeYKo7UGaI/+AbotqTMnwateUxZE1SmDkGyiJqbRLJ/ALVho
-         6O9hLM4VQ7aIkIo2lSxfuI8POQa0GsPjUq0Np5Rxi75CGDQrYyanUvgGkaKijBQtEv8W
-         0gEA==
-X-Gm-Message-State: AOAM531RqAtTJiJeysRkK2tbSc6utFvIqVKq+if+ivSc6FrfS077yCp/
-        kSEzbPKIE/IAF2rDzsUxo/HWoUX/oQkupPXb+0q0tA==
-X-Google-Smtp-Source: ABdhPJylqqYaO0m7SAS9trWbWvqpRQsbqTFEQBjRkjumnO4TwW0FwkUKpoVF6sDI6C3TqVp06SXSsIya5drVjSk12Pg=
-X-Received: by 2002:a2e:6e13:: with SMTP id j19mr1048011ljc.116.1621465604566;
- Wed, 19 May 2021 16:06:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RyfmXcmpiPf29zi7Cou4H0ygilUNz1aN0mITS576Vy8=;
+        b=ubUf36vJOUI8tqvzV5f70SbpZAFuwdM8jeNgiVuPvi5FzDllpaKFikNnsEpGnDO7+X
+         VRysQgWrM5kBJlMvw40J+cw23cTM/2qp1B5Z5D9vQNZ0gGSSmgkgBjKn5miF5Z4G2/Ox
+         l7eVysKCgQ/Qs8H7WkiAYO9NjtHkYcYxAQ8VNM7ZoAx0Gx/TyNsOD8jVBIf/ibwRE3eG
+         5FQCqD5YEbNLcSiSD6unQZMM9Ey2VFVWi1ADLz+qBG6mVOr47QOsnhV3rQi5DOtV4uaf
+         1EhOo3jCcsMwclRtERJpV0Og1FubpgIgDa/p2+/e5XcKP6bINPLDlXnWHCP+CIOOxY17
+         /OmQ==
+X-Gm-Message-State: AOAM530lBNx/U4useCKnoBx6Wr8N/cRPsqcfmA6KEfPZ36Y5jorW34Cd
+        In48BF6w3aztMNWI4L+5MsRQEQ==
+X-Google-Smtp-Source: ABdhPJxjoEmuhKpbT9CNsCXuUywm9ANtXixVppamuWzDYfOBD0teEaYiYmjSMSTgmIlvJzEcGHYpfg==
+X-Received: by 2002:a17:90a:8816:: with SMTP id s22mr1733707pjn.25.1621465628405;
+        Wed, 19 May 2021 16:07:08 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id l67sm340936pgl.18.2021.05.19.16.07.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 16:07:07 -0700 (PDT)
+Date:   Wed, 19 May 2021 23:07:03 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/8] KVM: Introduce memslots hva tree
+Message-ID: <YKWaFwgMNSaQQuQP@google.com>
+References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
+ <cf1695b3e1ba495a4d23cbdc66e0fa9b7b535cc3.1621191551.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-References: <212218590.13874.1621431781547@office.mailbox.org>
-In-Reply-To: <212218590.13874.1621431781547@office.mailbox.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 19 May 2021 16:06:33 -0700
-Message-ID: <CAKwvOd=Z1ia4ZufDbRsEUkumwkz15TtSb2V1aBT7SN8w86RKYw@mail.gmail.com>
-Subject: Re: [PATCH] fs/ntfs3: make ntfs3 compile with clang-12
-To:     torvic9@mailbox.org
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "almaz.alexandrovich@paragon-software.com" 
-        <almaz.alexandrovich@paragon-software.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf1695b3e1ba495a4d23cbdc66e0fa9b7b535cc3.1621191551.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 6:43 AM <torvic9@mailbox.org> wrote:
->
-> Some of the ccflags in the fs/ntfs3 Makefile are for gcc only.
-> Replace them with clang alternatives if necessary.
->
-> Signed-off-by: Tor Vic <torvic9@mailbox.org>
+Nit: something like "KVM: Use interval tree to do fast hva lookup in memslots"
+would be more helpful when perusing the shortlogs.  Stating that a tree is being
+added doesn't provide any hint as to why, or even the what is somewhat unclear.
 
-Thanks for the patch. +clang-built-linux; please make sure to cc the
-lists from ./scripts/get_maintainer.pl <patch file>.  It should
-recommend our mailing list of the words clang or llvm appear anywhere
-in the patch file. This helps spread around the review burden.
-
+On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> 
+> The current memslots implementation only allows quick binary search by gfn,
+> quick lookup by hva is not possible - the implementation has to do a linear
+> scan of the whole memslots array, even though the operation being performed
+> might apply just to a single memslot.
+> 
+> This significantly hurts performance of per-hva operations with higher
+> memslot counts.
+> 
+> Since hva ranges can overlap between memslots an interval tree is needed
+> for tracking them.
+> 
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
 > ---
->  fs/ntfs3/Makefile | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletions(-)
->
-> diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-> index b06a06cc0..dae144033 100644
-> --- a/fs/ntfs3/Makefile
-> +++ b/fs/ntfs3/Makefile
-> @@ -4,7 +4,9 @@
->  #
->
->  # to check robot warnings
-> -ccflags-y += -Wunused-but-set-variable -Wold-style-declaration -Wint-to-pointer-cast
-> +ccflags-y += -Wint-to-pointer-cast \
-> +       $(call cc-option,-Wunused-but-set-variable,-Wunused-const-variable) \
-> +       $(call cc-option,-Wold-style-declaration,-Wout-of-line-declaration)
 
-I think it would be better to leave off the second parameter of both
-of these, which is the fallback.
+...
 
->
->  obj-$(CONFIG_NTFS3_FS) += ntfs3.o
->
-> --
-> 2.31.1
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index d3a35646dfd8..f59847b6e9b3 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -27,6 +27,7 @@
+>  #include <linux/rcuwait.h>
+>  #include <linux/refcount.h>
+>  #include <linux/nospec.h>
+> +#include <linux/interval_tree.h>
+>  #include <linux/hashtable.h>
+>  #include <asm/signal.h>
+>  
+> @@ -358,6 +359,7 @@ static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
+>  
+>  struct kvm_memory_slot {
+>  	struct hlist_node id_node;
+> +	struct interval_tree_node hva_node;
+>  	gfn_t base_gfn;
+>  	unsigned long npages;
+>  	unsigned long *dirty_bitmap;
+> @@ -459,6 +461,7 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
+>   */
+>  struct kvm_memslots {
+>  	u64 generation;
+> +	struct rb_root_cached hva_tree;
+>  	/* The mapping table from slot id to the index in memslots[]. */
+>  	DECLARE_HASHTABLE(id_hash, 7);
+>  	atomic_t lru_slot;
+> @@ -679,6 +682,11 @@ static inline struct kvm_memslots *kvm_vcpu_memslots(struct kvm_vcpu *vcpu)
+>  	return __kvm_memslots(vcpu->kvm, as_id);
+>  }
+>  
+> +#define kvm_for_each_hva_range_memslot(node, slots, start, last)	     \
 
--- 
-Thanks,
-~Nick Desaulniers
+kvm_for_each_memslot_in_range()?  Or kvm_for_each_memslot_in_hva_range()?
+
+Please add a comment about whether start is inclusive or exclusive.
+
+I'd also be in favor of hiding this in kvm_main.c, just above the MMU notifier
+usage.  It'd be nice to discourage arch code from adding lookups that more than
+likely belong in generic code.
+
+> +	for (node = interval_tree_iter_first(&slots->hva_tree, start, last); \
+> +	     node;							     \
+> +	     node = interval_tree_iter_next(node, start, last))	     \
+> +
+>  static inline
+>  struct kvm_memory_slot *id_to_memslot(struct kvm_memslots *slots, int id)
+>  {
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 50f9bc9bb1e0..a55309432c9a 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -488,6 +488,9 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+>  	struct kvm_memslots *slots;
+>  	int i, idx;
+>  
+> +	if (range->end == range->start || WARN_ON(range->end < range->staart))
+
+I'm pretty sure both of these are WARNable offenses, i.e. they can be combined.
+It'd also be a good idea to use WARN_ON_ONCE(); if a caller does manage to
+trigger this, odds are good it will get spammed.
+
+Also, does interval_tree_iter_first() explode if given bad inputs?  If not, I'd
+probably say just omit this entirely.  If it does explode, it might be a good idea
+to work the sanity check into the macro, even if the macro is hidden here.
+
+> +		return 0;
+> +
+>  	/* A null handler is allowed if and only if on_lock() is provided. */
+>  	if (WARN_ON_ONCE(IS_KVM_NULL_FN(range->on_lock) &&
+>  			 IS_KVM_NULL_FN(range->handler)))
+> @@ -507,15 +510,18 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+>  	}
+>  
+>  	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+> +		struct interval_tree_node *node;
+> +
+>  		slots = __kvm_memslots(kvm, i);
+> -		kvm_for_each_memslot(slot, slots) {
+> +		kvm_for_each_hva_range_memslot(node, slots,
+> +					       range->start, range->end - 1) {
+>  			unsigned long hva_start, hva_end;
+>  
+> +			slot = container_of(node, struct kvm_memory_slot,
+> +					    hva_node);
+
+Eh, let that poke out.  The 80 limit is more of a guideline.
+
+>  			hva_start = max(range->start, slot->userspace_addr);
+>  			hva_end = min(range->end, slot->userspace_addr +
+>  						  (slot->npages << PAGE_SHIFT));
+> -			if (hva_start >= hva_end)
+> -				continue;
+>  
+>  			/*
+>  			 * To optimize for the likely case where the address
+> @@ -787,6 +793,7 @@ static struct kvm_memslots *kvm_alloc_memslots(void)
+>  	if (!slots)
+>  		return NULL;
+>  
+> +	slots->hva_tree = RB_ROOT_CACHED;
+>  	hash_init(slots->id_hash);
+>  
+>  	return slots;
+> @@ -1113,10 +1120,14 @@ static inline void kvm_memslot_delete(struct kvm_memslots *slots,
+>  		atomic_set(&slots->lru_slot, 0);
+>  
+>  	for (i = dmemslot - mslots; i < slots->used_slots; i++) {
+> +		interval_tree_remove(&mslots[i].hva_node, &slots->hva_tree);
+>  		hash_del(&mslots[i].id_node);
+
+I think it would make sense to add helpers for these?  Not sure I like the names,
+but it would certainly dedup the code a bit.
+
+static void kvm_memslot_remove(struct kvm_memslots *slots,
+			       struct kvm_memslot *memslot)
+{
+	interval_tree_remove(&memslot->hva_node, &slots->hva_tree);
+	hash_del(&memslot->id_node);
+}
+
+static void kvm_memslot_insert(struct kvm_memslots *slots,
+			       struct kvm_memslot *memslot)
+{
+	interval_tree_insert(&memslot->hva_node, &slots->hva_tree);
+	hash_add(slots->id_hash, &memslot->id_node, memslot->id);
+}
+
+> +
+>  		mslots[i] = mslots[i + 1];
+> +		interval_tree_insert(&mslots[i].hva_node, &slots->hva_tree);
+>  		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
+>  	}
+> +	interval_tree_remove(&mslots[i].hva_node, &slots->hva_tree);
+>  	hash_del(&mslots[i].id_node);
+>  	mslots[i] = *memslot;
+>  }
