@@ -2,154 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F2B3889A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD7C388977
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343719AbhESIr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:47:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31312 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343696AbhESIrw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:47:52 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14J8hf8c151433;
-        Wed, 19 May 2021 04:46:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=OYWWSIcs12yMfYYufLMR8/Q7KvEDR7ikuAOk4RW6roE=;
- b=sqHNhlRQ7OZzBnCrWq+GWAjtMH4f0glFjDlRU/aR8Sokt+ge0xMj9kBKeORaCl9iTuLo
- Tqk9kRZKOGSkIAr25OOb4Lj9sRhasik8mTMczBp74qVCczAl7CBhWP38yO/oIQIrUtsA
- xj2/lvlep7aTlqkMqh4nvF10nm1i8MSgAxthOI+ciePovfqsWJ7dh3bAAXlvzj1eW7Ml
- UAzIw7jE/5PG8n+TJdhSKQeE0t5/jv75+zTwtHq6XkHZ2NhCMWg6xIKrFBGrwH4TYYhk
- Mh6WmaevWQ9ISkhG6KX8bNxg+6jx7ih8n93r3GvWLi8EGrbn3TniQVskqDAl5XJi1BC4 EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mxbx2arq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 04:46:24 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14J8iRvO154388;
-        Wed, 19 May 2021 04:46:23 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38mxbx2ar1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 04:46:23 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14J8hvco020970;
-        Wed, 19 May 2021 08:46:21 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 38j5x81386-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 08:46:21 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14J8kIkd28705074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 08:46:18 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 517CC11C0D8;
-        Wed, 19 May 2021 08:46:16 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 081F211C307;
-        Wed, 19 May 2021 08:17:50 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.89.97])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 19 May 2021 08:17:49 +0000 (GMT)
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
- <20210512203536.4209c29c.pasic@linux.ibm.com>
- <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
- <20210513194541.58d1628a.pasic@linux.ibm.com>
- <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
- <20210514021500.60ad2a22.pasic@linux.ibm.com>
- <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
- <20210517211030.368ca64b.pasic@linux.ibm.com>
- <966a60ad-bdde-68d0-ae2f-06121c6ad970@de.ibm.com>
- <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
- <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
- <20210518173351.39646b45.pasic@linux.ibm.com>
- <ca5f1c72-09a3-d270-44a0-bda54c554f67@de.ibm.com>
- <20210519012709.3bcc30e7.pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <250189ed-bded-5261-d8f3-f75787be7aeb@de.ibm.com>
-Date:   Wed, 19 May 2021 10:17:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S242152AbhESIdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236249AbhESIdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:33:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF3561355;
+        Wed, 19 May 2021 08:31:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621413106;
+        bh=44k6xIJijGFNay+2T/qkyD1nvLUD1zJTY/C3KnNuYV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OrZ5gfn2PuBpGluKGxj5sZDRstijAVsuNrF8lkX9IKlLwweZWBahhkdjXVYA7YKfc
+         HZQ+OzKUX19SnvrdniBX39lL2V8wHTxz5PNqbmLkqH3DIpT8rotB+VhROyMb2QJ/z/
+         whCzX6CFumrpba7fIfIN7Vky/wmnp+jWsA/+oRMo=
+Date:   Wed, 19 May 2021 10:31:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hriday Hegde <hridayhegde1999@gmail.com>
+Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
+ 'const' keyword
+Message-ID: <YKTM8KmXI8bXUSqp@kroah.com>
+References: <20210519081958.7223-1-hridayhegde1999@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210519012709.3bcc30e7.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -pRYk4RQyfIs3-_W5GkkstdLTwAmRRRt
-X-Proofpoint-ORIG-GUID: Rtnd7wG_q_PxxiCdyVU6eOCYewUvxU0r
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_04:2021-05-18,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 impostorscore=0 spamscore=0 bulkscore=0
- malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190064
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519081958.7223-1-hridayhegde1999@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 19.05.21 01:27, Halil Pasic wrote:
-> On Tue, 18 May 2021 19:01:42 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+On Wed, May 19, 2021 at 01:19:58AM -0700, Hriday Hegde wrote:
+> Fixing following warnings found by checkpatch.pl
+> WARNING: struct file_operations should normally be const
+> 380: FILE: drivers/staging/android/ashmem.c:380:
+> +	static struct file_operations vmfile_fops;
 > 
->> On 18.05.21 17:33, Halil Pasic wrote:
->>> On Tue, 18 May 2021 15:59:36 +0200
->>> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-> [..]
->>>>>>
->>>>>> Would it help, if the code in priv.c would read the hook once
->>>>>> and then only work on the copy? We could protect that with rcu
->>>>>> and do a synchronize rcu in vfio_ap_mdev_unset_kvm after
->>>>>> unsetting the pointer?
->>>
->>> Unfortunately just "the hook" is ambiguous in this context. We
->>> have kvm->arch.crypto.pqap_hook that is supposed to point to
->>> a struct kvm_s390_module_hook member of struct ap_matrix_mdev
->>> which is also called pqap_hook. And struct kvm_s390_module_hook
->>> has function pointer member named "hook".
->>
->> I was referring to the full struct.
->>>    
->>>>>
->>>>> I'll look into this.
->>>>
->>>> I think it could work. in priv.c use rcu_readlock, save the
->>>> pointer, do the check and call, call rcu_read_unlock.
->>>> In vfio_ap use rcu_assign_pointer to set the pointer and
->>>> after setting it to zero call sychronize_rcu.
->>>
->>> In my opinion, we should make the accesses to the
->>> kvm->arch.crypto.pqap_hook pointer properly synchronized. I'm
->>> not sure if that is what you are proposing. How do we usually
->>> do synchronisation on the stuff that lives in kvm->arch?
->>>    
->>
->> RCU is a method of synchronization. We  make sure that structure
->> pqap_hook is still valid as long as we are inside the rcu read
->> lock. So the idea is: clear pointer, wait until all old readers
->> have finished and the proceed with getting rid of the structure.
+> Signed-off-by: Hriday Hegde <hridayhegde1999@gmail.com>
+> ---
+>  drivers/staging/android/ashmem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Yes I know that RCU is a method of synchronization, but I'm not
-> very familiar with it. I'm a little confused by "read the hook
-> once and then work on a copy". I guess, I would have to read up
-> on the RCU again to get clarity. I intend to brush up my RCU knowledge
-> once the patch comes along. I would be glad to have your help when
-> reviewing an RCU based solution for this.
+> diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+> index 8ee4320a5dc6..8ff2794b08e3 100644
+> --- a/drivers/staging/android/ashmem.c
+> +++ b/drivers/staging/android/ashmem.c
+> @@ -377,7 +377,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
+>  
+>  static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+>  {
+> -	static struct file_operations vmfile_fops;
+> +	static const struct file_operations vmfile_fops;
+>  	struct ashmem_area *asma = file->private_data;
+>  	int ret = 0;
+>  
+> -- 
+> 2.25.1
+> 
+> 
 
-Just had a quick look. Its not trivial, as the hook function itself
-takes a mutex and an rcu section must not sleep. Will have a deeper
-look.
+Any reason why you didn't build your change before submitting this
+patch?
+
+thanks,
+
+greg k-h
