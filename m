@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CECF3894C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579BA3894C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 19:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhESRpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 13:45:14 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:40261 "EHLO todd.t-8ch.de"
+        id S230085AbhESRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 13:49:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhESRpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 13:45:13 -0400
-X-Greylist: delayed 102131 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 May 2021 13:45:13 EDT
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1621446232;
-        bh=fmpstG8W170nShL6r4+pPqZlfWVXx1bGpoZLVspD3mA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZ/uqDg7MkOMiO6BDXQ3dj5m/2iRF94mBNLk3ILoOTgTdhqD/ax7vidymjzjchEja
-         I0xwKRwqIVYMCMtWCe64Ra66cmOqS2RORUouKW0/UoXGdsONzXV/7t9GqLY6bujfV1
-         WkBDBHB2fb8bCKiZNG62WNLbITdzD4H9K1DOlK4I=
-To:     linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] HID: input: Add support for Programmable Buttons
-Date:   Wed, 19 May 2021 19:43:45 +0200
-Message-Id: <20210519174345.614467-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <2dc197eb-a222-8af6-f0ab-f722e4f492ca@redhat.com>
-References: <2dc197eb-a222-8af6-f0ab-f722e4f492ca@redhat.com>
+        id S230023AbhESRtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 13:49:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 232EC611BF;
+        Wed, 19 May 2021 17:48:11 +0000 (UTC)
+Date:   Wed, 19 May 2021 18:48:08 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 3/8] arm64: mte: Sync tags for pages where PTE is
+ untagged
+Message-ID: <20210519174808.GD21619@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-4-steven.price@arm.com>
+ <87y2cdtk09.wl-maz@kernel.org>
+ <f3a3f560-4d2b-9cd3-bbf4-ea8135ab4d17@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3a3f560-4d2b-9cd3-bbf4-ea8135ab4d17@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Map them to KEY_MACRO# event codes.
+On Wed, May 19, 2021 at 10:32:01AM +0100, Steven Price wrote:
+> On 17/05/2021 17:14, Marc Zyngier wrote:
+> > On Mon, 17 May 2021 13:32:34 +0100,
+> > Steven Price <steven.price@arm.com> wrote:
+> >>
+> >> A KVM guest could store tags in a page even if the VMM hasn't mapped
+> >> the page with PROT_MTE. So when restoring pages from swap we will
+> >> need to check to see if there are any saved tags even if !pte_tagged().
+> >>
+> >> However don't check pages for which pte_access_permitted() returns false
+> >> as these will not have been swapped out.
+> >>
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  arch/arm64/include/asm/pgtable.h |  9 +++++++--
+> >>  arch/arm64/kernel/mte.c          | 16 ++++++++++++++--
+> >>  2 files changed, 21 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> >> index 0b10204e72fc..275178a810c1 100644
+> >> --- a/arch/arm64/include/asm/pgtable.h
+> >> +++ b/arch/arm64/include/asm/pgtable.h
+> >> @@ -314,8 +314,13 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+> >>  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
+> >>  		__sync_icache_dcache(pte);
+> >>  
+> >> -	if (system_supports_mte() &&
+> >> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
+> >> +	/*
+> >> +	 * If the PTE would provide user space access to the tags associated
+> >> +	 * with it then ensure that the MTE tags are synchronised.  Exec-only
+> >> +	 * mappings don't expose tags (instruction fetches don't check tags).
+> > 
+> > I'm not sure I understand this comment. Of course, execution doesn't
+> > match tags. But the memory could still have tags associated with
+> > it. Does this mean such a page would lose its tags is swapped out?
+> 
+> Hmm, I probably should have reread that - the context of the comment is
+> lost.
+> 
+> I added the comment when changing to pte_access_permitted(), and the
+> comment on pte_access_permitted() explains a potential gotcha:
+> 
+>  * p??_access_permitted() is true for valid user mappings (PTE_USER
+>  * bit set, subject to the write permission check). For execute-only
+>  * mappings, like PROT_EXEC with EPAN (both PTE_USER and PTE_UXN bits
+>  * not set) must return false. PROT_NONE mappings do not have the
+>  * PTE_VALID bit set.
+> 
+> So execute-only mappings return false even though that is effectively a
+> type of user access. However, because MTE checks are not performed by
+> the PE for instruction fetches this doesn't matter. I'll update the
+> comment, how about:
+> 
+> /*
+>  * If the PTE would provide user space access to the tags associated
+>  * with it then ensure that the MTE tags are synchronised.  Although
+>  * pte_access_permitted() returns false for exec only mappings, they
+>  * don't expose tags (instruction fetches don't check tags).
+>  */
 
-These buttons are defined by HID as follows:
-"The user defines the function of these buttons to control software applications or GUI objects."
+This looks fine to me. We basically want to check the PTE_VALID and
+PTE_USER bits and pte_access_permitted() does this (we could come up
+with a new macro name like pte_valid_user() but since we don't care
+about execute-only, it gets unnecessarily complicated).
 
-This matches the semantics of the KEY_MACRO# input event codes that Linux supports.
-
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-
-v1 -> v2: Only handle the 30 keys known
-
- drivers/hid/hid-debug.c | 11 +++++++++++
- drivers/hid/hid-input.c |  6 ++++++
- 2 files changed, 17 insertions(+)
-
-diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-index 59f8d716d78f..0e76d9b4530a 100644
---- a/drivers/hid/hid-debug.c
-+++ b/drivers/hid/hid-debug.c
-@@ -122,6 +122,7 @@ static const struct hid_usage_entry hid_usage_table[] = {
-   {  9, 0, "Button" },
-   { 10, 0, "Ordinal" },
-   { 12, 0, "Consumer" },
-+      {0, 0x003, "ProgrammableButtons"},
-       {0, 0x238, "HorizontalWheel"},
-   { 13, 0, "Digitizers" },
-     {0, 0x01, "Digitizer"},
-@@ -939,6 +940,16 @@ static const char *keys[KEY_MAX + 1] = {
- 	[KEY_KBDINPUTASSIST_NEXTGROUP] = "KbdInputAssistNextGroup",
- 	[KEY_KBDINPUTASSIST_ACCEPT] = "KbdInputAssistAccept",
- 	[KEY_KBDINPUTASSIST_CANCEL] = "KbdInputAssistCancel",
-+	[KEY_MACRO1] = "Macro1", [KEY_MACRO2] = "Macro2", [KEY_MACRO3] = "Macro3",
-+	[KEY_MACRO4] = "Macro4", [KEY_MACRO5] = "Macro5", [KEY_MACRO6] = "Macro6",
-+	[KEY_MACRO7] = "Macro7", [KEY_MACRO8] = "Macro8", [KEY_MACRO9] = "Macro9",
-+	[KEY_MACRO10] = "Macro10", [KEY_MACRO11] = "Macro11", [KEY_MACRO12] = "Macro12",
-+	[KEY_MACRO13] = "Macro13", [KEY_MACRO14] = "Macro14", [KEY_MACRO15] = "Macro15",
-+	[KEY_MACRO16] = "Macro16", [KEY_MACRO17] = "Macro17", [KEY_MACRO18] = "Macro18",
-+	[KEY_MACRO19] = "Macro19", [KEY_MACRO20] = "Macro20", [KEY_MACRO21] = "Macro21",
-+	[KEY_MACRO22] = "Macro22", [KEY_MACRO23] = "Macro23", [KEY_MACRO24] = "Macro24",
-+	[KEY_MACRO25] = "Macro25", [KEY_MACRO26] = "Macro26", [KEY_MACRO27] = "Macro27",
-+	[KEY_MACRO28] = "Macro28", [KEY_MACRO29] = "Macro29", [KEY_MACRO30] = "Macro30",
- };
- 
- static const char *relatives[REL_MAX + 1] = {
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 18f5e28d475c..32962772cb42 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -632,6 +632,12 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
- 				else
- 					code += BTN_TRIGGER_HAPPY - 0x10;
- 				break;
-+		case HID_CP_CONSUMER_CONTROL:
-+				if (code <= 29)
-+					code += KEY_MACRO1;
-+				else
-+					code += BTN_TRIGGER_HAPPY - 30;
-+				break;
- 		default:
- 			switch (field->physical) {
- 			case HID_GD_MOUSE:
-
-base-commit: efd8929b9eec1cde120abb36d76dd00ff6711023
 -- 
-2.31.1
-
+Catalin
