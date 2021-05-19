@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18053896A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C593896A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhEST13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhEST11 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:27:27 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36E1C06175F;
-        Wed, 19 May 2021 12:26:06 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id ECB844D25C1D0;
-        Wed, 19 May 2021 12:26:05 -0700 (PDT)
-Date:   Wed, 19 May 2021 12:26:05 -0700 (PDT)
-Message-Id: <20210519.122605.1971627339402718160.davem@davemloft.net>
-To:     zheyuma97@gmail.com
-Cc:     GR-Linux-NIC-Dev@marvell.com, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/qla3xxx: fix schedule while atomic in
- ql_sem_spinlock
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1621406954-1130-1-git-send-email-zheyuma97@gmail.com>
-References: <1621406954-1130-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 19 May 2021 12:26:06 -0700 (PDT)
+        id S231150AbhEST3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:29:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhEST3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 15:29:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B05376112F;
+        Wed, 19 May 2021 19:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621452496;
+        bh=Lk3jBXuZ1fbFKB/aRqyOiK+TZ31lR6R/DqCsZCHeyEM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q/MjRkDkEUJHWvk6moJrajtdTG8RF0swjf0bCI4Vdb4EmT6ylLtmd0iZsVEWtUaez
+         N0zDtwsciGX9NKoSSWIW9vXCnlFYTucJ041dkBmZ7e1rJTw6V6L9o1eO4NJoZcwYev
+         qS3DSPd1FpvaSI6Sfiz7ZEO3R3iPhp4J4g+F5HAeK6ySmSFrKH3HtotHWnMZnC7Gx6
+         2tqNDQ5LHLPzEaEYmljAv0QvToq85+lyXOSOCfWls5vVeu302LIjsvszYSWAjCNW6K
+         zEJ5dAIT8tkn2H3SmKz0NmdocR/BdTeZ71PtnhnxszAR309iQRJbOn9qXlzHOWKguW
+         DeYimFe9qtJbA==
+Date:   Wed, 19 May 2021 20:27:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 2/2] arm64: Create a list of SYM_CODE functions,
+ blacklist them in the unwinder
+Message-ID: <20210519192730.GI4224@sirena.org.uk>
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210516040018.128105-3-madvenka@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="MPkR1dXiUZqK+927"
+Content-Disposition: inline
+In-Reply-To: <20210516040018.128105-3-madvenka@linux.microsoft.com>
+X-Cookie: There's no time like the pleasant.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
-Date: Wed, 19 May 2021 06:49:14 +0000
 
-> When calling the 'ql_sem_spinlock', the driver has already acquired the
-> spin lock, so the driver should not call 'ssleep' in atomic context.
-> 
-> This bug can be fixed by unlocking before calling 'ssleep'.
- ...
-> diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-> index 214e347097a7..af7c142a066f 100644
-> --- a/drivers/net/ethernet/qlogic/qla3xxx.c
-> +++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-> @@ -114,7 +114,9 @@ static int ql_sem_spinlock(struct ql3_adapter *qdev,
->  		value = readl(&port_regs->CommonRegs.semaphoreReg);
->  		if ((value & (sem_mask >> 16)) == sem_bits)
->  			return 0;
-> +		spin_unlock_irq(&qdev->hw_lock);
->  		ssleep(1);
-> +		spin_lock_irq(&qdev->hw_lock);
->  	} while (--seconds);
->  	return -1;
->  }
+--MPkR1dXiUZqK+927
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Are you sure dropping the lock like this dos not introduce a race condition?
+On Sat, May 15, 2021 at 11:00:18PM -0500, madvenka@linux.microsoft.com wrot=
+e:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>=20
+> The unwinder should check if the return PC falls in any function that
+> is considered unreliable from an unwinding perspective. If it does,
+> mark the stack trace unreliable.
 
-Thank you.
+Other than the naming issue this makes sense to me, I'll try to go
+through the first patch properly in the next few days.
+
+--MPkR1dXiUZqK+927
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmClZqEACgkQJNaLcl1U
+h9B77Qf+M9+zHwxJNPl/vKY7Sle87Tgz3CrLIzIALiGlYZoKR6GmoGp1x+pA8XGw
+M/yVldVJE3DfEwBe5mPKLX+35CbSSyoAzAC00+KV66IwxaDbiAIFAMCtDfMh0tCr
+QFaglXXmWV6g4viO/v2+kpFY9PIhmUzyp3VtFFmaVaIdTmRiLx4+1UAGcmqMMopB
+CRIgjuaf0wsvwnXFQNqMxjrCx1ndY3XTHwRkxX5+06b8vUoIsqbZ1kvhNQz/cu39
+DWSn9OE2R1mIFwhG26yeONdeRUGXSYt7AmyRt7lcXX94v4J77FzrWfxJ5WaJPhz1
+MzcC6sZOVksed1e2vOwEpcDz53Y/gg==
+=+c7T
+-----END PGP SIGNATURE-----
+
+--MPkR1dXiUZqK+927--
