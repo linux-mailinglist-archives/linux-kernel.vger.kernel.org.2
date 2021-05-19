@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6B3388399
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8011B3883A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352845AbhESALT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 20:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S234326AbhESANn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 20:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbhESALS (ORCPT
+        with ESMTP id S233554AbhESANl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 20:11:18 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C101EC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 17:09:58 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i9so16318366lfe.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 17:09:58 -0700 (PDT)
+        Tue, 18 May 2021 20:13:41 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF751C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 17:12:22 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id q7so15020678lfr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 17:12:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OuTM33XGtLwqa8MYciwrkAYfeQ5kekKTaJ8lI00J+rs=;
-        b=h8O4DrZRkEIKrl/XUr78Ts7Z+5uTUkSBm2b+5q8n1o1rP5eMEsqe3JLY0RoalrthmN
-         hFx904A+BhryeG5r014WnM3Ppb3ppkCbzLzH2yCCxevVIGIPrbxabKc4WEHvr1hDjdWq
-         L/LVrgMDOlTc5LLNV02Y5nFswYHoZ5VQBrw1jc/Tr9If50zwJx+P5Y1yCzBki5O9QmoV
-         jpsuQe/Le47+ZzAJ/OtWbMAAmrQXUAz2S+vcQfsEzEf0wfD0P5OU6toS75gEFj6v1Ew9
-         9iBMry8hXEIvXdyzwh28L1Lk442e7oC4GWrHMsdBUKtvG15pRphJ+Qpmq6lB9ynjNzuZ
-         ZBnA==
+        bh=QkFJB+otnmwltLGFDsGxwuEk5BhOyR7tWdo4yOWY1wc=;
+        b=vvBSqOjC78aj5fWRQSsZoFhAPgjyKXreaLn2qc0ueH0m+gryUOA27w2Z+SpYbsW+AP
+         wK9J8Qugui3AbS4s0k85oG0VOb5+yNdNc22hkAcg9x9RQIzaoaP8m7j8eAYTrEC/GG+p
+         YZMWkAW4B95iGlH2UkU2TftwyCks9Lr6EexgrQWQQLOGdn1LqflzAxDqxSGWQfEItNau
+         AgrUm9ex+QWTrpjXbk80zgpFBlCIMYxEsfEhwVXv4sS34SGhO21Y/L17k5N2VhlNdUSo
+         UN43A4PQEiEPxbuA/RMexrA9PtL+9lEKgrI5RUcBJoTuA86MdeqX5CtAGoErWgTaBXso
+         9mvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OuTM33XGtLwqa8MYciwrkAYfeQ5kekKTaJ8lI00J+rs=;
-        b=l7NRiDs/p8KkI5IT1uDvxZyi5eh/FxJNqRWg60TCJZ+fIuZOfv5t61xTv7dxHR/3pb
-         hsMzCug4LqWBgy7Cw6RHF5pblBqXykrjHkNXjxAA+oQbLGhz3a04MXs5DHIM+0o64Zgw
-         f2Bn0ibcKdkW1yeNxRTJdhRA/T0omLu95zcsnYo8yF/9CPi5fzn6IbOOzIqCrR2dKBbW
-         CP8i2EYgIs7wKVWoR5W8vgTFVMpsoStIakIo9Q8AmxUbvgNcLTeRWVM/Wrk7M9IHwNxb
-         kbVBHVuS+Ow9AukErtfJ6/+dVlr15ycT2hrTk6V/d+kkEBU8Ru7mvYP8oFXJAV56Ssxw
-         nFIA==
-X-Gm-Message-State: AOAM5313Nrohd+LDKTRaSUewv+mge8E/3mnxzi6XVN9pYBrlXTLROb9i
-        cUB9zJlAnpv3xvZRg7eTgrFm0s9MnE77F+wRYlZ+pQ==
-X-Google-Smtp-Source: ABdhPJzXvwNyBIFBAGkgV+vqz4OfOm7bjiZHvKaE/3qxTD4SKunmkPBqDuIYym7TgM9jIoYc0T7bA2xvseQYyURg98U=
-X-Received: by 2002:a19:b0b:: with SMTP id 11mr5814348lfl.291.1621382997090;
- Tue, 18 May 2021 17:09:57 -0700 (PDT)
+        bh=QkFJB+otnmwltLGFDsGxwuEk5BhOyR7tWdo4yOWY1wc=;
+        b=Hu89BeJrahBegWAbYH7fJtkdNaeHR3XlsqVaKZI5/JAdmsWEHYQAdLDGH7hp1aMPUQ
+         gHLaB/haCYtqSOnI+IwMnYnMV3aNjkeW/B5AhkotqNZcoTzAe/8VDUfzV6W2I8+4iRBQ
+         VsyS6rH7h+iW62oRkY401wWnflQKTFtGXR/SdfMQEitM1he8SyrhM6vekw/w2I7qkEYC
+         D8hAr29LBGVhgl1Bm1jp7dHIHwdmNdsHN0ZsP0TIuMU/amnx/8hh2/rBEurujnWuLc0I
+         Dpocpxu+j0F4B13BQwD5QANZDV5kRakGY/aFemqo/Ec91f2Eidfyc49VXCSuiMS3bj7O
+         S+Sw==
+X-Gm-Message-State: AOAM533GVVIwb0llBRWehoONxwTXV8SyNSbq0F4VWm9W7DqcAsmR5D6F
+        BKAI0TszDj+7EU/xzqft6lrI4pXSJgPGEjYN5zo5OA==
+X-Google-Smtp-Source: ABdhPJy4FzN7hFkVlARsIv205HJnTPbWVjj0FRfYHskNGYlGD2BX2/SZGDwbbYLTxXAevIsKhZJd4qstb4GB0eWfjr8=
+X-Received: by 2002:ac2:5145:: with SMTP id q5mr3450917lfd.529.1621383141079;
+ Tue, 18 May 2021 17:12:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210426024533.20840-1-zhiyong.tao@mediatek.com> <20210426024533.20840-2-zhiyong.tao@mediatek.com>
-In-Reply-To: <20210426024533.20840-2-zhiyong.tao@mediatek.com>
+References: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 19 May 2021 02:09:45 +0200
-Message-ID: <CACRpkdaLhR9HgYNPZ_SQ-wi7RfpeT7iapXUfqf=bAwo05MBZqA@mail.gmail.com>
-Subject: Re: [PATCH v7] pinctrl: mediatek: add rsel setting on MT8195
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>, srv_heupstream@mediatek.com,
-        hui.liu@mediatek.com, huang eddie <eddie.huang@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
+Date:   Wed, 19 May 2021 02:12:10 +0200
+Message-ID: <CACRpkdb+3MjbtFvo3t-hX9uDDTdnPQx-KfZAqQUrvQQQ42mqKg@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: aspeed: Fix minor documentation error
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 4:45 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+On Sun, Apr 25, 2021 at 2:26 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
 
-> This patch provides rsel setting on MT8195.
->
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> Kernel test robot throws below warning ->
 
-I am suspicious about this patch, sorry for taking so long to answer.
-
-First explain what "rsel" means, because with no explanation I
-suspect it means "rail select" which is what we already have the
-existing generic property PIN_CONFIG_POWER_SOURCE
-and power-source = <> in DT for.
-
-Also add the custom properties to:
-Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-(separate patch)
+Patch applied for fixes!
 
 Yours,
 Linus Walleij
