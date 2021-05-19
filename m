@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B893886FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCAC388701
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244408AbhESFvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344733AbhESFvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:51:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2AF0613AE;
-        Wed, 19 May 2021 05:48:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621403316;
-        bh=1M/78skAnJ0O2EA7jNQp+kPITl517U87tfk5kFLTNwo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lncOtVDAEu7HiiRH4NkTlbuFCw039Zi8FHl47j/D8o8b6429d7pMItzt92Zuqn/md
-         1k+rbV+ujbbDaXukjm0H+1NkPpRruxJUxHosKCKcTPnfO6GNB2cIPjYaZNGrcS4NaE
-         GHVDbor7fM1s6Abpb3MI0t36fipqE5D8L9qat0/El/+e3kqejTkZ/+k+/nWPZ1mAzc
-         PuHDXrty+uIaYvgimxcHDmatLZfVnBz1m9NmKx/pMsYHPhhU/LaDAkRTimQGn8DGza
-         QJUH2Wr6BcISqxxFuI7L3y/p6NxUoWyT+xqpmuXHfj3/CzbkZ80qIsBFio5u6tyKDc
-         Ze99bV9iojkDQ==
-Received: by mail-lf1-f51.google.com with SMTP id i22so17125635lfl.10;
-        Tue, 18 May 2021 22:48:36 -0700 (PDT)
-X-Gm-Message-State: AOAM530Z5YNbPBOQZEcshdj85YLKgo1Nb7sIpeoJsQEYczyW3I7rN9zJ
-        BKJGf3XYyHCzjNxazYpSZpVx6h/+dLBbx7A6Y6w=
-X-Google-Smtp-Source: ABdhPJyZmJGTwo2722UUz7WdRiEPE80dASqU/bVhjb4FY4dMa4G28pS/d7JsiaV39IWXLH9tUctL90X9qaaj9JfV8T0=
-X-Received: by 2002:ac2:5493:: with SMTP id t19mr7208809lfk.346.1621403315041;
- Tue, 18 May 2021 22:48:35 -0700 (PDT)
+        id S237636AbhESFwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237145AbhESFwV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 01:52:21 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62BEC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:51:00 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id q2so9111706pfh.13
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hIce4Sab2WHJdY/Swtpl8EVUwcjzs30ShL3uKQAPv4Q=;
+        b=bY0gEpNI9wdmgQlkmfmh4/zJHX1NDu5BcloRUZfgTQi2VtFFwPQDDtPiTQcgTMcsHE
+         JMdLS3pGhcqmipuIESjVbHUvivGt9Fl583s3Wss2UrlYDyVtuYBN4vXoWb/SX92OdChC
+         Sp+ONzVcXONMLDpnCvXeI4RHsCwwFZjm6LwDfkSNapkrRFjj+XW49KpU8ZhDUoI59e/W
+         2Ldv35We6jySKA2qJHngshS7fYpfQSSg2DIdMVQLdlPR5WKImhwg3ucdTNBgpz7yoDpz
+         VW7SS0viKqnsRw5Tu/25LSix0Zgu5u5Gnh+JoVmak3LovY4WCAKZGYf7edEcmFHvxVTY
+         W+VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hIce4Sab2WHJdY/Swtpl8EVUwcjzs30ShL3uKQAPv4Q=;
+        b=ZP6wLSyCh4djSNLnvmjNNQPHQH4z7iL9231kONY738JQpyY5/Ov+hN9mvseIYnFifR
+         Bxfnm3RgtgbYtwf8V0msFLNZo8onQiY5TTvgimdk/rW7071eNXDJjQfnmDb/KYtWpdhI
+         O8K9cEYJS58c/Vlx6iT6Zquu2/NKrR1fakmJX2pjCAfkgQpeE3WxGLeKljN5+CKTRUzv
+         0qBEDiSkh3IiwC/TH8L2CxOyUlSZ6jAdn62tvBynKdpU3p6+2JOoX+gUoV++9HmvKOij
+         kkzQDMsWEa9EstLxUEKlf2cK5NgzCtTwfdPCPhwmzV8gs9dVDS29j5v290KoySnaMkFf
+         EDUg==
+X-Gm-Message-State: AOAM531nC8rkcRPcwgpX6lNN9v/6A5Cterpn3cKvA/8GctcuZRr1yJRr
+        nrzP1brjaIDzcJsXMQBEqzY=
+X-Google-Smtp-Source: ABdhPJzVWlqsbvRLM9AIgGousVrHGs2s5NJ44AQgxcguCO8uuTP4I63p5kRF91TQt4NM6R8Sul30hA==
+X-Received: by 2002:aa7:8484:0:b029:2d8:a014:a0fc with SMTP id u4-20020aa784840000b02902d8a014a0fcmr9032707pfn.24.1621403460230;
+        Tue, 18 May 2021 22:51:00 -0700 (PDT)
+Received: from devbox.home ([50.39.96.2])
+        by smtp.gmail.com with ESMTPSA id w1sm12525230pjk.10.2021.05.18.22.50.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 22:50:59 -0700 (PDT)
+Date:   Tue, 18 May 2021 22:50:01 -0700
+From:   Pawan Gupta <writetopawan@gmail.com>
+To:     Ramakrishna Saripalli <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
+Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
+ Forwarding
+Message-ID: <20210519055001.jtos5a4nu6j6kum2@devbox.home>
+References: <20210517220059.6452-1-rsaripal@amd.com>
+ <20210517220059.6452-2-rsaripal@amd.com>
 MIME-Version: 1.0
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org> <20210519052048.GA24853@lst.de>
-In-Reply-To: <20210519052048.GA24853@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 19 May 2021 13:48:23 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
-Message-ID: <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        drew@beagleboard.org, wefu@redhat.com, lazyparser@gmail.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210517220059.6452-2-rsaripal@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 1:20 PM Christoph Hellwig <hch@lst.de> wrote:
+On 17.05.2021 17:00, Ramakrishna Saripalli wrote:
+>From: Ramakrishna Saripalli <rk.saripalli@amd.com>
+[...]
+>--- a/arch/x86/include/asm/nospec-branch.h
+>+++ b/arch/x86/include/asm/nospec-branch.h
+>@@ -198,6 +198,12 @@ enum ssb_mitigation {
+> 	SPEC_STORE_BYPASS_SECCOMP,
+> };
 >
-> On Wed, May 19, 2021 at 05:04:13AM +0000, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > The RISC-V ISA doesn't yet specify how to query or modify PMAs, so let
-> > vendors define the custom properties of memory regions in PTE.
->
-> Err, hell no.   The ISA needs to gets this fixed first.  Then we can
-> talk about alternatives patching things in or trapping in the SBI.
-> But if the RISC-V ISA can't get these basic done after years we can't
-> support it in Linux at all.
+>+/* The Predictive Store forward control variant */
+>+enum psf_mitigation {
+>+	PREDICTIVE_STORE_FORWARD_NONE,
+>+	PREDICTIVE_STORE_FORWARD_DISABLE,
+>+};
+>+
 
-The patchset just leaves a configuration chance for vendors. Before
-RISC-V ISA fixes it, we should give the chance to let vendor solve
-their real chip issues.
+This can be moved to bugs.c which is the only user of psf_mitigation.
 
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Thanks,
+Pawan
