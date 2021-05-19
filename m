@@ -2,153 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE94D38990E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE132389911
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhESWFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 18:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhESWFS (ORCPT
+        id S229939AbhESWFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 18:05:46 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:37387 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhESWFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 18:05:18 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A66FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:03:57 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id o10so12541456ilm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DHPp5dFe4661NAQ9YjGdxmJrJmUrsmOq7WtKD4ddN7s=;
-        b=HBAODJKKUijlVggNYGOWYIGxWYk4G+D2MQvWauqSlfji5VEf4ImhXlg1LpWyJRna1o
-         dZmU0Gw1rQJJO5OIiQLZCJn4Qr320bVFgYsttQUdjRzGUJT3hefgjsyQJw9XLxwyzNn3
-         QpiRssJweEUgRJtKseFmWLxWV+9GpRMVS/k2ZY+KMzeB+gPFbKftJs21nao264aIrMZO
-         r+IN1U0E74zBtNx1nYtfaEkviAqu+s3xKYzkIJK6JyQzY0z+Jop78gMfHcItJtvf6wN5
-         xmFsDvMU6v/O0zUkLvR2kXTAU1+C/aSybGWM/Ol4hAr7SIJEMq2opG2KHI33H/kWkUP4
-         QWxg==
+        Wed, 19 May 2021 18:05:45 -0400
+Received: by mail-ot1-f51.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so13125083otp.4;
+        Wed, 19 May 2021 15:04:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DHPp5dFe4661NAQ9YjGdxmJrJmUrsmOq7WtKD4ddN7s=;
-        b=t5UyZn5pMccfI84YB8SVwHuLTSkkN2JN9DKYTnqrY8yFII++PQ6aFxBnWzK+6I5N4O
-         xwjxUHIOvn0dsHWeNzVwq5SOC8v/pSN4VO4oGZYW3oAboZ1Z/cfvR7ZFrPG+BeKZUG5h
-         i0T8A5rVpcD5EIiUpjk11Dibc1EDOH/bR1IaRHeRltkziqggTKhclUMVf18Dm0CUBq2j
-         NJPSabyU7Nt5DJRstwdyInflPQ2r9zELsXhS8T/p1acPGDpHF3aS5z75nbYNSnwejMkm
-         uplKLgPl/LgA/FdpGrhsvRYJhuWFTz53uS4C/9I5j5cvJBgHw4kjj0jnLll3lTWBnXA9
-         Uytg==
-X-Gm-Message-State: AOAM530KHdKAVHZuFmOrt+82Zt/VgZbbkKBRA6ymtITmegRsJUzSKrpI
-        9KmCav6mK3qkAkP27d9uPvCdA4y69gykaDjRFaAJMg==
-X-Google-Smtp-Source: ABdhPJzvOa4UAerVrB7M8OLxjCg5uuHwY/VZ9mkWkkYYTtlBpg74yUXaUI00sk12G4Kx6v+wrPN124Cetzj9ghUTsp4=
-X-Received: by 2002:a05:6e02:1a49:: with SMTP id u9mr1425014ilv.306.1621461836410;
- Wed, 19 May 2021 15:03:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Qxjx7gPKuv7WGl/fdRuh5TjzSYI1WNwx1W5A71DrYw=;
+        b=LF66X4cfA6qJf6mkXYQ4yxn/q0MiaIFHpOmLDRxVHBz7UhP2H9RGHQrA2HbzURBw8X
+         9cRlcplZ0ljdbxmJdLDF1C0WJ8XjSD1EiV10zAJcDTR6jtT1EknwIznrSeh3TgkoUDox
+         KB/BQtgPtM+iygGlw5MknOKWwWMKNVGHOSE/o3PouJsLBPNLYsCqSsjmVrcFocJWFJXN
+         jF4UHgmV+xd2MdvhBBYvFEQytCg6A1IRkqnsL8QHmxtydjbwuIurHEgQcmy0HdvsM46+
+         BP6fncTTwzHe0DS/N3ycWEW7aTbOidXWrJH+ERh1pIBOFhCcDlFswU/CHSq1AuuSNCz0
+         9h7w==
+X-Gm-Message-State: AOAM530Q12xz+GdsYeG4RUiGmzdnngKltjBM/ihuqnw8MbMC2Fbuj+mr
+        qzhD9k70NqRAfe4kQfWvPg==
+X-Google-Smtp-Source: ABdhPJxNQG8BfqDgptett9J/WmF6f63g6IaewjwZ5C5UO1H0AxgNr1cBxWbDBUOwYk8H8qTcx7FSGg==
+X-Received: by 2002:a9d:57cd:: with SMTP id q13mr1384580oti.23.1621461863492;
+        Wed, 19 May 2021 15:04:23 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x31sm228279ota.24.2021.05.19.15.04.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 15:04:22 -0700 (PDT)
+Received: (nullmailer pid 3741422 invoked by uid 1000);
+        Wed, 19 May 2021 22:04:21 -0000
+Date:   Wed, 19 May 2021 17:04:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>, mkorpershoek@baylibre.com,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: rng: mediatek: convert to yaml schema
+Message-ID: <20210519220421.GA3738290@robh.at.kernel.org>
+References: <20210518112250.2146819-1-fparent@baylibre.com>
 MIME-Version: 1.0
-References: <20210519200339.829146-1-axelrasmussen@google.com> <20210519200339.829146-8-axelrasmussen@google.com>
-In-Reply-To: <20210519200339.829146-8-axelrasmussen@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 19 May 2021 15:03:45 -0700
-Message-ID: <CANgfPd8r2TeBjrypBgkBTOkQWuYFW6UsfU36_XbB6wQiPu89qg@mail.gmail.com>
-Subject: Re: [PATCH v2 07/10] KVM: selftests: add shmem backing source type
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518112250.2146819-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 1:04 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> This lets us run the demand paging test on top of a shmem-backed area.
-> In follow-up commits, we'll 1) leverage this new capability to create an
-> alias mapping, and then 2) use the alias mapping to exercise UFFD minor
-> faults.
->
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+On Tue, May 18, 2021 at 01:22:49PM +0200, Fabien Parent wrote:
+> Convert the RNG binding for MediaTek to use YAML schema.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
->  tools/testing/selftests/kvm/include/test_util.h |  1 +
->  tools/testing/selftests/kvm/lib/kvm_util.c      | 15 +++++++++++++++
->  tools/testing/selftests/kvm/lib/test_util.c     |  5 +++++
->  3 files changed, 21 insertions(+)
->
-> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-> index fade3130eb01..7377f00469ef 100644
-> --- a/tools/testing/selftests/kvm/include/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/test_util.h
-> @@ -84,6 +84,7 @@ enum vm_mem_backing_src_type {
->         VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB,
->         VM_MEM_SRC_ANONYMOUS_HUGETLB_2GB,
->         VM_MEM_SRC_ANONYMOUS_HUGETLB_16GB,
-> +       VM_MEM_SRC_SHMEM,
->         NUM_SRC_TYPES,
->  };
->
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index bc405785ac8b..e4a8d0c43c5e 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -757,6 +757,21 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->         if (alignment > 1)
->                 region->mmap_size += alignment;
->
-> +       region->fd = -1;
+>  .../devicetree/bindings/rng/mtk-rng.txt       | 22 --------
+>  .../devicetree/bindings/rng/mtk-rng.yaml      | 53 +++++++++++++++++++
+>  2 files changed, 53 insertions(+), 22 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.txt
+>  create mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.txt b/Documentation/devicetree/bindings/rng/mtk-rng.txt
+> deleted file mode 100644
+> index dfdcb5cd2ea8..000000000000
+> --- a/Documentation/devicetree/bindings/rng/mtk-rng.txt
+> +++ /dev/null
+> @@ -1,22 +0,0 @@
+> -Device-Tree bindings for Mediatek random number generator
+> -found in MediaTek SoC family
+> -
+> -Required properties:
+> -- compatible	    : Should be
+> -			"mediatek,mt7622-rng", 	"mediatek,mt7623-rng" : for MT7622
+> -			"mediatek,mt7629-rng",  "mediatek,mt7623-rng" : for MT7629
+> -			"mediatek,mt7623-rng" : for MT7623
+> -			"mediatek,mt8516-rng", "mediatek,mt7623-rng" : for MT8516
+> -- clocks	    : list of clock specifiers, corresponding to
+> -		      entries in clock-names property;
+> -- clock-names	    : Should contain "rng" entries;
+> -- reg 		    : Specifies base physical address and size of the registers
+> -
+> -Example:
+> -
+> -rng: rng@1020f000 {
+> -	compatible = "mediatek,mt7623-rng";
+> -	reg = <0 0x1020f000 0 0x1000>;
+> -	clocks = <&infracfg CLK_INFRA_TRNG>;
+> -	clock-names = "rng";
+> -};
+> diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.yaml b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+> new file mode 100644
+> index 000000000000..d9731f0ae47d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/rng/mtk-rng.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: MediaTek Random number generator
+> +
+> +maintainers:
+> +  - Sean Wang <sean.wang@mediatek.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - mediatek,mt7623-rng
+> +      - items:
+> +          - const: mediatek,mt7622-rng
+> +          - const: mediatek,mt7623-rng
+> +      - items:
+> +          - const: mediatek,mt7629-rng
+> +          - const: mediatek,mt7623-rng
+> +      - items:
+> +          - const: mediatek,mt8516-rng
+> +          - const: mediatek,mt7623-rng
 
-Ah I guess this is the corresponding change from the previous patch.
+The last 3 can be:
 
-> +       if (src_type == VM_MEM_SRC_SHMEM) {
-> +               region->fd = memfd_create("kvm_selftest", MFD_CLOEXEC);
-> +               TEST_ASSERT(region->fd != -1,
-> +                           "memfd_create failed, errno: %i", errno);
+- items:
+    - enum:
+        - mediatek,mt7622-rng
+        - mediatek,mt7629-rng
+        - mediatek,mt8516-rng
+    - const: mediatek,mt7623-rng
+
 > +
-> +               ret = ftruncate(region->fd, region->mmap_size);
-> +               TEST_ASSERT(ret == 0, "ftruncate failed, errno: %i", errno);
+> +  reg:
+> +    maxItems: 1
 > +
-> +               ret = fallocate(region->fd,
-> +                               FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE, 0,
-> +                               region->mmap_size);
-> +               TEST_ASSERT(ret == 0, "fallocate failed, errno: %i", errno);
-> +       }
+> +  clocks:
+> +    maxItems: 1
 > +
->         region->mmap_start = mmap(NULL, region->mmap_size,
->                                   PROT_READ | PROT_WRITE,
->                                   vm_mem_backing_src_alias(src_type)->flag,
-> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> index 06ddde068736..c7a265da5090 100644
-> --- a/tools/testing/selftests/kvm/lib/test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> @@ -236,6 +236,10 @@ const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i)
->                         .name = "anonymous_hugetlb_16gb",
->                         .flag = anon_huge_flags | MAP_HUGE_16GB,
->                 },
-> +               [VM_MEM_SRC_SHMEM] = {
-> +                       .name = "shmem",
-> +                       .flag = MAP_SHARED,
-> +               },
->         };
->         _Static_assert(ARRAY_SIZE(aliases) == NUM_SRC_TYPES,
->                        "Missing new backing src types?");
-> @@ -253,6 +257,7 @@ size_t get_backing_src_pagesz(uint32_t i)
->
->         switch (i) {
->         case VM_MEM_SRC_ANONYMOUS:
-> +       case VM_MEM_SRC_SHMEM:
->                 return getpagesize();
->         case VM_MEM_SRC_ANONYMOUS_THP:
->                 return get_trans_hugepagesz();
-> --
-> 2.31.1.751.gd2f1c929bd-goog
->
+> +  clock-names:
+> +    items:
+> +      - const: rng
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt2701-clk.h>
+> +    rng: rng@1020f000 {
+> +            compatible = "mediatek,mt7623-rng";
+> +            reg = <0x1020f000 0x1000>;
+> +            clocks = <&infracfg CLK_INFRA_TRNG>;
+> +            clock-names = "rng";
+> +    };
+> -- 
+> 2.31.1
+> 
