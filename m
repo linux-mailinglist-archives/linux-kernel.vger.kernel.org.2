@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFF0389A07
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8735389A0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhESXpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        id S229518AbhESXp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbhESXps (ORCPT
+        with ESMTP id S230095AbhESXp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:45:48 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D76C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:27 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id k15so10553780pgb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:27 -0700 (PDT)
+        Wed, 19 May 2021 19:45:57 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4609DC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:36 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id w33so13707548lfu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 16:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nZuNfGfiKyXKRGv3YKg4ctxDIT6bECxQ0f3JGFBP+Jc=;
-        b=Sgx3LcjYq6ETYEDY47hsYdaRrCnGN5F+wvbCKhFTmXMWw0u20UAbMuFGPG9jqIUIDU
-         P7xy6mX2t46w8BN7ogPNyFnieYyRV1A5wNHWtckVTaOalBCdY2k7i8vqSzUaeIOv1HJm
-         SdhnOlnT85Ku+HNVywQC6S0Q0CSpGbSV0jji0h4u0H9ZZUbw2Oc2PaGvP3QqVTLp8v0a
-         ndubfFE0z+CIhyCbHHksip7jVF0c4qS1bEXgLcb/8gbO/zaMys9Od89i9374vQ0nkfkK
-         fpPfQX8A8bK+ARVFMCi1+CZ1hnIlV089tUlC1ZxUt4UrYtf3X/fOG88O+/RFSOPkzxu2
-         UgYg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wM5mCzM82gGvfQBTJBh8mxI48tmx7HiqO3orq8kFG8M=;
+        b=LXr5MO+utZ/NzeTIfmH9hyM1jISMq06v3IDaujQpMqszcM0701ZSs8bHFywI/8QidO
+         v1xGKx8SJoezcA76OFolfG4S4Jn+VjCZhpiROe9tgvN52DLstdRQGTVxhkHzM8o3ou8x
+         WVfJrMKMlyMrY/vdNVY4I7bZ44wChX0YqYbOH2hJ7pVkR/6QH+i1HqYwnyqDYyJlBeEr
+         CSKtcqKxo/Orhd8WmGlUnikhiFWAtB3I8/hpMb+S37xlmXZ9ljSAQhxzhaV00xkWZT32
+         TVOtZ2o/F3h6urKDDm5iTanJJSULolcBG+WiTgxH+jSW5a9vINs86YRi8dcJ16eAG2sY
+         bGsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nZuNfGfiKyXKRGv3YKg4ctxDIT6bECxQ0f3JGFBP+Jc=;
-        b=OnbJ3Ra3VtKbdo/OozVmodeW8WrwnpCp59vvOGkCxDfNPP+OOx3fiGZAeCx8XtlE4p
-         5TFhMt7QQL51ReyfGIxf42DBolb5WQO8XUmlzn+F7hnN7l6xWbs+HjF/P3cGmfAAIfKf
-         N82q6SUdYHsZfySMTnMIFhNURUsWOgptsPe/ph1m4kn8un0o+F7lwhHCyejlE7Dwl26M
-         bnj0MK4XS7kjYpVZUJysQfsSUdwoaMwbpT1xulIXKT8In3EVDCLRvRQqcR/WUiKAM6UN
-         rtrVGI8Stv6Ah3/LQ+wcgmTsg5lQBLs3icuxU3OdRJeBZvTwEZr8OjKTr8LMLhNbLp7R
-         i7mw==
-X-Gm-Message-State: AOAM532r1NVcdjy0ASbhdAx7sVNfimt1LvBqWl/bX257R31huTNztmcA
-        M0ILGNw5pI25G2u3dh8ApBES5g==
-X-Google-Smtp-Source: ABdhPJxDvzU0EhqoO2ANcJc4uzxhDerfang0h/wnVFWCCixnjLqJ1xzPwQO0cV2EkX0CMe3MbW7o5Q==
-X-Received: by 2002:a63:ba03:: with SMTP id k3mr1612845pgf.81.1621467867151;
-        Wed, 19 May 2021 16:44:27 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id v14sm364605pgl.86.2021.05.19.16.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 16:44:26 -0700 (PDT)
-Date:   Wed, 19 May 2021 23:44:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Ashish Kalra <Ashish.Kalra@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        thomas.lendacky@amd.com, the arch/x86 maintainers <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        srutherford@google.com, venu.busireddy@oracle.com,
-        brijesh.singh@amd.com
-Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
- status is changed
-Message-ID: <YKWi1iR4weMzpeC2@google.com>
-References: <cover.1619193043.git.ashish.kalra@amd.com>
- <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
- <YJvU+RAvetAPT2XY@zn.tnic>
- <86701a5e-87b5-4e73-9b7a-557d8c855f89@www.fastmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wM5mCzM82gGvfQBTJBh8mxI48tmx7HiqO3orq8kFG8M=;
+        b=lZOqpnHP+If6Bti+blu6pytnlP7jZinrxPRV4D1e/BCErIGH/OFqFM6ObVNA1AD82y
+         0pSzvA5qe3aNBYydKY7+kCQQxtm4DWLNP+fYEYWTRJ9A83BUfiV3lrPx0t71PX6NZ80F
+         8WvvQGE+Ryeud094CEctyXJmq3e8DEozWHmQWGpthlOlb9TSY6Va1pHsXNBmOU2bq9Ej
+         iGCKUtbmsZJPS8WuShwZ4iebaFQ+9GGMiqJ3xkDbzXhh77o15ox/c9BrItaz8SZIrFfp
+         A0uD7njTZSUkPI/OM038jabzYLKL70Ys6Hdp5Sej7e8F/+rKdrxn0nQhh+8vNpLzInu6
+         FUsw==
+X-Gm-Message-State: AOAM533sH1O0U9XggRNWhbv7Rp5OGNSXwOZTpLrlSFMo7vdrdfq+qT21
+        vMKsWMVzeTeqh64r3g+YZvNvk25O8L/1VRngJ9LT5Q==
+X-Google-Smtp-Source: ABdhPJyo49ywD7L+dYbgOEUpr1fsXLuMJaPoe5Fi+hfuegcGmM5nkNGHmm41Em3f/9YVuOYk2ii36sKpxCMY+Gm9nNM=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr1339795lfn.465.1621467874570;
+ Wed, 19 May 2021 16:44:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <86701a5e-87b5-4e73-9b7a-557d8c855f89@www.fastmail.com>
+References: <1620817988-18809-1-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <1620817988-18809-1-git-send-email-skakit@codeaurora.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 20 May 2021 01:44:23 +0200
+Message-ID: <CACRpkdYB9QSsj-23EPyX2+T=GLxjMPN8dcRopErSaA0gmuZE4g@mail.gmail.com>
+Subject: Re: [PATCH V3 0/3] Add GPIO support for PM7325
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021, Andy Lutomirski wrote:
-> On Wed, May 12, 2021, at 6:15 AM, Borislav Petkov wrote:
-> > On Fri, Apr 23, 2021 at 03:58:43PM +0000, Ashish Kalra wrote:
-> > > +static inline void notify_page_enc_status_changed(unsigned long pfn,
-> > > +						  int npages, bool enc)
-> > > +{
-> > > +	PVOP_VCALL3(mmu.notify_page_enc_status_changed, pfn, npages, enc);
-> > > +}
-> > 
-> > Now the question is whether something like that is needed for TDX, and,
-> > if so, could it be shared by both.
-> 
-> The TDX MapGPA call can fail, and presumably it will fail if the page is not
-> sufficiently quiescent from the host's perspective.
+On Wed, May 12, 2021 at 1:13 PM satya priya <skakit@codeaurora.org> wrote:
 
-Barring a guest bug, e.g. requesting a completely non-existent page, MapGPA
-shouldn't fail.  The example in the the GHCI:
+> satya priya (3):
+>   pinctrl: qcom: spmi-gpio: Add support for pm7325
+>   dt-bindings: pinctrl: qcom-pmic-gpio: Add pm7325 support
 
-  Invalid operand – for example, the GPA may be already mapped as a shared page.
+These two patches applied!
 
-makes no sense to me.  An already-mapped page would be an -EBUSY style error,
-not an invalid operand, and IIRC, I explicitly lobbied against allowing the VMM
-to return "try again" precisely because it's impossible for the guest to handle
-in a sane manner.  If the physical page is in a state that requires stalling the
-vCPU, then the VMM is supposed to do exactly that, not punt the problem to the
-guest.
+>   dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom pmic gpio bindings
+>     to YAML
 
-Maybe we should get stronger language into the GHCI?
+Now you only need to iterate this patch.
 
-> It seems like a mistake to me to have a KVM-specific hypercall for this that
-> cannot cleanly fail.
+Yours,
+Linus Walleij
