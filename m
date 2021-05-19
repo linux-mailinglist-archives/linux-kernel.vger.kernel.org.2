@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A93388736
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7DE388718
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237826AbhESGEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:04:11 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3418 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhESGEJ (ORCPT
+        id S238139AbhESGCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:02:37 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:27036 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232157AbhESGCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:04:09 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FlMf95p6SzCt6b;
-        Wed, 19 May 2021 14:00:01 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 14:02:48 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 19 May 2021 14:02:47 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: remove leading spaces before tabs
-Date:   Wed, 19 May 2021 13:59:44 +0800
-Message-ID: <1621403984-40037-1-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Wed, 19 May 2021 02:02:36 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AGePduaDNy2aVBGflHemQ55DYdb4zR+YMi2TD?=
+ =?us-ascii?q?tnoBLSC9F/b0qynAppomPGDP4gr5NEtApTniAtjkfZq/z+8X3WB5B97LMzUO01?=
+ =?us-ascii?q?HYTr2Kg7GD/xTQXwX69sN4kZxrarVCDrTLZmRSvILX5xaZHr8brOW6zA=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,311,1613404800"; 
+   d="scan'208";a="108456993"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 19 May 2021 14:01:13 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id B64B34D0BA82;
+        Wed, 19 May 2021 14:01:10 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 19 May 2021 14:01:10 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Wed, 19 May 2021 14:00:47 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <viro@zeniv.linux.org.uk>,
+        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>
+Subject: [PATCH v6 0/7] fsdax,xfs: Add reflink&dedupe support for fsdax
+Date:   Wed, 19 May 2021 14:00:38 +0800
+Message-ID: <20210519060045.1051226-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi760-chm.china.huawei.com (10.1.198.146)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: B64B34D0BA82.AF539
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a few leading spaces before tabs and remove it by running the
-following commard:
+This patchset is attempt to add CoW support for fsdax, and take XFS,
+which has both reflink and fsdax feature, as an example.
 
-	$ find . -name '*.c' | xargs sed -r -i 's/^[ ]+\t/\t/'
+Changes from V5:
+ - Fix the lock order of xfs_inode in xfs_mmaplock_two_inodes_and_break_dax_layout()
+ - move dax_remap_file_range_prep() to fs/dax.c
+ - change type of length to uint64_t in dax_iomap_cow_copy()
+ - fix mistake in dax_iomap_zero()
 
-At the same time, fix two warning by running checkpatch.pl:
-	WARNING: suspect code indent for conditional statements (16, 16)
-	WARNING: braces {} are not necessary for single statement blocks
+Changes from V4:
+ - Fix the mistake of breaking dax layout for two inodes
+ - Add CONFIG_FS_DAX judgement for fsdax code in remap_range.c
+ - Fix other small problems and mistakes
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- crypto/khazad.c |  2 +-
- crypto/wp512.c  | 40 +++++++++++++++++++---------------------
- 2 files changed, 20 insertions(+), 22 deletions(-)
+One of the key mechanism need to be implemented in fsdax is CoW.  Copy
+the data from srcmap before we actually write data to the destance
+iomap.  And we just copy range in which data won't be changed.
 
-diff --git a/crypto/khazad.c b/crypto/khazad.c
-index 14ca7f1..f193399 100644
---- a/crypto/khazad.c
-+++ b/crypto/khazad.c
-@@ -819,7 +819,7 @@ static void khazad_crypt(const u64 roundKey[KHAZAD_ROUNDS + 1],
- 			T6[(int)(state >>  8) & 0xff] ^
- 			T7[(int)(state      ) & 0xff] ^
- 			roundKey[r];
--    	}
-+	}
- 
- 	state = (T0[(int)(state >> 56)       ] & 0xff00000000000000ULL) ^
- 		(T1[(int)(state >> 48) & 0xff] & 0x00ff000000000000ULL) ^
-diff --git a/crypto/wp512.c b/crypto/wp512.c
-index feadc13..bf79fbb 100644
---- a/crypto/wp512.c
-+++ b/crypto/wp512.c
-@@ -1066,33 +1066,31 @@ static int wp512_final(struct shash_desc *desc, u8 *out)
- {
- 	struct wp512_ctx *wctx = shash_desc_ctx(desc);
- 	int i;
--   	u8 *buffer      = wctx->buffer;
--   	u8 *bitLength   = wctx->bitLength;
--   	int bufferBits  = wctx->bufferBits;
--   	int bufferPos   = wctx->bufferPos;
-+	u8 *buffer      = wctx->buffer;
-+	u8 *bitLength   = wctx->bitLength;
-+	int bufferBits  = wctx->bufferBits;
-+	int bufferPos   = wctx->bufferPos;
- 	__be64 *digest  = (__be64 *)out;
- 
--   	buffer[bufferPos] |= 0x80U >> (bufferBits & 7);
--   	bufferPos++;
--   	if (bufferPos > WP512_BLOCK_SIZE - WP512_LENGTHBYTES) {
--   		if (bufferPos < WP512_BLOCK_SIZE) {
--	   	memset(&buffer[bufferPos], 0, WP512_BLOCK_SIZE - bufferPos);
--   		}
--   		wp512_process_buffer(wctx);
--   		bufferPos = 0;
--   	}
--   	if (bufferPos < WP512_BLOCK_SIZE - WP512_LENGTHBYTES) {
--   		memset(&buffer[bufferPos], 0,
-+	buffer[bufferPos] |= 0x80U >> (bufferBits & 7);
-+	bufferPos++;
-+	if (bufferPos > WP512_BLOCK_SIZE - WP512_LENGTHBYTES) {
-+		if (bufferPos < WP512_BLOCK_SIZE)
-+			memset(&buffer[bufferPos], 0, WP512_BLOCK_SIZE - bufferPos);
-+		wp512_process_buffer(wctx);
-+		bufferPos = 0;
-+	}
-+	if (bufferPos < WP512_BLOCK_SIZE - WP512_LENGTHBYTES)
-+		memset(&buffer[bufferPos], 0,
- 			  (WP512_BLOCK_SIZE - WP512_LENGTHBYTES) - bufferPos);
--   	}
--   	bufferPos = WP512_BLOCK_SIZE - WP512_LENGTHBYTES;
--   	memcpy(&buffer[WP512_BLOCK_SIZE - WP512_LENGTHBYTES],
-+	bufferPos = WP512_BLOCK_SIZE - WP512_LENGTHBYTES;
-+	memcpy(&buffer[WP512_BLOCK_SIZE - WP512_LENGTHBYTES],
- 		   bitLength, WP512_LENGTHBYTES);
--   	wp512_process_buffer(wctx);
-+	wp512_process_buffer(wctx);
- 	for (i = 0; i < WP512_DIGEST_SIZE/8; i++)
- 		digest[i] = cpu_to_be64(wctx->hash[i]);
--   	wctx->bufferBits   = bufferBits;
--   	wctx->bufferPos    = bufferPos;
-+	wctx->bufferBits   = bufferBits;
-+	wctx->bufferPos    = bufferPos;
- 
- 	return 0;
- }
+Another mechanism is range comparison.  In page cache case, readpage()
+is used to load data on disk to page cache in order to be able to
+compare data.  In fsdax case, readpage() does not work.  So, we need
+another compare data with direct access support.
+
+With the two mechanisms implemented in fsdax, we are able to make reflink
+and fsdax work together in XFS.
+
+Some of the patches are picked up from Goldwyn's patchset.  I made some
+changes to adapt to this patchset.
+
+
+(Rebased on v5.13-rc2 and patchset[1])
+[1]: https://lkml.org/lkml/2021/4/22/575
+
+Shiyang Ruan (7):
+  fsdax: Introduce dax_iomap_cow_copy()
+  fsdax: Replace mmap entry in case of CoW
+  fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+  iomap: Introduce iomap_apply2() for operations on two files
+  fsdax: Dedup file range to use a compare function
+  fs/xfs: Handle CoW for fsdax write() path
+  fs/xfs: Add dax dedupe support
+
+ fs/dax.c               | 216 ++++++++++++++++++++++++++++++++++++-----
+ fs/iomap/apply.c       |  52 ++++++++++
+ fs/iomap/buffered-io.c |   2 +-
+ fs/remap_range.c       |  36 +++++--
+ fs/xfs/xfs_bmap_util.c |   3 +-
+ fs/xfs/xfs_file.c      |  11 +--
+ fs/xfs/xfs_inode.c     |  57 +++++++++++
+ fs/xfs/xfs_inode.h     |   1 +
+ fs/xfs/xfs_iomap.c     |  38 +++++++-
+ fs/xfs/xfs_iomap.h     |  24 +++++
+ fs/xfs/xfs_iops.c      |   7 +-
+ fs/xfs/xfs_reflink.c   |  15 +--
+ include/linux/dax.h    |  11 ++-
+ include/linux/fs.h     |  12 ++-
+ include/linux/iomap.h  |   7 +-
+ 15 files changed, 431 insertions(+), 61 deletions(-)
+
 -- 
-2.8.1
+2.31.1
+
+
 
