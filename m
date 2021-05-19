@@ -2,109 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EFF38863C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DC2388642
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238779AbhESE7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 00:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229939AbhESE7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 00:59:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6560561355;
-        Wed, 19 May 2021 04:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621400294;
-        bh=sBPi7doTjepZo5AoeX6D/DqrfoxCCmiTbbDfO6A7+1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tg2fxanYYVeqmsedHZTVahMC53Je13j2qQo6irCgVnD9l6R8hP1VifEKRUxwM2YPf
-         WFdvYQcpyQF7Ff73XO1FgRGZR0+AftflNxfwNilci58q/w6E1SwydNRY6uwOxzMEyF
-         6t74rsmccXGRBh0DVv57nMWSBPWKBOO0ZMymaVQc=
-Date:   Wed, 19 May 2021 06:58:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
-Message-ID: <YKSa48cejI1Lax+/@kroah.com>
-References: <20210519033553.1110536-1-anup.patel@wdc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519033553.1110536-1-anup.patel@wdc.com>
+        id S241862AbhESFAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:00:11 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34145 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241074AbhESFAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 01:00:09 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id F11B4580C43;
+        Wed, 19 May 2021 00:58:49 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Wed, 19 May 2021 00:58:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=GEQi439rDfvTRkSJD56IhBuyWrsjBmH
+        L/9eSU1ieZ5o=; b=Gv2lFV9Fn605qLRPC+zpp9WChhhrT9AxRaG3TMDpGHCAtMR
+        jwhZ18nyIJIDw2zL3PV7GHtryhrBkuJr2Bk8+iDbkh0YiR2LZuhUWrRlkN+tr0xO
+        ag/CDfIs42cgW2JoNzmgqPEPwdNCk8Jjfs8qOt2PR2Be27kjmY0u3KQb4klAJBcM
+        dvdK3qzQcTS73rvhjOtuCo1ugyYkYDv7XB7yXxiFV0zWioWZ82AjCzweZ2n5k5iB
+        B/TKViQv6MX5N5coiKo2ptBxsbqNCaSlMvoOco/ItqUQgAuzG3VaVd2xTbJrXyuR
+        n/CUABA4xc3xQSH5CxbuejPCu5qK6S3vvxFRLrQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=GEQi43
+        9rDfvTRkSJD56IhBuyWrsjBmHL/9eSU1ieZ5o=; b=MINiyE8y5zv0bN1unA3Fb9
+        DBIGslbZgOkYTl0jzeHItc5j0owO+c4Fe6QvGHig3Vj8yDIM8JT3D9F10FrEQPL9
+        LGhRsYam0qfs+ZLJNVcZ+JYNB9JKhQFQuc0qz5BgrMwmLjWXZSnbedfjJw1r6H5F
+        TygU6HrXbdCcjaySOYw2nH8jjL3lu0Qw0UTxBCQTXv9AHhrmxZltOJppdKLmBKFp
+        a1/YckF1f98/Xcoxmg+UJCwa5IK2Z1IelrgczYEa4AL+SYz4UbAkNS6WSTZVXhjO
+        M9jFnbqOKX0tSyRjDH+2HYonEipTHI0ZMQoSq0navs+ZF6CFrmnZZ4G6z7lvs0OQ
+        ==
+X-ME-Sender: <xms:CJukYLxvctHXvDCbnuBn55ZWmBwj4JswGjHsd-y7RlAmZ3q-NUgSxw>
+    <xme:CJukYDSXYk8Mm3rUnC3QIJROKIYBJz5D0oSL5a4qf8zSIp8fwtw6-eAJwvg3vHqcx
+    JOwJ-k9L2s-Ral39w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeikedgkeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepffehuedvhefhgeekhfeigffftedtffefvedtueffteevfedttdetuedv
+    hfffleegnecuffhomhgrihhnpehpohhrthdruggvvhenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:CJukYFVxI9SCND9zi0IIic1Ps5hjLAk4qMpLMpEDUiWtzJs5AEACsg>
+    <xmx:CJukYFgLKaDInf_kxFVmviyBaaFxQXO98D6u0Efypg4k6qo2sJfI7A>
+    <xmx:CJukYNCoDhNqP6lZKS4ASeHanZQYmZix3YtaOcNvVVNBj2svKe_Rsg>
+    <xmx:CZukYBuydz2DxcJ62WaUiFPHuFry4UmcWbVYIkOY9AWSXWVJqmB1dQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9368DA00079; Wed, 19 May 2021 00:58:48 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <66904cc2-a4ef-42db-a1c9-b12ceecb52c1@www.fastmail.com>
+In-Reply-To: <CACPK8XdqeS+rE0Jz9SF+sSMUaxmg7vFtghhiZNbDpKRNbBZK=Q@mail.gmail.com>
+References: <20210519000704.3661773-1-andrew@aj.id.au>
+ <20210519000704.3661773-2-andrew@aj.id.au>
+ <CACPK8XdqeS+rE0Jz9SF+sSMUaxmg7vFtghhiZNbDpKRNbBZK=Q@mail.gmail.com>
+Date:   Wed, 19 May 2021 14:28:18 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Joel Stanley" <joel@jms.id.au>
+Cc:     linux-serial@vger.kernel.org,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
+        "Jenmin Yuan" <jenmin_yuan@aspeedtech.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Milton Miller II" <miltonm@us.ibm.com>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_1/2]_serial:_8250:_Add_UART=5FBUG=5FTXRACE_worka?=
+ =?UTF-8?Q?round_for_Aspeed_VUART?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:05:35AM +0530, Anup Patel wrote:
-> From: Anup Patel <anup@brainfault.org>
-> 
-> This series adds initial KVM RISC-V support. Currently, we are able to boot
-> Linux on RV64/RV32 Guest with multiple VCPUs.
-> 
-> Key aspects of KVM RISC-V added by this series are:
-> 1. No RISC-V specific KVM IOCTL
-> 2. Minimal possible KVM world-switch which touches only GPRs and few CSRs
-> 3. Both RV64 and RV32 host supported
-> 4. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
-> 5. KVM ONE_REG interface for VCPU register access from user-space
-> 6. PLIC emulation is done in user-space
-> 7. Timer and IPI emuation is done in-kernel
-> 8. Both Sv39x4 and Sv48x4 supported for RV64 host
-> 9. MMU notifiers supported
-> 10. Generic dirtylog supported
-> 11. FP lazy save/restore supported
-> 12. SBI v0.1 emulation for KVM Guest available
-> 13. Forward unhandled SBI calls to KVM userspace
-> 14. Hugepage support for Guest/VM
-> 15. IOEVENTFD support for Vhost
-> 
-> Here's a brief TODO list which we will work upon after this series:
-> 1. SBI v0.2 emulation in-kernel
-> 2. SBI v0.2 hart state management emulation in-kernel
-> 3. In-kernel PLIC emulation
-> 4. ..... and more .....
-> 
-> This series can be found in riscv_kvm_v18 branch at:
-> https//github.com/avpatel/linux.git
-> 
-> Our work-in-progress KVMTOOL RISC-V port can be found in riscv_v7 branch
-> at: https//github.com/avpatel/kvmtool.git
-> 
-> The QEMU RISC-V hypervisor emulation is done by Alistair and is available
-> in master branch at: https://git.qemu.org/git/qemu.git
-> 
-> To play around with KVM RISC-V, refer KVM RISC-V wiki at:
-> https://github.com/kvm-riscv/howto/wiki
-> https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-QEMU
-> https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-Spike
-> 
-> Changes since v17:
->  - Rebased on Linux-5.13-rc2
->  - Moved to new KVM MMU notifier APIs
->  - Removed redundant kvm_arch_vcpu_uninit()
->  - Moved KVM RISC-V sources to drivers/staging for compliance with
->    Linux RISC-V patch acceptance policy
 
-What is this new "patch acceptance policy" and what does it have to do
-with drivers/staging?
 
-What does drivers/staging/ have to do with this at all?  Did anyone ask
-the staging maintainer about this?
+On Wed, 19 May 2021, at 10:28, Joel Stanley wrote:
+> On Wed, 19 May 2021 at 00:07, Andrew Jeffery <andrew@aj.id.au> wrote:
+> >
+> > Aspeed Virtual UARTs directly bridge e.g. the system console UART on the
+> > LPC bus to the UART interface on the BMC's internal APB. As such there's
+> > no RS-232 signalling involved - the UART interfaces on each bus are
+> > directly connected as the producers and consumers of the one set of
+> > FIFOs.
+> >
+> > The APB in the AST2600 generally runs at 100MHz while the LPC bus peaks
+> > at 33MHz. The difference in clock speeds exposes a race in the VUART
+> > design where a Tx data burst on the APB interface can result in a byte
+> > lost on the LPC interface. The symptom is LSR[DR] remains clear on the
+> > LPC interface despite data being present in its Rx FIFO, while LSR[THRE]
+> > remains clear on the APB interface as the host has not consumed the data
+> > the BMC has transmitted. In this state, the UART has stalled and no
+> > further data can be transmitted without manual intervention (e.g.
+> > resetting the FIFOs, resulting in loss of data).
+> >
+> > The recommended work-around is to insert a read cycle on the APB
+> > interface between writes to THR.
+> >
+> > Cc: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> 
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+> 
+> > ---
+> >  drivers/tty/serial/8250/8250.h              |  1 +
+> >  drivers/tty/serial/8250/8250_aspeed_vuart.c |  1 +
+> >  drivers/tty/serial/8250/8250_port.c         | 10 ++++++++++
+> >  3 files changed, 12 insertions(+)
+> >
+> > diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+> > index 52bb21205bb6..34aa2714f3c9 100644
+> > --- a/drivers/tty/serial/8250/8250.h
+> > +++ b/drivers/tty/serial/8250/8250.h
+> > @@ -88,6 +88,7 @@ struct serial8250_config {
+> >  #define UART_BUG_NOMSR (1 << 2)        /* UART has buggy MSR status bits (Au1x00) */
+> >  #define UART_BUG_THRE  (1 << 3)        /* UART has buggy THRE reassertion */
+> >  #define UART_BUG_PARITY        (1 << 4)        /* UART mishandles parity if FIFO enabled */
+> > +#define UART_BUG_TXRACE        (1 << 5)        /* UART Tx fails to set remote DR */
+> >
+> >
+> >  #ifdef CONFIG_SERIAL_8250_SHARE_IRQ
+> > diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> > index a28a394ba32a..4caab8714e2c 100644
+> > --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> > +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> > @@ -440,6 +440,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+> >         port.port.status = UPSTAT_SYNC_FIFO;
+> >         port.port.dev = &pdev->dev;
+> >         port.port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_8250_CONSOLE);
+> > +       port.bugs |= UART_BUG_TXRACE;
+> 
+> A future enhancement would be to have this depend on the ast2600
+> compatible string, so we don't enable the feature for ast2400/ast2500.
+> 
+> That would also mean adding a compatible string for the ast2600.
 
-Not cool, and not something I'm about to take without some very good
-reasons...
+Yep, I'll sort out some cleanups in that regard in a separate series.
 
-greg k-h
+Andrew
