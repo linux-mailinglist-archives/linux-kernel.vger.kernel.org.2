@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EF738968D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003B9389692
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbhESTYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:24:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54285 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230486AbhESTYp (ORCPT
+        id S232009AbhESTZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbhESTZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:24:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621452204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3WjHLe7Vud9dDJn40LFvnZRilRoTHkcFzpqQq2wlvq4=;
-        b=Y2GB6P19iFiqKHkfOiW9Lbq/FrgP0/13N7/IZDPsbvpgW8O6IS71fnrMRDe8Qahjw+NQAN
-        TO2OottWyEpJdA7zkeA+6CNGt23mSBfiAv+9ssrwucOT5B9mY6G8EXgydnLdRdIqoGRPyL
-        uV8i0FNJ+wMkpEDk0Mb/9wkTmNAusFE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-FBzjh4ukNI2vHrkQN_80wg-1; Wed, 19 May 2021 15:23:23 -0400
-X-MC-Unique: FBzjh4ukNI2vHrkQN_80wg-1
-Received: by mail-wr1-f72.google.com with SMTP id 1-20020adf93810000b029010fd5ac4ed7so7579320wrp.15
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:23:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3WjHLe7Vud9dDJn40LFvnZRilRoTHkcFzpqQq2wlvq4=;
-        b=JA4EDWr/q5r7VOaHUcRL0h7sY1fUjFJRunoR5/wpuHXPcJCxFCxZminMdPHiflrJLI
-         C++lYg40tjXP0GMTzmLtN1e+6ddEyC/Kak9pjXlMGDIIU3su0jwNVm3/zIrwYqoKGiOg
-         92AnlV5wUnKhXaHc4tXWuf9brRS7jQaShY7QAoCA7f8misy6Nvkc/dgFNCGuUHeQDJ8E
-         oIRYIUTfk2lBoePr++uDRKfCCzcnLpS0l/nIAGfxXcNe7zc1EBb5ve7lIoh1rOYEZYbW
-         orDqnU/tEwmui+jTgxgcOw46wmEatD8njSPfibfkLhuxHZo9gsjLqAGCv4HNUEfwPgK1
-         YYTA==
-X-Gm-Message-State: AOAM530pskpbxwFml3uodrkQShBIxfJb5u8/nysAGcrl0hbJkBd3L/OI
-        Na/g28r3xXSct0EhVgM6sRMWz/giqSguagWMCxW2KxB0zP2DfrK4yWhhUNnnAO2lNDuJNsMxM1E
-        yWpyvyOY+mNC2Dsiq8x4QJmc=
-X-Received: by 2002:a5d:688c:: with SMTP id h12mr520962wru.348.1621452202189;
-        Wed, 19 May 2021 12:23:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJym03hDmbID+lz+UjdMn7Xm8C/IopBXH7nwK38fTok52P/RFMMQ5K8a86YxCSqStlXtpXeTsw==
-X-Received: by 2002:a5d:688c:: with SMTP id h12mr520952wru.348.1621452202051;
-        Wed, 19 May 2021 12:23:22 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id k6sm6664098wmi.42.2021.05.19.12.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 12:23:21 -0700 (PDT)
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm/page_alloc: bail out on fatal signal during reclaim/compaction retry attempt
-Date:   Wed, 19 May 2021 20:23:21 +0100
-Message-Id: <20210519192321.3247175-1-atomlin@redhat.com>
-X-Mailer: git-send-email 2.26.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 19 May 2021 15:25:18 -0400
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4237DC06175F;
+        Wed, 19 May 2021 12:23:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 5AC0D4D25C1D0;
+        Wed, 19 May 2021 12:23:57 -0700 (PDT)
+Date:   Wed, 19 May 2021 12:23:56 -0700 (PDT)
+Message-Id: <20210519.122356.1201315264426214403.davem@davemloft.net>
+To:     anthony.l.nguyen@intel.com
+Cc:     huangguangbin2@huawei.com, jesse.brandeburg@intel.com,
+        kuba@kernel.org, lipeng321@huawei.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        tanhuazhong@huawei.com
+Subject: Re: [PATCH net-next 0/5] net: intel: some cleanups
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <194cf154afa7b56b22d4284cad537f1a6b697f61.camel@intel.com>
+References: <1621404885-20075-1-git-send-email-huangguangbin2@huawei.com>
+        <194cf154afa7b56b22d4284cad537f1a6b697f61.camel@intel.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 19 May 2021 12:23:57 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It does not make sense to retry compaction when a fatal signal is
-pending.
+From: "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Date: Wed, 19 May 2021 18:48:51 +0000
 
-In the context of try_to_compact_pages(), indeed COMPACT_SKIPPED can be
-returned; albeit, not every zone, on the zone list, would be considered
-in the case a fatal signal is found to be pending.
-Yet, in should_compact_retry(), given the last known compaction result,
-each zone, on the zone list, can be considered/or checked
-(see compaction_zonelist_suitable()). For example, if a zone was found
-to succeed, then reclaim/compaction would be tried again
-(notwithstanding the above).
+> On Wed, 2021-05-19 at 14:14 +0800, Guangbin Huang wrote:
+>> This patchset adds some cleanups for intel e1000/e1000e ethernet
+>> driver.
+>> 
+>> Hao Chen (5):
+>>   net: e1000: remove repeated word "slot" for e1000_main.c
+>>   net: e1000: remove repeated words for e1000_hw.c
+>>   net: e1000e: remove repeated word "the" for ich8lan.c
+>>   net: e1000e: remove repeated word "slot" for netdev.c
+>>   net: e1000e: fix misspell word "retreived"
+>> 
+>>  drivers/net/ethernet/intel/e1000/e1000_hw.c   | 4 ++--
+>>  drivers/net/ethernet/intel/e1000/e1000_main.c | 2 +-
+>>  drivers/net/ethernet/intel/e1000e/ich8lan.c   | 2 +-
+>>  drivers/net/ethernet/intel/e1000e/netdev.c    | 2 +-
+>>  drivers/net/ethernet/intel/e1000e/phy.c       | 2 +-
+>>  5 files changed, 6 insertions(+), 6 deletions(-)
+>> 
+> 
+> Reviewed-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> 
+> Dave/Jakub - as these are just comment changes, did you want to pick
+> this up?
 
-This patch ensures that compaction is not needlessly retried
-irrespective of the last known compaction result e.g. if it was skipped,
-in the unlikely case a fatal signal is found pending.
-So, OOM is at least attempted.
-
-Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
----
- mm/page_alloc.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index aaa1655cf682..49f416ffb54f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4252,6 +4252,9 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
- 	if (!order)
- 		return false;
- 
-+	if (fatal_signal_pending(current))
-+		goto out;
-+
- 	if (compaction_made_progress(compact_result))
- 		(*compaction_retries)++;
- 
--- 
-2.26.3
-
+Sure.
