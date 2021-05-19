@@ -2,290 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4E9389426
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0488B38942A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355438AbhESQye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:54:34 -0400
-Received: from mga04.intel.com ([192.55.52.120]:61433 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355419AbhESQyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:54:33 -0400
-IronPort-SDR: /G4g7zEiHJ9k8TxTrm3dQWZSOazvKLH2ZZ0Uqsm26ImS1xRjPqMNpvkEhcBNUwpSeWKlXXhXPI
- SLWvfDyX38wg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="199070392"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="199070392"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 09:53:13 -0700
-IronPort-SDR: wue0aEVMPyr2QRX7kZxWjybeA7tSz4/7zhqc+1YRzymL04IPB8HqOgCESUJmRsvOiEF8TqZTes
- F1RLTz65cUvA==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="474705805"
-Received: from mconrado-mobl1.amr.corp.intel.com (HELO [10.209.83.57]) ([10.209.83.57])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 09:53:12 -0700
-Subject: Re: [RFC v2-fix 1/1] x86/boot: Avoid #VE during boot for TDX
- platforms
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <CAPcyv4jqr8vyh7BwYxW3QJ_ui_yH+iGniJYuUMEnTLWjiYsvPQ@mail.gmail.com>
- <20210518005951.258819-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b1aafcbb-c5db-efa5-0343-014585e73191@intel.com>
-Date:   Wed, 19 May 2021 09:53:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1355462AbhESQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:54:44 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:50138 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355444AbhESQyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:54:43 -0400
+Received: from [IPv6:2a02:a03f:eafb:ee01:c82d:5b70:209e:672d] (unknown [IPv6:2a02:a03f:eafb:ee01:c82d:5b70:209e:672d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 77A46200B47;
+        Wed, 19 May 2021 18:53:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1621443202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/gxwzPCxHsmhHK6fNPUl2sY2aR8FGxUoyuqvFjb3imQ=;
+        b=w5d0CJTDeuCzHEJolae+6AmVIuxJpO9vMfuS3QbQPnH2O4Ocg9ZlSdDMlLbQjRqkJIufkq
+        MG04Dp5fsb6WsAbs4kOLVs66GiIbOoOqOT4JIDmuESkW+y18408tjn/lQpYAsbptBcoYdB
+        NT3RLMIAky5TMgBHYK/BB7HupoCZ9bbSwzGFb2IoREINPp+1hUnGZIx982tBL/6s6sTUwp
+        1ELm7Idwm+axPTYoWk0onU+A9qV68txUvZrOcpAjei2V4P1y7m5IvYug08XTzbXX9BWynk
+        wszdHA/yECiqy0xs+3t4+BG6xEOqA1ciyhQB63s+zQJP2U79AM5imwXNkA+QkQ==
+Message-ID: <3fd64248fbea981e19ccf80b8484ac4f71755824.camel@svanheule.net>
+Subject: Re: [PATCH 2/5] dt-bindings: mfd: Binding for RTL8231
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 19 May 2021 18:53:21 +0200
+In-Reply-To: <20210517223801.GA3327704@robh.at.kernel.org>
+References: <cover.1620735871.git.sander@svanheule.net>
+         <73e017d08117cee1290b9483c23f79f956f41a6d.1620735871.git.sander@svanheule.net>
+         <20210517223801.GA3327704@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210518005951.258819-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 5:59 PM, Kuppuswamy Sathyanarayanan wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Mon, 2021-05-17 at 17:38 -0500, Rob Herring wrote:
+> On Tue, May 11, 2021 at 02:25:20PM +0200, Sander Vanheule wrote:
+> > Add a binding description for the Realtek RTL8231, a GPIO and LED
+> > expander chip commonly used in ethernet switches based on a Realtek
+> > switch SoC. These chips can be addressed via an MDIO or SMI bus, or used
+> > as a plain 36-bit shift register.
+> > 
+> > This binding only describes the feature set provided by the MDIO/SMI
+> > configuration, and covers the GPIO, PWM, and pin control properties. The
+> > LED properties are defined in a separate binding.
+> > 
+> > Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> > ---
+> >  .../bindings/mfd/realtek,rtl8231.yaml         | 202 ++++++++++++++++++
+> >  1 file changed, 202 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/mfd/realtek,rtl8231.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mfd/realtek,rtl8231.yaml
+> > b/Documentation/devicetree/bindings/mfd/realtek,rtl8231.yaml
+> > new file mode 100644
+> > index 000000000000..2023cfa887a3
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mfd/realtek,rtl8231.yaml
+> > @@ -0,0 +1,202 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mfd/realtek,rtl8231.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Realtek RTL8231 GPIO and LED expander.
+> > +
+> > +maintainers:
+> > +  - Sander Vanheule <sander@svanheule.net>
+> > +
+> > +description: |
+> > +  The RTL8231 is a GPIO and LED expander chip, providing up to 37 GPIOs, up
+> > to
+> > +  88 LEDs, and up to one PWM output. This device is frequently used
+> > alongside
+> > +  Realtek switch SoCs, to provide additional I/O capabilities.
+> > +
+> > +  To manage the RTL8231's features, its strapping pins can be used to
+> > configure
+> > +  it in one of three modes: shift register, MDIO device, or SMI device. The
+> > +  shift register mode does not need special support. In MDIO or SMI mode,
+> > most
+> > +  pins can be configured as a GPIO output, LED matrix scan line/column, or
+> > as a
+> > +  PWM output.
+> > +
+> > +  The GPIO and pin control are part of the main node. PWM and LED support
+> > are
+> > +  configured as sub-nodes.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: realtek,rtl8231
+> > +
+> > +  reg:
+> > +    description: MDIO or SMI device address.
+> > +    maxItems: 1
+> > +
+> > +  # GPIO support
+> > +  gpio-controller: true
+> > +
+> > +  "#gpio-cells":
+> > +    const: 2
+> > +    description: |
+> > +      The first cell is the pin number and the second cell is used to
+> > specify
+> > +      the gpio active state.
+> > +
+> > +  gpio-ranges:
+> > +    description: |
+> > +      Must reference itself, and provide a zero-based mapping for 37 pins.
+> > +    maxItems: 1
+> > +
+> > +  # Pin muxing and configuration
+> > +  realtek,drive-strength:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
 > 
-> Avoid operations which will inject #VE during boot process,
-> which is obviously fatal for TDX platforms.
+> Use the standard 'drive-strength' property.
 
-It's not "obviously fatal".  We actually have early exception handlers.
- Please give an actual reason.  "They're easy to avoid, and that sure
-beats handling the exceptions" is a perfectly fine reason.
+Ok, I wasn't sure I could do this, since it's normally used in a pin config, not
+a pin controller config. I'll update this, as well as the suggested changes
+below.
 
-> Details are,
+Best,
+Sander
+
+
 > 
-> 1. TDX module injects #VE if a TDX guest attempts to write
->    EFER.
->    
->    Boot code updates EFER in following cases:
->    
->    * When enabling Long Mode configuration, EFER.LME bit will
->      be set. Since TDX forces EFER.LME=1, we can skip updating
->      it again. Check for EFER.LME before updating it and skip
->      it if it is already set.
+> > +    description: |
+> > +      Common drive strength used for all GPIO output pins, must be 4mA or
+> > 8mA.
+> > +      On reset, this value will default to 8mA.
+> > +    enum: [4, 8]
+> > +
+> > +  # LED scanning matrix
+> > +  leds:
+> > +    $ref: ../leds/realtek,rtl8231-leds.yaml#
+> > +
+> > +  # PWM output
+> > +  pwm:
+> > +    type: object
+> > +    description: |
+> > +      Subnode describing the PWM peripheral. To use the PWM output, gpio35
+> > must
+> > +      be muxed to its 'pwm' function. Valid frequency values for consumers
+> > are
+> > +      1200, 1600, 2000, 2400, 2800, 3200, 4000, and 4800.
+> > +
+> > +    properties:
+> > +      "#pwm-cells":
+> > +        description: |
+> > +          Twos cells with PWM index (must be 0) and PWM frequency in Hz.
+> > +        const: 2
+> > +
+> > +    required:
+> > +      - "#pwm-cells"
 > 
->    * EFER is also updated to enable support for features like
->      System call and No Execute page setting. In TDX, these
->      features are set up by the TDX module. So check whether
->      it is already enabled, and skip enabling it again.
->    
-> 2. TDX module also injects a #VE if the guest attempts to clear
->    CR0.NE. Ensure CR0.NE is set when loading CR0 during compressed
->    boot. The Setting CR0.NE should be a nop on all CPUs that
->    support 64-bit mode.
->    
-> 3. The TDX-Module (effectively part of the hypervisor) requires
-
-So, after we've mentioned the TDX module a few times, *NOW* we feel the
-need to explain what it is?  I'm also baffled by this little aside.
-Literally the WHOLE POINT FOR SEAM TO EXIST is that it is NOT PART OF
-THE HYPERVISOR.  The whole point.  Literally.
-
->    CR4.MCE to be set at all times and injects a #VE if the guest
->    attempts to clear CR4.MCE. So, preserve CR4.MCE instead of
->    clearing it during boot to avoid #VE.
-
-This is a good example of a changelog run amok.  It doesn't need to be
-an English language reproduction of the code.  This is getting close.
-
-This can all be replaced and improved with a high-level discussion of
-what is going on:
-
-	There are a few MSRs and control register bits which the kernel
-	normally needs to modify during boot.  But, TDX disallows
-	modification of these registers to help provide consistent
-	security guarantees.  Fortunately, TDX ensures that these are
-	all in the correct state before the kernel loads, which means
-	the kernel has no need to modify them.
-
-	The conditions we need to avoid are:
-	1. Any writes to the EFER MSR
-	2. Clearing CR0.NE
-	3. Clearing CR3.MCE
-
-> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-> index e94874f4bbc1..2d79e5f97360 100644
-> --- a/arch/x86/boot/compressed/head_64.S
-> +++ b/arch/x86/boot/compressed/head_64.S
-> @@ -616,12 +616,16 @@ SYM_CODE_START(trampoline_32bit_src)
->  	movl	$MSR_EFER, %ecx
->  	rdmsr
->  	btsl	$_EFER_LME, %eax
-> +	jc	1f
->  	wrmsr
-> -	popl	%edx
-> +1:	popl	%edx
-
-A comment would be nice:
-
-	/* Avoid writing EFER if no change was made (for TDX guest) */
-
->  	popl	%ecx
->  
->  	/* Enable PAE and LA57 (if required) paging modes */
-> -	movl	$X86_CR4_PAE, %eax
-> +	movl	%cr4, %eax
-> +	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
-> +	andl	$X86_CR4_MCE, %eax
-
-Maybe I'm just dense today, but I was boggling about what this 'andl' is
-actually doing.  This would help:
-
-	/*
-	 * Clear all bits except CR4.MCE, which is preserved.
-	 * Clearing CR4.MCE will #VE in TDX guests.
-	 */
-
-> +	orl	$X86_CR4_PAE, %eax
->  	testl	%edx, %edx
->  	jz	1f
->  	orl	$X86_CR4_LA57, %eax
-> @@ -636,7 +640,7 @@ SYM_CODE_START(trampoline_32bit_src)
->  	pushl	%eax
->  
->  	/* Enable paging again */
-> -	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
-> +	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
->  	movl	%eax, %cr0
-
-Shouldn't we also comment the X86_CR0_NE?
-
-	/* Enable paging again.  Avoid clearing X86_CR0_NE for TDX. */
-
->  	lret
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index 04bddaaba8e2..92c77cf75542 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -141,7 +141,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
->  1:
->  
->  	/* Enable PAE mode, PGE and LA57 */
-> -	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
-> +	movq	%cr4, %rcx
-> +	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
-> +	andl	$X86_CR4_MCE, %ecx
-> +	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
-
-Ditto on the comment from above about clearing/preserving bits.
-
->  #ifdef CONFIG_X86_5LEVEL
->  	testl	$1, __pgtable_l5_enabled(%rip)
->  	jz	1f
-> @@ -229,13 +232,19 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
->  	/* Setup EFER (Extended Feature Enable Register) */
->  	movl	$MSR_EFER, %ecx
->  	rdmsr
-> +	movl    %eax, %edx
-
-Comment, please.
-
->  	btsl	$_EFER_SCE, %eax	/* Enable System Call */
->  	btl	$20,%edi		/* No Execute supported? */
->  	jnc     1f
->  	btsl	$_EFER_NX, %eax
->  	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
-> -1:	wrmsr				/* Make changes effective */
->  
-> +	/* Skip the WRMSR if the current value matches the desired value. */
-
-If I read this comment in 5 years, I'm going to ask "Why bother?".
-Please mention TDX.
-
-> +1:	cmpl	%edx, %eax
-> +	je	1f
-> +	xor	%edx, %edx
-> +	wrmsr				/* Make changes effective */
-> +1:
->  	/* Setup cr0 */
->  	movl	$CR0_STATE, %eax
->  	/* Make changes effective */
-> diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-> index 754f8d2ac9e8..12b734b1da8b 100644
-> --- a/arch/x86/realmode/rm/trampoline_64.S
-> +++ b/arch/x86/realmode/rm/trampoline_64.S
-> @@ -143,13 +143,20 @@ SYM_CODE_START(startup_32)
->  	movl	%eax, %cr3
->  
->  	# Set up EFER
-> +	movl	$MSR_EFER, %ecx
-> +	rdmsr
-> +	cmp	pa_tr_efer, %eax
-> +	jne	.Lwrite_efer
-> +	cmp	pa_tr_efer + 4, %edx
-
-Comment, please:
-
-	# Skip EFER writes to avoid faults in TDX guests
-
-> +	je	.Ldone_efer
-> +.Lwrite_efer:
->  	movl	pa_tr_efer, %eax
->  	movl	pa_tr_efer + 4, %edx
-> -	movl	$MSR_EFER, %ecx
->  	wrmsr
->  
-> +.Ldone_efer:
->  	# Enable paging and in turn activate Long Mode
-> -	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
-> +	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
->  	movl	%eax, %cr0
->  
->  	/*
+> Just move this to the parent node. No reason for a child node or that 1 
+> node can't be 2 providers.
 > 
+> > +
+> > +patternProperties:
+> > +  "-pins$":
+> > +    type: object
+> > +    $ref: ../pinctrl/pinmux-node.yaml#
+> > +
+> > +    properties:
+> > +      pins:
+> > +        items:
+> > +          oneOf:
+> 
+> No need for oneOf when there's only 1 entry.
+> 
+> > +            - enum: ["gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5",
+> > "gpio6",
+> > +                     "gpio7", "gpio8", "gpio9", "gpio10", "gpio11",
+> > "gpio12", "gpio13",
+> > +                     "gpio14", "gpio15", "gpio16", "gpio17", "gpio18",
+> > "gpio19", "gpio20",
+> > +                     "gpio21", "gpio22", "gpio23", "gpio24", "gpio25",
+> > "gpio26", "gpio27",
+> > +                     "gpio28", "gpio29", "gpio30", "gpio31", "gpio32",
+> > "gpio33", "gpio34",
+> > +                     "gpio35", "gpio36"]
+> > +        minItems: 1
+> > +        maxItems: 37
+> > +      function:
+> > +        description: |
+> > +          Select which function to use. "gpio" is supported for all pins,
+> > "led" is supported
+> > +          for pins 0-34, "pwm" is supported for for pin 35.
+> > +        enum: ["gpio", "led", "pwm"]
+> > +
+> > +    required:
+> > +      - pins
+> > +      - function
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - gpio-controller
+> > +  - "#gpio-cells"
+> > +  - gpio-ranges
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    // Minimal example
+> > +    mdio {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        expander0: expander@0 {
+> > +            compatible = "realtek,rtl8231";
+> > +            reg = <0>;
+> > +
+> > +            gpio-controller;
+> > +            #gpio-cells = <2>;
+> > +            gpio-ranges = <&expander0 0 0 37>;
+> > +        };
+> > +    };
+> > +  - |
+> > +    // All bells and whistles included
+> > +    #include <dt-bindings/leds/common.h>
+> > +    mdio {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        expander1: expander@1 {
+> > +            compatible = "realtek,rtl8231";
+> > +            reg = <1>;
+> > +
+> > +            gpio-controller;
+> > +            #gpio-cells = <2>;
+> > +            gpio-ranges = <&expander1 0 0 37>;
+> > +
+> > +            realtek,drive-strength = <4>;
+> > +
+> > +            button-pins {
+> > +                pins = "gpio36";
+> > +                function = "gpio";
+> > +                input-debounce = "100000";
+> > +            };
+> > +
+> > +            pwm-pins {
+> > +                pins = "gpio35";
+> > +                function = "pwm";
+> > +            };
+> > +
+> > +            led-pins {
+> > +                pins = "gpio0", "gpio1", "gpio3", "gpio4";
+> > +                function = "led";
+> > +            };
+> > +
+> > +            pwm {
+> > +                #pwm-cells = <2>;
+> > +            };
+> > +
+> > +            leds {
+> > +                compatible = "realtek,rtl8231-leds";
+> > +                #address-cells = <2>;
+> > +                #size-cells = <0>;
+> > +
+> > +                realtek,led-scan-mode = "single-color";
+> > +
+> > +                led@0,0 {
+> > +                    reg = <0 0>;
+> > +                    color = <LED_COLOR_ID_GREEN>;
+> > +                    function = LED_FUNCTION_LAN;
+> > +                    function-enumerator = <0>;
+> > +                };
+> > +
+> > +                led@0,1 {
+> > +                    reg = <0 1>;
+> > +                    color = <LED_COLOR_ID_AMBER>;
+> > +                    function = LED_FUNCTION_LAN;
+> > +                    function-enumerator = <0>;
+> > +                };
+> > +
+> > +                led@1,0 {
+> > +                    reg = <1 0>;
+> > +                    color = <LED_COLOR_ID_GREEN>;
+> > +                    function = LED_FUNCTION_LAN;
+> > +                    function-enumerator = <1>;
+> > +                };
+> > +
+> > +                led@1,1 {
+> > +                    reg = <1 1>;
+> > +                    color = <LED_COLOR_ID_AMBER>;
+> > +                    function = LED_FUNCTION_LAN;
+> > +                    function-enumerator = <1>;
+> > +                };
+> > +            };
+> > +        };
+> > +    };
+> > -- 
+> > 2.31.1
+> > 
+
 
