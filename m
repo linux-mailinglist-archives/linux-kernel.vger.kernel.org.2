@@ -2,202 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5069A3884A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3573884AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbhESCDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 22:03:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234117AbhESCDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 22:03:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59C08613AF;
-        Wed, 19 May 2021 02:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621389744;
-        bh=eSW+Cl/e5KBTkRF2vqSMzB+oYnXIhHnXZ1epqm7AOXA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Sj0fwnl/qa9t+tA3iSdZ6uUDjWUESH7TT0/l8YxKOKXvf2jEbOQ5V1K4+LbVUQD7Z
-         JUb/rJ6FHwt1S19sy9zSfxmj/esu/ZtaGXuS/L9NVINhjZQuBClzt0C7AU1p5jotwP
-         F8vVE21abjTkiEgMNi3Y4PJzsAmY9xVBAuX5UMO3mispq7qiwrBeHMMIIXn0O1N2Z1
-         GVPoaus+gWt2WdMgMG+HLC1SMmoe5hx1HoxKHSNBUjnz1wXW1Lpka5WxAXMDaFMMrc
-         u+ZlybJmbjsMjgRM5PraR8BAACjWa3rzNrzx7pp1fIFsivxftZ7k0QDaoHBsHuLHOJ
-         S5qSxsdOf9Quw==
-Received: by mail-ed1-f43.google.com with SMTP id h16so13461299edr.6;
-        Tue, 18 May 2021 19:02:24 -0700 (PDT)
-X-Gm-Message-State: AOAM533eDyCA7xkYJhLkcA7cQyOcVJafFMcloFzr40DgNlP4zDKNJ4QJ
-        sUQg6JNU1J8dGJSEIM0ITxbRdCW8vQE3b9MVrg==
-X-Google-Smtp-Source: ABdhPJzv1gE2GvBbkp8kK7JhtqtZFIFNcUAYatbCykH5Qchx71BpP2RwhXApwP8e2nkcie0Kdo6hxR4uYvFdlH2yXpw=
-X-Received: by 2002:a50:c446:: with SMTP id w6mr10697786edf.62.1621389742843;
- Tue, 18 May 2021 19:02:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210518232858.1535403-1-robh@kernel.org> <20210518232858.1535403-6-robh@kernel.org>
- <YKRoqaQaz9QSMVqg@pendragon.ideasonboard.com>
-In-Reply-To: <YKRoqaQaz9QSMVqg@pendragon.ideasonboard.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 18 May 2021 21:02:11 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJLwC-HLAxX8xJK7DfBeNgPsKDJzreDSem7-1CMA8wAEg@mail.gmail.com>
-Message-ID: <CAL_JsqJLwC-HLAxX8xJK7DfBeNgPsKDJzreDSem7-1CMA8wAEg@mail.gmail.com>
-Subject: Re: [PATCH 5/6] dt-bindings: i2c: i2c-mux-pca954x: Convert to DT schema
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>,
+        id S234953AbhESCO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 22:14:56 -0400
+Received: from esa5.fujitsucc.c3s2.iphmx.com ([68.232.159.76]:3818 "EHLO
+        esa5.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234810AbhESCOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 22:14:54 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 22:14:53 EDT
+IronPort-SDR: bd4eegYa2L29knS/I57zZzGPwqJtQZ6iHKuebob6KdLMIxIh/mnHlVP1ePQJ7NlilaWzSDmu3F
+ ptP8OXmvsnV4FFC0VV7rXMN2WuVWSy7n+kkpOEQMT40S63R33jmX9Ufz5V5IwXPCv4yZpjo16n
+ dJze9ygTgeiwG6Umq3pp5MTOCF0PqS3NopPaNuho3xlk/wun5qv2q2IcTJuZ/EfFDN4oCf6/tu
+ gd6XhYNaKFmcAB5zLiiimcNI8dzk63TgdvGK64S9krVUbIcM2M8PAttjRB08uzHwp5/6Z7d5kw
+ Oz0=
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="31533535"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613401200"; 
+   d="scan'208";a="31533535"
+Received: from mail-os2jpn01lp2054.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.54])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 11:06:23 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=emA5Fb7de7D5X9qX/skI5QfrdRwu/jjDMOSu9x8hv4tV3KhudZnZyUvgi4h2CKJ0QqlCrQIXrlZ0NvQVfXLs0qoLOSaiweoOZGd9GlTteec8D0DhKr5qW0Kn2YaqTCLAb2n0TocYCPQ0xF2Ju8SHF8P49T2dnDtDwc/WKVEVZcgonN6MHGdRebD9MRYk8T+4/DWnK3jbeuJTjdDXYq4lUVAnvl2PCNChcqZsWmY1+FxoSGoGlqc2/Z5gey6mnRF2LWg4urE+7wyTJRT6+6PZQlGV1LeDFkmypwm2jHVYKdce6Fc+9XTsV34Dw4TocUPkjqlcpR6PR4pnoE1o/w2+aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=830DGdgKZZnvQ1IVmL2WDK1oKbuJPE5tak25+Y7sFYY=;
+ b=e/H0itRpHa6edt+YyItm+fVvZ4vS62P5XQgKJMjkswZUWpEY1PGMSsRobbhH2u2YqMFcCOjiCsAhsst5/t3f68RRl/4Bn8puKBpPgO2E7zDoUqc83YaxBHJ77XVHnLsTVRelAFMswHNc9/hZjmp6j7v9ZblzrgmmtX1xNvUL41l8srcHbpF/Ylzp9HTmaz1hUx7yLK2guw+I0kCKURKkWFXxw3Pl23ghoiYmWnztYkxuQ8MivDia37KweVEPfFjZ8H7bNdz5ROlSNpO7VtFYqWowCEhXsTfbP8xturFtNUSNuhgE9bp2xGDNCibIg7evXxgu0s4P7dSPBZfj2/k4Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=830DGdgKZZnvQ1IVmL2WDK1oKbuJPE5tak25+Y7sFYY=;
+ b=abk4768tIBEnnFAIV3+jsGSbtkPR1huYCto02/djO43zDZSiXsrEEuRCma1Yd3rWUEUD9dkLmz4LyyF5maqsOheWz4rx1kOIE0/AyGmbI/4wci2aRM728TPTk6fAcZ47fkgDBPnKs4iK7xbemB5240zStwpVU5bM5hxSaq6VDik=
+Received: from TY2PR01MB5257.jpnprd01.prod.outlook.com (2603:1096:404:11a::10)
+ by TYCPR01MB6127.jpnprd01.prod.outlook.com (2603:1096:400:48::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Wed, 19 May
+ 2021 02:06:20 +0000
+Received: from TY2PR01MB5257.jpnprd01.prod.outlook.com
+ ([fe80::1dd1:7e9c:e09d:d1da]) by TY2PR01MB5257.jpnprd01.prod.outlook.com
+ ([fe80::1dd1:7e9c:e09d:d1da%6]) with mapi id 15.20.4129.033; Wed, 19 May 2021
+ 02:06:20 +0000
+From:   "nobuta.keiya@fujitsu.com" <nobuta.keiya@fujitsu.com>
+To:     "madvenka@linux.microsoft.com" <madvenka@linux.microsoft.com>
+CC:     "broonie@kernel.org" <broonie@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "jthierry@redhat.com" <jthierry@redhat.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "jmorris@namei.org" <jmorris@namei.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Roger Quadros <rogerq@ti.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>
+Subject: Re: [RFC PATCH v4 2/2] arm64: Create a list of SYM_CODE functions,
+ blacklist them in the unwinder
+Thread-Topic: [RFC PATCH v4 2/2] arm64: Create a list of SYM_CODE functions,
+ blacklist them in the unwinder
+Thread-Index: AQHXSgkhR4DELDlZmEi65W09XM1I3KrqArXF
+Date:   Wed, 19 May 2021 02:06:20 +0000
+Message-ID: <TY2PR01MB5257FA9C1E94B136E1977790852B9@TY2PR01MB5257.jpnprd01.prod.outlook.com>
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>,<20210516040018.128105-3-madvenka@linux.microsoft.com>
+In-Reply-To: <20210516040018.128105-3-madvenka@linux.microsoft.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.microsoft.com; dkim=none (message not signed)
+ header.d=none;linux.microsoft.com; dmarc=none action=none
+ header.from=fujitsu.com;
+x-originating-ip: [210.162.30.55]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b6a06dc3-c54b-46ff-95da-08d91a6ab1ec
+x-ms-traffictypediagnostic: TYCPR01MB6127:
+x-microsoft-antispam-prvs: <TYCPR01MB6127BF4E58FDFD519635AD3A852B9@TYCPR01MB6127.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:565;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4KOSQJuguv3hJOX0Zjzh1poFU3b3R6FaArDO95eswPj2pTwk718rF/F2Lv3SoJvM9I43wR77qT/0DdmkuAtdh+ew/bkfbOVH/L9pfaYrDx5AaFVaQqre8hLmXrbFloIkDPyFxp06KyKpbqAM8+iu39NI2Bv0znqDGDsbHuOEIUKmfcEm4VBFaSEAraXs3GtX2tWRuNK+tk4WBekb0RZg9r7zi+naHfKHiEgR/YRpbxzTnvuO+iSrq8MxS8ozzyEF7e6EqU3/4o1X5UPUIzZVfvR5CYUjOKZUNJmi4UzTJQpX0JZpufvtSy1iUXuAU+3tzFnlX9XH/or15ymhOv3ijH1lFuwjpvCP1kr2KO94G2GFMpI0BAkqQ/4C7PVfrtj4grC1dfFoZgTTGlMC64cqDxKyMBONxmGimQehGLVSqqIrthnIojdhgKVt/lGT7+63ga0Jp4aPmRvJf0/mNVbXn2gYEyWo/V0MG6IdJ0DIg/2oDoNljN3gDpypLDljrC00S5Xvrm1h1KrswLHu6f/dFno5vCP+c6CcXSH0KoRnaJ5X1Nk2cjaIGaEq3ZIdP+WhYWBvjiDYyOEsqsOuyu5+FNWyBCB577fHkvhbO3biGfA9ESaQsZR5dsDJGIkU+29sbI8Olk61d8fDPzIxL7sPNWlYopOtvDB6Bxyb6EbTcXjELdOc4vIp6Q7ZdkojRCCMn8lXEpclUhsFBqIsKi3ghQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB5257.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(346002)(136003)(39860400002)(4326008)(122000001)(86362001)(54906003)(186003)(2906002)(26005)(55016002)(4744005)(9686003)(66946007)(6916009)(71200400001)(76116006)(6506007)(33656002)(66446008)(52536014)(478600001)(7696005)(66476007)(8936002)(64756008)(8676002)(85182001)(66556008)(38100700002)(316002)(966005)(7416002)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?U2F5dmthdXdNaFBJSEUvNC9ZY0NNQTBrWURPVGdMVlE0alFHSDkrSXJv?=
+ =?iso-2022-jp?B?eE1pVUtoNnY1QzRSdHVDYTJKZFVSd2ptUGxBMFNSd0xrcndtKzdPb0hw?=
+ =?iso-2022-jp?B?YTVROHZmL2pCSU9kMnJ1UGRYcjFNK0JuZzRXemljU0h6NFRGRENRQXNz?=
+ =?iso-2022-jp?B?TWpibGwvUnF1VFB3NW5nOGI2eFlhak9PQmhUR1pTV2NIWWh6WmRjbXFs?=
+ =?iso-2022-jp?B?NTZXeE96Vlg0Y005MzY0VEx5ZVdkMU5aeUl2NVMwSTlvSURCdXl3dTAr?=
+ =?iso-2022-jp?B?Z1R1SkV6b1czWFlsZzlIQ3JNOUJ1RUFnVzRBTHNRUk5telNYU2pncTU3?=
+ =?iso-2022-jp?B?bXpYNlI1empZTWE3QmVKZG5yY2V4d0lzcFl4N2xHQ2grTnBNYXg2WUdh?=
+ =?iso-2022-jp?B?ZzlpTFBuVTV0VEsvcjd3Y3lrVy9VemVtY0xYYUpLVWRPcGU0VUtHSXk3?=
+ =?iso-2022-jp?B?SW9SUjZ1ZEllYVVBSGw2eWNPWEZ6S08vWndsd3EwYUluS3JDYTNBNFZP?=
+ =?iso-2022-jp?B?UnQ4c1QxY0N5bUlzdEgyK1FxRVVWWHdOYmN6TlZoTnNSSVpXcjFHZWtU?=
+ =?iso-2022-jp?B?YnpoRUI1Qm9GTitCd2J4Slg3QnVPeVdrOFlUVllxRTFjdGJiNjJINDN2?=
+ =?iso-2022-jp?B?NnZWbTg3dFh5QXliMUpidXhZT1hGMlVXc0txeS95Q3ROZTNlY29SekVX?=
+ =?iso-2022-jp?B?TjlSS25TRFlkcGlYMFhwV05qdjFzOXA1eHJiR2tpL05VWkV1MDVVUGZF?=
+ =?iso-2022-jp?B?MnZrMHAzN0JGWU93ZlhPTWN6aUFYNlBWRWFyaXBkclZMRzdSVCtnRldh?=
+ =?iso-2022-jp?B?N3h1YWswMjhrQ283eHB5U3JxWGhRU0ZkRS9NTGw4M2NFVjRvTFRnS2N2?=
+ =?iso-2022-jp?B?OGJWd0JtYmJISUhjTHV1NFVpY0V4b3pFYjQrWk4rTlhVSDhrY1ZvMmZm?=
+ =?iso-2022-jp?B?blBpSFY3M2RidkUzWGowbXdPcENRVmVNK2Rsc0VQTXJYWUdwMTdyWThy?=
+ =?iso-2022-jp?B?QndiTC9DL28zOEttUzZuUnhWanRvQm1lZUQ3ZVZ3MjB2VGxRYTNFa1BI?=
+ =?iso-2022-jp?B?aXZVV1B3QWJPQ2ZzNXJBVzZkT3FhZUhxSk5wc3hTRXpLSFVUWjUyMWNq?=
+ =?iso-2022-jp?B?Q3JYdmp3cWFVa2FjTlREaVpCaDZNS3ZVUHVtdm00SFp6bXBnck16Q2ta?=
+ =?iso-2022-jp?B?YW51c28veE5PS1YwVjdpY3VEb1ErTk1BSCtIcFNTSHhKVGYxek82N1N0?=
+ =?iso-2022-jp?B?bkM2aDlDWWJsRlg1bFUvT0ZQOG14RjFoTGdGUFpsUlRSVUFLajB0RS92?=
+ =?iso-2022-jp?B?N0dWdHU2eDdwR0poenJCTWh0Yi9XZjgyeUNEc3hONm9yOE8xdXYvN25Y?=
+ =?iso-2022-jp?B?dWlJVUpTQUcwMkJZWjJyUHhFMlNZRFhNVHdHRWEvZ1NNQzkrOTl0WmpF?=
+ =?iso-2022-jp?B?aHdUd05EOWlmemx3UEE4cWJQZ3VuQ000RmtERTBGQS80NFdIT2E5ZGMw?=
+ =?iso-2022-jp?B?VGJualZUam5ZSHF0MU13cmdNcndZS25vMWxLdWdqYjZwU3ZCeG00NHlE?=
+ =?iso-2022-jp?B?Q28zZ0tRdUY5YmtLZFZtaCtJemhVYVFxZVozL0xmL3BxUnlJbW9ITGxv?=
+ =?iso-2022-jp?B?eG5pMFVCV1E5MHFZc1NTRkN1cWNwcmxqcWpQZXlwcHZlbE5BWE5aSUlt?=
+ =?iso-2022-jp?B?Vms4QUtwNVdvTGJpbjh3U0ZaZDdHSHhwUGxkcTJSL3VFaWxQQTc5d1FX?=
+ =?iso-2022-jp?B?a3V2WVVIMzhsbkd2cEVabHQyMTdaS1AyQytGSmFuYTFkQjhDZUtRZUlu?=
+ =?iso-2022-jp?B?YS9mMUlTaUhXYVFNUmNhaWxIZ2hKUVNBMk5MN2JSWFh2MERpN01Gb3pK?=
+ =?iso-2022-jp?B?WUxYTHJCdDFmRzJYRDFmR2JvRCtjPQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB5257.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6a06dc3-c54b-46ff-95da-08d91a6ab1ec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2021 02:06:20.2214
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uF+JgbKZBNSvyHnzaEhKb6CX4DAumutC20FMgcEKUajsyNF+ahVGHyAdAUySpuqbQcnS71rsT+yqPBSxeilUI+hPETIpAUVEl7fWmDqKH/M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 8:23 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Rob,
->
-> Thank you for the patch.
->
-> On Tue, May 18, 2021 at 06:28:57PM -0500, Rob Herring wrote:
-> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../bindings/i2c/i2c-mux-pca954x.txt          |  74 ------------
-> >  .../bindings/i2c/i2c-mux-pca954x.yaml         | 106 ++++++++++++++++++
-> >  2 files changed, 106 insertions(+), 74 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.txt
-> >  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.txt
-> > deleted file mode 100644
-> > index 9f3f3eb67e87..000000000000
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.txt
-> > +++ /dev/null
-> > @@ -1,74 +0,0 @@
-> > -* NXP PCA954x I2C bus switch
-> > -
-> > -The driver supports NXP PCA954x and PCA984x I2C mux/switch devices.
-> > -
-> > -Required Properties:
-> > -
-> > -  - compatible: Must contain one of the following.
-> > -    "nxp,pca9540",
-> > -    "nxp,pca9542",
-> > -    "nxp,pca9543",
-> > -    "nxp,pca9544",
-> > -    "nxp,pca9545",
-> > -    "nxp,pca9546", "nxp,pca9846",
-> > -    "nxp,pca9547", "nxp,pca9847",
-> > -    "nxp,pca9548", "nxp,pca9848",
-> > -    "nxp,pca9849"
-> > -
-> > -  - reg: The I2C address of the device.
-> > -
-> > -  The following required properties are defined externally:
-> > -
-> > -  - Standard I2C mux properties. See i2c-mux.txt in this directory.
-> > -  - I2C child bus nodes. See i2c-mux.txt in this directory.
-> > -
-> > -Optional Properties:
-> > -
-> > -  - reset-gpios: Reference to the GPIO connected to the reset input.
-> > -  - idle-state: if present, overrides i2c-mux-idle-disconnect,
-> > -    Please refer to Documentation/devicetree/bindings/mux/mux-controller.yaml
-> > -  - i2c-mux-idle-disconnect: Boolean; if defined, forces mux to disconnect all
-> > -    children in idle state. This is necessary for example, if there are several
-> > -    multiplexers on the bus and the devices behind them use same I2C addresses.
-> > -  - interrupts: Interrupt mapping for IRQ.
-> > -  - interrupt-controller: Marks the device node as an interrupt controller.
-> > -  - #interrupt-cells : Should be two.
-> > -    - first cell is the pin number
-> > -    - second cell is used to specify flags.
-> > -    See also Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-> > -
-> > -Example:
-> > -
-> > -     i2c-switch@74 {
-> > -             compatible = "nxp,pca9548";
-> > -             #address-cells = <1>;
-> > -             #size-cells = <0>;
-> > -             reg = <0x74>;
-> > -
-> > -             interrupt-parent = <&ipic>;
-> > -             interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
-> > -             interrupt-controller;
-> > -             #interrupt-cells = <2>;
-> > -
-> > -             i2c@2 {
-> > -                     #address-cells = <1>;
-> > -                     #size-cells = <0>;
-> > -                     reg = <2>;
-> > -
-> > -                     eeprom@54 {
-> > -                             compatible = "atmel,24c08";
-> > -                             reg = <0x54>;
-> > -                     };
-> > -             };
-> > -
-> > -             i2c@4 {
-> > -                     #address-cells = <1>;
-> > -                     #size-cells = <0>;
-> > -                     reg = <4>;
-> > -
-> > -                     rtc@51 {
-> > -                             compatible = "nxp,pcf8563";
-> > -                             reg = <0x51>;
-> > -                     };
-> > -             };
-> > -     };
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-> > new file mode 100644
-> > index 000000000000..82d9101098c7
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-> > @@ -0,0 +1,106 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/i2c/i2c-mux-pca954x.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: NXP PCA954x I2C bus switch
-> > +
-> > +maintainers:
-> > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > +
-> > +description:
-> > +  The binding supports NXP PCA954x and PCA984x I2C mux/switch devices.
-> > +
-> > +allOf:
-> > +  - $ref: /schemas/i2c/i2c-mux.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - nxp,pca9540
-> > +      - nxp,pca9542
-> > +      - nxp,pca9543
-> > +      - nxp,pca9544
-> > +      - nxp,pca9545
-> > +      - nxp,pca9546
-> > +      - nxp,pca9547
-> > +      - nxp,pca9548
-> > +      - nxp,pca9849
->
-> I'd put this entry last to keep them alphabetically sorted.
-
-Sigh, that was my intent...
-
-> While at it, could you add nxp,pca9646 as the driver supports it ?
-
-Sure.
-
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-Thanks!
+Hi Madhavan,=0A=
+=0A=
+> +static bool unwinder_blacklisted(unsigned long pc)=0A=
+> +{=0A=
+=0A=
+I've heard that the Linux community is currently avoiding the introduction =
+of the=0A=
+term 'blacklist', see:=0A=
+=0A=
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3D49decddd39e5f6132ccd7d9fdc3d7c470b0061bb=0A=
+=0A=
+=0A=
+Thanks & Best Regards,=0A=
+Keiya Nobuta=
