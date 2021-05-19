@@ -2,58 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C48388C9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41A7388CA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350020AbhESLV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:21:56 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53888 "EHLO deadmen.hmeau.com"
+        id S1350131AbhESLWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:22:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:60700 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346140AbhESLVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:21:55 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1ljKFc-0002QF-0q; Wed, 19 May 2021 19:20:32 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ljKFZ-00074i-49; Wed, 19 May 2021 19:20:29 +0800
-Date:   Wed, 19 May 2021 19:20:29 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     sharathv@codeaurora.org
-Cc:     tgraf@suug.ch, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, edumazet@google.com
-Subject: Re: Internal error: Oops  from inet_frag_find, when inserting a IP
- frag into a rhashtable
-Message-ID: <20210519112029.3jbw74fuqe4p2tjm@gondor.apana.org.au>
-References: <997dfef63f2bd14acc2e478758bfc425@codeaurora.org>
+        id S1350009AbhESLWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:22:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BFDE101E;
+        Wed, 19 May 2021 04:20:49 -0700 (PDT)
+Received: from bogus (unknown [10.57.72.88])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B17BC3F719;
+        Wed, 19 May 2021 04:20:47 -0700 (PDT)
+Date:   Wed, 19 May 2021 12:20:41 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: dvfs: Add support for generic
+ performance domains
+Message-ID: <20210519112041.olwl35irvcbjxrka@bogus>
+References: <20210517155458.1016707-1-sudeep.holla@arm.com>
+ <1621284311.383362.3157708.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <997dfef63f2bd14acc2e478758bfc425@codeaurora.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <1621284311.383362.3157708.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 12:52:27AM +0530, sharathv@codeaurora.org wrote:
+Hi Rob,
+
+On Mon, May 17, 2021 at 03:45:11PM -0500, Rob Herring wrote:
+
+[...]
+
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 >
->   784.185172:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754415]@2
-> __get_vm_area_node.llvm.17374696036975823682+0x1ac/0x1c8
->    784.185179:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754422]@2
-> __vmalloc_node_flags_caller+0xb4/0x170
->    784.185189:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754432]@2
-> kvmalloc_node+0x40/0xa8
->    784.185199:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754442]@2
-> rhashtable_insert_rehash+0x84/0x264
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/dvfs/performance-domain.example.dt.yaml:0:0: /example-0/performance-controller@12340000: failed to match any schema with compatible: ['qcom,cpufreq-hw']
+>
+> See https://patchwork.ozlabs.org/patch/1479615
 
-Something very fishy is going on here.
+IIUC, such errors due to the fact that the compatible used in the example
+is not in any yaml schema(as it is still in the old txt format). I also
+assume such errors are allowed until the transition is complete and I
+need not fix anything as part of this patch ?
 
-The code path in rhashtable_insert_rehash cannot possibly trigger
-vmalloc because it uses GFP_ATOMIC.  Is this a pristine upstream
-kernel or are there patches that may change things?
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+--
+Regards,
+Sudeep
