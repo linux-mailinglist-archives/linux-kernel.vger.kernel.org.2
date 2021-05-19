@@ -2,170 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AF9388468
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224D038846B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhESB1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 21:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
+        id S232833AbhESBaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhESB07 (ORCPT
+        with ESMTP id S231689AbhESBae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 21:26:59 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909BBC06175F;
-        Tue, 18 May 2021 18:25:40 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8C23145E;
-        Wed, 19 May 2021 03:25:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1621387537;
-        bh=ElhwxGKUwEWUYDnidWAaBFEhwLU8MhQqllbbZ9/wkKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gx0CQwuofTPcFArYqtsSSbVjGJZTeqg9V0NbRhVwIixE55pSFeInAiwv0ZCQjbVY+
-         ViiwvDXYi4RDEvVxWUXqMixKeXq/scVReHZBTWt2xzqfGGEzUSdOJtN54Ka6El8nlm
-         0qPqOp30KfU9FSNFFHkfK+hoZzPkvfjYA3cKf1r4=
-Date:   Wed, 19 May 2021 04:25:36 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Roger Quadros <rogerq@ti.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH 2/6] dt-bindings: rtc: nxp,pcf8563: Convert to DT schema
-Message-ID: <YKRpELsY7+30MxCd@pendragon.ideasonboard.com>
-References: <20210518232858.1535403-1-robh@kernel.org>
- <20210518232858.1535403-3-robh@kernel.org>
+        Tue, 18 May 2021 21:30:34 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C580C06175F;
+        Tue, 18 May 2021 18:29:15 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id t11so6506106pjm.0;
+        Tue, 18 May 2021 18:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VhtGsRQc+R6QdXUUosI8SyxA+4ob1+wx8JCGQB2aGos=;
+        b=ePVH2Y9lhx8keq05JyRcVnQiJ5/gCyhzA0oOtmSk9HelPosG8YbTaA5ZFIcuimZVI5
+         km9ct2j/Pxmvf6j85CjNGWJ6yx/ZVmZbv6FDNXfQePzxoXzM7cv1KtaCj9ilR6kvXj/M
+         kGnPnQwMmAVLfLalYfGnQ/tReLMIdbN4AvC3ljF8WR2Fi09WrwMR9AucTa1Whk6rzbGp
+         ONyee7EkgN+k5zIEeqS/4nZl1KJ5OzdHyaiJpyuZAgcd06Vfn/KoZTR+1hiWquoSTb4t
+         XVtS5bM+4jzbmXcAEQ2nsF9WC7zG9B/zcmK3kNYCuVaAWqKq/6FeqVLRlGVxZ8fThXSV
+         Cdvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VhtGsRQc+R6QdXUUosI8SyxA+4ob1+wx8JCGQB2aGos=;
+        b=j+s6qmVjNt8N1Tkl0iaSLV+cSpWG64CsH1JPFVSAFX9guTxj/27PsWEz7ITpc1YjK2
+         mIR0ydq5K6VKkHIyk5i/TOP5JoGFu0c/IGvgQUH1Wi27vzQ3sAUxbJDcKbM4X8OIBNgr
+         ZMsH0tMXV5+tnpAM62ETD3I2nnpoHDzVw+AOZiUumKd4Mi+cV5eSQg+hL1ooltMThXls
+         trkQXF8oH5R8xf/gXVkOjwY1B56p6QT1dcsmiNeWeSPW8L3VW/pM3j5DOh264UZ2O/hW
+         dNeccSb4wfEXymkW5gxsjBZ4hwNw8NkERto+gWlXw/TmbUY0DL0ZDas9W8SNb96a8CeC
+         wIrA==
+X-Gm-Message-State: AOAM533cpwvCKyKZz/GBtQa9mVvXIHajhjVkadl0xKxSOOyR5ljf8x53
+        R5nZIDlj7qpoa++MeeeNudpCogWqd1CELA==
+X-Google-Smtp-Source: ABdhPJzuGgnZo4UuzRhIECEwsmc+lXFofPjkB3LTrhrSQIILdP9TbmpsjUhs6nZL4cW6DnPToNJf7A==
+X-Received: by 2002:a17:902:d305:b029:f0:d3db:26db with SMTP id b5-20020a170902d305b02900f0d3db26dbmr7808100plc.36.1621387754639;
+        Tue, 18 May 2021 18:29:14 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([122.10.101.135])
+        by smtp.gmail.com with ESMTPSA id c16sm5908231pfd.206.2021.05.18.18.29.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 18:29:14 -0700 (PDT)
+Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+ <YKLXev4cjeRuGRqd@mit.edu> <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
+ <YKPV6FZWfoUD3bgL@mit.edu>
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Message-ID: <1d43599f-fed1-b37e-a411-2b0f31583991@gmail.com>
+Date:   Wed, 19 May 2021 09:27:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <YKPV6FZWfoUD3bgL@mit.edu>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210518232858.1535403-3-robh@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-Thank you for the patch.
 
-On Tue, May 18, 2021 at 06:28:54PM -0500, Rob Herring wrote:
-> Convert the Philips PCF8563/Epson RTC8564 binding to DT schema format.
+On 2021/5/18 10:57 PM, Theodore Y. Ts'o wrote:
+> On Tue, May 18, 2021 at 09:19:13AM +0800, Wang Jianchao wrote:
+>>> That way we don't need to move all of this to a kworker context.
+>>
+>> The submit_bio also needs to be out of jbd2 commit kthread as it may be
+>> blocked due to blk-wbt or no enough request tag. ;)
 > 
-> Add 'interrupts' as this device has an interrupt which was not
-> documented, but in use.
+> Actually, there's a bigger deal that I hadn't realized, about why we
+> is why are currently using submit_bio_wait().  We *must* wait until
+> discard has completed before we call ext4_free_data_in_buddy(), which
+> is what allows those blocks to be reused by the block allocator.
 > 
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> If the discard happens after we reallocate the block, there is a good
+> chance that we will end up corrupting a data or metadata block,
+> leading to user data loss.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Yes
 
-> ---
->  .../devicetree/bindings/rtc/nxp,pcf8563.yaml  | 50 +++++++++++++++++++
->  .../devicetree/bindings/rtc/pcf8563.txt       | 29 -----------
->  2 files changed, 50 insertions(+), 29 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
->  delete mode 100644 Documentation/devicetree/bindings/rtc/pcf8563.txt
 > 
-> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
-> new file mode 100644
-> index 000000000000..15e67be0ef95
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rtc/nxp,pcf8563.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Philips PCF8563/Epson RTC8564 Real Time Clock
-> +
-> +maintainers:
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - epson,rtc8564
-> +      - microcrystal,rv8564
-> +      - nxp,pcf8563
-> +      - nxp,pca8565
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#clock-cells":
-> +    const: 0
-> +
-> +  clock-output-names:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        rtc@51 {
-> +            compatible = "nxp,pcf8563";
-> +            reg = <0x51>;
-> +            #clock-cells = <0>;
-> +        };
-> +    };
-> +...
-> diff --git a/Documentation/devicetree/bindings/rtc/pcf8563.txt b/Documentation/devicetree/bindings/rtc/pcf8563.txt
-> deleted file mode 100644
-> index 0a900f7c8977..000000000000
-> --- a/Documentation/devicetree/bindings/rtc/pcf8563.txt
-> +++ /dev/null
-> @@ -1,29 +0,0 @@
-> -* Philips PCF8563/Epson RTC8564 Real Time Clock
-> -
-> -Philips PCF8563/Epson RTC8564 Real Time Clock
-> -
-> -Required properties:
-> -- compatible: Should contain "nxp,pcf8563",
-> -	"epson,rtc8564" or
-> -	"microcrystal,rv8564" or
-> -	"nxp,pca8565"
-> -- reg: I2C address for chip.
-> -
-> -Optional property:
-> -- #clock-cells: Should be 0.
-> -- clock-output-names:
-> -  overwrite the default clock name "pcf8563-clkout"
-> -
-> -Example:
-> -
-> -pcf8563: pcf8563@51 {
-> -	compatible = "nxp,pcf8563";
-> -	reg = <0x51>;
-> -	#clock-cells = <0>;
-> -};
-> -
-> -device {
-> -...
-> -	clocks = <&pcf8563>;
-> -...
-> -};
+> There's another corollary to this; if you use blk-wbt, and you are
+> doing lots of deletes, and we move this all to a writeback thread,
+> this *significantly* increases the chance that the user will see
+> ENOSPC errors in the case where they are with a very full (close to
+> 100% used) file system.
 
--- 
-Regards,
+We would flush the kwork that's doing discard in this patch.
+That's done in ext4_should_retry_alloc()
 
-Laurent Pinchart
+> 
+> I'd argue that this is a *really* good reason why using mount -o
+> discard is Just A Bad Idea if you are running with blk-wbt.  If
+> discards are slow, using fstrim is a much better choice.  It's also
+> the case that for most SSD's and workloads, doing frequent discards
+> doesn't actually help that much.  The write endurance of the device is
+> not compromised that much if you only run fs-trim and discard unused
+> blocks once a day, or even once a week --- I only recommend use of
+> mount -o discard in cases where the discard operation is effectively
+> free.  (e.g., in cases where the FTL is implemented on the Host OS, or
+> you are running with super-fast flash which is PCIe or NVMe attached.)
+
+We're running ext4 with discard on a nbd device whose backend is storage
+cluster. The discard can help to free the unused space to storage pool.
+
+And sometimes application delete a lot of data and discard is flooding. 
+Then we see the jbd2 commit kthread is blocked for a long time. Even
+move the discard out of jbd2, we still see the write IO of jbd2 log
+could be blocked. blk-wbt could help to relieve this. Finally the delay
+is shift to allocation path. But this is better than blocking the page
+fault path which holds the read mm->mmap_sem.
+
+Best regards
+Jianchao
+
+> 
+> Cheers,
+> 
+> 					- Ted
+> 
