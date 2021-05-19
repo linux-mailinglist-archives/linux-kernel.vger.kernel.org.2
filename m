@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C762389262
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99711389265
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354461AbhESPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        id S1354563AbhESPUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231823AbhESPUI (ORCPT
+        with ESMTP id S1354419AbhESPUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:20:08 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D977C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:18:48 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id w12so8079490edx.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:18:48 -0700 (PDT)
+        Wed, 19 May 2021 11:20:43 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7791C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:19:23 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id q6so7496418pjj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2+/4m4rfJ/qusBu6xKLeqSfoq/WhFXeBjZFbets1dms=;
-        b=L1dTZ/cejTl+mgSkbTA6g3xoBK1uVV3OJBQYenHp/RsDHmtHbJH61VtRY/tS2t9i2v
-         6rG/tuZPjwK1A36hZ+ZFrO02elZzCn0m6ck3ZEXouML3ey2StNCu3+0X7DXjif36uQGj
-         1D0bU8X/8Sx9Y+dqTtv51adgzo5SWy1LVnKIN2qg6D6Tc/OTHkw3sQQiyOLnPp+hWGMc
-         CH2HLX/oWClPhnOEH0OiBAtPOukmLfjLyQIR2fApxy0sqctGF0OUvNi3xBcJX4lAXdIG
-         OB3zli27dx9nzBvlk936qedg9Y//j1IiyOMJWaCzkvGJplG6k3DLinY5tU5hP8CldXVc
-         b/nQ==
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=k8zjSgfqxLxlFthhLmpxkp9fckpuIPaxUqjese+DfO0=;
+        b=wxXiEk5cfMSn+oebUrmAqIxaxe3uQoavSW8YeWQIpptNjA8WnDUG7VePoKAlmC0X3O
+         ExXkJhERYYfGeg2YXpx0++bbi4QYlSbcGAfqPdxo9ev9zPukWzNm7rGwDT3nj1YTuGO0
+         CyqCooNqCKOADjpBaIOmx92dSqsKRRtofCEKtqxEOufeykOaCXulsYTxLQdcCkH8rps3
+         BFpJEDMY+8rXMy8gq/yV5F5w3DuA8FIlYu1h6gk+HoD9bgalLiAhkl9MiS4C00OwyGhm
+         QmLN1FilocmSUpmomQIomX4Ihb9ZzgL98w9OcjN/zsoNcyBAItwWW0jeyqC+3cXiZzko
+         9jcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2+/4m4rfJ/qusBu6xKLeqSfoq/WhFXeBjZFbets1dms=;
-        b=qEDlLgycx3tMZ5zWQxzcnLqvRu6eYx7sTd4WaPIWizgJ9QjgYs3DkHO9QHEvbPy1BF
-         KIUXcGLn0DPck7W29cAQGoKOh4xCt0j+WzUjd2Yqver/xXsSCJUOL0gLZQoGuqsngC2U
-         N7Xr1Ud3PzixL4sA9FqKLl6k8zKOedv8WICSQFKoj2TShTJP0i+/OENJnDEfOXWa44lX
-         a75DCbM6R0F2M5CQqV9G+93IVb3oLBWraYFWzfFIu8U6FWln+NWETpJoFVnwCl8zuNPh
-         OCvC7eHizK4Uu0yy0LiIyLu9h7h7NdXUu8JHDA80ings+rCyuvHju4mLTTX8yux/m9g9
-         K2BQ==
-X-Gm-Message-State: AOAM531WPZ1h4qSpXJ5MqfCYayfkVnevjnECPER4HhJcbva3V5+5+Wen
-        xo4cEXKk3k7vcb9rm+op7guVuUyU1YJD42hljFDi
-X-Google-Smtp-Source: ABdhPJweTp1Zx0DSC45lRP2AIkDyyygfjOr7HW1yUjrFHA4wGjuIWy4HGyTLZRX5S/SFeMSmMrf9Vm79x2hCKHCyc3E=
-X-Received: by 2002:aa7:c349:: with SMTP id j9mr15031390edr.135.1621437526510;
- Wed, 19 May 2021 08:18:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210519113058.1979817-1-memxor@gmail.com>
-In-Reply-To: <20210519113058.1979817-1-memxor@gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 19 May 2021 11:18:35 -0400
-Message-ID: <CAHC9VhS=PDxx=MzZnGGNLwo-o5Og-HGZe84=+BBtBCZgaGSn4A@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Create io_uring fd with ephemeral inode
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     io-uring@vger.kernel.org, Pavel Emelyanov <xemul@openvz.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=k8zjSgfqxLxlFthhLmpxkp9fckpuIPaxUqjese+DfO0=;
+        b=RTkS3Zm6RyYcsDcAyh4/0wx7UC+MKXbqxkbihKtFOjBeQmDv5mpALqYhKT4mtY8RnY
+         egXXfhl6s+HRjqVjAmm2/UZlZCl5ZYK7R5RBSCuRQ2y7cA7ZnA80DvobHV6D/ROX2Csn
+         zGS+ChGep5khEkCLMGojIcePzwOhOptj4631pE4l9FWa1vZczXss/P0M/LuWg/c18wDd
+         cUyG76DhlbXOmOJvOJQxuIk9eixRWB+7EQDhNCstboOZmGNIE5lsKcbntcQbAedC1mNM
+         vYqVC6sydmxzxyP0HH8FL1+lt4VmuPm0xk30RrpUZFN7XsF9lmn93WLHTrzge2xKVj7g
+         KmpA==
+X-Gm-Message-State: AOAM530uHQ+2q8TYpLF44QS6kbwM04dfWAt4STuUplAJErMbBgp3Hb+R
+        29BpANpEVqGR4cZIXQlQ7oY/
+X-Google-Smtp-Source: ABdhPJy2iC8QxPrIsMllescdd+wISCdojKR/IHdc3CqJD/XKucc1n3UJ6p9YkgMXX9Ve2iyS5UhnHg==
+X-Received: by 2002:a17:90a:a78d:: with SMTP id f13mr12007709pjq.161.1621437563291;
+        Wed, 19 May 2021 08:19:23 -0700 (PDT)
+Received: from localhost.localdomain ([2402:4000:11ca:dcec:9f88:85c9:3532:e27b])
+        by smtp.gmail.com with ESMTPSA id k1sm8804547pfa.30.2021.05.19.08.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 08:19:23 -0700 (PDT)
+From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+To:     johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org
+Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+Subject: [PATCH] Staging: greybus: fix open parenthesis issue in gbphy.c
+Date:   Wed, 19 May 2021 20:48:51 +0530
+Message-Id: <20210519151851.26006-1-asha.16@itfac.mrt.ac.lk>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 7:37 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> This set converts io_uring to use secure anon_inodes (with a newly allocated
-> non-S_PRIVATE inode) for each individual instance. In addition to allowing LSM
-> modules to enforce policy using the inode context, it also enables
-> checkpoint/restore usecases by allowing mapping the VMA to the open fd in a
-> task. Offset is already available to determine rings mapped per region, so this
-> was the only missing piece in establishing region <-> io_uring instance mapping.
->
-> LSM tie up has been left out of this set for now.
+This fix "Alignment should match open parenthesis" checkpatch error.
 
-This brings to light something I have been trying to resolve for a
-little while now, but I have been finding it difficult to find the
-necessary time due to competing priorities at work and in my personal
-time.  While the patches in this patchset are a necessary dependency,
-there are other issues which remain unresolved but which are now
-public (although the problems were not buried very far in the first
-place).  Further complicating things on my end is that the system with
-my current work-in-progress patchset was taken offline two days ago
-and my office is under renovations :/
+Signed-off-by: "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+---
+ drivers/staging/greybus/gbphy.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Give me a day or two to get the patches off that system and I'll post
-them here and we can start the process of kicking around solutions
-that work for everyone.
-
+diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
+index 9fc5c47be9bd..13d319860da5 100644
+--- a/drivers/staging/greybus/gbphy.c
++++ b/drivers/staging/greybus/gbphy.c
+@@ -27,7 +27,7 @@ struct gbphy_host {
+ static DEFINE_IDA(gbphy_id);
+ 
+ static ssize_t protocol_id_show(struct device *dev,
+-				 struct device_attribute *attr, char *buf)
++				struct device_attribute *attr, char *buf)
+ {
+ 	struct gbphy_device *gbphy_dev = to_gbphy_dev(dev);
+ 
+@@ -221,7 +221,7 @@ void gb_gbphy_deregister_driver(struct gbphy_driver *driver)
+ EXPORT_SYMBOL_GPL(gb_gbphy_deregister_driver);
+ 
+ static struct gbphy_device *gb_gbphy_create_dev(struct gb_bundle *bundle,
+-				struct greybus_descriptor_cport *cport_desc)
++						struct greybus_descriptor_cport *cport_desc)
+ {
+ 	struct gbphy_device *gbphy_dev;
+ 	int retval;
 -- 
-paul moore
-www.paul-moore.com
+2.17.1
+
