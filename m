@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9383887E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1833887DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238772AbhESHAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:00:21 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4676 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238528AbhESHAR (ORCPT
+        id S238396AbhESG6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233136AbhESG6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:00:17 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlNty5L3jz1BP6k;
-        Wed, 19 May 2021 14:56:10 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 14:58:56 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 19 May 2021 14:58:55 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <kvalo@codeaurora.org>
-CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <tanghui20@huawei.com>, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 3/3] net: ti: remove leading spaces before tabs
-Date:   Wed, 19 May 2021 14:55:45 +0800
-Message-ID: <1621407345-10625-4-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621407345-10625-1-git-send-email-tanghui20@huawei.com>
-References: <1621407345-10625-1-git-send-email-tanghui20@huawei.com>
+        Wed, 19 May 2021 02:58:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A137C06175F;
+        Tue, 18 May 2021 23:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yR4HIbsOuCNiqwnMZ6oojYJI0qVF+NxXEr3UMzE7jxc=; b=sEYpWJdC/PkF58DyVztc24qcVs
+        PHCyER2RbURnpPPvO7FOu8JWqaQy7X55rAuUUhdF6Xb9nUaIC2O2bW8TjC70kU/JyQnHYkbrqzQPa
+        vEAib/TCCJXUY530heLmmpXuYXBt2uGdYCkEv8jyWm1qXDmme9Qwpn8zS0ZrJTB4rXiDmzmM6Cg1K
+        kShPU1otYba2SFM568CPgXlYR6vFYlrNXYvgo6jzF13GwooYkEUxrgvAEQnGaeSsETsPqxicxduRV
+        rr9zueqRHvX1CP3NoFIs5eWyEvSXxt7GWoDtXEZ6LFtS2Y8kiyUvgn8XGz8rDfbQ9M+f93YQLMywm
+        iF74YcMw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljG8A-00EhnQ-Vh; Wed, 19 May 2021 06:56:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8593D30021B;
+        Wed, 19 May 2021 08:56:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 65F4B2027BB36; Wed, 19 May 2021 08:56:33 +0200 (CEST)
+Date:   Wed, 19 May 2021 08:56:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        willy@infradead.org, masahiroy@kernel.org, michal.lkml@markovi.net
+Subject: Re: [tip: objtool/core] jump_label, x86: Allow short NOPs
+Message-ID: <YKS2oX/PCfp4NQ8V@hirez.programming.kicks-ass.net>
+References: <20210506194158.216763632@infradead.org>
+ <162082558708.29796.10992563428983424866.tip-bot2@tip-bot2>
+ <20210518195004.GD21560@worktop.programming.kicks-ass.net>
+ <20210518202443.GA48949@worktop.programming.kicks-ass.net>
+ <20210519004411.xpx4i6qcnfpyyrbj@treble>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi760-chm.china.huawei.com (10.1.198.146)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519004411.xpx4i6qcnfpyyrbj@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a few leading spaces before tabs and remove it by running the
-following commard:
+On Tue, May 18, 2021 at 07:44:11PM -0500, Josh Poimboeuf wrote:
 
-	$ find . -name '*.c' | xargs sed -r -i 's/^[ ]+\t/\t/'
-	$ find . -name '*.h' | xargs sed -r -i 's/^[ ]+\t/\t/'
+> I'm not exactly thrilled that objtool now has the power to easily brick
+> a system :-/  Is it really worth it?
 
-Cc: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/net/wireless/ti/wlcore/main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The way I look at it is that not running objtool is a bug either way,
+bricking a system is ofcourse a somewhat more drastic failure mode than
+missing ORC info for example, but neither are good.
 
-diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
-index 8509b98..e500b84 100644
---- a/drivers/net/wireless/ti/wlcore/main.c
-+++ b/drivers/net/wireless/ti/wlcore/main.c
-@@ -3242,8 +3242,8 @@ static void wl1271_op_configure_filter(struct ieee80211_hw *hw,
- 		 * the firmware filters so that all multicast packets are passed
- 		 * This is mandatory for MDNS based discovery protocols 
- 		 */
-- 		if (wlvif->bss_type == BSS_TYPE_AP_BSS) {
-- 			if (*total & FIF_ALLMULTI) {
-+		if (wlvif->bss_type == BSS_TYPE_AP_BSS) {
-+			if (*total & FIF_ALLMULTI) {
- 				ret = wl1271_acx_group_address_tbl(wl, wlvif,
- 							false,
- 							NULL, 0);
--- 
-2.8.1
+As to worth, about half the jump labels are shorter now, this reduces I$
+pressure on hot paths. Any little thing to offset the ever increasing
+bulk seems like a good thing to me. But yes, it would be nice if the
+assemblers wouldn't suck so bad and this wouldn't need objtool :/ But
+I've tried poking the tools guys and they don't really seem interested
+:-(
 
+Also, only dirty builds are affected here; clean builds (always
+recommended afaik, because dep trouble isn't unheard of) are fine.
+
+> Anyway, here's one way to fix it.  Maybe Masahiro has a better idea.
+
+Thanks! lemme go read up on this magic :-)
