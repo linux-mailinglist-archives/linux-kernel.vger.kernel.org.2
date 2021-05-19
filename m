@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF9438930C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5219B38930F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354843AbhESP4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348078AbhESP4X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:56:23 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A45C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:55:03 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id q2so10169874pfh.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=mwSqfCMAiP+PURiZIgOC/UkNyw6vkzqBNGed4Rp9ynU=;
-        b=iANFGf4JppO6R3fOhQhL/k70y/yBwMcjnXBWYENkz3ZBJ9r6IkDNYcn2RQi8qlNHor
-         JwuX53ihQdAZcgzky3lqSl4Nn4x1Ar1hK52ruWoyuS6bSMJYoknGbZThHoedI0VziBdJ
-         +8p8n8uwJY7I/WWI7e3P8mRmWLVs8Y9mt3B/esMhPhlg1CCRZ6KAeLDJvNjN8+NHkdML
-         Cv5sIta8zInfBzSsCot28HuCUHngzr2dSFGd04XnUIf4ZD2mxcyt/FG1b/HMl2DNXZum
-         BIp+BWRZzQa4H0MBRNDcvJOGM2z4STDu+RtMqmItqnvwb7YcknldhpqhPEfLTbl2QO/N
-         FwYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=mwSqfCMAiP+PURiZIgOC/UkNyw6vkzqBNGed4Rp9ynU=;
-        b=iLDQ9ETRF0LbfIAzMDgGnPlUcFheQvLeUzgTCl7LSeHahXAyJRaJ2AtyhXtBMAfYxV
-         sEWcKgMINeArx3PVt8PepuyfyXOFDXJJ6YTvb/y6gSeEtzC3Ta4nh7kFASHm2DpdzRj8
-         /1Z52rOACQ2V1eHoP2hE1+b2jKCXSaIhyJdW9odPovE7FlvuJYPkREO16sdc96WI0Jqj
-         o/nQtz3/B6ATNxmhnY5ivjcnibzsawvq+rocrMyv/kAzSV2fgBMlp3wjrbFN0AMi9oc/
-         Nz/K4OHqVKCVXbpn08AI18kMLkVSe6t2C5Z32Ycc/24x5NuPn6rx+IbU9Z4ZOwsKlLc1
-         tnSg==
-X-Gm-Message-State: AOAM531InGnFjveJRbHuQ+RC/WLriV/UW6fwdYlJfgqnaYYsQjL/wnue
-        Y31Z5/5bg9IVstryaJhqhOs=
-X-Google-Smtp-Source: ABdhPJwJl7QMZCtmIHpyb72rLKGG5d4H9TW1ivorGMCTugk1Eyje9xFIIG7+OUidEzNMQZoDkTYWQQ==
-X-Received: by 2002:aa7:8f37:0:b029:2db:551f:ed8e with SMTP id y23-20020aa78f370000b02902db551fed8emr11415084pfr.43.1621439703272;
-        Wed, 19 May 2021 08:55:03 -0700 (PDT)
-Received: from [192.168.1.2] ([103.196.78.23])
-        by smtp.gmail.com with ESMTPSA id 10sm9673847pgl.39.2021.05.19.08.54.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 08:55:02 -0700 (PDT)
-Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
- 'const' keyword
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Arve_Hj=c3=b8nnev=c3=a5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-References: <20210519081958.7223-1-hridayhegde1999@gmail.com>
- <YKTM8KmXI8bXUSqp@kroah.com> <0ddb894f-f66f-f31b-ef8a-0646e0a99b9f@gmail.com>
- <YKTfbdFhvM7fbpet@kroah.com> <08cf8110-cf84-8784-c919-eba27474b796@gmail.com>
- <20210519145105.GC1417@agape.jhs>
-From:   Hriday Hegde <hridayhegde1999@gmail.com>
-Message-ID: <8c325c0f-d63e-fcac-8073-e5c8acafb74a@gmail.com>
-Date:   Wed, 19 May 2021 21:24:57 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S1355000AbhESP4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:56:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348078AbhESP42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:56:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD32E611C2;
+        Wed, 19 May 2021 15:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621439709;
+        bh=FNORY5DBoHv91GsAYUPkB7clBXbWQdgXxlJpMEVxCV4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NyzdHH9l4zf8rZGW7ygTiV/En3ujZnBA6pRQrQSKLLMnJkk6E1LCvOgT3umzTfROO
+         v4LJ+YnYGH12lZLRFFwE5zCeKHZZ3A2xeTYGZ8ZUDp1tXLP4wuiNK8mfdW6k1lof0B
+         8+FGvQts1qm3MR/rzoJtZhgkJBDAzm0/H/S7DzgUCbhdO6nd3eI/kyrDZDS9k2FOI1
+         xLKfXyxpd5YtrF84qOYYNNRkqnK15C/KoycOUH//pNIqXehCAUJ4WvPWR5NJKSGOq2
+         Qm8bYXYYmLSQh5eX67ssSweHgmKckMmBhe56ESl/IeTPvG5IflhYqx9EMbqM39gQ8b
+         24SYD1SKthGyQ==
+Date:   Wed, 19 May 2021 17:55:03 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Pavel Machek <pavel@ucw.cz>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [PATCH v2 16/17] leds: leds-nuc: add support for changing the
+ ethernet type indicator
+Message-ID: <20210519175503.567e6ecc@thinkpad>
+In-Reply-To: <20210519162413.4feeab02@coco.lan>
+References: <cover.1621349813.git.mchehab+huawei@kernel.org>
+        <792598f4a1a3219b6517057c92559b0f0a95b419.1621349814.git.mchehab+huawei@kernel.org>
+        <20210519100253.49b155e9@thinkpad>
+        <20210519121812.4285b3ea@coco.lan>
+        <20210519141102.0161a9d9@thinkpad>
+        <20210519162413.4feeab02@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210519145105.GC1417@agape.jhs>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 19 May 2021 16:24:13 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
+> On other words, if no extra care is taken, it could have bad side 
+> effects at the machine's performance and affect system's latency,
+> eventually resulting on things like audio clicks and pops, if some
+> audio is playing while such calls keep happening.
 
-On 19-05-2021 20:21, Fabio Aiuto wrote:
-> Hi Hriday,
->
-> On Wed, May 19, 2021 at 08:06:14PM +0530, Hriday Hegde wrote:
->> On 19-05-2021 15:20, Greg Kroah-Hartman wrote:
->>> A: http://en.wikipedia.org/wiki/Top_post
->>> Q: Were do I find info about this thing called top-posting?
->>> A: Because it messes up the order in which people normally read text.
->>> Q: Why is top-posting such a bad thing?
->>> A: Top-posting.
->>> Q: What is the most annoying thing in e-mail?
->>>
->>> http://daringfireball.net/2007/07/on_top
->>>
->>> On Wed, May 19, 2021 at 03:00:08PM +0530, Hriday Hegde wrote:
->>>> I am not really sure how to do that and how to reflect it in the patch i followed what was taught in the Beginners course and it does not mention building. I know i need to test it out but is running 'patch -p1 < x.patch what i need to do?
->>> That does not build the code you changed, right?
->>>
->>> I'm sure whatever course you took, it did reference the fact that you
->>> need to ensure that your change actually works properly by the very
->>> least being able to be compiled correctly.  Please go over those
->>> instructions again.
->>>
->>> good luck!
->>>
->>> greg k-h
->> I am using the A Beginner's Guide to Linux Kernel Development (LFD103) by the linux foundation for this but i cant find any commands to as to build and test , the only way i tried compiling is with a custom Makefile and it didn't work, i've got a few errors so the const keyword might not work here since the variable is being written to.
->>
->>
-> try following this tutorial from scratch:
->
-> https://kernelnewbies.org/FirstKernelPatch
->
-> it's simply complete and helps a lot, from
-> gathering all tools needed to contribute to the
-> community to sending whole patchsets.
->
-> In your emails don't go over 80-100 character per line,
-> when you ask things or your mails will be difficult
-> to read.
->
-> thank you,
->
-> fabio
-Thank you for the guidance,  and will keep the char limit in
-mind.
+In general we want for every LED that is registered into kernel as a LED
+classdev to be possible to control the brightness by software. If the
+hardware supports it, it should be available. There is a _blocking
+.brightness_set_blocking callback for LEDs which may block when setting
+brightness.
+But even if we did not want to support software control, the transparent
+trigger offloading is still relevant. See below.
 
+> So, IMO, there's very little sense on trying to re-implement the
+> already existing hardware-controlled events via software emulation.
+
+We have a misunderstanding here, probably because of my bad
+explanation, I will try to clarify.
+
+> Sorry, but I guess I missed something here. Are you meaning to use
+> the code under "ledtrig-netdev.c" or something else? 
+> 
+> The code at ledtrig-netdev.c allocates a trigger data, initializes a
+> spin lock, initializes a delayed work, registers a notifier, sets a 
+> trigger interval, etc. It is perfectly fine for software-controlled
+> LEDs, but none of those will ever be used by the NUC driver, 
+> if it only implements HW blinking for the Ethernet interfaces
+> (and, as said before, there's little sense emulating it via software
+> on such devices).
+
+The idea of transparent offloading of LED triggers to HW (if HW
+supports it) is to have a consistent and unified interface.
+
+Currently we have a driver (leds-ns2 I think) which allows putting the
+LED into HW controlled mode (to blink on SATA disk activity). This is
+done by writing 1 into /sys/class/leds/<LED>/sata.
+
+In your proposal you are creating several sysfs files:
+  indicator
+  hdd_default (notice difference from "sata" sysfs file in leds-ns2
+               driver)
+  ethernet_type
+
+So the problem here is that this API is not unified. This is different
+from how leds-ns2 driver does this, and both of these solutions are
+wrong, because they are not extendable.
+
+The correct way to do this is via LED triggers, i.e. if I want a LED to
+blink on network activity, then I should use netdev trigger and nothing
+else. The netdev trigger should determine whether the underlying LED
+driver can set the LED to blink on network activity in HW. If HW
+supports it, netdev trigger should use this, otherwise netdev trigger
+should blink the LED in software.
+
+Currently the netdev trigger does the blinking in software only
+(code in "ledtrig-netdev.c" file). There is a WIP to add the necessary
+support for the netdev trigger to have the ability to offload blinking
+to HW. I will try to respin this WIP and send patches for review.
+
+Once netdev trigger supports this feature, you can implement your
+driver in this way. You can even make your driver depend on netdev
+trigger and set the specific LED into netdev triggering by default, and
+even forbidding anything else. But this is the corrent way to do this,
+instead of creating new sysfs API that is non-extendable.
+
+I am sorry that I did not explain this thoroughly in previous mails.
+Hopefully this explanation is better.
+
+Marek
+
+PS: This is relevant for disk activity as well.
