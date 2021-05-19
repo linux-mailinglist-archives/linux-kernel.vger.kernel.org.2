@@ -2,185 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C36388734
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CFD38873A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241444AbhESGDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:03:17 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:56917 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240886AbhESGDM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:03:12 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AX+uZmqyMOhl4y1NrYDX+KrPwEL1zdoMgy1kn?=
- =?us-ascii?q?xilNoH1uA6ilfqWV8cjzuiWbtN9vYhsdcLy7WZVoIkmskKKdg7NhXotKNTOO0A?=
- =?us-ascii?q?SVxepZnOnfKlPbexHWx6p00KdMV+xEAsTsMF4St63HyTj9P9E+4NTvysyVuds?=
- =?us-ascii?q?=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,311,1613404800"; 
-   d="scan'208";a="108457058"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 19 May 2021 14:01:50 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 6876F4D0BA86;
-        Wed, 19 May 2021 14:01:50 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 19 May 2021 14:01:41 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Wed, 19 May 2021 14:01:39 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
-CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>
-Subject: [PATCH v6 7/7] fs/xfs: Add dax dedupe support
-Date:   Wed, 19 May 2021 14:00:45 +0800
-Message-ID: <20210519060045.1051226-8-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210519060045.1051226-1-ruansy.fnst@fujitsu.com>
-References: <20210519060045.1051226-1-ruansy.fnst@fujitsu.com>
+        id S232799AbhESGFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:05:39 -0400
+Received: from mga11.intel.com ([192.55.52.93]:9625 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230452AbhESGFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 02:05:37 -0400
+IronPort-SDR: rzPtYo1SryYM/CJcJd69MkXmkB60fhWhOWIiBi1usEYtUcTdLu22Xzs5fU5QetXCKGRe3zSfBp
+ o02KC9PUBVFQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="197807631"
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="197807631"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 23:04:18 -0700
+IronPort-SDR: Ylgna6bP6ppFyurVtpIwaLwUdBnv3B+9ps6L8c9qsmmaXkhrbblOeV7tC8/5GUH+E57QrJK8+H
+ FtsO9MVbgVaQ==
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="439817278"
+Received: from dwchow-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.41.14])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 23:04:17 -0700
+Subject: Re: [RFC v2-fix-v1 1/1] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <3a7c0bba-cc43-e4ba-f7fe-43c8627c2fc2@intel.com>
+ <20210519055842.2048957-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <226b5406-510b-5f18-dc52-10b65bfb7551@linux.intel.com>
+Date:   Tue, 18 May 2021 23:04:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 6876F4D0BA86.AE3DE
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <20210519055842.2048957-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
-who are going to be deduped.  After that, call compare range function
-only when files are both DAX or not.
+Hi Dave,
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- fs/xfs/xfs_file.c    |  2 +-
- fs/xfs/xfs_inode.c   | 57 ++++++++++++++++++++++++++++++++++++++++++++
- fs/xfs/xfs_inode.h   |  1 +
- fs/xfs/xfs_reflink.c |  4 ++--
- 4 files changed, 61 insertions(+), 3 deletions(-)
+On 5/18/21 10:58 PM, Kuppuswamy Sathyanarayanan wrote:
+> Guests communicate with VMMs with hypercalls. Historically, these
+> are implemented using instructions that are known to cause VMEXITs
+> like vmcall, vmlaunch, etc. However, with TDX, VMEXITs no longer
+> expose guest state to the host.  This prevents the old hypercall
+> mechanisms from working. So to communicate with VMM, TDX
+> specification defines a new instruction called "tdcall".
+> 
+> In TDX based VM, since VMM is an untrusted entity, a intermediary
+> layer (TDX module) exists between host and guest to facilitate the
+> secure communication. And "tdcall" instruction  is used by the guest
+> to request services from TDX module. And a variant of "tdcall"
+> instruction (with specific arguments as defined by GHCI) is used by
+> the guest to request services from  VMM via the TDX module.
+> 
+> Implement common helper functions to communicate with the TDX Module
+> and VMM (using TDCALL instruction).
+>     
+> __tdx_hypercall()    - function can be used to request services from
+> 		       the VMM.
+> __tdx_module_call()  - function can be used to communicate with the
+> 		       TDX Module.
+> 
+> Also define two additional wrappers, tdx_hypercall() and
+> tdx_hypercall_out_r11() to cover common use cases of
+> __tdx_hypercall() function. Since each use case of
+> __tdx_module_call() is different, we don't need such wrappers for it.
+> 
+> Implement __tdx_module_call() and __tdx_hypercall() helper functions
+> in assembly.
+> 
+> Rationale behind choosing to use assembly over inline assembly are,
+> 
+> 1. Since the number of lines of instructions (with comments) in
+> __tdx_hypercall() implementation is over 70, using inline assembly
+> to implement it will make it hard to read.
+>     
+> 2. Also, since many registers (R8-R15, R[A-D]X)) will be used in
+> TDCALL operation, if all these registers are included in in-line
+> assembly constraints, some of the older compilers may not
+> be able to meet this requirement.
+> 
+> Also, just like syscalls, not all TDVMCALL/TDCALLs use cases need to
+> use the same set of argument registers. The implementation here picks
+> the current worst-case scenario for TDCALL (4 registers). For TDCALLs
+> with fewer than 4 arguments, there will end up being a few superfluous
+> (cheap) instructions.  But, this approach maximizes code reuse. The
+> same argument applies to __tdx_hypercall() function as well.
+> 
+> Current implementation of __tdx_hypercall() includes error handling
+> (ud2 on failure case) in assembly function instead of doing it in C
+> wrapper function. The reason behind this choice is, when adding support
+> for in/out instructions (refer to patch titled "x86/tdx: Handle port
+> I/O" in this series), we use alternative_io() to substitute in/out
+> instruction with  __tdx_hypercall() calls. So use of C wrappers is not
+> trivial in this case because the input parameters will be in the wrong
+> registers and it's tricky to include proper buffer code to make this
+> happen.
+> 
+> For registers used by TDCALL instruction, please check TDX GHCI
+> specification, sec 2.4 and 3.
+> 
+> https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
+> 
+> Originally-by: Sean Christopherson<seanjc@google.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 38d8eca05aee..bd5002d38df4 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -823,7 +823,7 @@ xfs_wait_dax_page(
- 	xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
- }
- 
--static int
-+int
- xfs_break_dax_layouts(
- 	struct inode		*inode,
- 	bool			*retry)
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 0369eb22c1bb..d5e2791969ba 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -3711,6 +3711,59 @@ xfs_iolock_two_inodes_and_break_layout(
- 	return 0;
- }
- 
-+static int
-+xfs_mmaplock_two_inodes_and_break_dax_layout(
-+	struct xfs_inode	*ip1,
-+	struct xfs_inode	*ip2)
-+{
-+	int			error, attempts = 0;
-+	bool			retry;
-+	struct page		*page;
-+	struct xfs_log_item	*lp;
-+
-+	if (ip1->i_ino > ip2->i_ino)
-+		swap(ip1, ip2);
-+
-+again:
-+	retry = false;
-+	/* Lock the first inode */
-+	xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
-+	error = xfs_break_dax_layouts(VFS_I(ip1), &retry);
-+	if (error || retry) {
-+		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-+		goto again;
-+	}
-+
-+	if (ip1 == ip2)
-+		return 0;
-+
-+	/* Nested lock the second inode */
-+	lp = &ip1->i_itemp->ili_item;
-+	if (lp && test_bit(XFS_LI_IN_AIL, &lp->li_flags)) {
-+		if (!xfs_ilock_nowait(ip2,
-+		    xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1))) {
-+			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-+			if ((++attempts % 5) == 0)
-+				delay(1); /* Don't just spin the CPU */
-+			goto again;
-+		}
-+	} else
-+		xfs_ilock(ip2, xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1));
-+	/*
-+	 * We cannot use xfs_break_dax_layouts() directly here because it may
-+	 * need to unlock & lock the XFS_MMAPLOCK_EXCL which is not suitable
-+	 * for this nested lock case.
-+	 */
-+	page = dax_layout_busy_page(VFS_I(ip2)->i_mapping);
-+	if (page && page_ref_count(page) != 1) {
-+		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
-+		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-+		goto again;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Lock two inodes so that userspace cannot initiate I/O via file syscalls or
-  * mmap activity.
-@@ -3725,6 +3778,10 @@ xfs_ilock2_io_mmap(
- 	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
- 	if (ret)
- 		return ret;
-+
-+	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2)))
-+		return xfs_mmaplock_two_inodes_and_break_dax_layout(ip1, ip2);
-+
- 	if (ip1 == ip2)
- 		xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
- 	else
-diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-index ca826cfba91c..2d0b344fb100 100644
---- a/fs/xfs/xfs_inode.h
-+++ b/fs/xfs/xfs_inode.h
-@@ -457,6 +457,7 @@ enum xfs_prealloc_flags {
- 
- int	xfs_update_prealloc_flags(struct xfs_inode *ip,
- 				  enum xfs_prealloc_flags flags);
-+int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
- int	xfs_break_layouts(struct inode *inode, uint *iolock,
- 		enum layout_break_reason reason);
- 
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 9a780948dbd0..ff308304c5cd 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1324,8 +1324,8 @@ xfs_reflink_remap_prep(
- 	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
- 		goto out_unlock;
- 
--	/* Don't share DAX file data for now. */
--	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-+	/* Don't share DAX file data with non-DAX file. */
-+	if (IS_DAX(inode_in) != IS_DAX(inode_out))
- 		goto out_unlock;
- 
- 	if (!IS_DAX(inode_in))
+I did send it as in-reply-to message id 3a7c0bba-cc43-e4ba-f7fe-43c8627c2fc2@intel.com (your
+last reply mail id), but for some reason its not detected as reply to original patch
+"[RFC v2 05/32] x86/tdx: Add __tdcall() and __tdvmcall() helper functions".
+
+I am not sure whats going on, but please review as reply to original patch.
+
 -- 
-2.31.1
-
-
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
