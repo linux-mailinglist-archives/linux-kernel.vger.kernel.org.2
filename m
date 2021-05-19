@@ -2,98 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F272388C24
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EF3388C28
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239889AbhESK4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 06:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhESK4a (ORCPT
+        id S240117AbhESK5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 06:57:34 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:43084 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229720AbhESK5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 06:56:30 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27BEC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 03:55:10 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso3164217wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 03:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VWNn8s6uxdHuGLdf6JViqfWGURn+ws2bD0QpSQyNXtA=;
-        b=jhQqXDTarQGD0aVvg49RzkHNeDpUc3l4ZBoOLERlayx2F0YWzBQtEfalRDdsri1NGS
-         JT7jNemYcq4vNJgJ92e14y+frxutWc74ciybLGe6CMTCZMmyf4jksDo+d5IbGQUhVD59
-         ayqsBqeS2wrt4P6ONmJumXQOZnLGGeVzVZRt6OespfiDCP/SarW3prBPo9OmsNQVG63x
-         O3s4TYSHTbFoKStHWonTysh2csMfC5zHUzTWVAK0zayLngamrlErIO5HsOonSutQuRD2
-         2rlxbOlQjy7HzUTctbsYzsU8VX1XcSd1YtVDMvxU6SXitpoaukCf0Fy4YAP40zncV2bY
-         AQKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VWNn8s6uxdHuGLdf6JViqfWGURn+ws2bD0QpSQyNXtA=;
-        b=FjCMeoz+Gm1/OO24Tykyh00ShFL1fy2RW+/ddq4nEs93ILZa91nKZZ4MLxIz8D06vE
-         B3ysqE/Rl+ydod8Q7SCQtXu9xSz1Mso8y5AWyZjbLGWz4zI7cq9fiJeEXMEbxQRFIYe3
-         soHjZ8lGCZwN7az4OWh8i7J0Tm87CKRZJxExOnzIZvG5JXn30V9Z+72m2OW0XJnV/C4k
-         G+/oQuxYvIAD1idPhwRu81nu5yfoi+KEeVpd8zfARJTRLwmTyR6Y+1wZC+pIwSVA/prC
-         mPWBXADuA/E2zoq4IXVNR0KeEh62F7BRqAUvNnUn67Wn2I64IgiKEulV6Wh5ZABreZYi
-         PlEg==
-X-Gm-Message-State: AOAM532mNhVvLEQs6tOq9VSfiCUkMXoLA6SBsy66k72S/Xr2Vqkbba1e
-        wTxnT3BtPjYOJrb2QXdzF/mOxTHzqt7QgQ==
-X-Google-Smtp-Source: ABdhPJyD186uI/OTMxMaOaSteeEZiIXUIemv+KZ0cy0nRD5LukptML6Mqe+WbVHyuceCrTalwt1iqQ==
-X-Received: by 2002:a1c:3cd4:: with SMTP id j203mr9633589wma.25.1621421709628;
-        Wed, 19 May 2021 03:55:09 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j7sm20660467wmi.21.2021.05.19.03.55.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 03:55:09 -0700 (PDT)
-Date:   Wed, 19 May 2021 11:55:07 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mfd: mt6397: keys: use named IRQs instead of index
-Message-ID: <20210519105507.GB2403908@dell>
-References: <20210506094116.638527-1-mkorpershoek@baylibre.com>
- <20210506094116.638527-3-mkorpershoek@baylibre.com>
+        Wed, 19 May 2021 06:57:33 -0400
+X-UUID: 7fe39ef1c05a4eee9c028761d6bc8ecf-20210519
+X-UUID: 7fe39ef1c05a4eee9c028761d6bc8ecf-20210519
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1392854785; Wed, 19 May 2021 18:56:11 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 19 May 2021 18:56:10 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 19 May 2021 18:56:10 +0800
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Baoquan He <bhe@redhat.com>, Kazu <k-hagio-ab@nec.com>
+Subject: [PATCH v2] mm/sparse: fix check_usemap_section_nr warnings
+Date:   Wed, 19 May 2021 18:56:08 +0800
+Message-ID: <20210519105608.23806-1-miles.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506094116.638527-3-mkorpershoek@baylibre.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 06 May 2021, Mattijs Korpershoek wrote:
+I see a "virt_to_phys used for non-linear address" warning from
+check_usemap_section_nr() on arm64 platforms.
 
-> Some pmics of the mt6397 family (such as MT6358), have two IRQs per
-> physical key: one for press event, another for release event.
-> 
-> The mtk-pmic-keys driver assumes that each key only has one
-> IRQ. The key index and the RES_IRQ resource index have a 1/1 mapping.
-> 
-> This won't work for MT6358, as we have multiple resources (2) for one key.
-> 
-> To prepare mtk-pmic-keys to support MT6358, retrieve IRQs by name
-> instead of by index.
-> 
-> Note: The keys_resources are not part of the device-tree bindings so
-> this won't break any DT schemas.
-> 
-> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-> ---
->  drivers/mfd/mt6397-core.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+In current implementation of NODE_DATA, if CONFIG_NEED_MULTIPLE_NODES=y,
+pglist_data is dynamically allocated and assigned to node_data[].
 
-Applied, thanks.
+For example, in arch/arm64/include/asm/mmzone.h:
+extern struct pglist_data *node_data[];
+\#define NODE_DATA(nid)          (node_data[(nid)])
 
+If CONFIG_NEED_MULTIPLE_NODES=n, pglist_data is defined as a global
+variable named "contig_page_data".
+
+For example, in include/linux/mmzone.h:
+extern struct pglist_data contig_page_data;
+\#define NODE_DATA(nid)          (&contig_page_data)
+
+If CONFIG_DEBUG_VIRTUAL is not enabled, __pa() can handle both
+dynamically allocated linear addresses and symbol addresses.
+However, if (CONFIG_DEBUG_VIRTUAL=y && CONFIG_NEED_MULTIPLE_NODES=n)
+,we can see the "virt_to_phys used for non-linear address"
+warning because that &contig_page_data is not a linear address on arm64.
+
+To fix it, create a small function to handle both translation.
+
+Warning message:
+[    0.000000] ------------[ cut here ]------------
+[    0.000000] virt_to_phys used for non-linear address: (____ptrval____) (contig_page_data+0x0/0x1c00)
+[    0.000000] WARNING: CPU: 0 PID: 0 at arch/arm64/mm/physaddr.c:15 __virt_to_phys+0x58/0x68
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G        W         5.13.0-rc1-00074-g1140ab592e2e #3
+[    0.000000] Hardware name: linux,dummy-virt (DT)
+[    0.000000] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO BTYPE=--)
+[    0.000000] pc : __virt_to_phys+0x58/0x68
+[    0.000000] lr : __virt_to_phys+0x54/0x68
+[    0.000000] sp : ffff800011833e70
+[    0.000000] x29: ffff800011833e70 x28: 00000000418a0018 x27: 0000000000000000
+[    0.000000] x26: 000000000000000a x25: ffff800011b70000 x24: ffff800011b70000
+[    0.000000] x23: fffffc0001c00000 x22: ffff800011b70000 x21: 0000000047ffffb0
+[    0.000000] x20: 0000000000000008 x19: ffff800011b082c0 x18: ffffffffffffffff
+[    0.000000] x17: 0000000000000000 x16: ffff800011833bf9 x15: 0000000000000004
+[    0.000000] x14: 0000000000000fff x13: ffff80001186a548 x12: 0000000000000000
+[    0.000000] x11: 0000000000000000 x10: 00000000ffffffff x9 : 0000000000000000
+[    0.000000] x8 : ffff8000115c9000 x7 : 737520737968705f x6 : ffff800011b62ef8
+[    0.000000] x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
+[    0.000000] x2 : 0000000000000000 x1 : ffff80001159585e x0 : 0000000000000058
+[    0.000000] Call trace:
+[    0.000000]  __virt_to_phys+0x58/0x68
+[    0.000000]  check_usemap_section_nr+0x50/0xfc
+[    0.000000]  sparse_init_nid+0x1ac/0x28c
+[    0.000000]  sparse_init+0x1c4/0x1e0
+[    0.000000]  bootmem_init+0x60/0x90
+[    0.000000]  setup_arch+0x184/0x1f0
+[    0.000000]  start_kernel+0x78/0x488
+[    0.000000] ---[ end trace f68728a0d3053b60 ]---
+
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Kazu <k-hagio-ab@nec.com>
+Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+
+
+---
+
+Change since v1:
+1) change "kzmalloc" to "dynamically allocated"
+2) describe the issue in detail
+
+
+---
+ mm/sparse.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/mm/sparse.c b/mm/sparse.c
+index b2ada9dc00cb..55c18aff3e42 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -344,6 +344,15 @@ size_t mem_section_usage_size(void)
+ 	return sizeof(struct mem_section_usage) + usemap_size();
+ }
+ 
++static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
++{
++#ifndef CONFIG_NEED_MULTIPLE_NODES
++	return __pa_symbol(pgdat);
++#else
++	return __pa(pgdat);
++#endif
++}
++
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+ static struct mem_section_usage * __init
+ sparse_early_usemaps_alloc_pgdat_section(struct pglist_data *pgdat,
+@@ -362,7 +371,7 @@ sparse_early_usemaps_alloc_pgdat_section(struct pglist_data *pgdat,
+ 	 * from the same section as the pgdat where possible to avoid
+ 	 * this problem.
+ 	 */
+-	goal = __pa(pgdat) & (PAGE_SECTION_MASK << PAGE_SHIFT);
++	goal = pgdat_to_phys(pgdat) & (PAGE_SECTION_MASK << PAGE_SHIFT);
+ 	limit = goal + (1UL << PA_SECTION_SHIFT);
+ 	nid = early_pfn_to_nid(goal >> PAGE_SHIFT);
+ again:
+@@ -390,7 +399,7 @@ static void __init check_usemap_section_nr(int nid,
+ 	}
+ 
+ 	usemap_snr = pfn_to_section_nr(__pa(usage) >> PAGE_SHIFT);
+-	pgdat_snr = pfn_to_section_nr(__pa(pgdat) >> PAGE_SHIFT);
++	pgdat_snr = pfn_to_section_nr(pgdat_to_phys(pgdat) >> PAGE_SHIFT);
+ 	if (usemap_snr == pgdat_snr)
+ 		return;
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.18.0
+
