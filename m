@@ -2,142 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0A238998A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A252389992
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhESXBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESXBH (ORCPT
+        id S229748AbhESXGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:06:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11158 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229465AbhESXGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:01:07 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8167EC061574;
-        Wed, 19 May 2021 15:59:47 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id k4so3352133qkd.0;
-        Wed, 19 May 2021 15:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FL4A84RnGL9eXsLReJXIYBVZb+CRyoUol9pEHr5O5qY=;
-        b=Dvq29lHaaHrwBS8AFWZSoJCdqQsSj5w0bo8XghtBLAZTBjrQf4RXb+AY3jd8EtUP94
-         KVMw8BwVB+j9N56QZ2bUXRwSkx94v24XrW5t9yTBPEk2Eg1E/sjej0T/YJ+UN8/hVyf2
-         eZl8fwg+VCSsuIKKXAIvKGBmJaQlJRJsra5j8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FL4A84RnGL9eXsLReJXIYBVZb+CRyoUol9pEHr5O5qY=;
-        b=f2MF1XTJ4TP4mVLdJEJH4ivR1W0r5aA1UerFQf/J8SNX7TmWcT2l91ZFSKbEZZlsym
-         YfL34ypIXdd5Qf66VIDTmbORlUUsLQbu6k6Uivz/7x2bu3tl8UjUMDqI/nDo91t1zC0o
-         h0rJUIkNq67EMpULB/yGKMV621MdNuHbMGfCPhIfzsv7w5ld8R14uKdhY4WPHCj2otZ3
-         XZIrb05PsJdfuVx/jx7ZQXO6CTGfSJl2cejQBpuZB0crrtZTkxogyijNLWXz2bfxE/VF
-         Kfv6g09a05eEmIUVqqn4gpqys1jslJm9RZp9x7nQpvgGl8QMp+jLxLnBcW8glvfTp79m
-         fGxA==
-X-Gm-Message-State: AOAM531Hkzp0ZzHXBqzdA3mKlppLPticZRmeD9Izg1JszLY9n2qzPh/y
-        h1+j7OrgVhymPXhS7aHY+DBz6Jy6HSRBeb0sYqg=
-X-Google-Smtp-Source: ABdhPJySEJL2SSIhxhurMKhfYZmnqZskBqtE2XkdoVEbVmUuDFR04avlb3/LIVd+WzCgLE4Ok6LLOCaBZg/S+B/hSKw=
-X-Received: by 2002:a37:424c:: with SMTP id p73mr1926220qka.465.1621465186642;
- Wed, 19 May 2021 15:59:46 -0700 (PDT)
+        Wed, 19 May 2021 19:06:10 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JN4GCd186042;
+        Wed, 19 May 2021 19:04:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=3oZoJnV+ZwIQFmrVajD07gyKVPdr10L1fejTAMNd/gE=;
+ b=Fwan1k7o3TbAS/PIMYVXNHs4lmNEamPgOAfcnUzFErXpa/ZKAuotca71sWvPhhGvGomP
+ oAyyo/pMasX2oMCq/M8MPEvAs+EK4+u5QY+rhBaBGCN8DtUfwHyUYzf9iDOHWJKKRZUZ
+ +vlSY5q2L6ihxZS5qXKvbV4z3f4b8E1C4xKhH0Wz4sZR0qEfYXk2tYXntYixvJbmZrwl
+ V+y1sI95QtboysmBexV5q6h91AqNJwvb3FKom6s94yLfybLzaTaTwJ9NoWF3RzIamSPv
+ ug/Rgj8ElZshBF0gq8BWt95cQt5F7wCH9Vh0wfiy8Wwy907iVZN/6ENrjp+XDBbWNHpi 1A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38nbr58bw3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 19:04:49 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JN4Oxg186580;
+        Wed, 19 May 2021 19:04:48 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38nbr58bvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 19:04:48 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JN3wVu007466;
+        Wed, 19 May 2021 23:04:48 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03dal.us.ibm.com with ESMTP id 38j5x9ugmc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 23:04:47 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JN4lre11994078
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 May 2021 23:04:47 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 10C40AC060;
+        Wed, 19 May 2021 23:04:47 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72455AC05F;
+        Wed, 19 May 2021 23:04:46 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 19 May 2021 23:04:46 +0000 (GMT)
+Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
+ <20210519153921.804887-3-akrowiak@linux.ibm.com>
+ <20210519161610.GO1002214@nvidia.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <8c93c29a-e223-ac9a-5b54-7329587084c9@linux.ibm.com>
+Date:   Wed, 19 May 2021 19:04:46 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210519080436.18975-1-jamin_lin@aspeedtech.com> <20210519080436.18975-2-jamin_lin@aspeedtech.com>
-In-Reply-To: <20210519080436.18975-2-jamin_lin@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 19 May 2021 22:59:34 +0000
-Message-ID: <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of AST2600
-To:     Jamin Lin <jamin_lin@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        Troy Lee <troy_lee@aspeedtech.com>, steven_lee@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210519161610.GO1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: k0r9BPM-w5013gCD3UgRqdiTrOWkMx0w
+X-Proofpoint-ORIG-GUID: ofqubM1AXwJBUkRUos-iPykRpiaaiN9a
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-19_10:2021-05-19,2021-05-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=940 mlxscore=0
+ bulkscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ malwarescore=0 impostorscore=0 clxscore=1015 spamscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105190143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 at 08:05, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
->
-> The register definition between AST2600 A2 and A3 is different.
-> This patch avoid new registers definition of AST2600 to use
-> this driver. We will submit the path for the new registers
-> definition of AST2600.
 
-The AST2600 v9 datasheet says that bit 2 selects between old and new
-register sets, and that the old register set is the default.
 
-Has the default changed for the A3?, and the datasheet is incorrect?
+On 5/19/21 12:16 PM, Jason Gunthorpe wrote:
+> On Wed, May 19, 2021 at 11:39:21AM -0400, Tony Krowiak wrote:
+>
+>> @@ -287,13 +289,17 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+>>   	if (!(vcpu->arch.sie_block->eca & ECA_AIV))
+>>   		return -EOPNOTSUPP;
+>>   
+>> -	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
+>> -	mutex_lock(&matrix_dev->lock);
+>> +	rcu_read_lock();
+>> +	pqap_module_hook = rcu_dereference(vcpu->kvm->arch.crypto.pqap_hook);
+>> +	if (!pqap_module_hook) {
+>> +		rcu_read_unlock();
+>> +		goto set_status;
+>> +	}
+>>   
+>> -	if (!vcpu->kvm->arch.crypto.pqap_hook)
+>> -		goto out_unlock;
+>> -	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
+>> -				   struct ap_matrix_mdev, pqap_hook);
+>> +	matrix_mdev = pqap_module_hook->data;
+>> +	rcu_read_unlock();
+>> +	mutex_lock(&matrix_dev->lock);
+> The matrix_mdev pointer was extracted from the pqap_module_hook,
+> but now there is nothing protecting it since the rcu was dropped and
+> it gets freed in vfio_ap_mdev_remove.
 
-Does the A3 still support the old register set?
+Therein lies the rub. We can't hold the rcu_read_lock across the
+entire time that the interception is being processed because of
+wait conditions in the interception handler. Regardless of whether
+the pointer to the matrix_mdev is retrieved as the container of
+or extracted from the pqap_hook, there is nothing protecting it
+and there appears to be no way to do so using RCU.
+>
+> And, again, module locking doesn't prevent vfio_ap_mdev_remove() from
+> being called. None of these patches should be combining module locking
+> with RCU.
+
+Is there any other way besides user interaction with the mdev's
+sysfs remove interface for the remove callback to get invoked?
+If I try to remove the mdev using the sysfs interface while the
+mdev fd is still open by the guest, the remove hangs until the
+fd is closed. That being the case, the mdev release callback
+will get invoked prior to the remove callback being invoked which
+renders this whole debate moot. What am I missing here?
 
 >
-> Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
-> ---
->  drivers/i2c/busses/i2c-aspeed.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-> index 724bf30600d6..007309077d9f 100644
-> --- a/drivers/i2c/busses/i2c-aspeed.c
-> +++ b/drivers/i2c/busses/i2c-aspeed.c
-> @@ -19,14 +19,20 @@
->  #include <linux/irqchip/chained_irq.h>
->  #include <linux/irqdomain.h>
->  #include <linux/kernel.h>
-> +#include <linux/mfd/syscon.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
->  #include <linux/of_irq.h>
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
-> +#include <linux/regmap.h>
->  #include <linux/reset.h>
->  #include <linux/slab.h>
->
-> +/* I2C Global Registers */
-> +/* 0x0c : I2CG Global Control Register (AST2500)  */
-> +#define ASPEED_I2CG_GLOBAL_CTRL_REG                    0x0c
-> +
->  /* I2C Register */
->  #define ASPEED_I2C_FUN_CTRL_REG                                0x00
->  #define ASPEED_I2C_AC_TIMING_REG1                      0x04
-> @@ -973,6 +979,22 @@ static int aspeed_i2c_probe_bus(struct platform_device *pdev)
->         struct resource *res;
->         int irq, ret;
->
-> +       if (of_device_is_compatible(pdev->dev.of_node,
-> +                                   "aspeed,ast2600-i2c-bus")) {
-> +               u32 global_ctrl;
-> +               struct regmap *gr_regmap;
-> +
-> +               gr_regmap = syscon_regmap_lookup_by_compatible("aspeed,ast2600-i2c-global");
-> +
-> +               if (IS_ERR(gr_regmap)) {
-> +                       ret = PTR_ERR(gr_regmap);
-> +               } else {
-> +                       regmap_read(gr_regmap, ASPEED_I2CG_GLOBAL_CTRL_REG, &global_ctrl);
-> +                       if (global_ctrl & BIT(2))
-> +                               return -EIO;
-> +               }
-> +       }
-> +
->         bus = devm_kzalloc(&pdev->dev, sizeof(*bus), GFP_KERNEL);
->         if (!bus)
->                 return -ENOMEM;
-> --
-> 2.17.1
->
+> Jason
+
