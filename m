@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BAA388F0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EE1388F15
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353672AbhESN2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:28:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:38642 "EHLO foss.arm.com"
+        id S1353683AbhESNaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:30:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239739AbhESN2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:28:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 799E731B;
-        Wed, 19 May 2021 06:26:43 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1AF63F73B;
-        Wed, 19 May 2021 06:26:40 -0700 (PDT)
-Subject: Re: [PATCH v12 6/8] arm64: kvm: Expose KVM_ARM_CAP_MTE
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-7-steven.price@arm.com> <87tun1tg1l.wl-maz@kernel.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <4e1fc7b7-ea8c-a87c-9177-d9e03ff96cb8@arm.com>
-Date:   Wed, 19 May 2021 14:26:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239739AbhESNaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:30:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D0A360FF2;
+        Wed, 19 May 2021 13:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621430922;
+        bh=ONdKLuddvYBQCu8qUCIv/OHdtVAvPsIV/PNuhxIh0eo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cYhrtPhdTEbgDAxSiB3tsOTpAtQ2fAfpk1W5aCinPvDyLYVb+bsSMQjHoS7Zo7+rC
+         u1TMfm3tJsROioc8855grOEfzhCfToIiWUBZpEMl3GyUTtBmOy68yw13C6523jT9Z4
+         Ji+5//hCuBSJySNbxDDHcwRD10oG4p+/2sXw/WL2H0uac6hf2NjdiA1O0tHba4aFHq
+         dNDF5wqPcssbVgZyGngCSq7rjbJTCjHKL4VBj/KeA5anUYpGCeQGbvoWt9fsmDZNo+
+         aA4hmRWxHXMHZxwNthwd5/Sw8mO3/pRrLbGCSGTXT+vHW3EN0axKDWCgwO8QsPTE+t
+         OWfmMComJckUg==
+From:   Chao Yu <chao@kernel.org>
+To:     colyli@suse.de
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] bcache: fix error info in register_bcache()
+Date:   Wed, 19 May 2021 21:28:23 +0800
+Message-Id: <20210519132823.14920-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-In-Reply-To: <87tun1tg1l.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/05/2021 18:40, Marc Zyngier wrote:
-> On Mon, 17 May 2021 13:32:37 +0100,
-> Steven Price <steven.price@arm.com> wrote:
->>
->> It's now safe for the VMM to enable MTE in a guest, so expose the
->> capability to user space.
->>
->> Signed-off-by: Steven Price <steven.price@arm.com>
->> ---
->>  arch/arm64/kvm/arm.c      | 9 +++++++++
->>  arch/arm64/kvm/sys_regs.c | 3 +++
->>  2 files changed, 12 insertions(+)
->>
->> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> index 1cb39c0803a4..e89a5e275e25 100644
->> --- a/arch/arm64/kvm/arm.c
->> +++ b/arch/arm64/kvm/arm.c
->> @@ -93,6 +93,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->>  		r = 0;
->>  		kvm->arch.return_nisv_io_abort_to_user = true;
->>  		break;
->> +	case KVM_CAP_ARM_MTE:
->> +		if (!system_supports_mte() || kvm->created_vcpus)
->> +			return -EINVAL;
->> +		r = 0;
->> +		kvm->arch.mte_enabled = true;
-> 
-> As far as I can tell from the architecture, this isn't valid for a
-> 32bit guest.
+From: Chao Yu <yuchao0@huawei.com>
 
-Indeed, however the MTE flag is a property of the VM not of the vCPU.
-And, unless I'm mistaken, it's technically possible to create a VM where
-some CPUs are 32 bit and some 64 bit. Not that I can see much use of a
-configuration like that.
+In register_bcache(), there are several cases we didn't set
+correct error info (return value and/or error message):
+- if kzalloc() fails, it needs to return ENOMEM and print
+"cannot allocate memory";
+- if register_cache() fails, it's better to propagate its
+return value rather than using default EINVAL.
 
-Steve
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ drivers/md/bcache/super.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index bea8c4429ae8..0a20ccf5a1db 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -2620,8 +2620,11 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
+ 	if (SB_IS_BDEV(sb)) {
+ 		struct cached_dev *dc = kzalloc(sizeof(*dc), GFP_KERNEL);
+ 
+-		if (!dc)
++		if (!dc) {
++			ret = -ENOMEM;
++			err = "cannot allocate memory";
+ 			goto out_put_sb_page;
++		}
+ 
+ 		mutex_lock(&bch_register_lock);
+ 		ret = register_bdev(sb, sb_disk, bdev, dc);
+@@ -2632,11 +2635,15 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
+ 	} else {
+ 		struct cache *ca = kzalloc(sizeof(*ca), GFP_KERNEL);
+ 
+-		if (!ca)
++		if (!ca) {
++			ret = -ENOMEM;
++			err = "cannot allocate memory";
+ 			goto out_put_sb_page;
++		}
+ 
+ 		/* blkdev_put() will be called in bch_cache_release() */
+-		if (register_cache(sb, sb_disk, bdev, ca) != 0)
++		ret = register_cache(sb, sb_disk, bdev, ca);
++		if (ret)
+ 			goto out_free_sb;
+ 	}
+ 
+-- 
+2.22.1
+
