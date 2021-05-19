@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5FD3890D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A193890DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347726AbhESOcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S1347762AbhESOcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347661AbhESOcC (ORCPT
+        with ESMTP id S1347746AbhESOcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:32:02 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57DA9C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:30:43 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d78so9153887pfd.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:30:43 -0700 (PDT)
+        Wed, 19 May 2021 10:32:05 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F3FC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:30:46 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id b13so6276295pfv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:30:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=R+qFAFfMoc0Yucgu6eUD8mX568+obmb19D6ELlcRmjM=;
-        b=iR+E7LPFefwqCp1itb4p/NP06ls686VNt/KWEA8X2O02aXe8wy/Oe1MZ1x8deyZ6hN
-         ogf0kcoaqIV+x3AQPvXw2xzAlj4yUk8fZ8/bafIlyhT5HI81p4B0sulvkmO1RHO4TQJU
-         kn+P+N8ADTLtpTkrYBYBDUOgYwAXQRZw5ec2g=
+        bh=6kfOa099pLULt6jl0OFN8u1UODEiizY8ZTmqttw30oY=;
+        b=YYJFq2dgWieXlD+hnduTh0WtZyYeZa2EiPeTpa57lwQx9mTGzA66B6NQbzCbtqWUL9
+         ZaZgHHENzsJ0sk17VTO6z5PDzEw/YKN4yBDtnWhcJkNm320t/00ciQPP/0RXOtEHC8yU
+         Q+dm28F+rxbG953RMEJ0ptfP9zNQdFsJklcqI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=R+qFAFfMoc0Yucgu6eUD8mX568+obmb19D6ELlcRmjM=;
-        b=NEBWGE+oQqJJDTHB0FQiIU+K5BGuYKkStplZgqcxnbvlpLsipnSlyqeZimJ5Y8GM36
-         HF58LjvTkcYAnMw8SdBe253KCigxLo7AaGKtXmNfPLlGqYBiTV+UlWiLOrNd+M0HOLGN
-         q9E/sFwl74AOoPPqSxvD48FZeSFLZuqGKzPXa56fIDNPqOxL7WduNa7JAnreQ2/S6Nn5
-         YSF4XTtPyrF9dEChNvmqq0PA+bPyfx1xc6ohouDp2uYmrto7JL0hTQXaPP4L6osqI7e9
-         487OvFZ3JNCOUHc8W6QaSwvU3Od6tkhV/xGWWN3B213HrzTcQxFUUkC24MHjjLg1Gber
-         krkw==
-X-Gm-Message-State: AOAM533lZXWZjRqV5qGYNwQIcKRzAbjBYYyiS6j7yFL/65yJWwHcEn9H
-        M5v+QzaP1LpJF81C0OtUnj7kUg==
-X-Google-Smtp-Source: ABdhPJzE9m0ahz3wmyrv0dEBy0FOLET41SMlFMBOWhO5fu66APdGn1l+PQfBNwdSBI2gkwx01qJj1g==
-X-Received: by 2002:a05:6a00:134b:b029:2bf:2c30:ebbd with SMTP id k11-20020a056a00134bb02902bf2c30ebbdmr11118765pfu.74.1621434642909;
-        Wed, 19 May 2021 07:30:42 -0700 (PDT)
+        bh=6kfOa099pLULt6jl0OFN8u1UODEiizY8ZTmqttw30oY=;
+        b=tI9UpPSGRXVosrR/rNxRctSDPIstE8/iqaqfC4ESwQO7zF3ZUD7PEm4uh9r/I6SRZL
+         nbH9gmf9+HmmE0ZC++FWMCeGmDirGJ+8bdKuH9lWQsZHaph/8fIqaoPFGgiK6dGZhIj+
+         vRX77teCz6Ic4bAxsTygiu6iIbq/6AVkktyqcSGzTAp7LoaiI7GCsTzXUGKMbTaHGYZ0
+         SlUlUhV7W+KTiCBY/CvUnfN30MwGMf9Bfgx+DQnpqyfdvvZTRzRF2M+efZX3goFwValn
+         CPnxF1z/l7MojtbGRRpL+1Or3N7wUGrxXLrVvQqozpe2t9xxsRpJkE8m81n0n9h1FTnS
+         eIwQ==
+X-Gm-Message-State: AOAM533Lw5g8i/w4MLEID9cu++pn4g/l3WnfiQmIlMCfFnggHf6qhc/L
+        liCwKchDVUxhdAko9q8luPZ7fA==
+X-Google-Smtp-Source: ABdhPJx1JoTLdOlAqO91SpwdnBsgYrywh1y4pWh6k1KrKQ93xhy72ahDDweSpIwRMcOnbAGct9eP6w==
+X-Received: by 2002:a63:7e13:: with SMTP id z19mr11116767pgc.184.1621434645624;
+        Wed, 19 May 2021 07:30:45 -0700 (PDT)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:87ab:ff82:1544:697])
-        by smtp.gmail.com with ESMTPSA id 3sm14337661pff.132.2021.05.19.07.30.40
+        by smtp.gmail.com with ESMTPSA id 3sm14337661pff.132.2021.05.19.07.30.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:30:42 -0700 (PDT)
+        Wed, 19 May 2021 07:30:45 -0700 (PDT)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -55,9 +55,9 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v5 02/14] media: mtk-vcodec: vdec: use helpers in VIDIOC_(TRY_)DECODER_CMD
-Date:   Wed, 19 May 2021 23:29:59 +0900
-Message-Id: <20210519143011.1175546-3-acourbot@chromium.org>
+Subject: [PATCH v5 03/14] media: mtk-vcodec: vdec: clamp OUTPUT resolution to hardware limits
+Date:   Wed, 19 May 2021 23:30:00 +0900
+Message-Id: <20210519143011.1175546-4-acourbot@chromium.org>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 In-Reply-To: <20210519143011.1175546-1-acourbot@chromium.org>
 References: <20210519143011.1175546-1-acourbot@chromium.org>
@@ -67,38 +67,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use the dedicated helpers to make sure we get the expected
-behavior and remove redundant code.
+Calling S_FMT or TRY_FMT on the OUTPUT queue should adjust the
+resolution to the limits supported by the hardware. Until now this was
+only done on the CAPTURE queue, which could make clients believe that
+unsupported resolutions can be used when they set the coded size on the
+OUTPUT queue.
+
+In the case of the stateless decoder, the problem was even bigger since
+subsequently calling G_FMT on the CAPTURE queue would result in the
+unclamped resolution being returned, further inducing the client into
+error.
 
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-index 8df8bcfe5e9c..1a633b485a69 100644
+index 1a633b485a69..58e521096b94 100644
 --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
 +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-@@ -484,18 +484,7 @@ static void mtk_vdec_worker(struct work_struct *work)
- static int vidioc_try_decoder_cmd(struct file *file, void *priv,
- 				struct v4l2_decoder_cmd *cmd)
- {
--	switch (cmd->cmd) {
--	case V4L2_DEC_CMD_STOP:
--	case V4L2_DEC_CMD_START:
--		if (cmd->flags != 0) {
--			mtk_v4l2_err("cmd->flags=%u", cmd->flags);
--			return -EINVAL;
--		}
--		break;
--	default:
--		return -EINVAL;
--	}
--	return 0;
-+	return v4l2_m2m_ioctl_try_decoder_cmd(file, priv, cmd);
- }
+@@ -649,19 +649,19 @@ static int vidioc_try_fmt(struct v4l2_format *f,
  
+ 	pix_fmt_mp->field = V4L2_FIELD_NONE;
  
++	pix_fmt_mp->width = clamp(pix_fmt_mp->width,
++				MTK_VDEC_MIN_W,
++				MTK_VDEC_MAX_W);
++	pix_fmt_mp->height = clamp(pix_fmt_mp->height,
++				MTK_VDEC_MIN_H,
++				MTK_VDEC_MAX_H);
++
+ 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+ 		pix_fmt_mp->num_planes = 1;
+ 		pix_fmt_mp->plane_fmt[0].bytesperline = 0;
+ 	} else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+ 		int tmp_w, tmp_h;
+ 
+-		pix_fmt_mp->height = clamp(pix_fmt_mp->height,
+-					MTK_VDEC_MIN_H,
+-					MTK_VDEC_MAX_H);
+-		pix_fmt_mp->width = clamp(pix_fmt_mp->width,
+-					MTK_VDEC_MIN_W,
+-					MTK_VDEC_MAX_W);
+-
+ 		/*
+ 		 * Find next closer width align 64, heign align 64, size align
+ 		 * 64 rectangle
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
