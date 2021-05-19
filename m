@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37CB38983D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5EA38983F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhESUu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:50:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43681 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhESUuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:50:25 -0400
-IronPort-SDR: kdWjDbTKOZB0jBldUpMXf2YqxNfgOsIK8qDum356yV30MGhIjb7b91TR0ISGjtdwPvmqaAlaTa
- i3oYB4sbc46w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="188203176"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="188203176"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 13:49:02 -0700
-IronPort-SDR: vlvBR4yYWAXNC1jO2cHTsGh3eijnJJitLO21wSAOekzigRdN0wXgHk9C6osOc9ebYHjxHA4m+3
- UR4XfuxjBZnw==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="411887513"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.100.118]) ([10.209.100.118])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 13:49:01 -0700
-Subject: Re: [RFC v2-fix-v1 1/1] x86/tdx: Add __tdx_module_call() and
- __tdx_hypercall() helper functions
-To:     Sean Christopherson <seanjc@google.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <3a7c0bba-cc43-e4ba-f7fe-43c8627c2fc2@intel.com>
- <20210519055842.2048957-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <568d2929-f366-e3be-96f9-0bfa91991ef2@intel.com>
- <02e7b229-4b6f-c1c7-bb63-48e5e9eca5db@linux.intel.com>
- <YKVwjdspTazTXlam@google.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <77545da6-d534-e4c2-a60b-085705e3f0b7@linux.intel.com>
-Date:   Wed, 19 May 2021 13:49:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229634AbhESUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:51:03 -0400
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:41743 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229379AbhESUvC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 16:51:02 -0400
+Received: by mail-pl1-f181.google.com with SMTP id z4so5555759plg.8;
+        Wed, 19 May 2021 13:49:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CcMXLFh8WFoRN3tO7rpqAMKmtQsUHFOTiMqF7Ll+dO0=;
+        b=ZXeGjeJQcIF8LuiurDpI921xxJD2ClFqp8Gc9RBVRq7w444xWMgM9lHTuyZUZFG6od
+         T+ATqsjfo+2eGfAVdOqqTuv9tex/4S8CA8qlzSKOtTSvyUZuhRsWTKn7tKtdI0V7dM5d
+         P8YYz2EauLjQ6sjdHJxhCecB4TPFwCIKVMe3uDNrWg2UJDWqk0DGb6qx+owpa3s44nM1
+         vJu8icuru42gJFflkjg6TCRvfXsV8XFfMcEIaHgFOpwqAc9NVZodJDO3E7X1fIw6/f8x
+         lDtgkJGf0agYbJnCO+pQKezPab81hdTtVoknN1rRzNp1gmkyyZqvZ+xNyK025mcskiB+
+         LZcg==
+X-Gm-Message-State: AOAM533R82TC4KjUAY+Uejvm1CEl6mxz+YCN2lqohNw5OdHRFMxw/c9Y
+        FQs+pqGYdpDGsjEdmncDkPA=
+X-Google-Smtp-Source: ABdhPJwfYLgu+7Iy+CsGNWU2/kOo53u52oMoq3BBqCD4Dil3FNE8QcD3RwcGcV8UBBcJZ1QW1B4O6g==
+X-Received: by 2002:a17:90b:2397:: with SMTP id mr23mr842942pjb.77.1621457382517;
+        Wed, 19 May 2021 13:49:42 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id b15sm233638pfi.100.2021.05.19.13.49.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 13:49:41 -0700 (PDT)
+Date:   Wed, 19 May 2021 13:49:41 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     trix@redhat.com
+Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] fpga: generalize updating to partial and full
+Message-ID: <YKV55XK1Py5YSXZp@epycbox.lan>
+References: <20210519204256.1975957-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YKVwjdspTazTXlam@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519204256.1975957-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tom,
 
-On 5/19/2021 1:09 PM, Sean Christopherson wrote:
-> On Wed, May 19, 2021, Kuppuswamy, Sathyanarayanan wrote:
->> On 5/19/21 8:31 AM, Dave Hansen wrote:
->>> Was this "older compiler" argument really the reason?
->> It is a speculation. I haven't tried to reproduce it with old compiler. So
->> I have removed that point.
-> It's not "older" compilers.  gcc does not support R8-R15 as input/output
-> constraints,
+On Wed, May 19, 2021 at 01:42:56PM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> There is a need to update the whole card.
+> The user area, the shell and even the card firmware.
+> This needs to be handled differently than the
+> existing partial updating in the fpga manager.
+> 
+> Move the write_* ops out of fpga_manager_ops and
+> into a new fpga_manager_update_ops struct.  Add
+> two update_ops back to fpga_manager_ops,
+> partial_update for the exiting functionality and
+> full_update for the new functionity.
 
-Yes that's true, but they can be in clobbers. So it usually just needs a 
-mov from the input arguments for output, or a mov to the output 
-arguments for output.
+Partial and Full are somewhat loaded terms with FPGAs -- think partial
+reconfiguration vs full reconfiguration.
 
+How about 'persistent' and 'volatile' or something along those lines
+instead?
 
-
+- Moritz
