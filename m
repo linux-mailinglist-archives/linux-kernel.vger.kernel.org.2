@@ -2,108 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6CC388B26
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F40388B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346568AbhESJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:52:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:56882 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345273AbhESJwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:52:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E216101E;
-        Wed, 19 May 2021 02:51:30 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1E0F3F719;
-        Wed, 19 May 2021 02:51:29 -0700 (PDT)
-Date:   Wed, 19 May 2021 10:51:28 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/3] arch_topology, ACPI: populate cpu capacity from CPPC
-Message-ID: <20210519095128.GC21501@arm.com>
-References: <20210514095339.12979-1-ionela.voinescu@arm.com>
- <87fsyk190c.mognet@arm.com>
+        id S1346681AbhESJxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:53:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4747 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343526AbhESJxe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:53:34 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlSk41sLPzpfWR;
+        Wed, 19 May 2021 17:48:44 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 17:52:13 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 19 May 2021 17:52:13 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH v2 0/9] drivers/perf: Use general macro to simplify event attributes
+Date:   Wed, 19 May 2021 17:51:50 +0800
+Message-ID: <1621417919-6632-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fsyk190c.mognet@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin,
+This patchset apply a general EVENT_ATTR_ID to simplify event
+attributes in many PMU drivers.
 
-On Tuesday 18 May 2021 at 14:12:03 (+0100), Valentin Schneider wrote:
-> Hi,
-> 
-> On 14/05/21 10:53, Ionela Voinescu wrote:
-> > Hi all,
-> >
-> > These are a few trivial patches to populate cpu capacity information
-> > using performance information from ACPI's CPPC.
-> >
-> > I've tied this functionality to the existing function
-> > init_freq_invariance_cppc() called in acpi_cppc_processor_probe().
-> > This function is renamed to a more generic arch_init_invariance_cppc().
-> >
-> > The patches have been build tested on x86 and more thoroughly tested on
-> > Juno R2 (arm64), which uses the new functionality, with the following
-> > results:
-> >
-> >
-> > root@ubuntu:~# dmesg | grep cpu_capacity
-> > [    2.157494] init_cpu_capacity_cppc: CPU0 cpu_capacity=38300 (raw).
-> > [    2.163699] init_cpu_capacity_cppc: CPU1 cpu_capacity=38300 (raw).
-> > [    2.169899] init_cpu_capacity_cppc: CPU2 cpu_capacity=38300 (raw).
-> > [    2.176098] init_cpu_capacity_cppc: CPU3 cpu_capacity=38300 (raw).
-> > [    2.182296] init_cpu_capacity_cppc: CPU4 cpu_capacity=102400 (raw).
-> > [    2.188581] init_cpu_capacity_cppc: CPU5 cpu_capacity=102400 (raw).
-> > [    2.194867] cpu_capacity: capacity_scale=102400
-> > [    2.199409] cpu_capacity: CPU0 cpu_capacity=383
-> > [    2.203952] cpu_capacity: CPU1 cpu_capacity=383
-> > [    2.208495] cpu_capacity: CPU2 cpu_capacity=383
-> > [    2.213037] cpu_capacity: CPU3 cpu_capacity=383
-> > [    2.217580] cpu_capacity: CPU4 cpu_capacity=1024
-> > [    2.222209] cpu_capacity: CPU5 cpu_capacity=1024
-> > [    2.226886] init_cpu_capacity_cppc: cpu_capacity initialization done
-> >
-> > root@ubuntu:~# tail -n +1 /sys/devices/system/cpu/cpu*/cpu_capacity
-> > ==> /sys/devices/system/cpu/cpu0/cpu_capacity <==
-> > 383
-> > ==> /sys/devices/system/cpu/cpu1/cpu_capacity <==
-> > 383
-> > ==> /sys/devices/system/cpu/cpu2/cpu_capacity <==
-> > 383
-> > ==> /sys/devices/system/cpu/cpu3/cpu_capacity <==
-> > 383
-> > ==> /sys/devices/system/cpu/cpu4/cpu_capacity <==
-> > 1024
-> > ==> /sys/devices/system/cpu/cpu5/cpu_capacity <==
-> > 1024
-> >
-> > All works as expected even if ACPI processor support is built as a
-> > module.
-> >
-> 
-> Tested on my Ampere eMAG; this all seems to work fine except for some
-> scheduler debug stuff that gets confused; see
-> 
->   http://lore.kernel.org/r/20210518130725.3563132-1-valentin.schneider@arm.com
-> 
-> With that in mind:
-> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Qi Liu (9):
+  perf: Add EVENT_ATTR_ID to simplify event attributes
+  drivers/perf: hisi: Remove redundant macro and functions
+  drivers/perf: Remove redundant macro and functions in arm_smmuv3_pmu.c
+  drivers/perf: Remove redundant macro and functions in qcom_l2_pmu.c
+  drivers/perf: Remove redundant macro and functions in qcom_l3_pmu.c
+  drivers/perf: Remove redundant macro and functions in xgene_pmu.c
+  drivers/perf: Remove redundant macro and functions in fsl_imx8_ddr_perf.c
+  drivers/perf: Remove redundant macro and functions in arm_dsu_pmu.c
+  arm64: perf: Remove redundant macro and functions in perf_event.c
 
-Many thanks for testing and fixing the debugfs problem. I'll take a look
-over your patch.
+ arch/arm64/kernel/perf_event.c                | 175 +++++-----
+ drivers/perf/arm_dsu_pmu.c                    |  28 +-
+ drivers/perf/arm_smmuv3_pmu.c                 |  33 +-
+ drivers/perf/fsl_imx8_ddr_perf.c              |  80 ++---
+ drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c |  22 +-
+ drivers/perf/hisilicon/hisi_uncore_hha_pmu.c  |  62 ++--
+ drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c  |  34 +-
+ drivers/perf/hisilicon/hisi_uncore_pa_pmu.c   |   6 +-
+ drivers/perf/hisilicon/hisi_uncore_pmu.c      |  14 -
+ drivers/perf/hisilicon/hisi_uncore_pmu.h      |   2 -
+ drivers/perf/hisilicon/hisi_uncore_sllc_pmu.c |  10 +-
+ drivers/perf/qcom_l2_pmu.c                    |  37 +-
+ drivers/perf/qcom_l3_pmu.c                    |  30 +-
+ drivers/perf/xgene_pmu.c                      | 475 +++++++++++++-------------
+ include/linux/perf_event.h                    |   6 +
+ kernel/events/core.c                          |   2 +
+ 16 files changed, 450 insertions(+), 566 deletions(-)
 
-Ionela.
+-- 
+2.7.4
+
