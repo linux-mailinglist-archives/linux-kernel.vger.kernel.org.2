@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D370388563
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AF038856A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238107AbhESDhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 23:37:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4666 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235058AbhESDhn (ORCPT
+        id S1353084AbhESDiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 23:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353057AbhESDhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 23:37:43 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlJPF451wz1BP4J;
-        Wed, 19 May 2021 11:33:37 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 11:36:23 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 11:36:22 +0800
-Subject: Re: [PATCH -next] scsi: hisi_sas: drop free_irq of devm_request_irq
- allocated irq
-To:     John Garry <john.garry@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        chenxiang <chenxiang66@hisilicon.com>,
-        "luojiaxing@huawei.com" <luojiaxing@huawei.com>
-References: <20210518130902.1307494-1-yangyingliang@huawei.com>
- <cf6a6fb8-e9e6-967e-a012-8e25a40922ec@huawei.com>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <30e9c7d4-75c6-8cbc-7a27-d406eae01dad@huawei.com>
-Date:   Wed, 19 May 2021 11:36:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 18 May 2021 23:37:54 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF11BC06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 20:36:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=sKHpQcvq+rUPwAULe7dYE5f70g4zQ2kG4rYG08+ZZAU=; b=UqzzuFYfeR7qGqWg3OIyDon2Cb
+        7d2qN4MWvw1SFx/Zvl4yiV3LF50MVRli1Jv6GkqL6VoNmCclw6fO8ih22GTHU5G6zQUqZaJ9cl8XH
+        CrX3IGSgP9nsAJQsdCg+LQaspJSmAbJzygYWHG7l6ccY0oJvBzoX5oxaP604zmBw6t6JbPVhGTLj3
+        n490I3Q4alYbW4QGBZ5WsDt0BJpUzOJeXSuE5hLoc7/OqjGo8wgm3l+ZwDm7H5on/J+CR+M/LbTSX
+        PiyrYLKd3ZqXM3V3pGrj3ZIoCkEBWVPtTd8agYOeOeZuEqt3St5LBS3PRoevS9r311Fkx0C8cXfc1
+        T4ushvNw==;
+Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljD0Y-00F5fR-3m; Wed, 19 May 2021 03:36:30 +0000
+Subject: Re: Am I the only one seeing LKML is lagging badly? Delivering the
+ mail ..wondering
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        LinuxKernel <linux-kernel@vger.kernel.org>
+References: <YKR+OFOPDBc4LMtH@ArchLinux>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d2c549e1-9be0-befa-19a7-c68088133d9d@infradead.org>
+Date:   Tue, 18 May 2021 20:36:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <cf6a6fb8-e9e6-967e-a012-8e25a40922ec@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YKR+OFOPDBc4LMtH@ArchLinux>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/18/21 7:55 PM, Bhaskar Chowdhury wrote:
+> �Hey,
+> 
+> �The mail delivery is happening in snail space. Or is it just me experiencing
+> �it??
+> 
+> �Almost a day behind in terms of mail delivery!
+> 
+> �Thanks,
+> �Bhaskar
 
-On 2021/5/18 23:34, John Garry wrote:
-> On 18/05/2021 14:09, Yang Yingliang wrote:
->> irq allocated with devm_request_irq should not be freed using
->> free_irq, because doing so causes a dangling pointer, and a
->> subsequent double free.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->> ---
->>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c 
->> b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->> index 499c770d405c..684f762bcfb3 100644
->> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->> @@ -4811,9 +4811,9 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, 
->> struct hisi_hba *hisi_hba)
->>   {
->>       int i;
->>   -    free_irq(pci_irq_vector(pdev, 1), hisi_hba);
->> -    free_irq(pci_irq_vector(pdev, 2), hisi_hba);
->> -    free_irq(pci_irq_vector(pdev, 11), hisi_hba);
->> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
->> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
->> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
->>       for (i = 0; i < hisi_hba->cq_nvecs; i++) {
->>           struct hisi_sas_cq *cq = &hisi_hba->cq[i];
->>           int nr = hisi_sas_intr_conv ? 16 : 16 + i;
->>
->
-> Does the free_irq(pci_irq_vector(pdev, nr, cq)) call also need to 
-> change (not shown)?
-Yes, I missed that, it should be changed too.
->
-> Having said that, why have these at all if we use devm_request_irq()? 
-> devm_irq_release() calls free_irq().
-I keep the original logic here, only avoid double free.
->
-> Thanks,
-> John
->
-> .
+Hi,
+I don't see it almost one day behind, but on days when
+there are lots of stable patch reviews, I see several hours
+delay.
+
+But I understand that gmail has its own special problems.
+It delays accepting email if an account is receiving "too much"
+mail, so it effectively slows down that account.
+E.g. maybe it thinks that the free account is being used for
+business activity...
+
+-- 
+~Randy
+
