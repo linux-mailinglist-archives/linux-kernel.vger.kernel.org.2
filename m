@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE4538959F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D00F389577
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 20:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhESSlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 14:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S231528AbhESSga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 14:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhESSlL (ORCPT
+        with ESMTP id S229813AbhESSg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 14:41:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB45C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 11:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=458hhqBv6jVmBU28pifWM9thQWXBek5SMeRXR8tNAn8=; b=LtHYOp+k9uOR4ys5woowV/HyLM
-        pvAMx9jcjQruQTa6B93r6zdF1/rcM8DJ52xKyEwfLHsZCobFmGuGn2pmfEMKbI4zF3exGxNvg3AN7
-        Udq8E+EdwenF5J3ta/GcqhM31+sIwK2awVI4Xf0CfOtfVrX7s2MWDR67F2Do3eKp0cjd65Y/T8xzd
-        uLellQ/t3J37F4cJULlMQuAQY1a1OzQkKe0o3WVzSZGYEXFanPTZ7d8kT2+6f92B0pInCUlee69Ah
-        t2+j736F62PdG9hvGPfq/IA6utGKbnzojeX6alLRtPUR/LjGFxobyYRLJkZMG/iwHdCL37bXG8r2+
-        WV1Qvarw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljR5c-00FCzf-9m; Wed, 19 May 2021 18:38:43 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CCD01986465; Wed, 19 May 2021 20:38:39 +0200 (CEST)
-Date:   Wed, 19 May 2021 20:38:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
-Subject: Re: [smp]  a32a4d8a81:  netperf.Throughput_tps -2.1% regression
-Message-ID: <20210519183839.GH21560@worktop.programming.kicks-ass.net>
-References: <20210519142742.GA5275@xsang-OptiPlex-9020>
- <16A4D949-D82D-4034-B5A4-DE4DADE15884@vmware.com>
+        Wed, 19 May 2021 14:36:27 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264C4C06175F;
+        Wed, 19 May 2021 11:35:08 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id q6so7783661pjj.2;
+        Wed, 19 May 2021 11:35:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OXGExEV9DKzHJXkbbNu+OVKImQdQyVv51ZhcABCoj+c=;
+        b=VZnQB3TxN9YgO/dIaFVc2+8H4/rfLP27UtLLUyHSQnGpnObGKzI49EYOFNj55HB1Ib
+         KDN3mpnAfRCZWzYXRhCZfmOHesq7zvueE9s9hkhFZvaRmd7Dan9VeXNl9u+jLqheXsbV
+         XqOPaKcxraAO9TpALhWIaLd0hW/+IR3k3yhcH6ScPBCHyejoghtRjIM2TkjFPHt8qOCZ
+         cPIFpSi8EtmD5buBu4Uc47iP7kXsMzEu8/wuwHyhxePBEdKVQ/v9URBCJSlPZdAr4pHa
+         RI3v65vcbzc2BQ1Z6MVuOCjZOaCS7NQq/ygVahpH8PbmiyFbGcH+pfW9xTrk1y7v3GR3
+         2olQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OXGExEV9DKzHJXkbbNu+OVKImQdQyVv51ZhcABCoj+c=;
+        b=czV7x2HHWQeMbRgE/Eu87DMJIzcB8CodSHxeXI69gjKE1LOUu4B/lWbCMUgmqPT2Q6
+         eP8WUpdZwS2G6RsG70Fkhk0iBM9M4S6yiTTiKDLxgTX6Zd3iOA0S2evYe1ny18BaVUAf
+         1BoBeFHKxamywUTEavoCj9yBbNk8rHb3/O4jTSJcSS8nHmwUxjFQ1DY7sqM0tdtqwrTb
+         XU6iHzyRBQSBfEAW2YM7def9sjcNArXWaSl57peZnMpaTcWcfVmf3wGTohO48vAL+lZV
+         jFt//uYhEQdxWXCN3O6IPXsh3srlKHScwtbBl9z4HjCT2i1EeEfjl7H/anbGgUtwtIza
+         8hcw==
+X-Gm-Message-State: AOAM531mX4q1qZbbfEeilqhlVfNU0eNpOC1tb/JsbKgu1s5NpdbVoNYf
+        oMpROQE5N0K5JyWURI/ah7E=
+X-Google-Smtp-Source: ABdhPJzT41yLbhtZB7tJviu8pahUyGJsXxTpFBsuKRqM6hf3433QzAmTmbncbwVd3iCvrem4aPOSdA==
+X-Received: by 2002:a17:90b:1041:: with SMTP id gq1mr697596pjb.224.1621449307682;
+        Wed, 19 May 2021 11:35:07 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id k7sm4759153pjj.46.2021.05.19.11.35.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 11:35:06 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
+        FRAMEWORK), linux-kernel@vger.kernel.org (open list),
+        linux-media@vger.kernel.org (open list:DMA BUFFER SHARING FRAMEWORK)
+Subject: [RFC 0/3] dma-fence: Add a "boost" mechanism
+Date:   Wed, 19 May 2021 11:38:51 -0700
+Message-Id: <20210519183855.1523927-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <16A4D949-D82D-4034-B5A4-DE4DADE15884@vmware.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 06:17:35PM +0000, Nadav Amit wrote:
-> >      1287 =B1 42%     +75.3%       2256 =B1 14%  interrupts.CPU111.CAL:=
-Function_call_interrupts
-> >      1326 =B1 43%     +71.0%       2267 =B1 13%  interrupts.CPU119.CAL:=
-Function_call_interrupts
-> >      1300 =B1 45%     +75.9%       2287 =B1 37%  interrupts.CPU120.CAL:=
-Function_call_interrupts
-> >      1299 =B1 45%     +60.1%       2081 =B1 28%  interrupts.CPU128.CAL:=
-Function_call_interrupts
-> >      1305 =B1 45%     +61.7%       2110 =B1 29%  interrupts.CPU131.CAL:=
-Function_call_interrupts
-> >      1299 =B1 45%     +61.8%       2102 =B1 28%  interrupts.CPU139.CAL:=
-Function_call_interrupts
-> >     66.67 =B1133%     -97.2%       1.83 =B1155%  interrupts.CPU14.TLB:T=
-LB_shootdowns
-> >      1299 =B1 45%    +107.8%       2700 =B1 33%  interrupts.CPU142.CAL:=
-Function_call_interrupts
-> >    301.83 =B1128%     -95.6%      13.17 =B1140%  interrupts.CPU149.RES:=
-Rescheduling_interrupts
-> >    389.17 =B1 89%     -73.5%     103.17 =B1 35%  interrupts.CPU164.NMI:=
-Non-maskable_interrupts
-> >    389.17 =B1 89%     -73.5%     103.17 =B1 35%  interrupts.CPU164.PMI:=
-Performance_monitoring_interrupts
-> >      1299 =B1 45%     +60.2%       2081 =B1 28%  interrupts.CPU35.CAL:F=
-unction_call_interrupts
-> >      1244 =B1 50%     +66.8%       2076 =B1 27%  interrupts.CPU45.CAL:F=
-unction_call_interrupts
-> >      1300 =B1 44%     +59.5%       2075 =B1 28%  interrupts.CPU46.CAL:F=
-unction_call_interrupts
-> >      1.50 =B1 63%   +1422.2%      22.83 =B1167%  interrupts.CPU47.RES:R=
-escheduling_interrupts
-> >    467.33 =B1 85%     -64.6%     165.67 =B1 74%  interrupts.CPU58.NMI:N=
-on-maskable_interrupts
-> >    467.33 =B1 85%     -64.6%     165.67 =B1 74%  interrupts.CPU58.PMI:P=
-erformance_monitoring_interrupts
-> >    306.67 =B1 75%     -59.9%     122.83 =B1 16%  interrupts.CPU68.NMI:N=
-on-maskable_interrupts
-> >    306.67 =B1 75%     -59.9%     122.83 =B1 16%  interrupts.CPU68.PMI:P=
-erformance_monitoring_interrupts
-> >      1131 =B1 27%     +61.2%       1822 =B1 35%  interrupts.CPU85.CAL:F=
-unction_call_interrupts
-> >      1180 =B1 31%     +79.6%       2119 =B1 24%  interrupts.CPU86.CAL:F=
-unction_call_interrupts
-> >=20
+From: Rob Clark <robdclark@chromium.org>
 
-It looks to be sending *waay* more call IPIs, did we mess up the mask or
-loose an optimization somewhere?
+In some cases, like double-buffered rendering, missing vblanks can
+trick the GPU into running at a lower frequence, when really we
+want to be running at a higher frequency to not miss the vblanks
+in the first place.
 
-I'll go read the commit again...
+This is partially inspired by a trick i915 does, but implemented
+via dma-fence for a couple of reasons:
+
+1) To continue to be able to use the atomic helpers
+2) To support cases where display and gpu are different drivers
+
+The last patch is just proof of concept, in reality I think it
+may want to be a bit more clever.  But sending this out as it
+is as an RFC to get feedback.
+
+Rob Clark (3):
+  dma-fence: Add boost fence op
+  drm/atomic: Call dma_fence_boost() when we've missed a vblank
+  drm/msm: Wire up gpu boost
+
+ drivers/gpu/drm/drm_atomic_helper.c | 11 +++++++++++
+ drivers/gpu/drm/msm/msm_fence.c     | 10 ++++++++++
+ drivers/gpu/drm/msm/msm_gpu.c       | 13 +++++++++++++
+ drivers/gpu/drm/msm/msm_gpu.h       |  2 ++
+ include/linux/dma-fence.h           | 26 ++++++++++++++++++++++++++
+ 5 files changed, 62 insertions(+)
+
+-- 
+2.30.2
+
