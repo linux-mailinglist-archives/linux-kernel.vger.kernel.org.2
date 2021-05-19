@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF3A389788
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869D9389782
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232905AbhESULP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:11:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232832AbhESULI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:11:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA4866135A;
-        Wed, 19 May 2021 20:09:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621454988;
-        bh=DxYkIdB3NoXfp/b7anhxq8gErDgzv0UGLQqtSRtpyY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D4KRXBPap1zrtJwSFdZnqTNedw9xbrBfR8ibW5cTaxFVYcIND6gzzSVL1SFhSQLI7
-         J7Pjxf3qeuzGHelHlVwbn3LdK2UrEFUiM/42Hmm7UhcP3Ep+0tIPaJmEGE2LWcYY00
-         JMHNDx01zOu0dJdjUibtc9PYHUFja9fuFWy7Lb2An2weX40JPZt2grWnA+JZOz39im
-         x9uQrJI8Psk/tJhhUYr8uKJ/u6t0JAa1xdxjaEb0RrRc0exUAPbdIsEDcDZa+kvs7S
-         0qNjlgko7Az81mExs/bWaluUV0mIoyCS2x9AXTqpVxW8DBlEMPHExvSCz4sfRLjKmM
-         xs9QoWmc1WuHg==
-Date:   Wed, 19 May 2021 21:09:02 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] ASoC: tegra: Unify ASoC machine drivers
-Message-ID: <20210519200902.GJ4224@sirena.org.uk>
-References: <20210518001356.19227-1-digetx@gmail.com>
- <20210518001356.19227-3-digetx@gmail.com>
- <20210518180949.GA949047@robh.at.kernel.org>
- <20210518183455.GE4358@sirena.org.uk>
- <b924f76a-56dd-5ca3-229d-293f7ff1e81a@gmail.com>
+        id S232819AbhESUKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232746AbhESUKc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 16:10:32 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDA5C06175F;
+        Wed, 19 May 2021 13:09:12 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id s20so7680406plr.13;
+        Wed, 19 May 2021 13:09:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lriiXlwHl41FtaV5CoBrV98HLQ9Gp2N1i35WCPU1eqA=;
+        b=dKEqkRVfGgMyoGeqNU/Wv8pn+ukFifp9q8JivcHVlOQdrprqGZxxNJ6xf3JaNyTUdx
+         pMGL8dFzJxihPpRu6DYg3c8Vu9xAfxna2Zx5q+Ak4PwluGAsqPvoIp54sV4sfWJ+MpXB
+         xBqb5J6izMjs/JFnOGZM4x9jbI+5pFH5xj5KRz2nMPb3eNCbrlTFHH9RgC/waFkMpQ6J
+         PdM/PQEfOZx0LNTlyZGomnoOfcPoW0pI/pDUhufucnT5YcTJ9HnsnuEP9JFkni9u3lIJ
+         pk+uSvgXTn8WHo+TdY8l0jw5umUnOVGFfHHkZFOgyviTtwwllUl/c6HxowplQ2Eo1XnV
+         4PZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=lriiXlwHl41FtaV5CoBrV98HLQ9Gp2N1i35WCPU1eqA=;
+        b=ltebFBV7d6jCjyw8TEqRmThZRw0ZDMboIx08p69+L+3bvVvUNzpM1nAtScDL/M0Iju
+         pONFj538m+3Mha6dcW+XiRNtRZh1rSvLX/2FZ/cNDRSTiopUEK9ORbuhd2QfJ/r+V41O
+         e3rbNAMcPORzWs6X+Wt4+ayZfGodKYZdvAYkTUAnAxmOS3emiJnxo1wTDxvttYTqDXxo
+         qY4LeA5+vfWy9/eNzPvcO9FF6bAMzln1l6H2RPm/wSa4cFIgI2xh5zH6CgDSU8SzOuF/
+         QFIHl4wQk1I1CiQHdVAswNuHykTRqtmDyVQ8jPTIee/v5goog7YqTI/nEwV0xOt1qL7v
+         Q6iA==
+X-Gm-Message-State: AOAM532up/4PWjPihTQp6Ocq+tB7s3prxOHt/xYxO7seTE88jS7Cglrl
+        qvxXqV8Xb0p8Rk9vkIUqaqM=
+X-Google-Smtp-Source: ABdhPJyRIP2OET6BhmkttYHpZgBQw+uanaslQBGyKVZRHgg4WwBOqHzuR/+zFxeGcOxN1nzy5O6zSw==
+X-Received: by 2002:a17:90b:116:: with SMTP id p22mr718929pjz.186.1621454951706;
+        Wed, 19 May 2021 13:09:11 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:4102:f4c7:9246:e6c4])
+        by smtp.gmail.com with ESMTPSA id 10sm181025pgl.39.2021.05.19.13.09.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 13:09:11 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 19 May 2021 13:09:09 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] zram: fix few sysfs races
+Message-ID: <YKVwZVcbZBNXUpKm@google.com>
+References: <20210423011108.11988-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mFHiwr52TKrxpkjc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b924f76a-56dd-5ca3-229d-293f7ff1e81a@gmail.com>
-X-Cookie: There's no time like the pleasant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210423011108.11988-1-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 23, 2021 at 01:11:04AM +0000, Luis Chamberlain wrote:
+> This 2nd series documents the fixes better and includes a bdgrab() fix
+> for the issue noted by Minchan. A general fix has been proposed for two
+> of these issues however they are not yet deemed required upstream and so
+> we just open code individual solutions on the driver.
+> 
+> Luis Chamberlain (4):
+>   zram: fix crashes due to use of cpu hotplug multistate
+>   zram: avoid disksize setting when device is being claimed
+>   zram: fix deadlock with sysfs attribute usage and driver removal
+>   zram: fix possible races between sysfs use and bdev access
+> 
+>  drivers/block/zram/zram_drv.c | 473 +++++++++++++++++++++++++++++-----
+>  1 file changed, 414 insertions(+), 59 deletions(-)
 
---mFHiwr52TKrxpkjc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Luis,
 
-On Tue, May 18, 2021 at 11:16:48PM +0300, Dmitry Osipenko wrote:
-> 18.05.2021 21:34, Mark Brown =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+First of all, I am sorry too late review. Now I see [3/4] and [4/4] would
+be not only zram issue since you shed a light in the descriptions.
+Yeah, that would be helpful if it could be deal with under general
+layer but looks like arguable or would take some times at least, IIUC.
 
-> > It's generally the clocking configuration, things with fancy clock trees
-> > don't play so nicely with generic systems where we want to configure
-> > them at runtime, or things with complex routing in the CPU where we
-> > only recently started getting bindings that were functional enough to
-> > use.  Tegra is fairly complex internally.
+On the case, yeah, we could fix it for zram first until the issue will
+bring up further. Anyway, I'd like to see some wrapper rather than annotating
+for every sysfs files for maintainance point of view.
+At least, could you introduce one more patch "introduce zram sysfs wrapper"
+on top of this series to centralize the work?
 
-> This is true, but still it's more optimal to use flags in a single
-> common driver for the minor differences rather than to duplicate 90% of
-> the code. In practice majority of tegra boards are derived from the same
-> reference design, thus the h/w configurations are mostly the same.
-
-If you can do it yes, though some of the CODECs can have sufficiently
-interesting clocking to make it useful to do something different - not
-sure if any of those are upstream though, WM8903 ought to with the right
-board I think.
-
---mFHiwr52TKrxpkjc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmClcF4ACgkQJNaLcl1U
-h9BMAgf+IBN65r2SkPO0SKO4VuwUiRBm9DNsLKDipdewyG5L+/rgOIOe8OIhjICd
-b87aOjXfu/XWDF0dUuRp2d/WgkrakunNEbTO9SlNtGu5VWjfdbXZ4tEx8qHj7I+7
-N5GSBVHeZ8NALnMOT+IoOUjSvHA7ZqGIj2Sd5vXjXOJJPsgeV3qKkJAgDfoY3Dv6
-ZLVIyahTKvwnS4pV9n8NN7icxMvshmAo8jcMheNUfCabY9YM0YwYDORFPwIdKJHw
-YLegZydKUAOuUcztxQw/GJbhYq0T7VBCFg7TH66dY8nleAvLVbVcQlCNaUPQ0+Lt
-KZwwTHTaD3PbHYQXiOmw7y3h8LkXrg==
-=JoYf
------END PGP SIGNATURE-----
-
---mFHiwr52TKrxpkjc--
+Thanks for your works!
