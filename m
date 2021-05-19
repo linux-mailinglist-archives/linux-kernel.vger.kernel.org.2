@@ -2,288 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD4D388446
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA50388448
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhESBSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 21:18:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:39944 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231641AbhESBSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 21:18:34 -0400
-IronPort-SDR: dRq0thjR8KcOYsQVTcpsuwnxPpqDz/nElU1Ml4+sokv+gIFCIDF3WiruoqSzGFx0oytBHRz0qk
- btGgQClowHug==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="187991924"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="187991924"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 18:17:15 -0700
-IronPort-SDR: P0vs2i19sy0wZ8XWfMyfK9Ebf04a71jJgifSdC6aS756Bx/IztdKS+gcMnjkexOgoKYWwuZ2v+
- wU9NPutejlaQ==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="630728043"
-Received: from kmylavar-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.212.100.98])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 18:17:14 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2-fix-v3 1/1] x86/tdx: Wire up KVM hypercalls
-Date:   Tue, 18 May 2021 18:17:12 -0700
-Message-Id: <20210519011712.1334416-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <97588756-5c12-2913-05a7-938eb7a510c8@intel.com>
-References: <97588756-5c12-2913-05a7-938eb7a510c8@intel.com>
+        id S231791AbhESBTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:19:31 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33202 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231641AbhESBTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 21:19:30 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6F13A45E;
+        Wed, 19 May 2021 03:18:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1621387090;
+        bh=w3br3R9b5YuogXvJ+4Md07rNPhvvQST+awL6ZItkg4w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lb07uRx60fMPu5ms9sIytoW0ORUUV5fheREpobjjSIJe0OrFKSgOQBhEd17nudWhe
+         QuwvuALY/bQxeEXjeSC/xnfH3Lt+w9VGRcoEUXp8MHdkm2iMtCwlPcTRomOrpgI6J2
+         bjyifFCmqde8Uyf/vENl5mUahqgtnjlT41e0Wio4=
+Date:   Wed, 19 May 2021 04:18:09 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Roger Quadros <rogerq@ti.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH 6/6] dt-bindings: i2c: maxim,max9286: Use the
+ i2c-mux.yaml schema
+Message-ID: <YKRnUSASlUrmqvYV@pendragon.ideasonboard.com>
+References: <20210518232858.1535403-1-robh@kernel.org>
+ <20210518232858.1535403-7-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210518232858.1535403-7-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Hi Rob,
 
-KVM hypercalls use the "vmcall" or "vmmcall" instructions.
-Although the ABI is similar, those instructions no longer
-function for TDX guests. Make vendor-specific TDVMCALLs
-instead of VMCALL. This enables TDX guests to run with KVM
-acting as the hypervisor. TDX guests running under other
-hypervisors will continue to use those hypervisors'
-hypercalls.
+Thank you for the patch.
 
-Since KVM driver can be built as a kernel module, export
-tdx_kvm_hypercall*() to make the symbols visible to kvm.ko.
+On Tue, May 18, 2021 at 06:28:58PM -0500, Rob Herring wrote:
+> Use the i2c-mux.yaml schema in the maxim,max9286 binding schema. With this,
+> several properties can be dropped as they are defined in i2c-mux.yaml
+> already.
+> 
+> Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Cc: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-[Isaku Yamahata: proposed KVM VENDOR string]
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- arch/x86/Kconfig                |  5 +++
- arch/x86/include/asm/kvm_para.h | 21 ++++++++++
- arch/x86/include/asm/tdx.h      | 68 +++++++++++++++++++++++++++++++++
- arch/x86/kernel/tdcall.S        | 26 +++++++++++++
- 4 files changed, 120 insertions(+)
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 9e0e0ff76bab..15e66a99dd41 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -886,6 +886,11 @@ config INTEL_TDX_GUEST
- 	  run in a CPU mode that protects the confidentiality of TD memory
- 	  contents and the TD’s CPU state from other software, including VMM.
- 
-+# This option enables KVM specific hypercalls in TDX guest.
-+config INTEL_TDX_GUEST_KVM
-+	def_bool y
-+	depends on KVM_GUEST && INTEL_TDX_GUEST
-+
- endif #HYPERVISOR_GUEST
- 
- source "arch/x86/Kconfig.cpu"
-diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-index 338119852512..2fa85481520b 100644
---- a/arch/x86/include/asm/kvm_para.h
-+++ b/arch/x86/include/asm/kvm_para.h
-@@ -6,6 +6,7 @@
- #include <asm/alternative.h>
- #include <linux/interrupt.h>
- #include <uapi/asm/kvm_para.h>
-+#include <asm/tdx.h>
- 
- extern void kvmclock_init(void);
- 
-@@ -34,6 +35,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
- static inline long kvm_hypercall0(unsigned int nr)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall0(nr);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr)
-@@ -44,6 +49,10 @@ static inline long kvm_hypercall0(unsigned int nr)
- static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall1(nr, p1);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1)
-@@ -55,6 +64,10 @@ static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
- 				  unsigned long p2)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall2(nr, p1, p2);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2)
-@@ -66,6 +79,10 @@ static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
- 				  unsigned long p2, unsigned long p3)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall3(nr, p1, p2, p3);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3)
-@@ -78,6 +95,10 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
- 				  unsigned long p4)
- {
- 	long ret;
-+
-+	if (is_tdx_guest())
-+		return tdx_kvm_hypercall4(nr, p1, p2, p3, p4);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3), "S"(p4)
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 8ab4067afefc..3d8d977e52f0 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -73,4 +73,72 @@ static inline void tdx_early_init(void) { };
- 
- #endif /* CONFIG_INTEL_TDX_GUEST */
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST_KVM
-+u64 __tdx_hypercall_vendor_kvm(u64 fn, u64 r12, u64 r13, u64 r14,
-+			       u64 r15, struct tdx_hypercall_output *out);
-+
-+/* Used by kvm_hypercall0() to trigger hypercall in TDX guest */
-+static inline long tdx_kvm_hypercall0(unsigned int nr)
-+{
-+	return __tdx_hypercall_vendor_kvm(nr, 0, 0, 0, 0, NULL);
-+}
-+
-+/* Used by kvm_hypercall1() to trigger hypercall in TDX guest */
-+static inline long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1)
-+{
-+	return __tdx_hypercall_vendor_kvm(nr, p1, 0, 0, 0, NULL);
-+}
-+
-+/* Used by kvm_hypercall2() to trigger hypercall in TDX guest */
-+static inline long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1,
-+				      unsigned long p2)
-+{
-+	return __tdx_hypercall_vendor_kvm(nr, p1, p2, 0, 0, NULL);
-+}
-+
-+/* Used by kvm_hypercall3() to trigger hypercall in TDX guest */
-+static inline long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1,
-+				      unsigned long p2, unsigned long p3)
-+{
-+	return __tdx_hypercall_vendor_kvm(nr, p1, p2, p3, 0, NULL);
-+}
-+
-+/* Used by kvm_hypercall4() to trigger hypercall in TDX guest */
-+static inline long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1,
-+				      unsigned long p2, unsigned long p3,
-+				      unsigned long p4)
-+{
-+	return __tdx_hypercall_vendor_kvm(nr, p1, p2, p3, p4, NULL);
-+}
-+#else
-+static inline long tdx_kvm_hypercall0(unsigned int nr)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall1(unsigned int nr, unsigned long p1)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall2(unsigned int nr, unsigned long p1,
-+				      unsigned long p2)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall3(unsigned int nr, unsigned long p1,
-+				      unsigned long p2, unsigned long p3)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1,
-+				      unsigned long p2, unsigned long p3,
-+				      unsigned long p4)
-+{
-+	return -ENODEV;
-+}
-+#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
-+
- #endif /* _ASM_X86_TDX_H */
-diff --git a/arch/x86/kernel/tdcall.S b/arch/x86/kernel/tdcall.S
-index 2dfecdae38bb..27355fb80aeb 100644
---- a/arch/x86/kernel/tdcall.S
-+++ b/arch/x86/kernel/tdcall.S
-@@ -3,6 +3,7 @@
- #include <asm/asm.h>
- #include <asm/frame.h>
- #include <asm/unwind_hints.h>
-+#include <asm/export.h>
- 
- #include <linux/linkage.h>
- #include <linux/bits.h>
-@@ -25,6 +26,8 @@
- 					  TDG_R12 | TDG_R13 | \
- 					  TDG_R14 | TDG_R15 )
- 
-+#define TDVMCALL_VENDOR_KVM		0x4d564b2e584454 /* "TDX.KVM" */
-+
- /*
-  * TDX guests use the TDCALL instruction to make requests to the
-  * TDX module and hypercalls to the VMM. It is supported in
-@@ -212,3 +215,26 @@ SYM_FUNC_START(__tdx_hypercall)
- 	FRAME_END
- 	retq
- SYM_FUNC_END(__tdx_hypercall)
-+
-+#ifdef CONFIG_INTEL_TDX_GUEST_KVM
-+
-+/*
-+ * Helper function for KVM vendor TDVMCALLs. This assembly wrapper
-+ * lets us reuse do_tdvmcall() for KVM-specific hypercalls (
-+ * TDVMCALL_VENDOR_KVM).
-+ */
-+SYM_FUNC_START(__tdx_hypercall_vendor_kvm)
-+	FRAME_BEGIN
-+	/*
-+	 * R10 is not part of the function call ABI, but it is a part
-+	 * of the TDVMCALL ABI. So set it before making call to the
-+	 * do_tdx_hypercall().
-+	 */
-+	movq $TDVMCALL_VENDOR_KVM, %r10
-+	call do_tdx_hypercall
-+	FRAME_END
-+	retq
-+SYM_FUNC_END(__tdx_hypercall_vendor_kvm)
-+
-+EXPORT_SYMBOL(__tdx_hypercall_vendor_kvm);
-+#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
+> ---
+>  .../bindings/media/i2c/maxim,max9286.yaml     | 23 +++----------------
+>  1 file changed, 3 insertions(+), 20 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> index ee16102fdfe7..02f656e78700 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> @@ -111,17 +111,10 @@ properties:
+>  
+>    i2c-mux:
+>      type: object
+> +    $ref: /schemas/i2c/i2c-mux.yaml#
+> +    unevaluatedProperties: false
+>      description: |
+> -      Each GMSL link is modelled as a child bus of an i2c bus
+> -      multiplexer/switch, in accordance with bindings described in
+> -      Documentation/devicetree/bindings/i2c/i2c-mux.txt.
+> -
+> -    properties:
+> -      '#address-cells':
+> -        const: 1
+> -
+> -      '#size-cells':
+> -        const: 0
+> +      Each GMSL link is modelled as a child bus of an i2c bus multiplexer/switch.
+>  
+>      patternProperties:
+>        "^i2c@[0-3]$":
+> @@ -133,12 +126,6 @@ properties:
+>            channels.
+>  
+>          properties:
+> -          '#address-cells':
+> -            const: 1
+> -
+> -          '#size-cells':
+> -            const: 0
+> -
+>            reg:
+>              description: The index of the GMSL channel.
+>              maxItems: 1
+> @@ -173,10 +160,6 @@ properties:
+>  
+>              additionalProperties: false
+>  
+> -        additionalProperties: false
+> -
+> -    additionalProperties: false
+> -
+>  required:
+>    - compatible
+>    - reg
+
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
