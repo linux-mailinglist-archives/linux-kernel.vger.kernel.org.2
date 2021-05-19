@@ -2,77 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA623897D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF723897D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhESUWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:22:38 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:41732 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhESUWh (ORCPT
+        id S229571AbhESUYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:24:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37296 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhESUYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:22:37 -0400
-Received: by mail-ot1-f41.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so12868732oth.8;
-        Wed, 19 May 2021 13:21:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uvlLvoBclCDrgerZoN2kUifuo6+qRvAzD4p+vHWf9lw=;
-        b=uZO+8Qz4Wl4feG8E7H6GQ2MT6Me93Ps492fWnsNWxZyIrgw66/Kbv+8j7s+QoIfVJu
-         4f+sXGwdAztKM55G3So6vsNeK6sG0uzUthRUQA8txoQ2pYVi2Xhr7Zh3j1ZWTXG19HUi
-         6SwTjYor9Y6ybUcLbd02dPxB5NoClW7cn1f1j+RkdZc9BekN8hJSSZqJbf5UQia4PQXD
-         co3wcYjBLqjfQ5C0tjqhFI7X+114DGk2eIvURYJIUyG5rckOqoBlARq8RcUPrkYUowFd
-         bdhorXjrgwc6MLYS6f3q/xSgPENYpUUihZ1XcqaTdczIoeqIYGo5oSQXFNmIKVX3Ijlp
-         KKxA==
-X-Gm-Message-State: AOAM530DEPmQ4H6dloicFoc/QIVReQRQ91W8mHpoJcQjMkXukJRiYiIH
-        VAjd8UXEDePnOmhy3VDc/gXiqVmYIA==
-X-Google-Smtp-Source: ABdhPJx++yl90zVKRdi3iZxZSviC1LWSXM6PVj1zj9ra7Dq5mSBR1BKrsnV/efeQLRqPmz8Zu4b1KQ==
-X-Received: by 2002:a9d:269:: with SMTP id 96mr1061313otb.222.1621455676488;
-        Wed, 19 May 2021 13:21:16 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q22sm158231otl.11.2021.05.19.13.21.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 13:21:15 -0700 (PDT)
-Received: (nullmailer pid 3582732 invoked by uid 1000);
-        Wed, 19 May 2021 20:21:14 -0000
-Date:   Wed, 19 May 2021 15:21:14 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, David Jander <david@protonic.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v1 1/3] dt-bindings: display: simple: add Innolux
- G070Y2-T02 panel
-Message-ID: <20210519202114.GA3582681@robh.at.kernel.org>
-References: <20210518071555.9785-1-o.rempel@pengutronix.de>
- <20210518071555.9785-2-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518071555.9785-2-o.rempel@pengutronix.de>
+        Wed, 19 May 2021 16:24:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621455766; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=AYbOgwbChI5rvlsBei4mmaY0nKq1z4ofewnO/Kfy8Xc=; b=jW5/FB/BeYeLimVMMNSQxz29Kaf3+v76eEU5A4jHMDhut/nYi+fTHC6GoLAo2ZNzgivXvSrS
+ IzAfZHaAP9ZYU8B0mZ+gj9mqUdY/fiL3kVnDGvmlfcae5wO5dg14FewtUJs4djpw818ZEkfd
+ cNZ9RRp9PKLDBYwWEf/4m+zeQuM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60a573922bff04e53b41eb1c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 20:22:42
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 71717C4323A; Wed, 19 May 2021 20:22:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C22AC433F1;
+        Wed, 19 May 2021 20:22:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C22AC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
+Date:   Wed, 19 May 2021 13:22:33 -0700
+Message-Id: <1621455753-28966-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 09:15:53 +0200, Oleksij Rempel wrote:
-> Add binding for the Innolux G070Y2-T02 panel. It is 7" WVGA (800x480)
-> TFT LCD panel with TTL interface and a backlight unit.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+irq_hpd interrupt should be handled after dongle plugged in and
+before dongle unplugged. Hence irq_hpd interrupt is enabled at
+the end of the plugin handle and disabled at the beginning of
+unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
+handled same as the dongle unplugged which tears down the mainlink
+and disables the phy. This patch fixes this problem by only tearing
+down the mainlink but keeping phy enabled at irq_hpd with
+sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
+handled by setup mainlink only. This patch also set dongle into D3
+(power off) state at end of handling irq_hpd with sink_count = 0.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Changes in v2:
+-- add ctrl->phy_Power_count
+
+Changes in v3:
+-- del ctrl->phy_Power_count
+-- add phy_power_off to dp_ctrl_off_link_stream()
+
+Changes in v4:
+-- return immediately if clock disable failed at dp_ctrl_off_link_stream()
+
+Changes in v5:
+-- set dongle to D3 (power off) state at dp_ctrl_off_link_stream()
+
+Changes in v6:
+-- add Fixes tag
+
+Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and pm_resume")
+
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_catalog.c |  5 ++--
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 55 +++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 ++
+ drivers/gpu/drm/msm/dp/dp_display.c | 57 +++++++++++++++++++++++++++----------
+ 4 files changed, 101 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index b1a9b1b..f4f53f2 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
+ 
+ 	u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
+ 
+-	/* enable HPD interrupts */
++	/* enable HPD plug and unplug interrupts */
+ 	dp_catalog_hpd_config_intr(dp_catalog,
+-		DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
+-		| DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
++		DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
+ 
+ 	/* Configure REFTIMER and enable it */
+ 	reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 8d59eb9..dbd8943 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1811,6 +1811,61 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ 	return ret;
+ }
+ 
++int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++	struct dp_io *dp_io;
++	struct phy *phy;
++	int ret;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
++
++	/* set dongle to D3 (power off) mode */
++	dp_link_psm_config(ctrl->link, &ctrl->panel->link_info, true);
++
++	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
++
++	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
++	if (ret) {
++		DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", ret);
++		return ret;
++	}
++
++	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
++	if (ret) {
++		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
++		return ret;
++	}
++
++	phy_power_off(phy);
++
++	/* aux channel down, reinit phy */
++	phy_exit(phy);
++	phy_init(phy);
++
++	DRM_DEBUG_DP("DP off link/stream done\n");
++	return ret;
++}
++
++void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++	struct dp_io *dp_io;
++	struct phy *phy;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	phy_exit(phy);
++
++	DRM_DEBUG_DP("DP off phy done\n");
++}
++
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index a836bd3..25e4f75 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -23,6 +23,8 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
++int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 0ba71c7..b2a282a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -337,6 +337,12 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	dp->dp_display.max_pclk_khz = DP_MAX_PIXEL_CLK_KHZ;
+ 	dp->dp_display.max_dp_lanes = dp->parser->max_dp_lanes;
+ 
++	/*
++	 * set sink to normal operation mode -- D0
++	 * before dpcd read
++	 */
++	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
++
+ 	dp_link_reset_phy_params_vx_px(dp->link);
+ 	rc = dp_ctrl_on_link(dp->ctrl);
+ 	if (rc) {
+@@ -405,11 +411,6 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
+ 
+ 	dp_display_host_init(dp, false);
+ 
+-	/*
+-	 * set sink to normal operation mode -- D0
+-	 * before dpcd read
+-	 */
+-	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+ 	rc = dp_display_process_hpd_high(dp);
+ end:
+ 	return rc;
+@@ -570,6 +571,10 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
+ 	}
+ 
++	/* enable HDP irq_hpd/replug interrupt */
++	dp_catalog_hpd_config_intr(dp->catalog,
++		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
++
+ 	mutex_unlock(&dp->event_mutex);
+ 
+ 	/* uevent will complete connection part */
+@@ -619,7 +624,26 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	state = dp->hpd_state;
+-	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
++
++	/* disable irq_hpd/replug interrupts */
++	dp_catalog_hpd_config_intr(dp->catalog,
++		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, false);
++
++	/* unplugged, no more irq_hpd handle */
++	dp_del_event(dp, EV_IRQ_HPD_INT);
++
++	if (state == ST_DISCONNECTED) {
++		/* triggered by irq_hdp with sink_count = 0 */
++		if (dp->link->sink_count == 0) {
++			dp_ctrl_off_phy(dp->ctrl);
++			hpd->hpd_high = 0;
++			dp->core_initialized = false;
++		}
++		mutex_unlock(&dp->event_mutex);
++		return 0;
++	}
++
++	if (state == ST_DISCONNECT_PENDING) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -633,9 +657,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	dp->hpd_state = ST_DISCONNECT_PENDING;
+ 
+-	/* disable HPD plug interrupt until disconnect is done */
+-	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK
+-				| DP_DP_IRQ_HPD_INT_MASK, false);
++	/* disable HPD plug interrupts */
++	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, false);
+ 
+ 	hpd->hpd_high = 0;
+ 
+@@ -652,8 +675,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	reinit_completion(&dp->audio_comp);
+ 	dp_display_handle_plugged_change(g_dp_display, false);
+ 
+-	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
+-					DP_DP_IRQ_HPD_INT_MASK, true);
++	/* enable HDP plug interrupt to prepare for next plugin */
++	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, true);
+ 
+ 	/* uevent will complete disconnection part */
+ 	mutex_unlock(&dp->event_mutex);
+@@ -684,7 +707,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	/* irq_hpd can happen at either connected or disconnected state */
+ 	state =  dp->hpd_state;
+-	if (state == ST_DISPLAY_OFF) {
++	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -903,9 +926,13 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display->audio_enabled = false;
+ 
+-	dp_ctrl_off(dp->ctrl);
+-
+-	dp->core_initialized = false;
++	/* triggered by irq_hpd with sink_count = 0 */
++	if (dp->link->sink_count == 0) {
++		dp_ctrl_off_link_stream(dp->ctrl);
++	} else {
++		dp_ctrl_off(dp->ctrl);
++		dp->core_initialized = false;
++	}
+ 
+ 	dp_display->power_on = false;
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
