@@ -2,107 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5D1388CC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AB0388CC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240637AbhESL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350640AbhESL3O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:29:14 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C9EC06175F;
-        Wed, 19 May 2021 04:27:55 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id q6so7172215pjj.2;
-        Wed, 19 May 2021 04:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FSH6O+80A3wo/ivtXXwOmyWUlPQ03Zp0wKm42ionk8s=;
-        b=CqUSodm9Z8jO18w0IjUEIZkYHPe19OzUDy5rXTjhBiQDHftdcPdsdHeXmQHvHfGZCz
-         4JK8jBkvZyqlfJBKHLdsR3knXqD5qS/EZtJuHYQIxyT+6/hpa3skDagG1zmhoLJlu6bf
-         j8M3ks+bRRwqbHdqrlc5kcnAhTqqzkv9WNylSHIEXv+qdo+Yj2Vw2XzL/Jv8uoYNOiUu
-         Jc3V79eFgL1r173MAQJlUYm/R2t2QVO75GqQRrcaxmHuskoj+OVQnJHppIj/CSyavXdD
-         mWvIZtGZfpKcBncmWG6mGSltkb/w4eb3PhppdnAzosXm9cNvRJk7IzcFCDJo+IGJkSJQ
-         psrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FSH6O+80A3wo/ivtXXwOmyWUlPQ03Zp0wKm42ionk8s=;
-        b=EsFsSjGKmsJMrwPynEqCCs8EiHsdLPByaviuEc6XsVhQs3E0jmpgsrFtQN6Kxuxilh
-         pBVJH0XvsmQMpZVjhlpgdS9bEKr3AZUl2unrRIQkyuyWNE4DwwGHbbAoIpkV0LSlOL00
-         riwRoNyPjL0suRdkmhnlcuFV+0QNp0Faiy9ndTpAAVjX5OQYfRZWpIPC0j/yU+Mpqumi
-         dALGuEJx1BZZxTICrsKQXgxJmcYqMIgqms2o+P95CahKWituQMPnrAX7Ua6EjpgVmsO2
-         47PaTNClqzV4lSCzE8JQpo30ox3IMKVNjJQX/mZVAakJ9jEB8nhly1wt72ieO8fetVb3
-         C4qg==
-X-Gm-Message-State: AOAM533Kuo75GUO/HoZkzUaN5m3dIkpI8Y4RKFDeVxnH3I+p1Tz0IR5o
-        RxOjAqdLts4qrpSNuWN3/Bv1xWPQIUW0rSolcdQ=
-X-Google-Smtp-Source: ABdhPJyP1HNBiZ2lW0jaNnCTaTSQkThhbcODAxJ4yukhbFbL2DAB/9CWeluHHZynJGgoB0KlGOw64vNBGmC5YjznZIU=
-X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr7040718pjq.228.1621423674579;
- Wed, 19 May 2021 04:27:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210516135531.2203-1-dariobin@libero.it> <20210516135531.2203-2-dariobin@libero.it>
- <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
- <1735504854.166374.1621346262270@mail1.libero.it> <CAHp75VeADiRKdfnsXQ=y3z1WAJBbtZ+P=8tdyYtVQpJrSrQ63Q@mail.gmail.com>
- <20210519100235.GA3063522@x1>
-In-Reply-To: <20210519100235.GA3063522@x1>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 19 May 2021 14:27:38 +0300
-Message-ID: <CAHp75Ve5sonh1qNgqqF1yr8OiuJVWXb-UJj+kzxQa7+R-YVoXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug file
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Dario Binacchi <dariobin@libero.it>,
+        id S1350592AbhESL3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:29:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:33236 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350681AbhESL3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:29:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DBF3101E;
+        Wed, 19 May 2021 04:27:56 -0700 (PDT)
+Received: from [10.57.66.179] (unknown [10.57.66.179])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBDA53F719;
+        Wed, 19 May 2021 04:27:54 -0700 (PDT)
+Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
+ 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
+ memory addresses")
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-rockchip@lists.infradead.org,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        heiko.stuebner@theobroma-systems.com, leobras.c@gmail.com,
+        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org
+References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
+Date:   Wed, 19 May 2021 12:27:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 1:02 PM Drew Fustini <drew@beagleboard.org> wrote:
-> On Tue, May 18, 2021 at 05:01:30PM +0300, Andy Shevchenko wrote:
+[ +linux-pci for visibility ]
 
-...
+On 2021-05-18 10:09, Alexandru Elisei wrote:
+> After doing a git bisect I was able to trace the following error when booting my
+> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
+> 
+> [..]
+> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
+> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
+> 0x00fa000000
+> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
+> 0x00fbe00000
+> [    0.306201] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
+> regulator
+> [    0.306334] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
+> regulator
+> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
+> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
+> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
+> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
+> address [0xfbe00000-0xfbefffff])
+> [    0.373839] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
+> [    0.373973] pci 0000:00:00.0: supports D1
+> [    0.373992] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> [    0.378518] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
+> reconfiguring
+> [    0.378765] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
+> [    0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
+> [    0.379051] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
+> [    0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
+> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
+> x4 link)
+> [    0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
+> [    0.393311] pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
+> [    0.393333] pci 0000:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
+> [    0.393356] pci 0000:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
+> [    0.393375] pci 0000:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
+> [    0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
+> [    0.393839] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
+> [    0.394165] pcieport 0000:00:00.0: AER: enabled with IRQ 78
+> [..]
+> 
+> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for
+> 64-bit memory addresses").
 
-> Vladimir Zapolskiy wrote in e73339037f6b ("pinctrl: remove unused
-> 'pinconf-config' debugfs interface"):
->
->     Of course it might be possible to increase MAX_NAME_LEN, and then add
->     .pin_config_dbg_parse_modify callbacks to the drivers, but the whole
->     idea of such a limited debug option looks inviable. A more flexible
->     way to functionally substitute the original approach is to implicitly
->     or explicitly use pinctrl_select_state() function whenever needed.
->
-> This makes me think it is not a good idea to bring back pinconf-config.
-> The pinmux-select debugfs file that I add added in commit 6199f6becc86
-> ("pinctrl: pinmux: Add pinmux-select debugfs file") provides a method to
-> activate a pin function and pin group which I think provides the same
-> capability as long as the possible pin functions are described in dts.
+FWFW, my hunch is that the host bridge advertising no 32-bit memory 
+resource, only only a single 64-bit non-prefetchable one (even though 
+it's entirely below 4GB) might be a bit weird and tripping something up 
+in the resource assignment code. It certainly seems like the thing most 
+directly related to the offending commit.
 
-The problem is that the pinctrl_select_state() is very limited and has
-no clear meanings of the states. Only few are defined and still
-unclear. What does `sleep` or `standby` or whatever mean? It may be
-quite different to the device in question. Basically what we need is
-to say we want this device ('function') to appear on this group of
-pins ('group'). And pinctrl_select_state() can't fulfill this simple
-task :-(
+I'd be tempted to try fiddling with that in the DT (i.e. changing 
+0x83000000 to 0x82000000 in the PCIe node's "ranges" property) to see if 
+it makes any difference. Note that even if it helps, though, I don't 
+know whether that's the correct fix or just a bodge around a corner-case 
+bug somewhere in the resource code.
 
-If we look at the ACPI case it makes that API completely out of useful
-context (it can be used due to above and some kind of layering
-violations, like PM vs. pin control).
+Robin.
 
-Since above is the debugfs interface we may return it for the certain
-task, i.e. printing current function / group choice(s) (if it's not
-done by other means) and allow to switch it desired function/group
-(that's what Dario tries to achieve AFAIU).
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+> For reference, here is the dmesg output when BAR
+> reassignment works:
+> 
+> [..]
+> [    0.307381] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
+> [    0.307445] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
+> 0x00fa000000
+> [    0.307481] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
+> 0x00fbe00000
+> [    0.308406] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
+> regulator
+> [    0.308534] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
+> regulator
+> [    0.374676] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
+> [    0.374701] pci_bus 0000:00: root bus resource [bus 00-1f]
+> [    0.374723] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff]
+> [    0.374746] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
+> address [0xfbe00000-0xfbefffff])
+> [    0.374808] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
+> [    0.374943] pci 0000:00:00.0: supports D1
+> [    0.374961] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> [    0.379473] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
+> reconfiguring
+> [    0.379712] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
+> [    0.379815] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
+> [    0.379997] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
+> [    0.380607] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
+> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
+> x4 link)
+> [    0.394239] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
+> [    0.394285] pci 0000:00:00.0: BAR 14: assigned [mem 0xfa000000-0xfa0fffff]
+> [    0.394312] pci 0000:01:00.0: BAR 0: assigned [mem 0xfa000000-0xfa003fff 64bit]
+> [    0.394374] pci 0000:00:00.0: PCI bridge to [bus 01]
+> [    0.394395] pci 0000:00:00.0:   bridge window [mem 0xfa000000-0xfa0fffff]
+> [    0.394569] pcieport 0000:00:00.0: enabling device (0000 -> 0002)
+> [    0.394845] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
+> [    0.395153] pcieport 0000:00:00.0: AER: enabled with IRQ 78
+> [..]
+> 
+> And here is the output of lspci when BAR reassignment works:
+> 
+> # lspci -v
+> 00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd RK3399 PCI Express Root
+> Port (prog-if 00 [Normal decode])
+>      Flags: bus master, fast devsel, latency 0, IRQ 78
+>      Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+>      I/O behind bridge: 00000000-00000fff [size=4K]
+>      Memory behind bridge: fa000000-fa0fffff [size=1M]
+>      Prefetchable memory behind bridge: 00000000-000fffff [size=1M]
+>      Capabilities: [80] Power Management version 3
+>      Capabilities: [90] MSI: Enable+ Count=1/1 Maskable+ 64bit+
+>      Capabilities: [b0] MSI-X: Enable- Count=1 Masked-
+>      Capabilities: [c0] Express Root Port (Slot+), MSI 00
+>      Capabilities: [100] Advanced Error Reporting
+>      Capabilities: [274] Transaction Processing Hints
+>      Kernel driver in use: pcieport
+> lspci: Unable to load libkmod resources: error -2
+> 
+> 01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD
+> Controller SM981/PM981/PM983 (prog-if 02 [NVM Express])
+>      Subsystem: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+>      Flags: bus master, fast devsel, latency 0, IRQ 77, NUMA node 0
+>      Memory at fa000000 (64-bit, non-prefetchable) [size=16K]
+>      Capabilities: [40] Power Management version 3
+>      Capabilities: [50] MSI: Enable- Count=1/1 Maskable- 64bit+
+>      Capabilities: [70] Express Endpoint, MSI 00
+>      Capabilities: [b0] MSI-X: Enable+ Count=33 Masked-
+>      Capabilities: [100] Advanced Error Reporting
+>      Capabilities: [148] Device Serial Number 00-00-00-00-00-00-00-00
+>      Capabilities: [158] Power Budgeting <?>
+>      Capabilities: [168] Secondary PCI Express
+>      Capabilities: [188] Latency Tolerance Reporting
+>      Capabilities: [190] L1 PM Substates
+>      Kernel driver in use: nvme
+> 
+> I can provide more information if needed (the board is sitting on my desk) and I
+> can help with testing the fix.
+> 
+> Thanks,
+> 
+> Alex
+> 
+> 
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+> 
