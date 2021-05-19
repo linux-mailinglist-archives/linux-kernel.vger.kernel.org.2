@@ -2,103 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51433893B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51083893BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355352AbhESQ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        id S242461AbhESQ2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355321AbhESQ1P (ORCPT
+        with ESMTP id S1355413AbhESQ23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:27:15 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAFBC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:25:54 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id h4so14632343wrt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:25:54 -0700 (PDT)
+        Wed, 19 May 2021 12:28:29 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44279C061342
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:27:09 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id m190so9843128pga.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:27:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h9ACoFyscr2mGx2hv7BWBvdkBNtd8ng9Fu2si46cdq4=;
-        b=byisdwD/i5u3WtSKYw+sYWGk0u8xFD4aI4NdDxMw+ffgIcjDqEhv7ahv61jA6USQgk
-         jm9vALBRIHhaWHsrnl4alI9tjghWi/KDqej7GJsI+Kh4+CiH0JVQT0LCLcEZJlSVxSxX
-         jj3JoW++94xEI/00y2L7l5sdQNlHQsyE9iBR37drGXa3B+/DmIvmUTXJqrKzGH3GoeOw
-         XAMQ1MECR83nnQKSRbgV7bTxboQM9oo/dUiqmRqnU1zBiQl1kBpBniegFK6NnaUyMYJs
-         dGv3epgWNZMUAMRxznt6TtyULLsjNPeZZZZRIBCFCcBlAEE6+cO/T9jXmsp2Z9ceZfa7
-         EZ7Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SakSgiZ4ddbOim/P+Jnfe0RsK1mrrxRc8FFWjgiG+Hw=;
+        b=C4RQBdYrK8StFkUZxtXfsB0waWA1/ViKjhuPBk07N76D6u5UT1LGXcZMc5aDZVdXBw
+         iTBHHNXJYaZkygeKDrLpKb0qzmmIpKNQSbXtQeSUmfvIUIOt7pAzvT2Xjrf7YW2as+DO
+         LUyGCOFcJpHFWRNntaK90tv4pJZlDR32phNsmmnlPqQnAghYvFM6IbCsOb5lkrXjPt8s
+         LX3gmQrpa+KInfNtM4ffR5n6FV7Fxr1lSgom0Ojh8ivnnhnhOzgPhOjvwl+EGn5v/Gdx
+         8MUixZbxbUoBzFL7KUTeVZ5LoNQyjpTRVxP7PQQtoDyHOS0xCPY+F62VI4b7bPkHmppo
+         0XLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h9ACoFyscr2mGx2hv7BWBvdkBNtd8ng9Fu2si46cdq4=;
-        b=e2wPAxl/vs/hLM3t9uHQ5YKOhhhmFZ0zkdcFmNET2sdpyfW1P4ehaWAyPerw5uBPKK
-         ExsoJNAyLpHoHgVc6jgZQMazxKgK0NRWHGYJR0idcCO0lYzAXDTL9Ns8dntXJ68grUL/
-         ri/jdxYf5hkvPJ6spViM0wyQsYQ7Oic7k2semmFYOw6pYIGAKUrNbSQflb1FivqTrl5x
-         euXMOd2mrJgqW1ECclvFwcd0MHvk3Ak5CO31KaszEGrj8vyKMbczO4q9Gk9zFXndLKT/
-         4ZyuSGGAvlJCPJVvKSQ0R7663ZbAnuo1mKFyIUDMR8kaowBr6pzDaG1avl2H06fyVx8b
-         mJIA==
-X-Gm-Message-State: AOAM531xZBxAMiCBftBWo/6hOhhXjZGqU4hv8JFqfu5oFJCYanvUmDhd
-        N07WqLsDP2TTbecam5Iz+fYJtg==
-X-Google-Smtp-Source: ABdhPJwr3K6AGuoWpHTQgaEA3SUgfH1bxgCXJJ3IVhKq00yPr1NJM+0gcq90Ro1URVdiivdA8wZX8A==
-X-Received: by 2002:adf:e411:: with SMTP id g17mr15445759wrm.402.1621441553089;
-        Wed, 19 May 2021 09:25:53 -0700 (PDT)
-Received: from localhost.localdomain ([88.160.162.107])
-        by smtp.gmail.com with ESMTPSA id k205sm5827724wmf.13.2021.05.19.09.25.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 09:25:52 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] cpufreq: mediatek: add support for mt8365
-Date:   Wed, 19 May 2021 18:25:50 +0200
-Message-Id: <20210519162550.3757832-1-fparent@baylibre.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SakSgiZ4ddbOim/P+Jnfe0RsK1mrrxRc8FFWjgiG+Hw=;
+        b=LNjO8s8FLvAO8x8ffslmoCh4+x1rjpmXNY5b51xrxYZQfZanbCFGDKTG/MEZcLF1rV
+         JHtLZ4t5fpmnEUrfrIw2pGzS1EVve9Z1kXS83WYAnH4F/F9Amy4E4u1sLAfSZT1B9aml
+         EQwGqa/72iqggg/j5iwcgdhrnDdmbK0kEOw10c1x2TJ/Gpuu5ysDJiw3rlt1kG659Ba1
+         xtLtZd2UkCWpCtgA4y16N7akIynjdRCC9XwKiVSkN6dSlQxxRxPYxbdun6D+JnPEP3bh
+         K6l4P+3cklzTCiMaoM8L6+zpfcfqf6YTcv14d3y9hxbAv0PsV/Ltonz4g+C+k6t2Zcha
+         Navw==
+X-Gm-Message-State: AOAM53316mRDQyx0L6nYU7cMkqtQdbcsFWcxY+5uaDQ/OOjkaTFcrtnN
+        PCZkaMDxRmVknk92tK0WaOUuVcXn7dcD7kx9adJ43PRc1uIibkZ7
+X-Google-Smtp-Source: ABdhPJwBsBhjiVRzoKpttjhEcHUgcSBV5/F0iI39ODAGN8VEsOq+opgx2eS+Vsrr/pYeZ7Vkt9I6CAAl7ipObN2gnIc=
+X-Received: by 2002:a05:6a00:bc2:b029:2df:93cc:371a with SMTP id
+ x2-20020a056a000bc2b02902df93cc371amr4622908pfu.12.1621441628686; Wed, 19 May
+ 2021 09:27:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-4-jonathan@marek.ca>
+In-Reply-To: <20210511180728.23781-4-jonathan@marek.ca>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 19 May 2021 18:26:57 +0200
+Message-ID: <CAG3jFytj8sgC-GW03e17RWFLhJGhMGTBpBpFBhYi3fixJuAdFg@mail.gmail.com>
+Subject: Re: [PATCH 03/17] media: camss: csiphy-3ph: add support for SM8250
+ CSI DPHY
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible stirng for MediaTek MT8365 SoC. Add also the
-compatible in the blacklist of the cpufreq-dt-platdev driver.
+On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
+>
+> Add support for CSIPHY (2PH/DPHY mode) found on SM8250 hardware.
+>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  .../qcom/camss/camss-csiphy-3ph-1-0.c         | 144 +++++++++++++++++-
+>  1 file changed, 137 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+> index 783b65295d20..61947576ddfb 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+> @@ -62,6 +62,7 @@ struct csiphy_reg_t {
+>         u32 csiphy_param_type;
+>  };
+>
+> +/* GEN2 1.0 2PH */
+>  static const struct
+>  csiphy_reg_t lane_regs_sdm845[5][14] = {
+>         {
+> @@ -146,6 +147,121 @@ csiphy_reg_t lane_regs_sdm845[5][14] = {
+>         },
+>  };
+>
+> +/* GEN2 1.2.1 2PH */
+> +static const struct
+> +csiphy_reg_t lane_regs_sm8250[5][20] = {
+> +       {
+> +               {0x0030, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0900, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0908, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0904, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0904, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0004, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x002C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0034, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0010, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x001C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x003C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0008, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+> +               {0x0000, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x000c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0038, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0014, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0028, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0024, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +       },
+> +       {
+> +               {0x0730, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C80, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C88, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C84, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C84, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0704, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x072C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0734, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0710, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x071C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x073C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0708, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+> +               {0x0700, 0x80, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x070c, 0xA5, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0738, 0x1F, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0714, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0728, 0x04, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0724, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +       },
+> +       {
+> +               {0x0230, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0A00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0A08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0A04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0A04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0204, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x022C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0234, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0210, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x021C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x023C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0208, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+> +               {0x0200, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x020c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0238, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0214, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0228, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0224, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +       },
+> +       {
+> +               {0x0430, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0B00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0B08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0B04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0B04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0404, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x042C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0434, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0410, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x041C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x043C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0408, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+> +               {0x0400, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x040c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0438, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0414, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0428, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0424, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +       },
+> +       {
+> +               {0x0630, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0C04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0604, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x062C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0634, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0610, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x061C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x063C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0608, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+> +               {0x0600, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x060c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0638, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0614, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0628, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0624, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+> +               {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +               {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+> +       },
+> +};
+> +
+>  static void csiphy_hw_version_read(struct csiphy_device *csiphy,
+>                                    struct device *dev)
+>  {
+> @@ -298,13 +414,23 @@ static void csiphy_gen1_config_lanes(struct csiphy_device *csiphy,
+>  static void csiphy_gen2_config_lanes(struct csiphy_device *csiphy,
+>                                      u8 settle_cnt)
+>  {
+> -       int i, l;
+> -       u32 val;
+> +       const struct csiphy_reg_t *r;
+> +       int i, l, array_size;
+> +       u32 val, lane_enable;
+> +
+> +       switch (csiphy->camss->version) {
+> +       case CAMSS_845:
+> +               r = &lane_regs_sdm845[0][0];
+> +               array_size = ARRAY_SIZE(lane_regs_sdm845[0]);
+> +               break;
+> +       case CAMSS_8250:
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
- drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
- drivers/cpufreq/mediatek-cpufreq.c   | 1 +
- 2 files changed, 2 insertions(+)
+CAMSS_8250 is not defined until later in the series, in "media: camss:
+add support for SM8250 camss".
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index 5e07065ec22f..d6fd821e3f5a 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -126,6 +126,7 @@ static const struct of_device_id blacklist[] __initconst = {
- 	{ .compatible = "mediatek,mt8173", },
- 	{ .compatible = "mediatek,mt8176", },
- 	{ .compatible = "mediatek,mt8183", },
-+	{ .compatible = "mediatek,mt8365", },
- 	{ .compatible = "mediatek,mt8516", },
- 
- 	{ .compatible = "nvidia,tegra20", },
-diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
-index f2e491b25b07..87019d5a9547 100644
---- a/drivers/cpufreq/mediatek-cpufreq.c
-+++ b/drivers/cpufreq/mediatek-cpufreq.c
-@@ -537,6 +537,7 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
- 	{ .compatible = "mediatek,mt8173", },
- 	{ .compatible = "mediatek,mt8176", },
- 	{ .compatible = "mediatek,mt8183", },
-+	{ .compatible = "mediatek,mt8365", },
- 	{ .compatible = "mediatek,mt8516", },
- 
- 	{ }
--- 
-2.31.1
+> +               r = &lane_regs_sm8250[0][0];
+> +               array_size = ARRAY_SIZE(lane_regs_sm8250[0]);
+> +               break;
+> +       }
+>
+>         for (l = 0; l < 5; l++) {
+> -               for (i = 0; i < 14; i++) {
+> -                       const struct csiphy_reg_t *r = &lane_regs_sdm845[l][i];
+> -
+> +               for (i = 0; i < array_size; i++, r++) {
+>                         switch (r->csiphy_param_type) {
+>                         case CSIPHY_SETTLE_CNT_LOWER_BYTE:
+>                                 val = settle_cnt & 0xff;
+> @@ -331,7 +457,10 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+>
+>         settle_cnt = csiphy_settle_cnt_calc(link_freq, csiphy->timer_clk_rate);
+>
+> -       val = BIT(c->clk.pos);
+> +       if (csiphy->camss->version == CAMSS_8250)
+> +               val = BIT(7);
+> +       else
+> +               val = BIT(c->clk.pos);
 
+sdm845 and sm8250 behave the same way, and I think this chunk should
+reflect that. With that being said the docs for camss-sdm845 mention
+that the only valid lane for the clock is #7. I don't know if it is
+preferred to enforce the restriction in the driver, yaml or both.
+
+>         for (i = 0; i < c->num_data; i++)
+>                 val |= BIT(c->data[i].pos * 2);
+>
+> @@ -349,7 +478,8 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+>         if (csiphy->camss->version == CAMSS_8x16 ||
+>             csiphy->camss->version == CAMSS_8x96)
+>                 csiphy_gen1_config_lanes(csiphy, cfg, settle_cnt);
+> -       else if (csiphy->camss->version == CAMSS_845)
+> +       else if (csiphy->camss->version == CAMSS_845 ||
+> +                csiphy->camss->version == CAMSS_8250)
+>                 csiphy_gen2_config_lanes(csiphy, settle_cnt);
+>
+>         /* IRQ_MASK registers - disable all interrupts */
+
+With the above issues fixed;
+
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
