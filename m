@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2B33884E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6786A3884F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237272AbhESCrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 22:47:53 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:39751 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235114AbhESCrv (ORCPT
+        id S1352916AbhESCtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 22:49:52 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4739 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236512AbhESCtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 22:47:51 -0400
-Received: by mail-ot1-f54.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so10500158otc.6;
-        Tue, 18 May 2021 19:46:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NdESKQMh43nC6JZr8BTSQsMvdc5KFh0MQVjejGwQt0Y=;
-        b=tTjqqI56+FxdySyFkRVJgZLE2yZ2PIlGAKXp2uiMMe7r+KTwYfj5ETqzbAHh4Ntwzo
-         6xEItnDMmlY0vkYqkCDReb7jcm3rZF6T9CRkUad9zKfnsaLBkadKQAxz3kVsz8pRb8jH
-         AaJQ1oYW4EVwKdPQh440aF6CzwnG4omyCyh4ml2M1tNrOEokuUv1DpFvDINu75kBgMNR
-         dE5+jno7qEIOP8/9EC2Neojj69q+WM+jxoIMYqDbYG1OyaDLK5sF15Lryow131n6xdxg
-         otfxYSkZXJLsODaNAgkcRwGVRDSuuyI+iBtCwnjOr3UQVYpO3EwmIIxEaR7MaNmQX0jr
-         gtKw==
-X-Gm-Message-State: AOAM533gaee76CxuHO+H9L4wYkm4+2b97trUgyNPlBhRtDehL7tlOyB6
-        4BwqEZyd/UcIfe22nLt3XlZYALQcxA==
-X-Google-Smtp-Source: ABdhPJyLtwLU5cVvUUA+7JfBr/dF1/lkXauFhjIqpLcKY7qXxLRlJUKcALQm7of52aoqdd3FZ6HNqA==
-X-Received: by 2002:a05:6830:1df0:: with SMTP id b16mr6692001otj.40.1621392392035;
-        Tue, 18 May 2021 19:46:32 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id x11sm4268909otr.36.2021.05.18.19.46.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 19:46:31 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: [PATCH] dt-bindings: mmc: Drop the "sdhci" compatible example
-Date:   Tue, 18 May 2021 21:46:30 -0500
-Message-Id: <20210519024630.1902477-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 18 May 2021 22:49:51 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlHK86mDJzpdwJ;
+        Wed, 19 May 2021 10:45:00 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 10:48:26 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 19
+ May 2021 10:48:26 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <michal.simek@xilinx.com>
+CC:     <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] net: xilinx_emaclite: Do not print real IOMEM pointer
+Date:   Wed, 19 May 2021 10:47:04 +0800
+Message-ID: <20210519024704.21228-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "sdhci" compatible is not documented though used as a fallback in a
-few cases. It is also not supported by a Linux driver. Just remove the
-example as part of ridding examples of undocumented bindings.
+Printing kernel pointers is discouraged because they might leak kernel
+memory layout.  This fixes smatch warning:
 
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-mmc@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
+drivers/net/ethernet/xilinx/xilinx_emaclite.c:1191 xemaclite_of_probe() warn:
+ argument 4 to %08lX specifier is cast from pointer
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- .../devicetree/bindings/mmc/mmc-controller.yaml  | 16 ----------------
- 1 file changed, 16 deletions(-)
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-index e141330c1114..6bf97cdd9507 100644
---- a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-+++ b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-@@ -357,22 +357,6 @@ dependencies:
- additionalProperties: true
+diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+index d9d58a7dabee..b06377fe7293 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
++++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+@@ -1189,9 +1189,8 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
+ 	}
  
- examples:
--  - |
--    mmc@ab000000 {
--        compatible = "sdhci";
--        reg = <0xab000000 0x200>;
--        interrupts = <23>;
--        bus-width = <4>;
--        cd-gpios = <&gpio 69 0>;
--        cd-inverted;
--        wp-gpios = <&gpio 70 0>;
--        max-frequency = <50000000>;
--        keep-power-in-suspend;
--        wakeup-source;
--        mmc-pwrseq = <&sdhci0_pwrseq>;
--        clk-phase-sd-hs = <63>, <72>;
--    };
--
-   - |
-     mmc3: mmc@1c12000 {
-         #address-cells = <1>;
+ 	dev_info(dev,
+-		 "Xilinx EmacLite at 0x%08lX mapped to 0x%08lX, irq=%d\n",
+-		 (unsigned long __force)ndev->mem_start,
+-		 (unsigned long __force)lp->base_addr, ndev->irq);
++		 "Xilinx EmacLite at 0x%08lX mapped to 0x%p, irq=%d\n",
++		 (unsigned long __force)ndev->mem_start, lp->base_addr, ndev->irq);
+ 	return 0;
+ 
+ error:
 -- 
-2.27.0
+2.17.1
 
