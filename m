@@ -2,212 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AD83890CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C403890D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347450AbhESO3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S1347580AbhESOb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241764AbhESO3m (ORCPT
+        with ESMTP id S1347546AbhESOb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:29:42 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0552CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:28:19 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id c20so20299661ejm.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:28:19 -0700 (PDT)
+        Wed, 19 May 2021 10:31:57 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FC9C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:30:37 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id t193so9595803pgb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:30:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=v5CXWXv+dicxXzBmVU94yt1htl8k2quY3j/LebiIK+k=;
-        b=EvWNtCTc8p9rBoagHQZW3apWHQWRmFXtifalApkJiN+PrAeY/YI5SKIs0c1NJoHb+B
-         rSWorFAyAtolyweWqIdEmbisnakESOLNsp85MCQZq/4VuvkfnNIIn1Fr6jkDpeNyKTnW
-         UwPyQ18Ut1oeW5Wge+ZEpyAT6GxRu3HrqpiPLVQ/IXBMTsljzlPqxpVy5wig0EFoSXKF
-         hMSoAaZW1ZP8y2zAT+RwceIUKtHUerklkrqbxaliQ6ri+aE6s2TJD2jaCnCvr7xICc0a
-         6MwVi2h179oCbAC8VRQCD+AZjnmWYcT82K7X0nLGT0JSz9PzICghqTANga/lEKxoshmI
-         eX4Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rt/H9kqo4opNwZCAYpaq4Dm1MqGgRfPs4hw8Yb8ixao=;
+        b=i0PtYZ6fhrKb5OBqzIORwwCTePqgZ28Sr0YjIbiqyA18fd+tgipwr3YBxDp2CxqrPy
+         iJMwNeyV/wYkmLGrf6aq+iYJdi0Rq9l5Se7RJErRSEvoDDpCIBFf4AX0h80/7pFbnqtS
+         XcKbtm+IYOO4uwK/MoYML+C6EL5FXReGS2zPU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=v5CXWXv+dicxXzBmVU94yt1htl8k2quY3j/LebiIK+k=;
-        b=XmEHcGl2c4GRHRBMS/nqC7yO/9hpTSUHL6wqICG4Qqy9Zu4pt1pboUAXRikGSng3Ol
-         at6vdxb9EtyCA+jEAbWlPzT6WvoUNEx3IlkmPgH3bkx8ocpQf46U0IPmNg897272vfr6
-         OqniBunRJgTjOJKUz+1nrWiJnMUeA6egFiOOCGLfYFKFomwPk1wjMB/ciwRz/Cvq6lYA
-         /7N+y8TPZHFD966X+wZ4oGR1SDgpOjda0ZEEr6XQmCO4ePStzGkKKVWM7W7mKED0oXtc
-         ASn6tkBUulUgpdefURT+5vo06K5Rim3beo4w6anBKdDp54fta7jeV8dq2Ksh15Bd9P0O
-         Qzug==
-X-Gm-Message-State: AOAM530QmccGnFFV5VCGsA4j1UpiebAaocXm5k9kI0cpfGP4ozfUqGLH
-        inbAtOfEB7db7AlCGlQaEHlRyC6KfR6cDrnZA63DsQ==
-X-Google-Smtp-Source: ABdhPJxP6OKa3AVmX8FScoq0kJuQdUDNbLmKvSmiJx0cmEb2xPU0a2tDtgZyDtqHbMKnFlI3b8rMHaBznk1oEjb0x4g=
-X-Received: by 2002:a17:907:161f:: with SMTP id hb31mr13134677ejc.514.1621434498337;
- Wed, 19 May 2021 07:28:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rt/H9kqo4opNwZCAYpaq4Dm1MqGgRfPs4hw8Yb8ixao=;
+        b=GmvNJDEH/BLgoIKOdaJQDbzidAYFzla1eCBkraQ9OHkhxORVHt3iYTtvs8pCxMLNuO
+         fXwAAkJwMlYrRWvIgMcPpsQecOv7lwXV88+lTIuTCi9Xx8gBHMmstV+vkfwCuSKMoQ0B
+         t/A0ICI30npzxGj/FELHr/WFzuYLoHAfbF8mCtrq9wBiHft8GQA7fvKOIyQ9Pr8azuoz
+         LzHn+vVZ5SRzXWRWuC6gfLNF/pK5g5Qw6xybyrc97AU19GePKE9BMXCYR024IvhFmA4Y
+         iSFNto0J5+UqJiY667Up+C8qUJKasFPXReFsjAd98XSND0TT6dX4OK5mwUFgAXcJWe00
+         Z3PQ==
+X-Gm-Message-State: AOAM53139kcpNe2PrByxisLIU6VZo+lEIa9e4ksowmoGNJ6Zt7mi4TPR
+        QSy1ErsYrTvj7uYmZqArMr5ubw==
+X-Google-Smtp-Source: ABdhPJzOpymkaL4fPwyPa2NIrifUr+bc66RUEBAnS8XP3YyYvp0CA6ioy/nE/sd6OZw+h1dVPo1UcQ==
+X-Received: by 2002:aa7:8b56:0:b029:2b9:77be:d305 with SMTP id i22-20020aa78b560000b02902b977bed305mr10940065pfd.61.1621434637343;
+        Wed, 19 May 2021 07:30:37 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:87ab:ff82:1544:697])
+        by smtp.gmail.com with ESMTPSA id 3sm14337661pff.132.2021.05.19.07.30.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 07:30:36 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH v5 00/14] media: mtk-vcodec: support for MT8183 decoder
+Date:   Wed, 19 May 2021 23:29:57 +0900
+Message-Id: <20210519143011.1175546-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
-References: <20210407123438.224551-1-mindal@semihalf.com> <20210511030658.GG3425@dragon>
- <AM0PR04MB67542D30A9424D455DB3ADD496539@AM0PR04MB6754.eurprd04.prod.outlook.com>
- <20210513021214.GJ3425@dragon> <20210513141921.i7sfmekbcw2m7vxd@skbuf>
- <CAPv3WKfnWFjfZw39avZBEyUpEsH2f=NCs8VfjeR+wzk4qV3GmA@mail.gmail.com>
- <20210513183102.6dflgb4v2oekdlq5@skbuf> <CAKpxNiyxDi66CXW4Z_exC=uy6mNbfhdBG5czgqNZqxmszegB0A@mail.gmail.com>
-In-Reply-To: <CAKpxNiyxDi66CXW4Z_exC=uy6mNbfhdBG5czgqNZqxmszegB0A@mail.gmail.com>
-From:   =?UTF-8?Q?Kornel_Dul=C4=99ba?= <mindal@semihalf.com>
-Date:   Wed, 19 May 2021 16:28:07 +0200
-Message-ID: <CAKpxNiyHaw6kr98q5466Amjs-mTtyWArJShPwvYm+znjPDZ0yw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: fsl-ls1028a: Correct ECAM PCIE window ranges
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "upstream@semihalf.com" <upstream@semihalf.com>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
+This series adds support for the stateless API into mtk-vcodec, by first
+separating the stateful ops into their own source file, and introducing
+a new set of ops suitable for stateless decoding. As such, support for
+stateful decoders should remain completely unaffected.
 
-On Fri, May 14, 2021 at 10:25 AM Kornel Dul=C4=99ba <mindal@semihalf.com> w=
-rote:
->
-> Hi Vladimir,
->
-> On Thu, May 13, 2021 at 8:31 PM Vladimir Oltean <vladimir.oltean@nxp.com>=
- wrote:
-> >
-> > Hi Marcin,
-> >
-> > On Thu, May 13, 2021 at 07:54:15PM +0200, Marcin Wojtas wrote:
-> > > Hi Vladimir,
-> > >
-> > > czw., 13 maj 2021 o 16:19 Vladimir Oltean <vladimir.oltean@nxp.com> n=
-apisa=C5=82(a):
-> > > >
-> > > > On Thu, May 13, 2021 at 10:12:15AM +0800, Shawn Guo wrote:
-> > > > > On Tue, May 11, 2021 at 09:48:22AM +0000, Claudiu Manoil wrote:
-> > > > > > >-----Original Message-----
-> > > > > > >From: Shawn Guo <shawnguo@kernel.org>
-> > > > > > >Sent: Tuesday, May 11, 2021 6:07 AM
-> > > > > > [...]
-> > > > > > >Subject: Re: [PATCH] arm64: dts: fsl-ls1028a: Correct ECAM PCI=
-E window
-> > > > > > >ranges
-> > > > > > >
-> > > > > > >+ Claudiu
-> > > > > > >
-> > > > > > >On Wed, Apr 07, 2021 at 02:34:38PM +0200, Kornel Duleba wrote:
-> > > > > > >> Currently all PCIE windows point to bus address 0x0, which d=
-oes not match
-> > > > > > >> the values obtained from hardware during EA.
-> > > > > > >> Replace those values with CPU addresses, since in reality we
-> > > > > > >> have a 1:1 mapping between the two.
-> > > > > > >>
-> > > > > > >> Signed-off-by: Kornel Duleba <mindal@semihalf.com>
-> > > > > > >
-> > > > > > >Claudiu,
-> > > > > > >
-> > > > > > >Do you have any comment on this?
-> > > > > > >
-> > > > > >
-> > > > > > Well, probing is still working with this change, I've just test=
-ed it.
-> > > > > >
-> > > > > > PCI listing at boot time changes from:
-> > > > > >
-> > > > > > pci-host-generic 1f0000000.pcie: host bridge /soc/pcie@1f000000=
-0 ranges:
-> > > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f81=
-5ffff -> 0x0000000000
-> > > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81=
-cffff -> 0x0000000000
-> > > > > >
-> > > > > > to:
-> > > > > >
-> > > > > > pci-host-generic 1f0000000.pcie: host bridge /soc/pcie@1f000000=
-0 ranges:
-> > > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f81=
-5ffff -> 0x01f8000000
-> > > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81=
-cffff -> 0x01f8160000
-> > > > > >
-> > > > > > and looks reasonable.
-> > > > > > Adding Vladimir and Alex just in case.
-> > > > > >
-> > > > > > Acked-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-> > > > >
-> > > > > Thanks, Claudiu.
-> > > > >
-> > > > > Kornel,
-> > > > >
-> > > > > Do we need a Fixes tag for this patch?
-> > > > >
-> > > > > Shawn
-> > > >
-> > > > Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > > >
-> > > > I am not sure whether "incorrect data that is unused" deserves a Fi=
-xes:
-> > > > tag or not, probably not.
-> > > >
-> > > > Bjorn Helgaas did point out before that "The fact that all these wi=
-ndows
-> > > > map to PCI bus address 0 looks broken", so there's that:
-> > > >
-> > > > https://patchwork.kernel.org/project/linux-pci/cover/20201129230743=
-.3006978-1-kw@linux.com/
-> > > >
-> > > > And while it does look "broken", with the Enhanced Allocation capab=
-ility
-> > > > and the pci-host-ecam-generic driver, there is no address translati=
-on
-> > > > taking place, so no inbound/outbound windows are configured, so the
-> > > > range.pci_addr calculated in devm_of_pci_get_host_bridge_resources(=
-) is
-> > > > not used for anything except for printing.
-> > >
-> > > ...in Linux. Please note Linux device trees can be used as-is by othe=
-r
-> > > projects. Regardless my opinion on how that's unfortunate, FreeBSD
-> > > does additional ranges check before performing EA and fails. Since th=
-e
-> > > current DT description is imo broken and the change is transparent fo=
-r
-> > > Linux, it would be great to get this change merged into tree in case
-> > > there are are no objections.
-> >
-> > Just for my curiosity, can you please link me to the extra FreeBSD chec=
-ks?
->
-> FreeBSD parses values from "ranges" and uses "rman" API to store them.
-> Now "rman", or Resource manager is used in the FreeBSD kernel to
-> manage memory regions.
-> In particular it checks if any two regions inserted into the same
-> "manager" overlap.
-> If they do it is treated as a fatal error, which in our case causes
-> the PCI driver to fail to probe.
-> code: https://github.com/freebsd/freebsd-src/blob/main/sys/dev/pci/pci_ho=
-st_generic.c#L148.
->
-> >
-> > Anyway, I'm not sure what is more "broken", to have a "ranges" property
-> > when no address translation takes place, or for that "ranges" property
-> > to be set to a confusing "child address space" value. That's not to say
-> > I have an objection against Shawn merging the patch.
-> >
-> > My main point was slightly different though, the "ranges" property is
-> > currently mandatory, although in this case it provides no information
-> > which cannot be retrieved directly from the config space. Properties
-> > that have no other use except to be pedantic are, well, useless.
-> > Maybe we can do something about that too.
+This series has been tested with both MT8183 and MT8173. Decoding was
+working for both chips, and in the case of MT8173 no regression has been
+spotted.
 
-Do you have any more remarks regarding this patch?
+Patches 1-5 fix a few compliance issues with the decoder and encoder, most
+notably by adding support for the START and STOP command for the latter. These
+patches were last in the previous series but have been moved to the beginning so
+they can be applied sooner.
+
+Patches 6-9 separates the "stateful" part of the driver into its own file and
+add support for the new firmware and pixel format used by MT8183.
+
+Patches 10-14 add support for H.264 stateless decoding and MT8183.
+
+Changes since v4:
+* Moved compliance fix patches to the head of the series.
+* Select MEDIA_CONTROLLER_REQUEST_API.
+* Properly capitalize MM21's format description string.
+* Reorganize stateless code as suggested by Hans.
+* Fix compilation errors when DEBUG is defined.
+* Merge double-free fixup patch into the patch that introduced the issue (was
+  a separate patch coming right after the one introducing the issue).
+
+Changes since v3:
+* Stop checking that controls are set for every request.
+* Add V4L2_CID_STATELESS_H264_START_CODE control.
+* Stop mapping OUTPUT buffers and getting the NAL type from them, use the
+  nal_ref_idc field instead.
+* Make V4L2_CID_MIN_BUFFERS_FOR_CAPTURE control stateful-only.
+* Set vb2_buffer's field to V4L2_FIELD_NONE in buffer validation hook.
+
+Changes since v2:
+* Add follow-up patches fixing support for START/STOP commands for the
+  encoder, and stateful decoder.
+
+Alexandre Courbot (8):
+  media: mtk-vcodec: vdec: use helpers in VIDIOC_(TRY_)DECODER_CMD
+  media: mtk-vcodec: vdec: clamp OUTPUT resolution to hardware limits
+  media: mtk-vcodec: make flush buffer reusable by encoder
+  media: mtk-vcodec: venc: support START and STOP commands
+  media: mtk-vcodec: vdec: handle firmware version field
+  media: mtk-vcodec: support version 2 of decoder firmware ABI
+  media: add Mediatek's MM21 format
+  dt-bindings: media: document mediatek,mt8183-vcodec-dec
+
+Hirokazu Honda (1):
+  media: mtk-vcodec: vdec: Support H264 profile control
+
+Yunfei Dong (5):
+  media: mtk-vcodec: vdec: move stateful ops into their own file
+  media: mtk-vcodec: vdec: support stateless API
+  media: mtk-vcodec: vdec: support stateless H.264 decoding
+  media: mtk-vcodec: vdec: add media device if using stateless api
+  media: mtk-vcodec: enable MT8183 decoder
+
+ .../bindings/media/mediatek-vcodec.txt        |   1 +
+ .../media/v4l/pixfmt-reserved.rst             |   7 +
+ drivers/media/platform/Kconfig                |   3 +
+ drivers/media/platform/mtk-vcodec/Makefile    |   3 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      | 817 +++---------------
+ .../platform/mtk-vcodec/mtk_vcodec_dec.h      |  27 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  66 +-
+ .../mtk-vcodec/mtk_vcodec_dec_stateful.c      | 668 ++++++++++++++
+ .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 366 ++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  58 +-
+ .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 135 ++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |   4 +
+ .../mtk-vcodec/vdec/vdec_h264_req_if.c        | 780 +++++++++++++++++
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |   3 +
+ .../media/platform/mtk-vcodec/vdec_drv_if.h   |   1 +
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  23 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  43 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |   5 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+ include/uapi/linux/videodev2.h                |   1 +
+ 20 files changed, 2290 insertions(+), 722 deletions(-)
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+
+--
+2.31.1.751.gd2f1c929bd-goog
+
