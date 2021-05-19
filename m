@@ -2,324 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C223892C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E323892D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354764AbhESPkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:40:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28608 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230176AbhESPku (ORCPT
+        id S1354939AbhESPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242076AbhESPlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:40:50 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JFXYtQ178307;
-        Wed, 19 May 2021 11:39:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=++z41hnm6bT8+P1jMnDJLFZd+fEX4QRI6pwwhYg1kiM=;
- b=XhypPluNwuU48014dv5rPHf2ntj80wLDV1g9bW4i5UtZDhLHVNA3fMusiO4BLjWa8653
- YX3dzB2FnaJFij3xqZUjToNDj5XfcRD+u8PS9vh5D0WjO2KT+M04JK40fohwOt9gn+Rz
- mkPtzrZaqoAzv5vIpQorwVAJKwGtCyF8rdsQo0qYirDMNCHdFqEiiFEaaqCpM1m49QEk
- ISrqIFXZeVcgOmfiHdYxQzgFbjr8qd0EgVCXaTAIWs0C0qqvwc7LkIJw13Elxfvt559y
- fnzngFP8NX9MNxc7X5uaGslyWXRJP8Kof98xVacTsXdHMrzwUFW8+zADx2qK2r8llA2p QQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n23kr0a0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 11:39:28 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JFYI4c180458;
-        Wed, 19 May 2021 11:39:28 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38n23kr09f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 11:39:28 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JFMeb0028443;
-        Wed, 19 May 2021 15:39:27 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma04dal.us.ibm.com with ESMTP id 38j5xa7xdb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 15:39:27 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JFdQta24183070
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 15:39:26 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A9CF8AC060;
-        Wed, 19 May 2021 15:39:26 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 394C0AC089;
-        Wed, 19 May 2021 15:39:26 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 19 May 2021 15:39:26 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        Tony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC) interception handler
-Date:   Wed, 19 May 2021 11:39:21 -0400
-Message-Id: <20210519153921.804887-3-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210519153921.804887-1-akrowiak@linux.ibm.com>
-References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
+        Wed, 19 May 2021 11:41:35 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD2FC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:40:14 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id v13so7245901ple.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5bEuxX2X8bBUVqC8o4ZD8af+cxfwPYrie2CqQyfE1eg=;
+        b=qRETapL+guGrCRWWx8ib5azlaovGzEPYrmFu8ScRF6zwzGS2UvHzB6A+78Bc9WOqMk
+         5PZf+y5DdzbsF/6aJ/EnoKVI6P2fSFypZV5Xj7ldUSA0YCNHcEetvdfVjjqNWvfvjzcU
+         i7gUDbjdg0HsEzBNE1LDFaPyh7c8IAxpusJdwH3WzvMtO5e5hsuPayfq510JlllOKjnJ
+         9mrnsIS0LICp0CZjeJdV1RK9lB4sfHFNUumZvRFT1i2nJE81MyPL63u1EibjDpXpz2CY
+         r4h6cJYviHXpX83OC9OGoyszfc/cwRtDFdQ1gOd376N6Dsfhr22asd2BvpA9lwG2kq70
+         XmVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5bEuxX2X8bBUVqC8o4ZD8af+cxfwPYrie2CqQyfE1eg=;
+        b=RwgSlFqdkqqPRgnu3pOV79r3YxF1Utcfrzekyihq1Hnrc7JbvNyEx+Cges2GTCXedK
+         Z5qLAkzjSRb32vEGYv4JX01ioEX0rEEAhmsH/Bnss0fslfNjC+6YvHHkI/6khOpvLwnE
+         qXbCOSFkRsgymumr5ZAMen/Z+fCT0Hunj1K9H3faylf6b8Mux7inaOjO5ukMvdLlHz1F
+         marBNcmZICZAJnal13qdwTH94JJine9zY4jHJND3TY/5D+PmKHynvK3zTO3yWxQItz6F
+         D8MnvEmDUEKPmjDfEmIv9b4OEQvRAXYcs6xgkucXzkYaf5rEB6U5G/ry/LN8MzMyEhB5
+         KB3A==
+X-Gm-Message-State: AOAM532wsa63McfggkEPqUPRMiM4macHNn6Kir+MWU4+wU9ucX4Aq2uU
+        NqCXxTTZUtcwYeEzUPIwltQsyw==
+X-Google-Smtp-Source: ABdhPJxhN0z+Kc4wpNsbbohN9nkWE0iRXUWhsGpnxbGaJuuoAihs6TJvhqtMh2V9Dpv4p6HEvC9WRA==
+X-Received: by 2002:a17:90a:a386:: with SMTP id x6mr12059847pjp.193.1621438814276;
+        Wed, 19 May 2021 08:40:14 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id u19sm8076836pfn.158.2021.05.19.08.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 08:40:13 -0700 (PDT)
+Date:   Wed, 19 May 2021 15:40:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Stamatis, Ilias" <ilstam@amazon.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "zamsden@gmail.com" <zamsden@gmail.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+Subject: Re: [PATCH v2 03/10] KVM: X86: Add kvm_scale_tsc_l1() and
+ kvm_compute_tsc_offset_l1()
+Message-ID: <YKUxWh1Blu7rLZR9@google.com>
+References: <20210512150945.4591-1-ilstam@amazon.com>
+ <20210512150945.4591-4-ilstam@amazon.com>
+ <YKRH7qVHpow6kwi5@google.com>
+ <772e232c27d180f876a5b49d7f188c0c3acd7560.camel@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: yrhoGKpptXvxXzTA7wsokoVDVE16B21g
-X-Proofpoint-ORIG-GUID: dK2OJtqhRRlbDWnvnavBhxkozyhBwdCO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_07:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 impostorscore=0 mlxscore=0
- adultscore=0 suspectscore=0 clxscore=1015 phishscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190096
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <772e232c27d180f876a5b49d7f188c0c3acd7560.camel@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is currently nothing that controls access to the structure that
-contains the function pointer to the handler that processes interception of
-the PQAP(AQIC) instruction. If the mdev is removed while the PQAP(AQIC)
-instruction is being intercepted, there is a possibility that the function
-pointer to the handler can get wiped out prior to the attempt to call it.
+On Wed, May 19, 2021, Stamatis, Ilias wrote:
+> On Tue, 2021-05-18 at 23:04 +0000, Sean Christopherson wrote:
+> > On Wed, May 12, 2021, Ilias Stamatis wrote:
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index 07cf5d7ece38..84af1af7a2cc 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -2319,18 +2319,30 @@ u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(kvm_scale_tsc);
+> > > 
+> > > -static u64 kvm_compute_tsc_offset(struct kvm_vcpu *vcpu, u64 target_tsc)
+> > > +u64 kvm_scale_tsc_l1(struct kvm_vcpu *vcpu, u64 tsc)
+> > > +{
+> > > +     u64 _tsc = tsc;
+> > > +     u64 ratio = vcpu->arch.l1_tsc_scaling_ratio;
+> > > +
+> > > +     if (ratio != kvm_default_tsc_scaling_ratio)
+> > > +             _tsc = __scale_tsc(ratio, tsc);
+> > > +
+> > > +     return _tsc;
+> > > +}
+> > 
+> > Just make the ratio a param.  This is complete copy+paste of kvm_scale_tsc(),
+> > with 3 characters added.  And all of the callers are already in an L1-specific
+> > function or have L1 vs. L2 awareness.  IMO, that makes the code less magical, too,
+> > as I don't have to dive into a helper to see that it reads l1_tsc_scaling_ratio
+> > versus tsc_scaling_ratio.
+> > 
+> 
+> That's how I did it initially but changed it into a separate function after
+> receiving feedback on v1. I'm neutral, I don't mind changing it back.
 
-This patch utilizes RCU to synchronize access to the kvm_s390_module_hook
-structure used to process interception of the PQAP(AQIC) instruction.
+Ah, I see the conundrum.  The vendor code isn't straightforward because of all
+the enabling checks against vmcs12 controls.
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
----
- arch/s390/include/asm/kvm_host.h  |  1 +
- arch/s390/kvm/priv.c              | 47 ++++++++++++++++-----------
- drivers/s390/crypto/vfio_ap_ops.c | 54 ++++++++++++++++++++++++-------
- 3 files changed, 73 insertions(+), 29 deletions(-)
+Given that, I don't terribly mind the callbacks, but I do think the connection
+between the computation and the VMWRITE needs to be more explicit.
 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index 8925f3969478..4987e82d6116 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -806,6 +806,7 @@ struct kvm_s390_cpu_model {
- struct kvm_s390_module_hook {
- 	int (*hook)(struct kvm_vcpu *vcpu);
- 	struct module *owner;
-+	void *data;
- };
- 
- struct kvm_s390_crypto {
-diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-index 9928f785c677..2d330dfbdb61 100644
---- a/arch/s390/kvm/priv.c
-+++ b/arch/s390/kvm/priv.c
-@@ -610,8 +610,11 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
- static int handle_pqap(struct kvm_vcpu *vcpu)
+Poking around the code, the other thing that would help would be to get rid of
+the awful decache_tsc_multiplier().  That helper was added to paper over the
+completely broken logic of commit ff2c3a180377 ("KVM: VMX: Setup TSC scaling
+ratio when a vcpu is loaded").  Its use in vmx_vcpu_load_vmcs() is basically
+"write the VMCS if we forgot to earlier", which is all kinds of wrong.
+
+If we get rid of that stupidity as prep work at the beginning of this series,
+and have the "setters" return the computed value, the nested VMX code can
+consume the value directly instead of having the subtle dependency on the helpers.
+
+	vmcs_write64(TSC_OFFSET, kvm_calc_l2_tsc_offset(vcpu));
+
+	if (kvm_has_tsc_control)
+		vmcs_write64(TSC_MULTIPLIER, kvm_calc_l2_tsc_multiplier(vcpu));
+
+
+Side topic, the checks against the vmcs12 controls are wrong.  Specifically,
+when checking a secondary execution control, KVM needs to first check that the
+secondary control is enabled in the primary control.  But, we helpers for that.
+The primary control should use its helper, too.  And while you're at it, drop
+the local variable in the getter.  I.e.:
+
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 3c4eb14a1e86..8735f2d71e17 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -1801,13 +1801,12 @@ static u64 vmx_get_l2_tsc_offset(struct kvm_vcpu *vcpu)
+ static u64 vmx_get_l2_tsc_multiplier(struct kvm_vcpu *vcpu)
  {
- 	struct ap_queue_status status = {};
-+	struct kvm_s390_module_hook *pqap_module_hook;
-+	int (*pqap_hook)(struct kvm_vcpu *vcpu);
-+	struct module *owner;
- 	unsigned long reg0;
--	int ret;
-+	int ret = 0;
- 	uint8_t fc;
- 
- 	/* Verify that the AP instruction are available */
-@@ -657,24 +660,32 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	 * Verify that the hook callback is registered, lock the owner
- 	 * and call the hook.
- 	 */
--	if (vcpu->kvm->arch.crypto.pqap_hook) {
--		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
--			return -EOPNOTSUPP;
--		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
--		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
--		if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
--			kvm_s390_set_psw_cc(vcpu, 3);
--		return ret;
-+	rcu_read_lock();
-+	pqap_module_hook = rcu_dereference(vcpu->kvm->arch.crypto.pqap_hook);
-+	if (pqap_module_hook) {
-+		pqap_hook = pqap_module_hook->hook;
-+		owner = pqap_module_hook->owner;
-+		rcu_read_unlock();
-+		if (!try_module_get(owner)) {
-+			ret = -EOPNOTSUPP;
-+		} else {
-+			ret = pqap_hook(vcpu);
-+			module_put(owner);
-+			if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
-+				kvm_s390_set_psw_cc(vcpu, 3);
-+		}
-+	} else {
-+		rcu_read_unlock();
-+		/*
-+		 * A vfio_driver must register a hook.
-+		 * No hook means no driver to enable the SIE CRYCB and no
-+		 * queues. We send this response to the guest.
-+		 */
-+		status.response_code = 0x01;
-+		memcpy(&vcpu->run->s.regs.gprs[1], &status, sizeof(status));
-+		kvm_s390_set_psw_cc(vcpu, 3);
- 	}
--	/*
--	 * A vfio_driver must register a hook.
--	 * No hook means no driver to enable the SIE CRYCB and no queues.
--	 * We send this response to the guest.
--	 */
--	status.response_code = 0x01;
--	memcpy(&vcpu->run->s.regs.gprs[1], &status, sizeof(status));
--	kvm_s390_set_psw_cc(vcpu, 3);
--	return 0;
-+	return ret;
- }
- 
- static int handle_stfl(struct kvm_vcpu *vcpu)
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index f90c9103dac2..a6aa3f753ac4 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -16,6 +16,7 @@
- #include <linux/bitops.h>
- #include <linux/kvm_host.h>
- #include <linux/module.h>
-+#include <linux/rcupdate.h>
- #include <asm/kvm.h>
- #include <asm/zcrypt.h>
- 
-@@ -279,6 +280,7 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	uint64_t status;
- 	uint16_t apqn;
- 	struct vfio_ap_queue *q;
-+	struct kvm_s390_module_hook *pqap_module_hook;
- 	struct ap_queue_status qstatus = {
- 			       .response_code = AP_RESPONSE_Q_NOT_AVAIL, };
- 	struct ap_matrix_mdev *matrix_mdev;
-@@ -287,13 +289,17 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	if (!(vcpu->arch.sie_block->eca & ECA_AIV))
- 		return -EOPNOTSUPP;
- 
--	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
--	mutex_lock(&matrix_dev->lock);
-+	rcu_read_lock();
-+	pqap_module_hook = rcu_dereference(vcpu->kvm->arch.crypto.pqap_hook);
-+	if (!pqap_module_hook) {
-+		rcu_read_unlock();
-+		goto set_status;
-+	}
- 
--	if (!vcpu->kvm->arch.crypto.pqap_hook)
--		goto out_unlock;
--	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
--				   struct ap_matrix_mdev, pqap_hook);
-+	matrix_mdev = pqap_module_hook->data;
-+	rcu_read_unlock();
-+	mutex_lock(&matrix_dev->lock);
-+	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
- 
- 	/*
- 	 * If the KVM pointer is in the process of being set, wait until the
-@@ -322,9 +328,10 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 		qstatus = vfio_ap_irq_disable(q);
- 
- out_unlock:
-+	mutex_unlock(&matrix_dev->lock);
-+set_status:
- 	memcpy(&vcpu->run->s.regs.gprs[1], &qstatus, sizeof(qstatus));
- 	vcpu->run->s.regs.gprs[1] >>= 32;
--	mutex_unlock(&matrix_dev->lock);
- 	return 0;
- }
- 
-@@ -353,8 +360,6 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
- 	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
- 	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
- 	mdev_set_drvdata(mdev, matrix_mdev);
--	matrix_mdev->pqap_hook.hook = handle_pqap;
--	matrix_mdev->pqap_hook.owner = THIS_MODULE;
- 	mutex_lock(&matrix_dev->lock);
- 	list_add(&matrix_mdev->node, &matrix_dev->mdev_list);
- 	mutex_unlock(&matrix_dev->lock);
-@@ -1085,6 +1090,22 @@ static const struct attribute_group *vfio_ap_mdev_attr_groups[] = {
- 	NULL
- };
- 
-+static int vfio_ap_mdev_set_pqap_hook(struct ap_matrix_mdev *matrix_mdev,
-+				       struct kvm *kvm)
-+{
-+	struct kvm_s390_module_hook *pqap_hook;
-+
-+	pqap_hook = kmalloc(sizeof(*kvm->arch.crypto.pqap_hook), GFP_KERNEL);
-+	if (!pqap_hook)
-+		return -ENOMEM;
-+	pqap_hook->data = matrix_mdev;
-+	pqap_hook->hook = handle_pqap;
-+	pqap_hook->owner = THIS_MODULE;
-+	rcu_assign_pointer(kvm->arch.crypto.pqap_hook, pqap_hook);
-+
-+	return 0;
-+}
-+
- /**
-  * vfio_ap_mdev_set_kvm
-  *
-@@ -1107,6 +1128,7 @@ static const struct attribute_group *vfio_ap_mdev_attr_groups[] = {
- static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- 				struct kvm *kvm)
- {
-+	int ret;
- 	struct ap_matrix_mdev *m;
- 
- 	if (kvm->arch.crypto.crycbd) {
-@@ -1115,6 +1137,10 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- 				return -EPERM;
- 		}
- 
-+		ret = vfio_ap_mdev_set_pqap_hook(matrix_mdev, kvm);
-+		if (ret)
-+			return ret;
-+
- 		kvm_get_kvm(kvm);
- 		matrix_mdev->kvm_busy = true;
- 		mutex_unlock(&matrix_dev->lock);
-@@ -1123,7 +1149,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- 					  matrix_mdev->matrix.aqm,
- 					  matrix_mdev->matrix.adm);
- 		mutex_lock(&matrix_dev->lock);
--		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
- 		matrix_mdev->kvm = kvm;
- 		matrix_mdev->kvm_busy = false;
- 		wake_up_all(&matrix_mdev->wait_for_kvm);
-@@ -1161,6 +1186,13 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
- 	return NOTIFY_DONE;
- }
- 
-+static void vfio_ap_mdev_unset_pqap_hook(struct kvm *kvm)
-+{
-+	rcu_assign_pointer(kvm->arch.crypto.pqap_hook, NULL);
-+	synchronize_rcu();
-+	kfree(kvm->arch.crypto.pqap_hook);
-+}
-+
- /**
-  * vfio_ap_mdev_unset_kvm
-  *
-@@ -1189,11 +1221,11 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
- 
- 	if (matrix_mdev->kvm) {
- 		matrix_mdev->kvm_busy = true;
-+		vfio_ap_mdev_unset_pqap_hook(matrix_mdev->kvm);
- 		mutex_unlock(&matrix_dev->lock);
- 		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
- 		mutex_lock(&matrix_dev->lock);
- 		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
--		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
- 		kvm_put_kvm(matrix_mdev->kvm);
- 		matrix_mdev->kvm = NULL;
- 		matrix_mdev->kvm_busy = false;
--- 
-2.30.2
+        struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
+-       u64 multiplier = kvm_default_tsc_scaling_ratio;
 
+-       if (vmcs12->cpu_based_vm_exec_control & CPU_BASED_USE_TSC_OFFSETTING &&
+-           vmcs12->secondary_vm_exec_control & SECONDARY_EXEC_TSC_SCALING)
+-               multiplier = vmcs12->tsc_multiplier;
++       if (nested_cpu_has(vmcs12, CPU_BASED_USE_TSC_OFFSETTING) &&
++           nested_cpu_has2(vmcs12, SECONDARY_EXEC_TSC_SCALING))
++               return vmcs12->tsc_multiplier;
+
+-       return multiplier;
++       return kvm_default_tsc_scaling_ratio;
+ }
+
+Side topic #2: I now see why the x86.c helpers skip the math if the multiplier
+is kvm_default_tsc_scaling_ratio.
