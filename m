@@ -2,56 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E25388B88
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC550388B8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347864AbhESKTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 06:19:34 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:49285 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232933AbhESKT0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 06:19:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UZOs6SD_1621419484;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UZOs6SD_1621419484)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 19 May 2021 18:18:05 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     rmk+kernel@armlinux.org.uk
-Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] fs/adfs: bigdir: Fix an error code in adfs_fplus_read()
-Date:   Wed, 19 May 2021 18:18:03 +0800
-Message-Id: <1621419483-9339-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1347861AbhESKTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 06:19:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347871AbhESKTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 06:19:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C549E61244;
+        Wed, 19 May 2021 10:18:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621419498;
+        bh=4czM9EYWeLrdCcBbSESA/iLnLGU3ZjPNgJ15BIIYftQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=I3ULXtV0frIXd+jbldhclcCbCjpHhBkpbkewONFQKZXGGIYosRiuIe1Aq+v5xGExw
+         sSfsiqTwa3Xpxsof71XapkzyE/EyItT2SyaI+Y726f67/A+MB3SrC7gmxLdpQfP/dt
+         Jv2OdHDjJvyuchD3xx3l24J7XRwpVvRTLHqQqcoEyZEPB3Ts+H4i/mHFyvQxMCJxRY
+         RAO5aXeie/LVYSvON7mB5YvMDwFGEv2WhMkFBztNJbgmeCeFuaV0q85t8mola1egR7
+         LnLp5Ykth1NaHhz9gQGaiB1w5vvuvXd2ZLzChi1sQpbpl6ZwJmZND+rN+hxgpoKOTi
+         +2q8byeQ2iyxg==
+Date:   Wed, 19 May 2021 12:18:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Pavel Machek <pavel@ucw.cz>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [PATCH v2 16/17] leds: leds-nuc: add support for changing the
+ ethernet type indicator
+Message-ID: <20210519121812.4285b3ea@coco.lan>
+In-Reply-To: <20210519100253.49b155e9@thinkpad>
+References: <cover.1621349813.git.mchehab+huawei@kernel.org>
+        <792598f4a1a3219b6517057c92559b0f0a95b419.1621349814.git.mchehab+huawei@kernel.org>
+        <20210519100253.49b155e9@thinkpad>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code accidentally returns 0, but it should return the
--EIO error code to show a I/O error.
+Em Wed, 19 May 2021 10:02:53 +0200
+Marek Beh=C3=BAn <kabel@kernel.org> escreveu:
 
-Clean up smatch warning:
+> What possible configurations does this support?
+>=20
+> Does this blink on rx/tx activity for a specific ethernet port?
+>=20
 
-fs/adfs/dir_fplus.c:146 adfs_fplus_read() warn: missing error code 'ret'
+When the indicator is set to monitor Ethernet, it can work on either
+LAN1, LAN2 or both LAN interfaces.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/adfs/dir_fplus.c | 1 +
- 1 file changed, 1 insertion(+)
+> There is a work in progress to add support for transparent offloading of
+> LED triggers, with the netdev trigger being the first target.
+>=20
+> This means that after that is done, you could implement this driver so
+> that when netdev trigger is enabled on a supported interface, your
+> driver will offload the blinking to the HW.
 
-diff --git a/fs/adfs/dir_fplus.c b/fs/adfs/dir_fplus.c
-index 4a15924..4334279 100644
---- a/fs/adfs/dir_fplus.c
-+++ b/fs/adfs/dir_fplus.c
-@@ -143,6 +143,7 @@ static int adfs_fplus_read(struct super_block *sb, u32 indaddr,
- 
- 	if (adfs_fplus_checkbyte(dir) != t->bigdircheckbyte) {
- 		adfs_error(sb, "dir %06x checkbyte mismatch\n", indaddr);
-+		ret = -EIO;
- 		goto out;
- 	}
- 
--- 
-1.8.3.1
+On NUC leds, this is already offloaded to HW/firmware.=20
 
+All it takes is to tell the BIOS via ACPI/WMI what LED will be used
+for monitoring the Ethernet activity, and on what port(s).
+=20
+> This should probably also work for HDD activity, but this would need a
+> blockdev trigger first...
+
+HDD activity is also HW/firmware monitored. The only thing the Kernel
+needs to to is to select what LED will be set as the HDD activity
+indicator.
+
+Thanks,
+Mauro
