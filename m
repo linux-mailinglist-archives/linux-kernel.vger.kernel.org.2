@@ -2,162 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E323892D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7BD3892D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354939AbhESPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242076AbhESPlf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:41:35 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD2FC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:40:14 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v13so7245901ple.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5bEuxX2X8bBUVqC8o4ZD8af+cxfwPYrie2CqQyfE1eg=;
-        b=qRETapL+guGrCRWWx8ib5azlaovGzEPYrmFu8ScRF6zwzGS2UvHzB6A+78Bc9WOqMk
-         5PZf+y5DdzbsF/6aJ/EnoKVI6P2fSFypZV5Xj7ldUSA0YCNHcEetvdfVjjqNWvfvjzcU
-         i7gUDbjdg0HsEzBNE1LDFaPyh7c8IAxpusJdwH3WzvMtO5e5hsuPayfq510JlllOKjnJ
-         9mrnsIS0LICp0CZjeJdV1RK9lB4sfHFNUumZvRFT1i2nJE81MyPL63u1EibjDpXpz2CY
-         r4h6cJYviHXpX83OC9OGoyszfc/cwRtDFdQ1gOd376N6Dsfhr22asd2BvpA9lwG2kq70
-         XmVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5bEuxX2X8bBUVqC8o4ZD8af+cxfwPYrie2CqQyfE1eg=;
-        b=RwgSlFqdkqqPRgnu3pOV79r3YxF1Utcfrzekyihq1Hnrc7JbvNyEx+Cges2GTCXedK
-         Z5qLAkzjSRb32vEGYv4JX01ioEX0rEEAhmsH/Bnss0fslfNjC+6YvHHkI/6khOpvLwnE
-         qXbCOSFkRsgymumr5ZAMen/Z+fCT0Hunj1K9H3faylf6b8Mux7inaOjO5ukMvdLlHz1F
-         marBNcmZICZAJnal13qdwTH94JJine9zY4jHJND3TY/5D+PmKHynvK3zTO3yWxQItz6F
-         D8MnvEmDUEKPmjDfEmIv9b4OEQvRAXYcs6xgkucXzkYaf5rEB6U5G/ry/LN8MzMyEhB5
-         KB3A==
-X-Gm-Message-State: AOAM532wsa63McfggkEPqUPRMiM4macHNn6Kir+MWU4+wU9ucX4Aq2uU
-        NqCXxTTZUtcwYeEzUPIwltQsyw==
-X-Google-Smtp-Source: ABdhPJxhN0z+Kc4wpNsbbohN9nkWE0iRXUWhsGpnxbGaJuuoAihs6TJvhqtMh2V9Dpv4p6HEvC9WRA==
-X-Received: by 2002:a17:90a:a386:: with SMTP id x6mr12059847pjp.193.1621438814276;
-        Wed, 19 May 2021 08:40:14 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id u19sm8076836pfn.158.2021.05.19.08.40.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 08:40:13 -0700 (PDT)
-Date:   Wed, 19 May 2021 15:40:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Stamatis, Ilias" <ilstam@amazon.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "zamsden@gmail.com" <zamsden@gmail.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [PATCH v2 03/10] KVM: X86: Add kvm_scale_tsc_l1() and
- kvm_compute_tsc_offset_l1()
-Message-ID: <YKUxWh1Blu7rLZR9@google.com>
-References: <20210512150945.4591-1-ilstam@amazon.com>
- <20210512150945.4591-4-ilstam@amazon.com>
- <YKRH7qVHpow6kwi5@google.com>
- <772e232c27d180f876a5b49d7f188c0c3acd7560.camel@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <772e232c27d180f876a5b49d7f188c0c3acd7560.camel@amazon.com>
+        id S1354938AbhESPmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:42:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53510 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242076AbhESPmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:42:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E1776B01E;
+        Wed, 19 May 2021 15:41:30 +0000 (UTC)
+Date:   Wed, 19 May 2021 17:41:30 +0200
+Message-ID: <s5h4keyivdh.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     <Codrin.Ciubotariu@microchip.com>
+Cc:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <perex@perex.cz>, <tiwai@suse.com>,
+        <pierre-louis.bossart@linux.intel.com>, <broonie@kernel.org>,
+        <joe@perches.com>, <lgirdwood@gmail.com>, <lars@metafoo.de>,
+        <kuninori.morimoto.gx@renesas.com>, <Nicolas.Ferre@microchip.com>,
+        <Cristian.Birsan@microchip.com>
+Subject: Re: [RFC PATCH 0/6] soc-pcm: Add separate snd_pcm_runtime for BEs
+In-Reply-To: <056e560e-d06d-23bc-b041-60890fa51e63@microchip.com>
+References: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+        <s5him3eizdf.wl-tiwai@suse.de>
+        <056e560e-d06d-23bc-b041-60890fa51e63@microchip.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021, Stamatis, Ilias wrote:
-> On Tue, 2021-05-18 at 23:04 +0000, Sean Christopherson wrote:
-> > On Wed, May 12, 2021, Ilias Stamatis wrote:
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index 07cf5d7ece38..84af1af7a2cc 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -2319,18 +2319,30 @@ u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc)
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(kvm_scale_tsc);
-> > > 
-> > > -static u64 kvm_compute_tsc_offset(struct kvm_vcpu *vcpu, u64 target_tsc)
-> > > +u64 kvm_scale_tsc_l1(struct kvm_vcpu *vcpu, u64 tsc)
-> > > +{
-> > > +     u64 _tsc = tsc;
-> > > +     u64 ratio = vcpu->arch.l1_tsc_scaling_ratio;
-> > > +
-> > > +     if (ratio != kvm_default_tsc_scaling_ratio)
-> > > +             _tsc = __scale_tsc(ratio, tsc);
-> > > +
-> > > +     return _tsc;
-> > > +}
-> > 
-> > Just make the ratio a param.  This is complete copy+paste of kvm_scale_tsc(),
-> > with 3 characters added.  And all of the callers are already in an L1-specific
-> > function or have L1 vs. L2 awareness.  IMO, that makes the code less magical, too,
-> > as I don't have to dive into a helper to see that it reads l1_tsc_scaling_ratio
-> > versus tsc_scaling_ratio.
-> > 
+On Wed, 19 May 2021 17:08:10 +0200,
+<Codrin.Ciubotariu@microchip.com> wrote:
 > 
-> That's how I did it initially but changed it into a separate function after
-> receiving feedback on v1. I'm neutral, I don't mind changing it back.
+> On 19.05.2021 17:15, Takashi Iwai wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On Wed, 19 May 2021 12:48:36 +0200,
+> > Codrin Ciubotariu wrote:
+> >>
+> >> This patchset adds a different snd_pcm_runtime in the BE's substream,
+> >> replacing the FE's snd_pcm_runtime. With a different structure, the BE
+> >> HW capabilities and constraints will no longer merge with the FE ones.
+> >> This allows for error detection if the be_hw_params_fixup() applies HW
+> >> parameters not supported by the BE DAIs. Also, it calculates values
+> >> needed for mem-to-dev/dev-to-mem DMA transfers, such as buffer size and
+> >> period size, if needed.
+> >>
+> >> The first 4 patches are preparatory patches, that just group and export
+> >> functions used to allocate and initialize the snd_pcm_runtime. Also, the
+> >> functions that set and apply the HW constraints are exported.
+> >> The 5th patch does (almost) everything need to create the new snd_pcm_runtime
+> >> for BEs, which includes allocation, initializing the HW capabilities,
+> >> HW constraints and HW parameters. The BE HW parameters are no longer
+> >> copied from the FE. They are recalculated, based on HW capabilities,
+> >> constraints and the be_hw_params_fixup() callback.
+> >> The 6th and last patch basically adds support for the PCM generic
+> >> dmaengine to be used as a platform driver for BE DAI links. It allocates
+> >> a buffer, needed by the DMA transfers that do not support dev-to-dev
+> >> transfers between FE and BE DAIs.
+> >>
+> >> This is a superset of
+> >> https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/182630.html
+> >> which only handles the BE HW constraints. This patchset aims to be more
+> >> complete, defining a a snd_pcm_runtime between each FE and BE and can
+> >> be used between any DAI link connection. I am sure I am not handling all
+> >> the needed members of snd_pcm_runtime (such as handling
+> >> struct snd_pcm_mmap_status *status), but I would like to have your
+> >> feedback regarding this idea.
+> > 
+> > I'm also concerned about the handling of other fields in runtime
+> > object, maybe allocating a complete runtime object for each BE is an
+> > overkill and fragile.  Could it be rather only hw_constraints to be
+> > unique for each BE, instead?
+> 
+> I tried with only the hw constraints in the previous patchset and it's 
+> difficult to handle the snd_pcm_hw_rule_add() calls, without changing 
+> the function's declaration. This solution requires no changes to 
+> constraints API, nor to their 'clients'. I agree that handling all the 
+> runtime fields might be over-complicated. From what I see, the scary 
+> ones are used to describe the buffer and the status of the transfers. I 
+> do not think there are BEs that use these values at this moment (the FE 
+> ones). I think that the HW params, private section, hardware description 
+> and maybe DMA members (at least in my case) are mostly needed by BEs.
 
-Ah, I see the conundrum.  The vendor code isn't straightforward because of all
-the enabling checks against vmcs12 controls.
+OK, I'll check your previous series again, but my gut feeling is for
+pursuit to the hw_constraints hacks.  e.g. we may split
+snd_pcm_hw_constraints and snd_pcm_hw_rule, too, if that matters.
 
-Given that, I don't terribly mind the callbacks, but I do think the connection
-between the computation and the VMWRITE needs to be more explicit.
+> > Also, the last patch allows only IRAM type, which sounds already
+> > doubtful.  The dmaengine code should be generic.
+> 
+> dmaengine, when used with normal PCM, preallocates only IRAM buffers 
+> [1]. This BE buffer would only be needed if DMA dev-to-mem or mem-to-dev 
+> transfers are needed, between FE and BE. I agree that it could be 
+> handled differently, I added it here mostly to express my goal, which is 
+> to use the generic dmaengine for BEs. My DMA has no dev-to-dev DMA 
+> capability, so I need a buffer to move the data between FE and BE.
 
-Poking around the code, the other thing that would help would be to get rid of
-the awful decache_tsc_multiplier().  That helper was added to paper over the
-completely broken logic of commit ff2c3a180377 ("KVM: VMX: Setup TSC scaling
-ratio when a vcpu is loaded").  Its use in vmx_vcpu_load_vmcs() is basically
-"write the VMCS if we forgot to earlier", which is all kinds of wrong.
-
-If we get rid of that stupidity as prep work at the beginning of this series,
-and have the "setters" return the computed value, the nested VMX code can
-consume the value directly instead of having the subtle dependency on the helpers.
-
-	vmcs_write64(TSC_OFFSET, kvm_calc_l2_tsc_offset(vcpu));
-
-	if (kvm_has_tsc_control)
-		vmcs_write64(TSC_MULTIPLIER, kvm_calc_l2_tsc_multiplier(vcpu));
+Ah, right, I overlooked that part...  It's confusing.  Maybe it's in
+that style just because it falls back to SNDRV_DMA_TYPE_DEV?
+It's another discussion, in anyway.
 
 
-Side topic, the checks against the vmcs12 controls are wrong.  Specifically,
-when checking a secondary execution control, KVM needs to first check that the
-secondary control is enabled in the primary control.  But, we helpers for that.
-The primary control should use its helper, too.  And while you're at it, drop
-the local variable in the getter.  I.e.:
+thanks,
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 3c4eb14a1e86..8735f2d71e17 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1801,13 +1801,12 @@ static u64 vmx_get_l2_tsc_offset(struct kvm_vcpu *vcpu)
- static u64 vmx_get_l2_tsc_multiplier(struct kvm_vcpu *vcpu)
- {
-        struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
--       u64 multiplier = kvm_default_tsc_scaling_ratio;
-
--       if (vmcs12->cpu_based_vm_exec_control & CPU_BASED_USE_TSC_OFFSETTING &&
--           vmcs12->secondary_vm_exec_control & SECONDARY_EXEC_TSC_SCALING)
--               multiplier = vmcs12->tsc_multiplier;
-+       if (nested_cpu_has(vmcs12, CPU_BASED_USE_TSC_OFFSETTING) &&
-+           nested_cpu_has2(vmcs12, SECONDARY_EXEC_TSC_SCALING))
-+               return vmcs12->tsc_multiplier;
-
--       return multiplier;
-+       return kvm_default_tsc_scaling_ratio;
- }
-
-Side topic #2: I now see why the x86.c helpers skip the math if the multiplier
-is kvm_default_tsc_scaling_ratio.
+Takashi
