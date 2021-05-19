@@ -2,170 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3693897F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E40389813
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhESUgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:36:22 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:17428 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229379AbhESUgV (ORCPT
+        id S229551AbhESUji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:39:38 -0400
+Received: from mx0b-00268f01.pphosted.com ([148.163.159.192]:8640 "EHLO
+        mx0b-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229437AbhESUjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:36:21 -0400
-Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JKXiVw016961
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:35:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=resent-from :
- resent-date : resent-message-id : resent-to : from : to : cc : subject :
- date : message-id : content-transfer-encoding : content-type :
- mime-version; s=pps0720; bh=MclP/KRxcwkRcbyk//tjKKr0YrJV6Jftbrq3jUUFzOI=;
- b=VRYAg1xrVSJNi/c1TnsJCCvkRfy3jaSNQE6Bmbgew8/9y/KqK/w6zBYBLY1SWbcbEiS0
- Q1O7oWGIpTn0Y00f/kmQDGFHus/iX1eVLd89VSIktbtLzC/rlY/FB+dJOawHC2YvoAyu
- A/loAmJ138SjKYg/kPiloqd4I2+wIPVBSsmEO2V1Be0rl75As+++pE8MImggMm99fBHI
- a0tRQHrHZVnPaWbu+CxbJAx498wDDciKNVFc9hewWQBMnCDs00a29DIRvdGI4lwXQzd/
- kDd5e36Lse1Xeu9xxT9CP67CRGUXMTCfBr01aFJo6Jox9/bFRFEtFcu/JgaMOeJ+FwOC XQ== 
-Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 38mjh43715-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:35:01 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g9t5009.houston.hpe.com (Postfix) with ESMTP id DC3916A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:35:00 +0000 (UTC)
-Received: from hpe.com (unknown [16.99.165.74])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 944B34A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:35:00 +0000 (UTC)
-Received: from localhost [::1]
-        by new-ben with IMAP (fetchmail-6.4.19)
-        for <rja@localhost> (single-drop); Wed, 19 May 2021 00:10:12 -0500 (CDT)
-Received: from CS1PR8401MB1205.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:7514::7) by DF4PR8401MB0507.NAMPRD84.PROD.OUTLOOK.COM with
- HTTPS; Tue, 18 May 2021 19:36:26 +0000
-Received: from DM5PR2201CA0003.namprd22.prod.outlook.com (2603:10b6:4:14::13)
- by CS1PR8401MB1205.NAMPRD84.PROD.OUTLOOK.COM (2a01:111:e400:7514::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Tue, 18 May
- 2021 19:36:23 +0000
-Received: from DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:14:cafe::c5) by DM5PR2201CA0003.outlook.office365.com
- (2603:10b6:4:14::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
- Transport; Tue, 18 May 2021 19:36:22 +0000
-Received-SPF: TempError (protection.outlook.com: error in processing during
- lookup of dog.eag.rdlabs.hpecorp.net: DNS Timeout)
-Received: from G9W8453.americas.hpqcorp.net (15.211.195.19) by
- DM6NAM11FT029.mail.protection.outlook.com (10.13.173.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Tue, 18 May 2021 19:36:20 +0000
-Received: from G4W9121.americas.hpqcorp.net (2002:10d2:1510::10d2:1510) by
- G9W8453.americas.hpqcorp.net (2002:10d8:a0d3::10d8:a0d3) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 19:36:00 +0000
-Received: from g4t3433.houston.hpecorp.net (16.208.49.245) by
- G4W9121.americas.hpqcorp.net (16.210.21.16) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 18 May 2021 19:36:00 +0000
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id CD71345;
-        Tue, 18 May 2021 19:35:59 +0000 (UTC)
-Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 48777)
-        id 7BD41302F481D; Tue, 18 May 2021 14:35:59 -0500 (CDT)
-From:   <kyle.meyer@hpe.com>
-To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Kyle Meyer <kyle.meyer@hpe.com>
-Subject: [PATCH] acpi-cpufreq: Skip initialization if a cpufreq driver exists
-Date:   Tue, 18 May 2021 14:34:55 -0500
-Message-ID: <20210518193455.192796-1-kyle.meyer@hpe.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: G9W8453.americas.hpqcorp.net
-X-MS-Exchange-Organization-ExpirationStartTime: 18 May 2021 19:36:20.8976
- (UTC)
-X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
-X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
-X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
-X-MS-Exchange-Organization-Network-Message-Id: 78daac90-5c72-427f-88ea-08d91a3436c2
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Organization-MessageDirectionality: Originating
-X-MS-Exchange-Organization-AuthSource: G4W9121.americas.hpqcorp.net
-X-MS-Exchange-Organization-AuthAs: Internal
-X-MS-Exchange-Organization-AuthMechanism: 10
-X-CrossPremisesHeadersPromoted: DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
-X-CrossPremisesHeadersFiltered: DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
-X-MS-PublicTrafficType: Email
-X-OriginatorOrg: hpe.onmicrosoft.com
-X-MS-Office365-Filtering-Correlation-Id: 78daac90-5c72-427f-88ea-08d91a3436c2
-X-MS-TrafficTypeDiagnostic: CS1PR8401MB1205:
-X-MS-Oob-TLC-OOBClassifiers: OLM:60;
-X-MS-Exchange-Organization-SCL: -1
-X-Microsoft-Antispam: BCL:0;
-X-Forefront-Antispam-Report: CIP:15.211.195.19;CTRY:US;LANG:en;SCL:-1;SRV:;IPV:NLI;SFV:SKI;H:G9W8453.americas.hpqcorp.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:;DIR:INB;
-X-MS-Exchange-Transport-Forked: True
-X-MS-Exchange-ABP-GUID: 02950aeb-3c14-4da5-8c60-ccbcc3967284
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2021 19:36:20.5568
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78daac90-5c72-427f-88ea-08d91a3436c2
-X-MS-Exchange-CrossTenant-Id: 105b2061-b669-4b31-92ac-24d304d195dc
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=105b2061-b669-4b31-92ac-24d304d195dc;Ip=[15.211.195.19];Helo=[G9W8453.americas.hpqcorp.net]
-X-MS-Exchange-CrossTenant-AuthSource: G4W9121.americas.hpqcorp.net
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CS1PR8401MB1205
-X-MS-Exchange-Transport-EndToEndLatency: 00:00:05.6441532
-X-MS-Exchange-Processed-By-BccFoldering: 15.20.4129.031
-Keywords: Old
-X-Microsoft-Antispam-Mailbox-Delivery: ucf:0;jmr:0;auth:0;dest:I;ENG:(750129)(520002050)(706158)(944506458)(944626604);
-X-Microsoft-Antispam-Message-Info: 29Drlo+sGi39nnOosQIwng2b/JiKI3qW4I2tj2jUpZNOzAsgP+QXDvVXo3zSXXHyrkEibCm3c9E5NvqqPHyfCeBB3jsq8fUGEhRmNRh14B2NxfedUY7T26w+zBKG9V5RXsM/I4OaEnnD5ebuLtSMSjCdomrv4omRSIeN+6Mh7yHTuu5T23rh/6hxPzjkWHP1GAn5LMfWF+snIVA3E3aZAYqnB7icKBSmc4g3lTaYf4+8oHUVARaGCPYxRc9B/rB92quml8g22GcHOG05AfRIWRwthuwwAiT+AGs+7SKT479RBG92B7B4ux7+WkcNFdjjvw6bn63J9B7ygxRWoso36r+Hl7L510PhQfzYLemdRflRllszrroCgitQjC9n0uHv67bI2nllyYZnw5Gr71AQD61EznbhPMZwuC0qTQSPieIuwfgBXKuupV+ycLiTyWd7C6CyHPqoBzR+y1aaGWDOBOUlpa+cWlipxpsrPlXHyXC/icE4RXnSPO5bS9j/paLqolUWGVeybmDkrYvP1R5PeyEMW1cfUOQKtcSPaSsQNhU=
+        Wed, 19 May 2021 16:39:37 -0400
+X-Greylist: delayed 5699 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 May 2021 16:39:37 EDT
+Received: from pps.filterd (m0165121.ppops.net [127.0.0.1])
+        by mx0b-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JIrQIi001497;
+        Wed, 19 May 2021 19:02:54 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
+        by mx0b-00268f01.pphosted.com with ESMTP id 38n53f8rue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 19:02:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cCsOYuzsLiS/Ev8HBLFh2tQKIKn4ZnDtyPijFRFF7IzJ1oqs8WDPUCx8dbdUPm3FHr/8EjVdZFXc98QJ8qZufr/eSCbNz3kBzUBjQSqea3HhxADB9LSqe05oHe4BVs9MePWcr8QECTL2TNAnpD3s7FFrNiiJPCrOtDCEKJ4Qu1W8jZSgR6UWD3rxSO1fhmt9IoZ/8bTIVatGvgbODKCfgpGMBSLK9YOhIN618/HJ0Zls50EQmRZ82o7dieG773Z4AMAkudCh0V6IQAZmPrrTo9tr458t9KJtV7Gi6vqtBrT9XSXFNmf2/CY1GgCLWgXyfjSbr7yMRzmEQ5KZ6wFrJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kvoCsGU2nQjTYgbXdS5nzV22tJWDyVf+C2DmIiz8KGY=;
+ b=MQz2ukTuGzE1KUQtHk2lSCvjWNP+nuArwlHBayu0Zj2w8rFPdglfK3kYJasSLXXWp7eMgM/IU5F03v/kQXxDFQPsvKoLaunnJLxWkZ1WoUQ3FXYCAf7sxxqKVwO0QJk77+LqLj32rGUYFNtIHPPifeixg+fD9pNn16afy+gVe2znzrdDKdhDz1x7EsiOaDUcvdFdu5qtsrEJ/L6FSemkkHrdNvgm3CkjV2nq/15WdLqmrRQkizYwqzk0beO088iANkAEMIysrD6l5K5ZW7aLbLZUIZKtIx9Cj8CIxpflow/zHBE6iuKeSAJ1BJOrDqpSkSnfYaMfsO1rRYE5iLFKzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
+ dkim=pass header.d=equinix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kvoCsGU2nQjTYgbXdS5nzV22tJWDyVf+C2DmIiz8KGY=;
+ b=G70Mr8hNK4MUvJHRVwYADZSPMqtWo7GTP2un1AWyUvHTppH6SzdqGo2wuqUOBf3UY2O0GlaRJt/AVrD+fYdpkYMo+QqoSDWV7aoocj6ilCmqLXrsPPyeoxZvkcRzesJ3x0I9EnUffi3wKJckjHLc4pvhYzus6+dEip+C5Xuig9g=
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
+ DM6PR04MB5532.namprd04.prod.outlook.com (2603:10b6:5:12d::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.28; Wed, 19 May 2021 19:02:51 +0000
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::d9ba:6e7f:b51e:6cab]) by DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::d9ba:6e7f:b51e:6cab%2]) with mapi id 15.20.4129.033; Wed, 19 May 2021
+ 19:02:50 +0000
+From:   Zev Weiss <zweiss@equinix.com>
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+CC:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        "steven_lee@aspeedtech.com" <steven_lee@aspeedtech.com>,
+        "chiawei_wang@aspeedtech.com" <chiawei_wang@aspeedtech.com>,
+        "troy_lee@aspeedtech.com" <troy_lee@aspeedtech.com>,
+        "ryan_chen@aspeedtech.com" <ryan_chen@aspeedtech.com>
+Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
+ AST2600
+Thread-Topic: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
+ AST2600
+Thread-Index: AQHXTOGQ+04th/dwT0i8Ccm8YNu1Cw==
+Date:   Wed, 19 May 2021 19:02:50 +0000
+Message-ID: <YKVg2Kfbex3DYbNI@packtop>
+References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
+ <20210519080436.18975-2-jamin_lin@aspeedtech.com>
+In-Reply-To: <20210519080436.18975-2-jamin_lin@aspeedtech.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aspeedtech.com; dkim=none (message not signed)
+ header.d=none;aspeedtech.com; dmarc=none action=none header.from=equinix.com;
+x-originating-ip: [24.181.166.149]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f83a6770-f627-4288-3300-08d91af8b324
+x-ms-traffictypediagnostic: DM6PR04MB5532:
+x-microsoft-antispam-prvs: <DM6PR04MB5532A50BF223C8ACA86B6910C32B9@DM6PR04MB5532.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o0klEahC8/xfDOGVZ+y/xugA+ddS+D9mkiSdlLJp6lqex5UK9g0Y1wnWbjAfz+BDu8R34aVAlDNX3+3B5i8A0NglRseLRepKnGUJzLqwe/hLwjXe6+JhYgFkKREiOe9aDGDqVdHR+k+0Ju/mvuzsAAYzeDVts+EbUjFi2xkwCFralcsuj726EnNVYMNr2vBIn31xLPt7jz2xyHxIiMq6fbTw/+svga7bCw36Foxszf7e1JCSbIGBPvgrdqriycO6buYtWpbGIeaXaxfNZ/BLp8VgeP6jns0cq/2BG2hwlqbccMfDUVoabgIV8xEd59DFclz7jHTJLHnyCqEbLKY8TNlblJvUUGIetOvSJkO/NN1qiZrY7DcUkH6WglBYY+A+M2oAN8RT53QPVwNs3W15ZDtWhKYYwVDgXg+yeO4AZTj9ptL5FXQpou8Ba1oLirp4leYquzYrAG/Vpyq8rv+xB2Q3hxno7K9onln33i7jShZEtm0SOUTkfFCepjh5REIOT0i9P4AEwsjLa2J5MrekjzbYe0VvG0w/wofQNHCA0McAF+MbTxStSb6+vIOzn5PdVE9H4IAlSM9Gh/RQzi7Ri5/m5tRJnoYZovA4O5oZ0sE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(4326008)(478600001)(54906003)(8936002)(8676002)(316002)(6916009)(86362001)(91956017)(7416002)(66946007)(6486002)(5660300002)(76116006)(122000001)(6512007)(71200400001)(9686003)(26005)(186003)(66556008)(66476007)(64756008)(66446008)(38100700002)(33716001)(6506007)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?YPZUePZVPDx0O51aDq5UGtkk0XLS4WQfuV/sNJHKhO6Hpb01+20LGgeuplwI?=
+ =?us-ascii?Q?yYNd6uMu2S19ySiBs8xKOhWUk73ZWtaiXa0DhrVv1zRaVSLvs/YvVzu3Yx0B?=
+ =?us-ascii?Q?tWKoPKyBfCQqjfsJ5YiTo/vmFEdGxVavht3WjG2w4La3sPogUPi3yxXbOaR9?=
+ =?us-ascii?Q?Es9BNihUxq8Pib7t4lGsAin7q2/CX+o7AmkGFt28LG1Y/OiRzxZZ3cEy2s7c?=
+ =?us-ascii?Q?T/ZTeJZHDBv1zKaRonWucRZpKe+QRynagI2tQWDMYCE0aZ6c50x54jvZGtVy?=
+ =?us-ascii?Q?woc2wwoHJ50YT7BAPRY3wCxXB6ZjlKFJzZt/jjKLIK61IKhLD5OaZAQVds9t?=
+ =?us-ascii?Q?RQoAtVsWFjmDpNiVk+Lisxts5WYrUGd1cnTIaOr9tbnULI+vhNNyG/j5M5ct?=
+ =?us-ascii?Q?3ScsL48AIGWdflRPsekxzZBwOk+5gUMsQ2W6rzOIbTppjn24edXHbWcYV/oy?=
+ =?us-ascii?Q?JNFjH2al3xfVbQy6qfMG5/+s6crsb8G9LLzN643RplPBnW7xOnDCA0d2RMER?=
+ =?us-ascii?Q?c2kYov7DL2xCbqkG0unQBjmo7R/lNJ95Uh4XCDosMRDTcPVnjvBvhOERKt3i?=
+ =?us-ascii?Q?zxzJUEb5Yj78phUODW3JMI4CaVgFPnt+0EKth6HpzSevSvI4LDCvbw500yGU?=
+ =?us-ascii?Q?5Y2HgLCL8VOJq4z0SzLg43pHRy4S3t35mkpRwMwbohrXIHqB4RNbxqvTT8FA?=
+ =?us-ascii?Q?T4lgr5TK0NsHt/sdXR7gaVmK+hSkJ2+z7niwwFjZRCKo0/5a9ZpJWfiZ6imj?=
+ =?us-ascii?Q?sGFlkKvH5jxm6yNHc0TlgHvLMLxcld5v3o7n4Paqk59HvZkgnJghlYAzwK/p?=
+ =?us-ascii?Q?HScOQa6TMG46FXURY1PK/jcvBVVugvVe+Acn6iTNowfN/xOLsaTWK/7of3wR?=
+ =?us-ascii?Q?bfZzFl+TMiATVVV3A8MAbteY5XlEjMJ67VWXlz+BFiuo+0GqLjlwnOv8yzve?=
+ =?us-ascii?Q?a4afsI92JaxsmR6+mbQ0MUS+HDz8OMtSOcWyJ9g+ox14dShTJp5EAbFgxw3g?=
+ =?us-ascii?Q?YkocReRTy//ZvFbkrcmcuxHLBofbJWiSYEupIMbVP/sZd9+tDXiMmYPl0B+y?=
+ =?us-ascii?Q?q5O+FYvDGzgvm3n2fum+0hP+ZJ04fo249uR55iBztQOlK9xphnDEFLYSU0IA?=
+ =?us-ascii?Q?3vPZCNiVjBAFUCzFc9bkNjNc+UrgQyVDAqwyExyWrpwnYdV45nX5eRPZmlTu?=
+ =?us-ascii?Q?PVW8m+yBzoQnuK6a+wncIaaETT5uEzM4qyg4p33XBM5+IzEgM7JR51q2i/6H?=
+ =?us-ascii?Q?o/5LWIRFkeSnKrIoQrgCmZn/miVMYyUVhfEEYa7AAkp7Td76m9Rt3ZeK01Az?=
+ =?us-ascii?Q?Z4AJ1iN0WnmbWOkRi/JzhH3K/kLGQUw9/zyjOPkpdZzKOQ=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <84F50A129A8DAD49B76EF596CB752539@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Proofpoint-GUID: wO_U-406pUi8E56t2eFQMXfuoXrDfITY
-X-Proofpoint-ORIG-GUID: wO_U-406pUi8E56t2eFQMXfuoXrDfITY
-X-HPE-SCL: -1
+X-OriginatorOrg: equinix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f83a6770-f627-4288-3300-08d91af8b324
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2021 19:02:50.8511
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zDuP14UVcLw+WRfwC3DERIqIJVUsl+QU2gFiThZxkWypGLngxDBgujxc4z4wpx2XmQ6aJxycWTRPzCuYenCgsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5532
+X-Proofpoint-ORIG-GUID: wMwPn8DyDFsX_YFW7eiXhh4qf4UDxt8Y
+X-Proofpoint-GUID: wMwPn8DyDFsX_YFW7eiXhh4qf4UDxt8Y
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_10:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
- impostorscore=0 bulkscore=0 mlxscore=0 suspectscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190125
+ definitions=2021-05-19_09:2021-05-19,2021-05-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105190115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyle Meyer <kyle.meyer@hpe.com>
+On Wed, May 19, 2021 at 03:04:27AM CDT, Jamin Lin wrote:
+>The register definition between AST2600 A2 and A3 is different.
+>This patch avoid new registers definition of AST2600 to use
+>this driver. We will submit the path for the new registers
+>definition of AST2600.
+>
+>Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
+>---
+> drivers/i2c/busses/i2c-aspeed.c | 22 ++++++++++++++++++++++
+> 1 file changed, 22 insertions(+)
+>
+>diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspe=
+ed.c
+>index 724bf30600d6..007309077d9f 100644
+>--- a/drivers/i2c/busses/i2c-aspeed.c
+>+++ b/drivers/i2c/busses/i2c-aspeed.c
+>@@ -19,14 +19,20 @@
+> #include <linux/irqchip/chained_irq.h>
+> #include <linux/irqdomain.h>
+> #include <linux/kernel.h>
+>+#include <linux/mfd/syscon.h>
+> #include <linux/module.h>
+> #include <linux/of_address.h>
+> #include <linux/of_irq.h>
+> #include <linux/of_platform.h>
+> #include <linux/platform_device.h>
+>+#include <linux/regmap.h>
+> #include <linux/reset.h>
+> #include <linux/slab.h>
+>
+>+/* I2C Global Registers */
+>+/* 0x0c : I2CG Global Control Register (AST2500)  */
+>+#define ASPEED_I2CG_GLOBAL_CTRL_REG			0x0c
+>+
+> /* I2C Register */
+> #define ASPEED_I2C_FUN_CTRL_REG				0x00
+> #define ASPEED_I2C_AC_TIMING_REG1			0x04
+>@@ -973,6 +979,22 @@ static int aspeed_i2c_probe_bus(struct platform_devic=
+e *pdev)
+> 	struct resource *res;
+> 	int irq, ret;
+>
+>+	if (of_device_is_compatible(pdev->dev.of_node,
+>+				    "aspeed,ast2600-i2c-bus")) {
+>+		u32 global_ctrl;
+>+		struct regmap *gr_regmap;
+>+
+>+		gr_regmap =3D syscon_regmap_lookup_by_compatible("aspeed,ast2600-i2c-gl=
+obal");
+>+
+>+		if (IS_ERR(gr_regmap)) {
+>+			ret =3D PTR_ERR(gr_regmap);
+>+		} else {
+>+			regmap_read(gr_regmap, ASPEED_I2CG_GLOBAL_CTRL_REG, &global_ctrl);
+>+			if (global_ctrl & BIT(2))
+>+				return -EIO;
 
-Revert part of commit 75c0758137c7a
-("acpi-cpufreq: Fail initialization if driver cannot be registered").
+A macro definition might be a bit nicer than a raw BIT(2) here I'd
+think.
 
-acpi-cpufreq is mutually exclusive with intel_pstate, however,
-acpi-cpufreq is loaded multiple times during startup while intel_pstate is
-enabled. On systems using systemd the kernel triggers one uevent for each
-device as a result of systemd-udev-trigger.service. The service exists to
-retrigger all devices as uevents sent by the kernel before systemd-udevd
-is running are missed. The delay caused by systemd-udevd repeatedly loading
-the driver, getting a fail return, and unloading the driver twice per
-logical CPU has a significant impact on the startup time, and can cause
-some devices to be unavailable after reaching the root login prompt.
+Also, it seems a bit unfortunate to just bail on the device entirely if
+we find this bit set (seems like a good way for a bootloader to
+inadvertently DoS the kernel), though I guess poking global syscon bits
+in the bus probe function might not be ideal.  Could/should we consider
+some module-level init code to ensure that bit is cleared?
 
-Load the driver once but skip initialization if a cpufreq driver exists by
-changing the return value of cpufreq_get_current_driver() from -EEXIST to
-0.
 
-Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
----
- drivers/cpufreq/acpi-cpufreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Zev
 
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index 7e7450453714..e79a945369d1 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -1003,7 +1003,7 @@ static int __init acpi_cpufreq_init(void)
- 
- 	/* don't keep reloading if cpufreq_driver exists */
- 	if (cpufreq_get_current_driver())
--		return -EEXIST;
-+		return 0;
- 
- 	pr_debug("%s\n", __func__);
- 
--- 
-2.26.2
+>+		}
+>+	}
+>+
+> 	bus =3D devm_kzalloc(&pdev->dev, sizeof(*bus), GFP_KERNEL);
+> 	if (!bus)
+> 		return -ENOMEM;
+>--=20
+>2.17.1
+>=
