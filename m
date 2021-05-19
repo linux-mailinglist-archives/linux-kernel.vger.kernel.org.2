@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681B93891CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2A83891D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354454AbhESOrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241208AbhESOry (ORCPT
+        id S1354622AbhESOs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:48:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:32958 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240331AbhESOs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:47:54 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B01C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:46:34 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q5so14314024wrs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qcih1ZsB54IYnpGJlyvkpoeAatFrfT168mDlUAbVXbc=;
-        b=ZtflBpiFzxk9IT9dvQLhj9zAX07ZOfwvbA/SbHogb7zqkB2Fz2wBOyx04jcdgoMnhR
-         gtU55xkk+MqmEvBL27AxoxAWzkbfwlfrlMjcRDPD/+1gMbBah6cGyS7nnlqa7MJm31N4
-         qfI9xRe+I5hdagUQo++vkAvuF/oZicXRoRk/0egqw5P8AiVaMt0n68i1PCFFxOX/xNDm
-         tqSIQmyan48kAtXOqtIrPvZUJMvCmK8ecONHAwhi+G/9q+FqJ3gkSpoQbcrGkLDRFxv+
-         kZjvm9gYTzXRoJeDB3BfkXBb7lG77g8e6AfI8UCTD/RwtRC6XFvuvKBDXpQDVj8rkGUB
-         SEyA==
+        Wed, 19 May 2021 10:48:57 -0400
+Received: from mail-qv1-f72.google.com ([209.85.219.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1ljNU1-0001PJ-46
+        for linux-kernel@vger.kernel.org; Wed, 19 May 2021 14:47:37 +0000
+Received: by mail-qv1-f72.google.com with SMTP id f17-20020a0cf3d10000b02901eda24e6b92so10532112qvm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:47:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qcih1ZsB54IYnpGJlyvkpoeAatFrfT168mDlUAbVXbc=;
-        b=pwYMPypkq3uBtztqmtxrfK68jxNDF7FkBDldRJPx/TKRLxlFCyZxPFkpO0Eh/kH9e6
-         +0nwEKsTtciyovZqiCzGwYEplIwJZl01SgcTDntEDQAoDX/D4bX0jKwamxtuW2flWSXJ
-         3ky5ITnijdzxoJT0zm/PQSMflgZ8Xj+L6N3YtDxxLP9UYKXYB1IiPZcMaxujB95ExPzV
-         AmLDE/uziscYvXPVxQMlM089xPc9E7bDDjRnknI16K1Y47k7DPRXNKMuznbzbRmhp3/T
-         tGy1zPl+eKLH6sq7lDoSn7GYeYWBcI5hserLVzNjLXqEpjGWl+zt7m/9lnWvW23uF7/s
-         yW4w==
-X-Gm-Message-State: AOAM532wysrVx8MwJYzVE5mWJGgQ7gNLVxxhI9EkY04M7fBhSvUbMvo4
-        EcdUp+2W0IVDDT5PwJBJp0DnvA==
-X-Google-Smtp-Source: ABdhPJyIt8eL6wfcj/xZA/0YCPZS/2JzPSNbt554efDjHPLXgMAWowEbrZ1/KMI0hS6vR3gARlmFxw==
-X-Received: by 2002:adf:ffd2:: with SMTP id x18mr15161346wrs.144.1621435592655;
-        Wed, 19 May 2021 07:46:32 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id q13sm24456544wrw.56.2021.05.19.07.46.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:46:32 -0700 (PDT)
-Date:   Wed, 19 May 2021 15:46:30 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Beomho Seo <beomho.seo@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 3/3] mfd: rt5033: Drop rt5033-battery sub-device
-Message-ID: <20210519144630.GC2549456@dell>
-References: <20210517105113.240379-1-stephan@gerhold.net>
- <20210517105113.240379-4-stephan@gerhold.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jlsUdvAi6guPhxb/KDLB35/MQXQ9ef80K6DmXkPtEJY=;
+        b=KN5NVA/3lg4H6AEwYpH7XR8UvNXlkhKLnFthjnyGrO0njzSGluava450JOOs3ZkuDZ
+         ZGa6lfRRYWiX6vfvO41qoBqw//tdJrnE11NaUcoEL9DRqIuCK8fvm+v6EcogGAu0y7dL
+         fGJTupD+AMf1CHWKHjaGCuBlLW14k9BBOm+yiHM+Bk9diaeo0xlZarCBcyyXNvMTtIp2
+         AwMsrstTSVZ5FpZJxYnq0IYkb111dif4Dh1AxLcgqLCsw4MgHYQl8swYxP3bUaPy8yfk
+         QXGwCRbfPVpgQ2oiwq9QdUSORVkgNS+EXyslgYVO5+Q7R2R+sySIaU2FMhTiNhXiayqG
+         Rx9A==
+X-Gm-Message-State: AOAM533zT+lu3zWuwVcRcx1EuLscAGywaPiTB72TYurgFuuLkZxlWecE
+        cU9IfAY/8WrkRKjA3jE3MHUegFHm2aiNDG9oTOhaJYtL7Db6w7Eaa2aXcf3PA6tmFlCqCfrN8kL
+        I5F6PNEC4t6juSTFeZWjavpeUNfuhCs7/W+BrbOA78w==
+X-Received: by 2002:ae9:e70c:: with SMTP id m12mr4511958qka.414.1621435656336;
+        Wed, 19 May 2021 07:47:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQnyqJ3uV7od4UNk33JSm3yvXvFib0hw6K0hCjkV16Dui0sb3gcPAR3H/GJ1RFmug5AkAs6A==
+X-Received: by 2002:ae9:e70c:: with SMTP id m12mr4511940qka.414.1621435656170;
+        Wed, 19 May 2021 07:47:36 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.48.1])
+        by smtp.gmail.com with ESMTPSA id x27sm9461224qkj.133.2021.05.19.07.47.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 07:47:35 -0700 (PDT)
+Subject: Re: [PATCH] soc: samsung: pmu: fix BUT->BIT macro typo
+To:     Alim Akhtar <alim.akhtar@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+References: <20210517141250.55655-1-krzysztof.kozlowski@canonical.com>
+ <CAGOxZ524m0tYy2Y8xnkfoSg9PQj7uA6PohYC9u23Je3F+gHjDA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6c7fda4b-7f0c-242e-21c2-eb6c003d6d05@canonical.com>
+Date:   Wed, 19 May 2021 10:47:34 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <CAGOxZ524m0tYy2Y8xnkfoSg9PQj7uA6PohYC9u23Je3F+gHjDA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210517105113.240379-4-stephan@gerhold.net>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021, Stephan Gerhold wrote:
-
-> The fuel gauge in the RT5033 PMIC (rt5033-battery) has its own I2C bus
-> and interrupt lines. Therefore, it is not part of the MFD device
-> and needs to be specified separately in the device tree.
+On 19/05/2021 10:36, Alim Akhtar wrote:
+> Hello Krzysztof
 > 
-> Cc: Beomho Seo <beomho.seo@samsung.com>
-> Cc: Chanwoo Choi <cw00.choi@samsung.com>
-> Fixes: 0b271258544b ("mfd: rt5033: Add Richtek RT5033 driver core.")
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
->  drivers/mfd/rt5033.c | 3 ---
->  1 file changed, 3 deletions(-)
+> On Mon, May 17, 2021 at 7:59 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> The macro EXYNOS5_USE_STANDBYWFI_ARM_CORE1 should use BIT, not BUT.  Fix
+>> does not have real effect as the macro is not used in the code.
+>>
+> Can we consider removing this? As this is not used in code.
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+Sure, I guess, if someone needs this bit, can always check in the
+documentation :)
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best regards,
+Krzysztof
