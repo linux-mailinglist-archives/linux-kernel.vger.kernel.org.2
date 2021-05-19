@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CE6388994
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CAD388998
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245605AbhESImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:42:05 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:50722 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245518AbhESImE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:42:04 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14J8e0ZI015483;
-        Wed, 19 May 2021 08:40:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=/mZiErNBoyzN3umssfH3gOPEDtVZgaX6Jvuu78Gwv2I=;
- b=HoGCojdDEW/wA8l97yac42ps/7wadpyHLAEM/yr6/qNo4eD57XG2Uc+SRwB2dMeU4oU9
- L6KZyBX36NNKITAKGoyXz45jCxdloAPSLsI3fDjaK2vcDOEW3RBRe0rFhPrxgtRYQzyA
- 7YUPxS8pj7EgFY1eJ0J/8fvtigiwZPggDU0DbhQPccNvFjW7Voe/z7n+va21xP3QUfJY
- NDFJskEA4MxRCYJAcoyZXq6tFeZSLgvKMRZV1TP5d57XRkhCOgCCrS+IUhMmFxqC/x93
- BTDJuBd1al01eNAPIgAAQck7g0Iuu79liIdhmITH67JOo2Bl9m7if8AKGm6sewsFZJkN yQ== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38kh0h91x9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 08:40:41 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14J8eexw119045;
-        Wed, 19 May 2021 08:40:40 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38msw18cjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 08:40:40 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14J8edVP119032;
-        Wed, 19 May 2021 08:40:39 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 38msw18cjg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 08:40:39 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14J8eXex015950;
-        Wed, 19 May 2021 08:40:33 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 19 May 2021 01:40:32 -0700
-Date:   Wed, 19 May 2021 11:40:27 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     ztong0001@gmail.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: re: [PATCH v3] misc: alcor_pci: fix null-ptr-deref when there is no
- PCI bridge
-Message-ID: <YKTO+xuM/Ly+8Vwf@mwanda>
+        id S245677AbhESInB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:43:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245627AbhESIm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 04:42:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A64D60C3D;
+        Wed, 19 May 2021 08:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621413698;
+        bh=NHzva1BedRTQo1ZiYTLnCiPM+iMIZVRQCHVWgn+Qbcc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ql7y2bn4qw1rsWiv5Yi4fr6ZOknDNpCuPHlvIBxASQZgF3AF8Klb50z1jHQ+6Tyze
+         qAHiv00NHCIE1QFMjyTI801rjj+/EPg/Uy3hPjr6YDWkWLdkTBCmHiALmkG6goZAMR
+         oJSIXltBbsbh3pRB71xD1VDgFklffzv7SUACTLSuGn6U0LyL9EsPkeJWWdvsax0+SM
+         TvP0ELY4bfT8ncXxWmM18Fckwd1km69f5P6ZxroWontEuuKDDza/UZYTQndYjxvmoJ
+         itRIavZFsyHw328I4fu6YPQSMV8MRTbNEDlUIRILuWNPgpiobyA+6N+zn3uKIQJLE5
+         VgOwI+2UJiPig==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix query DCT via DEVX
+Date:   Wed, 19 May 2021 11:41:32 +0300
+Message-Id: <6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513040732.1310159-1-ztong0001@gmail.com>
-X-Proofpoint-GUID: SbxvM9rnKVsbnX_j00taO6xd2JIsvsxq
-X-Proofpoint-ORIG-GUID: SbxvM9rnKVsbnX_j00taO6xd2JIsvsxq
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Tong Zhang,
+From: Maor Gottlieb <maorg@nvidia.com>
 
-This is a semi-automatic email about new static checker warnings.
+When executing DEVX command to query QP object, we need to take
+the QP type from the mlx5_ib_qp struct which hold the driver specific
+QP types as well, such as DC.
 
-The patch 3ce3e45cc333: "misc: alcor_pci: fix null-ptr-deref when
-there is no PCI bridge" from May 13, 2021, leads to the following
-Smatch complaint:
+Fixes: 34613eb1d2ad ("IB/mlx5: Enable modify and query verbs objects via DEVX")
+Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/devx.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-    drivers/misc/cardreader/alcor_pci.c:149 alcor_pci_init_check_aspm()
-    error: we previously assumed 'priv->parent_pdev' could be null (see line 147)
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 72a0828388de..53dc67e16d03 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -630,9 +630,8 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
+ 	case UVERBS_OBJECT_QP:
+ 	{
+ 		struct mlx5_ib_qp *qp = to_mqp(uobj->object);
+-		enum ib_qp_type	qp_type = qp->ibqp.qp_type;
+ 
+-		if (qp_type == IB_QPT_RAW_PACKET ||
++		if (qp->type == IB_QPT_RAW_PACKET ||
+ 		    (qp->flags & IB_QP_CREATE_SOURCE_QPN)) {
+ 			struct mlx5_ib_raw_packet_qp *raw_packet_qp =
+ 							 &qp->raw_packet_qp;
+@@ -649,10 +648,9 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
+ 					       sq->tisn) == obj_id);
+ 		}
+ 
+-		if (qp_type == MLX5_IB_QPT_DCT)
++		if (qp->type == MLX5_IB_QPT_DCT)
+ 			return get_enc_obj_id(MLX5_CMD_OP_CREATE_DCT,
+ 					      qp->dct.mdct.mqp.qpn) == obj_id;
+-
+ 		return get_enc_obj_id(MLX5_CMD_OP_CREATE_QP,
+ 				      qp->ibqp.qp_num) == obj_id;
+ 	}
+-- 
+2.31.1
 
-drivers/misc/cardreader/alcor_pci.c
-   142          /*
-   143           * A device might be attached to root complex directly and
-   144           * priv->parent_pdev will be NULL. In this case we don't check its
-   145           * capability and disable ASPM completely.
-   146           */
-   147		if (!priv->parent_pdev)
-                    ^^^^^^^^^^^^^^^^^^
-
-   148			priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
-   149								 priv->parent_pdev);
-                                                                 ^^^^^^^^^^^^^^^^^^
-It will just crash inside the function call.  Is the if statement
-reversed?
-
-   150	
-   151		if ((priv->pdev_cap_off == 0) || (priv->parent_cap_off == 0)) {
-
-regards,
-dan carpenter
