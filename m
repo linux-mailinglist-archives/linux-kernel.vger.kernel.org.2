@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B46238975D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C819E389761
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbhESUFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
+        id S232750AbhESUFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbhESUFJ (ORCPT
+        with ESMTP id S232633AbhESUFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:05:09 -0400
+        Wed, 19 May 2021 16:05:11 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C33C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so19357295ybp.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BFBC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:50 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id q6-20020a25bfc60000b02904f9715cd13cso19357087ybm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:03:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=TRzyq4oNy0xbwezI+8cBZnf/nTLSb+t8cRqYWcWY/Eg=;
-        b=CxvtArSRKX6OIHDHNbloVqlUItuDs1pUVWO461kxImFFcH32VxsUk8wQRTWZwQ6azV
-         xH9kIDgHSGkmKm3QMzYT8uD5SUun0xyFySIS+XdVS0A3rqkbCqR3aWZIGyOmeKCdjjEj
-         ZC2H/hOoPa5G7ZMVYY0Ra3jjN+vFL3opMB+3VKbRuP9Um+YHZNcNdhuIUS/xWwqbJH+i
-         jXPI/8k+0f6H7op/p+Aa0EWorl/GZObZys8KJJnM7xcqT6q9C+QoQGA3cOfd6VG2rF60
-         ETVQ91+uqYc3SF2jfC1c2q0N8ia/NuFB3pTg7Cf2b5wJCmdp2TJch+OuowdqLY9nCkD2
-         dOmA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=NF76M7YPlPLnV5lZxvKeN+qihLtEQ8HfegihjKBXIf0=;
+        b=XzHcxVIJslByFngY/1pqnI3iL00i/64SxucLflHWP2YaMPYrtFFt9CdnhJr5O5rcRX
+         JkE/zZiBI8NntCkeEMeHVo8cgG9myQgPl6fMvz8XY1xTHqSenqRMj/a5GFiI+OmaUjav
+         9rygBBWsmAcIej7/HQJA45cboxevZDIquzdNMUm7P4tMTP87xQWoq6+qRpNMsACmG0VR
+         muxQ7KaVXoW4zWu4WDFuZbt9fDkEKovnvzUbJY4DTxfgYmWmQQkJVhGax2BegTxIehh5
+         eUdAaH7r/TjF/yIKomjYM2ksxozHyP6yB4YGvrPrpkbGtiBWr5iQh8SALxzSY6cYUE/l
+         Vcvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=TRzyq4oNy0xbwezI+8cBZnf/nTLSb+t8cRqYWcWY/Eg=;
-        b=Qe7XRQBmb2m2KDpQPZQaUCO1m6g2sjhdX0H+PEZRo+6aQ3TvEa1A7Nrc7d+TIi/oVC
-         4Ka21AyLL4JEDGZzyOMCWCoAUj4VzVVwqcBj+fUjfotGJyDwCzprEZbE/xAPhQo7h5ZQ
-         Ml8Ygm0d889Rng1q5VeMAOI7edUTlEc8WRD28azprl3R2qWUXzOVtIfMhQdRSdLSl1Tt
-         fZnf5gu9M3a/2JynO3bGKdwlM+8jgSxa9Jz/CGgPyxSQVpxWqH4mysQ23dht2xlpF1w1
-         pApPtNa61l7B7vjzakTapJCZ6KUFlO4PDKXLyyTe/ZUyPOZxbNgTOnQAmRCQYGTyoW2U
-         xEhQ==
-X-Gm-Message-State: AOAM532tWkoCqHbnQsZz9Xqhd8HPKC0vBzMacv/BJh+Jjmo5bdeyf+G1
-        tZ8K76b0dQEFnjcxo+Nu8pUe+r67EWICGR4/KBYK
-X-Google-Smtp-Source: ABdhPJyFo1HijtaGGGcxKGVnq1SWKSvHoMWpsxuc+TwmN6hh5Zag+cdBMzwAriowHUIKTHlRVkauQ7YZIi2LKSLHBpWj
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=NF76M7YPlPLnV5lZxvKeN+qihLtEQ8HfegihjKBXIf0=;
+        b=ECmEP9TM8AVjdsxsiwfL2ojt9yzgwpYWK0/cFrhYgo92nFUsTDsJJwevl9qcceKBKA
+         crd5cfTt0e3L19076sojDoU+uwOCKwH0bPvFm0LHUGJDGErS/v4Fak1uvyRIsv0Zt1KB
+         ZS+MGywW689+q0Sbh5dSaCs9cy9a37EdXSntGOcw8Dct1255eFnf1aVc5ZPBMhbazhsv
+         DMFrjBkFu5Aovb4qe/cwycp9TKLPd3I8ky+o3N3WwPF4bd1CsruOjvNhKHp82jd2Xo5S
+         iAoaEe6g6xaYJjV/vAffDo/HocRWF5IwzSsj0SG24RP/ZppTEgHUMZweSCojNb+7/1QE
+         1YxA==
+X-Gm-Message-State: AOAM531FiyiAuyvAzwi3Srbq4It7trco47PBTDGfAOv2jb81dmsz7hyF
+        EgadKUF7FFCUpkulKnLUak9X+g+Pv3jqYkL0Rp+O
+X-Google-Smtp-Source: ABdhPJx4J2Yqvr2CG0rRzjRd7777YBkS9k9JN7ZzFPPyeyKgAHRh7Yr2Khndm0Y7ApuG+etMuNop5MitgoUX4yoKcmSy
 X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:7eb5:10bb:834a:d5ec])
- (user=axelrasmussen job=sendgmr) by 2002:a25:8205:: with SMTP id
- q5mr1802119ybk.170.1621454627516; Wed, 19 May 2021 13:03:47 -0700 (PDT)
-Date:   Wed, 19 May 2021 13:03:29 -0700
-Message-Id: <20210519200339.829146-1-axelrasmussen@google.com>
+ (user=axelrasmussen job=sendgmr) by 2002:a5b:489:: with SMTP id
+ n9mr1859006ybp.45.1621454629266; Wed, 19 May 2021 13:03:49 -0700 (PDT)
+Date:   Wed, 19 May 2021 13:03:30 -0700
+In-Reply-To: <20210519200339.829146-1-axelrasmussen@google.com>
+Message-Id: <20210519200339.829146-2-axelrasmussen@google.com>
 Mime-Version: 1.0
+References: <20210519200339.829146-1-axelrasmussen@google.com>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v2 00/10] KVM: selftests: exercise userfaultfd minor faults
+Subject: [PATCH v2 01/10] KVM: selftests: trivial comment/logging fixes
 From:   Axel Rasmussen <axelrasmussen@google.com>
 To:     Aaron Lewis <aaronlewis@google.com>,
         Alexander Graf <graf@amazon.com>,
@@ -70,86 +74,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Base
-====
+Some trivial fixes I found while touching related code in this series,
+factored out into a separate commit for easier reviewing:
 
-These patches are based upon Andrew Morton's v5.13-rc1-mmots-2021-05-13-17-23
-tag. This is because this series depends on:
+- s/gor/got/ and add a newline in demand_paging_test.c
+- s/backing_src/src_type/ in a comment to be consistent with the real
+  function signature in kvm_util.c
 
-- UFFD minor fault support for hugetlbfs (in v5.13-rc1) [1]
-- UFFD minor fault support for shmem (in Andrew's tree) [2]
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ tools/testing/selftests/kvm/demand_paging_test.c | 2 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c       | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-[1] https://lore.kernel.org/linux-fsdevel/20210301222728.176417-1-axelrasmussen@google.com/
-[2] https://lore.kernel.org/patchwork/cover/1420967/
-
-Changelog
-=========
-
-v1->v2:
-- Picked up Reviewed-by's.
-- Change backing_src_is_shared() to check the flags, instead of the type. This
-  makes it robust to adding new backing source types in the future.
-- Add another commit which refactors setup_demand_paging() error handling.
-- Print UFFD ioctl type once in setup_demand_paging, instead of on every page-in
-  operation.
-- Expand comment on why we use MFD_HUGETLB instead of MAP_HUGETLB.
-- Reworded comment on addr_gpa2alias.
-- Moved demand_paging_test.c timing calls outside of the if (), deduplicating
-  them.
-- Split trivial comment / logging fixups into a separate commit.
-- Add another commit which prints a clarifying message on test skip.
-- Split the commit allowing backing src_type to be modified in two.
-- Split the commit adding the shmem backing type in two.
-- Rebased onto v5.13-rc1-mmots-2021-05-13-17-23.
-
-Overview
-========
-
-Minor fault handling is a new userfaultfd feature whose goal is generally to
-improve performance. In particular, it is intended for use with demand paging.
-There are more details in the cover letters for this new feature (linked above),
-but at a high level the idea is that we think of these three phases of live
-migration of a VM:
-
-1. Precopy, where we copy "some" pages from the source to the target, while the
-   VM is still running on the source machine.
-2. Blackout, where execution stops on the source, and begins on the target.
-3. Postcopy, where the VM is running on the target, some pages are already up
-   to date, and others are not (because they weren't copied, or were modified
-   after being copied).
-
-During postcopy, the first time the guest touches memory, we intercept a minor
-fault. Userspace checks whether or not the page is already up to date. If
-needed, we copy the final version of the page from the soure machine. This
-could be done with RDMA for example, to do it truly in place / with no copying.
-At this point, all that's left is to setup PTEs for the guest: so we issue
-UFFDIO_CONTINUE. No copying or page allocation needed.
-
-Because of this use case, it's useful to exercise this as part of the demand
-paging test. It lets us ensure the use case works correctly end-to-end, and also
-gives us an in-tree way to profile the end-to-end flow for future performance
-improvements.
-
-Axel Rasmussen (10):
-  KVM: selftests: trivial comment/logging fixes
-  KVM: selftests: simplify setup_demand_paging error handling
-  KVM: selftests: print a message when skipping KVM tests
-  KVM: selftests: compute correct demand paging size
-  KVM: selftests: allow different backing source types
-  KVM: selftests: refactor vm_mem_backing_src_type flags
-  KVM: selftests: add shmem backing source type
-  KVM: selftests: create alias mappings when using shared memory
-  KVM: selftests: allow using UFFD minor faults for demand paging
-  KVM: selftests: add shared hugetlbfs backing source type
-
- .../selftests/kvm/demand_paging_test.c        | 175 +++++++++++-------
- .../testing/selftests/kvm/include/kvm_util.h  |   1 +
- .../testing/selftests/kvm/include/test_util.h |  12 ++
- tools/testing/selftests/kvm/lib/kvm_util.c    |  84 ++++++++-
- .../selftests/kvm/lib/kvm_util_internal.h     |   2 +
- tools/testing/selftests/kvm/lib/test_util.c   |  51 +++--
- 6 files changed, 238 insertions(+), 87 deletions(-)
-
---
+diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+index 5f7a229c3af1..9398ba6ef023 100644
+--- a/tools/testing/selftests/kvm/demand_paging_test.c
++++ b/tools/testing/selftests/kvm/demand_paging_test.c
+@@ -169,7 +169,7 @@ static void *uffd_handler_thread_fn(void *arg)
+ 		if (r == -1) {
+ 			if (errno == EAGAIN)
+ 				continue;
+-			pr_info("Read of uffd gor errno %d", errno);
++			pr_info("Read of uffd got errno %d\n", errno);
+ 			return NULL;
+ 		}
+ 
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index fc83f6c5902d..f05ca919cccb 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -663,8 +663,8 @@ int kvm_memcmp_hva_gva(void *hva, struct kvm_vm *vm, vm_vaddr_t gva, size_t len)
+  *
+  * Input Args:
+  *   vm - Virtual Machine
+- *   backing_src - Storage source for this region.
+- *                 NULL to use anonymous memory.
++ *   src_type - Storage source for this region.
++ *              NULL to use anonymous memory.
+  *   guest_paddr - Starting guest physical address
+  *   slot - KVM region slot
+  *   npages - Number of physical pages
+-- 
 2.31.1.751.gd2f1c929bd-goog
 
