@@ -2,209 +2,544 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E785389267
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16A8389268
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354582AbhESPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:21:16 -0400
-Received: from mga07.intel.com ([134.134.136.100]:9762 "EHLO mga07.intel.com"
+        id S1354644AbhESPVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:21:19 -0400
+Received: from mga07.intel.com ([134.134.136.100]:9763 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354419AbhESPVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:21:13 -0400
-IronPort-SDR: bwPZTgANCD6yI9zBuolAlP3W/0RKgFbIAcsfZgJQ3h/0ixM8cdy+Cj5V+/INM2iZ1sHt17tIhR
- UATJXiN3FQIQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="264916850"
+        id S1354508AbhESPVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:21:14 -0400
+IronPort-SDR: 1j6/M4YO59T4WxbiE2GA1HCtVY1IcwhQtpuU/Ofo9Od3x57gIs0I7jztbUu3SmpqkOwprONChZ
+ 8S7ZCDlKCZrQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="264916853"
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="264916850"
+   d="scan'208";a="264916853"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:19:49 -0700
-IronPort-SDR: TMjsN5N9i8bCyNLvivx2Cwg7FbLj36jgtiFnH68b3HXkuKntHsNuyPDNOfRRDtcyUr+5msKt4D
- pbZya2ABgARQ==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 08:19:50 -0700
+IronPort-SDR: rjXuMt9UrU/0so+YIEEVHVDLQCUQJcMh5drc/1Ggpslu85cSEmApHw+DowxARiiuDGo6y0lCgr
+ Sfuj8vn+UgOQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="411775923"
+   d="scan'208";a="411775929"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 19 May 2021 08:19:48 -0700
+  by orsmga002.jf.intel.com with ESMTP; 19 May 2021 08:19:50 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         tglx@linutronix.de, bp@alien8.de, linux-kernel@vger.kernel.org
 Cc:     eranian@google.com, vitaly.slobodskoy@intel.com,
         namhyung@kernel.org, ak@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V4 1/6] perf: Save PMU specific data in task_struct
-Date:   Wed, 19 May 2021 08:06:01 -0700
-Message-Id: <1621436766-112801-1-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V4 2/6] perf: attach/detach PMU specific data
+Date:   Wed, 19 May 2021 08:06:02 -0700
+Message-Id: <1621436766-112801-2-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1621436766-112801-1-git-send-email-kan.liang@linux.intel.com>
+References: <1621436766-112801-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Some PMU specific data has to be saved/restored during context switch,
-e.g. LBR call stack data. Currently, the data is saved in event context
-structure, but only for per-process event. For system-wide event,
-because of missing the LBR call stack data after context switch, LBR
-callstacks are always shorter in comparison to per-process mode.
+The LBR call stack data has to be saved/restored during context switch
+to fix the shorter LBRs call stacks issue in the  system-wide mode.
+Allocate PMU specific data and attach them to the corresponding
+task_struct during LBR call stack monitoring.
 
-For example,
-  Per-process mode:
-  $perf record --call-graph lbr -- taskset -c 0 ./tchain_edit
+When a LBR call stack event is accounted, the perf_ctx_data for the
+related tasks will be allocated/attached by attach_perf_ctx_data().
+When a LBR call stack event is unaccounted, the perf_ctx_data for
+related tasks will be detached/freed by detach_perf_ctx_data().
 
-  -   99.90%    99.86%  tchain_edit  tchain_edit       [.] f3
-       99.86% _start
-          __libc_start_main
-          generic_start_main
-          main
-          f1
-        - f2
-             f3
+The LBR call stack event could be a per-task event or a system-wide
+event.
+- For a per-task event, perf only allocates the perf_ctx_data for the
+  current task. If the allocation fails, perf will error out.
+- For a system-wide event, perf has to allocate the perf_ctx_data for
+  both the existing tasks and the upcoming tasks.
+  The allocation for the existing tasks is done in perf_event_alloc().
+  The allocation for the new tasks will be done in perf_event_fork().
+  If any allocation fails, perf doesn't error out for the system-wide
+  event.  A debug message will be dumped to system log instead. LBR
+  callstack may be cutoff for the task which doesn't have the space
+  allocated.
+- The perf_ctx_data only be freed by the last LBR call stack event.
+  The number of the per-task events is tracked by refcount of each task.
+  Since the system-wide events impact all tasks, it's not practical to
+  go through the whole task list to update the refcount for each
+  system-wide event. The number of system-wide events is tracked by a
+  global variable nr_task_data_sys_wide_events.
+  Introduce a macro TASK_DATA_SYS_WIDE for refcount to indicate the
+  PMU specific data is used by the system-wide events.
 
-  System-wide mode:
-  $perf record --call-graph lbr -a -- taskset -c 0 ./tchain_edit
-
-  -   99.88%    99.82%  tchain_edit  tchain_edit        [.] f3
-   - 62.02% main
-        f1
-        f2
-        f3
-   - 28.83% f1
-      - f2
-        f3
-   - 28.83% f1
-      - f2
-           f3
-   - 8.88% generic_start_main
-        main
-        f1
-        f2
-        f3
-
-It isn't practical to simply allocate the data for system-wide event in
-CPU context structure for all tasks. We have no idea which CPU a task
-will be scheduled to. The duplicated LBR data has to be maintained on
-every CPU context structure. That's a huge waste. Otherwise, the LBR
-data still lost if the task is scheduled to another CPU.
-
-Save the pmu specific data in task_struct. The size of pmu specific data
-is 788 bytes for LBR call stack. Usually, the overall amount of threads
-doesn't exceed a few thousands. For 10K threads, keeping LBR data would
-consume additional ~8MB. The additional space will only be allocated
-during LBR call stack monitoring. It will be released when the
-monitoring is finished.
-
-Furthermore, moving task_ctx_data from perf_event_context to task_struct
-can reduce complexity and make things clearer. E.g. perf doesn't need to
-swap task_ctx_data on optimized context switch path.
-This patch set is just the first step. There could be other
-optimization/extension on top of this patch set. E.g. for cgroup
-profiling, perf just needs to save/store the LBR call stack information
-for tasks in specific cgroup. That could reduce the additional space.
-Also, the LBR call stack can be available for software events, or allow
-even debugging use cases, like LBRs on crash later.
-
-The data can be shared among events. To sync the writers of
-perf_ctx_data RCU pointer, add a lock in task_struct as well.
-
-The Kmem cache of pmu specific data is saved in struct perf_ctx_data.
-It's required when child task allocates the space.
-The refcount in struct perf_ctx_data is used to track the users of pmu
-specific data.
-
-Reviewed-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
 
-The V3 can be found here.
-https://lore.kernel.org/lkml/1578495789-95006-1-git-send-email-kan.liang@linux.intel.com/
-
 Changes since V3:
-- Rebase for the Arch LBR. Use Kmem cache to replace the data_size.
+- Rebase for the Arch LBR
+- Use kvcalloc to replace kcalloc (Andi)
 
 Changes since V2:
-- Cannot use mutex inside rcu_read_lock().
-  Restore the pin lock perf_ctx_data_lock
+- Remove global spin lock task_data_sys_wide_events_lock
+  Since the global spin lock has been removed, we cannot guarantee
+  that the allocation/assignments for existing threads and free are
+  serialized.
+  To fix it, in V3, we go through the task list when accounting for
+  each system-wide event, and assign the perf_ctx_data pointer if needed.
+  (In V2, we only do the assignment for the first system-wide event).
+  In V3, we also add a breaker in free process for system-wide event.
+  If there is new system-wide event accounted, stop the free process
+  immediately.
+- Add a macro TASK_DATA_SYS_WIDE to indicate the PMU specific data
+  is used by system-wide events.
 
+ kernel/events/core.c | 380 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 380 insertions(+)
 
- include/linux/perf_event.h | 28 ++++++++++++++++++++++++++++
- include/linux/sched.h      |  4 ++++
- kernel/events/core.c       |  2 ++
- 3 files changed, 34 insertions(+)
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index f5a6a2f..d46b7e1 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -851,6 +851,34 @@ struct perf_event_context {
- 	struct rcu_head			rcu_head;
- };
- 
-+/**
-+ * struct perf_ctx_data - PMU specific data for a task
-+ * @rcu_head:  To avoid the race on free PMU specific data
-+ * @refcount:  To track users
-+ * @ctx_cache: Kmem cache of PMU specific data
-+ * @data:      PMU specific data
-+ *
-+ * Currently, the struct is only used in Intel LBR call stack mode to
-+ * save/restore the call stack of a task on context switches.
-+ * The data only be allocated when Intel LBR call stack mode is enabled.
-+ * The data will be freed when the mode is disabled. The rcu_head is
-+ * used to prevent the race on free the data.
-+ * The content of the data will only be accessed in context switch, which
-+ * should be protected by rcu_read_lock().
-+ *
-+ * Careful: Struct perf_ctx_data is added as a pointor in struct task_struct.
-+ * When system-wide Intel LBR call stack mode is enabled, a buffer with
-+ * constant size will be allocated for each task.
-+ * Also, system memory consumption can further grow when the size of
-+ * struct perf_ctx_data enlarges.
-+ */
-+struct perf_ctx_data {
-+	struct rcu_head			rcu_head;
-+	refcount_t			refcount;
-+	struct kmem_cache		*ctx_cache;
-+	void				*data;
-+};
-+
- /*
-  * Number of contexts where an event can trigger:
-  *	task, softirq, hardirq, nmi.
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d2c8813..700f56f 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -52,6 +52,7 @@ struct mempolicy;
- struct nameidata;
- struct nsproxy;
- struct perf_event_context;
-+struct perf_ctx_data;
- struct pid_namespace;
- struct pipe_inode_info;
- struct rcu_node;
-@@ -1135,6 +1136,9 @@ struct task_struct {
- 	struct perf_event_context	*perf_event_ctxp[perf_nr_task_contexts];
- 	struct mutex			perf_event_mutex;
- 	struct list_head		perf_event_list;
-+	/* Sync the writers of perf_ctx_data RCU pointer */
-+	raw_spinlock_t			perf_ctx_data_lock;
-+	struct perf_ctx_data __rcu	*perf_ctx_data;
- #endif
- #ifdef CONFIG_DEBUG_PREEMPT
- 	unsigned long			preempt_disable_ip;
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 2e947a4..9bb9bee 100644
+index 9bb9bee..bb1b27e 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -13131,6 +13131,8 @@ int perf_event_init_task(struct task_struct *child, u64 clone_flags)
- 	memset(child->perf_event_ctxp, 0, sizeof(child->perf_event_ctxp));
- 	mutex_init(&child->perf_event_mutex);
- 	INIT_LIST_HEAD(&child->perf_event_list);
-+	child->perf_ctx_data = NULL;
-+	raw_spin_lock_init(&child->perf_ctx_data_lock);
+@@ -48,6 +48,7 @@
+ #include <linux/parser.h>
+ #include <linux/sched/clock.h>
+ #include <linux/sched/mm.h>
++#include <linux/sched/stat.h>
+ #include <linux/proc_ns.h>
+ #include <linux/mount.h>
+ #include <linux/min_heap.h>
+@@ -401,6 +402,39 @@ static atomic_t nr_cgroup_events __read_mostly;
+ static atomic_t nr_text_poke_events __read_mostly;
+ static atomic_t nr_build_id_events __read_mostly;
  
- 	for_each_task_context_nr(ctxn) {
- 		ret = perf_event_init_context(child, ctxn, clone_flags);
++/* Track the number of system-wide event which requires pmu specific data */
++static atomic_t nr_task_data_sys_wide_events;
++
++/*
++ * There are two types of users for pmu specific data, system-wide event and
++ * per-task event.
++ *
++ * The number of system-wide events is already tracked by global variable
++ * nr_task_data_sys_wide_events. Set TASK_DATA_SYS_WIDE in refcount to
++ * indicate the PMU specific data is used by system-wide events.
++ *
++ * The number of per-task event users is tracked by refcount. Since the
++ * TASK_DATA_SYS_WIDE is already occupied by system-wide events, limit
++ * the max number of per-task event users less than half of TASK_DATA_SYS_WIDE.
++ */
++#define TASK_DATA_SYS_WIDE		0x1000000
++#define MAX_NR_TASK_DATA_EVENTS		(TASK_DATA_SYS_WIDE >> 1)
++
++static inline bool has_task_data_sys_wide(struct perf_ctx_data *perf_ctx_data)
++{
++	return !!(refcount_read(&perf_ctx_data->refcount) & TASK_DATA_SYS_WIDE);
++}
++
++static inline bool exceed_task_data_events_limit(struct perf_ctx_data *perf_ctx_data)
++{
++	unsigned int count = refcount_read(&perf_ctx_data->refcount);
++
++	if (has_task_data_sys_wide(perf_ctx_data))
++		return (count - TASK_DATA_SYS_WIDE) > MAX_NR_TASK_DATA_EVENTS;
++	else
++		return count > MAX_NR_TASK_DATA_EVENTS;
++}
++
+ static LIST_HEAD(pmus);
+ static DEFINE_MUTEX(pmus_lock);
+ static struct srcu_struct pmus_srcu;
+@@ -4768,6 +4802,288 @@ static void unaccount_freq_event(void)
+ 		atomic_dec(&nr_freq_events);
+ }
+ 
++static int
++alloc_perf_ctx_data(struct kmem_cache *ctx_cache, gfp_t flags,
++		    struct perf_ctx_data **task_ctx_data)
++{
++	struct perf_ctx_data *ctx_data;
++
++	if (!ctx_cache)
++		return -EINVAL;
++
++	ctx_data = kzalloc(sizeof(struct perf_ctx_data), flags);
++	if (!ctx_data)
++		return -ENOMEM;
++
++	ctx_data->data = kmem_cache_zalloc(ctx_cache, flags);
++	if (!ctx_data->data) {
++		kfree(ctx_data);
++		return -ENOMEM;
++	}
++
++	ctx_data->ctx_cache = ctx_cache;
++	*task_ctx_data = ctx_data;
++
++	return 0;
++}
++
++static void
++free_perf_ctx_data(struct perf_ctx_data *ctx_data)
++{
++	kfree(ctx_data->data);
++	kfree(ctx_data);
++}
++
++static void
++free_perf_ctx_data_rcu(struct rcu_head *rcu_head)
++{
++	struct perf_ctx_data *ctx_data;
++
++	ctx_data = container_of(rcu_head, struct perf_ctx_data, rcu_head);
++	free_perf_ctx_data(ctx_data);
++}
++
++static int
++attach_task_ctx_data(struct task_struct *task, struct kmem_cache *ctx_cache)
++{
++	struct perf_ctx_data *ctx_data, *tsk_data;
++
++	/*
++	 * To make the code RT friendly, make the allocation out of
++	 * the spinlock.
++	 */
++	if (alloc_perf_ctx_data(ctx_cache, GFP_KERNEL, &ctx_data))
++		return -ENOMEM;
++
++	raw_spin_lock(&task->perf_ctx_data_lock);
++
++	tsk_data = rcu_dereference_protected(task->perf_ctx_data,
++				lockdep_is_held(&task->perf_ctx_data_lock));
++	if (tsk_data) {
++		free_perf_ctx_data(ctx_data);
++		if (WARN_ON_ONCE(exceed_task_data_events_limit(tsk_data))) {
++			raw_spin_unlock(&task->perf_ctx_data_lock);
++			return -EINVAL;
++		}
++		refcount_inc(&tsk_data->refcount);
++	} else {
++		refcount_set(&ctx_data->refcount, 1);
++		/* System-wide event is active as well */
++		if (atomic_read(&nr_task_data_sys_wide_events))
++			refcount_add(TASK_DATA_SYS_WIDE, &ctx_data->refcount);
++
++		rcu_assign_pointer(task->perf_ctx_data, ctx_data);
++	}
++
++	raw_spin_unlock(&task->perf_ctx_data_lock);
++	return 0;
++}
++
++static int
++attach_system_wide_ctx_data(struct kmem_cache *ctx_cache)
++{
++	int i, num_thread, pos, nr_failed_alloc;
++	struct perf_ctx_data *tsk_data;
++	struct perf_ctx_data **data;
++	struct task_struct *g, *p;
++	gfp_t flags = GFP_ATOMIC;
++	bool re_alloc = true;
++
++	/* Retrieve total number of threads */
++	num_thread = nr_threads;
++
++	data = kvcalloc(num_thread, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		printk_once(KERN_DEBUG
++			    "Failed to allocate space for LBR callstack. "
++			    "The LBR callstack for all tasks may be cutoff.\n");
++		return -ENOMEM;
++	}
++
++	atomic_inc(&nr_task_data_sys_wide_events);
++
++repeat:
++	/*
++	 * Allocate perf_ctx_data for all existing threads.
++	 * The perf_ctx_data for new threads will be allocated in
++	 * perf_event_fork().
++	 * Do a quick allocation in first round with GFP_ATOMIC.
++	 */
++	for (i = 0; i < num_thread; i++) {
++		if (alloc_perf_ctx_data(ctx_cache, flags, &data[i]))
++			break;
++	}
++	num_thread = i;
++	nr_failed_alloc = 0;
++	pos = 0;
++
++	rcu_read_lock();
++	for_each_process_thread(g, p) {
++		raw_spin_lock(&p->perf_ctx_data_lock);
++		tsk_data = p->perf_ctx_data;
++		if (tsk_data) {
++			/*
++			 * The perf_ctx_data for this thread may has been
++			 * allocated by per-task event.
++			 * Only update refcount for the case.
++			 */
++			if (!has_task_data_sys_wide(tsk_data))
++				refcount_add(TASK_DATA_SYS_WIDE, &tsk_data->refcount);
++			raw_spin_unlock(&p->perf_ctx_data_lock);
++			continue;
++		}
++
++		if (pos < num_thread) {
++			refcount_set(&data[pos]->refcount, TASK_DATA_SYS_WIDE);
++			rcu_assign_pointer(p->perf_ctx_data, data[pos++]);
++		} else {
++			/*
++			 * The quick allocation in first round may be failed.
++			 * Track the number in nr_failed_alloc.
++			 */
++			nr_failed_alloc++;
++		}
++		raw_spin_unlock(&p->perf_ctx_data_lock);
++	}
++	rcu_read_unlock();
++
++	if (re_alloc && !nr_failed_alloc) {
++		num_thread = nr_failed_alloc;
++		flags = GFP_KERNEL;
++		re_alloc = false;
++		goto repeat;
++	}
++
++	if (nr_failed_alloc) {
++		printk_once(KERN_DEBUG
++			    "Failed to allocate space for LBR callstack. "
++			    "The LBR callstack for some tasks may be cutoff.\n");
++	}
++
++	for (; pos < num_thread; pos++)
++		free_perf_ctx_data(data[pos]);
++
++	kvfree(data);
++	return 0;
++}
++
++static int
++attach_perf_ctx_data(struct perf_event *event)
++{
++	struct task_struct *task = event->hw.target;
++	struct kmem_cache *ctx_cache = event->pmu->task_ctx_cache;
++
++	if (task)
++		return attach_task_ctx_data(task, ctx_cache);
++	else
++		return attach_system_wide_ctx_data(ctx_cache);
++}
++
++/**
++ * detach_task_ctx_data - Detach perf_ctx_data RCU pointer for a task
++ *			  monitored by per-task event
++ * @task:        Target Task
++ * @force:       Unconditionally free perf_ctx_data
++ *
++ * If force is set, free perf_ctx_data unconditionally.
++ * Otherwise, free perf_ctx_data when there are no users.
++ * Lock is required to sync the writers of perf_ctx_data RCU pointer
++ */
++static void
++detach_task_ctx_data(struct task_struct *task, bool force)
++{
++	struct perf_ctx_data *ctx_data;
++
++	raw_spin_lock(&task->perf_ctx_data_lock);
++
++	ctx_data = rcu_dereference_protected(task->perf_ctx_data,
++				lockdep_is_held(&task->perf_ctx_data_lock));
++
++	if (!ctx_data)
++		goto unlock;
++
++	if (!force) {
++		WARN_ON_ONCE(refcount_read(&ctx_data->refcount) == TASK_DATA_SYS_WIDE);
++
++		if (!refcount_dec_and_test(&ctx_data->refcount))
++			goto unlock;
++	}
++
++	RCU_INIT_POINTER(task->perf_ctx_data, NULL);
++	call_rcu(&ctx_data->rcu_head, free_perf_ctx_data_rcu);
++
++unlock:
++	raw_spin_unlock(&task->perf_ctx_data_lock);
++}
++
++/**
++ * detach_task_ctx_data_sys_wide - Detach perf_ctx_data RCU pointer for
++ *				   a task monitored by system-wide event
++ * @task:        Target Task
++ *
++ * Free perf_ctx_data when there are no users.
++ */
++static void
++detach_task_ctx_data_sys_wide(struct task_struct *task)
++{
++	struct perf_ctx_data *ctx_data;
++
++	lockdep_assert_held(&task->perf_ctx_data_lock);
++
++	ctx_data = rcu_dereference_protected(task->perf_ctx_data,
++				lockdep_is_held(&task->perf_ctx_data_lock));
++	if (!ctx_data)
++		return;
++
++	WARN_ON_ONCE(!has_task_data_sys_wide(ctx_data));
++
++	if (!refcount_sub_and_test(TASK_DATA_SYS_WIDE, &ctx_data->refcount))
++		return;
++
++	RCU_INIT_POINTER(task->perf_ctx_data, NULL);
++	call_rcu(&ctx_data->rcu_head, free_perf_ctx_data_rcu);
++}
++
++static void detach_system_wide_ctx_data(void)
++{
++	struct task_struct *g, *p;
++
++	if (!atomic_dec_and_test(&nr_task_data_sys_wide_events))
++		return;
++
++	rcu_read_lock();
++	for_each_process_thread(g, p) {
++		raw_spin_lock(&p->perf_ctx_data_lock);
++
++		/*
++		 * A new system-wide event may be attached while freeing
++		 * everything for the old event.
++		 * If so, stop the free process immediately.
++		 * For the freed threads, attach_system_wide_ctx_data()
++		 * will re-allocate the space.
++		 */
++		if (unlikely(atomic_read(&nr_task_data_sys_wide_events))) {
++			raw_spin_unlock(&p->perf_ctx_data_lock);
++			goto unlock;
++		}
++
++		detach_task_ctx_data_sys_wide(p);
++		raw_spin_unlock(&p->perf_ctx_data_lock);
++	}
++unlock:
++	rcu_read_unlock();
++}
++
++static void detach_perf_ctx_data(struct perf_event *event)
++{
++	struct task_struct *task = event->hw.target;
++
++	if (task)
++		detach_task_ctx_data(task, false);
++	else
++		detach_system_wide_ctx_data();
++}
++
+ static void unaccount_event(struct perf_event *event)
+ {
+ 	bool dec = false;
+@@ -4805,6 +5121,8 @@ static void unaccount_event(struct perf_event *event)
+ 		atomic_dec(&nr_bpf_events);
+ 	if (event->attr.text_poke)
+ 		atomic_dec(&nr_text_poke_events);
++	if (event->attach_state & PERF_ATTACH_TASK_DATA)
++		detach_perf_ctx_data(event);
+ 
+ 	if (dec) {
+ 		if (!atomic_add_unless(&perf_sched_count, -1, 1))
+@@ -7841,10 +8159,63 @@ static void perf_event_task(struct task_struct *task,
+ 		       task_ctx);
+ }
+ 
++/*
++ * Allocate data for a new task when profiling system-wide
++ * events which require PMU specific data
++ */
++static void perf_event_alloc_task_data(struct task_struct *child,
++				       struct task_struct *parent)
++{
++	struct kmem_cache *ctx_cache = NULL;
++	struct perf_ctx_data *ctx_data;
++
++	if (!atomic_read(&nr_task_data_sys_wide_events))
++		return;
++
++	rcu_read_lock();
++	ctx_data = rcu_dereference(parent->perf_ctx_data);
++	if (ctx_data)
++		ctx_cache = ctx_data->ctx_cache;
++	rcu_read_unlock();
++
++	if (!ctx_cache)
++		return;
++
++	if (alloc_perf_ctx_data(ctx_cache, GFP_KERNEL, &ctx_data))
++		return;
++
++	raw_spin_lock(&child->perf_ctx_data_lock);
++
++	if (child->perf_ctx_data) {
++		free_perf_ctx_data(ctx_data);
++	} else {
++		refcount_set(&ctx_data->refcount, TASK_DATA_SYS_WIDE);
++		rcu_assign_pointer(child->perf_ctx_data, ctx_data);
++	}
++
++	/*
++	 * System-wide event may be unaccount when attaching the perf_ctx_data.
++	 * For example,
++	 *                CPU A                              CPU B
++	 *        perf_event_alloc_task_data():
++	 *          read(nr_task_data_sys_wide_events)
++	 *                                         detach_system_wide_ctx_data()
++	 *          alloc_perf_ctx_data()
++	 *          rcu_assign_pointer(perf_ctx_data);
++	 *
++	 * The perf_ctx_data may never be freed until the task is terminated.
++	 */
++	if (unlikely(!atomic_read(&nr_task_data_sys_wide_events)))
++		detach_task_ctx_data_sys_wide(child);
++
++	raw_spin_unlock(&child->perf_ctx_data_lock);
++}
++
+ void perf_event_fork(struct task_struct *task)
+ {
+ 	perf_event_task(task, NULL, 1);
+ 	perf_event_namespaces(task);
++	perf_event_alloc_task_data(task, current);
+ }
+ 
+ /*
+@@ -11614,11 +11985,18 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 	if (err)
+ 		goto err_callchain_buffer;
+ 
++	if ((event->attach_state & PERF_ATTACH_TASK_DATA) &&
++	    attach_perf_ctx_data(event))
++		goto err_task_ctx_data;
++
+ 	/* symmetric to unaccount_event() in _free_event() */
+ 	account_event(event);
+ 
+ 	return event;
+ 
++err_task_ctx_data:
++	if (!event->parent && (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN))
++		put_callchain_buffers();
+ err_callchain_buffer:
+ 	if (!event->parent) {
+ 		if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
+@@ -12696,6 +13074,8 @@ void perf_event_exit_task(struct task_struct *child)
+ 	 * At this point we need to send EXIT events to cpu contexts.
+ 	 */
+ 	perf_event_task(child, NULL, 0);
++
++	detach_task_ctx_data(child, true);
+ }
+ 
+ static void perf_free_event(struct perf_event *event,
 -- 
 2.7.4
 
