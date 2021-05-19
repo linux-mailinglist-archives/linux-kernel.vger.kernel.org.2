@@ -2,222 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034C9389932
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B632F389933
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhESWSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 18:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
+        id S229937AbhESWTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 18:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhESWSn (ORCPT
+        with ESMTP id S229455AbhESWTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 18:18:43 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E9AC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:17:23 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id l15so8390616iln.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5wgl05064bo/wrhGEEMBj308K0kQaD0/2stg8PGthI0=;
-        b=H6+SABy0HV4MGm3RGyJtz6pogFgzYS75atH5aoZhE6LIjuSASSLpiVi2cTcJqD1CZy
-         XTQ34IZDiAjannkogmRFrctR7ETtoQ83cmiNdGMhQqnlVxOVzH1ZI+hmDuE8x0xvNuBS
-         Jtsh9aeSiGvHKr8JVL7KalSSNMMxJeD5NUxqM8vVgN+x7OQBhj4wJGbep5q8F7IiEAek
-         2XtUak8fA2EHe5UJw1RYfhXqOLpYGPQqr0RPNQg6f+soqQggdyv8Vtx6gsrD7pLJ087U
-         BocGya1tu3TXC4kB/AAjBp3wA6XCMcU44DqdAdxk0sNhUje2WDByAFUQNii0t6NUvnbL
-         9Jiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5wgl05064bo/wrhGEEMBj308K0kQaD0/2stg8PGthI0=;
-        b=EXtN/0Agxfw8mGyX58rW3RwoTh/tFfkV2VLLHV+w0fjAzVURqnFDQKYPkYNAyJ9tP/
-         qGminMLX+G9UbQa8lZ2MoSJM7wavD0GYkrDd3GUVF+TfSEb/zo6qcwIEj8NL7IkahpRD
-         5UGw/SjyP0ksIg/lvSksPnVvQp2f6BwjA1RtXPQaqc3Ez3n9kbfo+tFfRKKEkPB+1duC
-         a26Xw/nd8kJD1QPxgpr90834r39+qK0RsRtkAxOhCImUIJ7BeD+47KcgkdfRPQ0w7gJB
-         mpPDBngxiOLp23cqMFWxZtbbdW7CzTkgJSfzEklKVA1VU1reJlXmt9YJVCAiDVRVjMOj
-         +N5Q==
-X-Gm-Message-State: AOAM533jOiZxQoVp8PlrLt/WbzVx+EDQ5bs4GTyhtBwhUmI/mjBag/MC
-        GHD0S0yF/BkpVwfe9zhmsoLpBF7OVKKuVcaMghTFKw==
-X-Google-Smtp-Source: ABdhPJzOuNXE276R25wv+szT69fRMzJgkvdYpulEGNtX8Xfx1YJ1vxarp3QWt6xXw5xq4KBBUjMWe8MTFYkiZvXOJ9Q=
-X-Received: by 2002:a92:340a:: with SMTP id b10mr1424032ila.301.1621462642818;
- Wed, 19 May 2021 15:17:22 -0700 (PDT)
+        Wed, 19 May 2021 18:19:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F52EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:18:00 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621462677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nV6NgUefo2nH7QxJaek8cK1eUXir75HyDeTG1bZBI4c=;
+        b=4BxRXUahXEvWlIcUn5wtii5rXwtCFtgSh7N/mMZgCSn78IjK453Pr0x3rjhXkTaPLYnKeS
+        2k+eeTr8PmuBo2rRPfZWZD8iy//BiSrAPAblk0mdSIFJTDC+Zdn/Oihu9nmujqxOFKTd/z
+        jtapjrCZwODjpn0xkf9r8cE2iS5IBCIvYaW+JPdYKdZkYwPJGbtJt2SJLnrN8hdylYSwrV
+        ZMbviaMuwwSAB4clEnQEM6cn+kj+Osfed3vE5bVgZGSfIRCNzQ+Dx5BHTOTnslwCOEB7o+
+        iTwlCAzyc8JDDzNovTJHanpzpU+/NsA8nyLOp25HRn/WwtCdI6FRj40fMpSMag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621462677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nV6NgUefo2nH7QxJaek8cK1eUXir75HyDeTG1bZBI4c=;
+        b=gZlX0znP4Jz4LBkn2jni9cQc3Aw8KRper/BTkDgKt0k4V7t8brq0uhPHLli9ExaurS0C8W
+        qP3btf2SnbLjkEAQ==
+To:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/8] x86/traps: add X86_NR_HW_TRAPS to <asm/trapnr.h>
+In-Reply-To: <20210519212154.511983-2-hpa@zytor.com>
+References: <20210519212154.511983-1-hpa@zytor.com> <20210519212154.511983-2-hpa@zytor.com>
+Date:   Thu, 20 May 2021 00:17:57 +0200
+Message-ID: <87bl96cqqy.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210519200339.829146-1-axelrasmussen@google.com>
- <20210519200339.829146-7-axelrasmussen@google.com> <CANgfPd-RuScC1BONf2wBSSJ=GQE5yW=BK4g18L3R2Ebn__+PAg@mail.gmail.com>
-In-Reply-To: <CANgfPd-RuScC1BONf2wBSSJ=GQE5yW=BK4g18L3R2Ebn__+PAg@mail.gmail.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 19 May 2021 15:16:46 -0700
-Message-ID: <CAJHvVchMMse=CcSUnHGDXLKd0YSa3wTvyyyPjT8MU3RmmwAXtQ@mail.gmail.com>
-Subject: Re: [PATCH v2 06/10] KVM: selftests: refactor vm_mem_backing_src_type flags
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 3:02 PM Ben Gardon <bgardon@google.com> wrote:
+On Wed, May 19 2021 at 14:21, H. Peter Anvin wrote:
+> From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 >
-> On Wed, May 19, 2021 at 1:04 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> >
-> > Each struct vm_mem_backing_src_alias has a flags field, which denotes
-> > the flags used to mmap() an area of that type. Previously, this field
-> > never included MAP_PRIVATE | MAP_ANONYMOUS, because
-> > vm_userspace_mem_region_add assumed that *all* types would always use
-> > those flags, and so it hardcoded them.
-> >
-> > In a follow-up commit, we'll add a new type: shmem. Areas of this type
-> > must not have MAP_PRIVATE | MAP_ANONYMOUS, and instead they must have
-> > MAP_SHARED.
-> >
-> > So, refactor things. Make it so that the flags field of
-> > struct vm_mem_backing_src_alias really is a complete set of flags, and
-> > don't add in any extras in vm_userspace_mem_region_add. This will let us
-> > easily tack on shmem.
-> >
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >  tools/testing/selftests/kvm/lib/kvm_util.c  |  5 ++-
-> >  tools/testing/selftests/kvm/lib/test_util.c | 35 +++++++++++----------
-> >  2 files changed, 21 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > index 0d6ddee429b9..bc405785ac8b 100644
-> > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > @@ -759,9 +759,8 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
-> >
-> >         region->mmap_start = mmap(NULL, region->mmap_size,
-> >                                   PROT_READ | PROT_WRITE,
-> > -                                 MAP_PRIVATE | MAP_ANONYMOUS
-> > -                                 | vm_mem_backing_src_alias(src_type)->flag,
-> > -                                 -1, 0);
-> > +                                 vm_mem_backing_src_alias(src_type)->flag,
-> > +                                 region->fd, 0);
->
-> I don't see the region->fd change mentioned in the patch description
-> or elsewhere in this patch. Is something setting region->fd to -1 or
-> should this be part of another patch in the series?
+> The x86 architecture supports up to 32 trap vectors. Add that constant
+> to <asm/trapnr.h>.
 
-Ah, apologies, this is a mistake from splitting up the commits. When
-they were all squashed together, we set region->fd = -1 explicitly
-just above here, but with them separated we can't depend on that. I'll
-fix this in a v3.
+Where is that actually used?
 
->
-> >         TEST_ASSERT(region->mmap_start != MAP_FAILED,
-> >                     "test_malloc failed, mmap_start: %p errno: %i",
-> >                     region->mmap_start, errno);
-> > diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> > index 63d2bc7d757b..06ddde068736 100644
-> > --- a/tools/testing/selftests/kvm/lib/test_util.c
-> > +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> > @@ -168,70 +168,73 @@ size_t get_def_hugetlb_pagesz(void)
-> >
-> >  const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i)
-> >  {
-> > +       static const int anon_flags = MAP_PRIVATE | MAP_ANONYMOUS;
-> > +       static const int anon_huge_flags = anon_flags | MAP_HUGETLB;
-> > +
-> >         static const struct vm_mem_backing_src_alias aliases[] = {
-> >                 [VM_MEM_SRC_ANONYMOUS] = {
-> >                         .name = "anonymous",
-> > -                       .flag = 0,
-> > +                       .flag = anon_flags,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_THP] = {
-> >                         .name = "anonymous_thp",
-> > -                       .flag = 0,
-> > +                       .flag = anon_flags,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB] = {
-> >                         .name = "anonymous_hugetlb",
-> > -                       .flag = MAP_HUGETLB,
-> > +                       .flag = anon_huge_flags,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_16KB] = {
-> >                         .name = "anonymous_hugetlb_16kb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_16KB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_16KB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_64KB] = {
-> >                         .name = "anonymous_hugetlb_64kb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_64KB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_64KB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_512KB] = {
-> >                         .name = "anonymous_hugetlb_512kb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_512KB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_512KB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_1MB] = {
-> >                         .name = "anonymous_hugetlb_1mb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_1MB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_1MB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB] = {
-> >                         .name = "anonymous_hugetlb_2mb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_2MB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_2MB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_8MB] = {
-> >                         .name = "anonymous_hugetlb_8mb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_8MB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_8MB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_16MB] = {
-> >                         .name = "anonymous_hugetlb_16mb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_16MB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_16MB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_32MB] = {
-> >                         .name = "anonymous_hugetlb_32mb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_32MB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_32MB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_256MB] = {
-> >                         .name = "anonymous_hugetlb_256mb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_256MB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_256MB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_512MB] = {
-> >                         .name = "anonymous_hugetlb_512mb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_512MB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_512MB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB] = {
-> >                         .name = "anonymous_hugetlb_1gb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_1GB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_1GB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_2GB] = {
-> >                         .name = "anonymous_hugetlb_2gb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_2GB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_2GB,
-> >                 },
-> >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_16GB] = {
-> >                         .name = "anonymous_hugetlb_16gb",
-> > -                       .flag = MAP_HUGETLB | MAP_HUGE_16GB,
-> > +                       .flag = anon_huge_flags | MAP_HUGE_16GB,
-> >                 },
-> >         };
-> >         _Static_assert(ARRAY_SIZE(aliases) == NUM_SRC_TYPES,
-> > --
-> > 2.31.1.751.gd2f1c929bd-goog
-> >
+Thanks,
+
+        tglx
