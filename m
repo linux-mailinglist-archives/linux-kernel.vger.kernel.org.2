@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2333886F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFDF3886FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345054AbhESFvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349022AbhESFrB (ORCPT
+        id S242878AbhESFvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:51:37 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:14618 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344680AbhESFvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:47:01 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37D3C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:45:41 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n8so1156796plf.7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YX6bVogG7OVOPNM1yvwbjKO/m+OQLr7iv04qm+yLWgk=;
-        b=qlBlhCYZ4jdvxAcFL4MFjLwB9Mr54MsVnnFEjADnPiNBOwQUrSJtPPRJInz72qIUD8
-         09Xk+BS39Pw/LEB3HpuOPCD6uCaYNWIXPcOYeFGaRrPltssi0Bg2E5j1yTzRTyZpXDLV
-         zDa6yg98Ych9jTAkdj33Mb1wdw4A1KagrOzIPGQJdcPn9pLf6Y77p/QV8CAlMnXwHVUe
-         KqmaWsLgjnhuIE3/LHs2P0XAdtnj8MxdhEPSQDC7c1cGXJkxj46bWb8UFkch1wAU0+3s
-         0nDL31uoeob59ZTqPqr7GIKWjPtX2voUMjBMcvyWwORcISYjO9rRSGbfh/lTOaMyJOXl
-         f6Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YX6bVogG7OVOPNM1yvwbjKO/m+OQLr7iv04qm+yLWgk=;
-        b=goZGIFWju7TufzJyeGRktNle/fJ4OpFMyLYKygNRGh3tNIBDDQ9e49dVFJjpO0Q3jp
-         y23tasfCy3SVz/92PBp9c31WLKjJQt2GF1rTC0/6/bX+6+ZWvf3ksnC4hqP6feYnDpAE
-         K8Nr22qrwwuRm2GRj0lIV+ujmZ5/2aKFDSNrgju0dCH7iCrqpYBF4BnhnX45ojQyrxT/
-         PHlbSxuZVMKBAY2E6W1zo+VoWOlcaUhDQR55tBbVC0CJSiRQX88G6CBCyeaFpEgUQiLn
-         08Qn1i5GBFMUThFozY8JkzCbGtOs3oFOdtZc44bYc+qrFURn5fEMjJgzRwNYpEWfOMV7
-         O5LA==
-X-Gm-Message-State: AOAM533B0Feed2+Tx+pPdENMI3S69XV8ZI9Pt68WzmKaWzMxOFere/vy
-        SVM+W81RPVZTx2WWQFMUzbXwM5ncvjWsFwdBqdNh7Q==
-X-Google-Smtp-Source: ABdhPJzFjlL3ldo/YTrnNY5oN/5DBrDGqVKohxRHJO2DbVshHNB6qfBiCQwKAgVDsFk8W1xhnfmVeBIw+jSWb7IZCkA=
-X-Received: by 2002:a17:902:f20c:b029:f0:af3d:c5d8 with SMTP id
- m12-20020a170902f20cb02900f0af3dc5d8mr8801350plc.23.1621403141274; Tue, 18
- May 2021 22:45:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-20-seanjc@google.com>
-In-Reply-To: <20210424004645.3950558-20-seanjc@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Tue, 18 May 2021 22:45:25 -0700
-Message-ID: <CAAeT=FzuLL5JMW2orGWDfdZ1oLN0Bm+-scnYwEysVd_WCkibYA@mail.gmail.com>
-Subject: Re: [PATCH 19/43] KVM: x86: Move EDX initialization at vCPU RESET to
- common code
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 19 May 2021 01:51:18 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 18 May 2021 22:47:09 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 18 May 2021 22:47:08 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 19 May 2021 11:16:47 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 7EFD8219B3; Wed, 19 May 2021 11:16:46 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH] arm64: dts: qcom: sc7280: Add venus DT node
+Date:   Wed, 19 May 2021 11:16:44 +0530
+Message-Id: <1621403204-21398-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 5:51 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Move the EDX initialization at vCPU RESET, which is now identical between
-> VMX and SVM, into common code.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Add DT entries for the sc7280 venus encoder/decoder.
 
-Reviewed-by: Reiji Watanabe <reijiw@google.com>
+Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 43 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-All of those refactorings look great to me.
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 4c44a52..9b4cc9a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -60,6 +60,11 @@
+ 			no-map;
+ 			reg = <0x0 0x80b00000 0x0 0x100000>;
+ 		};
++
++		video_mem: memory@8b200000 {
++			reg = <0x0 0x8b200000 0x0 0x500000>;
++			no-map;
++		};
+ 	};
+ 
+ 	cpus {
+@@ -850,6 +855,44 @@
+ 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
++		venus: video-codec@0aa00000 {
++			compatible = "qcom,sc7280-venus";
++			reg = <0 0x0aa00000 0 0xd0600>;
++			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
++				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
++				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
++			clock-names = "core", "bus", "iface",
++				      "vcodec_core", "vcodec_bus";
++
++			power-domains = <&videocc MVSC_GDSC>,
++					<&videocc MVS0_GDSC>;
++			power-domain-names = "venus", "vcodec0";
++
++			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
++					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
++			interconnect-names = "cpu-cfg", "video-mem";
++
++			iommus = <&apps_smmu 0x2180 0x20>,
++				 <&apps_smmu 0x2184 0x20>;
++			memory-region = <&video_mem>;
++
++			video-decoder {
++				compatible = "venus-decoder";
++			};
++
++			video-encoder {
++				compatible = "venus-encoder";
++			};
++
++			video-firmware {
++				iommus = <&apps_smmu 0x21a2 0x0>;
++			};
++		};
++
+ 		videocc: clock-controller@aaf0000 {
+ 			compatible = "qcom,sc7280-videocc";
+ 			reg = <0 0xaaf0000 0 0x10000>;
+-- 
+2.7.4
 
-Thanks,
-Reiji
