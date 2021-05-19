@@ -2,125 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919273896CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654C83896D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbhESTfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        id S232137AbhESTfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhESTfq (ORCPT
+        with ESMTP id S232089AbhESTfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 15:35:46 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A72BC06175F;
-        Wed, 19 May 2021 12:34:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C015FC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:34:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wm6Fg6hPEXzb07sPLpGnEeLDWpfOMrauzZEfAlcYzmM=; b=YmoOqAur2JknC74gPCU8jGvugp
-        P88XBQSr2WV4USjdKsyTqVsgFLp9ogTq6CoyV9QmGmhOkRFRSH3OhA1Gk3od5PQ/k6IZ1Hg8LP6hE
-        7e9XrO7uoMSxt3qWDgWa1kpNE2v+ksyiq1GD6PBLx9gLjWBri/dtPcGYBapdd8F0t/oqD88Wp1rHF
-        cPWt5ZzNKurWzPdQrIaF5JmBLwEA7+dixraZw4EC7r3xNq4XFkH6CWVLR720EWcYK3U2dv/vKO7pB
-        4WRNJMV+rsawx3qRiA4q1YRO4uIgJStawTWIEsweO9LksGnPfrFH3CyY3ftNEmem07is3KL5U/TSt
-        F0CD3LEg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljRvD-00FFAb-4q; Wed, 19 May 2021 19:32:15 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4F1D1986465; Wed, 19 May 2021 21:31:58 +0200 (CEST)
-Date:   Wed, 19 May 2021 21:31:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Hyunwook Baek <baekhw@google.com>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 5/8] x86/sev-es: Leave NMI-mode before sending signals
-Message-ID: <20210519193158.GJ21560@worktop.programming.kicks-ass.net>
-References: <20210519135251.30093-1-joro@8bytes.org>
- <20210519135251.30093-6-joro@8bytes.org>
- <20210519175450.GF21560@worktop.programming.kicks-ass.net>
- <YKVjRJmva/Y2EHPZ@suse.de>
+        bh=wr3Ku9b6p1OcKYD36FL40EcvE+r2U3PE5PB9FmNodEs=; b=mPPtsrhsbyPiTB6GtS0B5RkZh6
+        zT101ItlUS3Q3Eh8iqbahWXPa6CgN7YPLjar/KSdVp3ruNo1QXj8C4mugiTz6DhJQHL6MDtkNeMJp
+        QUJaeZxa/pYXMXQ6ALaFbrBJYBGI1wLWEFRLPHrSk8DkdveV3Hl7ps/Ioz2eVF8xtq/An6CZn9zSV
+        tMSw4QxJJp+I2/ll220djhSGcjOjBZwcJANSwqV7iyugpcKbna7VPFp8fuNcISO6VFN0ZtkA+QeO3
+        gD6gI6TDwEuAtOa8EV03B4Y8Gky6P9nRuS8rsoEsc0FQhqUFL6QmGlVAMMRhNAXuopOK2Pn5/RSa9
+        WvFWA4zA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljRwB-00FFDH-TK; Wed, 19 May 2021 19:33:13 +0000
+Date:   Wed, 19 May 2021 20:32:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Aaron Tomlin <atomlin@redhat.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        mhocko@suse.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/page_alloc: bail out on fatal signal during
+ reclaim/compaction retry attempt
+Message-ID: <YKVn69o1UizH0kJD@casper.infradead.org>
+References: <20210519192321.3247175-1-atomlin@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKVjRJmva/Y2EHPZ@suse.de>
+In-Reply-To: <20210519192321.3247175-1-atomlin@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:13:08PM +0200, Joerg Roedel wrote:
-> Hi Peter,
-> 
-> thanks for your review.
-> 
-> On Wed, May 19, 2021 at 07:54:50PM +0200, Peter Zijlstra wrote:
-> > On Wed, May 19, 2021 at 03:52:48PM +0200, Joerg Roedel wrote:
-> > > --- a/arch/x86/kernel/sev.c
-> > > +++ b/arch/x86/kernel/sev.c
-> > > @@ -1343,9 +1343,10 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
-> > >  		return;
-> > >  	}
-> > >  
-> > > +	instrumentation_begin();
-> > > +
-> > >  	irq_state = irqentry_nmi_enter(regs);
-> > >  	lockdep_assert_irqs_disabled();
-> > > -	instrumentation_begin();
-> > >  
-> > >  	/*
-> > >  	 * This is invoked through an interrupt gate, so IRQs are disabled. The
-> > 
-> > That's just plain wrong. No instrumentation is allowed before you enter
-> > the exception context.
-> 
-> Okay.
-> 
-> > > +	irqentry_nmi_exit(regs, irq_state);
-> > > +
-> > 
-> > And this is wrong too; because at this point the handler doesn't run in
-> > _any_ context anymore, certainly not one you can call regular C code
-> > from.
-> 
-> The #VC handler is at this point not running on the IST stack anymore,
-> but on the stack it came from or on the task stack. So my believe was
-> that at this point it inherits the context it came from (just like the
-> page-fault handler). But I also don't fully understand the context
-> tracking, so is my assumption wrong?
+On Wed, May 19, 2021 at 08:23:21PM +0100, Aaron Tomlin wrote:
+> +++ b/mm/page_alloc.c
+> @@ -4252,6 +4252,9 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
+>  	if (!order)
+>  		return false;
+>  
+> +	if (fatal_signal_pending(current))
+> +		goto out;
 
-Being on the right stack is only part of the issue; you also need to
-make sure your runtime environment is set up.
+I think 'goto out' will be confusing.  It'll output a tracepoint, which
+isn't going to record that a fatal signal is pending, so it'll cause
+some head scratching for someone looking through the traces.  I
+think we should just return false here and skip the tracepoint.
 
-Regular kernel C expects a whole lot of things to be present; esp. so
-with all the debug options on. The irqentry_*_enter() family of
-functions very carefully sets up this environment and the
-irqentry_*_exit() undoes it again. Before and after you really cannot
-run normal code.
+But I'd defer to someone like Vlastimil or Michal who know this code far
+better than I do.
 
-Just an example, RCU might not be watching, it might think the CPU is in
-userspace and advance the GP while you're relying on it not doing so.
-
-Similarly lockdep is in some undefined state and any lock used can
-trigger random 'funny' things.
-
-Just because this is 'C', doesn't immediately mean you can go call any
-random function. Up until recently most of this was in ASM. There's a
-reason for the noinstr annotations.
