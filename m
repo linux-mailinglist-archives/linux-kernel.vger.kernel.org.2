@@ -2,155 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E118389744
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73B338974C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbhESUDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:03:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49382 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232529AbhESUDS (ORCPT
+        id S232620AbhESUD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:03:29 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:41581 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232548AbhESUDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:03:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621454517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xhvgxIwKXugvxbNq7OeadgSTzvUaMEzWThB+Rg7b80k=;
-        b=ZZhg4zQKRWOGUU0U6GSf98p6srWjVyAw6XYnYhulfqt2NWQAmR81MhXm3XwvSFSdw5sDYb
-        JOv1QFzA8DueThnjAgHvJ51eQcyESQJtu720d1c4H/cOYvgFCUKbSWoOHtmw8tZlt4VB3D
-        cKR9qzm+3LdWCWG0jVgBeEPgU2hCdVg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-ZfmaMgHvOYKHbYxjSQhStw-1; Wed, 19 May 2021 16:01:55 -0400
-X-MC-Unique: ZfmaMgHvOYKHbYxjSQhStw-1
-Received: by mail-ej1-f71.google.com with SMTP id la2-20020a170906ad82b02903d4bcc8de3bso4150778ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:01:55 -0700 (PDT)
+        Wed, 19 May 2021 16:03:19 -0400
+Received: by mail-oi1-f181.google.com with SMTP id c3so14219134oic.8;
+        Wed, 19 May 2021 13:01:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xhvgxIwKXugvxbNq7OeadgSTzvUaMEzWThB+Rg7b80k=;
-        b=PoYUkh3q0K17W1G5iIZbUdi2u/WUEsoo1tqsKydccUAOcvO3eA7qkctuoTuW+CZXQ4
-         XmhNvbnFisPBUtTD1CVE79ONZQJnAe0T9q5mE4PNw4Yst8eqVMH+/2Mb1lsOzzFr6fqf
-         0SqOYaz2WFNulNdi0CZ1oW165qB2vkJjsgxAyi4Ze9mTpjYHpjXomWpNxfHdInknVgS5
-         7QcqdSt0Urdi+6QlWc4mkDE8gX1sxE6Zbirml0bcndrRJo7rUhaeNC43U7G0US+6NqHh
-         0VsYRvwioviABLThh6jjp6z+A0bTdY+B85/s8HOHldzj7H6qeOiUiWZUxFhX4x1CFISA
-         UG+w==
-X-Gm-Message-State: AOAM5310Blzzle7OvcYiFSd23pqgKhFy/UUUXVlw1dx6LARfoYXuauit
-        CrOp6hsySeoSqaC4P/fRUt8t6rCTUirk7Hxdj6oEc35a/3K52CWUCsK7Ae+/CAJIJCZ+zJ+XGnv
-        syKzd7AML13dJX8XXPurOe7ANyAF+XDQ02qk46Pn0AGmSFbU6xODxOafwF5PtyEXl/VHvjrdg0N
-        dY
-X-Received: by 2002:a17:906:9257:: with SMTP id c23mr879393ejx.392.1621454514262;
-        Wed, 19 May 2021 13:01:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybAg2DWZBkUUzS/X6mkLHq8i7CowtdJNYzUX/LoGoHmT0H/o0OQw/yu/bVPLeRCeLuH4uFBw==
-X-Received: by 2002:a17:906:9257:: with SMTP id c23mr879369ejx.392.1621454514011;
-        Wed, 19 May 2021 13:01:54 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id 9sm397858ejv.73.2021.05.19.13.01.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 13:01:53 -0700 (PDT)
-Subject: Re: [PATCH v2] HID: input: Add support for Programmable Buttons
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <2dc197eb-a222-8af6-f0ab-f722e4f492ca@redhat.com>
- <20210519174345.614467-1-linux@weissschuh.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f4cf1adb-5662-28d2-0063-0bd2856ef0f4@redhat.com>
-Date:   Wed, 19 May 2021 22:01:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Kjcp8Kbu/gHUzT4EN3gAJeFDCsJxXxZEegj91MDV0s=;
+        b=uCG53rbHsiOuh3CmnPPKhkhfBfW1aYrWUpNSHwJH1nCAN+lPHIJl0qT2OGzr5POEaD
+         hQmSuOxoqb9dfZ5AaMwXmv58/zbJuOUHGe/6S68tH74yxS1scRq4i7NnTI0kKwEGW4rl
+         Ykf8jH2ZLla4KHZtU4bLj1E8/3bSbLtFwpe//Hod6yq+XkrpQbtEV+WQD1lR7uUMwtl+
+         bdWn7EB0CH0MwuKHz7imHwte/FBQeUZUyqQ/Ux/N18QSA9Iumfaci6w9gimiGxgYeFTC
+         oVzoumDSG227hG05PyiUvsDXwOO8x/fB0gRabC2FrpE8zRvOzI79Qe1v8t+odnIv/4mW
+         FujA==
+X-Gm-Message-State: AOAM533TCcD4kNhxjFblL6gkKmnm1rUaOUs32/vBX4PtHjR+7FxZTREp
+        zMyoMXjwqPktUhIyun8+Nw==
+X-Google-Smtp-Source: ABdhPJydgRnEx3u0Yk7JGxUcjCToYZAuHSoyNE8WhQh23y3bTA4GIZ9QjzcusOLgg0cgOuCwZQ3YAg==
+X-Received: by 2002:a05:6808:309:: with SMTP id i9mr731417oie.14.1621454518528;
+        Wed, 19 May 2021 13:01:58 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y13sm164017ots.10.2021.05.19.13.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 13:01:57 -0700 (PDT)
+Received: (nullmailer pid 3552474 invoked by uid 1000);
+        Wed, 19 May 2021 20:01:56 -0000
+Date:   Wed, 19 May 2021 15:01:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linus W <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org, robdclark@chromium.org,
+        Steev Klimaszewski <steev@kali.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 03/10] dt-bindings: drm/bridge: ti-sn65dsi86: Add
+ aux-bus child
+Message-ID: <20210519200156.GA3535665@robh.at.kernel.org>
+References: <20210517200907.1459182-1-dianders@chromium.org>
+ <20210517130450.v7.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
 MIME-Version: 1.0
-In-Reply-To: <20210519174345.614467-1-linux@weissschuh.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517130450.v7.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 5/19/21 7:43 PM, Thomas Weißschuh wrote:
-> Map them to KEY_MACRO# event codes.
+On Mon, May 17, 2021 at 01:09:00PM -0700, Douglas Anderson wrote:
+> We want to be able to list an eDP panel as a child of a ti-sn65dsi86
+> node to represent the fact that the panel is connected to the bridge's
+> DP AUX bus. Though the panel and the bridge chip are connected in
+> several ways, the DP AUX bus is the primary control interface between
+> the two and thus makes the most sense to model in device tree
+> hierarchy.
 > 
-> These buttons are defined by HID as follows:
-> "The user defines the function of these buttons to control software applications or GUI objects."
+> Listing a panel in this way makes it possible for the panel driver to
+> easily get access to the DP AUX bus that it resides on, which can be
+> useful to help in auto-detecting the panel and for turning on various
+> bits.
 > 
-> This matches the semantics of the KEY_MACRO# input event codes that Linux supports.
+> NOTE: it's still possible to continue using the bridge chip and point
+> to a panel that _isn't_ listed as a child of the bridge chip (since
+> it's worked that way previously), but that should be deprecated since
+> there is no downside to listing the panel under the bridge chip.
 > 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> The idea for this bus's design was hashed out over IRC [1].
+> 
+> [1] https://people.freedesktop.org/~cbrill/dri-log/?channel=dri-devel&date=2021-05-11
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
+> Possibly we might want something fancier that could be included by
+> other eDP controller bindings. If we want to do this, I'd love to be
+> pointed at a good example to follow.
 > 
-> v1 -> v2: Only handle the 30 keys known
-
-I'm no expert in this part of HID, so I'm not 100% sure this is correct,
-with that said this looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
+> Changes in v7:
+> - ti-sn65dsi86: Add aux-bus child patch new for v7.
 > 
->  drivers/hid/hid-debug.c | 11 +++++++++++
->  drivers/hid/hid-input.c |  6 ++++++
->  2 files changed, 17 insertions(+)
+>  .../bindings/display/bridge/ti,sn65dsi86.yaml | 22 ++++++++++++++++++-
+>  1 file changed, 21 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-> index 59f8d716d78f..0e76d9b4530a 100644
-> --- a/drivers/hid/hid-debug.c
-> +++ b/drivers/hid/hid-debug.c
-> @@ -122,6 +122,7 @@ static const struct hid_usage_entry hid_usage_table[] = {
->    {  9, 0, "Button" },
->    { 10, 0, "Ordinal" },
->    { 12, 0, "Consumer" },
-> +      {0, 0x003, "ProgrammableButtons"},
->        {0, 0x238, "HorizontalWheel"},
->    { 13, 0, "Digitizers" },
->      {0, 0x01, "Digitizer"},
-> @@ -939,6 +940,16 @@ static const char *keys[KEY_MAX + 1] = {
->  	[KEY_KBDINPUTASSIST_NEXTGROUP] = "KbdInputAssistNextGroup",
->  	[KEY_KBDINPUTASSIST_ACCEPT] = "KbdInputAssistAccept",
->  	[KEY_KBDINPUTASSIST_CANCEL] = "KbdInputAssistCancel",
-> +	[KEY_MACRO1] = "Macro1", [KEY_MACRO2] = "Macro2", [KEY_MACRO3] = "Macro3",
-> +	[KEY_MACRO4] = "Macro4", [KEY_MACRO5] = "Macro5", [KEY_MACRO6] = "Macro6",
-> +	[KEY_MACRO7] = "Macro7", [KEY_MACRO8] = "Macro8", [KEY_MACRO9] = "Macro9",
-> +	[KEY_MACRO10] = "Macro10", [KEY_MACRO11] = "Macro11", [KEY_MACRO12] = "Macro12",
-> +	[KEY_MACRO13] = "Macro13", [KEY_MACRO14] = "Macro14", [KEY_MACRO15] = "Macro15",
-> +	[KEY_MACRO16] = "Macro16", [KEY_MACRO17] = "Macro17", [KEY_MACRO18] = "Macro18",
-> +	[KEY_MACRO19] = "Macro19", [KEY_MACRO20] = "Macro20", [KEY_MACRO21] = "Macro21",
-> +	[KEY_MACRO22] = "Macro22", [KEY_MACRO23] = "Macro23", [KEY_MACRO24] = "Macro24",
-> +	[KEY_MACRO25] = "Macro25", [KEY_MACRO26] = "Macro26", [KEY_MACRO27] = "Macro27",
-> +	[KEY_MACRO28] = "Macro28", [KEY_MACRO29] = "Macro29", [KEY_MACRO30] = "Macro30",
->  };
+> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> index 26932d2e86ab..51f5a29e216c 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> @@ -70,6 +70,11 @@ properties:
+>      const: 1
+>      description: See ../../pwm/pwm.yaml for description of the cell formats.
 >  
->  static const char *relatives[REL_MAX + 1] = {
-> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-> index 18f5e28d475c..32962772cb42 100644
-> --- a/drivers/hid/hid-input.c
-> +++ b/drivers/hid/hid-input.c
-> @@ -632,6 +632,12 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
->  				else
->  					code += BTN_TRIGGER_HAPPY - 0x10;
->  				break;
-> +		case HID_CP_CONSUMER_CONTROL:
-> +				if (code <= 29)
-> +					code += KEY_MACRO1;
-> +				else
-> +					code += BTN_TRIGGER_HAPPY - 30;
-> +				break;
->  		default:
->  			switch (field->physical) {
->  			case HID_GD_MOUSE:
-> 
-> base-commit: efd8929b9eec1cde120abb36d76dd00ff6711023
-> 
+> +  aux-bus:
 
+As this is a node:
+
+type: object
+
+> +    description:
+> +      It is recommended that you place your panel under the aux-bus node
+> +      here to represent the control hierarchy.
+> +
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+>  
+> @@ -201,11 +206,26 @@ examples:
+>  
+>            port@1 {
+>              reg = <1>;
+> -            endpoint {
+> +            sn65dsi86_out: endpoint {
+>                remote-endpoint = <&panel_in_edp>;
+>              };
+>            };
+>          };
+> +
+> +        aux-bus {
+> +          panel {
+
+We should perhaps have a separate aux-bus schema. Something should 
+define the child node is 'panel' and nothing else. Though perhaps 
+connectors are valid too?
+
+> +            compatible = "boe,nv133fhm-n62";
+> +            power-supply = <&pp3300_dx_edp>;
+> +            backlight = <&backlight>;
+> +            hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
+> +
+> +            port {
+> +              panel_in_edp: endpoint {
+> +                remote-endpoint = <&sn65dsi86_out>;
+> +              };
+> +            };
+> +          };
+> +        };
+>        };
+>      };
+>    - |
+> -- 
+> 2.31.1.751.gd2f1c929bd-goog
+> 
