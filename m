@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1B5388F36
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5E3388F3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353682AbhESNe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:34:57 -0400
-Received: from verein.lst.de ([213.95.11.211]:38376 "EHLO verein.lst.de"
+        id S1353722AbhESNhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:37:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240462AbhESNex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:34:53 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id DBED467373; Wed, 19 May 2021 15:33:30 +0200 (CEST)
-Date:   Wed, 19 May 2021 15:33:30 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Serge Belyshev <belyshev@depni.sinp.msu.ru>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [i915] b12d691ea5: kernel_BUG_at_mm/memory.c
-Message-ID: <20210519133330.GA14452@lst.de>
-References: <20210519024322.GA29704@xsang-OptiPlex-9020> <CAHk-=whcr5M=4Mz2ydu4XtxTL_34WkXPnmFmA4f8r+ELXDC6hg@mail.gmail.com>
+        id S232354AbhESNhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:37:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC653610A8;
+        Wed, 19 May 2021 13:35:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621431360;
+        bh=zThcPhVHQLG+U7QXmHxEsymmlyuAgZgHRCartqMr0uM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gJITtrlLpbtccURZ7I2k7yfXSJGNddfGSGom+POnv2DFkKN9F1n9/aTOc0nIaVaK4
+         FqPEY3vGvWKhZtKrxc5UZDB1koOwMTWbNblbGz0TnOA54TcIKq/ae+ln1h49bkLC3m
+         DvU4B8Akf8J0m2NdpQ1O5ljcjDjTiVyEl96skrUekq7sacyz5xuf3GR132/pwfaIpx
+         aknWeuwqCZZyiN99E0rk3yZWUycZ9GosX4e9BXqV59Pf4NTkwXwfFApgiAn78sGbHa
+         i45Qj52fGLRqo05zUMIWC36i79wqQCvCbdukI1xr4yx9qnw4104L7aSwecLHIenmnq
+         Xa+31CyMe/5kQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3700F40DC6; Wed, 19 May 2021 10:35:57 -0300 (-03)
+Date:   Wed, 19 May 2021 10:35:57 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] perf intel-pt: Fixes relating to transaction abort
+ handling
+Message-ID: <YKUUPfAzaZ5zVp3h@kernel.org>
+References: <20210519074515.9262-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whcr5M=4Mz2ydu4XtxTL_34WkXPnmFmA4f8r+ELXDC6hg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210519074515.9262-1-adrian.hunter@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 04:58:31PM -1000, Linus Torvalds wrote:
-> On Tue, May 18, 2021 at 4:26 PM kernel test robot <oliver.sang@intel.com> wrote:
-> >
-> > commit: b12d691ea5e01db42ccf3b4207e57cb3ce7cfe91 ("i915: fix remap_io_sg to verify the pgprot")
-> > [...]
-> > [  778.550996] kernel BUG at mm/memory.c:2183!
-> > [  778.559015] RIP: 0010:remap_pfn_range_notrack (kbuild/src/consumer/mm/memory.c:2183 kbuild/src/consumer/mm/memory.c:2211 kbuild/src/consumer/mm/memory.c:2233 kbuild/src/consumer/mm/memory.c:2255 kbuild/src/consumer/mm/memory.c:2311)
-> > [  778.688951] remap_pfn_range (kbuild/src/consumer/mm/memory.c:2342)
-> > [  778.692700] remap_io_sg (kbuild/src/consumer/drivers/gpu/drm/i915/i915_mm.c:71) i915
+Em Wed, May 19, 2021 at 10:45:12AM +0300, Adrian Hunter escreveu:
+> Hi
 > 
-> Yeah, so that BUG_ON() checks that theer isn't any old mapping there.
+> Here are 2 fixes for stable and a subsequent tiny tidy-up.
 > 
-> You can't just remap over an old one, but it does seem like that is
-> exactly what commit b12d691ea5e0 ("i915: fix remap_io_sg to verify the
-> pgprot") ends up doing.
+> Adrian Hunter (3):
+>       perf intel-pt: Fix transaction abort handling
+>       perf intel-pt: Fix sample instruction bytes
+>       perf intel-pt: Remove redundant setting of ptq->insn_len
 > 
-> So the code used to just do "apply_to_page_range()", which admittedly
-> was odd too. But it didn't mind having old mappings and re-applying
-> something over them.
-> 
-> Converting it to use remap_pfn_range() does look better, but it kind
-> of depends on it ever being done *once*. But the caller seems to very
-> much remap the whole vmsa at fault time, so...
-> 
-> I don't know what the right thing to do here is, because I don't know
-> the invalidation logic and when faults happen.
-> 
-> I see that there is another thread about different issues on the
-> intel-gfx list. Adding a few people to this kernel test robot thread
-> too.
-> 
-> I'd be inclined to revert the commits as "not ready yet", but it would
-> be better if somebody can go "yeah, this should be done properly like
-> X".
+>  tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 6 +++++-
+>  tools/perf/util/intel-pt.c                          | 6 ++++--
+>  2 files changed, 9 insertions(+), 3 deletions(-)
 
-I think reverting just this commit for now is the best thing.
+Thanks, applied.
+
+- Arnaldo
+
