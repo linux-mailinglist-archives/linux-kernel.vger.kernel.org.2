@@ -2,223 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7D2388961
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3343888EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 10:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245082AbhESI2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 04:28:54 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:46534 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245047AbhESI2x (ORCPT
+        id S234521AbhESIGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 04:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232158AbhESIGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 04:28:53 -0400
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 14J7tMok034027;
-        Wed, 19 May 2021 15:55:22 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14J7qPqH033740;
-        Wed, 19 May 2021 15:52:25 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
- 2021 16:05:01 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        "Andrew Jeffery" <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>
-CC:     <ryan_chen@aspeedtech.com>, <chiawei_wang@aspeedtech.com>,
-        <troy_lee@aspeedtech.com>, <steven_lee@aspeedtech.com>,
-        <jamin_lin@aspeedtech.com>
-Subject: [PATCH 3/3] dt-bindings: aspeed-i2c: Convert txt to yaml format
-Date:   Wed, 19 May 2021 16:04:29 +0800
-Message-ID: <20210519080436.18975-4-jamin_lin@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
-References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
+        Wed, 19 May 2021 04:06:02 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BE0C06175F;
+        Wed, 19 May 2021 01:04:40 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id h7so6581541plt.1;
+        Wed, 19 May 2021 01:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1a/3BQnqnwQwhdVRgfo9exWw4oG0eTb7Km72R5HPSzs=;
+        b=La+rgrvuHBKodAiDpmronThGYpO38NvKFMmguymd+qFiys5iCJXNJsczIzqj8mQ1PA
+         tOrCkhkPB1BgZDVipdM732+EIhk4/9rpJXdMsaXjCFKUVthBw/p2x8iOB8j7uT9gWpBd
+         +vxRXDjrxHl+i6fl6YJc/5gAzKvo9diAUGfipw0lwm2XlnQhJy9IhoSU3nyTetj6ZZn1
+         QGUu1ANl9AJ92rqRJq9sEK1BB5mOO/4IKXuvqvYsufMzob1pqqRueYqZcRBbZNSl3l2P
+         dz71KuYc2xnz7HS/rnYG+IStaqqSXnfkq5b+137GvYTVUnotWQsob9p7FVbENkuZU7XN
+         SLIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1a/3BQnqnwQwhdVRgfo9exWw4oG0eTb7Km72R5HPSzs=;
+        b=nT10ZzaWHSDok88SbA+j/3yoc17SUiJdbJrxSTl5iOAIAd2t6spDRFyQaGNEC83ifu
+         Uj2ppHVCtoDGRHQMok16EQRfRIhewqUhNTyoV1fI1Jgt5XNXYxYWQid7bXPxCG4X+xGt
+         PcD4MQuZxshIGqQht4fmUeC5kna6Z7BwrkC87u4W6vUQxf25OpBdCkAmFC/MpTZeFQrH
+         iIq1Yu/dQ2xxOmG3RhwEZnYO5UwzD3Du5W678Kuio5+XVdyKcs9EXxbR0eYLKgVZZGL6
+         2bPmThSsArtN+tBL681BNILJZsU2qB+JbFgEOOxqsWjNyRUgLwd2WfyuraO7jdZ1z9re
+         uBkg==
+X-Gm-Message-State: AOAM530y5OtKa2oRPnIGNlY5Y6bKsF31mBQe8FJvQlMMIJxaUw1BhayC
+        EdjcS0TsOPLz9FReVcwJPrc=
+X-Google-Smtp-Source: ABdhPJwsRweAo/OuJYkGF7oa7HYO4hWypHV7DuRd1Yuan5yRZ9NNmjBZOjczUTC6YrtFdDHsfFnoNg==
+X-Received: by 2002:a17:90b:f0e:: with SMTP id br14mr10052633pjb.121.1621411480208;
+        Wed, 19 May 2021 01:04:40 -0700 (PDT)
+Received: from sol (106-69-175-91.dyn.iinet.net.au. [106.69.175.91])
+        by smtp.gmail.com with ESMTPSA id u6sm13266463pfi.44.2021.05.19.01.04.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 01:04:39 -0700 (PDT)
+Date:   Wed, 19 May 2021 16:04:34 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
+Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to
+ user space
+Message-ID: <20210519080434.GA22854@sol>
+References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
+ <20210518232451.GA7362@sol>
+ <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14J7qPqH033740
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add global-reg node for AST2600. Document the properties for
-"aspeed,ast2600-i2c-global" compatible node.
+On Wed, May 19, 2021 at 10:45:16AM +0300, Andy Shevchenko wrote:
+> On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
+> > On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
+> > > Currently it's possible that character device interface may return
+> > > the error codes which are not supposed to be seen by user space.
+> > > In this case it's EPROBE_DEFER.
+> > > 
+> > > Wrap it to return -ENODEV instead as sysfs does.
+> 
+> > > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
+> > > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
+> > > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
+> 
+> ...
+> 
+> > You immediately revert this patch in patch 2.
+> > My understanding is that is not allowed within a patch set.
+> 
+> > Why split the patches instead of going direct to the new helper?
+> 
+> It's for backporting to make it easier. (I deliberately left the context above)
+> 
+> I can fold them if maintainers think it's okay to do.
+> 
 
-Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
----
- .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 89 +++++++++++++++++++
- .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 ----------
- 2 files changed, 89 insertions(+), 49 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
+Not sure what the constraints are on backporting, but wouldn't it be
+simpler and cleaner to backport the new helper?
 
-diff --git a/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-new file mode 100644
-index 000000000000..f469487935bd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-@@ -0,0 +1,89 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/i2c/aspeed,i2c.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ASPEED I2C on the AST24XX, AST25XX, and AST26XX SoCs Device Tree Bindings
-+
-+maintainers:
-+  - Rayn Chen <rayn_chen@aspeedtech.com>
-+
-+allOf:
-+  - $ref: /schemas/i2c/i2c-controller.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - aspeed,ast2400-i2c-bus
-+      - aspeed,ast2500-i2c-bus
-+      - aspeed,ast2600-i2c-bus
-+      - aspeed,ast2600-i2c-global syscon
-+
-+  "#size-cells":
-+    const: 0
-+
-+  "#address-cells":
-+    const: 1
-+
-+  reg:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - description: address offset and range of bus
-+      - description: address offset and range of bus buffer
-+
-+  interrupts:
-+    description: interrupt number
-+
-+  clocks:
-+    description:
-+      root clock of bus, should reference the APB
-+      clock in the second cell
-+
-+  reset:
-+    description: phandle to reset controller with the reset number in
-+      the second cell
-+
-+  bus-frequency:
-+    minimum: 10000
-+    maximum: 3400000
-+    default: 100000
-+    description: frequency of the bus clock in Hz defaults to 100 kHz when not
-+      specified
-+
-+  multi-master:
-+    maxItems: 1
-+    description:
-+      states that there is another master active on this bus
-+
-+required:
-+  - reg
-+  - compatible
-+  - clocks
-+  - resets
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/ast2600-clock.h>
-+    i2c_gr: i2c-global-regs@0 {
-+      compatible = "aspeed,ast2600-i2c-global", "syscon";
-+      reg = <0x0 0x20>;
-+      clocks = <&syscon ASPEED_CLK_APB2>;
-+      resets = <&syscon ASPEED_RESET_I2C>;
-+    };
-+
-+    i2c0: i2c-bus@80 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      #interrupt-cells = <1>;
-+      reg = <0x80 0x80>;
-+      compatible = "aspeed,ast2600-i2c-bus";
-+      clocks = <&syscon ASPEED_CLK_APB2>;
-+      resets = <&syscon ASPEED_RESET_I2C>;
-+      interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-+      bus-frequency = <100000>;
-+    };
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-aspeed.txt b/Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-deleted file mode 100644
-index b47f6ccb196a..000000000000
---- a/Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--Device tree configuration for the I2C busses on the AST24XX, AST25XX, and AST26XX SoCs.
--
--Required Properties:
--- #address-cells	: should be 1
--- #size-cells		: should be 0
--- reg			: address offset and range of bus
--- compatible		: should be "aspeed,ast2400-i2c-bus"
--			  or "aspeed,ast2500-i2c-bus"
--			  or "aspeed,ast2600-i2c-bus"
--- clocks		: root clock of bus, should reference the APB
--			  clock in the second cell
--- resets		: phandle to reset controller with the reset number in
--			  the second cell
--- interrupts		: interrupt number
--
--Optional Properties:
--- bus-frequency	: frequency of the bus clock in Hz defaults to 100 kHz when not
--		  specified
--- multi-master	: states that there is another master active on this bus.
--
--Example:
--
--i2c {
--	compatible = "simple-bus";
--	#address-cells = <1>;
--	#size-cells = <1>;
--	ranges = <0 0x1e78a000 0x1000>;
--
--	i2c_ic: interrupt-controller@0 {
--		#interrupt-cells = <1>;
--		compatible = "aspeed,ast2400-i2c-ic";
--		reg = <0x0 0x40>;
--		interrupts = <12>;
--		interrupt-controller;
--	};
--
--	i2c0: i2c-bus@40 {
--		#address-cells = <1>;
--		#size-cells = <0>;
--		#interrupt-cells = <1>;
--		reg = <0x40 0x40>;
--		compatible = "aspeed,ast2400-i2c-bus";
--		clocks = <&syscon ASPEED_CLK_APB>;
--		resets = <&syscon ASPEED_RESET_I2C>;
--		bus-frequency = <100000>;
--		interrupts = <0>;
--		interrupt-parent = <&i2c_ic>;
--	};
--};
--- 
-2.17.1
+But, as you say, it is the maintainers' call.
+
+Cheers,
+Kent.
 
