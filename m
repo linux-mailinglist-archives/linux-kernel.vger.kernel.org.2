@@ -2,110 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0F138927B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E22D3892A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354669AbhESPY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        id S1354869AbhESPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346703AbhESPYY (ORCPT
+        with ESMTP id S1354777AbhESPbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:24:24 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD42C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:23:04 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id l4so20522536ejc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:23:03 -0700 (PDT)
+        Wed, 19 May 2021 11:31:03 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94D8FC06138D
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:29:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2kcMHiUdBh2RX9lqzPjQo7AnDIczfIylBe4oy/anXE4=;
-        b=Ozr9QX2vejijzqnJiHLv3IEed5XqEa5tCvrp4GWhBWSBVsToH+RmYdiIwm3uQ8Rd1+
-         J9PuijBn2eRbEI1jVMnt5WZfi9ziUoMOy8uc2Q3VD6SCdOC3t9t8qoBn2Q44BZ7jr48e
-         F892B/DS76Lcor5RWCGtbq2A8vth6kTdpxuk/rjirPcFFbSRhoZN8miOTdA1a4gxo1zI
-         Cj8Wp039/MPhSS4QXTAfFJLdQCGuF65cX8GOrtTFFgaoqT21vCWGJW9hqVlc89YiWNgq
-         sj8FkAItA82GtRljXobNcFgKBEJsiwslTzt1OKqLOCeZnCjIHmQN8zEvGocBnYyFVZfL
-         5u+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2kcMHiUdBh2RX9lqzPjQo7AnDIczfIylBe4oy/anXE4=;
-        b=eZCjVOPpkgzjwpjy/HqhgX0RGnRr1vGVflirmEnrPVhMfve/iDypXLvAN96sMiw49Z
-         Hy95NSpUUASPb1xSzYoyxTZ8YL6z6qYlkFYpGcEENmeb7BFJu0Qd2pq86Sup8ifL4UKX
-         BdTUj44wqmqvv/Udg8vWcorlCXWcg65wghJ4epv8leJtIXY76dIwHrK46PYCBiNJUsQk
-         xIFYKfFBzBwI1yxCpE3xxlBB7cEcC0UQ8e/Fb9e9vEGhYlIKHM6/r6bPOzhjNYy9ajQH
-         2al42tgEsc5RiS/pZxgju29qw7YlpTKQ1sdxquH1uJDmlaPJhoA9rqcebZx0bkrTFVFS
-         as0w==
-X-Gm-Message-State: AOAM5305cN1D7JMpS3zXgkpIGKCa+Tkq0b7Ug/QTB+o7FFDt9oJeqhSo
-        NjXeWMQjMgEQArXN6AounNzZLdo2lerzD0eTdUbd
-X-Google-Smtp-Source: ABdhPJyfh/Fy9DHSztbus3l4CzHOkkEYqRjXK6/08Yh4J+xdsoExgFRhQ+pqMygupCb94lvG9QjZu3YfmHF5IUWHWmE=
-X-Received: by 2002:a17:906:840c:: with SMTP id n12mr13191151ejx.431.1621437782490;
- Wed, 19 May 2021 08:23:02 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=N5oDKef5Tw90YKktAChc3BuhuB4OG2LUMj
+        wkINxvuoQ=; b=YaaX28Xs1QIo9I7RDkJMf4Wnm4I8OnNxzmn+1pnaxtorpKG6HQ
+        KY0P0+zkGb7G+cdGQaeRi2ofJ9uUulqi/X9v9otymK+Yko6/hf3Ol6t2gD368Iap
+        p5UsGbsbVeBU7hd5MqhhOwgrkw6HxLXVRfESoVULOZ7bTGAZYdtjUoEj4=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3iNO+LqVgf7MDAQ--.1274S2;
+        Wed, 19 May 2021 23:29:02 +0800 (CST)
+Date:   Wed, 19 May 2021 23:23:41 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: mm: Fix W+X mappings at boot
+Message-ID: <20210519232341.782bab6c@xhacker>
+In-Reply-To: <35618c9a-acae-bc4f-e403-d06c0476166c@ghiti.fr>
+References: <20210516170038.7de9c866@xhacker>
+        <35618c9a-acae-bc4f-e403-d06c0476166c@ghiti.fr>
 MIME-Version: 1.0
-References: <20210519113058.1979817-1-memxor@gmail.com> <20210519113058.1979817-2-memxor@gmail.com>
-In-Reply-To: <20210519113058.1979817-2-memxor@gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 19 May 2021 11:22:51 -0400
-Message-ID: <CAHC9VhTBcCJ1TfvB-HbzrByroeqfFE-SF_REik9PDSdqmJbuYA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] fs: anon_inodes: export anon_inode_getfile_secure helper
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     io-uring@vger.kernel.org, Pavel Emelyanov <xemul@openvz.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-CM-TRANSID: LkAmygD3iNO+LqVgf7MDAQ--.1274S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr1UKFWfJw13Jr1kAw4fZrb_yoW7XFWDpF
+        W5JwnxCrW8tw1xGr9Fkry5Zr1jqr1UA3W3tr17AF1rZF1UGw1jqr18Jr4xWFyq93ykZFn3
+        tryqv3yUKw4qyaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
+        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
+        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5PpnJUUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 7:37 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> This is the non-fd installing analogue of anon_inode_getfd_secure. In
-> addition to allowing LSMs to attach policy to the distinct inode, this
-> is also needed for checkpoint restore of an io_uring instance where a
-> mapped region needs to mapped back to the io_uring fd by CRIU. This is
-> currently not possible as all anon_inodes share a single inode.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  fs/anon_inodes.c            | 9 +++++++++
->  include/linux/anon_inodes.h | 4 ++++
->  2 files changed, 13 insertions(+)
 
-[NOTE: dropping dancol@google as that email is bouncy]
+On Tue, 18 May 2021 17:26:53 +0200
+Alex Ghiti <alex@ghiti.fr> wrote:
 
-> diff --git a/fs/anon_inodes.c b/fs/anon_inodes.c
-> index a280156138ed..37032786b211 100644
-> --- a/fs/anon_inodes.c
-> +++ b/fs/anon_inodes.c
-> @@ -148,6 +148,15 @@ struct file *anon_inode_getfile(const char *name,
->  }
->  EXPORT_SYMBOL_GPL(anon_inode_getfile);
+> Hi Jisheng,
 
-This function should have a comment block at the top similar to
-anon_inode_getfile(); in fact you can likely copy-n-paste the bulk of
-it to use as a start.
+Hi Alex,
 
-If you don't want to bother respinning, I've got this exact patch
-(+comments) in my patchset that I'll post later and I'm happy to
-give/share credit if that is important to you.
+>=20
+> On 16/05/2021 11:00, Jisheng Zhang wrote:
+> > From: Jisheng Zhang <jszhang@kernel.org>
+> >=20
+> > When the kernel mapping was moved the last 2GB of the address space,
+> > (__va(PFN_PHYS(max_low_pfn))) is much smaller than the .data section
+> > start address, the last set_memory_nx() in protect_kernel_text_data()
+> > will fail, thus the .data section is still mapped as W+X. This results
+> > in below W+X mapping waring at boot. Fix it by passing the correct
+> > .data section page num to the set_memory_nx().
+> >=20
+> > [    0.396516] ------------[ cut here ]------------
+> > [    0.396889] riscv/mm: Found insecure W+X mapping at address (____ptr=
+val____)/0xffffffff80c00000
+> > [    0.398347] WARNING: CPU: 0 PID: 1 at arch/riscv/mm/ptdump.c:258 not=
+e_page+0x244/0x24a
+> > [    0.398964] Modules linked in:
+> > [    0.399459] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc1+ #14
+> > [    0.400003] Hardware name: riscv-virtio,qemu (DT)
+> > [    0.400591] epc : note_page+0x244/0x24a
+> > [    0.401368]  ra : note_page+0x244/0x24a
+> > [    0.401772] epc : ffffffff80007c86 ra : ffffffff80007c86 sp : ffffff=
+e000e7bc30
+> > [    0.402304]  gp : ffffffff80caae88 tp : ffffffe000e70000 t0 : ffffff=
+ff80cb80cf
+> > [    0.402800]  t1 : ffffffff80cb80c0 t2 : 0000000000000000 s0 : ffffff=
+e000e7bc80
+> > [    0.403310]  s1 : ffffffe000e7bde8 a0 : 0000000000000053 a1 : ffffff=
+ff80c83ff0
+> > [    0.403805]  a2 : 0000000000000010 a3 : 0000000000000000 a4 : 6c7e7a=
+5137233100
+> > [    0.404298]  a5 : 6c7e7a5137233100 a6 : 0000000000000030 a7 : ffffff=
+ffffffffff
+> > [    0.404849]  s2 : ffffffff80e00000 s3 : 0000000040000000 s4 : 000000=
+0000000000
+> > [    0.405393]  s5 : 0000000000000000 s6 : 0000000000000003 s7 : ffffff=
+e000e7bd48
+> > [    0.405935]  s8 : ffffffff81000000 s9 : ffffffffc0000000 s10: ffffff=
+e000e7bd48
+> > [    0.406476]  s11: 0000000000001000 t3 : 0000000000000072 t4 : ffffff=
+ffffffffff
+> > [    0.407016]  t5 : 0000000000000002 t6 : ffffffe000e7b978
+> > [    0.407435] status: 0000000000000120 badaddr: 0000000000000000 cause=
+: 0000000000000003
+> > [    0.408052] Call Trace:
+> > [    0.408343] [<ffffffff80007c86>] note_page+0x244/0x24a
+> > [    0.408855] [<ffffffff8010c5a6>] ptdump_hole+0x14/0x1e
+> > [    0.409263] [<ffffffff800f65c6>] walk_pgd_range+0x2a0/0x376
+> > [    0.409690] [<ffffffff800f6828>] walk_page_range_novma+0x4e/0x6e
+> > [    0.410146] [<ffffffff8010c5f8>] ptdump_walk_pgd+0x48/0x78
+> > [    0.410570] [<ffffffff80007d66>] ptdump_check_wx+0xb4/0xf8
+> > [    0.410990] [<ffffffff80006738>] mark_rodata_ro+0x26/0x2e
+> > [    0.411407] [<ffffffff8031961e>] kernel_init+0x44/0x108
+> > [    0.411814] [<ffffffff80002312>] ret_from_exception+0x0/0xc
+> > [    0.412309] ---[ end trace 7ec3459f2547ea83 ]---
+> > [    0.413141] Checked W+X mappings: failed, 512 W+X pages found
+> >=20
+> > Fixes: 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of linear =
+mapping")
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > ---
+> >   arch/riscv/mm/init.c | 8 ++++++--
+> >   1 file changed, 6 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > index 4faf8bd157ea..4c4c92ce0bb8 100644
+> > --- a/arch/riscv/mm/init.c
+> > +++ b/arch/riscv/mm/init.c
+> > @@ -746,14 +746,18 @@ void __init protect_kernel_text_data(void)
+> >   	unsigned long init_data_start =3D (unsigned long)__init_data_begin;
+> >   	unsigned long rodata_start =3D (unsigned long)__start_rodata;
+> >   	unsigned long data_start =3D (unsigned long)_data;
+> > -	unsigned long max_low =3D (unsigned long)(__va(PFN_PHYS(max_low_pfn))=
+);
+> > +#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
+> > +	unsigned long end_va =3D kernel_virt_addr + load_sz;
+> > +#else
+> > +	unsigned long end_va =3D (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
+> > +#endif
+> >  =20
+> >   	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHI=
+FT);
+> >   	set_memory_ro(init_text_start, (init_data_start - init_text_start) >=
+> PAGE_SHIFT);
+> >   	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> P=
+AGE_SHIFT);
+> >   	/* rodata section is marked readonly in mark_rodata_ro */
+> >   	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIF=
+T);
+> > -	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
+> > +	set_memory_nx(data_start, (end_va - data_start) >> PAGE_SHIFT);
+> >   }
+> >  =20
+> >   void mark_rodata_ro(void)
+> >  =20
+>=20
+> Thank you for taking the time to fix this, I had read a report here=20
+> https://github.com/starfive-tech/linux/issues/17 but had no time yet to=20
 
-> +struct file *anon_inode_getfile_secure(const char *name,
-> +                                      const struct file_operations *fops,
-> +                                      void *priv, int flags,
-> +                                      const struct inode *context_inode)
-> +{
-> +       return __anon_inode_getfile(name, fops, priv, flags, context_inode, true);
-> +}
-> +EXPORT_SYMBOL_GPL(anon_inode_getfile_secure);
+I didn't know this github repo, in fact I don't have a beaglev board ;)
+=46rom the log, this is the same issue as I saw on Qemu.
 
--- 
-paul moore
-www.paul-moore.com
+> track this down.
+>=20
+> Your fix seems good to me, but it intrigued me to see that for 32b=20
+> kernels, the whole linear mapping is mapped as executable and then here,=
+=20
+> we remove this attribute. So I came up with a patch to map the kernel=20
+> correctly once at first time and avoid fixing this mapping afterwards. I=
+=20
+
+Your solution looks better.
+
+> added you in cc of this patch, any comment is welcome.
+>=20
+
+I'm reading your patch. Will comment it soon.
+
+Thanks
+
+
