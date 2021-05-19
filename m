@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4CE38972F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDA3389738
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhESUCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232463AbhESUCc (ORCPT
+        id S232520AbhESUDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:03:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38060 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232505AbhESUDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:02:32 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CAFC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:01:11 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id t3so16733106edc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:01:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OlxoSwTyBGcIB+AvV2WfDn1g1Sf/3pWsJB/YRZB8SB8=;
-        b=1dh0Q+cxVbEWRDmbm9CbH3FmdqIYJe8AQBGdaFSXXRTRAU50YTKYucb5bSElHQPTK1
-         Lv7Cc8hcGY8Leks6KtL54P+GEsSL7ZzHs9Ys03+8y7Uo6LGzaBH5et1EMJpA6MqboF7d
-         dzbjjXf0OOlXr3SgohVT+LZCuju7dgik6T+NVkiwR70FiBTjiTMyz6gW86PcTkuD2EIM
-         SUYq4mZmDjcOp/FALakgTnus6G9wyiTUGTq7mi1Hq+k1Z6akiGnqyz6b58BCCLoRnfRV
-         qsfACgNRDDs2QVQDf+3Tj3FfouX4mQcV45NPfvFPUl3SuhuIeA92MXc+/xVPADipFOwb
-         W8og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OlxoSwTyBGcIB+AvV2WfDn1g1Sf/3pWsJB/YRZB8SB8=;
-        b=DouZZGJGm8xFiPQOTF0S0m5iNq3TrH7S0Rta6sXPmhPPiW9TkibSLOO/qZNZy3XOyY
-         OSRanoIbcX5RqW7NZjrVy1u/YbampAd6Pz7QgUFUei9NYRWrN9wx4QNDm8R6TQHuIjlo
-         OayXpgDR3T51dU7lmcuSxb4zuwav96bdOhzJrXipP9pFOkFjlCxmqwFZ5X6tltbnzkvQ
-         e5Uj39Ls7ABcY1z7x00PyO0Fqc2QEcYoqt7mV1XFYr0PlNf6eIZgIt0mnIlE/tp+hB2F
-         dhNGHbLn2h7hHmi0Iid3ZirESaZzJBYWD+rfqCKCAE5dDKFTNLCzbWmemuvIvwsawUIf
-         urJQ==
-X-Gm-Message-State: AOAM532y8fhbXooHCO5E8A6wn7paXxDOMM7Jp/zlWY9hknMXWUnBI088
-        UFFDBEyQppozCxVkLIx+oeKeiX+50ZMBGY3dSV1+CxHlU0/mIw==
-X-Google-Smtp-Source: ABdhPJwBYagjUpaXpLq5SIcAJYpu2toyEqzEY8kfw4+9XLQVZ7jpoX+ib07aWV6cm4nAhKDYGUb4FOrk3VOFKfJnE30=
-X-Received: by 2002:a05:6402:128f:: with SMTP id w15mr808464edv.354.1621454470538;
- Wed, 19 May 2021 13:01:10 -0700 (PDT)
+        Wed, 19 May 2021 16:03:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621454514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oqR82qYZ5cHPW+jMmb6LKw1zBxDgfEa0K+Sm55MnPRw=;
+        b=EPf+1bHeNhuGn0Rrr6sUg9QfQAd3pj66II1RbGEWOtigcjPVeLdlvnzLgdbZ4Y3Ml5/UY+
+        JV4+aRg24ZyBhNCJp+s2XFZ1vidOVJ/5Fg0FSke4zSpY4N3zWQdfhJSfd69xWB+3HO+5KU
+        EsCQ+Uui8eWob2LecfwVc6NOTIvYi0s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-6OHx4A6KP1SdsuldedHntQ-1; Wed, 19 May 2021 16:01:50 -0400
+X-MC-Unique: 6OHx4A6KP1SdsuldedHntQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65013107AFA7;
+        Wed, 19 May 2021 20:01:48 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7788D60BF1;
+        Wed, 19 May 2021 20:01:44 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Paris <eparis@redhat.com>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH v4 0/3] audit: add support for openat2
+Date:   Wed, 19 May 2021 16:00:19 -0400
+Message-Id: <cover.1621363275.git.rgb@redhat.com>
 MIME-Version: 1.0
-References: <20210415232610.603273-3-ben.widawsky@intel.com> <20210415232750.604112-1-ben.widawsky@intel.com>
-In-Reply-To: <20210415232750.604112-1-ben.widawsky@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 19 May 2021 13:01:00 -0700
-Message-ID: <CAPcyv4jRm5Xw650GPUWOjAJ8sDQfOZ3yq2gMpVGho39eawLXrg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] cxl/mem: Demarcate vendor specific capability IDs
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 4:27 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> Vendor capabilities occupy 0x8000 to 0xFFFF according to CXL 2.0 spec
-> 8.2.8.2.1 CXL Device Capabilities. While they are not defined by the
-> spec, they are allowed and not "unknown". Call this detail out in the
-> logs to let users easily distinguish the difference.
->
-> v2: Should be greater than or equal to (Ben)
->
-> Fixes: 8adaf747c9f0b ("cxl/mem: Find device capabilities")
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> ---
->  drivers/cxl/mem.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index c05617b0ba4b..28c7c29567b3 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -939,7 +939,10 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->                         cxlm->memdev_regs = register_block;
->                         break;
->                 default:
-> -                       dev_dbg(dev, "Unknown cap ID: %x (0x%x)\n", cap_id, offset);
-> +                       if (cap_id >= 0x8000)
-> +                               dev_dbg(dev, "Vendor cap ID: %x (0x%x)\n", cap_id, offset);
-> +                       else
-> +                               dev_dbg(dev, "Unknown cap ID: %x (0x%x)\n", cap_id, offset);
+The openat2(2) syscall was added in v5.6.  Add support for openat2 to the
+audit syscall classifier and for recording openat2 parameters that cannot
+be captured in the syscall parameters of the SYSCALL record.
 
-This wants the same %#x fixup that Vishal noted on patch2 [1], and I
-think it would be useful to clarify that the second number is indeed
-an offset: "Unknown cap_id: %#x offset: %#x\n"
+Supporting userspace code can be found in
+https://github.com/rgbriggs/audit-userspace/tree/ghau-openat2
 
-[1]: http://lore.kernel.org/r/40063fe52fcaa066a42d352b13128b6762277542.camel@intel.com
+Supporting test case can be found in
+https://github.com/linux-audit/audit-testsuite/pull/103
+
+Changelog:
+v4:
+- change filename include/linux/auditscm.h to auditsc_classmacros.h to avoid socket association
+
+v3:
+- re-add commit descriptions that somehow got dropped
+- add new file to MAINTAINERS
+
+v2:
+- add include/linux/auditscm.h for audit syscall class macros due to syscall redefinition warnings:
+        arch/x86/ia32/audit.c:3:
+        ./include/linux/audit.h:12,
+        ./include/linux/sched.h:22,
+        ./include/linux/seccomp.h:21,
+        ./arch/x86/include/asm/seccomp.h:5,
+        ./arch/x86/include/asm/unistd.h:20,
+        ./arch/x86/include/generated/uapi/asm/unistd_64.h:4: warning: "__NR_read" redefined #define __NR_read 0
+	...
+        ./arch/x86/include/generated/uapi/asm/unistd_64.h:338: warning: "__NR_rseq" redefined #define __NR_rseq 334
+    previous:
+        arch/x86/ia32/audit.c:2:
+        ./arch/x86/include/generated/uapi/asm/unistd_32.h:7: note: this is the location of the previous definition #define __NR_read 3                                                                                                      
+	...
+        ./arch/x86/include/generated/uapi/asm/unistd_32.h:386: note: this is the location of the previous definition #define __NR_rseq 386
+
+Richard Guy Briggs (3):
+  audit: replace magic audit syscall class numbers with macros
+  audit: add support for the openat2 syscall
+  audit: add OPENAT2 record to list how
+
+ MAINTAINERS                         |  1 +
+ arch/alpha/kernel/audit.c           | 10 ++++++----
+ arch/ia64/kernel/audit.c            | 10 ++++++----
+ arch/parisc/kernel/audit.c          | 10 ++++++----
+ arch/parisc/kernel/compat_audit.c   | 11 ++++++----
+ arch/powerpc/kernel/audit.c         | 12 ++++++-----
+ arch/powerpc/kernel/compat_audit.c  | 13 +++++++-----
+ arch/s390/kernel/audit.c            | 12 ++++++-----
+ arch/s390/kernel/compat_audit.c     | 13 +++++++-----
+ arch/sparc/kernel/audit.c           | 12 ++++++-----
+ arch/sparc/kernel/compat_audit.c    | 13 +++++++-----
+ arch/x86/ia32/audit.c               | 13 +++++++-----
+ arch/x86/kernel/audit_64.c          | 10 ++++++----
+ fs/open.c                           |  2 ++
+ include/linux/audit.h               | 11 ++++++++++
+ include/linux/auditsc_classmacros.h | 24 ++++++++++++++++++++++
+ include/uapi/linux/audit.h          |  1 +
+ kernel/audit.h                      |  2 ++
+ kernel/auditsc.c                    | 31 +++++++++++++++++++++++------
+ lib/audit.c                         | 14 ++++++++-----
+ lib/compat_audit.c                  | 15 +++++++++-----
+ 21 files changed, 169 insertions(+), 71 deletions(-)
+ create mode 100644 include/linux/auditsc_classmacros.h
+
+-- 
+2.27.0
+
