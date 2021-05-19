@@ -2,77 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC550388B8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32190388B8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347861AbhESKTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 06:19:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347871AbhESKTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 06:19:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C549E61244;
-        Wed, 19 May 2021 10:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621419498;
-        bh=4czM9EYWeLrdCcBbSESA/iLnLGU3ZjPNgJ15BIIYftQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I3ULXtV0frIXd+jbldhclcCbCjpHhBkpbkewONFQKZXGGIYosRiuIe1Aq+v5xGExw
-         sSfsiqTwa3Xpxsof71XapkzyE/EyItT2SyaI+Y726f67/A+MB3SrC7gmxLdpQfP/dt
-         Jv2OdHDjJvyuchD3xx3l24J7XRwpVvRTLHqQqcoEyZEPB3Ts+H4i/mHFyvQxMCJxRY
-         RAO5aXeie/LVYSvON7mB5YvMDwFGEv2WhMkFBztNJbgmeCeFuaV0q85t8mola1egR7
-         LnLp5Ykth1NaHhz9gQGaiB1w5vvuvXd2ZLzChi1sQpbpl6ZwJmZND+rN+hxgpoKOTi
-         +2q8byeQ2iyxg==
-Date:   Wed, 19 May 2021 12:18:12 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Pavel Machek <pavel@ucw.cz>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [PATCH v2 16/17] leds: leds-nuc: add support for changing the
- ethernet type indicator
-Message-ID: <20210519121812.4285b3ea@coco.lan>
-In-Reply-To: <20210519100253.49b155e9@thinkpad>
-References: <cover.1621349813.git.mchehab+huawei@kernel.org>
-        <792598f4a1a3219b6517057c92559b0f0a95b419.1621349814.git.mchehab+huawei@kernel.org>
-        <20210519100253.49b155e9@thinkpad>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S1347913AbhESKVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 06:21:20 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21520 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347645AbhESKVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 06:21:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621419600; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Ic8FJNP9L+1A0PI/Lman567/Hir6/FYMQCBLwb1m9Po=; b=hbW5p7yGzkjuynRr8c57EnjJCAoGcchC+OLvTmmXNkH8cFHFZlk4HL2o5Z/7lLj3NRnwMeG8
+ ERLpAcxiU6ovGaUq31pZvXrvQnJ7ZHIMTq/6Z8L3WtOh0E9Y/wJQ8HxkvpYAMfub/7t6SJGe
+ 0fkPnOrg+lqdsHIK6NuAaKYeF/s=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60a4e6431449805ea2b9a16f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 10:19:47
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7A3C8C4323A; Wed, 19 May 2021 10:19:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.110] (unknown [49.37.156.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 15BCEC433F1;
+        Wed, 19 May 2021 10:19:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 15BCEC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIIFYyXSBtbTogY29tcGFjdGlvbjogc3Vw?=
+ =?UTF-8?Q?port_triggering_of_proactive_compaction_by_user?=
+To:     "Chu,Kaiping" <chukaiping@baidu.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "nigupta@nvidia.com" <nigupta@nvidia.com>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
+        "sh_def@163.com" <sh_def@163.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
+ <79279be3573542dea0266f8e9d4d5368@baidu.com>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <e17fb3b8-2737-0d4c-eede-093a2aa2ed8b@codeaurora.org>
+Date:   Wed, 19 May 2021 15:49:39 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <79279be3573542dea0266f8e9d4d5368@baidu.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 19 May 2021 10:02:53 +0200
-Marek Beh=C3=BAn <kabel@kernel.org> escreveu:
+Thanks Kaiping for your review comments!!
 
-> What possible configurations does this support?
->=20
-> Does this blink on rx/tx activity for a specific ethernet port?
->=20
+On 5/19/2021 7:11 AM, Chu,Kaiping wrote:
+>> This triggering of proactive compaction is done on a write to
+>> sysctl.compaction_proactiveness by user.
+> If you want to trigger compaction from userspace, you can use " echo 1 > /proc/sys/vm/compact_memory", there is no need to be so complex.
 
-When the indicator is set to monitor Ethernet, it can work on either
-LAN1, LAN2 or both LAN interfaces.
+1) compact_memory is intended for debug interface. And moreover we can't
+issue the compaction in some controlled manner as write to this node
+triggers the full node compaction. This patch aims at users who want to
+do the compaction in some controlled manner from user space. Example
+user is app launcher preparing the system before launching a memory
+hungry app.
 
-> There is a work in progress to add support for transparent offloading of
-> LED triggers, with the netdev trigger being the first target.
->=20
-> This means that after that is done, you could implement this driver so
-> that when netdev trigger is enabled on a supported interface, your
-> driver will offload the blinking to the HW.
+2) Also, with the current implementation of proactive compaction, say
+user sets the sysctl.compaction_proactiveness, the values can have
+effect only in the next HPAGE_FRAG_CHECK_INTERVAL_MSEC(500msec), IOW,
+the proactive compaction can run with the new settings only after
+500msec which can make the user to wait for 500msec after setting a
+value in the compaction_proactiveness to think that the value written is
+came into effectiveness. Say user want to launch a gaming application
+which has higher memory requirements and its launch time is proportional
+to the available higher order pages. So, what he can do to get the
+larger number of pages is set the compaction_proactivness to higher
+value, continue launching the application and once finishes can set the
+proactivness to original value. But with the current implementation the
+value set may not come into effectiveness at all because of the 500msec
+delay.Thus,the patch also handles the scenario of requiring the
+proactive compaction to run immediately once user sets the
+'compaction_proactiveness'.
 
-On NUC leds, this is already offloaded to HW/firmware.=20
+May be I need to update the commit log even more clear about why can't
+we use the 'compact_memory' and requirements to need to run the
+proactive compaction immediately once user changes the
+compaction_proactivness.
 
-All it takes is to tell the BIOS via ACPI/WMI what LED will be used
-for monitoring the Ethernet activity, and on what port(s).
-=20
-> This should probably also work for HDD activity, but this would need a
-> blockdev trigger first...
+> 
 
-HDD activity is also HW/firmware monitored. The only thing the Kernel
-needs to to is to select what LED will be set as the HDD activity
-indicator.
-
-Thanks,
-Mauro
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
