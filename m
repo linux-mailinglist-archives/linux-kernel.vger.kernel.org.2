@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EFC3891F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6460A3891FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354844AbhESOwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        id S1354854AbhESOwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354786AbhESOwb (ORCPT
+        with ESMTP id S1354849AbhESOwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:52:31 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A33C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:51:10 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so3493767wmf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:51:10 -0700 (PDT)
+        Wed, 19 May 2021 10:52:35 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B72C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:51:16 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso3445972wmc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VV7/9JaD44d0SIqii9fxOh5N5w8JV1LAcaGfCsGPjYk=;
-        b=O/bCuWPT0xvna7IdB8ZdNA2ka107ndSdOAyZEuHtgtrVI3lxb674JM47G7q8AkrBnC
-         2f2zdiVvgFKVOmXxyEXLdsFYauT/ueWr6wB2qvXtqOkqWGME4wE/ExM9tbgwgpRKmM0/
-         UHLTxIkIUCff3AOpeiv1Jvk9rKv5uh3mr7xzEZG1wf/OnAbpEsXhwa7ZdpzGhI7mHTWg
-         XGdC07AaB6yef11bTrh08hxTlgENe840S1h685chWWw2xfUrTfcsv3nrFLfJcOvJNhgm
-         ApW5MdcnmADSnpiMWG97IkY/+DeAVxKh5wKmzs6DWkrs8tr9evufmYeSMhzpmKyKPoxW
-         rD9g==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nvJsZjtlKlLIH6fdR/8rxsvo7mslRnhXMBMDcMwpR/k=;
+        b=Gf+NBbClaX3c/oHpNH/owQaNKi5li/Aj7dV8g56asHuHG8FuUYgXdJJ0WQkYs7Zuab
+         8YBTtfKAXsyXbD1S74Ly5jUECBkhRLs/GEStkBFfgTriUGMItv82pNpCfb695A+PDuwC
+         FTCJgQFfa0o4psLOe/ShI0f3WMxXEH+AZnXF2+dR+iDDzhHyTY1lokDpxTmBLZ1G6qYx
+         jPiCaW0C9Fua7d3QJ+81N8s2E0ey6cUSj8q84G9YvZgVpcmQ7jUnKPTeCplK2kAYUDhY
+         JOhGRDNerL0KmPZzd18OpFLAr9gHJ3y9zgi7DbpTWxmbGbHIdaHtbTD+aRNlOzK/BefW
+         VVEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VV7/9JaD44d0SIqii9fxOh5N5w8JV1LAcaGfCsGPjYk=;
-        b=pcnWgaeK95XoyXFEn8twJQB4DYxWzCYgrMEzXz4vaaPaWWT/bN5iafSMKYRVdIxWVD
-         xKCnm7YvgGhszTDSYPXHIcSqHr5DQOrumtxVjSJTj0gG5TEI3EEG4Acr/Kaxp+LcEkV1
-         FTKWUG7F8XY8nT7PSdOHxe4nKPxd62pq4wRnG4BkXd8+JSrKNNmGXD7VJHD+4YjOeKe8
-         v1SjQ9EbuvyrotAEscnzxos0s8yWZyP5k3dUP6wtuuLWMcK7dGon2ohWFo4vn0E4I1IV
-         tBG7Un08TDEXUSzIMTzB9e3gTJv2ENLcT1OyZ4okJ+nm6xR9YkOsB9oAKJ/xBUfpteJz
-         9UzQ==
-X-Gm-Message-State: AOAM533t/QeQ0nZPALQyRAQVeUsq/O8mNEdXKfdKsfVBg9LBqA7wPGA4
-        hI4F4sGj5AP7floQEVh9AxSun0V71aDPpA==
-X-Google-Smtp-Source: ABdhPJwoFOT8mTousPrM/DH9tL/Vw5xPCW7VkUP6JtNW1ZqT8fi+zWPR13Hbu8vaW3NV6mBwMehlKw==
-X-Received: by 2002:a7b:cc10:: with SMTP id f16mr12281481wmh.24.1621435869272;
-        Wed, 19 May 2021 07:51:09 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.197])
-        by smtp.gmail.com with ESMTPSA id c6sm7772219wru.50.2021.05.19.07.51.08
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nvJsZjtlKlLIH6fdR/8rxsvo7mslRnhXMBMDcMwpR/k=;
+        b=JsRaNNsiW7+4H8ohvy+Fd/o+ADFoFc3IvMxdpu/jVqEUGEohlGqW/4zJGGj4LxxvK0
+         OC4XfI3cLM7HhzInWV9zPT1LALhZ/k+bcEcwruPvjWTPIPJyoFq/ZOfnuLlQpgW5trIu
+         0Q5p+bub4KsZ4Ozc0z8bfequBH3gZl0qIpezKKTZPXGtVRFOIjCLvvbHYAVMqWNdfmYm
+         MbNAu0tb+rz1C2sSljOV0+1DToqbKHDdv947Zglyq7UVxE/mwVgKEWNE8ClIcLB2Hm+Y
+         Ynnos6hVzcpny9YjX4a8DO6FBEdgmujdQIZpAcysHo8kZbIABERmfO6tlYzgE/WyxHc1
+         qhzA==
+X-Gm-Message-State: AOAM533sLnLCzFOHZ0K/9EC9xEb8nqXrNNTpl7oGUAXChVKDW4b4k41h
+        NBpjy42pxpCQ5ZpMz149VbEDjg==
+X-Google-Smtp-Source: ABdhPJzw2ZX1L7rkBrbwUJlJD+6pDoXl8RrmUaoL4wF6IzOTk9tjI5t1y2Exc8dabwsaE4wIB0Qnmw==
+X-Received: by 2002:a05:600c:21c3:: with SMTP id x3mr3775449wmj.131.1621435874758;
+        Wed, 19 May 2021 07:51:14 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id t16sm17810288wrb.66.2021.05.19.07.51.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:51:09 -0700 (PDT)
-Date:   Wed, 19 May 2021 16:51:06 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Hriday Hegde <hridayhegde1999@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
- 'const' keyword
-Message-ID: <20210519145105.GC1417@agape.jhs>
-References: <20210519081958.7223-1-hridayhegde1999@gmail.com>
- <YKTM8KmXI8bXUSqp@kroah.com>
- <0ddb894f-f66f-f31b-ef8a-0646e0a99b9f@gmail.com>
- <YKTfbdFhvM7fbpet@kroah.com>
- <08cf8110-cf84-8784-c919-eba27474b796@gmail.com>
+        Wed, 19 May 2021 07:51:14 -0700 (PDT)
+Date:   Wed, 19 May 2021 15:51:12 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        daniel.thompson@linaro.org, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com, pavel@ucw.cz, robh+dt@kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, cy_huang@richtek.com
+Subject: Re: [PATCH v7 4/4] backlight: rt4831: Adds support for Richtek
+ RT4831 backlight
+Message-ID: <20210519145112.GG2549456@dell>
+References: <1621262161-9972-1-git-send-email-u0084500@gmail.com>
+ <1621262161-9972-4-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <08cf8110-cf84-8784-c919-eba27474b796@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1621262161-9972-4-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hriday,
+On Mon, 17 May 2021, cy_huang wrote:
 
-On Wed, May 19, 2021 at 08:06:14PM +0530, Hriday Hegde wrote:
-> On 19-05-2021 15:20, Greg Kroah-Hartman wrote:
-> > A: http://en.wikipedia.org/wiki/Top_post
-> > Q: Were do I find info about this thing called top-posting?
-> > A: Because it messes up the order in which people normally read text.
-> > Q: Why is top-posting such a bad thing?
-> > A: Top-posting.
-> > Q: What is the most annoying thing in e-mail?
-> >
-> > http://daringfireball.net/2007/07/on_top
-> >
-> > On Wed, May 19, 2021 at 03:00:08PM +0530, Hriday Hegde wrote:
-> >> I am not really sure how to do that and how to reflect it in the patch i followed what was taught in the Beginners course and it does not mention building. I know i need to test it out but is running 'patch -p1 < x.patch what i need to do?
-> > That does not build the code you changed, right?
-> >
-> > I'm sure whatever course you took, it did reference the fact that you
-> > need to ensure that your change actually works properly by the very
-> > least being able to be compiled correctly.  Please go over those
-> > instructions again.
-> >
-> > good luck!
-> >
-> > greg k-h
+> From: ChiYuan Huang <cy_huang@richtek.com>
 > 
-> I am using the A Beginner's Guide to Linux Kernel Development (LFD103) by the linux foundation for this but i cant find any commands to as to build and test , the only way i tried compiling is with a custom Makefile and it didn't work, i've got a few errors so the const keyword might not work here since the variable is being written to.
+> Adds support for Richtek RT4831 backlight.
 > 
-> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> ---
+> since v7
+> - Fix typo 'common' to 'commonly' in Kconfig description.
+> ---
+>  drivers/video/backlight/Kconfig            |   8 ++
+>  drivers/video/backlight/Makefile           |   1 +
+>  drivers/video/backlight/rt4831-backlight.c | 203 +++++++++++++++++++++++++++++
+>  3 files changed, 212 insertions(+)
+>  create mode 100644 drivers/video/backlight/rt4831-backlight.c
 
-try following this tutorial from scratch:
+Applied, thanks.
 
-https://kernelnewbies.org/FirstKernelPatch
-
-it's simply complete and helps a lot, from
-gathering all tools needed to contribute to the
-community to sending whole patchsets.
-
-In your emails don't go over 80-100 character per line,
-when you ask things or your mails will be difficult
-to read.
-
-thank you,
-
-fabio
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
