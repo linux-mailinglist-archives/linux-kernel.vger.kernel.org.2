@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9427A38982C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C471389834
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhESUow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:44:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229454AbhESUop (ORCPT
+        id S229540AbhESUs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:48:29 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:42256 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229379AbhESUs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:44:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621457005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=d7rjCgQxk+5xvpaVNfykovhhV8vEkbL0LJZ6/GWPBlM=;
-        b=cJw4wMTse5NVPnr4GgsrjypYE3vGepz3XPvAMsJRXlF/ZQBJWFig7WR9wtfbpsW/Y4bg5J
-        k3eJLymhHln9w+/MzbEANzJvMHcktGbOmLK7MGITiT9JZGAqTmZhBTMEED1FLflmQjN3b2
-        TbmHArNavAkOTb0kfv6w6h3fyiAlvoI=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-AwwaJXCQPHmCeSspDvu7ag-1; Wed, 19 May 2021 16:43:23 -0400
-X-MC-Unique: AwwaJXCQPHmCeSspDvu7ag-1
-Received: by mail-qk1-f199.google.com with SMTP id d15-20020a05620a136fb02902e9e93c69c8so10714267qkl.23
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:43:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d7rjCgQxk+5xvpaVNfykovhhV8vEkbL0LJZ6/GWPBlM=;
-        b=HUPKxTJ/EekTU5+84P17NQVceRHCW5u/eiNERj/8ZKSRWPamEswwTizyVuaUOKhd6Z
-         1UUE4dZm9hA6OAwWUsfBjEL2oDvzGSPbcIQaP0oaI2iRDLlJe4Tp/MqRZizEmpsBoqbW
-         V/8C2E5gdyEaJbnx7RnzUCVvtn2h2P2EPcmxPY9gDZDJ4OuwFmbPNlE/sMHYfNph7Yj6
-         POAYK+5nsENUIVb6YHS/QhK0XVrur4xoqnCGlXNLeMvBs5w2lQEMlNXNhEIvnbM2thk0
-         t9l/u4Ar02POV2yLRlW2AFtx2hiu1VXB3//owMvbSKDNVp9yVdkUpbsWN+5pxq1rsChy
-         A4zw==
-X-Gm-Message-State: AOAM530+fzRcPEEbYxaPWXebDN0s8til6LH2bittLE9iMq7YCf4ISXuF
-        oFCsy2iMQ14SnFHDspitRBCAouYzWJsfQA/XzYYuqpRP7xdmthNVrCXvDeB96gk+61DE84LWN2l
-        l3+vL0tb7lOA/ZpPGiGfxuVvS
-X-Received: by 2002:a37:38d:: with SMTP id 135mr1520680qkd.136.1621457003296;
-        Wed, 19 May 2021 13:43:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwdMHznC98oBCZTDwmJO/G1L/uvLiQN7mN+gwV4D1I1ygEupjeNYdhOwwFQ1imXPbyJr2fAFw==
-X-Received: by 2002:a37:38d:: with SMTP id 135mr1520665qkd.136.1621457003146;
-        Wed, 19 May 2021 13:43:23 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id v66sm560563qkd.113.2021.05.19.13.43.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 13:43:22 -0700 (PDT)
-From:   trix@redhat.com
-To:     mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH 2/2] fpga: add cancel() and get_error() to update ops
-Date:   Wed, 19 May 2021 13:43:18 -0700
-Message-Id: <20210519204318.1976186-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        Wed, 19 May 2021 16:48:28 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d81 with ME
+        id 6kn32500A21Fzsu03kn3Bq; Wed, 19 May 2021 22:47:05 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 19 May 2021 22:47:05 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     anitha.chrisanthus@intel.com, edmund.j.dea@intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, sam@ravnborg.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] drm/kmb: Fix an error handling path
+Date:   Wed, 19 May 2021 22:47:02 +0200
+Message-Id: <ce19f0d78174b0674dc963d134fbdec222250e84.1621457119.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+If 'platform_get_irq()' fails, it is spurious to call
+'of_reserved_mem_device_release()' in the error handling path, because
+'of_reserved_mem_device_init() has not been called yet.
 
-A user may want to cancel an update or get
-more information on when an update fails.
-Add some device ops to do these.
+Moreover, a previous 'kmb_initialize_clocks()' is unbalanced by a
+corresponding 'kmb_display_clk_disable()' call, has already done in the
+remove function.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+It is likely that 'kmb_display_clk_disable()' is expected in the error
+handling path, instead of 'kmb_display_clk_disable()'.
+
+
+Also, it is spurious to return directly if 'of_reserved_mem_device_init()'
+fails.
+Goto the error handling path instead to free some resources.
+
+Fixes: 7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- include/linux/fpga/fpga-mgr.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/kmb/kmb_drv.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
-index ab68280f3b4a4..31d6ebc34d87a 100644
---- a/include/linux/fpga/fpga-mgr.h
-+++ b/include/linux/fpga/fpga-mgr.h
-@@ -111,6 +111,8 @@ struct fpga_image_info {
-  * @write: write count bytes of configuration data to the FPGA
-  * @write_sg: write the scatter list of configuration data to the FPGA
-  * @write_complete: set FPGA to operating state after writing is done
-+ * @cancel: cancel the update
-+ * @get_error: get extended error information
-  */
- struct fpga_manager_update_ops {
- 	int (*write_init)(struct fpga_manager *mgr,
-@@ -120,6 +122,8 @@ struct fpga_manager_update_ops {
- 	int (*write_sg)(struct fpga_manager *mgr, struct sg_table *sgt);
- 	int (*write_complete)(struct fpga_manager *mgr,
- 			      struct fpga_image_info *info);
-+	int (*cancel)(struct fpga_manager *mgr);
-+	int (*get_error)(struct fpga_manager *mgr, u64 *err);
- };
+diff --git a/drivers/gpu/drm/kmb/kmb_drv.c b/drivers/gpu/drm/kmb/kmb_drv.c
+index f64e06e1067d..b41b8789fe57 100644
+--- a/drivers/gpu/drm/kmb/kmb_drv.c
++++ b/drivers/gpu/drm/kmb/kmb_drv.c
+@@ -138,13 +138,13 @@ static int kmb_hw_init(struct drm_device *drm, unsigned long flags)
+ 	irq_lcd = platform_get_irq(pdev, 0);
+ 	if (irq_lcd < 0) {
+ 		drm_err(&kmb->drm, "irq_lcd not found");
+-		goto setup_fail;
++		goto disable_clk_err;
+ 	}
  
- /**
+ 	/* Get the optional framebuffer memory resource */
+ 	ret = of_reserved_mem_device_init(drm->dev);
+ 	if (ret && ret != -ENODEV)
+-		return ret;
++		goto disable_clk_err;
+ 
+ 	spin_lock_init(&kmb->irq_lock);
+ 
+@@ -152,8 +152,8 @@ static int kmb_hw_init(struct drm_device *drm, unsigned long flags)
+ 
+ 	return 0;
+ 
+- setup_fail:
+-	of_reserved_mem_device_release(drm->dev);
++ disable_clk_err:
++	kmb_display_clk_disable(kmb);
+ 
+ 	return ret;
+ }
 -- 
-2.26.3
+2.30.2
 
