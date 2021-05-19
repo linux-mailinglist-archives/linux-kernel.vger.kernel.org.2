@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA56E388A66
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8519E388A4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343616AbhESJVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344889AbhESJV1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:21:27 -0400
-X-Greylist: delayed 593 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 May 2021 02:20:07 PDT
-Received: from office2.cesnet.cz (office2.cesnet.cz [IPv6:2001:718:1:101::144:244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9082C061761;
-        Wed, 19 May 2021 02:20:07 -0700 (PDT)
-Received: from localhost (ip-78-45-210-72.net.upcbroadband.cz [78.45.210.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by office2.cesnet.cz (Postfix) with ESMTPSA id 0494340006B;
-        Wed, 19 May 2021 11:10:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
-        s=office2-2020; t=1621415411;
-        bh=9rJ9Z+mUNNZ52JFny7dcqpzdc+w+PhUPqEWe2Fkq+q4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=kF8lDyIUmSNtkj7mUmPHN3fqM9GHcen9DMX0qrvhbixtFGhX9k0ZJlbdJrLedA94E
-         kJSV7U1lRgRItH5F5cmgo/wtIIbR6fWiVP+ZXPfgku8CZBB5r6udXk4m6OmUGV1Ov8
-         0KZm1im+4Xb9P0xPgET7uojaDP/fLMtkIrdctHFOvVYRqe3shpyCEkxaEI0vOmHYuC
-         vOBoQPiLTtSHLZhqGvCWIsJLO8tPgpmGzqlpsaKJdGQRli0mja7CwaE5yuY8p/7Wma
-         Xj6Amx86ZWHZhm4500rBqHIE4gkUyB9+uvC3fSGn0gebsLu0nHHWL12Oeeg3pyXtdH
-         vHFaRE7ftWlOw==
-From:   =?iso-8859-1?Q?Jan_Kundr=E1t?= <jan.kundrat@cesnet.cz>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     =?iso-8859-1?Q?V=E1clav_Kubern=E1t?= <kubernat@cesnet.cz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        <linux-hwmon@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/5] hwmon: (max31790) Fix and split =?iso-8859-1?Q?pwm*=5Fenable?=
-Date:   Wed, 19 May 2021 11:10:10 +0200
+        id S1344778AbhESJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:13:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344696AbhESJNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:13:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D68860FE4;
+        Wed, 19 May 2021 09:11:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621415507;
+        bh=F6pKKwIPBcGczYtJtMS3QwrOVGxIOQ49Ne5ddiNdoQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YPWTM2Jajqu2pS1nhf07dzYZsb28GkWZ8eHPPpoITbmcmJRkJu/qEIVsXgFdzxVIk
+         nDnFdHx/AkdE1ykcy7Xg6RF4Qs6QyRICAWII2boOl50TuyrMPWEPy9NRD/NOI2LV9b
+         DWVXT0wpwvsUWjNdjjEMzBDYONjxxyoIPBnU+kcnjLIBbV966Q2HJA2FE/GIh94Re+
+         umILgRMr/4kJ9qUhvdutmEFS8/Omjso2O2LTL2eEw5OWPOE3/cHoAkQi6DICpKWYCy
+         9Fm08M7qdnJLsqAHHZ0tD1kOjNnxUlgx7Jev4zU25qrH2NL+RZ+fck8/CxT7hn/toH
+         EotcbMHlvti1Q==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1ljIF0-0002ST-QX; Wed, 19 May 2021 11:11:46 +0200
+Date:   Wed, 19 May 2021 11:11:46 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 29/35] USB: serial: digi_acceleport, simplify
+ digi_chars_in_buffer
+Message-ID: <YKTWUmYkC/qfrLh0@hovoldconsulting.com>
+References: <20210505091928.22010-1-jslaby@suse.cz>
+ <20210505091928.22010-30-jslaby@suse.cz>
 MIME-Version: 1.0
-Message-ID: <6f256c72-df4d-4f9a-ba5f-eabfd9f2365f@cesnet.cz>
-In-Reply-To: <20210518211609.GA3532746@roeck-us.net>
-References: <20210518211609.GA3532746@roeck-us.net>
-Organization: CESNET
-User-Agent: Trojita/unstable-2020-07-06; Qt/5.15.2; xcb; Linux; 
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505091928.22010-30-jslaby@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> As it turns out, even the current code doesn't really work for fans 7..12.
-> =09=09sr =3D get_tach_period(data->fan_dynamics[channel]);
-> However, the data->fan_dynamics array has only 6 entries, not 12, so
-> reading fan[7-12]_input will result in bad/random values.
+On Wed, May 05, 2021 at 11:19:22AM +0200, Jiri Slaby wrote:
+> "if"'s true branch in digi_chars_in_buffer returns. So there is no need
+> for "else" and indented code. Remove this else and shift the code to the
+> left.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Johan Hovold <johan@kernel.org>
+> Cc: linux-usb@vger.kernel.org
+> ---
+>  drivers/usb/serial/digi_acceleport.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/serial/digi_acceleport.c b/drivers/usb/serial/digi_acceleport.c
+> index 19ee8191647c..0c4d611621c2 100644
+> --- a/drivers/usb/serial/digi_acceleport.c
+> +++ b/drivers/usb/serial/digi_acceleport.c
+> @@ -1050,12 +1050,11 @@ static unsigned int digi_chars_in_buffer(struct tty_struct *tty)
+>  			priv->dp_port_num, port->bulk_out_size - 2);
+>  		/* return(port->bulk_out_size - 2); */
+>  		return 256;
+> -	} else {
+> -		dev_dbg(&port->dev, "digi_chars_in_buffer: port=%d, chars=%d\n",
+> -			priv->dp_port_num, priv->dp_out_buf_len);
+> -		return priv->dp_out_buf_len;
+>  	}
+>  
+> +	dev_dbg(&port->dev, "digi_chars_in_buffer: port=%d, chars=%d\n",
+> +		priv->dp_port_num, priv->dp_out_buf_len);
+> +	return priv->dp_out_buf_len;
+>  }
 
-Hi Guenter, I'm Vaclav's colleague. The chip can indeed reconfigure each=20
-PWMOUT pin either as a PWM output or as a TACH input, but that's not=20
-something that's correctly implemented in the current code, and we have no=20=
+This doesn't look like much of an improvement so I'm dropping this one.
 
-use for that either (and we cannot test that on our PCBs easily, we do not=20=
+If we want to clean this up we should use a common exit path for both
+branches. I'll send a couple of patches to address this and a related
+issue.
 
-have the manufacturer's eval kit).
-
-It looks to me that the original bug is that the current docs mention 12=20
-fan inputs. Would you be OK with a patch series which fixes the docs so=20
-that the chip always exports 6 TACH inputs and 6 PWMOUT channels?
-
-Cheers,
-Jan
+Johan
