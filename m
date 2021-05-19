@@ -2,262 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0A538842A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F7D38842E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhESAzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 20:55:51 -0400
-Received: from mga03.intel.com ([134.134.136.65]:55938 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhESAzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 20:55:47 -0400
-IronPort-SDR: iXINgL8m/ImT6oc8pCsm+FeLtAl/ulUVHyGXz9poFeXFT/DF25ANhBHSZbr/dbE6L4H9s3BUoZ
- 4nsxxlizpvfw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="200918253"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="200918253"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 17:54:26 -0700
-IronPort-SDR: bJsS3WxwCEtgnTeD4WjhXKkCq7IoU5XFUb23p15exmRxHtxIaaMOcr4pYBdBdmRGPOuVQ9bJKW
- 9c1FDIHMTkZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="461015864"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 18 May 2021 17:54:25 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ljATg-0002Q8-Fl; Wed, 19 May 2021 00:54:24 +0000
-Date:   Wed, 19 May 2021 08:54:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- 1dcc917a0eed934c522d93bb05a9a7bb3c54f96c
-Message-ID: <60a461b0.KnjL/iwqNoeBVSkL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230437AbhESBAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhESBAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 21:00:32 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6E4C06175F;
+        Tue, 18 May 2021 17:59:13 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id f8so8986730qth.6;
+        Tue, 18 May 2021 17:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iA2EHGmILYF3Ml1IoKcFl7klA1jJMkJx+SQifRlFeBM=;
+        b=jDbIwZK9bujZuoCmwjiZCtN3t0mgYNHbMStF+mg90h2xWnCH6z6HnUfyNuKPPsVDnb
+         e1z3o3bUHhZT9BzFRs00wSV5QLLltabKEGKqIvrGBsoYzbgN0MojPWltj0DrF1KvMoGb
+         YPrwqlbkl4q3mD42AKzyPDQhvTkPYhPielBj0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iA2EHGmILYF3Ml1IoKcFl7klA1jJMkJx+SQifRlFeBM=;
+        b=OPEtno6ujpVjGjQ35CU0srEG8hf7qbq2sSoA22+YGLZpo4/VlShKC9A51X8mrivFuF
+         h41mNFMUIXiIygv3wkiKm/0AfV6MvGKPYAfmL5cfhOksl/mzn3WVaahkkcoY2oOCWzg6
+         c5slbijf4rTooi3r9mrtMrqurAcuwTdI6rIsw0iv1wp6ime/JmIt/NbSTViU1GzGOR1j
+         i+b2GSDv+Z5CMVDkcykWdr8eUer1+waNznrTYYq4WLCzWnmeYkS08MjgF81/d8vPWAh6
+         CoEAqxX+FJeVShIqi2zMePP4OlvDpInHmOGiFq5osmiukjHs2zw2Pv95DQMQm/Vwwq6a
+         iXLA==
+X-Gm-Message-State: AOAM530EIUN+Of1RmjBl+oqa6ZsqlNCF+dbJJAcBCn2+7FgE5l0qcCNT
+        K/cHPnBaSBcpS01uz3idUAO2noalw+JfnUZAdmg=
+X-Google-Smtp-Source: ABdhPJxhcLKtuV5HoYZdC5QIYyfaUlbDWsTyG4InHF+kLqOE28o2g0f3FPeB2WalZeVgyPWCQKM+2IW+QfQ8WjUgOLY=
+X-Received: by 2002:ac8:5459:: with SMTP id d25mr8202628qtq.385.1621385951143;
+ Tue, 18 May 2021 17:59:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210519000704.3661773-1-andrew@aj.id.au> <20210519000704.3661773-2-andrew@aj.id.au>
+In-Reply-To: <20210519000704.3661773-2-andrew@aj.id.au>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 19 May 2021 00:58:57 +0000
+Message-ID: <CACPK8XdqeS+rE0Jz9SF+sSMUaxmg7vFtghhiZNbDpKRNbBZK=Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] serial: 8250: Add UART_BUG_TXRACE workaround for
+ Aspeed VUART
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-serial@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jenmin Yuan <jenmin_yuan@aspeedtech.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Milton Miller II <miltonm@us.ibm.com>,
+        ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
-branch HEAD: 1dcc917a0eed934c522d93bb05a9a7bb3c54f96c  x86/idt: Rework IDT setup for boot CPU
+On Wed, 19 May 2021 at 00:07, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> Aspeed Virtual UARTs directly bridge e.g. the system console UART on the
+> LPC bus to the UART interface on the BMC's internal APB. As such there's
+> no RS-232 signalling involved - the UART interfaces on each bus are
+> directly connected as the producers and consumers of the one set of
+> FIFOs.
+>
+> The APB in the AST2600 generally runs at 100MHz while the LPC bus peaks
+> at 33MHz. The difference in clock speeds exposes a race in the VUART
+> design where a Tx data burst on the APB interface can result in a byte
+> lost on the LPC interface. The symptom is LSR[DR] remains clear on the
+> LPC interface despite data being present in its Rx FIFO, while LSR[THRE]
+> remains clear on the APB interface as the host has not consumed the data
+> the BMC has transmitted. In this state, the UART has stalled and no
+> further data can be transmitted without manual intervention (e.g.
+> resetting the FIFOs, resulting in loss of data).
+>
+> The recommended work-around is to insert a read cycle on the APB
+> interface between writes to THR.
+>
+> Cc: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-elapsed time: 724m
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-configs tested: 200
-configs skipped: 66
+> ---
+>  drivers/tty/serial/8250/8250.h              |  1 +
+>  drivers/tty/serial/8250/8250_aspeed_vuart.c |  1 +
+>  drivers/tty/serial/8250/8250_port.c         | 10 ++++++++++
+>  3 files changed, 12 insertions(+)
+>
+> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+> index 52bb21205bb6..34aa2714f3c9 100644
+> --- a/drivers/tty/serial/8250/8250.h
+> +++ b/drivers/tty/serial/8250/8250.h
+> @@ -88,6 +88,7 @@ struct serial8250_config {
+>  #define UART_BUG_NOMSR (1 << 2)        /* UART has buggy MSR status bits (Au1x00) */
+>  #define UART_BUG_THRE  (1 << 3)        /* UART has buggy THRE reassertion */
+>  #define UART_BUG_PARITY        (1 << 4)        /* UART mishandles parity if FIFO enabled */
+> +#define UART_BUG_TXRACE        (1 << 5)        /* UART Tx fails to set remote DR */
+>
+>
+>  #ifdef CONFIG_SERIAL_8250_SHARE_IRQ
+> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> index a28a394ba32a..4caab8714e2c 100644
+> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> @@ -440,6 +440,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+>         port.port.status = UPSTAT_SYNC_FIFO;
+>         port.port.dev = &pdev->dev;
+>         port.port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_8250_CONSOLE);
+> +       port.bugs |= UART_BUG_TXRACE;
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+A future enhancement would be to have this depend on the ast2600
+compatible string, so we don't enable the feature for ast2400/ast2500.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        spear6xx_defconfig
-mips                           rs90_defconfig
-arm                           omap1_defconfig
-xtensa                       common_defconfig
-microblaze                      mmu_defconfig
-mips                        nlm_xlp_defconfig
-powerpc64                           defconfig
-m68k                          atari_defconfig
-powerpc                     ep8248e_defconfig
-alpha                               defconfig
-arm                          lpd270_defconfig
-sh                          rsk7264_defconfig
-ia64                          tiger_defconfig
-mips                        bcm47xx_defconfig
-sh                          landisk_defconfig
-arc                      axs103_smp_defconfig
-mips                           xway_defconfig
-csky                             alldefconfig
-powerpc                     tqm8555_defconfig
-sh                           se7722_defconfig
-mips                         mpc30x_defconfig
-um                            kunit_defconfig
-powerpc                      makalu_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                           ip27_defconfig
-sparc64                          alldefconfig
-mips                          rb532_defconfig
-mips                            gpr_defconfig
-sh                     magicpanelr2_defconfig
-arm                          gemini_defconfig
-sh                             espt_defconfig
-sh                        apsh4ad0a_defconfig
-sparc                       sparc32_defconfig
-sh                              ul2_defconfig
-sh                      rts7751r2d1_defconfig
-xtensa                generic_kc705_defconfig
-arm64                            alldefconfig
-xtensa                    smp_lx200_defconfig
-i386                                defconfig
-sh                            hp6xx_defconfig
-mips                           ip28_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                      cm5200_defconfig
-arm                           viper_defconfig
-arc                        nsimosci_defconfig
-i386                             alldefconfig
-openrisc                  or1klitex_defconfig
-sh                          kfr2r09_defconfig
-mips                      malta_kvm_defconfig
-arm                             rpc_defconfig
-powerpc                   lite5200b_defconfig
-arm                          iop32x_defconfig
-ia64                            zx1_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                   sb1250_swarm_defconfig
-sh                          urquell_defconfig
-arm                        realview_defconfig
-mips                           ip32_defconfig
-sh                          rsk7201_defconfig
-arm                         shannon_defconfig
-sh                   secureedge5410_defconfig
-mips                       rbtx49xx_defconfig
-arm                        multi_v7_defconfig
-m68k                         apollo_defconfig
-arm                           h3600_defconfig
-arm                      footbridge_defconfig
-arm                            hisi_defconfig
-arm                          exynos_defconfig
-powerpc                     tqm8541_defconfig
-mips                        qi_lb60_defconfig
-x86_64                            allnoconfig
-m68k                           sun3_defconfig
-arm                         lpc18xx_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                          sdk7786_defconfig
-csky                                defconfig
-nios2                         3c120_defconfig
-parisc                generic-64bit_defconfig
-x86_64                              defconfig
-arm                       multi_v4t_defconfig
-arm                      integrator_defconfig
-mips                     loongson2k_defconfig
-sparc                               defconfig
-arm                          ep93xx_defconfig
-arm                           h5000_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                           se7206_defconfig
-x86_64                           allyesconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                       eiger_defconfig
-powerpc                        icon_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                        mvme16x_defconfig
-powerpc                    klondike_defconfig
-powerpc                     tqm8560_defconfig
-microblaze                          defconfig
-powerpc                 mpc834x_itx_defconfig
-nds32                               defconfig
-s390                             allyesconfig
-arm                         assabet_defconfig
-arm                       imx_v4_v5_defconfig
-sparc                       sparc64_defconfig
-arm                          pxa168_defconfig
-arm                          collie_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210518
-x86_64               randconfig-a004-20210518
-x86_64               randconfig-a005-20210518
-x86_64               randconfig-a001-20210518
-x86_64               randconfig-a002-20210518
-x86_64               randconfig-a006-20210518
-i386                 randconfig-a003-20210518
-i386                 randconfig-a001-20210518
-i386                 randconfig-a005-20210518
-i386                 randconfig-a004-20210518
-i386                 randconfig-a002-20210518
-i386                 randconfig-a006-20210518
-i386                 randconfig-a003-20210519
-i386                 randconfig-a001-20210519
-i386                 randconfig-a005-20210519
-i386                 randconfig-a004-20210519
-i386                 randconfig-a002-20210519
-i386                 randconfig-a006-20210519
-x86_64               randconfig-a012-20210519
-x86_64               randconfig-a015-20210519
-x86_64               randconfig-a013-20210519
-x86_64               randconfig-a011-20210519
-x86_64               randconfig-a016-20210519
-x86_64               randconfig-a014-20210519
-i386                 randconfig-a014-20210518
-i386                 randconfig-a016-20210518
-i386                 randconfig-a011-20210518
-i386                 randconfig-a015-20210518
-i386                 randconfig-a012-20210518
-i386                 randconfig-a013-20210518
-i386                 randconfig-a014-20210519
-i386                 randconfig-a016-20210519
-i386                 randconfig-a011-20210519
-i386                 randconfig-a015-20210519
-i386                 randconfig-a012-20210519
-i386                 randconfig-a013-20210519
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+That would also mean adding a compatible string for the ast2600.
 
-clang tested configs:
-x86_64               randconfig-b001-20210519
-x86_64               randconfig-b001-20210518
-x86_64               randconfig-a015-20210518
-x86_64               randconfig-a012-20210518
-x86_64               randconfig-a013-20210518
-x86_64               randconfig-a011-20210518
-x86_64               randconfig-a016-20210518
-x86_64               randconfig-a014-20210518
-x86_64               randconfig-a003-20210519
-x86_64               randconfig-a004-20210519
-x86_64               randconfig-a005-20210519
-x86_64               randconfig-a001-20210519
-x86_64               randconfig-a002-20210519
-x86_64               randconfig-a006-20210519
+Cheers,
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Joel
