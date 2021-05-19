@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A654F388CDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D30D388CDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240736AbhESLdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhESLdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:33:13 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E86CC06175F;
-        Wed, 19 May 2021 04:31:54 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id x18so5385393pfi.9;
-        Wed, 19 May 2021 04:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S3az4aOopeu8PToPYTiB4gPF4tOtIx0O5/U+DExxUeI=;
-        b=MlQdVLTfmyS+jmnvPXSCPFU8qxgppbaMswdRbCCGctJrcHyZRJLO9NSf2BCFZIoGgi
-         p1UfCSuGe1FlownvAkyKCtoOuKCCLEB+Hn6S9eSjVmjYbmfkIvlGRLqinGPeieUN98kr
-         glkO/74KCT00da1aiYsqt/hlz0Vyo6mPEVy747QfRjeg2n/QrsPNLLC4UphxJnrZ6fC+
-         0WWxdVKRYtKhR7x/LpFZlkXGzQ8xjb8GgMk0vloPZ3f/bu76clVyUXoazfqus7f5bKj0
-         fjI7mEt8w+Ro6H1ApkFr2dp9eHFpJ4C4O1QsdOlIyoGdmKv7yKEqR1UJkpqnvT9X9Xk7
-         2Sig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S3az4aOopeu8PToPYTiB4gPF4tOtIx0O5/U+DExxUeI=;
-        b=GuDw92QhlZUvSQcWEbrOv+d7WaAgodJnU8oFu6s6uv7bJbpeVmKg6Mv7SI2LiBXHH3
-         9rPk3AvaoaZZm+hJ5YRgdSfiYPh5bhwltj5ZQaQ0Gh7IKVFD29yauaagw7rICSrcEl02
-         78UE0lwBaLno2nofrLyPuUuRUpCUUe3HtAer47DJYKpmnWC9gkARxLLAb52hy8Ym7EsA
-         cl6HzTfLZNE2PmhbHCrJyDWMLaOaVnvQ2t5kZH990Z0b9eD7Bc2CNf2nowDY6n5S83d4
-         y3eAlM1hoJoC2sqwn0Vh25GZ5DK1P7sE9mdMoA/f6JtAmSM+LHkEw15thhyPlKUsmuU6
-         TJfg==
-X-Gm-Message-State: AOAM530soxc38VZ8+LzfjHrqSyODEA3yRZmq2t5vLCg+/HIun95H1DmN
-        wXpLcNQiP8x/1Rtw4BXqTTlnh5kPSp78txY4RmO4V4tCfx0=
-X-Google-Smtp-Source: ABdhPJy9StB6CLmDduXztdxo3V1PZk9GmaxBlE5HP/AnxW3AU7T3ysCXLYhWRwW9+4Zx+8hH7HpQvITx5FQR/cXIOCY=
-X-Received: by 2002:a63:cd11:: with SMTP id i17mr10333646pgg.74.1621423913678;
- Wed, 19 May 2021 04:31:53 -0700 (PDT)
+        id S241718AbhESLfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:35:11 -0400
+Received: from 8bytes.org ([81.169.241.247]:39854 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhESLfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:35:09 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 689F82FA; Wed, 19 May 2021 13:33:48 +0200 (CEST)
+Date:   Wed, 19 May 2021 13:33:46 +0200
+From:   'Joerg Roedel' <joro@8bytes.org>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Juergen Gross <jgross@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Hyunwook Baek <baekhw@google.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
+Message-ID: <YKT3mpYlPqNHo1QU@8bytes.org>
+References: <20210512075445.18935-1-joro@8bytes.org>
+ <20210512075445.18935-4-joro@8bytes.org>
+ <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
+ <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
+ <YJuW4TtRJKZ+OIhj@8bytes.org>
+ <92244e37-4443-98bd-24aa-bf59548aab47@suse.com>
+ <YJugs0CdiNo0/Gbd@suse.de>
 MIME-Version: 1.0
-References: <20210517200002.6316-1-dariobin@libero.it>
-In-Reply-To: <20210517200002.6316-1-dariobin@libero.it>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 19 May 2021 14:31:37 +0300
-Message-ID: <CAHp75Vc0kmwuT21=bvpfUj+qAO1XmKEXUpxEEhx3TRZrQbR4Gw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] am335x: set pinmux registers from pins debug file
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJugs0CdiNo0/Gbd@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 3:58 AM Dario Binacchi <dariobin@libero.it> wrote:
+On Wed, May 12, 2021 at 11:32:35AM +0200, Joerg Roedel wrote:
+> On Wed, May 12, 2021 at 10:58:20AM +0200, Juergen Gross wrote:
+> > No, those were used before, but commit 9da3f2b7405440 broke Xen's use
+> > case. That is why I did commit 1457d8cf7664f.
 >
+> [...]
 >
-> The patch was born from the need to change the slew rate of the LCD pins
-> of a custom AM335x board during EMC tests. The AM335x, as described in a
-> note in section 9.1 of its reference manual [1], is unable to write
-> pinmux registers from user space. The series now makes it possible to
-> write these registers from the pins debug file.
+> Having the distinction between user and kernel memory accesses
+> explicitly in the code seems to be the most robust solution.
 
-Even for debugfs it would be nice to have a piece of documentation.
-Because pin control is a quite sensitive area and if something goes
-wrong, it may damage the hardware.
+On the other hand, as I found out today, 9da3f2b7405440 had a short
+life-time and got reverted upstream. So using __get_user()/__put_user()
+should be fine in this code path. It just deserves a comment explaining
+its use here and why pagefault_enable()/disable() is not needed.
+Even the get_kernel* helpers use __get_user_size() internally.
 
-> [1] https://www.ti.com/lit/ug/spruh73q/spruh73q.pdf
+Regards,
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+	Joerg
