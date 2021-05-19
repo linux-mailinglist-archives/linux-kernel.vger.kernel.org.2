@@ -2,106 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC87388C9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C48388C9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349736AbhESLVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:21:45 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3029 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346140AbhESLVj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:21:39 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlVgd3wNRzQpYR;
-        Wed, 19 May 2021 19:16:45 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 19:20:15 +0800
-Received: from [10.47.87.246] (10.47.87.246) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 19 May
- 2021 12:20:12 +0100
-Subject: Re: [PATCH -next] scsi: hisi_sas: drop free_irq of devm_request_irq
- allocated irq
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        chenxiang <chenxiang66@hisilicon.com>,
-        "luojiaxing@huawei.com" <luojiaxing@huawei.com>
-References: <20210518130902.1307494-1-yangyingliang@huawei.com>
- <cf6a6fb8-e9e6-967e-a012-8e25a40922ec@huawei.com>
- <30e9c7d4-75c6-8cbc-7a27-d406eae01dad@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <245d0847-bddd-2ea7-d4bc-9c4be2d26b45@huawei.com>
-Date:   Wed, 19 May 2021 12:19:09 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1350020AbhESLV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:21:56 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:53888 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346140AbhESLVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:21:55 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1ljKFc-0002QF-0q; Wed, 19 May 2021 19:20:32 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1ljKFZ-00074i-49; Wed, 19 May 2021 19:20:29 +0800
+Date:   Wed, 19 May 2021 19:20:29 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     sharathv@codeaurora.org
+Cc:     tgraf@suug.ch, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, edumazet@google.com
+Subject: Re: Internal error: Oops  from inet_frag_find, when inserting a IP
+ frag into a rhashtable
+Message-ID: <20210519112029.3jbw74fuqe4p2tjm@gondor.apana.org.au>
+References: <997dfef63f2bd14acc2e478758bfc425@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <30e9c7d4-75c6-8cbc-7a27-d406eae01dad@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.87.246]
-X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <997dfef63f2bd14acc2e478758bfc425@codeaurora.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/2021 04:36, Yang Yingliang wrote:
-> 
-> On 2021/5/18 23:34, John Garry wrote:
->> On 18/05/2021 14:09, Yang Yingliang wrote:
->>> irq allocated with devm_request_irq should not be freed using
->>> free_irq, because doing so causes a dangling pointer, and a
->>> subsequent double free.
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->>> ---
->>>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 6 +++---
->>>   1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c 
->>> b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->>> index 499c770d405c..684f762bcfb3 100644
->>> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->>> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->>> @@ -4811,9 +4811,9 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, 
->>> struct hisi_hba *hisi_hba)
->>>   {
->>>       int i;
->>>   -    free_irq(pci_irq_vector(pdev, 1), hisi_hba);
->>> -    free_irq(pci_irq_vector(pdev, 2), hisi_hba);
->>> -    free_irq(pci_irq_vector(pdev, 11), hisi_hba);
->>> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
->>> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
->>> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
->>>       for (i = 0; i < hisi_hba->cq_nvecs; i++) {
->>>           struct hisi_sas_cq *cq = &hisi_hba->cq[i];
->>>           int nr = hisi_sas_intr_conv ? 16 : 16 + i;
->>>
->>
->> Does the free_irq(pci_irq_vector(pdev, nr, cq)) call also need to 
->> change (not shown)?
-> Yes, I missed that, it should be changed too.
+On Wed, May 19, 2021 at 12:52:27AM +0530, sharathv@codeaurora.org wrote:
+>
+>   784.185172:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754415]@2
+> __get_vm_area_node.llvm.17374696036975823682+0x1ac/0x1c8
+>    784.185179:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754422]@2
+> __vmalloc_node_flags_caller+0xb4/0x170
+>    784.185189:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754432]@2
+> kvmalloc_node+0x40/0xa8
+>    784.185199:   <2>  (2)[71:kworker/2:1][20210408_17:01:54.754442]@2
+> rhashtable_insert_rehash+0x84/0x264
 
-So I think that we need this addition:
-  devm_free_irq(&pdev->dev, pci_irq_vector(pdev, nr), cq);
+Something very fishy is going on here.
 
->>
->> Having said that, why have these at all if we use devm_request_irq()? 
->> devm_irq_release() calls free_irq().
-> I keep the original logic here, only avoid double free.
+The code path in rhashtable_insert_rehash cannot possibly trigger
+vmalloc because it uses GFP_ATOMIC.  Is this a pristine upstream
+kernel or are there patches that may change things?
 
-Kasan doesn't complain. Anyway, I think we can't rely on device-managed 
-method (for calling free_irq()) as it conflicts with pci free vectors 
-call. I thought that someone was developed a device-managed version of 
-that (pci_alloc_irq_vectors()).
-
-Anyway, please proceed with your change, but with the suggested addition.
-
-Thanks
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
