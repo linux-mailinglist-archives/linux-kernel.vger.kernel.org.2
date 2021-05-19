@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F8B38929D
+	by mail.lfdr.de (Postfix) with ESMTP id A98463892A0
 	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354861AbhESPaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:30:52 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:33289 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354777AbhESPat (ORCPT
+        id S1354878AbhESPa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:30:58 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:33298 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354785AbhESPav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:30:49 -0400
-Received: by mail-ot1-f46.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so12138502oto.0;
-        Wed, 19 May 2021 08:29:28 -0700 (PDT)
+        Wed, 19 May 2021 11:30:51 -0400
+Received: by mail-ot1-f49.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so12138630oto.0;
+        Wed, 19 May 2021 08:29:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=7+JB9Zyu4+IY2hdDOgcmRMbIQW9I3jTmXTZo7gASLew=;
-        b=ngOo7DLOlIDsUKLSWCs7rPfiOhBa0xQ9GrNexUdEnYzVKtXrkrv8PdfCV9Vxn/llC/
-         7akxXHyAcB119dMfhLr1tVoYeWo3vbsR8bJ5HZLHzPVxpAadzj/j+KskrzDXzvNHcU2M
-         HdnYcQrLXQRFpx3kOqIjy/S1xrMoS7BO+HuyT4KnSnX6zKzNiBUwHEAr6z7iWmOXvv3n
-         aV32dol6+4t9TEffbL4aL8QYP11qQZC+aS79Pe8GQWNn7xZLUgVymhWNuEkh+7jkSTh4
-         VvTMzWmddU/eAF/5+G0Aw2oEkNICM74ADyyPEwUe5yvcjrH4YR0nFiBPHM0OiHE+I06N
-         ebxw==
-X-Gm-Message-State: AOAM531iRPtwgULdWS0BZdo8c/9wpRo2RIg9/JF5u9BA2yVtmkrJSDOZ
-        Tzfj/nJznhm9XpslT+uWYQ==
-X-Google-Smtp-Source: ABdhPJzaSafp0audcs87a9mL6YLp05FiXb1wBCFLn+0OqGYGYkYPD48OIiWNXACJVQ2DTYwY+cmQ/g==
-X-Received: by 2002:a9d:62d2:: with SMTP id z18mr9579427otk.78.1621438168410;
-        Wed, 19 May 2021 08:29:28 -0700 (PDT)
+        bh=k1BMeUTbeJ1Ojj2Y28GjLMZTtvIHgmmwd90fSboA3i0=;
+        b=mq5TOPpVSfg74PM1+WstRQekcMvU6+0JiR95ovncZqLbt2aWU/yuNCMxvpx+8px/a3
+         C+/xIK0CwSP/R0XT7GiXFc7UP69QKKIluxlMKZfrHVKJotIvQNIonBnuyvnU8UE81Rhr
+         ODCw4bcplkboKtEqdUOOGBqtMRZUGE4IZ+MG5E+VvjJLJOscvmlZYcL0WCW36V5yWj8X
+         Zj6GWmSqRl6FOx6jGGTYmvx3PLH/JeuZ+6hg3V5USQadBJYA7F1QMVmLKE5SqPrPX1ME
+         sCS09Bc57IaGI8HnWOD2633MY67xzcuV0Q1hn2K9I48LvPRXm00aK1TKhFORfRcP42Wo
+         pgKQ==
+X-Gm-Message-State: AOAM533ofd+5zF2ZPanR3z4tQd/06L4btETifigrXMu9dTgfEEp5Lq1N
+        8eazZETbIfoz0+FWyUflpQpkqPwtJA==
+X-Google-Smtp-Source: ABdhPJzfHwRubC4A+GJbwqXIPluC9VWdzE3LtUHkth8w8OcmezXF1dBV+tE1V5FeZG+SaSCglQKYiQ==
+X-Received: by 2002:a9d:58c1:: with SMTP id s1mr9206990oth.361.1621438170894;
+        Wed, 19 May 2021 08:29:30 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z9sm5015oti.37.2021.05.19.08.29.26
+        by smtp.gmail.com with ESMTPSA id r124sm4101937oig.38.2021.05.19.08.29.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 08:29:27 -0700 (PDT)
-Received: (nullmailer pid 3134238 invoked by uid 1000);
+        Wed, 19 May 2021 08:29:30 -0700 (PDT)
+Received: (nullmailer pid 3134234 invoked by uid 1000);
         Wed, 19 May 2021 15:29:24 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        kernel@pengutronix.de, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        David Jander <david@protonic.nl>
-In-Reply-To: <20210519094221.27792-2-o.rempel@pengutronix.de>
-References: <20210519094221.27792-1-o.rempel@pengutronix.de> <20210519094221.27792-2-o.rempel@pengutronix.de>
-Subject: Re: [PATCH v4 1/5] dt-bindings: touchscreen: validate nodename
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        steven_lee@aspeedtech.com, Rayn Chen <rayn_chen@aspeedtech.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        chiawei_wang@aspeedtech.com, Joel Stanley <joel@jms.id.au>,
+        ryan_chen@aspeedtech.com, Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        troy_lee@aspeedtech.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+In-Reply-To: <20210519080436.18975-4-jamin_lin@aspeedtech.com>
+References: <20210519080436.18975-1-jamin_lin@aspeedtech.com> <20210519080436.18975-4-jamin_lin@aspeedtech.com>
+Subject: Re: [PATCH 3/3] dt-bindings: aspeed-i2c: Convert txt to yaml format
 Date:   Wed, 19 May 2021 10:29:24 -0500
-Message-Id: <1621438164.148746.3134237.nullmailer@robh.at.kernel.org>
+Message-Id: <1621438164.132520.3134233.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 11:42:17 +0200, Oleksij Rempel wrote:
-> Validate touchscreen nodes. Make sure it is named touchscreen*.
+On Wed, 19 May 2021 16:04:29 +0800, Jamin Lin wrote:
+> Add global-reg node for AST2600. Document the properties for
+> "aspeed,ast2600-i2c-global" compatible node.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
 > ---
->  .../devicetree/bindings/input/touchscreen/touchscreen.yaml     | 3 +++
->  1 file changed, 3 insertions(+)
+>  .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 89 +++++++++++++++++++
+>  .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 ----------
+>  2 files changed, 89 insertions(+), 49 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -68,14 +82,9 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.example.dt.yaml: edt-ft5x06@38: $nodename:0: 'edt-ft5x06@38' does not match '^touchscreen(@.*)?$'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/goodix.example.dt.yaml: gt928@5d: $nodename:0: 'gt928@5d' does not match '^touchscreen(@.*)?$'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/goodix.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/iqs626a.example.dt.yaml: iqs626a@44: $nodename:0: 'iqs626a@44' does not match '^touchscreen(@.*)?$'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/iqs626a.yaml
+Documentation/devicetree/bindings/i2c/aspeed,i2c.example.dt.yaml:0:0: /example-0/i2c-global-regs@0: failed to match any schema with compatible: ['aspeed,ast2600-i2c-global', 'syscon']
 
-See https://patchwork.ozlabs.org/patch/1480791
+See https://patchwork.ozlabs.org/patch/1480769
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
