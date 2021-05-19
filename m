@@ -2,115 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2D338984D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C75389850
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbhESVBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
+        id S229685AbhESVCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhESVB3 (ORCPT
+        with ESMTP id S229556AbhESVCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:01:29 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D7CC06175F;
-        Wed, 19 May 2021 14:00:08 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so12986121otg.2;
-        Wed, 19 May 2021 14:00:08 -0700 (PDT)
+        Wed, 19 May 2021 17:02:18 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B291C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:00:57 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 27so9017928pgy.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:00:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OJ4xddo6HAByAS2Mf+0gozS0xDegLbhMxvUwK7ZPGQE=;
-        b=VivXWrAmQJS1ZtwNhQsFioYbvNDe5wUeAf96SQhqtUXt61nrqGgtVHUJBXvbRofAYS
-         Tgj/M+3x2YsYiKgLn8ToP5/3MYBnUwqk6dTbEb7ALDluGGq08B1OJZyJHDCEM3qLu3wz
-         s7W4F7zUgDygZrRx3sv7dC9lKdlgJmXG8b6RL8FVTx42zALLeMadOFvAmU0UyAaCPdJI
-         CpxyhsKzMOeTEnlF074GU8J/mMSudCNA6wpM8PJ6O/yC05Jfd5IfxErSqfuON5Ev1276
-         esJqQzRxcsh9zbqWNiDCZebD4ExckjEN+9xmcMwx2/2zTzSGY9nGC1JxQ0kpPVVY+cSY
-         0IWQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8fPkrJZl4xbjKZWSb4LautfbTP6fpPHvxZUlNFpdvSA=;
+        b=wCA+ul9992t4Z3RZZg7u/sCLnlCW1UpUlXad2PEtqU7sXx/IpINVWngj3nGutMGJSM
+         DyOznK2ZiHYjYqGw6jCarfrR/HPvBbZMG06mpWvqewKGFovKCO+wl3aNaJCz+9mzzNJI
+         UHYeVGSB+LmxV9XDidTKfTS/9e9V9o1scQdbUAcivKUkN4rb45ZFLenLJLiNWKU4Fu9W
+         /RWKbyu3hA+jGi/ErLBE8GyqbXE1hmgWycS7xieAiJg8nruu8TXAO6h0BT2o9xki7RCx
+         ce0kPdRUCD0VWcmxZeZsZknMp1uqHWioYiZwh5PzpF2m83LrONvnHU9lm7lLbzhVXIc7
+         3xRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OJ4xddo6HAByAS2Mf+0gozS0xDegLbhMxvUwK7ZPGQE=;
-        b=Cf5eHqMzeq7HdL0h7t4jVDhpM0pbKgoUn+2rrfgNn/uEM1tNWJ4h1Eg8UrmV7lJJLf
-         gIWW2LnfOtwqZ0JMryNOenVhncKPpjewpsprx4GaoF9jG2sv/QypWk/m1fgnZWLcc1G7
-         ZPnU+NubXiXLLN++AQfEtwXzF/SJAdC8Ez9ZStdjQCg7BuZvZqRulaR/K1CjJ8aKAHg/
-         E1lc/9N3KP8kAQ/zJ77t2dvKYZcPexS4ceW5htuulmoDDlfEaOzbR23FOkOoKUaKBeby
-         cBbTGYVfiHyWGCAgaAwcJcyLt7FE/Pj4hW9zpmXziyi4zvszuB9b2uRhKEmXBXuDeNoq
-         R0cQ==
-X-Gm-Message-State: AOAM533/OVmY6UHuEZnGaZNm7PXGc/SRa3oqeXeHt9mciUZ8oSAd1ANB
-        NtTUNU0LLg1Gr8/6I+qG3AyNzCwPBppbPMzuwpLp4t6/dmL54Q==
-X-Google-Smtp-Source: ABdhPJywbnkY5hJthZVCokPPffVXR6mbseppLvL9bW9/9/nIywzZCsiRbwYwYyLwRkfgNDP4Zo8QzYqvHBxXU4qaxBM=
-X-Received: by 2002:a9d:5a9b:: with SMTP id w27mr1177123oth.362.1621458007340;
- Wed, 19 May 2021 14:00:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8fPkrJZl4xbjKZWSb4LautfbTP6fpPHvxZUlNFpdvSA=;
+        b=FXsLZpshlzFMhAAUWjDt2LIlBYEzwawS0hsZU/oQgfO7WkXbMqIjUlBCaGTT+UzXiN
+         qZGprttTjrakqtkBR07308vorUWWAPwfRRAccxIzbW3bt/Lc2Xsld2FMvSy+PRewvKZ6
+         61P3sYM5zbOUESgvq3CCTcysRnvRl4igHXZPXBBysIxGg/hWtAhtFWx7tEyF9ys7jxPA
+         30Z1k1b1k0vlpZXCMgiF1giNQm1FBoseGg4e7p/TSjT46IltCtGkoTHsrQ8gSBIxvjLP
+         92qsgvraQsNXsmXrshZVrOsiYMNnU/hiE35r2MyTZDTCt6rb3YtrxNoTrVaiWA47gcea
+         Ghlg==
+X-Gm-Message-State: AOAM531E8mgTRPwYY9/dfGo7y0iHDHoLzopdgjiisJYIGSJo1JXbWIcj
+        JWfEy9EYltDOezQSkVbz4icSRg==
+X-Google-Smtp-Source: ABdhPJy0Bnrx+iCOczdDbABKesxv6ntU9siwPKi1NgqUCXqUrNZZfXMKKBMKmXgXn85/O4dnm1j3yA==
+X-Received: by 2002:a63:5060:: with SMTP id q32mr1088180pgl.32.1621458056727;
+        Wed, 19 May 2021 14:00:56 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id e7sm251429pfl.171.2021.05.19.14.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 14:00:56 -0700 (PDT)
+Date:   Wed, 19 May 2021 21:00:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/8] KVM: x86: Cache total page count to avoid
+ traversing the memslot array
+Message-ID: <YKV8hHDS489g9JBS@google.com>
+References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
+ <eb1c881ce814705c83813f02a1a13ced96f1b1d1.1621191551.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-References: <cover.1619841953.git.lucas.p.stankus@gmail.com> <20210502185002.4c2faead@jic23-huawei>
-In-Reply-To: <20210502185002.4c2faead@jic23-huawei>
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-Date:   Wed, 19 May 2021 17:59:31 -0300
-Message-ID: <CACKVXZCxKpBwzmy4L+TEmbO5nYUVMEjZd7SZ3+1KTOaz3hp89A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] staging: iio: cdc: ad7746: add dt properties for
- capacitive channel setup
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eb1c881ce814705c83813f02a1a13ced96f1b1d1.1621191551.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 2, 2021 at 2:49 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Sat, 1 May 2021 09:32:03 -0300
-> Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
->
-> > This patch series aims to replace the platform_struct for the ad7746 driver
-> > in favor of device tree bindings, creating the dt-binding documentation in
-> > the process.
-> >
-> > Since the header file was only used to define the struct and the excitation
-> > level values, it was possible to remove the file entirely.
-> >
-> > Changelog v2 -> v3:
-> > - Add application reference note for the inverted EXCX dt bindings
-> > - Replace macro with lookup table for setting the capacitive channel
-> >   excitation voltage
-> >
-> > Lucas Stankus (2):
-> >   dt-bindings: staging: iio: cdc: ad7746: add binding documentation for
-> >     AD7746
-> >   staging: iio: cdc: ad7746: use dt for capacitive channel setup.
->
-> Looks good to me.  Thanks!
->
-> Will leave time for Rob or anyone else to take a look etc before applying.
->
-> If I seem to have lost it then feel free to give me a poke in a few weeks
-> (it's happened a few times in the past :(
->
-> Thanks,
->
-> Jonathan
-> >
-> >  .../bindings/iio/cdc/adi,ad7746.yaml          | 77 +++++++++++++++++++
-> >  drivers/staging/iio/cdc/ad7746.c              | 54 ++++++++-----
-> >  drivers/staging/iio/cdc/ad7746.h              | 28 -------
-> >  3 files changed, 110 insertions(+), 49 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/cdc/adi,ad7746.yaml
-> >  delete mode 100644 drivers/staging/iio/cdc/ad7746.h
-> >
->
+On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> 
+> There is no point in recalculating from scratch the total number of pages
+> in all memslots each time a memslot is created or deleted.
+> 
+> Just cache the value and update it accordingly on each such operation so
+> the code doesn't need to traverse the whole memslot array each time.
+> 
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> ---
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 5bd550eaf683..8c7738b75393 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11112,9 +11112,21 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+>  				const struct kvm_memory_slot *new,
+>  				enum kvm_mr_change change)
+>  {
+> -	if (!kvm->arch.n_requested_mmu_pages)
+> -		kvm_mmu_change_mmu_pages(kvm,
+> -				kvm_mmu_calculate_default_mmu_pages(kvm));
+> +	if (change == KVM_MR_CREATE)
+> +		kvm->arch.n_memslots_pages += new->npages;
+> +	else if (change == KVM_MR_DELETE) {
+> +		WARN_ON(kvm->arch.n_memslots_pages < old->npages);
 
-Hey Jonathan,
+Heh, so I think this WARN can be triggered at will by userspace on 32-bit KVM by
+causing the running count to wrap.  KVM artificially caps the size of a single
+memslot at ((1UL << 31) - 1), but userspace could create multiple gigantic slots
+to overflow arch.n_memslots_pages.
 
-It has been a week or so without any more feedback, so I'm just a pinging here
-to know if this can be applied.
+I _think_ changing it to a u64 would fix the problem since KVM forbids overlapping
+memslots in the GPA space.
 
-Thanks,
-Lucas
+Also, what about moving the check-and-WARN to prepare_memory_region() so that
+KVM can error out if the check fails?  Doesn't really matter, but an explicit
+error for userspace is preferable to underflowing the number of pages and getting
+weird MMU errors/behavior down the line.
+
+> +		kvm->arch.n_memslots_pages -= old->npages;
+> +	}
+> +
+> +	if (!kvm->arch.n_requested_mmu_pages) {
+
+If we're going to bother caching the number of pages then we should also skip
+the update when the number pages isn't changing, e.g.
+
+	if (change == KVM_MR_CREATE || change == KVM_MR_DELETE) {
+		if (change == KVM_MR_CREATE)
+			kvm->arch.n_memslots_pages += new->npages;
+		else
+			kvm->arch.n_memslots_pages -= old->npages;
+
+		if (!kvm->arch.n_requested_mmu_pages) {
+			unsigned long nr_mmu_pages;
+
+			nr_mmu_pages = kvm->arch.n_memslots_pages *
+				       KVM_PERMILLE_MMU_PAGES / 1000;
+			nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
+			kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
+		}
+	}
+
+> +		unsigned long nr_mmu_pages;
+> +
+> +		nr_mmu_pages = kvm->arch.n_memslots_pages *
+> +			       KVM_PERMILLE_MMU_PAGES / 1000;
+> +		nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
+> +		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
+> +	}
+>  
+>  	/*
+>  	 * FIXME: const-ify all uses of struct kvm_memory_slot.
