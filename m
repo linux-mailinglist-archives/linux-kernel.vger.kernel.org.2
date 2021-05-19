@@ -2,229 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A64D389945
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C2D38994D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhESW0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 18:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        id S229689AbhESWa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 18:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhESW0m (ORCPT
+        with ESMTP id S229455AbhESWa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 18:26:42 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4630AC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:25:22 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id d25so2833787ioe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:25:22 -0700 (PDT)
+        Wed, 19 May 2021 18:30:56 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AF6C061574;
+        Wed, 19 May 2021 15:29:35 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 5so7713368qvk.0;
+        Wed, 19 May 2021 15:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lFxp5Wo5o8KVeHp1UFWe95+41R0OvdliXrOKe6C2icQ=;
-        b=mLnewFJkeeJSpCJWt4VqJyF90CI/PtHxpmF3KzTsZUR3TvUmWFbS7Elq/2JHtCfcxe
-         HRODcbL/3wgoESreTVUidJGGaTCTNHC9LeZuLMzUaAijHXAOQ/0qO5CBngdwCLm+PRNu
-         3jDYarfXCWVEJ19r2SWg8pMT1e0m3mFvMkTKnEILP6XWgI0psLvSVDxmZXGyYsyGcm06
-         ob/rp2UobM9Ez19oqjnMuiniGVOPQHGqWMb2/Bg+S9OH3oVOPHDHB3fYla8oKRhXXTpo
-         kKMiHKkaWWLxv0wBJSPFXew5aQ2wutS7uA2IuNnhgvjRGmbpdnUrH0d8009X80wOfYdm
-         MJog==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XPe29nBUqioUnaGp7VmbMwpIqyxLsVu+OHx0UyfkHXc=;
+        b=pgAaBxknPORKh+FLBVNtFKbW69u6wTNFWahqYf0YBMvwei6Sodnfp7xKssu6LEVtRh
+         wDCiGtK1BHUSgZB2r5rKi3E5vlyjRpWuA0/TIuRvSYlmz2h2a5L9ta14D3T/mZ/8Jufs
+         zkDSZT+YmFeMuQXWGf9OvXlFSXI1F4NegVNDTpAbVa1dGJW87gs55n2UnWoDqtWSAhfK
+         CWlm7y+bx84yZ60D4eaKUUdnVJtZpyOwVekggV/6iHSXLlx7LZFNZxrFmzJvOrg5FTCW
+         sTsMG3N0O8xq6zw7qHyXaKqv6+SQWAJDSCUCils4IjRp2JvEhmJBrsnidGDJCIVU6sqi
+         XyJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lFxp5Wo5o8KVeHp1UFWe95+41R0OvdliXrOKe6C2icQ=;
-        b=FLN5X93eAV0bUkuii/joPYU4veTa+NXz7X+mQ8FMTY7d/Ij/TDCfubkK/JD2PG1NYh
-         ac3UntLYvYzS/Y9CJHeoRIdPALS1FERclhz/jX8DZKxMCJWulr0BdXxwyXzfDvDxfi38
-         5B40jWWEQjORWi/IDZIV5iWEC16tFkbTy8kA2gJLq5myMa4hMkb9LjXXKJ1fUODE4W3/
-         kqWS87jh3ypYWXQr7iOwCQIR2KgfBOXaBoLiXSJa7YEEMfp1lnlMTebTgerLfTBzaFeU
-         ZUsFCR7RsJHBTOvM0h7dxtVi4RE+foouo/WbWzdb9O16XtlSdbfXr3HjDJ/VTBkIkIUr
-         0LdQ==
-X-Gm-Message-State: AOAM531swM85Oqcu6o9u0N/bGrDZ6m/h4mO02HgyybQB8kOC9rBSXzlu
-        be2gFANtzr0GUQTcVagzgkwYPeUZ8Df6Lsp4YGnF7g==
-X-Google-Smtp-Source: ABdhPJzfpozcvCfE5cxMXYtwUSKnQSzRGz6Wf64p8UV1W/+Wg3OT2t0l6IjI+DEPjyWJvD+On9NH7zP+W1hfV8Fju+Q=
-X-Received: by 2002:a05:6638:3395:: with SMTP id h21mr1798024jav.44.1621463121394;
- Wed, 19 May 2021 15:25:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XPe29nBUqioUnaGp7VmbMwpIqyxLsVu+OHx0UyfkHXc=;
+        b=hsj3bVLqKFlfWhA9ptrBNXPrPZHPfG8VFk0GRqsmuxOrFLSya7T0ERtwyrJQ5mBkFf
+         XqK8kqqU68TNYnomYeDBE3PkPi7NxPjsGR4jS01GMs4q935k6Vmqwvei1weut5KQyls3
+         pCoqkv/r+Ilojb30auu6IjniToifFrkbpCrAKr3XwhDZfTCDanuDZFDt7vHzr8oEWo4w
+         plMKTpPabaO4AbWC10mPS2J/B0WH2XCzlLxR3Ppw4D4xoVWnC7hLZ9G32P52PW3qd9bq
+         ftRqypqu39RrG1wsO/fuJBUxosymiWlGWsvOGK3jbMxI4eRfbFaaRdiiuuKKR4Kyx5N9
+         TRkA==
+X-Gm-Message-State: AOAM533sWYbIUKPmQ62EcP8dRXEI+0b2u0UgH6rWuyl1PzehnxbnRckf
+        gjbTCF74BabKcEgYjXZ3pBg=
+X-Google-Smtp-Source: ABdhPJylZ5t/foP9g/9RLhCJCFJe5cDNsQNSHTUOs7cjs73r46V+fred9ZUrfKofkyfdkWPJ40pnkg==
+X-Received: by 2002:a05:6214:7af:: with SMTP id v15mr1957418qvz.17.1621463374756;
+        Wed, 19 May 2021 15:29:34 -0700 (PDT)
+Received: from LuizSampaio-PC.localdomain ([2804:214:8175:da27:c352:bf96:2102:fa64])
+        by smtp.gmail.com with ESMTPSA id d18sm823716qkc.28.2021.05.19.15.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 15:29:34 -0700 (PDT)
+From:   Luiz Sampaio <sampaio.ime@gmail.com>
+To:     zbr@ioremap.net
+Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Luiz Sampaio <sampaio.ime@gmail.com>
+Subject: [PATCH v8 0/6] w1: ds2438: adding support for calibration of current measurements
+Date:   Wed, 19 May 2021 19:30:40 -0300
+Message-Id: <20210519223046.13798-1-sampaio.ime@gmail.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210409031533.442123-1-sampaio.ime@gmail.com>
+References: <20210409031533.442123-1-sampaio.ime@gmail.com>
 MIME-Version: 1.0
-References: <20210519200339.829146-1-axelrasmussen@google.com>
- <20210519200339.829146-7-axelrasmussen@google.com> <CANgfPd-RuScC1BONf2wBSSJ=GQE5yW=BK4g18L3R2Ebn__+PAg@mail.gmail.com>
- <CAJHvVchMMse=CcSUnHGDXLKd0YSa3wTvyyyPjT8MU3RmmwAXtQ@mail.gmail.com>
-In-Reply-To: <CAJHvVchMMse=CcSUnHGDXLKd0YSa3wTvyyyPjT8MU3RmmwAXtQ@mail.gmail.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 19 May 2021 15:25:10 -0700
-Message-ID: <CANgfPd-_LgX5bf=GG=_CGHS9gNpeiiuW+_UseoirPuBasWU4tQ@mail.gmail.com>
-Subject: Re: [PATCH v2 06/10] KVM: selftests: refactor vm_mem_backing_src_type flags
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 3:17 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> On Wed, May 19, 2021 at 3:02 PM Ben Gardon <bgardon@google.com> wrote:
-> >
-> > On Wed, May 19, 2021 at 1:04 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > >
-> > > Each struct vm_mem_backing_src_alias has a flags field, which denotes
-> > > the flags used to mmap() an area of that type. Previously, this field
-> > > never included MAP_PRIVATE | MAP_ANONYMOUS, because
-> > > vm_userspace_mem_region_add assumed that *all* types would always use
-> > > those flags, and so it hardcoded them.
-> > >
-> > > In a follow-up commit, we'll add a new type: shmem. Areas of this type
-> > > must not have MAP_PRIVATE | MAP_ANONYMOUS, and instead they must have
-> > > MAP_SHARED.
-> > >
-> > > So, refactor things. Make it so that the flags field of
-> > > struct vm_mem_backing_src_alias really is a complete set of flags, and
-> > > don't add in any extras in vm_userspace_mem_region_add. This will let us
-> > > easily tack on shmem.
-> > >
-> > > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > > ---
-> > >  tools/testing/selftests/kvm/lib/kvm_util.c  |  5 ++-
-> > >  tools/testing/selftests/kvm/lib/test_util.c | 35 +++++++++++----------
-> > >  2 files changed, 21 insertions(+), 19 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > > index 0d6ddee429b9..bc405785ac8b 100644
-> > > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> > > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > > @@ -759,9 +759,8 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
-> > >
-> > >         region->mmap_start = mmap(NULL, region->mmap_size,
-> > >                                   PROT_READ | PROT_WRITE,
-> > > -                                 MAP_PRIVATE | MAP_ANONYMOUS
-> > > -                                 | vm_mem_backing_src_alias(src_type)->flag,
-> > > -                                 -1, 0);
-> > > +                                 vm_mem_backing_src_alias(src_type)->flag,
-> > > +                                 region->fd, 0);
-> >
-> > I don't see the region->fd change mentioned in the patch description
-> > or elsewhere in this patch. Is something setting region->fd to -1 or
-> > should this be part of another patch in the series?
->
-> Ah, apologies, this is a mistake from splitting up the commits. When
-> they were all squashed together, we set region->fd = -1 explicitly
-> just above here, but with them separated we can't depend on that. I'll
-> fix this in a v3.
+The following patches aim to make a user able to calibrate the current
+measurement of the DS2438. This chip uses a offset register in page1, which
+is added to the current register to give the user the current measurement.
+If this value is wrong, the user will get an offset current value, even if
+the current is zero, for instance. This patch gives support for reading the
+page1 registers (including the offset register) and for writing to the
+offset register. The DS2438 datasheet shows a calibration routine, and with
+this patch, the user can do this quickly by writing the correct value to
+the offset register. This patch was tested on real hardware using a power
+supply and an electronic load.
+Please help to review this series of patches.
 
-Thanks for fixing that and thanks for splitting up the patches in this
-series. It made them super easy to review.
+Best regards!
+Sampaio
+---
+Changes in v8:
+- Fixing bot identation warning
 
->
-> >
-> > >         TEST_ASSERT(region->mmap_start != MAP_FAILED,
-> > >                     "test_malloc failed, mmap_start: %p errno: %i",
-> > >                     region->mmap_start, errno);
-> > > diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> > > index 63d2bc7d757b..06ddde068736 100644
-> > > --- a/tools/testing/selftests/kvm/lib/test_util.c
-> > > +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> > > @@ -168,70 +168,73 @@ size_t get_def_hugetlb_pagesz(void)
-> > >
-> > >  const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i)
-> > >  {
-> > > +       static const int anon_flags = MAP_PRIVATE | MAP_ANONYMOUS;
-> > > +       static const int anon_huge_flags = anon_flags | MAP_HUGETLB;
-> > > +
-> > >         static const struct vm_mem_backing_src_alias aliases[] = {
-> > >                 [VM_MEM_SRC_ANONYMOUS] = {
-> > >                         .name = "anonymous",
-> > > -                       .flag = 0,
-> > > +                       .flag = anon_flags,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_THP] = {
-> > >                         .name = "anonymous_thp",
-> > > -                       .flag = 0,
-> > > +                       .flag = anon_flags,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB] = {
-> > >                         .name = "anonymous_hugetlb",
-> > > -                       .flag = MAP_HUGETLB,
-> > > +                       .flag = anon_huge_flags,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_16KB] = {
-> > >                         .name = "anonymous_hugetlb_16kb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_16KB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_16KB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_64KB] = {
-> > >                         .name = "anonymous_hugetlb_64kb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_64KB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_64KB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_512KB] = {
-> > >                         .name = "anonymous_hugetlb_512kb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_512KB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_512KB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_1MB] = {
-> > >                         .name = "anonymous_hugetlb_1mb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_1MB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_1MB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB] = {
-> > >                         .name = "anonymous_hugetlb_2mb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_2MB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_2MB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_8MB] = {
-> > >                         .name = "anonymous_hugetlb_8mb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_8MB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_8MB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_16MB] = {
-> > >                         .name = "anonymous_hugetlb_16mb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_16MB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_16MB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_32MB] = {
-> > >                         .name = "anonymous_hugetlb_32mb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_32MB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_32MB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_256MB] = {
-> > >                         .name = "anonymous_hugetlb_256mb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_256MB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_256MB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_512MB] = {
-> > >                         .name = "anonymous_hugetlb_512mb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_512MB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_512MB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB] = {
-> > >                         .name = "anonymous_hugetlb_1gb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_1GB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_1GB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_2GB] = {
-> > >                         .name = "anonymous_hugetlb_2gb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_2GB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_2GB,
-> > >                 },
-> > >                 [VM_MEM_SRC_ANONYMOUS_HUGETLB_16GB] = {
-> > >                         .name = "anonymous_hugetlb_16gb",
-> > > -                       .flag = MAP_HUGETLB | MAP_HUGE_16GB,
-> > > +                       .flag = anon_huge_flags | MAP_HUGE_16GB,
-> > >                 },
-> > >         };
-> > >         _Static_assert(ARRAY_SIZE(aliases) == NUM_SRC_TYPES,
-> > > --
-> > > 2.31.1.751.gd2f1c929bd-goog
-> > >
+Changes in v7:
+- Build test again
+
+Changes in v6:
+- Actually changing from BIN_ATTR to BIN_ATTR_RW
+
+---
+Changes in v5:
+- Merged all brackets coding style issue in one patch
+- Changing from BIN_ATTR to BIN_ATTR_RW in w1_ds2438.c
+- Wrapping email lines
+- Addind Documentation/ABI/
+
+Changes in v4:
+- Fixing different patches with identical subject lines as requested
+
+Changes in v3:
+- I accidentally added a wrong line that would not compile. I'm sorry. Fixed it.
+
+Changes in v2:
+- Using git send-email to send the patches
+- Adding documentation as requested
+- Separating the coding style changes in different patches as requested
+
+Luiz Sampaio (6):
+  w1: ds2438: fixed a coding style issue
+  w1: ds2438: fixed if brackets coding style issue
+  w1: ds2438: changed sysfs macro for rw file
+  w1: ds2438: fixing bug that would always get page0
+  w1: ds2438: adding support for reading page1
+  w1: ds2438: support for writing to offset register
+
+ .../ABI/stable/sysfs-driver-w1_ds2438         |  13 ++
+ Documentation/w1/slaves/w1_ds2438.rst         |  19 ++-
+ drivers/w1/slaves/w1_ds2438.c                 | 122 +++++++++++++++---
+ 3 files changed, 137 insertions(+), 17 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-driver-w1_ds2438
+
+-- 
+2.30.1
+
