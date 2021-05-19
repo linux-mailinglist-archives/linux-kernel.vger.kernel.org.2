@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8706438889F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD3F3888AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243521AbhESHvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243370AbhESHvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:51:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA7376135B;
-        Wed, 19 May 2021 07:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621410626;
-        bh=cJyYNFSyYN5r62klP/f+ZfY2a5qEQmGVQUMfHjx7h+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fb384pLVEr92JBexh5zPTyfCSDi8DRNNvdXBekoUMPlus7X/hYbZQiyKHNeEabO41
-         e4t8yqPtZnTQJ8aWknVBCmovBFPoQnrTfhLq2DJbZY1e5xYB6HrToHeNK4KHYx22wu
-         yzZUiFB7rVJjj+t+sXaYiLmyowsIWHvwo19HcumXRSyVWTae1JwcLqyS26tgrd9yDV
-         fv5eS9zK0GfzG4Q1Wd2vtGdm7fhxfoCRetZawnKdaUOK/4/iaJ7gZrWAgYESzSgVwK
-         tsZ6MzdNncHfKcNKVWz0GN4o3mZ6lXmRgHUPQRdN/VmC+wU7IEryyycy0ZlXsj4iyQ
-         D1qtbeyctZJWA==
-Date:   Wed, 19 May 2021 10:50:22 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Message-ID: <YKTDPm6j29jziSxT@unreal>
-References: <BYAPR01MB3816C9521A96A8BA773CF613F2529@BYAPR01MB3816.prod.exchangelabs.com>
- <YJvPDbV0VpFShidZ@unreal>
- <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
- <20210513191551.GT1002214@nvidia.com>
- <4237ab8a-a851-ecdf-ec41-4e798a2da156@cornelisnetworks.com>
- <20210514130247.GA1002214@nvidia.com>
- <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
- <20210514143516.GG1002214@nvidia.com>
- <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
- <20210514150237.GJ1002214@nvidia.com>
+        id S243683AbhESHwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243226AbhESHwD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 03:52:03 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644C0C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:50:44 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso2365433pjq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:50:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SHfnoSjpeSA7P7SyDHgJJjYJgXT2xogBrtIgLEZ6Eo4=;
+        b=TJ4pSjtkJLRPEOmhgq92BMOrkvLx9ljoeW5Gdhau68hkiDWzWM0SPRdo6TyP4v+7Q/
+         4oLNy/grrZInGPuqplAvyXeSlFF2/iC+65ZxnmKPj/EdYzJjZi//Inc8HDXpY0MH6PbA
+         bB6wbCkUUCVMiNjhDiD9ZBKiTUn6SLmKRx4glIxQasg/kf5WZ3yVLPP4qpqL9Cimg93L
+         G3upToea1gC2ZAezzPfTEJWaNe4/4xWTOoCPRxtRfXn2XYl15b7u+TIlQnkNR1scTkAV
+         xJd6eiR7ag68jjc4pGrYOJ+J3BmnRCLIyqWOH3p9G7KkcLzf3lHWj9eAmA2gp3sk2Fqq
+         CZ5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SHfnoSjpeSA7P7SyDHgJJjYJgXT2xogBrtIgLEZ6Eo4=;
+        b=nCwgm1khqt5Vql+HemsFdNYTx+czpgXotRIpnKr7uBf5ZBlTusFOHLrJLJDvdsO/AV
+         nWEHj0pvtz/k1tBEdEVA1OEfxa1y+8bd9QwNCHRkloVr7tYsWYMts6M9tU/sUWM0uKOc
+         MJRXqBH7fTEgihIGF+li1HG0bpCUetsH94MZlp2JYa6v8MQxJSB7f7tW9EjCmi4pXM01
+         uyn3RRg/ZmEdYhE1dNwBbDWk8LSTs/TNd7Mfh8FLnPK74WE7u4V/mjR0N6EPWoqFLzgp
+         ty0q81xQ0/WQ9Z0l7GBfNX3kb+4qc+dTYjRbHc41er7kHmhEQUhZ5/SNB4QSgusnp/KW
+         /+ZQ==
+X-Gm-Message-State: AOAM531IRhju1Cl7QW+wNC58HgZF63NUdze0JqAms4iHPpQ3HWTvfk5z
+        5WFVAqMQRyLjUqra+XJW62qn4Mk3+sosked6
+X-Google-Smtp-Source: ABdhPJwYek/LvJhQOnxnJQ/2HyjTJZjZcY2ALVu2ceS7vspxyOc84gCSTPj8GxnlwW5Ebf1xmroLVw==
+X-Received: by 2002:a17:902:7281:b029:ea:afe2:b356 with SMTP id d1-20020a1709027281b02900eaafe2b356mr9629734pll.16.1621410643809;
+        Wed, 19 May 2021 00:50:43 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id t1sm14301560pjo.33.2021.05.19.00.50.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 00:50:43 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: Check ramp_delay_table for regulator_set_ramp_delay_regmap
+Date:   Wed, 19 May 2021 15:50:24 +0800
+Message-Id: <20210519075024.1644990-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514150237.GJ1002214@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 12:02:37PM -0300, Jason Gunthorpe wrote:
-> On Fri, May 14, 2021 at 03:00:37PM +0000, Marciniszyn, Mike wrote:
-> > > The core stuff in ib_qp is not performance sensitive and has no obvious node
-> > > affinity since it relates primarily to simple control stuff.
-> > > 
-> > 
-> > The current rvt_qp "inherits" from ib_qp, so the fields in the
-> > "control" stuff are performance critical especially for receive
-> > processing and have historically live in the same allocation.
-> 
-> This is why I said "core stuff in ib_qp" if drivers are adding
-> performance stuff to their own structs then that is the driver's
-> responsibility to handle.
+Return -EINVAL if ramp_delay_table is NULL.
+Also add WARN_ON since the driver code needs fix if this happened.
 
-Can I learn from this response that node aware allocation is not needed,
-and this patch can go as is.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/helpers.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thanks
+diff --git a/drivers/regulator/helpers.c b/drivers/regulator/helpers.c
+index 0e16e31c968f..1e61fec4636e 100644
+--- a/drivers/regulator/helpers.c
++++ b/drivers/regulator/helpers.c
+@@ -948,8 +948,10 @@ int regulator_set_ramp_delay_regmap(struct regulator_dev *rdev, int ramp_delay)
+ 	int ret;
+ 	unsigned int sel;
+ 
+-	if (!rdev->desc->n_ramp_values)
++	if (!rdev->desc->n_ramp_values || !rdev->desc->ramp_delay_table) {
++		WARN_ON(!rdev->desc->n_ramp_values || !rdev->desc->ramp_delay_table);
+ 		return -EINVAL;
++	}
+ 
+ 	ret = find_closest_bigger(ramp_delay, rdev->desc->ramp_delay_table,
+ 				  rdev->desc->n_ramp_values, &sel);
+-- 
+2.25.1
+
