@@ -2,80 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5957E388E92
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77491388E9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353514AbhESNEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:04:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4535 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344580AbhESNEa (ORCPT
+        id S239957AbhESNHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:07:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51923 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231434AbhESNHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:04:30 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlXz90BtDzsSRx;
-        Wed, 19 May 2021 21:00:21 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 21:03:05 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 19 May
- 2021 21:03:04 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
-CC:     <john.garry@huawei.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <chenxiang66@hisilicon.com>,
-        <luojiaxing@huawei.com>
-Subject: [PATCH -next resend] scsi: hisi_sas: drop free_irq of devm_request_irq allocated irq
-Date:   Wed, 19 May 2021 21:05:19 +0800
-Message-ID: <20210519130519.2661938-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 19 May 2021 09:07:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621429574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xqzvhqKhh1nFQM60OV9hcT/mMJVDvQ3rAokoQfYzmz4=;
+        b=ckzUFq7gmIf0T+2h7tVlUshE9TKbHSUYU6m56fZIpPru5HaZ3wcrTAYb8hdvAebnykc24t
+        vNPtEqSHvSssj0Hd1VouVkzvluK9ZUTJlyj40yPMSfYY4w+ylVb5j4EA8f7i4P0eyoLl09
+        jwwwX83akG3vpingPt6MoX+UCJ8rDro=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-BthQQSlnNA-e0WNPFJsJqA-1; Wed, 19 May 2021 09:06:12 -0400
+X-MC-Unique: BthQQSlnNA-e0WNPFJsJqA-1
+Received: by mail-wm1-f71.google.com with SMTP id f8-20020a1c1f080000b0290169855914dfso1506859wmf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 06:06:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xqzvhqKhh1nFQM60OV9hcT/mMJVDvQ3rAokoQfYzmz4=;
+        b=NdVhfAubHcQgWGGqhpwz1rtlsgpVt4JOBQ53Q+vEogUMuJQK/ElYYoYzULDiqo1dj4
+         ac4MWdqUIdyQx4Pa6vRr7p3DkeCS3ftiTUrsfm7IwZfZ2cqAkyFf1baOQvUhv++XBMkG
+         EEoQByppmbCSI/49O8slrIahaINOXJkwJAfD7kNDDcaHAl/m/BafeC5vNoNpnBjvN10o
+         KwL3/NcrmCGoi0MvpUy/ja11pRpxcAqlYeCwF5KQjoZz2w53Pq5Jfgbgf8uw7f1O6xG5
+         0SmfUk6sKHDTxEKdyKd12qgs909R0d6MIgiyIxIokghA6vALVr3uctqUCUmmaDhMJ2h4
+         Smxg==
+X-Gm-Message-State: AOAM532jeHB3KxQ0GCgIojhXRFzk+dStDaKZ3S2HEN5InM7HNh+LmCSk
+        UXJe1yILjY6kCLvutlwP2bpfT55r7GW476Y5OVXJOD/vEC7qljl6CvKTICtA5z84oOwcRpdqA+X
+        r03LL83hHaub63NXejiegC7k=
+X-Received: by 2002:a5d:64aa:: with SMTP id m10mr14731769wrp.291.1621429571653;
+        Wed, 19 May 2021 06:06:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmkaVogALKjMKQCJnqNqqS951xIsSZNejhsUEMl2kc6HJVeWXrLDE4wji4CEWD3+ScKdprvA==
+X-Received: by 2002:a5d:64aa:: with SMTP id m10mr14731738wrp.291.1621429571451;
+        Wed, 19 May 2021 06:06:11 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id s11sm3277535wmf.14.2021.05.19.06.06.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 06:06:11 -0700 (PDT)
+Date:   Wed, 19 May 2021 14:06:09 +0100
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/page_alloc: try oom if reclaim is unable to make
+ forward progress
+Message-ID: <20210519130609.r3ml6ohb2qsrfq2t@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20210315165837.789593-1-atomlin@redhat.com>
+ <YFN8wXwJA59w9twA@dhcp22.suse.cz>
+ <20210319172901.cror2u53b7caws3a@ava.usersys.com>
+ <YFh10eSTKY5lbE9u@dhcp22.suse.cz>
+ <20210325210159.r565fvfitoqeuykp@ava.usersys.com>
+ <YF2YTNnyzWNHfrEg@dhcp22.suse.cz>
+ <20210326112254.jy5jkiwtgj3pqkt2@ava.usersys.com>
+ <YF3/YZPd+iz/xGu6@dhcp22.suse.cz>
+ <20210518140554.dwan66i4ttmzw4hj@ava.usersys.com>
+ <YKTyKSDrFZjCS6Wu@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YKTyKSDrFZjCS6Wu@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq allocated with devm_request_irq should not be freed using
-free_irq, because doing so causes a dangling pointer, and a
-subsequent double free.
+Michal,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On Wed 2021-05-19 13:10 +0200, Michal Hocko wrote:
+> > Looking at try_to_compact_pages(), indeed COMPACT_SKIPPED can be returned;
+> > albeit, not every zone, on the zone list, would be considered in the case
+> > a fatal signal is found to be pending. Yet, in should_compact_retry(),
+> > given the last known compaction result, each zone, on the zone list, can be
+> > considered/or checked (see compaction_zonelist_suitable()). If a zone e.g.
+> > was found to succeed then reclaim/compaction would be tried again
+> > (notwithstanding the above).
+> 
+> I believe Vlastimil would be much better fit into looking into those
+> details but it smells like pending fatal signals can lead to a unbound
+> retry indeed.
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-index 499c770d405c..e95408314078 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-@@ -4811,14 +4811,14 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, struct hisi_hba *hisi_hba)
- {
- 	int i;
- 
--	free_irq(pci_irq_vector(pdev, 1), hisi_hba);
--	free_irq(pci_irq_vector(pdev, 2), hisi_hba);
--	free_irq(pci_irq_vector(pdev, 11), hisi_hba);
-+	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
-+	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
-+	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
- 	for (i = 0; i < hisi_hba->cq_nvecs; i++) {
- 		struct hisi_sas_cq *cq = &hisi_hba->cq[i];
- 		int nr = hisi_sas_intr_conv ? 16 : 16 + i;
- 
--		free_irq(pci_irq_vector(pdev, nr), cq);
-+		devm_free_irq(&pdev->dev, pci_irq_vector(pdev, nr), cq);
- 	}
- 	pci_free_irq_vectors(pdev);
- }
+Understood.
+
+I will post a trivial patch to hopefully address this particular condition
+in the compaction retry code path, shortly for further discussion.
+
+
+Kind regards,
+
 -- 
-2.25.1
+Aaron Tomlin
 
