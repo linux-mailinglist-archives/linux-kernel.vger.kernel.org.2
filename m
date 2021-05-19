@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D30D388CDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C05D388CE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241718AbhESLfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:35:11 -0400
-Received: from 8bytes.org ([81.169.241.247]:39854 "EHLO theia.8bytes.org"
+        id S244449AbhESLfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:35:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22027 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhESLfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:35:09 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 689F82FA; Wed, 19 May 2021 13:33:48 +0200 (CEST)
-Date:   Wed, 19 May 2021 13:33:46 +0200
-From:   'Joerg Roedel' <joro@8bytes.org>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Juergen Gross <jgross@suse.com>,
-        David Laight <David.Laight@aculab.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Hyunwook Baek <baekhw@google.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
-Message-ID: <YKT3mpYlPqNHo1QU@8bytes.org>
-References: <20210512075445.18935-1-joro@8bytes.org>
- <20210512075445.18935-4-joro@8bytes.org>
- <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
- <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
- <YJuW4TtRJKZ+OIhj@8bytes.org>
- <92244e37-4443-98bd-24aa-bf59548aab47@suse.com>
- <YJugs0CdiNo0/Gbd@suse.de>
+        id S229554AbhESLfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:35:14 -0400
+IronPort-SDR: Lpw5zyZt6/WodeMDEJpZeGtq48dI7/jRc8MLK8VtRuFJfO3tMg/vTQDqxWY4BeGns/A30Aj0q9
+ 15a1diuf1X0g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="197862775"
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="197862775"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 04:33:55 -0700
+IronPort-SDR: fcQ6N0d5zcMYSZig/l2twvSPHWM2ptsG3Dx/LwZnmb/nyLafED1WPZUTTrghP7o04hctpbvAVW
+ jUICdWmSzjmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="542515866"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 19 May 2021 04:33:52 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 19 May 2021 14:33:52 +0300
+Date:   Wed, 19 May 2021 14:33:52 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Benjamin Berg <bberg@redhat.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: ucsi: Clear pending after acking connector
+ change
+Message-ID: <YKT3oEt/9fX8k8mw@kuha.fi.intel.com>
+References: <20210516040953.622409-1-bjorn.andersson@linaro.org>
+ <YKI/XT8qpZDjDuqs@kuha.fi.intel.com>
+ <YKJeYzIgvL/soGgw@kuha.fi.intel.com>
+ <cd62e9a6d317e106db5e5d6b5f36170524ed7ad9.camel@redhat.com>
+ <YKPBPqZ6zHBsCnsO@kuha.fi.intel.com>
+ <7c09a6bf2ee0a644863f1ec8b333c871cf83d5b8.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJugs0CdiNo0/Gbd@suse.de>
+In-Reply-To: <7c09a6bf2ee0a644863f1ec8b333c871cf83d5b8.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:32:35AM +0200, Joerg Roedel wrote:
-> On Wed, May 12, 2021 at 10:58:20AM +0200, Juergen Gross wrote:
-> > No, those were used before, but commit 9da3f2b7405440 broke Xen's use
-> > case. That is why I did commit 1457d8cf7664f.
->
-> [...]
->
-> Having the distinction between user and kernel memory accesses
-> explicitly in the code seems to be the most robust solution.
+On Tue, May 18, 2021 at 08:04:14PM +0200, Benjamin Berg wrote:
+> On Tue, 2021-05-18 at 16:29 +0300, Heikki Krogerus wrote:
+> > On Mon, May 17, 2021 at 02:57:28PM +0200, Benjamin Berg wrote:
+> > > 
+> > > [SNIP]
+> > > Unfortunately, I don't feel it'll work. The problem that I was
+> > > seeing
+> > > looked like a race condition in the PPM itself, where the window is
+> > > the
+> > > time between the UCSI_GET_CONNECTOR_STATUS command and the
+> > > subsequent
+> > > ACK.
+> > > For such a firmware level bug in the PPM, we need a way to detect
+> > > the
+> > > race condition when it happens (or get a fix for the firmware).
+> > 
+> > OK. Let me know does the patch bring the issue back for you.
+> 
+> So, I just tried the patch, and I can occasionally reproduce the issue
+> where "online" for the ucsi power adapter is stuck at "1" after
+> unplugging with the patch applied.
 
-On the other hand, as I found out today, 9da3f2b7405440 had a short
-life-time and got reverted upstream. So using __get_user()/__put_user()
-should be fine in this code path. It just deserves a comment explaining
-its use here and why pagefault_enable()/disable() is not needed.
-Even the get_kernel* helpers use __get_user_size() internally.
+Thanks for testing it.
 
-Regards,
+I'm still not sure that the PPM is the culprit here. I have a feeling
+that the problem you are seeing is caused by the workaround (bad
+workaround) that we have for the issue where the EC firmware does not
+return with the BUSY bit set in the CCI when it should in many cases.
+The UCSI ACPI driver has one minute timeout value for command
+completion because of that, which is way too long. So if the EC
+firmware decides to take its time before acknowledging command, the
+driver is stuck, and we start loosing the events... Well, I guess
+technically the PPM would be the culprit in the end in any case, but
+I'm just not sure that there is any race like you suspected.
 
-	Joerg
+But this is off topic. I'll send you an RFC proposal what I think we
+could do about that.
+
+
+thanks,
+
+-- 
+heikki
