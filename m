@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A21388FA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8B1388FAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346659AbhESN5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238625AbhESN5F (ORCPT
+        id S242315AbhESN66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:58:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59734 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231627AbhESN65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:57:05 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD43C06175F;
-        Wed, 19 May 2021 06:55:45 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id ez19so6805204qvb.3;
-        Wed, 19 May 2021 06:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3f+yTG1Y43kyfn2gz9Nshdtvq1qpcwEyoAHthUpllhg=;
-        b=ujTnxy267R79o8tloOi8yakaiUosC+EyZRv9R+qxb7UAz5a/X8Q0yUIcFxqASwneM8
-         Ajk2luWDZiVEAER2DhmHmIzGxMgAKoV6UXE746NyP/KWP1ah3mU2j5dZB/97BqdPtCvZ
-         67m7GO5uISJ5FbAdueXoy1C2KvYzdkBNFZo7P8jx+VOLuDzPH3LzRjgwDGeBGH81q6/d
-         JczRMboPi+53BOFljX0hLQxJV+ZcaVGzfgTVrmL7SV2zfXGWkKSBj+yCkCN6EZKI5W0A
-         TBiigQ9HUQ0Ap3xWBQE7zjlCpIuG1CvlWqMsIXuzEcOzpCoi6dWvXE2U+AjC7aS/XSR+
-         DULg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3f+yTG1Y43kyfn2gz9Nshdtvq1qpcwEyoAHthUpllhg=;
-        b=h6fsxKuwVnCWbcxmw93+bJf7VpQb+BFixwbVEK9zh4V7Sn3Rn0fflhFUuEGIm6rnmi
-         mq92bsb5mq7U2a6NW6f2BnSqh0QCV4vXwKUvOpdjGIjmaPeOP2SBFgLkoRvUUM1hp8w9
-         xiphulaDXWbhv0HCbHesFcf6cU7kXWIL3NFJgTsMKQ3uGRWR4UnPQgq6y8eZu5bjecJX
-         J6sFRYQcnCeYvPDCpQ4G13cCGnEyKWZ53+y6GabKSXfw8TBuOq1Q1zzzmvn3vRRN1hX7
-         yRzq3mUgm9oG9jdED/r+7aI3H0JRyaD7VZxUWWJ5gU+Q2W3no9k7PvlYaPL9ippKvapy
-         6e4Q==
-X-Gm-Message-State: AOAM531NrkkmhMWzQPM0Q9CPjFGNE30du2AE90CvMo93YXJLdubNfpM0
-        dXHD0TEr5O6S+BNltNnkldXNVVAjUBM=
-X-Google-Smtp-Source: ABdhPJyQtQyTdrZI/o7HM9Fsco/QYrd5AxeKNDK8sg6l83t+4/wOmbr+1BaBLDiE0yzf4TsrY6NY5A==
-X-Received: by 2002:a0c:f294:: with SMTP id k20mr13602522qvl.45.1621432544634;
-        Wed, 19 May 2021 06:55:44 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x18sm14707875qkx.118.2021.05.19.06.55.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 06:55:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     =?UTF-8?Q?Jan_Kundr=c3=a1t?= <jan.kundrat@cesnet.cz>
-Cc:     =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210518211609.GA3532746@roeck-us.net>
- <6f256c72-df4d-4f9a-ba5f-eabfd9f2365f@cesnet.cz>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v5 2/5] hwmon: (max31790) Fix and split pwm*_enable
-Message-ID: <76619e11-3999-1e89-de93-fb5942970844@roeck-us.net>
-Date:   Wed, 19 May 2021 06:55:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 19 May 2021 09:58:57 -0400
+Received: from 1-171-221-38.dynamic-ip.hinet.net ([1.171.221.38] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1ljMhX-0005vU-6q; Wed, 19 May 2021 13:57:31 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de
+Cc:     alexander.deucher@amd.com,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] vgaarb: Use ACPI HID name to find integrated GPU
+Date:   Wed, 19 May 2021 21:57:23 +0800
+Message-Id: <20210519135723.525997-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <6f256c72-df4d-4f9a-ba5f-eabfd9f2365f@cesnet.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 2:10 AM, Jan Kundrát wrote:
->> As it turns out, even the current code doesn't really work for fans 7..12.
->>         sr = get_tach_period(data->fan_dynamics[channel]);
->> However, the data->fan_dynamics array has only 6 entries, not 12, so
->> reading fan[7-12]_input will result in bad/random values.
-> 
-> Hi Guenter, I'm Vaclav's colleague. The chip can indeed reconfigure each PWMOUT pin either as a PWM output or as a TACH input, but that's not something that's correctly implemented in the current code, and we have no use for that either (and we cannot test that on our PCBs easily, we do not have the manufacturer's eval kit).
-> 
-> It looks to me that the original bug is that the current docs mention 12 fan inputs. Would you be OK with a patch series which fixes the docs so that the chip always exports 6 TACH inputs and 6 PWMOUT channels?
-> 
-That would not be appropriate. The chip does support 12 fan inputs,
-so that is not a bug. Its support has a bug, and the datasheet is kind
-of vague when it comes to details, but that doesn't mean we can just
-remove its support.
+Commit 3d42f1ddc47a ("vgaarb: Keep adding VGA device in queue") assumes
+the first device is an integrated GPU. However, on AMD platforms an
+integrated GPU can have higher PCI device number than a discrete GPU.
 
-I see two bugs in the current code:
-- pwm values should be read from the duty cycle registers,
-   not from the target duty cycle registers.
-- fan[1-12]_input needs to use a correct divider value.
-   Unfortunately the datasheet is a bit vague when it comes
-   to deciding which divider value to use, so the best we can
-   do is going to use the values from fan[1-6].
+Integrated GPU on ACPI platform generally has _DOD and _DOS method, so
+use that as predicate to find integrated GPU. If the new strategy
+doesn't work, fallback to use the first device as boot VGA.
 
-Fixing this will require two patches, which should come first.
-Let me know if you want to do that; if not I'll write patches
-in the next few days.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/gpu/vga/vgaarb.c | 31 ++++++++++++++++++++++++++-----
+ 1 file changed, 26 insertions(+), 5 deletions(-)
 
-As for fan[7-12]_enable, I don't even know if those can be enabled
-separately. I see two options: Drop those attributes entirely (
-assuming that those fan inputs are always enabled if the associated
-pins are configured as inputs), or align them with fan[1-6]_enable.
+diff --git a/drivers/gpu/vga/vgaarb.c b/drivers/gpu/vga/vgaarb.c
+index 5180c5687ee5..949fde433ea2 100644
+--- a/drivers/gpu/vga/vgaarb.c
++++ b/drivers/gpu/vga/vgaarb.c
+@@ -50,6 +50,7 @@
+ #include <linux/screen_info.h>
+ #include <linux/vt.h>
+ #include <linux/console.h>
++#include <linux/acpi.h>
+ 
+ #include <linux/uaccess.h>
+ 
+@@ -1450,9 +1451,23 @@ static struct miscdevice vga_arb_device = {
+ 	MISC_DYNAMIC_MINOR, "vga_arbiter", &vga_arb_device_fops
+ };
+ 
++#if defined(CONFIG_ACPI)
++static bool vga_arb_integrated_gpu(struct device *dev)
++{
++	struct acpi_device *adev = ACPI_COMPANION(dev);
++
++	return adev && !strcmp(acpi_device_hid(adev), ACPI_VIDEO_HID);
++}
++#else
++static bool vga_arb_integrated_gpu(struct device *dev)
++{
++	return false;
++}
++#endif
++
+ static void __init vga_arb_select_default_device(void)
+ {
+-	struct pci_dev *pdev;
++	struct pci_dev *pdev, *found = NULL;
+ 	struct vga_device *vgadev;
+ 
+ #if defined(CONFIG_X86) || defined(CONFIG_IA64)
+@@ -1505,20 +1520,26 @@ static void __init vga_arb_select_default_device(void)
+ #endif
+ 
+ 	if (!vga_default_device()) {
+-		list_for_each_entry(vgadev, &vga_list, list) {
++		list_for_each_entry_reverse(vgadev, &vga_list, list) {
+ 			struct device *dev = &vgadev->pdev->dev;
+ 			u16 cmd;
+ 
+ 			pdev = vgadev->pdev;
+ 			pci_read_config_word(pdev, PCI_COMMAND, &cmd);
+ 			if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
+-				vgaarb_info(dev, "setting as boot device (VGA legacy resources not available)\n");
+-				vga_set_default_device(pdev);
+-				break;
++				found = pdev;
++				if (vga_arb_integrated_gpu(dev))
++					break;
+ 			}
+ 		}
+ 	}
+ 
++	if (found) {
++		vgaarb_info(&found->dev, "setting as boot device (VGA legacy resources not available)\n");
++		vga_set_default_device(found);
++		return;
++	}
++
+ 	if (!vga_default_device()) {
+ 		vgadev = list_first_entry_or_null(&vga_list,
+ 						  struct vga_device, list);
+-- 
+2.31.1
 
-Guenter
