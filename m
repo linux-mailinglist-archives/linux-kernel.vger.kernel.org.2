@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54FA388D4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B746388D4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352699AbhESLy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240419AbhESLy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:54:57 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775E3C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:53:37 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id h6so11965695ila.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UW7fZiIlXVfl0Qc0/A9Hj0P585Ftj5tVT/omHdWRq4I=;
-        b=xLPFHrobZa2WtMv3ql7wPlAv5Tlyo5PmflSYyt63GdY1dJxV6q/++PoWUU73Vm8I8Q
-         XhykK9d/2gYBEup6fAwa2XK+Umf9GBrejU/zdN/Q5H/8/Fgml0iNnb1gBdWV8iOy8P1v
-         VJBUZDNw3f4iM+zvum6Yav1e8S+RzjRmzu0EQdDYM46bamsvc9oBTDOc27AOk9ZJPMzN
-         hX73g9wxPHDs13xqAScfxHl1X2NLKl1zx/r5cxUNm2PlXAJ2UXr+O1mvsXUmJHXY/j3m
-         t340Ij6y4xra8yVLLznQQEYhjk9BsM/rX0jQObGJQmoKKyBeJyAiwsCqGdNfZvj/t9ir
-         +/cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UW7fZiIlXVfl0Qc0/A9Hj0P585Ftj5tVT/omHdWRq4I=;
-        b=ro44mr4ebZYkcM26q0QvXLcIEcR0J3RtDCWet1FRp8qzIpGOQvy85ayE82V3StzNgq
-         ggKAif51E2rXMEfmny/afszDXK1dOaXLlCdmKaizyY1N7MLXsYgHMtidjL8JevIFhoo/
-         Y25d4QEHDef/dS8dsCrDn0dO7rmZnsbUc+ai1EtKJL3qVxK2Q5ZfDmN/tmL2h4e+3ZtX
-         Z63fGAt4P4o+Rn0XRmxOq+ZLRjjw31q0jM/3vFS5LFOODGOtKdU632X6Hsi4/u7xzjKO
-         TyNxlK0vLUajAkg5u4l9kZkGmmi3E9UF4DWoCqlSOL1hlR3BlosRf9zLExBI2wr58J3f
-         tHSg==
-X-Gm-Message-State: AOAM533C098rCuBfu177aickrCkyJcvcnRlBa8x2RRtXtlsEXVekmAiU
-        URs4RyDQbDm8W0gO1TkSdqDLniWM3zS7TPNpW5cbvg==
-X-Google-Smtp-Source: ABdhPJyagVuDl87Slxx3PuzN9OBL7HrQnUxrISgaMw3Gc9dfiRyYygGFfRlU4U4XUgvEtNonmfbMHU8PypFnnAmBhHo=
-X-Received: by 2002:a92:cf45:: with SMTP id c5mr10915199ilr.182.1621425216452;
- Wed, 19 May 2021 04:53:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210430123511.116057-1-robert.marko@sartura.hr> <af4923ef1ed0693fcd67d7986348b164@walle.cc>
-In-Reply-To: <af4923ef1ed0693fcd67d7986348b164@walle.cc>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Wed, 19 May 2021 13:53:25 +0200
-Message-ID: <CA+HBbNHCnpg9qCzZbT9KVNqX-daC68iaJKNdyEf7do3w98miWw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] mfd: Add Delta TN48M CPLD driver
-To:     Michael Walle <michael@walle.cc>
-Cc:     Lee Jones <lee.jones@linaro.org>, robh+dt@kernel.org,
+        id S1352739AbhESL4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:56:15 -0400
+Received: from tux.runtux.com ([176.9.82.136]:39240 "EHLO tux.runtux.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240448AbhESL4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:56:14 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by tux.runtux.com (Postfix) with ESMTP id A77CB6F0D6;
+        Wed, 19 May 2021 13:54:52 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
+Received: from tux.runtux.com ([127.0.0.1])
+        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id S3S3Grr3HLSe; Wed, 19 May 2021 13:54:51 +0200 (CEST)
+Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
+        (Authenticated sender: postmaster@runtux.com)
+        by tux.runtux.com (Postfix) with ESMTPSA id 9F36A6EFFE;
+        Wed, 19 May 2021 13:54:51 +0200 (CEST)
+Received: by bee.priv.zoo (Postfix, from userid 1002)
+        id 32B5A46E; Wed, 19 May 2021 13:54:51 +0200 (CEST)
+Date:   Wed, 19 May 2021 13:54:51 +0200
+From:   Ralf Schlatterbeck <rsc@runtux.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>, Lars Poeschel <poeschel@lemonage.de>,
         Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, jdelvare@suse.com,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
-        jmp@epiphyte.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/1] auxdisplay: Add I2C gpio expander example
+Message-ID: <20210519115450.qoqpy7d5dgnjtenx@runtux.com>
+References: <20210106113730.k5qveshjgcd57kgx@runtux.com>
+ <20210106113929.fizyg6fcsmsntkiy@runtux.com>
+ <CANiq72=Cfv=Qo2fs+HDjUc8pV37mL326SDS5JpGotUfHLwK_rQ@mail.gmail.com>
+ <CAMuHMdUW3U6DVkHp3xiHFzvRUDJ1FwTNCnBWp5LCuDGxhds9wg@mail.gmail.com>
+ <CANiq72mCFwYnbynQgwNGTt0mzo_rMrnQfpinz6DrPttFxUpyNQ@mail.gmail.com>
+ <20210517152035.GA2581887@robh.at.kernel.org>
+ <20210519090047.e63d2im5vgskqpcs@runtux.com>
+ <CAMuHMdV80XUo5ihXUkogCikGA4H71Ada9w=9W9d9d1zdgrw0uA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdV80XUo5ihXUkogCikGA4H71Ada9w=9W9d9d1zdgrw0uA@mail.gmail.com>
+X-ray:  beware
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 6:34 PM Michael Walle <michael@walle.cc> wrote:
->
-> Hi Robert,
->
-> Am 2021-04-30 14:35, schrieb Robert Marko:
-> > Delta TN48M switches have a Lattice CPLD that serves
-> > multiple purposes including being a GPIO expander.
-> > So lets add the MFD core driver for it.
->
-> Did you have a look at mfd/simple-mfd-i2c.c?
+The hd44780 displays are often used with pcf8574 based I/O expanders.
+Add example to documentation.
 
-Hi Michael,
+Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
+---
+Updated Patch, thanks to Geert Uytterhoeven for his tip on how to
+reproduce the warning. I've removed the address from the i2c stanza
+which fixes it. Let me know if I should re-post the patch in a separate
+thread.
 
-Yes, that was my first idea but we have a requirement to expose CPLD
-information via debugfs as there are userspace applications using it.
-And simple-mfd-i2c does not allow us to do so.
+ .../bindings/auxdisplay/hit,hd44780.yaml      | 31 ++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-Regards,
-Robert
->
-> -michael
-
-
-
+diff --git a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+index 9222b06e93a0..fde07e4b119d 100644
+--- a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
++++ b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+@@ -12,7 +12,10 @@ maintainers:
+ description:
+   The Hitachi HD44780 Character LCD Controller is commonly used on character
+   LCDs that can display one or more lines of text. It exposes an M6800 bus
+-  interface, which can be used in either 4-bit or 8-bit mode.
++  interface, which can be used in either 4-bit or 8-bit mode. By using a
++  GPIO expander it is possible to use the driver with one of the popular I2C
++  expander boards based on the PCF8574 available for these displays. For
++  an example see below.
+ 
+ properties:
+   compatible:
+@@ -94,3 +97,29 @@ examples:
+             display-height-chars = <2>;
+             display-width-chars = <16>;
+     };
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            pcf8574: pcf8574@27 {
++                    compatible = "nxp,pcf8574";
++                    reg = <0x27>;
++                    gpio-controller;
++                    #gpio-cells = <2>;
++            };
++    };
++    hd44780 {
++            compatible = "hit,hd44780";
++            display-height-chars = <2>;
++            display-width-chars  = <16>;
++            data-gpios = <&pcf8574 4 0>,
++                         <&pcf8574 5 0>,
++                         <&pcf8574 6 0>,
++                         <&pcf8574 7 0>;
++            enable-gpios = <&pcf8574 2 0>;
++            rs-gpios = <&pcf8574 0 0>;
++            rw-gpios = <&pcf8574 1 0>;
++            backlight-gpios = <&pcf8574 3 0>;
++    };
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+2.20.1
