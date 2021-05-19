@@ -2,287 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCFE38995E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C93C389961
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhESWd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 18:33:58 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:36006 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhESWd5 (ORCPT
+        id S229917AbhESWg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 18:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhESWg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 18:33:57 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JMUr30006197;
-        Wed, 19 May 2021 22:32:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=lxVHWrJp+EOOkXcqzPE4WmJyKvsqUemoTKoAUiZrg/g=;
- b=a+PT/B4QqqH3Ia719POmsW4Z4rh258/8zbscrqNURazqe5b98+99Gmn8SNp85MO8DVi8
- Lk3PUkMias34OV4s1r1fdxfK4GU/9N29jyyDebfi3TmAgZbldETiKJZMNW63o80LFYLG
- U+A9Bxv7lFFCKqyJhvF79lxR6bu+g60PxtHWygOVJLzCeb0OaTvKl/ZzK2LVrJIURw8u
- v/CdB0l6Hcbe8X2FdghqOr18LqAbIDQATAw3vBxRS0xK5MX9PoKCq11nWPS3/GX9DZtY
- cjACUFGXzdtd+qE2oDXiVxT6Ol3aOYn5MpzM3W5b86dFKfN99FQAj4nY2qIK9kK82xqI +w== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38ktd2h5x8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 22:32:25 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14JMWNqK121411;
-        Wed, 19 May 2021 22:32:23 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
-        by userp3030.oracle.com with ESMTP id 38megkv9h7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 22:32:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jhfoPMCGwiDkY5DbGForiIBSZo2WHqx1PYK6phvccc1xfNu0LbgNmL2mcXKGwVNlt4C/UAjaDaVn04U+TTGnk/KJ2KJoDfevVmGv/gLomnKlyGCqzJSXjv14PY/A4wo71Qj5uGpkVeulPGpFGi9pKQ41a549d/yJacFL38o3rXGKZi+a514ia0aoSdikaFmIAsdHUblAyOB7F6/Js1Uo7KSMDsDo+4o+jynqtCuh2EzngdK9oTSDrOARHTMYsWpTl3iBEddMhq9YbbIkKUNwPfK/r1936Pi2t/Aa+V2eiYbIvoCR0cMXRhc8tB64k03RCIsKiG76PNUxQn5tZekcAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lxVHWrJp+EOOkXcqzPE4WmJyKvsqUemoTKoAUiZrg/g=;
- b=HJGx4HkOlP0jujIdapJ7XAdwEnPD6HgTH1PKoCx0pcLlEGis+oyQPg/0JAC3uFtxb5o0LcwJMVVKcEVJGsLl5Z08f0DuA3uvVfirTISsCeNXRysFixh4ELXTO3sUVqbg4rEcUQkbmh9O4JxPbx1INlFrhzzgxRHxUuERnGB1+sn4Kj3W2EMEyhgD9wHRUlCN1HzwvIaKkjCeyQsCAEg6z3lRB2Ie+9s8Bs7v1/36R8FQIP/KNnFv2hnAlbbMPpE3Rt0aJQyOIYw+lEBUK8frHfS7oVjybHvnyZM/ovWNh9eQQ3Iz7FY8qMi5MY0QJnj8cJoMAYCCuJm/LOe7TLzzCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 19 May 2021 18:36:26 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244E1C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:35:05 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id k4so9885215ili.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:35:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lxVHWrJp+EOOkXcqzPE4WmJyKvsqUemoTKoAUiZrg/g=;
- b=oq/V6uLRSqIeLxppGM0Rvh/ZSEJmv96CF/lHZVufuqJS28xWuX4Du0v1QAZVBv78OumWQtUMWrhSDOeopiK15ritFlkx0JwI1mTRpwfSKRuXqL8p5ONzuCPyCD8aX1OF1csp/GhbdZG8sxusPS00quWjMafxjW+3gNjciGIWMoU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB2614.namprd10.prod.outlook.com (2603:10b6:a02:b0::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Wed, 19 May
- 2021 22:32:21 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::4407:2ff6:c0a:5d90]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::4407:2ff6:c0a:5d90%8]) with mapi id 15.20.4129.033; Wed, 19 May 2021
- 22:32:21 +0000
-Subject: Re: [PATCH v5 1/2] mm,hwpoison: fix race with hugetlb page allocation
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-References: <20210518231259.2553203-1-nao.horiguchi@gmail.com>
- <20210518231259.2553203-2-nao.horiguchi@gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <d78f430c-2390-2a5f-564a-e20e0ba6b26a@oracle.com>
-Date:   Wed, 19 May 2021 15:32:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210518231259.2553203-2-nao.horiguchi@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR03CA0026.namprd03.prod.outlook.com
- (2603:10b6:303:8f::31) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8taWKY5LgEYAKZy1/shzdKgVUl6wjUkkU8aHH9O6HjM=;
+        b=Pkw59cBUdOt2BsRLN3pKCcg0cRpOd8hDUQ5v3CIyWdCqMvo0HUogV6cjdSeKnwW/dp
+         cxXsLgWuCI3sCcPrSS4mYKbuvOEOvfBfw+JWKXOB6jAS3SBzlkod60U/H90QpU6BziD2
+         iRg28PHFzNMgcwvrpQivl4uqBj5PMnk//40bg1IkjU3H2iNq7bRO2iFvL8vfEexvEP9o
+         WdIzITvaxwdmoZaPvi4aDUDAVdBCseC9AF6SfWqtjDZZdsosKNRA11kmYiyTcEwPzjTT
+         /4t0VsK+hWn0F3a/5R3nB+jINDaFulLoCit1QFImFHc2NCjz6zXv14+z4BCvfrXkRgUz
+         cXNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8taWKY5LgEYAKZy1/shzdKgVUl6wjUkkU8aHH9O6HjM=;
+        b=QKj9LIZ4BYcik/oXQzETPQR09tsbXsEYu4DQqliI5Qru8rcT7SiiCX6PWv+1ks9Q78
+         Yz7RqlmnXOFJSDAtnUZ62xaJ8ybIuMJbmtEwXcDifF3XgyfPdO5cFPp0DuxFjfzr/lRM
+         0zg0Y4d9amWrbJmQUCUR7+xXdi3E803GJlRzpGbf9hrO4P50HzX3FcaD65aG2rvokRnt
+         GbmmvbeWWNB7vovZRKH1j7f1+kbUGGDirGYyXG2t7xmYH/jD9RFNhAXt97J2zn8AQCdg
+         eTlBPxj1smZjBsHAjQJkFrWXUsYbc2rFHBDNxlB8B1y7gp/cG2xL50/8qqUbumqRKlSK
+         BDPg==
+X-Gm-Message-State: AOAM532bhoF+Ua5ZQ9TLDFlr1yt5cWtknnSE6o0aKLlVU3pkcjCZ5am3
+        fWOzjsY0kNTV/kZQufHzPPmrLY9J4OdIAICrWHX2tA==
+X-Google-Smtp-Source: ABdhPJxLSIPs6OmtcLIIJUwUPBv+pyT0FSHXXjqDKhcwU578B0nnw+iM0scfKQJcUtHiIdMKau7x3aXjDCtKMEaDGjY=
+X-Received: by 2002:a92:dd04:: with SMTP id n4mr1648417ilm.165.1621463704103;
+ Wed, 19 May 2021 15:35:04 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0026.namprd03.prod.outlook.com (2603:10b6:303:8f::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.33 via Frontend Transport; Wed, 19 May 2021 22:32:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bdf630e7-4780-46bb-daee-08d91b15f75e
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2614:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB26146430692CFBFBF7032B6BE22B9@BYAPR10MB2614.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 70X6ryB2No/7CqfO74VwAbhI2P2Du5ZFTzvyrA2+a14NtE+0BXCI0Z9VLe21S5vRBMxuYmykzsLVVYciOTG0aDLI1RyChixC1zb9awflOqR/TU29/9T2BQojoiZapeYKitk4j4XheCoVJdZAakpkQ4L8DLAXkXX7oHPfBdVTQUd6T/xPhjTFzo2cZHBnEuQDzNg8fDLCVQk7/UAvma2V5+ov/UJ/OTJqOsSbVHb2tKLGte6TRgpKuJ+DOarixx/C0o5im4+aOxxKufqEFJ9X/3SQKUOHQQgHGa4pWgIdqRWcF1UwzlGa3bQTcTCySVFLur86NqmSdTXQ9mgnEQOTp2Xo1Hy69TMOtuWiKv7WbGr+Oo38ZW59UYq1cnJ/w1cFT20QD1DREdxjd1lDswxgogmFtmvkhKzqpEj0uhji6TwOblaE2YIQpVllid0N6RJDr7DqVFc9fWYXqO9lFnu+R1uiCFMFBb/guZTfDw/MY6izF+I9/Db9n0o/BxockIe7Mv2+w7cb6Q3Rn+Zyn+YJBx69Z9lqq/T58Y8FBsPONq9/JYvcL3yNmMtSFwUo4bgo2Nsw4kyOObIPz8n8tSVO667nvqArsRHT2av8VJ1pxIB41Rwb3Nd4gavOPPUiBHU2Pd94ZAKulofP6svj9ggOJ+VUQJOwHiuQJuYo+LrdEp3meDiO7ZZZY8QZolKaZ1zd4XQ0O8phkM3Ce/2QstVv9g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(366004)(136003)(346002)(66946007)(66556008)(66476007)(316002)(36756003)(2616005)(956004)(44832011)(8676002)(31686004)(8936002)(26005)(2906002)(16526019)(478600001)(186003)(31696002)(6666004)(86362001)(53546011)(38100700002)(4326008)(110136005)(38350700002)(5660300002)(52116002)(54906003)(83380400001)(16576012)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y245TnVZWThMM2lrUlRCREk3S2tYbVM1dDhiSTFXZnlzNXhyYlQ3OFJ3TmY5?=
- =?utf-8?B?Ym9YYnpOMW43amF4OXFQZkltVitIek9CUVFYTURJamZuSkdvNUl1YWFVNGxM?=
- =?utf-8?B?OTM5SVR1dG9tc0txNFdoN3l6eEhjNWxyaXE5YlB4bU8xaUxpWjJwbks0MVQx?=
- =?utf-8?B?bjg4WlZJb2NaeGhyK3AwYWxUUG5OekNCZ29hMExDTTkvTnVUOHk0bzJrS0kw?=
- =?utf-8?B?Y0ZPSlN5bVhWalN5bkJNdy82bm5xMURKWVlCZmQzZCtwSmhJZkV5TWVkL1Nl?=
- =?utf-8?B?WFBGS0MwY2dPNFN0eHd4VDhYanBKNDBZOU1jdjBtNm1aeDVxVkhFT3dlQlRw?=
- =?utf-8?B?QnZmczBkMlA2cGRMdDdOeTlZMHNqbmpVT3J5Y3JBc05WMk5EdFFnQjdReHR3?=
- =?utf-8?B?Z3BCQ01acHRPaXVaeURkYTFUUjEyMjRBN1JTcXFEcUV6VXFMMzhlMnpLRlBk?=
- =?utf-8?B?ejZuejNKR0JNbEpVcnVWaW1USWZhbHJYbVNsQThuaGxtcW5TT3JHSmRiaE1G?=
- =?utf-8?B?QWJOTGZiQXdaQmJBdE5yU0VhS2VZK2pwbkcyYUNCbWV5SXpSMWlZWnEraHhm?=
- =?utf-8?B?N05HbkRlc3VUTDdBbk8xZVZzKytuajFORWp5L05zYWlwdnl1eUNPSEpZSkdq?=
- =?utf-8?B?azBoQ3g5M01sT2NlV3RTbWswM1o1RVZJYWZlMFQ5NS9Rb054dkhkVmkyUVI3?=
- =?utf-8?B?QS9TT05QdDdDejcxWEpBYzdIeGpudEtqTXpqaFlTVXBhb2tUMmk3K0JxeVl3?=
- =?utf-8?B?clpqbzZESjlVaE5YN0JFS1NkTnhWekxNcFRhWW83bnQwc3BoLzZsM3BqU3Vm?=
- =?utf-8?B?WFNlTTl6bkY1QlcwOHpwOXlFenkxZ1ZpRWZSMjJIa0JZRnZJdW5yOWtWTHJG?=
- =?utf-8?B?WWJzRnJ1VlJBZWIwQyt3Q3U4VERCQ0hOZFl2cDQxL2w4WXd5ckJuVUh2eW4v?=
- =?utf-8?B?UVJ4RHJrNC9aYmFGVzRPYS96TENObVZVUGJCc1RpWmdFVktjU2s2bDlMYXFj?=
- =?utf-8?B?RmdOTjdoL0JXZmR0YUNLRXE3L0NxUGlkUzJJY3ZQWlNSVE9mSThMNm5WRHVZ?=
- =?utf-8?B?OVZrN0ZTc2c2VGdYUTNxRlUyR2hxd2pYOGdTeW02Tk50Nm5Nc3NEdUQ0aHRS?=
- =?utf-8?B?a05GUUlsMncwZmhzVERQWFViUjczZUpLb0JhVXJJVkxBaVcrQkpwQ2sxZFY2?=
- =?utf-8?B?eklwWHhUaXJHOUtGTjUxTXcrMTJyT1JLUXJiVUNaS1RmLzRoK1VWVzh6Nkxm?=
- =?utf-8?B?YlphY3c0YnVEdDdZcUFMaEFJeDE4aFNieUxQd1FxTzdoR0NLMFp2YjhoQ0lY?=
- =?utf-8?B?TldvWDI5WmRCcC9DRDRvNkNheVN4N1hyQmZ2Z1FJRTdic21uSVVLZmNrM3Ux?=
- =?utf-8?B?bVpPeUs2TnlXcVlrZWlGdjFUUkdvOFJwNjQzRms5ZzF1MnJqVkliK0xPOTVu?=
- =?utf-8?B?WDc2V0lXMEpST2pBZEVhVlYxdndlNm9LdkdIRkkyRTUzME44RjlXM3Q2MW5K?=
- =?utf-8?B?U1Uzb3lPWWVpUjdnRDl5YUs5ZndXZWR6R0pXVUVoQ09qRnRxKzdKdWQraXg1?=
- =?utf-8?B?ZERVV3RyRXJORTFFU05hY2IzbDNqQWlPbUpHVUcwbGZsbUhQcWgrWWZkQTRC?=
- =?utf-8?B?N1M5NHVCdkZ2NHNRTThFc0M1ZjlRMFBkN3BxOUc2N1k5WXZPUjQ1eWx2Rm9B?=
- =?utf-8?B?UldoM1phNStLMkdId0t3YURxdG1OVVBhSHY3clUzSHVtakV2MWZGd2krSXZm?=
- =?utf-8?Q?k2rD6/mwQkuvhHoELjTXmsALqYmxS27+SVRZ8c3?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdf630e7-4780-46bb-daee-08d91b15f75e
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 22:32:21.0447
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VtfvdeLpEfNLy+NpReEkrWa7zV3c7oZ40hshimWNgO2kFmV1b1TD7UyMnJPuawcQY7T8Zy1u+vQM0+n4EnOeOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2614
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9989 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190137
-X-Proofpoint-GUID: nQRzL5QkRwgTrfiM6lbjzQ-WB1UJfrKo
-X-Proofpoint-ORIG-GUID: nQRzL5QkRwgTrfiM6lbjzQ-WB1UJfrKo
+References: <20210519200339.829146-1-axelrasmussen@google.com>
+ <20210519200339.829146-10-axelrasmussen@google.com> <CANgfPd-O5aEvK74DSxkbJaTBv5gResLgvNSjpuzP+PJwifNmfQ@mail.gmail.com>
+In-Reply-To: <CANgfPd-O5aEvK74DSxkbJaTBv5gResLgvNSjpuzP+PJwifNmfQ@mail.gmail.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 19 May 2021 15:34:28 -0700
+Message-ID: <CAJHvVcgiRJrneUDbExckXgLmp6WaUmpXgeuUtMEWEBq4qtb9ZA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] KVM: selftests: allow using UFFD minor faults
+ for demand paging
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 4:12 PM, Naoya Horiguchi wrote:
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> 
-> When hugetlb page fault (under overcommitting situation) and
-> memory_failure() race, VM_BUG_ON_PAGE() is triggered by the following race:
-> 
->     CPU0:                           CPU1:
-> 
->                                     gather_surplus_pages()
->                                       page = alloc_surplus_huge_page()
->     memory_failure_hugetlb()
->       get_hwpoison_page(page)
->         __get_hwpoison_page(page)
->           get_page_unless_zero(page)
->                                       zero = put_page_testzero(page)
->                                       VM_BUG_ON_PAGE(!zero, page)
->                                       enqueue_huge_page(h, page)
->       put_page(page)
-> 
-> __get_hwpoison_page() only checks the page refcount before taking an
-> additional one for memory error handling, which is wrong because there's
-> a time window where compound pages have non-zero refcount during
-> initialization.  So make __get_hwpoison_page() check page status a bit
-> more for hugetlb pages.
-> 
-> Fixes: ead07f6a867b ("mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling")
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Reported-by: Muchun Song <songmuchun@bytedance.com>
-> Cc: stable@vger.kernel.org # 5.12+
-> ---
->  include/linux/hugetlb.h |  6 ++++++
->  mm/hugetlb.c            | 15 +++++++++++++++
->  mm/memory-failure.c     |  8 +++++++-
->  3 files changed, 28 insertions(+), 1 deletion(-)
-> 
-> diff --git v5.13-rc2/include/linux/hugetlb.h v5.13-rc2_patched/include/linux/hugetlb.h
-> index b92f25ccef58..790ae618548d 100644
-> --- v5.13-rc2/include/linux/hugetlb.h
-> +++ v5.13-rc2_patched/include/linux/hugetlb.h
-> @@ -149,6 +149,7 @@ bool hugetlb_reserve_pages(struct inode *inode, long from, long to,
->  long hugetlb_unreserve_pages(struct inode *inode, long start, long end,
->  						long freed);
->  bool isolate_huge_page(struct page *page, struct list_head *list);
-> +int get_hwpoison_huge_page(struct page *page, bool *hugetlb);
->  void putback_active_hugepage(struct page *page);
->  void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason);
->  void free_huge_page(struct page *page);
-> @@ -339,6 +340,11 @@ static inline bool isolate_huge_page(struct page *page, struct list_head *list)
->  	return false;
->  }
->  
-> +static inline int get_hwpoison_huge_page(struct page *page, bool *hugetlb)
-> +{
-> +	return 0;
-> +}
-> +
->  static inline void putback_active_hugepage(struct page *page)
->  {
->  }
-> diff --git v5.13-rc2/mm/hugetlb.c v5.13-rc2_patched/mm/hugetlb.c
-> index 95918f410c0f..f138bae3e302 100644
-> --- v5.13-rc2/mm/hugetlb.c
-> +++ v5.13-rc2_patched/mm/hugetlb.c
-> @@ -5847,6 +5847,21 @@ bool isolate_huge_page(struct page *page, struct list_head *list)
->  	return ret;
->  }
->  
-> +int get_hwpoison_huge_page(struct page *page, bool *hugetlb)
-> +{
-> +	int ret = 0;
-> +
-> +	*hugetlb = false;
-> +	spin_lock_irq(&hugetlb_lock);
-> +	if (PageHeadHuge(page)) {
-> +		*hugetlb = true;
-> +		if (HPageFreed(page) || HPageMigratable(page))
-> +			ret = get_page_unless_zero(page);
-> +	}
-> +	spin_unlock_irq(&hugetlb_lock);
-> +	return ret;
-> +}
-> +
->  void putback_active_hugepage(struct page *page)
->  {
->  	spin_lock_irq(&hugetlb_lock);
-> diff --git v5.13-rc2/mm/memory-failure.c v5.13-rc2_patched/mm/memory-failure.c
-> index 85ad98c00fd9..353c6177e489 100644
-> --- v5.13-rc2/mm/memory-failure.c
-> +++ v5.13-rc2_patched/mm/memory-failure.c
-> @@ -959,8 +959,14 @@ static int page_action(struct page_state *ps, struct page *p,
->  static int __get_hwpoison_page(struct page *page)
->  {
->  	struct page *head = compound_head(page);
-> +	int ret = 0;
-> +	bool hugetlb = false;
-> +
-> +	ret = get_hwpoison_huge_page(head, &hugetlb);
-> +	if (hugetlb)
-> +		return ret;
->  
+On Wed, May 19, 2021 at 3:21 PM Ben Gardon <bgardon@google.com> wrote:
+>
+> On Wed, May 19, 2021 at 1:04 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+> >
+> > UFFD handling of MINOR faults is a new feature whose use case is to
+> > speed up demand paging (compared to MISSING faults). So, it's
+> > interesting to let this selftest exercise this new mode.
+> >
+> > Modify the demand paging test to have the option of using UFFD minor
+> > faults, as opposed to missing faults. Now, when turning on userfaultfd
+> > with '-u', the desired mode has to be specified ("MISSING" or "MINOR").
+> >
+> > If we're in minor mode, before registering, prefault via the *alias*.
+> > This way, the guest will trigger minor faults, instead of missing
+> > faults, and we can UFFDIO_CONTINUE to resolve them.
+> >
+> > Modify the page fault handler function to use the right ioctl depending
+> > on the mode we're running in. In MINOR mode, use UFFDIO_CONTINUE.
+> >
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > ---
+> >  .../selftests/kvm/demand_paging_test.c        | 112 ++++++++++++------
+> >  1 file changed, 79 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> > index 01890a7b0155..df7190261923 100644
+> > --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> > +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> > @@ -74,33 +74,48 @@ static void *vcpu_worker(void *data)
+> >         return NULL;
+> >  }
+> >
+> > -static int handle_uffd_page_request(int uffd, uint64_t addr)
+> > +static int handle_uffd_page_request(int uffd_mode, int uffd, uint64_t addr)
+> >  {
+> > -       pid_t tid;
+> > +       pid_t tid = syscall(__NR_gettid);
+> >         struct timespec start;
+> >         struct timespec ts_diff;
+> > -       struct uffdio_copy copy;
+> >         int r;
+> >
+> > -       tid = syscall(__NR_gettid);
+> > +       clock_gettime(CLOCK_MONOTONIC, &start);
+> >
+> > -       copy.src = (uint64_t)guest_data_prototype;
+> > -       copy.dst = addr;
+> > -       copy.len = demand_paging_size;
+> > -       copy.mode = 0;
+> > +       if (uffd_mode == UFFDIO_REGISTER_MODE_MISSING) {
+> > +               struct uffdio_copy copy;
+> >
+> > -       clock_gettime(CLOCK_MONOTONIC, &start);
+> > +               copy.src = (uint64_t)guest_data_prototype;
+> > +               copy.dst = addr;
+> > +               copy.len = demand_paging_size;
+> > +               copy.mode = 0;
+> > +
+> > +               r = ioctl(uffd, UFFDIO_COPY, &copy);
+> > +               if (r == -1) {
+> > +                       pr_info("Failed UFFDIO_COPY in 0x%lx from thread %d with errno: %d\n",
+> > +                               addr, tid, errno);
+> > +                       return r;
+> > +               }
+> > +       } else if (uffd_mode == UFFDIO_REGISTER_MODE_MINOR) {
+> > +               struct uffdio_continue cont = {0};
+> > +
+> > +               cont.range.start = addr;
+> > +               cont.range.len = demand_paging_size;
+> >
+> > -       r = ioctl(uffd, UFFDIO_COPY, &copy);
+> > -       if (r == -1) {
+> > -               pr_info("Failed Paged in 0x%lx from thread %d with errno: %d\n",
+> > -                       addr, tid, errno);
+> > -               return r;
+> > +               r = ioctl(uffd, UFFDIO_CONTINUE, &cont);
+> > +               if (r == -1) {
+> > +                       pr_info("Failed UFFDIO_CONTINUE in 0x%lx from thread %d with errno: %d\n",
+> > +                               addr, tid, errno);
+> > +                       return r;
+> > +               }
+> > +       } else {
+> > +               TEST_FAIL("Invalid uffd mode %d", uffd_mode);
+> >         }
+> >
+> >         ts_diff = timespec_elapsed(start);
+> >
+> > -       PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
+> > +       PER_PAGE_DEBUG("UFFD page-in %d \t%ld ns\n", tid,
+> >                        timespec_to_ns(ts_diff));
+> >         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
+> >                        demand_paging_size, addr, tid);
+> > @@ -111,6 +126,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+> >  bool quit_uffd_thread;
+> >
+> >  struct uffd_handler_args {
+> > +       int uffd_mode;
+> >         int uffd;
+> >         int pipefd;
+> >         useconds_t delay;
+> > @@ -187,7 +203,7 @@ static void *uffd_handler_thread_fn(void *arg)
+> >                 if (delay)
+> >                         usleep(delay);
+> >                 addr =  msg.arg.pagefault.address;
+> > -               r = handle_uffd_page_request(uffd, addr);
+> > +               r = handle_uffd_page_request(uffd_args->uffd_mode, uffd, addr);
+> >                 if (r < 0)
+> >                         return NULL;
+> >                 pages++;
+> > @@ -203,13 +219,32 @@ static void *uffd_handler_thread_fn(void *arg)
+> >
+> >  static void setup_demand_paging(struct kvm_vm *vm,
+> >                                 pthread_t *uffd_handler_thread, int pipefd,
+> > -                               useconds_t uffd_delay,
+> > +                               int uffd_mode, useconds_t uffd_delay,
+> >                                 struct uffd_handler_args *uffd_args,
+> > -                               void *hva, uint64_t len)
+> > +                               void *hva, void *alias, uint64_t len)
+> >  {
+> > +       bool is_minor = (uffd_mode == UFFDIO_REGISTER_MODE_MINOR);
+> >         int uffd;
+> >         struct uffdio_api uffdio_api;
+> >         struct uffdio_register uffdio_register;
+> > +       uint64_t expected_ioctls = ((uint64_t) 1) << _UFFDIO_COPY;
+> > +
+> > +       PER_PAGE_DEBUG("Userfaultfd %s mode, faults resolved with %s\n",
+> > +                      is_minor ? "MINOR" : "MISSING",
+> > +                      is_minor ? "UFFDIO_CONINUE" : "UFFDIO_COPY");
+> > +
+> > +       /* In order to get minor faults, prefault via the alias. */
+> > +       if (is_minor) {
+> > +               size_t p;
+> > +
+> > +               expected_ioctls = ((uint64_t) 1) << _UFFDIO_CONTINUE;
+> > +
+> > +               TEST_ASSERT(alias != NULL, "Alias required for minor faults");
+> > +               for (p = 0; p < (len / demand_paging_size); ++p) {
+> > +                       memcpy(alias + (p * demand_paging_size),
+> > +                              guest_data_prototype, demand_paging_size);
+> > +               }
+> > +       }
+>
+> Would it be worth timing this operation? I think we'd need to know how
+> long we spent prefaulting the memory to really be able to compare UDDF
+> modes using this test.
 
-Hello Naoya,
+It's easy to time it and print out a value, so I'm happy to add it.
 
-Thanks for your continued efforts.  However, I believe the race still
-exists.  Unless I am mistaken, it is possible that page is in the hugetlb
-allocation patch and racing with __get_hwpoison_page() as follows:
+As for how useful it is, I'm not so sure. In general the way I think
+of it is, the prefaulting would happen during the precopy phase of
+live migration. During this phase, the VM is still running on the
+source machine, so the VM owner doesn't notice any performance
+degradation or slowness in this phase.
 
-    CPU0:                           CPU1:
-
-                                    gather_surplus_pages()
-                                      page = alloc_surplus_huge_page()
-				      	page = alloc_fresh_huge_page()
-				      	  page = alloc_buddy_huge_page()
-    memory_failure_hugetlb()
-      get_hwpoison_page(page)
-        __get_hwpoison_page(page)
-	  get_hwpoison_huge_page()
-	    /* Note that PageHuge()
-	       is false, so hugetlb
-	       not set */
-	  PageTransHuge(head) false
-					  prep_new_huge_page(page)
-					  /* Now PageHuge() becomes true */
-          get_page_unless_zero(page)
-
-I am not sure if it is possible to handle this race in the memory error
-code.  I can not think of a way to avoid potentially incrementing the
-ref count on a hugetlb page as it is being created.  There is nothing
-synchronizing this in the hugetlb code.
-
-When Muchun first proposed a fix to the race, the idea was to catch the
-race in the hugetlb code.  Michal suggested that the memory error code
-be more careful in modifying ref counts.  I would wait a bit to see if
-someone has a good idea how this can be done.  We 'may' need to revisit
-the approach suggested by Muchun.
--- 
-Mike Kravetz
+>
+> >
+> >         uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
+> >         TEST_ASSERT(uffd >= 0, "uffd creation failed, errno: %d", errno);
+> > @@ -222,12 +257,13 @@ static void setup_demand_paging(struct kvm_vm *vm,
+> >
+> >         uffdio_register.range.start = (uint64_t)hva;
+> >         uffdio_register.range.len = len;
+> > -       uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
+> > +       uffdio_register.mode = uffd_mode;
+> >         TEST_ASSERT(ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) != -1,
+> >                     "ioctl UFFDIO_REGISTER failed");
+> > -       TEST_ASSERT((uffdio_register.ioctls & UFFD_API_RANGE_IOCTLS) ==
+> > -                   UFFD_API_RANGE_IOCTLS, "unexpected userfaultfd ioctl set");
+> > +       TEST_ASSERT((uffdio_register.ioctls & expected_ioctls) ==
+> > +                   expected_ioctls, "missing userfaultfd ioctls");
+> >
+> > +       uffd_args->uffd_mode = uffd_mode;
+> >         uffd_args->uffd = uffd;
+> >         uffd_args->pipefd = pipefd;
+> >         uffd_args->delay = uffd_delay;
+> > @@ -239,7 +275,7 @@ static void setup_demand_paging(struct kvm_vm *vm,
+> >  }
+> >
+> >  struct test_params {
+> > -       bool use_uffd;
+> > +       int uffd_mode;
+> >         useconds_t uffd_delay;
+> >         enum vm_mem_backing_src_type src_type;
+> >         bool partition_vcpu_memory_access;
+> > @@ -276,7 +312,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >         perf_test_setup_vcpus(vm, nr_vcpus, guest_percpu_mem_size,
+> >                               p->partition_vcpu_memory_access);
+> >
+> > -       if (p->use_uffd) {
+> > +       if (p->uffd_mode) {
+> >                 uffd_handler_threads =
+> >                         malloc(nr_vcpus * sizeof(*uffd_handler_threads));
+> >                 TEST_ASSERT(uffd_handler_threads, "Memory allocation failed");
+> > @@ -290,6 +326,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >                 for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> >                         vm_paddr_t vcpu_gpa;
+> >                         void *vcpu_hva;
+> > +                       void *vcpu_alias;
+> >                         uint64_t vcpu_mem_size;
+> >
+> >
+> > @@ -304,8 +341,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >                         PER_VCPU_DEBUG("Added VCPU %d with test mem gpa [%lx, %lx)\n",
+> >                                        vcpu_id, vcpu_gpa, vcpu_gpa + vcpu_mem_size);
+> >
+> > -                       /* Cache the HVA pointer of the region */
+> > +                       /* Cache the host addresses of the region */
+> >                         vcpu_hva = addr_gpa2hva(vm, vcpu_gpa);
+> > +                       vcpu_alias = addr_gpa2alias(vm, vcpu_gpa);
+> >
+> >                         /*
+> >                          * Set up user fault fd to handle demand paging
+> > @@ -316,8 +354,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >                         TEST_ASSERT(!r, "Failed to set up pipefd");
+> >
+> >                         setup_demand_paging(vm, &uffd_handler_threads[vcpu_id],
+> > -                                           pipefds[vcpu_id * 2], p->uffd_delay,
+> > -                                           &uffd_args[vcpu_id], vcpu_hva,
+> > +                                           pipefds[vcpu_id * 2], p->uffd_mode,
+> > +                                           p->uffd_delay, &uffd_args[vcpu_id],
+> > +                                           vcpu_hva, vcpu_alias,
+> >                                             vcpu_mem_size);
+> >                 }
+> >         }
+> > @@ -346,7 +385,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >
+> >         pr_info("All vCPU threads joined\n");
+> >
+> > -       if (p->use_uffd) {
+> > +       if (p->uffd_mode) {
+> >                 char c;
+> >
+> >                 /* Tell the user fault fd handler threads to quit */
+> > @@ -368,7 +407,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >
+> >         free(guest_data_prototype);
+> >         free(vcpu_threads);
+> > -       if (p->use_uffd) {
+> > +       if (p->uffd_mode) {
+> >                 free(uffd_handler_threads);
+> >                 free(uffd_args);
+> >                 free(pipefds);
+> > @@ -378,11 +417,11 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >  static void help(char *name)
+> >  {
+> >         puts("");
+> > -       printf("usage: %s [-h] [-m mode] [-u] [-d uffd_delay_usec]\n"
+> > +       printf("usage: %s [-h] [-m mode] [-u mode] [-d uffd_delay_usec]\n"
+>
+> NIT: maybe use uffd_mode or some word other than mode here to
+> disambiguate with -m
+>
+> >                "          [-b memory] [-t type] [-v vcpus] [-o]\n", name);
+> >         guest_modes_help();
+> > -       printf(" -u: use User Fault FD to handle vCPU page\n"
+> > -              "     faults.\n");
+> > +       printf(" -u: use userfaultfd to handle vCPU page faults. Mode is a\n"
+> > +              "     UFFD registration mode: 'MISSING' or 'MINOR'.\n");
+> >         printf(" -d: add a delay in usec to the User Fault\n"
+> >                "     FD handler to simulate demand paging\n"
+> >                "     overheads. Ignored without -u.\n");
+> > @@ -409,13 +448,17 @@ int main(int argc, char *argv[])
+> >
+> >         guest_modes_append_default();
+> >
+> > -       while ((opt = getopt(argc, argv, "hm:ud:b:t:v:o")) != -1) {
+> > +       while ((opt = getopt(argc, argv, "hm:u:d:b:t:v:o")) != -1) {
+> >                 switch (opt) {
+> >                 case 'm':
+> >                         guest_modes_cmdline(optarg);
+> >                         break;
+> >                 case 'u':
+> > -                       p.use_uffd = true;
+> > +                       if (!strcmp("MISSING", optarg))
+> > +                               p.uffd_mode = UFFDIO_REGISTER_MODE_MISSING;
+> > +                       else if (!strcmp("MINOR", optarg))
+> > +                               p.uffd_mode = UFFDIO_REGISTER_MODE_MINOR;
+> > +                       TEST_ASSERT(p.uffd_mode, "UFFD mode must be 'MISSING' or 'MINOR'.");
+> >                         break;
+> >                 case 'd':
+> >                         p.uffd_delay = strtoul(optarg, NULL, 0);
+> > @@ -442,6 +485,9 @@ int main(int argc, char *argv[])
+> >                 }
+> >         }
+> >
+> > +       TEST_ASSERT(p.uffd_mode != UFFDIO_REGISTER_MODE_MINOR || p.src_type == VM_MEM_SRC_SHMEM,
+> > +                   "userfaultfd MINOR mode requires shared memory; pick a different -t");
+> > +
+> >         for_each_guest_mode(run_test, &p);
+> >
+> >         return 0;
+> > --
+> > 2.31.1.751.gd2f1c929bd-goog
+> >
