@@ -2,145 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2293388FB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E73A388FB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346716AbhESN73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:59:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231627AbhESN72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D15586100C;
-        Wed, 19 May 2021 13:58:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621432687;
-        bh=1VkCYNL0c12Ug0LXnzJjOzCC3hjW/+2zr3MkeEO+0n4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SMDZeq2XvmrcXuBcr7sl4S4JEZSUBlQkZcFB2xQViTrjZjhCIDg0/Ffa2IMKrgmaW
-         m/b3eNYlCd3m8nvzOaEY5fyWv1IXGkJSq9tyd0ckJ/pn2qTlscaa8jermQrDLwn5Me
-         3fsUl7684B5GSf9aWhkkog0Ibsh8fcFX3y4B1BgE=
-Date:   Wed, 19 May 2021 15:58:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Anup Patel <anup@brainfault.org>, Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-doc@vger.kernel.org,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
-Message-ID: <YKUZbb6OK+UYAq+t@kroah.com>
-References: <20210519033553.1110536-1-anup.patel@wdc.com>
- <YKSa48cejI1Lax+/@kroah.com>
- <CAAhSdy18qySXbUdrEsUe-KtbtuEoYrys0TcmsV2UkEA2=7UQzw@mail.gmail.com>
- <YKSgcn5gxE/4u2bT@kroah.com>
- <YKTsyyVYsHVMQC+G@kroah.com>
- <d7d5ad76-aec3-3297-0fac-a9da9b0c3663@redhat.com>
- <YKUDWgZVj82/KiKw@kroah.com>
- <daa30135-8757-8d33-a92e-8db4207168ff@redhat.com>
+        id S1346740AbhESOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:01:41 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:37055 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231627AbhESOBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 10:01:35 -0400
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id D83391ABB;
+        Wed, 19 May 2021 10:00:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Wed, 19 May 2021 10:00:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=B
+        nbndRIlPAC3lNeO9HvB61BMifoaS36zuFiF7bSK8+M=; b=SYuHWtQQIXUFRy9jc
+        eIUVW/RWqSETHBJpPO4r+fILVJQS6oiPyXpBBX6kxmDUplHeLRsf3uHf6kw3wOLy
+        K0Q100BPJoIEtBES3ax44LBi4lE42QUeuCxkgYVipYZ+BFOakFSgwIX0G1YJbysF
+        9FT4A8jVM5oqyvNjYX5Tga53ucFL/3/Zf4dc+G3QwCyg4okcWTNfu/Ejasqx0s9a
+        0gMLhGfBUTtVePHH6aaD1n/Z5AlMRE5pXm81tP1GkqdSTTztYwI+BmE/lbxRyqam
+        Xn7P2oFj4xc20VPtSfWV8fPaH9H+WXFLpFTpFoj57LzfBiCF1lBM18M2mobeWa3L
+        Sg5gQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=BnbndRIlPAC3lNeO9HvB61BMifoaS36zuFiF7bSK8
+        +M=; b=VsnZbaYLVkTd+xhU+lKOFvaamQ8+9Xj1x5glGITkpg5n8oCZn5g2x7giz
+        Z6VZsrfITcJSF3nd+znmRYzTKnBUE4mhk8QBz9aevWhZ6928/ksjsJ02lw0Wy5OM
+        250yV/rvgClyJ37V0brRBT61L6LR0hmpFmV/IGqcPrEi4B61XuXethlZIQaOJzCE
+        oXryvP3YaO2qJda0+H+EQoGD08oUJwxiTy/0omyWCpyVfvCmBWdVmFZ7bfGEjJr8
+        yO4tfoEQRMgjB/9DS/z8pml1aoMyid7ZElwoaFFmQGF1MSgBIfZbtysh1e/wV07o
+        3r60NbzeQyXlFuaR7BXOo0+d3YCtQ==
+X-ME-Sender: <xms:7RmlYJovhPjvq_B4bZ5QZ80rvuMt0QzrA_xvTjzxDhcl2H1STJx3UQ>
+    <xme:7RmlYLq8-kisLsC3VO1lY57H9KYhiJtK-2ReB1hj6j_7Xtui0Ea_lfryIZ_gJjl_t
+    mfVLUJqdhdsGtBQnfw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeiledgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefuvfhfhffkffgfgggjtgfgsehtke
+    ertddtfeftnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
+    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludeitddvkeffge
+    fgueekjeegfeefteelgffhkeffueetieejgeehhfeuffdvnecukfhppeefledrudeggedr
+    geehrddvleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:7RmlYGPPKZeiTr_lJoq2-4DHnr1bdHXJBpkgSFeEh9ZP11VWvhzBfQ>
+    <xmx:7RmlYE6rRzulUAtxJlVBEQ1_9CUBozV_qOD3DM6z4YLERBc39dXGwg>
+    <xmx:7RmlYI7Il21e3jf5MMY3bWBMtzLexT639F7-uAYRCcad0ajPcQM1GQ>
+    <xmx:7hmlYIEZclFlns8CKTfoFuQXFNrw-ge2tXJd2WC5f1JZmzn_ngL7RQ>
+Received: from [192.168.143.245] (unknown [39.144.45.29])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Wed, 19 May 2021 10:00:11 -0400 (EDT)
+Subject: Re: [PATCH] arch/mips/boot/compressed/string.c: Fix build warnings
+To:     zhaoxiao <zhaoxiao@uniontech.com>, tsbogend@alpha.franken.de
+Cc:     paul@crapouillou.net, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210519084405.27364-1-zhaoxiao@uniontech.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <8d01b52e-6687-a624-6a76-97b4b71d999e@flygoat.com>
+Date:   Wed, 19 May 2021 22:00:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <daa30135-8757-8d33-a92e-8db4207168ff@redhat.com>
+In-Reply-To: <20210519084405.27364-1-zhaoxiao@uniontech.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 03:29:24PM +0200, Paolo Bonzini wrote:
-> On 19/05/21 14:23, Greg Kroah-Hartman wrote:
-> > > - the code could be removed if there's no progress on either changing the
-> > > RISC-V acceptance policy or ratifying the spec
-> > 
-> > I really do not understand the issue here, why can this just not be
-> > merged normally?
-> 
-> Because the RISC-V people only want to merge code for "frozen" or "ratified"
-> processor extensions, and the RISC-V foundation is dragging their feet in
-> ratifying the hypervisor extension.
-> 
-> It's totally a self-inflicted pain on part of the RISC-V maintainers; see
-> Documentation/riscv/patch-acceptance.rst:
-> 
->   We'll only accept patches for new modules or extensions if the
->   specifications for those modules or extensions are listed as being
->   "Frozen" or "Ratified" by the RISC-V Foundation.  (Developers may, of
->   course, maintain their own Linux kernel trees that contain code for
->   any draft extensions that they wish.)
-> 
-> (Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/riscv/patch-acceptance.rst)
 
-Lovely, and how is that going to work for code that lives outside of the
-riscv "arch" layer?  Like all drivers?
 
-And what exactly is "not ratified" that these patches take advantage of?
-If there is hardware out there with these features, well, Linux needs to
-run on it, so we need to support that.  No external committee rules
-should be relevant here.
+ÔÚ 2021/5/19 16:44, zhaoxiao Ð´µÀ:
+> Fixes the following W=1 kernel build warning(s):
+> arch/mips/boot/compressed/string.c:11:7: warning: no previous prototype for 'memcpy' [-Wmissing-prototypes]
+>   void *memcpy(void *dest, const void *src, size_t n)
+>         ^~~~~~
+> arch/mips/boot/compressed/string.c:22:7: warning: no previous prototype for 'memset' [-Wmissing-prototypes]
+>   void *memset(void *s, int c, size_t n)
+>         ^~~~~~
+> arch/mips/boot/compressed/string.c:32:15: warning: no previous prototype for 'memmove' [-Wmissing-prototypes]
+>   void * __weak memmove(void *dest, const void *src, size_t n)
+Hi Xiao,
 
-Now if this is for hardware that is not "real", then that's a different
-story.  In that case, who cares, no one can use it, so why not take it?
+Are you sure you know what you're doing?
 
-So what exactly is this trying to "protect" Linux from?
+They're supposed to be called by external reference in vmlinuz.
+Marking them static makes no sense.
 
-> > All staging drivers need a TODO list that shows what needs to be done in
-> > order to get it out of staging.  All I can tell so far is that the riscv
-> > maintainers do not want to take this for "unknown reasons" so let's dump
-> > it over here for now where we don't have to see it.
-> > 
-> > And that's not good for developers or users, so perhaps the riscv rules
-> > are not very good?
-> 
-> I agree wholeheartedly.
-> 
-> I have heard contrasting opinions on conflict of interest where the
-> employers of the maintainers benefit from slowing down the integration of
-> code in Linus's tree.  I find these allegations believable, but even if that
-> weren't the case, the policy is (to put it kindly) showing its limits.
+Thanks.
 
-Slowing down code merges is horrible, again, if there's hardware out
-there, and someone sends code to support it, and wants to maintain it,
-then we should not be rejecting it.
+- Jiaxun
+>                 ^~~~~~~
+>
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> ---
+>   arch/mips/boot/compressed/string.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
+> index 0b593b709228..d28996509f91 100644
+> --- a/arch/mips/boot/compressed/string.c
+> +++ b/arch/mips/boot/compressed/string.c
+> @@ -8,7 +8,7 @@
+>   #include <linux/compiler_attributes.h>
+>   #include <linux/types.h>
+>   
+> -void *memcpy(void *dest, const void *src, size_t n)
+> +static void *memcpy(void *dest, const void *src, size_t n)
+>   {
+>   	int i;
+>   	const char *s = src;
+> @@ -19,7 +19,7 @@ void *memcpy(void *dest, const void *src, size_t n)
+>   	return dest;
+>   }
+>   
+> -void *memset(void *s, int c, size_t n)
+> +static void *memset(void *s, int c, size_t n)
+>   {
+>   	int i;
+>   	char *ss = s;
+> @@ -29,7 +29,7 @@ void *memset(void *s, int c, size_t n)
+>   	return s;
+>   }
+>   
+> -void * __weak memmove(void *dest, const void *src, size_t n)
+> +static void * __weak memmove(void *dest, const void *src, size_t n)
+>   {
+>   	unsigned int i;
+>   	const char *s = src;
 
-Otherwise we are not doing our job as an operating system kernel, our
-role is to make hardware work.  We don't get to just ignore code because
-we don't like the hardware (oh if only we could!), if a user wants to
-use it, our role is to handle that.
-
-> > > Of course there should have been a TODO file explaining the situation. But
-> > > if you think this is not the right place, I totally understand; if my
-> > > opinion had any weight in this, I would just place it in arch/riscv/kvm.
-> > > 
-> > > The RISC-V acceptance policy as is just doesn't work, and the fact that
-> > > people are trying to work around it is proving it.  There are many ways to
-> > > improve it:
-> > 
-> > What is this magical acceptance policy that is preventing working code
-> > from being merged?  And why is it suddenly the rest of the kernel
-> > developer's problems because of this?
-> 
-> It is my problem because I am trying to help Anup merging some perfectly
-> good KVM code; when a new KVM port comes up, I coordinate merging the first
-> arch/*/kvm bits with the arch/ maintainers and from that point on that
-> directory becomes "mine" (or my submaintainers').
-
-Agreed, but the riscv maintainers should not be forcing this "problem"
-onto all of us, like it seems is starting to happen :(
-
-Ok, so, Paul, Palmer, and Albert, what do we do here?  Why can't we take
-working code like this into the kernel if someone is willing to support
-and maintain it over time?
-
-thanks,
-
-greg k-h
