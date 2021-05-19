@@ -2,135 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B927A389313
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24431389318
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354990AbhESP5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        id S1355004AbhESP6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239586AbhESP5k (ORCPT
+        with ESMTP id S1355003AbhESP6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:57:40 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C59C06175F;
-        Wed, 19 May 2021 08:56:20 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljOXW-00GH8f-H0; Wed, 19 May 2021 15:55:18 +0000
-Date:   Wed, 19 May 2021 15:55:18 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 12/14] d_path: prepend_path(): lift the inner loop into a
- new helper
-Message-ID: <YKU05k0P7YjH/g6E@zeniv-ca.linux.org.uk>
-References: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
- <20210519004901.3829541-1-viro@zeniv.linux.org.uk>
- <20210519004901.3829541-12-viro@zeniv.linux.org.uk>
- <YKTHKNsX/cvYwbWj@smile.fi.intel.com>
+        Wed, 19 May 2021 11:58:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577D7C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=GCiO5jtPmcXxtuD2cYz4lG/3Yt3JBlECnMVfp0AvOxQ=; b=RAptUpFt5PkVRnPKRgjbxl9670
+        5WPlJcxK0CFHlUd7Z+x2UZeVDeCeXQxPUyJj+WPPAFZkU5UAv+8NrGBdwPcft52DICFAmwXACMFNs
+        ZLzimhPgjudhWjPWLzf+0N+D6YsKw8lFG9Js43cvA3Osh97QRPOt8hzV6E6Gqu0F8K9QE0IO759Kf
+        AdNJHdPPtDmLA/mOyIhXzqWVrPlZaLFc+eewZ87vS5NRb2Vhr0UifYAjKULtIjLVu4Pkr4Yh1o2cl
+        oogv7P4f1wVw2aRewWVZ1H3aAPehsezMVcJXH/dpGBLIXcrkSpjc8ZZzFNwVpabKx17STrUzJy98j
+        KKJTJ7hg==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljOYk-00Fbf9-Fy; Wed, 19 May 2021 15:56:34 +0000
+Subject: Re: [PATCH 1/3] gpu: drm: replace occurrences of invalid character
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        David Airlie <airlied@linux.ie>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Michal Wajdeczko <michal.wajdeczko@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <e606930c73029f16673849c57acac061dd923866.1621412009.git.mchehab+huawei@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f0589aff-a776-0715-e421-0d9a8cf2cc25@infradead.org>
+Date:   Wed, 19 May 2021 08:56:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKTHKNsX/cvYwbWj@smile.fi.intel.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <e606930c73029f16673849c57acac061dd923866.1621412009.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:07:04AM +0300, Andy Shevchenko wrote:
-> On Wed, May 19, 2021 at 12:48:59AM +0000, Al Viro wrote:
-> > ... and leave the rename_lock/mount_lock handling in prepend_path()
-> > itself
+On 5/19/21 1:15 AM, Mauro Carvalho Chehab wrote:
+> There are some places at drm that ended receiving a
+> REPLACEMENT CHARACTER U+fffd ('�'), probably because of
+> some bad charset conversion.
 > 
-> ...
+> Fix them by using what it seems	to be the proper
+> character.
 > 
-> > +			if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
-> > +				return 1;	// absolute root
-> > +			else
-> > +				return 2;	// detached or not attached yet
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  drivers/gpu/drm/amd/include/atombios.h       | 10 +++++-----
+>  drivers/gpu/drm/i915/gt/intel_gpu_commands.h |  2 +-
+>  drivers/gpu/drm/i915/i915_gpu_error.h        |  2 +-
+>  drivers/gpu/drm/r128/r128_drv.h              |  2 +-
+>  4 files changed, 8 insertions(+), 8 deletions(-)
 > 
-> Would it be slightly better to read
-> 
-> 			if (IS_ERR_OR_NULL(mnt_ns) || is_anon_ns(mnt_ns))
-> 				return 2;	// detached or not attached yet
-> 			else
-> 				return 1;	// absolute root
-> 
-> ?
-> 
-> Oh, I have noticed that it's in the original piece of code (perhaps separate
-> change if we ever need it?).
 
-The real readability problem here is not the negations.  There are 4 possible
-states for vfsmount encoded via ->mnt_ns:
-	1) not attached to any tree, kept alive by refcount alone.
-->mnt_ns == NULL.
-	2) long-term unattached.  Not a part of any mount tree, but we have
-a known holder for it and until that's gone (making ->mnt_ns NULL), refcount
-is guaranteed to remain positive.  pipe_mnt is an example of such.
-->mnt_ns == MNT_NS_INTERNAL, which is encoded as ERR_PTR(-1), thus the use of
-IS_ERR_OR_NULL here (something I'd normally taken out and shot - use of that
-primitive is a sign of lousy API or of a cargo-culted "defensive programming").
-	3) part of a temporary mount tree; not in anyone's namespace.
-->mnt_ns points the tree in question, ->mnt_ns->seq == 0.
-	4) belongs to someone's namespace.  ->mnt_ns points to that,
-->mnt_ns->seq != 0.  That's what we are looking for here.
+-- 
+~Randy
 
-	It's kludges all the way down ;-/  Note that temporary tree can't become
-a normal one or vice versa - mounts can get transferred to normal namespace,
-but they will see ->mnt_ns reassigned to that.  IOW, ->mnt_ns->seq can't
-get changed without a change to ->mnt_ns.  I suspect that the right way
-to handle that would be to have that state stored as explicit flags.
-
-	All mounts are created (and destroyed) in state (1); state changes:
-commit_tree() - (1) or (3) to (3) or (4)
-umount_tree() - (3) or (4) to (1)
-clone_private_mount() - (1) to (2)
-open_detached_copy() - (1) to (3)
-copy_mnt_ns() - (1) to (4)
-mount_subtree() - (1) to (3)
-fsmount() - (1) to (3)
-init_mount_tree() - (1) to (4)
-kern_mount() - (1) to (2)
-kern_unmount{,_array}() - (2) to (1)
-
-	commit_tree() has a pathological call chain that has it
-attach stuff to temporary tree; that's basically automount by lookup in
-temporary namespace.  It can distinguish it from the usual (adding to
-normal namespace) by looking at the state of mountpoint we are attaching
-to - or simply describe all cases as "(1) or (3) to whatever state the
-mountpoint is".
-
-	One really hot path where we check (1) vs. (2,3,4) is
-mntput_no_expire(), which is the initial reason behind the current
-representation.  However, read from ->mnt_flags is just as cheap as
-that from ->mnt_ns and the same reasons that make READ_ONCE()
-legitimate there would apply to ->mnt_flags as well.
-
-	We can't reuse MNT_INTERNAL for that, more's the pity -
-it's used to mark the mounts (kern_mount()-created, mostly) that
-need to destroyed synchronously on the final mntput(), with no
-task_work_add() allowed (think of module_init() failing halfway through,
-with kern_unmount() done to destroy the internal mounts already created;
-we *really* don't want to delay that filesystem shutdown until insmod(2)
-heads out to userland).  Another headache is in LSM shite, as usual...
-
-	Anyway, sorting that out is definitely a separate story.
