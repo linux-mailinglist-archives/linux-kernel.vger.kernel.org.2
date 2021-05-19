@@ -2,159 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136D63885C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AEA3885CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 05:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353239AbhESDxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 23:53:45 -0400
-Received: from mail-dm6nam12on2077.outbound.protection.outlook.com ([40.107.243.77]:13633
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1353189AbhESDxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 23:53:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QQ7i+mcNLMb1X5cDMNs1++NOLGPMvb/5kHA3ieJMxDo6IsTpqDCjTauC94p4zHxMO5/AwHjz2UPbba0RZY8q2BwsdYDHQIvxMAf0vld4B5wfCY3jYgB2G6BE3cHek+U5lbwIk28fllV4xFIK+IvXjA7ezofYF9pwZ5xk06bhJvGCSbEhZmC9RF8kbMK27zGS1lX5B/ZOlyPsiIsonNe8/mFNt/UXiFdwIrNc72mltxg34ympgnzb2kHD7aR1KYnvp4wyW48aHCa1aRKCjea+yizciwcm3OfsGl0jyFKNV9HOPiiRWbiLJyZMnlj7CGRVrtqAisio06z6ZuRS38X/xA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hq4L2ED43oW0Y0WDfOOeWM/JNCedp+RK1Z4B/YP9Io8=;
- b=FDNwnlA+qFJUqj3Xb9eRytXsLnpCtM6qhw7IyqLg325lV6PX5gjk8buAYXmkCnOWAD61VeipNgBkbt0ZQca29fAxFrfb1qPzqwGMW0Vl0pbTYH6kBgnb7bRJBFVJzgaj9S8kLjMkxhKsKC1qFT7pggfrq6toFSMFGaua6/V907Y1DKJvc4DI/lyy4LXNS8juGaYtDPUBQwg6ThjlyVhNnqJ3EbQiM5D5lcqnSQwxmvRHzc2/G2yZ/MtMcCqqV+9HGw4OvnH50VhggxmyISwSKLvYn8W1vCOHwaJH6MBHNhavUez3NPpcH1Gj9OmqezGejPh1PJItwYdFNYTG66oV5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hq4L2ED43oW0Y0WDfOOeWM/JNCedp+RK1Z4B/YP9Io8=;
- b=ikshemmlwP7l7Rjvo1IqZMZFB2/KHLtSMuDmdXpa94UV15JbUzk/2VuBVmNPyj0SiJoyK3MLZE/Bq5tuq+VJonp33iiLbk/wZ1RMILuU50LgAmI3zJwlEjpXgZk/+A6qlOsNmVG9CDjuTXYTiGKHf2zwplc04/WlwYRYXSbwt0k=
-Authentication-Results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN8PR12MB2884.namprd12.prod.outlook.com (2603:10b6:408:97::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Wed, 19 May
- 2021 03:52:16 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::418b:8ea0:dc4b:d211]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::418b:8ea0:dc4b:d211%6]) with mapi id 15.20.4129.033; Wed, 19 May 2021
- 03:52:16 +0000
-Date:   Tue, 18 May 2021 23:52:07 -0400
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, x86@kernel.org,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH 00/25] AMD MCA Address Translation Updates
-Message-ID: <20210519035207.GA8913@aus-x-yghannam.amd.com>
-References: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
- <YKJoICQzD/o7ZPBp@zn.tnic>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKJoICQzD/o7ZPBp@zn.tnic>
-X-Originating-IP: [165.204.25.250]
-X-ClientProxiedBy: BN6PR1701CA0021.namprd17.prod.outlook.com
- (2603:10b6:405:15::31) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+        id S1353254AbhESD4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 23:56:18 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:13219 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229889AbhESD4Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 23:56:16 -0400
+X-UUID: 98c88d82fd344b57a50108e11aaa34bd-20210519
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4SNfkbRqzDZ+P6okN6fxqL61nvCWq7VOzTHBHYbyx0k=;
+        b=XD5huvevJ6BzKlh8M2cITcXAy+hFDaKRgKqcsr3V8ZBoIEi+xPdl56i/P9HncxYKY2usxoKxzTA9R/NW2ou6iUaZSih70kSTOXcfm5TIng0CKIiRG4SWgZDiadLk6oQfLBG6dFAnEYvw+L1ZyVG+xo+6l67p0yVW9zLHkoUd020=;
+X-UUID: 98c88d82fd344b57a50108e11aaa34bd-20210519
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1186167528; Wed, 19 May 2021 11:54:53 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 19 May
+ 2021 11:54:47 +0800
+Received: from [10.16.6.141] (10.16.6.141) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 19 May 2021 11:54:46 +0800
+Message-ID: <1621396486.18307.22.camel@mszsdaap41>
+Subject: Re: [PATCH 3/4] drm/mediatek: fine tune the dsi panel's power
+ sequence
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Huijuan Xie =?UTF-8?Q?=28=E8=B0=A2=E6=85=A7=E5=A8=9F=29?= 
+        <Huijuan.Xie@mediatek.com>,
+        "stonea168@163.com" <stonea168@163.com>,
+        Cawa Cheng =?UTF-8?Q?=28=E9=84=AD=E6=9B=84=E7=A6=A7=29?= 
+        <cawa.cheng@mediatek.com>,
+        Rex-BC Chen =?UTF-8?Q?=28=E9=99=B3=E6=9F=8F=E8=BE=B0=29?= 
+        <Rex-BC.Chen@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Yingjoe Chen =?UTF-8?Q?=28=E9=99=B3=E8=8B=B1=E6=B4=B2=29?= 
+        <Yingjoe.Chen@mediatek.com>,
+        Eddie Huang =?UTF-8?Q?=28=E9=BB=83=E6=99=BA=E5=82=91=29?= 
+        <eddie.huang@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 19 May 2021 11:54:46 +0800
+In-Reply-To: <CAAOTY_-SKcX+4U5hKOgRaip-vk+ofEWe_g4VNUxFjN7LCprq1w@mail.gmail.com>
+References: <20210420132614.150242-1-jitao.shi@mediatek.com>
+         <20210420132614.150242-3-jitao.shi@mediatek.com>
+         <CAAOTY_-SKcX+4U5hKOgRaip-vk+ofEWe_g4VNUxFjN7LCprq1w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aus-x-yghannam.amd.com (165.204.25.250) by BN6PR1701CA0021.namprd17.prod.outlook.com (2603:10b6:405:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend Transport; Wed, 19 May 2021 03:52:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ae45f6e5-b6e8-4b6e-a5b2-08d91a797e2e
-X-MS-TrafficTypeDiagnostic: BN8PR12MB2884:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR12MB28843DB3D675B3D9AF06F1C1F82B9@BN8PR12MB2884.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oyTv/UWXo+K4LzOmQrYsFRPqQFcYQd9AwnclWykiWYvhHOPpdYlGsOb1EPpTmEu0Ck/gg8E//UHK/P4HF8jk/syZEj942qXePZpmbMAyA1XE7+xaM8h91SsZA1zwvxZ2h7IWPBr4+nZ+FIbavyb6NuNRqXrS5fNC9mLS4dV3Jk7NiEcG2UlcloRvB1+N+LiiHRYYcx8OgcIvGjmfV6w5wzWNCeEZ+FeKrw3W4DGx1OE+tdby29JHp4nC73yMIqMf4iXKfpPSioI7bnZ476T6zqNnLgp94pD5V5nfzAwc+vWt05x6s5KMnqIIll/1qv8egCl6a7NZHvYIaiwRFuVIWiAdWFjGd6YHzMtbHMhzu2pz+Y96BG3L+dofmgcK3paRej+Fu0BMNoNdP0OV9eo0KRPt1UjJGbODU9DDuZ0Tc8q1pPw617d60sian/aTMG9V5OVVLnh0fBe87FQ5weDFyDBHYLmGBtsYGNnzdJeyEG4/i1IIOvmP1AWcpTVHubwj9Nw7lAeYGfdPrE55HnPJn0MwYp82de7NZhV4WjJqB2EDfv14cGNR5h/kByI6kLU8P8OXnidYpXF1nb9ECAg2VoK3RgES9KsnlNERtKq7eT3+shWZLZN1ouD6p4fJGygIa0Ec9rQKfiaJDJIeA6gQ/A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(376002)(346002)(366004)(136003)(44832011)(478600001)(66476007)(6666004)(26005)(7696005)(5660300002)(8676002)(66556008)(33656002)(6916009)(4326008)(8936002)(55016002)(83380400001)(38350700002)(186003)(16526019)(956004)(86362001)(38100700002)(66946007)(1076003)(52116002)(2906002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?J+mYHnpM6tcCDtNmA5Q7SULxRhIjydCIgX1AgkFDwpJZyORXTd0NInqiSEwZ?=
- =?us-ascii?Q?6Iffpmvr//THviW+0c+XLkqtAk7f2ANLpwkmw5KN3jzUJH2WPOhTgVsejMfl?=
- =?us-ascii?Q?PL7/zya05KhkRaSfdUBszieZ4Vj+Axugenn/5QBA14Wr//lOjaoMADkYASwC?=
- =?us-ascii?Q?H4QW4Cq7LFnbGflyRg/7qljWAvQPGIEarn54Ty5G9P8l2QLdKFEXAcojQFbY?=
- =?us-ascii?Q?N+V9GxMnDg7ovoYO3gmtZGtc1BhHAXbAAtDyZuhUn1EN58QQdspMFG4gMfUn?=
- =?us-ascii?Q?dSINKmYLCX3Ct9O4c8lcU/SnRfgfCLjxpc03ux2sRZ/ClIxhEqYRRI8a1lTr?=
- =?us-ascii?Q?hPLy3TvAV0XjwCjt/SkH9Xx1PVDoV9PdxHlDeGbKjKikxgkDUX6sgjqEAEYP?=
- =?us-ascii?Q?cEgFhXgKopIeAb8lmbaKVAcFVIPylvV6+t/d1N6+di9fGgdbut0K8x0ko0Lg?=
- =?us-ascii?Q?eW1ldMnJpnySh9Un/EsbPu9ntbzMFWjPgm60cNJ3vuRY9yjNAQm1i7O8oZpr?=
- =?us-ascii?Q?CuHmD0oBmMUw5FKzhtb4L8fOw4tFeqgtcpV68pJi9kqdJSwUrJqroUoHvn+I?=
- =?us-ascii?Q?Pd+Sl1dFR14lfapbDFGB2XmrW3WMy5uQc9kU1D3hdH6IbBseVQEcnrdKHZwv?=
- =?us-ascii?Q?zivckFd+++qv818n9LpkjkQh+OiKGaA8kwfsoUIUgCapZJH3MY0b7AGUnlkV?=
- =?us-ascii?Q?G0opHXxusHMJZjCD37gmnvzITBhTDvZAGjNPYqDKHvjF1MKUNR7JUdz+NtfW?=
- =?us-ascii?Q?vsm80++a06T2igL1Nnb7Qy8Uk+NQH4zZ/fwsaiF5vNRSXNM677pUmLu94Djr?=
- =?us-ascii?Q?DG45OLWStWduqFgzCX7UC4xeL0iF7JNt5/AdYptjyjYrqujZ8ZAnHmI0X+o9?=
- =?us-ascii?Q?bYeLqu07cO+aEsA0rRnIHYI+MCziBi7kzv22tmcd7h+4w67kJNm/jPLXlSPR?=
- =?us-ascii?Q?A1lZFJgsbga6m3y9mLBkDHgP2qDpwBvDqfh5XONrDcbuPnuAJXlxiLLv9u7t?=
- =?us-ascii?Q?Y4sBBsOj0HERvm3jDx+5I0paFaO5i6BftsO7xVKk5YYsPqyPM4xBPKvp1SCQ?=
- =?us-ascii?Q?cYHyqvog3I40NmhNxiQAz/SUQirBjEjyyokWZUvijwlggfBzec5Y8Y1M8zUE?=
- =?us-ascii?Q?T4Pc9D1mONet8AmBTNnrqoUwamlx3hv/STyXpZW9TgfH5jvT/gO8ZNntxJ64?=
- =?us-ascii?Q?D/hDZAwtTgydzttDFQ5ggQvoELICet4A6shHlLlbr3FkE/LYA3W4rou6X71I?=
- =?us-ascii?Q?hfDwXOB6NH/Ep0FvtoCKURXt8jFuVj9zbpYqRg0lprLooy2d0gib4QiulQBY?=
- =?us-ascii?Q?Yp3sQ1GopyqK1Rn52LIsHZSG?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae45f6e5-b6e8-4b6e-a5b2-08d91a797e2e
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 03:52:16.3565
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: diVYJlFQ0Pcr5SiEYa+TPDH7RUm4MrMKznh0mi2soswA0L0G6eXK089ftuXXFr/WgHkka3xKTOJ9bi+7jKY1EA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2884
+X-TM-SNTS-SMTP: F8D1A7938E471559E34A2AA68D23CC1055848FF057CA6C0BB5272F2AB98E3E3F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 02:57:04PM +0200, Borislav Petkov wrote:
-> On Fri, May 07, 2021 at 03:01:15PM -0400, Yazen Ghannam wrote:
-> > Patches 1-24 do the refactor without adding new system support. The goal
-> > is to break down the translation algorithm into smaller chunks. There
-> > are some simple wrapper functions defined. These will be filled in when
-> > supporting newer systems. The intention is that new system support can
-> > be added without any major refactor. I tried to make a patch for each
-> > logical change. There's a bit of churn so as to not break the build with
-> > each change. I think many of these patches can be squashed together, if
-> > desired. The top level function was split first, then the next level of
-> > functions, etc. in a somewhat breadth-first approach.
-> 
-> No, that's great what you did and keeping each logical change in a
-> single patch is a lot easier on everybody involved.
-> 
-> Now, looking at this - and I know we've talked about this before - but:
-> 
-> umc_normaddr_to_sysaddr() is used only in amd64_edac.c.
-> amd_df_indirect_read() is used only by this function, so how about
-> moving both to amd64_edac, where they're needed and then doing the
-> refactoring ontop?
-> 
-> You can simply reuse your current patches - just change the file they
-> patch from
-> 
-> arch/x86/kernel/cpu/mce/amd.c
-> 
-> to
-> 
-> drivers/edac/amd64_edac.c
-> 
-> I went through te umc_... function and AFAICT, it doesn't need any core
-> MCE facilities so it should be just fine in EDAC land.
-> 
-> Or?
->
+T24gU2F0LCAyMDIxLTA0LTI0IGF0IDAwOjM2ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
+PiBIaSwgSml0YW86DQo+IA0KPiBKaXRhbyBTaGkgPGppdGFvLnNoaUBtZWRpYXRlay5jb20+IOaW
+vCAyMDIx5bm0NOaciDIw5pelIOmAseS6jCDkuIvljYg5OjI25a+r6YGT77yaDQo+ID4NCj4gPiBB
+ZGQgdGhlIGRybV9wYW5lbF9wcmVwYXJlX3Bvd2VyIGFuZCBkcm1fcGFuZWxfdW5wcmVwYXJlX3Bv
+d2VyIGNvbnRyb2wuDQo+ID4gVHVybiBvbiBwYW5lbCBwb3dlcihkcm1fcGFuZWxfcHJlcGFyZV9w
+b3dlcikgYW5kIGNvbnRyb2wgYmVmb3JlIGRzaQ0KPiA+IGVuYWJsZS4gQW5kIHRoZW4gZHNpIGVu
+YWJsZSwgc2VuZCBkY3MgY21kIGluIGRybV9wYW5lbF9wcmVwYXJlLCBsYXN0DQo+ID4gdHVybiBv
+biBiYWNrbGlnaHQuDQo+IA0KPiBQbGVhc2UgZGVzY3JpYmUgV0hZIGRvIHlvdSBuZWVkIHRoaXMg
+cGF0Y2g/IEZpeCBhbnkgYnVnPw0KDQpNb3N0IHBhbmVscywgaGF2ZSBmaXZlIHN0ZXBzIHdoZW4g
+cG93ZXJvbi4NCg0KMS4gdHVybiBvbiBkc2kgc2lnbmFsIHRvIExQMTEgICAtLT4gZHNpIGhvc3Qn
+cyBhY3Rpb24NCjIuIHR1cm4gb24gdGhlIHBvd2VyIHN1cHBsaWVzLCAgLS0+IHBhbmVsJ3MgYWN0
+aW9uDQozLiBzZW5kIHRoZSBEQ1MgIGNtZCB0byBwYW5lbCAgIC0tPiBwYW5lbCdzIGFjdGlvbg0K
+NC4gc3RhcnQgc2VuZCB2aWRlbyBzdHJlYW0gICAgICAtLT4gZHNpIGhvc3QncyBhY3Rpb24NCjUu
+IHR1cm4gb24gYmFja2xpZ2h0LiAgICAgICAgICAgLS0+IHBhbmVsJ3MgYWN0aW9uDQoNCndlIHB1
+dCAidHVybiBvbiB0aGUgcG93ZXIgc3VwcGxpZXMiIGFuZCAic2VuZCB0aGUgRENTICBjbWQgdG8g
+cGFuZWwiIGluDQpwYW5lbF9wcmVwYXJlLiBBbmQgInR1cm4gb24gYmFja2xpZ2h0IiBpbiBwYW5l
+bF9lbmFibGUuDQoNCkJ1dCBzb21lIG90aGVyIHBhbmVscyBoYXMgYSBzcGVjaWFsIHBvd2Vyb24g
+c2VxdWVuY2UgYXMgdGhlIGZvbGxvd2luZy4NCg0KMS4gdHVybiBvbiB0aGUgcG93ZXIgc3VwcGxp
+ZXMsICAtLT4gcGFuZWwncyBhY3Rpb24NCjIuIHR1cm4gb24gZHNpIHNpZ25hbCB0byBMUDExICAg
+LS0+IGRzaSBob3N0J3MgYWN0aW9uDQozLiBzZW5kIHRoZSBEQ1MgIGNtZCB0byBwYW5lbCAgIC0t
+PiBwYW5lbCdzIGFjdGlvbg0KNC4gc3RhcnQgc2VuZCB2aWRlbyBzdHJlYW0gICAgICAtLT4gZHNp
+IGhvc3QncyBhY3Rpb24NCjUuIHR1cm4gb24gYmFja2xpZ2h0LiAgICAgICAgICAgLS0+IHBhbmVs
+J3MgYWN0aW9uDQoNCnBhbmVsJ3MgYWN0aW9ucyBhcmUgZGl2aWRlZCBpbnRvIHRocmVlIHBhcnRz
+Lg0KDQpTbyBJIGFkZCBhIG5ldyBhcGkgImRybV9wYW5lbF9wcmVwYXJlX3Bvd2VyL3JtX3BhbmVs
+X3VucHJlcGFyZV9wb3dlciIgdG8NCmNvbnRyb2wgdGhlIHNlcXVlbmNlLg0KDQoNCkJlc3QgUmVn
+YXJkcw0KSml0YW8NCg0KPiANCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEppdGFvIFNoaSA8aml0
+YW8uc2hpQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9ncHUvZHJtL21lZGlh
+dGVrL210a19kc2kuYyB8IDEyICsrKysrKysrKystLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTAg
+aW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVr
+L210a19kc2kuYw0KPiA+IGluZGV4IGExZmYxNTJlZjQ2OC4uNDU1ZmU1ODJjNmI1IDEwMDY0NA0K
+PiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMNCj4gPiArKysgYi9k
+cml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQo+ID4gQEAgLTYxNSwxMCArNjE1LDEz
+IEBAIHN0YXRpYyBpbnQgbXRrX2RzaV9wb3dlcm9uKHN0cnVjdCBtdGtfZHNpICpkc2kpDQo+ID4g
+ICAgICAgICBkc2ktPmRhdGFfcmF0ZSA9IERJVl9ST1VORF9VUF9VTEwoZHNpLT52bS5waXhlbGNs
+b2NrICogYml0X3Blcl9waXhlbCwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBkc2ktPmxhbmVzKTsNCj4gPg0KPiA+ICsgICAgICAgaWYgKHBhbmVsX2JyaWRn
+ZV9wcmVwYXJlX3Bvd2VyKGRzaS0+bmV4dF9icmlkZ2UpKQ0KPiANCj4gcmV0ID0gcGFuZWxfYnJp
+ZGdlX3ByZXBhcmVfcG93ZXIoZHNpLT5uZXh0X2JyaWRnZSk7DQo+IGlmIChyZXQpDQo+IA0KPiA+
+ICsgICAgICAgICAgICAgICBEUk1fSU5GTygiY2FuJ3QgcHJlcGFyZSBwb3dlciB0aGUgcGFuZWxc
+biIpOw0KPiANCj4gSSB0aGluayB5b3Ugc2hvdWxkIGdvdG8gZXJyX3JlZmNvdW50Ow0KDQpUaGFu
+a3MgZm9yIHlvdXIgcmV2aWV3LiBJJ2xsIGZpeCBpdCBuZXh0IHBhdGNoLg0KDQo+IA0KPiA+ICsN
+Cj4gPiAgICAgICAgIHJldCA9IGNsa19zZXRfcmF0ZShkc2ktPmhzX2NsaywgZHNpLT5kYXRhX3Jh
+dGUpOw0KPiA+ICAgICAgICAgaWYgKHJldCA8IDApIHsNCj4gPiAgICAgICAgICAgICAgICAgZGV2
+X2VycihkZXYsICJGYWlsZWQgdG8gc2V0IGRhdGEgcmF0ZTogJWRcbiIsIHJldCk7DQo+ID4gLSAg
+ICAgICAgICAgICAgIGdvdG8gZXJyX3JlZmNvdW50Ow0KPiA+ICsgICAgICAgICAgICAgICBnb3Rv
+IGVycl9wcmVwYXJlX3Bvd2VyOw0KPiA+ICAgICAgICAgfQ0KPiA+DQo+ID4gICAgICAgICBwaHlf
+cG93ZXJfb24oZHNpLT5waHkpOw0KPiA+IEBAIC02NjEsNyArNjY0LDkgQEAgc3RhdGljIGludCBt
+dGtfZHNpX3Bvd2Vyb24oc3RydWN0IG10a19kc2kgKmRzaSkNCj4gPiAgICAgICAgIGNsa19kaXNh
+YmxlX3VucHJlcGFyZShkc2ktPmVuZ2luZV9jbGspOw0KPiA+ICBlcnJfcGh5X3Bvd2VyX29mZjoN
+Cj4gPiAgICAgICAgIHBoeV9wb3dlcl9vZmYoZHNpLT5waHkpOw0KPiA+IC1lcnJfcmVmY291bnQ6
+DQo+ID4gK2Vycl9wcmVwYXJlX3Bvd2VyOg0KPiA+ICsgICAgICAgaWYgKHBhbmVsX2JyaWRnZV91
+bnByZXBhcmVfcG93ZXIoZHNpLT5uZXh0X2JyaWRnZSkpDQo+IA0KPiByZXQgPSBwYW5lbF9icmlk
+Z2VfdW5wcmVwYXJlX3Bvd2VyKGRzaS0+bmV4dF9icmlkZ2UpOw0KPiANCj4gPiArICAgICAgICAg
+ICAgICAgRFJNX0lORk8oIkNhbid0IHVucHJlcGFyZSBwb3dlciB0aGUgcGFuZWxcbiIpOw0KPiA+
+ICAgICAgICAgZHNpLT5yZWZjb3VudC0tOw0KPiA+ICAgICAgICAgcmV0dXJuIHJldDsNCj4gPiAg
+fQ0KPiA+IEBAIC02OTQsNiArNjk5LDkgQEAgc3RhdGljIHZvaWQgbXRrX2RzaV9wb3dlcm9mZihz
+dHJ1Y3QgbXRrX2RzaSAqZHNpKQ0KPiA+ICAgICAgICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGRz
+aS0+ZGlnaXRhbF9jbGspOw0KPiA+DQo+ID4gICAgICAgICBwaHlfcG93ZXJfb2ZmKGRzaS0+cGh5
+KTsNCj4gPiArDQo+ID4gKyAgICAgICBpZiAocGFuZWxfYnJpZGdlX3VucHJlcGFyZV9wb3dlcihk
+c2ktPm5leHRfYnJpZGdlKSkNCj4gDQo+IHJldCA9IHBhbmVsX2JyaWRnZV91bnByZXBhcmVfcG93
+ZXIoZHNpLT5uZXh0X2JyaWRnZSk7DQo+IA0KPiA+ICsgICAgICAgICAgICAgICBEUk1fSU5GTygi
+Q2FuJ3QgdW5wcmVwYXJlIHBvd2VyIHRoZSBwYW5lbFxuIik7DQo+ID4gIH0NCj4gPg0KPiA+ICBz
+dGF0aWMgdm9pZCBtdGtfb3V0cHV0X2RzaV9lbmFibGUoc3RydWN0IG10a19kc2kgKmRzaSkNCj4g
+PiAtLQ0KPiA+IDIuMjUuMQ0KPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fDQo+ID4gZHJpLWRldmVsIG1haWxpbmcgbGlzdA0KPiA+IGRyaS1kZXZlbEBs
+aXN0cy5mcmVlZGVza3RvcC5vcmcNCj4gPiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbA0KDQo=
 
-I think this is a good idea. The only hang up is that we should be using
-the output of this function, i.e. the systeme physical address, when
-handling memory errors in the MCE notifier blocks. But I have an idea
-where we can handle this. I can send that as a follow up series, if
-that's okay.
-
-One other issue is what if a user doesn't want to use amd64_edac_mod?
-This is more of a user preference and/or configuration issue. Maybe the
-module loads, but an uninterested user can tell EDAC to not log errors,
-etc.? Or should the translation code live in its own module?
-
-So for version 2, I have 1) Add a glossary of terms, and 2) Move
-everything to EDAC. Any other comments?
-
-Thanks,
-Yazen
