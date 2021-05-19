@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC88388A88
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F011D388A80
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345295AbhESJWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:22:46 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3422 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345147AbhESJWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:22:03 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FlS2S0wFVzCv61;
-        Wed, 19 May 2021 17:17:52 +0800 (CST)
-Received: from dggeml751-chm.china.huawei.com (10.1.199.150) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 17:20:38 +0800
-Received: from huawei.com (10.44.142.101) by dggeml751-chm.china.huawei.com
- (10.1.199.150) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 19
- May 2021 17:20:38 +0800
-From:   Sang Yan <sangyan@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <linux-kernel@vger.kernel.org>, <hpa@zytor.com>
-CC:     <hejie3@huawei.com>, <hewenliang4@huawei.com>,
-        <wuxu.wu@huawei.com>, <hejingxian@huawei.com>
-Subject: [PATCH] rtc: Fix hwclock write fail problem in x86 arch
-Date:   Wed, 19 May 2021 17:19:08 +0800
-Message-ID: <20210519091908.513593-1-sangyan@huawei.com>
-X-Mailer: git-send-email 2.9.5
+        id S1343495AbhESJWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:22:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344960AbhESJVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:21:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A4706139A;
+        Wed, 19 May 2021 09:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621416029;
+        bh=Ibw/zQM+d/sALTpQspjHYltUcbAA2yu1YtiHvBMW5jQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XN34e3ia7ztY1n3NbNFSCDQjQTMGcp5S+hrRxqJI/dpe2OSHfIUMd7OZqnDfSv4a7
+         UFjpH8dcjL5KGnzNh5FDljLAOkQ8YQy2tuSSqMwQv0nuBPSdXKtzN/3faRlcXRcXvu
+         WesO8qDWliM57EYqiPNb50KJBZK14FwhzwjNYo2opgZC9UdfZEVBhTjUb2R3Nt+hVa
+         RK25/t2yL2hhJPvFTth+QqS8/7a+kngcNouMo8w3ZYHf7JC3ZM4l4U3qvOpYddFvA9
+         VmryhTqAJr76dvLzEtE+MQ0yju0pWHiXLoTi61rmNrr/s+6O91mcXt+JbJUt/T4GMS
+         bDK2bXIpQ5Zpw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1ljINQ-0002YW-EP; Wed, 19 May 2021 11:20:28 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] USB: serial: buffer-callback clean ups
+Date:   Wed, 19 May 2021 11:20:00 +0200
+Message-Id: <20210519092006.9775-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.44.142.101]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeml751-chm.china.huawei.com (10.1.199.150)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jingxian He <hejingxian@huawei.com>
+This series clean up a few things related to the chars_in_buffer and
+write_room callbacks that were found during review of the recent
+conversion to have these callbacks return an unsigned int.
 
-When RTC_ALWAYS_BCD is set as 1, the function mc146818_set_time
-ignores the reading value of RTC_CONTROL register,
-and assumes that RTC always operates in binary mode.
+Johan
 
-However, the mc146818 development manual says that:
-if !(CMOS_READ(RTC_CONTROL) & 0x04), then
-the rtc time is in binary mode;
-if (CMOS_READ(RTC_CONTROL) & 0x04), then
-the rtc time is in bcd mode.
 
-We use 'hwclock -w' to set the RTC from the system time
-at our x86 machines, and we find that when 
-(CMOS_READ(RTC_CONTROL) & 0x04) is equal to 1,
-'hwclock -w' will fail to set the RTC.
+Johan Hovold (6):
+  USB: serial: digi_acceleport: reduce chars_in_buffer over-reporting
+  USB: serial: digi_acceleport: add chars_in_buffer locking
+  USB: serial: io_edgeport: drop buffer-callback sanity checks
+  USB: serial: mos7720: drop buffer-callback sanity checks
+  USB: serial: mos7840: drop buffer-callback return-value comments
+  USB: serial: drop irq-flags initialisations
 
-We change the RTC_ALWAYS_BCD to 0 to parse the rtc
-time according to the read value of RTC_CONTROL register.
+ drivers/usb/serial/digi_acceleport.c | 34 ++++++++++++++--------------
+ drivers/usb/serial/io_edgeport.c     | 27 +---------------------
+ drivers/usb/serial/metro-usb.c       | 12 +++++-----
+ drivers/usb/serial/mos7720.c         | 17 ++------------
+ drivers/usb/serial/mos7840.c         |  5 ----
+ drivers/usb/serial/quatech2.c        |  2 +-
+ 6 files changed, 27 insertions(+), 70 deletions(-)
 
-Signed-off-by: Jingxian He <hejingxian@huawei.com>
-Signed-off-by: Jie He <hejie3@huawei.com>
----
- arch/x86/include/asm/mc146818rtc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/mc146818rtc.h b/arch/x86/include/asm/mc146818rtc.h
-index 9719800..63cf0d5 100644
---- a/arch/x86/include/asm/mc146818rtc.h
-+++ b/arch/x86/include/asm/mc146818rtc.h
-@@ -10,7 +10,7 @@
- 
- #ifndef RTC_PORT
- #define RTC_PORT(x)	(0x70 + (x))
--#define RTC_ALWAYS_BCD	1	/* RTC operates in binary mode */
-+#define RTC_ALWAYS_BCD	0
- #endif
- 
- #if defined(CONFIG_X86_32)
 -- 
-2.9.5
+2.26.3
 
