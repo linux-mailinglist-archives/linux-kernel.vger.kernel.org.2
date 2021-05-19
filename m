@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05988389122
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905E338911A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348235AbhESOiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348055AbhESOiG (ORCPT
+        id S1347956AbhESOhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:37:35 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:33637 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S243400AbhESOhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:38:06 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5861FC06175F;
-        Wed, 19 May 2021 07:36:46 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id k4so8726641ili.4;
-        Wed, 19 May 2021 07:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uDAFEEzvC0GMNw2+sRgzLq7AM8Ry0p0VtseioN3JgBw=;
-        b=HJY7pYpY+CZGqyohBnzZrSYjIxma7o1SWQKjak/BF9q27IVx940a4DxjjzYrJYVaiN
-         r66VAb89UPun6CBe17/HtDYZZeZGTaDe9EgludyZf/LiK9GNK81M6T1igRE+/5XJ3gji
-         6+a5eVmOBYnlcen++VG6aw9WESGI4VlvklcovfDUHyCVxwfhssczWnyoJnphOcn/5jrE
-         Or8pdz0NEWp0O43Sy6OTEdheRTm0DvQ0JGrtvhsa9WxQ6Iw1G8q7JBxlcYP7oZt0k57n
-         AQy2eMHgsGIA1sLIZ8JOPB+zbd6TWLkTiQ2Ytx5x4H6DDZvLhenxscsyCHiqc0BhUCko
-         6xFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uDAFEEzvC0GMNw2+sRgzLq7AM8Ry0p0VtseioN3JgBw=;
-        b=RkXZZV9OZvrWBPj1D27Rav8CG34CQGGujRPBCm+Iqgmx5nCDAXzH95po9tZ6bTsMd3
-         f2BvfLenDJIv4CqMKq+MFhq6h993iJhB7ZMgUwiTBrOf1f/W/dRCtI3G1zKD1o3EFF1o
-         R4Q0jg7QtPkDqevdEfKtCEWhSQ6UL5fejpkdyZqOGZCRuEBOqxIFpJRFQIYdcUAsGt/N
-         I3hBJw9YqhA5heGydOlqxHWP4Ltc8K+cWynP+s7vhzDDfAo7QRmPmkhF+TNKSlczK98D
-         X8MYUrTaG3dV8H4HjyKu5K+MY8kSIG3t8wGn4pE7CXPSui1OGCvuy9Xq1szyMT+xE9QT
-         oH0w==
-X-Gm-Message-State: AOAM532/l1ssASBRUuvNtGrJDZBzCEpxZ5rQ/F1qFQOKoVhV2owPEl3a
-        RAiDyPqkHBJWjcSlDLe1mOEna6bwgc8RCjaFdZK3D8Yo
-X-Google-Smtp-Source: ABdhPJygUotjLagydKprqOXosGKm1YtHQhsptK/ZWsH6PbwWZqJsXqIrH8j0U0FBUjxgEKaLhqfmH+QjkPZdpaZw9Q0=
-X-Received: by 2002:a05:6e02:1bce:: with SMTP id x14mr6898550ilv.287.1621435005534;
- Wed, 19 May 2021 07:36:45 -0700 (PDT)
+        Wed, 19 May 2021 10:37:34 -0400
+Received: (qmail 1166645 invoked by uid 1000); 19 May 2021 10:36:13 -0400
+Date:   Wed, 19 May 2021 10:36:13 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     dave penkler <dpenkler@gmail.com>
+Cc:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
+Message-ID: <20210519143613.GA1165692@rowland.harvard.edu>
+References: <6cffd7eebba54ed8acd043d51d212ec1@rohde-schwarz.com>
+ <CAL=kjP0xOQ32xLytyVm9=d+9rnKzV2dW2VJQ6c8MAwTK7rg2Kw@mail.gmail.com>
+ <20210508142947.GB810516@rowland.harvard.edu>
+ <CAL=kjP1WegRkxuYuKSmvA6rZ1BrC5wE5KvLe0JjjE+wN4up8Xg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210517141250.55655-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210517141250.55655-1-krzysztof.kozlowski@canonical.com>
-From:   Alim Akhtar <alim.akhtar@gmail.com>
-Date:   Wed, 19 May 2021 20:06:02 +0530
-Message-ID: <CAGOxZ524m0tYy2Y8xnkfoSg9PQj7uA6PohYC9u23Je3F+gHjDA@mail.gmail.com>
-Subject: Re: [PATCH] soc: samsung: pmu: fix BUT->BIT macro typo
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL=kjP1WegRkxuYuKSmvA6rZ1BrC5wE5KvLe0JjjE+wN4up8Xg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof
+On Wed, May 19, 2021 at 10:48:29AM +0200, dave penkler wrote:
+> On Sat, 8 May 2021 at 16:29, Alan Stern <stern@rowland.harvard.edu> wrote:
+> >
+> > On Sat, May 08, 2021 at 10:14:41AM +0200, dave penkler wrote:
+> > > When the host driver detects a protocol error while processing an URB
+> > > it completes the URB with EPROTO status and marks the endpoint as
+> > > halted.
+> >
+> > Not true.  It does not mark the endpoint as halted, not unless it
+> > receives a STALL handshake from the device.  A STALL is not a protocol
+> > error.
+> >
+> > > When the class driver resubmits the URB and the if the host driver
+> > > finds the endpoint still marked as halted it should return EPIPE
+> > > status on the resubmitted URB
+> >
+> > Irrelevant.
+> Not at all. The point is that when an application is talking to an
+> instrument over the usbtmc driver, the underlying host controller and
+> its driver will detect and silence a babbling endpoint.
 
-On Mon, May 17, 2021 at 7:59 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> The macro EXYNOS5_USE_STANDBYWFI_ARM_CORE1 should use BIT, not BUT.  Fix
-> does not have real effect as the macro is not used in the code.
->
-Can we consider removing this? As this is not used in code.
+No, they won't.  That is, they will detect a babble error and return an 
+error status, but they won't silence the endpoint.  What makes you think 
+they will?
 
-> Fixes: af2e0a0754ac ("ARM: EXYNOS: Add PMU support for exynos5420")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
+> Hence no EPROTO loop will ensue in this case and therefore no changes
+> are needed in usbtmc.
 
+Since this conclusion relies on the incorrect assumption above, it also 
+is incorrect.
 
->  include/linux/soc/samsung/exynos-regs-pmu.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/soc/samsung/exynos-regs-pmu.h b/include/linux/soc/samsung/exynos-regs-pmu.h
-> index fc9250fb3133..4bfd9a210da2 100644
-> --- a/include/linux/soc/samsung/exynos-regs-pmu.h
-> +++ b/include/linux/soc/samsung/exynos-regs-pmu.h
-> @@ -613,7 +613,7 @@
->
->  /* For EXYNOS_CENTRAL_SEQ_OPTION */
->  #define EXYNOS5_USE_STANDBYWFI_ARM_CORE0                       BIT(16)
-> -#define EXYNOS5_USE_STANDBYWFI_ARM_CORE1                       BUT(17)
-> +#define EXYNOS5_USE_STANDBYWFI_ARM_CORE1                       BIT(17)
->  #define EXYNOS5_USE_STANDBYWFE_ARM_CORE0                       BIT(24)
->  #define EXYNOS5_USE_STANDBYWFE_ARM_CORE1                       BIT(25)
->
-> --
-> 2.27.0
->
-
-
--- 
-Regards,
-Alim
+Alan Stern
