@@ -2,173 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E539A3885DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C313885DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhESEG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 00:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
+        id S232070AbhESEHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 00:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhESEG2 (ORCPT
+        with ESMTP id S230250AbhESEG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 00:06:28 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA3DC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:05:09 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so2715434ool.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/MQA7/cq456d1sxLzbZtrmQ5JtgLhRNVtq75eilKgSM=;
-        b=IzBfRCSL6S3V1beY4be3eQ/ArujBd9leOulz7621X967qbL7gxwgL8ur3gnaMMp7ku
-         L84WzhWkRGgfP/Bls9X7329o+aH2RmNzbfxOLrYtVZpz6ia/13/2/W+lqnv7swAz03wz
-         5tVhJ3QnSMJX6f5IzM0ZmjE5vv8PAlapg9PpQPHuHE/fvndKMsoGtTCI37kH3M1SFTqy
-         RY2cWjVfVuDjILPhy2HLXTIkdk33vB3aGfaawVVXCjgw9FY+gqGemHXej3uOCoULJ4WG
-         DLScsOPp2gGzObiI7JHDwiyWlzidZQwaDY6pEVuUAW7JZLXiqnwNdUJsanNoiBOm+KMq
-         4OZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/MQA7/cq456d1sxLzbZtrmQ5JtgLhRNVtq75eilKgSM=;
-        b=g3QbwMQU3ieW4rp5vlS6ERn+7mw4zxRgelpD7YWyV1aWPJVe5eGJApDKzpn/ddG8Yg
-         3pPUuI8+KWezO36rHSVfO7//r5ENE1od8dcWaZD2g2WySyqoUqnCZJc6NpMBVaMt0kEu
-         Xio0KNrOY5j9CavtMxlV6eprn1s97f6XPPWgQDjO7gMr6aeCcMRYdj3nXoj+kKZd1PRl
-         DNUQFFYwm2iCpYZSmx3n7jzsXr02ZGfL7J3ErsO81Hw/EixK4nhwAp9BIcckM/ydv7+s
-         n/4jMPNWGf7OP9LttxAcF9PKPc7dXOwxDGiRV67asxsvGQMWe/3oQKK5Grw6t7G0M5Jb
-         2E+A==
-X-Gm-Message-State: AOAM530JdcFK6T+BZE3Cw8urZDfaPDxVDCs5EfXv9sO301mVW734eL4v
-        294m9Hsu/Zp+Sebg+2XMm/+AcR2g149YbOrtGgP0jB8F
-X-Google-Smtp-Source: ABdhPJysxZpkcygDHH21kkq/yV4SFakKqK0rIT0xIP7zpokB8Z5e5ZjA/wT1gErxLEEECSePW3jWGNckwZW8FdxXwB0=
-X-Received: by 2002:a4a:270d:: with SMTP id l13mr7119274oof.11.1621397108504;
- Tue, 18 May 2021 21:05:08 -0700 (PDT)
+        Wed, 19 May 2021 00:06:58 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0FFC06175F;
+        Tue, 18 May 2021 21:05:39 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FlK6667Q4z9sRf;
+        Wed, 19 May 2021 14:05:34 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621397136;
+        bh=pauE8XMkpcl5YeU9UQe+H4otsmdHP12qTD5+jPriKds=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H67ZlgmgSuwuD4q7fx+JZepYdYzW05QsLkRaR08zroGyV4Rm09PROUKNOnyuyB3er
+         xkjfuCzn5U0Pq4j1y5oxclhNo/b2Ai4V6c/6AT+X9BGj/yAQqNBaXBZB5itsdUTymD
+         9ZhOpoUeJtzfLgFDjlsAgySNONun0s5mdjH7jGKHJBWoE0BCpnuc36oou6u3s+udzg
+         cui6LzBqoki/+nHK09tcqLCxb93h+KpKxzCEkxS7ZqFBC4GH8jRr12hS2F2VSNYLdK
+         4XRGtVu/xaNe9JJ9F6qqFSb45X3wsqjgo9HFmvzoviQPARip8zkhtvUkroCIOlH+aK
+         jUEvXHI4Cjnlg==
+Date:   Wed, 19 May 2021 14:05:32 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stefano Brivio <sbrivio@redhat.com>
+Subject: Re: linux-next: manual merge of the netfilter-next tree with the
+ net tree
+Message-ID: <20210519140532.677d1bb6@canb.auug.org.au>
+In-Reply-To: <20210519095627.7697ff12@canb.auug.org.au>
+References: <20210519095627.7697ff12@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210517112044.233138-1-aisheng.dong@nxp.com> <20210517112044.233138-3-aisheng.dong@nxp.com>
- <YKOSZELQWd6o7cva@kernel.org> <CAA+hA=QcNWo3brs4HvdBb+QHHOiBHgF3hdbfJ1ivaGHiBXM4EQ@mail.gmail.com>
- <YKOoU7GjZ6cDogiH@kernel.org>
-In-Reply-To: <YKOoU7GjZ6cDogiH@kernel.org>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Wed, 19 May 2021 12:04:05 +0800
-Message-ID: <CAA+hA=TBCsNcb=ZX+WMyMbZt+oUD0pOxWZ4rZJc8C31HwQ-c1Q@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mm/sparse: free section usage memory in case
- populate_section_memmap failed
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/fk7n6zHb2ovrZiubd3gbaHl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 7:43 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Tue, May 18, 2021 at 06:25:28PM +0800, Dong Aisheng wrote:
-> > On Tue, May 18, 2021 at 6:09 PM Mike Rapoport <rppt@kernel.org> wrote:
-> > >
-> > > On Mon, May 17, 2021 at 07:20:41PM +0800, Dong Aisheng wrote:
-> > > > Free section usage memory in case populate_section_memmap failed.
-> > > > We use map_count to track the remain unused memory to be freed.
-> > > >
-> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> > > > ---
-> > > >  mm/sparse.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/mm/sparse.c b/mm/sparse.c
-> > > > index 7ac481353b6b..98bfacc763da 100644
-> > > > --- a/mm/sparse.c
-> > > > +++ b/mm/sparse.c
-> > > > @@ -549,12 +549,14 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
-> > > >                              __func__, nid);
-> > > >                       pnum_begin = pnum;
-> > > >                       sparse_buffer_fini();
-> > > > +                     memblock_free_early(__pa(usage), map_count * mem_section_usage_size());
-> > >
-> > > I'd move both sparse_buffer_fini() and freeing of 'usage' memory after the
-> > > failed label.
-> > >
-> >
-> > Doing that needs to introduce another 'failed' label.
-> > Do you think if it's necessary?
->
-> In general, it's preferred way of error handling:
->
+--Sig_/fk7n6zHb2ovrZiubd3gbaHl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Okay, if no objections, i will do it in V2.
-Thanks
+Hi all,
 
-Regards
-Aisheng
+On Wed, 19 May 2021 09:56:27 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the netfilter-next tree got a conflict in:
+>=20
+>   net/netfilter/nft_set_pipapo.c
+>=20
+> between commit:
+>=20
+>   f0b3d338064e ("netfilter: nft_set_pipapo_avx2: Add irq_fpu_usable() che=
+ck, fallback to non-AVX2 version")
+>=20
+> from the net tree and commit:
+>=20
+>   b1bc08f6474f ("netfilter: nf_tables: prefer direct calls for set lookup=
+s")
+>=20
+> from the netfilter-next tree.
+>=20
+> I fixed it up (I just used the latter) and can carry the fix as necessary=
+. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-> https://www.kernel.org/doc/html/latest/process/coding-style.html#centralized-exiting-of-functions
->
-> > e.g.
-> > diff --git a/mm/sparse.c b/mm/sparse.c
-> > index 7ac481353b6b..408b737e168e 100644
-> > --- a/mm/sparse.c
-> > +++ b/mm/sparse.c
-> > @@ -533,7 +533,7 @@ static void __init sparse_init_nid(int nid,
-> > unsigned long pnum_begin,
-> >                         mem_section_usage_size() * map_count);
-> >         if (!usage) {
-> >                 pr_err("%s: node[%d] usemap allocation failed", __func__, nid);
-> > -               goto failed;
-> > +               goto failed1;
-> >         }
-> >         sparse_buffer_init(map_count * section_map_size(), nid);
-> >         for_each_present_section_nr(pnum_begin, pnum) {
-> > @@ -548,17 +548,20 @@ static void __init sparse_init_nid(int nid,
-> > unsigned long pnum_begin,
-> >                         pr_err("%s: node[%d] memory map backing
-> > failed. Some memory will not be available.",
-> >                                __func__, nid);
-> >                         pnum_begin = pnum;
-> > -                       sparse_buffer_fini();
-> > -                       goto failed;
-> > +                       goto failed2;
-> >                 }
-> >                 check_usemap_section_nr(nid, usage);
-> >                 sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
-> >                                 SECTION_IS_EARLY);
-> >                 usage = (void *) usage + mem_section_usage_size();
-> > +               map_count--;
-> >         }
-> >         sparse_buffer_fini();
-> >         return;
-> > -failed:
-> > +failed2:
-> > +       sparse_buffer_fini();
-> > +       memblock_free_early(__pa(usage), map_count * mem_section_usage_size());
-> > +failed1:
-> >         /* We failed to allocate, mark all the following pnums as not present */
-> >         for_each_present_section_nr(pnum_begin, pnum) {
-> >                 struct mem_section *ms;
-> >
-> > Regards
-> > Aisheng
-> > > >                       goto failed;
-> > > >               }
-> > > >               check_usemap_section_nr(nid, usage);
-> > > >               sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
-> > > >                               SECTION_IS_EARLY);
-> > > >               usage = (void *) usage + mem_section_usage_size();
-> > > > +             map_count--;
-> > > >       }
-> > > >       sparse_buffer_fini();
-> > > >       return;
-> > > > --
-> > > > 2.25.1
-> > > >
-> > > >
-> > >
-> > > --
-> > > Sincerely yours,
-> > > Mike.
->
-> --
-> Sincerely yours,
-> Mike.
+This merge also needs the following merge resolution patch:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 19 May 2021 13:48:22 +1000
+Subject: [PATCH] fix up for merge involving nft_pipapo_lookup()
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ net/netfilter/nft_set_pipapo.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/netfilter/nft_set_pipapo.h b/net/netfilter/nft_set_pipapo.h
+index d84afb8fa79a..25a75591583e 100644
+--- a/net/netfilter/nft_set_pipapo.h
++++ b/net/netfilter/nft_set_pipapo.h
+@@ -178,8 +178,6 @@ struct nft_pipapo_elem {
+=20
+ int pipapo_refill(unsigned long *map, int len, int rules, unsigned long *d=
+st,
+ 		  union nft_pipapo_map_bucket *mt, bool match_only);
+-bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+-		       const u32 *key, const struct nft_set_ext **ext);
+=20
+ /**
+  * pipapo_and_field_buckets_4bit() - Intersect 4-bit buckets
+--=20
+2.30.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fk7n6zHb2ovrZiubd3gbaHl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCkjowACgkQAVBC80lX
+0Gyfhgf+LJu3irilPR9sd9/H8elwRHyLTv6/ff1mBI3efU4oM7G1ucFWmEfgK9Mp
+CpMTpioNmg0O3IlALWc1BbFLQ6oJ9UFbg9gQcMgKllo8sZDoiCdbRCrekTaGDT/R
+P/msJd7qBpxsaoYi2pZ4Dyt5fOd+qFz7BURrWCSpJpNzeXVJPJGJ6W2TpPoqCA7B
+uyVklY5OA3ra8/k1sV8+bIxIUI29r1j2BtdNU4G/rVxv2f5F0SlPjZUyqzxY6Zqe
+gE1WzfDDbu1um6W8dgEOWL9Bq3KT4FWYqDFS7pJJ/FuIH8zkU01GHO2sLPw85HCy
+d+PclL1aPQXgmV44gJg5xZj0Fu8I1g==
+=MFdv
+-----END PGP SIGNATURE-----
+
+--Sig_/fk7n6zHb2ovrZiubd3gbaHl--
