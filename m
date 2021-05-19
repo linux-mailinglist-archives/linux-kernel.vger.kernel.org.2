@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC806388B31
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3C6388B29
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347413AbhESJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:54:05 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4533 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346749AbhESJxh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346787AbhESJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 19 May 2021 05:53:37 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlSkz4rHDzsSgV;
-        Wed, 19 May 2021 17:49:31 +0800 (CST)
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4530 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346497AbhESJxf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:53:35 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlSkx0gF8zsRCr;
+        Wed, 19 May 2021 17:49:29 +0800 (CST)
 Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
  15.1.2176.2; Wed, 19 May 2021 17:52:14 +0800
 Received: from localhost.localdomain (10.69.192.56) by
@@ -26,12 +26,12 @@ Received: from localhost.localdomain (10.69.192.56) by
 From:   Qi Liu <liuqi115@huawei.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Andy Gross <agross@kernel.org>,
-        Will Deacon <will@kernel.org>,
+CC:     <linuxarm@huawei.com>, Khuong Dinh <khuong@os.amperecomputing.com>,
+        "Will Deacon" <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2 5/9] drivers/perf: Remove redundant macro and functions in qcom_l3_pmu.c
-Date:   Wed, 19 May 2021 17:51:55 +0800
-Message-ID: <1621417919-6632-6-git-send-email-liuqi115@huawei.com>
+Subject: [PATCH v2 6/9] drivers/perf: Remove redundant macro and functions in xgene_pmu.c
+Date:   Wed, 19 May 2021 17:51:56 +0800
+Message-ID: <1621417919-6632-7-git-send-email-liuqi115@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1621417919-6632-1-git-send-email-liuqi115@huawei.com>
 References: <1621417919-6632-1-git-send-email-liuqi115@huawei.com>
@@ -45,57 +45,537 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove L3CACHE_EVENT_ATTR and l3cache_pmu_event_show(), as there is
+Remove XGENE_PMU_EVENT_ATTR and xgene_pmu_event_show(), as there is
 a general function for this.
 
-Cc: Andy Gross <agross@kernel.org>
+Cc: Khuong Dinh <khuong@os.amperecomputing.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Qi Liu <liuqi115@huawei.com>
 ---
- drivers/perf/qcom_l3_pmu.c | 30 +++++++-----------------------
- 1 file changed, 7 insertions(+), 23 deletions(-)
+ drivers/perf/xgene_pmu.c | 475 +++++++++++++++++++++++------------------------
+ 1 file changed, 230 insertions(+), 245 deletions(-)
 
-diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
-index bba0780..a163c9a 100644
---- a/drivers/perf/qcom_l3_pmu.c
-+++ b/drivers/perf/qcom_l3_pmu.c
-@@ -636,30 +636,14 @@ static const struct attribute_group qcom_l3_cache_pmu_format_group = {
- };
- 
- /* events */
--
--static ssize_t l3cache_pmu_event_show(struct device *dev,
--				     struct device_attribute *attr, char *page)
+diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
+index ffe3bde..3da6599 100644
+--- a/drivers/perf/xgene_pmu.c
++++ b/drivers/perf/xgene_pmu.c
+@@ -275,96 +275,81 @@ static const struct attribute_group mc_pmu_v3_format_attr_group = {
+ /*
+  * sysfs event attributes
+  */
+-static ssize_t xgene_pmu_event_show(struct device *dev,
+-				    struct device_attribute *attr, char *buf)
 -{
--	struct perf_pmu_events_attr *pmu_attr;
+-	struct dev_ext_attribute *eattr;
 -
--	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
--	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
+-	eattr = container_of(attr, struct dev_ext_attribute, attr);
+-	return sysfs_emit(buf, "config=0x%lx\n", (unsigned long) eattr->var);
 -}
 -
--#define L3CACHE_EVENT_ATTR(_name, _id)					     \
--	(&((struct perf_pmu_events_attr[]) {				     \
--		{ .attr = __ATTR(_name, 0444, l3cache_pmu_event_show, NULL), \
--		  .id = _id, }						     \
--	})[0].attr.attr)
+-#define XGENE_PMU_EVENT_ATTR(_name, _config)		\
+-	(&((struct dev_ext_attribute[]) {		\
+-		{ .attr = __ATTR(_name, S_IRUGO, xgene_pmu_event_show, NULL), \
+-		  .var = (void *) _config, }		\
+-	 })[0].attr.attr)
 -
- static struct attribute *qcom_l3_cache_pmu_events[] = {
--	L3CACHE_EVENT_ATTR(cycles, L3_EVENT_CYCLES),
--	L3CACHE_EVENT_ATTR(read-hit, L3_EVENT_READ_HIT),
--	L3CACHE_EVENT_ATTR(read-miss, L3_EVENT_READ_MISS),
--	L3CACHE_EVENT_ATTR(read-hit-d-side, L3_EVENT_READ_HIT_D),
--	L3CACHE_EVENT_ATTR(read-miss-d-side, L3_EVENT_READ_MISS_D),
--	L3CACHE_EVENT_ATTR(write-hit, L3_EVENT_WRITE_HIT),
--	L3CACHE_EVENT_ATTR(write-miss, L3_EVENT_WRITE_MISS),
-+	PMU_EVENT_ATTR_ID(cycles, L3_EVENT_CYCLES),
-+	PMU_EVENT_ATTR_ID(read-hit, L3_EVENT_READ_HIT),
-+	PMU_EVENT_ATTR_ID(read-miss, L3_EVENT_READ_MISS),
-+	PMU_EVENT_ATTR_ID(read-hit-d-side, L3_EVENT_READ_HIT_D),
-+	PMU_EVENT_ATTR_ID(read-miss-d-side, L3_EVENT_READ_MISS_D),
-+	PMU_EVENT_ATTR_ID(write-hit, L3_EVENT_WRITE_HIT),
-+	PMU_EVENT_ATTR_ID(write-miss, L3_EVENT_WRITE_MISS),
- 	NULL
+ static struct attribute *l3c_pmu_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(cycle-count-div-64,		0x01),
+-	XGENE_PMU_EVENT_ATTR(read-hit,				0x02),
+-	XGENE_PMU_EVENT_ATTR(read-miss,				0x03),
+-	XGENE_PMU_EVENT_ATTR(write-need-replacement,		0x06),
+-	XGENE_PMU_EVENT_ATTR(write-not-need-replacement,	0x07),
+-	XGENE_PMU_EVENT_ATTR(tq-full,				0x08),
+-	XGENE_PMU_EVENT_ATTR(ackq-full,				0x09),
+-	XGENE_PMU_EVENT_ATTR(wdb-full,				0x0a),
+-	XGENE_PMU_EVENT_ATTR(bank-fifo-full,			0x0b),
+-	XGENE_PMU_EVENT_ATTR(odb-full,				0x0c),
+-	XGENE_PMU_EVENT_ATTR(wbq-full,				0x0d),
+-	XGENE_PMU_EVENT_ATTR(bank-conflict-fifo-issue,		0x0e),
+-	XGENE_PMU_EVENT_ATTR(bank-fifo-issue,			0x0f),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(cycle-count-div-64,		0x01),
++	PMU_EVENT_ATTR_ID(read-hit,			0x02),
++	PMU_EVENT_ATTR_ID(read-miss,			0x03),
++	PMU_EVENT_ATTR_ID(write-need-replacement,	0x06),
++	PMU_EVENT_ATTR_ID(write-not-need-replacement,	0x07),
++	PMU_EVENT_ATTR_ID(tq-full,			0x08),
++	PMU_EVENT_ATTR_ID(ackq-full,			0x09),
++	PMU_EVENT_ATTR_ID(wdb-full,			0x0a),
++	PMU_EVENT_ATTR_ID(bank-fifo-full,		0x0b),
++	PMU_EVENT_ATTR_ID(odb-full,			0x0c),
++	PMU_EVENT_ATTR_ID(wbq-full,			0x0d),
++	PMU_EVENT_ATTR_ID(bank-conflict-fifo-issue,	0x0e),
++	PMU_EVENT_ATTR_ID(bank-fifo-issue,		0x0f),
+ 	NULL,
+ };
+ 
+ static struct attribute *iob_pmu_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(cycle-count-div-64,		0x01),
+-	XGENE_PMU_EVENT_ATTR(axi0-read,				0x02),
+-	XGENE_PMU_EVENT_ATTR(axi0-read-partial,			0x03),
+-	XGENE_PMU_EVENT_ATTR(axi1-read,				0x04),
+-	XGENE_PMU_EVENT_ATTR(axi1-read-partial,			0x05),
+-	XGENE_PMU_EVENT_ATTR(csw-read-block,			0x06),
+-	XGENE_PMU_EVENT_ATTR(csw-read-partial,			0x07),
+-	XGENE_PMU_EVENT_ATTR(axi0-write,			0x10),
+-	XGENE_PMU_EVENT_ATTR(axi0-write-partial,		0x11),
+-	XGENE_PMU_EVENT_ATTR(axi1-write,			0x13),
+-	XGENE_PMU_EVENT_ATTR(axi1-write-partial,		0x14),
+-	XGENE_PMU_EVENT_ATTR(csw-inbound-dirty,			0x16),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(cycle-count-div-64,		0x01),
++	PMU_EVENT_ATTR_ID(axi0-read,			0x02),
++	PMU_EVENT_ATTR_ID(axi0-read-partial,		0x03),
++	PMU_EVENT_ATTR_ID(axi1-read,			0x04),
++	PMU_EVENT_ATTR_ID(axi1-read-partial,		0x05),
++	PMU_EVENT_ATTR_ID(csw-read-block,		0x06),
++	PMU_EVENT_ATTR_ID(csw-read-partial,		0x07),
++	PMU_EVENT_ATTR_ID(axi0-write,			0x10),
++	PMU_EVENT_ATTR_ID(axi0-write-partial,		0x11),
++	PMU_EVENT_ATTR_ID(axi1-write,			0x13),
++	PMU_EVENT_ATTR_ID(axi1-write-partial,		0x14),
++	PMU_EVENT_ATTR_ID(csw-inbound-dirty,		0x16),
+ 	NULL,
+ };
+ 
+ static struct attribute *mcb_pmu_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(cycle-count-div-64,		0x01),
+-	XGENE_PMU_EVENT_ATTR(csw-read,				0x02),
+-	XGENE_PMU_EVENT_ATTR(csw-write-request,			0x03),
+-	XGENE_PMU_EVENT_ATTR(mcb-csw-stall,			0x04),
+-	XGENE_PMU_EVENT_ATTR(cancel-read-gack,			0x05),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(cycle-count-div-64,		0x01),
++	PMU_EVENT_ATTR_ID(csw-read,			0x02),
++	PMU_EVENT_ATTR_ID(csw-write-request,		0x03),
++	PMU_EVENT_ATTR_ID(mcb-csw-stall,		0x04),
++	PMU_EVENT_ATTR_ID(cancel-read-gack,		0x05),
+ 	NULL,
+ };
+ 
+ static struct attribute *mc_pmu_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(cycle-count-div-64,		0x01),
+-	XGENE_PMU_EVENT_ATTR(act-cmd-sent,			0x02),
+-	XGENE_PMU_EVENT_ATTR(pre-cmd-sent,			0x03),
+-	XGENE_PMU_EVENT_ATTR(rd-cmd-sent,			0x04),
+-	XGENE_PMU_EVENT_ATTR(rda-cmd-sent,			0x05),
+-	XGENE_PMU_EVENT_ATTR(wr-cmd-sent,			0x06),
+-	XGENE_PMU_EVENT_ATTR(wra-cmd-sent,			0x07),
+-	XGENE_PMU_EVENT_ATTR(pde-cmd-sent,			0x08),
+-	XGENE_PMU_EVENT_ATTR(sre-cmd-sent,			0x09),
+-	XGENE_PMU_EVENT_ATTR(prea-cmd-sent,			0x0a),
+-	XGENE_PMU_EVENT_ATTR(ref-cmd-sent,			0x0b),
+-	XGENE_PMU_EVENT_ATTR(rd-rda-cmd-sent,			0x0c),
+-	XGENE_PMU_EVENT_ATTR(wr-wra-cmd-sent,			0x0d),
+-	XGENE_PMU_EVENT_ATTR(in-rd-collision,			0x0e),
+-	XGENE_PMU_EVENT_ATTR(in-wr-collision,			0x0f),
+-	XGENE_PMU_EVENT_ATTR(collision-queue-not-empty,		0x10),
+-	XGENE_PMU_EVENT_ATTR(collision-queue-full,		0x11),
+-	XGENE_PMU_EVENT_ATTR(mcu-request,			0x12),
+-	XGENE_PMU_EVENT_ATTR(mcu-rd-request,			0x13),
+-	XGENE_PMU_EVENT_ATTR(mcu-hp-rd-request,			0x14),
+-	XGENE_PMU_EVENT_ATTR(mcu-wr-request,			0x15),
+-	XGENE_PMU_EVENT_ATTR(mcu-rd-proceed-all,		0x16),
+-	XGENE_PMU_EVENT_ATTR(mcu-rd-proceed-cancel,		0x17),
+-	XGENE_PMU_EVENT_ATTR(mcu-rd-response,			0x18),
+-	XGENE_PMU_EVENT_ATTR(mcu-rd-proceed-speculative-all,	0x19),
+-	XGENE_PMU_EVENT_ATTR(mcu-rd-proceed-speculative-cancel,	0x1a),
+-	XGENE_PMU_EVENT_ATTR(mcu-wr-proceed-all,		0x1b),
+-	XGENE_PMU_EVENT_ATTR(mcu-wr-proceed-cancel,		0x1c),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(cycle-count-div-64,		0x01),
++	PMU_EVENT_ATTR_ID(act-cmd-sent,			0x02),
++	PMU_EVENT_ATTR_ID(pre-cmd-sent,			0x03),
++	PMU_EVENT_ATTR_ID(rd-cmd-sent,			0x04),
++	PMU_EVENT_ATTR_ID(rda-cmd-sent,			0x05),
++	PMU_EVENT_ATTR_ID(wr-cmd-sent,			0x06),
++	PMU_EVENT_ATTR_ID(wra-cmd-sent,			0x07),
++	PMU_EVENT_ATTR_ID(pde-cmd-sent,			0x08),
++	PMU_EVENT_ATTR_ID(sre-cmd-sent,			0x09),
++	PMU_EVENT_ATTR_ID(prea-cmd-sent,		0x0a),
++	PMU_EVENT_ATTR_ID(ref-cmd-sent,			0x0b),
++	PMU_EVENT_ATTR_ID(rd-rda-cmd-sent,		0x0c),
++	PMU_EVENT_ATTR_ID(wr-wra-cmd-sent,		0x0d),
++	PMU_EVENT_ATTR_ID(in-rd-collision,		0x0e),
++	PMU_EVENT_ATTR_ID(in-wr-collision,		0x0f),
++	PMU_EVENT_ATTR_ID(collision-queue-not-empty,	0x10),
++	PMU_EVENT_ATTR_ID(collision-queue-full,		0x11),
++	PMU_EVENT_ATTR_ID(mcu-request,			0x12),
++	PMU_EVENT_ATTR_ID(mcu-rd-request,		0x13),
++	PMU_EVENT_ATTR_ID(mcu-hp-rd-request,		0x14),
++	PMU_EVENT_ATTR_ID(mcu-wr-request,		0x15),
++	PMU_EVENT_ATTR_ID(mcu-rd-proceed-all,		0x16),
++	PMU_EVENT_ATTR_ID(mcu-rd-proceed-cancel,	0x17),
++	PMU_EVENT_ATTR_ID(mcu-rd-response,		0x18),
++	PMU_EVENT_ATTR_ID(mcu-rd-proceed-speculative-all,	0x19),
++	PMU_EVENT_ATTR_ID(mcu-rd-proceed-speculative-cancel,	0x1a),
++	PMU_EVENT_ATTR_ID(mcu-wr-proceed-all,		0x1b),
++	PMU_EVENT_ATTR_ID(mcu-wr-proceed-cancel,	0x1c),
+ 	NULL,
+ };
+ 
+@@ -389,190 +374,190 @@ static const struct attribute_group mc_pmu_events_attr_group = {
+ };
+ 
+ static struct attribute *l3c_pmu_v3_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(read-hit,				0x01),
+-	XGENE_PMU_EVENT_ATTR(read-miss,				0x02),
+-	XGENE_PMU_EVENT_ATTR(index-flush-eviction,		0x03),
+-	XGENE_PMU_EVENT_ATTR(write-caused-replacement,		0x04),
+-	XGENE_PMU_EVENT_ATTR(write-not-caused-replacement,	0x05),
+-	XGENE_PMU_EVENT_ATTR(clean-eviction,			0x06),
+-	XGENE_PMU_EVENT_ATTR(dirty-eviction,			0x07),
+-	XGENE_PMU_EVENT_ATTR(read,				0x08),
+-	XGENE_PMU_EVENT_ATTR(write,				0x09),
+-	XGENE_PMU_EVENT_ATTR(request,				0x0a),
+-	XGENE_PMU_EVENT_ATTR(tq-bank-conflict-issue-stall,	0x0b),
+-	XGENE_PMU_EVENT_ATTR(tq-full,				0x0c),
+-	XGENE_PMU_EVENT_ATTR(ackq-full,				0x0d),
+-	XGENE_PMU_EVENT_ATTR(wdb-full,				0x0e),
+-	XGENE_PMU_EVENT_ATTR(odb-full,				0x10),
+-	XGENE_PMU_EVENT_ATTR(wbq-full,				0x11),
+-	XGENE_PMU_EVENT_ATTR(input-req-async-fifo-stall,	0x12),
+-	XGENE_PMU_EVENT_ATTR(output-req-async-fifo-stall,	0x13),
+-	XGENE_PMU_EVENT_ATTR(output-data-async-fifo-stall,	0x14),
+-	XGENE_PMU_EVENT_ATTR(total-insertion,			0x15),
+-	XGENE_PMU_EVENT_ATTR(sip-insertions-r-set,		0x16),
+-	XGENE_PMU_EVENT_ATTR(sip-insertions-r-clear,		0x17),
+-	XGENE_PMU_EVENT_ATTR(dip-insertions-r-set,		0x18),
+-	XGENE_PMU_EVENT_ATTR(dip-insertions-r-clear,		0x19),
+-	XGENE_PMU_EVENT_ATTR(dip-insertions-force-r-set,	0x1a),
+-	XGENE_PMU_EVENT_ATTR(egression,				0x1b),
+-	XGENE_PMU_EVENT_ATTR(replacement,			0x1c),
+-	XGENE_PMU_EVENT_ATTR(old-replacement,			0x1d),
+-	XGENE_PMU_EVENT_ATTR(young-replacement,			0x1e),
+-	XGENE_PMU_EVENT_ATTR(r-set-replacement,			0x1f),
+-	XGENE_PMU_EVENT_ATTR(r-clear-replacement,		0x20),
+-	XGENE_PMU_EVENT_ATTR(old-r-replacement,			0x21),
+-	XGENE_PMU_EVENT_ATTR(old-nr-replacement,		0x22),
+-	XGENE_PMU_EVENT_ATTR(young-r-replacement,		0x23),
+-	XGENE_PMU_EVENT_ATTR(young-nr-replacement,		0x24),
+-	XGENE_PMU_EVENT_ATTR(bloomfilter-clearing,		0x25),
+-	XGENE_PMU_EVENT_ATTR(generation-flip,			0x26),
+-	XGENE_PMU_EVENT_ATTR(vcc-droop-detected,		0x27),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(read-hit,			0x01),
++	PMU_EVENT_ATTR_ID(read-miss,			0x02),
++	PMU_EVENT_ATTR_ID(index-flush-eviction,		0x03),
++	PMU_EVENT_ATTR_ID(write-caused-replacement,	0x04),
++	PMU_EVENT_ATTR_ID(write-not-caused-replacement,	0x05),
++	PMU_EVENT_ATTR_ID(clean-eviction,		0x06),
++	PMU_EVENT_ATTR_ID(dirty-eviction,		0x07),
++	PMU_EVENT_ATTR_ID(read,				0x08),
++	PMU_EVENT_ATTR_ID(write,			0x09),
++	PMU_EVENT_ATTR_ID(request,			0x0a),
++	PMU_EVENT_ATTR_ID(tq-bank-conflict-issue-stall,	0x0b),
++	PMU_EVENT_ATTR_ID(tq-full,			0x0c),
++	PMU_EVENT_ATTR_ID(ackq-full,			0x0d),
++	PMU_EVENT_ATTR_ID(wdb-full,			0x0e),
++	PMU_EVENT_ATTR_ID(odb-full,			0x10),
++	PMU_EVENT_ATTR_ID(wbq-full,			0x11),
++	PMU_EVENT_ATTR_ID(input-req-async-fifo-stall,	0x12),
++	PMU_EVENT_ATTR_ID(output-req-async-fifo-stall,	0x13),
++	PMU_EVENT_ATTR_ID(output-data-async-fifo-stall,	0x14),
++	PMU_EVENT_ATTR_ID(total-insertion,		0x15),
++	PMU_EVENT_ATTR_ID(sip-insertions-r-set,		0x16),
++	PMU_EVENT_ATTR_ID(sip-insertions-r-clear,	0x17),
++	PMU_EVENT_ATTR_ID(dip-insertions-r-set,		0x18),
++	PMU_EVENT_ATTR_ID(dip-insertions-r-clear,	0x19),
++	PMU_EVENT_ATTR_ID(dip-insertions-force-r-set,	0x1a),
++	PMU_EVENT_ATTR_ID(egression,			0x1b),
++	PMU_EVENT_ATTR_ID(replacement,			0x1c),
++	PMU_EVENT_ATTR_ID(old-replacement,		0x1d),
++	PMU_EVENT_ATTR_ID(young-replacement,		0x1e),
++	PMU_EVENT_ATTR_ID(r-set-replacement,		0x1f),
++	PMU_EVENT_ATTR_ID(r-clear-replacement,		0x20),
++	PMU_EVENT_ATTR_ID(old-r-replacement,		0x21),
++	PMU_EVENT_ATTR_ID(old-nr-replacement,		0x22),
++	PMU_EVENT_ATTR_ID(young-r-replacement,		0x23),
++	PMU_EVENT_ATTR_ID(young-nr-replacement,		0x24),
++	PMU_EVENT_ATTR_ID(bloomfilter-clearing,		0x25),
++	PMU_EVENT_ATTR_ID(generation-flip,		0x26),
++	PMU_EVENT_ATTR_ID(vcc-droop-detected,		0x27),
+ 	NULL,
+ };
+ 
+ static struct attribute *iob_fast_pmu_v3_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(pa-req-buf-alloc-all,		0x01),
+-	XGENE_PMU_EVENT_ATTR(pa-req-buf-alloc-rd,		0x02),
+-	XGENE_PMU_EVENT_ATTR(pa-req-buf-alloc-wr,		0x03),
+-	XGENE_PMU_EVENT_ATTR(pa-all-cp-req,			0x04),
+-	XGENE_PMU_EVENT_ATTR(pa-cp-blk-req,			0x05),
+-	XGENE_PMU_EVENT_ATTR(pa-cp-ptl-req,			0x06),
+-	XGENE_PMU_EVENT_ATTR(pa-cp-rd-req,			0x07),
+-	XGENE_PMU_EVENT_ATTR(pa-cp-wr-req,			0x08),
+-	XGENE_PMU_EVENT_ATTR(ba-all-req,			0x09),
+-	XGENE_PMU_EVENT_ATTR(ba-rd-req,				0x0a),
+-	XGENE_PMU_EVENT_ATTR(ba-wr-req,				0x0b),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-shared-req-issued,		0x10),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-exclusive-req-issued,	0x11),
+-	XGENE_PMU_EVENT_ATTR(pa-wr-invalidate-req-issued-stashable, 0x12),
+-	XGENE_PMU_EVENT_ATTR(pa-wr-invalidate-req-issued-nonstashable, 0x13),
+-	XGENE_PMU_EVENT_ATTR(pa-wr-back-req-issued-stashable,	0x14),
+-	XGENE_PMU_EVENT_ATTR(pa-wr-back-req-issued-nonstashable, 0x15),
+-	XGENE_PMU_EVENT_ATTR(pa-ptl-wr-req,			0x16),
+-	XGENE_PMU_EVENT_ATTR(pa-ptl-rd-req,			0x17),
+-	XGENE_PMU_EVENT_ATTR(pa-wr-back-clean-data,		0x18),
+-	XGENE_PMU_EVENT_ATTR(pa-wr-back-cancelled-on-SS,	0x1b),
+-	XGENE_PMU_EVENT_ATTR(pa-barrier-occurrence,		0x1c),
+-	XGENE_PMU_EVENT_ATTR(pa-barrier-cycles,			0x1d),
+-	XGENE_PMU_EVENT_ATTR(pa-total-cp-snoops,		0x20),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-shared-snoop,		0x21),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-shared-snoop-hit,		0x22),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-exclusive-snoop,		0x23),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-exclusive-snoop-hit,		0x24),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-wr-invalid-snoop,		0x25),
+-	XGENE_PMU_EVENT_ATTR(pa-rd-wr-invalid-snoop-hit,	0x26),
+-	XGENE_PMU_EVENT_ATTR(pa-req-buffer-full,		0x28),
+-	XGENE_PMU_EVENT_ATTR(cswlf-outbound-req-fifo-full,	0x29),
+-	XGENE_PMU_EVENT_ATTR(cswlf-inbound-snoop-fifo-backpressure, 0x2a),
+-	XGENE_PMU_EVENT_ATTR(cswlf-outbound-lack-fifo-full,	0x2b),
+-	XGENE_PMU_EVENT_ATTR(cswlf-inbound-gack-fifo-backpressure, 0x2c),
+-	XGENE_PMU_EVENT_ATTR(cswlf-outbound-data-fifo-full,	0x2d),
+-	XGENE_PMU_EVENT_ATTR(cswlf-inbound-data-fifo-backpressure, 0x2e),
+-	XGENE_PMU_EVENT_ATTR(cswlf-inbound-req-backpressure,	0x2f),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(pa-req-buf-alloc-all,		0x01),
++	PMU_EVENT_ATTR_ID(pa-req-buf-alloc-rd,		0x02),
++	PMU_EVENT_ATTR_ID(pa-req-buf-alloc-wr,		0x03),
++	PMU_EVENT_ATTR_ID(pa-all-cp-req,		0x04),
++	PMU_EVENT_ATTR_ID(pa-cp-blk-req,		0x05),
++	PMU_EVENT_ATTR_ID(pa-cp-ptl-req,		0x06),
++	PMU_EVENT_ATTR_ID(pa-cp-rd-req,			0x07),
++	PMU_EVENT_ATTR_ID(pa-cp-wr-req,			0x08),
++	PMU_EVENT_ATTR_ID(ba-all-req,			0x09),
++	PMU_EVENT_ATTR_ID(ba-rd-req,			0x0a),
++	PMU_EVENT_ATTR_ID(ba-wr-req,			0x0b),
++	PMU_EVENT_ATTR_ID(pa-rd-shared-req-issued,	0x10),
++	PMU_EVENT_ATTR_ID(pa-rd-exclusive-req-issued,	0x11),
++	PMU_EVENT_ATTR_ID(pa-wr-invalidate-req-issued-stashable, 0x12),
++	PMU_EVENT_ATTR_ID(pa-wr-invalidate-req-issued-nonstashable, 0x13),
++	PMU_EVENT_ATTR_ID(pa-wr-back-req-issued-stashable,	0x14),
++	PMU_EVENT_ATTR_ID(pa-wr-back-req-issued-nonstashable, 0x15),
++	PMU_EVENT_ATTR_ID(pa-ptl-wr-req,		0x16),
++	PMU_EVENT_ATTR_ID(pa-ptl-rd-req,		0x17),
++	PMU_EVENT_ATTR_ID(pa-wr-back-clean-data,	0x18),
++	PMU_EVENT_ATTR_ID(pa-wr-back-cancelled-on-SS,	0x1b),
++	PMU_EVENT_ATTR_ID(pa-barrier-occurrence,	0x1c),
++	PMU_EVENT_ATTR_ID(pa-barrier-cycles,		0x1d),
++	PMU_EVENT_ATTR_ID(pa-total-cp-snoops,		0x20),
++	PMU_EVENT_ATTR_ID(pa-rd-shared-snoop,		0x21),
++	PMU_EVENT_ATTR_ID(pa-rd-shared-snoop-hit,	0x22),
++	PMU_EVENT_ATTR_ID(pa-rd-exclusive-snoop,	0x23),
++	PMU_EVENT_ATTR_ID(pa-rd-exclusive-snoop-hit,	0x24),
++	PMU_EVENT_ATTR_ID(pa-rd-wr-invalid-snoop,	0x25),
++	PMU_EVENT_ATTR_ID(pa-rd-wr-invalid-snoop-hit,	0x26),
++	PMU_EVENT_ATTR_ID(pa-req-buffer-full,		0x28),
++	PMU_EVENT_ATTR_ID(cswlf-outbound-req-fifo-full,	0x29),
++	PMU_EVENT_ATTR_ID(cswlf-inbound-snoop-fifo-backpressure, 0x2a),
++	PMU_EVENT_ATTR_ID(cswlf-outbound-lack-fifo-full,	0x2b),
++	PMU_EVENT_ATTR_ID(cswlf-inbound-gack-fifo-backpressure, 0x2c),
++	PMU_EVENT_ATTR_ID(cswlf-outbound-data-fifo-full,	0x2d),
++	PMU_EVENT_ATTR_ID(cswlf-inbound-data-fifo-backpressure, 0x2e),
++	PMU_EVENT_ATTR_ID(cswlf-inbound-req-backpressure,	0x2f),
+ 	NULL,
+ };
+ 
+ static struct attribute *iob_slow_pmu_v3_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(pa-axi0-rd-req,			0x01),
+-	XGENE_PMU_EVENT_ATTR(pa-axi0-wr-req,			0x02),
+-	XGENE_PMU_EVENT_ATTR(pa-axi1-rd-req,			0x03),
+-	XGENE_PMU_EVENT_ATTR(pa-axi1-wr-req,			0x04),
+-	XGENE_PMU_EVENT_ATTR(ba-all-axi-req,			0x07),
+-	XGENE_PMU_EVENT_ATTR(ba-axi-rd-req,			0x08),
+-	XGENE_PMU_EVENT_ATTR(ba-axi-wr-req,			0x09),
+-	XGENE_PMU_EVENT_ATTR(ba-free-list-empty,		0x10),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(pa-axi0-rd-req,		0x01),
++	PMU_EVENT_ATTR_ID(pa-axi0-wr-req,		0x02),
++	PMU_EVENT_ATTR_ID(pa-axi1-rd-req,		0x03),
++	PMU_EVENT_ATTR_ID(pa-axi1-wr-req,		0x04),
++	PMU_EVENT_ATTR_ID(ba-all-axi-req,		0x07),
++	PMU_EVENT_ATTR_ID(ba-axi-rd-req,		0x08),
++	PMU_EVENT_ATTR_ID(ba-axi-wr-req,		0x09),
++	PMU_EVENT_ATTR_ID(ba-free-list-empty,		0x10),
+ 	NULL,
+ };
+ 
+ static struct attribute *mcb_pmu_v3_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(req-receive,			0x01),
+-	XGENE_PMU_EVENT_ATTR(rd-req-recv,			0x02),
+-	XGENE_PMU_EVENT_ATTR(rd-req-recv-2,			0x03),
+-	XGENE_PMU_EVENT_ATTR(wr-req-recv,			0x04),
+-	XGENE_PMU_EVENT_ATTR(wr-req-recv-2,			0x05),
+-	XGENE_PMU_EVENT_ATTR(rd-req-sent-to-mcu,		0x06),
+-	XGENE_PMU_EVENT_ATTR(rd-req-sent-to-mcu-2,		0x07),
+-	XGENE_PMU_EVENT_ATTR(rd-req-sent-to-spec-mcu,		0x08),
+-	XGENE_PMU_EVENT_ATTR(rd-req-sent-to-spec-mcu-2,		0x09),
+-	XGENE_PMU_EVENT_ATTR(glbl-ack-recv-for-rd-sent-to-spec-mcu, 0x0a),
+-	XGENE_PMU_EVENT_ATTR(glbl-ack-go-recv-for-rd-sent-to-spec-mcu, 0x0b),
+-	XGENE_PMU_EVENT_ATTR(glbl-ack-nogo-recv-for-rd-sent-to-spec-mcu, 0x0c),
+-	XGENE_PMU_EVENT_ATTR(glbl-ack-go-recv-any-rd-req,	0x0d),
+-	XGENE_PMU_EVENT_ATTR(glbl-ack-go-recv-any-rd-req-2,	0x0e),
+-	XGENE_PMU_EVENT_ATTR(wr-req-sent-to-mcu,		0x0f),
+-	XGENE_PMU_EVENT_ATTR(gack-recv,				0x10),
+-	XGENE_PMU_EVENT_ATTR(rd-gack-recv,			0x11),
+-	XGENE_PMU_EVENT_ATTR(wr-gack-recv,			0x12),
+-	XGENE_PMU_EVENT_ATTR(cancel-rd-gack,			0x13),
+-	XGENE_PMU_EVENT_ATTR(cancel-wr-gack,			0x14),
+-	XGENE_PMU_EVENT_ATTR(mcb-csw-req-stall,			0x15),
+-	XGENE_PMU_EVENT_ATTR(mcu-req-intf-blocked,		0x16),
+-	XGENE_PMU_EVENT_ATTR(mcb-mcu-rd-intf-stall,		0x17),
+-	XGENE_PMU_EVENT_ATTR(csw-rd-intf-blocked,		0x18),
+-	XGENE_PMU_EVENT_ATTR(csw-local-ack-intf-blocked,	0x19),
+-	XGENE_PMU_EVENT_ATTR(mcu-req-table-full,		0x1a),
+-	XGENE_PMU_EVENT_ATTR(mcu-stat-table-full,		0x1b),
+-	XGENE_PMU_EVENT_ATTR(mcu-wr-table-full,			0x1c),
+-	XGENE_PMU_EVENT_ATTR(mcu-rdreceipt-resp,		0x1d),
+-	XGENE_PMU_EVENT_ATTR(mcu-wrcomplete-resp,		0x1e),
+-	XGENE_PMU_EVENT_ATTR(mcu-retryack-resp,			0x1f),
+-	XGENE_PMU_EVENT_ATTR(mcu-pcrdgrant-resp,		0x20),
+-	XGENE_PMU_EVENT_ATTR(mcu-req-from-lastload,		0x21),
+-	XGENE_PMU_EVENT_ATTR(mcu-req-from-bypass,		0x22),
+-	XGENE_PMU_EVENT_ATTR(volt-droop-detect,			0x23),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(req-receive,			0x01),
++	PMU_EVENT_ATTR_ID(rd-req-recv,			0x02),
++	PMU_EVENT_ATTR_ID(rd-req-recv-2,		0x03),
++	PMU_EVENT_ATTR_ID(wr-req-recv,			0x04),
++	PMU_EVENT_ATTR_ID(wr-req-recv-2,		0x05),
++	PMU_EVENT_ATTR_ID(rd-req-sent-to-mcu,		0x06),
++	PMU_EVENT_ATTR_ID(rd-req-sent-to-mcu-2,		0x07),
++	PMU_EVENT_ATTR_ID(rd-req-sent-to-spec-mcu,	0x08),
++	PMU_EVENT_ATTR_ID(rd-req-sent-to-spec-mcu-2,	0x09),
++	PMU_EVENT_ATTR_ID(glbl-ack-recv-for-rd-sent-to-spec-mcu, 0x0a),
++	PMU_EVENT_ATTR_ID(glbl-ack-go-recv-for-rd-sent-to-spec-mcu, 0x0b),
++	PMU_EVENT_ATTR_ID(glbl-ack-nogo-recv-for-rd-sent-to-spec-mcu, 0x0c),
++	PMU_EVENT_ATTR_ID(glbl-ack-go-recv-any-rd-req,	0x0d),
++	PMU_EVENT_ATTR_ID(glbl-ack-go-recv-any-rd-req-2,	0x0e),
++	PMU_EVENT_ATTR_ID(wr-req-sent-to-mcu,		0x0f),
++	PMU_EVENT_ATTR_ID(gack-recv,			0x10),
++	PMU_EVENT_ATTR_ID(rd-gack-recv,			0x11),
++	PMU_EVENT_ATTR_ID(wr-gack-recv,			0x12),
++	PMU_EVENT_ATTR_ID(cancel-rd-gack,		0x13),
++	PMU_EVENT_ATTR_ID(cancel-wr-gack,		0x14),
++	PMU_EVENT_ATTR_ID(mcb-csw-req-stall,		0x15),
++	PMU_EVENT_ATTR_ID(mcu-req-intf-blocked,		0x16),
++	PMU_EVENT_ATTR_ID(mcb-mcu-rd-intf-stall,	0x17),
++	PMU_EVENT_ATTR_ID(csw-rd-intf-blocked,		0x18),
++	PMU_EVENT_ATTR_ID(csw-local-ack-intf-blocked,	0x19),
++	PMU_EVENT_ATTR_ID(mcu-req-table-full,		0x1a),
++	PMU_EVENT_ATTR_ID(mcu-stat-table-full,		0x1b),
++	PMU_EVENT_ATTR_ID(mcu-wr-table-full,		0x1c),
++	PMU_EVENT_ATTR_ID(mcu-rdreceipt-resp,		0x1d),
++	PMU_EVENT_ATTR_ID(mcu-wrcomplete-resp,		0x1e),
++	PMU_EVENT_ATTR_ID(mcu-retryack-resp,		0x1f),
++	PMU_EVENT_ATTR_ID(mcu-pcrdgrant-resp,		0x20),
++	PMU_EVENT_ATTR_ID(mcu-req-from-lastload,	0x21),
++	PMU_EVENT_ATTR_ID(mcu-req-from-bypass,		0x22),
++	PMU_EVENT_ATTR_ID(volt-droop-detect,		0x23),
+ 	NULL,
+ };
+ 
+ static struct attribute *mc_pmu_v3_events_attrs[] = {
+-	XGENE_PMU_EVENT_ATTR(cycle-count,			0x00),
+-	XGENE_PMU_EVENT_ATTR(act-sent,				0x01),
+-	XGENE_PMU_EVENT_ATTR(pre-sent,				0x02),
+-	XGENE_PMU_EVENT_ATTR(rd-sent,				0x03),
+-	XGENE_PMU_EVENT_ATTR(rda-sent,				0x04),
+-	XGENE_PMU_EVENT_ATTR(wr-sent,				0x05),
+-	XGENE_PMU_EVENT_ATTR(wra-sent,				0x06),
+-	XGENE_PMU_EVENT_ATTR(pd-entry-vld,			0x07),
+-	XGENE_PMU_EVENT_ATTR(sref-entry-vld,			0x08),
+-	XGENE_PMU_EVENT_ATTR(prea-sent,				0x09),
+-	XGENE_PMU_EVENT_ATTR(ref-sent,				0x0a),
+-	XGENE_PMU_EVENT_ATTR(rd-rda-sent,			0x0b),
+-	XGENE_PMU_EVENT_ATTR(wr-wra-sent,			0x0c),
+-	XGENE_PMU_EVENT_ATTR(raw-hazard,			0x0d),
+-	XGENE_PMU_EVENT_ATTR(war-hazard,			0x0e),
+-	XGENE_PMU_EVENT_ATTR(waw-hazard,			0x0f),
+-	XGENE_PMU_EVENT_ATTR(rar-hazard,			0x10),
+-	XGENE_PMU_EVENT_ATTR(raw-war-waw-hazard,		0x11),
+-	XGENE_PMU_EVENT_ATTR(hprd-lprd-wr-req-vld,		0x12),
+-	XGENE_PMU_EVENT_ATTR(lprd-req-vld,			0x13),
+-	XGENE_PMU_EVENT_ATTR(hprd-req-vld,			0x14),
+-	XGENE_PMU_EVENT_ATTR(hprd-lprd-req-vld,			0x15),
+-	XGENE_PMU_EVENT_ATTR(wr-req-vld,			0x16),
+-	XGENE_PMU_EVENT_ATTR(partial-wr-req-vld,		0x17),
+-	XGENE_PMU_EVENT_ATTR(rd-retry,				0x18),
+-	XGENE_PMU_EVENT_ATTR(wr-retry,				0x19),
+-	XGENE_PMU_EVENT_ATTR(retry-gnt,				0x1a),
+-	XGENE_PMU_EVENT_ATTR(rank-change,			0x1b),
+-	XGENE_PMU_EVENT_ATTR(dir-change,			0x1c),
+-	XGENE_PMU_EVENT_ATTR(rank-dir-change,			0x1d),
+-	XGENE_PMU_EVENT_ATTR(rank-active,			0x1e),
+-	XGENE_PMU_EVENT_ATTR(rank-idle,				0x1f),
+-	XGENE_PMU_EVENT_ATTR(rank-pd,				0x20),
+-	XGENE_PMU_EVENT_ATTR(rank-sref,				0x21),
+-	XGENE_PMU_EVENT_ATTR(queue-fill-gt-thresh,		0x22),
+-	XGENE_PMU_EVENT_ATTR(queue-rds-gt-thresh,		0x23),
+-	XGENE_PMU_EVENT_ATTR(queue-wrs-gt-thresh,		0x24),
+-	XGENE_PMU_EVENT_ATTR(phy-updt-complt,			0x25),
+-	XGENE_PMU_EVENT_ATTR(tz-fail,				0x26),
+-	XGENE_PMU_EVENT_ATTR(dram-errc,				0x27),
+-	XGENE_PMU_EVENT_ATTR(dram-errd,				0x28),
+-	XGENE_PMU_EVENT_ATTR(rd-enq,				0x29),
+-	XGENE_PMU_EVENT_ATTR(wr-enq,				0x2a),
+-	XGENE_PMU_EVENT_ATTR(tmac-limit-reached,		0x2b),
+-	XGENE_PMU_EVENT_ATTR(tmaw-tracker-full,			0x2c),
++	PMU_EVENT_ATTR_ID(cycle-count,			0x00),
++	PMU_EVENT_ATTR_ID(act-sent,			0x01),
++	PMU_EVENT_ATTR_ID(pre-sent,			0x02),
++	PMU_EVENT_ATTR_ID(rd-sent,			0x03),
++	PMU_EVENT_ATTR_ID(rda-sent,			0x04),
++	PMU_EVENT_ATTR_ID(wr-sent,			0x05),
++	PMU_EVENT_ATTR_ID(wra-sent,			0x06),
++	PMU_EVENT_ATTR_ID(pd-entry-vld,			0x07),
++	PMU_EVENT_ATTR_ID(sref-entry-vld,		0x08),
++	PMU_EVENT_ATTR_ID(prea-sent,			0x09),
++	PMU_EVENT_ATTR_ID(ref-sent,			0x0a),
++	PMU_EVENT_ATTR_ID(rd-rda-sent,			0x0b),
++	PMU_EVENT_ATTR_ID(wr-wra-sent,			0x0c),
++	PMU_EVENT_ATTR_ID(raw-hazard,			0x0d),
++	PMU_EVENT_ATTR_ID(war-hazard,			0x0e),
++	PMU_EVENT_ATTR_ID(waw-hazard,			0x0f),
++	PMU_EVENT_ATTR_ID(rar-hazard,			0x10),
++	PMU_EVENT_ATTR_ID(raw-war-waw-hazard,		0x11),
++	PMU_EVENT_ATTR_ID(hprd-lprd-wr-req-vld,		0x12),
++	PMU_EVENT_ATTR_ID(lprd-req-vld,			0x13),
++	PMU_EVENT_ATTR_ID(hprd-req-vld,			0x14),
++	PMU_EVENT_ATTR_ID(hprd-lprd-req-vld,		0x15),
++	PMU_EVENT_ATTR_ID(wr-req-vld,			0x16),
++	PMU_EVENT_ATTR_ID(partial-wr-req-vld,		0x17),
++	PMU_EVENT_ATTR_ID(rd-retry,			0x18),
++	PMU_EVENT_ATTR_ID(wr-retry,			0x19),
++	PMU_EVENT_ATTR_ID(retry-gnt,			0x1a),
++	PMU_EVENT_ATTR_ID(rank-change,			0x1b),
++	PMU_EVENT_ATTR_ID(dir-change,			0x1c),
++	PMU_EVENT_ATTR_ID(rank-dir-change,		0x1d),
++	PMU_EVENT_ATTR_ID(rank-active,			0x1e),
++	PMU_EVENT_ATTR_ID(rank-idle,			0x1f),
++	PMU_EVENT_ATTR_ID(rank-pd,			0x20),
++	PMU_EVENT_ATTR_ID(rank-sref,			0x21),
++	PMU_EVENT_ATTR_ID(queue-fill-gt-thresh,		0x22),
++	PMU_EVENT_ATTR_ID(queue-rds-gt-thresh,		0x23),
++	PMU_EVENT_ATTR_ID(queue-wrs-gt-thresh,		0x24),
++	PMU_EVENT_ATTR_ID(phy-updt-complt,		0x25),
++	PMU_EVENT_ATTR_ID(tz-fail,			0x26),
++	PMU_EVENT_ATTR_ID(dram-errc,			0x27),
++	PMU_EVENT_ATTR_ID(dram-errd,			0x28),
++	PMU_EVENT_ATTR_ID(rd-enq,			0x29),
++	PMU_EVENT_ATTR_ID(wr-enq,			0x2a),
++	PMU_EVENT_ATTR_ID(tmac-limit-reached,		0x2b),
++	PMU_EVENT_ATTR_ID(tmaw-tracker-full,		0x2c),
+ 	NULL,
  };
  
 -- 
