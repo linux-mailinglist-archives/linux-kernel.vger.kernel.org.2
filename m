@@ -2,109 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5393338987C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01D8389882
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhESVUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:20:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46576 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229454AbhESVUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:20:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EB8C0B1F6;
-        Wed, 19 May 2021 21:18:54 +0000 (UTC)
-Date:   Wed, 19 May 2021 23:18:47 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     James Feeney <james@nurealm.net>
-Cc:     linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: linux 5.12 - fails to boot - soft lockup - CPU#0 stuck for 23s!
- - RIP smp_call_function_single
-Message-ID: <YKWAt1zLM2vfv4Sp@zn.tnic>
-References: <8a9599b2-f4fe-af9b-90f5-af39c315ec2f@nurealm.net>
- <YKIqDdFNaXYd39wz@zn.tnic>
- <1876afbe-a167-2be5-3690-846700eeb76c@nurealm.net>
- <YKTygvN0QNlExEQP@zn.tnic>
- <984ee4ab-6e6b-cb0e-a4f1-ce2951994b1d@nurealm.net>
+        id S229578AbhESVVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:21:34 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:49982 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhESVVd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:21:33 -0400
+Received: by mail-il1-f200.google.com with SMTP id w11-20020a92db4b0000b02901bb97fba647so7823235ilq.16
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:20:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=fHKEKHdPjoZhYVJRZoCAKKckDq3mCm+7VXF61UEPMbE=;
+        b=LuOb8d8OqX7kKh9gQqFdfgvFtHwmE8qF+kMku0xIG7hh0hRMDpnO2Hj/5O6/KpsXFG
+         VJf57itfv8umk53K/aSDhf+xYz8qM9EdizXbrc38FI6ucI2X4OFx7+3tlDcVcqdbbjGG
+         TIccVe77yoQydS6gqk2dMN0bBGAjXe24xS/DaEeJBw+nWm3XmETQ3G0yaIdReuPElJRl
+         58eAEriSugD/sVPGbSJrKUJLQDCzfYtlRBeg7a5GN9WBeZEOdAoFjb0zxDPuDn0f1ktm
+         /bCrgwWNAAxHaGAxBm0FE8COSH7VtsLg5okaZdioFRHR8Q4Uk2yM5QMuCVpBUBT1UTKR
+         KLQQ==
+X-Gm-Message-State: AOAM532DcKUq/EQqp0E4bzqeVBhCltBmYoPnS5ig6rAWMl/tXLX8XoV/
+        o+oqTWhrKLiSdrSs3VadiwNAprW6MnKUYyjabhZ2OO0FKmSx
+X-Google-Smtp-Source: ABdhPJx8VGV2AowHbhQLRUUM3t2/NTkPxF/lr8g2940N1fdAGo4lnn8PGW6H1XIbKr7SpsV+18LlWRt4H4yTIMVu63/Nu5zWdSEY
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <984ee4ab-6e6b-cb0e-a4f1-ce2951994b1d@nurealm.net>
+X-Received: by 2002:a05:6e02:e05:: with SMTP id a5mr1018062ilk.235.1621459212835;
+ Wed, 19 May 2021 14:20:12 -0700 (PDT)
+Date:   Wed, 19 May 2021 14:20:12 -0700
+In-Reply-To: <0000000000006932df0596121784@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000066201405c2b56476@google.com>
+Subject: Re: KCSAN: data-race in wbt_wait / wbt_wait
+From:   syzbot <syzbot+ba8947364367f96fe16b@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, elver@google.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzkaller-upstream-moderation@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 02:03:05PM -0600, James Feeney wrote:
-> I had to ask, and got this answer:
-> 
-> ====
-> The sources contain commits on top of upstream releases. This is why the tags contain -arch1 etc. For example, see https://git.archlinux.org/linux.git/log/?h=v5.11.16-arch1 , which adds 6 commits on top of the upstream "Linux 5.11.16" release, while https://git.archlinux.org/linux.git/log/?h=v5.12-arch1 only contains the long-standing "unprivileged_userns_clone" patch and the version number change, making it essentially vanilla.
-> ====
-> 
-> There are no additional kernel patches in the build.
-
-Yeah, ok, let's say you're running pretty much an upstream kernel.
-
-> These boots are consecutive and are all from the same stock 5.12.0 kernel.
-
-Yeah, that's weird. Box seems to boot fine in some cases. There's
-
-[   26.864040] ACPI: OSL: Resource conflict; ACPI support missing from driver?
-[   26.874541] ACPI: OSL: Resource conflict: System may be unstable or behave erratically
-
-Dunno how relevant this is - it probably has been the case since forever. 
-
-> $ make menuconfig
-> ...
-> 
-> This config option is not listed and is not changeable:
-
-Bah, sorry about that. Use this small hunk ontop so that you can disable
-it in menuconfig:
-
----
-diff --git a/drivers/thermal/intel/Kconfig b/drivers/thermal/intel/Kconfig
-index ce4f59213c7a..8c1376a20b54 100644
---- a/drivers/thermal/intel/Kconfig
-+++ b/drivers/thermal/intel/Kconfig
-@@ -9,7 +9,8 @@ config INTEL_POWERCLAMP
- 	  user interface is exposed via generic thermal framework.
- 
- config X86_THERMAL_VECTOR
--	def_bool y
-+	tristate "X86 thermal vector"
-+	default y
- 	depends on X86 && CPU_SUP_INTEL && X86_LOCAL_APIC
- 
- config X86_PKG_TEMP_THERMAL
----
-
-and with it ontop, boot it the aforementioned way.
-
-And then pls build 5.11 which doesn't have the therm_throt patch - I'd
-like to see if that therm_throt thing is even loading. Because I don't
-see something like:
-
-[    0.302411] mce: CPU0: Thermal monitoring enabled (TM2)
-
-in your dmesg. Could be some detection failure due to the change when
-those happen. Althouth they shouldn't but who knows.
-
-I have a similar box as yours:
-
-[    0.305858] smpboot: CPU0: Intel(R) Pentium(R) Dual  CPU  E2180  @ 2.00GHz (family: 0x6, model: 0xf, stepping: 0xd)
-
-a bit newer stepping and AFAIR, it boots fine but I'll try your .config
-there to check just in case.
-
-Thx.
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Auto-closing this bug as obsolete.
+Crashes did not happen for a while, no reproducer and no activity.
