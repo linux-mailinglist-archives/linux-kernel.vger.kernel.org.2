@@ -2,78 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD62388870
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66687388887
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242240AbhESHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:46:42 -0400
-Received: from mga02.intel.com ([134.134.136.20]:44814 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234879AbhESHql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:46:41 -0400
-IronPort-SDR: Jj44/z2AEc/GK2ugM9JhrnL0moFJFZZ0V3g1gzGzqkJVQESX3KkbGlgdcJnP3sJCYvJwSswYic
- F/fQsMEcEIEQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="188042600"
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="188042600"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 00:45:22 -0700
-IronPort-SDR: RPGXIXXASOkQEW3xJ1raYGkgwDAxWM2cnqOVNkfL8WTYoFlUhFZswFiUg4ZWx+qIg/p3nPfQy9
- /qclinwFaDqQ==
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="411625304"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 00:45:20 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ljGtI-00DARi-6B; Wed, 19 May 2021 10:45:16 +0300
-Date:   Wed, 19 May 2021 10:45:16 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
-Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to
- user space
-Message-ID: <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
-References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
- <20210518232451.GA7362@sol>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518232451.GA7362@sol>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S242706AbhESHuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:50:54 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21124 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237918AbhESHus (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 03:50:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621410569; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=bsxppbbnuRiOSu/qVyS/IG8aXaiQZ611ruIILDQ/cj4=; b=Q9/zwFVymQrXNGcYZPB6JjCXuVZ08NWgbh70YzN9CiZLY/5NmsSmx1dLNhWbR3gjM9TZhhTj
+ CdWuvL0hpddxvfB1bWYSWe7i1XAOhh/trew4+AZHJsf/eLe3yAGmDjLqdt41D7wcAIfOpJQa
+ 3aHWeVF+f7aofhtrLkEZIbLIUoM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60a4c3061449805ea27084cf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 07:49:26
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4965C43143; Wed, 19 May 2021 07:49:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EFFEDC4338A;
+        Wed, 19 May 2021 07:49:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EFFEDC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+Date:   Wed, 19 May 2021 00:49:16 -0700
+Message-Id: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
-> On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
-> > Currently it's possible that character device interface may return
-> > the error codes which are not supposed to be seen by user space.
-> > In this case it's EPROBE_DEFER.
-> > 
-> > Wrap it to return -ENODEV instead as sysfs does.
+Changes in V9:
+ - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3-qcom will
+   add the property by default from the kernel.
 
-> > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
-> > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
-> > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
+Changes in V8:
+ - Rebased to usb-testing
+ - Using devm_kzalloc for adding txfifo property in dwc3-qcom
+ - Removed DWC3 QCOM ACPI property for enabling the txfifo resize
 
-...
+Changes in V7:
+ - Added a new property tx-fifo-max-num for limiting how much fifo space the
+   resizing logic can allocate for endpoints with large burst values.  This
+   can differ across platforms, and tie in closely with overall system latency.
+ - Added recommended checks for DWC32.
+ - Added changes to set the tx-fifo-resize property from dwc3-qcom by default
+   instead of modifying the current DTSI files.
+ - Added comments on all APIs/variables introduced.
+ - Updated the DWC3 YAML to include a better description of the tx-fifo-resize
+   property and added an entry for tx-fifo-max-num.
 
-> You immediately revert this patch in patch 2.
-> My understanding is that is not allowed within a patch set.
+Changes in V6:
+ - Rebased patches to usb-testing.
+ - Renamed to PATCH series instead of RFC.
+ - Checking for fs_descriptors instead of ss_descriptors for determining the
+   endpoint count for a particular configuration.
+ - Re-ordered patch series to fix patch dependencies.
 
-> Why split the patches instead of going direct to the new helper?
+Changes in V5:
+ - Added check_config() logic, which is used to communicate the number of EPs
+   used in a particular configuration.  Based on this, the DWC3 gadget driver
+   has the ability to know the maximum number of eps utilized in all configs.
+   This helps reduce unnecessary allocation to unused eps, and will catch fifo
+   allocation issues at bind() time.
+ - Fixed variable declaration to single line per variable, and reverse xmas.
+ - Created a helper for fifo clearing, which is used by ep0.c
 
-It's for backporting to make it easier. (I deliberately left the context above)
+Changes in V4:
+ - Removed struct dwc3* as an argument for dwc3_gadget_resize_tx_fifos()
+ - Removed WARN_ON(1) in case we run out of fifo space
+ 
+Changes in V3:
+ - Removed "Reviewed-by" tags
+ - Renamed series back to RFC
+ - Modified logic to ensure that fifo_size is reset if we pass the minimum
+   threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
 
-I can fold them if maintainers think it's okay to do.
+Changes in V2:
+ - Modified TXFIFO resizing logic to ensure that each EP is reserved a
+   FIFO.
+ - Removed dev_dbg() prints and fixed typos from patches
+ - Added some more description on the dt-bindings commit message
 
+Currently, there is no functionality to allow for resizing the TXFIFOs, and
+relying on the HW default setting for the TXFIFO depth.  In most cases, the
+HW default is probably sufficient, but for USB compositions that contain
+multiple functions that require EP bursting, the default settings
+might not be enough.  Also to note, the current SW will assign an EP to a
+function driver w/o checking to see if the TXFIFO size for that particular
+EP is large enough. (this is a problem if there are multiple HW defined
+values for the TXFIFO size)
+
+It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
+is required for an EP that supports bursting.  Otherwise, there may be
+frequent occurences of bursts ending.  For high bandwidth functions,
+such as data tethering (protocols that support data aggregation), mass
+storage, and media transfer protocol (over FFS), the bMaxBurst value can be
+large, and a bigger TXFIFO depth may prove to be beneficial in terms of USB
+throughput. (which can be associated to system access latency, etc...)  It
+allows for a more consistent burst of traffic, w/o any interruptions, as
+data is readily available in the FIFO.
+
+With testing done using the mass storage function driver, the results show
+that with a larger TXFIFO depth, the bandwidth increased significantly.
+
+Test Parameters:
+ - Platform: Qualcomm SM8150
+ - bMaxBurst = 6
+ - USB req size = 256kB
+ - Num of USB reqs = 16
+ - USB Speed = Super-Speed
+ - Function Driver: Mass Storage (w/ ramdisk)
+ - Test Application: CrystalDiskMark
+
+Results:
+
+TXFIFO Depth = 3 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 193.60
+	  |           | 195.86
+          |           | 184.77
+          |           | 193.60
+-------------------------------------------
+
+TXFIFO Depth = 6 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 287.35
+	  |           | 304.94
+          |           | 289.64
+          |           | 293.61
+-------------------------------------------
+
+Wesley Cheng (5):
+  usb: gadget: udc: core: Introduce check_config to verify USB
+    configuration
+  usb: gadget: configfs: Check USB configuration before adding
+  usb: dwc3: Resize TX FIFOs to meet EP bursting requirements
+  usb: dwc3: dwc3-qcom: Enable tx-fifo-resize property by default
+  dt-bindings: usb: dwc3: Update dwc3 TX fifo properties
+
+ .../devicetree/bindings/usb/snps,dwc3.yaml         |  15 +-
+ drivers/usb/dwc3/core.c                            |   9 +
+ drivers/usb/dwc3/core.h                            |  15 ++
+ drivers/usb/dwc3/dwc3-qcom.c                       |   9 +
+ drivers/usb/dwc3/ep0.c                             |   2 +
+ drivers/usb/dwc3/gadget.c                          | 212 +++++++++++++++++++++
+ drivers/usb/gadget/configfs.c                      |  22 +++
+ drivers/usb/gadget/udc/core.c                      |  25 +++
+ include/linux/usb/gadget.h                         |   5 +
+ 9 files changed, 312 insertions(+), 2 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
