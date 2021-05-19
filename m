@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD16838967E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD78389681
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbhESTV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
+        id S231889AbhESTVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhESTV1 (ORCPT
+        with ESMTP id S229535AbhESTVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:21:27 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F61C06175F;
-        Wed, 19 May 2021 12:20:07 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c17so10595345pfn.6;
-        Wed, 19 May 2021 12:20:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uMIDYXiQCge+lCPg7jWJZVlhfPYt5aTIXixKF3xFdtw=;
-        b=Yg91ASxZAaNzg/r8+0Ydre6wM45Ae3A1iPokHrBnYytUGLfpFnHdf3IFz8HESX0/2+
-         g821YtdozGCEBqe5IWPqRoORjgSuvSUsnUJvkFHQmi1Z8EyDysdL0ajJwNlL5xiTuXsv
-         wFEKThjSNrz9xGLrgbp/gM/UJUw8aKgxniG4Yn3LJ2CAh4MiM/s09DXVGVwgC1M7Lc1O
-         mqFqDRB1Z5q6tLXZhXMkex5oVmrXUvI0/xcrkwhwr72xMCAoZJcgyVejktim5H+sPgp9
-         TLPqhl56m5cKFfFNduokObt8ZVxO6KXBoFBtUzi8i8SumVh20RnjYnxygdSMJ5gi3qzx
-         uvlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uMIDYXiQCge+lCPg7jWJZVlhfPYt5aTIXixKF3xFdtw=;
-        b=Dc3geLcgqBcQfWkwlO1vYuYn3/4o9akM2C0EzLHeC5tMz0mxGNk3uAntlFh/O3s4+o
-         HOTfsh9GKXRBX6Jt3hm95tC/igb2Hrv/nzK6kdkjOvpXQcz21smeaBc7XONbWmAyNxYc
-         HQM6dhqR16hLxw8+5n5DaTg4V2rQlx6uZnHI6J3l1SfxfC3rK9vvOSU0gRwawWTZ2Irk
-         f7DZAC77y/PC4SWxj5OwgbReHYK74sTitv66gxcK2MhB5ZFcEO6ECJXX+8+WdNexKO/d
-         C6pLyVZMCPW9q+hunoAHVRSupKB7sJtnp4mDIlIkEJVYMLNYV/NqIOfEQz6tI2EPIVVF
-         IgNg==
-X-Gm-Message-State: AOAM5300hlkX+sMiuvhTYB2ZdO4JL4q5RIBDr66w6RxGKvRgtYAnpEeM
-        YyF0SI69CfVx6ef0JLGtlRs=
-X-Google-Smtp-Source: ABdhPJylNyq7yX8wc3qiI92uMNP4dk54r6bNs8/LZR+DzeCwuyO2pJ1p5Agdk04xE/qvY5oPdEYXRQ==
-X-Received: by 2002:aa7:90d4:0:b029:28e:b912:acf with SMTP id k20-20020aa790d40000b029028eb9120acfmr661343pfk.43.1621452007052;
-        Wed, 19 May 2021 12:20:07 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id m5sm109361pgl.75.2021.05.19.12.20.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 12:20:06 -0700 (PDT)
-Subject: Re: [PATCH v7 07/15] swiotlb: Update is_swiotlb_active to add a
- struct device argument
-To:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-References: <20210518064215.2856977-1-tientzu@chromium.org>
- <20210518064215.2856977-8-tientzu@chromium.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6cae5ffa-f31b-ba08-c2cf-4a3dd76afb3b@gmail.com>
-Date:   Wed, 19 May 2021 12:20:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        Wed, 19 May 2021 15:21:46 -0400
+Received: from outbound1.mail.transip.nl (outbound1.mail.transip.nl [IPv6:2a01:7c8:7c8::72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A254EC06175F;
+        Wed, 19 May 2021 12:20:23 -0700 (PDT)
+Received: from submission14.mail.transip.nl (unknown [10.103.8.165])
+        by outbound1.mail.transip.nl (Postfix) with ESMTP id 4FljPd30KGzRjlT;
+        Wed, 19 May 2021 21:20:21 +0200 (CEST)
+Received: from transip.email (unknown [10.103.8.118])
+        by submission14.mail.transip.nl (Postfix) with ESMTPA id 4FljPb1nVZz2SSZt;
+        Wed, 19 May 2021 21:20:19 +0200 (CEST)
 MIME-Version: 1.0
-In-Reply-To: <20210518064215.2856977-8-tientzu@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Date:   Wed, 19 May 2021 21:20:19 +0200
+From:   Dave Olsthoorn <dave@bewaar.me>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: mwifiex firmware crash
+In-Reply-To: <20210515165338.7lqe6nqtkevpc5lh@pali>
+References: <20210515024227.2159311-1-briannorris@chromium.org>
+ <713286ddc100bd63a9dbefdece39c935@bewaar.me>
+ <20210515154042.mscvvyfapuvwdgzy@pali>
+ <ec4aa44faf41f2820c2f82317373033e@bewaar.me>
+ <20210515165338.7lqe6nqtkevpc5lh@pali>
+Message-ID: <61c5c6ef663d01f8505cadba47104bb5@bewaar.me>
+X-Sender: dave@bewaar.me
+User-Agent: Webmail
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: ClueGetter at submission14.mail.transip.nl
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=transip-a; d=bewaar.me; t=1621452019; h=from:subject:to:cc:
+ references:in-reply-to:date:mime-version:content-type;
+ bh=ZzpC85Xv4Cb2bHJAXt44ho3OyPZO3NRrH207lXMuyzE=;
+ b=kOWJ6cDuKf7y8GEX4QI0EroFyrhgefjqUfjtqfqgJOqkMY1wLRBVSUr9EmggVf+ELNjrg0
+ 6T8rjqAfFBWi5EWIwVunPFlTCLPYoSlLJot+feqNL2mwbBuckTVk5nq9gyTKl2v5FdrQMw
+ TEbFdGMDnrt8hBqohYy2FMFbs8AiA/qAeDBdhheJyBLd78NBdMCsXgt5Oe8c/4uYoqaDqS
+ P/xm2Fw388q4JNMinfQLtcjtZvhP9xRZQMlM9DbxEBnf7m5DtaIBnc9oujAjvjAim4BXHA
+ f2mpahM1wS+UDSJUMXG8efEjHUcSQpStw5f8Nf2zJeQHprUf5QREoPPDXmVJzQ==
+X-Report-Abuse-To: abuse@transip.nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+I'll drop some of the people since this is a sub-thread of the original, 
+I'll keep the lists for access to this using lore.kernel.org.
 
-On 5/17/2021 11:42 PM, Claire Chang wrote:
-> Update is_swiotlb_active to add a struct device argument. This will be
-> useful later to allow for restricted DMA pool.
+On 2021-05-15 18:53, Pali Rohár wrote:
+> Hello!
 > 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> On Saturday 15 May 2021 18:32:30 Dave Olsthoorn wrote:
+>> Hi,
+>> 
+>> On 2021-05-15 17:40, Pali Rohár wrote:
+>> > On Saturday 15 May 2021 17:10:31 Dave Olsthoorn wrote:
+>> > > The firmware still seems to crash quicker than previously, but
+>> > > that's a
+>> > > unrelated problem.
+>> >
+>> > Hello! Do you have some more details (or links) about mentioned firmware
+>> > crash?
+>> 
+>> Sure, firmware crashes have always been a problem on the Surface 
+>> devices.
+> 
+> What wifi chip you have on these devices? Because very similar firmware
+> crashes I see on 88W8997 chip (also with mwifiex) when wifi card is
+> configured in SDIO mode (not PCIe).
+> 
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+The Surface Pro 2017 has an 88W8897.
+
+> I know that there are new version of firmwares for these 88W8xxx chips,
+> but they are available only under NXP NDA and only for NXP customers.
+> So it looks like that end users with NXP wifi chips are out of luck.
+> 
+>> They seem to be related, at least for some of the crashes, to power
+>> management. For this reason I disabled powersaving in NetworkManager 
+>> which
+>> used to make it at least stable enough for me, in 5.13 this trick does 
+>> not
+>> seem to work.
+>> 
+>> The dmesg log attached shows a firmware crash happening, the card does 
+>> not
+>> work even after a reset or remove & rescan on the pci(e) bus.
+> 
+> Similar issue, card start working again only after whole system 
+> restart.
+> 
+> So this is something which can be resolved only in NXP.
+
+After a conversation with the author of the patches, the problem is not 
+the power management itself (for most hardware revisions [1]) but a race 
+where pci commands are being written while the device is being put to 
+sleep. A fix for this problem is included in the patches which make all 
+pci commands synchronous instead of asynchronous [2].
+
+After that a the wakeup patch seems relevant [3].
+
+<snip>
+>> There are patches [1] which have not been submitted yet and where 
+>> developed
+>> as part of the linux-surface effort [2]. From my experience these 
+>> patches
+>> resolve most if not all of the firmware crashes.
+> 
+> Is somebody going to cleanup these patches and send them for inclusion
+> into mainline kernel? I see that most of them are PCIe related, but due
+> to seeing same issues also on SDIO bus, I guess adding similar hooks
+> also for SDIO could make also SDIO more stable...
+
+The author plans to upstream them, he just hasn't gotten around to it.
+
+Regards,
+Dave
+
+[1]: 
+https://github.com/linux-surface/linux-surface/blob/master/patches/5.12/0002-mwifiex.patch#L2237-L2338
+[2]: 
+https://github.com/linux-surface/linux-surface/blob/master/patches/5.12/0002-mwifiex.patch#L1152-L1207
+[3]: 
+https://github.com/linux-surface/linux-surface/blob/master/patches/5.12/0002-mwifiex.patch#L1992-L2079
