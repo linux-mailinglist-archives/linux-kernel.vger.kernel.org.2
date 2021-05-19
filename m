@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C1638937B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02DB389373
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355167AbhESQTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:19:22 -0400
-Received: from gateway31.websitewelcome.com ([192.185.143.35]:12888 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345746AbhESQTU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:19:20 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id C1A68F8EF1C
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 11:14:36 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id jOqClu7BYFRe9jOqClsLFh; Wed, 19 May 2021 11:14:36 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=bvCWAHbH8eGnG7CPvvzIAg7IGUzCsPOMwFSTobGjWiU=; b=Rx84nMv42tFkR3Co7w5iE2qvMj
-        wAGTqUuD0Uy+NuAohCnoVYVdF/yZ3WcjfQch3T9Qt6/Fsa9YPOmDI1/3IqFNQ856Q3/FzAeb40K9a
-        pcKpyWPJnY6Xmrp9qje9aoSmZ6bfYQOJqr2xdgoP9hNhNOYiKm7RO6EI4fTFWtzDqqANkaJRmo1QC
-        5BAToZa/2UfWG3frC6xu4BQacGxrdyDcG6h+r+VkbEfno7NqzNfxurK0qLC7SDf57WmxEVFsLMLfT
-        JnKtcshN1Hjnt1mKPoyF8I97NNh6k69k/DRyYxY7WSZr9APy11ObGsOvPJmbHcDt4iSQ/nb4sAt+R
-        mwPiIxZQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:60144 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1ljOq9-000Ug6-83; Wed, 19 May 2021 11:14:33 -0500
-Subject: Re: [PATCH][next] media: venus: hfi_msgs.h: Replace one-element
- arrays with flexible-array members
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210211001044.GA69612@embeddedor>
- <bf31beab-dc36-23e9-757f-9729be59f7b2@embeddedor.com>
- <de8538ad-48d8-7a3c-af4f-ab31ee2da761@linaro.org>
- <f63824ee-fc8b-25cf-f3c2-c7b3947b8076@embeddedor.com>
- <64aa38bc-62b2-79d9-156f-74a09f11f871@linaro.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <d4c57054-5708-fcd3-dd9d-fb26c40f6355@embeddedor.com>
-Date:   Wed, 19 May 2021 11:15:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1355027AbhESQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:17:34 -0400
+Received: from mail-dm6nam11on2081.outbound.protection.outlook.com ([40.107.223.81]:17121
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240333AbhESQRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:17:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CoiwbB8BVaSZkncDayN9p3iuHFi55eLbAZLcWjbdZLNG+RMxVDFhIZogHlhVh5FU7c9jWpTlgVv5KmbOLejGh/RcQ4DGLHDjDBq+cyHE5Ve9rfpttk54iFL1Cb7TMn+8pqD5hNGiat/FvpS8HTMGWcbvhRI6bqMtQj0jPj3amy0JydAjD3jJgRtRAUKpylpYpA2oIlVgxzcHc5Okq0YiFXXHXIwiqQEdKU86VSeVfHhR+3T8AXgAHpYOj33rT/RQNl3NA+eGnkw8fxTttfDZ8Pv5+3AShE+OMkpkC6/7bQmCBYFrpFEqHArpnUDapRAyOoR05j1/LfyAL5UOI03BVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KTcK0ozGxWWZN+CzITmegu1gO+pLoHC4OUiJscY4xwM=;
+ b=Z04tgIzF5nB2+KR8HEBxjmpobEcfZ3I/JLYMA5EAV4D1hP2DXwuZsjuaGUk6RHcsNMA7w5zmwHPhW6vznOWGOD7e8/HfDknBLLJXWZ15q5kAe7j8ElOB5WkUtDBKXD1GKgRyTG2Q0Eskd3qSdLAxT1FHRc4SlhoiC3NSj24388LkqmW0+asT6PI4LgRXpVOLuhiP/HQwH45SK/v5QTxSzZwLjP0MmqVXwETR5EENWSqhb5dIq0w2y8bDqaxoHlzu0YlSo1uDch1UcqPnRd5A6c2mGL50hJj6EjTQWZNlWeeY3yrMKl7nvQDILOY0oXnwcQbplx8a5lUUAK1Ny/qezg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KTcK0ozGxWWZN+CzITmegu1gO+pLoHC4OUiJscY4xwM=;
+ b=dIArLLXdaPMgJg+phRr6a60QXRyMIVEYfCoFbx/nzAOlJqe7SpJHETAC9kX9Bwv92YQWy5r/KmfrXfcOex/5axZJhPbCsjT2txuaQUskmklFpAG/F+A78viBRCV4QkRGsaCaQrRl/nOUib87MVpt5coZLiL83cPXgAnp7WzBhhIqrXpe7bLXvJ3fk9iHxbGNH6or3qcnDEUZlSrHsatqQUSnL+lTvjJPKYWflo5179vE+xjyOoXfuUf23kVGgLIMpUIQZxNSYgjYzjSAKkQ9WFMkxP/qLWCFzpZmStD3Hys8plJdMxSM8EHLek17fSTx6jdEYpGGy72SzgSuQFqvyQ==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4265.namprd12.prod.outlook.com (2603:10b6:5:211::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Wed, 19 May
+ 2021 16:16:11 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.033; Wed, 19 May 2021
+ 16:16:11 +0000
+Date:   Wed, 19 May 2021 13:16:10 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+Message-ID: <20210519161610.GO1002214@nvidia.com>
+References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
+ <20210519153921.804887-3-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519153921.804887-3-akrowiak@linux.ibm.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL0PR02CA0001.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::14) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <64aa38bc-62b2-79d9-156f-74a09f11f871@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1ljOq9-000Ug6-83
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:60144
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0001.namprd02.prod.outlook.com (2603:10b6:207:3c::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.33 via Frontend Transport; Wed, 19 May 2021 16:16:11 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljOri-00Akm4-9h; Wed, 19 May 2021 13:16:10 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cf9d9479-3275-45b6-d464-08d91ae16b1d
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4265:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4265B00B509384113113E367C22B9@DM6PR12MB4265.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YzuE8YooH2sMo9iOOrMiwLSxNK+rSpbRlODofIqHNbaOZ/CLKMRXs8/Qgq4cCUEAtyCwa92soFADOkm1yUeBS2T8bU7pRP/HSUy0OgKy+JtYsNJI+wlq6RK0+dqakUEwXCTogx7j+kfFjLJBHl3rlTKmfAcQAVUaqMoMox03kTIui8jIJLt1VPZ4iGWxQFCSfFuyj6PLULCY612K+F6GAXSfnFnlthtAKp711qWe8W0qyQF0BQ2nnnGI7z8ZZ+2AKGaFw2PRoY6QBScrz0Kv3f6oEo2oHN5KrGkD2v5fx1udJ8S0SSnTlHDd3QGSuAUog038xutxUPEWjua+CXtntzOjMCokVbY62vm0wFB6fi6sDpHU6b+g7Vsa6SeMG+IlqUCIhBZ0k9OSF3s/8CduEH8Kv3S6tk2Ymc5tm5yIU2ioYSqFQ38d9Re9uj9Jigm0Uc4vIPMgEarrDOGUclZcsvCD6zdpVhsdXOZnig6WNP54J95NzFG7pgnK0d/YkprXHtysbkraBqnAAwuyHWHqqQ0G5Efr+WDNFzIhDLzJia9ISc6Csh9JFfIck0px4LaDjdJHKH243A7rlJev7kRcmsBxCYe/zhLU7uQz1vMTSzg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(396003)(39860400002)(1076003)(478600001)(66476007)(8936002)(86362001)(36756003)(2906002)(8676002)(4326008)(107886003)(6916009)(5660300002)(66946007)(316002)(38100700002)(26005)(83380400001)(33656002)(2616005)(9786002)(186003)(9746002)(426003)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SS5KnuL2Fzcn9p3/1sK4Jjfv18bVHebEVBaRT+cTcc4v7TThL/W5oRttSBMV?=
+ =?us-ascii?Q?IMvx3daBe2W8Om0yAsaqtOOMtJRUe76oe4ZDWKw4Ku6jmgYqtoCyWtyvgo+9?=
+ =?us-ascii?Q?hhgyZymo/fPfhPP9rJi7q8PjS1qG+PaNbZqj5KoHXbD+JIzaxXhPYulcoN9c?=
+ =?us-ascii?Q?k5kREsjIgVSJofCtaOm7O6EFJSGws7Jqmn+O4JIt+Z02cGkZc1+OOMDXSyNp?=
+ =?us-ascii?Q?T+jLyfNRt4OyLe9wyhcpMBA10/38xs/vCqiyhoGT10AwB8gkZFgdR0irDKvc?=
+ =?us-ascii?Q?fjBzR7ev82uJJcHBxACGC3LXDyX8JoelP5Nr1FUdWdQ5S38hHl4VtdnGyjaz?=
+ =?us-ascii?Q?RTbzbbupOb2S+ydZ0tliakGRJBSlwlaQZsLKcNSdkQAFOe2IE8R1iZtZ3ktc?=
+ =?us-ascii?Q?874vN2E5TKyk284YUTk2srhuIHRV7H1L+oEn54+NHT7QMWhCXEgUIIR6IJg9?=
+ =?us-ascii?Q?9nSPPgppS4m5LiyLg15OSFhAUCq/Xud/RaGjOchicENC+bYoNEF0dusd8S0g?=
+ =?us-ascii?Q?18rY1yDER0/GihIe1x6d9vvEHnPgBIWrUo+dzbij1fbAp/2TgJc8yp0MKr5u?=
+ =?us-ascii?Q?euY9d5/bilWWSH9OQRHyGVEylkCGx2UGNUzvRWWgq4rPIuEdtXRa9cnEutBq?=
+ =?us-ascii?Q?5okdblWehJG/+HCt0QFjiK4n6nBhDRulJ/k7tcZcJeDbDU9GQZD1sjhyuM/i?=
+ =?us-ascii?Q?+Ijg2uE0ZlYbpf/9HoMDUHFax6hzfND6q6q3eHLKQnSqXq+pDnjMYpSIGJmu?=
+ =?us-ascii?Q?3djV6upqohus7/1wVww47CtEZ/ke+gxTs5A0KM9bpR/yINkuh9umX9aOoAmu?=
+ =?us-ascii?Q?NtrnlyMQsKK2V9C08yWM1FDeLsFsemrMFJWVQmTceXmbaFm0AUreu/xaVH1D?=
+ =?us-ascii?Q?Pdwrd06EfHVi11dq2km0ckPQb41G3rqJcX+pW35+N6OMlpNr7seCa0uldt6K?=
+ =?us-ascii?Q?SUQhxoMBFm4JSUFNEv2qrU8rjnytR1rSrYXI6zRLzlyQWZll3FToY5ADvUbr?=
+ =?us-ascii?Q?aGQAedW1n1oqXlG+/r3QXFZ7TgDFEpok5qgzwuZTrt9yqHs5TtOt8wT31HYd?=
+ =?us-ascii?Q?cas/Bnk6DyODt9PHGDYhvJ1AEhpbdqfbdI/ogjdcrO6GizqYveWmkcaJl/lX?=
+ =?us-ascii?Q?aczohtiECacn+HaoYBfB5589whJbOf5C4Khok2cHEoyjRaQKE4IZ7cugZW2m?=
+ =?us-ascii?Q?ZviJvEQRxzevGMZ7hHt3Y5eAVRR4+S+qQCpwc+DNTh/opjmrUkd4mmBhJb7s?=
+ =?us-ascii?Q?FsIKtf/WGCrI49JHZIqoZFmh8zyMM2zXeH1Tjjn/Ten4GXviXl/MlJbL3Vbs?=
+ =?us-ascii?Q?BcTa2nNE2r/InkhU2zUbq2UN?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf9d9479-3275-45b6-d464-08d91ae16b1d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2021 16:16:11.7865
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wvgw0e4DnHZ3PKnVnbodGKQEsWTFXXi9Duxtx0I+Gt0NAJx9ZzldLc5qKT/DWBGf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4265
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanimir,
+On Wed, May 19, 2021 at 11:39:21AM -0400, Tony Krowiak wrote:
 
-On 5/17/21 06:01, Stanimir Varbanov wrote:
+> @@ -287,13 +289,17 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+>  	if (!(vcpu->arch.sie_block->eca & ECA_AIV))
+>  		return -EOPNOTSUPP;
+>  
+> -	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
+> -	mutex_lock(&matrix_dev->lock);
+> +	rcu_read_lock();
+> +	pqap_module_hook = rcu_dereference(vcpu->kvm->arch.crypto.pqap_hook);
+> +	if (!pqap_module_hook) {
+> +		rcu_read_unlock();
+> +		goto set_status;
+> +	}
+>  
+> -	if (!vcpu->kvm->arch.crypto.pqap_hook)
+> -		goto out_unlock;
+> -	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
+> -				   struct ap_matrix_mdev, pqap_hook);
+> +	matrix_mdev = pqap_module_hook->data;
+> +	rcu_read_unlock();
+> +	mutex_lock(&matrix_dev->lock);
 
->>> This one introduces regressions, so I cannot take it. It needs some more
->>> work.
->>
->> Please, share with me the errors or warnings you see with this. So, I can
->> have an idea of what is going on. Unfortunately, I don't have access to the
->> test suite or hardware to test this.
-> 
-> I guess it needs more debugging, but the simple answer is that the
-> driver refuse to start streaming with this patch.
+The matrix_mdev pointer was extracted from the pqap_module_hook,
+but now there is nothing protecting it since the rcu was dropped and
+it gets freed in vfio_ap_mdev_remove.
 
-I see. Please, share with me the details about your test setup. Are you using
-qemu or actual hardware for this?
+And, again, module locking doesn't prevent vfio_ap_mdev_remove() from
+being called. None of these patches should be combining module locking
+with RCU.
 
-Please, also help me by sending me your .config file and dmesg output, as well.
-So, I can try to debug this.
-
-Thanks!
---
-Gustavo
+Jason
