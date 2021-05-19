@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CFE38932E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C678B389331
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355062AbhESQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:03:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56959 "EHLO m43-7.mailgun.net"
+        id S1355081AbhESQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:04:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346574AbhESQC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:02:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621440096; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=f3esNVJWkyreSf7lUucLsVmFEpcwPaQNQn4DlkwCpPk=;
- b=ib51Cixrc97uvU3/jgQwHjeZPYQVprHkZNDgHzH2qnsgk9O5NNrhkdP7+W516IInDyVE/kO2
- A3XlGImg1O6eOoO3vILyGe8nXevkrRYskMtCZhL6jpoXUL4YVlAFmwfR5b/EdjO47oG16Vwc
- SSbs2DvciNmxYR2bY1bqH+eUvfA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60a5363fb15734c8f97708f2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 16:01:03
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08D2AC4323A; Wed, 19 May 2021 16:01:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34CC2C433F1;
-        Wed, 19 May 2021 16:01:02 +0000 (UTC)
+        id S1346574AbhESQEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:04:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC91611BF;
+        Wed, 19 May 2021 16:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621440190;
+        bh=JZ5ttupHJEOD9whNallqTU+f5HydGhX1QoErpDhMSqc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pK80JGjcsfTNR77RvDU/cvsZsF0N9SpohJW9XQJaXGVTLtFhs9vZO0mfB8Qr/6yP1
+         WeDPA9KpMxok/EFnJe+k7/XORUQWRS1slPmZKqwOWUobnEANqAoyr5w/7wWWmc+RMx
+         qxmSTLpdSAIBzMBO0t4HXq7D8VfJGTzne7w68Wjk=
+Date:   Wed, 19 May 2021 18:03:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jeff Johnson <jjohnson@codeaurora.org>
+Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jjohnson=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v2] b43: don't save dentries for debugfs
+Message-ID: <YKU2vMoDO0Ch1Lyg@kroah.com>
+References: <20210518163304.3702015-1-gregkh@linuxfoundation.org>
+ <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
+ <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
+ <YKScfFKhxtVqfRkt@kroah.com>
+ <2eb3af43025436c0832c8f61fbf519ad@codeaurora.org>
+ <YKUyAoBq/cepglmk@kroah.com>
+ <48aea7ae33faaafab388e24c3b8eb199@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 19 May 2021 09:01:02 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
- correctly
-In-Reply-To: <CAE-0n53VUr=f=PKnO5HhXZ3BAG_mNBwmQrfQPxHvxLZPDReA+g@mail.gmail.com>
-References: <1621013713-6860-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n53VUr=f=PKnO5HhXZ3BAG_mNBwmQrfQPxHvxLZPDReA+g@mail.gmail.com>
-Message-ID: <c1a3ced9ac4682bae310712a11576322@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <48aea7ae33faaafab388e24c3b8eb199@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-18 14:42, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-05-14 10:35:13)
->> irq_hpd interrupt should be handled after dongle plugged in and
->> before dongle unplugged. Hence irq_hpd interrupt is enabled at
->> the end of the plugin handle and disabled at the beginning of
->> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
->> handled same as the dongle unplugged which tears down the mainlink
->> and disables the phy. This patch fixes this problem by only tearing
->> down the mainlink but keeping phy enabled at irq_hpd with
->> sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
->> handled by setup mainlink only.
->> 
->> Changes in v2:
->> -- add ctrl->phy_Power_count
->> 
->> Changes in v3:
->> -- del ctrl->phy_Power_count
->> -- add phy_power_off to dp_ctrl_off_link_stream()
->> 
->> Changes in v4:
->> -- return immediately if clock disable failed at 
->> dp_ctrl_off_link_stream()
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+On Wed, May 19, 2021 at 08:57:00AM -0700, Jeff Johnson wrote:
+> On 2021-05-19 08:42, Greg Kroah-Hartman wrote:
+> > On Wed, May 19, 2021 at 08:04:59AM -0700, Jeff Johnson wrote:
+> > > On 2021-05-18 22:05, Greg Kroah-Hartman wrote:
+> > > > On Tue, May 18, 2021 at 03:00:44PM -0700, Jeff Johnson wrote:
+> > > > > On 2021-05-18 12:29, Jeff Johnson wrote:
+> > > > > Would still like guidance on if there is a recommended way to get a
+> > > > > dentry not associated with debugfs.
+> > > >
+> > > > What do you exactly mean by "not associated with debugfs"?
+> > > >
+> > > > And why are you passing a debugfs dentry to relay_open()?  That feels
+> > > > really wrong and fragile.
+> > > 
+> > > I don't know the history but the relay documentation tells us:
+> > > "If you want a directory structure to contain your relay files,
+> > > you should create it using the host filesystem’s directory
+> > > creation function, e.g. debugfs_create_dir()..."
+> > > 
+> > > So my guess is that the original implementation followed that
+> > > advice.  I see 5 clients of this functionality, and all 5 pass a
+> > > dentry returned from debugfs_create_dir():
+> > > 
+> > > drivers/gpu/drm/i915/gt/uc/intel_guc_log.c, line 384
+> > > drivers/net/wireless/ath/ath10k/spectral.c, line 534
+> > > drivers/net/wireless/ath/ath11k/spectral.c, line 902
+> > > drivers/net/wireless/ath/ath9k/common-spectral.c, line 1077
+> > > kernel/trace/blktrace.c, line 549
+> > 
+> > Ah, that's just the "parent" dentry for the relayfs file.  That's fine,
+> > not a big deal, debugfs will always provide a way for you to get that if
+> > needed.
 > 
-> I think we want some Fixes tag. Not sure what it would be though.
-> 
-> I also noticed that if I plug and unplug the HDMI cable from my apple
-> dongle that I see this error message
-> 
->   [drm:dp_display_usbpd_attention_cb] *ERROR* Disconnected, no
-> DP_LINK_STATUS_UPDATED
+> Unless debugfs is disabled, like on Android, which is the real problem I'm
+> trying to solve.
 
-> *ERROR* Disconnected, no DP_LINK_STATUS_UPDATED <== this is caused by 
-> dongle generate the second
-irq_hpd with sink_count = 0 after first first irq_hpd with sink_count = 
-0. The fix is you have
-set dongle to D3 (power off) state after first irq_pd with sink_count = 
-0 handled.
-I have a patch fix this problem. I will merge and re submit for review.
+Then use some other filesystem to place your relay file in.  A relay
+file is not a file that userspace should rely on for normal operation,
+so why do you need it at all?
 
-> which looks like the irq_hpd comes in while I'm disconnecting the HDMI
-> cable but the hpd_state is ST_DISCONNECTED. The state is set to
-> ST_DISCONNECTED in msm_dp_display_disable() so it seems that userspace
-> has turned off the external display, and then the kthread runs for the
-> irq_hpd but it's too late.
-> 
-> Something is missing from this patch then to properly disable the
-> IRQ_HPD interrupt before telling userspace that the external display is
-> disconnected. Shouldn't we be toggling the irq enable bits from the
-> hardirq context when we figure out what it is? The logic would be
-> 
->  in_hardirq() {
-> 
->    if (hpd high)
->       enable_irq_hpd(); // Probably this can be delayed to the kthread
-> after enabling the link
-> 
->    if (hpd_low)
->       disable_irq_hpd(); // But this certainly cannot be in the kthread
-> 
->    else if (irq_hpd) // Notice the else-if so that if hpd is low we
-> don't even try to handle irq_hpd if it came in at the same time
->       handle_irq_hpd();
->  }
-> 
-> Because we can't really mess with the irq controls in the kthread when
-> hpd goes low, it will be too late. For all we know, the kthread could
-> run seconds later, after an irq_hpd has come bouncing in at the same
-> time and pushed an irq_hpd handling event onto the kthread.
+What tools/operation requires access to this file that systems without
+debugfs support is causing problems on?
+
+thanks,
+
+greg k-h
