@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482B5388D50
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B9E388D54
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352819AbhESL5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:57:12 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:26305 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbhESL5L (ORCPT
+        id S1352898AbhESL5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352823AbhESL5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:57:11 -0400
+        Wed, 19 May 2021 07:57:49 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A66C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:56:30 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x8so13710835wrq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1621425352; x=1652961352;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=7wOlZ2gzX8M1e1TcLJxy2vcRUtwsLg/oGU7mZHfCpco=;
-  b=Di3O54SCXdQjZMrt64GcdQdEJsE1PXSS5uKcJqED560Xv71QLnCrP2Wu
-   6/W0ohPnAxKlwMJFTueAhsj/qGAvEuNAFU7K9FW7rMnR/gkqwUChJK8T/
-   SH091VKJKVIgFaFbWTn/i3jRbxP6cDbIsL9jH7bZojXSG57GERevd/r8B
-   A=;
-X-IronPort-AV: E=Sophos;i="5.82,312,1613433600"; 
-   d="scan'208";a="108697019"
-Subject: Re: [PATCH v2 08/10] KVM: VMX: Set the TSC offset and multiplier on nested
- entry and exit
-Thread-Topic: [PATCH v2 08/10] KVM: VMX: Set the TSC offset and multiplier on nested entry
- and exit
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 19 May 2021 11:55:51 +0000
-Received: from EX13MTAUEE001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 96BC8A1F72;
-        Wed, 19 May 2021 11:55:47 +0000 (UTC)
-Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
- EX13MTAUEE001.ant.amazon.com (10.43.62.226) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Wed, 19 May 2021 11:55:44 +0000
-Received: from EX13D18EUA001.ant.amazon.com (10.43.165.58) by
- EX13D08UEB001.ant.amazon.com (10.43.60.245) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Wed, 19 May 2021 11:55:43 +0000
-Received: from EX13D18EUA001.ant.amazon.com ([10.43.165.58]) by
- EX13D18EUA001.ant.amazon.com ([10.43.165.58]) with mapi id 15.00.1497.018;
- Wed, 19 May 2021 11:55:43 +0000
-From:   "Stamatis, Ilias" <ilstam@amazon.com>
-To:     "seanjc@google.com" <seanjc@google.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "zamsden@gmail.com" <zamsden@gmail.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Thread-Index: AQHXR0FPCDaBzFcBrUGdKtsaYHCYIarp94cAgADEW4A=
-Date:   Wed, 19 May 2021 11:55:43 +0000
-Message-ID: <a506d7cf3cde8c2b258fb6d31088030e2ce171ab.camel@amazon.com>
-References: <20210512150945.4591-1-ilstam@amazon.com>
-         <20210512150945.4591-9-ilstam@amazon.com> <YKRW3EF5NHBlJEOn@google.com>
-In-Reply-To: <YKRW3EF5NHBlJEOn@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.166.148]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0D0B452918BD2D468236E29CE8B50089@amazon.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tywEFb4vp0ELML71nnp+3Fg0yJB6HJRt5hv7Bnh2ISE=;
+        b=zHRh08vDkJN66J2tWvBYCucBoSBvHiDxBECiPzMCzRNK21lcuuPtpyCi2Dypq3rAbR
+         PXctT9x/1L2rWQUplaqdeFfccWRnDjlI+wVyHQcGHHn5clpG/7js1sDp+6wHG6yLFhf5
+         ym7xls6t8CpUCce7QtSytRJYwenWMUSn7Q6E2lT1wew3YM5vsrcEvGjfR6YAYkP5L0RK
+         yfV+tI4+yKioRuo4+664vYINpCSEBo3EW2bgt9aCHE/2jFExl5kk6PchqGmj9ANAgPAn
+         cOtYfIan8XZv8RPbJSM3npF485fFueG2p8gsuC4sl6mw5UgQc93OCcju/qbF3RObctfL
+         TezQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tywEFb4vp0ELML71nnp+3Fg0yJB6HJRt5hv7Bnh2ISE=;
+        b=CrFA+nHZgR/SAQYT3stnQNd8qcsrg6RZln6vcZXnLuqiKmRwV95ANwS/09rmePFwa2
+         3cdgaLkUvNLR0wzWnI2YFjk1e48wRYccBD4hpx9KR3kAiPfFHRR64WAA67aJqoyMQT39
+         /YDNhEpHUTH91/xovBX7Dt/908veWXXZ/Pnaxe3Aa5U644fKteen/b3Q5QrBE1eV5fc3
+         usivm9U/o3Crh89gS3spH4GL44sf1p/P1W48WIdnXO67G3JO6Euk8RuTNf3BUGO7JExA
+         XU+wrl8p9ZOffZIcTUcr8NX3/fRre7U8mkPj85T6zn0U2n12Qh56V6w9bqt7v8IAi4KX
+         eKFA==
+X-Gm-Message-State: AOAM530UxsRx+CLGnP5OKIryY8nRJ5R88GoeByXdv2jtQzL3Nq1OwKji
+        ecZT9AHJZQpx5ZG692dUVfg6HlsBc3/d3Q==
+X-Google-Smtp-Source: ABdhPJz2vIsE2USfXvF8zgxO5QbHoPaqhASWfvswHoU/c0B0fm/bi2xlXJYtE+upEc4pNIB3/lVx3w==
+X-Received: by 2002:a5d:5508:: with SMTP id b8mr13664638wrv.278.1621425388572;
+        Wed, 19 May 2021 04:56:28 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id h14sm31788062wrq.45.2021.05.19.04.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 04:56:28 -0700 (PDT)
+Date:   Wed, 19 May 2021 12:56:26 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jian Dong <dj0227@163.com>
+Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com,
+        Jian Dong <dongjian@yulong.com>
+Subject: Re: [PATCH] mfd: si476x-cmd: fix two typos
+Message-ID: <20210519115626.GE2403908@dell>
+References: <1620379295-144373-1-git-send-email-dj0227@163.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1620379295-144373-1-git-send-email-dj0227@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA1LTE5IGF0IDAwOjA3ICswMDAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
-b3RlOg0KPiBPbiBXZWQsIE1heSAxMiwgMjAyMSwgSWxpYXMgU3RhbWF0aXMgd3JvdGU6DQo+ID4g
-Tm93IHRoYXQgbmVzdGVkIFRTQyBzY2FsaW5nIGlzIHN1cHBvcnRlZCB3ZSBuZWVkIHRvIGNhbGN1
-bGF0ZSB0aGUNCj4gPiBjb3JyZWN0IDAyIHZhbHVlcyBmb3IgYm90aCB0aGUgb2Zmc2V0IGFuZCB0
-aGUgbXVsdGlwbGllciB1c2luZyB0aGUNCj4gPiBjb3JyZXNwb25kaW5nIGZ1bmN0aW9ucy4gT24g
-TDIncyBleGl0IHRoZSBMMSB2YWx1ZXMgYXJlIHJlc3RvcmVkLg0KPiA+IA0KPiA+IFNpZ25lZC1v
-ZmYtYnk6IElsaWFzIFN0YW1hdGlzIDxpbHN0YW1AYW1hem9uLmNvbT4NCj4gPiAtLS0NCj4gPiAg
-YXJjaC94ODYva3ZtL3ZteC9uZXN0ZWQuYyB8IDEzICsrKysrKysrKy0tLS0NCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZm
-IC0tZ2l0IGEvYXJjaC94ODYva3ZtL3ZteC9uZXN0ZWQuYyBiL2FyY2gveDg2L2t2bS92bXgvbmVz
-dGVkLmMNCj4gPiBpbmRleCA2MDU4YTY1YTZlZGUuLmYxZGZmMWViYWNjYiAxMDA2NDQNCj4gPiAt
-LS0gYS9hcmNoL3g4Ni9rdm0vdm14L25lc3RlZC5jDQo+ID4gKysrIGIvYXJjaC94ODYva3ZtL3Zt
-eC9uZXN0ZWQuYw0KPiA+IEBAIC0zMzU0LDggKzMzNTQsOSBAQCBlbnVtIG52bXhfdm1lbnRyeV9z
-dGF0dXMgbmVzdGVkX3ZteF9lbnRlcl9ub25fcm9vdF9tb2RlKHN0cnVjdCBrdm1fdmNwdSAqdmNw
-dSwNCj4gPiAgICAgICB9DQo+ID4gDQo+ID4gICAgICAgZW50ZXJfZ3Vlc3RfbW9kZSh2Y3B1KTsN
-Cj4gPiAtICAgICBpZiAodm1jczEyLT5jcHVfYmFzZWRfdm1fZXhlY19jb250cm9sICYgQ1BVX0JB
-U0VEX1VTRV9UU0NfT0ZGU0VUVElORykNCj4gPiAtICAgICAgICAgICAgIHZjcHUtPmFyY2gudHNj
-X29mZnNldCArPSB2bWNzMTItPnRzY19vZmZzZXQ7DQo+ID4gKw0KPiA+ICsgICAgIGt2bV9zZXRf
-MDJfdHNjX29mZnNldCh2Y3B1KTsNCj4gPiArICAgICBrdm1fc2V0XzAyX3RzY19tdWx0aXBsaWVy
-KHZjcHUpOw0KPiANCj4gUGxlYXNlIG1vdmUgdGhpcyBjb2RlIGludG8gcHJlcGFyZV92bWNzMDIo
-KSB0byBjby1sb2NhdGUgaXQgd2l0aCB0aGUgcmVsZXZhbnQNCj4gdm1jczAyIGxvZ2ljLiAgSWYg
-dGhlcmUncyBzb21ldGhpbmcgaW4gcHJlcGFyZV92bWNzMDIoKSB0aGF0IGNvbnN1bWVzDQo+IHZj
-cHUtPmFyY2gudHNjX29mZnNldCgpIG90aGVyIHRoYW4gdGhlIG9idmlvdXMgVk1XUklURSwgSSB2
-b3RlIHRvIG1vdmUgdGhpbmdzDQo+IGFyb3VuZCB0byBmaXggdGhhdCByYXRoZXIgdGhhbiBjcmVh
-dGUgdGhpcyB3ZWlyZCBzcGxpdC4NCj4gDQoNCkFncmVlZC4gSXQgbWFrZXMgbW9yZSBzZW5zZS4N
-Cg0KPiA+ICAgICAgIGlmIChwcmVwYXJlX3ZtY3MwMih2Y3B1LCB2bWNzMTIsICZlbnRyeV9mYWls
-dXJlX2NvZGUpKSB7DQo+ID4gICAgICAgICAgICAgICBleGl0X3JlYXNvbi5iYXNpYyA9IEVYSVRf
-UkVBU09OX0lOVkFMSURfU1RBVEU7DQo+ID4gQEAgLTQ0NjMsOCArNDQ2NCwxMiBAQCB2b2lkIG5l
-c3RlZF92bXhfdm1leGl0KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwgdTMyIHZtX2V4aXRfcmVhc29u
-LA0KPiA+ICAgICAgIGlmIChuZXN0ZWRfY3B1X2hhc19wcmVlbXB0aW9uX3RpbWVyKHZtY3MxMikp
-DQo+ID4gICAgICAgICAgICAgICBocnRpbWVyX2NhbmNlbCgmdG9fdm14KHZjcHUpLT5uZXN0ZWQu
-cHJlZW1wdGlvbl90aW1lcik7DQo+ID4gDQo+ID4gLSAgICAgaWYgKHZtY3MxMi0+Y3B1X2Jhc2Vk
-X3ZtX2V4ZWNfY29udHJvbCAmIENQVV9CQVNFRF9VU0VfVFNDX09GRlNFVFRJTkcpDQo+ID4gLSAg
-ICAgICAgICAgICB2Y3B1LT5hcmNoLnRzY19vZmZzZXQgLT0gdm1jczEyLT50c2Nfb2Zmc2V0Ow0K
-PiA+ICsgICAgIGlmICh2bWNzMTItPmNwdV9iYXNlZF92bV9leGVjX2NvbnRyb2wgJiBDUFVfQkFT
-RURfVVNFX1RTQ19PRkZTRVRUSU5HKSB7DQo+ID4gKyAgICAgICAgICAgICB2Y3B1LT5hcmNoLnRz
-Y19vZmZzZXQgPSB2Y3B1LT5hcmNoLmwxX3RzY19vZmZzZXQ7DQo+ID4gKw0KPiA+ICsgICAgICAg
-ICAgICAgaWYgKHZtY3MxMi0+c2Vjb25kYXJ5X3ZtX2V4ZWNfY29udHJvbCAmIFNFQ09OREFSWV9F
-WEVDX1RTQ19TQ0FMSU5HKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICB2Y3B1LT5hcmNoLnRz
-Y19zY2FsaW5nX3JhdGlvID0gdmNwdS0+YXJjaC5sMV90c2Nfc2NhbGluZ19yYXRpbzsNCj4gPiAr
-ICAgICB9DQoNCkkgZ3Vlc3MgdGhlc2UgbmVlZCB0byBzdGF5IHdoZXJlIHRoZXkgYXJlIHRob3Vn
-aC4NCg0KQW5kIHRoaW5raW5nIGFib3V0IGl0IHRoZSB0d28gaWYgY29uZGl0aW9ucyBhcmUgdW5u
-ZWNlc3NhcnkgcmVhbGx5Lg0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXdzIQ0KDQpJbGlhcw0KDQo+
-ID4gDQo+ID4gICAgICAgaWYgKGxpa2VseSghdm14LT5mYWlsKSkgew0KPiA+ICAgICAgICAgICAg
-ICAgc3luY192bWNzMDJfdG9fdm1jczEyKHZjcHUsIHZtY3MxMik7DQo+ID4gLS0NCj4gPiAyLjE3
-LjENCj4gPiANCg0KDQoNCg==
+On Fri, 07 May 2021, Jian Dong wrote:
+
+> From: Jian Dong <dongjian@yulong.com>
+> 
+> Fix two typos retured --> returned
+> 
+> Signed-off-by: Jian Dong <dongjian@yulong.com>
+> ---
+>  drivers/mfd/si476x-cmd.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Applied, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
