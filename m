@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB12389713
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EB5389714
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhESTyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
+        id S232357AbhESTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbhESTyM (ORCPT
+        with ESMTP id S232339AbhESTyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:54:12 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339ECC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:52:51 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id j12so2316110vsq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:52:51 -0700 (PDT)
+        Wed, 19 May 2021 15:54:31 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA54C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:53:11 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id h6so13242620ila.7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:53:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SVSoUhFkNVU1wGDCrOEIUWeMZbbqgNel6ArZ5B6BHME=;
-        b=j02T5iH/g5OOJT+qVHaMYNg3RoPC1IDqKx39RRzdSiwkV1p59kLzicfMf6q5Ei2GJI
-         cVyPAoDWT1w6RFW2J6NWxdN8fAJjbiiaq3kMjni9oaKat7Y8FDAbqimnVqBHT+Xtac4n
-         AQryv0hNLkHLrfYbVs1hTrFgix/eqx9ivJkzd40LM+d8piUt8bXvPz6r6dMOC5JADamA
-         Vk4+3D8bpwPKYXUUp+SR2ORtN++HlijTUgAPbA2elleeVyR5rQ63RCfGPBgKo7e9Z/yV
-         AjOob1HpwEg/7CE2TxmKsqZZrpy1yaEJFGUczUDXQknDSWjgllEz17zCunoKwpCUFhaC
-         BPeQ==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xnd1I+ZG+p2xZfCRtzpcp/ESI8qGAqiQnNJLNfwMGAw=;
+        b=FOAstcFqxm5gMlrrmJeGQxNCe9+od1LRKLR8F7/t4K0pcuuzTJuMpORb2SqN7HryaA
+         lRLKvsxIcHLPzZYLXOFgzxaU+zdms5iH9FIVR84dtjZofnHRR27OmU684HkJIzUc0uTs
+         807ofQUcHjysLchT48CYfb+M87AWNoZxVqkH8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SVSoUhFkNVU1wGDCrOEIUWeMZbbqgNel6ArZ5B6BHME=;
-        b=Lr9qxwW7o/1OPDfMx27+FgwRQ71Ok//TY98xYpJtyp/nrvo4LyIFtxU7R4iY6tn4kP
-         mHYZmnJzsFlDQlj6lEPgFJ25+YeJgxq8XVDd5EUC/GmmkLkNVv59LcAzSkUFq6Ao2ozS
-         Y8VnxFpCTnC1Ra94256Ze8qslZKGH1KqZvo6iCqyYXLytJbVTUKFh3qgn2KfnYhBDQSk
-         qMMc5d9UiDnG/LY+raP5+s4DYzqeczs656JInB0JkzyVxvxMOjduUP1V9Z3M/vkSHiR4
-         RqYw6kHd+L8P4P06F9liIb5q9UA2Zevng3miWNt+ubwDmrFxQfgflODQnZ43x9Sbq0yf
-         DaSw==
-X-Gm-Message-State: AOAM532KOxL/ZpxmRPihDdDefy/aPFleNFV6uQ1BcNnSHEIFmCY5Gsh1
-        BYrisZoXdJpEFcfRgnPaVIBQOpQvGx7PhbcJaW7V8Q==
-X-Google-Smtp-Source: ABdhPJxxoWS3DTZv/NUY1sMiill0r2SxFo+/QHsrv0FtFmIaOP1OH4+BDNxiNuZytI/FAQXMJfYgTt07UaJhe43EgaI=
-X-Received: by 2002:a05:6102:7d8:: with SMTP id y24mr935834vsg.2.1621453968723;
- Wed, 19 May 2021 12:52:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xnd1I+ZG+p2xZfCRtzpcp/ESI8qGAqiQnNJLNfwMGAw=;
+        b=j0n64izo2VzED7Jan7Iv9LaGvDyQq3oMJFYq1asyYyZjKtpho1pC25uaSX2iD2qI5A
+         I0Bl0mVBl7DZ6kPYpzZRmKjRzLFfdA5/D/oIfWW0wLPDSzIsHou+woVn5CKL+PCVZ0aE
+         olsCFS94pqNpxKfw1xLdVLjRHOrZqc285rs+URUzBZXK2GTFYJPbRZCgg9o6SXOXF9Tx
+         Rk+ZDB/D+0GvXqIdwk3S1+lhnaNHgejSijvxF93eyIO0V2h+6C8zieSp32Awf6A50Vdh
+         yYj+ln6LKxbUEWP8hTkyqKA8x6o4avMl8YRXWvmrq/OIUY4WyXk6G2s1I4cL1sZZAZ+T
+         y2gA==
+X-Gm-Message-State: AOAM532Fl/SrLXg4K1giKET2+b4sASYPwtup6LwhdsLWw+hSY5Ka5IYp
+        S63rzghpuDBuD0FBdUplPqJRH+cw9fLnaDcK
+X-Google-Smtp-Source: ABdhPJzySBp1/n9I0djhR7BYsNQdwVhF3x0meWR8KHdioxICxxPdj/J739UNVX45BP0D7DOUAhfZzg==
+X-Received: by 2002:a92:6b02:: with SMTP id g2mr720527ilc.23.1621453990981;
+        Wed, 19 May 2021 12:53:10 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id f10sm542923ioc.10.2021.05.19.12.53.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 12:53:10 -0700 (PDT)
+Subject: Re: [PATCH] staging: greybus: spi: add blank line after variable
+ declaration
+To:     Philippe Dixon <philippesdixon@gmail.com>, vireshk@kernel.org
+Cc:     rmfrfs@gmail.com, johan@kernel.org, elder@kernel.org,
+        gregkh@linuxfoundation.org, greybus-dev@lists.linaro.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210519193938.GA7131@ubuntu>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <7694715e-41b9-08e2-68f5-0fd57223a3ab@ieee.org>
+Date:   Wed, 19 May 2021 14:53:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210517235546.3038875-1-eugenis@google.com> <20210518174439.GA28491@arm.com>
- <CAMn1gO5TmJZ4M4EyQ60VMc2-acUZSYkaB9M0C9kOv_dXQe54Ug@mail.gmail.com> <20210519181225.GF21619@arm.com>
-In-Reply-To: <20210519181225.GF21619@arm.com>
-From:   Evgenii Stepanov <eugenis@google.com>
-Date:   Wed, 19 May 2021 12:52:36 -0700
-Message-ID: <CAFKCwrjH1FEKqeQyKxXacQVk_034NCtsF+rAwTvb4jZwK7a+nA@mail.gmail.com>
-Subject: Re: [PATCH v3] kasan: speed up mte_set_mem_tag_range
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Peter Collingbourne <pcc@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210519193938.GA7131@ubuntu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:13 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Tue, May 18, 2021 at 11:11:52AM -0700, Peter Collingbourne wrote:
-> > On Tue, May 18, 2021 at 10:44 AM Catalin Marinas
-> > <catalin.marinas@arm.com> wrote:
-> > > If we want to get the best performance out of this, we should look at
-> > > the memset implementation and do something similar. In principle it's
-> > > not that far from a memzero, though depending on the microarchitecture
-> > > it may behave slightly differently.
-> >
-> > For Scudo I compared our storeTags implementation linked above against
-> > __mtag_tag_zero_region from the arm-optimized-routines repository
-> > (which I think is basically an improved version of that memset
-> > implementation rewritten to use STG and DC GZVA), and our
-> > implementation performed better on the hardware that we have access
-> > to.
->
-> That's the advantage of having hardware early ;).
->
-> > > Anyway, before that I wonder if we wrote all this in C + inline asm
-> > > (three while loops or maybe two and some goto), what's the performance
-> > > difference? It has the advantage of being easier to maintain even if we
-> > > used some C macros to generate gva/gzva variants.
-> >
-> > I'm not sure I agree that it will be easier to maintain. Due to the
-> > number of "unusual" instructions required here it seems more readable
-> > to have the code in pure assembly than to require readers to switch
-> > contexts between C and asm. If we did move it to inline asm then I
-> > think it should basically be a large blob of asm like the Scudo code
-> > that I linked.
->
-> I was definitely not thinking of a big asm block, that's even less
-> readable than separate .S file. It's more like adding dedicated macros
-> for single STG or DC GVA uses and using them in while loops.
+On 5/19/21 2:39 PM, Philippe Dixon wrote:
+> This patch fixes the following checkpatch.pl warning:
+> 
+> WARNING: Missing a blank line after declarations
+> 
+> Signed-off-by: Philippe Dixon <philippesdixon@gmail.com>
 
-I've got a C version with 4 single-instruction asm blocks, and it
-looks pretty nice. The assembly is almost identical to the hand
-written variant, and performance is 3% better, presumably because of
-the inlining. Also, the C version allows more potential optimizations,
-like specialization on the value of "init" - which is not happening
-right now because it is not constant in any of the callers.
+Looks good.
 
-I'll upload a v4 shortly.
+Reviewed-by: Alex Elder <elder@linaro.org>
 
->
-> Anyway, let's see a better commented .S implementation first. Given that
-> tagging is very sensitive to the performance of this function, we'd
-> probably benefit from a (few percent I suspect) perf improvement with
-> the hand-coded assembly.
->
-> --
-> Catalin
+> ---
+>   drivers/staging/greybus/spilib.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/staging/greybus/spilib.c b/drivers/staging/greybus/spilib.c
+> index 30655153df6a..ad0700a0bb81 100644
+> --- a/drivers/staging/greybus/spilib.c
+> +++ b/drivers/staging/greybus/spilib.c
+> @@ -246,6 +246,7 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
+>   	xfer = spi->first_xfer;
+>   	while (msg->state != GB_SPI_STATE_OP_DONE) {
+>   		int xfer_delay;
+> +
+>   		if (xfer == spi->last_xfer)
+>   			xfer_len = spi->last_xfer_size;
+>   		else
+> 
+
