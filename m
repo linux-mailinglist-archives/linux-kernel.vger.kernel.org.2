@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFDF3886FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B893886FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242878AbhESFvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:51:37 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:14618 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344680AbhESFvS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:51:18 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 18 May 2021 22:47:09 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 18 May 2021 22:47:08 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 19 May 2021 11:16:47 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 7EFD8219B3; Wed, 19 May 2021 11:16:46 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
-        devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH] arm64: dts: qcom: sc7280: Add venus DT node
-Date:   Wed, 19 May 2021 11:16:44 +0530
-Message-Id: <1621403204-21398-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S244408AbhESFvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:51:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344733AbhESFvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 01:51:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2AF0613AE;
+        Wed, 19 May 2021 05:48:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621403316;
+        bh=1M/78skAnJ0O2EA7jNQp+kPITl517U87tfk5kFLTNwo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lncOtVDAEu7HiiRH4NkTlbuFCw039Zi8FHl47j/D8o8b6429d7pMItzt92Zuqn/md
+         1k+rbV+ujbbDaXukjm0H+1NkPpRruxJUxHosKCKcTPnfO6GNB2cIPjYaZNGrcS4NaE
+         GHVDbor7fM1s6Abpb3MI0t36fipqE5D8L9qat0/El/+e3kqejTkZ/+k+/nWPZ1mAzc
+         PuHDXrty+uIaYvgimxcHDmatLZfVnBz1m9NmKx/pMsYHPhhU/LaDAkRTimQGn8DGza
+         QJUH2Wr6BcISqxxFuI7L3y/p6NxUoWyT+xqpmuXHfj3/CzbkZ80qIsBFio5u6tyKDc
+         Ze99bV9iojkDQ==
+Received: by mail-lf1-f51.google.com with SMTP id i22so17125635lfl.10;
+        Tue, 18 May 2021 22:48:36 -0700 (PDT)
+X-Gm-Message-State: AOAM530Z5YNbPBOQZEcshdj85YLKgo1Nb7sIpeoJsQEYczyW3I7rN9zJ
+        BKJGf3XYyHCzjNxazYpSZpVx6h/+dLBbx7A6Y6w=
+X-Google-Smtp-Source: ABdhPJyZmJGTwo2722UUz7WdRiEPE80dASqU/bVhjb4FY4dMa4G28pS/d7JsiaV39IWXLH9tUctL90X9qaaj9JfV8T0=
+X-Received: by 2002:ac2:5493:: with SMTP id t19mr7208809lfk.346.1621403315041;
+ Tue, 18 May 2021 22:48:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <1621400656-25678-1-git-send-email-guoren@kernel.org> <20210519052048.GA24853@lst.de>
+In-Reply-To: <20210519052048.GA24853@lst.de>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 19 May 2021 13:48:23 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
+Message-ID: <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        drew@beagleboard.org, wefu@redhat.com, lazyparser@gmail.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT entries for the sc7280 venus encoder/decoder.
+On Wed, May 19, 2021 at 1:20 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, May 19, 2021 at 05:04:13AM +0000, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The RISC-V ISA doesn't yet specify how to query or modify PMAs, so let
+> > vendors define the custom properties of memory regions in PTE.
+>
+> Err, hell no.   The ISA needs to gets this fixed first.  Then we can
+> talk about alternatives patching things in or trapping in the SBI.
+> But if the RISC-V ISA can't get these basic done after years we can't
+> support it in Linux at all.
 
-Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 43 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+The patchset just leaves a configuration chance for vendors. Before
+RISC-V ISA fixes it, we should give the chance to let vendor solve
+their real chip issues.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 4c44a52..9b4cc9a 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -60,6 +60,11 @@
- 			no-map;
- 			reg = <0x0 0x80b00000 0x0 0x100000>;
- 		};
-+
-+		video_mem: memory@8b200000 {
-+			reg = <0x0 0x8b200000 0x0 0x500000>;
-+			no-map;
-+		};
- 	};
- 
- 	cpus {
-@@ -850,6 +855,44 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		venus: video-codec@0aa00000 {
-+			compatible = "qcom,sc7280-venus";
-+			reg = <0 0x0aa00000 0 0xd0600>;
-+			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-+				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-+			clock-names = "core", "bus", "iface",
-+				      "vcodec_core", "vcodec_bus";
-+
-+			power-domains = <&videocc MVSC_GDSC>,
-+					<&videocc MVS0_GDSC>;
-+			power-domain-names = "venus", "vcodec0";
-+
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
-+					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "cpu-cfg", "video-mem";
-+
-+			iommus = <&apps_smmu 0x2180 0x20>,
-+				 <&apps_smmu 0x2184 0x20>;
-+			memory-region = <&video_mem>;
-+
-+			video-decoder {
-+				compatible = "venus-decoder";
-+			};
-+
-+			video-encoder {
-+				compatible = "venus-encoder";
-+			};
-+
-+			video-firmware {
-+				iommus = <&apps_smmu 0x21a2 0x0>;
-+			};
-+		};
-+
- 		videocc: clock-controller@aaf0000 {
- 			compatible = "qcom,sc7280-videocc";
- 			reg = <0 0xaaf0000 0 0x10000>;
 -- 
-2.7.4
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
