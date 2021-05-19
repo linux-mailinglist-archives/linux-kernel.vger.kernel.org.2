@@ -2,252 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E83838923C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0149538923A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354301AbhESPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348804AbhESPJx (ORCPT
+        id S231216AbhESPJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:09:49 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48209 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231361AbhESPJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:09:53 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64359C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:08:33 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id lg14so20455774ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=ph0osxMlcLSR6veao4D2tUuPI+Qiul8ix0MqsKElrHw=;
-        b=m4wGniTx0BvYL7+UPEpR0wQbHgQjm62i8CAzStFxl9MiKN4GJQ+3ZXfs/6v9Zfl0pe
-         W+jDVS1e5GhmPGV2MJJRPDHvvZWiYNtVG5A8ZkNFGUfLOz1n9fbKe76uAhBYEwix38pQ
-         0hXiRjpxsfnmZi2b7nJRkJxxpDgxiMqP/n6SL0gdsV39ypa88DFrX+VgGy9JXzqwkeJE
-         cK6aG6H1wWXswFySsDKOhYsNGh9t80I7llaRkHzQacFtnob8r9MTEhJkVoWp6iBLSj7k
-         9nl/6V7Pi/3whr0uj/YSyJDZ04hQEd0DUo7Tl69z2kZ2joHUIn36hRl3bTBtC1eGd9sG
-         XKUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=ph0osxMlcLSR6veao4D2tUuPI+Qiul8ix0MqsKElrHw=;
-        b=DuttcL5jTF1yO96afBRjQCucWU5Q8ZEDJNvlP3oUlFjTZRTaW6BewtuZ+3aOjfFbjR
-         7oyBpk6kQ9zsIzdbqaEc4hg/LSSSKS5Sj0BeeUPQUIC4aOWdDkV26KjLhmKXJss2OOAA
-         3wsuacfu0U17RsGeceoHTDXKDI8qa3FV4Xl2S72DN6JRobHkm+meYNFSOnaObkRymW6k
-         IV0nNUSuuZqoXTdHbOBTn5zcrAbUkeorY3DgoH2admO4PrhsWeMuWJopWSw7R86o+LZR
-         eP++InY6mQuIrg2ufLZTxlk/cgovSj5HhDGDqjQGB8LgyB+PxfiJRik85VlsxXeNCdgg
-         ikwg==
-X-Gm-Message-State: AOAM533pX/1PjY80qzJcWnrLEesLBVaBU28BTrnnRg3wRYHICBebKrt8
-        xhvtCazXI9oU+ntG/MSMnuXQoc7jyY45+W0N55rdB9JgelJLLJv5
-X-Google-Smtp-Source: ABdhPJxrlJo8yHaCqwwZSDuTS5F7uFq1npAEeDhvK9eB2piJXL7qPTEcGnRx+sgTSc8qFthpKMS2pet98wCWRIDw3dM=
-X-Received: by 2002:a17:906:17cc:: with SMTP id u12mr12955404eje.170.1621436910591;
- Wed, 19 May 2021 08:08:30 -0700 (PDT)
+        Wed, 19 May 2021 11:09:47 -0400
+Received: from callcc.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14JF8Kjh016152
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 May 2021 11:08:22 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 70A3C420119; Wed, 19 May 2021 11:08:20 -0400 (EDT)
+Date:   Wed, 19 May 2021 11:08:20 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
+Message-ID: <YKUp5BpAwaBREe6d@mit.edu>
+References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+ <YKLXev4cjeRuGRqd@mit.edu>
+ <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
+ <YKPV6FZWfoUD3bgL@mit.edu>
+ <1d43599f-fed1-b37e-a411-2b0f31583991@gmail.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 19 May 2021 20:38:19 +0530
-Message-ID: <CA+G9fYtAbUGO9oAtL8eZ9Pu-_a1wx3y8Tk=pDO3Fh3dEwoRGWg@mail.gmail.com>
-Subject: BUG: unable to handle page fault for address - EIP: __kmap_local_page_prot
-To:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Oliver Sang <oliver.sang@intel.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d43599f-fed1-b37e-a411-2b0f31583991@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While running LTP mm test suite on i386 kernel the following warning and BUG
-reported on linux next 5.13.0-rc2-next-20210519.
+On Wed, May 19, 2021 at 09:27:56AM +0800, Wang Jianchao wrote:
+> 
+> We're running ext4 with discard on a nbd device whose backend is storage
+> cluster. The discard can help to free the unused space to storage pool.
+> 
+> And sometimes application delete a lot of data and discard is flooding. 
+> Then we see the jbd2 commit kthread is blocked for a long time. Even
+> move the discard out of jbd2, we still see the write IO of jbd2 log
+> could be blocked. blk-wbt could help to relieve this. Finally the delay
+> is shift to allocation path. But this is better than blocking the page
+> fault path which holds the read mm->mmap_sem.
 
-The warning is not regression, We have been noticing these warnings often on
-i386 but kernel BUG: looks to be a new crash.
+I'm assuming that the problem is when the application deletes a lot of
+data, the discard flood is causing performance problems on your nbd
+server.  Is that the high level problem that you are trying to solve?
 
- ------------[ cut here ]------------
-[  696.876399] WARNING: CPU: 1 PID: 24493 at mm/mremap.c:314
-move_page_tables+0x18d/0x6e0
-[  696.884319] Modules linked in: x86_pkg_temp_thermal
-05.c:78: TPASS: [  696.889246] CPU: 1 PID: 24493 Comm: true Not
-tainted 5.13.0-rc2-next-20210519 #1
-[  696.898018] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[  696.905462] EIP: move_page_tables+0x18d/0x6e0
-still alive.
-ks[  696.909865] Code: 40 20 8b 40 24 89 c1 01 d9 0f 84 36 04 00 00 8b
-55 08 c1 ea 16 8d 04 90 85 c0 0f 84 e5 02 00 00 80 7d bb 00 0f 85 23
-04 00 00 <0f> 0b 80 7d bb 00 0f 84 f7 fe ff ff 8b 45 c8 e8 1f fe ff ff
-e9 ea
-[  696.929986] EAX: c28a5bf8 EBX: 00000bfc ECX: c28a5bfc EDX: 000002fe
-[  696.936323] ESI: c0000000 EDI: bfc00000 EBP: c86ffe14 ESP: c86ffda8
-m05.c:78: TPASS:[  696.942614] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS:
-0068 EFLAGS: 00010246
-[  696.950777] CR0: 80050033 CR2: b7e13b50 CR3: 028a5000 CR4: 003506d0
-[  696.957043] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  696.963310] DR6: fffe0ff0 DR7: 00000400
-[  696.967148] Call Trace:
-[  696.969594]  setup_arg_pages+0x28c/0x380
- still alive.
-k[  696.973563]  ? get_random_u32+0x35/0x80
-[  696.978779]  ? trace_hardirqs_off+0x2f/0xc0
-sm05.c:78: TPASS[  696.983006]  ? trace_hardirqs_on+0x2d/0xc0
-[  696.988484]  ? _raw_spin_unlock_irqrestore+0x18/0x20
-[  696.993467]  ? get_random_u32+0x4e/0x80
-[  696.997385]  load_elf_binary+0x31e/0x11c0
-[  697.001452]  ? security_file_permission+0x97/0x170
-[  697.006277]  ? kernel_read+0x31/0x40
-[  697.009907]  bprm_execve+0x233/0x5f0
-[  697.013541]  do_execveat_common+0x129/0x150
-[  697.017725]  __ia32_sys_execve+0x28/0x30
-[  697.021650]  __do_fast_syscall_32+0x4c/0xc0
-[  697.025835]  do_fast_syscall_32+0x29/0x60
-[  697.029850]  do_SYSENTER_32+0x15/0x20
-[  697.033516]  entry_SYSENTER_32+0x98/0xe7
-[  697.037441] EIP: 0xb7f12549
-[  697.040243] Code: Unable to access opcode bytes at RIP 0xb7f1251f.
-: still alive.
-[  697.046462] EAX: ffffffda EBX: bfd72c00 ECX: 0806b460 EDX: bfd72e54
-[  697.054106] ESI: 0805af94 EDI: bfd72c09 EBP: bfd72cc8 ESP: bfd72bd8
-[  697.060425] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 007b EFLAGS: 00000296
-[  697.067210] ---[ end trace 7b789866f6f48389 ]---
-[  697.071832] ------------[ cut here ]------------
+So if that's the case, I'd suggest a different approach.  First, move
+kmem_cache_free(ext4_free_data_cachep, entry) out of
+ext4_free_data_in_buddy() to its caller, ext4_process_data.  Then if
+discard is enabled, after calling ext4_free_data_in_buddy(), the
+ext4_free_data struct will be detached from rbtree rooted in
+ext4_group_info.bb_free_root, and then we can attach it to a new
+rbtree rooted in ext4_group_info.bb_discard_root.
 
-...
-ksm05.c:78: TPASS: still alive.
+This allows the block to be reused as soon the commit is finished
+(allowing for potentially more efficient block allocations), but we
+can now keep track of which blocks would be useful for discarding and
+decouple that from when we release the blocks to be reused.  We can
+now use the pre-existing fstrim kernel thread infrastructure to lock a
+block group, and we can now iterate over the rbtree, and take into
+account which blocks have since become allocated --- since if a block
+has been allocated, there's no need to send a discard for it.
 
-[  699.637408] BUG: unable to handle page fault for address: f752b000
-[  699.644091] #PF: supervisor read access in kernel mode
-[  699.649222] #PF: error_code(0x0000) - not-present page
-[  699.654357] *pde = 01106067 *pte = 00000000
-[  699.658666] Oops: 0000 [#1] SMP
-[  699.661806] CPU: 1 PID: 24636 Comm: true Tainted: G        W
- 5.13.0-rc2-next-20210519 #1
-[  699.670583] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[  699.677966] EIP: __kmap_local_page_prot+0x6/0x40
-[  699.682614] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-ff ff
-[  699.701371] EAX: f752b000 EBX: 00000004 ECX: bf400000 EDX: 00000163
-[  699.707640] ESI: f752b000 EDI: c86ffecc EBP: c86ffe60 ESP: c86ffe00
-[  699.713897] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-[  699.720676] CR0: 80050033 CR2: f752b000 CR3: 028a5000 CR4: 003506d0
-[  699.726934] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  699.733197] DR6: fffe0ff0 DR7: 00000400
-[  699.737027] Call Trace:
-[  699.739474]  ? unmap_page_range+0x154/0x690
-[  699.743658]  unmap_single_vma+0x61/0xc0
-[  699.747489]  unmap_vmas+0x6f/0xf0
-[  699.750800]  exit_mmap+0x71/0x1c0
-[  699.754110]  mmput+0x57/0x100
-[  699.757075]  do_exit+0x2da/0x9e0
-[  699.760306]  ? syscall_trace_enter.isra.0+0x148/0x1b0
-[  699.765372]  do_group_exit+0x36/0x90
-[  699.768955]  __ia32_sys_exit_group+0x15/0x20
-[  699.773220]  __do_fast_syscall_32+0x4c/0xc0
-[  699.777405]  do_fast_syscall_32+0x29/0x60
-[  699.781409]  do_SYSENTER_32+0x15/0x20
-[  699.785066]  entry_SYSENTER_32+0x98/0xe7
-[  699.788984] EIP: 0x1ff58549
-[  699.791774] Code: Unable to access opcode bytes at RIP 0x1ff5851f.
-[  699.797945] EAX: ffffffda EBX: 00000000 ECX: 00000001 EDX: 00000000
-[  699.804202] ESI: 1ff471f0 EDI: 1ff493fc EBP: 00000000 ESP: bf1ff3cc
-[  699.810458] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 007b EFLAGS: 00000296
-[  699.817236] Modules linked in: x86_pkg_temp_thermal
-[  699.822115] CR2: 00000000f752b000
-[  699.825426] ---[ end trace 7b789866f6f4838b ]---
-[  699.830036] EIP: __kmap_local_page_prot+0x6/0x40
-[  699.834655] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-ff ff
-[  699.853401] EAX: f752b000 EBX: 00000004 ECX: bf400000 EDX: 00000163
-[  699.859658] ESI: f752b000 EDI: c86ffecc EBP: c86ffe60 ESP: c86ffe00
-[  699.865915] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-[  699.872690] CR0: 80050033 CR2: f752b000 CR3: 028a5000 CR4: 003506d0
-[  699.878948] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  699.885207] DR6: fffe0ff0 DR7: 00000400
-[  699.889036] Fixing recursive fault but reboot is needed!
+I think this will be more efficient, and will allow us to share more
+of the code for fstrim and the discard-at-runtime model used by "mount
+-o discard".  We can also fine-tune how quickly we issue discards; it
+might be that if user has executed "rm -rf" it might actually better
+to wait until the deletes have completed, even if it takes several
+commit intervals, since it might allow us to combine discards if the
+blocks 100-199 and 400-500 are released in one commit, and blocks
+200-399 are released two or three commits later.
 
-ksm05.c:78: TPASS: still alive.
-..
-[ 1599.651922] BUG: unable to handle page fault for address: f7d64000
-[ 1599.658959] #PF: supervisor read access in kernel mode
-[ 1599.664088] #PF: error_code(0x0000) - not-present page
-[ 1599.669219] *pde = 00000000
-[ 1599.672097] Oops: 0000 [#2] SMP
-[ 1599.675236] CPU: 3 PID: 24646 Comm: thp02 Tainted: G      D W
-  5.13.0-rc2-next-20210519 #1
-[ 1599.684102] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[ 1599.691485] EIP: __kmap_local_page_prot+0x6/0x40
-[ 1599.696102] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-ff ff
-[ 1599.714840] EAX: f7d64000 EBX: b5800000 ECX: b5800000 EDX: 00000163
-[ 1599.721097] ESI: f7d64000 EDI: c1a5decc EBP: c1a5de60 ESP: c1a5de00
-[ 1599.727354] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-[ 1599.734132] CR0: 80050033 CR2: f7d64000 CR3: 19fce000 CR4: 003506d0
-[ 1599.740387] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[ 1599.746646] DR6: fffe0ff0 DR7: 00000400
-[ 1599.750477] Call Trace:
-[ 1599.752919]  ? unmap_page_range+0x154/0x690
-[ 1599.757096]  unmap_single_vma+0x61/0xc0
-[ 1599.760929]  unmap_vmas+0x6f/0xf0
-[ 1599.764246]  exit_mmap+0x71/0x1c0
-[ 1599.767558]  mmput+0x57/0x100
-[ 1599.770531]  do_exit+0x2da/0x9e0
-[ 1599.773763]  ? syscall_trace_enter.isra.0+0x148/0x1b0
-[ 1599.778815]  do_group_exit+0x36/0x90
-[ 1599.782393]  __ia32_sys_exit_group+0x15/0x20
-[ 1599.786659]  __do_fast_syscall_32+0x4c/0xc0
-[ 1599.790845]  do_fast_syscall_32+0x29/0x60
-[ 1599.794857]  do_SYSENTER_32+0x15/0x20
-[ 1599.798513]  entry_SYSENTER_32+0x98/0xe7
-[ 1599.802441] EIP: 0xb7fa6549
-[ 1599.805237] Code: Unable to access opcode bytes at RIP 0xb7fa651f.
-[ 1599.811408] EAX: ffffffda EBX: 00000002 ECX: 00000000 EDX: bfff8660
-[ 1599.817665] ESI: b7f761f0 EDI: b7f783fc EBP: 00000000 ESP: bfff866c
-[ 1599.823922] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 007b EFLAGS: 00000296
-[ 1599.830702] Modules linked in: x86_pkg_temp_thermal
-[ 1599.835579] CR2: 00000000f7d64000
-[ 1599.838890] ---[ end trace 7b789866f6f4838c ]---
-[ 1599.843499] EIP: __kmap_local_page_prot+0x6/0x40
-[ 1599.848111] Code: 00 00 00 00 c6 05 00 cc 2c d4 00 8b 5d fc c9 c3
-8d 74 26 00 0f 0b 0f 0b 8d b4 26 00 00 00 00 8d 74 26 00 90 3e 8d 74
-26 00 55 <8b> 08 c1 e9 1e 89 e5 83 f9 02 74 17 83 f9 03 74 09 e8 54 fe
-ff ff
-[ 1599.866849] EAX: f752b000 EBX: 00000004 ECX: bf400000 EDX: 00000163
-[ 1599.873114] ESI: f752b000 EDI: c86ffecc EBP: c86ffe60 ESP: c86ffe00
-[ 1599.879369] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-[ 1599.886148] CR0: 80050033 CR2: f7d64000 CR3: 19fce000 CR4: 003506d0
-[ 1599.892404] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[ 1599.898661] DR6: fffe0ff0 DR7: 00000400
-[ 1599.902493] Fixing recursive fault but reboot is needed!
-O: mremap (0xb6c00000-0xb7bff000) to (0xb5800000-0xb67ff000)
-thp02.c:84: TBROK: mremap bug
+Something else I'd urge you to consider is whether it's possible to
+enhance the nbd protocol to add some kind of back-channel notification
+when the shared storage is getting low on space.  In that case, when
+the nbd client code a request from the nbd server indicating, "please
+issue discards if possible", it could either trigger an upcall to
+userspace, which could then issue the fstrim ioctl, which in the case
+where "mount -o discard" is enabled, would accelerate when discards
+took place.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+We could then make the fstrim thread normally work on a much slower
+pace, but when there is a signal from the shared storage that space is
+needed, clients could accelerate when they issue discards to free up
+shared space.
 
-Links:
-https://lkft.validation.linaro.org/scheduler/job/2742412#L8838
+Cheers,
 
-Step to reproduce:
-------------------
-# cd /opt/ltp
-# ./runltp -f mm
+						- Ted
 
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git commit: 9f24705effef8c3b9eca00d70594ef7e0364a6da
-  git describe: next-20210519
-  make_kernelversion: 5.13.0-rc2
-  kernel-config: https://builds.tuxbuild.com/1sk6bnicwdtrZQO2wqfaMdsZO5z/config
+P.S.  One other potential thought; if we have established a new
+bb_discard_root rbtree, it *might* actually be beneficial to consider
+using that information in the block allocator.  One of the best way to
+tell an SSD that block is no longer needed is to simply overwrite that
+block.  If we do that, we don't need to send a discard to that block
+any more.
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Of course, we still want to keep blocks contiguous since even though
+seeks are free for SSD's, we want to keep large reads contiguous as
+much as possible, and we want to keep the extent tree as compact as
+possible.  But if we have just released a 12k file, and we are writing
+a new 12k file, and don't really care *where* in the block group we
+are writing that file, reusing blocks that had just been freed might
+actually be a good strategy.
+
+That's not something you need to implement in this patch series, but
+it might be an interesting optimization.
