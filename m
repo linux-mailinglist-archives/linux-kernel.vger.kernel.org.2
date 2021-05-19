@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8C3388869
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8184738886D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241524AbhESHqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:46:14 -0400
+        id S242252AbhESHqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:46:19 -0400
 Received: from mga09.intel.com ([134.134.136.24]:51685 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240919AbhESHqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241271AbhESHqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 03:46:14 -0400
-IronPort-SDR: t0vRVs4yrqKWCp1nnhWOgswiQHmgn1/nu6DA75Jfghl5oRPj0lp42F/QiBriu6tHTSBrTc0uRV
- FBOMWdM0j/HQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="200964063"
+IronPort-SDR: Y2dhkEqs6sahEssVlSEaPtNmp4JlZVKxN7SuiyR4f05uDMg6etRPl8E9b5+DRWapYQEKfBZb+g
+ MgHFBVdIzTSQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="200964066"
 X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="200964063"
+   d="scan'208";a="200964066"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 00:44:53 -0700
-IronPort-SDR: rpa6mYkfnevFRK4NQSk9hrWCOLxMvaJCvMJewlKGfi3swTiUE0cACnKlNzZGfCVh/MNiSlDtnF
- Wi/NYjOJx9CA==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 00:44:54 -0700
+IronPort-SDR: QPlfJBlhpP/4QgiQSvuGlob0ZPaDri3VhcOD6DXnyVdzxmBbOdGCoefjHDxZcRThVi5bWrohl8
+ rvT8kY/BScIA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="411625027"
+   d="scan'208";a="411625031"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga002.jf.intel.com with ESMTP; 19 May 2021 00:44:50 -0700
+  by orsmga002.jf.intel.com with ESMTP; 19 May 2021 00:44:52 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] perf intel-pt: Fix transaction abort handling
-Date:   Wed, 19 May 2021 10:45:13 +0300
-Message-Id: <20210519074515.9262-2-adrian.hunter@intel.com>
+Subject: [PATCH 2/3] perf intel-pt: Fix sample instruction bytes
+Date:   Wed, 19 May 2021 10:45:14 +0300
+Message-Id: <20210519074515.9262-3-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210519074515.9262-1-adrian.hunter@intel.com>
 References: <20210519074515.9262-1-adrian.hunter@intel.com>
@@ -40,9 +40,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adding support for power events, some handling of FUP packets was
-unified. That resulted in breaking reporting of TSX aborts, by not
-considering the associated TIP packet. Fix that.
+The decoder reports the current instruction if it was decoded. In some
+cases the current instruction is not decoded, in which case the instruction
+bytes length must be set to zero. Ensure that is always done.
+
+Note perf script can anyway get the instruction bytes for any samples where
+they are not present.
+
+Also note, that there is a redundant "ptq->insn_len = 0" statement which is
+not removed until a subsequent patch in order to make this patch apply
+cleanly to stable branches.
 
 Example:
 
@@ -80,57 +87,47 @@ Record:
 
 Before:
 
- # perf script --itrace=be -F+flags,+addr,-period,-event --ns
-          xabort  1478 [007] 92161.431348552:   tr strt                             0 [unknown] ([unknown]) =>           400b6d main+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431348624:   jmp                            400b96 main+0x29 (/root/xabort) =>           400bae main+0x41 (/root/xabort)
-          xabort  1478 [007] 92161.431348624:   return                         400bb4 main+0x47 (/root/xabort) =>           400b87 main+0x1a (/root/xabort)
-          xabort  1478 [007] 92161.431348637:   jcc                            400b8a main+0x1d (/root/xabort) =>           400b98 main+0x2b (/root/xabort)
-          xabort  1478 [007] 92161.431348644:   tr end  call                   400ba9 main+0x3c (/root/xabort) =>           40f690 printf+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431360859:   tr strt                             0 [unknown] ([unknown]) =>           400bae main+0x41 (/root/xabort)
-          xabort  1478 [007] 92161.431360882:   tr end  return                 400bb4 main+0x47 (/root/xabort) =>           401139 __libc_start_main+0x309 (/root/xabort)
+ # perf script --itrace=xe -F+flags,+insn,-period --xed --ns
+          xabort  1478 [007] 92161.431348581:   transactions:   x                              400b81 main+0x14 (/root/xabort)          mov $0xffffffff, %eax
+          xabort  1478 [007] 92161.431348624:   transactions:   tx abrt                        400b93 main+0x26 (/root/xabort)          mov $0xffffffff, %eax
 
 After:
 
- # perf script --itrace=be -F+flags,+addr,-period,-event --ns
-          xabort  1478 [007] 92161.431348552:   tr strt                             0 [unknown] ([unknown]) =>           400b6d main+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431348624:   tx abrt                        400b93 main+0x26 (/root/xabort) =>           400b87 main+0x1a (/root/xabort)
-          xabort  1478 [007] 92161.431348637:   jcc                            400b8a main+0x1d (/root/xabort) =>           400b98 main+0x2b (/root/xabort)
-          xabort  1478 [007] 92161.431348644:   tr end  call                   400ba9 main+0x3c (/root/xabort) =>           40f690 printf+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431360859:   tr strt                             0 [unknown] ([unknown]) =>           400bae main+0x41 (/root/xabort)
-          xabort  1478 [007] 92161.431360882:   tr end  return                 400bb4 main+0x47 (/root/xabort) =>           401139 __libc_start_main+0x309 (/root/xabort)
+ # perf script --itrace=xe -F+flags,+insn,-period --xed --ns
+          xabort  1478 [007] 92161.431348581:   transactions:   x                              400b81 main+0x14 (/root/xabort)          xbegin 0x6
+          xabort  1478 [007] 92161.431348624:   transactions:   tx abrt                        400b93 main+0x26 (/root/xabort)          xabort $0x1
 
-Fixes: a472e65fc490a ("perf intel-pt: Add decoder support for ptwrite and power event packets")
+Fixes: faaa87680b25d ("perf intel-pt/bts: Report instruction bytes and length in sample")
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 Cc: stable@vger.kernel.org
 ---
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/perf/util/intel-pt.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index 0db5f948801f..cb2520abf261 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -1205,6 +1205,8 @@ static bool intel_pt_fup_event(struct intel_pt_decoder *decoder)
- 		decoder->set_fup_tx_flags = false;
- 		decoder->tx_flags = decoder->fup_tx_flags;
- 		decoder->state.type = INTEL_PT_TRANSACTION;
-+		if (decoder->fup_tx_flags & INTEL_PT_ABORT_TX)
-+			decoder->state.type |= INTEL_PT_BRANCH;
- 		decoder->state.from_ip = decoder->ip;
- 		decoder->state.to_ip = 0;
- 		decoder->state.flags = decoder->fup_tx_flags;
-@@ -1279,8 +1281,10 @@ static int intel_pt_walk_fup(struct intel_pt_decoder *decoder)
- 			return 0;
- 		if (err == -EAGAIN ||
- 		    intel_pt_fup_with_nlip(decoder, &intel_pt_insn, ip, err)) {
-+			bool no_tip = decoder->pkt_state != INTEL_PT_STATE_FUP;
-+
- 			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
--			if (intel_pt_fup_event(decoder))
-+			if (intel_pt_fup_event(decoder) && no_tip)
- 				return 0;
- 			return -EAGAIN;
- 		}
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index 2a5fe1514e65..4428dba24aa7 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -778,8 +778,10 @@ static int intel_pt_walk_next_insn(struct intel_pt_insn *intel_pt_insn,
+ 
+ 			*ip += intel_pt_insn->length;
+ 
+-			if (to_ip && *ip == to_ip)
++			if (to_ip && *ip == to_ip) {
++				intel_pt_insn->length = 0;
+ 				goto out_no_cache;
++			}
+ 
+ 			if (*ip >= al.map->end)
+ 				break;
+@@ -1301,6 +1303,7 @@ static void intel_pt_set_pid_tid_cpu(struct intel_pt *pt,
+ 
+ static void intel_pt_sample_flags(struct intel_pt_queue *ptq)
+ {
++	ptq->insn_len = 0;
+ 	if (ptq->state->flags & INTEL_PT_ABORT_TX) {
+ 		ptq->flags = PERF_IP_FLAG_BRANCH | PERF_IP_FLAG_TX_ABORT;
+ 	} else if (ptq->state->flags & INTEL_PT_ASYNC) {
 -- 
 2.17.1
 
