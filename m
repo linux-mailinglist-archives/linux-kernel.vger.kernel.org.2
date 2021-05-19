@@ -2,102 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E9F388801
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8BD388806
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239346AbhESHQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236951AbhESHQ3 (ORCPT
+        id S238839AbhESHUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:20:34 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53647 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236024AbhESHUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:16:29 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E544C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:15:09 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id z85-20020a1c7e580000b029017a76f3afbaso171232wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9okw0AivC/GodUAOgdSjrzNrGvlF7i2iJnuU6Q7Ckhk=;
-        b=GLdq3bNPUG1jVbmGuXT/73WV/H4ct0JC+JPyO1eIGy+uxrXeIrrgUTBkgOyB79PHc7
-         wLFK19VrpLW3+QR7uumz7VfegumO/03BPjeaHthtleLjPv4rR5sZsZKmnwKaMZ0UMMQE
-         gr/wpNE/p3phdRl/HBhMBnnG7Ceqfv4Un6Qh9OMLUWnILbaOcsufq7QT6gVJNkALrDj5
-         LvEedY1AAT0Wpovo/BsutzLeeNlF70WhAFXjf5wfegQAs7idnoCE+88T76OnTfUMjnqY
-         mZBt11ZLbg81ZNLfNeOqHoJde6wljGw5DprysPeWSQuaCaOg7bKP+7E2aaqYKQ3qBy0R
-         wFLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9okw0AivC/GodUAOgdSjrzNrGvlF7i2iJnuU6Q7Ckhk=;
-        b=XC9ih/rSShIjMdp83jef7imQuv4y9+wVL0DWZ/Bf23Q8nVPWFYDRVe5Y5XdblfbzVr
-         Uab+VJt+clxWzvVpb7l6cVL5Sv/ftPLwlsFkLIe4KWYhI/euiMr+t61aIFwhXUqjyTb6
-         JaYFR3JqwunfKE1K3BojXpEdKSHB+9F5Ys7v4qmO6RSKBoSljr/z7jXe+A9XvmFSZO1r
-         yuGlfVQeNAYPCre4GwVEWaUAky+4M/XiRdojEFyszg1JOl48H6TSukDIApUIIRLjkpIF
-         g99I+1oC4kSp4qyjfJlDLutbBFXH+ehv7/sJ30qFMGPJ9q75binpciGpF4kj43vLbpnb
-         atyg==
-X-Gm-Message-State: AOAM5303gKxbkkHX4VspgJkyx38xXR+xim0QCtHeOOp1Nmar7yeRkFO1
-        2GVaiMkSsPFu+OeGvSVIyEo9sA9IA7hO6bLssQcHbA==
-X-Google-Smtp-Source: ABdhPJw/naptBUbx4b3ptbfbXhmKN+TgrAcgi05rNO45VadkiPEcCxSc5SrssSarObHWl3KVpfRHtcRUN81TCIYDW3E=
-X-Received: by 2002:a1c:4e0b:: with SMTP id g11mr9882524wmh.3.1621408508509;
- Wed, 19 May 2021 00:15:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de> <CAJF2gTR5838=Uwc5P6Xs=G7vk80k0yqWcSsNe0OFcwc9sDBBHg@mail.gmail.com>
- <20210519060617.GA28397@lst.de> <20210519065431.GB3076809@x1>
-In-Reply-To: <20210519065431.GB3076809@x1>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 19 May 2021 12:44:55 +0530
-Message-ID: <CAAhSdy3C1owsbY_9gkxkhWfCXnL_noow7F4t=5+j7q+AJO3pZQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
+        Wed, 19 May 2021 03:20:33 -0400
+X-UUID: 8d6442a4730a4f42b1b522fb45af3148-20210519
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7uTMyP8kzD/uP+FGo4KtbE5DwPBm28qGLTSFWKP3PPE=;
+        b=PzPHYG0jDCF9ib3YsGkdiYRDhMxUclaOqLI6rUzU7n+5tl2v7pzOQmyGpK0Jucb2NroO8vjCkbYndFyIwmrYQI6Y9QvlqBsUov5SX82W9PVw4ZDSoi1Ha3dtUHVJSflBNUsXKv1lyUJX2NCWcJZ+rG0ak6BqNHF0yXuwrCIh5yM=;
+X-UUID: 8d6442a4730a4f42b1b522fb45af3148-20210519
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1245937702; Wed, 19 May 2021 15:19:11 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 19 May 2021 15:18:49 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 19 May 2021 15:18:49 +0800
+Message-ID: <1621408729.12301.34.camel@mtkswgap22>
+Subject: Re: [PATCH] mm/sparse: fix check_usemap_section_nr warnings
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Date:   Wed, 19 May 2021 15:18:49 +0800
+In-Reply-To: <YKSigC4UAQAARX4L@kernel.org>
+References: <20210511093114.15123-1-miles.chen@mediatek.com>
+         <YKSigC4UAQAARX4L@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 12:24 PM Drew Fustini <drew@beagleboard.org> wrote:
->
-> On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph Hellwig wrote:
-> > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
-> > > Since the existing RISC-V ISA cannot solve this problem, it is better
-> > > to provide some configuration for the SOC vendor to customize.
-> >
-> > We've been talking about this problem for close to five years.  So no,
-> > if you don't manage to get the feature into the ISA it can't be
-> > supported.
->
-> Isn't it a good goal for Linux to support the capabilities present in
-> the SoC that a currently being fab'd?
->
-> I believe the CMO group only started last year [1] so the RV64GC SoCs
-> that are going into mass production this year would not have had the
-> opporuntiy of utilizing any RISC-V ISA extension for handling cache
-> management.
+T24gV2VkLCAyMDIxLTA1LTE5IGF0IDA4OjMwICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
+PiAoYWRkIGFybTY0IHBlb3BsZSkNCj4gDQo+IE9uIFR1ZSwgTWF5IDExLCAyMDIxIGF0IDA1OjMx
+OjE0UE0gKzA4MDAsIE1pbGVzIENoZW4gd3JvdGU6DQo+ID4gSW4gY3VycmVudCBpbXBsZW1lbnRh
+dGlvbiBvZiBub2RlX2RhdGEsIGlmIENPTkZJR19ORUVEX01VTFRJUExFX05PREVTPXksDQo+ID4g
+bm9kZV9kYXRhIGlzIGFsbG9jYXRlZCBieSBrem1hbGxvYy4gSWYgQ09ORklHX05FRURfTVVMVElQ
+TEVfTk9ERVM9biwNCj4gDQo+IFRoZSBub2RlIHN0cnVjdHVyZXMgYXJlIGFsbG9jYXRlZCBmcm9t
+IG1lbWJsb2NrIHJhdGhlciB0aGFuIGt6bWFsbG9jLCBzbw0KPiBJJ2Qgc3VnZ2VzdCB0byB1c2Ug
+ImR5bmFtaWNhbGx5IGFsbG9jYXRlZCI6DQo+IA0KPiAuLi4gbm9kZV9kYXRhIGlzIGR5bmFtaWNh
+bGx5IGFsbG9jYXRlZA0KDQoNCm5vIHByb2JsZW0uICJkeW5hbWljYWxseSBhbGxvY2F0ZWQiIGlz
+IGJldHRlci4NCg0KPiANCj4gPiB3ZSB1c2UgYSBnbG9iYWwgdmFyaWFibGUgbmFtZWQgImNvbnRp
+Z19wYWdlX2RhdGEiLg0KPiA+IA0KPiA+IElmIENPTkZJR19ERUJVR19WSVJUVUFMIGlzIG5vdCBl
+bmFibGVkLiBfX3BhKCkgY2FuIGhhbmRsZSBib3RoIGt6YWxsb2MgYW5kDQo+IA0KPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXiBjb21hDQo+IA0KPiBBbmQgaGVyZSBh
+cyB3ZWxsLCByYXRoZXIgdGhlbiBtZW50aW9uIGt6YWxsb2MNCg0KDQpvaywgd2lsbCBmaXggdGhp
+cyBpbiB2Mw0KDQo+IA0KPiAJLi4uIF9fcGEoKSBjYW4gaGFuZGxlIGJvdGggZHluYW1pYyBhbGxv
+Y2F0aW9uIGFuZCBzeW1ib2wgY2FzZXMuDQo+IA0KPiA+IHN5bWJvbCBjYXNlcy4gQnV0IGlmIENP
+TkZJR19ERUJVR19WSVJUVUFMIGlzIHNldCwgd2Ugd2lsbCBoYXZlIHRoZQ0KPiA+ICJ2aXJ0X3Rv
+X3BoeXMgdXNlZCBmb3Igbm9uLWxpbmVhciBhZGRyZXNzIiB3YXJuaW5nIHdoZW4gYm9vdGluZy4N
+Cj4gPiANCj4gPiBUbyBmaXggaXQsIGNyZWF0ZSBhIHNtYWxsIGZ1bmN0aW9uIHRvIGhhbmRsZSBi
+b3RoIHRyYW5zbGF0aW9uLg0KPiANCj4gTW9yZSBnZW5lcmFsbHksIEkgd29uZGVyIGhvdyBvdGhl
+ciBhcmNoaXRlY3R1cmVzIHRoYW4gc3VwcG9ydCBERUJVR19WSVJUVUFMDQo+IGNvcGUgd2l0aCB0
+aGlzPw0KDQphcm02NCBzdXBwb3J0IERFQlVHX1ZJUlRVQUwgc2luY2UgdjQuMTEuIEJlZm9yZSB2
+NC4xMSwgYSBkcml2ZXIgY2FuIGdldA0KaW5jb3JyZWN0IFBBIGJ5IHVzaW5nIF9fcGEoKSBmb3Ig
+bm9uLWxpbmVhciBhZGRyZXNzZXMgYW5kIGNyZWF0ZQ0KaGFyZC10by1kZWJ1ZyBpc3N1ZXMuDQoN
+CmFybTMyLi4uSSByZW1lbWJlciBhbiBvbGQgaXNzdWUgaW4gZXh0NDogX19wYSgpIGlzIHVzZWQg
+dG8gY29udmVydA0Kbm9uLWxpbmVhciBrbWFwJ2VkIGFkZHJlc3NlcyAod2hlbiBDT05GSUdfSElH
+SE1FTT15KS4NCg0KVGhlcmUgYXJlIG11bHRpcGxlIGFyY2hpdGVjdHVyZXMgd2hpY2ggc3VwcG9y
+dCBDT05GSUdfREVCVUdfVklSVFVBTC4NCkl0IGhlbHBzIHBlb3BsZSB0byBjYXRjaCBub24tbGlu
+ZWFyIGFkZHJlc3NlcyBhdCB0aGUgZmlyc3QgcGxhY2UuDQoNCmZpbmQgYXJjaCAtbmFtZSAncGh5
+c2FkZHIuYycNCmFyY2gvYXJtL21tL3BoeXNhZGRyLmMNCmFyY2gvYXJtNjQvbW0vcGh5c2FkZHIu
+Yw0KYXJjaC9taXBzL21tL3BoeXNhZGRyLmMNCmFyY2gvcmlzY3YvbW0vcGh5c2FkZHIuYw0KYXJj
+aC94ODYvbW0vcGh5c2FkZHIuYw0KDQo+IA0KPiBNYXliZSBzdWNoIGxhY2sgb2YgY29uc2lzdGVu
+Y3kgYmV0d2VlbiBkZWJ1ZyBhbmQgbm8tZGVidWcgdmVyc2lvbiBvZg0KPiBhcm02NDo6dmlydF90
+b19waHlzKCkgaXMgd2hhdCBuZWVkcyB0byBiZSBmaXhlZCBhdCB0aGUgZmlyc3QgcGxhY2U/DQo+
+ICANCj4gPiBXYXJuaW5nIG1lc3NhZ2U6DQo+ID4gWyAgICAwLjAwMDAwMF0gLS0tLS0tLS0tLS0t
+WyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+ID4gWyAgICAwLjAwMDAwMF0gdmlydF90b19waHlz
+IHVzZWQgZm9yIG5vbi1saW5lYXIgYWRkcmVzczogKF9fX19wdHJ2YWxfX19fKSAoY29udGlnX3Bh
+Z2VfZGF0YSsweDAvMHgxYzAwKQ0KPiA+IFsgICAgMC4wMDAwMDBdIFdBUk5JTkc6IENQVTogMCBQ
+SUQ6IDAgYXQgYXJjaC9hcm02NC9tbS9waHlzYWRkci5jOjE1IF9fdmlydF90b19waHlzKzB4NTgv
+MHg2OA0KPiA+IFsgICAgMC4wMDAwMDBdIE1vZHVsZXMgbGlua2VkIGluOg0KPiA+IFsgICAgMC4w
+MDAwMDBdIENQVTogMCBQSUQ6IDAgQ29tbTogc3dhcHBlciBUYWludGVkOiBHICAgICAgICBXICAg
+ICAgICAgNS4xMy4wLXJjMS0wMDA3NC1nMTE0MGFiNTkyZTJlICMzDQo+ID4gWyAgICAwLjAwMDAw
+MF0gSGFyZHdhcmUgbmFtZTogbGludXgsZHVtbXktdmlydCAoRFQpDQo+ID4gWyAgICAwLjAwMDAw
+MF0gcHN0YXRlOiA2MDAwMDBjNSAoblpDdiBkYUlGIC1QQU4gLVVBTyAtVENPIEJUWVBFPS0tKQ0K
+PiA+IFsgICAgMC4wMDAwMDBdIHBjIDogX192aXJ0X3RvX3BoeXMrMHg1OC8weDY4DQo+ID4gWyAg
+ICAwLjAwMDAwMF0gbHIgOiBfX3ZpcnRfdG9fcGh5cysweDU0LzB4NjgNCj4gPiBbICAgIDAuMDAw
+MDAwXSBzcCA6IGZmZmY4MDAwMTE4MzNlNzANCj4gPiBbICAgIDAuMDAwMDAwXSB4Mjk6IGZmZmY4
+MDAwMTE4MzNlNzAgeDI4OiAwMDAwMDAwMDQxOGEwMDE4IHgyNzogMDAwMDAwMDAwMDAwMDAwMA0K
+PiA+IFsgICAgMC4wMDAwMDBdIHgyNjogMDAwMDAwMDAwMDAwMDAwYSB4MjU6IGZmZmY4MDAwMTFi
+NzAwMDAgeDI0OiBmZmZmODAwMDExYjcwMDAwDQo+ID4gWyAgICAwLjAwMDAwMF0geDIzOiBmZmZm
+ZmMwMDAxYzAwMDAwIHgyMjogZmZmZjgwMDAxMWI3MDAwMCB4MjE6IDAwMDAwMDAwNDdmZmZmYjAN
+Cj4gPiBbICAgIDAuMDAwMDAwXSB4MjA6IDAwMDAwMDAwMDAwMDAwMDggeDE5OiBmZmZmODAwMDEx
+YjA4MmMwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPiA+IFsgICAgMC4wMDAwMDBdIHgxNzogMDAw
+MDAwMDAwMDAwMDAwMCB4MTY6IGZmZmY4MDAwMTE4MzNiZjkgeDE1OiAwMDAwMDAwMDAwMDAwMDA0
+DQo+ID4gWyAgICAwLjAwMDAwMF0geDE0OiAwMDAwMDAwMDAwMDAwZmZmIHgxMzogZmZmZjgwMDAx
+MTg2YTU0OCB4MTI6IDAwMDAwMDAwMDAwMDAwMDANCj4gPiBbICAgIDAuMDAwMDAwXSB4MTE6IDAw
+MDAwMDAwMDAwMDAwMDAgeDEwOiAwMDAwMDAwMGZmZmZmZmZmIHg5IDogMDAwMDAwMDAwMDAwMDAw
+MA0KPiA+IFsgICAgMC4wMDAwMDBdIHg4IDogZmZmZjgwMDAxMTVjOTAwMCB4NyA6IDczNzUyMDcz
+Nzk2ODcwNWYgeDYgOiBmZmZmODAwMDExYjYyZWY4DQo+ID4gWyAgICAwLjAwMDAwMF0geDUgOiAw
+MDAwMDAwMDAwMDAwMDAwIHg0IDogMDAwMDAwMDAwMDAwMDAwMSB4MyA6IDAwMDAwMDAwMDAwMDAw
+MDANCj4gPiBbICAgIDAuMDAwMDAwXSB4MiA6IDAwMDAwMDAwMDAwMDAwMDAgeDEgOiBmZmZmODAw
+MDExNTk1ODVlIHgwIDogMDAwMDAwMDAwMDAwMDA1OA0KPiA+IFsgICAgMC4wMDAwMDBdIENhbGwg
+dHJhY2U6DQo+ID4gWyAgICAwLjAwMDAwMF0gIF9fdmlydF90b19waHlzKzB4NTgvMHg2OA0KPiA+
+IFsgICAgMC4wMDAwMDBdICBjaGVja191c2VtYXBfc2VjdGlvbl9ucisweDUwLzB4ZmMNCj4gPiBb
+ICAgIDAuMDAwMDAwXSAgc3BhcnNlX2luaXRfbmlkKzB4MWFjLzB4MjhjDQo+ID4gWyAgICAwLjAw
+MDAwMF0gIHNwYXJzZV9pbml0KzB4MWM0LzB4MWUwDQo+ID4gWyAgICAwLjAwMDAwMF0gIGJvb3Rt
+ZW1faW5pdCsweDYwLzB4OTANCj4gPiBbICAgIDAuMDAwMDAwXSAgc2V0dXBfYXJjaCsweDE4NC8w
+eDFmMA0KPiA+IFsgICAgMC4wMDAwMDBdICBzdGFydF9rZXJuZWwrMHg3OC8weDQ4OA0KPiA+IFsg
+ICAgMC4wMDAwMDBdIC0tLVsgZW5kIHRyYWNlIGY2ODcyOGEwZDMwNTNiNjAgXS0tLQ0KPiA+IA0K
+PiA+IFNpZ25lZC1vZmYtYnk6IE1pbGVzIENoZW4gPG1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tPg0K
+PiA+IC0tLQ0KPiA+ICBtbS9zcGFyc2UuYyB8IDEzICsrKysrKysrKysrLS0NCj4gPiAgMSBmaWxl
+IGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlm
+ZiAtLWdpdCBhL21tL3NwYXJzZS5jIGIvbW0vc3BhcnNlLmMNCj4gPiBpbmRleCBiMmFkYTlkYzAw
+Y2IuLjU1YzE4YWZmM2U0MiAxMDA2NDQNCj4gPiAtLS0gYS9tbS9zcGFyc2UuYw0KPiA+ICsrKyBi
+L21tL3NwYXJzZS5jDQo+ID4gQEAgLTM0NCw2ICszNDQsMTUgQEAgc2l6ZV90IG1lbV9zZWN0aW9u
+X3VzYWdlX3NpemUodm9pZCkNCj4gPiAgCXJldHVybiBzaXplb2Yoc3RydWN0IG1lbV9zZWN0aW9u
+X3VzYWdlKSArIHVzZW1hcF9zaXplKCk7DQo+ID4gIH0NCj4gPiAgDQo+ID4gK3N0YXRpYyBpbmxp
+bmUgcGh5c19hZGRyX3QgcGdkYXRfdG9fcGh5cyhzdHJ1Y3QgcGdsaXN0X2RhdGEgKnBnZGF0KQ0K
+PiA+ICt7DQo+ID4gKyNpZm5kZWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9ERVMNCj4gPiArCXJl
+dHVybiBfX3BhX3N5bWJvbChwZ2RhdCk7DQo+ID4gKyNlbHNlDQo+ID4gKwlyZXR1cm4gX19wYShw
+Z2RhdCk7DQo+ID4gKyNlbmRpZg0KPiA+ICt9DQo+ID4gKw0KPiA+ICAjaWZkZWYgQ09ORklHX01F
+TU9SWV9IT1RSRU1PVkUNCj4gPiAgc3RhdGljIHN0cnVjdCBtZW1fc2VjdGlvbl91c2FnZSAqIF9f
+aW5pdA0KPiA+ICBzcGFyc2VfZWFybHlfdXNlbWFwc19hbGxvY19wZ2RhdF9zZWN0aW9uKHN0cnVj
+dCBwZ2xpc3RfZGF0YSAqcGdkYXQsDQo+ID4gQEAgLTM2Miw3ICszNzEsNyBAQCBzcGFyc2VfZWFy
+bHlfdXNlbWFwc19hbGxvY19wZ2RhdF9zZWN0aW9uKHN0cnVjdCBwZ2xpc3RfZGF0YSAqcGdkYXQs
+DQo+ID4gIAkgKiBmcm9tIHRoZSBzYW1lIHNlY3Rpb24gYXMgdGhlIHBnZGF0IHdoZXJlIHBvc3Np
+YmxlIHRvIGF2b2lkDQo+ID4gIAkgKiB0aGlzIHByb2JsZW0uDQo+ID4gIAkgKi8NCj4gPiAtCWdv
+YWwgPSBfX3BhKHBnZGF0KSAmIChQQUdFX1NFQ1RJT05fTUFTSyA8PCBQQUdFX1NISUZUKTsNCj4g
+PiArCWdvYWwgPSBwZ2RhdF90b19waHlzKHBnZGF0KSAmIChQQUdFX1NFQ1RJT05fTUFTSyA8PCBQ
+QUdFX1NISUZUKTsNCj4gPiAgCWxpbWl0ID0gZ29hbCArICgxVUwgPDwgUEFfU0VDVElPTl9TSElG
+VCk7DQo+ID4gIAluaWQgPSBlYXJseV9wZm5fdG9fbmlkKGdvYWwgPj4gUEFHRV9TSElGVCk7DQo+
+ID4gIGFnYWluOg0KPiA+IEBAIC0zOTAsNyArMzk5LDcgQEAgc3RhdGljIHZvaWQgX19pbml0IGNo
+ZWNrX3VzZW1hcF9zZWN0aW9uX25yKGludCBuaWQsDQo+ID4gIAl9DQo+ID4gIA0KPiA+ICAJdXNl
+bWFwX3NuciA9IHBmbl90b19zZWN0aW9uX25yKF9fcGEodXNhZ2UpID4+IFBBR0VfU0hJRlQpOw0K
+PiA+IC0JcGdkYXRfc25yID0gcGZuX3RvX3NlY3Rpb25fbnIoX19wYShwZ2RhdCkgPj4gUEFHRV9T
+SElGVCk7DQo+ID4gKwlwZ2RhdF9zbnIgPSBwZm5fdG9fc2VjdGlvbl9ucihwZ2RhdF90b19waHlz
+KHBnZGF0KSA+PiBQQUdFX1NISUZUKTsNCj4gPiAgCWlmICh1c2VtYXBfc25yID09IHBnZGF0X3Nu
+cikNCj4gPiAgCQlyZXR1cm47DQo+ID4gIA0KPiA+IC0tIA0KPiA+IDIuMTguMA0KPiANCg0K
 
-The current Linux RISC-V policy is to only accept patches for frozen or
-ratified ISA specs.
-(Refer, Documentation/riscv/patch-acceptance.rst)
-
-This means even if emulate CMO instructions in OpenSBI, the Linux
-patches won't be taken by Palmer because CMO specification is
-still in draft stage.
-
-Also, we all know how much time it takes for RISCV international
-to freeze some spec. Judging by that we are looking at another
-3-4 years at minimum.
-
-Regards,
-Anup
