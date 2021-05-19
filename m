@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4547D389092
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98052389097
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347629AbhESOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:20:02 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37556 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354066AbhESOTz (ORCPT
+        id S1344742AbhESOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:20:13 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:45947 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239857AbhESOUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 10:19:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JEF9S0101727;
-        Wed, 19 May 2021 14:18:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=3N0UDr8fp/rROWpaUFSOnbPEWFC1lCojv6j2aMf4zHY=;
- b=IffCIAR0qn7rYRPWwUZlSa5i7x5lpIzo+wqkYYxxq5NSLm1Ft0UfJ9L1kYk6HqeJmNjE
- WVhCX3+28DAYd8060//bo79+PIi5ZnxoWRjWPIrHdOL0B1mMzXM82I0XMN9507w9w1Rx
- tA4BUePtbhxBJxRRquqESAmef1zBkiw3thanHaxjSWArg73eJl03k/jSQpRmnwXCndl1
- mn1u9bkBCayc4GKOH09AjU2RD9l9JP0ddEeQmjLAkchVhcC1qNA15Q/0cx5L2WfBQSPl
- szGWiN8yNqrbm/TiTiFEkh8Sjia/Qf4R5QbBAS1vZsw1MqvO50Bi5b4C3i/7ZW5AqG5z aQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 38j6xnhnxe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 14:18:15 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14JEC4xK028409;
-        Wed, 19 May 2021 14:18:14 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38mecjb8qm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 14:18:14 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14JEFewt070836;
-        Wed, 19 May 2021 14:18:14 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 38mecjb8np-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 14:18:14 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14JEIBxX031464;
-        Wed, 19 May 2021 14:18:12 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 19 May 2021 07:18:10 -0700
-Date:   Wed, 19 May 2021 17:17:45 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Evgeniy Polyakov <zbr@ioremap.net>
-Cc:     Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] w1: fix loop in w1_fini()
-Message-ID: <YKUeCfjQqt5NuSta@mwanda>
+        Wed, 19 May 2021 10:20:09 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UZPxG0E_1621433926;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UZPxG0E_1621433926)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 19 May 2021 22:18:46 +0800
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: Re: [PATCH] virtio_net: Remove BUG() to aviod machine dead
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     jasowang@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
+ <20210518055336-mutt-send-email-mst@kernel.org>
+Message-ID: <4aaf5125-ce75-c72a-4b4a-11c91cb85a72@linux.alibaba.com>
+Date:   Wed, 19 May 2021 22:18:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518082855.GB32682@kadam>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: A5jfNBGAkI2EWzceDpCJO9nvvs7mwSYj
-X-Proofpoint-ORIG-GUID: A5jfNBGAkI2EWzceDpCJO9nvvs7mwSYj
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9988 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- mlxlogscore=936 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190089
+In-Reply-To: <20210518055336-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __w1_remove_master_device() function calls:
+thanks, I submit the patch as commented by Andrew 
+https://lkml.org/lkml/2021/5/18/256
 
-	list_del(&dev->w1_master_entry);
+Actually, if xmit_skb() returns error, below code will give a warning 
+with error code.
 
-So presumably this can cause an endless loop.
+	/* Try to transmit */
+	err = xmit_skb(sq, skb);
 
-Fixes: 7785925dd8e0 ("[PATCH] w1: cleanups.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/w1/w1.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+	/* This should not happen! */
+	if (unlikely(err)) {
+		dev->stats.tx_fifo_errors++;
+		if (net_ratelimit())
+			dev_warn(&dev->dev,
+				 "Unexpected TXQ (%d) queue failure: %d\n",
+				 qnum, err);
+		dev->stats.tx_dropped++;
+		dev_kfree_skb_any(skb);
+		return NETDEV_TX_OK;
+	}
 
-diff --git a/drivers/w1/w1.c b/drivers/w1/w1.c
-index f2ae2e563dc5..8b2d82959ded 100644
---- a/drivers/w1/w1.c
-+++ b/drivers/w1/w1.c
-@@ -1259,10 +1259,10 @@ static int __init w1_init(void)
- 
- static void __exit w1_fini(void)
- {
--	struct w1_master *dev;
-+	struct w1_master *dev, *n;
- 
- 	/* Set netlink removal messages and some cleanup */
--	list_for_each_entry(dev, &w1_masters, w1_master_entry)
-+	list_for_each_entry_safe(dev, n, &w1_masters, w1_master_entry)
- 		__w1_remove_master_device(dev);
- 
- 	w1_fini_netlink();
--- 
-2.30.2
 
+
+
+
+ÔÚ 2021/5/18 ÏÂÎç5:54, Michael S. Tsirkin Ð´µÀ:
+> typo in subject
+> 
+> On Tue, May 18, 2021 at 05:46:56PM +0800, Xianting Tian wrote:
+>> When met error, we output a print to avoid a BUG().
+>>
+>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>> ---
+>>   drivers/net/virtio_net.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index c921ebf3ae82..a66174d13e81 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -1647,9 +1647,8 @@ static int xmit_skb(struct send_queue *sq, struct
+>> sk_buff *skb)
+>>   		hdr = skb_vnet_hdr(skb);
+>>
+>>   	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+>> -				    virtio_is_little_endian(vi->vdev), false,
+>> -				    0))
+>> -		BUG();
+>> +				virtio_is_little_endian(vi->vdev), false, 0))
+>> +		return -EPROTO;
+>>
+> 
+> why EPROTO? can you add some comments to explain what is going on pls?
+> 
+> is this related to a malicious hypervisor thing?
+> 
+> don't we want at least a WARN_ON? Or _ONCE?
+> 
+>>   	if (vi->mergeable_rx_bufs)
+>>   		hdr->num_buffers = 0;
+>> -- 
+>> 2.17.1
