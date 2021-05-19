@@ -2,205 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C1E388CC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5D1388CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350339AbhESL1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:27:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6648 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237819AbhESL1T (ORCPT
+        id S240637AbhESL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350640AbhESL3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:27:19 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JB5YaK002366;
-        Wed, 19 May 2021 07:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=xjNwDg6g7R/jUn4STa3QG5nV0qyInx4KtgFWDfuBse0=;
- b=lbW3PP5qWk9eiRNicUTrzl5EBQnharuU086gFlmexOGxkaemMp3ZGbxA+Wl+Ywey+ybT
- TI+EcYWjqW9NX/y2S4pvTMg9b5WZQ3wCLUfo2ytYO0bRkRabTalekV6yNlDG6RqDX/kr
- g6FwFIJm4GzWmTNfRo7+fXUR4KiRxNa3WILi3TPAX3UxzQ1XqOuHKzEIXEOhprY6rDJP
- Bkb4tys9EtrL4IsAdhBOC96DuOZH2ba4wjDxu0f9BZVVQZ60/1+msNoV7u957iH3RWOp
- dx2UokkhcFioPHUr+JbzKpD2lzZU8NlEskyM3QypBawyOtpQkGLY/SzTnD5qkImZn4o6 AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38n0a02qre-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 07:25:58 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14JB5nXF003560;
-        Wed, 19 May 2021 07:25:57 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38n0a02qqu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 07:25:57 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14JBPXaF011293;
-        Wed, 19 May 2021 11:25:55 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 38j5jgt2cs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 May 2021 11:25:55 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14JBPqrA34013598
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 May 2021 11:25:52 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B8CDAE056;
-        Wed, 19 May 2021 11:25:52 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC9E8AE051;
-        Wed, 19 May 2021 11:25:51 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.63.209])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 19 May 2021 11:25:51 +0000 (GMT)
-Date:   Wed, 19 May 2021 13:25:49 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
- callback
-Message-ID: <20210519132549.295d48db.pasic@linux.ibm.com>
-In-Reply-To: <250189ed-bded-5261-d8f3-f75787be7aeb@de.ibm.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
-        <20210512203536.4209c29c.pasic@linux.ibm.com>
-        <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
-        <20210513194541.58d1628a.pasic@linux.ibm.com>
-        <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
-        <20210514021500.60ad2a22.pasic@linux.ibm.com>
-        <594374f6-8cf6-4c22-0bac-3b224c55bbb6@linux.ibm.com>
-        <20210517211030.368ca64b.pasic@linux.ibm.com>
-        <966a60ad-bdde-68d0-ae2f-06121c6ad970@de.ibm.com>
-        <9ebd5fd8-b093-e5bc-e680-88fa7a9b085c@linux.ibm.com>
-        <494af62b-dc9a-ef2c-1869-d8f5ed239504@de.ibm.com>
-        <20210518173351.39646b45.pasic@linux.ibm.com>
-        <ca5f1c72-09a3-d270-44a0-bda54c554f67@de.ibm.com>
-        <20210519012709.3bcc30e7.pasic@linux.ibm.com>
-        <250189ed-bded-5261-d8f3-f75787be7aeb@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 19 May 2021 07:29:14 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C9EC06175F;
+        Wed, 19 May 2021 04:27:55 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id q6so7172215pjj.2;
+        Wed, 19 May 2021 04:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FSH6O+80A3wo/ivtXXwOmyWUlPQ03Zp0wKm42ionk8s=;
+        b=CqUSodm9Z8jO18w0IjUEIZkYHPe19OzUDy5rXTjhBiQDHftdcPdsdHeXmQHvHfGZCz
+         4JK8jBkvZyqlfJBKHLdsR3knXqD5qS/EZtJuHYQIxyT+6/hpa3skDagG1zmhoLJlu6bf
+         j8M3ks+bRRwqbHdqrlc5kcnAhTqqzkv9WNylSHIEXv+qdo+Yj2Vw2XzL/Jv8uoYNOiUu
+         Jc3V79eFgL1r173MAQJlUYm/R2t2QVO75GqQRrcaxmHuskoj+OVQnJHppIj/CSyavXdD
+         mWvIZtGZfpKcBncmWG6mGSltkb/w4eb3PhppdnAzosXm9cNvRJk7IzcFCDJo+IGJkSJQ
+         psrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FSH6O+80A3wo/ivtXXwOmyWUlPQ03Zp0wKm42ionk8s=;
+        b=EsFsSjGKmsJMrwPynEqCCs8EiHsdLPByaviuEc6XsVhQs3E0jmpgsrFtQN6Kxuxilh
+         pBVJH0XvsmQMpZVjhlpgdS9bEKr3AZUl2unrRIQkyuyWNE4DwwGHbbAoIpkV0LSlOL00
+         riwRoNyPjL0suRdkmhnlcuFV+0QNp0Faiy9ndTpAAVjX5OQYfRZWpIPC0j/yU+Mpqumi
+         dALGuEJx1BZZxTICrsKQXgxJmcYqMIgqms2o+P95CahKWituQMPnrAX7Ua6EjpgVmsO2
+         47PaTNClqzV4lSCzE8JQpo30ox3IMKVNjJQX/mZVAakJ9jEB8nhly1wt72ieO8fetVb3
+         C4qg==
+X-Gm-Message-State: AOAM533Kuo75GUO/HoZkzUaN5m3dIkpI8Y4RKFDeVxnH3I+p1Tz0IR5o
+        RxOjAqdLts4qrpSNuWN3/Bv1xWPQIUW0rSolcdQ=
+X-Google-Smtp-Source: ABdhPJyP1HNBiZ2lW0jaNnCTaTSQkThhbcODAxJ4yukhbFbL2DAB/9CWeluHHZynJGgoB0KlGOw64vNBGmC5YjznZIU=
+X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr7040718pjq.228.1621423674579;
+ Wed, 19 May 2021 04:27:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: _iyEpA1SPmLyKZ1JJ59LaZOsF_ozL0VD
-X-Proofpoint-GUID: J30VBoJ0VeHxI7dmTnPyIu16zuzxnH5P
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-19_04:2021-05-19,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 adultscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- impostorscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105190074
+References: <20210516135531.2203-1-dariobin@libero.it> <20210516135531.2203-2-dariobin@libero.it>
+ <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
+ <1735504854.166374.1621346262270@mail1.libero.it> <CAHp75VeADiRKdfnsXQ=y3z1WAJBbtZ+P=8tdyYtVQpJrSrQ63Q@mail.gmail.com>
+ <20210519100235.GA3063522@x1>
+In-Reply-To: <20210519100235.GA3063522@x1>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 19 May 2021 14:27:38 +0300
+Message-ID: <CAHp75Ve5sonh1qNgqqF1yr8OiuJVWXb-UJj+kzxQa7+R-YVoXQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug file
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Vladimir Zapolskiy <vz@mleia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 10:17:49 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+On Wed, May 19, 2021 at 1:02 PM Drew Fustini <drew@beagleboard.org> wrote:
+> On Tue, May 18, 2021 at 05:01:30PM +0300, Andy Shevchenko wrote:
 
-> On 19.05.21 01:27, Halil Pasic wrote:
-> > On Tue, 18 May 2021 19:01:42 +0200
-> > Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-> >   
-> >> On 18.05.21 17:33, Halil Pasic wrote:  
-> >>> On Tue, 18 May 2021 15:59:36 +0200
-> >>> Christian Borntraeger <borntraeger@de.ibm.com> wrote:  
-> > [..]  
-> >>>>>>
-> >>>>>> Would it help, if the code in priv.c would read the hook once
-> >>>>>> and then only work on the copy? We could protect that with rcu
-> >>>>>> and do a synchronize rcu in vfio_ap_mdev_unset_kvm after
-> >>>>>> unsetting the pointer?  
-> >>>
-> >>> Unfortunately just "the hook" is ambiguous in this context. We
-> >>> have kvm->arch.crypto.pqap_hook that is supposed to point to
-> >>> a struct kvm_s390_module_hook member of struct ap_matrix_mdev
-> >>> which is also called pqap_hook. And struct kvm_s390_module_hook
-> >>> has function pointer member named "hook".  
-> >>
-> >> I was referring to the full struct.  
-> >>>      
-> >>>>>
-> >>>>> I'll look into this.  
-> >>>>
-> >>>> I think it could work. in priv.c use rcu_readlock, save the
-> >>>> pointer, do the check and call, call rcu_read_unlock.
-> >>>> In vfio_ap use rcu_assign_pointer to set the pointer and
-> >>>> after setting it to zero call sychronize_rcu.  
-> >>>
-> >>> In my opinion, we should make the accesses to the
-> >>> kvm->arch.crypto.pqap_hook pointer properly synchronized. I'm
-> >>> not sure if that is what you are proposing. How do we usually
-> >>> do synchronisation on the stuff that lives in kvm->arch?
-> >>>      
-> >>
-> >> RCU is a method of synchronization. We  make sure that structure
-> >> pqap_hook is still valid as long as we are inside the rcu read
-> >> lock. So the idea is: clear pointer, wait until all old readers
-> >> have finished and the proceed with getting rid of the structure.  
-> > 
-> > Yes I know that RCU is a method of synchronization, but I'm not
-> > very familiar with it. I'm a little confused by "read the hook
-> > once and then work on a copy". I guess, I would have to read up
-> > on the RCU again to get clarity. I intend to brush up my RCU knowledge
-> > once the patch comes along. I would be glad to have your help when
-> > reviewing an RCU based solution for this.  
-> 
-> Just had a quick look. Its not trivial, as the hook function itself
-> takes a mutex and an rcu section must not sleep. Will have a deeper
-> look.
+...
 
-I refreshed my RCU knowledge and RCU seems to be a reasonable choice
-here. I don't think we have to make the rcu read section span the 
-call to the callback. That is something like
+> Vladimir Zapolskiy wrote in e73339037f6b ("pinctrl: remove unused
+> 'pinconf-config' debugfs interface"):
+>
+>     Of course it might be possible to increase MAX_NAME_LEN, and then add
+>     .pin_config_dbg_parse_modify callbacks to the drivers, but the whole
+>     idea of such a limited debug option looks inviable. A more flexible
+>     way to functionally substitute the original approach is to implicitly
+>     or explicitly use pinctrl_select_state() function whenever needed.
+>
+> This makes me think it is not a good idea to bring back pinconf-config.
+> The pinmux-select debugfs file that I add added in commit 6199f6becc86
+> ("pinctrl: pinmux: Add pinmux-select debugfs file") provides a method to
+> activate a pin function and pin group which I think provides the same
+> capability as long as the possible pin functions are described in dts.
 
---- a/arch/s390/kvm/priv.c
-+++ b/arch/s390/kvm/priv.c
-@@ -613,6 +613,7 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
-        unsigned long reg0;
-        int ret;
-        uint8_t fc;
-+       int (*pqap_hook)(struct kvm_vcpu *vcpu);
- 
-        /* Verify that the AP instruction are available */
-        if (!ap_instructions_available())
-@@ -657,14 +658,21 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
-         * Verify that the hook callback is registered, lock the owner
-         * and call the hook.
-         */
-+       rcu_read_lock();
-        if (vcpu->kvm->arch.crypto.pqap_hook) {
--               if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-+               if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner)) {
-+                       rcu_read_unlock();
-                        return -EOPNOTSUPP;
--               ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-+               }
-+               pqap_hook = READ_ONCE(vcpu->kvm->arch.crypto.pqap_hook->hook);
-+               rcu_read_unlock();
-+               ret = pqap_hook();
-                module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-                if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
-                        kvm_s390_set_psw_cc(vcpu, 3);
-                return ret;
-+       } else {
-+               rcu_read_unlock();
-        }
-        /*
-         * A vfio_driver must register a hook.
+The problem is that the pinctrl_select_state() is very limited and has
+no clear meanings of the states. Only few are defined and still
+unclear. What does `sleep` or `standby` or whatever mean? It may be
+quite different to the device in question. Basically what we need is
+to say we want this device ('function') to appear on this group of
+pins ('group'). And pinctrl_select_state() can't fulfill this simple
+task :-(
 
-Should be sufficient. The module get ensures that the pointee is still
-around for the duration of the call. The handle_pqap() from
-vfio_ap_ops.c checks the vcpu->kvm->arch.crypto.pqap_hook the same
-lock that is used to set it to NULL, and bails out if it is NULL. It
-is a bit convoluted, but it should work.
+If we look at the ACPI case it makes that API completely out of useful
+context (it can be used due to above and some kind of layering
+violations, like PM vs. pin control).
 
-Regards,
-Halil
+Since above is the debugfs interface we may return it for the certain
+task, i.e. printing current function / group choice(s) (if it's not
+done by other means) and allow to switch it desired function/group
+(that's what Dario tries to achieve AFAIU).
 
+
+-- 
+With Best Regards,
+Andy Shevchenko
