@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C26E389352
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA21389355
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355155AbhESQMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:12:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355144AbhESQMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:12:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B06DB6124C;
-        Wed, 19 May 2021 16:11:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621440684;
-        bh=na6FALQoNuy8u03ZG29zB+aTDGjiYRhmATrXpQWBCAw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M8qK9qlv1xTdKbAIltgvg+rJeQrfD6rWZ3qGsvDwCpkySLGOY7w0PLI5svRkIbHoh
-         RLhl5ybGt7z1ZSI3GzedvHOtWdotKfkJQV9AmmLoRdX+1Foun3bUCvhBsDCKcqx6L3
-         Z+MpvafZ95wCw35PONHCbVpL2f2+TYLMLlhjVbMRPEL5fuKcNzCOhIhmDpWi++i3vG
-         y+IY7va2TV4EMoRbuTBPDt0Gk/4A70DiSyitS2AAkLjdolxeNiQRKLgqcQIVCuaH6m
-         9VQIHm10JySYHd/RpBCkdu8ukCjHg1KWBKgW06XPO8lbggU8qLK+2GL5P0rVLStKyc
-         OMF/RJXyoy0Rg==
-From:   Mark Brown <broonie@kernel.org>
-To:     jbrunet@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] ASoC: meson: g12a-toacodec: add support for SM1
-Date:   Wed, 19 May 2021 17:10:18 +0100
-Message-Id: <162144027324.37060.1996054206902696511.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210511074829.4110036-1-narmstrong@baylibre.com>
-References: <20210511074829.4110036-1-narmstrong@baylibre.com>
+        id S1354812AbhESQNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347757AbhESQNK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:13:10 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2E4C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:11:49 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i9so19871311lfe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:11:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n38yI3oq9hOs0w7+qSvFPZKuNPxOuHm402NSUUthZyA=;
+        b=BrlJyx9AUrw2lHOaGBlhvxuHGUWn4JGwoZHMIip/Cz5zCwjc3amf34js0LZtyhhYg/
+         Kn+CAL4R8ueE98Wxql/NUDPbmhynUChlJlPuL8SRI4i/0L7ZpSD6YwBgZXhGhOewPA/3
+         td+EVvuvVWxSislyyclLVv2EpK7SiWO5zda0s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n38yI3oq9hOs0w7+qSvFPZKuNPxOuHm402NSUUthZyA=;
+        b=e0nH+2/SaTkgR0y0Xp296EC2HpZ4vj5DO75djCwcUOwlPOqXWHps7mAyg6RuCpW9T+
+         8O6mj/XGEBKHUVJxxdxKNqvDUd7suqlcMBSdwlsvgc2hpwLy6ahza76frq2mwO8n74Bu
+         0nnAeAfM9o4s91FgZQKo+lO0IW8oENez0jZAUggniN/ljpApasmGg2us/H0QOAMCEZMa
+         VqC+Qw8YzjWVrkdNkeFVP3vTz0kZrB57wzRe6vmQlv+uFpgOdzzFHQ4wvR17F+FjAzwD
+         lk0h0JxrvajTYHKymnEOvJMO6Wo4QolfbP5OXYppqfvbcHmasYOcg0ZJ+JHy0zqHiTtX
+         MIew==
+X-Gm-Message-State: AOAM530CTAPTLvGJNnPo1pOa5yAPdsR/Tc9mbIdM0tRgFPv8oQJBzZyO
+        PRL3NAxSP8EtfMqiHNUKfwKqJ8QEtjzGKaom/6U=
+X-Google-Smtp-Source: ABdhPJxuwWm/zeU4/GQlQ3ah6VNo7ljJorXvPIl2M2SW9bcVh7dJZkmSzcmgj1Z+eKhTveCDRGlueQ==
+X-Received: by 2002:a05:6512:3c8e:: with SMTP id h14mr166138lfv.472.1621440707240;
+        Wed, 19 May 2021 09:11:47 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id y26sm12173lfb.164.2021.05.19.09.11.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 09:11:45 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id j6so17236742lfr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:11:44 -0700 (PDT)
+X-Received: by 2002:a05:6512:36c5:: with SMTP id e5mr157954lfs.41.1621440704505;
+ Wed, 19 May 2021 09:11:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210519024322.GA29704@xsang-OptiPlex-9020> <CAHk-=whcr5M=4Mz2ydu4XtxTL_34WkXPnmFmA4f8r+ELXDC6hg@mail.gmail.com>
+ <20210519133330.GA14452@lst.de> <87y2ca6a69.fsf@tynnyri.adurom.net>
+In-Reply-To: <87y2ca6a69.fsf@tynnyri.adurom.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 19 May 2021 06:11:28 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wgYqF3bffW0EPmVTUFcoV0jXECu-A_dyWZ0ZwUwhCHi+A@mail.gmail.com>
+Message-ID: <CAHk-=wgYqF3bffW0EPmVTUFcoV0jXECu-A_dyWZ0ZwUwhCHi+A@mail.gmail.com>
+Subject: Re: [i915] b12d691ea5: kernel_BUG_at_mm/memory.c
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        kernel test robot <oliver.sang@intel.com>,
+        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Serge Belyshev <belyshev@depni.sinp.msu.ru>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 09:48:27 +0200, Neil Armstrong wrote:
-> This patchset adds Amlogic SM1 support on the TOACODEC driver, first by switching
-> to regmap fields for some bit fields to avoid code duplication, and then by adding
-> the corresponding bits & struct for the SM1 changed bits.
-> 
-> Changes since v2 at [2]:
-> - use raw values instead of defines in REG_FIELD() for g12a_toacodec_match_data
-> 
-> [...]
+On Wed, May 19, 2021 at 5:00 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Christoph Hellwig <hch@lst.de> writes:
+>
+> > On Tue, May 18, 2021 at 04:58:31PM -1000, Linus Torvalds wrote:
+> >>
+> >> I'd be inclined to revert the commits as "not ready yet", but it would
+> >> be better if somebody can go "yeah, this should be done properly like
+> >> X".
+> >
+> > I think reverting just this commit for now is the best thing.
+>
+> Yes, please revert it if there's no quick fix. On my Dell XPS 13 9310
+> laptop (with Debian 10) X won't start until I revert commit
+> b12d691ea5e0, so this is a major issue.
 
-Applied to
+Reverted.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: meson: g12a-toacodec: use regmap fields to prepare SM1 support
-      commit: 172dd9216d2b8a3fa162039d89c4361ef35c85ae
-[2/2] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
-      commit: 7487238c5f530b418745ce134d1b0a7fba3a0d8d
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+                 Linus
