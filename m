@@ -2,204 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6297F3883E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5EC3883DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352865AbhESAqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 20:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244461AbhESAqC (ORCPT
+        id S239083AbhESApi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 20:45:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234097AbhESApg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 20:46:02 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B6AC06175F;
-        Tue, 18 May 2021 17:44:44 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljAIt-00G48Y-QL; Wed, 19 May 2021 00:43:15 +0000
-Date:   Wed, 19 May 2021 00:43:15 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: [PATCHSET] d_path cleanups
-Message-ID: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
-References: <20210508122530.1971-1-justin.he@arm.com>
- <20210508122530.1971-2-justin.he@arm.com>
- <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
- <YJbivrA4Awp4FXo8@zeniv-ca.linux.org.uk>
- <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
- <YJb9KFBO7MwJeDHz@zeniv-ca.linux.org.uk>
- <CAHk-=wjhrhkWbV_EY0gupi2ea7QHpGW=68x7g09j_Tns5ZnsLA@mail.gmail.com>
- <CAHk-=wiOPkSm-01yZzamTvX2RPdJ0784+uWa0OMK-at+3XDd0g@mail.gmail.com>
- <YJdIx6iiU9YwnQYz@zeniv-ca.linux.org.uk>
- <CAHk-=wih_O+0xG4QbLw-3XJ71Yh43_SFm3gp9swj8knzXoceZQ@mail.gmail.com>
+        Tue, 18 May 2021 20:45:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621385057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwTV7Kjj6RrOTTD0I2CX5CsxsnrWqAGskz6Ldbn+/74=;
+        b=RS0RNR4bDnHEOBFwj+nl3ddPEEmaaAHi0sy/D371KwVKffmY44TDSCRAntcAyJhPqrdYPT
+        uMMD7K6M9QHFN+73dQg7ZFVerRPMEvnHEu+hi6tfs/6SZbU+Ivo8Vp0nbCM4hCBrEr2d99
+        E/zH6Ipbynhh9GRsvaaezgnjbWpRVw4=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-136-YQfHGrdEPrm_H5L3n5yqaw-1; Tue, 18 May 2021 20:44:15 -0400
+X-MC-Unique: YQfHGrdEPrm_H5L3n5yqaw-1
+Received: by mail-qv1-f71.google.com with SMTP id e2-20020ad442a20000b02901f3586a14easo1329046qvr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 17:44:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YwTV7Kjj6RrOTTD0I2CX5CsxsnrWqAGskz6Ldbn+/74=;
+        b=qty+8LSk3VKE5ebBfJETpzY6ayPZp3oIiA84LFUeIuVwRdyazEmetXhnRMf+wJA/L/
+         B4LjoOn5yzia0/r2zMowTpr1tOr7R39E7Z0EZvE/XHGhVC3KY86uITTm3L9hgadToo47
+         aB7fYNkrjLSGah09InNccR1CZR7/SP/1zcCfWzbhsjgTs+ATwwL0BgNHc20hE+MFIYgD
+         aN6T3Kn71HeBZTgiX0ZQJ5mLnwFwMXnd9O5H8pWs00a6C/BsYaXrsymMmdCo78o6OONo
+         4WB+8LvuK/mlaFk1s3gLC6g3O7Sa9v4GDC9xxFuvh6lfa046I0tSF6hD2pk6AhqzQ9wL
+         Aoag==
+X-Gm-Message-State: AOAM532r/oeViyMe6KIcTIvBge9eSFnZ+nh3wBBrMFPh1bnigoP2DsCn
+        ixlwRVulozfi9fmLSjbbz77B0iqXMZ+P7EcKog+8FExy+4NXjeTqVOgDE2mmXem9O2TeT+59vDt
+        xXZRL9q4+QJnRkO8fgd904Sbo
+X-Received: by 2002:ac8:57d3:: with SMTP id w19mr7985512qta.75.1621385054693;
+        Tue, 18 May 2021 17:44:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/Q1QiH+3hhEaWnwd9y0dfF8Sdg6/iOfxvq1qK25qepn9oxe5obi9OdahD47I+lnDGQNYZ4A==
+X-Received: by 2002:ac8:57d3:: with SMTP id w19mr7985479qta.75.1621385054364;
+        Tue, 18 May 2021 17:44:14 -0700 (PDT)
+Received: from treble ([68.52.236.68])
+        by smtp.gmail.com with ESMTPSA id k2sm12508513qtg.68.2021.05.18.17.44.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 17:44:14 -0700 (PDT)
+Date:   Tue, 18 May 2021 19:44:11 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        willy@infradead.org, masahiroy@kernel.org, michal.lkml@markovi.net
+Subject: Re: [tip: objtool/core] jump_label, x86: Allow short NOPs
+Message-ID: <20210519004411.xpx4i6qcnfpyyrbj@treble>
+References: <20210506194158.216763632@infradead.org>
+ <162082558708.29796.10992563428983424866.tip-bot2@tip-bot2>
+ <20210518195004.GD21560@worktop.programming.kicks-ass.net>
+ <20210518202443.GA48949@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wih_O+0xG4QbLw-3XJ71Yh43_SFm3gp9swj8knzXoceZQ@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210518202443.GA48949@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	First of all, apologies for delays (one of the disks on the main
-devel/testing box has become an ex-parrot, with... interesting recovery).
+On Tue, May 18, 2021 at 10:24:43PM +0200, Peter Zijlstra wrote:
+> OK, willy followed up on IRC, and it turns out there's a kbuild
+> dependency missing; then objtool changes we don't rebuild:
+> 
+>   arch/x86/entry/vdso/vma.o
+> 
+> even though we should, this led to an unpatched 2 byte jump-label and
+> things went sideways. I'm not sure I understand the whole build
+> machinery well enough to know where to begin chasing this.
+> 
+> Now, this file is mighty magical, due to:
+> 
+> arch/x86/entry/vdso/Makefile:OBJECT_FILES_NON_STANDARD  := y
+> arch/x86/entry/vdso/Makefile:OBJECT_FILES_NON_STANDARD_vma.o    := n
+> 
+> Maybe that's related.
 
-	Here's what I've got for carve-up of cleanups.  This stuff lives
-in git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #work.d_path,
-individual patches in followups.  14 commits, all changes are to fs/d_path.c,
-total being +133/-191.  Moderately tested, seems to work here.  Review
-and testing would be welcome...
+I'm not exactly thrilled that objtool now has the power to easily brick
+a system :-/  Is it really worth it?
 
-	Part 1: trivial preliminary cleanup
+Anyway, here's one way to fix it.  Maybe Masahiro has a better idea.
 
-1/14) d_path: "\0" is {0,0}, not {0}
-	A bunch of places used "\0" as a literal for 1-element array consisting
-of NULs.  That should've been "", obviously...
+From f88b208677953bc445db08ac46b6e4259217bb8a Mon Sep 17 00:00:00 2001
+Message-Id: <f88b208677953bc445db08ac46b6e4259217bb8a.1621384807.git.jpoimboe@redhat.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Date: Tue, 18 May 2021 18:59:15 -0500
+Subject: [PATCH] kbuild: Fix objtool dependency for
+ 'OBJECT_FILES_NON_STANDARD_<obj> := n'
 
-	Part 2: untangling __dentry_path()
+"OBJECT_FILES_NON_STANDARD_vma.o := n" has a dependency bug.  When
+objtool source is updated, the affected object doesn't get re-analyzed
+by objtool.
 
-2/14) d_path: saner calling conventions for __dentry_path()
-	__dentry_path() used to copy the calling conventions for dentry_path().
-That was fine for use in dentry_path_raw(), but it created a lot of headache
-in dentry_path(), since we might need a suffix (//deleted) in there, without
-NUL between it and the pathname itself.  So we had to
-	1) (possibly) put /deleted into buffer and remember where it went
-	2) let __dentry_path() prepend NUL-terminated pathname
-	3) override NUL with / if we had done (1)
-Life becomes much easier if __dentry_path() does *NOT* put NUL in there.
-Then dentry_path_raw() becomes 'put "" into buffer, then __dentry_path()'
-and dentry_path() - 'put "" or "//deleted" into buffer, then __dentry_path()'.
+Peter's new variable-sized jump label feature relies on objtool
+rewriting the object file.  Otherwise the system can fail to boot.  That
+effectively upgrades this minor dependency issue to a major bug.
 
-Additionally, we switch the way buffer information is passed to one similar
-to what we do in prepend()/prepend_name()/etc., i.e. pass the pointer to the
-end of buffer instead of that to beginning.  That's what we'd been using
-in __dentry_path() all along, and now that the callers are doing some prepend()
-before calling __dentry_path(), they that value already on hand.
+The problem is that variables in prerequisites are expanded early,
+during the read-in phase.  The '$(objtool_dep)' variable indirectly uses
+'$@', which isn't yet available when the target prerequisites are
+evaluated.
 
-3/14)  d_path: regularize handling of root dentry in __dentry_path()
-	All path-forming primitives boil down to sequence of prepend_name()
-on dentries encountered along the way toward root.  Each time we prepend
-/ + dentry name to the buffer.  Normally that does exactly what we want,
-but there's a corner case when we don't call prepend_name() at all (in case
-of __dentry_path() that happens if we are given root dentry).  We obviously
-want to end up with "/", rather than "", so this corner case needs to be
-handled.
-	__dentry_path() used to manually put '/' in the end of buffer before
-doing anything else, to be overwritten by the first call of prepend_name()
-if one happens and to be left in place if we don't call prepend_name() at
-all.  That required manually checking that we had space in the buffer
-(prepend_name() and prepend() take care of such checks themselves) and lead
-to clumsy keeping track of return value.
-	A better approach is to check if the main loop has added anything
-into the buffer and prepend "/" if it hasn't.  A side benefit of using prepend()
-is that it does the right thing if we'd already run out of buffer, making
-the overflow-handling logics simpler.
+Use '.SECONDEXPANSION:' which causes '$(objtool_dep)' to be expanded in
+a later phase, after the target-specific '$@' variable has been defined.
 
-NB: the above might be worth putting into commit message.
+Fixes: b9ab5ebb14ec ("objtool: Add CONFIG_STACK_VALIDATION option")
+Fixes: ab3257042c26 ("jump_label, x86: Allow short NOPs")
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ scripts/Makefile.build | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-	Part 3: overflow handling cleanups
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 949f723efe53..34d257653fb4 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -268,7 +268,8 @@ define rule_as_o_S
+ endef
+ 
+ # Built-in and composite module parts
+-$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
++.SECONDEXPANSION:
++$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
+ 
+@@ -349,7 +350,7 @@ cmd_modversions_S =								\
+ 	fi
+ endif
+ 
+-$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
++$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,as_o_S)
+ 
+ targets += $(filter-out $(subdir-builtin), $(real-obj-y))
+-- 
+2.31.1
 
-We have an overcomplicated handling of overflows.  Primitives (prepend() and
-prepend_name()) check if we'd run out of space and return -ENAMETOOLONG.
-Then it's propagated all the way out by call chain.  However, the same
-primitives are safe to call in case we'd *already* run out of space and
-that condition is easily checked at any level of callchain.  The next
-5 commits use that to simplify the control flow.
-
-4/14)  d_path: get rid of path_with_deleted()
-	expand into the sole caller, rearrange the suffix handing
-along the lines of dentry_path().
-
-5/14)  getcwd(2): saner logics around prepend_path() call
-	Turn
-		prepend_path()
-		if it says it has run out of space, fail with ENAMETOOLONG
-		if it wants "(unreachable) " prepended
-			do so
-			if that says it has run out of space, fail with ENAMETOOLONG
-	into
-		prepend_path()
-		if it wants "(unreachable) " prepended
-			do so
-		if we see we'd run out of space at some point
-			fail with ENAMETOOLONG
-
-6/14)  d_path: don't bother with return value of prepend()
-	Almost nothing is looking at return value of prepend() and it's
-easy to get rid of the last stragglers...
-
-7/14)  d_path: lift -ENAMETOOLONG handling into callers of prepend_path()
-	It's easier to have prepend_path() return 0 on overflow and
-check for overflow in the callers.  The logics is the same for all callers
-(ran out of space => ERR_PTR(-ENAMETOOLONG)), so we get a bit of boilerplate,
-but even with that the callers become simpler.  Added boilerplate will be
-dealt with a couple of commits down the road.
-
-8/14)  d_path: make prepend_name() boolean
-	Unlike the case of prepend(), callers of prepend_name() really want
-to see whether it has run out of space - the loops it's called in are
-lockless and we could, in principle, end up spinning there for indetermined
-amount of iterations.  Dropping out of loop if we run out of space in the
-buffers serves as a backstop for (very unlikely) cases.
-	However, all we care about is success/failure - we generate
-ENAMETOOLONG in the callers, if not callers of callers, so we can bloody well
-make it return bool.
-
-	Part 4: introduction of prepend_buffer
-
-9/14)  d_path: introduce struct prepend_buffer
-	We've a lot of places where we have pairs of form (pointer to end
-of buffer, amount of space left in front of that).  These sit in pairs of
-variables located next to each other and usually passed by reference.
-Turn those into instances of new type (struct prepend_buffer) and pass
-reference to the pair instead of pairs of references to its fields.
-
-Initialization (of form {buf + len, len}) turned into a macro (DECLARE_BUF),
-to avoid brainos.  Extraction of string (buffer contents if we hadn't run
-out of space, ERR_PTR(-ENAMETOOLONG) otherwise) is done by extract_string();
-that eats the leftover boilerplate from earlier in the series.
-
-	Part 5: extracting the lockless part of prepend_path()
-The thing that started the entire mess had been an attempt to use d_path
-machinery for vsprintf(); that can't grab rename_lock and mount_lock,
-so we needed a variant of prepend_path() that would try to go without
-those locks.  The obvious approach is to lift the internal loop of
-prepend_path() into a new primitive.  However, that needs some massage
-first to separate local variables - otherwise we end up with the
-argument list from hell.
-
-10/14) d_path: prepend_path(): get rid of vfsmnt
-	redundant - we maintain mnt and vfsmnt through the loop,
-with the latter being a pointer to mnt->mnt all along.
-11/14) d_path: prepend_path(): lift resetting b in case when we'd return 3 out of loop
-	the only place in the inner loop where we need p; we use it
-to reset b in case we would return 3.  We can easily check that error is 3
-after the loop and do resetting there.  Note that we only need that after
-the *outer* loop - the body of that starts with assignment to b anyway.
-12/14) d_path: prepend_path(): lift the inner loop into a new helper
-	ta-da
-
-	Part 6: followups
-
-13/14) d_path: prepend_path() is unlikely to return non-zero
-t14/14) getcwd(2): clean up error handling
