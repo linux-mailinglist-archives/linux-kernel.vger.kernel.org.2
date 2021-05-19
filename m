@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C4A3885E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D44F3885E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238808AbhESERU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 00:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S240217AbhESER0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 00:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbhESERQ (ORCPT
+        with ESMTP id S232110AbhESERX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 00:17:16 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B3AC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:15:57 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id 22so8601296pfv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:15:57 -0700 (PDT)
+        Wed, 19 May 2021 00:17:23 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205AFC061761
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:16:01 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id b7so2126312plg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 21:16:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dSvPMJ6ajKYTaE4dMLmv0bU7XqFPvynhF+nhCSjEXqk=;
-        b=aaCOTZsa/3yjYLdqdA/OfbMLWzu9RyJRXuZPYfr+wm3AI9457kCSoFMDCrIsLQrGLt
-         ByoCDOENXrICY1ExhAww4HbaQCkuMYnaHUi2moXVW/S5cevx0U9KeGKRAg+EdufUBA+V
-         1ZxFBOdj8svbSNooNQOceeTijJZm1lZDYEkpSXhTi+1d8Lr1q4cCdCLsaO/eKDLf19ez
-         2YkqD0JJR1s5x88/GXM+P0fpjAOd+F+NR7xfHvvKO4rjabQ2boL8aHUt8jn1GFkgTkj3
-         8xlRFRQ1K2K41Dhesb7oEyVgmMTj+CsIX46gFK77ODinRCHexWx2mKDAQQu7iBu65BYz
-         ZwjQ==
+        bh=9hP472i8tu0x2oWr2ZZdW3TiExRRKywLv6WAxBp0eH4=;
+        b=ZqWbS934HXeMusilkVQHGpZ3Q7vGiO7M0MUhqBwrcrwXi+yiv+LfI1IFFgG55aPJ3F
+         AqPEzAT7IbucWE+hJY1kLI3IgxoGc26uDeR8hTERW6r4mUhqr/wj25zAXWpckxqMyJaQ
+         e9wa8PoKnLRs6YM2oykFuACMjKlfifKrW/fRG8dH5auH3N++J40GsQb/mOGRSbp7AVtt
+         63ew5qNPYMksJ374gKdWGU3yxvOlLUj5a2GWDAzzBIOolZT8BYehXPx47F5zXJe1ZxIp
+         oS0+kaCHvPBfeER/gIuQpIjD4BQ2cJJOugivvlmBYPxNN3J+NmK1UfzRCeFHqoyRV6gW
+         IqWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dSvPMJ6ajKYTaE4dMLmv0bU7XqFPvynhF+nhCSjEXqk=;
-        b=Gxk3MjRV9azEXvXh1OQv2pnyNs/ULXlsoWvECy/zkzcgbet2Jgs8gipUYvdQRH/8d8
-         AsWEDOTasN8p5+t7sZ1NkNH+RCw1waco2U9t/2bbGhv8M8myMuLcr1jVioB67nXbLY0s
-         tmS57Lkjrrsp2bYYEMJZSDpLOPP93AScaMhHAyaNoBBEoVO1FS3DQ/2Y4QgQ4FCfnfu9
-         qDStv3a5Tyso5P+Usq6hVvERZDVMeAYoF14CriTZUK6g/IU2v9JSGEhlE0bLG2NiXtAy
-         szuFf1VGPOg+eiiNvsWjJKtRoLOCC9pmRHkWqjxLNnKyoOmKemJVrRN6jy4KjQ1P6DIL
-         82AQ==
-X-Gm-Message-State: AOAM533mtEuaFWyrSjYAPNgsj+lkNtQfSApV0LdA9Kb6BaXWWw0YNbxi
-        x+yA6glYP4yWAz2jrE96KLTKMA==
-X-Google-Smtp-Source: ABdhPJypI2NKauTPCzBLknKllWhLQ9Zb5c+DwOn8mkNjD/GPp1xQGsoaRdyiZLKLGIK9pw/p+X+/Tg==
-X-Received: by 2002:a65:5248:: with SMTP id q8mr8763715pgp.176.1621397756718;
-        Tue, 18 May 2021 21:15:56 -0700 (PDT)
+        bh=9hP472i8tu0x2oWr2ZZdW3TiExRRKywLv6WAxBp0eH4=;
+        b=LPewvBSHl/8VeAUQkDEPTI2MuhbI2y7LH8wYPwjftZNGSGS7cYCkzUadd/FLQbZNoH
+         j1bIMeV+0YNkpWrwEv3hNlANNWgGxWId++sebeyHEdr/8pg2xna3eQIzGErLn0BY6qH6
+         b+t6YofJiQ68i3xOjDRREYAeExspC08MsRdSLwMmFKxvzEg/8cq6CeYb938P+VYvBcTD
+         j1DvrnagudwzTyZ/8Lea+Gx7X9tYI3tufn1MMuUHMneKh4LfJyrSfmHAcO1w5QKjZfud
+         hVtBHa9x7zykwCdYRA6UzdVXAhR8a3aBIoiUkj/FtfxLhGM/bn1ZxuYP3CH+cBnGsQbG
+         Dbog==
+X-Gm-Message-State: AOAM530rw+wsDK2kvw60YSlA5vedXCwl83TOBdski3Jek4BYu7tsDfVC
+        dHJxhfFcyIHZ6Ya3JQnd6/n2VA==
+X-Google-Smtp-Source: ABdhPJyGVQQN0GIEUbL3koaYY2sK4NeUkK5gEA8vO0yJRRxu3bib5xdQI2HlfpWuxUUBFFDAnKf5BA==
+X-Received: by 2002:a17:90a:1a43:: with SMTP id 3mr9090485pjl.154.1621397760560;
+        Tue, 18 May 2021 21:16:00 -0700 (PDT)
 Received: from localhost ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id d3sm13588742pfn.141.2021.05.18.21.15.55
+        by smtp.gmail.com with ESMTPSA id kk7sm2993954pjb.16.2021.05.18.21.15.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 21:15:56 -0700 (PDT)
+        Tue, 18 May 2021 21:16:00 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         John Garry <john.garry@huawei.com>,
@@ -63,9 +63,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 1/4] perf arm-spe: Correct sample flags for SPE event
-Date:   Wed, 19 May 2021 12:15:43 +0800
-Message-Id: <20210519041546.1574961-2-leo.yan@linaro.org>
+Subject: [PATCH v2 2/4] perf arm-spe: Correct sample flags for dummy event
+Date:   Wed, 19 May 2021 12:15:44 +0800
+Message-Id: <20210519041546.1574961-3-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210519041546.1574961-1-leo.yan@linaro.org>
 References: <20210519041546.1574961-1-leo.yan@linaro.org>
@@ -75,21 +75,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now it's hard code to set sample flags for CPU, TIME and TID for SPE
-event, which is pointless.
+The dummy event is mainly used for mmap, the TIME sample is only needed
+for per-cpu case so that the perf tool can rely on the correct timing
+for parsing symbols.  And the CPU sample is useless for mmap.
 
-The CPU is useful for sampling only for per-mmap case, it is used to
-indicate the AUX trace is associated to which CPU.
+The BRANCH_STACK sample bit will be always reset for the dummy event in
+the function evsel__config(), so don't need to repeatedly reset it for
+Arm SPE specific.
 
-The TIME sample is not needed for AUX event, since the time for AUX
-event is not really used and this time is a different thing from the
-timestamp in Arm SPE trace, the timestamp tracing which is controlled
-by Arm SPE's config bit.
-
-The TID sample is not useful for AUX event.
-
-This patch corrects the sample flags for SPE event, it only set CPU
-sample bit for per-cpu mmap case.
+So this patch only enables TIME sample for per-cpu mmap.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Reviewed-by: James Clark <james.clark@arm.com>
@@ -99,30 +93,23 @@ Tested-by: James Clark <james.clark@arm.com>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-index 414c8a5584b1..902e73a64184 100644
+index 902e73a64184..4c916626c203 100644
 --- a/tools/perf/arch/arm64/util/arm-spe.c
 +++ b/tools/perf/arch/arm64/util/arm-spe.c
-@@ -68,6 +68,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
- 			container_of(itr, struct arm_spe_recording, itr);
- 	struct perf_pmu *arm_spe_pmu = sper->arm_spe_pmu;
- 	struct evsel *evsel, *arm_spe_evsel = NULL;
-+	struct perf_cpu_map *cpus = evlist->core.cpus;
- 	bool privileged = perf_event_paranoid_check(-1);
- 	struct evsel *tracking_evsel;
- 	int err;
-@@ -120,9 +121,9 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
- 	 */
- 	evlist__to_front(evlist, arm_spe_evsel);
+@@ -135,9 +135,10 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
  
--	evsel__set_sample_bit(arm_spe_evsel, CPU);
--	evsel__set_sample_bit(arm_spe_evsel, TIME);
--	evsel__set_sample_bit(arm_spe_evsel, TID);
-+	/* In the case of per-cpu mmaps, sample CPU for AUX event. */
+ 	tracking_evsel->core.attr.freq = 0;
+ 	tracking_evsel->core.attr.sample_period = 1;
+-	evsel__set_sample_bit(tracking_evsel, TIME);
+-	evsel__set_sample_bit(tracking_evsel, CPU);
+-	evsel__reset_sample_bit(tracking_evsel, BRANCH_STACK);
++
++	/* In per-cpu case, always need the time of mmap events etc */
 +	if (!perf_cpu_map__empty(cpus))
-+		evsel__set_sample_bit(arm_spe_evsel, CPU);
++		evsel__set_sample_bit(tracking_evsel, TIME);
  
- 	/* Add dummy event to keep tracking */
- 	err = parse_events(evlist, "dummy:u", NULL);
+ 	return 0;
+ }
 -- 
 2.25.1
 
