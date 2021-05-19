@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23711389253
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8C738925E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 17:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354322AbhESPOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 11:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233577AbhESPOh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 11:14:37 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E5CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:13:16 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id m190so9688340pga.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 08:13:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=p1U+oAmLN15Il7adctUFj5XirLGOy/razNk7lJyJFbo=;
-        b=n40THdRfAoBafaZbp00vGauvtDhhN41cyBhmX8LROnMMA2m4ryRmfFtwciXVPn2wEG
-         JZMzcViWQpO/rxkeJqvd/yRjxqy+ERr9O/Rinc84y8DQ4yeX3Mpue3T2IiUJT4nyMEEX
-         x859Z7VW1AeD8g+3niJPNx353nqxBt7Iv6z+dMhi5MxWU/eo3vrCswTLPh4/WqI0ju6F
-         ISRZzhrXQaFwphhLhD0KkRg6gOIC62kqWBCQ+FVHCkYnN4x7vY/JzqNO3dn7sws50CGx
-         wXbhgI/tNTxNoTTev1Eici2LlWqZP+c40KOH248Az9A46p1UmMtRbKdLHkvaU4CTBOcD
-         nZJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=p1U+oAmLN15Il7adctUFj5XirLGOy/razNk7lJyJFbo=;
-        b=a7SWwgiRHsNkgRw7XM5kej04WB0JTp/nhBlE1WJHwutaX0Ms/ai7IS5dX1CDW6Lov2
-         ayFKcBeD8lChOrKbDcU2OceWOPdV+hRKnNA/IoGLHnYoKVRt3p0Nlheo8okOUJ0pAC6N
-         /C3kDKGgGnmjgTaAXAMq+TAQV3xY9kuMtpvkn3zIcKUoYJGXf+mYZPutf8x3k9RPwaNC
-         ++tQFXqqTisf88Ms/wuEtSQcJBIMYArxf1KdPK6+8VqfwjsVPevSfkm+HCRgZTqpIFtM
-         lOaz2RUOWHQkkKPIFKf64rZ31rBzOIj2wFCuDFHRXYE7BEU9jSe/240y7cRmpst5vT8J
-         shag==
-X-Gm-Message-State: AOAM531n8rP9wA3HCzEPuRDwfslyGYP8/UJ797xECTwW7+rQV8b7+Iwh
-        d7dJEabXsqQUyJHAlPYK15RuZsU0RJaSRP5jfw==
-X-Google-Smtp-Source: ABdhPJy/Myxcy7bbgNjO9/KwP0pk3uC5ShQibLxNRwLOs5F4vzS/w4fcBWkjdNPZmN3wbPescTZr+g==
-X-Received: by 2002:a65:6a44:: with SMTP id o4mr11269699pgu.145.1621437196050;
-        Wed, 19 May 2021 08:13:16 -0700 (PDT)
-Received: from localhost.localdomain ([2402:4000:11ca:dcec:9f88:85c9:3532:e27b])
-        by smtp.gmail.com with ESMTPSA id n23sm2408025pff.93.2021.05.19.08.13.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 08:13:15 -0700 (PDT)
-From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
-To:     ash15.sulaiman@gmail.com, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Staging: greybus: fix open parenthesis issue in gbphy.c
-Date:   Wed, 19 May 2021 20:42:58 +0530
-Message-Id: <20210519151258.25845-1-asha.16@itfac.mrt.ac.lk>
-X-Mailer: git-send-email 2.17.1
+        id S1354553AbhESPTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 11:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354390AbhESPTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 11:19:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC95611B0;
+        Wed, 19 May 2021 15:17:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621437478;
+        bh=c+IEVTunFe30w7ogB/IAN3huK2t9VfW9QwLl3VpCa08=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nf1qUo57ru5boOQUeQi6aZRa+idhytrYYWQBsMIh0N76Pv9ZELRHmFnK01Xu3q2/6
+         MB6JrKgYdO2D6etejTV1zfK2BJmiS0XNkSz2f+HfWQmH2lc004fqqNkgn/vpcdAAgF
+         qepnKyQZPQrUSk13bwr0+u054K1h6PZmnGuo+Zh2zkmzPOyNdGSEqBqg902bo/Q+o4
+         +TjRt4gILLbdY/OhH1m8VuoRdoR2ZPzdN4r+RvOkNFWEI0NU/nEU0s2OEREzaEpSNC
+         2qBgU0xveUp1R6FzjaCn1u/o4wsne77m8hqm0me9Lp/9gtqqAFkMe4fq13pICszSsR
+         tKh4WJyfdSrlw==
+Received: by mail-ed1-f51.google.com with SMTP id h16so15810444edr.6;
+        Wed, 19 May 2021 08:17:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531Ghrsi5XUJwgjKacreSvjGsN5AlzLL+Zcbf/w9fnzuxAyXSRb8
+        cMVFk1dZKvxA9eDGxtvTDqeMChxNtRs/+aLeHQ==
+X-Google-Smtp-Source: ABdhPJwOYwVtRLx9sKZdict2H1FAMFQvZK2Ew7pbG3fTyjBtHO+tC9tIIgY6UaUnSE+9VfiPaZ5PHom5bkNsTthHsFs=
+X-Received: by 2002:a05:6402:124b:: with SMTP id l11mr15226813edw.137.1621437476871;
+ Wed, 19 May 2021 08:17:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210512122346.9463-1-jbx6244@gmail.com> <162101023435.2009214.882597722137585064.b4-ty@sntech.de>
+In-Reply-To: <162101023435.2009214.882597722137585064.b4-ty@sntech.de>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 19 May 2021 10:17:44 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLbumF-x8yAO2C5wTG5cDpVmgFdqADrEDguQ-ZidMj25g@mail.gmail.com>
+Message-ID: <CAL_JsqLbumF-x8yAO2C5wTG5cDpVmgFdqADrEDguQ-ZidMj25g@mail.gmail.com>
+Subject: Re: (subset) [PATCH v5 0/4] convert grf.txt to YAML
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Johan Jonker <jbx6244@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-phy@lists.infradead.org,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Vinod <vkoul@kernel.org>, Shawn Lin <shawn.lin@rock-chips.com>,
+        David Wu <david.wu@rock-chips.com>,
+        Liang Chen <cl@rock-chips.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tao Huang <huangtao@rock-chips.com>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fix "Alignment should match open parenthesis" checkpatch
- error.
+On Fri, May 14, 2021 at 11:37 AM Heiko Stuebner <heiko@sntech.de> wrote:
+>
+> On Wed, 12 May 2021 14:23:42 +0200, Johan Jonker wrote:
+> > Changed V5:
+> >   changed compatibles for rk3066/rk3188
+> >   add rockchip-usb-phy.yaml
+> >   move and restyle grf nodes rk3066/rk3188
+> >   remove applied patches
+> >
+> > Changed V4:
+> >   revert separate schemas for each 'if' subset
+> >   add additionalProperties
+> >   move properties to top level
+> >
+> > [...]
+>
+> Applied, thanks!
+>
+> [2/4] dt-bindings: soc: rockchip: convert grf.txt to YAML
+>       commit: f2ffa8f9e32d38f5c37e3c61c5b02d434057f3db
 
-Signed-off-by: "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
----
- drivers/staging/greybus/gbphy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Patch 1 is a dependency of this, so now linux-next is broken.
 
-diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
-index 9fc5c47be9bd..13d319860da5 100644
---- a/drivers/staging/greybus/gbphy.c
-+++ b/drivers/staging/greybus/gbphy.c
-@@ -27,7 +27,7 @@ struct gbphy_host {
- static DEFINE_IDA(gbphy_id);
- 
- static ssize_t protocol_id_show(struct device *dev,
--				 struct device_attribute *attr, char *buf)
-+				struct device_attribute *attr, char *buf)
- {
- 	struct gbphy_device *gbphy_dev = to_gbphy_dev(dev);
- 
-@@ -221,7 +221,7 @@ void gb_gbphy_deregister_driver(struct gbphy_driver *driver)
- EXPORT_SYMBOL_GPL(gb_gbphy_deregister_driver);
- 
- static struct gbphy_device *gb_gbphy_create_dev(struct gb_bundle *bundle,
--				struct greybus_descriptor_cport *cport_desc)
-+						struct greybus_descriptor_cport *cport_desc)
- {
- 	struct gbphy_device *gbphy_dev;
- 	int retval;
--- 
-2.17.1
-
+> [3/4] ARM: dts: rockchip: move and restyle grf nodes rk3066/rk3188
+>       commit: a082a4ba218457fd52256e4357184b58d3fcaa49
+> [4/4] arm64: dts: rename grf-gpio nodename in rk3328.dtsi
+>       commit: 19486fe587b8ed17daf87a6419b51e3a65ce565c
+>
+> Best regards,
+> --
+> Heiko Stuebner <heiko@sntech.de>
