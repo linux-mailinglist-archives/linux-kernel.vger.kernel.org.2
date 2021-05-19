@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D8A388AF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897C5388AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 11:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346035AbhESJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 05:45:54 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4679 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239386AbhESJpo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 05:45:44 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlSYs1SQnz1BP0l;
-        Wed, 19 May 2021 17:41:37 +0800 (CST)
-Received: from dggema765-chm.china.huawei.com (10.1.198.207) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 17:44:23 +0800
-Received: from DESKTOP-6NKE0BC.china.huawei.com (10.174.185.210) by
- dggema765-chm.china.huawei.com (10.1.198.207) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 19 May 2021 17:44:22 +0800
-From:   Kunkun Jiang <jiangkunkun@huawei.com>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Eric Auger" <eric.auger@redhat.com>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>,
-        "Zenghui Yu" <yuzenghui@huawei.com>,
-        Kunkun Jiang <jiangkunkun@huawei.com>
-Subject: [RFC PATCH v1 2/2] iommu/arm-smmu-v3: Standardize granule size when support RIL
-Date:   Wed, 19 May 2021 17:43:07 +0800
-Message-ID: <20210519094307.3275-3-jiangkunkun@huawei.com>
-X-Mailer: git-send-email 2.26.2.windows.1
-In-Reply-To: <20210519094307.3275-1-jiangkunkun@huawei.com>
-References: <20210519094307.3275-1-jiangkunkun@huawei.com>
+        id S1345808AbhESJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 05:45:15 -0400
+Received: from mga05.intel.com ([192.55.52.43]:19435 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239386AbhESJpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 05:45:13 -0400
+IronPort-SDR: lBtbmSZqlSYsqkPL7ZfiakfsK/pbV+PJUN24unC+dOMTX/psYbf46FnazeAxLfhTCDku/P4MMI
+ 1RDrPrmxOaeg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="286466212"
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="286466212"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 02:43:53 -0700
+IronPort-SDR: ON3io25K4TSdRLdfXgZrCBD/Uy301n85yYSyiIxaNM8HryivBq7xALR0vp7DQ5Igxr7TfdPzbL
+ ijE2ECeiwj1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
+   d="scan'208";a="461174404"
+Received: from aubrey-app.sh.intel.com (HELO [10.239.53.25]) ([10.239.53.25])
+  by fmsmga004.fm.intel.com with ESMTP; 19 May 2021 02:43:50 -0700
+Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
+ callback
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+References: <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
+ <47d29f1d-cea6-492a-5125-85db6bce0fa7@linux.intel.com>
+ <20210513073112.GV2633526@linux.vnet.ibm.com>
+ <5823f298-6fae-5a73-3ab8-f708d90a7e52@linux.intel.com>
+ <20210517104058.GW2633526@linux.vnet.ibm.com>
+ <9d493353-7a27-16aa-3e99-c6a07e69de25@linux.intel.com>
+ <20210517125727.GX2633526@linux.vnet.ibm.com>
+ <27ab234c-b36b-bf7f-52f4-92c1804f8245@linux.intel.com>
+ <20210518040024.GY2633526@linux.vnet.ibm.com>
+ <ce4eba7e-dc2e-1c67-d04d-579f04c2040b@linux.intel.com>
+ <20210518071843.GZ2633526@linux.vnet.ibm.com>
+From:   Aubrey Li <aubrey.li@linux.intel.com>
+Message-ID: <32b98350-35e4-7475-2d19-9101f50ecc63@linux.intel.com>
+Date:   Wed, 19 May 2021 17:43:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.210]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema765-chm.china.huawei.com (10.1.198.207)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210518071843.GZ2633526@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In __arm_smmu_tlb_inv_range(), the field 'ttl' of TLB invalidation
-command is caculated based on granule size when the SMMU supports
-RIL. There are some scenarious we need to avoid, which are pointed
-out in the SMMUv3 spec(page 143-144, Version D.a). Adding a check
-to ensure that the granule size is supported by the SMMU before set
-the 'ttl' value.
+On 5/18/21 3:18 PM, Srikar Dronamraju wrote:
 
-Reported-by: Nianyao Tang <tangnianyao@huawei.com>
-Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 +++++
- 1 file changed, 5 insertions(+)
+>>>> This is v3. It looks like hackbench gets better. And netperf still has
+>>>> some notable changes under 2 x overcommit cases.
+>>>>
+>>>
+>>> Thanks Aubrey for the results. netperf (2X) case does seem to regress.
+>>> I was actually expecting the results to get better with overcommit.
+>>> Can you confirm if this was just v3 or with v3 + set_next_idle_core
+>>> disabled?
+>>
+>> Do you mean set_idle_cores(not set_next_idle_core) actually? Gautham's patch
+>> changed "this" to "target" in set_idle_cores, and I removed it to apply
+>> v3-2-8-sched-fair-Maintain-the-identity-of-idle-core.patch for tip/sched/core
+>> commit-id 915a2bc3c6b7.
+> 
+> Thats correct,
+> 
+> In the 3rd patch, I had introduced set_next_idle_core
+> which is suppose to set idle_cores in the LLC.
+> What I suspected was is this one is causing issues in your 48 CPU LLC.
+> 
+> I am expecting set_next_idle_core to be spending much time in your scenario.
+> I was planning for something like the below on top of my patch.
+> With this we dont look for an idle-core if we already know that we dont find one.
+> But in the mean while I had asked if you could have dropped the call to
+> set_next_idle_core.
+> 
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 8a2cacbb1ef8..77ff283ca329 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1711,6 +1711,11 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
- 		cmd->tlbi.tg = (tg - 10) / 2;
- 
- 		/* Determine what level the granule is at */
-+		if (!(granule & smmu_domain->domain.pgsize_bitmap) ||
-+		    (granule & (granule - 1))) {
-+			granule = leaf_pgsize;
-+			iova = ALIGN_DOWN(iova, leaf_pgsize);
-+		}
- 		cmd->tlbi.ttl = 4 - ((ilog2(granule) - 3) / (tg - 3));
- 
- 		/* Align size with the leaf page size upwards */
--- 
-2.23.0
++	if (atomic_read(&sd->shared->nr_busy_cpus) * 2 >=  per_cpu(sd_llc_size, target))
++		goto out;
 
+Does this has side effect if waker and wakee are coalesced on a portion of cores?
+Also, is 2 a SMT2 assumption?
+
+I did a quick testing on this, it looks like the regression of netperf 2x cases are 
+improved indeed, but hackbench two mid-load cases get worse.
+
+process-sockets 	group-2 	 1.00 (  5.32)	-18.40 (  7.32)
+threads-sockets 	group-2 	 1.00 (  5.44)	-20.44 (  4.60)
+
+Thanks,
+-Aubrey
