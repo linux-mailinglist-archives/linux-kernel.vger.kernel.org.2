@@ -2,144 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9643898E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FF63898E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 23:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhESVxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 17:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhESVxM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 17:53:12 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66B8C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:51:52 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id k16so14530748ios.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 14:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AD8S0PqRt8X2YnzWzcDJwsZW0R7LolCe/WFdyfKGfyk=;
-        b=aWy/rO3R605QtBWXxqhKXcOIv+kLNJlvLjJsFqzQ3CmFBp0qEFCoM2XAqW1gdRzpY2
-         stjWL8mY3lLwNoEmzXZRxyku0NAUnIjLY2NjnVX6MtBZwtKXa5YagGCfzpVyDop6HOrO
-         q4sHNqlV2gA6I5MRWTN/jKkZu34zF3+Ik4LeChg4vWA+2Y39GNRpMRUMJH7UNhKIHlrA
-         JsJyug0IHVqCuBEvF3YO0IbE66oU7RXVTasZldLU8sPxIuKdTDvFtATG5PUMpl10j7Z1
-         hHq/DRgxfBDUn1QeqX+rmXcyITXpOXVpkn0H2gHi+bnMZEpQFw40VfiR8w95Qlf85sKN
-         KxAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AD8S0PqRt8X2YnzWzcDJwsZW0R7LolCe/WFdyfKGfyk=;
-        b=uAMYCOyoDW5NPv1tGuBo8nrkQM0F5uBYzGXz23S5Rf7BeDnNotKRuycOPQUm9k/KcY
-         Eu3ldxmMk+5LU5j3BunzjO4jtLgYxm50qHR3ZlYESRjW4ggDUqYlFTY8MsUI5S42+ygu
-         keRTPUqypAFZmQs1iHYVerflVt5aE81tou47ivsrWE5sGEnc4G+tBp9xhtcEamnwLF6y
-         OZRxaH+yFaiRlJBydLXfH5pauuYLFISOPXWPrpATkGepaL6EUPwRL1woOuEtUbj/Lyrc
-         8fkM2iJk2bx2bUFvVAzrTCnadWqhjHKGq4SNYiFv1pX7z9iRzN3ELBxUVBzDUhNJBj0Z
-         +peg==
-X-Gm-Message-State: AOAM533/vMDrwfHYChOrVkjKCAN48B1BfClDeJWzzSaoVjkO8cvczW4d
-        lJYZuMRzgAev0x9OARoQfJ0bFERCjdfQ0aHjNnAJOQ==
-X-Google-Smtp-Source: ABdhPJwQ/2kUTShiGx6TGIHaO461D4Z/lIu9p2sC3GCPcycwt4PJ/6HPCNbnNp2z40yoOOuAG80DXCuMwXS5/5oEx1Q=
-X-Received: by 2002:a05:6638:124b:: with SMTP id o11mr1610166jas.4.1621461111941;
- Wed, 19 May 2021 14:51:51 -0700 (PDT)
+        id S229750AbhESVyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 17:54:25 -0400
+Received: from ozlabs.org ([203.11.71.1]:60961 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhESVyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 17:54:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Flmnp2fl7z9sV5;
+        Thu, 20 May 2021 07:53:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621461182;
+        bh=3Wr2asGiMeqShxZC14lvl44PWKk1mAJ+rNRv1o6iLWw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BZWffnfFuQjGQBKTF1mf0E4bmPRphA6L0ykcU0p6ZkQNMw3QdB82SeKytfaWMc2Iv
+         deLRurHfvoq9X4c+oHpW01cG2q1nKpmL96PUionBwLyHb+ObJpeucGzr/CgrIm0FJR
+         6GbrLyOEIc4MY6Jcxbqwk5XY1DSl8ZNVb9t6wHvohjVFcrg6V1rhi4SVqPaUH3mceG
+         IBkEbS8m3Wtt/oAiSHMxddThL+te/GHkdi7UbLQsuhK/2zCQANlfMhDLcH/70L3y0S
+         rR/v2ZheV9Y2Ji9m+dlx+7X8GftVnTFDb8u/Lf72FOGiGGR3pmVnKOQyFYyKlO/FAz
+         tGvlhn44r2moQ==
+Date:   Thu, 20 May 2021 07:53:01 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     Ronnie Sahlberg <lsahlber@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the cifs tree
+Message-ID: <20210520075301.6a2cf55c@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210519200339.829146-1-axelrasmussen@google.com> <20210519200339.829146-5-axelrasmussen@google.com>
-In-Reply-To: <20210519200339.829146-5-axelrasmussen@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 19 May 2021 14:51:41 -0700
-Message-ID: <CANgfPd_X7YWubJENyb5pSLjUUmUzgqcwpL2GHjyePrrQFs0pyg@mail.gmail.com>
-Subject: Re: [PATCH v2 04/10] KVM: selftests: compute correct demand paging size
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/uG56_pooXROXh8Yp_A=3dFA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 1:03 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> This is a preparatory commit needed before we can use different kinds of
-> backing pages for guest memory.
->
-> Previously, we used perf_test_args.host_page_size, which is the host's
-> native page size (commonly 4K). For VM_MEM_SRC_ANONYMOUS this turns out
-> to be okay, but in a follow-up commit we want to allow using different
-> kinds of backing memory.
->
-> Take VM_MEM_SRC_ANONYMOUS_HUGETLB for example. Without this change, if
-> we used that backing page type, when we issued a UFFDIO_COPY ioctl we'd
-> only do so with 4K, rather than the full 2M of a backing hugepage. In
-> this case, UFFDIO_COPY returns -EINVAL (__mcopy_atomic_hugetlb checks
-> the size).
->
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+--Sig_/uG56_pooXROXh8Yp_A=3dFA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+Hi all,
 
-> ---
->  tools/testing/selftests/kvm/demand_paging_test.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
-> index 601a1df24dd2..94cf047358d5 100644
-> --- a/tools/testing/selftests/kvm/demand_paging_test.c
-> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
-> @@ -40,6 +40,7 @@
->
->  static int nr_vcpus = 1;
->  static uint64_t guest_percpu_mem_size = DEFAULT_PER_VCPU_MEM_SIZE;
-> +static size_t demand_paging_size;
->  static char *guest_data_prototype;
->
->  static void *vcpu_worker(void *data)
-> @@ -85,7 +86,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
->
->         copy.src = (uint64_t)guest_data_prototype;
->         copy.dst = addr;
-> -       copy.len = perf_test_args.host_page_size;
-> +       copy.len = demand_paging_size;
->         copy.mode = 0;
->
->         clock_gettime(CLOCK_MONOTONIC, &start);
-> @@ -102,7 +103,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
->         PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
->                        timespec_to_ns(ts_diff));
->         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
-> -                      perf_test_args.host_page_size, addr, tid);
-> +                      demand_paging_size, addr, tid);
->
->         return 0;
->  }
-> @@ -261,10 +262,12 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->
->         perf_test_args.wr_fract = 1;
->
-> -       guest_data_prototype = malloc(perf_test_args.host_page_size);
-> +       demand_paging_size = get_backing_src_pagesz(VM_MEM_SRC_ANONYMOUS);
-> +
-> +       guest_data_prototype = malloc(demand_paging_size);
->         TEST_ASSERT(guest_data_prototype,
->                     "Failed to allocate buffer for guest data pattern");
-> -       memset(guest_data_prototype, 0xAB, perf_test_args.host_page_size);
-> +       memset(guest_data_prototype, 0xAB, demand_paging_size);
->
->         vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
->         TEST_ASSERT(vcpu_threads, "Memory allocation failed");
-> --
-> 2.31.1.751.gd2f1c929bd-goog
->
+In commit
+
+  158c6b1e3dff ("cifs: fix memory leak in smb2_copychunk_range")
+
+Fixes tag
+
+  Fixes: 9bf0c9cd431440a831e60c0a0fd0bc4f0e083e7f
+
+has these problem(s):
+
+  - missing subject
+
+Pleas just use:
+
+  git log -1 --format=3D'Fixes: %h ("%s")' <commit>
+
+So
+
+Fixes: 9bf0c9cd4314 ("CIFS: Fix SMB2/SMB3 Copy offload support (refcopy) fo=
+r large files")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uG56_pooXROXh8Yp_A=3dFA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCliL0ACgkQAVBC80lX
+0Gx0ZAf9GyeA4JIcv6GdNywnjeyRZN1sml4sSb8oURSjkFspne0w+s5h3PgppZll
+qtowBNHnVkZmSR2NNbI2TSrOgarTQiVKcKc9irTRwiurvCBK5TuGBi0wOnPCMmAJ
+dWAJhG/QSVVFktULHsDyBDDW6sy/zvBCt0H9+LcFBw/Cv9uK3tcASLsa90Wsz/LE
+4RXz40FK82KFu88IA8k0USt/HBcII4Tl2B4UAZ9b915CDVk72wj1DFxKSSvm/fHc
+yTWqEqA36rtvmbKH8zDG+7MhW2KdU8pN15Vj5S1wvrugNBeWkLT3BtJXsKlOyHqT
+sKehsN/gLOTzlLXAfqLUgfhk22q/jg==
+=mTzL
+-----END PGP SIGNATURE-----
+
+--Sig_/uG56_pooXROXh8Yp_A=3dFA--
