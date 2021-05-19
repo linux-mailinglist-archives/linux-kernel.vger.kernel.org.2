@@ -2,161 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CF5388FF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88791388FF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 16:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347103AbhESOLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 10:11:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:41372 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347040AbhESOK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347080AbhESOK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 10:10:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40360 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346630AbhESOK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 10:10:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3F6431B;
-        Wed, 19 May 2021 07:09:37 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F3503F73B;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621433377;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uA5LBQUpQQcpe5I2oDgwRimXB7jI4me/eAnHY5LMMkc=;
+        b=KFmiMj3s2us43/++cpPNGprz9FWDrJ3XOUFDYYYXGhqmakgiZ/af8CvyAPfS2kBeoNwt9l
+        uPLmAoOb9RYF4gt6p5J4+UBUHQn+V6bSki4q/yB2cDS9v9MsxkV+4jW+9hH0GnZZ7GHvHC
+        28jjjOWVpS4imP0Qszj0PUjZK5b7Kw4=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-0CqxOzEvMBSj73SLeoa_Dw-1; Wed, 19 May 2021 10:09:35 -0400
+X-MC-Unique: 0CqxOzEvMBSj73SLeoa_Dw-1
+Received: by mail-qv1-f71.google.com with SMTP id e15-20020a0caa4f0000b02901eedbb09299so8845153qvb.15
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 07:09:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uA5LBQUpQQcpe5I2oDgwRimXB7jI4me/eAnHY5LMMkc=;
+        b=h9CAzt5WPJfv3gzAz2TLT+jjaHtEie03d8Bj5/7id4+w9UBnbdIOHc1wxcsJe88N/U
+         R8KmIoLfWc13wqihOGMMi1vf1QZdPBuiuJFKVEIdvf1dzgB/YSeca/pxAyBkmyOnpV6v
+         +0gw7crUtVOxuSgIXUezr0wmzIxmv3g53vK93yQzk7QgqJyl7s0K/uWkdtof4Zn5DgQd
+         syrAEH0KuZtP2Tu+43GylmzJKoRzAkkJTpZ52qXgHOM14sYJreq/IctRCG+L6db2zo6n
+         hxNpXW3dVUQZH1oV2Xkwz0woeglTYs7aJCfe6lXZBHZ6NMfz/+Hr3b4Q8e0duFJoWkd8
+         nhng==
+X-Gm-Message-State: AOAM533sVpnR6yJqo1qRFKliSimjNwiPVUEK/3MAzjHqwbhm41ti9Ay+
+        xa/bthAzthhKEaqgdPsDV3zpqUQjj0VoLHjAqoi6PlSu1hVNymrc/qNd3BhNEVJf1F8A1myJ5ec
+        BJEsbCbeAYw0fLynw9IJ3wQ7U
+X-Received: by 2002:a05:622a:413:: with SMTP id n19mr11309610qtx.238.1621433375268;
         Wed, 19 May 2021 07:09:35 -0700 (PDT)
-Subject: Re: [PATCH v12 8/8] KVM: arm64: Document MTE capability and ioctl
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-9-steven.price@arm.com> <87r1i5teou.wl-maz@kernel.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <3b4cca00-e81d-322e-6f65-4d0850aac5a5@arm.com>
-Date:   Wed, 19 May 2021 15:09:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+X-Google-Smtp-Source: ABdhPJwfgXghdceBt0pzuJuLcMWZrj1qSDnzHPuTLDIdA4muPS9QaO8qeOo+lEtQMgzjzxGPQ17Ppg==
+X-Received: by 2002:a05:622a:413:: with SMTP id n19mr11309576qtx.238.1621433375015;
+        Wed, 19 May 2021 07:09:35 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id c20sm15634299qtm.52.2021.05.19.07.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 07:09:34 -0700 (PDT)
+Date:   Wed, 19 May 2021 10:09:33 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
+        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
+        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
+        bsingharora@gmail.com, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v8 5/8] mm: Device exclusive memory access
+Message-ID: <YKUcHfhQMbDnjXC7@t490s>
+References: <YKMhorngO2DVrxac@t490s>
+ <47694715.suB6H4Uo8R@nvdebian>
+ <YKP5Dj4Q/riGGc43@t490s>
+ <20210518173334.GE1002214@nvidia.com>
+ <YKQBACJCjsxeM3ro@t490s>
+ <20210518194509.GF1002214@nvidia.com>
+ <YKQjmtMo+YQGx/wZ@t490s>
+ <20210518230327.GG1002214@nvidia.com>
+ <YKRRgZmRMdk1vH7A@t490s>
+ <20210519132842.GJ1002214@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <87r1i5teou.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210519132842.GJ1002214@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/05/2021 19:09, Marc Zyngier wrote:
-> On Mon, 17 May 2021 13:32:39 +0100,
-> Steven Price <steven.price@arm.com> wrote:
->>
->> A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
->> granting a guest access to the tags, and provides a mechanism for the
->> VMM to enable it.
->>
->> A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
->> access the tags of a guest without having to maintain a PROT_MTE mapping
->> in userspace. The above capability gates access to the ioctl.
->>
->> Signed-off-by: Steven Price <steven.price@arm.com>
->> ---
->>  Documentation/virt/kvm/api.rst | 53 ++++++++++++++++++++++++++++++++++
->>  1 file changed, 53 insertions(+)
->>
->> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
->> index 22d077562149..a31661b870ba 100644
->> --- a/Documentation/virt/kvm/api.rst
->> +++ b/Documentation/virt/kvm/api.rst
->> @@ -5034,6 +5034,40 @@ see KVM_XEN_VCPU_SET_ATTR above.
->>  The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
->>  with the KVM_XEN_VCPU_GET_ATTR ioctl.
->>  
->> +4.130 KVM_ARM_MTE_COPY_TAGS
->> +---------------------------
->> +
->> +:Capability: KVM_CAP_ARM_MTE
->> +:Architectures: arm64
->> +:Type: vm ioctl
->> +:Parameters: struct kvm_arm_copy_mte_tags
->> +:Returns: 0 on success, < 0 on error
->> +
->> +::
->> +
->> +  struct kvm_arm_copy_mte_tags {
->> +	__u64 guest_ipa;
->> +	__u64 length;
->> +	union {
->> +		void __user *addr;
->> +		__u64 padding;
->> +	};
->> +	__u64 flags;
->> +	__u64 reserved[2];
->> +  };
+On Wed, May 19, 2021 at 10:28:42AM -0300, Jason Gunthorpe wrote:
+> On Tue, May 18, 2021 at 07:45:05PM -0400, Peter Xu wrote:
+> > On Tue, May 18, 2021 at 08:03:27PM -0300, Jason Gunthorpe wrote:
+> > > Logically during fork all these device exclusive pages should be
+> > > reverted back to their CPU pages, write protected and the CPU page PTE
+> > > copied to the fork.
+> > > 
+> > > We should not copy the device exclusive page PTE to the fork. I think
+> > > I pointed to this on an earlier rev..
+> > 
+> > Agreed.  Though please see the question I posted in the other thread: now I am
+> > not very sure whether we'll be able to mark a page as device exclusive if that
+> > page has mapcount>1.
 > 
-> This doesn't exactly match the structure in the previous patch :-(.
+> IMHO it is similar to write protect done by filesystems on shared
+> mappings - all VMAs with a copy of the CPU page have to get switched
+> to the device exclusive PTE. This is why the rmap stuff is involved in
+> the migration helpers
 
-:( I knew there was a reason I didn't include it in the documentation
-for the first 9 versions... I'll fix this up, thanks for spotting it.
+Right, I think Alistair corrected me there that I missed the early COW
+happening in GUP.
 
->> +
->> +Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
->> +``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
->> +fieldmust point to a buffer which the tags will be copied to or from.
->> +
->> +``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
->> +``KVM_ARM_TAGS_FROM_GUEST``.
->> +
->> +The size of the buffer to store the tags is ``(length / MTE_GRANULE_SIZE)``
-> 
-> Should we add a UAPI definition for MTE_GRANULE_SIZE?
+Actually even without that GUP triggering early COW it won't be a problem,
+because as long as one child mm restored the pte from exclusive to normal
+(before any further COW happens) device exclusiveness is broken in the mmu
+notifiers, and after that point all previous-exclusive ptes actually becomes
+the same as a very normal PageAnon.  Then it's very sane to even not have the
+original page in parent process, because we know each COWed page will contain
+all the device atomic modifications (so we don't really have the requirement to
+return the original page to parent).
 
-I wasn't sure whether to export this or not. The ioctl is based around
-the existing ptrace interface (PTRACE_{PEEK,POKE}MTETAGS) which doesn't
-expose a UAPI definition. Admittedly the documentation there also just
-says "16-byte granule" rather than MTE_GRANULE_SIZE.
+Sorry for the noise.
 
-So I'll just remove the reference to MTE_GRANULE_SIZE in the
-documentation unless you feel that we should have a UAPI definition.
+-- 
+Peter Xu
 
->> +bytes (i.e. 1/16th of the corresponding size). Each byte contains a single tag
->> +value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
->> +``PTRACE_POKEMTETAGS``.
->> +
->>  5. The kvm_run structure
->>  ========================
->>  
->> @@ -6362,6 +6396,25 @@ default.
->>  
->>  See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
->>  
->> +7.26 KVM_CAP_ARM_MTE
->> +--------------------
->> +
->> +:Architectures: arm64
->> +:Parameters: none
->> +
->> +This capability indicates that KVM (and the hardware) supports exposing the
->> +Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
->> +VMM before the guest will be granted access.
->> +
->> +When enabled the guest is able to access tags associated with any memory given
->> +to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
->> +that the tags are maintained during swap or hibernation of the host; however
->> +the VMM needs to manually save/restore the tags as appropriate if the VM is
->> +migrated.
->> +
->> +When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
->> +perform a bulk copy of tags to/from the guest.
->> +
-> 
-> Missing limitation to AArch64 guests.
-
-As mentioned previously it's not technically limited to AArch64, but
-I'll expand this to make it clear that MTE isn't usable from a AArch32 VCPU.
-
-Thanks,
-
-Steve
