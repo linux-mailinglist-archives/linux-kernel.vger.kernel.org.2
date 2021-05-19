@@ -2,289 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4193B38995B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EDC38995D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 00:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbhESWdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 18:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhESWdF (ORCPT
+        id S230010AbhESWd1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 May 2021 18:33:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44755 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhESWd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 18:33:05 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCFFC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:31:44 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so4196582pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 15:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3Vx7mu6+ZNKXXoJYS7AVN4Z/38zh285y5Q+544/T8iY=;
-        b=XxRkDCdm53sGRGyY2ZYwH7T0AQIXefX6uNKZpOorQU6EQHDGclhTmzcnRR6oEpDkR9
-         hwPcnNL8Se68VX1SNb6obITM1ng2MKcYq5VQR2zlZY9YhMGuM2rCq6YcajdUhwbxUO7Y
-         bK/rEBsN13eh0y/NjU4uawPATIAhV0LA5d+niD5nZhN+5FE9+OuHWhtyWPV/hbb0PmPG
-         +B84rQsB0fU8U+7/wut17hQ+LErazbfphlbqrM3DPC74TDrcpOxxe304ZjkYT7sRhcRV
-         SHb/lli5vqmguWhu5YcbIk0NxcpbotFtdUkZ2s03CqKo5KaDfVGHmW9JxskcnQCqC2Tl
-         S9cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3Vx7mu6+ZNKXXoJYS7AVN4Z/38zh285y5Q+544/T8iY=;
-        b=FOIwUuHCRvIOtyAUKYt4rsDMULIWvBFWtKBCn8IWa5kmWpsopL9n6Sm5xA+xR3zjmq
-         yMHj6qQgJvooQjv6HpWX1RDlmPGMIZ/r1X26197eDy+ssvrkdPmyCRVP/IzBqfLe3E4S
-         6yh9HMPSeebH8spjGVAg2WDKFkicYTDPC5V/WEhClgk8OEqRYVy511fR+Ahqtbm5fdic
-         /AUVvfAeH4VqxvVgM+yTGR52iQd+8G3qeHDFPH2UD3YHpwvrUb/Z7Oy0g/1onPN7kXkG
-         BtWe2tL9o7FV5tPlbuPA9h4Uv5fy2Jfx1+uiequqgcOtLU83wv7GwTgt8XaZoVKZ+uza
-         shGg==
-X-Gm-Message-State: AOAM531XbPLqQWYxuUzG4DBe4L7u11DUoMq4wMqA3FTT+bl6psNkmvj1
-        Bt0ldagHPbvL5EYoTBVboUIgug==
-X-Google-Smtp-Source: ABdhPJyVa57WZ7TUt99IukPmtNkvrFPQqB+ptTfQty0q1rI/EXjLODYRKiJfCeImcIvIJxb0mHjLaQ==
-X-Received: by 2002:a17:902:d507:b029:f2:c88c:5b45 with SMTP id b7-20020a170902d507b02900f2c88c5b45mr2080651plg.66.1621463503306;
-        Wed, 19 May 2021 15:31:43 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id ge5sm971996pjb.45.2021.05.19.15.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 15:31:42 -0700 (PDT)
-Date:   Wed, 19 May 2021 22:31:38 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/8] KVM: Resolve memslot ID via a hash table instead
- of via a static array
-Message-ID: <YKWRyvyyO5UAHv4U@google.com>
-References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
- <4a4867419344338e1419436af1e1b0b8f2405517.1621191551.git.maciej.szmigiero@oracle.com>
+        Wed, 19 May 2021 18:33:26 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1ljUjR-0007Hn-E3; Wed, 19 May 2021 22:32:01 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 9CA415FDD5; Wed, 19 May 2021 15:31:59 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 97494A040C;
+        Wed, 19 May 2021 15:31:59 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH 2/4] bond_alb: don't rewrite bridged non-local MACs
+In-reply-to: <20210518210849.1673577-3-jarod@redhat.com>
+References: <20210518210849.1673577-1-jarod@redhat.com> <20210518210849.1673577-3-jarod@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Tue, 18 May 2021 17:08:47 -0400."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a4867419344338e1419436af1e1b0b8f2405517.1621191551.git.maciej.szmigiero@oracle.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7728.1621463519.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Wed, 19 May 2021 15:31:59 -0700
+Message-ID: <7729.1621463519@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
-> @@ -356,6 +357,7 @@ static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
->  #define KVM_MEM_MAX_NR_PAGES ((1UL << 31) - 1)
->  
->  struct kvm_memory_slot {
-> +	struct hlist_node id_node;
->  	gfn_t base_gfn;
->  	unsigned long npages;
->  	unsigned long *dirty_bitmap;
-> @@ -458,7 +460,7 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
->  struct kvm_memslots {
->  	u64 generation;
->  	/* The mapping table from slot id to the index in memslots[]. */
-> -	short id_to_index[KVM_MEM_SLOTS_NUM];
-> +	DECLARE_HASHTABLE(id_hash, 7);
+Jarod Wilson <jarod@redhat.com> wrote:
 
-Is there any specific motivation for using 7 bits?
+>With a virtual machine behind a bridge on top of a bond, outgoing traffic
+>should retain the VM's source MAC. That works fine most of the time, until
+>doing a failover, and then the MAC gets rewritten to the bond slave's MAC,
+>and the return traffic gets dropped. If we don't rewrite the MAC there, we
+>don't lose any traffic.
 
->  	atomic_t lru_slot;
->  	int used_slots;
->  	struct kvm_memory_slot memslots[];
+	Please have the log message here specify that this applies only
+to balance-alb mode, and, the usual nomenclature for bonding patches is
+"[PATCH] bonding:"; for this case, I'd suggest "balance-alb:" right
+afterwards to be clear that it's only for alb mode.  I didn't really
+spot the "bond_alb" tag for what it was on first read, and it is the
+only indication that this change is specific to alb mode other than the
+patch itself.
 
-...
+>Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+>Cc: Veaceslav Falico <vfalico@gmail.com>
+>Cc: Andy Gospodarek <andy@greyhouse.net>
+>Cc: "David S. Miller" <davem@davemloft.net>
+>Cc: Jakub Kicinski <kuba@kernel.org>
+>Cc: Thomas Davis <tadavis@lbl.gov>
+>Cc: netdev@vger.kernel.org
+>Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>---
+> drivers/net/bonding/bond_alb.c | 23 ++++++++++++++++++++++-
+> 1 file changed, 22 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
+>index 3455f2cc13f2..ce8257c7cbea 100644
+>--- a/drivers/net/bonding/bond_alb.c
+>+++ b/drivers/net/bonding/bond_alb.c
+>@@ -1302,6 +1302,26 @@ void bond_alb_deinitialize(struct bonding *bond)
+> 		rlb_deinitialize(bond);
+> }
+> 
+>+static bool bond_alb_bridged_mac(struct bonding *bond, struct ethhdr *eth_data)
+>+{
+>+	struct list_head *iter;
+>+	struct slave *slave;
+>+
+>+	if (BOND_MODE(bond) != BOND_MODE_ALB)
+>+		return false;
+>+
+>+	/* Don't modify source MACs that do not originate locally
+>+	 * (e.g.,arrive via a bridge).
+>+	 */
+>+	if (!netif_is_bridge_port(bond->dev))
+>+		return false;
 
-> @@ -1097,14 +1095,16 @@ static int kvm_alloc_dirty_bitmap(struct kvm_memory_slot *memslot)
->  /*
->   * Delete a memslot by decrementing the number of used slots and shifting all
->   * other entries in the array forward one spot.
-> + * @memslot is a detached dummy struct with just .id and .as_id filled.
->   */
->  static inline void kvm_memslot_delete(struct kvm_memslots *slots,
->  				      struct kvm_memory_slot *memslot)
->  {
->  	struct kvm_memory_slot *mslots = slots->memslots;
-> +	struct kvm_memory_slot *dmemslot = id_to_memslot(slots, memslot->id);
+	I believe this logic will fail if the plumbing is, e.g., bond ->
+vlan -> bridge, as netif_is_bridge_port() would not return true for the
+bond in that case.
 
-I vote to call these local vars "old", or something along those lines.  dmemslot
-isn't too bad, but mmemslot in the helpers below is far too similar to memslot,
-and using the wrong will cause nasty explosions.
+	Making this reliable is tricky at best, and may be impossible to
+be correct for all possible cases.  As such, I think the comment above
+should reflect the limited scope of what is actually being checked here
+(i.e., the bond itself is directly a bridge port).
 
->  	int i;
->  
-> -	if (WARN_ON(slots->id_to_index[memslot->id] == -1))
-> +	if (WARN_ON(!dmemslot))
->  		return;
->  
->  	slots->used_slots--;
-> @@ -1112,12 +1112,13 @@ static inline void kvm_memslot_delete(struct kvm_memslots *slots,
->  	if (atomic_read(&slots->lru_slot) >= slots->used_slots)
->  		atomic_set(&slots->lru_slot, 0);
->  
-> -	for (i = slots->id_to_index[memslot->id]; i < slots->used_slots; i++) {
-> +	for (i = dmemslot - mslots; i < slots->used_slots; i++) {
-> +		hash_del(&mslots[i].id_node);
->  		mslots[i] = mslots[i + 1];
-> -		slots->id_to_index[mslots[i].id] = i;
-> +		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
->  	}
-> +	hash_del(&mslots[i].id_node);
->  	mslots[i] = *memslot;
-> -	slots->id_to_index[memslot->id] = -1;
->  }
->  
->  /*
-> @@ -1135,31 +1136,41 @@ static inline int kvm_memslot_insert_back(struct kvm_memslots *slots)
->   * itself is not preserved in the array, i.e. not swapped at this time, only
->   * its new index into the array is tracked.  Returns the changed memslot's
->   * current index into the memslots array.
-> + * The memslot at the returned index will not be in @slots->id_hash by then.
-> + * @memslot is a detached struct with desired final data of the changed slot.
->   */
->  static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
->  					    struct kvm_memory_slot *memslot)
->  {
->  	struct kvm_memory_slot *mslots = slots->memslots;
-> +	struct kvm_memory_slot *mmemslot = id_to_memslot(slots, memslot->id);
->  	int i;
->  
-> -	if (WARN_ON_ONCE(slots->id_to_index[memslot->id] == -1) ||
-> +	if (WARN_ON_ONCE(!mmemslot) ||
->  	    WARN_ON_ONCE(!slots->used_slots))
->  		return -1;
->  
-> +	/*
-> +	 * update_memslots() will unconditionally overwrite and re-add the
-> +	 * target memslot so it has to be removed here firs
-> +	 */
+	-J
 
-It would be helpful to explain "why" this is necessary.  Something like:
+>+
+>+	if (bond_slave_has_mac_rx(bond, eth_data->h_source))
+>+		return false;
+>+
+>+	return true;
+>+}
+>+
+> static netdev_tx_t bond_do_alb_xmit(struct sk_buff *skb, struct bonding *bond,
+> 				    struct slave *tx_slave)
+> {
+>@@ -1316,7 +1336,8 @@ static netdev_tx_t bond_do_alb_xmit(struct sk_buff *skb, struct bonding *bond,
+> 	}
+> 
+> 	if (tx_slave && bond_slave_can_tx(tx_slave)) {
+>-		if (tx_slave != rcu_access_pointer(bond->curr_active_slave)) {
+>+		if (tx_slave != rcu_access_pointer(bond->curr_active_slave) &&
+>+		    !bond_alb_bridged_mac(bond, eth_data)) {
+> 			ether_addr_copy(eth_data->h_source,
+> 					tx_slave->dev->dev_addr);
+> 		}
+>-- 
+>2.30.2
+>
 
-	/*
-	 * The memslot is being moved, delete its previous hash entry; its new
-	 * entry will be added by updated_memslots().  The old entry cannot be
-	 * kept even though its id is unchanged, because the old entry points at
-	 * the memslot in the old instance of memslots.
-	 */
-
-> +	hash_del(&mmemslot->id_node);
-> +
->  	/*
->  	 * Move the target memslot backward in the array by shifting existing
->  	 * memslots with a higher GFN (than the target memslot) towards the
->  	 * front of the array.
->  	 */
-> -	for (i = slots->id_to_index[memslot->id]; i < slots->used_slots - 1; i++) {
-> +	for (i = mmemslot - mslots; i < slots->used_slots - 1; i++) {
->  		if (memslot->base_gfn > mslots[i + 1].base_gfn)
->  			break;
->  
->  		WARN_ON_ONCE(memslot->base_gfn == mslots[i + 1].base_gfn);
->  
->  		/* Shift the next memslot forward one and update its index. */
-> +		hash_del(&mslots[i + 1].id_node);
->  		mslots[i] = mslots[i + 1];
-> -		slots->id_to_index[mslots[i].id] = i;
-> +		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
->  	}
->  	return i;
->  }
-> @@ -1170,6 +1181,10 @@ static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
->   * is not preserved in the array, i.e. not swapped at this time, only its new
->   * index into the array is tracked.  Returns the changed memslot's final index
->   * into the memslots array.
-> + * The memslot at the returned index will not be in @slots->id_hash by then.
-> + * @memslot is a detached struct with desired final data of the new or
-> + * changed slot.
-> + * Assumes that the memslot at @start index is not in @slots->id_hash.
->   */
->  static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
->  					   struct kvm_memory_slot *memslot,
-> @@ -1185,8 +1200,9 @@ static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
->  		WARN_ON_ONCE(memslot->base_gfn == mslots[i - 1].base_gfn);
->  
->  		/* Shift the next memslot back one and update its index. */
-> +		hash_del(&mslots[i - 1].id_node);
->  		mslots[i] = mslots[i - 1];
-> -		slots->id_to_index[mslots[i].id] = i;
-> +		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
->  	}
->  	return i;
->  }
-> @@ -1231,6 +1247,9 @@ static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
->   * most likely to be referenced, sorting it to the front of the array was
->   * advantageous.  The current binary search starts from the middle of the array
->   * and uses an LRU pointer to improve performance for all memslots and GFNs.
-> + *
-> + * @memslot is a detached struct, not a part of the current or new memslot
-> + * array.
->   */
->  static void update_memslots(struct kvm_memslots *slots,
->  			    struct kvm_memory_slot *memslot,
-> @@ -1247,12 +1266,16 @@ static void update_memslots(struct kvm_memslots *slots,
->  			i = kvm_memslot_move_backward(slots, memslot);
->  		i = kvm_memslot_move_forward(slots, memslot, i);
->  
-> +		if (i < 0)
-> +			return;
-
-Hmm, this is essentially a "fix" to existing code, it should be in a separate
-patch.  And since kvm_memslot_move_forward() can theoretically hit this even if
-kvm_memslot_move_backward() doesn't return -1, i.e. doesn't WARN, what about
-doing WARN_ON_ONCE() here and dropping the WARNs in kvm_memslot_move_backward()?
-It'll be slightly less developer friendly, but anyone that has the unfortunate
-pleasure of breaking and debugging this code is already in for a world of pain.
-
-> +
->  		/*
->  		 * Copy the memslot to its new position in memslots and update
->  		 * its index accordingly.
->  		 */
->  		slots->memslots[i] = *memslot;
-> -		slots->id_to_index[memslot->id] = i;
-> +		hash_add(slots->id_hash, &slots->memslots[i].id_node,
-> +			 memslot->id);
->  	}
->  }
->  
-> @@ -1316,6 +1339,7 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
->  {
->  	struct kvm_memslots *slots;
->  	size_t old_size, new_size;
-> +	struct kvm_memory_slot *memslot;
->  
->  	old_size = sizeof(struct kvm_memslots) +
->  		   (sizeof(struct kvm_memory_slot) * old->used_slots);
-> @@ -1326,8 +1350,14 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
->  		new_size = old_size;
->  
->  	slots = kvzalloc(new_size, GFP_KERNEL_ACCOUNT);
-> -	if (likely(slots))
-> -		memcpy(slots, old, old_size);
-> +	if (unlikely(!slots))
-> +		return NULL;
-> +
-> +	memcpy(slots, old, old_size);
-> +
-> +	hash_init(slots->id_hash);
-> +	kvm_for_each_memslot(memslot, slots)
-> +		hash_add(slots->id_hash, &memslot->id_node, memslot->id);
-
-What's the perf penalty if the number of memslots gets large?  I ask because the
-lazy rmap allocation is adding multiple calls to kvm_dup_memslots().
-
->  	return slots;
->  }
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
