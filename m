@@ -2,111 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E18D3893E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEB03893F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355270AbhESQi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:38:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58674 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347383AbhESQiy (ORCPT
+        id S1355307AbhESQlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355170AbhESQlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:38:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621442254;
+        Wed, 19 May 2021 12:41:12 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421C9C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:39:51 -0700 (PDT)
+Received: from [IPv6:2a02:a03f:eafb:ee01:c82d:5b70:209e:672d] (unknown [IPv6:2a02:a03f:eafb:ee01:c82d:5b70:209e:672d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 79EB9200B37;
+        Wed, 19 May 2021 18:39:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1621442389;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WZ5uWoy1UxuW2HCG2i+GDn7yK9hnNKwWkhoavaIlAUs=;
-        b=gdm8GUFqu0r2cDcc0MlvCHYNETeZ+imHDqlu57/dzrmwNFcRVG1uVBopcocVVNH64B5q/1
-        Rgvm/+OPOa3tUBmlVAUxCltkXn3pIHrYkHg/ariKWcR+r0jwKPObdgWtZY3QIRie9BqwgT
-        9avpVRyPsecBWp5/VF3TrtwDwLkW0s8=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262--t7hPRU5MM21x-rnB7NH2g-1; Wed, 19 May 2021 12:37:26 -0400
-X-MC-Unique: -t7hPRU5MM21x-rnB7NH2g-1
-Received: by mail-oo1-f71.google.com with SMTP id n16-20020a0568200550b029020b438b2591so9428013ooj.19
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 09:37:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WZ5uWoy1UxuW2HCG2i+GDn7yK9hnNKwWkhoavaIlAUs=;
-        b=fVEKgSXJdp6g9AF0gbHAc6sVfudx/mqBb3l2ekZRuaQoGWYYiLlzUd49k5p+1X9nbD
-         7mZ61JEoze2jU/cKHuB8U4RhmICbDuyGml2/5jhT/eLSRTQwrqq0cZRh86EWxPgojcxK
-         CO0MhV1ilRqlJ4TwPHsvhnXbLjdAk6TPLGvCzt8VAZnnOORUvNsG12TDpyzkINNMB1Tm
-         rAN76FGw40MQ1cgC/nOl0us7KTR6PFuIVWSpaUixO0beLdpA7Qo+2l9PCvnY9QDs1YL2
-         c9DqnTnis/nF7gt4qOCR63aKKyvFU0Z7/xx5vyVL44G75HmG7xFN66FSa5uAFPtnuD/h
-         heJw==
-X-Gm-Message-State: AOAM532ILo3hXYsTU6YUpo/qLeCpDNg4DA3R+a0jbPfd2jXQJ4BOxtC9
-        7kYP8j1kNAYUrmURBs5Hc/vVX/S2nYjvnnEoLPLgO/rXZsVDWnxcrDDDWNHfMMf230ipuJlxCrv
-        Y7XEdjUXy0vXJuuHWwdW1OzLg
-X-Received: by 2002:a4a:49c8:: with SMTP id z191mr167863ooa.62.1621442245943;
-        Wed, 19 May 2021 09:37:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwT9Z7+BgF+Y4z9e/UaTaUStcmFjg7RSgwJ5ZdJxc6pmT9q2Q4v0VsHk1X24SzvGIkTyijfQQ==
-X-Received: by 2002:a4a:49c8:: with SMTP id z191mr167834ooa.62.1621442245728;
-        Wed, 19 May 2021 09:37:25 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id g48sm45212otg.50.2021.05.19.09.37.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 09:37:25 -0700 (PDT)
-Subject: Re: [RFC PATCH 00/67] KVM: X86: TDX support
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com
-References: <cover.1605232743.git.isaku.yamahata@intel.com>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <3edc0fb2-d552-88df-eead-9e2b80e79be4@redhat.com>
-Date:   Wed, 19 May 2021 11:37:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=xdkHu+ohiZ0kc7GcvLVwlzXNI81lDspuucHz/tbwJ2Q=;
+        b=qUyTPcC/9KSPdw/8RB5J2hzib63PNFZyxILnWKUTneXZJmjXR57YpYnG1/kiSK1JxwLtIO
+        2k1gkNCxr16dfQ9OKn2F339JeHwlrcaDr88Yt3NvoU2fqG579scec/sSZawwRwYlLchgc3
+        zq8dHRbdi6+Nqj7UXWsikQxo4rpwmNUfvpd58ng1B3iJz8mZWr8ripBHUuFZTyaUmKdf0n
+        mWt87fYP3kZCPq+/q0ethM/DKJTl0KcX38IsLfGnxH6eorPMfkL+/1g/f+q8rRUat+ZcdN
+        hQ+hxEMbWOsLgyjwoQchfz1yoQESZeJzcFu7WYwGM11hdJqeTqi3e9000p3mGg==
+Message-ID: <0aef1d59f5676b5357a45463a5968f5e9b566aa7.camel@svanheule.net>
+Subject: Re: [PATCH 1/5] dt-bindings: leds: Binding for RTL8231 scan matrix
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 19 May 2021 18:39:46 +0200
+In-Reply-To: <20210517223113.GA3302542@robh.at.kernel.org>
+References: <cover.1620735871.git.sander@svanheule.net>
+         <cb1910ab6ba0795666df1034b47221f8bac160f9.1620735871.git.sander@svanheule.net>
+         <20210517223113.GA3302542@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 12:25 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Mon, 2021-05-17 at 17:31 -0500, Rob Herring wrote:
+> On Tue, May 11, 2021 at 02:25:19PM +0200, Sander Vanheule wrote:
+> > Add a binding description for the Realtek RTL8231's LED support, which
+> > consists of up to 88 LEDs arranged in a number of scanning matrices.
+> > 
+> > Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> > ---
+> >  .../bindings/leds/realtek,rtl8231-leds.yaml   | 159 ++++++++++++++++++
+> >  1 file changed, 159 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/leds/realtek,rtl8231-
+> > leds.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/leds/realtek,rtl8231-
+> > leds.yaml b/Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
+> > new file mode 100644
+> > index 000000000000..aba2b55fb9c9
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
+> > @@ -0,0 +1,159 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/realtek,rtl8231-leds.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Realtek RTL8231 LED scan matrix.
+> > +
+> > +maintainers:
+> > +  - Sander Vanheule <sander@svanheule.net>
+> > +
+> > +description: |
+> > +  The RTL8231 has support for driving a number of LED matrices, by scanning
+> > +  over the LEDs pins, alternatingly lighting different columns and/or rows.
+> > +
+> > +  In single color scan mode, 88 LEDs are supported. These are grouped into
+> > +  three output matrices:
+> > +    - Group A of 6×6 single color LEDs. Rows and columns are driven by GPIO
+> > +      pins 0-11.
+> > +               L0[n]    L1[n]    L2[n]    L0[n+6]  L1[n+6]  L2[n+6]
+> > +                |        |        |        |        |        |
+> > +       P0/P6  --<--------<--------<--------<--------<--------< (3)
+> > +                |        |        |        |        |        |
+> > +       P1/P7  --<--------<--------<--------<--------<--------< (4)
+> > +                |        |        |        |        |        |
+> > +       P2/P8  --<--------<--------<--------<--------<--------< (5)
+> > +                |        |        |        |        |        |
+> > +       P3/P9  --<--------<--------<--------<--------<--------< (6)
+> > +                |        |        |        |        |        |
+> > +       P4/P10 --<--------<--------<--------<--------<--------< (7)
+> > +                |        |        |        |        |        |
+> > +       P5/P11 --<--------<--------<--------<--------<--------< (8)
+> > +               (0)      (1)      (2)      (9)     (10)     (11)
+> > +    - Group B of 6×6 single color LEDs. Rows and columns are driven by GPIO
+> > +      pins 12-23.
+> > +               L0[n]    L1[n]    L2[n]    L0[n+6]  L1[n+6]  L2[n+6]
+> > +                |        |        |        |        |        |
+> > +      P12/P18 --<--------<--------<--------<--------<--------< (15)
+> > +                |        |        |        |        |        |
+> > +      P13/P19 --<--------<--------<--------<--------<--------< (16)
+> > +                |        |        |        |        |        |
+> > +      P14/P20 --<--------<--------<--------<--------<--------< (17)
+> > +                |        |        |        |        |        |
+> > +      P15/P21 --<--------<--------<--------<--------<--------< (18)
+> > +                |        |        |        |        |        |
+> > +      P16/P22 --<--------<--------<--------<--------<--------< (19)
+> > +                |        |        |        |        |        |
+> > +      P17/P23 --<--------<--------<--------<--------<--------< (20)
+> > +              (12)     (13)     (14)    (21)      (22)     (23)
+> > +    - Group C of 8 pairs of anti-parallel (or bi-color) LEDs. LED selection
+> > is
+> > +      provided by GPIO pins 24-27 and 29-32, polarity selection by GPIO 28.
+> > +               P24     P25  ...  P30     P31
+> > +                |       |         |       |
+> > +      LED POL --X-------X---/\/---X-------X (28)
+> > +              (24)    (25)  ... (31)    (32)
+> > +
+> > +  In bi-color scan mode, 72 LEDs are supported. These are grouped into four
+> > +  output matrices:
+> > +    - Group A of 12 pairs of anti-parallel LEDs. LED selection is provided
+> > +      by GPIO pins 0-11, polarity selection by GPIO 12.
+> > +    - Group B of 6 pairs of anti-parallel LEDs. LED selection is provided
+> > +      by GPIO pins 23-28, polarity selection by GPIO 21.
+> > +    - Group C of 6 pairs of anti-parallel LEDs. LED selection is provided
+> > +      by GPIO pins 29-34, polarity selection by GPIO 22.
+> > +    - Group of 4×6 single color LEDs. Rows are driven by GPIO pins 15-20,
+> > +      columns by GPIO pins 13-14 and 21-22 (shared with groups B and C).
+> > +          P[n]     P[n+6]   P[n+12]  P[n+18]
+> > +            |        |        |        |
+> > +       +0 --<--------<--------<--------< (15)
+> > +            |        |        |        |
+> > +       +1 --<--------<--------<--------< (16)
+> > +            |        |        |        |
+> > +       +2 --<--------<--------<--------< (17)
+> > +            |        |        |        |
+> > +       +3 --<--------<--------<--------< (18)
+> > +            |        |        |        |
+> > +       +4 --<--------<--------<--------< (19)
+> > +            |        |        |        |
+> > +       +6 --<--------<--------<--------< (20)
+> > +          (13)     (14)     (21)     (22)
+> > +
+> > +  This node must always be a child of a 'realtek,rtl8231' node.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    const: leds
 > 
-> * What's TDX?
-> TDX stands for Trust Domain Extensions which isolates VMs from
-> the virtual-machine manager (VMM)/hypervisor and any other software on
-> the platform. [1]
-> For details, the specifications, [2], [3], [4], [5], [6], [7], are
-> available.
+> led-controller
+
+Will update.
+
+> > +
+> > +  compatible:
+> > +    const: realtek,rtl8231-leds
 > 
+> How is this device controlled?
 > 
-> * The goal of this RFC patch
-> The purpose of this post is to get feedback early on high level design
-> issue of KVM enhancement for TDX. The detailed coding (variable naming
-> etc) is not cared of. This patch series is incomplete (not working).
-> Although multiple software components, not only KVM but also QEMU,
-> guest Linux and virtual bios, need to be updated, this includes only
-> KVM VMM part. For those who are curious to changes to other
-> component, there are public repositories at github. [8], [9]
 
-Hi,
+This device represents a part of the functionality of the RTL8231 GPIO/LED
+expander, which sits on an MDIO bus or Realtek SMI bus. I'll add this bit to the
+main description.
 
-I'm planning on reading through this patch set; but before I do, since
-it's been several months and it's a non-trivially sized series, I just
-wanted to confirm that this is the latest revision of the RFC that
-you'd like comments on. Or, if there's a more recent series that I've
-missed, I would be grateful for a pointer to it.
+Does this answer your question, or were you looking for other details?
 
-Thanks,
+> > 
+> > +patternProperties:
+> > +  "^led@[0-9]+,[0-2]$":
+> > +    description: |
+> > +      LEDs are addressed by their port index and led index. Ports 0-23
+> > always
+> > +      support three LEDs. Additionally, but only when used in single color
+> > scan
+> > +      mode, ports 24-31 support two LEDs.
+> 
+> Normally unit-addresses are hex values.
+> > 
+> > +    type: object
+> > +
+> > +    properties:
+> > +      reg:
+> > +        maxItems: 1
+> 
+> This should have more constraints:
+> 
+> reg:
+>   items: 
+>     - items:
+>         - description: port index
+>           maximum: 31
+>         - description: led index
+>           maximum: 2
+> 
 
-Connor
+Thanks for the suggestion, I was wondering what the best approach was here. I
+will change the pattern to "^led@" as well, so the address restrictions are only
+defined by the reg property.
+> 
+
+Best,
+Sander
 
