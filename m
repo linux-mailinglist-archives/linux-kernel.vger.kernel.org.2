@@ -2,98 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E64438835F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 01:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5419388369
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 02:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239770AbhERX5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 19:57:52 -0400
-Received: from ozlabs.org ([203.11.71.1]:44615 "EHLO ozlabs.org"
+        id S239854AbhESAGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 20:06:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232153AbhERX5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 19:57:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FlCZh3Vy2z9sW1;
-        Wed, 19 May 2021 09:56:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621382191;
-        bh=3rf0qZX3Nn/RoMbAO+/jBG2pUP8lT0uHr4bYKwv2jf4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OwsTSRG7C+EyXepEsl4piz6IURvAsj+yqlbVFqF5zeT9GnSiD7yDWdQIHzltiLd8r
-         i6j2zIv12rgRsoPy+PRw3y2bs60WqRNsJlY2G+qmkn/P5ksg31pnVrJ1uxtUXhsgvu
-         NlwM8+byFiWJC9HThrLWUsThl+aW95/fpBw6ZsJt5gnB4XGIkJNX6lgt6egDFpM3GL
-         hwUDV3OLeadHybkvzE8frks7mdmL4M3FnGDp22OeezbdS1ZP9yot0h2UQYaGfnFixm
-         6ti8vH3/U/5/0GSkU1lo2G2675dVlDoLqRFWakfYHORE90n761Dy3b6Ak39ON8DsoK
-         FAabl87NDY34Q==
-Date:   Wed, 19 May 2021 09:56:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stefano Brivio <sbrivio@redhat.com>
-Subject: linux-next: manual merge of the netfilter-next tree with the net
- tree
-Message-ID: <20210519095627.7697ff12@canb.auug.org.au>
+        id S232153AbhESAGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 May 2021 20:06:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B5096135D;
+        Wed, 19 May 2021 00:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621382686;
+        bh=fDRMp6la+ZcO5o042pAO9F4TsB3TBtyXZEm5oCc5P38=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bvqEZnImrNrt7AR9pV3HbJHdRQsLGs6+rH6LJTWkf5DaLd0DaX1l5uEZJPHve1jc1
+         1h8wF5O5OgHG4WZpNi+41Tg5skdzyFIBm6xoYHfbYtRc1RZih+WCgWlc6AiGQI9oQT
+         KqR4ihgH/nGqbSM0IFGIvrEJGBfZrnckNX6I5BVKx3371+I4iK7pozq8Sd3OLTi8Gk
+         gzye1FR3mDmlQcV2UTRPMHWaGhT07WNwNv9MbN9b/FG5YxmHS2hwWBOg/7+Z628p3e
+         GtIORMGaG9WQRiGHDq8PQFHM65YTNf3gau6fAJtO86/3leP/YEq9baAH9ibdj+fbm+
+         dD5GIv4WQqt2g==
+Date:   Tue, 18 May 2021 20:04:45 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 5.4 042/111] virtio_net: Do not pull payload in skb->head
+Message-ID: <YKRWHYiN1zXWHrfj@sashalap>
+References: <20210412084004.200986670@linuxfoundation.org>
+ <20210412084005.653952525@linuxfoundation.org>
+ <20210412051230-mutt-send-email-mst@kernel.org>
+ <CANn89iJ+5qFw+sPmxBqzxd6rp=3fnc8xkbup7SWWa_LxyhUUrg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZrdEgz5d6.3D2BnwYH.gAdq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CANn89iJ+5qFw+sPmxBqzxd6rp=3fnc8xkbup7SWWa_LxyhUUrg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZrdEgz5d6.3D2BnwYH.gAdq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 18, 2021 at 09:35:26PM +0200, Eric Dumazet wrote:
+>On Mon, Apr 12, 2021 at 11:12 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>> Note that an issue related to this patch was recently reported.
+>> It's quite possible that the root cause is a bug elsewhere
+>> in the kernel, but it probably makes sense to defer the backport
+>> until we know more ...
+>
+>I think the patch should be backported now, all issues have been sorted out ?
 
-Hi all,
+This is just 38ec4944b593 ("gro: ensure frag0 meets IP header
+alignment"), right? I can queue both for the next round of releases.
 
-Today's linux-next merge of the netfilter-next tree got a conflict in:
-
-  net/netfilter/nft_set_pipapo.c
-
-between commit:
-
-  f0b3d338064e ("netfilter: nft_set_pipapo_avx2: Add irq_fpu_usable() check=
-, fallback to non-AVX2 version")
-
-from the net tree and commit:
-
-  b1bc08f6474f ("netfilter: nf_tables: prefer direct calls for set lookups")
-
-from the netfilter-next tree.
-
-I fixed it up (I just used the latter) and can carry the fix as necessary. =
-This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ZrdEgz5d6.3D2BnwYH.gAdq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCkVCsACgkQAVBC80lX
-0GzTswf+JZ2W8O9XQDa4xYLwQF5eBjb5aIHl2P9t0iQIbVgoa/20FqujmP3Za6vk
-S2uSKOu6EjOelZt/Jf5dSTXjGfK2/h7iZ5fgk6t/SoOPwHMwVhPU6Qnw29G7PWtB
-7/IMBpCC/4njlGaDA5YTCzkmxBdia8PTwhGWlTlFNswyIdPl0jcdfp3ft6ML68ps
-ygIcNOgsEq87Quk3HuqvQniaz+SDrX/jm+eRH2aksVi7jKEU1v1FqJ/4aDUz0LJJ
-KYEv7eZS1FXJnTWu1HZkoRlspo+WjRMM17HbeyP3ekugh9x2u7+FEWo7jSybhuXk
-qevBkpNmQFamK8EBRASkEqe/YY0ulg==
-=9c6I
------END PGP SIGNATURE-----
-
---Sig_/ZrdEgz5d6.3D2BnwYH.gAdq--
+-- 
+Thanks,
+Sasha
