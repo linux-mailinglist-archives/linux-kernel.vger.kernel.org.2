@@ -2,136 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C313885DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8153885E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 06:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhESEHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 00:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhESEG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 00:06:58 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0FFC06175F;
-        Tue, 18 May 2021 21:05:39 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FlK6667Q4z9sRf;
-        Wed, 19 May 2021 14:05:34 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621397136;
-        bh=pauE8XMkpcl5YeU9UQe+H4otsmdHP12qTD5+jPriKds=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H67ZlgmgSuwuD4q7fx+JZepYdYzW05QsLkRaR08zroGyV4Rm09PROUKNOnyuyB3er
-         xkjfuCzn5U0Pq4j1y5oxclhNo/b2Ai4V6c/6AT+X9BGj/yAQqNBaXBZB5itsdUTymD
-         9ZhOpoUeJtzfLgFDjlsAgySNONun0s5mdjH7jGKHJBWoE0BCpnuc36oou6u3s+udzg
-         cui6LzBqoki/+nHK09tcqLCxb93h+KpKxzCEkxS7ZqFBC4GH8jRr12hS2F2VSNYLdK
-         4XRGtVu/xaNe9JJ9F6qqFSb45X3wsqjgo9HFmvzoviQPARip8zkhtvUkroCIOlH+aK
-         jUEvXHI4Cjnlg==
-Date:   Wed, 19 May 2021 14:05:32 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stefano Brivio <sbrivio@redhat.com>
-Subject: Re: linux-next: manual merge of the netfilter-next tree with the
- net tree
-Message-ID: <20210519140532.677d1bb6@canb.auug.org.au>
-In-Reply-To: <20210519095627.7697ff12@canb.auug.org.au>
-References: <20210519095627.7697ff12@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fk7n6zHb2ovrZiubd3gbaHl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S232087AbhESEN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 00:13:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:43524 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231893AbhESEN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 00:13:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93AF3101E;
+        Tue, 18 May 2021 21:12:37 -0700 (PDT)
+Received: from p8cg001049571a15.blr.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4828D3F719;
+        Tue, 18 May 2021 21:12:35 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] mm/debug_vm_pgtable: Ensure THP availability via has_transparent_hugepage()
+Date:   Wed, 19 May 2021 09:43:08 +0530
+Message-Id: <1621397588-19211-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fk7n6zHb2ovrZiubd3gbaHl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On certain platforms, THP support could not just be validated via the build
+option CONFIG_TRANSPARENT_HUGEPAGE. Instead has_transparent_hugepage() also
+needs to be called upon to verify THP runtime support. Otherwise the debug
+test will just run into unusable THP helpers like in the case of a 4K hash
+config on powerpc platform [1]. This just moves all pfn_pmd() and pfn_pud()
+after THP runtime validation with has_transparent_hugepage() which prevents
+the mentioned problem.
 
-Hi all,
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=213069
 
-On Wed, 19 May 2021 09:56:27 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the netfilter-next tree got a conflict in:
->=20
->   net/netfilter/nft_set_pipapo.c
->=20
-> between commit:
->=20
->   f0b3d338064e ("netfilter: nft_set_pipapo_avx2: Add irq_fpu_usable() che=
-ck, fallback to non-AVX2 version")
->=20
-> from the net tree and commit:
->=20
->   b1bc08f6474f ("netfilter: nf_tables: prefer direct calls for set lookup=
-s")
->=20
-> from the netfilter-next tree.
->=20
-> I fixed it up (I just used the latter) and can carry the fix as necessary=
-. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-
-This merge also needs the following merge resolution patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 19 May 2021 13:48:22 +1000
-Subject: [PATCH] fix up for merge involving nft_pipapo_lookup()
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: 787d563b8642 ("mm/debug_vm_pgtable: fix kernel crash by checking for THP support")
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- net/netfilter/nft_set_pipapo.h | 2 --
- 1 file changed, 2 deletions(-)
+This applies on v5.13-rc2.
 
-diff --git a/net/netfilter/nft_set_pipapo.h b/net/netfilter/nft_set_pipapo.h
-index d84afb8fa79a..25a75591583e 100644
---- a/net/netfilter/nft_set_pipapo.h
-+++ b/net/netfilter/nft_set_pipapo.h
-@@ -178,8 +178,6 @@ struct nft_pipapo_elem {
-=20
- int pipapo_refill(unsigned long *map, int len, int rules, unsigned long *d=
-st,
- 		  union nft_pipapo_map_bucket *mt, bool match_only);
--bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
--		       const u32 *key, const struct nft_set_ext **ext);
-=20
- /**
-  * pipapo_and_field_buckets_4bit() - Intersect 4-bit buckets
---=20
-2.30.2
+Changes in V2:
 
---=20
-Cheers,
-Stephen Rothwell
+- Updated [pmd|pud]_advanced_tests() per Christophe
+- Added "Fixes: " tag per Christophe
 
---Sig_/fk7n6zHb2ovrZiubd3gbaHl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes in V1:
 
------BEGIN PGP SIGNATURE-----
+https://lore.kernel.org/linux-mm/1621325590-18199-1-git-send-email-anshuman.khandual@arm.com/
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCkjowACgkQAVBC80lX
-0Gyfhgf+LJu3irilPR9sd9/H8elwRHyLTv6/ff1mBI3efU4oM7G1ucFWmEfgK9Mp
-CpMTpioNmg0O3IlALWc1BbFLQ6oJ9UFbg9gQcMgKllo8sZDoiCdbRCrekTaGDT/R
-P/msJd7qBpxsaoYi2pZ4Dyt5fOd+qFz7BURrWCSpJpNzeXVJPJGJ6W2TpPoqCA7B
-uyVklY5OA3ra8/k1sV8+bIxIUI29r1j2BtdNU4G/rVxv2f5F0SlPjZUyqzxY6Zqe
-gE1WzfDDbu1um6W8dgEOWL9Bq3KT4FWYqDFS7pJJ/FuIH8zkU01GHO2sLPw85HCy
-d+PclL1aPQXgmV44gJg5xZj0Fu8I1g==
-=MFdv
------END PGP SIGNATURE-----
+ mm/debug_vm_pgtable.c | 63 ++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 51 insertions(+), 12 deletions(-)
 
---Sig_/fk7n6zHb2ovrZiubd3gbaHl--
+diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+index 05efe98a9ac2..b3c7e7b04cb9 100644
+--- a/mm/debug_vm_pgtable.c
++++ b/mm/debug_vm_pgtable.c
+@@ -146,13 +146,14 @@ static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+ static void __init pmd_basic_tests(unsigned long pfn, int idx)
+ {
+ 	pgprot_t prot = protection_map[idx];
+-	pmd_t pmd = pfn_pmd(pfn, prot);
+ 	unsigned long val = idx, *ptr = &val;
++	pmd_t pmd;
+ 
+ 	if (!has_transparent_hugepage())
+ 		return;
+ 
+ 	pr_debug("Validating PMD basic (%pGv)\n", ptr);
++	pmd = pfn_pmd(pfn, prot);
+ 
+ 	/*
+ 	 * This test needs to be executed after the given page table entry
+@@ -185,7 +186,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
+ 				      unsigned long pfn, unsigned long vaddr,
+ 				      pgprot_t prot, pgtable_t pgtable)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
+ 
+ 	if (!has_transparent_hugepage())
+ 		return;
+@@ -232,9 +233,14 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
+ 
+ static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PMD leaf\n");
++	pmd = pfn_pmd(pfn, prot);
++
+ 	/*
+ 	 * PMD based THP is a leaf entry.
+ 	 */
+@@ -267,12 +273,16 @@ static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+ 
+ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_NUMA_BALANCING))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD saved write\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_savedwrite(pmd_mk_savedwrite(pmd_clear_savedwrite(pmd))));
+ 	WARN_ON(pmd_savedwrite(pmd_clear_savedwrite(pmd_mk_savedwrite(pmd))));
+ }
+@@ -281,13 +291,14 @@ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+ static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx)
+ {
+ 	pgprot_t prot = protection_map[idx];
+-	pud_t pud = pfn_pud(pfn, prot);
+ 	unsigned long val = idx, *ptr = &val;
++	pud_t pud;
+ 
+ 	if (!has_transparent_hugepage())
+ 		return;
+ 
+ 	pr_debug("Validating PUD basic (%pGv)\n", ptr);
++	pud = pfn_pud(pfn, prot);
+ 
+ 	/*
+ 	 * This test needs to be executed after the given page table entry
+@@ -323,7 +334,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+ 				      unsigned long pfn, unsigned long vaddr,
+ 				      pgprot_t prot)
+ {
+-	pud_t pud = pfn_pud(pfn, prot);
++	pud_t pud;
+ 
+ 	if (!has_transparent_hugepage())
+ 		return;
+@@ -332,6 +343,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+ 	/* Align the address wrt HPAGE_PUD_SIZE */
+ 	vaddr = (vaddr & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE;
+ 
++	pud = pfn_pud(pfn, prot);
+ 	set_pud_at(mm, vaddr, pudp, pud);
+ 	pudp_set_wrprotect(mm, vaddr, pudp);
+ 	pud = READ_ONCE(*pudp);
+@@ -370,9 +382,13 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+ 
+ static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pud_t pud = pfn_pud(pfn, prot);
++	pud_t pud;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PUD leaf\n");
++	pud = pfn_pud(pfn, prot);
+ 	/*
+ 	 * PUD based THP is a leaf entry.
+ 	 */
+@@ -654,12 +670,16 @@ static void __init pte_protnone_tests(unsigned long pfn, pgprot_t prot)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void __init pmd_protnone_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_NUMA_BALANCING))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD protnone\n");
++	pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
+ 	WARN_ON(!pmd_protnone(pmd));
+ 	WARN_ON(!pmd_present(pmd));
+ }
+@@ -679,18 +699,26 @@ static void __init pte_devmap_tests(unsigned long pfn, pgprot_t prot)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void __init pmd_devmap_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PMD devmap\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_devmap(pmd_mkdevmap(pmd)));
+ }
+ 
+ #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+ static void __init pud_devmap_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pud_t pud = pfn_pud(pfn, prot);
++	pud_t pud;
++
++	if (!has_transparent_hugepage())
++		return;
+ 
+ 	pr_debug("Validating PUD devmap\n");
++	pud = pfn_pud(pfn, prot);
+ 	WARN_ON(!pud_devmap(pud_mkdevmap(pud)));
+ }
+ #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+@@ -733,25 +761,33 @@ static void __init pte_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void __init pmd_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_MEM_SOFT_DIRTY))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD soft dirty\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_soft_dirty(pmd_mksoft_dirty(pmd)));
+ 	WARN_ON(pmd_soft_dirty(pmd_clear_soft_dirty(pmd)));
+ }
+ 
+ static void __init pmd_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
+ {
+-	pmd_t pmd = pfn_pmd(pfn, prot);
++	pmd_t pmd;
+ 
+ 	if (!IS_ENABLED(CONFIG_MEM_SOFT_DIRTY) ||
+ 		!IS_ENABLED(CONFIG_ARCH_ENABLE_THP_MIGRATION))
+ 		return;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD swap soft dirty\n");
++	pmd = pfn_pmd(pfn, prot);
+ 	WARN_ON(!pmd_swp_soft_dirty(pmd_swp_mksoft_dirty(pmd)));
+ 	WARN_ON(pmd_swp_soft_dirty(pmd_swp_clear_soft_dirty(pmd)));
+ }
+@@ -780,6 +816,9 @@ static void __init pmd_swap_tests(unsigned long pfn, pgprot_t prot)
+ 	swp_entry_t swp;
+ 	pmd_t pmd;
+ 
++	if (!has_transparent_hugepage())
++		return;
++
+ 	pr_debug("Validating PMD swap\n");
+ 	pmd = pfn_pmd(pfn, prot);
+ 	swp = __pmd_to_swp_entry(pmd);
+-- 
+2.20.1
+
