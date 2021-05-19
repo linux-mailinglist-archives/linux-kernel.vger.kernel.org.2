@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393AE388B95
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10849388B96
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 12:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347921AbhESKWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 06:22:16 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:65356 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1346200AbhESKWP (ORCPT
+        id S1347943AbhESKXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 06:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345613AbhESKXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 06:22:15 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14JAGCk9022302;
-        Wed, 19 May 2021 05:20:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=372dr6SwmwYwOUb7PJzGd6F0k/qxZb2QrHZ6Tt9d8Pw=;
- b=JKEEZqp/2QnfOrdyWkoJuCJkz1dZSQbn39px/nohG2OiEhtxpfqpO/LssvU54LoNwwcu
- Sh8ASGHCfov1Ni6Z/JfyL7YHjtMe9BScgJKkJRp76jbTyUr2i6xOOrs/fxfdFlsJFRA0
- ouhL2ZDAPH71QMsGu9tLTEoEpXqYCX6Pwwr5M3OHTumWEKV2cokSVu3p4jLNlc3cvRe4
- 3SrsUXYegMl1pXBKVdCdQuwFpIjOkHxP6I311jBrVIsb7e/4O/31uWFLX0IagxbU3f4a
- l6CHnGOH6VHrqHwuyT/VhctOxz3+KcdygELttWHOhB6PdxcPpEoN/N2GEbcpk5Z21rIH eA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 38kqtwjp1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 19 May 2021 05:20:38 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 19 May
- 2021 11:20:36 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 19 May 2021 11:20:36 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 718C911CD;
-        Wed, 19 May 2021 10:20:35 +0000 (UTC)
-Date:   Wed, 19 May 2021 10:20:35 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Saravana Kannan <saravanak@google.com>,
-        <alsa-devel@alsa-project.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH 05/10] docs: update pin-control.rst references
-Message-ID: <20210519102035.GH64205@ediswmail.ad.cirrus.com>
-References: <cover.1621413933.git.mchehab+huawei@kernel.org>
- <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
+        Wed, 19 May 2021 06:23:05 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EA0C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 03:21:45 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id h3-20020a05600c3503b0290176f13c7715so3010894wmq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 03:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=agmM9r0ocVor9/dELzPhDyxV/Q6g4/KHl3BaIRPfQMo=;
+        b=Q6r5E6/JTJ/+6maNrSQPa/GSrHfkMCdUNc4pqocJv5EXGNMDrowwxW1txNa/5N/+xk
+         GYwR8lgHZ/BFD65gvsud0SnoBSz3HfCltufKq3dO9clYMX2s9Tcy+dbP2wX4TL8a2nNe
+         n88muJcwXgf0oVKFKyBM87UMvPIeEOJKEJsJw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=agmM9r0ocVor9/dELzPhDyxV/Q6g4/KHl3BaIRPfQMo=;
+        b=uNNH+j9T/TpuuHOz6WPus8SIUxwacdltwpqVjO34gGobMdlwaz0lMyqIp5EtsEBrIJ
+         Ofq2D9fsmK2cR2FZdhNsh/XWVe+L5o2u/gk7f32kY46bFrDpSgudZVczJp2cxrlDhsHh
+         iLXIU/j4xaXsB8pKKwKLjhEDwjmSXe3JWHzkqKzk8uHBBppzKuggWTMi32C1IN/BcLUP
+         mOI5vb7lzMiqMg+LwZ/9aJzn7Ha8cz9psJyWZhAwuQOcUZMdcxiWhpqaQzk/SJs1J4xJ
+         3kXDY4nF0ynnl25bctn8feFGbmJuHboy+JEQ62AYOeJoHmx9Nb6qgoSaDfVHTzzG1VC1
+         QN3Q==
+X-Gm-Message-State: AOAM533PfKmKia2m6m1ajXMcS8AntWUVwqBwuifVCYBZByUpZPi9OUoL
+        dUC1nR9sWom3CuljjToMtBU91g==
+X-Google-Smtp-Source: ABdhPJyrrNplyPF4l7h+AsOBRZFblqke572pHjkUgJUA7dvxQHAp9nrQ62XQOtKxwOeNoU38M3wWtw==
+X-Received: by 2002:a7b:cc19:: with SMTP id f25mr10714124wmh.153.1621419703930;
+        Wed, 19 May 2021 03:21:43 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q13sm23556881wrw.56.2021.05.19.03.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 03:21:43 -0700 (PDT)
+Date:   Wed, 19 May 2021 12:21:41 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        joseph.kogut@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] drm: Fix missing unlock and free on error in
+ drm_legacy_addbufs_pci()
+Message-ID: <YKTmta3l0barePvJ@phenom.ffwll.local>
+Mail-Followup-To: Zou Wei <zou_wei@huawei.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, joseph.kogut@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1621341302-112089-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: kjVnaIbt4ji1tbhMzTpF3hssfkrUUfoU
-X-Proofpoint-ORIG-GUID: kjVnaIbt4ji1tbhMzTpF3hssfkrUUfoU
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 mlxlogscore=999
- bulkscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0 phishscore=0
- adultscore=0 impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105190071
+In-Reply-To: <1621341302-112089-1-git-send-email-zou_wei@huawei.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:51:42AM +0200, Mauro Carvalho Chehab wrote:
-> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> renamed: Documentation/driver-api/pinctl.rst
-> to: Documentation/driver-api/pin-control.rst.
+On Tue, May 18, 2021 at 08:35:02PM +0800, Zou Wei wrote:
+> Add the missing unlock and free before return from function
+> drm_legacy_addbufs_pci() in the error handling case.
 > 
-> Update the cross-references accordingly.
-> 
-> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Fixes: 70556e24e18e ("drm: remove usage of drm_pci_alloc/free")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+
+Applied to drm-misc-next, thanks for your patch.
+-Daniel
+
 > ---
+>  drivers/gpu/drm/drm_bufs.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
+> index 4805726..c23d7f7 100644
+> --- a/drivers/gpu/drm/drm_bufs.c
+> +++ b/drivers/gpu/drm/drm_bufs.c
+> @@ -984,8 +984,16 @@ int drm_legacy_addbufs_pci(struct drm_device *dev,
+>  
+>  	while (entry->buf_count < count) {
+>  		dmah = kmalloc(sizeof(drm_dma_handle_t), GFP_KERNEL);
+> -		if (!dmah)
+> +		if (!dmah) {
+> +			/* Set count correctly so we free the proper amount. */
+> +			entry->buf_count = count;
+> +			entry->seg_count = count;
+> +			drm_cleanup_buf_error(dev, entry);
+> +			kfree(temp_pagelist);
+> +			mutex_unlock(&dev->struct_mutex);
+> +			atomic_dec(&dev->buf_alloc);
+>  			return -ENOMEM;
+> +		}
+>  
+>  		dmah->size = total;
+>  		dmah->vaddr = dma_alloc_coherent(dev->dev,
+> -- 
+> 2.6.2
+> 
 
-For the Madera change:
-
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
