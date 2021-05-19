@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6E5388E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37FB388E14
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351220AbhESM37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbhESM36 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:29:58 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAA8C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:28:38 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id j14so12088737wrq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HAplkHgGU3tRto7R2RnYLLvSSEXMkA2joJn6sNhro1k=;
-        b=DJXbNNsF04XtEItOYW5lrVVZN/KsAqoEpNcq41ENC5qYeDEC6v5VcjmOgsxMUChDGy
-         jQ9kUB9A6XgRtHCDd1SdAaApwcayfo7ZWDFQUWBsfqjBbi0kwl0sbh+anPqeLl8PQT/v
-         dLH+xEnyySwTzPLk4Tybr2r+I7whz0byYerE50YGPGQOlKSQXBvhE+If8CZ57o6tOL3O
-         6MD2luVU8HwrY08BDY/XQYM9yeJqa7Aj/T0UORHB5M4KOthY1DbiiM+mXd5DVbfkdXGD
-         nZwP27zJT77FhdLYg9oUWVpx+AZCz5ePNSv9bZL7iWdyQwDpZTLulZqZqUT3z7YuWj02
-         KwCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HAplkHgGU3tRto7R2RnYLLvSSEXMkA2joJn6sNhro1k=;
-        b=dODcCkixpNn6Pgrg2VyfwTfknBUilFxvczo8/P7n1WCtXCJitBEoiXzDIFDB0cOTy1
-         yHnu6vpvGm3Dg1XFGeBfVCuaizDtlOLuef1LEcxWpphendrjAEjuCxvmvL1QQwUr9x2c
-         Qwupdm9jT23f90cXec1mD1pgMKfRlgy9MwK/Fz+ZoOiEuqAJ9s1QHKAcXZrlLtVprd2r
-         KRc2nmcZWdERjyRqPgoeYVzg/panqT8AtbXhGvqRDYey1/HpjepWAIzomBFoaJxBw7AS
-         Q6L6Hl+MyeGW+zkzZoahmyjd3mO9b4McVFu10ebTlT/4rZ6WupNVz2afMKRxNrnknmt4
-         E8GA==
-X-Gm-Message-State: AOAM533GpmYuW3ae6EA0nsLW13x2u5j2SOsGji11ifcIxkAhZTyMCvVW
-        +uDxoJ992zFcLZY1cr9LMpTTKg==
-X-Google-Smtp-Source: ABdhPJwDg7RGHqkNTaktkcD8WZv9YGSHhvgCdm578VBT7MBZxnttVfvqsOLOnpBAgbWuj9eL+tuPcQ==
-X-Received: by 2002:a5d:5052:: with SMTP id h18mr13986195wrt.365.1621427317348;
-        Wed, 19 May 2021 05:28:37 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id i11sm25952850wrq.26.2021.05.19.05.28.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 05:28:36 -0700 (PDT)
-Date:   Wed, 19 May 2021 13:28:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Ikjoon Jang <ikjn@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-input@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>, Rob Herring <robh@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] mfd: google,cros-ec: add DT bindings for a
- baseboard's switch device
-Message-ID: <20210519122835.GC2415519@dell>
-References: <20210415032958.740233-2-ikjn@chromium.org>
- <20210512100832.3878138-1-ikjn@chromium.org>
+        id S1353034AbhESMcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:32:14 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47376 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232850AbhESMcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 08:32:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=KJoK5eHV6zPsubnPIQGNm9VMcRMlk8KPOoIYCtY6QKU=; b=VmRhxzMQjDaQ55v72m/hZC/1r+
+        ueLMCss6Om57671IhgF+vrUjyJRFJi2WFH1Gm3jnP0HSwV0WPszH+WeFM7cyRVajWsov4VqvfY4I8
+        VnD5ygHhUIhg5eXKbiUwSVQ825FSIWZhukwpwlxZt2FtvU0yGM4x2j9FadqJYfE2K67M=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ljLLS-004vM0-C9; Wed, 19 May 2021 14:30:38 +0200
+Date:   Wed, 19 May 2021 14:30:38 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Peter Rosin <peda@axentia.se>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: net: Convert MDIO mux bindings to DT schema
+Message-ID: <YKUE7hB/BRMgkd28@lunn.ch>
+References: <20210519022000.1858188-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210512100832.3878138-1-ikjn@chromium.org>
+In-Reply-To: <20210519022000.1858188-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021, Ikjoon Jang wrote:
+> diff --git a/Documentation/devicetree/bindings/net/mdio-mux.yaml b/Documentation/devicetree/bindings/net/mdio-mux.yaml
+> new file mode 100644
+> index 000000000000..92163fa45f39
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/mdio-mux.yaml
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/mdio-mux.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Common MDIO bus multiplexer/switch properties.
+> +
+> +maintainers:
+> +  - Andrew Lunn <andrew@lunn.ch>
+> +
+> +description: |+
+> +  An MDIO bus multiplexer/switch will have several child busses that are
+> +  numbered uniquely in a device dependent manner.  The nodes for an MDIO
+> +  bus multiplexer/switch will have one child node for each child bus.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: '^mdio-mux[\-@]?'
+> +
+> +  mdio-parent-bus:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      The phandle of the I2C bus that this multiplexer's master-side port is
+> +      connected to.
 
-> This is for ChromeOS tablets which have a 'cros_cbas' switch device
-> in the "Whiskers" base board. This device can be instantiated only by
-> device tree on ARM platforms. ChromeOS EC doesn't provide a way to
-> probe the device.
-> 
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> 
-> ---
-> 
-> Changes in v6:
->  - Remove a label from cbas node in an example
-> 
-> Changes in v5:
->  - Add missing blank lines and change the description property's position.
->  - Add a note to description: "this device cannot be detected at runtime."
-> 
-> Changes in v4:
-> Define cros-cbase bindings inside google,cros-ec.yaml instead of
-> a separated binding document.
-> 
->  .../bindings/mfd/google,cros-ec.yaml          | 20 +++++++++++++++++++
->  1 file changed, 20 insertions(+)
+I2C? This seems like a cut/paste error?
 
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+     Andrew
