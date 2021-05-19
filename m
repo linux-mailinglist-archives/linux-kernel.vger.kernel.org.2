@@ -2,210 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B863388F1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765D0388F20
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353698AbhESNap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 09:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239739AbhESNao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 09:30:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B1F160FF2;
-        Wed, 19 May 2021 13:29:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621430964;
-        bh=JQuIFikX2LB0ssFXoz9KKfQObi9t6NSh4izYf1JqYPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ROx8QG94DaNgkkz8Ej/A++v7hVd9fcUYHXMfqjcfmL0wZ+alrDZ2yB3+yPMw2V53z
-         4PTXuiiCzu0waWHptWKfgdrYUkGVXyQ3bH44wJgFyUYE/eMT9vZJrsoQesQw5ltCC4
-         tZunPFXdVZgq4upcW2Lf3h5X5SpVRz5C7XvrvOIN45vvhoZ6vDZfZGuVe1xJK9U9Ev
-         6JE6WottHC9Bu6XV7RK1vvBLAq7F3Wlh9STltRH80TvNZMoxOu2Tx2o+Fk85Gc73y+
-         uC1oHJpo12pyN4u19Iu0gZ9xTDafk79NuIErmU2e/shAkfmSRiUICD0D3AoK9e0x3v
-         Rwq8bstTBnL5Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3655240DC6; Wed, 19 May 2021 10:29:21 -0300 (-03)
-Date:   Wed, 19 May 2021 10:29:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>, svens@linux.ibm.com,
-        Vasily Gorbik <gor@linux.ibm.com>, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: Re: [PATCH] perf test: Test libpfm4 support (63) reports error
-Message-ID: <YKUSseBM+IW4tphS@kernel.org>
-References: <20210517140931.2559364-1-tmricht@linux.ibm.com>
- <CAP-5=fV-2J1rxHAaGv_GwFzY-mAKKogEvQf1A87PUvZxT7wzUQ@mail.gmail.com>
+        id S1353713AbhESNay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 09:30:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31520 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353701AbhESNaw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 09:30:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621430972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Utix8t6spaKb207Zj7UyYQmhE/BXGv3+F72MAkz+g6c=;
+        b=Ky/yzhgso1H+eOGamHupsO5oIuOp5PkM73OZARHbhAet5XUt5m5SS7NgXF/9neC/4f/SOO
+        nXXRL/h7JXwzsGeKFMzYC52lbbegXxZtoI5VcZ0naXdfi4MeevtzyCSaVZGmDEyIthKukW
+        MKqugPI9SXNsHeZIskXrwz2HPcI8VVg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-EStJBb3yPguKkAg-CcoVog-1; Wed, 19 May 2021 09:29:28 -0400
+X-MC-Unique: EStJBb3yPguKkAg-CcoVog-1
+Received: by mail-wr1-f72.google.com with SMTP id h104-20020adf90710000b029010de8455a3aso7153352wrh.12
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 06:29:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Utix8t6spaKb207Zj7UyYQmhE/BXGv3+F72MAkz+g6c=;
+        b=ltDhVoy6xru85yjm4cHkZOAXcI+8px3OLwFYPfHZM/6b8pu4JjwpZpobJ3mhiOZmBX
+         6uFqzRQ4+5/tTQ1ELvPKqTBjutwpGw/kh5GpvaUleyRnrd1uGLx5E7viUCVScf9Z9fpX
+         1+uZn4P45962HDLHWP/eQmYl9BIdPa+7ZasIfoID3gqXHBNR7IRTn44y1T/TPcbc0DAQ
+         uVF0Ik4hYVg4BdK39oprGx8d+3+oiIeK28nONOypcwaTwXPRqjdt/g0XTsxLkx/ou/IA
+         FpVWsZwRSEJzCMdsjL3P5KUmJpFL8tai2CqJdK/ZUtVb0W97OTx8ceRxfaCltZLQaCOm
+         TDIg==
+X-Gm-Message-State: AOAM532N9D9OWY2hnCavpWWYE45muVnZTdMZYMQXMUVPUKxvGRH4uZNh
+        6iiQxOaR4joclFLEyFgNQGl13JQfacsC209IzmPsIRY/9nTD2v0Yw4uy/zX90xutHPgZHPDyt0v
+        iLRfme9RJ1RtNrNIYl7SWDPKK
+X-Received: by 2002:a5d:4946:: with SMTP id r6mr7406504wrs.123.1621430967435;
+        Wed, 19 May 2021 06:29:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw5mZQHnE/EnIv4pnudlM+/lE7mYzi7oQJa6EidXFKUYAuQiAiWM9tIETxbilaUxzeh7C/zPA==
+X-Received: by 2002:a5d:4946:: with SMTP id r6mr7406476wrs.123.1621430967215;
+        Wed, 19 May 2021 06:29:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id l18sm25469067wrt.97.2021.05.19.06.29.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 06:29:26 -0700 (PDT)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Anup Patel <anup@brainfault.org>, Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-doc@vger.kernel.org,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev
+References: <20210519033553.1110536-1-anup.patel@wdc.com>
+ <YKSa48cejI1Lax+/@kroah.com>
+ <CAAhSdy18qySXbUdrEsUe-KtbtuEoYrys0TcmsV2UkEA2=7UQzw@mail.gmail.com>
+ <YKSgcn5gxE/4u2bT@kroah.com> <YKTsyyVYsHVMQC+G@kroah.com>
+ <d7d5ad76-aec3-3297-0fac-a9da9b0c3663@redhat.com>
+ <YKUDWgZVj82/KiKw@kroah.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
+Message-ID: <daa30135-8757-8d33-a92e-8db4207168ff@redhat.com>
+Date:   Wed, 19 May 2021 15:29:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fV-2J1rxHAaGv_GwFzY-mAKKogEvQf1A87PUvZxT7wzUQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YKUDWgZVj82/KiKw@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 18, 2021 at 04:30:35PM -0700, Ian Rogers escreveu:
-> On Mon, May 17, 2021 at 7:12 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
-> >
-> > Compiling perf with make LIBPFM4=1 includes libpfm support and
-> > enables test case 63 'Test libpfm4 support'. This test reports an error
-> > on all platforms for subtest 63.2 'test groups of --pfm-events'.
-> > The reported error message is 'nested event groups not supported'
+On 19/05/21 14:23, Greg Kroah-Hartman wrote:
+>> - the code could be removed if there's no progress on either changing the
+>> RISC-V acceptance policy or ratifying the spec
 > 
-> The parsing test checks broken and working strings and so errors are
-> always going to be reported, but agreed this error is wrong.
-> 
-> >  # ./perf test -F 63
-> >  63: Test libpfm4 support                                            :
-> >  63.1: test of individual --pfm-events                               :
-> >  Error:
-> >  failed to parse event stereolab : event not found
-> >  Error:
-> >  failed to parse event stereolab,instructions : event not found
-> >  Error:
-> >  failed to parse event instructions,stereolab : event not found
-> >   Ok
-> >  63.2: test groups of --pfm-events                                   :
-> >  Error:
-> >  nested event groups not supported    <------ Error message here
-> >  Error:
-> >  failed to parse event {stereolab} : event not found
-> >  Error:
-> >  failed to parse event {instructions,cycles},{instructions,stereolab} :\
-> >          event not found
-> >  Ok
-> >  #
-> >
-> > This patch addresses the error message 'nested event groups not supported'.
-> > The root cause is function parse_libpfm_events_option() which parses the
-> > event string '{},{instructions}' and can not handle a leading empty
-> > group notation '{},...'.
-> >
-> > The code detects the first (empty) group indicator '{' but does not
-> > terminate group processing on the following group closing character '}'.
-> > So when the second group indicator '{' is detected, the code assumes
-> > a nested group and returns an error.
-> >
-> > With the error message fixed, also change the expected event number to
-> > one for the test case to succeed.
-> >
-> > While at it also fix a memory leak. In good case the function does not
-> > free the duplicated string given as first parameter.
-> >
-> > Output after:
-> >  # ./perf test -F 63
-> >  63: Test libpfm4 support                                            :
-> >  63.1: test of individual --pfm-events                               :
-> >  Error:
-> >  failed to parse event stereolab : event not found
-> >  Error:
-> >  failed to parse event stereolab,instructions : event not found
-> >  Error:
-> >  failed to parse event instructions,stereolab : event not found
-> >   Ok
-> >  63.2: test groups of --pfm-events                                   :
-> >  Error:
-> >  failed to parse event {stereolab} : event not found
-> >  Error:
-> >  failed to parse event {instructions,cycles},{instructions,stereolab} : \
-> >          event not found
-> >   Ok
-> >  #
-> > Error message 'nested event groups not supported' is gone.
-> 
-> Acked-By: Ian Rogers <irogers@google.com>
-> 
-> I wonder if we should add some coverage for the error cases to the pfm
-> test with something like the following.
+> I really do not understand the issue here, why can this just not be
+> merged normally?
 
-Yeah, agreed, please consider sending a patch for that.
+Because the RISC-V people only want to merge code for "frozen" or 
+"ratified" processor extensions, and the RISC-V foundation is dragging 
+their feet in ratifying the hypervisor extension.
 
-Thanks, applied.
+It's totally a self-inflicted pain on part of the RISC-V maintainers; 
+see Documentation/riscv/patch-acceptance.rst:
 
-- Arnaldo
- 
-> Thanks,
-> Ian
+   We'll only accept patches for new modules or extensions if the
+   specifications for those modules or extensions are listed as being
+   "Frozen" or "Ratified" by the RISC-V Foundation.  (Developers may, of
+   course, maintain their own Linux kernel trees that contain code for
+   any draft extensions that they wish.)
+
+(Link: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/riscv/patch-acceptance.rst)
+
+> All staging drivers need a TODO list that shows what needs to be done in
+> order to get it out of staging.  All I can tell so far is that the riscv
+> maintainers do not want to take this for "unknown reasons" so let's dump
+> it over here for now where we don't have to see it.
 > 
-> --- a/tools/perf/tests/pfm.c
-> +++ b/tools/perf/tests/pfm.c
-> @@ -155,6 +155,16 @@ static int test__pfm_group(void)
->                         .nr_events = 3,
->                         .nr_groups = 1,
->                 },
-> +               {
-> +                       .events = "instructions}",
-> +                       .nr_events = 1,
-> +                       .nr_groups = 0,
-> +               },
-> +               {
-> +                       .events = "{{instructions}}",
-> +                       .nr_events = 0,
-> +                       .nr_groups = 0,
-> +               },
->         };
-> 
->         for (i = 0; i < ARRAY_SIZE(table); i++) {
-> 
-> > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> > Acked-By: Sumanth Korikkar <sumanthk@linux.ibm.com>
-> > ---
-> >  tools/perf/tests/pfm.c |  4 ++--
-> >  tools/perf/util/pfm.c  | 11 ++++++++++-
-> >  2 files changed, 12 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
-> > index 76a53126efdf..d4b0ef74defc 100644
-> > --- a/tools/perf/tests/pfm.c
-> > +++ b/tools/perf/tests/pfm.c
-> > @@ -131,8 +131,8 @@ static int test__pfm_group(void)
-> >                 },
-> >                 {
-> >                         .events = "{},{instructions}",
-> > -                       .nr_events = 0,
-> > -                       .nr_groups = 0,
-> > +                       .nr_events = 1,
-> > +                       .nr_groups = 1,
-> >                 },
-> >                 {
-> >                         .events = "{instructions},{instructions}",
-> > diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
-> > index d735acb6c29c..6eef6dfeaa57 100644
-> > --- a/tools/perf/util/pfm.c
-> > +++ b/tools/perf/util/pfm.c
-> > @@ -62,8 +62,16 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
-> >                 }
-> >
-> >                 /* no event */
-> > -               if (*q == '\0')
-> > +               if (*q == '\0') {
-> > +                       if (*sep == '}') {
-> > +                               if (grp_evt < 0) {
-> > +                                       ui__error("cannot close a non-existing event group\n");
-> > +                                       goto error;
-> > +                               }
-> > +                               grp_evt--;
-> > +                       }
-> >                         continue;
-> > +               }
-> >
-> >                 memset(&attr, 0, sizeof(attr));
-> >                 event_attr_init(&attr);
-> > @@ -107,6 +115,7 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
-> >                         grp_evt = -1;
-> >                 }
-> >         }
-> > +       free(p_orig);
-> >         return 0;
-> >  error:
-> >         free(p_orig);
-> > --
-> > 2.31.1
-> >
+> And that's not good for developers or users, so perhaps the riscv rules
+> are not very good?
 
--- 
+I agree wholeheartedly.
 
-- Arnaldo
+I have heard contrasting opinions on conflict of interest where the 
+employers of the maintainers benefit from slowing down the integration 
+of code in Linus's tree.  I find these allegations believable, but even 
+if that weren't the case, the policy is (to put it kindly) showing its 
+limits.
+
+>> Of course there should have been a TODO file explaining the situation. But
+>> if you think this is not the right place, I totally understand; if my
+>> opinion had any weight in this, I would just place it in arch/riscv/kvm.
+>>
+>> The RISC-V acceptance policy as is just doesn't work, and the fact that
+>> people are trying to work around it is proving it.  There are many ways to
+>> improve it:
+> 
+> What is this magical acceptance policy that is preventing working code
+> from being merged?  And why is it suddenly the rest of the kernel
+> developer's problems because of this?
+
+It is my problem because I am trying to help Anup merging some perfectly 
+good KVM code; when a new KVM port comes up, I coordinate merging the 
+first arch/*/kvm bits with the arch/ maintainers and from that point on 
+that directory becomes "mine" (or my submaintainers').
+
+Paolo
+
