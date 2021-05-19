@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580AA3884DC
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB7D3884DB
 	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 04:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237202AbhESClT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 22:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
+        id S237040AbhESClM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 22:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235352AbhESClR (ORCPT
+        with ESMTP id S235593AbhESClL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 22:41:17 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5867DC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 19:39:58 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id w33so8782272lfu.7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 19:39:58 -0700 (PDT)
+        Tue, 18 May 2021 22:41:11 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04053C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 19:39:52 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id u11so11799512oiv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 19:39:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JtmNJLU/dhQ9ELu/k2h5VHa5Rzw2bCS2zmPu0hLax+8=;
-        b=BVvY6dfBpTLG0lCmqHmrDJcT+SrZNvl2aUJRRzUMfSXvRfy+O8EXPnnwQahXMdao6o
-         ADK4xqT8fNsbM2m33sQnw4i2uQ0JMU5+vr1tAi+7ZAg8S9HHsObzS/enEivmT4rgIsLZ
-         ILiKKP3sz7olT1g3KLaQqtWqIyrwYxRu/fSqs=
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=42kZB8rIxpXtlmy4eCZ87H5Cnt9bvCmXlZWsu3b1z3M=;
+        b=NNhd+3lWHQVOpFOjlp2fwFvkZ50amWoTiFTDPNe7GD6yhK96uPN34fhxE4x9eM4yNS
+         yAbGEB4zhDJyCWP755DujLOSBmfOC8U0MRudf06cUgiFaqwF5ft6oxDF0eUJoBMVd4aV
+         tPECKBVisePO+NLdw9x5Szv3CPSyDKzvIaUjU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JtmNJLU/dhQ9ELu/k2h5VHa5Rzw2bCS2zmPu0hLax+8=;
-        b=RUk6lSZ8fmz+LAcq+mwpBIjyea3/xyjkqICaeLEhHpiy+tmcg/fS9VMMUBZ4qz7IhM
-         P5sYNpBGRBXonE6n3TW/fg6bc6dDLrnhBwuVUU63qv869beF6Q5FpOc9nuY3FM3nYrFE
-         iN1nbc7HxYGa2MSrWmar/Iw79xFTLbLyeSF/eIJ3KF0KUlQkl0MqIv0/bfYP4bKYiTxu
-         A/mD7EyCnwTpCfEs+ul2wuWfmcJaKMZPOYeS272VXFeLyqb4tg3H1b5e3glSACSuYdn0
-         9+n92HRMBRSXjkyA1bhmN9L3I1CFbQeF6o7c0+CU74HYcVm9560NGilsl5BDCXASw0Uh
-         wbiQ==
-X-Gm-Message-State: AOAM533zbwY5JICQ22eyZkezS1ydQIdIqVQGx1GX0CquUA4FvHbbjTHS
-        NuqcJjpmVM1KCXzTl9roJW4h7SQnwXnVN2NY
-X-Google-Smtp-Source: ABdhPJzDISnP/wQAPucKOXygKjB8e/QNJ03i1U4woeWasGxnzH+0zhU/TstWBEeXH3bakFKmRljWhA==
-X-Received: by 2002:ac2:592c:: with SMTP id v12mr6383839lfi.632.1621391996463;
-        Tue, 18 May 2021 19:39:56 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id q10sm2457614lfg.1.2021.05.18.19.39.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 19:39:55 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id w7so396613lji.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 19:39:54 -0700 (PDT)
-X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr6863723ljq.220.1621391994583;
- Tue, 18 May 2021 19:39:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=42kZB8rIxpXtlmy4eCZ87H5Cnt9bvCmXlZWsu3b1z3M=;
+        b=Qdf8dBEmcQSUStMGzWRmHXo1KM851hNHFqQKg26L1zGCC7Xn/jH84QjcqHkQbGFsXZ
+         TXloV+NrLNls4JGmnHxJx2wlnRRufbiGFvMIkUpTZtOL4vT4/YjOCDsT3FqbXzsJ2A1Y
+         ivNS3msFto3XUGFsl4rS9H2QJiDMOgbsXc8AFjw6MOh0O5tw4hVuV93x8H7BIFEg/0ec
+         pRvCg7y8OohPoXXYCZ68wtp9ellZFA2YZdfe60eF9vSirlcEX+pbNwbz6P+AnanuzpdH
+         DMU5fByg8QFJ/mWBAAjwF1UQ/HhauDMBD7aDWOfntWyU6Z3uEBrDIg727ywDPD+mrLaE
+         DQ/g==
+X-Gm-Message-State: AOAM53259FUD39do0SS7snk3sYFO+MEzJytNVXUgVwnSgCcqwJ+zDnGq
+        oIXugu+nUMtwMvFjGLmbToUF1zs8QxmasYo5yd4=
+X-Google-Smtp-Source: ABdhPJzr4/GMtfxjWDvXAg315JZjId8p+fzR37sPTwSeZhqI58ywGSfe7Mxd5R2wxoqp85XnfRDfSw==
+X-Received: by 2002:aca:da89:: with SMTP id r131mr6384423oig.3.1621391989286;
+        Tue, 18 May 2021 19:39:49 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id f9sm4262728otq.27.2021.05.18.19.39.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 19:39:48 -0700 (PDT)
+Date:   Tue, 18 May 2021 21:39:47 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc2 review
+Message-ID: <YKR6czNAwad1/mB2@fedora64.linuxtx.org>
+References: <20210518135831.445321364@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210508122530.1971-1-justin.he@arm.com> <20210508122530.1971-2-justin.he@arm.com>
- <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
- <YJbivrA4Awp4FXo8@zeniv-ca.linux.org.uk> <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
- <YJb9KFBO7MwJeDHz@zeniv-ca.linux.org.uk> <CAHk-=wjhrhkWbV_EY0gupi2ea7QHpGW=68x7g09j_Tns5ZnsLA@mail.gmail.com>
- <CAHk-=wiOPkSm-01yZzamTvX2RPdJ0784+uWa0OMK-at+3XDd0g@mail.gmail.com>
- <YJdIx6iiU9YwnQYz@zeniv-ca.linux.org.uk> <CAHk-=wih_O+0xG4QbLw-3XJ71Yh43_SFm3gp9swj8knzXoceZQ@mail.gmail.com>
- <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
-In-Reply-To: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 18 May 2021 16:39:38 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whJkHMtf4RYiE3PLTEo8fM_vU6BG43TNJLbHsGYPsSJfQ@mail.gmail.com>
-Message-ID: <CAHk-=whJkHMtf4RYiE3PLTEo8fM_vU6BG43TNJLbHsGYPsSJfQ@mail.gmail.com>
-Subject: Re: [PATCHSET] d_path cleanups
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518135831.445321364@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 2:44 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
->         Here's what I've got for carve-up of cleanups.
+On Tue, May 18, 2021 at 03:59:03PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.5 release.
+> There are 363 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 20 May 2021 13:57:42 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Thanks, these all look logical to me.
+Tested rc2 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
 
-I only read through the individual patches, I didn't test or check the
-end result, but it all looked like good sane cleanups.
-
-              Linus
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
