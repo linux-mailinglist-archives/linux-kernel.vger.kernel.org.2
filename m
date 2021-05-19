@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885053899DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1AD3899E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 01:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhESXa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 19:30:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44380 "EHLO mail.kernel.org"
+        id S230106AbhESXbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 19:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhESXa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 19:30:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C209610CB;
-        Wed, 19 May 2021 23:29:36 +0000 (UTC)
+        id S229498AbhESXbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 19:31:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44CC6611AB;
+        Wed, 19 May 2021 23:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621466976;
-        bh=6/whUwY1s4s16/hwQLNvUOYLO0zffwSHDrR5vJNwuf4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=EsZr5LTzneA83dV8soI8i3YX1gZa4OsXH7nTfBIa2Wurl5SJkjMmvVrqd7JDOls0f
-         qzdPxPmnG2I300EQdWQAS5FvXbainILuLqQ9uo2veUq7basSqK27CfWHuyPn9RDqYd
-         R9tuk1dIpSdZGVePfweQfRhylsJrdQvha5A+faMw2VMF3K/CaPWrvtz4CqzuOTB6qY
-         NvWbMlWgFZZGEYegPF9YnQ0D4sA+hzLByUZhwQGyVA6ZX8O00CPerDlVfONCAJ7ARK
-         2K2O1Afi7A2lwo0Q3Nu1Y3wB5fpsPuq+Ubibl7QoSKe05k5Ue2mgK49ZGY1ZCa5I+/
-         cj0cD+SNKaiUw==
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-To:     Len Brown <lenb@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
- <20210415054713.GB6318@zn.tnic>
- <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic>
- <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic>
- <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic>
- <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic>
- <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <8735uxmucw.ffs@nanos.tec.linutronix.de>
- <CAJvTdK=6B8fXasshqOoMknAt25vWPDW6LVLovOhnmY10ZEdL1Q@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <eebc971a-dc5f-6ae6-c5f7-d303e56212b2@kernel.org>
-Date:   Wed, 19 May 2021 16:29:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <CAJvTdK=6B8fXasshqOoMknAt25vWPDW6LVLovOhnmY10ZEdL1Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1621467002;
+        bh=8xvSSE3H35qcDXVWBq8krJ/CkeS4P86f6MpxZY+FQsI=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=pdeWnBCOnInNDm8x6YAc+z9QI+Wu0uGxbXPy3JyYre/HD1tUr1yp6Kj89MZ/+rP4j
+         yP5bCoD92a0n36gX2BAgc3g5ShKUr18Xw+WgAzNI8SNW/Sk5rU/KyTIrmiiul6h1Wg
+         eT0zgg4taZ/bludKSSGnXyBVkQKxorWMOnB8PG4P7W2+I07XYaArz+llvLdH4G+O+N
+         tzQE4mXkQcKNXTuv5CU/EnJ5oulujaPddY2b+jkmjSUcR6D3RjGV/vScxk/7tTfePz
+         k34YWGiA5fjDL/STm/OGEjTDauJfOd+tL9eNhUJyrdSknsk/RRxsjrst6a35PUaLNs
+         FdW6geIgOvIKg==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 550F327C0054;
+        Wed, 19 May 2021 19:30:00 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Wed, 19 May 2021 19:30:00 -0400
+X-ME-Sender: <xms:d5-lYHGmPWDSX8OSBqh8yqRFL6-TU4DGvAAYQa_ollvI-_ZFCfiU8A>
+    <xme:d5-lYEWA6xPYUhC6Dp-0AaIYZd1uBpZsvgq6yetXcps0f_I2zd7eQCGNfT61HZfO0
+    kAZe7T5DnMvIhY_1Hk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpeegjefghfdtledvfeegfeelvedtgfevkeeugfekffdvveeffeetieeh
+    ueetveekfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:d5-lYJLzfx3n_y0I3zlLOGlU6QQemwxaAQP1RPrT6w3cifmzFy3kXw>
+    <xmx:d5-lYFFNy--_xYr0kWZptyE06O5JxcTVrqCwu81bzB8JH91a3XzhPA>
+    <xmx:d5-lYNV19oH3DOUeibnsJQfgKXqcPYhjwLeW8Zt2oSxUuuDukuwBvA>
+    <xmx:eJ-lYGvA-tXWjlTjhLx2635WhOntheP6f4M6vGlDhqQ6qROmgFpx5OUCrR3ovjulKRgSqQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 155B051C0060; Wed, 19 May 2021 19:29:58 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <86701a5e-87b5-4e73-9b7a-557d8c855f89@www.fastmail.com>
+In-Reply-To: <YJvU+RAvetAPT2XY@zn.tnic>
+References: <cover.1619193043.git.ashish.kalra@amd.com>
+ <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
+ <YJvU+RAvetAPT2XY@zn.tnic>
+Date:   Wed, 19 May 2021 16:29:37 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Borislav Petkov" <bp@alien8.de>,
+        "Ashish Kalra" <Ashish.Kalra@amd.com>,
+        "Sean Christopherson" <seanjc@google.com>
+Cc:     "Paolo Bonzini" <pbonzini@redhat.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        "Joerg Roedel" <joro@8bytes.org>, thomas.lendacky@amd.com,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "kvm list" <kvm@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        srutherford@google.com, venu.busireddy@oracle.com,
+        brijesh.singh@amd.com
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_2/4]_mm:_x86:_Invoke_hypercall_when_page_encrypt?=
+ =?UTF-8?Q?ion_status_is_changed?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 1:39 PM, Len Brown wrote:
-> On Sat, May 8, 2021 at 5:45 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Wed, May 12, 2021, at 6:15 AM, Borislav Petkov wrote:
+> On Fri, Apr 23, 2021 at 03:58:43PM +0000, Ashish Kalra wrote:
+> > +static inline void notify_page_enc_status_changed(unsigned long pfn,
+> > +						  int npages, bool enc)
+> > +{
+> > +	PVOP_VCALL3(mmu.notify_page_enc_status_changed, pfn, npages, enc);
+> > +}
 > 
->> Where is #6 which describes the signal interaction?
-> 
-> #6 Per the current ABI, Linux gives signal handlers access to all of
-> the hardware architectural state.
-> 
-> #6a Signal Stack is on User Stack
-> 
-> The architectural state is pushed on the user stack in uncompressed
-> XSTATE format.
-> 
-> It is established that there exists application code that counts on
-> this opaque state being complete so that it can do a user-space
-> XRESTORE instead of a sigreturn(2).
+> Now the question is whether something like that is needed for TDX, and,
+> if so, could it be shared by both.
 
-Is this established?
-
-Note that the specific case of a user program doing XRSTOR will work
-just fine if we omit the allocation of non-in-use states from the
-buffer, at least by my reading of the pseudocode.  The case that would
-break is if user code then assumes that it can XSAVE back to the same
-buffer.
-
-> (My opinion is that not breaking
-> that legacy code is a requirement, and I'm actually shocked this view
-> is not unanimous)
-> 
-It's pretty unanimous.  But the legacy code that's broken has to
-actually exist for this to apply.
+The TDX MapGPA call can fail, and presumably it will fail if the page is not sufficiently quiescent from the host's perspective.  It seems like a mistake to me to have a KVM-specific hypercall for this that cannot cleanly fail.
