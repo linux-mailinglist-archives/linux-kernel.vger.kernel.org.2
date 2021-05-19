@@ -2,142 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDFE388494
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B76388496
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 03:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbhESBvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 May 2021 21:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234117AbhESBvP (ORCPT
+        id S234248AbhESBwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 May 2021 21:52:09 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3018 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234120AbhESBwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 May 2021 21:51:15 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20870C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 18:49:56 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id t3so13435125edc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 18:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oy9iy31YW42GgULMnDfqqrgoX8PmHZpkik30uv+f1aA=;
-        b=tvQ2E7Kd2+Hf+RN1JCJdnQu6RymaGP0zziznDt8ISnI+jG1I9F5rTtPCJWa6PikhKh
-         XFhKmAAqHeMsUAOgy6hUDl59IPnHpchWu1cnHTyyjxMolBXIohuKR723SkE7OCNxzAbK
-         oygZjSu1ZC0vRf3URWfxhzVNd3YMtTfsohBEjCi0q+/uREUxDQtHtMXYqH6q8d9eUBIB
-         218/C9Rmj+pEf1HRmaUjm/IPbnYkBLCQnR3DkYGpm/9v4+VmsDb6lUfsBZ8rq8wjdtNW
-         PEFTJvZlWna6c3qGn3K9JEbsQ5ZbIkKlwDebT3ZVImG1L8u/VdgWTl83Y5Z5wVd6ZNag
-         17jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oy9iy31YW42GgULMnDfqqrgoX8PmHZpkik30uv+f1aA=;
-        b=QaBqs2hX3Cr+ju2SF+ETOuXFAJShd2M0It1+06Peqj2iYeX9f+Xtog43cSK9ZdYhoA
-         Mo5Y0s9Cj1heFA7rduM3s1FBe2OCE2Bl/kH+GSQ+pzlqHlzYFDVx4SYMaiIQ30IolnV1
-         3P8ID8OoR7PFcMSEZ1/UuSJoQi/T+FOlY2zWW1lNhyUceoBpoZJmbgKH0pA1o5hUpXtJ
-         Vx2qzgeuVrxPGioQK3YERKw6viluCO7io7kyttVq1qbCwKsz12MfHvy16dYwvNvhTQCt
-         xcwRcVbxWQerSlTjCoKq54tmVs/EpdU960BFCGOKGaFxD/bLpkl6/Qju6U018YEIiAPZ
-         ruog==
-X-Gm-Message-State: AOAM530LWWWbGMsZPPx9N3rDpeR29WPTlmGXm1vumvK8e5DiKovS+TzC
-        LitjJ2HB3rrqQuf7Qx1doVKNlcUvfthXPe9Z3DH9yQ==
-X-Google-Smtp-Source: ABdhPJzCebUO43WPo6zd3pAT6bxEi4LXjBLrk7zln8XX7z9KqzudweIVCjqD+YotU9S81wu4CFwPj9RiJ4aku6RH+xo=
-X-Received: by 2002:a50:ff13:: with SMTP id a19mr10495865edu.300.1621388993652;
- Tue, 18 May 2021 18:49:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210513184734.29317-1-rppt@kernel.org> <20210513184734.29317-7-rppt@kernel.org>
- <20210518102424.GD82842@C02TD0UTHF1T.local> <d99864e677cec4ed83e52c4417c58bbe5fd728b1.camel@linux.ibm.com>
-In-Reply-To: <d99864e677cec4ed83e52c4417c58bbe5fd728b1.camel@linux.ibm.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 18 May 2021 18:49:42 -0700
-Message-ID: <CAPcyv4hwZ2e-xzsySOjaJXDSXRKctsoGA5zW-enTn2Y9ezWPVw@mail.gmail.com>
-Subject: Re: [PATCH v19 6/8] PM: hibernate: disable when there are active
- secretmem users
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
+        Tue, 18 May 2021 21:52:08 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlG2Y6hXNzQp7V;
+        Wed, 19 May 2021 09:47:17 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 09:50:47 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 09:50:47 +0800
+Subject: Re: [PATCH 3/3] arm: extend pfn_valid to take into accound freed
+ memory map alignment
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Michal Hocko <mhocko@suse.com>,
         Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-riscv@lists.infradead.org, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Russell King <linux@armlinux.org.uk>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210518090613.21519-1-rppt@kernel.org>
+ <20210518090613.21519-4-rppt@kernel.org>
+ <2d34f990-c609-88aa-1dc0-f8e9e9623fc3@huawei.com>
+ <YKPi0eBWsHBDZCg/@kernel.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <779d890b-6983-6138-4f74-eef7be0bbd4c@huawei.com>
+Date:   Wed, 19 May 2021 09:50:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <YKPi0eBWsHBDZCg/@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 6:33 PM James Bottomley <jejb@linux.ibm.com> wrote:
->
-> On Tue, 2021-05-18 at 11:24 +0100, Mark Rutland wrote:
-> > On Thu, May 13, 2021 at 09:47:32PM +0300, Mike Rapoport wrote:
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > >
-> > > It is unsafe to allow saving of secretmem areas to the hibernation
-> > > snapshot as they would be visible after the resume and this
-> > > essentially will defeat the purpose of secret memory mappings.
-> > >
-> > > Prevent hibernation whenever there are active secret memory users.
-> >
-> > Have we thought about how this is going to work in practice, e.g. on
-> > mobile systems? It seems to me that there are a variety of common
-> > applications which might want to use this which people don't expect
-> > to inhibit hibernate (e.g. authentication agents, web browsers).
->
-> If mobile systems require hibernate, then the choice is to disable this
-> functionality or implement a secure hibernation store.   I also thought
-> most mobile hibernation was basically equivalent to S3, in which case
-> there's no actual writing of ram into storage, in which case there's no
-> security barrier and likely the inhibition needs to be made a bit more
-> specific to the suspend to disk case?
->
-> > Are we happy to say that any userspace application can incidentally
-> > inhibit hibernate?
->
-> Well, yes, for the laptop use case because we don't want suspend to
-> disk to be able to compromise the secret area.  You can disable this
-> for mobile if you like, or work out how to implement hibernate securely
-> if you're really suspending to disk.
 
-Forgive me if this was already asked and answered. Why not document
-that secretmem is ephemeral in the case of hibernate and push the
-problem to userspace to disable hibernation? In other words
-hibernation causes applications to need to reload their secretmem, it
-will be destroyed on the way down and SIGBUS afterwards. That at least
-gives a system the flexibility to either sacrifice hibernate for
-secretmem (with a userspace controlled policy), or sacrifice secretmem
-using processes for hibernate.
+
+On 2021/5/18 23:52, Mike Rapoport wrote:
+> On Tue, May 18, 2021 at 08:49:43PM +0800, Kefeng Wang wrote:
+>>
+>>
+>> On 2021/5/18 17:06, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> When unused memory map is freed the preserved part of the memory map is
+>>> extended to match pageblock boundaries because lots of core mm
+>>> functionality relies on homogeneity of the memory map within pageblock
+>>> boundaries.
+>>>
+>>> Since pfn_valid() is used to check whether there is a valid memory map
+>>> entry for a PFN, make it return true also for PFNs that have memory map
+>>> entries even if there is no actual memory populated there.
+>>>
+>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>> ---
+>>>    arch/arm/mm/init.c | 15 ++++++++++++++-
+>>>    1 file changed, 14 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+>>> index 9d4744a632c6..bb678c0ba143 100644
+>>> --- a/arch/arm/mm/init.c
+>>> +++ b/arch/arm/mm/init.c
+>>> @@ -125,11 +125,24 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
+>>>    int pfn_valid(unsigned long pfn)
+>>>    {
+>>>    	phys_addr_t addr = __pfn_to_phys(pfn);
+>>> +	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
+>>>    	if (__phys_to_pfn(addr) != pfn)
+>>>    		return 0;
+>>> -	return memblock_is_map_memory(addr);
+>>> +	if (memblock_is_map_memory(addr))
+>>> +		return 1;
+>>> +
+>>> +	/*
+>>> +	 * If address less than pageblock_size bytes away from a present
+>>> +	 * memory chunk there still will be a memory map entry for it
+>>> +	 * because we round freed memory map to the pageblock boundaries
+>>> +	 */
+>>> +	if (memblock_is_map_memory(ALIGN(addr + 1, pageblock_size)) ||
+>>> +	    memblock_is_map_memory(ALIGN_DOWN(addr, pageblock_size)))
+>>> +		return 1;
+>>
+>> Hi Mike, with patch3, the system won't boot.
+> 
+> Hmm, apparently I've miscalculated the ranges...
+> 
+> Can you please check with the below patch on top of this series:
+
+Yes, it works,
+
+On node 0 totalpages: 311551
+   Normal zone: 1230 pages used for memmap
+   Normal zone: 0 pages reserved
+   Normal zone: 157440 pages, LIFO batch:31
+   Normal zone: 17152 pages in unavailable ranges
+   HighMem zone: 154111 pages, LIFO batch:31
+   HighMem zone: 513 pages in unavailable ranges
+
+and the oom testcase could pass.
+
+Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+
+
+There is memblock_is_region_reserved(check if a region intersects 
+reserved memory), it also checks the size, should we add a similar func?
+
+> 
+> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+> index bb678c0ba143..2fafbbc8e73b 100644
+> --- a/arch/arm/mm/init.c
+> +++ b/arch/arm/mm/init.c
+> @@ -138,8 +138,9 @@ int pfn_valid(unsigned long pfn)
+>   	 * memory chunk there still will be a memory map entry for it
+>   	 * because we round freed memory map to the pageblock boundaries
+>   	 */
+> -	if (memblock_is_map_memory(ALIGN(addr + 1, pageblock_size)) ||
+> -	    memblock_is_map_memory(ALIGN_DOWN(addr, pageblock_size)))
+> +	if (memblock_overlaps_region(&memblock.memory,
+> +				     ALIGN_DOWN(addr, pageblock_size),
+> +				     pageblock_size);
+>   		return 1;
+>   
+>   	return 0;
+> 
