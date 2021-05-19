@@ -2,330 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0276388D69
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C54B388D6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 14:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353135AbhESMDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 08:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
+        id S1353158AbhESME1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 08:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353023AbhESMDQ (ORCPT
+        with ESMTP id S230226AbhESMEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 08:03:16 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BE6C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:01:55 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id o21so12703917iow.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:01:55 -0700 (PDT)
+        Wed, 19 May 2021 08:04:25 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6627C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:03:05 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id z130so7144925wmg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 05:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QbcVwQW1z15G6VjS0UeeaaJEOmNbFGmcyc8swkb4/8g=;
-        b=OAv0T2Oc6tv18fE2NrzQGd43DJALHgYEWT6TjprKNCoz3x+XoHKwH9dBuwGPmcJCmH
-         t2iHw4gziydt7dTF2RTp+oEAhCYOVc4XIaQyb5iq1D0pNfkHFzxOXDvkNDqSroOgUT/m
-         QiQsNPKaDkr0tHXhC9/r1daj0JHiXv9/cLXG1ZN6Sn3q6AZU7H6Zi+TYzd7lCYN1zPj1
-         mb2rxjYDcAuDSzbTM7EOxv3HA1Qqph1/nv4VATtXj6AxRAisa6t7xkZBU7/bZhvKHI34
-         myyKCJKQb/1v4YDOdVbOfbXVh04bjeD5FA2dyl2+e/apqegxd2HS5O96JxqFC1OeW8dx
-         DyVw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=o3LfSzRyhixcXxomWmxdvec6SZ9Wlq6bPaub1d1bIoc=;
+        b=o0XEOaE+eJKuweKUIXOFc43Wyun9W11HQto5KxeOYOw2/+wE0TlSYRlFV3o9m8EkDL
+         tI5lH27HOEMfMBivvEWJ/74LnFz14EUOxb8dJVpmno5Sta01pZpcwSPnJS6FzW814wJI
+         TYCpH1ahGdUuciU83vcn8hPhR9ORRU7zUh+QMj7PYfVcKdVplTv1nBc6ocEop/+mFrYD
+         RrEW/qeY5L2RPQvIJieYImD4tlFSJ6DLUA49OLz9wvhTtK4y6XnTCGQ71bPwNWWJT3K/
+         rmEC3iaJWjgx3crpgM1p170ycoi6b3JFNEYikBwYWj11L2MrnU4TtUqtDSJQLFZ19tUn
+         Nz6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QbcVwQW1z15G6VjS0UeeaaJEOmNbFGmcyc8swkb4/8g=;
-        b=M3Cg7dOm/AuWVNbL9s2jm/tQBWcrEs6u1VxJmdJc1bvawnt09+6KafCXDa9DVfRJso
-         MaJuYHksmczKh9OEDQ7rQMSJq1JabJ2IVTPXzKFyZkeE8hkKiDUXx3uUlbkoQVNHO5DQ
-         5udqvEmXKAyckNU3K5PiwzMBUMOGNXjjL+copPc+Dog+n4GW+4aUEBzOw3YkpD4+WzDQ
-         QXQaaZEaIKGxWXn3YKkXQhz+WcihQUEL/ohqC4PObZTHfZHxaG9PMiAykrxSTj0iWZ08
-         yf7KrllVQWLkUiwvj1ndgPmPChN3Df2FazgeuQzchWfPr++TOpltXvkOJepJzUWvbJ06
-         zqVQ==
-X-Gm-Message-State: AOAM5322WkxmpWTfehMvE4SS1cSQaVe/emP0yoAGixmb+bYiVvD5spBB
-        EGqxBGUgqOZWF/sqOYN9rp5eN9ELMlXlA/5sHurk4A==
-X-Google-Smtp-Source: ABdhPJy+Dpc5p77lHiZnSay9+BoIG7EvK09vpmvABwcqk+PQ8B5i6qIjM+AqMZPD3g27HqNhlpXdB/mMz9Gdnrest8c=
-X-Received: by 2002:a02:4844:: with SMTP id p65mr12234056jaa.102.1621425715190;
- Wed, 19 May 2021 05:01:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=o3LfSzRyhixcXxomWmxdvec6SZ9Wlq6bPaub1d1bIoc=;
+        b=WkSkOIbS2Gfe9gZCP01OzTai0uxq7KRqiGlxE3zvGawUN/e7YUBcZ5BtHosKO288DE
+         ciecx+cZuuBYS/jyU/cjO8PAwYt0rqjBkwNMiVTELjWbM5UWL4QtAYT4SmOV0Svqyhvs
+         ZdA230hiN630ii93GqEUw14MuS4muJVGPWNFt4/M0FEw/CkXkbbdzspg23xtmG1XeFTu
+         1TugSGJ7WMBfQzt3Yf5wyDNcmm8/X7uaRJPJvNZVV8zk3J0nM40ZQmNXWu2GoXt3Kfgo
+         HK+SFKEgMCpdLqzO2Gh9YwUjyL2PxM3RtFYex/Xrk6LOAxYNCLXL50qHnqsnncpOAzsU
+         0ASA==
+X-Gm-Message-State: AOAM533Q4kxCAHP23ayfkBi+7h9r2z9cXoeGOJtFHmiNw8V9ndMNF0m7
+        f9OPY31o9MaNfT1yQYPZJmPmAbrDESUDrA==
+X-Google-Smtp-Source: ABdhPJzRBm+0qVXy1+H9YSgyw5QH5IXxt9u1AgZ9HHAfUdmS68Kqg3s2zyHluFrzBTI7LUcJPNJh3g==
+X-Received: by 2002:a7b:cc15:: with SMTP id f21mr10759597wmh.86.1621425784317;
+        Wed, 19 May 2021 05:03:04 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id v12sm23736159wru.73.2021.05.19.05.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 05:03:03 -0700 (PDT)
+Date:   Wed, 19 May 2021 13:03:02 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] mfd: Remove software node conditionally and
+ locate at right place
+Message-ID: <20210519120302.GH2403908@dell>
+References: <20210510141552.57045-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20210430123511.116057-1-robert.marko@sartura.hr>
- <20210430123511.116057-4-robert.marko@sartura.hr> <f5bc39d4-742d-4403-7b5d-172a2410a631@roeck-us.net>
-In-Reply-To: <f5bc39d4-742d-4403-7b5d-172a2410a631@roeck-us.net>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Wed, 19 May 2021 14:01:44 +0200
-Message-ID: <CA+HBbNE2E8jEnLhGE-Z3qqYFS99TnCMdS7m8rfum1MbPX+-=bw@mail.gmail.com>
-Subject: Re: [PATCH 4/6] hwmon: Add Delta TN48M CPLD HWMON driver
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Lee Jones <lee.jones@linaro.org>, robh+dt@kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, jdelvare@suse.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210510141552.57045-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 3:12 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 4/30/21 5:35 AM, Robert Marko wrote:
-> > Delta TN48M has a CPLD that also monitors the power supply
-> > statuses.
-> >
-> > These are useful to be presented to the users, so lets
-> > add a driver for HWMON part of the CPLD.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > ---
-> >  drivers/hwmon/Kconfig       |  10 +++
-> >  drivers/hwmon/Makefile      |   1 +
-> >  drivers/hwmon/tn48m-hwmon.c | 148 ++++++++++++++++++++++++++++++++++++
-> >  drivers/mfd/tn48m-cpld.c    |   3 +
-> >  include/linux/mfd/tn48m.h   |   1 +
-> >  5 files changed, 163 insertions(+)
-> >  create mode 100644 drivers/hwmon/tn48m-hwmon.c
-> >
-> > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> > index 54f04e61fb83..89271dfeb775 100644
-> > --- a/drivers/hwmon/Kconfig
-> > +++ b/drivers/hwmon/Kconfig
-> > @@ -1924,6 +1924,16 @@ config SENSORS_TMP513
-> >         This driver can also be built as a module. If so, the module
-> >         will be called tmp513.
-> >
-> > +config SENSORS_TN48M
-> > +     tristate "Delta Networks TN48M switch CPLD HWMON driver"
-> > +     depends on MFD_TN48M_CPLD
-> > +     help
-> > +       If you say yes here you get support for Delta Networks TN48M
-> > +       CPLD.
-> > +
-> > +       This driver can also be built as a module. If so, the module
-> > +       will be called tn48m-hwmon.
-> > +
-> >  config SENSORS_VEXPRESS
-> >       tristate "Versatile Express"
-> >       depends on VEXPRESS_CONFIG
-> > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> > index fe38e8a5c979..22e470057ffe 100644
-> > --- a/drivers/hwmon/Makefile
-> > +++ b/drivers/hwmon/Makefile
-> > @@ -187,6 +187,7 @@ obj-$(CONFIG_SENSORS_TMP108)      += tmp108.o
-> >  obj-$(CONFIG_SENSORS_TMP401) += tmp401.o
-> >  obj-$(CONFIG_SENSORS_TMP421) += tmp421.o
-> >  obj-$(CONFIG_SENSORS_TMP513) += tmp513.o
-> > +obj-$(CONFIG_SENSORS_TN48M)  += tn48m-hwmon.o
-> >  obj-$(CONFIG_SENSORS_VEXPRESS)       += vexpress-hwmon.o
-> >  obj-$(CONFIG_SENSORS_VIA_CPUTEMP)+= via-cputemp.o
-> >  obj-$(CONFIG_SENSORS_VIA686A)        += via686a.o
-> > diff --git a/drivers/hwmon/tn48m-hwmon.c b/drivers/hwmon/tn48m-hwmon.c
-> > new file mode 100644
-> > index 000000000000..80fd18d74f1d
-> > --- /dev/null
-> > +++ b/drivers/hwmon/tn48m-hwmon.c
-> > @@ -0,0 +1,148 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Delta TN48M CPLD HWMON driver
-> > + *
-> > + * Copyright 2020 Sartura Ltd
-> > + *
-> > + * Author: Robert Marko <robert.marko@sartura.hr>
-> > + */
-> > +
-> > +#include <linux/bitfield.h>
-> > +#include <linux/hwmon-sysfs.h>
-> > +#include <linux/hwmon.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +#include <linux/mfd/tn48m.h>
-> > +
-> > +#define PSU1_PRESENT_MASK    BIT(0)
-> > +#define PSU2_PRESENT_MASK    BIT(1)
-> > +#define PSU1_POWERGOOD_MASK  BIT(2)
-> > +#define PSU2_POWERGOOD_MASK  BIT(3)
-> > +#define PSU1_ALERT_MASK              BIT(4)
-> > +#define PSU2_ALERT_MASK              BIT(5)
-> > +
-> > +static int board_id_get(struct tn48m_data *data)
-> > +{
-> > +     unsigned int regval;
-> > +
-> > +     regmap_read(data->regmap, BOARD_ID, &regval);
-> > +
-> > +     switch (regval) {
-> > +     case BOARD_ID_TN48M:
-> > +             return BOARD_ID_TN48M;
-> > +     case BOARD_ID_TN48M_P:
-> > +             return BOARD_ID_TN48M_P;
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +}
-> > +
-> > +static ssize_t psu_present_show(struct device *dev,
-> > +                             struct device_attribute *attr, char *buf)
-> > +{
-> > +     struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(attr);
-> > +     struct tn48m_data *data = dev_get_drvdata(dev);
-> > +     unsigned int regval, status;
-> > +
-> > +     if (board_id_get(data) == BOARD_ID_TN48M_P) {
-> > +             regmap_read(data->regmap, attr2->nr, &regval);
-> > +
-> > +             if (attr2->index == 1)
-> > +                     status = !FIELD_GET(PSU1_PRESENT_MASK, regval);
-> > +             else
-> > +                     status = !FIELD_GET(PSU2_PRESENT_MASK, regval);
-> > +     } else
-> > +             status = 0;
-> > +
-> > +     return sprintf(buf, "%d\n", status);
-> > +}
-> > +
-> > +static ssize_t psu_pg_show(struct device *dev,
-> > +                        struct device_attribute *attr, char *buf)
-> > +{
-> > +     struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(attr);
-> > +     struct tn48m_data *data = dev_get_drvdata(dev);
-> > +     unsigned int regval, status;
-> > +
-> > +     regmap_read(data->regmap, attr2->nr, &regval);
-> > +
-> > +     if (attr2->index == 1)
-> > +             status = FIELD_GET(PSU1_POWERGOOD_MASK, regval);
-> > +     else
-> > +             status = FIELD_GET(PSU2_POWERGOOD_MASK, regval);
-> > +
-> > +     return sprintf(buf, "%d\n", status);
-> > +}
-> > +
-> > +static ssize_t psu_alert_show(struct device *dev,
-> > +                           struct device_attribute *attr, char *buf)
-> > +{
-> > +     struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(attr);
-> > +     struct tn48m_data *data = dev_get_drvdata(dev);
-> > +     unsigned int regval, status;
-> > +
-> > +     if (board_id_get(data) == BOARD_ID_TN48M_P) {
-> > +             regmap_read(data->regmap, attr2->nr, &regval);
-> > +
-> > +             if (attr2->index == 1)
-> > +                     status = !FIELD_GET(PSU1_ALERT_MASK, regval);
-> > +             else
-> > +                     status = !FIELD_GET(PSU2_ALERT_MASK, regval);
-> > +     } else
-> > +             status = 0;
-> > +
-> > +     return sprintf(buf, "%d\n", status);
-> > +}
-> > +
-> > +static SENSOR_DEVICE_ATTR_2_RO(psu1_present, psu_present, PSU_STATUS, 1);
-> > +static SENSOR_DEVICE_ATTR_2_RO(psu2_present, psu_present, PSU_STATUS, 2);
-> > +static SENSOR_DEVICE_ATTR_2_RO(psu1_pg, psu_pg, PSU_STATUS, 1);
-> > +static SENSOR_DEVICE_ATTR_2_RO(psu2_pg, psu_pg, PSU_STATUS, 2);
-> > +static SENSOR_DEVICE_ATTR_2_RO(psu1_alert, psu_alert, PSU_STATUS, 1);
-> > +static SENSOR_DEVICE_ATTR_2_RO(psu2_alert, psu_alert, PSU_STATUS, 2);
-> > +
-> > +static struct attribute *tn48m_hwmon_attrs[] = {
-> > +     &sensor_dev_attr_psu1_present.dev_attr.attr,
-> > +     &sensor_dev_attr_psu2_present.dev_attr.attr,
-> > +     &sensor_dev_attr_psu1_pg.dev_attr.attr,
-> > +     &sensor_dev_attr_psu2_pg.dev_attr.attr,
-> > +     &sensor_dev_attr_psu1_alert.dev_attr.attr,
-> > +     &sensor_dev_attr_psu2_alert.dev_attr.attr,
->
-> Literally none of those attributes are standard hwmon attributes.
-> I don't know what this is, but it is not a hardware monitoring driver.
+On Mon, 10 May 2021, Andy Shevchenko wrote:
 
-Yes, I agree that it does not expose any of the standard attributes, but these
-are the only ones the CPLD exposes.
+> Currently the software node is removed in error case and at ->remove()
+> stage unconditionally, that ruins the symmetry. Besides, in some cases,
+> when mfd_add_device() fails, the device_remove_software_node() call
+> may lead to NULL pointer dereference:
+> 
+>   BUG: kernel NULL pointer dereference, address: 00000000
+>   ...
+>   EIP: strlen+0x12/0x20
+>   ...
+>   kernfs_name_hash+0x13/0x70
+>   kernfs_find_ns+0x32/0xc0
+>   kernfs_remove_by_name_ns+0x2a/0x90
+>   sysfs_remove_link+0x16/0x30
+>   software_node_notify.cold+0x34/0x6b
+>   device_remove_software_node+0x5a/0x90
+>   mfd_add_device.cold+0x30a/0x427
+> 
+> Fix all these by guarding device_remove_software_node() with a conditional
+> and locating it at the right place.
+> 
+> Fixes: 42e59982917a ("mfd: core: Add support for software nodes")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mfd/mfd-core.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 
-I don't know where else to put them, MFD driver did not seem logical to me.
->
-> > +     NULL
-> > +};
-> > +
-> > +ATTRIBUTE_GROUPS(tn48m_hwmon);
-> > +
-> > +static int tn48m_hwmon_probe(struct platform_device *pdev)
-> > +{
-> > +     struct tn48m_data *data = dev_get_drvdata(pdev->dev.parent);
-> > +     struct device *hwmon_dev;
-> > +
-> > +     hwmon_dev = devm_hwmon_device_register_with_groups(&pdev->dev,
-> > +                                                        "tn48m_hwmon",
-> > +                                                        data,
-> > +                                                        tn48m_hwmon_groups);
->
-> Please use devm_hwmon_device_register_with_info() to register hwmon devices.
-> Of course, that only makes sense for actual hardware monitoring drivers
-> which do support standard attributes.
-
-Yes, devm_hwmon_device_register_with_info() made no sense without any of the
-standard attributes.
-
-Robert
->
-> > +     return PTR_ERR_OR_ZERO(hwmon_dev);
-> > +}
-> > +
-> > +static const struct platform_device_id tn48m_hwmon_id_table[] = {
-> > +     { "delta,tn48m-hwmon", },
-> > +     { }
-> > +};
-> > +MODULE_DEVICE_TABLE(platform, tn48m_hwmon_id_table);
-> > +
-> > +static struct platform_driver tn48m_hwmon_driver = {
-> > +     .driver = {
-> > +             .name = "tn48m-hwmon",
-> > +     },
-> > +     .probe = tn48m_hwmon_probe,
-> > +     .id_table = tn48m_hwmon_id_table,
-> > +};
-> > +module_platform_driver(tn48m_hwmon_driver);
-> > +
-> > +MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
-> > +MODULE_DESCRIPTION("Delta TN48M CPLD HWMON driver");
-> > +MODULE_LICENSE("GPL");
-> > diff --git a/drivers/mfd/tn48m-cpld.c b/drivers/mfd/tn48m-cpld.c
-> > index f22a15ddd22d..4d837aca01e7 100644
-> > --- a/drivers/mfd/tn48m-cpld.c
-> > +++ b/drivers/mfd/tn48m-cpld.c
-> > @@ -20,6 +20,9 @@
-> >  static const struct mfd_cell tn48m_cell[] = {
-> >       {
-> >               .name = "delta,tn48m-gpio",
-> > +     },
-> > +     {
-> > +             .name = "delta,tn48m-hwmon",
-> >       }
-> >  };
-> >
-> > diff --git a/include/linux/mfd/tn48m.h b/include/linux/mfd/tn48m.h
-> > index 9cc2b04c8d69..eb2cfc3a5db7 100644
-> > --- a/include/linux/mfd/tn48m.h
-> > +++ b/include/linux/mfd/tn48m.h
-> > @@ -22,6 +22,7 @@
-> >  #define SFP_TX_DISABLE               0x31
-> >  #define SFP_PRESENT          0x3a
-> >  #define SFP_LOS                      0x40
-> > +#define PSU_STATUS           0xa
-> >
-> >  struct tn48m_data {
-> >       struct device *dev;
-> >
->
-
+Applied, thanks.
 
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
