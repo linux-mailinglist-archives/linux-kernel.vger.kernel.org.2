@@ -2,234 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF45388860
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34343388853
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241804AbhESHpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:45:49 -0400
-Received: from mga18.intel.com ([134.134.136.126]:17369 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240919AbhESHpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:45:42 -0400
-IronPort-SDR: F6x/OgbZqs70QUiJdTPC7dUp5wE7HIzqs/bcFosPi+ogH6XWcWztwPtsHs0yh4amX74c0fGDQR
- 5F4vK9VwcZbQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="188323363"
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="188323363"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 00:44:22 -0700
-IronPort-SDR: PLQVBqB6kbAQD7S3SxUUjoV/fC9LL7z5kb0bksw9A7+ANhK7AEsd6k1mn1JSsdPyFHIgHIU6JH
- 1MjVDPaqgO0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="439536901"
-Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 19 May 2021 00:44:17 -0700
-Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ljGsL-00004I-BZ; Wed, 19 May 2021 07:44:17 +0000
-Date:   Wed, 19 May 2021 15:43:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 9bcae6c73b2af171a96265e354d870e43bd1440c
-Message-ID: <60a4c1a0.wU5IyGTXDXFxDJIX%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S240688AbhESHp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:45:26 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27175 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240620AbhESHpX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 03:45:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621410244; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=p4mHKCgz2gpZVhCmLVAn9UFJkEUI3Dl0gLnmogSvU6o=; b=jTDKQQBhzqeiqLwX5dWPyvI8FLVLcp38jnFhMv0MlHMPYBkYwzN1j0rsudWlSg0JCbEJQJgv
+ /z39lGbtZp9q/T4nR64a/VArsHx2l7aXXClpB6xDc8nCiQgb9nR3KlYIOfHZ/pr24T28CfwX
+ VjI9MlmEfjPG0Uq2bxo663EBQfc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60a4c1c3b15734c8f986fff7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 19 May 2021 07:44:03
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E1FF8C43217; Wed, 19 May 2021 07:44:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 63E82C433F1;
+        Wed, 19 May 2021 07:44:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 63E82C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v8 0/5] Re-introduce TX FIFO resize for larger EP bursting
+Date:   Wed, 19 May 2021 00:43:53 -0700
+Message-Id: <1621410238-31395-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 9bcae6c73b2af171a96265e354d870e43bd1440c  tools/memory-model: Document data_race(READ_ONCE())
+Changes in V8:
+ - Rebased to usb-testing
+ - Using devm_kzalloc for adding txfifo property in dwc3-qcom
+ - Removed DWC3 QCOM ACPI property for enabling the txfifo resize
 
-elapsed time: 723m
+Changes in V7:
+ - Added a new property tx-fifo-max-num for limiting how much fifo space the
+   resizing logic can allocate for endpoints with large burst values.  This
+   can differ across platforms, and tie in closely with overall system latency.
+ - Added recommended checks for DWC32.
+ - Added changes to set the tx-fifo-resize property from dwc3-qcom by default
+   instead of modifying the current DTSI files.
+ - Added comments on all APIs/variables introduced.
+ - Updated the DWC3 YAML to include a better description of the tx-fifo-resize
+   property and added an entry for tx-fifo-max-num.
 
-configs tested: 172
-configs skipped: 3
+Changes in V6:
+ - Rebased patches to usb-testing.
+ - Renamed to PATCH series instead of RFC.
+ - Checking for fs_descriptors instead of ss_descriptors for determining the
+   endpoint count for a particular configuration.
+ - Re-ordered patch series to fix patch dependencies.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Changes in V5:
+ - Added check_config() logic, which is used to communicate the number of EPs
+   used in a particular configuration.  Based on this, the DWC3 gadget driver
+   has the ability to know the maximum number of eps utilized in all configs.
+   This helps reduce unnecessary allocation to unused eps, and will catch fifo
+   allocation issues at bind() time.
+ - Fixed variable declaration to single line per variable, and reverse xmas.
+ - Created a helper for fifo clearing, which is used by ep0.c
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        spear6xx_defconfig
-mips                           rs90_defconfig
-arm                           omap1_defconfig
-xtensa                       common_defconfig
-microblaze                      mmu_defconfig
-mips                        nlm_xlp_defconfig
-arm                       aspeed_g4_defconfig
-arc                         haps_hs_defconfig
-arm                         lubbock_defconfig
-sh                          rsk7201_defconfig
-um                               allmodconfig
-sh                         ap325rxa_defconfig
-powerpc                     powernv_defconfig
-arm                          imote2_defconfig
-sh                           se7722_defconfig
-mips                         mpc30x_defconfig
-um                            kunit_defconfig
-powerpc                      makalu_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                           ip27_defconfig
-sparc64                          alldefconfig
-mips                          rb532_defconfig
-mips                            gpr_defconfig
-sh                     magicpanelr2_defconfig
-sh                      rts7751r2d1_defconfig
-xtensa                generic_kc705_defconfig
-arm64                            alldefconfig
-xtensa                    smp_lx200_defconfig
-i386                                defconfig
-sh                            hp6xx_defconfig
-powerpc                 mpc837x_mds_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                     loongson2k_defconfig
-m68k                       m5475evb_defconfig
-powerpc                   lite5200b_defconfig
-arm                           u8500_defconfig
-um                                  defconfig
-arc                      axs103_smp_defconfig
-arm                          iop32x_defconfig
-ia64                            zx1_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                     rainier_defconfig
-mips                        maltaup_defconfig
-m68k                         amcore_defconfig
-sh                           se7721_defconfig
-arm                         shannon_defconfig
-sh                   secureedge5410_defconfig
-mips                       rbtx49xx_defconfig
-arm                        multi_v7_defconfig
-sh                          polaris_defconfig
-alpha                            alldefconfig
-alpha                               defconfig
-mips                        nlm_xlr_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                     cu1830-neo_defconfig
-arm                          gemini_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                           se7343_defconfig
-arm                          pxa168_defconfig
-arm                         lpc18xx_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                          sdk7786_defconfig
-csky                                defconfig
-nios2                         3c120_defconfig
-parisc                generic-64bit_defconfig
-x86_64                              defconfig
-arm                       multi_v4t_defconfig
-arm                      integrator_defconfig
-arm                       aspeed_g5_defconfig
-powerpc                      ppc64e_defconfig
-arm                      footbridge_defconfig
-mips                           ip32_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                        mvme16x_defconfig
-powerpc                    klondike_defconfig
-powerpc                     tqm8560_defconfig
-microblaze                          defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210519
-i386                 randconfig-a001-20210519
-i386                 randconfig-a005-20210519
-i386                 randconfig-a004-20210519
-i386                 randconfig-a002-20210519
-i386                 randconfig-a006-20210519
-i386                 randconfig-a003-20210518
-i386                 randconfig-a001-20210518
-i386                 randconfig-a005-20210518
-i386                 randconfig-a004-20210518
-i386                 randconfig-a002-20210518
-i386                 randconfig-a006-20210518
-x86_64               randconfig-a012-20210519
-x86_64               randconfig-a015-20210519
-x86_64               randconfig-a013-20210519
-x86_64               randconfig-a011-20210519
-x86_64               randconfig-a016-20210519
-x86_64               randconfig-a014-20210519
-i386                 randconfig-a014-20210519
-i386                 randconfig-a016-20210519
-i386                 randconfig-a011-20210519
-i386                 randconfig-a015-20210519
-i386                 randconfig-a012-20210519
-i386                 randconfig-a013-20210519
-x86_64               randconfig-a003-20210518
-x86_64               randconfig-a004-20210518
-x86_64               randconfig-a005-20210518
-x86_64               randconfig-a001-20210518
-x86_64               randconfig-a002-20210518
-x86_64               randconfig-a006-20210518
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Changes in V4:
+ - Removed struct dwc3* as an argument for dwc3_gadget_resize_tx_fifos()
+ - Removed WARN_ON(1) in case we run out of fifo space
+ 
+Changes in V3:
+ - Removed "Reviewed-by" tags
+ - Renamed series back to RFC
+ - Modified logic to ensure that fifo_size is reset if we pass the minimum
+   threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
 
-clang tested configs:
-x86_64               randconfig-b001-20210519
-x86_64               randconfig-a003-20210519
-x86_64               randconfig-a004-20210519
-x86_64               randconfig-a005-20210519
-x86_64               randconfig-a001-20210519
-x86_64               randconfig-a002-20210519
-x86_64               randconfig-a006-20210519
-x86_64               randconfig-a015-20210518
-x86_64               randconfig-a012-20210518
-x86_64               randconfig-a013-20210518
-x86_64               randconfig-a011-20210518
-x86_64               randconfig-a016-20210518
-x86_64               randconfig-a014-20210518
+Changes in V2:
+ - Modified TXFIFO resizing logic to ensure that each EP is reserved a
+   FIFO.
+ - Removed dev_dbg() prints and fixed typos from patches
+ - Added some more description on the dt-bindings commit message
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Currently, there is no functionality to allow for resizing the TXFIFOs, and
+relying on the HW default setting for the TXFIFO depth.  In most cases, the
+HW default is probably sufficient, but for USB compositions that contain
+multiple functions that require EP bursting, the default settings
+might not be enough.  Also to note, the current SW will assign an EP to a
+function driver w/o checking to see if the TXFIFO size for that particular
+EP is large enough. (this is a problem if there are multiple HW defined
+values for the TXFIFO size)
+
+It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
+is required for an EP that supports bursting.  Otherwise, there may be
+frequent occurences of bursts ending.  For high bandwidth functions,
+such as data tethering (protocols that support data aggregation), mass
+storage, and media transfer protocol (over FFS), the bMaxBurst value can be
+large, and a bigger TXFIFO depth may prove to be beneficial in terms of USB
+throughput. (which can be associated to system access latency, etc...)  It
+allows for a more consistent burst of traffic, w/o any interruptions, as
+data is readily available in the FIFO.
+
+With testing done using the mass storage function driver, the results show
+that with a larger TXFIFO depth, the bandwidth increased significantly.
+
+Test Parameters:
+ - Platform: Qualcomm SM8150
+ - bMaxBurst = 6
+ - USB req size = 256kB
+ - Num of USB reqs = 16
+ - USB Speed = Super-Speed
+ - Function Driver: Mass Storage (w/ ramdisk)
+ - Test Application: CrystalDiskMark
+
+Results:
+
+TXFIFO Depth = 3 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 193.60
+	  |           | 195.86
+          |           | 184.77
+          |           | 193.60
+-------------------------------------------
+
+TXFIFO Depth = 6 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 287.35
+	  |           | 304.94
+          |           | 289.64
+          |           | 293.61
+-------------------------------------------
+
+Wesley Cheng (5):
+  usb: gadget: udc: core: Introduce check_config to verify USB
+    configuration
+  usb: gadget: configfs: Check USB configuration before adding
+  usb: dwc3: Resize TX FIFOs to meet EP bursting requirements
+  usb: dwc3: dwc3-qcom: Enable tx-fifo-resize property by default
+  arm64: boot: dts: qcom: sm8150: Enable dynamic TX FIFO resize logic
+
+ arch/arm64/boot/dts/qcom/sm8150.dtsi |   1 +
+ drivers/usb/dwc3/core.c              |   9 ++
+ drivers/usb/dwc3/core.h              |  15 +++
+ drivers/usb/dwc3/dwc3-qcom.c         |   9 ++
+ drivers/usb/dwc3/ep0.c               |   2 +
+ drivers/usb/dwc3/gadget.c            | 212 +++++++++++++++++++++++++++++++++++
+ drivers/usb/gadget/configfs.c        |  22 ++++
+ drivers/usb/gadget/udc/core.c        |  25 +++++
+ include/linux/usb/gadget.h           |   5 +
+ 9 files changed, 300 insertions(+)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
