@@ -2,99 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A3C3896F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5CD3896F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 21:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhESTqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 15:46:18 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:36569 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbhESTqS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 15:46:18 -0400
-Received: by mail-vs1-f45.google.com with SMTP id x2so1272775vss.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 12:44:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CzHnfUg1666M53V2yggFr2S/ZKrY9fE36CiKlPgQZwo=;
-        b=i0pdzaagWJzQRZMqweSN07S3sMzpNQnpmFPBC2uAAi9tLL3dYYyXGA8i9RI9ErC5Em
-         EJL0YKJH1sNTjMe7yz0+txdLSU4TntR5o037vUJfc0gdeyUO2XaUw5gyPaeHN8Oz8sGc
-         CYlAH+Rzw6GUFPSPe1AAH26UWOaxsz6KcQBoSP5otXrrIAyWP8LPyAL5jOZafgCgjESx
-         oxzftJZqTG19pSWdmp6lqrBaNFIWJuBOHECh1knT3Pyx+/P0+wYVKRcGCHmh+6XzYfZl
-         HmlJqcHT5+Oun3RUUiq6mDG39pup4DKiF5TdS8E7jzHGQS9fc+f05yge0M+ABeeFLcnj
-         KspA==
-X-Gm-Message-State: AOAM533rmKEYF6NnfYFhYBqJjHXM1P7l+PM/GZ6pAQmHiZ0X/FgnF6V3
-        LwzWCilsVef1d8826LH0wZ6wIhivIc3s6x94ozM=
-X-Google-Smtp-Source: ABdhPJz5lf1iSCtWGg5T5cyRjJahGfg7EhfK6ZgoFfGK4xLIPLQveJFRrIK0qJBzGGqlY+C0FQz1ieC03GUYWfFOD/8=
-X-Received: by 2002:a67:fb52:: with SMTP id e18mr997473vsr.18.1621453497630;
- Wed, 19 May 2021 12:44:57 -0700 (PDT)
+        id S232222AbhESTtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 15:49:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:54274 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232171AbhESTtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 15:49:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E062311D4;
+        Wed, 19 May 2021 12:48:20 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 810B73F73D;
+        Wed, 19 May 2021 12:48:18 -0700 (PDT)
+Date:   Wed, 19 May 2021 20:48:09 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        valentin.schneider@arm.com, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210519194808.GA15842@e120325.cambridge.arm.com>
+References: <1621239831-5870-1-git-send-email-beata.michalska@arm.com>
+ <1621239831-5870-3-git-send-email-beata.michalska@arm.com>
+ <YKT2vbluMgcu94M6@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <202105190411.YxwxfdYw-lkp@intel.com>
-In-Reply-To: <202105190411.YxwxfdYw-lkp@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 19 May 2021 21:44:45 +0200
-Message-ID: <CAMuHMdUBKS-CN6Y7vhk_=+33FO6M8NQ0KT0w=2Br+dpzQ4ce=g@mail.gmail.com>
-Subject: Re: include/linux/avf/virtchnl.h:852:33: error: enumerator value for
- 'virtchnl_static_assert_virtchnl_rss_cfg' is not an integer constant
-To:     kernel test robot <lkp@intel.com>
-Cc:     Qi Zhang <qi.z.zhang@intel.com>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jia Guo <jia.guo@intel.com>,
-        Haiyue Wang <haiyue.wang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKT2vbluMgcu94M6@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 8:36 PM kernel test robot <lkp@intel.com> wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   8ac91e6c6033ebc12c5c1e4aa171b81a662bd70f
-> commit: 222a8ab01698148c00c271cda82d96f4e6e7b0a8 ice: Enable RSS configure for AVF
-> date:   4 weeks ago
-> config: m68k-randconfig-r025-20210519 (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=222a8ab01698148c00c271cda82d96f4e6e7b0a8
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 222a8ab01698148c00c271cda82d96f4e6e7b0a8
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
+On Wed, May 19, 2021 at 01:30:05PM +0200, Peter Zijlstra wrote:
+> 
+> Mostly style nits, since I read you're already looking at reworking this
+> due to other feedback, do with it what you like.
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    In file included from drivers/net/ethernet/intel/i40e/i40e_prototype.h:9,
->                     from drivers/net/ethernet/intel/i40e/i40e.h:41,
->                     from drivers/net/ethernet/intel/i40e/i40e_main.c:11:
->    include/linux/avf/virtchnl.h:153:36: warning: division by zero [-Wdiv-by-zero]
->      153 |  { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
->          |                                    ^
->    include/linux/avf/virtchnl.h:844:1: note: in expansion of macro 'VIRTCHNL_CHECK_STRUCT_LEN'
->      844 | VIRTCHNL_CHECK_STRUCT_LEN(2312, virtchnl_proto_hdrs);
->          | ^~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/avf/virtchnl.h:844:33: error: enumerator value for 'virtchnl_static_assert_virtchnl_proto_hdrs' is not an integer constant
->      844 | VIRTCHNL_CHECK_STRUCT_LEN(2312, virtchnl_proto_hdrs);
+Will apply your remarks on whatever ends up in the new version, which should be
+most of it. To be out soon.
 
-On m68k, integers are aligned to an address that is a multiple of 2 bytes.
+Thank You
 
-struct virtchnl_proto_hdrs lacks explicit padding.
-Patch sent: https://lore.kernel.org/lkml/20210519194350.1854798-1-geert@linux-m68k.org/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+BR
+B.
+> On Mon, May 17, 2021 at 09:23:50AM +0100, Beata Michalska wrote:
+> > @@ -1989,66 +1989,96 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
+> >  
+> >  	return true;
+> >  }
+> 
+> + whitespace
+> 
+> > +/**
+> > + * Asym capacity bits
+> > + */
+> > +struct asym_cap_data {
+> > +	struct list_head link;
+> > +	unsigned long    capacity;
+> > +	struct cpumask   *cpu_mask;
+> > +};
+> 
+> + whitespace
+> 
+> >  /*
+> > + * Set of available CPUs grouped by their corresponding capacities
+> > + * Each list entry contains a CPU mask reflecting CPUs that share the same
+> > + * capacity.
+> > + * The lifespan of data is unlimited.
+> >   */
+> > +static LIST_HEAD(asym_cap_list);
+> >  
+> > +/*
+> > + * Verify whether given CPU at a given topology level belongs to a sched domain
+> > + * that does span CPUs with different capacities.
+> > + * Provides sd_flags reflecting the asymmetry scope.
+> > + */
+> > +static inline int
+> > +asym_cpu_capacity_classify(struct sched_domain_topology_level *tl, int cpu)
+> > +{
+> > +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
+> > +	const struct cpumask *tl_mask = tl->mask(cpu);
+> > +	struct asym_cap_data *entry;
+> > +	int asym_cap_count = 0;
+> > +
+> > +	if (list_is_singular(&asym_cap_list))
+> > +		goto leave;
+> > +
+> > +	list_for_each_entry(entry, &asym_cap_list, link) {
+> > +		if (cpumask_intersects(tl_mask, entry->cpu_mask))
+> > +			++asym_cap_count;
+> > +		else
+> > +			sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
+> >  	}
+> > +	WARN_ON_ONCE(!asym_cap_count);
+> > +leave:
+> > +	return asym_cap_count > 1 ? sd_asym_flags : 0;
+> > +}
+> >  
+> >  
+> 
+> - whitespace
+> 
+> > +/*
+> > + * Build-up/update list of CPUs grouped by their capacities
+> > + */
+> > +static void asym_cpu_capacity_scan(const struct cpumask *cpu_map)
+> > +{
+> > +	struct asym_cap_data *entry, *next;
+> > +	int cpu;
+> >  
+> > +	if (!list_empty(&asym_cap_list))
+> > +		list_for_each_entry(entry, &asym_cap_list, link)
+> > +			cpumask_clear(entry->cpu_mask);
+> 
+> two nits:
+> 
+>  - the if() needs { } because while what follows is strictly a single
+>    statement, it is multi-line, so coding style requires { }.
+> 
+>  - the if() is strictly superfluous, if the list is empty the
+>    list_for_each_entry() iteration already doesn't do anything.
+> 
+> >  
+> > +	entry = list_first_entry_or_null(&asym_cap_list,
+> > +			struct asym_cap_data, link);
+> 
+> Please align line-breaks at the most nested (, vim can help you do this
+> with: set cino=(0:0, if you're using that other editor, I'm sure you can
+> convince it to align properly too :-)
+> 
+> >  
+> > +	for_each_cpu(cpu, cpu_map) {
+> > +		unsigned long capacity = arch_scale_cpu_capacity(cpu);
+> >  
+> > +		if (entry && capacity == entry->capacity)
+> > +			goto next;
+> >  
+> > +		list_for_each_entry(entry, &asym_cap_list, link)
+> > +			if (capacity == entry->capacity)
+> > +				goto next;
+> 
+> { } again
+> 
+> > +
+> > +		entry = kzalloc(sizeof(*entry) + cpumask_size(), GFP_KERNEL);
+> > +		if (entry) {
+> > +			entry->capacity = capacity;
+> > +			entry->cpu_mask = (struct cpumask *)((char *)entry +
+> > +					   sizeof(*entry));
+> 
+> alignment again
+> 
+> > +			list_add(&entry->link, &asym_cap_list);
+> >  		}
+> > +		WARN_ONCE(!entry,
+> > +		    "Failed to allocate memory for capacity asymmetry detection\n");
+> 
+> alignment again
+> 
+> (also, eeew, if this lives, perhaps a find_asym_data(capacity) helper
+> might make it better:
+> 
+> 		if (!entry || entry->capacity != capacity)
+> 			entry = find_asym_data(capacity);
+> )
+> 
+> > +next:
+> > +		__cpumask_set_cpu(cpu, entry->cpu_mask);
+> >  	}
+> >  
+> > +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
+> > +		if (cpumask_empty(entry->cpu_mask)) {
+> > +			list_del(&entry->link);
+> > +			kfree(entry);
+> > +		}
+> > +	}
+> 
+> See, this has { }
+> 
+> >  }
