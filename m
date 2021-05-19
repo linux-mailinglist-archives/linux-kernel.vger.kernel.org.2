@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C678B389331
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DC6389334
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 18:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355081AbhESQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 12:04:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
+        id S1347076AbhESQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 12:05:37 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:47621 "EHLO todd.t-8ch.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346574AbhESQEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 12:04:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC91611BF;
-        Wed, 19 May 2021 16:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621440190;
-        bh=JZ5ttupHJEOD9whNallqTU+f5HydGhX1QoErpDhMSqc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pK80JGjcsfTNR77RvDU/cvsZsF0N9SpohJW9XQJaXGVTLtFhs9vZO0mfB8Qr/6yP1
-         WeDPA9KpMxok/EFnJe+k7/XORUQWRS1slPmZKqwOWUobnEANqAoyr5w/7wWWmc+RMx
-         qxmSTLpdSAIBzMBO0t4HXq7D8VfJGTzne7w68Wjk=
-Date:   Wed, 19 May 2021 18:03:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jeff Johnson <jjohnson@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>, b43-dev@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jjohnson=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH v2] b43: don't save dentries for debugfs
-Message-ID: <YKU2vMoDO0Ch1Lyg@kroah.com>
-References: <20210518163304.3702015-1-gregkh@linuxfoundation.org>
- <891f28e4c1f3c24ed1b257de83cbb3a0@codeaurora.org>
- <f539277054c06e1719832b9e99cbf7f1@codeaurora.org>
- <YKScfFKhxtVqfRkt@kroah.com>
- <2eb3af43025436c0832c8f61fbf519ad@codeaurora.org>
- <YKUyAoBq/cepglmk@kroah.com>
- <48aea7ae33faaafab388e24c3b8eb199@codeaurora.org>
+        id S245423AbhESQFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 12:05:35 -0400
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1621440246;
+        bh=HjX1XlOaRqJLsyW2CK3RwmEjpoWJVREThQk49QVY79g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pSaoOsZLSSK4+Z5Py33kpGAnpxsQ88TsVV86OrAler9Qi8Q+/a/IQmZ9sAh+ZkzhB
+         3FiMXSwGbT/tsMqizSvktVCEU34Q2ZuSl6kfwsQw12lY/PhPLOLdz6kl03OgzVo9w1
+         YipaCSdlZARTBl3n4tGjYE+e94gBKWXPf1Mxu2tE=
+To:     linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: input: Add support for Programmable Buttons
+Date:   Wed, 19 May 2021 18:03:49 +0200
+Message-Id: <20210519160349.609690-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <61dcf8c7-2dcb-4173-fbbd-9adf3412edb7@redhat.com>
+References: <61dcf8c7-2dcb-4173-fbbd-9adf3412edb7@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <48aea7ae33faaafab388e24c3b8eb199@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 08:57:00AM -0700, Jeff Johnson wrote:
-> On 2021-05-19 08:42, Greg Kroah-Hartman wrote:
-> > On Wed, May 19, 2021 at 08:04:59AM -0700, Jeff Johnson wrote:
-> > > On 2021-05-18 22:05, Greg Kroah-Hartman wrote:
-> > > > On Tue, May 18, 2021 at 03:00:44PM -0700, Jeff Johnson wrote:
-> > > > > On 2021-05-18 12:29, Jeff Johnson wrote:
-> > > > > Would still like guidance on if there is a recommended way to get a
-> > > > > dentry not associated with debugfs.
-> > > >
-> > > > What do you exactly mean by "not associated with debugfs"?
-> > > >
-> > > > And why are you passing a debugfs dentry to relay_open()?  That feels
-> > > > really wrong and fragile.
-> > > 
-> > > I don't know the history but the relay documentation tells us:
-> > > "If you want a directory structure to contain your relay files,
-> > > you should create it using the host filesystem’s directory
-> > > creation function, e.g. debugfs_create_dir()..."
-> > > 
-> > > So my guess is that the original implementation followed that
-> > > advice.  I see 5 clients of this functionality, and all 5 pass a
-> > > dentry returned from debugfs_create_dir():
-> > > 
-> > > drivers/gpu/drm/i915/gt/uc/intel_guc_log.c, line 384
-> > > drivers/net/wireless/ath/ath10k/spectral.c, line 534
-> > > drivers/net/wireless/ath/ath11k/spectral.c, line 902
-> > > drivers/net/wireless/ath/ath9k/common-spectral.c, line 1077
-> > > kernel/trace/blktrace.c, line 549
-> > 
-> > Ah, that's just the "parent" dentry for the relayfs file.  That's fine,
-> > not a big deal, debugfs will always provide a way for you to get that if
-> > needed.
-> 
-> Unless debugfs is disabled, like on Android, which is the real problem I'm
-> trying to solve.
+From: Thomas Weißschuh <thomas@t-8ch.de>
 
-Then use some other filesystem to place your relay file in.  A relay
-file is not a file that userspace should rely on for normal operation,
-so why do you need it at all?
+Map them to KEY_MACRO# event codes.
 
-What tools/operation requires access to this file that systems without
-debugfs support is causing problems on?
+These buttons are defined by HID as follows:
+"The user defines the function of these buttons to control software
+applications or GUI objects."
 
-thanks,
+This matches the semantics of the KEY_MACRO# input event codes that
+Linux supports.
 
-greg k-h
+Signed-off-by: Thomas Weißschuh <thomas@t-8ch.de>
+---
+ drivers/hid/hid-debug.c | 11 +++++++++++
+ drivers/hid/hid-input.c |  1 +
+ 2 files changed, 12 insertions(+)
+
+diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
+index 59f8d716d78f..0e76d9b4530a 100644
+--- a/drivers/hid/hid-debug.c
++++ b/drivers/hid/hid-debug.c
+@@ -122,6 +122,7 @@ static const struct hid_usage_entry hid_usage_table[] = {
+   {  9, 0, "Button" },
+   { 10, 0, "Ordinal" },
+   { 12, 0, "Consumer" },
++      {0, 0x003, "ProgrammableButtons"},
+       {0, 0x238, "HorizontalWheel"},
+   { 13, 0, "Digitizers" },
+     {0, 0x01, "Digitizer"},
+@@ -939,6 +940,16 @@ static const char *keys[KEY_MAX + 1] = {
+ 	[KEY_KBDINPUTASSIST_NEXTGROUP] = "KbdInputAssistNextGroup",
+ 	[KEY_KBDINPUTASSIST_ACCEPT] = "KbdInputAssistAccept",
+ 	[KEY_KBDINPUTASSIST_CANCEL] = "KbdInputAssistCancel",
++	[KEY_MACRO1] = "Macro1", [KEY_MACRO2] = "Macro2", [KEY_MACRO3] = "Macro3",
++	[KEY_MACRO4] = "Macro4", [KEY_MACRO5] = "Macro5", [KEY_MACRO6] = "Macro6",
++	[KEY_MACRO7] = "Macro7", [KEY_MACRO8] = "Macro8", [KEY_MACRO9] = "Macro9",
++	[KEY_MACRO10] = "Macro10", [KEY_MACRO11] = "Macro11", [KEY_MACRO12] = "Macro12",
++	[KEY_MACRO13] = "Macro13", [KEY_MACRO14] = "Macro14", [KEY_MACRO15] = "Macro15",
++	[KEY_MACRO16] = "Macro16", [KEY_MACRO17] = "Macro17", [KEY_MACRO18] = "Macro18",
++	[KEY_MACRO19] = "Macro19", [KEY_MACRO20] = "Macro20", [KEY_MACRO21] = "Macro21",
++	[KEY_MACRO22] = "Macro22", [KEY_MACRO23] = "Macro23", [KEY_MACRO24] = "Macro24",
++	[KEY_MACRO25] = "Macro25", [KEY_MACRO26] = "Macro26", [KEY_MACRO27] = "Macro27",
++	[KEY_MACRO28] = "Macro28", [KEY_MACRO29] = "Macro29", [KEY_MACRO30] = "Macro30",
+ };
+ 
+ static const char *relatives[REL_MAX + 1] = {
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 18f5e28d475c..7d4dee58d869 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -632,6 +632,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+ 				else
+ 					code += BTN_TRIGGER_HAPPY - 0x10;
+ 				break;
++		case HID_CP_CONSUMER_CONTROL: code += KEY_MACRO1; break;
+ 		default:
+ 			switch (field->physical) {
+ 			case HID_GD_MOUSE:
+
+base-commit: efd8929b9eec1cde120abb36d76dd00ff6711023
+-- 
+2.31.1
+
