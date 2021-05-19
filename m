@@ -2,143 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10761388C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC87388C9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350229AbhESLUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:20:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42757 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349957AbhESLUK (ORCPT
+        id S1349736AbhESLVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:21:45 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3029 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346140AbhESLVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:20:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621423130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NWPwTLXUbkkuBeNGwn+3y597gm6t7tmE54rpjMpE4pA=;
-        b=RKWa2iA9rxg69RsfOxR9jwKscMv7Fhob28ukgfKT56LqXY+LuSIfkSuM7TyJgnF/l48eU9
-        gQ8jEjZQenGDyyaK0IkqOulyzt0ePcT38Edurz8qcswlmtKsyBS3OTBtICpxUG6BIgkNkK
-        FnhPQaZ1KwVtz90da/4f05znrC04xCQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-DPauk6GuPn2fMnBLii4KJg-1; Wed, 19 May 2021 07:18:48 -0400
-X-MC-Unique: DPauk6GuPn2fMnBLii4KJg-1
-Received: by mail-wr1-f70.google.com with SMTP id 67-20020adf81490000b029010756d109e6so6958111wrm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 04:18:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NWPwTLXUbkkuBeNGwn+3y597gm6t7tmE54rpjMpE4pA=;
-        b=STdH16SzVTJnnIZdL97afunnBI/ocA+z+z+QCqxI9MGCtleI72oYOEX/S9l/EVE6Bu
-         iG24Qm3/lN1iC0aZdwgKsphR133onXqw5ElE1L2tbtbsuUy0QPZd3qcPvD/ZQzMPBNRy
-         KmWpXWpg1eazrqVAWsX1hadwHLM4k09JGEEZKvQF3LUjwut7Up6g55WN2LOOQmg0hE/3
-         2Aiu+gIBZypdlftV788IL/gdmfvRX0timafaatEAbtm45g9/Olw5uox/p/+ZSL1IrAZY
-         QJdm1c6CujxBWoSCCqkPZ3k5ZTWVY5/y9sE319K2FVL+BM7XpThgqU4y9b+4IySqkVJW
-         W9hw==
-X-Gm-Message-State: AOAM530UsP0NQlBTE45f29z/EMBYTpKBilhURKY4mMpcG1vs3Ip6kn/H
-        nPDumD8eyqEaBZzOnNEwYUlYfrmEOO6NfjfWCaUmmpivvtuuDnpkuPYdarBcnOVj+S6LhPwWnD6
-        4RvzCm55PES6Vy8WpN2pEyeb4
-X-Received: by 2002:a5d:6910:: with SMTP id t16mr13720346wru.416.1621423127668;
-        Wed, 19 May 2021 04:18:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzsKGojU2DgZBTVi6QJ5uaGR/qngB2I/7EjHlNBsabqXVj4gNUE+e0fQBwiJa1DS8Rsi1PZLg==
-X-Received: by 2002:a5d:6910:: with SMTP id t16mr13720320wru.416.1621423127405;
-        Wed, 19 May 2021 04:18:47 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v10sm28926558wrq.0.2021.05.19.04.18.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 04:18:46 -0700 (PDT)
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anup Patel <anup@brainfault.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-doc@vger.kernel.org,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-References: <20210519033553.1110536-1-anup.patel@wdc.com>
- <YKSa48cejI1Lax+/@kroah.com>
- <CAAhSdy18qySXbUdrEsUe-KtbtuEoYrys0TcmsV2UkEA2=7UQzw@mail.gmail.com>
- <YKSgcn5gxE/4u2bT@kroah.com> <YKTsyyVYsHVMQC+G@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
-Message-ID: <d7d5ad76-aec3-3297-0fac-a9da9b0c3663@redhat.com>
-Date:   Wed, 19 May 2021 13:18:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 19 May 2021 07:21:39 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlVgd3wNRzQpYR;
+        Wed, 19 May 2021 19:16:45 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 19:20:15 +0800
+Received: from [10.47.87.246] (10.47.87.246) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 19 May
+ 2021 12:20:12 +0100
+Subject: Re: [PATCH -next] scsi: hisi_sas: drop free_irq of devm_request_irq
+ allocated irq
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
+CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        chenxiang <chenxiang66@hisilicon.com>,
+        "luojiaxing@huawei.com" <luojiaxing@huawei.com>
+References: <20210518130902.1307494-1-yangyingliang@huawei.com>
+ <cf6a6fb8-e9e6-967e-a012-8e25a40922ec@huawei.com>
+ <30e9c7d4-75c6-8cbc-7a27-d406eae01dad@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <245d0847-bddd-2ea7-d4bc-9c4be2d26b45@huawei.com>
+Date:   Wed, 19 May 2021 12:19:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <YKTsyyVYsHVMQC+G@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <30e9c7d4-75c6-8cbc-7a27-d406eae01dad@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.87.246]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/21 12:47, Greg Kroah-Hartman wrote:
->> It is not a dumping ground for stuff that arch maintainers can not seem
->> to agree on, and it is not a place where you can just randomly play
->> around with user/kernel apis with no consequences.
+On 19/05/2021 04:36, Yang Yingliang wrote:
+> 
+> On 2021/5/18 23:34, John Garry wrote:
+>> On 18/05/2021 14:09, Yang Yingliang wrote:
+>>> irq allocated with devm_request_irq should not be freed using
+>>> free_irq, because doing so causes a dangling pointer, and a
+>>> subsequent double free.
+>>>
+>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>>> ---
+>>>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 6 +++---
+>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c 
+>>> b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+>>> index 499c770d405c..684f762bcfb3 100644
+>>> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+>>> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+>>> @@ -4811,9 +4811,9 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, 
+>>> struct hisi_hba *hisi_hba)
+>>>   {
+>>>       int i;
+>>>   -    free_irq(pci_irq_vector(pdev, 1), hisi_hba);
+>>> -    free_irq(pci_irq_vector(pdev, 2), hisi_hba);
+>>> -    free_irq(pci_irq_vector(pdev, 11), hisi_hba);
+>>> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
+>>> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
+>>> +    devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
+>>>       for (i = 0; i < hisi_hba->cq_nvecs; i++) {
+>>>           struct hisi_sas_cq *cq = &hisi_hba->cq[i];
+>>>           int nr = hisi_sas_intr_conv ? 16 : 16 + i;
+>>>
 >>
->> So no, sorry, not going to take this code at all.
->
-> And to be a bit more clear about this, having other subsystem
-> maintainers drop their unwanted code on this subsystem,_without_  even
-> asking me first is just not very nice. All of a sudden I am now > responsible for this stuff, without me even being asked about it.
-> Should I start throwing random drivers into the kvm subsystem for them
-> to maintain because I don't want to?:)
+>> Does the free_irq(pci_irq_vector(pdev, nr, cq)) call also need to 
+>> change (not shown)?
+> Yes, I missed that, it should be changed too.
 
-(I did see the smiley), I'm on board with throwing random drivers in 
-arch/riscv. :)
+So I think that we need this addition:
+  devm_free_irq(&pdev->dev, pci_irq_vector(pdev, nr), cq);
 
-The situation here didn't seem very far from what process/2.Process.rst 
-says about staging:
+>>
+>> Having said that, why have these at all if we use devm_request_irq()? 
+>> devm_irq_release() calls free_irq().
+> I keep the original logic here, only avoid double free.
 
-- "a way to keep track of drivers that aren't up to standards", though 
-in this case the issue is not coding standards or quality---the code is 
-very good---and which people "may want to use"
+Kasan doesn't complain. Anyway, I think we can't rely on device-managed 
+method (for calling free_irq()) as it conflicts with pci free vectors 
+call. I thought that someone was developed a device-managed version of 
+that (pci_alloc_irq_vectors()).
 
-- the code could be removed if there's no progress on either changing 
-the RISC-V acceptance policy or ratifying the spec
+Anyway, please proceed with your change, but with the suggested addition.
 
-Of course there should have been a TODO file explaining the situation. 
-But if you think this is not the right place, I totally understand; if 
-my opinion had any weight in this, I would just place it in arch/riscv/kvm.
-
-The RISC-V acceptance policy as is just doesn't work, and the fact that 
-people are trying to work around it is proving it.  There are many ways 
-to improve it:
-
-- get rid of it;
-
-- provide a path to get an exception;
-
-- provide a staging place sot hat people to do their job of contributing 
-code to Linux (e.g. arch/riscv/staging/kvm).
-
-If everything else fail, I guess we can place it in 
-drivers/virt/riscv/kvm, even though that's just as silly a workaround. 
-It's a pity because the RISC-V virtualization architecture has a very 
-nice design, and the KVM code is also a very good example of how to do 
-things right.
-
-Paolo
-
-> If there's really no other way to do this, than to put it in staging,
-> let's talk about it.  But saying "this must go here" is not a
-> conversation...
-
+Thanks
