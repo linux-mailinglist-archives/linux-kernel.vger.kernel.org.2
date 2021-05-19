@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06B5388D0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE50388D21
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 13:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351728AbhESLkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 07:40:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238729AbhESLkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 07:40:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 262B16135C;
-        Wed, 19 May 2021 11:38:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621424330;
-        bh=k/Cg9sewf2pkY+aL3nTGRGRyuIzL36As8fq/44gs3p8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qzPdydjcUfeOykNZheQQnJDPKkW9Qxg/no1An7urX76zfKoL3hh9DRo2y1vbZZSQm
-         fqzsWtma40gSFTfnmxz8alZimnwP9kN9+RYVZIgnI25s2sF6wDJLmmBYPTJ+a59ELN
-         +xVpqCC7jGvHwnanB4ARmxQ2Vq5ulKbYOWs6AkL9kKCH03tsU1gpfufCH9KsJVerEi
-         uQ2XURB+CYswSjqZi8l13+nFykbL9i43jgwwzXFuZ8dcg5Ff9krVSGO/e7bONpvgco
-         335RXegYI0aKV8LDBl551QxhLkJVo0En9XgK8qbfqAtfnJhS3whauXNqOzuHsru1+u
-         ZuSQV34YzMlCQ==
-Date:   Wed, 19 May 2021 12:38:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: Question about Tegra UCMs
-Message-ID: <20210519113805.GA4224@sirena.org.uk>
-References: <20210518001356.19227-1-digetx@gmail.com>
- <20210518001356.19227-3-digetx@gmail.com>
- <20210518180949.GA949047@robh.at.kernel.org>
- <20210518183455.GE4358@sirena.org.uk>
- <92cef674-c454-e08c-b44d-d8c08b1e8ccf@gmail.com>
+        id S1351453AbhESLnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 07:43:18 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3030 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234661AbhESLnR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 07:43:17 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlW8d3jmGzQnjG;
+        Wed, 19 May 2021 19:38:25 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 19:41:54 +0800
+Received: from [10.47.87.246] (10.47.87.246) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 19 May
+ 2021 12:41:52 +0100
+Subject: Re: [PATCH v4 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     Qi Liu <liuqi115@huawei.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangshaokun@hisilicon.com>
+References: <1621417741-5229-1-git-send-email-liuqi115@huawei.com>
+ <1621417741-5229-3-git-send-email-liuqi115@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4c0f623b-fd0f-e13d-452a-7d72719ecaf8@huawei.com>
+Date:   Wed, 19 May 2021 12:40:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
-Content-Disposition: inline
-In-Reply-To: <92cef674-c454-e08c-b44d-d8c08b1e8ccf@gmail.com>
-X-Cookie: There's no time like the pleasant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1621417741-5229-3-git-send-email-liuqi115@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.87.246]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 19/05/2021 10:49, Qi Liu wrote:
+> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+> to sample bandwidth, latency, buffer occupation etc.
+> 
+> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
+> registered as a PMU in /sys/bus/event_source/devices, so users can
+> select target PMU, and use filter to do further sets.
+> 
+> Filtering options contains:
+> event        - select the event.
+> subevent     - select the subevent.
+> port         - select target Root Ports. Information of Root Ports
+>                 are shown under sysfs.
+> bdf          - select requester_id of target EP device.
+> trig_len     - set trigger condition for starting event statistics.
+> trigger_mode - set trigger mode. 0 means starting to statistic when
+>                 bigger than trigger condition, and 1 means smaller.
+> thr_len      - set threshold for statistics.
+> thr_mode     - set threshold mode. 0 means count when bigger than
+>                 threshold, and 1 means smaller.
+> 
+> Reviewed-by: John Garry <john.garry@huawei.com>
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+JFYI, In light of this following series:
+https://lore.kernel.org/linux-arm-kernel/87v97fccq9.ffs@nanos.tec.linutronix.de/
 
-On Wed, May 19, 2021 at 01:31:28AM +0300, Dmitry Osipenko wrote:
+At some stage the irq_set_affinity_hint() calls need to be fixed up here 
+as well.
 
-> Mark, could you please help me to understand the UCM naming scheme that ALSA uses..
-
-I have no real idea, sorry.  Most of my userspace work has been with
-Android which doesn't use UCM.
-
-> IIUC, the "ucm2/Tegra/codec_name" scheme [2] that the current ALSA UCM
-> uses simply doesn't work at all. Is there anything on the kernel side
-> that I could change to get a working naming scheme? If yes, I may try
-> to do something about it in the v2, thanks in advance.
-
-Could you elaborate on the way in which it simply doesn't work at all?
-I'd expect there to be something in there that first tries to match on
-something to do with the specific hardware platform to take account of
-plastics differences but that'd be a userspace change.
-
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
---AqsLC8rIMeq19msA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCk+JwACgkQJNaLcl1U
-h9Dt2Af8D6yTsMzAGTj7KbTr3xEXsDs6SVhpitdY5ohrWjYu32XSNoSMCKHZhj5Z
-BXK41d7eh8QTN02078sBrifJ2e5KGpw191xaDKiBDOeMF/pdX4QLMHoNqF0PGUc5
-QaBvfT+ZltEUPmq1cjmCFnhXSlkYKekLXx32KIfEX/+xussTbHVqMb1TWdAwUTZx
-n8pj+NvXNNpnJDozUWtNcRxykvzDqG2wzmdUygn+IEcRC/6XZYngAqDSPE+7Z+id
-/Gl0FzIHhXYf5w5skQV5NhqMpaXwag613VnPwtWWNUvqgWMsP1K3pSx2aC4jSdaK
-qJa1qzIIHMbq4qlkl5GMl8bba2Mp8g==
-=0Y2O
------END PGP SIGNATURE-----
-
---AqsLC8rIMeq19msA--
+Thanks,
+John
