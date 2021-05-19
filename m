@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE644389804
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4349F389808
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 22:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhESUhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 16:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhESUhR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 16:37:17 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17E0C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:35:56 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a4so15400069wrr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 13:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=E86M8ZFI17SPZdRhP/Hegi7pved0ocDQoAlWZoCG2K0=;
-        b=QvEVTtHHUyx0bus4QZnTQbK6l5ZunpAU30ioE38p3xjfvwrl/4ofHoI7UB3WBmWvj2
-         k959cr675azEQL9Aa9k/XAIpRn0njMB7PSWT4z0syjZwtWHR9di1Cl5oWREewtR3tTrF
-         vFyN31nhYaiY9shGObcrUDhn0B5vQmv5ddGkc0zRuViXR4HBs9uRgURVPXIlbrg+weZV
-         3HRsjYWt+tEF9O73j2Px7KkgSBzD8xkiuKbAQ5tHnOL8QXphLFiGjn3UVpoXL4iALbTN
-         vPXc25NmPH75+BeA250crVSGBFhJ8DdTfLSsWCB5f0sem44Tky8zMlbvG1wlMHnLz9pz
-         tbOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=E86M8ZFI17SPZdRhP/Hegi7pved0ocDQoAlWZoCG2K0=;
-        b=HUyAxxmWUJx3kQ0HiAsacwj7njGd97FnGY65YQTYlil9u48axPDVQz5ktDyUSqjSlC
-         OIx9/am/jGV1pF5VfvKhnKA79cPMijoUxgWsaiQZllKs7k8imYUdQGLg5YHOmOIANYEv
-         kAdDBl2KXDTRJ/xgUe6eBmRFwM8Qqh42B1FQeHf65av7M6koh6DZiWCu/mu40L9LyNkY
-         +3FPAN34IWRT44iy8NwRWjW5QETJJ4YnF1Z3lyMM3F4QU4+j0icMGOoiQrQMzj7/q9ok
-         q11ikuqkEBibL1apHhTnzYZiygRSYPR7BfFbXqO0pmk2v/iS10YvmO1OFemYl8BIslll
-         5e4A==
-X-Gm-Message-State: AOAM530/BkpPBvxgNmNhV5mq/0OnNLdCzXji2fj1OKR9+fX2uuD44HWh
-        cyayK2qCbXalLvwLCg7MH2v0WA==
-X-Google-Smtp-Source: ABdhPJwW3NvOpKEXYZiI5P5aVY4plqkdy1YIWQBgyz37GWNhM4ckyeMYB/gc2E10kBgaPi7Ca7ZGmw==
-X-Received: by 2002:a5d:5989:: with SMTP id n9mr778417wri.60.1621456555641;
-        Wed, 19 May 2021 13:35:55 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id y20sm7531918wmi.0.2021.05.19.13.35.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 13:35:55 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     airlied@linux.ie, daniel@ffwll.ch, linus.walleij@linaro.org,
-        robh+dt@kernel.org, ulli.kroll@googlemail.com
-Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v2 3/3] ARM: dts: gemini: remove xxx-cells from display
-Date:   Wed, 19 May 2021 20:35:47 +0000
-Message-Id: <20210519203547.837237-3-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210519203547.837237-1-clabbe@baylibre.com>
-References: <20210519203547.837237-1-clabbe@baylibre.com>
+        id S229720AbhESUhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 16:37:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhESUhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 16:37:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EA0361353;
+        Wed, 19 May 2021 20:36:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621456590;
+        bh=hPDZ+qhFdL3l1wvU7xVmrc9Ovo2GaDsgSYaq2W7tiuc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=h+icgfG5fIC2bm1IbpxJ8ERv095myrQ0TEv7RQ6Sf7gbfsNW0VGyTHTOIiuCjYiMw
+         G0Fl59Q7M9/2VGshEmzTKANvrn05Lb9HOKLPTp2F1UwZBRCyJV2sUlDIQhb2vZlVOQ
+         EOv/cjOq5CLfVyYX3uqubQy5+btsPdT4c7F1VvAE4OPwoEbaesaXewazgwGDHg40AS
+         Yq6m6eU2plVKWVbGeWasB2ipoW9cDWAbDVQcB3QfZhuaaXdvrZW6te81EZqa2yqxBX
+         R2pKd+Q2nYsjNpYLP1XTH9loBQAz9sx4Ys7rLN1AEs/LH5djMU6ZD0c2ylZil+oX1I
+         2LFFaGJ8eLTqw==
+Date:   Wed, 19 May 2021 15:36:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        devicetree@vger.kernel.org, matthias.bgg@gmail.com,
+        john@phrozen.org, bhelgaas@google.com, robh+dt@kernel.org,
+        linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
+        neil@brown.name, ilya.lipnitskiy@gmail.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 0/4] MIPS: ralink: pci: driver for Pcie controller in
+ MT7621 SoCs
+Message-ID: <20210519203628.GA254894@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dtb_check complains about #address-cells and #size-cells, so lets
-remove them.
+On Sat, May 15, 2021 at 02:40:51PM +0200, Sergio Paracuellos wrote:
+> MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+> with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link.
+> Topology is as follows:
+> 
+>                           MT7621 PCIe HOST Topology
+> 
+>                                    .-------.
+>                                    |       |
+>                                    |  CPU  |
+>                                    |       |
+>                                    '-------'
+>                                        |
+>                                        |
+>                                        |
+>                                        v
+>                               .------------------.
+>                   .-----------|  HOST/PCI Bridge |------------.
+>                   |           '------------------'            |     Type1 
+>          BUS0     |                     |                     |    Access 
+>                   v                     v                     v    On Bus0
+>           .-------------.        .-------------.       .-------------.
+>           | VIRTUAL P2P |        | VIRTUAL P2P |       | VIRTUAL P2P |
+>           |    BUS0     |        |    BUS0     |       |    BUS0     |
+>           |    DEV0     |        |    DEV1     |       |    DEV2     |
+>           '-------------'        '-------------'       '-------------'
+>     Type0        |          Type0       |         Type0       |
+>    Access   BUS1 |         Access   BUS2|        Access   BUS3|
+>    On Bus1       v         On Bus2      v        On Bus3      v
+>            .----------.           .----------.          .----------.
+>            | Device 0 |           | Device 0 |          | Device 0 |
+>            |  Func 0  |           |  Func 0  |          |  Func 0  |
+>            '----------'           '----------'          '----------'
+> 
+> This driver has been very long time in staging and I have been cleaning
+> it from its first versions where there was code kaos and PCI_LEGACY support.
+> Original code came probably from openWRT based on mediatek's SDK code. There
+> is no documentation at all about the mt7621 PCI subsystem.
+> I have been cleaning it targeting mt7621 SoC which is the one I use in
+> my GNUBee PC1 board and HiLink HLK-MT7621A evaluation board.
+> 
+> Now I think is clean enough to be moved into 'arch/mips/pci'.
+> 
+> This driver also uses already mainlined pci phy driver located in
+> 'drivers/phy/ralink/phy-mt7621-pci.c'. There are two instances of
+> the phy being the first one dual ported for pci0 and pci1, and the 
+> second one not dual ported dedicated to pci2. Because of writing twice 
+> some phy registers of the dual-ported one sometimes become in not
+> confident boot cycles we have to take care of this when device link
+> is checked here in controller driver. We power on the dual ported-phy
+> if there is something connected in pcie0 or pcie1. In the same manner
+> we have to properly disable it only if nothing is connected in of both
+> pcie0 and pci1 slots.
+> 
+> Another thing that must be mentioned is that this driver uses IO
+> in physical address 0x001e160000. IO_SPACE_LIMIT for MIPS is 0xffff
+> so some generic PCI functions (like of_pci_range_to_resource) won't
+> work and the resource ranges part for IO is set manually.
+> 
+> I had already sent binding documentation to be reviewed but I am
+> include also here with the driver itself and this cover letter
+> to make easy review process.
+> 
+> Best regards,
+>     Sergio Paracuellos
+> 
+> Sergio Paracuellos (4):
+>   dt-bindings: mt7621-pci: PCIe binding documentation for MT7621 SoCs
+>   MIPS: pci: Add driver for MT7621 PCIe controller
+>   staging: mt7621-pci: remove driver from staging
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- arch/arm/boot/dts/gemini.dtsi | 2 --
- 1 file changed, 2 deletions(-)
+Generally it's better if the move can be done in one commit instead of
+an add followed by a remove.
 
-diff --git a/arch/arm/boot/dts/gemini.dtsi b/arch/arm/boot/dts/gemini.dtsi
-index fa708f5d0c72..34961e5bc7b2 100644
---- a/arch/arm/boot/dts/gemini.dtsi
-+++ b/arch/arm/boot/dts/gemini.dtsi
-@@ -417,8 +417,6 @@ display-controller@6a000000 {
- 			clock-names = "PCLK", "TVE";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&tvc_default_pins>;
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			status = "disabled";
- 		};
- 
--- 
-2.26.3
+I see there are a bunch of MIPS PCI controller drivers in
+arch/mips/pci/, so I see the argument for putting this one there as
+well.
 
+But most of the similar drivers are in drivers/pci/controller/, where
+I think it's easier to keep them up to date with changes in the PCI
+core.  Have you considered putting this one there?
+
+>   MAINTAINERS: add myself as maintainer of the MT7621 PCI controller
+>     driver
+> 
+>  .../bindings/pci/mediatek,mt7621-pci.yaml     | 149 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  arch/mips/pci/Makefile                        |   1 +
+>  .../mt7621-pci => arch/mips/pci}/pci-mt7621.c |   0
+>  arch/mips/ralink/Kconfig                      |   9 +-
+>  drivers/staging/Kconfig                       |   2 -
+>  drivers/staging/Makefile                      |   1 -
+>  drivers/staging/mt7621-pci/Kconfig            |   8 -
+>  drivers/staging/mt7621-pci/Makefile           |   2 -
+>  drivers/staging/mt7621-pci/TODO               |   4 -
+>  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 ------------
+>  11 files changed, 164 insertions(+), 122 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+>  rename {drivers/staging/mt7621-pci => arch/mips/pci}/pci-mt7621.c (100%)
+>  delete mode 100644 drivers/staging/mt7621-pci/Kconfig
+>  delete mode 100644 drivers/staging/mt7621-pci/Makefile
+>  delete mode 100644 drivers/staging/mt7621-pci/TODO
+>  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> 
+> -- 
+> 2.25.1
