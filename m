@@ -2,107 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B6538869E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484533886A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 07:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244551AbhESFhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 01:37:18 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:40806 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241566AbhESFf2 (ORCPT
+        id S243372AbhESFhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 01:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240379AbhESFft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 01:35:28 -0400
-Received: by mail-lf1-f48.google.com with SMTP id w33so9239548lfu.7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:34:08 -0700 (PDT)
+        Wed, 19 May 2021 01:35:49 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4AEC061344
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:34:27 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id v13so6358648ple.9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 May 2021 22:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BvCMRttPf/TJqIxdmSUmQm/huvf1KSvWFJ4QU8dhZnk=;
+        b=CV3ss4X4zAfCIAxywB9c5q8IlVUT1MajJkdkgC6I1ntnX9+2t276blstc5JZXkrArs
+         yG6PXbxxCaQ0iHrRO2CTgoomX4v1YH1TnxgirKjmSoB7LwA38t8GXd0yxCpGO+jhizJY
+         PCF7+9P80QUYBMoNxT667Bq5uW5JSS98qs6K+3tU79MJ7ztOWwNCN1aL3lBTvIxK8BRi
+         dFSxrAvLrdEYdHAsJTz4u1zb1PKZXrbXOPwhtXvEdHbVYsqHgiMf1tfFpDKsdjwxFi9U
+         U0rHSGwE7UjiFSnHUbE2LatX+hxDXvouahNkVFQCUdb8bE6cOGB45YagFvOLcXi2IFbm
+         oULA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=fC1CaIU+pSkmYQdi6dJq59uRpeoDdhiocnnvg2FvKyE=;
-        b=YPcjqPRqtGlTinuTKNkuYKS05PxjkL0lQS5iWhoaY/H1/eQ0fZe9bCkYiLBejXsusR
-         UoFKEFO4jYe6nGsXNTWLBm1FY9By6+TIZypWpeSpRGtdZlOwbcz19s4k6rSIvsZ3Hrak
-         z98ffjbf/1HbdkALHKZQ412y1U+52O2PbSC1J3wcUWQc+IHL4jNAercBVMPYpMSPVagB
-         0gG9SlG4Q5vuQM6QglVESPjG36mfCZQNlDPXUlPGrQUjjmHHomRhNJaiKORRzogG3oqq
-         MwVHqvwvYkrXLJT9d472GjMl0GYHLE2jgoteg13ZwlwzdsbUeN4SIoPUS6Ssi7Vd4JTp
-         RxNQ==
-X-Gm-Message-State: AOAM5322lTJyn83mImdo7sZ0i1MWlcgker1x2HWZViide9t0MRmsxUZi
-        rxusgYC28vre459Vu6SGOQgRY48icmrxJw==
-X-Google-Smtp-Source: ABdhPJyX4yTCbPOoWfrgd7DmBR3ZO5Rh49nIBfzOpw5Io832iLT5WCwHyiyQsWHhGZKuwNA/5WcOkw==
-X-Received: by 2002:a05:6512:21d:: with SMTP id a29mr7150382lfo.391.1621402447397;
-        Tue, 18 May 2021 22:34:07 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyyyt-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::1])
-        by smtp.gmail.com with ESMTPSA id b24sm2480405lff.93.2021.05.18.22.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 22:34:07 -0700 (PDT)
-Message-ID: <278ddbfcb0f5a9326eefdc22b35f2a476c482caa.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v2 0/5] Add devm helper for work-queue initialization
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Rob Herring <robh@kernel.org>
-Cc:     hanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210519003938.GA1649581@robh.at.kernel.org>
-References: <cover.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210519003938.GA1649581@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BvCMRttPf/TJqIxdmSUmQm/huvf1KSvWFJ4QU8dhZnk=;
+        b=EI9VEMiPl/vWlypSx6UtKS5S9aS3TpEMZtH53nPzLWI7CNeTbHh26HsEBN5VpJezpQ
+         E1Jv7X0ioy63wPJRk+Bi9akSbwHFD78hcNtDPNQQVxiVKKk2myEj+OfwCkTqskTGfS6h
+         Hmly0x89Nrk8yEE9Kz0m2d/beAdsLdOrWDpO2FeridsiOm+cc40BtcdpafouAWMa+TtF
+         pV6RBbuubBd38QzUcPl0lMk55c3c5OSIN4A4orCHfhWCctIsSAz14Ld6sMw32RAbjLFh
+         AIgWaDI6M4JU0D6EjtUzk1deoUy3W0NtaN/a85oCrIElhPV4AUwPSFH9DKvz1x+qTdOr
+         PO9A==
+X-Gm-Message-State: AOAM532LVnQJfQE5k/CM9CGmJI416EdlQ4orBMf5T2n8VUucS37vuv8V
+        M+fTSuvfTY2SkBkGnfCJD7Vk74DHAmzs/85OYL7Iig==
+X-Google-Smtp-Source: ABdhPJyo4fL8c9W5UWz7sAEOga5ZdnbLPesZtp5YMsbclajiI+GYH9FAyRMTx+a8zYcjrPDC8/Fb/X6r2ucNAVseJIg=
+X-Received: by 2002:a17:90a:6f06:: with SMTP id d6mr9677207pjk.216.1621402466801;
+ Tue, 18 May 2021 22:34:26 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Wed, 19 May 2021 08:33:58 +0300
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-21-seanjc@google.com>
+In-Reply-To: <20210424004645.3950558-21-seanjc@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Tue, 18 May 2021 22:34:11 -0700
+Message-ID: <CAAeT=FzHOCDH3-vZWOx798x6pGekCgjD8w1m8xPbrPh-ddR+vA@mail.gmail.com>
+Subject: Re: [PATCH 20/43] KVM: SVM: Don't bother writing vmcb->save.rip at
+ vCPU RESET/INIT
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 23, 2021 at 5:51 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Remove unnecessary initialization of vmcb->save.rip during vCPU RESET/INIT,
+> as svm_vcpu_run() unconditionally propagates VCPU_REGS_RIP to save.rip.
+>
+> No true functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-On Tue, 2021-05-18 at 19:39 -0500, Rob Herring wrote:
-> On Tue, May 18, 2021 at 03:31:37PM +0300, Matti Vaittinen wrote:
-> > This series adds new devm_work_autocancel() helper.
-> > 
-> > Many drivers which use work-queues must ensure the work is not
-> > queued when
-> > driver is detached. Often this is done by ensuring new work is not
-> > added and
-> > then calling cancel_work_sync() at remove(). In many cases this
-> > also requires
-> > cleanup at probe error path - which is easy to forget (or get
-> > wrong).
-> > 
-> > Also the "by ensuring new work is not added" has a gotcha.
-> > 
-> > It is not strange to see devm managed IRQs scheduling work.
-> > Mixing this with manual wq clean-up is hard to do correctly because
-> > the
-> > devm is likely to free the IRQ only after the remove() is ran. So
-> > manual
-> > wq cancellation and devm-based IRQ management do not mix well -
-> > there is
-> > a short(?) time-window after the wq clean-up when IRQs are still
-> > not
-> > freed and may schedule new work.
-> > 
-> > When both WQs and IRQs are managed by devm things are likely to
-> > just
-> > work. WQs should be initialized before IRQs (when IRQs need to
-> > schedule
-> > work) and devm unwinds things in "FILO" order.
-> 
-> Wouldn't it be better to convert drivers to use threaded IRQ
-> handlers?
-
-Morning Rob,
-
-I think for example the extcon drivers were using threaded IRQs. In
-general, there may be legitimate use-cases for having threaded IRQs but
-still offloading some work to WQ. I guess that for example the
-IRQF_ONESHOT usage could be such, right?
-
-Best Regards
-	Matti Vaittinen
-
-
+Reviewed-by: Reiji Watanabe <reijiw@google.com>
