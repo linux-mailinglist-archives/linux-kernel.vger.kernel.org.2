@@ -2,134 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD57E38879D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39573887A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237362AbhESGf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:35:58 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:61744 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236954AbhESGfw (ORCPT
+        id S237393AbhESGgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:36:47 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:56505 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236954AbhESGgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:35:52 -0400
-X-UUID: 282ef5c8ef874f24a2bc2cc7af03db4e-20210519
-X-UUID: 282ef5c8ef874f24a2bc2cc7af03db4e-20210519
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 733360804; Wed, 19 May 2021 14:34:25 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 19 May 2021 14:34:20 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 19 May 2021 14:34:19 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <treding@nvidia.com>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lee Jones <lee.jones@linaro.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 3/3] Revert "usb: common: usb-conn-gpio: Make VBUS supply optional"
-Date:   Wed, 19 May 2021 14:34:15 +0800
-Message-ID: <1621406055-18749-3-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1621406055-18749-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1621406055-18749-1-git-send-email-chunfeng.yun@mediatek.com>
-MIME-Version: 1.0
+        Wed, 19 May 2021 02:36:44 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B3D45580D4A;
+        Wed, 19 May 2021 02:35:24 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Wed, 19 May 2021 02:35:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=jS0Qnsk+x812+QOJj7P8LcihXVmZ9by
+        +e5Cbm2C4ce0=; b=Q9R1crHIzEfmhvsoE2ER+21RAh9fslXaQfzwLrfN+h0D9Kv
+        2mmCdtZr0E/7BSeF0FmPn1GGN4GEsl1UqaWRA+eXN48t7VJbWU0V/qVnFgB4Q96z
+        0JZVQT8Rnk0DEmgVl7joC1/MPGOnhd5kjEGhkoY/lL/IcpJeMJzpg+JEhbauGfi2
+        xaPGhmy88Xex1GN/rUqR0Bk6SpPMm8TAYpNsFRX0K21rWk2n5IzSK5hNjT/7pCeO
+        AXQ0i8D2BSoI3nlO2jeQ9MCxZVTgoNEkH5dCI9zRfFkqx3qVE0HOtOYNBYehCOzf
+        JDA5joHwgyNQ0m9tV41FI4pXQl6JbkquFFeI87g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jS0Qns
+        k+x812+QOJj7P8LcihXVmZ9by+e5Cbm2C4ce0=; b=dYK4lyCr9+O0BJhH0F4P/Q
+        D2P3nY0k/GU+kwyex5nGCCyc09Jp8BGwoRfBejOCj5Pd6+V0hugbtIFehUwIwUAv
+        lpID4DrAE3mtwoDl6DdX3OJjlhMU+eLC4bkQqT+E+rNatx4TIrnGx283TyungFyn
+        dyXW6DsJuB2BliAYQ/zsZO/rVHega9dagOYUdXLk0+6TX6mymnglNbaUSzSUmQe0
+        fjH5ZLH3q5SrfCy9I2CT9gINNdQDOGERmiPog9NRwwlbXxJrxAkRSZ/Yfr8HM136
+        e2HR2RRciequKu5qyz+eMw1rG+HJIB00OLBUFffcNucel44lOEj50Idn+JRBTTtw
+        ==
+X-ME-Sender: <xms:q7GkYAECxc8l-CVyxQd4nRbLi4rjOkQziEhICc2cd-8zKQ8A9bd3NA>
+    <xme:q7GkYJXckHWe6h2h8tzlGL4GuxRB2sc6TfTHbYBsnZOQyJki-JqmC8FLaJu2Q1QNj
+    K98Shm_Znef2O1nsQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeikedguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
+    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
+    frrghtthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedv
+    hefhveeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:q7GkYKIhmLu5d2Q0SEe67oaztuO86hMRqsrtGprUulY3nLvKGkTf_w>
+    <xmx:q7GkYCFKOVAXvseAXgyT_FX2hKEct1lY9xeCcJALbfOygekgUH6ZgQ>
+    <xmx:q7GkYGX6rdGx28TrGTkHPqxPijntydqAGVhCUTRnlppq-v_boVmI4A>
+    <xmx:rLGkYKq2-gb8mBXnILBc_IoPgyI61INShkiHEWDTvz3XW6opqkNESw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8BF9FA00079; Wed, 19 May 2021 02:35:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <53e8d6d3-bccc-4c80-8e7d-ea4d3f7ff488@www.fastmail.com>
+In-Reply-To: <a67f0c95-7708-569f-099b-db9e2ad9616d@kernel.org>
+References: <20210519000704.3661773-1-andrew@aj.id.au>
+ <20210519000704.3661773-3-andrew@aj.id.au>
+ <56ec152a-560b-1eed-97e2-c12e4fed171a@kernel.org>
+ <2bb7dfc4-a20e-4e3e-8fa5-74ff264c4e44@www.fastmail.com>
+ <a67f0c95-7708-569f-099b-db9e2ad9616d@kernel.org>
+Date:   Wed, 19 May 2021 16:05:02 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Jiri Slaby" <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        jenmin_yuan@aspeedtech.com, "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Milton Miller II" <miltonm@us.ibm.com>
+Subject: Re: [PATCH v2 2/2] serial: 8250: Use BIT(x) for UART_{CAP,BUG}_*
 Content-Type: text/plain
-X-TM-SNTS-SMTP: EC0D35134169962D652787113D82E54CFD756EFEAD831699B6318AC78E25A0602000:8
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vbus is already an optional supply, if the vbus-supply is not
-provided in DTS, will use a dummy regulator,
-the warning log is as below:
-"supply vbus not found, using dummy regulator"
 
-This reverts commit 4ddf1ac79e5f082451cd549283d2eb7559ab6ca9.
 
-Cc: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- drivers/usb/common/usb-conn-gpio.c | 29 ++++++-----------------------
- 1 file changed, 6 insertions(+), 23 deletions(-)
+On Wed, 19 May 2021, at 16:02, Jiri Slaby wrote:
+> On 19. 05. 21, 8:27, Andrew Jeffery wrote:
+> > 
+> > 
+> > On Wed, 19 May 2021, at 15:44, Jiri Slaby wrote:
+> >> On 19. 05. 21, 2:07, Andrew Jeffery wrote:
+> >>> BIT(x) improves readability and safety with respect to shifts.
+> >>>
+> >>> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> >>> ---
+> >>>    drivers/tty/serial/8250/8250.h | 33 +++++++++++++++++----------------
+> >>>    1 file changed, 17 insertions(+), 16 deletions(-)
+> >>>
+> >>> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+> >>> index 34aa2714f3c9..4fbf1088fad8 100644
+> >>> --- a/drivers/tty/serial/8250/8250.h
+> >>> +++ b/drivers/tty/serial/8250/8250.h
+> >>> @@ -7,6 +7,7 @@
+> >>>     *  Copyright (C) 2001 Russell King.
+> >>>     */
+> >>>    
+> >>> +#include <linux/bitops.h>
+> >>>    #include <linux/serial_8250.h>
+> >>>    #include <linux/serial_reg.h>
+> >>>    #include <linux/dmaengine.h>
+> >>> @@ -70,25 +71,25 @@ struct serial8250_config {
+> >>>    	unsigned int	flags;
+> >>>    };
+> >>>    
+> >>> -#define UART_CAP_FIFO	(1 << 8)	/* UART has FIFO */
+> >>> -#define UART_CAP_EFR	(1 << 9)	/* UART has EFR */
+> >>> -#define UART_CAP_SLEEP	(1 << 10)	/* UART has IER sleep */
+> >>> -#define UART_CAP_AFE	(1 << 11)	/* MCR-based hw flow control */
+> >>> -#define UART_CAP_UUE	(1 << 12)	/* UART needs IER bit 6 set (Xscale) */
+> >>> -#define UART_CAP_RTOIE	(1 << 13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
+> >>> -#define UART_CAP_HFIFO	(1 << 14)	/* UART has a "hidden" FIFO */
+> >>> -#define UART_CAP_RPM	(1 << 15)	/* Runtime PM is active while idle */
+> >>> -#define UART_CAP_IRDA	(1 << 16)	/* UART supports IrDA line discipline */
+> >>> -#define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
+> >>> +#define UART_CAP_FIFO	BIT(8)	/* UART has FIFO */
+> >>> +#define UART_CAP_EFR	BIT(9)	/* UART has EFR */
+> >>> +#define UART_CAP_SLEEP	BIT(10)	/* UART has IER sleep */
+> >>
+> >>
+> >> Perfect, except the include: BIT is not defined in bitops.h, but in
+> >> bits.h (which includes vdso/bits.h). In fact, bitops.h includes bits.h
+> >> too, but it's superfluous to include all those bitops.
+> > 
+> > Maybe the recommendation in the checkpatch documentation should be
+> > fixed then?
+> 
+> +1 since:
+> 
+> commit 8bd9cb51daac89337295b6f037b0486911e1b408
+> Author: Will Deacon <will@kernel.org>
+> Date:   Tue Jun 19 13:53:08 2018 +0100
+> 
+>      locking/atomics, asm-generic: Move some macros from 
+> <linux/bitops.h> to a new <linux/bits.h> file
+> 
+> So care to fix checkpatch too :)?
 
-diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
-index dfbbc4f51ed6..143bbd8f557a 100644
---- a/drivers/usb/common/usb-conn-gpio.c
-+++ b/drivers/usb/common/usb-conn-gpio.c
-@@ -91,14 +91,14 @@ static void usb_conn_detect_cable(struct work_struct *work)
- 		return;
- 	}
- 
--	if (info->last_role == USB_ROLE_HOST && info->vbus)
-+	if (info->last_role == USB_ROLE_HOST)
- 		regulator_disable(info->vbus);
- 
- 	ret = usb_role_switch_set_role(info->role_sw, role);
- 	if (ret)
- 		dev_err(info->dev, "failed to set role: %d\n", ret);
- 
--	if (role == USB_ROLE_HOST && info->vbus) {
-+	if (role == USB_ROLE_HOST) {
- 		ret = regulator_enable(info->vbus);
- 		if (ret)
- 			dev_err(info->dev, "enable vbus regulator failed\n");
-@@ -106,9 +106,8 @@ static void usb_conn_detect_cable(struct work_struct *work)
- 
- 	info->last_role = role;
- 
--	if (info->vbus)
--		dev_dbg(info->dev, "vbus regulator is %s\n",
--			regulator_is_enabled(info->vbus) ? "enabled" : "disabled");
-+	dev_dbg(info->dev, "vbus regulator is %s\n",
-+		regulator_is_enabled(info->vbus) ? "enabled" : "disabled");
- 
- 	power_supply_changed(info->charger);
- }
-@@ -205,23 +204,7 @@ static int usb_conn_probe(struct platform_device *pdev)
- 
- 	INIT_DELAYED_WORK(&info->dw_det, usb_conn_detect_cable);
- 
--	/*
--	 * If the USB connector is a child of a USB port and that port already provides the VBUS
--	 * supply, there's no need for the USB connector to provide it again.
--	 */
--	if (dev->parent && dev->parent->of_node) {
--		if (of_find_property(dev->parent->of_node, "vbus-supply", NULL))
--			need_vbus = false;
--	}
--
--	if (!need_vbus) {
--		info->vbus = devm_regulator_get_optional(dev, "vbus");
--		if (PTR_ERR(info->vbus) == -ENODEV)
--			info->vbus = NULL;
--	} else {
--		info->vbus = devm_regulator_get(dev, "vbus");
--	}
--
-+	info->vbus = devm_regulator_get(dev, "vbus");
- 	if (IS_ERR(info->vbus)) {
- 		ret = PTR_ERR(info->vbus);
- 		return dev_err_probe(dev, ret, "failed to get vbus :%d\n", ret);
-@@ -288,7 +271,7 @@ static int usb_conn_remove(struct platform_device *pdev)
- 
- 	cancel_delayed_work_sync(&info->dw_det);
- 
--	if (info->last_role == USB_ROLE_HOST && info->vbus)
-+	if (info->last_role == USB_ROLE_HOST)
- 		regulator_disable(info->vbus);
- 
- 	usb_role_switch_put(info->role_sw);
--- 
-2.18.0
+Yeah, I'll sort that out.
 
+Andrew
