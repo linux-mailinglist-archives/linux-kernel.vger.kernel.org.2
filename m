@@ -2,150 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8BD388806
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A3C388808
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 09:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238839AbhESHUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 03:20:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53647 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236024AbhESHUd (ORCPT
+        id S239433AbhESHVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 03:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238829AbhESHVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 03:20:33 -0400
-X-UUID: 8d6442a4730a4f42b1b522fb45af3148-20210519
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7uTMyP8kzD/uP+FGo4KtbE5DwPBm28qGLTSFWKP3PPE=;
-        b=PzPHYG0jDCF9ib3YsGkdiYRDhMxUclaOqLI6rUzU7n+5tl2v7pzOQmyGpK0Jucb2NroO8vjCkbYndFyIwmrYQI6Y9QvlqBsUov5SX82W9PVw4ZDSoi1Ha3dtUHVJSflBNUsXKv1lyUJX2NCWcJZ+rG0ak6BqNHF0yXuwrCIh5yM=;
-X-UUID: 8d6442a4730a4f42b1b522fb45af3148-20210519
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1245937702; Wed, 19 May 2021 15:19:11 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 19 May 2021 15:18:49 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 19 May 2021 15:18:49 +0800
-Message-ID: <1621408729.12301.34.camel@mtkswgap22>
-Subject: Re: [PATCH] mm/sparse: fix check_usemap_section_nr warnings
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Mike Rapoport <rppt@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Date:   Wed, 19 May 2021 15:18:49 +0800
-In-Reply-To: <YKSigC4UAQAARX4L@kernel.org>
-References: <20210511093114.15123-1-miles.chen@mediatek.com>
-         <YKSigC4UAQAARX4L@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 19 May 2021 03:21:06 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F580C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:19:46 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so3013201pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 00:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=heLMK1eVMd9vz01zbjzMSRH/Wv+AZ6MgS42nN+leRL8=;
+        b=XjbDchF23I2Bo56VloArkfZQPG+SkQmBadJ5nE5rEJ0YOcRju17csGqJmZ84opweJy
+         c9T9sHYCTv78MMSMKQuquxH3ebgC0VhhUWb3n5z9yYBRRCaXHQslFleBbmmPDR5kfciD
+         vNybNIgVuIbUptlBWJijwWURr6eiYaeQHd7kBK+l+4aRIjzlpMYbIVwSvlmS+2uTWspl
+         R5iyYcvf0HXkJmMST9QjzeRnz2wKQjligSoeP1yQgzB8Gq++E6mWb8gxvJXMP+bGlQpH
+         J0L+L2P3LBC69KwjRF9v2M2R8JfjpndY2JqrPIGTDt0tdgHMvMmdNycZKbL3N3jmNb+U
+         zqIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=heLMK1eVMd9vz01zbjzMSRH/Wv+AZ6MgS42nN+leRL8=;
+        b=es8DlrysjdCTkPkag1ImFXoRi/d0u3JV70GvKnHLcQqLIZWltoFAfr7+JjOU+61VqS
+         hMVBGjw1yaU+waSP3yiDYAgXYoB0/o68WsAoqEYKjowQEo2Zek4MbSz7eoGiS/3EC2p9
+         vsdCEQ83NuplkQD2DpamTefueQWWFguUQE5C0LdUinFBduxGFX9bfb/LCDEZvbk0axwn
+         M+lf9ckjFRGdoANwOyABCx7yuovsudOb6FDflsD/2jfNb105s5RFYMfO+rm6rf/x8LUq
+         DIRjJjCi4E1lckguPwMYwufn9kZCP4N2mBuFZCT6kbj+7nMVCswiEgE/Q/dZlfe8rTos
+         sS8w==
+X-Gm-Message-State: AOAM5303QyTrTYeF5YF6gHaoWE24SNSgdBoZvQugvLi+CxgZEX0qEcYJ
+        11iHNgAAQ/ek6iMZ83c8gDS2GA==
+X-Google-Smtp-Source: ABdhPJzsnkXIAqnGpb2P78SYG5OsZrFZjbzFBEaoM5bed8mXbJBTf7ascukMOrEQKyhdRY6fM+fsuw==
+X-Received: by 2002:a17:902:a70f:b029:ea:d4a8:6a84 with SMTP id w15-20020a170902a70fb02900ead4a86a84mr9345467plq.42.1621408786017;
+        Wed, 19 May 2021 00:19:46 -0700 (PDT)
+Received: from localhost ([103.207.71.35])
+        by smtp.gmail.com with ESMTPSA id q9sm3435974pjm.23.2021.05.19.00.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 00:19:45 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>, Al Grant <Al.Grant@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v5 0/5] perf arm-spe: Enable timestamp
+Date:   Wed, 19 May 2021 15:19:34 +0800
+Message-Id: <20210519071939.1598923-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA1LTE5IGF0IDA4OjMwICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
-PiAoYWRkIGFybTY0IHBlb3BsZSkNCj4gDQo+IE9uIFR1ZSwgTWF5IDExLCAyMDIxIGF0IDA1OjMx
-OjE0UE0gKzA4MDAsIE1pbGVzIENoZW4gd3JvdGU6DQo+ID4gSW4gY3VycmVudCBpbXBsZW1lbnRh
-dGlvbiBvZiBub2RlX2RhdGEsIGlmIENPTkZJR19ORUVEX01VTFRJUExFX05PREVTPXksDQo+ID4g
-bm9kZV9kYXRhIGlzIGFsbG9jYXRlZCBieSBrem1hbGxvYy4gSWYgQ09ORklHX05FRURfTVVMVElQ
-TEVfTk9ERVM9biwNCj4gDQo+IFRoZSBub2RlIHN0cnVjdHVyZXMgYXJlIGFsbG9jYXRlZCBmcm9t
-IG1lbWJsb2NrIHJhdGhlciB0aGFuIGt6bWFsbG9jLCBzbw0KPiBJJ2Qgc3VnZ2VzdCB0byB1c2Ug
-ImR5bmFtaWNhbGx5IGFsbG9jYXRlZCI6DQo+IA0KPiAuLi4gbm9kZV9kYXRhIGlzIGR5bmFtaWNh
-bGx5IGFsbG9jYXRlZA0KDQoNCm5vIHByb2JsZW0uICJkeW5hbWljYWxseSBhbGxvY2F0ZWQiIGlz
-IGJldHRlci4NCg0KPiANCj4gPiB3ZSB1c2UgYSBnbG9iYWwgdmFyaWFibGUgbmFtZWQgImNvbnRp
-Z19wYWdlX2RhdGEiLg0KPiA+IA0KPiA+IElmIENPTkZJR19ERUJVR19WSVJUVUFMIGlzIG5vdCBl
-bmFibGVkLiBfX3BhKCkgY2FuIGhhbmRsZSBib3RoIGt6YWxsb2MgYW5kDQo+IA0KPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXiBjb21hDQo+IA0KPiBBbmQgaGVyZSBh
-cyB3ZWxsLCByYXRoZXIgdGhlbiBtZW50aW9uIGt6YWxsb2MNCg0KDQpvaywgd2lsbCBmaXggdGhp
-cyBpbiB2Mw0KDQo+IA0KPiAJLi4uIF9fcGEoKSBjYW4gaGFuZGxlIGJvdGggZHluYW1pYyBhbGxv
-Y2F0aW9uIGFuZCBzeW1ib2wgY2FzZXMuDQo+IA0KPiA+IHN5bWJvbCBjYXNlcy4gQnV0IGlmIENP
-TkZJR19ERUJVR19WSVJUVUFMIGlzIHNldCwgd2Ugd2lsbCBoYXZlIHRoZQ0KPiA+ICJ2aXJ0X3Rv
-X3BoeXMgdXNlZCBmb3Igbm9uLWxpbmVhciBhZGRyZXNzIiB3YXJuaW5nIHdoZW4gYm9vdGluZy4N
-Cj4gPiANCj4gPiBUbyBmaXggaXQsIGNyZWF0ZSBhIHNtYWxsIGZ1bmN0aW9uIHRvIGhhbmRsZSBi
-b3RoIHRyYW5zbGF0aW9uLg0KPiANCj4gTW9yZSBnZW5lcmFsbHksIEkgd29uZGVyIGhvdyBvdGhl
-ciBhcmNoaXRlY3R1cmVzIHRoYW4gc3VwcG9ydCBERUJVR19WSVJUVUFMDQo+IGNvcGUgd2l0aCB0
-aGlzPw0KDQphcm02NCBzdXBwb3J0IERFQlVHX1ZJUlRVQUwgc2luY2UgdjQuMTEuIEJlZm9yZSB2
-NC4xMSwgYSBkcml2ZXIgY2FuIGdldA0KaW5jb3JyZWN0IFBBIGJ5IHVzaW5nIF9fcGEoKSBmb3Ig
-bm9uLWxpbmVhciBhZGRyZXNzZXMgYW5kIGNyZWF0ZQ0KaGFyZC10by1kZWJ1ZyBpc3N1ZXMuDQoN
-CmFybTMyLi4uSSByZW1lbWJlciBhbiBvbGQgaXNzdWUgaW4gZXh0NDogX19wYSgpIGlzIHVzZWQg
-dG8gY29udmVydA0Kbm9uLWxpbmVhciBrbWFwJ2VkIGFkZHJlc3NlcyAod2hlbiBDT05GSUdfSElH
-SE1FTT15KS4NCg0KVGhlcmUgYXJlIG11bHRpcGxlIGFyY2hpdGVjdHVyZXMgd2hpY2ggc3VwcG9y
-dCBDT05GSUdfREVCVUdfVklSVFVBTC4NCkl0IGhlbHBzIHBlb3BsZSB0byBjYXRjaCBub24tbGlu
-ZWFyIGFkZHJlc3NlcyBhdCB0aGUgZmlyc3QgcGxhY2UuDQoNCmZpbmQgYXJjaCAtbmFtZSAncGh5
-c2FkZHIuYycNCmFyY2gvYXJtL21tL3BoeXNhZGRyLmMNCmFyY2gvYXJtNjQvbW0vcGh5c2FkZHIu
-Yw0KYXJjaC9taXBzL21tL3BoeXNhZGRyLmMNCmFyY2gvcmlzY3YvbW0vcGh5c2FkZHIuYw0KYXJj
-aC94ODYvbW0vcGh5c2FkZHIuYw0KDQo+IA0KPiBNYXliZSBzdWNoIGxhY2sgb2YgY29uc2lzdGVu
-Y3kgYmV0d2VlbiBkZWJ1ZyBhbmQgbm8tZGVidWcgdmVyc2lvbiBvZg0KPiBhcm02NDo6dmlydF90
-b19waHlzKCkgaXMgd2hhdCBuZWVkcyB0byBiZSBmaXhlZCBhdCB0aGUgZmlyc3QgcGxhY2U/DQo+
-ICANCj4gPiBXYXJuaW5nIG1lc3NhZ2U6DQo+ID4gWyAgICAwLjAwMDAwMF0gLS0tLS0tLS0tLS0t
-WyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+ID4gWyAgICAwLjAwMDAwMF0gdmlydF90b19waHlz
-IHVzZWQgZm9yIG5vbi1saW5lYXIgYWRkcmVzczogKF9fX19wdHJ2YWxfX19fKSAoY29udGlnX3Bh
-Z2VfZGF0YSsweDAvMHgxYzAwKQ0KPiA+IFsgICAgMC4wMDAwMDBdIFdBUk5JTkc6IENQVTogMCBQ
-SUQ6IDAgYXQgYXJjaC9hcm02NC9tbS9waHlzYWRkci5jOjE1IF9fdmlydF90b19waHlzKzB4NTgv
-MHg2OA0KPiA+IFsgICAgMC4wMDAwMDBdIE1vZHVsZXMgbGlua2VkIGluOg0KPiA+IFsgICAgMC4w
-MDAwMDBdIENQVTogMCBQSUQ6IDAgQ29tbTogc3dhcHBlciBUYWludGVkOiBHICAgICAgICBXICAg
-ICAgICAgNS4xMy4wLXJjMS0wMDA3NC1nMTE0MGFiNTkyZTJlICMzDQo+ID4gWyAgICAwLjAwMDAw
-MF0gSGFyZHdhcmUgbmFtZTogbGludXgsZHVtbXktdmlydCAoRFQpDQo+ID4gWyAgICAwLjAwMDAw
-MF0gcHN0YXRlOiA2MDAwMDBjNSAoblpDdiBkYUlGIC1QQU4gLVVBTyAtVENPIEJUWVBFPS0tKQ0K
-PiA+IFsgICAgMC4wMDAwMDBdIHBjIDogX192aXJ0X3RvX3BoeXMrMHg1OC8weDY4DQo+ID4gWyAg
-ICAwLjAwMDAwMF0gbHIgOiBfX3ZpcnRfdG9fcGh5cysweDU0LzB4NjgNCj4gPiBbICAgIDAuMDAw
-MDAwXSBzcCA6IGZmZmY4MDAwMTE4MzNlNzANCj4gPiBbICAgIDAuMDAwMDAwXSB4Mjk6IGZmZmY4
-MDAwMTE4MzNlNzAgeDI4OiAwMDAwMDAwMDQxOGEwMDE4IHgyNzogMDAwMDAwMDAwMDAwMDAwMA0K
-PiA+IFsgICAgMC4wMDAwMDBdIHgyNjogMDAwMDAwMDAwMDAwMDAwYSB4MjU6IGZmZmY4MDAwMTFi
-NzAwMDAgeDI0OiBmZmZmODAwMDExYjcwMDAwDQo+ID4gWyAgICAwLjAwMDAwMF0geDIzOiBmZmZm
-ZmMwMDAxYzAwMDAwIHgyMjogZmZmZjgwMDAxMWI3MDAwMCB4MjE6IDAwMDAwMDAwNDdmZmZmYjAN
-Cj4gPiBbICAgIDAuMDAwMDAwXSB4MjA6IDAwMDAwMDAwMDAwMDAwMDggeDE5OiBmZmZmODAwMDEx
-YjA4MmMwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPiA+IFsgICAgMC4wMDAwMDBdIHgxNzogMDAw
-MDAwMDAwMDAwMDAwMCB4MTY6IGZmZmY4MDAwMTE4MzNiZjkgeDE1OiAwMDAwMDAwMDAwMDAwMDA0
-DQo+ID4gWyAgICAwLjAwMDAwMF0geDE0OiAwMDAwMDAwMDAwMDAwZmZmIHgxMzogZmZmZjgwMDAx
-MTg2YTU0OCB4MTI6IDAwMDAwMDAwMDAwMDAwMDANCj4gPiBbICAgIDAuMDAwMDAwXSB4MTE6IDAw
-MDAwMDAwMDAwMDAwMDAgeDEwOiAwMDAwMDAwMGZmZmZmZmZmIHg5IDogMDAwMDAwMDAwMDAwMDAw
-MA0KPiA+IFsgICAgMC4wMDAwMDBdIHg4IDogZmZmZjgwMDAxMTVjOTAwMCB4NyA6IDczNzUyMDcz
-Nzk2ODcwNWYgeDYgOiBmZmZmODAwMDExYjYyZWY4DQo+ID4gWyAgICAwLjAwMDAwMF0geDUgOiAw
-MDAwMDAwMDAwMDAwMDAwIHg0IDogMDAwMDAwMDAwMDAwMDAwMSB4MyA6IDAwMDAwMDAwMDAwMDAw
-MDANCj4gPiBbICAgIDAuMDAwMDAwXSB4MiA6IDAwMDAwMDAwMDAwMDAwMDAgeDEgOiBmZmZmODAw
-MDExNTk1ODVlIHgwIDogMDAwMDAwMDAwMDAwMDA1OA0KPiA+IFsgICAgMC4wMDAwMDBdIENhbGwg
-dHJhY2U6DQo+ID4gWyAgICAwLjAwMDAwMF0gIF9fdmlydF90b19waHlzKzB4NTgvMHg2OA0KPiA+
-IFsgICAgMC4wMDAwMDBdICBjaGVja191c2VtYXBfc2VjdGlvbl9ucisweDUwLzB4ZmMNCj4gPiBb
-ICAgIDAuMDAwMDAwXSAgc3BhcnNlX2luaXRfbmlkKzB4MWFjLzB4MjhjDQo+ID4gWyAgICAwLjAw
-MDAwMF0gIHNwYXJzZV9pbml0KzB4MWM0LzB4MWUwDQo+ID4gWyAgICAwLjAwMDAwMF0gIGJvb3Rt
-ZW1faW5pdCsweDYwLzB4OTANCj4gPiBbICAgIDAuMDAwMDAwXSAgc2V0dXBfYXJjaCsweDE4NC8w
-eDFmMA0KPiA+IFsgICAgMC4wMDAwMDBdICBzdGFydF9rZXJuZWwrMHg3OC8weDQ4OA0KPiA+IFsg
-ICAgMC4wMDAwMDBdIC0tLVsgZW5kIHRyYWNlIGY2ODcyOGEwZDMwNTNiNjAgXS0tLQ0KPiA+IA0K
-PiA+IFNpZ25lZC1vZmYtYnk6IE1pbGVzIENoZW4gPG1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tPg0K
-PiA+IC0tLQ0KPiA+ICBtbS9zcGFyc2UuYyB8IDEzICsrKysrKysrKysrLS0NCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlm
-ZiAtLWdpdCBhL21tL3NwYXJzZS5jIGIvbW0vc3BhcnNlLmMNCj4gPiBpbmRleCBiMmFkYTlkYzAw
-Y2IuLjU1YzE4YWZmM2U0MiAxMDA2NDQNCj4gPiAtLS0gYS9tbS9zcGFyc2UuYw0KPiA+ICsrKyBi
-L21tL3NwYXJzZS5jDQo+ID4gQEAgLTM0NCw2ICszNDQsMTUgQEAgc2l6ZV90IG1lbV9zZWN0aW9u
-X3VzYWdlX3NpemUodm9pZCkNCj4gPiAgCXJldHVybiBzaXplb2Yoc3RydWN0IG1lbV9zZWN0aW9u
-X3VzYWdlKSArIHVzZW1hcF9zaXplKCk7DQo+ID4gIH0NCj4gPiAgDQo+ID4gK3N0YXRpYyBpbmxp
-bmUgcGh5c19hZGRyX3QgcGdkYXRfdG9fcGh5cyhzdHJ1Y3QgcGdsaXN0X2RhdGEgKnBnZGF0KQ0K
-PiA+ICt7DQo+ID4gKyNpZm5kZWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9ERVMNCj4gPiArCXJl
-dHVybiBfX3BhX3N5bWJvbChwZ2RhdCk7DQo+ID4gKyNlbHNlDQo+ID4gKwlyZXR1cm4gX19wYShw
-Z2RhdCk7DQo+ID4gKyNlbmRpZg0KPiA+ICt9DQo+ID4gKw0KPiA+ICAjaWZkZWYgQ09ORklHX01F
-TU9SWV9IT1RSRU1PVkUNCj4gPiAgc3RhdGljIHN0cnVjdCBtZW1fc2VjdGlvbl91c2FnZSAqIF9f
-aW5pdA0KPiA+ICBzcGFyc2VfZWFybHlfdXNlbWFwc19hbGxvY19wZ2RhdF9zZWN0aW9uKHN0cnVj
-dCBwZ2xpc3RfZGF0YSAqcGdkYXQsDQo+ID4gQEAgLTM2Miw3ICszNzEsNyBAQCBzcGFyc2VfZWFy
-bHlfdXNlbWFwc19hbGxvY19wZ2RhdF9zZWN0aW9uKHN0cnVjdCBwZ2xpc3RfZGF0YSAqcGdkYXQs
-DQo+ID4gIAkgKiBmcm9tIHRoZSBzYW1lIHNlY3Rpb24gYXMgdGhlIHBnZGF0IHdoZXJlIHBvc3Np
-YmxlIHRvIGF2b2lkDQo+ID4gIAkgKiB0aGlzIHByb2JsZW0uDQo+ID4gIAkgKi8NCj4gPiAtCWdv
-YWwgPSBfX3BhKHBnZGF0KSAmIChQQUdFX1NFQ1RJT05fTUFTSyA8PCBQQUdFX1NISUZUKTsNCj4g
-PiArCWdvYWwgPSBwZ2RhdF90b19waHlzKHBnZGF0KSAmIChQQUdFX1NFQ1RJT05fTUFTSyA8PCBQ
-QUdFX1NISUZUKTsNCj4gPiAgCWxpbWl0ID0gZ29hbCArICgxVUwgPDwgUEFfU0VDVElPTl9TSElG
-VCk7DQo+ID4gIAluaWQgPSBlYXJseV9wZm5fdG9fbmlkKGdvYWwgPj4gUEFHRV9TSElGVCk7DQo+
-ID4gIGFnYWluOg0KPiA+IEBAIC0zOTAsNyArMzk5LDcgQEAgc3RhdGljIHZvaWQgX19pbml0IGNo
-ZWNrX3VzZW1hcF9zZWN0aW9uX25yKGludCBuaWQsDQo+ID4gIAl9DQo+ID4gIA0KPiA+ICAJdXNl
-bWFwX3NuciA9IHBmbl90b19zZWN0aW9uX25yKF9fcGEodXNhZ2UpID4+IFBBR0VfU0hJRlQpOw0K
-PiA+IC0JcGdkYXRfc25yID0gcGZuX3RvX3NlY3Rpb25fbnIoX19wYShwZ2RhdCkgPj4gUEFHRV9T
-SElGVCk7DQo+ID4gKwlwZ2RhdF9zbnIgPSBwZm5fdG9fc2VjdGlvbl9ucihwZ2RhdF90b19waHlz
-KHBnZGF0KSA+PiBQQUdFX1NISUZUKTsNCj4gPiAgCWlmICh1c2VtYXBfc25yID09IHBnZGF0X3Nu
-cikNCj4gPiAgCQlyZXR1cm47DQo+ID4gIA0KPiA+IC0tIA0KPiA+IDIuMTguMA0KPiANCg0K
+This patch set is to enable timestamp for Arm SPE trace.  It reads out
+TSC parameters from the TIME_CONV event, the parameters are used for
+conversion between timer counter and kernel time, the calculated
+timestamps are assigned to Arm SPE samples.
+
+This patch set can be clearly applied on perf/core branch with:
+
+  commit 046b243a6afb ("perf x86 kvm-stat: Support to analyze kvm MSR")
+
+The patches have been tested on Hisilicon D06 platform.
+
+Changes from v4:
+* Dropped the change "perf arm-spe: Remove unused enum value
+  ARM_SPE_PER_CPU_MMAPS" for format compatibility (James).
+
+Changes from v3:
+* Let to be backwards-compatible for TIME_CONV event (Adrian).
+
+Changes from v2:
+* Changed to use TIME_CONV event for extracting clock parameters (Al).
+
+Changes from v1:
+* Rebased patch series on the latest perf/core branch;
+* Fixed the patch for dumping TSC parameters to support both the
+  older and new auxtrace info format.
+
+
+Leo Yan (5):
+  perf arm-spe: Save clock parameters from TIME_CONV event
+  perf arm-spe: Convert event kernel time to counter value
+  perf arm-spe: Assign kernel time to synthesized event
+  perf arm-spe: Bail out if the trace is later than perf event
+  perf arm-spe: Don't wait for PERF_RECORD_EXIT event
+
+ tools/perf/util/arm-spe.c | 73 +++++++++++++++++++++++++++++++++------
+ 1 file changed, 63 insertions(+), 10 deletions(-)
+
+-- 
+2.25.1
 
