@@ -2,157 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D63388759
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01D838875B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 May 2021 08:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbhESGKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 02:10:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:24016 "EHLO mga14.intel.com"
+        id S234809AbhESGKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 02:10:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231339AbhESGKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 02:10:42 -0400
-IronPort-SDR: w/JbdbMbeWXR2PUvT2xGQESQC5728qE/M9ErizR2mSIEV3FDMFAfxWZGwHtjvMNIrBxYHIBN1W
- 5uaVRZCcdwZA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="200594362"
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="200594362"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 23:09:07 -0700
-IronPort-SDR: U9kdsIUWWPVeDaS4hXJ2El/Ogt0uWcsgMZQNaXEqcM0EDHRxuQcT0owPGuoPCuNPS9uKBF3MIG
- 02C4SvJO5NwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; 
-   d="scan'208";a="473327115"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by orsmga001.jf.intel.com with ESMTP; 18 May 2021 23:09:02 -0700
-Date:   Wed, 19 May 2021 14:09:02 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, zhengjun.xing@intel.com, kernel-team@fb.com,
-        neeraju@codeaurora.org, rui.zhang@intel.com
-Subject: Re: [clocksource]  388450c708:  netperf.Throughput_tps -65.1%
- regression
-Message-ID: <20210519060902.GE78241@shbuild999.sh.intel.com>
-References: <20210501003247.2448287-4-paulmck@kernel.org>
- <20210513155515.GB23902@xsang-OptiPlex-9020>
- <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
- <20210514074314.GB5384@shbuild999.sh.intel.com>
- <20210514174908.GI975577@paulmck-ThinkPad-P17-Gen-1>
- <20210516063419.GA22111@shbuild999.sh.intel.com>
+        id S231339AbhESGKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 02:10:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 102B1613B4;
+        Wed, 19 May 2021 06:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621404571;
+        bh=+tng9KOkJ4vGrdnFxKm0TZVfhTzW5k68odPKowCsvhg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uIFcOBsrOPaOvn2n6HLWrG+RAKH5xzptUoATriDXNQfa/02/ENtvWdaSu9rOiF5N1
+         +k2R5oQrAgs3HF5e7SKOncFWi5nhVxR5BXYPQ6yPcLjpR7yj8heIO/d8Q35i/g4NAI
+         KvcOnf3FI0yuBWQC5qBFFGCBe+2rWumYiZo2mvF2lHCDPQKbF8zkwmQQGGMqmSM0VM
+         bBYqhyCuVt+UtTd4uZ3Z9WHzcLGN0qiJ9pTyK2IiRxrelP0OJHaYGvxMCr4tWxrUaI
+         82SUAJ/G8SBrlul2epNghxGFdlMslJ08hdiYwv7LtWSAzdQWM9FRWwxqYULt/3JKJj
+         7vKPlTe7DOX3A==
+Received: by mail-lj1-f182.google.com with SMTP id c15so14195806ljr.7;
+        Tue, 18 May 2021 23:09:30 -0700 (PDT)
+X-Gm-Message-State: AOAM530GnR1EGebvX6K/3qP8LBuoJWwLqdFO4lBqEDfZ/0/5whVH54S/
+        260pn3L0zeTKpyNSl1myzdN2MUg6WNWFGOHAzvA=
+X-Google-Smtp-Source: ABdhPJxCD9AU161BNjQRQBYs1nLF1LGkl0Ty6pHsGbdXuhweqLk1xlX6xD5rGyODMFf4KqToUL2wB7X/Dnv9SWicVUo=
+X-Received: by 2002:a2e:9d82:: with SMTP id c2mr7361177ljj.508.1621404569271;
+ Tue, 18 May 2021 23:09:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210516063419.GA22111@shbuild999.sh.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
+ <20210519052048.GA24853@lst.de> <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
+ <20210519055555.GA27451@lst.de>
+In-Reply-To: <20210519055555.GA27451@lst.de>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 19 May 2021 14:09:17 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSg0TqAzmdzf7B_xASXLO-z4yVvCDnaUV4brP7tCpCdvQ@mail.gmail.com>
+Message-ID: <CAJF2gTSg0TqAzmdzf7B_xASXLO-z4yVvCDnaUV4brP7tCpCdvQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        drew@beagleboard.org, wefu@redhat.com, lazyparser@gmail.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 02:34:19PM +0800, Feng Tang wrote:
-> On Fri, May 14, 2021 at 10:49:08AM -0700, Paul E. McKenney wrote:
-> > On Fri, May 14, 2021 at 03:43:14PM +0800, Feng Tang wrote:
-> > > Hi Paul,
-> > > 
-> > > On Thu, May 13, 2021 at 10:07:07AM -0700, Paul E. McKenney wrote:
-> > > > On Thu, May 13, 2021 at 11:55:15PM +0800, kernel test robot wrote:
-> > > > > 
-> > > > > 
-> > > > > Greeting,
-> > > > > 
-> > > > > FYI, we noticed a -65.1% regression of netperf.Throughput_tps due to commit:
-> > > > > 
-> > > > > 
-> > > > > commit: 388450c7081ded73432e2b7148c1bb9a0b039963 ("[PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC")
-> > > > > url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
-> > > > > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
-> > > > > 
-> > > > > in testcase: netperf
-> > > > > on test machine: 96 threads 2 sockets Ice Lake with 256G memory
-> > > > > with following parameters:
-> > > > > 
-> > > > > 	ip: ipv4
-> > > > > 	runtime: 300s
-> > > > > 	nr_threads: 25%
-> > > > > 	cluster: cs-localhost
-> > > > > 	test: UDP_RR
-> > > > > 	cpufreq_governor: performance
-> > > > > 	ucode: 0xb000280
-> > > > > 
-> > > > > test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
-> > > > > test-url: http://www.netperf.org/netperf/
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > If you fix the issue, kindly add following tag
-> > > > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > > > 
-> > > > > 
-> > > > > also as Feng Tang checked, this is a "unstable clocksource" case.
-> > > > > attached dmesg FYI.
-> > > > 
-> > > > Agreed, given the clock-skew event and the resulting switch to HPET,
-> > > > performance regressions are expected behavior.
-> > > > 
-> > > > That dmesg output does demonstrate the value of Feng Tang's patch!
-> > > > 
-> > > > I don't see how to obtain the values of ->mult and ->shift that would
-> > > > allow me to compute the delta.  So if you don't tell me otherwise, I
-> > > > will assume that the skew itself was expected on this hardware, perhaps
-> > > > somehow due to the tpm_tis_status warning immediately preceding the
-> > > > clock-skew event.  If my assumption is incorrect, please let me know.
-> > > 
-> > > I run the case with the debug patch applied, the info is:
-> > > 
-> > > [   13.796429] clocksource: timekeeping watchdog on CPU19: Marking clocksource 'tsc' as unstable because the skew is too large:
-> > > [   13.797413] clocksource:                       'hpet' wd_nesc: 505192062 wd_now: 10657158 wd_last: fac6f97 mask: ffffffff
-> > > [   13.797413] clocksource:                       'tsc' cs_nsec: 504008008 cs_now: 3445570292aa5 cs_last: 344551f0cad6f mask: ffffffffffffffff
-> > > [   13.797413] clocksource:                       'tsc' is current clocksource.
-> > > [   13.797413] tsc: Marking TSC unstable due to clocksource watchdog
-> > > [   13.844513] clocksource: Checking clocksource tsc synchronization from CPU 50 to CPUs 0-1,12,22,32-33,60,65.
-> > > [   13.855080] clocksource: Switched to clocksource hpet
-> > > 
-> > > So the delta is 1184 us (505192062 - 504008008), and I agree with
-> > > you that it should be related with the tpm_tis_status warning stuff.
-> > > 
-> > > But this re-trigger my old concerns, that if the margins calculated
-> > > for tsc, hpet are too small?
-> > 
-> > If the error really did disturb either tsc or hpet, then we really
-> > do not have a false positive, and nothing should change (aside from
-> > perhaps documenting that TPM issues can disturb the clocks, or better
-> > yet treating that perturbation as a separate bug that should be fixed).
-> > But if this is yet another way to get a confused measurement, then it
-> > would be better to work out a way to reject the confusion and keep the
-> > tighter margins.  I cannot think right off of a way that this could
-> > cause measurement confusion, but you never know.
-> 
-> I have no doubt in the correctness of the measuring method, but was
-> just afraid some platforms which use to 'just work' will be caught :)
-> 
-> > So any thoughts on exactly how the tpm_tis_status warning might have
-> > resulted in the skew?
-> 
-> The tpm error message has been reported before, and from google there
-> were some similar errors, we'll do some further check.
+On Wed, May 19, 2021 at 1:55 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, May 19, 2021 at 01:48:23PM +0800, Guo Ren wrote:
+> > The patchset just leaves a configuration chance for vendors. Before
+> > RISC-V ISA fixes it, we should give the chance to let vendor solve
+> > their real chip issues.
+>
+> No.  The vendors need to work to get a feature standardized before
+> implementing it.  There is other way to have a sane kernel build that
+> supports all the different SOCs.
 
-Some update on this: further debug shows it is not related to TPM 
-module, as the 'unstable' still happens even if we disable TPM
-module in kernel.
+I've said the patchset doesn't define any features, It just leaves the
+chance for vendors.
 
-We run this case on another test box of same type but with latest 
-BIOS and microcode, the tsc freq is correctly calculated and the 
-'unstable' error can't be reproduced. And we will check how to 
-upgrade the test box in 0day.
+It's not in conflict with any standardized riscv ISA.
 
-Thanks,
-Feng
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
