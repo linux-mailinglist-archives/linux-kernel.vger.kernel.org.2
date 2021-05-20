@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB35038B7A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A16E38B7A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238322AbhETTe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S238753AbhETTfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234189AbhETTex (ORCPT
+        with ESMTP id S233966AbhETTfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:34:53 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF86C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:33:28 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so5847817pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:33:28 -0700 (PDT)
+        Thu, 20 May 2021 15:35:10 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AB2C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:33:48 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id h24so2255143qtm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:33:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DKaftpjv7H83Jh/uRtII0tq3p9ECwTnXtKKu/Rh05PI=;
-        b=vz5G03Jq3T+zYlANXUXDryLqsRfrAPGj9W2taWRFdoAqGpZb9TiwgFz6Ogsh6l69kb
-         JdPBtixQGnCKuAjOaWr3RFRc37fQZXsY9umWWFIr9btcsZ2H6JvT/yUdwCaPzbadtkk7
-         N1Ozq3SS/8ad81RVsvUvY0I0pwjvMahpz/+P0lx9rO4DvRc3eowOqndgZyTWno9I4ZXO
-         qm1nnrbXkFkzbI6LM68ZxsFc2B4C8MgChsg4h8eU7hTrpYYrvE6c/6Wo2z76zNKgTbBO
-         E/Y/DGO0KUByry4G6Cp9DKF7jIUQHysttBXkHfXRkQWEOqyqWRD14EtyaLwftyOhAUfL
-         FSPA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p8G0uB0F2NEQKNMVrVQoid1N5+N7dmGBlMzWRHpJEjE=;
+        b=kDONrh86vDKBFTcyz1CD3cz/Tb0aQ+GqykCRp/E8pJqPhug2KqL60svLYIqdu2WlFh
+         kAcCc1V39WMLTg1+IEWvEGQ7tkkWqvTGsgSOq26jxTM5NjJ5JnfXihyBfEfa3S59ANBo
+         lscZt3x58JxvHz52hU7MixzSVaR9ISakHYEJQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DKaftpjv7H83Jh/uRtII0tq3p9ECwTnXtKKu/Rh05PI=;
-        b=mjbqTcFZFAD27BfvIybHzEzHbVRAtPDO910GOCzTPI8YHFMmYU8seOoOksLpEgkFHv
-         nnzE2PykkMk4wdOfdUi4RWm5KTsL28TWf5blCVkUjAC/b3vVJLmDZh8ZDjrRRtjG/IDp
-         vIbz5bQy193sRBoTm3Xelr4m+jwK4sxZkvQAjNhd/32jg8v/g4j10yU/192czLCUGVuD
-         kBe6Jhq0dJibNvisBDmrN2JX697Lv8kEX4hYrP+bHULvyqmLnhlw3oHAuU6QeLOdsVZp
-         y397K/sawPxLyo3cq85LAhtaKF/yfra6rxXiklV9t+plJmyBPGcYnkxekRO7yJD3ODiP
-         DzqQ==
-X-Gm-Message-State: AOAM5310POLd5MdyrbwRQZ4ulzncMYvMzaRJX4IalJBx3eLSsvXkcfnK
-        38CH+TFfYYpWQp55f4dcsG10bw==
-X-Google-Smtp-Source: ABdhPJx2cEANB7DElFy0DEIg4GJXnR9d7vcMndsj8xxQv4VsXHSdZwNwbkTVvozR7t2BFM6ZIHpLeg==
-X-Received: by 2002:a17:90a:7486:: with SMTP id p6mr6949639pjk.216.1621539207345;
-        Thu, 20 May 2021 12:33:27 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id b17sm2565876pgb.71.2021.05.20.12.33.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 12:33:26 -0700 (PDT)
-Date:   Thu, 20 May 2021 19:33:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2 27/32] x86/tdx: Exclude Shared bit from __PHYSICAL_MASK
-Message-ID: <YKa5gkwGTIUFpzzH@google.com>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <87b31425b79df3cc44d2bdc6a79d6aa36c42d116.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <3ae38a0b-0676-1543-7015-39a589b2807a@intel.com>
- <0df80c0f-e0da-e86e-0ab8-abc58f0da559@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p8G0uB0F2NEQKNMVrVQoid1N5+N7dmGBlMzWRHpJEjE=;
+        b=rBjSAWivDJfI0dH19qDKi30cNZ/9jjBNx/iUiM+5tgALsA1rk4nmyF+D4A8TWAapKJ
+         mBixKKlANY+ktaywz0eoIjDfeSd/Amdi9+gL032+2l5PbLTkkwtaVy1l6YB2Oj38Bxwx
+         65U33PIyi60nuyluq1LRqkDSOyaCuiIUVooAS4sp6xqrJXraABV6PY7003DTHnjbMfiC
+         toMmQ/Ra/Sn/2XDUEPvPPpIp/mmYYQx0nXmelY+odGMlmEOhWuBnJiLxpCmJtFQy4vpl
+         yH83OwUTBwn4ZLxv3RjPp58hvW8DTlduHDfSxPd2pbC6iSQRXjmbZ1N9PeUeZ6ezuwxd
+         ivYw==
+X-Gm-Message-State: AOAM533RhOJFMQbYHwlpqJwyV+7jQelRhpde2HhK07aEu9VR4wAbpt/m
+        d9a+1iBSlXTHTHfOBi5jeKuMrx2C+4cUSg==
+X-Google-Smtp-Source: ABdhPJwJgNY1RrIIMXrJG+2liIfJRjQKkU6123BGt8pBXJywMel/XdRYNen3sI8tmsrjUR1YcMMt/Q==
+X-Received: by 2002:ac8:5a94:: with SMTP id c20mr6742372qtc.353.1621539227646;
+        Thu, 20 May 2021 12:33:47 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id p10sm2842825qkg.74.2021.05.20.12.33.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 12:33:47 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id y36so7753925ybi.11
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:33:47 -0700 (PDT)
+X-Received: by 2002:a25:4252:: with SMTP id p79mr9576627yba.276.1621539226800;
+ Thu, 20 May 2021 12:33:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0df80c0f-e0da-e86e-0ab8-abc58f0da559@linux.intel.com>
+References: <20210520190105.3772683-1-lee.jones@linaro.org> <20210520190105.3772683-3-lee.jones@linaro.org>
+In-Reply-To: <20210520190105.3772683-3-lee.jones@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 20 May 2021 12:33:33 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WJQQpa2BedjrmPFBebVY1Ay6=CFLmBhFFCV5ZEaQsq3w@mail.gmail.com>
+Message-ID: <CAD=FV=WJQQpa2BedjrmPFBebVY1Ay6=CFLmBhFFCV5ZEaQsq3w@mail.gmail.com>
+Subject: Re: [PATCH 02/16] i2c: muxes: i2c-arb-gpio-challenge: Demote
+ non-conformant kernel-doc headers
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Peter Rosin <peda@axentia.se>,
+        linux-i2c <linux-i2c@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021, Kuppuswamy, Sathyanarayanan wrote:
-> Hi Dave,
-> 
-> On 5/19/21 9:14 AM, Dave Hansen wrote:
-> > On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
-> > > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> > > 
-> > > tdx_shared_mask() returns the mask that has to be set in a page
-> > > table entry to make page shared with VMM.
-> > 
-> > Here's a rewrite:
-> > 
-> > Just like MKTME, TDX reassigns bits of the physical address for
-> > metadata.  MKTME used several bits for an encryption KeyID.  TDX uses a
-> > single bit in guests to communicate whether a physical page should be
-> > protected by TDX as private memory (bit set to 0) or unprotected and
-> > shared with the VMM (bit set to 1).
-> > 
-> > Add a helper, tdg_shared_mask() (bad name please fix it) to generate the
-> 
-> Initially we have used tdx_* prefix for the guest code. But when the code from
-> host side got merged together, we came across many name conflicts.
+Hi,
 
-Whatever the conflicts are, they are by no means an unsolvable problem.  I am
-more than happy to end up with slightly verbose names in KVM if that's what it
-takes to avoid "tdg".
+On Thu, May 20, 2021 at 12:01 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/i2c/muxes/i2c-arb-gpio-challenge.c:43: warning: Function parameter or member 'muxc' not described in 'i2c_arbitrator_select'
+>  drivers/i2c/muxes/i2c-arb-gpio-challenge.c:43: warning: Function parameter or member 'chan' not described in 'i2c_arbitrator_select'
+>  drivers/i2c/muxes/i2c-arb-gpio-challenge.c:86: warning: Function parameter or member 'muxc' not described in 'i2c_arbitrator_deselect'
+>  drivers/i2c/muxes/i2c-arb-gpio-challenge.c:86: warning: Function parameter or member 'chan' not described in 'i2c_arbitrator_deselect'
+>
+> Cc: Peter Rosin <peda@axentia.se>
+> Cc: Doug Anderson <dianders@chromium.org>
+> Cc: linux-i2c@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/i2c/muxes/i2c-arb-gpio-challenge.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-> So to avoid such issues in future, we were asked not to use the "tdx_" prefix
-> and our alternative choice was "tdg_".
+No objections from me.
 
-Who asked you not to use tdx_?  More specifically, did that feedback come from a
-maintainer (or anyone on-list), or was it an Intel-internal decision?
+Acked-by: Douglas Anderson <dianders@chromium.org>
 
-> Also, IMO, "tdg" prefix is more meaningful for guest code (Trusted Domain Guest)
-> compared to "tdx" (Trusted Domain eXtensions). I know that it gets confusing
-> when grepping for TDX related changes. But since these functions are only used
-> inside arch/x86 it should not be too confusing.
-> 
-> Even if rename is requested, IMO, it is easier to do it in one patch over
-> making changes in all the patches. So if it is required, we can do it later
-> once these initial patches were merged.
-
-Hell no, we are not merging known bad crud that requires useless churn to get
-things right.
+-Doug
